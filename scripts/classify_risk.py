@@ -6,6 +6,7 @@ Classifies AI operations against EU AI Act risk tiers.
 
 import argparse
 import json
+import os
 import re
 import sys
 from dataclasses import dataclass, field, asdict
@@ -110,7 +111,7 @@ HIGH_RISK_PATTERNS = {
     "employment": {
         "patterns": [r"cv.?screen", r"resume.?filt", r"hiring.?decision", r"recruit\w*\W{0,3}automat",
                      r"automat\w*\W{0,3}recruit", r"candidate.?rank", r"promotion.?decision",
-                     r"termination.?decision"],
+                     r"termination.?decision", r"performance.?review.{0,10}(ai|automat|model|predict)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 4",
         "description": "Employment and workers management"
@@ -196,6 +197,112 @@ AI_INDICATORS = {
 }
 
 
+def _load_policy() -> dict:
+    """Load policy configuration from regula-policy.yaml if available."""
+    # Search order: REGULA_POLICY env var, cwd, home dir
+    candidates = []
+    env_path = os.environ.get("REGULA_POLICY")
+    if env_path:
+        candidates.append(Path(env_path))
+    candidates.append(Path.cwd() / "regula-policy.yaml")
+    candidates.append(Path.home() / ".regula" / "regula-policy.yaml")
+
+    for path in candidates:
+        if path.exists():
+            try:
+                # Parse YAML subset without pyyaml dependency
+                content = path.read_text(encoding="utf-8")
+                return _parse_simple_yaml(content)
+            except Exception:
+                continue
+    return {}
+
+
+def _parse_simple_yaml(text: str) -> dict:
+    """Minimal YAML parser for policy files (handles flat keys, lists, nested dicts)."""
+    import re as _re
+    result = {}
+    current_section = None
+    current_subsection = None
+
+    for line in text.split("\n"):
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+
+        indent = len(line) - len(line.lstrip())
+
+        # Top-level key
+        if indent == 0 and ":" in stripped:
+            key, _, val = stripped.partition(":")
+            val = val.strip()
+            if val and not val.startswith("["):
+                result[key.strip()] = val.strip().strip('"').strip("'")
+            elif val.startswith("["):
+                items = _re.findall(r'["\']?([^"\',\[\]]+)["\']?', val)
+                result[key.strip()] = [i.strip() for i in items if i.strip()]
+            else:
+                result[key.strip()] = {}
+                current_section = key.strip()
+                current_subsection = None
+            continue
+
+        if indent == 2 and current_section and ":" in stripped:
+            key, _, val = stripped.partition(":")
+            val = val.strip()
+            if isinstance(result.get(current_section), dict):
+                if val and not val.startswith("["):
+                    result[current_section][key.strip()] = val.strip().strip('"').strip("'")
+                elif val.startswith("["):
+                    items = _re.findall(r'["\']?([^"\',\[\]]+)["\']?', val)
+                    result[current_section][key.strip()] = [i.strip() for i in items if i.strip()]
+                else:
+                    result[current_section][key.strip()] = {}
+                    current_subsection = key.strip()
+            continue
+
+        if indent == 4 and current_section and current_subsection and ":" in stripped:
+            key, _, val = stripped.partition(":")
+            val = val.strip()
+            parent = result.get(current_section, {}).get(current_subsection)
+            if isinstance(parent, dict):
+                if val and not val.startswith("["):
+                    val_clean = val.strip('"').strip("'")
+                    if val_clean.lower() == "true":
+                        parent[key.strip()] = True
+                    elif val_clean.lower() == "false":
+                        parent[key.strip()] = False
+                    elif val_clean.isdigit():
+                        parent[key.strip()] = int(val_clean)
+                    else:
+                        parent[key.strip()] = val_clean
+                elif val.startswith("["):
+                    items = _re.findall(r'["\']?([^"\',\[\]]+)["\']?', val)
+                    parent[key.strip()] = [i.strip() for i in items if i.strip()]
+                else:
+                    parent[key.strip()] = {}
+            continue
+
+        # List item
+        if stripped.startswith("- "):
+            item = stripped[2:].strip().strip('"').strip("'")
+            if current_subsection and isinstance(result.get(current_section, {}).get(current_subsection), list):
+                result[current_section][current_subsection].append(item)
+            elif current_section and isinstance(result.get(current_section), list):
+                result[current_section].append(item)
+
+    return result
+
+
+# Load policy once at import time
+_POLICY = _load_policy()
+
+
+def get_policy() -> dict:
+    """Get the loaded policy configuration."""
+    return _POLICY
+
+
 def is_ai_related(text: str) -> bool:
     text_lower = text.lower()
     for category in AI_INDICATORS.values():
@@ -266,13 +373,54 @@ def check_limited_risk(text: str) -> Optional[Classification]:
     return None
 
 
+def _check_policy_overrides(text: str) -> Optional[Classification]:
+    """Check policy-defined force_high_risk and exempt lists."""
+    policy = get_policy()
+    rules = policy.get("rules", {})
+    risk_rules = rules.get("risk_classification", {})
+
+    text_lower = text.lower()
+
+    # Check exempt list first
+    exempt = risk_rules.get("exempt", [])
+    if isinstance(exempt, list):
+        for pattern in exempt:
+            if pattern.lower() in text_lower:
+                return Classification(
+                    tier=RiskTier.MINIMAL_RISK, confidence="high",
+                    indicators_matched=[], applicable_articles=[],
+                    category="Policy Exempt", description=f"Exempt per policy: {pattern}",
+                    action="allow", message=f"EXEMPT: '{pattern}' is exempt per regula-policy.yaml"
+                )
+
+    # Check force_high_risk list
+    force_high = risk_rules.get("force_high_risk", [])
+    if isinstance(force_high, list):
+        for pattern in force_high:
+            if pattern.lower().replace("_", " ") in text_lower or pattern.lower() in text_lower:
+                return Classification(
+                    tier=RiskTier.HIGH_RISK, confidence="high",
+                    indicators_matched=[pattern], applicable_articles=["9", "10", "11", "12", "13", "14", "15"],
+                    category="Policy Override", description=f"Forced high-risk per policy: {pattern}",
+                    action="allow_with_requirements",
+                    message=f"HIGH-RISK (policy override): '{pattern}' is force-classified as high-risk"
+                )
+
+    return None
+
+
 def classify(text: str) -> Classification:
+    # Check policy overrides first (force_high_risk, exempt)
+    policy_result = _check_policy_overrides(text)
+    if policy_result:
+        return policy_result
+
     if not is_ai_related(text):
         prohibited = check_prohibited(text)
         if prohibited:
             return prohibited
         return Classification(tier=RiskTier.NOT_AI, confidence="high", action="allow", message="No AI indicators detected.")
-    
+
     prohibited = check_prohibited(text)
     if prohibited:
         return prohibited

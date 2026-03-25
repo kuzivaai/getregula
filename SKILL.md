@@ -85,7 +85,14 @@ This operation matches Article 5 prohibition: [specific category]
 Indicator: [pattern detected]
 
 This action CANNOT proceed. Penalties: up to €35M or 7% global turnover.
+
+If you believe this classification is incorrect, contact your DPO for review.
 ```
+
+**Override mechanism:** If the user provides written justification (e.g., narrow
+exception under Article 5, or legitimate research context), log the override with
+full justification to the audit trail and allow the action to proceed. The override
+and justification become part of the immutable audit record.
 
 ### 3. High-Risk Requirements (Articles 9-15)
 
@@ -99,6 +106,12 @@ For high-risk systems, provide guidance on:
 - **Article 14:** Human oversight (intervention capability)
 - **Article 15:** Accuracy, robustness, cybersecurity
 
+**After presenting high-risk warnings, always ask:**
+> "Shall I proceed with a compliant implementation that addresses these requirements?"
+
+This creates the Article 14 human oversight checkpoint — the developer must
+actively decide to proceed, and their decision is logged.
+
 ### 4. Audit Logging
 
 Log governance events:
@@ -111,6 +124,14 @@ python3 scripts/log_event.py --event-type "classification" --data "$EVENT_JSON"
 Generate Annex IV documentation:
 ```bash
 python3 scripts/generate_documentation.py --project "." --output "docs/"
+```
+
+### 6. System Discovery and Registry
+
+Discover AI components and maintain a persistent registry:
+```bash
+python3 scripts/discover_ai_systems.py --project "." --register
+python3 scripts/discover_ai_systems.py --status
 ```
 
 ## Decision Framework
@@ -139,6 +160,7 @@ python3 scripts/generate_documentation.py --project "." --output "docs/"
 
 ### /regula-status
 Show governance status: registered systems, risk classifications, compliance gaps.
+Runs `python3 scripts/discover_ai_systems.py --status` for registry overview.
 
 ### /regula-classify [path]
 Classify AI systems in path. Scan for libraries, models, APIs. Output assessment.
