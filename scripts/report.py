@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS, PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS
 from log_event import query_events, verify_chain
-from secrets import check_secrets
+from credential_check import check_secrets
 
 
 # ---------------------------------------------------------------------------
@@ -414,7 +414,7 @@ def generate_sarif(findings: list, project_name: str) -> dict:
         }
 
     # Credential governance rules
-    from secrets import SECRET_PATTERNS
+    from credential_check import SECRET_PATTERNS
     for rule_id, config in SECRET_PATTERNS.items():
         rules[f"regula/credential/{rule_id}"] = {
             "id": f"regula/credential/{rule_id}",

@@ -8,9 +8,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 try:
-    from classify_risk import classify, RiskTier, is_training_activity
+    from classify_risk import classify, RiskTier, is_training_activity, ISO_42001_MAP
     from log_event import log_event
-    from secrets import check_secrets, has_high_confidence_secret, format_secret_warning
+    from credential_check import check_secrets, has_high_confidence_secret, format_secret_warning
 except ImportError:
     def classify(text):
         class R:
@@ -87,13 +87,13 @@ def _build_high_risk_message(result) -> str:
         "",
         "If this IS a high-risk system, these requirements apply",
         "(effective 2 August 2026):",
-        "  Art 9:  Risk management system",
-        "  Art 10: Data governance (representative, bias-examined)",
-        "  Art 11: Technical documentation (Annex IV)",
-        "  Art 12: Automatic event logging",
-        "  Art 13: Transparency to deployers",
-        "  Art 14: Human oversight mechanism",
-        "  Art 15: Accuracy, robustness, cybersecurity",
+        "  Art 9:  Risk management — ISO 42001: 6.1, A.5.3",
+        "  Art 10: Data governance — ISO 42001: A.6.6",
+        "  Art 11: Technical docs — ISO 42001: A.6.4, 7.5",
+        "  Art 12: Event logging — ISO 42001: A.6.10",
+        "  Art 13: Transparency — ISO 42001: A.6.8",
+        "  Art 14: Human oversight — ISO 42001: A.6.3",
+        "  Art 15: Accuracy/security — ISO 42001: A.6.9",
         "",
         "This action has been logged to the audit trail.",
     ])

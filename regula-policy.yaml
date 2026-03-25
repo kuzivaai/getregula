@@ -3,29 +3,35 @@ organisation: "Your Organisation"
 
 frameworks:
   - eu_ai_act
-  # - iso_42001      # Future
-  # - nist_ai_rmf    # Future
+  # - iso_42001      # Planned: v1.2
+  # - nist_ai_rmf    # Planned: v1.2
 
 rules:
   risk_classification:
     # Systems to always treat as high-risk (e.g., fraud_detection)
     force_high_risk: []
     # Systems confirmed as low-risk after human review.
-    # NOTE: exempt CANNOT override Article 5 prohibited practice detection.
-    # Prohibited checks always run first regardless of this list.
+    # NOTE: Cannot override Article 5 prohibited practice detection.
     exempt: []
-
-  approvals:
-    high_risk:
-      required: true
-      approvers: ["dpo@company.com"]
-      timeout_hours: 72
-
-  blocking:
-    prohibited: []           # Additional patterns to block
-    require_approval: []     # Patterns requiring approval
 
   logging:
     retention_years: 10
-    pii_redaction: true
     export_format: [json, csv]
+
+# --- Fields below are planned but NOT YET IMPLEMENTED ---
+# They are included to show the intended configuration surface.
+# Do not rely on these having any effect in the current version.
+#
+# planned:
+#   approvals:
+#     high_risk:
+#       required: true
+#       approvers: ["dpo@company.com"]
+#       timeout_hours: 72
+#   blocking:
+#     prohibited: []
+#     require_approval: []
+#   logging:
+#     pii_redaction: true
+#   alerts:
+#     channels: []

@@ -1,3 +1,4 @@
+# regula-ignore
 #!/usr/bin/env python3
 """
 Regula Risk Indication Engine
@@ -371,6 +372,19 @@ def get_policy() -> dict:
 # ---------------------------------------------------------------------------
 # Detection functions
 # ---------------------------------------------------------------------------
+
+# Compact ISO 42001 mapping for high-risk classification output.
+# Full mapping in references/iso_42001_mapping.yaml.
+ISO_42001_MAP = {
+    "9":  "ISO 42001: 6.1 (Risk assessment), A.5.3 (AI risk management)",
+    "10": "ISO 42001: A.6.6 (Data for AI systems), A.7.4 (Documentation of data)",
+    "11": "ISO 42001: A.6.4 (AI system documentation), 7.5 (Documented information)",
+    "12": "ISO 42001: A.6.10 (Logging and monitoring)",
+    "13": "ISO 42001: A.6.8 (Transparency and explainability)",
+    "14": "ISO 42001: A.6.3 (Human oversight of AI systems)",
+    "15": "ISO 42001: A.6.9 (Performance and monitoring)",
+}
+
 
 def _compute_confidence_score(tier: str, num_matches: int, has_ai_indicator: bool) -> int:
     """Compute a 0-100 confidence score based on tier, match count, and context."""
