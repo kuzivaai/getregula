@@ -33,9 +33,9 @@ from xml.etree import ElementTree
 FEED_SOURCES = [
     {
         "name": "IAPP News",
-        "url": "https://iapp.org/news/rss/",
+        "url": "https://iapp.org/rss/news.xml",
         "type": "rss",
-        "authority": "International Association of Privacy Professionals — industry standard body for privacy and AI governance professionals. Publishes with editorial independence. 670+ professional survey base.",
+        "authority": "International Association of Privacy Professionals — industry standard body for privacy and AI governance professionals. 670+ professional survey base.",
     },
     {
         "name": "NIST AI Publications",
@@ -50,43 +50,53 @@ FEED_SOURCES = [
         "authority": "Most comprehensive independent EU AI Act reference site. Tracks implementation timeline, article text, and standard-setting progress.",
     },
     {
-        "name": "ICO Technology Blog",
-        "url": "https://ico.org.uk/about-the-ico/media-centre/blog/rss/",
+        "name": "MIT Technology Review",
+        "url": "https://www.technologyreview.com/feed/",
         "type": "rss",
-        "authority": "UK Information Commissioner's Office — UK data protection and AI regulator. Publishes binding guidance and enforcement actions.",
+        "authority": "MIT Technology Review — independent journalism on technology policy. Covers AI governance, regulation, and societal impact with editorial independence.",
     },
     {
-        "name": "Stanford HAI News",
-        "url": "https://hai.stanford.edu/news/rss.xml",
+        "name": "Future of Life Institute",
+        "url": "https://futureoflife.org/feed/",
         "type": "rss",
-        "authority": "Stanford Institute for Human-Centered AI — publishes the annual AI Index report, cited by policymakers globally.",
+        "authority": "Future of Life Institute — non-profit focused on existential risk from AI. Publishes AI governance policy analysis and coordinates open letters.",
     },
     {
-        "name": "Brookings AI Policy",
-        "url": "https://www.brookings.edu/topic/artificial-intelligence/feed/",
-        "type": "rss",
-        "authority": "Brookings Institution — non-partisan policy research organisation. Publishes independent AI policy analysis.",
-    },
-    {
-        "name": "Help Net Security AI",
+        "name": "Help Net Security",
         "url": "https://www.helpnetsecurity.com/feed/",
         "type": "rss",
         "authority": "Independent cybersecurity news outlet. Covers AI security and governance tools with editorial independence from vendors.",
+    },
+    {
+        "name": "EFF AI Policy",
+        "url": "https://www.eff.org/rss/updates.xml",
+        "type": "rss",
+        "authority": "Electronic Frontier Foundation — non-profit defending civil liberties in digital spaces. Covers AI regulation, surveillance, and rights implications.",
     },
 ]
 
 # Keywords for filtering — articles must contain at least one
 GOVERNANCE_KEYWORDS = [
+    # Regulatory
     "ai act", "ai governance", "ai regulation", "ai compliance", "ai risk",
-    "ai safety", "ai ethics", "responsible ai", "eu ai act", "ai audit",
-    "ai oversight", "algorithmic", "automated decision", "ai transparency",
-    "ai accountability", "model governance", "ai policy", "high-risk ai",
+    "eu ai act", "ai audit", "ai oversight", "ai policy", "high-risk ai",
     "prohibited ai", "conformity assessment", "iso 42001", "nist ai rmf",
-    "ai bill of materials", "ai-bom", "agentic ai", "ai agent governance",
-    "shadow ai", "ai standard", "harmonised standard", "annex iii",
-    "article 5", "article 6", "article 9", "artificial intelligence act",
-    "digital omnibus", "ai framework", "bias detection", "fairness",
-    "ai assurance", "trustworthy ai", "ai certification",
+    "artificial intelligence act", "digital omnibus", "harmonised standard",
+    "annex iii", "article 5", "article 6", "article 9",
+    # Governance concepts
+    "ai safety", "ai ethics", "responsible ai", "ai transparency",
+    "ai accountability", "model governance", "ai assurance", "trustworthy ai",
+    "ai certification", "ai framework", "bias detection", "fairness",
+    "ai bill of materials", "ai-bom", "agentic ai", "ai agent",
+    "shadow ai", "ai standard", "automated decision",
+    # Broader AI policy (widens match for MIT Tech Review, HelpNetSec, EFF)
+    "artificial intelligence regulation", "ai legislation", "ai law",
+    "machine learning governance", "deepfake", "facial recognition",
+    "surveillance", "algorithmic bias", "algorithmic accountability",
+    "ai security", "ai vulnerability", "prompt injection",
+    "ai copyright", "training data", "generative ai regulation",
+    "foundation model", "large language model", "llm governance",
+    "ai workforce", "ai hiring", "ai discrimination",
 ]
 
 CACHE_DIR = Path(os.environ.get("REGULA_CACHE_DIR", Path.home() / ".regula" / "cache"))

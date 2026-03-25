@@ -1,6 +1,8 @@
+# regula-ignore
 #!/usr/bin/env python3
 """Comprehensive test suite for Regula classification engine"""
 
+import json
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
@@ -825,7 +827,7 @@ def test_timeline_data():
 
 def test_secret_detection_openai_key():
     """Detects OpenAI API key pattern"""
-    from secrets import check_secrets
+    from credential_check import check_secrets
     findings = check_secrets('curl -H "Authorization: Bearer sk-abcdefghijklmnopqrstuvwxyz12345"')
     assert_true(len(findings) > 0, "detects OpenAI key")
     assert_eq(findings[0].confidence, "high", "OpenAI key is high confidence")
@@ -835,7 +837,7 @@ def test_secret_detection_openai_key():
 
 def test_secret_detection_aws_key():
     """Detects AWS access key pattern"""
-    from secrets import check_secrets
+    from credential_check import check_secrets
     findings = check_secrets("export AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE")
     assert_true(len(findings) > 0, "detects AWS key")
     assert_eq(findings[0].pattern_name, "aws_access_key", "pattern is aws_access_key")
@@ -844,7 +846,7 @@ def test_secret_detection_aws_key():
 
 def test_secret_detection_no_false_positive():
     """Does not flag normal code as containing secrets"""
-    from secrets import check_secrets
+    from credential_check import check_secrets
     findings = check_secrets("git status && npm install && python3 main.py")
     assert_eq(len(findings), 0, "no false positives on normal commands")
     findings = check_secrets("print('hello world')")
@@ -854,7 +856,7 @@ def test_secret_detection_no_false_positive():
 
 def test_secret_redaction():
     """Secrets are properly redacted in output"""
-    from secrets import check_secrets
+    from credential_check import check_secrets
     findings = check_secrets("sk-abcdefghijklmnopqrstuvwxyz12345")
     assert_true(len(findings) > 0, "found secret")
     assert_true(findings[0].redacted_value.startswith("sk-a"), "shows first 4 chars")
@@ -883,6 +885,66 @@ def test_gpai_inference_not_training():
     assert_false(is_training_activity("response = openai.chat.completions.create()"), "API call is not training")
     assert_false(is_training_activity("import torch; output = model(input)"), "inference is not training")
     print("✓ GPAI: inference patterns not flagged as training")
+
+
+# ── Hook Integration Tests ──────────────────────────────────────────
+
+def _run_hook(tool_name: str, tool_input: dict) -> tuple:
+    """Run the pre_tool_use hook with given input, return (json_output, exit_code)."""
+    import subprocess
+    hook_path = str(Path(__file__).parent.parent / "hooks" / "pre_tool_use.py")
+    input_json = json.dumps({"tool_name": tool_name, "tool_input": tool_input})
+    result = subprocess.run(
+        [sys.executable, hook_path],
+        input=input_json, capture_output=True, text=True, timeout=10,
+    )
+    try:
+        output = json.loads(result.stdout)
+    except (json.JSONDecodeError, ValueError):
+        output = {}
+    return output, result.returncode
+
+
+def test_hook_prohibited_block():
+    """Hook blocks prohibited patterns with exit code 2"""
+    output, code = _run_hook("Bash", {"command": "python3 social_credit_scoring.py"})
+    assert_eq(code, 2, "prohibited exits with code 2")
+    decision = output.get("hookSpecificOutput", {}).get("permissionDecision")
+    assert_eq(decision, "deny", "prohibited decision is deny")
+    reason = output.get("hookSpecificOutput", {}).get("permissionDecisionReason", "")
+    assert_true("PROHIBITED" in reason, "reason contains PROHIBITED")
+    print("✓ Hook integration: prohibited block with exit 2")
+
+
+def test_hook_high_risk_allow_with_iso():
+    """Hook allows high-risk with ISO 42001 controls in context"""
+    output, code = _run_hook("Bash", {"command": "python3 -c 'import sklearn; cv_screening()'"})
+    assert_eq(code, 0, "high-risk exits with code 0")
+    decision = output.get("hookSpecificOutput", {}).get("permissionDecision")
+    assert_eq(decision, "allow", "high-risk decision is allow")
+    context = output.get("hookSpecificOutput", {}).get("additionalContext", "")
+    assert_true("ISO 42001" in context, "context includes ISO 42001 controls")
+    print("✓ Hook integration: high-risk allow with ISO 42001")
+
+
+def test_hook_secret_block():
+    """Hook blocks high-confidence secrets with exit code 2"""
+    output, code = _run_hook("Bash", {"command": "curl -H 'Authorization: Bearer sk-abcdefghijklmnopqrstuvwxyz12345' api.openai.com"})
+    assert_eq(code, 2, "secret exits with code 2")
+    decision = output.get("hookSpecificOutput", {}).get("permissionDecision")
+    assert_eq(decision, "deny", "secret decision is deny")
+    reason = output.get("hookSpecificOutput", {}).get("permissionDecisionReason", "")
+    assert_true("CREDENTIAL" in reason.upper(), "reason mentions credential")
+    print("✓ Hook integration: secret block with exit 2")
+
+
+def test_hook_clean_pass():
+    """Hook allows clean operations with exit 0"""
+    output, code = _run_hook("Bash", {"command": "git status"})
+    assert_eq(code, 0, "clean command exits with code 0")
+    decision = output.get("hookSpecificOutput", {}).get("permissionDecision")
+    assert_eq(decision, "allow", "clean decision is allow")
+    print("✓ Hook integration: clean pass with exit 0")
 
 
 def test_file_credential_governance():
@@ -992,6 +1054,11 @@ if __name__ == "__main__":
         test_gpai_inference_not_training,
         # AI credential governance (1 test)
         test_file_credential_governance,
+        # Hook integration (4 tests)
+        test_hook_prohibited_block,
+        test_hook_high_risk_allow_with_iso,
+        test_hook_secret_block,
+        test_hook_clean_pass,
     ]
 
     print(f"Running {len(tests)} tests...\n")
