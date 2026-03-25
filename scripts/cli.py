@@ -178,6 +178,12 @@ def cmd_status(args):
     print_registry_status()
 
 
+def cmd_init(args):
+    """Guided setup wizard."""
+    from init_wizard import run_init
+    run_init(Path(args.project).resolve(), interactive=args.interactive)
+
+
 def cmd_feed(args):
     """Fetch AI governance news feed."""
     from feed import fetch_governance_news, format_text, format_html, FEED_SOURCES
@@ -291,6 +297,12 @@ Examples:
 """,
     )
     subparsers = parser.add_subparsers(dest="command")
+
+    # --- init ---
+    p_init = subparsers.add_parser("init", help="Guided setup wizard")
+    p_init.add_argument("--project", "-p", default=".", help="Project directory")
+    p_init.add_argument("--interactive", "-i", action="store_true", help="Interactive mode")
+    p_init.set_defaults(func=cmd_init)
 
     # --- check ---
     p_check = subparsers.add_parser("check", help="Scan files for risk indicators")

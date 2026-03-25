@@ -15,18 +15,26 @@ Regula is a Claude Code skill that detects AI governance risk indicators in real
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 
-# Install for your platform (pick one):
-python3 scripts/install.py claude-code     # Claude Code
-python3 scripts/install.py copilot-cli     # GitHub Copilot CLI
-python3 scripts/install.py windsurf        # Windsurf Cascade
-python3 scripts/install.py pre-commit      # pre-commit framework
-python3 scripts/install.py git-hooks       # Direct git hooks
+# Guided setup (detects platform, installs hooks, runs first scan)
+python3 scripts/cli.py init
+
+# Or install manually for your platform:
+python3 scripts/cli.py install claude-code     # Claude Code
+python3 scripts/cli.py install copilot-cli     # GitHub Copilot CLI
+python3 scripts/cli.py install windsurf        # Windsurf Cascade
 
 # Scan a project
 python3 scripts/cli.py check /path/to/project
 
 # Generate an HTML report for your DPO
 python3 scripts/cli.py report --format html --output report.html --include-audit
+```
+
+Or install via pip:
+```bash
+pip install -e .
+regula init
+regula check .
 ```
 
 Run tests: `python3 tests/test_classification.py`
@@ -39,7 +47,9 @@ When you write AI-related code, Regula:
 2. **Flags** patterns associated with EU AI Act risk tiers
 3. **Blocks** patterns matching Article 5 prohibited practices (with conditions and exceptions)
 4. **Warns** about patterns in Annex III high-risk areas (with Article 6 context)
-5. **Logs** everything to a hash-chained audit trail
+5. **Blocks** hardcoded API keys in tool inputs (OpenAI, Anthropic, AWS, GitHub)
+6. **Notes** GPAI transparency obligations when training patterns are detected
+7. **Logs** everything to a hash-chained audit trail
 
 ### Example: High-Risk Indicator
 
@@ -281,7 +291,7 @@ For full YAML support, install pyyaml: `pip install pyyaml`. Without it, a minim
 python3 tests/test_classification.py
 ```
 
-59 test functions, 177+ assertions covering:
+65 test functions, 196+ assertions covering:
 - AI detection (libraries, model files, API endpoints, ML patterns)
 - All 8 prohibited practices
 - All 10+ high-risk categories
@@ -293,6 +303,8 @@ python3 tests/test_classification.py
 - Reports (SARIF structure, HTML disclaimer, inline suppression)
 - Questionnaire (generation, high-risk evaluation, minimal-risk evaluation)
 - Session aggregation, baseline comparison, timeline data accuracy
+- Secret detection (OpenAI/AWS keys, no false positives, redaction)
+- GPAI training detection (training vs inference distinction)
 
 ## Constraints
 

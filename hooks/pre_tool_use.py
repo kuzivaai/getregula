@@ -8,8 +8,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 try:
-    from classify_risk import classify, RiskTier
+    from classify_risk import classify, RiskTier, is_training_activity
     from log_event import log_event
+    from secrets import check_secrets, has_high_confidence_secret, format_secret_warning
 except ImportError:
     def classify(text):
         class R:
@@ -24,6 +25,9 @@ except ImportError:
     class RiskTier:
         PROHIBITED = type("o", (), {"value": "prohibited"})()
     def log_event(*a, **k): pass
+    def check_secrets(text): return []
+    def has_high_confidence_secret(text): return False
+    def format_secret_warning(findings): return ""
 
 
 def _build_prohibited_message(result) -> str:
@@ -117,9 +121,38 @@ def main():
     tool_input = input_data.get("tool_input", {})
     session_id = input_data.get("session_id")
     text = f"{tool_name} {json.dumps(tool_input)}"
-
-    result = classify(text)
     response = {"hookSpecificOutput": {"hookEventName": "PreToolUse"}}
+
+    # --- Secret detection (runs first, before AI risk classification) ---
+    secret_findings = check_secrets(text)
+    if secret_findings:
+        high_confidence = [f for f in secret_findings if f.confidence == "high"]
+
+        try:
+            log_event("secret_detected", {
+                "count": len(secret_findings),
+                "high_confidence": len(high_confidence),
+                "patterns": [f.pattern_name for f in secret_findings],
+                "tool_name": tool_name,
+            }, session_id=session_id)
+        except Exception:
+            pass
+
+        if high_confidence:
+            # Block: high-confidence credential in tool input
+            warning = format_secret_warning(secret_findings)
+            response["hookSpecificOutput"]["permissionDecision"] = "deny"
+            response["hookSpecificOutput"]["permissionDecisionReason"] = warning
+            print(json.dumps(response))
+            sys.exit(2)
+        else:
+            # Warn: medium-confidence patterns only
+            warning = format_secret_warning(secret_findings)
+            response["hookSpecificOutput"]["additionalContext"] = warning
+            # Don't return yet — continue to AI risk classification
+
+    # --- AI risk classification ---
+    result = classify(text)
 
     if result.tier == RiskTier.PROHIBITED or result.tier.value == "prohibited":
         reason = _build_prohibited_message(result)
@@ -175,6 +208,24 @@ def main():
 
     else:
         response["hookSpecificOutput"]["permissionDecision"] = "allow"
+
+    # --- GPAI awareness (non-blocking, informational) ---
+    try:
+        if is_training_activity(text):
+            gpai_note = (
+                "\n\nGPAI Note: This operation involves model training or fine-tuning. "
+                "If you are building a general-purpose AI model (trained with >10^23 FLOPs) "
+                "or making a significant modification (>1/3 of original compute), GPAI "
+                "transparency obligations apply (EU AI Act Articles 53-55, in force since "
+                "2 August 2025). Obligations include: technical documentation, training data "
+                "summary (Commission template), copyright policy, and downstream provider "
+                "notification. Most fine-tuning (LoRA, adapters) does NOT meet the 1/3 "
+                "threshold and does NOT create GPAI provider obligations."
+            )
+            existing = response["hookSpecificOutput"].get("additionalContext", "")
+            response["hookSpecificOutput"]["additionalContext"] = existing + gpai_note if existing else gpai_note.strip()
+    except Exception:
+        pass
 
     print(json.dumps(response))
     sys.exit(0)

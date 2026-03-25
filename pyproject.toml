@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "regula"
+version = "1.1.0"
+description = "AI governance risk indication for code — EU AI Act compliance at the point of creation"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [{name = "The Implementation Layer"}]
+keywords = ["ai-governance", "eu-ai-act", "compliance", "claude-code", "risk-indication"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Security",
+]
+
+[project.optional-dependencies]
+yaml = ["pyyaml>=6.0"]
+
+[project.urls]
+Homepage = "https://github.com/kuzivaai/getregula"
+Repository = "https://github.com/kuzivaai/getregula"
+Issues = "https://github.com/kuzivaai/getregula/issues"
+
+[project.scripts]
+regula = "scripts.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["scripts*", "hooks*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml", "*.md"]

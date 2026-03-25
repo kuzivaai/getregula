@@ -821,6 +821,70 @@ def test_timeline_data():
     print("✓ Timeline: verified enforcement dates present and accurate")
 
 
+# ── Secret Detection Tests ──────────────────────────────────────────
+
+def test_secret_detection_openai_key():
+    """Detects OpenAI API key pattern"""
+    from secrets import check_secrets
+    findings = check_secrets('curl -H "Authorization: Bearer sk-abcdefghijklmnopqrstuvwxyz12345"')
+    assert_true(len(findings) > 0, "detects OpenAI key")
+    assert_eq(findings[0].confidence, "high", "OpenAI key is high confidence")
+    assert_true(findings[0].confidence_score >= 90, f"score >= 90 (got {findings[0].confidence_score})")
+    print("✓ Secrets: detects OpenAI API key")
+
+
+def test_secret_detection_aws_key():
+    """Detects AWS access key pattern"""
+    from secrets import check_secrets
+    findings = check_secrets("export AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE")
+    assert_true(len(findings) > 0, "detects AWS key")
+    assert_eq(findings[0].pattern_name, "aws_access_key", "pattern is aws_access_key")
+    print("✓ Secrets: detects AWS access key")
+
+
+def test_secret_detection_no_false_positive():
+    """Does not flag normal code as containing secrets"""
+    from secrets import check_secrets
+    findings = check_secrets("git status && npm install && python3 main.py")
+    assert_eq(len(findings), 0, "no false positives on normal commands")
+    findings = check_secrets("print('hello world')")
+    assert_eq(len(findings), 0, "no false positives on print")
+    print("✓ Secrets: no false positives on normal code")
+
+
+def test_secret_redaction():
+    """Secrets are properly redacted in output"""
+    from secrets import check_secrets
+    findings = check_secrets("sk-abcdefghijklmnopqrstuvwxyz12345")
+    assert_true(len(findings) > 0, "found secret")
+    assert_true(findings[0].redacted_value.startswith("sk-a"), "shows first 4 chars")
+    assert_true("****" in findings[0].redacted_value, "redacts remainder")
+    assert_true(len(findings[0].redacted_value) < 20, "redacted value is short")
+    print("✓ Secrets: proper redaction in output")
+
+
+# ── GPAI Awareness Tests ───────────────────────────────────────────
+
+def test_gpai_training_detection():
+    """Detects model training patterns"""
+    from classify_risk import is_training_activity
+    assert_true(is_training_activity("model.fit(X_train, y_train)"), "model.fit")
+    assert_true(is_training_activity("trainer.train()"), "trainer.train")
+    assert_true(is_training_activity("fine_tuning the model"), "fine_tune")
+    assert_true(is_training_activity("from transformers import TrainingArguments"), "TrainingArguments")
+    assert_true(is_training_activity("using LoRA adapters"), "lora")
+    print("✓ GPAI: detects training patterns")
+
+
+def test_gpai_inference_not_training():
+    """Does not flag inference-only patterns as training"""
+    from classify_risk import is_training_activity
+    assert_false(is_training_activity("model.predict(X_test)"), "predict is not training")
+    assert_false(is_training_activity("response = openai.chat.completions.create()"), "API call is not training")
+    assert_false(is_training_activity("import torch; output = model(input)"), "inference is not training")
+    print("✓ GPAI: inference patterns not flagged as training")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -893,6 +957,14 @@ if __name__ == "__main__":
         test_session_aggregation,
         test_baseline_save_and_compare,
         test_timeline_data,
+        # Secret detection (4 tests)
+        test_secret_detection_openai_key,
+        test_secret_detection_aws_key,
+        test_secret_detection_no_false_positive,
+        test_secret_redaction,
+        # GPAI awareness (2 tests)
+        test_gpai_training_detection,
+        test_gpai_inference_not_training,
     ]
 
     print(f"Running {len(tests)} tests...\n")
