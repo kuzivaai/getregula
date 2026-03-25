@@ -108,8 +108,9 @@ HIGH_RISK_PATTERNS = {
         "description": "Education and vocational training"
     },
     "employment": {
-        "patterns": [r"cv.?screen", r"resume.?filt", r"hiring.?decision", r"recruit.?automat",
-                     r"candidate.?rank", r"promotion.?decision", r"termination.?decision"],
+        "patterns": [r"cv.?screen", r"resume.?filt", r"hiring.?decision", r"recruit\w*\W{0,3}automat",
+                     r"automat\w*\W{0,3}recruit", r"candidate.?rank", r"promotion.?decision",
+                     r"termination.?decision"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 4",
         "description": "Employment and workers management"
@@ -170,8 +171,8 @@ LIMITED_RISK_PATTERNS = {
         "description": "Biometric categorisation (non-sensitive)"
     },
     "synthetic_content": {
-        "patterns": [r"deepfake", r"synthetic.?media", r"face.?swap", r"voice.?clone",
-                     r"ai.?generat.?image", r"text.?to.?image"],
+        "patterns": [r"deepfake", r"synthetic.?media", r"face.?swap", r"voice.?clon",
+                     r"ai.{0,5}generat\w*.{0,5}image", r"text.?to.?image"],
         "article": "50",
         "description": "Synthetic content generation"
     }
@@ -179,11 +180,19 @@ LIMITED_RISK_PATTERNS = {
 
 AI_INDICATORS = {
     "libraries": [r"tensorflow", r"torch", r"pytorch", r"transformers", r"langchain",
-                  r"openai", r"anthropic", r"sklearn", r"scikit.?learn", r"keras"],
-    "model_files": [r"\.onnx", r"\.pt\b", r"\.pth\b", r"\.pkl\b", r"\.h5\b", r"\.safetensors"],
-    "api_endpoints": [r"api\.openai\.com", r"api\.anthropic\.com", r"generativelanguage\.googleapis\.com"],
+                  r"openai", r"anthropic", r"sklearn", r"scikit.?learn", r"keras",
+                  r"xgboost", r"lightgbm", r"huggingface", r"spacy", r"nltk",
+                  r"onnx", r"onnxruntime", r"brain\.js", r"@tensorflow/tfjs",
+                  r"@anthropic-ai/sdk", r"@langchain", r"transformers\.js"],
+    "model_files": [r"\.onnx", r"\.pt\b", r"\.pth\b", r"\.pkl\b", r"\.joblib\b",
+                    r"\.h5\b", r"\.hdf5\b", r"\.safetensors", r"\.gguf\b", r"\.ggml\b"],
+    "api_endpoints": [r"api\.openai\.com", r"api\.anthropic\.com",
+                      r"generativelanguage\.googleapis\.com",
+                      r"api\.cohere\.ai", r"api\.mistral\.ai"],
     "ml_patterns": [r"model\.fit", r"model\.train", r"model\.predict", r"embedding",
-                    r"from_pretrained", r"neural.?network", r"deep.?learning", r"machine.?learning"]
+                    r"vectorstore", r"llm\.invoke", r"chat\.completions",
+                    r"messages\.create", r"from_pretrained", r"fine.?tune",
+                    r"neural.?network", r"deep.?learning", r"machine.?learning"]
 }
 
 
