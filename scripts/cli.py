@@ -34,6 +34,7 @@ def cmd_check(args):
     suppressed = [f for f in findings if f.get("suppressed")]
 
     prohibited = [f for f in active if f["tier"] == "prohibited"]
+    credentials = [f for f in active if f["tier"] == "credential_exposure"]
     high_risk = [f for f in active if f["tier"] == "high_risk"]
     limited = [f for f in active if f["tier"] == "limited_risk"]
 
@@ -50,6 +51,7 @@ def cmd_check(args):
         total_files = len(set(f["file"] for f in findings))
         print(f"  Files scanned:      {total_files}")
         print(f"  Prohibited:         {len(prohibited)}")
+        print(f"  Credentials:        {len(credentials)}")
         print(f"  High-risk:          {len(high_risk)}")
         print(f"  Limited-risk:       {len(limited)}")
         print(f"  Suppressed:         {len(suppressed)}")
@@ -59,6 +61,12 @@ def cmd_check(args):
             for f in prohibited:
                 score = f.get("confidence_score", 0)
                 print(f"    [{score:3d}] {f['file']} — {f.get('description', '')}")
+
+        if credentials:
+            print(f"\n  CREDENTIAL EXPOSURE (Article 15):")
+            for f in credentials:
+                score = f.get("confidence_score", 0)
+                print(f"    [{score:3d}] {f['file']}:{f.get('line', '?')} — {f.get('description', '')}")
 
         if high_risk:
             print(f"\n  HIGH-RISK INDICATORS:")

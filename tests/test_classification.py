@@ -885,6 +885,31 @@ def test_gpai_inference_not_training():
     print("✓ GPAI: inference patterns not flagged as training")
 
 
+def test_file_credential_governance():
+    """File scan detects AI credentials in AI-related files as governance finding"""
+    from report import scan_files
+    import tempfile, shutil
+
+    temp_dir = tempfile.mkdtemp()
+    test_file = Path(temp_dir) / "ai_service.py"
+    test_file.write_text(
+        'import openai\n'
+        'client = openai.Client(api_key="sk-abcdefghijklmnopqrstuvwxyz12345")\n'
+        'result = client.chat.completions.create(model="gpt-4")\n'
+    )
+
+    try:
+        findings = scan_files(temp_dir)
+        cred_findings = [f for f in findings if f["tier"] == "credential_exposure"]
+        assert_true(len(cred_findings) > 0, "credential found in AI file")
+        assert_true("Article 15" in cred_findings[0]["category"], "framed as Article 15 governance")
+        assert_true("OpenAI" in cred_findings[0]["description"], "identifies OpenAI key")
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+    print("✓ AI credential governance: detects credentials in AI files as Article 15 finding")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -965,6 +990,8 @@ if __name__ == "__main__":
         # GPAI awareness (2 tests)
         test_gpai_training_detection,
         test_gpai_inference_not_training,
+        # AI credential governance (1 test)
+        test_file_credential_governance,
     ]
 
     print(f"Running {len(tests)} tests...\n")

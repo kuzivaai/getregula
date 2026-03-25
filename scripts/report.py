@@ -19,6 +19,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS, PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS
 from log_event import query_events, verify_chain
+from secrets import check_secrets
 
 
 # ---------------------------------------------------------------------------
@@ -78,6 +79,34 @@ def scan_files(project_path: str, respect_ignores: bool = True) -> list:
                             suppressed_rules.add(rule_part.lower())
                         else:
                             suppressed_rules.add("*")  # Suppress all
+
+            # --- AI credential governance (runs on ALL AI-related files) ---
+            secret_suppressed = "*" in suppressed_rules or "secrets" in suppressed_rules
+            try:
+                secret_findings = check_secrets(content)
+                for sf in secret_findings:
+                    secret_line = 1
+                    for i, line_text in enumerate(lines, 1):
+                        if sf.redacted_value[:4] in line_text:
+                            secret_line = i
+                            break
+
+                    findings.append({
+                        "file": str(filepath.relative_to(project)),
+                        "line": secret_line,
+                        "tier": "credential_exposure",
+                        "category": "AI Credential Governance (Article 15)",
+                        "description": (
+                            f"{sf.description} in AI system code. "
+                            f"Article 15 requires cybersecurity measures for high-risk systems. "
+                            f"Fix: {sf.remediation}"
+                        ),
+                        "indicators": [sf.pattern_name],
+                        "confidence_score": sf.confidence_score,
+                        "suppressed": secret_suppressed,
+                    })
+            except Exception:
+                pass
 
             result = classify(content)
             if result.tier in (RiskTier.NOT_AI, RiskTier.MINIMAL_RISK) and not result.indicators_matched:
@@ -148,6 +177,8 @@ header .meta { font-size: 0.85rem; opacity: 0.8; text-align: right; }
 .card.green .number { color: #198754; }
 .card.blue { border-left: 4px solid #0d6efd; }
 .card.blue .number { color: #0d6efd; }
+.card.purple { border-left: 4px solid #6f42c1; }
+.card.purple .number { color: #6f42c1; }
 .section { background: #fff; border-radius: 8px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 .section h2 { font-size: 1.1rem; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #dee2e6; }
 table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
@@ -160,6 +191,7 @@ tr.suppressed { opacity: 0.5; text-decoration: line-through; }
 .badge.high-risk { background: #fd7e14; color: #fff; }
 .badge.limited-risk { background: #0d6efd; color: #fff; }
 .badge.minimal-risk { background: #198754; color: #fff; }
+.badge.credential-exposure { background: #6f42c1; color: #fff; }
 .confidence-bar { display: inline-block; width: 60px; height: 8px; background: #e9ecef; border-radius: 4px; overflow: hidden; vertical-align: middle; }
 .confidence-fill { height: 100%; border-radius: 4px; }
 .top3 { list-style: none; }
@@ -202,15 +234,16 @@ def generate_html_report(
     high_risk_count = sum(1 for f in active if f["tier"] == "high_risk")
     limited_count = sum(1 for f in active if f["tier"] == "limited_risk")
     minimal_count = sum(1 for f in active if f["tier"] == "minimal_risk")
+    credential_count = sum(1 for f in active if f["tier"] == "credential_exposure")
     suppressed_count = sum(1 for f in findings if f.get("suppressed"))
     total_files = len(set(f["file"] for f in findings))
 
-    # Top risks
+    # Top risks — include credential exposure as a priority finding
     top_risks = []
     seen_categories = set()
     for f in sorted(active, key=lambda x: -x.get("confidence_score", 0)):
         cat = f.get("category", "")
-        if cat and cat not in seen_categories and f["tier"] in ("prohibited", "high_risk"):
+        if cat and cat not in seen_categories and f["tier"] in ("prohibited", "high_risk", "credential_exposure"):
             seen_categories.add(cat)
             top_risks.append(f)
             if len(top_risks) >= 3:
@@ -262,6 +295,10 @@ personnel. This is not legal advice.
 <div class="number">{limited_count}</div>
 <div class="label">Limited-Risk</div>
 </div>
+<div class="card purple">
+<div class="number">{credential_count}</div>
+<div class="label">Credential Findings</div>
+</div>
 <div class="card green">
 <div class="number">{total_files}</div>
 <div class="label">AI Files Scanned</div>
@@ -301,7 +338,7 @@ personnel. This is not legal advice.
 <tbody>
 """
     for f in sorted(findings, key=lambda x: (
-        {"prohibited": 0, "high_risk": 1, "limited_risk": 2, "minimal_risk": 3}.get(x["tier"], 4),
+        {"prohibited": 0, "credential_exposure": 1, "high_risk": 2, "limited_risk": 3, "minimal_risk": 4}.get(x["tier"], 5),
         -x.get("confidence_score", 0),
     )):
         row_class = ' class="suppressed"' if f.get("suppressed") else ""
@@ -343,6 +380,7 @@ Pattern-based analysis only. Not a substitute for legal advice or DPO review.
 
 SARIF_SEVERITY_MAP = {
     "prohibited": "error",
+    "credential_exposure": "error",
     "high_risk": "warning",
     "limited_risk": "note",
     "minimal_risk": "none",
@@ -375,6 +413,18 @@ def generate_sarif(findings: list, project_name: str) -> dict:
             "helpUri": "https://artificialintelligenceact.eu/annex/3/",
         }
 
+    # Credential governance rules
+    from secrets import SECRET_PATTERNS
+    for rule_id, config in SECRET_PATTERNS.items():
+        rules[f"regula/credential/{rule_id}"] = {
+            "id": f"regula/credential/{rule_id}",
+            "name": config["description"],
+            "shortDescription": {"text": f"AI credential governance: {config['description']}"},
+            "fullDescription": {"text": f"EU AI Act Article 15 cybersecurity: {config['description']}. {config['remediation']}"},
+            "defaultConfiguration": {"level": "error" if config["confidence"] == "high" else "warning"},
+            "helpUri": "https://artificialintelligenceact.eu/article/15/",
+        }
+
     for rule_id, config in LIMITED_RISK_PATTERNS.items():
         rules[f"regula/limited-risk/{rule_id}"] = {
             "id": f"regula/limited-risk/{rule_id}",
@@ -397,6 +447,8 @@ def generate_sarif(findings: list, project_name: str) -> dict:
         # Match to a rule
         if tier == "prohibited":
             rule_id = f"regula/prohibited/{primary_indicator}"
+        elif tier == "credential_exposure":
+            rule_id = f"regula/credential/{primary_indicator}"
         elif tier == "high_risk":
             rule_id = f"regula/high-risk/{primary_indicator}"
         elif tier == "limited_risk":
