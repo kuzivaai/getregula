@@ -8,7 +8,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 try:
-    from classify_risk import classify, RiskTier, is_training_activity, ISO_42001_MAP
+    from classify_risk import classify, RiskTier, is_training_activity, ISO_42001_MAP, generate_observations
     from log_event import log_event
     from credential_check import check_secrets, has_high_confidence_secret, format_secret_warning
 except ImportError:
@@ -72,7 +72,7 @@ def _build_prohibited_message(result) -> str:
 def _build_high_risk_message(result) -> str:
     indicators = ", ".join(result.indicators_matched) if result.indicators_matched else "unknown"
 
-    return "\n".join([
+    base = "\n".join([
         "HIGH-RISK AI SYSTEM INDICATORS DETECTED",
         "",
         f"Category: {result.category or 'High-Risk'}",
@@ -97,6 +97,7 @@ def _build_high_risk_message(result) -> str:
         "",
         "This action has been logged to the audit trail.",
     ])
+    return base
 
 
 def _build_limited_risk_message(result) -> str:
@@ -176,6 +177,18 @@ def main():
 
     if result.tier.value == "high_risk":
         context = _build_high_risk_message(result)
+
+        # Add Article-specific governance observations from code patterns
+        try:
+            observations = generate_observations(text)
+            if observations:
+                obs_lines = ["\n\nGovernance observations for this code:"]
+                for obs in observations:
+                    obs_lines.append(f"  Art {obs['article']}: {obs['observation']}")
+                context += "\n".join(obs_lines)
+        except Exception:
+            pass
+
         response["hookSpecificOutput"]["permissionDecision"] = "allow"
         response["hookSpecificOutput"]["additionalContext"] = context
 
