@@ -9,7 +9,7 @@ description: >
   files (.onnx, .pt, .pkl, .h5, .safetensors), LLM API calls, automated
   decision systems, biometric processing. Also activates when the user
   mentions compliance, governance, AI Act, risk assessment, or audit.
-version: 1.0.0
+version: 1.1.0
 license: MIT
 author: The Implementation Layer
 compatibility:
@@ -47,15 +47,16 @@ determined from code patterns alone.
 - False positives will occur (e.g., code discussing prohibited practices)
 - False negatives will occur (novel risk patterns not in the database)
 - Always supplement with DPO/legal review for high-stakes decisions
-- "Prohibited" means the pattern matches Article 5 indicators — not that the
-  code is necessarily unlawful (context and exceptions matter)
 
 ## Regulatory Context
 
 The EU AI Act (Regulation 2024/1689) entered into force on 1 August 2024:
 - **2 February 2025:** Prohibited AI practices (Article 5) now apply
 - **2 August 2025:** General-purpose AI model rules apply
-- **2 August 2026:** High-risk AI system requirements (Articles 9-15) fully apply
+- **2 August 2026:** High-risk AI system requirements (Articles 9-15) apply
+  *(Digital Omnibus proposes December 2027 — not yet enacted)*
+
+Run `python3 scripts/timeline.py` for current enforcement dates.
 
 ## Core Capabilities
 
@@ -71,7 +72,7 @@ Detect patterns that correlate with EU AI Act risk tiers:
 | **Minimal-Risk** | No specific obligations matched | Log only |
 
 ```bash
-python3 scripts/classify_risk.py --input "$TOOL_INPUT" --format json
+python3 scripts/cli.py classify --input "$TOOL_INPUT" --format json
 ```
 
 ### 2. Prohibited Practices (Article 5)
@@ -88,11 +89,7 @@ These patterns trigger blocks. Each has specific conditions and exceptions:
    *Exception: Medical or safety purposes (e.g., driver fatigue detection)*
 7. **Biometric categorisation** — Inferring race, politics, religion, sexuality
 8. **Real-time remote biometric ID** — In public spaces for law enforcement
-   *Exception: With prior judicial authorisation for victim search, terrorism prevention, serious crime suspects*
-
-When a block fires, the message includes the specific conditions and any
-applicable exceptions so the developer can assess whether the prohibition
-actually applies to their context.
+   *Exception: With prior judicial authorisation for specific scenarios*
 
 **Override mechanism:** If the user provides written justification (narrow
 exception applies, research context, false positive), log the override with
@@ -105,52 +102,88 @@ automatically mean a system is high-risk. Article 6(3) exempts systems that:
 - Perform narrow procedural tasks
 - Improve the result of a previously completed human activity
 - Detect decision-making patterns without replacing human assessment
-- Perform preparatory tasks to an assessment
-
-When high-risk indicators are detected, provide this context and the
-applicable requirements:
-
-- **Article 9:** Risk management system (continuous, iterative)
-- **Article 10:** Data governance (representative, bias-examined)
-- **Article 11:** Technical documentation (Annex IV format)
-- **Article 12:** Record-keeping (automatic logging)
-- **Article 13:** Transparency (instructions for use)
-- **Article 14:** Human oversight (intervention capability)
-- **Article 15:** Accuracy, robustness, cybersecurity
 
 **After presenting high-risk indicators, always ask:**
-> "Does this system make or materially influence decisions affecting individuals? If so, Articles 9-15 likely apply. Shall I proceed with a compliant implementation?"
+> "Does this system make or materially influence decisions affecting
+> individuals? If so, Articles 9-15 likely apply. Shall I proceed with
+> a compliant implementation?"
 
-This creates the Article 14 human oversight checkpoint.
+### 4. Questionnaire Mode (Ambiguous Classifications)
 
-### 4. Audit Logging
+When pattern-based classification is ambiguous (low confidence score or
+conflicting indicators), offer to run a context-driven questionnaire:
 
-Log governance events:
 ```bash
-python3 scripts/log_event.py log --event-type "classification" --data "$EVENT_JSON"
+python3 scripts/questionnaire.py --generate
+python3 scripts/questionnaire.py --evaluate '{"autonomous_decisions":"yes",...}'
 ```
 
-**Limitation:** The audit trail is self-attesting (same user controls both
-data and integrity proof). For regulatory evidence, supplement with external
-timestamp authority or remote log forwarding.
+8 questions derived from Article 6 criteria. Combines pattern-based signals
+with context about intended purpose. Both questions and answers are logged.
 
-### 5. Documentation Generation
+### 5. Audit Trail
 
-Generate Annex IV documentation scaffolds:
+Hash-chained, append-only, file-locked event log:
 ```bash
+python3 scripts/cli.py audit verify              # Check chain integrity
+python3 scripts/cli.py audit export --format csv  # Export as CSV
+```
+
+### 6. Documentation Generation
+
+Generate Annex IV documentation scaffolds (not complete compliance docs):
+```bash
+python3 scripts/cli.py report --format html --output report.html --include-audit
 python3 scripts/generate_documentation.py --project "." --output "docs/"
 ```
 
-Generated documents are **scaffolds with placeholders**, not complete
-compliance documentation. Human review and completion is required.
+### 7. System Discovery and Registry
 
-### 6. System Discovery and Registry
-
-Discover AI components and maintain a persistent registry:
+Discover AI components and maintain a persistent inventory:
 ```bash
-python3 scripts/discover_ai_systems.py --project "." --register
-python3 scripts/discover_ai_systems.py --status
+python3 scripts/cli.py discover --project "." --register
+python3 scripts/cli.py status
 ```
+
+### 8. Governance News Feed
+
+Curated AI governance news from 7 reputable sources (IAPP, NIST, Stanford
+HAI, ICO, EU AI Act, Brookings, Help Net Security):
+```bash
+python3 scripts/cli.py feed                          # CLI text
+python3 scripts/cli.py feed --format html -o feed.html  # HTML digest
+python3 scripts/cli.py feed --sources                # List sources
+```
+
+### 9. Session Risk Aggregation
+
+Aggregate individual tool classifications into a session-level risk profile:
+```bash
+python3 scripts/cli.py session              # Current session profile
+python3 scripts/cli.py session --hours 24   # Last 24 hours
+```
+
+### 10. CI/CD Baseline Comparison
+
+Save compliance baseline and report only net-new findings:
+```bash
+python3 scripts/cli.py baseline save           # Save current state
+python3 scripts/cli.py baseline compare        # Show changes
+python3 scripts/cli.py baseline compare --fail-on-new  # Fail CI on new findings
+```
+
+### 11. EU AI Act Timeline
+
+Current enforcement dates with Digital Omnibus status:
+```bash
+python3 scripts/cli.py timeline
+```
+
+### 12. ISO 42001 Cross-Mapping
+
+Risk classifications include ISO 42001 control references alongside EU AI
+Act articles. See `references/iso_42001_mapping.yaml` for the full mapping
+(24 controls, ~90% coverage).
 
 ## Decision Framework
 
@@ -176,26 +209,52 @@ python3 scripts/discover_ai_systems.py --status
 
 ### /regula-status
 Show governance status: registered systems, risk indicators, compliance gaps.
-Runs `python3 scripts/discover_ai_systems.py --status` for registry overview.
 
 ### /regula-classify [path]
 Scan path for AI systems. Report risk indicators found.
 
-### /regula-audit [--export format]
-View/export audit trail. Formats: json, csv. Verify hash chain integrity.
+### /regula-audit [verify|export]
+View/export audit trail. Verify hash chain integrity.
 
 ### /regula-docs [--output path]
 Generate Annex IV documentation scaffolds.
 
+### /regula-report [--format html|sarif|json]
+Generate governance reports. HTML for stakeholders, SARIF for CI/CD.
+
+### /regula-feed
+AI governance news from curated sources.
+
+### /regula-timeline
+Current EU AI Act enforcement dates with Digital Omnibus status.
+
+### /regula-questionnaire
+Context-driven risk assessment for ambiguous classifications.
+
+### /regula-session
+Session-level risk aggregation across tool calls.
+
+### /regula-baseline [save|compare]
+CI/CD baseline comparison for incremental compliance.
+
 ### /regula-policy [validate|apply|test]
-Manage governance policies. Validate syntax, apply, or test in dry-run mode.
+Manage governance policies.
+
+## Multi-Platform Support
+
+Regula works across AI coding platforms that share the same hook protocol:
+```bash
+python3 scripts/cli.py install claude-code   # Claude Code
+python3 scripts/cli.py install copilot-cli   # GitHub Copilot CLI
+python3 scripts/cli.py install windsurf      # Windsurf Cascade
+python3 scripts/cli.py install pre-commit    # pre-commit framework
+python3 scripts/cli.py install git-hooks     # Direct git hooks
+```
 
 ## Limitations
 
-- **Not legal advice.** Regula indicates risk patterns, not legal compliance status.
+- **Not legal advice.** Risk indication, not legal classification.
 - **Pattern matching only.** Cannot assess intended purpose or deployment context.
-- **False positives occur.** Code that discusses prohibited practices (documentation,
-  governance tools, test suites) will trigger indicators.
-- **False negatives occur.** Novel risk patterns not in the database will be missed.
-- **Self-attesting audit.** Hash chain is locally verifiable but not externally witnessed.
-- **EU AI Act only.** Does not yet cover ISO 42001, NIST AI RMF, or regional frameworks.
+- **False positives occur.** Code discussing prohibited practices will trigger.
+- **False negatives occur.** Novel patterns not in the database will be missed.
+- **Self-attesting audit.** Locally verifiable, not externally witnessed.

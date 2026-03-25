@@ -245,6 +245,22 @@ AI_INDICATORS = {
                     r"neural.?network", r"deep.?learning", r"machine.?learning"],
 }
 
+# Patterns that indicate model TRAINING (not just inference) — may trigger
+# GPAI obligations if building a general-purpose model (>10^23 FLOPs)
+GPAI_TRAINING_PATTERNS = [
+    r"model\.fit\b", r"model\.train\b", r"\.train\(\)", r"trainer\.train",
+    r"fine.?tun", r"from_pretrained.{0,30}train", r"training_args",
+    r"TrainingArguments", r"Trainer\(", r"SFTTrainer",
+    r"\.compile\(.{0,30}optimizer", r"backpropagat",
+    r"torch\.optim", r"tf\.keras\.optimizers",
+    r"lora", r"qlora", r"peft",
+]
+
+
+def is_training_activity(text: str) -> bool:
+    """Detect whether code involves model training/fine-tuning (not just inference)."""
+    return any(re.search(p, text, re.IGNORECASE) for p in GPAI_TRAINING_PATTERNS)
+
 
 # ---------------------------------------------------------------------------
 # Policy loading
