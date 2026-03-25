@@ -723,6 +723,104 @@ def test_inline_suppression():
     print("✓ Report: inline suppression works")
 
 
+# ── New Feature Tests ───────────────────────────────────────────────
+
+def test_questionnaire_generation():
+    """Questionnaire generates 8 questions derived from Article 6"""
+    from questionnaire import generate_questionnaire
+    q = generate_questionnaire()
+    assert_eq(q["type"], "risk_assessment_questionnaire", "questionnaire type")
+    assert_eq(len(q["questions"]), 8, "8 questions")
+    ids = {qu["id"] for qu in q["questions"]}
+    assert_true("autonomous_decisions" in ids, "has autonomous_decisions question")
+    assert_true("affected_domain" in ids, "has affected_domain question")
+    print("✓ Questionnaire: generates 8 Article 6-derived questions")
+
+
+def test_questionnaire_evaluation_high_risk():
+    """High-risk answers produce high-risk classification"""
+    from questionnaire import evaluate_questionnaire
+    answers = {
+        "autonomous_decisions": "yes",
+        "affected_domain": "yes",
+        "significant_harm": "yes",
+        "narrow_procedural": "no",
+        "improves_human_activity": "no",
+        "public_facing": "no",
+        "biometric_data": "yes",
+        "deployment_eu": "yes",
+    }
+    result = evaluate_questionnaire(answers)
+    assert_eq(result.tier, RiskTier.HIGH_RISK, "high-risk answers → HIGH_RISK")
+    assert_true(result.confidence_score >= 70, f"score >= 70 (got {result.confidence_score})")
+    print("✓ Questionnaire: high-risk answers produce HIGH_RISK")
+
+
+def test_questionnaire_evaluation_minimal_risk():
+    """Low-risk answers produce minimal-risk classification"""
+    from questionnaire import evaluate_questionnaire
+    answers = {
+        "autonomous_decisions": "no",
+        "affected_domain": "no",
+        "significant_harm": "no",
+        "narrow_procedural": "yes",
+        "improves_human_activity": "yes",
+        "public_facing": "yes",
+        "biometric_data": "no",
+        "deployment_eu": "no",
+    }
+    result = evaluate_questionnaire(answers)
+    assert_eq(result.tier, RiskTier.MINIMAL_RISK, "low-risk answers → MINIMAL_RISK")
+    assert_true(result.confidence_score < 40, f"score < 40 (got {result.confidence_score})")
+    print("✓ Questionnaire: low-risk answers produce MINIMAL_RISK")
+
+
+def test_session_aggregation():
+    """Session aggregation produces valid profile structure"""
+    from session import aggregate_session
+    profile = aggregate_session(session_id="nonexistent-session", hours=1)
+    assert_eq(profile["events"], 0, "empty session has 0 events")
+    assert_eq(profile["risk_profile"], "none", "empty session has 'none' risk")
+    print("✓ Session: aggregation produces valid profile")
+
+
+def test_baseline_save_and_compare():
+    """Baseline save and compare works correctly"""
+    import tempfile, shutil
+    from baseline import save_baseline, compare_to_baseline
+
+    temp_dir = tempfile.mkdtemp()
+    test_file = Path(temp_dir) / "model.py"
+    test_file.write_text("import tensorflow\ncredit_scoring = True\n")
+
+    try:
+        bl = save_baseline(temp_dir)
+        assert_true(bl["findings_count"] > 0, "baseline has findings")
+
+        result = compare_to_baseline(temp_dir)
+        assert_eq(result["summary"]["new"], 0, "no new findings after baseline")
+        assert_eq(result["summary"]["resolved"], 0, "no resolved findings")
+        assert_true(result["summary"]["unchanged"] > 0, "unchanged findings exist")
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+    print("✓ Baseline: save and compare work correctly")
+
+
+def test_timeline_data():
+    """Timeline contains verified enforcement dates"""
+    from timeline import TIMELINE
+    dates = [e["date"] for e in TIMELINE]
+    assert_true("2025-02-02" in dates, "Article 5 date present")
+    assert_true("2026-08-02" in dates, "High-risk date present")
+    assert_true("2027-12-02" in dates, "Digital Omnibus proposed date present")
+
+    # Verify Digital Omnibus entry has correct status
+    omnibus = [e for e in TIMELINE if e["date"] == "2027-12-02"][0]
+    assert_eq(omnibus["status"], "proposed", "Digital Omnibus is 'proposed' not 'effective'")
+    print("✓ Timeline: verified enforcement dates present and accurate")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -788,6 +886,13 @@ if __name__ == "__main__":
         test_sarif_output_structure,
         test_html_report_contains_disclaimer,
         test_inline_suppression,
+        # New features (6 tests)
+        test_questionnaire_generation,
+        test_questionnaire_evaluation_high_risk,
+        test_questionnaire_evaluation_minimal_risk,
+        test_session_aggregation,
+        test_baseline_save_and_compare,
+        test_timeline_data,
     ]
 
     print(f"Running {len(tests)} tests...\n")

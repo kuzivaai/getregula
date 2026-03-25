@@ -171,6 +171,53 @@ import sklearn
 # This CV screening tool is a research prototype, not deployed
 ```
 
+### Governance News Feed
+
+Curated AI governance news from 7 reputable sources (IAPP, NIST, Stanford HAI, ICO, EU AI Act, Brookings, Help Net Security). Keyword-filtered, deduplicated, cached.
+
+```bash
+regula feed                              # CLI text output
+regula feed --format html -o feed.html   # HTML digest for stakeholders
+regula feed --sources                    # List sources with authority notes
+regula feed --days 30                    # Last 30 days
+```
+
+### Questionnaire Mode
+
+When pattern-based classification is ambiguous, gather context about intended purpose and deployment via structured questions derived from Article 6 criteria.
+
+```bash
+regula questionnaire                     # Show questions
+regula questionnaire --evaluate '{...}'  # Evaluate answers (JSON)
+```
+
+### Session Risk Aggregation
+
+Aggregate individual tool classifications into a session-level risk profile for agentic AI governance.
+
+```bash
+regula session                           # Current session profile
+regula session --hours 24 --format json  # Last 24 hours as JSON
+```
+
+### CI/CD Baseline Comparison
+
+Save a compliance baseline and only report net-new findings on subsequent scans.
+
+```bash
+regula baseline save                     # Save current state
+regula baseline compare --fail-on-new    # Fail CI on new findings
+```
+
+### EU AI Act Timeline
+
+Current enforcement dates with Digital Omnibus status.
+
+```bash
+regula timeline                          # Display timeline
+regula timeline --format json            # Machine-readable
+```
+
 ## Architecture
 
 ```
@@ -182,6 +229,11 @@ regula/
 │   ├── log_event.py               # Audit trail (hash-chained, file-locked)
 │   ├── report.py                  # HTML + SARIF report generator
 │   ├── install.py                 # Multi-platform hook installer
+│   ├── feed.py                    # Governance news aggregator (7 sources)
+│   ├── questionnaire.py           # Context-driven risk assessment
+│   ├── session.py                 # Session-level risk aggregation
+│   ├── baseline.py                # CI/CD baseline comparison
+│   ├── timeline.py                # EU AI Act enforcement dates
 │   ├── generate_documentation.py  # Annex IV scaffold generator
 │   └── discover_ai_systems.py     # AI system discovery and registry
 ├── hooks/
@@ -190,7 +242,7 @@ regula/
 │   └── stop_hook.py               # Session summary hook
 ├── references/                    # Regulatory reference documents
 ├── tests/
-│   └── test_classification.py     # 53 tests, 159 assertions
+│   └── test_classification.py     # 59 tests, 177 assertions
 ├── docs/
 │   └── research-synthesis.md      # Research findings informing roadmap
 ├── regula-policy.yaml             # Policy configuration template
@@ -229,7 +281,7 @@ For full YAML support, install pyyaml: `pip install pyyaml`. Without it, a minim
 python3 tests/test_classification.py
 ```
 
-53 test functions, 159+ assertions covering:
+59 test functions, 177+ assertions covering:
 - AI detection (libraries, model files, API endpoints, ML patterns)
 - All 8 prohibited practices
 - All 10+ high-risk categories
@@ -239,6 +291,8 @@ python3 tests/test_classification.py
 - Audit trail (hash chain integrity, CSV export)
 - Confidence scoring (numeric scores, tier ordering, multi-indicator bonus)
 - Reports (SARIF structure, HTML disclaimer, inline suppression)
+- Questionnaire (generation, high-risk evaluation, minimal-risk evaluation)
+- Session aggregation, baseline comparison, timeline data accuracy
 
 ## Constraints
 
