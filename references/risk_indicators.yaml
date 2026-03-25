@@ -1,0 +1,257 @@
+# Regula Risk Indicators
+# EU AI Act classification patterns for AI system risk assessment
+
+ai_indicators:
+  python_libraries:
+    - tensorflow
+    - torch
+    - pytorch
+    - transformers
+    - langchain
+    - openai
+    - anthropic
+    - sklearn
+    - scikit-learn
+    - xgboost
+    - lightgbm
+    - keras
+    - huggingface
+    - spacy
+    - nltk
+    - onnx
+    - onnxruntime
+  javascript_libraries:
+    - "@tensorflow/tfjs"
+    - openai
+    - "@anthropic-ai/sdk"
+    - langchain
+    - "@langchain"
+    - brain.js
+    - transformers.js
+  model_files:
+    - .onnx
+    - .pt
+    - .pth
+    - .pkl
+    - .joblib
+    - .h5
+    - .hdf5
+    - .safetensors
+    - .gguf
+    - .ggml
+  api_endpoints:
+    - api.openai.com
+    - api.anthropic.com
+    - generativelanguage.googleapis.com
+    - api.cohere.ai
+    - api.mistral.ai
+  ml_patterns:
+    - model.fit
+    - model.train
+    - model.predict
+    - embedding
+    - vectorstore
+    - llm.invoke
+    - chat.completions
+    - messages.create
+    - from_pretrained
+    - fine_tune
+    - neural_network
+    - deep_learning
+    - machine_learning
+
+prohibited_patterns:
+  subliminal_manipulation:
+    article: "5(1)(a)"
+    description: "AI deploying subliminal techniques beyond a person's consciousness"
+    patterns:
+      - subliminal
+      - beyond_consciousness
+      - subconscious_influence
+  exploitation_vulnerabilities:
+    article: "5(1)(b)"
+    description: "Exploiting vulnerabilities of specific groups"
+    patterns:
+      - target_elderly
+      - exploit_disabil
+      - vulnerable_group_target
+  social_scoring:
+    article: "5(1)(c)"
+    description: "Social scoring systems evaluating persons based on social behaviour"
+    patterns:
+      - social_scor
+      - social_credit
+      - citizen_score
+      - behaviour_scor
+  criminal_prediction:
+    article: "5(1)(d)"
+    description: "Criminal risk prediction based solely on profiling"
+    patterns:
+      - crime_predict
+      - criminal_risk_assess
+      - predictive_polic
+      - recidivism
+  facial_recognition_scraping:
+    article: "5(1)(e)"
+    description: "Creating facial recognition databases through untargeted scraping"
+    patterns:
+      - face_scrap
+      - facial_database_untarget
+      - mass_facial_collect
+  emotion_inference_restricted:
+    article: "5(1)(f)"
+    description: "Emotion inference in workplace or educational settings"
+    patterns:
+      - "emotion + workplace"
+      - "emotion + school"
+      - "sentiment + employee"
+      - "emotion + employee"
+  biometric_categorisation_sensitive:
+    article: "5(1)(g)"
+    description: "Biometric categorisation inferring sensitive attributes"
+    patterns:
+      - race_detect
+      - ethnicity_infer
+      - religion_detect
+      - sexual_orientation_infer
+      - political_opinion_biometric
+  realtime_biometric_public:
+    article: "5(1)(h)"
+    description: "Real-time remote biometric identification in public spaces"
+    patterns:
+      - real_time_facial_recogn
+      - live_biometric_public
+      - public_space_biometric
+      - mass_surveillance_biometric
+
+high_risk_patterns:
+  biometrics:
+    category: "Annex III, Category 1"
+    description: "Biometric identification and categorisation"
+    articles: [9, 10, 11, 12, 13, 14, 15]
+    patterns:
+      - biometric_ident
+      - face_recogn
+      - fingerprint_recogn
+      - voice_recogn
+  critical_infrastructure:
+    category: "Annex III, Category 2"
+    description: "Critical infrastructure management"
+    articles: [9, 10, 11, 12, 13, 14, 15]
+    patterns:
+      - energy_grid
+      - water_supply
+      - traffic_control
+      - electricity_manage
+  education:
+    category: "Annex III, Category 3"
+    description: "Education and vocational training"
+    articles: [9, 10, 11, 12, 13, 14, 15]
+    patterns:
+      - admission_decision
+      - student_assess
+      - exam_scor
+      - procto
+  employment:
+    category: "Annex III, Category 4"
+    description: "Employment and workers management"
+    articles: [9, 10, 11, 12, 13, 14, 15]
+    patterns:
+      - cv_screen
+      - resume_filt
+      - hiring_decision
+      - recruit_automat
+      - candidate_rank
+      - promotion_decision
+      - termination_decision
+  essential_services:
+    category: "Annex III, Category 5"
+    description: "Access to essential services"
+    articles: [9, 10, 11, 12, 13, 14, 15]
+    patterns:
+      - credit_scor
+      - creditworth
+      - loan_decision
+      - insurance_pric
+      - benefit_eligib
+      - emergency_dispatch
+  law_enforcement:
+    category: "Annex III, Category 6"
+    description: "Law enforcement"
+    articles: [9, 10, 11, 12, 13, 14, 15]
+    patterns:
+      - polygraph
+      - lie_detect
+      - evidence_reliab
+      - criminal_investigat
+  migration:
+    category: "Annex III, Category 7"
+    description: "Migration, asylum, and border control"
+    articles: [9, 10, 11, 12, 13, 14, 15]
+    patterns:
+      - border_control
+      - visa_application
+      - asylum_application
+      - immigration_decision
+  justice:
+    category: "Annex III, Category 8"
+    description: "Justice and democratic processes"
+    articles: [9, 10, 11, 12, 13, 14, 15]
+    patterns:
+      - judicial_decision
+      - court_rul
+      - sentenc
+      - election_influence
+  medical_devices:
+    category: "Medical Devices"
+    description: "AI components of medical devices"
+    articles: [9, 10, 11, 12, 13, 14, 15]
+    patterns:
+      - medical_diagnos
+      - clinical_decision
+      - treatment_recommend
+      - patient_triage
+  safety_components:
+    category: "Safety Components"
+    description: "Safety components under Union harmonisation legislation"
+    articles: [9, 10, 11, 12, 13, 14, 15]
+    patterns:
+      - autonomous_vehicle
+      - self_driv
+      - aviation_safety
+      - machinery_safety
+
+limited_risk_patterns:
+  chatbots:
+    article: "50"
+    description: "Chatbots and conversational AI"
+    patterns:
+      - chatbot
+      - conversational_ai
+      - virtual_assist
+      - support_bot
+  emotion_recognition:
+    article: "50"
+    description: "Emotion recognition systems"
+    patterns:
+      - emotion_recogn
+      - sentiment_analy
+      - affect_detect
+      - mood_analy
+  biometric_categorisation:
+    article: "50"
+    description: "Biometric categorisation (non-sensitive)"
+    patterns:
+      - age_estimat
+      - gender_detect
+      - demographic_analy
+  synthetic_content:
+    article: "50"
+    description: "Synthetic content generation"
+    patterns:
+      - deepfake
+      - synthetic_media
+      - face_swap
+      - voice_clon
+      - ai_generat_image
+      - text_to_image
