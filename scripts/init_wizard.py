@@ -69,6 +69,7 @@ rules:
     pii_redaction: true
     export_format: [json, csv]
 """
+    project_dir.mkdir(parents=True, exist_ok=True)
     (project_dir / "regula-policy.yaml").write_text(policy, encoding="utf-8")
 
 

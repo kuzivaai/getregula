@@ -386,6 +386,62 @@ ISO_42001_MAP = {
 }
 
 
+# Pattern-to-Article observations: when specific code patterns co-occur
+# with high-risk indicators, generate Article-specific governance notes.
+GOVERNANCE_OBSERVATIONS = {
+    "training_data": {
+        "patterns": [r"\.fit\(", r"\.train\(", r"training_data", r"train_test_split",
+                     r"\.csv", r"read_csv", r"load_data"],
+        "article": "10",
+        "observation": "Training data detected — Article 10 requires data to be relevant, representative, and examined for biases.",
+    },
+    "prediction_without_review": {
+        "patterns": [r"\.predict\(", r"\.predict_proba\("],
+        "article": "14",
+        "observation": "Model predictions detected — Article 14 requires human oversight with ability to override or reverse AI outputs.",
+    },
+    "automated_decision_function": {
+        "patterns": [r"def\s+\w*(screen|filter|rank|score|decide|reject|accept|approve|deny)\w*\s*\("],
+        "article": "13",
+        "observation": "Automated decision function detected — Article 13 requires transparency to deployers about capabilities and limitations.",
+    },
+    "no_logging": {
+        "patterns": [r"logging", r"\.log\(", r"audit", r"logger"],
+        "article": "12",
+        "observation": None,  # Only flag ABSENCE — see check below
+        "absence_observation": "No logging detected — Article 12 requires automatic recording of events for traceability.",
+    },
+}
+
+
+def generate_observations(text: str) -> list:
+    """Generate Article-specific governance observations from code patterns.
+
+    Returns a list of dicts with 'article' and 'observation' keys.
+    Only runs on text already classified as high-risk.
+    """
+    observations = []
+    text_lower = text.lower()
+
+    for name, config in GOVERNANCE_OBSERVATIONS.items():
+        found = any(re.search(p, text_lower) for p in config["patterns"])
+
+        if name == "no_logging":
+            # Flag absence of logging, not presence
+            if not found:
+                observations.append({
+                    "article": config["article"],
+                    "observation": config["absence_observation"],
+                })
+        elif found and config.get("observation"):
+            observations.append({
+                "article": config["article"],
+                "observation": config["observation"],
+            })
+
+    return observations
+
+
 def _compute_confidence_score(tier: str, num_matches: int, has_ai_indicator: bool) -> int:
     """Compute a 0-100 confidence score based on tier, match count, and context."""
     base = {"prohibited": 75, "high_risk": 55, "limited_risk": 40, "minimal_risk": 15}.get(tier, 10)

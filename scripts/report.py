@@ -17,7 +17,7 @@ from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS, PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS
+from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS, PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS, generate_observations
 from log_event import query_events, verify_chain
 from credential_check import check_secrets
 
@@ -136,6 +136,14 @@ def scan_files(project_path: str, respect_ignores: bool = True) -> list:
             indicator_bonus = min(len(result.indicators_matched) * 8, 15)
             confidence_score = min(base_score + indicator_bonus, 100)
 
+            # Generate Article-specific observations for high-risk findings
+            observations = []
+            if result.tier == RiskTier.HIGH_RISK:
+                try:
+                    observations = generate_observations(content)
+                except Exception:
+                    pass
+
             findings.append({
                 "file": str(filepath.relative_to(project)),
                 "line": 1,
@@ -147,6 +155,7 @@ def scan_files(project_path: str, respect_ignores: bool = True) -> list:
                 "exceptions": result.exceptions,
                 "confidence_score": confidence_score,
                 "suppressed": is_suppressed,
+                "observations": observations,
             })
 
     return findings

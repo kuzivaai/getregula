@@ -1,3 +1,4 @@
+# regula-ignore
 #!/usr/bin/env python3
 """
 Regula Governance Feed — AI Governance News Aggregator
