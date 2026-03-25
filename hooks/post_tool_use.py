@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regula PostToolUse Hook - Logs completed tool executions with classification"""
+"""Regula PostToolUse Hook — Logs completed tool executions with classification."""
 
 import json
 import sys
@@ -13,7 +13,7 @@ try:
 except ImportError:
     def classify(text):
         class R:
-            tier = type('o', (), {'value': 'not_ai'})()
+            tier = type("o", (), {"value": "not_ai"})()
             indicators_matched = []
             applicable_articles = []
             description = ""
@@ -25,9 +25,14 @@ except ImportError:
 def main():
     try:
         input_data = json.load(sys.stdin)
+    except (json.JSONDecodeError, ValueError):
+        sys.exit(0)
+
+    try:
         tool_name = input_data.get("tool_name", "")
         tool_input = input_data.get("tool_input", {})
-        tool_output = input_data.get("tool_output", {})
+        tool_response = input_data.get("tool_response", {})
+        session_id = input_data.get("session_id")
 
         text = f"{tool_name} {json.dumps(tool_input)}"
         result = classify(text)
@@ -38,21 +43,19 @@ def main():
             "tier": result.tier.value,
         }
 
-        # Only include classification details for AI-related actions
         if result.tier.value != "not_ai":
             event_data["indicators"] = result.indicators_matched
             event_data["articles"] = result.applicable_articles
             event_data["description"] = result.description
             event_data["category"] = result.category
 
-        # Include truncated output for audit purposes
-        if tool_output:
-            output_str = str(tool_output)
-            event_data["tool_output"] = output_str[:500]
+        if tool_response:
+            event_data["tool_response"] = str(tool_response)[:500]
 
-        log_event("tool_use", event_data)
+        log_event("tool_use", event_data, session_id=session_id)
     except Exception:
         pass
+
     sys.exit(0)
 
 

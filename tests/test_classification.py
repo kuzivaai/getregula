@@ -492,31 +492,31 @@ def test_classification_to_json():
 
 # ── Policy Engine Tests ─────────────────────────────────────────────
 
-def test_policy_force_high_risk():
-    """Policy force_high_risk overrides normal classification"""
-    import os
-    import tempfile
-    from classify_risk import _parse_simple_yaml, _check_policy_overrides, _POLICY
+def test_policy_yaml_parser():
+    """YAML fallback parser handles policy structure"""
+    from classify_risk import _parse_yaml_fallback
 
-    # Test the YAML parser
     yaml_text = """version: "1.0"
 rules:
   risk_classification:
     force_high_risk: [fraud_detection, customer_churn]
     exempt: [internal_chatbot_v2]
 """
-    parsed = _parse_simple_yaml(yaml_text)
+    parsed = _parse_yaml_fallback(yaml_text)
     assert_eq(parsed.get("version"), "1.0", "yaml version parsed")
-    print("✓ Policy engine: YAML parser works")
+    rules = parsed.get("rules", {})
+    assert_true(isinstance(rules, dict), "rules is dict")
+    rc = rules.get("risk_classification", {})
+    assert_true("fraud_detection" in rc.get("force_high_risk", []), "force_high_risk parsed")
+    assert_true("internal_chatbot_v2" in rc.get("exempt", []), "exempt parsed")
+    print("✓ Policy engine: YAML fallback parser works")
 
 
 def test_policy_check_overrides():
-    """Policy overrides function works"""
+    """Policy overrides function works for non-prohibited tiers"""
     import classify_risk
-    # Save original policy
     original = classify_risk._POLICY
 
-    # Test with a policy that has force_high_risk
     classify_risk._POLICY = {
         "rules": {
             "risk_classification": {
@@ -532,26 +532,41 @@ def test_policy_check_overrides():
     r = classify("import openai; internal_chatbot_v2 update")
     assert_eq(r.tier, RiskTier.MINIMAL_RISK, "exempt system is minimal-risk")
 
-    # Restore
     classify_risk._POLICY = original
     print("✓ Policy engine: force_high_risk and exempt work")
 
 
-def test_policy_prohibited_overrides_policy():
-    """Prohibited still overrides policy exemptions (safety first)"""
+def test_policy_cannot_exempt_prohibited():
+    """CRITICAL: Policy exempt list CANNOT override prohibited practices"""
     import classify_risk
     original = classify_risk._POLICY
 
-    # Even if exempt, prohibited should still block
-    # But actually exempt is checked first in current impl — this is a design choice
-    # The current logic: policy overrides run first, so exempt DOES override prohibited
-    # This is intentional per plan: policy is org-level override
-    classify_risk._POLICY = {}  # No policy = normal behavior
-    r = classify("social credit scoring with tensorflow")
-    assert_eq(r.tier, RiskTier.PROHIBITED, "prohibited without policy")
+    # Try to exempt a prohibited pattern via policy
+    classify_risk._POLICY = {
+        "rules": {
+            "risk_classification": {
+                "exempt": ["social_scoring_v2"],
+            }
+        }
+    }
+
+    # Even though "social_scoring_v2" is in exempt, "social scoring" is prohibited
+    r = classify("social scoring v2 with tensorflow")
+    assert_eq(r.tier, RiskTier.PROHIBITED, "prohibited CANNOT be exempted by policy")
 
     classify_risk._POLICY = original
-    print("✓ Policy engine: prohibited works without policy")
+    print("✓ Policy engine: prohibited overrides policy exempt (safety-first)")
+
+
+def test_prohibited_has_exceptions_field():
+    """Prohibited classifications include exception info where applicable"""
+    r = classify("emotion detection in workplace using tensorflow")
+    assert_eq(r.tier, RiskTier.PROHIBITED, "emotion workplace is prohibited")
+    # The emotion inference category has medical/safety exceptions
+    # Check that the exceptions field is populated via the result object
+    d = r.to_dict()
+    assert_true("exceptions" in d, "exceptions field exists in output")
+    print("✓ Prohibited: exceptions field present in classification")
 
 
 def test_high_risk_performance_review():
@@ -610,6 +625,104 @@ def test_audit_export_csv():
     print("✓ Audit trail: CSV export")
 
 
+# ── Confidence Score Tests ──────────────────────────────────────────
+
+def test_confidence_score_numeric():
+    """Classifications include numeric confidence scores"""
+    r = classify("social credit scoring using tensorflow")
+    assert_true(isinstance(r.confidence_score, int), "confidence_score is int")
+    assert_true(r.confidence_score > 0, "prohibited has positive score")
+    assert_true(r.confidence_score <= 100, "score <= 100")
+
+    r = classify("import sklearn; cv screening")
+    assert_true(r.confidence_score > 0, "high-risk has positive score")
+
+    r = classify("import openai; chatbot")
+    assert_true(r.confidence_score > 0, "limited-risk has positive score")
+    print("✓ Confidence scoring: numeric scores present")
+
+
+def test_confidence_score_ordering():
+    """Prohibited has higher confidence than high-risk which is higher than limited"""
+    r_prohibited = classify("social credit scoring using tensorflow")
+    r_high = classify("import sklearn; cv screening")
+    r_limited = classify("import openai; chatbot")
+
+    assert_true(r_prohibited.confidence_score > r_high.confidence_score,
+                f"prohibited ({r_prohibited.confidence_score}) > high-risk ({r_high.confidence_score})")
+    assert_true(r_high.confidence_score > r_limited.confidence_score,
+                f"high-risk ({r_high.confidence_score}) > limited ({r_limited.confidence_score})")
+    print("✓ Confidence scoring: tier ordering correct")
+
+
+def test_multiple_indicators_increase_score():
+    """Multiple indicators produce higher confidence score"""
+    r_single = classify("import sklearn; cv screening")
+    r_multi = classify("import sklearn; cv screening credit scoring loan decision")
+
+    assert_true(r_multi.confidence_score >= r_single.confidence_score,
+                f"multi ({r_multi.confidence_score}) >= single ({r_single.confidence_score})")
+    print("✓ Confidence scoring: multiple indicators increase score")
+
+
+# ── Report Tests ────────────────────────────────────────────────────
+
+def test_sarif_output_structure():
+    """SARIF output follows v2.1.0 schema structure"""
+    from report import generate_sarif, scan_files
+    import tempfile, os
+
+    # Create a temp dir with a test file
+    temp_dir = tempfile.mkdtemp()
+    test_file = Path(temp_dir) / "test.py"
+    test_file.write_text("import tensorflow\ncredit_scoring_model = True\n")
+
+    try:
+        findings = scan_files(temp_dir)
+        sarif = generate_sarif(findings, "test-project")
+
+        assert_eq(sarif["version"], "2.1.0", "SARIF version")
+        assert_true(len(sarif["runs"]) == 1, "has one run")
+        assert_eq(sarif["runs"][0]["tool"]["driver"]["name"], "Regula", "tool name")
+        assert_true(len(sarif["runs"][0]["tool"]["driver"]["rules"]) > 0, "has rules")
+    finally:
+        import shutil
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+    print("✓ Report: SARIF output structure valid")
+
+
+def test_html_report_contains_disclaimer():
+    """HTML report contains risk indication disclaimer"""
+    from report import generate_html_report
+
+    html = generate_html_report([], "test-project")
+    assert_true("not legal risk classification" in html.lower() or "not legal" in html.lower(),
+                "HTML contains legal disclaimer")
+    assert_true("pattern-based" in html.lower(), "HTML mentions pattern-based")
+    print("✓ Report: HTML contains disclaimer")
+
+
+def test_inline_suppression():
+    """Files with regula-ignore comments have findings marked as suppressed"""
+    from report import scan_files
+    import tempfile
+
+    temp_dir = tempfile.mkdtemp()
+    test_file = Path(temp_dir) / "model.py"
+    test_file.write_text("# regula-ignore\nimport tensorflow\ncredit_scoring = True\n")
+
+    try:
+        findings = scan_files(temp_dir)
+        suppressed = [f for f in findings if f.get("suppressed")]
+        assert_true(len(suppressed) > 0, "suppressed findings exist")
+    finally:
+        import shutil
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+    print("✓ Report: inline suppression works")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -659,13 +772,22 @@ if __name__ == "__main__":
         test_classification_action_field,
         test_classification_to_dict,
         test_classification_to_json,
-        # Policy Engine (3 tests)
-        test_policy_force_high_risk,
+        # Policy Engine (4 tests)
+        test_policy_yaml_parser,
         test_policy_check_overrides,
-        test_policy_prohibited_overrides_policy,
+        test_policy_cannot_exempt_prohibited,
+        test_prohibited_has_exceptions_field,
         # Audit Trail (2 tests)
         test_audit_hash_chain,
         test_audit_export_csv,
+        # Confidence Scoring (3 tests)
+        test_confidence_score_numeric,
+        test_confidence_score_ordering,
+        test_multiple_indicators_increase_score,
+        # Reports (3 tests)
+        test_sarif_output_structure,
+        test_html_report_contains_disclaimer,
+        test_inline_suppression,
     ]
 
     print(f"Running {len(tests)} tests...\n")

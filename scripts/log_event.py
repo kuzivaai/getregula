@@ -1,8 +1,18 @@
 #!/usr/bin/env python3
-"""Regula Audit Trail Logger"""
+"""
+Regula Audit Trail Logger
+
+Append-only, hash-chained event log for governance audit trails.
+
+LIMITATION: The hash chain is self-attesting — the same user who could
+modify log entries also controls the chain. For regulatory evidence that
+meets ISO 27001 A.12.4 or SOC 2 standards, supplement with an external
+timestamp authority (RFC 3161) or remote log forwarding.
+"""
 
 import argparse
 import csv
+import fcntl
 import hashlib
 import io
 import json
@@ -49,43 +59,80 @@ def compute_hash(event_dict: dict, previous_hash: str) -> str:
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
 
-def get_previous_hash(audit_file: Path) -> str:
-    if not audit_file.exists():
+def _read_last_hash(audit_file: Path) -> str:
+    """Read the current_hash of the last event in the file.
+
+    Called while holding the file lock — do not call independently.
+    """
+    if not audit_file.exists() or audit_file.stat().st_size == 0:
         return "0" * 64
     try:
         with open(audit_file, "r", encoding="utf-8") as f:
             last_line = ""
             for line in f:
-                if line.strip():
-                    last_line = line
+                stripped = line.strip()
+                if stripped:
+                    last_line = stripped
         if not last_line:
             return "0" * 64
-        return json.loads(last_line.strip()).get("current_hash", "0" * 64)
-    except Exception:
+        return json.loads(last_line).get("current_hash", "0" * 64)
+    except (json.JSONDecodeError, OSError, KeyError):
         return "0" * 64
 
 
-def log_event(event_type: str, data: Dict[str, Any], session_id: Optional[str] = None, project: Optional[str] = None) -> AuditEvent:
+def log_event(
+    event_type: str,
+    data: Dict[str, Any],
+    session_id: Optional[str] = None,
+    project: Optional[str] = None,
+) -> AuditEvent:
+    """Append an event to the audit trail with file locking.
+
+    Uses fcntl.flock to prevent concurrent writes from corrupting the
+    hash chain when PreToolUse and PostToolUse hooks run in parallel.
+    """
     audit_file = get_audit_file()
-    previous_hash = get_previous_hash(audit_file)
-    event = AuditEvent(
-        event_id=str(uuid.uuid4()), timestamp=datetime.now(timezone.utc).isoformat(),
-        event_type=event_type, session_id=session_id or os.environ.get("CLAUDE_SESSION_ID"),
-        project=project or os.environ.get("REGULA_PROJECT"), data=data, previous_hash=previous_hash
-    )
-    event.current_hash = compute_hash(event.to_dict(), previous_hash)
+
+    # Open in append mode and acquire exclusive lock
     with open(audit_file, "a", encoding="utf-8") as f:
-        f.write(event.to_json() + "\n")
+        fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+        try:
+            # Read previous hash while holding lock
+            previous_hash = _read_last_hash(audit_file)
+
+            event = AuditEvent(
+                event_id=str(uuid.uuid4()),
+                timestamp=datetime.now(timezone.utc).isoformat(),
+                event_type=event_type,
+                session_id=session_id or os.environ.get("CLAUDE_SESSION_ID"),
+                project=project or os.environ.get("REGULA_PROJECT"),
+                data=data,
+                previous_hash=previous_hash,
+            )
+            event.current_hash = compute_hash(event.to_dict(), previous_hash)
+            f.write(event.to_json() + "\n")
+            f.flush()
+        finally:
+            fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+
     return event
 
 
-def query_events(event_type: Optional[str] = None, after: Optional[str] = None, before: Optional[str] = None, limit: int = 100) -> List[dict]:
+def query_events(
+    event_type: Optional[str] = None,
+    after: Optional[str] = None,
+    before: Optional[str] = None,
+    limit: int = 100,
+) -> List[dict]:
     events = []
     for audit_file in sorted(get_audit_dir().glob("audit_*.jsonl")):
-        with open(audit_file, "r", encoding="utf-8") as f:
-            for line in f:
-                try:
-                    event = json.loads(line.strip())
+        try:
+            with open(audit_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    try:
+                        event = json.loads(line.strip())
+                    except json.JSONDecodeError:
+                        continue
                     if event_type and event.get("event_type") != event_type:
                         continue
                     if after and event.get("timestamp", "") < after:
@@ -95,39 +142,54 @@ def query_events(event_type: Optional[str] = None, after: Optional[str] = None, 
                     events.append(event)
                     if len(events) >= limit:
                         return events
-                except:
-                    continue
+        except OSError:
+            continue
     return events
 
 
 def verify_chain() -> tuple:
+    """Verify hash chain integrity across all audit files.
+
+    Returns (True, None) if valid, (False, error_message) if broken.
+    """
     previous_hash = "0" * 64
     for audit_file in sorted(get_audit_dir().glob("audit_*.jsonl")):
-        with open(audit_file, "r", encoding="utf-8") as f:
-            for line_num, line in enumerate(f, 1):
-                try:
-                    event = json.loads(line.strip())
+        try:
+            with open(audit_file, "r", encoding="utf-8") as f:
+                for line_num, line in enumerate(f, 1):
+                    stripped = line.strip()
+                    if not stripped:
+                        continue
+                    try:
+                        event = json.loads(stripped)
+                    except json.JSONDecodeError:
+                        return False, f"Invalid JSON at {audit_file.name}:{line_num}"
                     if event.get("previous_hash") != previous_hash:
                         return False, f"Chain broken at {audit_file.name}:{line_num}"
-                    if event.get("current_hash") != compute_hash(event, previous_hash):
+                    expected = compute_hash(event, previous_hash)
+                    if event.get("current_hash") != expected:
                         return False, f"Hash mismatch at {audit_file.name}:{line_num}"
-                    previous_hash = event.get("current_hash")
-                except:
-                    return False, f"Invalid JSON at {audit_file.name}:{line_num}"
+                    previous_hash = event["current_hash"]
+        except OSError as e:
+            return False, f"Cannot read {audit_file.name}: {e}"
     return True, None
 
 
 def export_csv(events: List[dict]) -> str:
     """Export events as CSV."""
-    output = io.StringIO()
     if not events:
         return ""
-    fields = ["event_id", "timestamp", "event_type", "session_id", "project",
-              "tier", "indicators", "articles", "action", "tool_name", "description"]
+    output = io.StringIO()
+    fields = [
+        "event_id", "timestamp", "event_type", "session_id", "project",
+        "tier", "indicators", "articles", "action", "tool_name", "description",
+    ]
     writer = csv.DictWriter(output, fieldnames=fields, extrasaction="ignore")
     writer.writeheader()
     for event in events:
         data = event.get("data", {})
+        indicators = data.get("indicators", [])
+        articles = data.get("articles", [])
         row = {
             "event_id": event.get("event_id", ""),
             "timestamp": event.get("timestamp", ""),
@@ -135,8 +197,8 @@ def export_csv(events: List[dict]) -> str:
             "session_id": event.get("session_id", ""),
             "project": event.get("project", ""),
             "tier": data.get("tier", ""),
-            "indicators": "; ".join(data.get("indicators", [])) if isinstance(data.get("indicators"), list) else str(data.get("indicators", "")),
-            "articles": "; ".join(data.get("articles", [])) if isinstance(data.get("articles"), list) else str(data.get("articles", "")),
+            "indicators": "; ".join(indicators) if isinstance(indicators, list) else str(indicators),
+            "articles": "; ".join(articles) if isinstance(articles, list) else str(articles),
             "action": data.get("action", ""),
             "tool_name": data.get("tool_name", ""),
             "description": data.get("description", ""),
@@ -178,12 +240,13 @@ def main():
         events = query_events(args.event_type, args.after, args.before, args.limit)
         print(json.dumps(events, indent=2))
     elif args.command == "export":
-        events = query_events(args.event_type, getattr(args, "after", None),
-                             getattr(args, "before", None), limit=100000)
-        if args.format == "csv":
-            content = export_csv(events)
-        else:
-            content = json.dumps(events, indent=2)
+        events = query_events(
+            getattr(args, "event_type", None),
+            getattr(args, "after", None),
+            getattr(args, "before", None),
+            limit=100000,
+        )
+        content = export_csv(events) if args.format == "csv" else json.dumps(events, indent=2)
         if args.output:
             Path(args.output).write_text(content, encoding="utf-8")
             print(f"Exported {len(events)} events to {args.output}")
