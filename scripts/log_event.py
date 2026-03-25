@@ -2,7 +2,9 @@
 """Regula Audit Trail Logger"""
 
 import argparse
+import csv
 import hashlib
+import io
 import json
 import os
 import sys
@@ -51,13 +53,15 @@ def get_previous_hash(audit_file: Path) -> str:
     if not audit_file.exists():
         return "0" * 64
     try:
-        with open(audit_file, "rb") as f:
-            f.seek(-2, os.SEEK_END)
-            while f.read(1) != b"\n":
-                f.seek(-2, os.SEEK_CUR)
-            last_line = f.readline().decode("utf-8")
+        with open(audit_file, "r", encoding="utf-8") as f:
+            last_line = ""
+            for line in f:
+                if line.strip():
+                    last_line = line
+        if not last_line:
+            return "0" * 64
         return json.loads(last_line.strip()).get("current_hash", "0" * 64)
-    except:
+    except Exception:
         return "0" * 64
 
 
@@ -113,29 +117,78 @@ def verify_chain() -> tuple:
     return True, None
 
 
+def export_csv(events: List[dict]) -> str:
+    """Export events as CSV."""
+    output = io.StringIO()
+    if not events:
+        return ""
+    fields = ["event_id", "timestamp", "event_type", "session_id", "project",
+              "tier", "indicators", "articles", "action", "tool_name", "description"]
+    writer = csv.DictWriter(output, fieldnames=fields, extrasaction="ignore")
+    writer.writeheader()
+    for event in events:
+        data = event.get("data", {})
+        row = {
+            "event_id": event.get("event_id", ""),
+            "timestamp": event.get("timestamp", ""),
+            "event_type": event.get("event_type", ""),
+            "session_id": event.get("session_id", ""),
+            "project": event.get("project", ""),
+            "tier": data.get("tier", ""),
+            "indicators": "; ".join(data.get("indicators", [])) if isinstance(data.get("indicators"), list) else str(data.get("indicators", "")),
+            "articles": "; ".join(data.get("articles", [])) if isinstance(data.get("articles"), list) else str(data.get("articles", "")),
+            "action": data.get("action", ""),
+            "tool_name": data.get("tool_name", ""),
+            "description": data.get("description", ""),
+        }
+        writer.writerow(row)
+    return output.getvalue()
+
+
 def main():
     parser = argparse.ArgumentParser(description="Regula audit trail management")
     subparsers = parser.add_subparsers(dest="command")
-    
+
     log_p = subparsers.add_parser("log")
     log_p.add_argument("--event-type", "-t", required=True)
     log_p.add_argument("--data", "-d")
-    
+
     query_p = subparsers.add_parser("query")
     query_p.add_argument("--event-type", "-t")
     query_p.add_argument("--after")
+    query_p.add_argument("--before")
     query_p.add_argument("--limit", type=int, default=100)
-    
+
+    export_p = subparsers.add_parser("export")
+    export_p.add_argument("--format", "-f", choices=["json", "csv"], default="json")
+    export_p.add_argument("--event-type", "-t")
+    export_p.add_argument("--after")
+    export_p.add_argument("--before")
+    export_p.add_argument("--output", "-o", help="Output file path")
+
     subparsers.add_parser("verify")
-    
+
     args = parser.parse_args()
-    
+
     if args.command == "log":
         data = json.loads(args.data) if args.data else {}
         event = log_event(args.event_type, data)
         print(json.dumps({"status": "logged", "event_id": event.event_id}))
     elif args.command == "query":
-        print(json.dumps(query_events(args.event_type, args.after, limit=args.limit), indent=2))
+        events = query_events(args.event_type, args.after, args.before, args.limit)
+        print(json.dumps(events, indent=2))
+    elif args.command == "export":
+        events = query_events(args.event_type, getattr(args, "after", None),
+                             getattr(args, "before", None), limit=100000)
+        if args.format == "csv":
+            content = export_csv(events)
+        else:
+            content = json.dumps(events, indent=2)
+        if args.output:
+            Path(args.output).write_text(content, encoding="utf-8")
+            print(f"Exported {len(events)} events to {args.output}")
+        else:
+            print(content)
     elif args.command == "verify":
         valid, error = verify_chain()
         print(json.dumps({"status": "valid" if valid else "invalid", "error": error}))
