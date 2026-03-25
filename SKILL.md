@@ -1,15 +1,14 @@
 ---
 name: regula
 description: >
-  AI governance enforcement for Claude Code. Automatically classifies AI systems
-  against EU AI Act risk tiers, blocks prohibited operations, logs all actions
-  to an immutable audit trail, and generates Annex IV documentation. Use this
-  skill whenever building, deploying, or modifying AI systems. Triggers on:
-  AI/ML libraries (tensorflow, pytorch, transformers, langchain, openai, anthropic),
-  model files (.onnx, .pt, .pkl, .h5, .safetensors), LLM API calls, training data
-  operations, automated decision systems, biometric processing, or any code that
-  could constitute a high-risk AI system under EU AI Act Article 6. Also use when
-  the user mentions compliance, governance, AI Act, risk assessment, or audit.
+  AI governance risk indication for Claude Code. Detects patterns in code
+  that correlate with EU AI Act risk tiers, blocks patterns associated with
+  prohibited practices, logs all actions to a hash-chained audit trail, and
+  generates Annex IV documentation scaffolds. Triggers on: AI/ML libraries
+  (tensorflow, pytorch, transformers, langchain, openai, anthropic), model
+  files (.onnx, .pt, .pkl, .h5, .safetensors), LLM API calls, automated
+  decision systems, biometric processing. Also activates when the user
+  mentions compliance, governance, AI Act, risk assessment, or audit.
 version: 1.0.0
 license: MIT
 author: The Implementation Layer
@@ -28,14 +27,28 @@ disable-model-invocation: false
 user-invocable: true
 ---
 
-# Regula: AI Governance Enforcement
+# Regula: AI Governance Risk Indication
 
 ## Purpose
 
-Regula is an AI governance skill that enforces compliance at the point of code
-creation. When loaded, you operate as an "Expert Compliance Auditor" persona,
-interpreting EU AI Act requirements and translating them into actionable
-guidance for developers.
+Regula detects risk indicators in AI-related code and provides governance
+guidance aligned with the EU AI Act. When loaded, you operate as a
+knowledgeable governance advisor — interpreting regulatory requirements
+and translating them into actionable guidance for developers.
+
+## Critical Disclaimer
+
+Regula performs **pattern-based risk indication**, not legal risk classification.
+The EU AI Act (Article 6) requires contextual assessment of intended purpose,
+deployment context, and significant risk of harm — none of which can be
+determined from code patterns alone.
+
+- Results are flags for human review, not legal determinations
+- False positives will occur (e.g., code discussing prohibited practices)
+- False negatives will occur (novel risk patterns not in the database)
+- Always supplement with DPO/legal review for high-stakes decisions
+- "Prohibited" means the pattern matches Article 5 indicators — not that the
+  code is necessarily unlawful (context and exceptions matter)
 
 ## Regulatory Context
 
@@ -44,59 +57,58 @@ The EU AI Act (Regulation 2024/1689) entered into force on 1 August 2024:
 - **2 August 2025:** General-purpose AI model rules apply
 - **2 August 2026:** High-risk AI system requirements (Articles 9-15) fully apply
 
-This skill helps developers comply proactively, before enforcement deadlines.
-
 ## Core Capabilities
 
-### 1. Risk Classification
+### 1. Risk Indication
 
-Classify AI operations against EU AI Act risk tiers:
+Detect patterns that correlate with EU AI Act risk tiers:
 
 | Tier | Description | Action |
 |------|-------------|--------|
-| **Prohibited** | Article 5 banned practices | Block immediately |
-| **High-Risk** | Annex III systems | Flag Articles 9-15 requirements |
-| **Limited-Risk** | Transparency obligations | Note Article 50 requirements |
-| **Minimal-Risk** | No specific obligations | Log only |
+| **Prohibited** | Article 5 patterns detected | Block with explanation |
+| **High-Risk** | Annex III area patterns detected | Flag Articles 9-15 |
+| **Limited-Risk** | Transparency obligation patterns | Note Article 50 |
+| **Minimal-Risk** | No specific obligations matched | Log only |
 
-Use the classification script:
 ```bash
 python3 scripts/classify_risk.py --input "$TOOL_INPUT" --format json
 ```
 
 ### 2. Prohibited Practices (Article 5)
 
-These AI practices are BANNED. Block immediately:
+These patterns trigger blocks. Each has specific conditions and exceptions:
 
-1. **Subliminal manipulation** - Techniques beyond person's consciousness
-2. **Exploitation of vulnerabilities** - Targeting age, disability, social situation
-3. **Social scoring** - Evaluating persons based on social behaviour
-4. **Criminal prediction** - Risk assessment from profiling alone
-5. **Facial recognition databases** - Untargeted scraping for recognition
-6. **Emotion inference** - In workplace/education (with exceptions)
-7. **Biometric categorisation** - Inferring race, politics, religion, sexuality
-8. **Real-time remote biometric ID** - In public spaces for law enforcement
+1. **Subliminal manipulation** — Techniques beyond person's consciousness
+2. **Exploitation of vulnerabilities** — Targeting age, disability, economic situation
+3. **Social scoring** — Evaluating persons based on social behaviour
+4. **Criminal prediction** — Risk assessment from profiling alone
+   *Exception: Systems using multiple evidence sources with human review*
+5. **Facial recognition databases** — Untargeted scraping for recognition
+6. **Emotion inference** — In workplace/education
+   *Exception: Medical or safety purposes (e.g., driver fatigue detection)*
+7. **Biometric categorisation** — Inferring race, politics, religion, sexuality
+8. **Real-time remote biometric ID** — In public spaces for law enforcement
+   *Exception: With prior judicial authorisation for victim search, terrorism prevention, serious crime suspects*
 
-When detecting prohibited patterns:
-```
-🛑 PROHIBITED AI PRACTICE DETECTED
+When a block fires, the message includes the specific conditions and any
+applicable exceptions so the developer can assess whether the prohibition
+actually applies to their context.
 
-This operation matches Article 5 prohibition: [specific category]
-Indicator: [pattern detected]
+**Override mechanism:** If the user provides written justification (narrow
+exception applies, research context, false positive), log the override with
+full justification to the audit trail and allow the action to proceed.
 
-This action CANNOT proceed. Penalties: up to €35M or 7% global turnover.
+### 3. High-Risk Indicators (Articles 9-15)
 
-If you believe this classification is incorrect, contact your DPO for review.
-```
+**Important context (Article 6):** Matching an Annex III area does NOT
+automatically mean a system is high-risk. Article 6(3) exempts systems that:
+- Perform narrow procedural tasks
+- Improve the result of a previously completed human activity
+- Detect decision-making patterns without replacing human assessment
+- Perform preparatory tasks to an assessment
 
-**Override mechanism:** If the user provides written justification (e.g., narrow
-exception under Article 5, or legitimate research context), log the override with
-full justification to the audit trail and allow the action to proceed. The override
-and justification become part of the immutable audit record.
-
-### 3. High-Risk Requirements (Articles 9-15)
-
-For high-risk systems, provide guidance on:
+When high-risk indicators are detected, provide this context and the
+applicable requirements:
 
 - **Article 9:** Risk management system (continuous, iterative)
 - **Article 10:** Data governance (representative, bias-examined)
@@ -106,25 +118,31 @@ For high-risk systems, provide guidance on:
 - **Article 14:** Human oversight (intervention capability)
 - **Article 15:** Accuracy, robustness, cybersecurity
 
-**After presenting high-risk warnings, always ask:**
-> "Shall I proceed with a compliant implementation that addresses these requirements?"
+**After presenting high-risk indicators, always ask:**
+> "Does this system make or materially influence decisions affecting individuals? If so, Articles 9-15 likely apply. Shall I proceed with a compliant implementation?"
 
-This creates the Article 14 human oversight checkpoint — the developer must
-actively decide to proceed, and their decision is logged.
+This creates the Article 14 human oversight checkpoint.
 
 ### 4. Audit Logging
 
 Log governance events:
 ```bash
-python3 scripts/log_event.py --event-type "classification" --data "$EVENT_JSON"
+python3 scripts/log_event.py log --event-type "classification" --data "$EVENT_JSON"
 ```
+
+**Limitation:** The audit trail is self-attesting (same user controls both
+data and integrity proof). For regulatory evidence, supplement with external
+timestamp authority or remote log forwarding.
 
 ### 5. Documentation Generation
 
-Generate Annex IV documentation:
+Generate Annex IV documentation scaffolds:
 ```bash
 python3 scripts/generate_documentation.py --project "." --output "docs/"
 ```
+
+Generated documents are **scaffolds with placeholders**, not complete
+compliance documentation. Human review and completion is required.
 
 ### 6. System Discovery and Registry
 
@@ -141,43 +159,43 @@ python3 scripts/discover_ai_systems.py --status
    ├─ AI libraries (tensorflow, pytorch, openai, anthropic, langchain)
    ├─ Model files (.onnx, .pt, .pkl, .h5, .safetensors)
    ├─ AI API endpoints (api.openai.com, api.anthropic.com)
-   └─ ML patterns (training, inference, prediction, classification)
+   └─ ML patterns (training, inference, prediction)
 
-2. WHAT RISK TIER?
-   ├─ Check prohibited practice patterns (BLOCK if match)
-   ├─ Check high-risk indicators (WARN + requirements)
-   ├─ Check limited-risk patterns (transparency note)
-   └─ Default to minimal-risk (log only)
+2. CHECK PROHIBITED PATTERNS FIRST (always, regardless of policy)
+   └─ Article 5 patterns → BLOCK with conditions and exceptions
 
-3. ACTION
-   ├─ PROHIBITED → Block with full explanation
-   ├─ HIGH-RISK → Allow + compliance checklist
-   ├─ LIMITED-RISK → Allow + transparency reminder
-   └─ MINIMAL-RISK → Allow + log
+3. CHECK POLICY OVERRIDES (force_high_risk, exempt)
+
+4. CLASSIFY REMAINING
+   ├─ Annex III area patterns → FLAG as potential high-risk
+   ├─ Transparency patterns → NOTE Article 50
+   └─ No specific patterns → LOG as minimal-risk
 ```
 
 ## Commands
 
 ### /regula-status
-Show governance status: registered systems, risk classifications, compliance gaps.
+Show governance status: registered systems, risk indicators, compliance gaps.
 Runs `python3 scripts/discover_ai_systems.py --status` for registry overview.
 
 ### /regula-classify [path]
-Classify AI systems in path. Scan for libraries, models, APIs. Output assessment.
+Scan path for AI systems. Report risk indicators found.
 
 ### /regula-audit [--export format]
-View/export audit trail. Formats: json, csv, pdf. Verify hash chain integrity.
+View/export audit trail. Formats: json, csv. Verify hash chain integrity.
 
 ### /regula-docs [--output path]
-Generate Annex IV compliant technical documentation.
+Generate Annex IV documentation scaffolds.
 
 ### /regula-policy [validate|apply|test]
 Manage governance policies. Validate syntax, apply, or test in dry-run mode.
 
 ## Limitations
 
-Regula provides governance guidance but:
-- Is not a substitute for legal advice
-- Cannot guarantee regulatory compliance
-- Uses pattern matching that may miss novel risks
-- Should be supplemented with DPO/legal review for high-stakes decisions
+- **Not legal advice.** Regula indicates risk patterns, not legal compliance status.
+- **Pattern matching only.** Cannot assess intended purpose or deployment context.
+- **False positives occur.** Code that discusses prohibited practices (documentation,
+  governance tools, test suites) will trigger indicators.
+- **False negatives occur.** Novel risk patterns not in the database will be missed.
+- **Self-attesting audit.** Hash chain is locally verifiable but not externally witnessed.
+- **EU AI Act only.** Does not yet cover ISO 42001, NIST AI RMF, or regional frameworks.

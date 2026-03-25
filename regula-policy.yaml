@@ -8,8 +8,12 @@ frameworks:
 
 rules:
   risk_classification:
-    force_high_risk: []      # Systems to always treat as high-risk
-    exempt: []               # Systems confirmed as low-risk
+    # Systems to always treat as high-risk (e.g., fraud_detection)
+    force_high_risk: []
+    # Systems confirmed as low-risk after human review.
+    # NOTE: exempt CANNOT override Article 5 prohibited practice detection.
+    # Prohibited checks always run first regardless of this list.
+    exempt: []
 
   approvals:
     high_risk:
@@ -24,4 +28,4 @@ rules:
   logging:
     retention_years: 10
     pii_redaction: true
-    export_format: [json, pdf]
+    export_format: [json, csv]

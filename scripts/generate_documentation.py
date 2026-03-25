@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """
 Regula Documentation Generator
-Generates EU AI Act Annex IV compliant technical documentation.
+
+Generates EU AI Act Annex IV documentation SCAFFOLDS from project analysis.
+Output is a starting point that requires human review and completion — it is
+NOT complete compliance documentation and should not be presented as such.
 """
 
 import argparse
@@ -75,7 +78,13 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
     if isinstance(highest, RiskTier):
         highest = highest.value
 
-    doc = f"""# Annex IV — Technical Documentation
+    doc = f"""# Annex IV — Technical Documentation Scaffold
+
+> **IMPORTANT:** This is an auto-generated scaffold, NOT complete compliance
+> documentation. All sections marked _[TO BE COMPLETED]_ require human input.
+> Risk indicators are pattern-based and may not reflect the actual risk
+> classification under Article 6. This document must be reviewed by qualified
+> personnel before being used as regulatory evidence.
 
 ## AI System: {project_name}
 

@@ -1,180 +1,104 @@
 # Regula
 
-**AI Governance Enforcement at the Point of Code Creation**
+**AI Governance Risk Indication for Claude Code**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
-[![EU AI Act](https://img.shields.io/badge/EU%20AI%20Act-Compliant-green.svg)](#regulatory-coverage)
+[![EU AI Act](https://img.shields.io/badge/EU%20AI%20Act-Risk%20Indication-blue.svg)](#regulatory-coverage)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
 
-Regula is a Claude Code skill that enforces AI governance compliance in real-time. It intercepts AI-related code as developers write it, classifies operations against EU AI Act risk tiers, blocks prohibited practices, provides compliance guidance for high-risk systems, and maintains an immutable audit trail.
+Regula is a Claude Code skill that detects AI governance risk indicators in real-time. It flags patterns associated with EU AI Act risk tiers, blocks patterns matching prohibited practices, and maintains a hash-chained audit trail.
 
-## The Problem
+## Quick Start
+
+```bash
+git clone https://github.com/kuzivaai/getregula.git
+cd getregula
+
+# Install for your platform (pick one):
+python3 scripts/install.py claude-code     # Claude Code
+python3 scripts/install.py copilot-cli     # GitHub Copilot CLI
+python3 scripts/install.py windsurf        # Windsurf Cascade
+python3 scripts/install.py pre-commit      # pre-commit framework
+python3 scripts/install.py git-hooks       # Direct git hooks
+
+# Scan a project
+python3 scripts/cli.py check /path/to/project
+
+# Generate an HTML report for your DPO
+python3 scripts/cli.py report --format html --output report.html --include-audit
+```
+
+Run tests: `python3 tests/test_classification.py`
+
+## What It Does
+
+When you write AI-related code, Regula:
+
+1. **Detects** AI indicators (libraries, model files, API calls, ML patterns)
+2. **Flags** patterns associated with EU AI Act risk tiers
+3. **Blocks** patterns matching Article 5 prohibited practices (with conditions and exceptions)
+4. **Warns** about patterns in Annex III high-risk areas (with Article 6 context)
+5. **Logs** everything to a hash-chained audit trail
+
+### Example: High-Risk Indicator
+
+```
+User: "Build a CV screening function that auto-filters candidates"
+
+Regula: HIGH-RISK AI SYSTEM INDICATORS DETECTED
+
+Category: Annex III, Category 4 — Employment and workers management
+Patterns: cv_screen
+
+Whether Articles 9-15 apply depends on whether the system poses a
+significant risk of harm (Article 6). Systems performing narrow
+procedural tasks or supporting human decisions may be exempt.
+
+If this IS a high-risk system, these requirements apply (Aug 2026):
+  Art 9:  Risk management system
+  Art 10: Data governance
+  Art 14: Human oversight mechanism
+  ...
+```
+
+### Example: Prohibited Pattern Block
+
+```
+User: "Build a social credit scoring system"
+
+Regula: PROHIBITED AI PRACTICE — ACTION BLOCKED
+
+Prohibition: Social scoring by public authorities or on their behalf
+Pattern detected: social_scoring
+
+This is a pattern-based risk indication, not a legal determination.
+If this is a false positive or an exception applies, document the
+justification and consult your DPO.
+```
+
+## Important Limitations
+
+Regula performs **pattern-based risk indication**, not legal risk classification.
+
+- The EU AI Act classifies risk based on intended purpose and deployment context (Article 6), not code patterns
+- False positives will occur (code that discusses prohibited practices triggers indicators)
+- False negatives will occur (novel risk patterns not in the database)
+- Article 5 prohibitions have conditions and exceptions that require human judgment
+- The audit trail is self-attesting (locally verifiable, not externally witnessed)
+- Not a substitute for legal advice or DPO review
+
+## Regulatory Context
 
 The EU AI Act (Regulation 2024/1689) is now in force:
 
 | Date | Requirement |
 |------|-------------|
-| **2 February 2025** | Prohibited AI practices (Article 5) apply — **live now** |
+| **2 February 2025** | Prohibited AI practices (Article 5) apply |
 | **2 August 2025** | General-purpose AI model rules apply |
 | **2 August 2026** | High-risk system requirements (Articles 9-15) fully apply |
 
-**Penalties:** Up to **€35 million** or **7% of global annual turnover**.
-
-Current AI governance tools cost $50K-500K+/year, require 6-12 month implementations, and operate post-deployment. Nothing exists at the code creation layer — until now.
-
-## How It Works
-
-Regula operates as a three-layer defence:
-
-```
-┌─────────────────────────────────────────────────────────┐
-│  SKILL LAYER — Expert auditor persona & guidance        │
-├─────────────────────────────────────────────────────────┤
-│  HOOK LAYER — Deterministic enforcement (block/allow)   │
-├─────────────────────────────────────────────────────────┤
-│  AUDIT LAYER — Immutable, hash-chained event log        │
-└─────────────────────────────────────────────────────────┘
-```
-
-When a developer writes AI-related code, Regula:
-
-1. **Detects** AI indicators (libraries, model files, API calls, ML patterns)
-2. **Classifies** the operation against EU AI Act risk tiers
-3. **Blocks** prohibited practices immediately (exit code 2)
-4. **Warns** about high-risk system requirements (Articles 9-15)
-5. **Logs** everything to a tamper-evident audit trail
-
-## What It Does
-
-| Feature | Description |
-|---------|-------------|
-| **Risk Classification** | Classifies code against 4 EU AI Act risk tiers |
-| **Real-time Blocking** | Blocks all 8 Article 5 prohibited practices |
-| **Compliance Guidance** | Flags Articles 9-15 requirements for high-risk systems |
-| **Audit Trail** | SHA-256 hash-chained, append-only event log |
-| **Documentation** | Generates Annex IV compliant technical documentation |
-
-## Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/kuzivaai/getregula.git
-
-# Copy to your Claude Code skills directory
-cp -r getregula ~/.claude/skills/regula
-```
-
-### Configure Hooks
-
-Add to your Claude Code `settings.json`:
-
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": ".*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 ~/.claude/skills/regula/hooks/pre_tool_use.py"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": ".*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 ~/.claude/skills/regula/hooks/post_tool_use.py"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 ~/.claude/skills/regula/hooks/stop_hook.py"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-## Usage
-
-### Automatic Enforcement
-
-Once installed, Regula activates automatically when you work with AI-related code:
-
-```
-User: "Build a CV screening function that auto-filters candidates"
-
-Claude: ⚠️ HIGH-RISK AI SYSTEM DETECTED
-
-Category: Annex III, Category 4 — Employment and workers management
-Indicators: cv_screen, hiring_decision
-
-Applicable Requirements (effective 2 August 2026):
-• Article 9: Implement risk management system
-• Article 10: Ensure training data is representative and bias-examined
-• Article 11: Maintain technical documentation (Annex IV)
-• Article 12: Enable automatic logging of decisions
-• Article 13: Provide transparency to affected persons
-• Article 14: Implement human oversight mechanism
-• Article 15: Validate accuracy and implement security measures
-```
-
-### Prohibited Practice Blocking
-
-```
-User: "Build a social credit scoring system"
-
-🛑 PROHIBITED AI PRACTICE — ACTION BLOCKED
-
-Specific prohibition: Article 5(1)(c)
-Description: Social scoring systems evaluating persons based on social behaviour
-Indicator detected: social_scoring
-
-This action CANNOT proceed. Penalties: up to €35M or 7% global turnover.
-```
-
-### CLI Usage
-
-```bash
-# Classify a text input
-python3 scripts/classify_risk.py --input "import tensorflow; cv screening model" --format json
-
-# Classify a file
-python3 scripts/classify_risk.py --file model.py --format json
-
-# Generate Annex IV documentation
-python3 scripts/generate_documentation.py --project . --output docs/
-
-# Query audit trail
-python3 scripts/log_event.py query --event-type classification --limit 50
-
-# Verify audit chain integrity
-python3 scripts/log_event.py verify
-```
-
-### Skill Commands
-
-| Command | Description |
-|---------|-------------|
-| `/regula-status` | Show governance status and compliance gaps |
-| `/regula-classify [path]` | Classify AI systems in a path |
-| `/regula-audit [--export format]` | View/export audit trail |
-| `/regula-docs [--output path]` | Generate Annex IV documentation |
-| `/regula-policy [validate\|apply\|test]` | Manage governance policies |
+Penalties: up to EUR 35 million or 7% of global annual turnover.
 
 ## Regulatory Coverage
 
@@ -189,70 +113,97 @@ python3 scripts/log_event.py verify
 
 ### Prohibited Practices (Article 5)
 
-All 8 prohibited practices are detected and blocked:
+All 8 Article 5 categories are detected. Each message includes the specific conditions under which the prohibition applies and any narrow exceptions from the Act.
 
-1. Subliminal manipulation beyond consciousness
-2. Exploitation of vulnerabilities (age, disability, economic situation)
-3. Social scoring by public authorities
-4. Criminal risk prediction based solely on profiling
-5. Untargeted facial recognition database scraping
-6. Emotion inference in workplace/education
-7. Biometric categorisation inferring sensitive attributes (race, politics, religion, sexuality)
-8. Real-time remote biometric ID in public spaces
+### High-Risk Areas (Annex III)
 
-### High-Risk Categories (Annex III)
+All 10 Annex III categories are detected. Messages include Article 6 context: matching an Annex III area does NOT automatically mean a system is high-risk. Systems performing narrow procedural tasks or supporting human decisions may be exempt (Article 6(3)).
 
-All 10 Annex III categories are detected:
+## Supported Platforms
 
-1. Biometrics (identification, categorisation)
-2. Critical infrastructure (energy, water, traffic)
-3. Education (admissions, assessments, proctoring)
-4. Employment (CV screening, hiring, promotions, terminations)
-5. Essential services (credit scoring, insurance, benefits)
-6. Law enforcement (polygraphs, evidence analysis)
-7. Migration (visa, asylum, border control)
-8. Justice and democracy (judicial decisions, elections)
-9. Medical devices (diagnosis, clinical decisions, treatment)
-10. Safety components (autonomous vehicles, aviation)
+| Platform | Status | Install Command |
+|----------|--------|----------------|
+| **Claude Code** | Supported | `python3 scripts/install.py claude-code` |
+| **GitHub Copilot CLI** | Supported | `python3 scripts/install.py copilot-cli` |
+| **Windsurf Cascade** | Supported | `python3 scripts/install.py windsurf` |
+| **pre-commit** | Supported | `python3 scripts/install.py pre-commit` |
+| **Git hooks** | Supported | `python3 scripts/install.py git-hooks` |
+| **CI/CD (GitHub Actions, GitLab)** | Via SARIF | `regula check --format sarif` |
+
+All three major AI coding agents (Claude Code, Copilot CLI, Windsurf) use the same hook protocol. Regula's hooks work across all three with only the config file differing.
+
+## CLI Usage
+
+```bash
+# Scan a project for risk indicators
+python3 scripts/cli.py check .
+python3 scripts/cli.py check . --format json
+python3 scripts/cli.py check . --format sarif    # For CI/CD integration
+
+# Classify a text input
+python3 scripts/cli.py classify --input "import tensorflow; cv screening model"
+
+# Generate reports
+python3 scripts/cli.py report --format html -o report.html --include-audit
+python3 scripts/cli.py report --format sarif -o results.sarif.json
+
+# Discover AI systems and register them
+python3 scripts/cli.py discover --project . --register
+python3 scripts/cli.py status
+
+# Audit trail management
+python3 scripts/cli.py audit verify
+python3 scripts/cli.py audit export --format csv -o audit.csv
+
+# Install hooks for a platform
+python3 scripts/cli.py install claude-code
+python3 scripts/cli.py install copilot-cli
+python3 scripts/cli.py install list
+```
+
+### Inline Suppression
+
+Add `# regula-ignore` to any file to suppress all findings for that file, or `# regula-ignore: RULE_ID` to suppress a specific rule. Suppressions are tracked and visible in reports.
+
+```python
+# regula-ignore: employment
+import sklearn
+# This CV screening tool is a research prototype, not deployed
+```
 
 ## Architecture
 
 ```
 regula/
-├── SKILL.md                       # Core skill file
+├── SKILL.md                       # Core skill file (Claude Code)
 ├── scripts/
-│   ├── classify_risk.py           # Risk classification engine
-│   ├── log_event.py               # Audit trail management
-│   └── generate_documentation.py  # Annex IV doc generator
+│   ├── cli.py                     # Unified CLI entry point
+│   ├── classify_risk.py           # Risk indication engine (confidence scoring)
+│   ├── log_event.py               # Audit trail (hash-chained, file-locked)
+│   ├── report.py                  # HTML + SARIF report generator
+│   ├── install.py                 # Multi-platform hook installer
+│   ├── generate_documentation.py  # Annex IV scaffold generator
+│   └── discover_ai_systems.py     # AI system discovery and registry
 ├── hooks/
-│   ├── pre_tool_use.py            # PreToolUse enforcement hook
+│   ├── pre_tool_use.py            # PreToolUse hook (CC/Copilot/Windsurf)
 │   ├── post_tool_use.py           # PostToolUse logging hook
 │   └── stop_hook.py               # Session summary hook
-├── references/
-│   ├── risk_indicators.yaml       # Classification patterns
-│   ├── eu_ai_act_articles_9_15.md # Full article text
-│   └── annex_iv_template.md       # Documentation template
+├── references/                    # Regulatory reference documents
 ├── tests/
-│   └── test_classification.py     # 40 test functions, 130+ assertions
+│   └── test_classification.py     # 53 tests, 159 assertions
+├── docs/
+│   └── research-synthesis.md      # Research findings informing roadmap
 ├── regula-policy.yaml             # Policy configuration template
-├── README.md
-├── LICENSE.txt                    # MIT
 └── .github/workflows/ci.yaml     # CI/CD
 ```
 
-## Testing
+### Design Principles
 
-```bash
-python3 tests/test_classification.py
-```
-
-The test suite includes 40 test functions covering:
-- AI detection (Python libraries, model files, API endpoints, ML patterns)
-- All 8 prohibited practices
-- All 10 high-risk categories
-- Limited-risk scenarios
-- Minimal-risk scenarios
-- Edge cases (empty input, case insensitivity, priority ordering, serialisation)
+- **Core engine + thin adapters.** One classification engine, multiple platform integrations.
+- **Same hook protocol.** Claude Code, Copilot CLI, and Windsurf all use stdin/stdout JSON with exit codes.
+- **Confidence scores, not binary labels.** 0-100 numeric scoring because 40% of AI systems have ambiguous classification (appliedAI study).
+- **Inline suppression with audit trail.** `# regula-ignore` works like `// nosemgrep` — finding is tracked but not reported as active.
+- **SARIF for CI/CD.** Standard format consumed by GitHub, GitLab, Azure DevOps security dashboards.
 
 ## Configuration
 
@@ -262,66 +213,46 @@ Copy `regula-policy.yaml` to your project root and customise:
 version: "1.0"
 organisation: "Your Organisation"
 
-frameworks:
-  - eu_ai_act
-
 rules:
   risk_classification:
-    force_high_risk: []       # Systems to always treat as high-risk
-    exempt: []                # Systems confirmed as low-risk
-
-  approvals:
-    high_risk:
-      required: true
-      approvers: ["dpo@company.com"]
-
-  logging:
-    retention_years: 10
-    pii_redaction: true
+    force_high_risk: []       # Always treat as high-risk
+    exempt: []                # Confirmed low-risk (cannot exempt prohibited)
 ```
 
-## Audit Trail
+Policy exemptions **cannot override** Article 5 prohibited practice detection. Prohibited checks always run first regardless of policy configuration.
 
-Events are stored in `~/.regula/audit/` as JSONL files with SHA-256 hash chaining:
+For full YAML support, install pyyaml: `pip install pyyaml`. Without it, a minimal YAML subset parser is used. Alternatively, use `regula-policy.json`.
 
-```json
-{
-  "event_id": "uuid",
-  "timestamp": "ISO8601",
-  "event_type": "classification",
-  "data": {
-    "tier": "high_risk",
-    "indicators_matched": ["employment", "cv_screen"],
-    "applicable_articles": ["9", "10", "11", "12", "13", "14", "15"]
-  },
-  "previous_hash": "sha256...",
-  "current_hash": "sha256..."
-}
+## Testing
+
+```bash
+python3 tests/test_classification.py
 ```
 
-Verify integrity: `python3 scripts/log_event.py verify`
+53 test functions, 159+ assertions covering:
+- AI detection (libraries, model files, API endpoints, ML patterns)
+- All 8 prohibited practices
+- All 10+ high-risk categories
+- Limited-risk and minimal-risk scenarios
+- Edge cases (empty input, case insensitivity, priority ordering)
+- Policy engine (force_high_risk, exempt, prohibited override safety)
+- Audit trail (hash chain integrity, CSV export)
+- Confidence scoring (numeric scores, tier ordering, multi-indicator bonus)
+- Reports (SARIF structure, HTML disclaimer, inline suppression)
 
 ## Constraints
 
-- **No external dependencies** — stdlib only
+- **No required external dependencies** — stdlib only (pyyaml optional)
 - **Python 3.10+**
 - **Works offline** — no API calls required
 - **Append-only audit** — no deletion capability
-- **Tamper-evident** — SHA-256 hash chain verification
-
-## Limitations
-
-Regula provides governance guidance but:
-- Is not a substitute for legal advice
-- Cannot guarantee regulatory compliance
-- Uses pattern matching that may miss novel risks
-- Should be supplemented with DPO/legal review for high-stakes decisions
+- **File-locked writes** — safe under concurrent hook execution
 
 ## Roadmap
 
 - **v1.1:** ISO 42001 control mapping, NIST AI RMF integration
-- **v1.2:** DPO dashboard, Slack/Teams alerting
-- **v2.0:** Model card generation, bias testing integration, continuous monitoring
+- **v1.2:** DPO dashboard, Slack/Teams alerting, external timestamp authority
+- **v2.0:** Model card generation, bias testing integration
 
 ## License
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regula PreToolUse Hook - Intercepts and classifies tool calls"""
+"""Regula PreToolUse Hook — Intercepts and classifies tool calls."""
 
 import json
 import sys
@@ -13,84 +13,116 @@ try:
 except ImportError:
     def classify(text):
         class R:
-            tier = type('o', (), {'value': 'minimal_risk'})()
+            tier = type("o", (), {"value": "minimal_risk"})()
             indicators_matched = []
             applicable_articles = []
             description = ""
             category = ""
             action = "allow"
+            exceptions = None
         return R()
     class RiskTier:
-        PROHIBITED = type('o', (), {'value': 'prohibited'})()
+        PROHIBITED = type("o", (), {"value": "prohibited"})()
     def log_event(*a, **k): pass
 
 
-PROHIBITED_MESSAGE = """🛑 PROHIBITED AI PRACTICE — ACTION BLOCKED
+def _build_prohibited_message(result) -> str:
+    articles = result.applicable_articles
+    article_str = articles[0] if articles else "5"
+    indicators = ", ".join(result.indicators_matched) if result.indicators_matched else "unknown"
 
-This operation matches a prohibited practice under EU AI Act Article 5.
+    lines = [
+        "PROHIBITED AI PRACTICE — ACTION BLOCKED",
+        "",
+        "This operation matches a pattern associated with a prohibited",
+        f"practice under EU AI Act Article {article_str}.",
+        "",
+        f"Prohibition: {result.description or 'Prohibited AI practice'}",
+        f"Pattern detected: {indicators}",
+    ]
 
-Specific prohibition: {article}
-Description: {description}
-Indicator detected: {indicators}
+    # Include conditions if available
+    conditions = getattr(result, "conditions", None)
+    if conditions:
+        lines += ["", f"Conditions: {conditions}"]
 
-This action CANNOT proceed. The EU AI Act prohibits this practice entirely,
-with penalties up to €35 million or 7% of global annual turnover.
+    # Include exceptions if available — this is legally important
+    exceptions = getattr(result, "exceptions", None)
+    if exceptions:
+        lines += ["", f"Exceptions: {exceptions}"]
 
-If you believe this classification is incorrect, contact your DPO for review."""
+    lines += [
+        "",
+        "IMPORTANT: This is a pattern-based risk indication, not a legal",
+        "determination. The EU AI Act requires contextual assessment of",
+        "intended purpose. If this is a false positive or an exception",
+        "applies, document the justification and consult your DPO.",
+        "",
+        "Penalties for actual prohibited practices: up to EUR 35 million",
+        "or 7% of global annual turnover.",
+    ]
 
-
-HIGH_RISK_MESSAGE = """⚠️ HIGH-RISK AI SYSTEM DETECTED
-
-This operation involves a high-risk AI system under EU AI Act Annex III.
-
-Category: {category}
-Description: {description}
-Indicators: {indicators}
-
-Applicable Requirements (effective 2 August 2026):
-• Article 9: Implement risk management system
-• Article 10: Ensure training data is representative and bias-examined
-• Article 11: Maintain technical documentation (Annex IV)
-• Article 12: Enable automatic logging of decisions
-• Article 13: Provide transparency to affected persons
-• Article 14: Implement human oversight mechanism
-• Article 15: Validate accuracy and implement security measures
-
-This action has been logged. Proceed with compliance requirements in mind."""
+    return "\n".join(lines)
 
 
-LIMITED_RISK_MESSAGE = """ℹ️ Limited-Risk AI System
+def _build_high_risk_message(result) -> str:
+    indicators = ", ".join(result.indicators_matched) if result.indicators_matched else "unknown"
 
-Description: {description}
-Transparency obligation (Article 50): Ensure users are informed of AI involvement.
+    return "\n".join([
+        "HIGH-RISK AI SYSTEM INDICATORS DETECTED",
+        "",
+        f"Category: {result.category or 'High-Risk'}",
+        f"Description: {result.description or 'High-risk AI system'}",
+        f"Patterns: {indicators}",
+        "",
+        "This operation matches patterns associated with a high-risk AI",
+        "system under EU AI Act Annex III. Whether Articles 9-15 apply",
+        "depends on whether the system poses a significant risk of harm",
+        "(Article 6). Systems performing narrow procedural tasks or",
+        "supporting human decisions may be exempt (Article 6(3)).",
+        "",
+        "If this IS a high-risk system, these requirements apply",
+        "(effective 2 August 2026):",
+        "  Art 9:  Risk management system",
+        "  Art 10: Data governance (representative, bias-examined)",
+        "  Art 11: Technical documentation (Annex IV)",
+        "  Art 12: Automatic event logging",
+        "  Art 13: Transparency to deployers",
+        "  Art 14: Human oversight mechanism",
+        "  Art 15: Accuracy, robustness, cybersecurity",
+        "",
+        "This action has been logged to the audit trail.",
+    ])
 
-This action has been logged."""
+
+def _build_limited_risk_message(result) -> str:
+    return "\n".join([
+        "Limited-Risk AI System",
+        "",
+        f"Description: {result.description or 'Limited-risk AI system'}",
+        "Transparency obligation (Article 50): Ensure users are informed",
+        "they are interacting with an AI system.",
+        "",
+        "This action has been logged.",
+    ])
 
 
 def main():
     try:
         input_data = json.load(sys.stdin)
-    except Exception:
+    except (json.JSONDecodeError, ValueError):
         sys.exit(0)
 
     tool_name = input_data.get("tool_name", "")
     tool_input = input_data.get("tool_input", {})
+    session_id = input_data.get("session_id")
     text = f"{tool_name} {json.dumps(tool_input)}"
 
     result = classify(text)
     response = {"hookSpecificOutput": {"hookEventName": "PreToolUse"}}
 
     if result.tier == RiskTier.PROHIBITED or result.tier.value == "prohibited":
-        articles = result.applicable_articles
-        article_str = articles[0] if articles else "5"
-        indicators = ", ".join(result.indicators_matched) if result.indicators_matched else "unknown"
-
-        reason = PROHIBITED_MESSAGE.format(
-            article=f"Article {article_str}",
-            description=result.description or "Prohibited AI practice",
-            indicators=indicators,
-        )
-
+        reason = _build_prohibited_message(result)
         response["hookSpecificOutput"]["permissionDecision"] = "deny"
         response["hookSpecificOutput"]["permissionDecisionReason"] = reason
 
@@ -102,7 +134,7 @@ def main():
                 "description": result.description,
                 "tool_name": tool_name,
                 "tool_input": str(tool_input)[:500],
-            })
+            }, session_id=session_id)
         except Exception:
             pass
 
@@ -110,12 +142,7 @@ def main():
         sys.exit(2)
 
     if result.tier.value == "high_risk":
-        indicators = ", ".join(result.indicators_matched) if result.indicators_matched else "unknown"
-        context = HIGH_RISK_MESSAGE.format(
-            category=result.category or "High-Risk",
-            description=result.description or "High-risk AI system",
-            indicators=indicators,
-        )
+        context = _build_high_risk_message(result)
         response["hookSpecificOutput"]["permissionDecision"] = "allow"
         response["hookSpecificOutput"]["additionalContext"] = context
 
@@ -127,14 +154,12 @@ def main():
                 "category": result.category,
                 "description": result.description,
                 "tool_name": tool_name,
-            })
+            }, session_id=session_id)
         except Exception:
             pass
 
     elif result.tier.value == "limited_risk":
-        context = LIMITED_RISK_MESSAGE.format(
-            description=result.description or "Limited-risk AI system",
-        )
+        context = _build_limited_risk_message(result)
         response["hookSpecificOutput"]["permissionDecision"] = "allow"
         response["hookSpecificOutput"]["additionalContext"] = context
 
@@ -144,7 +169,7 @@ def main():
                 "indicators": result.indicators_matched,
                 "description": result.description,
                 "tool_name": tool_name,
-            })
+            }, session_id=session_id)
         except Exception:
             pass
 
