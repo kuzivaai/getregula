@@ -84,14 +84,14 @@ PROHIBITED_PATTERNS = {
         "exceptions": None,
     },
     "criminal_prediction": {
-        "patterns": [r"crime.?predict", r"criminal.?risk.?assess", r"predictive.?polic", r"recidivism"],
+        "patterns": [r"crime.?predict", r"criminal.?risk.?assess", r"predictive.?policing", r"recidivism"],
         "article": "5(1)(d)",
         "description": "Criminal risk prediction based solely on profiling or personality traits",
         "conditions": "Prohibited ONLY when based solely on profiling or personality traits. Systems using multiple evidence sources (case facts, prior convictions with human review) may be lawful.",
         "exceptions": "AI systems that support human assessment based on objective, verifiable facts directly linked to criminal activity are NOT prohibited.",
     },
     "facial_recognition_scraping": {
-        "patterns": [r"face.?scrap", r"facial.?database.?untarget", r"mass.?facial.?collect"],
+        "patterns": [r"\bface.?scrap", r"facial.?database.?untarget", r"mass.?facial.?collect"],
         "article": "5(1)(e)",
         "description": "Creating facial recognition databases through untargeted scraping",
         "conditions": "Prohibited when scraping facial images from the internet or CCTV to build or expand recognition databases.",
@@ -106,7 +106,7 @@ PROHIBITED_PATTERNS = {
         "exceptions": "EXEMPT when used for medical or safety purposes (e.g., detecting driver fatigue, monitoring patient wellbeing in clinical settings).",
     },
     "biometric_categorisation_sensitive": {
-        "patterns": [r"race.?detect", r"ethnicity.?infer", r"political.?opinion.?biometric",
+        "patterns": [r"\brace.?detect(?!.*(?:condition|thread|concurrent))", r"ethnicity.?infer", r"political.?opinion.?biometric",
                      r"religion.?detect", r"sexual.?orientation.?infer"],
         "article": "5(1)(g)",
         "description": "Biometric categorisation inferring sensitive attributes (race, politics, religion, sexuality)",
