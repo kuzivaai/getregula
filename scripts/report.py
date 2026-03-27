@@ -20,6 +20,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS, PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS, generate_observations
 from log_event import query_events, verify_chain
 from credential_check import check_secrets
+from remediation import get_remediation
 
 
 # ---------------------------------------------------------------------------
@@ -444,7 +445,7 @@ personnel. This is not legal advice.
 <h2>All Findings</h2>
 <table>
 <thead>
-<tr><th>File</th><th>Risk Tier</th><th>Category</th><th>Confidence</th><th>Description</th></tr>
+<tr><th>File</th><th>Risk Tier</th><th>Category</th><th>Confidence</th><th>Description</th><th>Remediation</th></tr>
 </thead>
 <tbody>
 """
@@ -458,12 +459,31 @@ personnel. This is not legal advice.
             desc += f' <em>(Exception: {escape(f["exceptions"])})</em>'
         if f.get("suppressed"):
             desc += " [SUPPRESSED]"
+        # Generate remediation for non-minimal findings
+        rem_html = ""
+        if f["tier"] in ("prohibited", "high_risk", "credential_exposure", "limited_risk"):
+            rem = get_remediation(
+                f["tier"],
+                f.get("category", ""),
+                f.get("indicators", []),
+                f.get("file", ""),
+                f.get("description", ""),
+            )
+            rem_parts = []
+            if rem.get("summary"):
+                rem_parts.append(f'<strong>{escape(rem["summary"])}</strong>')
+            if rem.get("fix_command"):
+                rem_parts.append(f'<code>{escape(rem["fix_command"])}</code>')
+            if rem.get("article"):
+                rem_parts.append(f'<em>{escape(rem["article"])}</em>')
+            rem_html = "<br>".join(rem_parts)
         html += f"""<tr{row_class}>
 <td>{escape(f["file"])}</td>
 <td>{_tier_badge(f["tier"])}</td>
 <td>{escape(f.get("category", "—"))}</td>
 <td>{_confidence_bar(f.get("confidence_score", 0))}</td>
 <td>{desc}</td>
+<td>{rem_html}</td>
 </tr>
 """
 

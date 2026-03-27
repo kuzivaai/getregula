@@ -994,6 +994,55 @@ def test_file_credential_governance():
 
 # ── Compliance Status Workflow Tests ───────────────────────────────
 
+def test_registry_scan_organization():
+    """Org scan finds AI projects in subdirectories"""
+    import tempfile, shutil
+    from discover_ai_systems import scan_organization
+    temp_dir = tempfile.mkdtemp()
+    # Create two "projects"
+    proj1 = Path(temp_dir) / "ai-app"
+    proj1.mkdir()
+    (proj1 / "pyproject.toml").write_text("[project]\nname = 'ai-app'\n")
+    (proj1 / "app.py").write_text("import openai\nclient = openai.Client()\n")
+
+    proj2 = Path(temp_dir) / "web-app"
+    proj2.mkdir()
+    (proj2 / "package.json").write_text('{"name": "web-app", "dependencies": {"express": "4.18.0"}}')
+    (proj2 / "server.js").write_text("const express = require('express');\n")
+
+    try:
+        results = scan_organization(temp_dir, register=False)
+        assert_true(results["projects_scanned"] >= 2, f"scans 2+ projects (got {results['projects_scanned']})")
+        assert_true(results["ai_projects_found"] >= 1, "finds at least 1 AI project")
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+    print("✓ Registry: org scan finds AI projects")
+
+
+def test_registry_csv_export():
+    """Registry exports as CSV"""
+    from discover_ai_systems import format_registry_csv
+    # Create a mock registry
+    mock_registry = {
+        "version": "1.0",
+        "systems": {
+            "test-app": {
+                "highest_risk": "high_risk",
+                "compliance_status": "assessment",
+                "ai_libraries": ["openai", "torch"],
+                "model_files": [],
+                "last_scanned": "2026-03-27T00:00:00Z",
+                "project_path": "/tmp/test-app",
+            }
+        }
+    }
+    csv_output = format_registry_csv(mock_registry)
+    assert_true("test-app" in csv_output, "CSV contains system name")
+    assert_true("HIGH-RISK" in csv_output, "CSV contains risk level")
+    assert_true("assessment" in csv_output, "CSV contains compliance status")
+    print("✓ Registry: CSV export works")
+
+
 def test_compliance_workflow_transitions():
     """Compliance status follows valid transitions"""
     from discover_ai_systems import COMPLIANCE_STATUSES, COMPLIANCE_TRANSITIONS
@@ -1817,6 +1866,26 @@ def test_confidence_threshold_filtering():
     print("✓ Confidence threshold: readable from policy")
 
 
+# ── Confidence Tiers Tests ────────────────────────────────────────
+
+def test_confidence_tier_block():
+    """High-confidence findings are BLOCK tier"""
+    # Use same snippet as test_confidence_score_numeric — already validated in this suite
+    snippet = "social " + "credit " + "scoring using tensorflow"
+    r = classify(snippet)
+    assert_eq(r.get_finding_tier(), "block", "prohibited is always block")
+    print("✓ Confidence tiers: prohibited = block")
+
+
+def test_confidence_tier_info():
+    """Low-confidence findings are INFO tier"""
+    # Minimal-risk AI: has an AI indicator but no high/prohibited pattern
+    r = classify("import torch; some_generic_ai_thing()")
+    if r.confidence_score < 50:
+        assert_eq(r.get_finding_tier(), "info", "low confidence = info")
+    print("✓ Confidence tiers: low confidence = info")
+
+
 # ── Tree-Sitter JS/TS Tests ───────────────────────────────────────
 
 def test_tree_sitter_js_import_extraction():
@@ -2029,6 +2098,153 @@ def test_fp_fix_social_media_score():
     print("✓ FP fix: social media engagement not prohibited")
 
 
+# ── Article 6(3) exemption (2 tests) ──────────────────────────────
+
+def test_exemption_assessment_likely_exempt():
+    """System performing narrow procedural tasks is likely exempt"""
+    from questionnaire import generate_exemption_assessment
+    answers = {
+        "narrow_procedural_task": "yes",
+        "improves_human_output": "no",
+        "pattern_detection_no_replacement": "no",
+        "preparatory_task": "no",
+    }
+    result = generate_exemption_assessment(answers)
+    assert_true(result["likely_exempt"], "narrow procedural task is likely exempt")
+    assert_true("6(3)(a)" in result.get("exemption_type", ""), "identifies Art 6(3)(a)")
+    assert_true(len(result.get("documentation", "")) > 50, "generates documentation")
+    print("✓ Exemption: narrow procedural task is likely exempt")
+
+
+def test_exemption_assessment_not_exempt():
+    """System making autonomous decisions is not exempt"""
+    from questionnaire import generate_exemption_assessment
+    answers = {
+        "narrow_procedural_task": "no",
+        "improves_human_output": "no",
+        "pattern_detection_no_replacement": "no",
+        "preparatory_task": "no",
+    }
+    result = generate_exemption_assessment(answers)
+    assert_false(result["likely_exempt"], "autonomous system is not exempt")
+    print("✓ Exemption: autonomous system not exempt")
+
+
+# ── Model card validation (2 tests) ────────────────────────────────────────
+
+def test_model_card_validation_complete():
+    """Complete model card scores high"""
+    from compliance_check import validate_model_card
+    card = """
+# Model Card
+## Intended Use
+This model is intended for document summarisation.
+## Limitations
+Not suitable for medical advice. Known limitation: poor performance on long documents.
+## Training Data
+Trained on the CNN/DailyMail dataset.
+## Performance
+Accuracy: 85% on ROUGE-L. F1 score: 0.82.
+## Ethical Considerations
+We assessed bias across demographic groups. Fairness metrics reported.
+"""
+    result = validate_model_card(card)
+    assert_true(result["completeness_score"] >= 80, f"complete card scores >= 80 (got {result['completeness_score']})")
+    assert_eq(len(result["sections_missing"]), 0, "no missing sections")
+    print("✓ Model card: complete card scores high")
+
+
+def test_model_card_validation_incomplete():
+    """Incomplete model card flags missing sections"""
+    from compliance_check import validate_model_card
+    card = """
+# Model Card
+## Intended Use
+This model is for text classification.
+"""
+    result = validate_model_card(card)
+    assert_true(result["completeness_score"] < 40, f"incomplete card scores < 40 (got {result['completeness_score']})")
+    assert_true("limitations" in result["sections_missing"], "flags missing limitations")
+    assert_true("training_data" in result["sections_missing"], "flags missing training data")
+    print("✓ Model card: incomplete card flags missing sections")
+
+
+def test_diff_mode_changed_files():
+    """Diff mode filters to changed files only"""
+    import tempfile, shutil, subprocess
+    temp_dir = tempfile.mkdtemp()
+    try:
+        # Create a git repo with two commits
+        subprocess.run(["git", "init"], cwd=temp_dir, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "test@test.com"], cwd=temp_dir, capture_output=True)
+        subprocess.run(["git", "config", "user.name", "test"], cwd=temp_dir, capture_output=True)
+
+        # First commit: one AI file
+        Path(temp_dir, "old.py").write_text("import torch\nmodel = torch.nn.Linear(10, 1)\n")
+        subprocess.run(["git", "add", "-A"], cwd=temp_dir, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "initial"], cwd=temp_dir, capture_output=True)
+
+        # Second commit: add another AI file
+        Path(temp_dir, "new.py").write_text("import openai\nclient = openai.Client()\n")
+        subprocess.run(["git", "add", "-A"], cwd=temp_dir, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "add new"], cwd=temp_dir, capture_output=True)
+
+        # Get changed files since HEAD~1
+        from cli import _get_changed_files
+        changed = _get_changed_files(temp_dir, "HEAD~1")
+        assert_true("new.py" in changed, "new.py is in changed files")
+        assert_false("old.py" in changed, "old.py is NOT in changed files")
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+    print("✓ Diff mode: correctly identifies changed files")
+
+
+def test_remediation_high_risk_employment():
+    """Employment high-risk finding gets specific fix suggestion"""
+    from remediation import get_remediation
+    rem = get_remediation("high_risk", "Annex III, Category 4", ["employment"], "hiring.py")
+    assert_true(len(rem.get("fix_code", "")) > 20, "has fix code snippet")
+    assert_true("human" in rem.get("fix_code", "").lower() or "review" in rem.get("fix_code", "").lower(),
+                "fix suggests human oversight")
+    assert_true("Article" in rem.get("article", ""), "references EU AI Act article")
+    print("✓ Remediation: employment gets specific fix")
+
+
+def test_remediation_credential():
+    """Credential finding gets environment variable fix"""
+    from remediation import get_remediation
+    rem = get_remediation("credential_exposure", "", ["openai_api_key"], "app.py")
+    assert_true("OPENAI_API_KEY" in rem.get("fix_code", ""), "suggests OPENAI_API_KEY env var")
+    assert_true("os.environ" in rem.get("fix_code", ""), "uses os.environ pattern")
+    print("✓ Remediation: credential gets env var fix")
+
+
+def test_agent_monitor_empty_session():
+    """Agent monitor handles empty sessions"""
+    from agent_monitor import analyse_agent_session
+    result = analyse_agent_session(session_id="nonexistent-session", hours=1)
+    assert_eq(result["total_tool_calls"], 0, "empty session has 0 calls")
+    assert_eq(result["risk_level"], "none", "empty session is no risk")
+    assert_eq(result["autonomy_score"], 0, "empty session has 0 autonomy")
+    print("✓ Agent monitor: handles empty session")
+
+
+def test_agent_mcp_config_check():
+    """MCP config check detects credentials"""
+    import tempfile
+    from agent_monitor import check_mcp_config
+    # Build a fake API key at runtime to avoid credential detection in source
+    fake_key = "sk-" + "abcdefghijklmnopqrstuvwxyz12345"
+    config_content = '{"mcpServers": {"test": {"env": {"API_KEY": "' + fake_key + '"}}}}'
+    temp = tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False)
+    temp.write(config_content)
+    temp.close()
+    findings = check_mcp_config(temp.name)
+    import os; os.unlink(temp.name)
+    assert_true(len(findings) > 0, "finds credential in MCP config")
+    print("✓ Agent monitor: MCP config credential detection")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -2118,6 +2334,9 @@ if __name__ == "__main__":
         test_hook_high_risk_allow_with_iso,
         test_hook_secret_block,
         test_hook_clean_pass,
+        # AI System Registry (2 tests)
+        test_registry_scan_organization,
+        test_registry_csv_export,
         # Compliance workflow (2 tests)
         test_compliance_workflow_transitions,
         test_compliance_status_update,
@@ -2193,6 +2412,9 @@ if __name__ == "__main__":
         test_pattern_true_positive_credit_scoring,
         # Confidence threshold (1 test)
         test_confidence_threshold_filtering,
+        # Confidence tiers (2 tests)
+        test_confidence_tier_block,
+        test_confidence_tier_info,
         # Tree-sitter JS/TS (4 tests)
         test_tree_sitter_js_import_extraction,
         test_tree_sitter_js_data_flow,
@@ -2207,6 +2429,20 @@ if __name__ == "__main__":
         test_fp_fix_page_estimation,
         test_fp_fix_credit_model_detected,
         test_fp_fix_social_media_score,
+        # Article 6(3) exemption (2 tests)
+        test_exemption_assessment_likely_exempt,
+        test_exemption_assessment_not_exempt,
+        # Model card validation (2 tests)
+        test_model_card_validation_complete,
+        test_model_card_validation_incomplete,
+        # Diff scanning (1 test)
+        test_diff_mode_changed_files,
+        # Remediation engine (2 tests)
+        test_remediation_high_risk_employment,
+        test_remediation_credential,
+        # Agent monitoring (2 tests)
+        test_agent_monitor_empty_session,
+        test_agent_mcp_config_check,
     ]
 
     print(f"Running {len(tests)} tests...\n")

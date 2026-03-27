@@ -31,6 +31,10 @@ inputs:
     description: Minimum acceptable pinning score (0–100). Exit with code 1 if below threshold.
     required: false
     default: "0"
+  diff-mode:
+    description: 'Only scan files changed in this PR (compares against base branch)'
+    required: false
+    default: 'false'
   upload-sarif:
     description: Upload SARIF results to GitHub Code Scanning
     required: false
@@ -74,9 +78,17 @@ runs:
         SARIF_FILE="${{ runner.temp }}/regula-results.sarif.json"
         echo "sarif_file=${SARIF_FILE}" >> "$GITHUB_OUTPUT"
 
+        # Build diff flag if diff-mode is enabled
+        DIFF_FLAG=""
+        if [ "${{ inputs.diff-mode }}" = "true" ]; then
+          BASE_REF="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
+          DIFF_FLAG="--diff ${BASE_REF}"
+        fi
+
         python3 "${{ github.action_path }}/scripts/cli.py" check "${{ inputs.path }}" \
           --format sarif \
           --framework "${{ inputs.framework }}" \
+          ${DIFF_FLAG} \
           --output "${SARIF_FILE}" \
           || true
 
@@ -85,6 +97,7 @@ runs:
           python3 "${{ github.action_path }}/scripts/cli.py" check "${{ inputs.path }}" \
             --format sarif \
             --framework "${{ inputs.framework }}" \
+            ${DIFF_FLAG} \
             > "${SARIF_FILE}" 2>/dev/null || echo '{"runs":[{"results":[]}]}' > "${SARIF_FILE}"
         fi
 
