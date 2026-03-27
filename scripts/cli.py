@@ -451,7 +451,7 @@ Examples:
   regula audit verify                     Verify audit chain integrity
 """,
     )
-    parser.add_argument("--framework", choices=["eu-ai-act", "nist-ai-rmf", "iso-42001", "owasp-llm-top10", "mitre-atlas", "all"], default="eu-ai-act",
+    parser.add_argument("--framework", choices=["eu-ai-act", "nist-ai-rmf", "iso-42001", "nist-csf", "soc2", "iso-27001", "owasp-llm-top10", "mitre-atlas", "all"], default="eu-ai-act",
                         help="Compliance framework to map findings to")
     parser.add_argument("--ci", action="store_true",
                         help="CI mode: exit 0=pass, 1=findings, 2=blocked")
