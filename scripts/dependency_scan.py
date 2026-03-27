@@ -59,6 +59,18 @@ AI_LIBRARIES: set[str] = {
     "@pinecone-database/pinecone",
     "@qdrant/js-client-rest", "weaviate-ts-client",
     "ai",
+    # Rust crates (use hyphens, the Cargo.toml format)
+    "candle-core", "candle-nn", "candle-transformers",
+    "burn", "burn-core", "burn-tch", "burn-ndarray",
+    "tch", "ort", "rust-bert",
+    "async-openai", "anthropic", "misanthropic",
+    "langchain-rust", "llm-chain",
+    "tokenizers", "safetensors", "hf-hub",
+    "linfa", "smartcore",
+    "qdrant-client",
+    # C++ packages (vcpkg/conan names)
+    "libtorch", "tensorflow-lite",
+    "mlpack", "dlib", "faiss",
 }
 
 # Alias mapping for normalized names that should match
@@ -77,6 +89,7 @@ LOCKFILE_NAMES: set[str] = {
     "bun.lockb",
     ".conda-lock.yml",
     "conda-lock.yml",
+    "Cargo.lock",
 }
 
 # ── Helpers ────────────────────────────────────────────────────────
@@ -378,6 +391,224 @@ def parse_pipfile(content: str) -> list[dict]:
     return deps
 
 
+# ── Cargo.toml parser ──────────────────────────────────────────────
+
+def parse_cargo_toml(content: str) -> list[dict]:
+    """Parse dependencies from Cargo.toml content.
+
+    Handles both:
+      crate-name = "version"
+      crate-name = { version = "version", features = [...] }
+    """
+    deps: list[dict] = []
+    in_dependencies = False
+    line_num = 0
+
+    for raw_line in content.splitlines():
+        line_num += 1
+        line = raw_line.strip()
+
+        # Section detection
+        if line.startswith("["):
+            section = line.strip("[]").strip().lower()
+            # Match [dependencies], [dev-dependencies], [build-dependencies]
+            # but NOT [package] or other sections
+            in_dependencies = section in (
+                "dependencies", "dev-dependencies", "build-dependencies",
+            )
+            continue
+
+        if not in_dependencies:
+            continue
+
+        if not line or line.startswith("#"):
+            continue
+
+        # Parse  name = "version"  or  name = { version = "...", ... }
+        if "=" not in line:
+            continue
+
+        key, _, val = line.partition("=")
+        name = key.strip().strip('"').strip("'")
+        val = val.strip()
+
+        if not name:
+            continue
+
+        # Inline table: { version = "...", ... }
+        if val.startswith("{"):
+            vm = re.search(r'version\s*=\s*["\']([^"\']*)["\']', val)
+            version_str = vm.group(1) if vm else None
+        else:
+            # Simple string value
+            version_str = val.strip('"').strip("'")
+
+        # Classify pinning
+        if version_str is None or version_str == "*":
+            pinning = "unpinned"
+            version = None
+        elif version_str.startswith("="):
+            # Exact: "=1.2.3"
+            pinning = "exact"
+            version = version_str[1:].strip()
+        elif version_str.startswith("^") or version_str.startswith("~"):
+            pinning = "range"
+            version = version_str[1:].strip()
+        elif any(version_str.startswith(op) for op in (">=", "<=", ">", "<")):
+            pinning = "range"
+            version = re.sub(r'^[><=]+', '', version_str).split(",")[0].strip()
+        else:
+            # Plain semver like "1.0" or "0.8.0" — semver compatible, treat as range
+            pinning = "range"
+            version = version_str
+
+        # Normalise hyphens to underscores for AI library matching
+        # (Cargo uses hyphens, Rust source uses underscores — keep original name)
+        deps.append({
+            "name": name,
+            "version": version,
+            "pinning": pinning,
+            "is_ai": is_ai_dependency(name),
+            "line": line_num,
+        })
+
+    return deps
+
+
+# ── CMakeLists.txt parser ───────────────────────────────────────────
+
+# CMake: cpp package names that map to AI libraries
+_CMAKE_AI_PACKAGES = {
+    "torch", "libtorch", "caffe2", "opencv", "onnxruntime",
+    "tensorflow", "mlpack", "dlib", "faiss", "xgboost", "lightgbm",
+    "flashlight", "ncnn", "mxnet", "openvino",
+}
+
+_RE_CMAKE_FIND_PACKAGE = re.compile(
+    r'find_package\s*\(\s*([A-Za-z0-9_\-]+)',
+    re.IGNORECASE,
+)
+_RE_CMAKE_TARGET_LINK = re.compile(
+    r'target_link_libraries\s*\([^)]+\)',
+    re.IGNORECASE | re.DOTALL,
+)
+_RE_CMAKE_LINK_LIB = re.compile(r'[A-Za-z0-9_:\-\.]+')
+
+
+def _is_cmake_ai_lib(name: str) -> bool:
+    """Check whether a CMake package/library name is AI-related."""
+    lower = name.lower().replace("::", "").replace("_", "-")
+    # Direct match against our cmake AI set
+    for pkg in _CMAKE_AI_PACKAGES:
+        if lower.startswith(pkg.lower()):
+            return True
+    # Also check against the main AI library registry
+    return is_ai_dependency(name)
+
+
+def parse_cmake(content: str) -> list[dict]:
+    """Parse AI-relevant packages from a CMakeLists.txt file."""
+    deps: list[dict] = []
+    seen: set[str] = set()
+    line_num = 0
+
+    lines = content.splitlines()
+
+    # find_package entries
+    for i, line in enumerate(lines, 1):
+        m = _RE_CMAKE_FIND_PACKAGE.search(line)
+        if m:
+            name = m.group(1)
+            if name not in seen:
+                seen.add(name)
+                deps.append({
+                    "name": name,
+                    "version": None,
+                    "pinning": "unpinned",
+                    "is_ai": _is_cmake_ai_lib(name),
+                    "line": i,
+                })
+
+    # target_link_libraries — extract library names
+    for m in _RE_CMAKE_TARGET_LINK.finditer(content):
+        block = m.group(0)
+        # Line number of the start of the match
+        ln = content[:m.start()].count('\n') + 1
+        tokens = _RE_CMAKE_LINK_LIB.findall(block)
+        # First token is "target_link_libraries", second is target name, rest are libs
+        for tok in tokens[2:]:
+            if tok.upper() in ("PUBLIC", "PRIVATE", "INTERFACE", "TARGET_LINK_LIBRARIES"):
+                continue
+            if tok not in seen:
+                seen.add(tok)
+                deps.append({
+                    "name": tok,
+                    "version": None,
+                    "pinning": "unpinned",
+                    "is_ai": _is_cmake_ai_lib(tok),
+                    "line": ln,
+                })
+
+    return deps
+
+
+# ── vcpkg.json parser ───────────────────────────────────────────────
+
+_VCPKG_AI_PACKAGES = {
+    "libtorch", "onnxruntime", "opencv4", "opencv", "mlpack", "dlib",
+    "xgboost", "lightgbm", "tensorflow-lite", "faiss",
+}
+
+
+def _is_vcpkg_ai(name: str) -> bool:
+    """Check whether a vcpkg package name is AI-related."""
+    lower = name.lower()
+    for pkg in _VCPKG_AI_PACKAGES:
+        if lower == pkg or lower.startswith(pkg + "-"):
+            return True
+    return is_ai_dependency(name)
+
+
+def parse_vcpkg_json(content: str) -> list[dict]:
+    """Parse dependencies from a vcpkg.json file."""
+    deps: list[dict] = []
+    try:
+        data = json.loads(content)
+    except json.JSONDecodeError:
+        return deps
+
+    raw_deps = data.get("dependencies", [])
+    if not isinstance(raw_deps, list):
+        return deps
+
+    for entry in raw_deps:
+        if isinstance(entry, str):
+            name = entry
+            version = None
+        elif isinstance(entry, dict):
+            name = entry.get("name", "")
+            version = entry.get("version") or entry.get("version-string") or None
+        else:
+            continue
+
+        if not name:
+            continue
+
+        # vcpkg doesn't have semver pinning in the same sense;
+        # if a version is specified treat as exact, otherwise unpinned
+        pinning = "exact" if version else "unpinned"
+
+        deps.append({
+            "name": name,
+            "version": version,
+            "pinning": pinning,
+            "is_ai": _is_vcpkg_ai(name),
+            "line": 0,
+        })
+
+    return deps
+
+
 # ── Lockfile detection ─────────────────────────────────────────────
 
 def detect_lockfiles(project_path: str) -> list[str]:
@@ -544,6 +775,21 @@ def scan_dependencies(project_path: str) -> dict:
     pipfile = root / "Pipfile"
     if pipfile.exists():
         all_deps.extend(parse_pipfile(pipfile.read_text(encoding="utf-8")))
+
+    # Cargo.toml (Rust)
+    cargo_toml = root / "Cargo.toml"
+    if cargo_toml.exists():
+        all_deps.extend(parse_cargo_toml(cargo_toml.read_text(encoding="utf-8")))
+
+    # CMakeLists.txt (C/C++)
+    cmake_lists = root / "CMakeLists.txt"
+    if cmake_lists.exists():
+        all_deps.extend(parse_cmake(cmake_lists.read_text(encoding="utf-8")))
+
+    # vcpkg.json (C/C++)
+    vcpkg_json = root / "vcpkg.json"
+    if vcpkg_json.exists():
+        all_deps.extend(parse_vcpkg_json(vcpkg_json.read_text(encoding="utf-8")))
 
     lockfiles = detect_lockfiles(project_path)
     ai_deps = [d for d in all_deps if d.get("is_ai")]

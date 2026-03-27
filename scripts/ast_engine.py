@@ -117,40 +117,59 @@ GO_AI_LIBRARIES = {
 RUST_AI_LIBRARIES = {
     "candle-core", "candle-nn", "candle-transformers",
     "burn", "burn-core", "burn-tensor",
+    "burn-ndarray", "burn-candle", "burn-wgpu",
     "tch",  # Rust bindings for PyTorch
     "ort",  # ONNX Runtime
+    "ort-sys",
     "rust-bert",
     "llm",  # llm crate for local inference
     "async-openai",
     "anthropic-rs",
+    "misanthropic",  # Anthropic client
+    "openai-api-rs",
     "langchain-rust",
+    "llm-chain", "llm-connector", "rsllm",
     "mistralrs",
     "kalosm",
     "safetensors",
     "tokenizers",
+    "rust-tokenizers",
     "hf-hub",  # Hugging Face Hub
     "ndarray",  # Numerical arrays (AI-adjacent)
     "linfa",  # ML toolkit
+    "linfa-clustering", "linfa-linear", "linfa-logistic", "linfa-trees", "linfa-svm",
     "smartcore",  # ML algorithms
+    "qdrant-client", "pinecone-sdk",
+    "polars",  # DataFrame library (AI-adjacent)
 }
 
 CPP_AI_LIBRARIES = {
     "tensorflow", "tensorflow/c", "tensorflow/cc", "tensorflow/core",
+    "tensorflow/lite", "tensorflow/cc",
     "torch", "torch/torch.h", "ATen",
+    "torch/script.h", "torch/nn.h", "torch/jit.h",
     "onnxruntime", "onnxruntime_c_api.h",
+    "onnxruntime_cxx_api.h",
     "llama.h", "llama-cpp",
     "opencv", "opencv2",
+    "opencv2/dnn",
     "dlib",
-    "mlpack",
+    "dlib/dnn.h", "dlib/svm.h",
+    "mlpack", "mlpack.hpp",
     "shark",  # Shogun ML
     "caffe", "caffe/caffe.hpp",
     "ncnn",
     "mxnet",
     "armnn",  # ARM NN inference engine
-    "tensorrt", "NvInfer.h",
+    "tensorrt", "NvInfer.h",  # TensorRT
     "openvino",
     "whisper.h",  # whisper.cpp
     "stable-diffusion.h",  # stable-diffusion.cpp
+    "xgboost/c_api.h", "xgboost/learner.h",
+    "LightGBM/c_api.h",
+    "flashlight",
+    "faiss/IndexFlat.h", "faiss/index_io.h",
+    "ggml.h", "ggml-alloc.h",
 }
 
 # ---------------------------------------------------------------------------
