@@ -32,6 +32,21 @@ CODE_EXTENSIONS = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"}
 MODEL_EXTENSIONS = {".onnx", ".pt", ".pth", ".pkl", ".joblib", ".h5", ".hdf5", ".safetensors", ".gguf", ".ggml"}
 
 
+def _is_test_file(filepath: Path) -> bool:
+    """Detect if a file is a test file (findings should be deprioritised)."""
+    name = filepath.name.lower()
+    parts = [p.lower() for p in filepath.parts]
+    # File name patterns
+    if name.startswith("test_") or name.endswith("_test.py") or name == "conftest.py":
+        return True
+    if name.endswith(".spec.ts") or name.endswith(".spec.js") or name.endswith(".test.ts") or name.endswith(".test.js"):
+        return True
+    # Directory patterns
+    if "test" in parts or "tests" in parts or "__tests__" in parts or "spec" in parts:
+        return True
+    return False
+
+
 def scan_files(project_path: str, respect_ignores: bool = True) -> list:
     """Scan project files and return findings with file locations."""
     project = Path(project_path).resolve()
@@ -103,7 +118,7 @@ def scan_files(project_path: str, respect_ignores: bool = True) -> list:
                             f"Fix: {sf.remediation}"
                         ),
                         "indicators": [sf.pattern_name],
-                        "confidence_score": sf.confidence_score,
+                        "confidence_score": max(sf.confidence_score - 40, 10) if _is_test_file(filepath) else sf.confidence_score,
                         "suppressed": secret_suppressed,
                     })
             except Exception:
@@ -120,7 +135,7 @@ def scan_files(project_path: str, respect_ignores: bool = True) -> list:
                         "category": f"AI Security ({sf['owasp']})",
                         "description": sf["description"],
                         "indicators": [sf["pattern_name"]],
-                        "confidence_score": {"critical": 90, "high": 80, "medium": 60, "low": 40}.get(sf["severity"], 50),
+                        "confidence_score": max({"critical": 90, "high": 80, "medium": 60, "low": 40}.get(sf["severity"], 50) - (40 if _is_test_file(filepath) else 0), 10),
                         "suppressed": secret_suppressed or "*" in suppressed_rules,
                         "remediation": sf["remediation"],
                     })
@@ -154,6 +169,11 @@ def scan_files(project_path: str, respect_ignores: bool = True) -> list:
             }.get(result.tier.value, 20)
             indicator_bonus = min(len(result.indicators_matched) * 8, 15)
             confidence_score = min(base_score + indicator_bonus, 100)
+
+            # Deprioritise test file findings (reduce to INFO tier)
+            is_test = _is_test_file(filepath)
+            if is_test and result.tier.value != "prohibited":
+                confidence_score = max(confidence_score - 40, 10)
 
             # Generate Article-specific observations for high-risk findings
             observations = []
