@@ -213,9 +213,9 @@ Article 14  Human Oversight      [ 20%] WEAK
   Gap: AST: 3 automated decision paths with no oversight mechanism
 ```
 
-### Dependency Supply Chain Security
+### AI Dependency Pinning Analysis
 
-AI-specific dependency pinning analysis addressing supply chain attacks like the LiteLLM incident (March 2026).
+Checks whether your AI dependencies are properly pinned — addressing the class of attack demonstrated by the LiteLLM supply chain incident (March 2026).
 
 ```bash
 regula deps --project .                   # Full dependency analysis
@@ -223,7 +223,9 @@ regula deps --project . --format json     # Machine-readable output
 regula deps --project . --strict          # Exit 1 if pinning score < 50 (CI/CD gate)
 ```
 
-Checks: pinning quality (hash > exact > range > unpinned), lockfile presence, known compromised versions (OSV format). AI dependencies weighted 3x in scoring.
+Checks: pinning quality (hash > exact > range > unpinned), lockfile presence, AI dependencies weighted 3x in scoring. Parses 7 dependency file formats (requirements.txt, pyproject.toml, package.json, Pipfile, Cargo.toml, CMakeLists.txt, vcpkg.json).
+
+**Note:** This is a pinning hygiene checker, not a vulnerability scanner. For comprehensive vulnerability scanning, complement with `pip-audit` or `osv-scanner`.
 
 ### Cross-Framework Compliance Mapping
 
@@ -376,7 +378,7 @@ regula/
 │   ├── owasp_llm_top10.yaml       # OWASP Top 10 for LLMs → EU AI Act mapping
 │   └── mitre_atlas.yaml           # MITRE ATLAS → EU AI Act mapping
 ├── tests/
-│   └── test_classification.py     # 116 tests, 360 assertions
+│   └── test_classification.py     # 136 tests, 402 assertions
 ├── docs/
 │   └── research-synthesis.md      # Research findings informing roadmap
 ├── regula-policy.yaml             # Policy configuration template
@@ -385,10 +387,16 @@ regula/
 
 ### Language Support
 
-- **Python** — Full AST analysis (data flow tracing, human oversight detection, logging practices)
-- **JavaScript/TypeScript** — Regex import detection (tree-sitter optional for deeper analysis)
-- **Java** — Regex import detection (13 AI libraries including Google AI Platform, LangChain4j, DJL)
-- **Go** — Regex import detection (9 AI libraries including go-openai, langchaingo)
+| Language | Analysis Depth | What It Detects |
+|----------|---------------|-----------------|
+| **Python** | Full AST | Data flow tracing, human oversight detection, logging practices, function/class extraction |
+| **JavaScript/TypeScript** | Moderate (tree-sitter) | Import extraction, data flow tracing, oversight detection, logging. Tree-sitter optional — falls back to regex. |
+| **Java** | Import detection (regex) | 13 AI libraries (Google AI Platform, LangChain4j, DJL, etc.) |
+| **Go** | Import detection (regex) | 9 AI libraries (go-openai, langchaingo, etc.) |
+| **Rust** | Import detection (regex) | 35 AI crates (candle, burn, tch, async-openai, etc.) + Cargo.toml parsing |
+| **C/C++** | Include detection (regex) | 37 AI headers (LibTorch, TensorFlow, ONNX Runtime, llama.cpp, etc.) + CMake/vcpkg parsing |
+
+**Honest note:** Only Python has deep AST analysis with data flow tracing. JS/TS with tree-sitter is moderate depth. Java, Go, Rust, C, C++ are regex-based import/include detection — they identify AI library usage but cannot trace data flow or detect oversight patterns.
 
 ### Design Principles
 
@@ -438,7 +446,7 @@ For full YAML support, install pyyaml: `pip install pyyaml`. Without it, a minim
 python3 tests/test_classification.py
 ```
 
-116 tests, 360 assertions covering:
+136 tests, 402 assertions covering:
 - AI detection (libraries, model files, API endpoints, ML patterns)
 - All 8 prohibited practices
 - All 10+ high-risk categories
