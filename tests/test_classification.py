@@ -1504,6 +1504,50 @@ def test_dep_scan_compromised_detection():
     print("✓ Dependency scan: detects known compromised versions")
 
 
+# Rust/C++ dependency parsing (2 tests)
+
+def test_dep_scan_cargo_toml():
+    """Parses Cargo.toml dependencies"""
+    from dependency_scan import parse_cargo_toml
+    content = '''
+[package]
+name = "my-ai-app"
+version = "0.1.0"
+
+[dependencies]
+candle-core = "0.8.0"
+async-openai = { version = "0.25", features = ["stream"] }
+tokio = { version = "1.0", features = ["full"] }
+serde = "1.0"
+'''
+    deps = parse_cargo_toml(content)
+    assert_true(len(deps) >= 4, f"finds 4 deps (got {len(deps)})")
+    candle = [d for d in deps if d["name"] == "candle-core"]
+    assert_true(len(candle) > 0, "finds candle-core")
+    assert_eq(candle[0]["pinning"], "range", "semver is range (not exact)")
+    assert_true(candle[0]["is_ai"], "candle-core is AI")
+    tokio = [d for d in deps if d["name"] == "tokio"]
+    assert_true(len(tokio) > 0, "finds tokio")
+    assert_false(tokio[0]["is_ai"], "tokio is not AI")
+    print("✓ Dependency scan: Cargo.toml parsing")
+
+
+def test_dep_scan_vcpkg_json():
+    """Parses vcpkg.json dependencies"""
+    from dependency_scan import parse_vcpkg_json
+    content = json.dumps({
+        "dependencies": ["libtorch", "opencv4", "fmt", "boost-asio"]
+    })
+    deps = parse_vcpkg_json(content)
+    assert_true(len(deps) >= 4, f"finds 4 deps (got {len(deps)})")
+    torch = [d for d in deps if d["name"] == "libtorch"]
+    assert_true(len(torch) > 0, "finds libtorch")
+    assert_true(torch[0]["is_ai"], "libtorch is AI")
+    fmt = [d for d in deps if d["name"] == "fmt"]
+    assert_false(fmt[0]["is_ai"], "fmt is not AI")
+    print("✓ Dependency scan: vcpkg.json parsing")
+
+
 def test_gap_article_15_dependency_pinning():
     """Article 15 gap assessment includes dependency pinning analysis"""
     import tempfile, shutil
@@ -2053,6 +2097,9 @@ if __name__ == "__main__":
         test_dep_scan_lockfile_detection,
         test_dep_scan_package_json,
         test_dep_scan_compromised_detection,
+        # Rust/C++ dependency parsing (2 tests)
+        test_dep_scan_cargo_toml,
+        test_dep_scan_vcpkg_json,
         # Gap assessment enhancement (1 test)
         test_gap_article_15_dependency_pinning,
         # Framework mapper (2 tests)
