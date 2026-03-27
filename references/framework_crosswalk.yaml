@@ -1,7 +1,9 @@
-# Framework Crosswalk: EU AI Act 2024/1689 <-> NIST AI RMF 1.0 <-> ISO/IEC 42001:2023
-# Maintained by Regula. Sources: EU AI Act text, NIST AI 100-1, ISO/IEC 42001:2023 Annex A.
-schema_version: "1.0"
-last_updated: "2026-03-26"
+# Framework Crosswalk: EU AI Act 2024/1689 mapped to 7 frameworks
+# Sources: EU AI Act text, NIST AI 100-1, ISO/IEC 42001:2023, NIST CSF 2.0,
+#          SOC 2 TSC (AICPA 2017), ISO 27001:2022, OWASP LLM Top 10 (2025),
+#          MITRE ATLAS
+schema_version: "2.0"
+last_updated: "2026-03-27"
 
 mappings:
   article_9:
@@ -22,6 +24,26 @@ mappings:
         - "6.1: Actions to address risks and opportunities"
         - "A.5.3: AI risk management"
         - "A.6.1: AI risk assessment"
+    nist_csf:
+      functions: ["GOVERN", "IDENTIFY"]
+      subcategories:
+        - "GV.RM-01: Risk management objectives are established and agreed upon"
+        - "GV.RM-02: Risk appetite and tolerance statements are established and communicated"
+        - "GV.RM-07: Strategic opportunities (positive risks) are identified and included in risk discussions"
+        - "ID.RA-01: Vulnerabilities in assets are identified, validated, and recorded"
+        - "ID.RA-02: Cyber threat intelligence is received from information sharing forums"
+        - "ID.RA-03: Internal and external threats are identified and recorded"
+    soc2:
+      criteria:
+        - "CC3.1: Management identifies and assesses risks to the achievement of objectives"
+        - "CC3.2: Management considers the potential for fraud when assessing risks"
+        - "CC3.4: Management identifies and assesses changes that could significantly affect the system of internal control"
+    iso_27001:
+      controls:
+        - "5.1: Policies for information security"
+        - "6.1: Actions to address risks and opportunities"
+        - "6.1.2: Information security risk assessment"
+        - "6.1.3: Information security risk treatment"
     owasp_llm_top10:
       items: []
     mitre_atlas:
@@ -45,6 +67,24 @@ mappings:
       controls:
         - "A.6.6: Data for AI systems"
         - "A.7.4: Documentation of data"
+    nist_csf:
+      functions: ["IDENTIFY", "PROTECT"]
+      subcategories:
+        - "ID.AM-07: Inventories of data and corresponding metadata are maintained"
+        - "ID.AM-08: Systems, hardware, software, services, and data are managed throughout their life cycles"
+        - "PR.DS-01: The confidentiality, integrity, and availability of data-at-rest are protected"
+        - "PR.DS-02: The confidentiality, integrity, and availability of data-in-transit are protected"
+    soc2:
+      criteria:
+        - "CC6.1: Logical and physical access controls restrict access to information assets"
+        - "PI1.1: Processing integrity policies and procedures are established"
+        - "C1.1: Confidential information is identified and maintained"
+    iso_27001:
+      controls:
+        - "A.5.12: Classification of information"
+        - "A.5.13: Labelling of information"
+        - "A.8.10: Information deletion"
+        - "A.8.11: Data masking"
     owasp_llm_top10:
       items:
         - "LLM02: Sensitive Information Disclosure"
@@ -71,6 +111,22 @@ mappings:
       controls:
         - "A.6.4: AI system documentation"
         - "7.5: Documented information"
+    nist_csf:
+      functions: ["GOVERN", "IDENTIFY"]
+      subcategories:
+        - "GV.PO-01: A policy for managing cybersecurity risks is established based on organizational context"
+        - "ID.AM-01: Inventories of hardware managed by the organization are maintained"
+        - "ID.AM-02: Inventories of software, services, and systems managed by the organization are maintained"
+    soc2:
+      criteria:
+        - "CC2.1: Information regarding the design and operation of controls is communicated to internal and external users"
+        - "CC2.2: Internal communications include information about objectives, responsibilities, and changes"
+    iso_27001:
+      controls:
+        - "7.5.1: Documented information — general"
+        - "7.5.2: Creating and updating documented information"
+        - "7.5.3: Control of documented information"
+        - "A.5.37: Documented operating procedures"
     owasp_llm_top10:
       items: []
     mitre_atlas:
@@ -89,6 +145,21 @@ mappings:
     iso_42001:
       controls:
         - "A.6.10: Logging and monitoring"
+    nist_csf:
+      functions: ["DETECT", "IDENTIFY"]
+      subcategories:
+        - "DE.CM-01: Networks and network services are monitored to find potentially adverse events"
+        - "DE.CM-06: External service provider activities and services are monitored"
+        - "DE.CM-09: Computing hardware and software, runtime environments, and their data are monitored"
+    soc2:
+      criteria:
+        - "CC7.1: To meet its objectives, the entity uses detection and monitoring procedures"
+        - "CC7.2: The entity monitors system components and the operation of those components for anomalies"
+    iso_27001:
+      controls:
+        - "A.8.15: Logging"
+        - "A.8.16: Monitoring activities"
+        - "A.8.17: Clock synchronization"
     owasp_llm_top10:
       items: []
     mitre_atlas:
@@ -107,6 +178,19 @@ mappings:
     iso_42001:
       controls:
         - "A.6.8: Transparency and explainability"
+    nist_csf:
+      functions: ["GOVERN"]
+      subcategories:
+        - "GV.PO-02: Policy for managing cybersecurity risks is reviewed, updated, communicated, and enforced"
+        - "GV.SC-03: Cybersecurity supply chain risk management activities are integrated into cybersecurity and enterprise risk management"
+    soc2:
+      criteria:
+        - "CC2.1: Information regarding the design and operation of controls is communicated to internal and external users"
+        - "CC2.3: External communications include information about objectives, responsibilities, and changes"
+    iso_27001:
+      controls:
+        - "7.4: Communication"
+        - "A.5.31: Legal, statutory, regulatory, and contractual requirements"
     owasp_llm_top10:
       items:
         - "LLM01: Prompt Injection"
@@ -131,6 +215,21 @@ mappings:
     iso_42001:
       controls:
         - "A.6.3: Human oversight of AI systems"
+    nist_csf:
+      functions: ["GOVERN", "RESPOND"]
+      subcategories:
+        - "GV.RR-01: Organizational leadership takes responsibility for decisions associated with cybersecurity risks"
+        - "RS.MA-01: The incident response plan is executed in coordination with relevant third parties"
+        - "RS.MA-05: The criteria for initiating incident recovery are applied"
+    soc2:
+      criteria:
+        - "CC1.1: The entity demonstrates a commitment to integrity and ethical values"
+        - "CC1.3: Management establishes, with board oversight, structures, reporting lines, and appropriate authorities"
+    iso_27001:
+      controls:
+        - "5.3: Organizational roles, responsibilities, and authorities"
+        - "A.5.8: Information security in project management"
+        - "A.6.4: Disciplinary process"
     owasp_llm_top10:
       items:
         - "LLM05: Improper Output Handling"
@@ -153,6 +252,31 @@ mappings:
       controls:
         - "A.6.9: Performance and monitoring"
         - "A.8.1: Cybersecurity for AI"
+    nist_csf:
+      functions: ["PROTECT", "DETECT", "RECOVER"]
+      subcategories:
+        - "PR.PS-01: Configuration management practices are established and applied"
+        - "PR.PS-06: Secure software development practices are integrated, and their performance is monitored"
+        - "PR.IR-01: Networks and environments are protected from unauthorized logical access and usage"
+        - "DE.AE-02: Potentially adverse events are analyzed to better understand associated activities"
+        - "RC.RP-01: The recovery portion of the incident response plan is executed once initiated"
+    soc2:
+      criteria:
+        - "CC6.1: Logical and physical access controls restrict access to information assets"
+        - "CC6.6: Security events are evaluated to determine whether they represent failures in controls"
+        - "CC6.8: Measures to prevent or detect and act upon the introduction of unauthorized or malicious software"
+        - "CC8.1: Change management processes ensure authorized, tested, and approved changes"
+        - "A1.2: Environmental protections, software, data backup processes, and recovery infrastructure"
+    iso_27001:
+      controls:
+        - "A.8.8: Management of technical vulnerabilities"
+        - "A.8.9: Configuration management"
+        - "A.8.12: Data leakage prevention"
+        - "A.8.23: Web filtering"
+        - "A.8.24: Use of cryptography"
+        - "A.8.25: Secure development life cycle"
+        - "A.8.26: Application security requirements"
+        - "A.8.28: Secure coding"
     owasp_llm_top10:
       items:
         - "LLM01: Prompt Injection"

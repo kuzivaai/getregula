@@ -1564,6 +1564,48 @@ def test_framework_mapper_mitre_atlas():
     print("✓ Framework mapper: MITRE ATLAS mapping")
 
 
+def test_framework_mapper_nist_csf():
+    """Maps findings to NIST CSF 2.0"""
+    from framework_mapper import map_to_frameworks
+    mapping = map_to_frameworks(articles=["15"], frameworks=["nist-csf"])
+    assert_true("15" in mapping, "article 15 mapped")
+    csf = mapping["15"].get("nist_csf", {})
+    assert_true(len(csf.get("functions", [])) > 0, "has NIST CSF functions for Art 15")
+    assert_true("PROTECT" in csf["functions"], "Art 15 maps to PROTECT")
+    print("✓ Framework mapper: NIST CSF 2.0 mapping")
+
+
+def test_framework_mapper_soc2():
+    """Maps findings to SOC 2 Trust Services Criteria"""
+    from framework_mapper import map_to_frameworks
+    mapping = map_to_frameworks(articles=["9"], frameworks=["soc2"])
+    assert_true("9" in mapping, "article 9 mapped")
+    soc = mapping["9"].get("soc2", {})
+    assert_true(len(soc.get("criteria", [])) > 0, "has SOC 2 criteria for Art 9")
+    print("✓ Framework mapper: SOC 2 mapping")
+
+
+def test_framework_mapper_iso_27001():
+    """Maps findings to ISO 27001:2022"""
+    from framework_mapper import map_to_frameworks
+    mapping = map_to_frameworks(articles=["12"], frameworks=["iso-27001"])
+    assert_true("12" in mapping, "article 12 mapped")
+    iso = mapping["12"].get("iso_27001", {})
+    assert_true(len(iso.get("controls", [])) > 0, "has ISO 27001 controls for Art 12")
+    print("✓ Framework mapper: ISO 27001 mapping")
+
+
+def test_framework_mapper_all_8_frameworks():
+    """Maps to all 8 frameworks simultaneously"""
+    from framework_mapper import map_to_frameworks
+    mapping = map_to_frameworks(articles=["15"], frameworks=["all"])
+    art15 = mapping.get("15", {})
+    expected_keys = ["eu_ai_act", "nist_ai_rmf", "iso_42001", "nist_csf", "soc2", "iso_27001", "owasp_llm_top10", "mitre_atlas"]
+    for key in expected_keys:
+        assert_true(key in art15, f"Art 15 has {key}")
+    print("✓ Framework mapper: all 8 frameworks mapped simultaneously")
+
+
 def test_policy_thresholds():
     """Policy thresholds are readable"""
     from classify_risk import get_policy
@@ -1792,6 +1834,37 @@ class AIService {
         print("✓ Tree-sitter: JS function/class extraction (SKIPPED — tree-sitter not installed)")
 
 
+# ── Rust/C/C++ language support (3 tests) ─────────────────────────
+
+def test_ast_engine_rust_ai_detection():
+    """AST engine detects AI imports in Rust"""
+    from ast_engine import analyse_file
+    code = 'use candle_core::Tensor;\nuse candle_nn::Linear;\nuse async_openai::Client;\n\nfn main() {\n    let tensor = Tensor::zeros(&[2, 3], candle_core::DType::F32, &candle_core::Device::Cpu);\n}\n'
+    findings = analyse_file(code, "main.rs", language="rust")
+    assert_true(findings["has_ai_code"], "detects AI imports in Rust")
+    assert_true(len(findings["ai_imports"]) >= 2, f"finds 2+ AI imports (got {len(findings['ai_imports'])})")
+    print("✓ AST engine: Rust AI detection")
+
+
+def test_ast_engine_cpp_ai_detection():
+    """AST engine detects AI includes in C++"""
+    from ast_engine import analyse_file
+    code = '#include <torch/torch.h>\n#include <opencv2/core.hpp>\n\nint main() {\n    auto tensor = torch::zeros({2, 3});\n    return 0;\n}\n'
+    findings = analyse_file(code, "main.cpp", language="cpp")
+    assert_true(findings["has_ai_code"], "detects AI includes in C++")
+    assert_true(len(findings["ai_imports"]) >= 1, f"finds AI includes (got {len(findings['ai_imports'])})")
+    print("✓ AST engine: C++ AI detection")
+
+
+def test_ast_engine_rust_non_ai():
+    """Rust code without AI imports is not flagged"""
+    from ast_engine import analyse_file
+    code = 'use std::collections::HashMap;\nuse tokio::runtime::Runtime;\n\nfn main() {\n    let map: HashMap<String, i32> = HashMap::new();\n}\n'
+    findings = analyse_file(code, "main.rs", language="rust")
+    assert_false(findings["has_ai_code"], "standard Rust libs not flagged as AI")
+    print("✓ AST engine: Rust non-AI correctly identified")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -1912,6 +1985,10 @@ if __name__ == "__main__":
         test_ast_engine_java_ai_detection,
         test_ast_engine_go_ai_detection,
         test_ast_engine_java_non_ai,
+        # Rust/C/C++ language support (3 tests)
+        test_ast_engine_rust_ai_detection,
+        test_ast_engine_cpp_ai_detection,
+        test_ast_engine_rust_non_ai,
         # Dependency supply chain (6 tests)
         test_dep_scan_requirements_txt,
         test_dep_scan_ai_identification,
@@ -1928,6 +2005,11 @@ if __name__ == "__main__":
         test_framework_mapper_owasp_llm,
         # MITRE ATLAS mapping (1 test)
         test_framework_mapper_mitre_atlas,
+        # Additional framework mappings (4 tests)
+        test_framework_mapper_nist_csf,
+        test_framework_mapper_soc2,
+        test_framework_mapper_iso_27001,
+        test_framework_mapper_all_8_frameworks,
         # Policy enhancement (2 tests)
         test_policy_thresholds,
         test_policy_exclusions,

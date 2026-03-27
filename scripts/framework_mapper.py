@@ -37,6 +37,9 @@ _FRAMEWORK_KEYS = {
     "eu-ai-act": "eu_ai_act",
     "nist-ai-rmf": "nist_ai_rmf",
     "iso-42001": "iso_42001",
+    "nist-csf": "nist_csf",
+    "soc2": "soc2",
+    "iso-27001": "iso_27001",
     "owasp-llm-top10": "owasp_llm_top10",
     "mitre-atlas": "mitre_atlas",
 }

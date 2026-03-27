@@ -42,6 +42,13 @@ EXTENSION_MAP: Dict[str, str] = {
     ".tsx": "typescript",
     ".java": "java",
     ".go": "go",
+    ".rs": "rust",
+    ".c": "c",
+    ".cpp": "cpp",
+    ".cc": "cpp",
+    ".cxx": "cpp",
+    ".h": "cpp",    # Could be C or C++, treat as C++ for AI detection
+    ".hpp": "cpp",
 }
 
 JS_AI_LIBRARIES = {
@@ -105,6 +112,45 @@ GO_AI_LIBRARIES = {
     "github.com/aws/aws-sdk-go-v2/service/bedrockruntime",
     "github.com/gomlx/gomlx",
     "github.com/cohere-ai/cohere-go",
+}
+
+RUST_AI_LIBRARIES = {
+    "candle-core", "candle-nn", "candle-transformers",
+    "burn", "burn-core", "burn-tensor",
+    "tch",  # Rust bindings for PyTorch
+    "ort",  # ONNX Runtime
+    "rust-bert",
+    "llm",  # llm crate for local inference
+    "async-openai",
+    "anthropic-rs",
+    "langchain-rust",
+    "mistralrs",
+    "kalosm",
+    "safetensors",
+    "tokenizers",
+    "hf-hub",  # Hugging Face Hub
+    "ndarray",  # Numerical arrays (AI-adjacent)
+    "linfa",  # ML toolkit
+    "smartcore",  # ML algorithms
+}
+
+CPP_AI_LIBRARIES = {
+    "tensorflow", "tensorflow/c", "tensorflow/cc", "tensorflow/core",
+    "torch", "torch/torch.h", "ATen",
+    "onnxruntime", "onnxruntime_c_api.h",
+    "llama.h", "llama-cpp",
+    "opencv", "opencv2",
+    "dlib",
+    "mlpack",
+    "shark",  # Shogun ML
+    "caffe", "caffe/caffe.hpp",
+    "ncnn",
+    "mxnet",
+    "armnn",  # ARM NN inference engine
+    "tensorrt", "NvInfer.h",
+    "openvino",
+    "whisper.h",  # whisper.cpp
+    "stable-diffusion.h",  # stable-diffusion.cpp
 }
 
 # ---------------------------------------------------------------------------
@@ -1151,6 +1197,281 @@ def _analyse_go_regex(content: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Rust regex analysis
+# ---------------------------------------------------------------------------
+
+_RE_RUST_USE = re.compile(r'use\s+([\w:]+)', re.MULTILINE)
+_RE_RUST_CARGO_DEP = re.compile(r'^([\w\-]+)\s*=', re.MULTILINE)
+_RE_RUST_FN_DEF = re.compile(r'^(?:pub\s+)?(?:async\s+)?fn\s+(\w+)\s*\(', re.MULTILINE)
+_RE_RUST_STRUCT_DEF = re.compile(r'^(?:pub\s+)?struct\s+(\w+)\b', re.MULTILINE)
+
+
+def _analyse_rust_regex(content: str) -> dict:
+    """Analyse Rust source (or Cargo.toml) using regex patterns."""
+    imports = []
+    is_cargo_toml = "[dependencies]" in content or "[package]" in content
+
+    if is_cargo_toml:
+        # Parse Cargo.toml dependency names
+        in_deps = False
+        for line in content.splitlines():
+            stripped = line.strip()
+            if stripped.startswith("[dependencies]") or stripped.startswith("[dev-dependencies]"):
+                in_deps = True
+                continue
+            if stripped.startswith("[") and stripped.endswith("]"):
+                in_deps = False
+            if in_deps:
+                m = _RE_RUST_CARGO_DEP.match(line)
+                if m:
+                    imports.append(m.group(1))
+    else:
+        # Parse `use` statements
+        for match in _RE_RUST_USE.finditer(content):
+            path = match.group(1)
+            # The crate root is the first segment before '::'
+            crate_root = path.split("::")[0]
+            # Rust uses underscores in code but hyphens in Cargo.toml
+            # Normalise underscores → hyphens for matching against RUST_AI_LIBRARIES
+            imports.append(crate_root)
+
+    imports = list(dict.fromkeys(imports))
+
+    # Identify AI imports: normalise underscores → hyphens for comparison
+    ai_imports = []
+    for imp in imports:
+        normalised = imp.replace("_", "-")
+        if normalised in RUST_AI_LIBRARIES or imp in RUST_AI_LIBRARIES:
+            ai_imports.append(imp)
+
+    ai_imports = list(dict.fromkeys(ai_imports))
+    has_ai_code = len(ai_imports) > 0
+
+    # Extract function definitions
+    function_defs = []
+    for match in _RE_RUST_FN_DEF.finditer(content):
+        name = match.group(1)
+        function_defs.append({
+            "name": name,
+            "args": [],
+            "decorators": [],
+            "is_test": name.startswith("test_") or name == "test",
+        })
+
+    # Extract struct definitions (analogous to class defs)
+    class_defs = []
+    for match in _RE_RUST_STRUCT_DEF.finditer(content):
+        name = match.group(1)
+        class_defs.append({"name": name, "bases": [], "methods": []})
+
+    # Determine if test file
+    is_test_file = any(f["is_test"] for f in function_defs) or "#[cfg(test)]" in content
+
+    # Classify context
+    if is_test_file:
+        context = "test"
+    elif has_ai_code:
+        context = "implementation"
+    else:
+        config_patterns = re.compile(
+            r"""(?:model|endpoint|api_key|temperature|max_tokens|prompt)\s*[=:]""",
+            re.IGNORECASE,
+        )
+        context = "configuration" if config_patterns.search(content) else "implementation"
+
+    # Basic oversight detection
+    oversight_keywords = {
+        "review", "approve", "approval", "confirm", "verify",
+        "human", "manual", "override", "escalate", "moderator",
+    }
+    oversight_patterns = []
+    for kw in oversight_keywords:
+        if re.search(r"\b" + kw + r"\b", content, re.IGNORECASE):
+            oversight_patterns.append({"keyword": kw})
+
+    oversight = {
+        "has_oversight": len(oversight_patterns) > 0,
+        "oversight_patterns": oversight_patterns,
+        "automated_decisions": [],
+        "oversight_score": min(100, 50 + min(len(oversight_patterns) * 15, 40)),
+    }
+
+    # Basic logging detection
+    logging_re = re.compile(
+        r"""(?:log::(?:info|debug|warn|error|trace)|println!|eprintln!|tracing::(?:info|debug|warn|error|trace))\s*[!(]""",
+        re.MULTILINE,
+    )
+    logging_patterns = []
+    for match in logging_re.finditer(content):
+        logging_patterns.append({
+            "call": match.group(0).rstrip("!(").strip(),
+            "line": content[:match.start()].count("\n") + 1,
+        })
+
+    logging_info = {
+        "has_logging": len(logging_patterns) > 0,
+        "logging_patterns": logging_patterns,
+        "ai_operations_logged": 0,
+        "ai_operations_unlogged": 0,
+        "logging_score": 60 if logging_patterns else 50,
+    }
+
+    return {
+        "language": "rust",
+        "imports": imports,
+        "ai_imports": ai_imports,
+        "has_ai_code": has_ai_code,
+        "context": context,
+        "function_defs": function_defs,
+        "class_defs": class_defs,
+        "is_test_file": is_test_file,
+        "data_flows": [],
+        "oversight": oversight,
+        "logging": logging_info,
+    }
+
+
+# ---------------------------------------------------------------------------
+# C/C++ regex analysis
+# ---------------------------------------------------------------------------
+
+_RE_CPP_INCLUDE = re.compile(r'#include\s*[<"]([\w/.\-]+)[>"]', re.MULTILINE)
+_RE_CPP_FUNC_DEF = re.compile(
+    r'^(?:[\w:*&<>\s]+)\s+(\w+)\s*\([^)]*\)\s*(?:const\s*)?\{',
+    re.MULTILINE,
+)
+_RE_CPP_CLASS_DEF = re.compile(r'^(?:class|struct)\s+(\w+)\b', re.MULTILINE)
+
+
+def _analyse_cpp_regex(content: str) -> dict:
+    """Analyse C/C++ source using regex patterns."""
+    # Extract #include directives
+    imports = []
+    for match in _RE_CPP_INCLUDE.finditer(content):
+        imports.append(match.group(1))
+
+    imports = list(dict.fromkeys(imports))
+
+    # Identify AI imports by checking against CPP_AI_LIBRARIES
+    ai_imports = []
+    for inc in imports:
+        # Direct match
+        if inc in CPP_AI_LIBRARIES:
+            ai_imports.append(inc)
+            continue
+        # Prefix match: e.g. "opencv2/core.hpp" matches "opencv2" prefix
+        for lib in CPP_AI_LIBRARIES:
+            if inc == lib or inc.startswith(lib + "/") or inc.startswith(lib + "."):
+                ai_imports.append(inc)
+                break
+
+    # Also detect usage patterns like cv::Mat, torch::Tensor, tf::Tensor
+    cpp_usage_patterns = re.compile(
+        r'\b(?:cv|torch|tf|ort|dlib|caffe|ncnn|mxnet|armnn|trt|ov)::\w+',
+        re.MULTILINE,
+    )
+    for match in cpp_usage_patterns.finditer(content):
+        # Map namespace to a representative library if not already detected
+        ns = match.group(0).split("::")[0]
+        ns_to_lib = {
+            "cv": "opencv", "torch": "torch", "tf": "tensorflow",
+            "ort": "onnxruntime", "dlib": "dlib", "caffe": "caffe",
+            "ncnn": "ncnn", "mxnet": "mxnet", "armnn": "armnn",
+            "trt": "tensorrt", "ov": "openvino",
+        }
+        lib_name = ns_to_lib.get(ns)
+        if lib_name and lib_name not in ai_imports:
+            ai_imports.append(lib_name)
+
+    ai_imports = list(dict.fromkeys(ai_imports))
+    has_ai_code = len(ai_imports) > 0
+
+    # Extract function definitions (simplified)
+    function_defs = []
+    for match in _RE_CPP_FUNC_DEF.finditer(content):
+        name = match.group(1)
+        if name not in {"if", "while", "for", "switch", "catch", "else"}:
+            function_defs.append({
+                "name": name,
+                "args": [],
+                "decorators": [],
+                "is_test": name.startswith("test") or name.startswith("Test"),
+            })
+
+    # Extract class/struct definitions
+    class_defs = []
+    for match in _RE_CPP_CLASS_DEF.finditer(content):
+        name = match.group(1)
+        class_defs.append({"name": name, "bases": [], "methods": []})
+
+    # Determine if test file
+    is_test_file = any(f["is_test"] for f in function_defs)
+
+    # Classify context
+    if is_test_file:
+        context = "test"
+    elif has_ai_code:
+        context = "implementation"
+    else:
+        config_patterns = re.compile(
+            r"""(?:model|endpoint|api_key|temperature|max_tokens|prompt)\s*[=:]""",
+            re.IGNORECASE,
+        )
+        context = "configuration" if config_patterns.search(content) else "implementation"
+
+    # Basic oversight detection
+    oversight_keywords = {
+        "review", "approve", "approval", "confirm", "verify",
+        "human", "manual", "override", "escalate", "moderator",
+    }
+    oversight_patterns = []
+    for kw in oversight_keywords:
+        if re.search(r"\b" + kw + r"\b", content, re.IGNORECASE):
+            oversight_patterns.append({"keyword": kw})
+
+    oversight = {
+        "has_oversight": len(oversight_patterns) > 0,
+        "oversight_patterns": oversight_patterns,
+        "automated_decisions": [],
+        "oversight_score": min(100, 50 + min(len(oversight_patterns) * 15, 40)),
+    }
+
+    # Basic logging detection
+    logging_re = re.compile(
+        r"""(?:std::cout|std::cerr|printf|fprintf|spdlog::\w+|LOG(?:_INFO|_DEBUG|_WARN|_ERROR)?)\s*[(<]""",
+        re.MULTILINE,
+    )
+    logging_patterns = []
+    for match in logging_re.finditer(content):
+        logging_patterns.append({
+            "call": match.group(0).rstrip("(<").strip(),
+            "line": content[:match.start()].count("\n") + 1,
+        })
+
+    logging_info = {
+        "has_logging": len(logging_patterns) > 0,
+        "logging_patterns": logging_patterns,
+        "ai_operations_logged": 0,
+        "ai_operations_unlogged": 0,
+        "logging_score": 60 if logging_patterns else 50,
+    }
+
+    return {
+        "language": "cpp",
+        "imports": imports,
+        "ai_imports": ai_imports,
+        "has_ai_code": has_ai_code,
+        "context": context,
+        "function_defs": function_defs,
+        "class_defs": class_defs,
+        "is_test_file": is_test_file,
+        "data_flows": [],
+        "oversight": oversight,
+        "logging": logging_info,
+    }
+
+
+# ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
 
@@ -1211,6 +1532,10 @@ def analyse_file(content: str, filename: str, language: Optional[str] = None) ->
         return _analyse_java_regex(content)
     elif language == "go":
         return _analyse_go_regex(content)
+    elif language == "rust":
+        return _analyse_rust_regex(content)
+    elif language in ("c", "cpp"):
+        return _analyse_cpp_regex(content)
     else:
         return {
             "language": language,
