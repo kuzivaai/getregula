@@ -1865,6 +1865,63 @@ def test_ast_engine_rust_non_ai():
     print("✓ AST engine: Rust non-AI correctly identified")
 
 
+# ── SBOM Generation Tests ──────────────────────────────────────────
+
+def test_sbom_cyclonedx_structure():
+    """SBOM generates valid CycloneDX 1.6 structure"""
+    import tempfile, shutil
+    from sbom import generate_sbom
+    temp_dir = tempfile.mkdtemp()
+    Path(temp_dir, "app.py").write_text("import openai\nclient = openai.Client()\n")
+    Path(temp_dir, "requirements.txt").write_text("openai==1.52.0\n")
+    try:
+        bom = generate_sbom(temp_dir)
+        assert_eq(bom["bomFormat"], "CycloneDX", "bomFormat is CycloneDX")
+        assert_eq(bom["specVersion"], "1.6", "specVersion is 1.6")
+        assert_true("components" in bom, "has components")
+        assert_true("metadata" in bom, "has metadata")
+        assert_true(len(bom["components"]) > 0, "has at least 1 component")
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+    print("✓ SBOM: CycloneDX 1.6 structure valid")
+
+
+def test_sbom_ai_library_detection():
+    """SBOM marks AI libraries with regula properties"""
+    import tempfile, shutil
+    from sbom import generate_sbom
+    temp_dir = tempfile.mkdtemp()
+    Path(temp_dir, "app.py").write_text("import torch\nimport flask\n")
+    Path(temp_dir, "requirements.txt").write_text("torch==2.4.1\nflask==3.0.0\n")
+    try:
+        bom = generate_sbom(temp_dir)
+        ai_comps = [c for c in bom["components"]
+                    if any(p.get("name") == "regula:is-ai-library" and p.get("value") == "true"
+                           for p in c.get("properties", []))]
+        assert_true(len(ai_comps) > 0, "finds AI library components")
+        torch_comp = [c for c in ai_comps if c["name"] == "torch"]
+        assert_true(len(torch_comp) > 0, "torch marked as AI library")
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+    print("✓ SBOM: AI libraries marked with regula properties")
+
+
+def test_sbom_model_file_detection():
+    """SBOM detects ML model files"""
+    import tempfile, shutil
+    from sbom import generate_sbom
+    temp_dir = tempfile.mkdtemp()
+    Path(temp_dir, "model.onnx").write_text("fake model content")
+    Path(temp_dir, "app.py").write_text("import onnxruntime\n")
+    try:
+        bom = generate_sbom(temp_dir)
+        model_comps = [c for c in bom["components"] if c.get("type") == "machine-learning-model"]
+        assert_true(len(model_comps) > 0, "detects model file as ML model component")
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+    print("✓ SBOM: ML model files detected")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -2031,6 +2088,10 @@ if __name__ == "__main__":
         test_tree_sitter_js_data_flow,
         test_tree_sitter_ts_oversight_detection,
         test_tree_sitter_js_function_extraction,
+        # SBOM generation (3 tests)
+        test_sbom_cyclonedx_structure,
+        test_sbom_ai_library_detection,
+        test_sbom_model_file_detection,
     ]
 
     print(f"Running {len(tests)} tests...\n")

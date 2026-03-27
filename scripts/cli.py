@@ -404,6 +404,22 @@ def cmd_timeline(args):
         print(format_timeline_text())
 
 
+def cmd_sbom(args):
+    """Generate AI Software Bill of Materials (CycloneDX 1.6)."""
+    from sbom import generate_sbom, format_sbom_json, format_sbom_summary
+    bom = generate_sbom(args.project, project_name=args.name)
+    if args.format == "json":
+        content = format_sbom_json(bom)
+    else:
+        content = format_sbom_summary(bom)
+    if args.output:
+        Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.output).write_text(content, encoding="utf-8")
+        print(f"SBOM written to {args.output}", file=sys.stderr)
+    else:
+        print(content)
+
+
 def cmd_deps(args):
     """Dependency supply chain analysis."""
     from dependency_scan import scan_dependencies, format_dep_text, format_dep_json
@@ -593,6 +609,14 @@ Examples:
     p_deps.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_deps.add_argument("--strict", action="store_true", help="Exit 1 if pinning score < 50")
     p_deps.set_defaults(func=cmd_deps)
+
+    # --- sbom ---
+    p_sbom = subparsers.add_parser("sbom", help="Generate AI Software Bill of Materials (CycloneDX 1.6)")
+    p_sbom.add_argument("--project", "-p", default=".")
+    p_sbom.add_argument("--format", "-f", choices=["json", "text"], default="json")
+    p_sbom.add_argument("--output", "-o", help="Output file path")
+    p_sbom.add_argument("--name", "-n", help="Project name")
+    p_sbom.set_defaults(func=cmd_sbom)
 
     args = parser.parse_args()
 
