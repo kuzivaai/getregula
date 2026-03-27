@@ -1996,6 +1996,39 @@ def test_sbom_model_file_detection():
     print("✓ SBOM: ML model files detected")
 
 
+# ── False positive fixes (4 tests) ─────────────────────────────────
+
+def test_fp_fix_invoice_recognition():
+    """invoice_recognition does not trigger biometrics high-risk"""
+    r = classify("import torch; invoice_recognition(document)")
+    assert_true(r.tier != RiskTier.HIGH_RISK or "biometric" not in (r.category or "").lower(),
+                "invoice_recognition should not trigger biometrics")
+    print("✓ FP fix: invoice_recognition not false positive")
+
+
+def test_fp_fix_page_estimation():
+    """page_estimation does not trigger biometric categorisation"""
+    r = classify("import sklearn; page_estimation = calculate_pages(document)")
+    assert_true(r.tier != RiskTier.LIMITED_RISK or "biometric" not in (r.category or "").lower(),
+                "page_estimation should not trigger biometric categorisation")
+    print("✓ FP fix: page_estimation not false positive")
+
+
+def test_fp_fix_credit_model_detected():
+    """Credit model training is detected as high-risk"""
+    r = classify("import xgboost; credit_model = train_credit_risk_model(data)")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "credit risk model is high-risk")
+    print("✓ FP fix: credit risk model correctly detected")
+
+
+def test_fp_fix_social_media_score():
+    """Social media engagement scoring does not trigger prohibited"""
+    r = classify("import sklearn; social_media_engagement_metric = compute_engagement(posts)")
+    assert_true(r.tier != RiskTier.PROHIBITED,
+                "social media engagement should not trigger prohibited")
+    print("✓ FP fix: social media engagement not prohibited")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -2169,6 +2202,11 @@ if __name__ == "__main__":
         test_sbom_cyclonedx_structure,
         test_sbom_ai_library_detection,
         test_sbom_model_file_detection,
+        # False positive fixes (4 tests)
+        test_fp_fix_invoice_recognition,
+        test_fp_fix_page_estimation,
+        test_fp_fix_credit_model_detected,
+        test_fp_fix_social_media_score,
     ]
 
     print(f"Running {len(tests)} tests...\n")

@@ -77,7 +77,7 @@ PROHIBITED_PATTERNS = {
         "exceptions": None,
     },
     "social_scoring": {
-        "patterns": [r"social.?scor", r"social.?credit", r"citizen.?score", r"behaviour.?scor"],
+        "patterns": [r"\bsocial.?scor(?:e|ing)\b", r"\bsocial.?credit.?(?:scor|system|rating)", r"\bsocial.?credit\b", r"\bcitizen.?score", r"\bbehaviour.?scor"],
         "article": "5(1)(c)",
         "description": "Social scoring by public authorities or on their behalf",
         "conditions": "Prohibited when evaluating or classifying persons based on social behaviour or personal traits, leading to detrimental treatment disproportionate to context.",
@@ -140,64 +140,66 @@ PROHIBITED_PATTERNS = {
 
 HIGH_RISK_PATTERNS = {
     "biometrics": {
-        "patterns": [r"biometric.?ident", r"face.?recogn", r"fingerprint.?recogn", r"voice.?recogn"],
+        "patterns": [r"\bbiometric.?ident", r"\bface.?recogn", r"\bfingerprint.?recogn", r"\bvoice.?recogn"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 1",
         "description": "Biometric identification and categorisation",
     },
     "critical_infrastructure": {
-        "patterns": [r"energy.?grid", r"water.?supply", r"traffic.?control", r"electricity.?manage"],
+        "patterns": [r"\benergy.?grid", r"\bwater.?supply", r"\btraffic.?control", r"\belectricity.?manage"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 2",
         "description": "Critical infrastructure management",
     },
     "education": {
-        "patterns": [r"admission.?decision", r"student.?assess", r"exam.?scor", r"procto\w*.{0,15}(exam|test|monitor|ai|automat|student|cheat)"],
+        "patterns": [r"\badmission.?decision", r"\bstudent.?assess", r"\bexam.?scor", r"\bprocto\w*.{0,15}(exam|test|monitor|ai|automat|student|cheat)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 3",
         "description": "Education and vocational training",
     },
     "employment": {
-        "patterns": [r"cv.?screen", r"resume.?filt", r"hiring.?decision", r"recruit\w*\W{0,3}automat",
-                     r"automat\w*\W{0,3}recruit", r"candidate.?rank", r"promotion.?decision",
-                     r"termination.?decision", r"performance.?review.{0,10}(ai|automat|model|predict)"],
+        "patterns": [r"\bcv.?screen", r"\bresume.?filt", r"\bhiring.?decision", r"\brecruit\w*\W{0,3}automat",
+                     r"\bautomat\w*\W{0,3}recruit", r"\bcandidate.?rank", r"\bpromotion.?decision",
+                     r"\btermination.?decision", r"\bperformance.?review.{0,10}(ai|automat|model|predict)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 4",
         "description": "Employment and workers management",
     },
     "essential_services": {
-        "patterns": [r"credit.?scor", r"creditworth", r"loan.?decision", r"insurance.?pric",
-                     r"benefit.?eligib", r"emergency.?dispatch"],
+        "patterns": [r"\bcredit.?scor", r"\bcreditworth", r"\bloan.?decision", r"\binsurance.?pric",
+                     r"\bbenefit.?eligib", r"\bemergency.?dispatch",
+                     r"\bcredit.?risk", r"\bcredit.?model", r"\bcredit.?predict",
+                     r"\bloan.?approv", r"\blending.?decision"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 5",
         "description": "Access to essential services",
     },
     "law_enforcement": {
-        "patterns": [r"polygraph", r"lie.?detect", r"evidence.?reliab", r"criminal.?investigat"],
+        "patterns": [r"\bpolygraph", r"\blie.?detect", r"\bevidence.?reliab", r"\bcriminal.?investigat"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 6",
         "description": "Law enforcement",
     },
     "migration": {
-        "patterns": [r"border.?control", r"visa.?application", r"asylum.?application", r"immigration.?decision"],
+        "patterns": [r"\bborder.?control", r"\bvisa.?application", r"\basylum.?application", r"\bimmigration.?decision"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 7",
         "description": "Migration, asylum, and border control",
     },
     "justice": {
-        "patterns": [r"judicial.?decision", r"court.?rul", r"sentenc(ing|e\.?)\W{0,5}(recommend|decision|guidelines|court|judge|judicial|legal|verdict|criminal|prison|convict|parole|probation)", r"election.?influence"],
+        "patterns": [r"\bjudicial.?decision", r"\bcourt.?rul", r"\bsentenc(ing|e\.?)\W{0,5}(recommend|decision|guidelines|court|judge|judicial|legal|verdict|criminal|prison|convict|parole|probation)", r"\belection.?influence"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 8",
         "description": "Justice and democratic processes",
     },
     "medical_devices": {
-        "patterns": [r"medical.?diagnos", r"clinical.?decision", r"treatment.?recommend", r"patient.?triage"],
+        "patterns": [r"\bmedical.?diagnos", r"\bclinical.?decision", r"\btreatment.?recommend", r"\bpatient.?triage"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Medical Devices",
         "description": "AI components of medical devices",
     },
     "safety_components": {
-        "patterns": [r"autonomous.?vehicle", r"self.?driv", r"aviation.?safety", r"machinery.?safety"],
+        "patterns": [r"\bautonomous.?vehicle", r"\bself.?driv", r"\baviation.?safety", r"\bmachinery.?safety"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Safety Components",
         "description": "Safety components under Union harmonisation legislation",
@@ -206,7 +208,7 @@ HIGH_RISK_PATTERNS = {
 
 LIMITED_RISK_PATTERNS = {
     "chatbots": {
-        "patterns": [r"chatbot", r"conversational.?ai", r"virtual.?assist", r"support.?bot"],
+        "patterns": [r"\bchatbot", r"conversational.?ai", r"virtual.?assist", r"support.?bot\b"],
         "article": "50",
         "description": "Chatbots and conversational AI",
     },
@@ -216,7 +218,7 @@ LIMITED_RISK_PATTERNS = {
         "description": "Emotion recognition systems",
     },
     "biometric_categorisation": {
-        "patterns": [r"age.?estimat", r"gender.?detect", r"demographic.?analy"],
+        "patterns": [r"\bage.?estimat", r"\bgender.?detect", r"\bdemographic.?analy"],
         "article": "50",
         "description": "Biometric categorisation (non-sensitive)",
     },
