@@ -1,0 +1,256 @@
+name: Regula AI Governance Check
+description: Scan your AI project for EU AI Act compliance issues, dependency risks, and governance gaps.
+author: Regula
+
+branding:
+  icon: shield
+  color: blue
+
+inputs:
+  path:
+    description: Path to the project to scan
+    required: false
+    default: "."
+  format:
+    description: Output format for findings (sarif or json)
+    required: false
+    default: "sarif"
+  framework:
+    description: Compliance framework to check against
+    required: false
+    default: "eu-ai-act"
+  fail-on-prohibited:
+    description: Exit with code 2 if prohibited-use findings are detected
+    required: false
+    default: "true"
+  fail-on-high-risk:
+    description: Exit with code 1 if high-risk findings are detected
+    required: false
+    default: "false"
+  min-dependency-score:
+    description: Minimum acceptable pinning score (0–100). Exit with code 1 if below threshold.
+    required: false
+    default: "0"
+  upload-sarif:
+    description: Upload SARIF results to GitHub Code Scanning
+    required: false
+    default: "true"
+
+outputs:
+  findings-count:
+    description: Total number of findings
+    value: ${{ steps.count-findings.outputs.findings_count }}
+  prohibited-count:
+    description: Number of prohibited-use findings
+    value: ${{ steps.count-findings.outputs.prohibited_count }}
+  high-risk-count:
+    description: Number of high-risk findings
+    value: ${{ steps.count-findings.outputs.high_risk_count }}
+  pinning-score:
+    description: Dependency pinning score (0–100)
+    value: ${{ steps.deps-scan.outputs.pinning_score }}
+  sarif-file:
+    description: Path to the generated SARIF file
+    value: ${{ steps.run-check.outputs.sarif_file }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install Regula dependencies
+      shell: bash
+      run: |
+        pip install --quiet -r "${{ github.action_path }}/requirements.txt" 2>/dev/null || true
+        pip install --quiet -e "${{ github.action_path }}" 2>/dev/null || true
+
+    - name: Run regula check
+      id: run-check
+      shell: bash
+      run: |
+        SARIF_FILE="${{ runner.temp }}/regula-results.sarif.json"
+        echo "sarif_file=${SARIF_FILE}" >> "$GITHUB_OUTPUT"
+
+        python3 "${{ github.action_path }}/scripts/cli.py" check "${{ inputs.path }}" \
+          --format sarif \
+          --framework "${{ inputs.framework }}" \
+          --output "${SARIF_FILE}" \
+          || true
+
+        # If cli.py wrote to stdout instead of file, capture it
+        if [ ! -f "${SARIF_FILE}" ]; then
+          python3 "${{ github.action_path }}/scripts/cli.py" check "${{ inputs.path }}" \
+            --format sarif \
+            --framework "${{ inputs.framework }}" \
+            > "${SARIF_FILE}" 2>/dev/null || echo '{"runs":[{"results":[]}]}' > "${SARIF_FILE}"
+        fi
+
+    - name: Count findings from SARIF
+      id: count-findings
+      shell: bash
+      run: |
+        SARIF_FILE="${{ runner.temp }}/regula-results.sarif.json"
+
+        python3 - <<'EOF'
+        import json, os, sys
+
+        sarif_file = os.environ.get("SARIF_FILE", "")
+        output_file = os.environ.get("GITHUB_OUTPUT", "")
+
+        try:
+            with open(sarif_file) as f:
+                data = json.load(f)
+        except Exception as e:
+            print(f"Warning: could not parse SARIF: {e}", file=sys.stderr)
+            data = {"runs": [{"results": []}]}
+
+        results = []
+        for run in data.get("runs", []):
+            results.extend(run.get("results", []))
+
+        findings_count = len(results)
+        prohibited_count = 0
+        high_risk_count = 0
+
+        for r in results:
+            level = r.get("level", "").lower()
+            rule_id = r.get("ruleId", "").lower()
+            tags = []
+            # Check properties for category tags
+            props = r.get("properties", {})
+            if isinstance(props, dict):
+                tags = [t.lower() for t in props.get("tags", [])]
+
+            if "prohibited" in rule_id or "prohibited" in tags:
+                prohibited_count += 1
+            elif level == "error" or "high-risk" in rule_id or "high_risk" in rule_id or "high-risk" in tags:
+                high_risk_count += 1
+
+        with open(output_file, "a") as f:
+            f.write(f"findings_count={findings_count}\n")
+            f.write(f"prohibited_count={prohibited_count}\n")
+            f.write(f"high_risk_count={high_risk_count}\n")
+
+        print(f"findings_count={findings_count}")
+        print(f"prohibited_count={prohibited_count}")
+        print(f"high_risk_count={high_risk_count}")
+        EOF
+      env:
+        SARIF_FILE: ${{ runner.temp }}/regula-results.sarif.json
+
+    - name: Run regula deps
+      id: deps-scan
+      shell: bash
+      run: |
+        python3 - <<'EOF'
+        import json, os, subprocess, sys
+
+        action_path = os.environ.get("ACTION_PATH", "")
+        project_path = os.environ.get("PROJECT_PATH", ".")
+        output_file = os.environ.get("GITHUB_OUTPUT", "")
+
+        try:
+            result = subprocess.run(
+                ["python3", f"{action_path}/scripts/cli.py", "deps",
+                 "--project", project_path, "--format", "json"],
+                capture_output=True, text=True, timeout=120
+            )
+            data = json.loads(result.stdout)
+            # Try common field names for pinning score
+            pinning_score = (
+                data.get("pinning_score")
+                or data.get("pin_score")
+                or data.get("score")
+                or data.get("dependency_score")
+                or 0
+            )
+            # Handle nested structures
+            if isinstance(pinning_score, dict):
+                pinning_score = pinning_score.get("score", 0)
+            pinning_score = int(float(pinning_score))
+        except Exception as e:
+            print(f"Warning: deps scan failed: {e}", file=sys.stderr)
+            pinning_score = 0
+
+        with open(output_file, "a") as f:
+            f.write(f"pinning_score={pinning_score}\n")
+
+        print(f"pinning_score={pinning_score}")
+        EOF
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+        PROJECT_PATH: ${{ inputs.path }}
+
+    - name: Write GitHub Step Summary
+      shell: bash
+      run: |
+        cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+        ## Regula AI Governance Report
+
+        | Metric | Value |
+        |--------|-------|
+        | Total Findings | ${{ steps.count-findings.outputs.findings_count }} |
+        | Prohibited-Use Findings | ${{ steps.count-findings.outputs.prohibited_count }} |
+        | High-Risk Findings | ${{ steps.count-findings.outputs.high_risk_count }} |
+        | Dependency Pinning Score | ${{ steps.deps-scan.outputs.pinning_score }}/100 |
+        | Framework | ${{ inputs.framework }} |
+        | SARIF File | \`${{ steps.run-check.outputs.sarif_file }}\` |
+
+        EOF
+
+        # Add status indicator
+        PROHIBITED="${{ steps.count-findings.outputs.prohibited_count }}"
+        HIGH_RISK="${{ steps.count-findings.outputs.high_risk_count }}"
+
+        if [ "${PROHIBITED}" -gt "0" ]; then
+          echo "### Status: FAIL — Prohibited-use issues detected" >> "$GITHUB_STEP_SUMMARY"
+        elif [ "${HIGH_RISK}" -gt "0" ] && [ "${{ inputs.fail-on-high-risk }}" = "true" ]; then
+          echo "### Status: FAIL — High-risk issues detected" >> "$GITHUB_STEP_SUMMARY"
+        else
+          echo "### Status: PASS" >> "$GITHUB_STEP_SUMMARY"
+        fi
+
+    - name: Upload SARIF to GitHub Code Scanning
+      if: inputs.upload-sarif == 'true' && always()
+      continue-on-error: true
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ steps.run-check.outputs.sarif_file }}
+        category: regula-ai-governance
+
+    - name: Determine exit code
+      shell: bash
+      run: |
+        EXIT_CODE=0
+
+        PROHIBITED="${{ steps.count-findings.outputs.prohibited_count }}"
+        HIGH_RISK="${{ steps.count-findings.outputs.high_risk_count }}"
+        PINNING="${{ steps.deps-scan.outputs.pinning_score }}"
+        MIN_PINNING="${{ inputs.min-dependency-score }}"
+
+        # Check high-risk and low pinning score first (exit 1)
+        if [ "${{ inputs.fail-on-high-risk }}" = "true" ] && [ "${HIGH_RISK}" -gt "0" ]; then
+          EXIT_CODE=1
+        fi
+
+        if [ "${MIN_PINNING}" -gt "0" ] && [ "${PINNING}" -lt "${MIN_PINNING}" ]; then
+          EXIT_CODE=1
+        fi
+
+        # Prohibited-use findings override to exit code 2
+        if [ "${{ inputs.fail-on-prohibited }}" = "true" ] && [ "${PROHIBITED}" -gt "0" ]; then
+          EXIT_CODE=2
+        fi
+
+        if [ "${EXIT_CODE}" -eq "2" ]; then
+          echo "::error::Regula found ${PROHIBITED} prohibited-use finding(s). Review and remediate before merging."
+          exit 2
+        elif [ "${EXIT_CODE}" -eq "1" ]; then
+          echo "::warning::Regula found ${HIGH_RISK} high-risk finding(s) or dependency pinning score ${PINNING} is below threshold ${MIN_PINNING}."
+          exit 1
+        fi
+
+        echo "Regula checks passed."

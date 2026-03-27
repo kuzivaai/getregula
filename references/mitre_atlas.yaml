@@ -1,0 +1,52 @@
+# MITRE ATLAS — Adversarial Threat Landscape for AI Systems
+# Source: https://atlas.mitre.org/
+schema_version: "1.0"
+last_updated: "2026-03-27"
+source: "MITRE Corporation"
+
+techniques:
+  AML.T0010:
+    id: "AML.T0010"
+    name: "ML Supply Chain Compromise"
+    description: "Adversary compromises ML supply chain components"
+    eu_ai_act_articles: ["15"]
+  AML.T0018:
+    id: "AML.T0018"
+    name: "Backdoor ML Model"
+    description: "Adversary embeds backdoor triggers in ML models"
+    eu_ai_act_articles: ["10", "15"]
+  AML.T0019:
+    id: "AML.T0019"
+    name: "Publish Poisoned Datasets"
+    description: "Adversary publishes datasets containing manipulated data"
+    eu_ai_act_articles: ["10"]
+  AML.T0020:
+    id: "AML.T0020"
+    name: "Poison Training Data"
+    description: "Adversary manipulates training data to degrade model behaviour"
+    eu_ai_act_articles: ["10"]
+  AML.T0031:
+    id: "AML.T0031"
+    name: "Erode ML Model Integrity"
+    description: "Adversary degrades model performance over time"
+    eu_ai_act_articles: ["9", "15"]
+  AML.T0040:
+    id: "AML.T0040"
+    name: "ML Model Inference API Access"
+    description: "Adversary gains access to model inference APIs"
+    eu_ai_act_articles: ["13", "15"]
+  AML.T0043:
+    id: "AML.T0043"
+    name: "Craft Adversarial Data"
+    description: "Adversary creates inputs designed to cause model misclassification"
+    eu_ai_act_articles: ["9", "10", "15"]
+  AML.T0047:
+    id: "AML.T0047"
+    name: "Evade ML Model"
+    description: "Adversary crafts inputs to evade model detection"
+    eu_ai_act_articles: ["9", "15"]
+  AML.T0048:
+    id: "AML.T0048"
+    name: "Prompt Injection"
+    description: "Adversary manipulates LLM via crafted prompts"
+    eu_ai_act_articles: ["13", "15"]

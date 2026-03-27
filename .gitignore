@@ -13,3 +13,4 @@ venv/
 .regula/
 *.log
 .regula-baseline.json
+.venv/

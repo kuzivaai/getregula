@@ -19,6 +19,17 @@ from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS
 
 REGISTRY_PATH = Path(os.environ.get("REGULA_REGISTRY", Path.home() / ".regula" / "registry.json"))
 
+# Compliance status workflow
+# not_started → assessment → implementing → compliant → review_due
+COMPLIANCE_STATUSES = ["not_started", "assessment", "implementing", "compliant", "review_due"]
+COMPLIANCE_TRANSITIONS = {
+    "not_started": ["assessment"],
+    "assessment": ["implementing", "not_started"],
+    "implementing": ["compliant", "assessment"],
+    "compliant": ["review_due"],
+    "review_due": ["assessment", "compliant"],
+}
+
 DEPENDENCY_FILES = {
     "requirements.txt": "python",
     "requirements-dev.txt": "python",
@@ -252,6 +263,61 @@ def print_discovery(discovery: dict) -> None:
     print(f"{'=' * 60}\n")
 
 
+def update_compliance_status(project_name: str, new_status: str, note: str = "") -> dict:
+    """Update the compliance status of a registered system.
+
+    Returns the updated registry entry or raises ValueError for invalid transitions.
+    """
+    if new_status not in COMPLIANCE_STATUSES:
+        raise ValueError(f"Invalid status '{new_status}'. Valid: {', '.join(COMPLIANCE_STATUSES)}")
+
+    registry = load_registry()
+    systems = registry.get("systems", {})
+
+    if project_name not in systems:
+        raise ValueError(f"System '{project_name}' not found in registry. Run 'regula discover --register' first.")
+
+    current = systems[project_name].get("compliance_status", "not_started")
+    allowed = COMPLIANCE_TRANSITIONS.get(current, [])
+
+    if new_status not in allowed and new_status != current:
+        raise ValueError(
+            f"Cannot transition from '{current}' to '{new_status}'. "
+            f"Allowed transitions: {', '.join(allowed)}"
+        )
+
+    systems[project_name]["compliance_status"] = new_status
+    systems[project_name]["compliance_updated"] = datetime.now(timezone.utc).isoformat()
+
+    # Maintain a compliance history log
+    history = systems[project_name].get("compliance_history", [])
+    history.append({
+        "from": current,
+        "to": new_status,
+        "date": datetime.now(timezone.utc).isoformat(),
+        "note": note,
+    })
+    systems[project_name]["compliance_history"] = history
+
+    if note:
+        systems[project_name]["notes"] = note
+
+    save_registry(registry)
+
+    try:
+        from log_event import log_event
+        log_event("compliance_status_change", {
+            "project": project_name,
+            "from_status": current,
+            "to_status": new_status,
+            "note": note,
+        })
+    except Exception:
+        pass
+
+    return systems[project_name]
+
+
 def print_registry_status() -> None:
     """Print the full registry status."""
     registry = load_registry()
@@ -280,8 +346,46 @@ def main():
     parser.add_argument("--project", "-p", default=".", help="Project directory to scan")
     parser.add_argument("--register", "-r", action="store_true", help="Register in persistent registry")
     parser.add_argument("--status", "-s", action="store_true", help="Show registry status")
+    parser.add_argument("--compliance", help="Update compliance status: SYSTEM_NAME:STATUS[:NOTE]")
     parser.add_argument("--format", choices=["text", "json"], default="text")
     args = parser.parse_args()
+
+    if args.compliance:
+        parts = args.compliance.split(":", 2)
+        name = parts[0]
+        status = parts[1] if len(parts) > 1 else ""
+        note = parts[2] if len(parts) > 2 else ""
+
+        if not status:
+            # Show current status and allowed transitions
+            registry = load_registry()
+            system = registry.get("systems", {}).get(name)
+            if not system:
+                print(f"System '{name}' not found.", file=sys.stderr)
+                sys.exit(1)
+            current = system.get("compliance_status", "not_started")
+            allowed = COMPLIANCE_TRANSITIONS.get(current, [])
+            print(f"\n  System: {name}")
+            print(f"  Current status: {current}")
+            print(f"  Allowed transitions: {', '.join(allowed)}")
+            print(f"\n  Workflow: not_started → assessment → implementing → compliant → review_due")
+            history = system.get("compliance_history", [])
+            if history:
+                print(f"\n  History:")
+                for h in history[-5:]:
+                    print(f"    {h['date'][:10]}: {h['from']} → {h['to']}{' — ' + h['note'] if h.get('note') else ''}")
+            print()
+            return
+
+        try:
+            entry = update_compliance_status(name, status, note)
+            print(f"Updated '{name}' compliance status to '{status}'")
+            if note:
+                print(f"Note: {note}")
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+        return
 
     if args.status:
         print_registry_status()

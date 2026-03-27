@@ -1,0 +1,25 @@
+name: Regula AI Governance Scan
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  security-events: write
+  contents: read
+
+jobs:
+  regula-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Regula
+        uses: kuzivaai/getregula@main
+        with:
+          path: '.'
+          fail-on-prohibited: 'true'
+          fail-on-high-risk: 'false'
+          min-dependency-score: '0'
+          upload-sarif: 'true'

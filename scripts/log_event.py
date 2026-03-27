@@ -12,7 +12,6 @@ timestamp authority (RFC 3161) or remote log forwarding.
 
 import argparse
 import csv
-import fcntl
 import hashlib
 import io
 import json
@@ -23,6 +22,31 @@ from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, List, Dict, Any
+
+# Cross-platform file locking
+if sys.platform == "win32":
+    import msvcrt
+
+    def _lock_file(f):
+        """Acquire exclusive lock (Windows)."""
+        msvcrt.locking(f.fileno(), msvcrt.LK_LOCK, 1)
+
+    def _unlock_file(f):
+        """Release exclusive lock (Windows)."""
+        try:
+            msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
+        except OSError:
+            pass
+else:
+    import fcntl
+
+    def _lock_file(f):
+        """Acquire exclusive lock (Unix/macOS)."""
+        fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+
+    def _unlock_file(f):
+        """Release exclusive lock (Unix/macOS)."""
+        fcntl.flock(f.fileno(), fcntl.LOCK_UN)
 
 
 def get_audit_dir() -> Path:
@@ -95,7 +119,7 @@ def log_event(
 
     # Open in append mode and acquire exclusive lock
     with open(audit_file, "a", encoding="utf-8") as f:
-        fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+        _lock_file(f)
         try:
             # Read previous hash while holding lock
             previous_hash = _read_last_hash(audit_file)
@@ -113,7 +137,7 @@ def log_event(
             f.write(event.to_json() + "\n")
             f.flush()
         finally:
-            fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+            _unlock_file(f)
 
     return event
 

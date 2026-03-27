@@ -45,7 +45,7 @@ class SecretFinding:
 SECRET_PATTERNS = {
     # --- HIGH confidence (prefixed, block-worthy) ---
     "openai_api_key": {
-        "pattern": r"sk-[a-zA-Z0-9]{20,}",
+        "pattern": r"sk-(?!ant-)[a-zA-Z0-9]{20,}",
         "confidence": "high",
         "confidence_score": 95,
         "description": "OpenAI API key detected",

@@ -63,7 +63,11 @@ flags for human review. False positives and negatives will occur.
 | `/regula-session` | Session-level risk aggregation |
 | `/regula-baseline [save\|compare]` | CI/CD incremental compliance |
 | `/regula-audit [verify\|export]` | Audit trail management |
-| `/regula-docs` | Annex IV documentation scaffolds |
+| `/regula-docs [--qms]` | Annex IV + QMS documentation scaffolds |
+| `/regula-compliance` | Compliance status tracking and workflow |
+| `/regula-gap` | Compliance gap assessment (Articles 9-15) |
+| `/regula-benchmark` | Real-world precision/recall validation |
+| `/regula-deps` | AI dependency supply chain analysis |
 
 ## CLI
 
@@ -76,6 +80,19 @@ python3 scripts/cli.py install claude-code         # Install hooks
 python3 scripts/cli.py timeline                    # Enforcement dates
 python3 scripts/cli.py baseline save               # Save baseline
 python3 scripts/cli.py baseline compare --fail-on-new  # CI/CD gate
+python3 scripts/cli.py deps --project .            # Dependency supply chain analysis
+regula check . --framework owasp-llm-top10         # OWASP LLM Top 10 mapping
+regula check . --framework mitre-atlas             # MITRE ATLAS mapping
+```
+
+### GitHub Action
+
+```yaml
+- uses: kuzivaai/getregula@main
+  with:
+    path: '.'
+    fail-on-prohibited: 'true'
+    upload-sarif: 'true'
 ```
 
 ## Multi-Platform
@@ -85,7 +102,7 @@ and git hooks. Same hook protocol, different config files.
 
 ## Limitations
 
-- Pattern matching only — cannot assess intent or deployment context
+- AST analysis for Python; regex import detection for JS/TS, Java (13 libraries), and Go (9 libraries); tree-sitter optional for deeper JS/TS analysis — cannot assess intent or deployment context
 - False positives on code that discusses prohibited practices
 - Self-attesting audit trail — not externally witnessed
-- EU AI Act focus — ISO 42001 mapped, NIST AI RMF planned
+- EU AI Act focus — ISO 42001, NIST AI RMF, OWASP LLM Top 10, and MITRE ATLAS all mapped via crosswalk data files

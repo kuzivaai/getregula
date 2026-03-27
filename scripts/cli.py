@@ -271,6 +271,129 @@ def cmd_baseline(args):
         print("Usage: regula baseline [save|compare]")
 
 
+def cmd_docs(args):
+    """Generate documentation scaffolds."""
+    sys.argv = ["generate_documentation.py"]
+    if args.project:
+        sys.argv += ["--project", args.project]
+    if args.output:
+        sys.argv += ["--output", args.output]
+    if args.name:
+        sys.argv += ["--name", args.name]
+    if args.qms:
+        sys.argv += ["--qms"]
+    if getattr(args, "all", False):
+        sys.argv += ["--all"]
+
+    from generate_documentation import main as docs_main
+    docs_main()
+
+
+def cmd_compliance(args):
+    """Manage compliance status of registered AI systems."""
+    from discover_ai_systems import update_compliance_status, load_registry, COMPLIANCE_TRANSITIONS, COMPLIANCE_STATUSES
+
+    if args.subcommand == "update":
+        try:
+            entry = update_compliance_status(args.system, args.status, args.note or "")
+            print(f"Updated '{args.system}' to '{args.status}'")
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+
+    elif args.subcommand == "history":
+        registry = load_registry()
+        system = registry.get("systems", {}).get(args.system)
+        if not system:
+            print(f"System '{args.system}' not found.", file=sys.stderr)
+            sys.exit(1)
+        history = system.get("compliance_history", [])
+        if args.format == "json":
+            print(json.dumps(history, indent=2))
+        else:
+            print(f"\n  Compliance History: {args.system}")
+            print(f"  Current: {system.get('compliance_status', 'not_started')}")
+            if not history:
+                print("  No history recorded.")
+            else:
+                for h in history:
+                    print(f"    {h['date'][:10]}: {h['from']} → {h['to']}{' — ' + h['note'] if h.get('note') else ''}")
+            print()
+
+    elif args.subcommand == "workflow":
+        print("\n  Regula Compliance Status Workflow")
+        print("  " + "=" * 50)
+        print("  not_started → assessment → implementing → compliant → review_due")
+        print()
+        for status, transitions in COMPLIANCE_TRANSITIONS.items():
+            print(f"    {status:<20} → {', '.join(transitions)}")
+        print()
+
+    else:
+        registry = load_registry()
+        systems = registry.get("systems", {})
+        if not systems:
+            print("No systems registered. Run 'regula discover --register' first.")
+            return
+        if args.format == "json":
+            summary = {name: {"status": s.get("compliance_status", "not_started"), "risk": s.get("highest_risk", "unknown")} for name, s in systems.items()}
+            print(json.dumps(summary, indent=2))
+        else:
+            print(f"\n  {'System':<30} {'Status':<20} {'Risk':<15}")
+            print(f"  {'-'*30} {'-'*20} {'-'*15}")
+            for name, s in systems.items():
+                status = s.get("compliance_status", "not_started")
+                risk = s.get("highest_risk", "unknown").upper().replace("_", "-")
+                print(f"  {name:<30} {status:<20} {risk:<15}")
+            print()
+
+
+def cmd_gap(args):
+    """Compliance gap assessment."""
+    from compliance_check import assess_compliance, format_gap_text, format_gap_json
+    articles = [args.article] if args.article else None
+    assessment = assess_compliance(args.project, articles=articles)
+    if args.format == "json":
+        print(format_gap_json(assessment))
+    else:
+        print(format_gap_text(assessment))
+    # Exit 1 if overall score < 50 and --strict
+    if args.strict and assessment.get("overall_score", 0) < 50:
+        sys.exit(1)
+
+
+def cmd_benchmark(args):
+    """Run real-world validation benchmark."""
+    from benchmark import benchmark_project, benchmark_suite, calculate_metrics, load_labelled_results
+    from benchmark import format_benchmark_text, format_benchmark_json, format_labelling_csv
+
+    if args.metrics:
+        results = load_labelled_results(args.metrics)
+        metrics = calculate_metrics(results)
+        print(json.dumps(metrics, indent=2))
+        return
+
+    if args.manifest:
+        projects = json.loads(Path(args.manifest).read_text(encoding="utf-8"))
+        results = benchmark_suite(projects)
+    else:
+        results = benchmark_project(args.project)
+
+    if args.format == "csv":
+        content = format_labelling_csv(results)
+    elif args.format == "json":
+        content = format_benchmark_json(results)
+    else:
+        content = format_benchmark_text(results)
+
+    if args.output:
+        Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.output).write_text(content, encoding="utf-8")
+        print(f"Benchmark output written to {args.output}", file=sys.stderr)
+    else:
+        print(content)
+
+
 def cmd_timeline(args):
     """EU AI Act enforcement timeline."""
     from timeline import format_timeline_text, TIMELINE
@@ -279,6 +402,20 @@ def cmd_timeline(args):
         print(json.dumps({"as_of": date.today().isoformat(), "timeline": TIMELINE}, indent=2))
     else:
         print(format_timeline_text())
+
+
+def cmd_deps(args):
+    """Dependency supply chain analysis."""
+    from dependency_scan import scan_dependencies, format_dep_text, format_dep_json
+    results = scan_dependencies(args.project)
+    if args.format == "json":
+        print(format_dep_json(results))
+    else:
+        print(format_dep_text(results))
+    if results.get("compromised_count", 0) > 0:
+        sys.exit(2)
+    elif args.strict and results.get("pinning_score", 100) < 50:
+        sys.exit(1)
 
 
 def main():
@@ -298,12 +435,28 @@ Examples:
   regula session                          Session risk aggregation
   regula baseline save                    Save compliance baseline
   regula baseline compare --fail-on-new   CI/CD incremental compliance
+  regula compliance                       View compliance status of all systems
+  regula compliance update -s MyApp --status assessment
+  regula gap --project .                  Compliance gap assessment (Articles 9-15)
+  regula gap --project . --article 14    Check Article 14 (human oversight) only
+  regula compliance workflow              Show compliance status transitions
+  regula docs --project . --qms          Generate Annex IV + QMS scaffolds
+  regula benchmark --project .           Benchmark precision/recall
+  regula benchmark --project . -f csv -o findings.csv  Export for labelling
   regula timeline                         EU AI Act enforcement dates
+  regula deps --project .                 AI dependency supply chain analysis
+  regula deps --project . --format json  Dependency scan as JSON
   regula install claude-code              Install Claude Code hooks
   regula install copilot-cli              Install Copilot CLI hooks
   regula audit verify                     Verify audit chain integrity
 """,
     )
+    parser.add_argument("--framework", choices=["eu-ai-act", "nist-ai-rmf", "iso-42001", "owasp-llm-top10", "mitre-atlas", "all"], default="eu-ai-act",
+                        help="Compliance framework to map findings to")
+    parser.add_argument("--ci", action="store_true",
+                        help="CI mode: exit 0=pass, 1=findings, 2=blocked")
+    parser.add_argument("--config", help="Custom policy configuration file path")
+
     subparsers = parser.add_subparsers(dest="command")
 
     # --- init ---
@@ -394,12 +547,58 @@ Examples:
     p_baseline.add_argument("--fail-on-new", action="store_true", help="Exit 1 on new findings (CI/CD)")
     p_baseline.set_defaults(func=cmd_baseline)
 
+    # --- docs ---
+    p_docs = subparsers.add_parser("docs", help="Generate documentation scaffolds (Annex IV, QMS)")
+    p_docs.add_argument("--project", "-p", default=".")
+    p_docs.add_argument("--output", "-o", default="docs", help="Output directory")
+    p_docs.add_argument("--name", "-n", help="Project name")
+    p_docs.add_argument("--qms", action="store_true", help="Also generate QMS scaffold (Article 17)")
+    p_docs.add_argument("--all", action="store_true", help="Generate all documentation types")
+    p_docs.set_defaults(func=cmd_docs)
+
+    # --- compliance ---
+    p_compliance = subparsers.add_parser("compliance", help="Manage compliance status of AI systems")
+    p_compliance.add_argument("subcommand", nargs="?", choices=["update", "history", "workflow"], default=None)
+    p_compliance.add_argument("--system", "-s", help="System name")
+    p_compliance.add_argument("--status", help="New compliance status")
+    p_compliance.add_argument("--note", "-n", help="Note for the status change")
+    p_compliance.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_compliance.set_defaults(func=cmd_compliance)
+
+    # --- gap ---
+    p_gap = subparsers.add_parser("gap", help="Compliance gap assessment (Articles 9-15)")
+    p_gap.add_argument("--project", "-p", default=".")
+    p_gap.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_gap.add_argument("--article", "-a", help="Check specific article only (e.g., 14)")
+    p_gap.add_argument("--strict", action="store_true", help="Exit 1 if overall score < 50")
+    p_gap.set_defaults(func=cmd_gap)
+
+    # --- benchmark ---
+    p_bench = subparsers.add_parser("benchmark", help="Real-world validation benchmark")
+    p_bench.add_argument("--project", "-p", default=".")
+    p_bench.add_argument("--manifest", "-m", help="JSON manifest of projects to scan")
+    p_bench.add_argument("--metrics", help="Calculate metrics from labelled CSV/JSON")
+    p_bench.add_argument("--format", "-f", choices=["text", "json", "csv"], default="text")
+    p_bench.add_argument("--output", "-o", help="Output file")
+    p_bench.set_defaults(func=cmd_benchmark)
+
     # --- timeline ---
     p_timeline = subparsers.add_parser("timeline", help="EU AI Act enforcement timeline")
     p_timeline.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_timeline.set_defaults(func=cmd_timeline)
 
+    # --- deps ---
+    p_deps = subparsers.add_parser("deps", help="AI dependency supply chain analysis")
+    p_deps.add_argument("--project", "-p", default=".")
+    p_deps.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_deps.add_argument("--strict", action="store_true", help="Exit 1 if pinning score < 50")
+    p_deps.set_defaults(func=cmd_deps)
+
     args = parser.parse_args()
+
+    if hasattr(args, 'config') and args.config:
+        import os
+        os.environ["REGULA_POLICY"] = args.config
 
     if not args.command:
         parser.print_help()
