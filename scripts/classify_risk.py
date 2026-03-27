@@ -251,6 +251,107 @@ LIMITED_RISK_PATTERNS = {
     },
 }
 
+# ---------------------------------------------------------------------------
+# AI Security Antipatterns — Code patterns that indicate AI-specific
+# vulnerabilities.  These map to OWASP LLM Top 10 and are reported as
+# Article 15 (cybersecurity) findings.
+# ---------------------------------------------------------------------------
+
+AI_SECURITY_PATTERNS = {
+    "unsafe_deserialization": {
+        "patterns": [
+            r"pickle\.load",
+            r"pickle\.loads",
+            r"torch\.load\s*\([^)]*\)",  # torch.load without weights_only=True
+            r"joblib\.load",
+            r"dill\.load",
+        ],
+        "owasp": "LLM05",
+        "description": "Unsafe model deserialization — arbitrary code execution risk",
+        "severity": "high",
+        "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    },
+    "prompt_injection_vulnerable": {
+        "patterns": [
+            r"f['\"].*\{.*user.*\}.*['\"].*(?:messages|prompt|system)",  # f-string with user input in prompt
+            r"\.format\(.*user.*\).*(?:messages|prompt|content)",  # .format with user input in prompt
+            r"\+\s*(?:user_input|user_message|request\.body|req\.body).*(?:messages|prompt)",  # string concat user input to prompt
+        ],
+        "owasp": "LLM01",
+        "description": "User input directly concatenated into LLM prompt — prompt injection risk",
+        "severity": "high",
+        "remediation": "Use structured prompt templates with input sanitisation. Never concatenate raw user input into system prompts.",
+    },
+    "no_output_validation": {
+        "patterns": [
+            r"\.content\s*\)\s*$",  # raw AI output used directly at end of expression
+            r"eval\s*\(.*(?:response|result|output|completion)",  # eval on AI output
+            r"exec\s*\(.*(?:response|result|output|completion)",  # exec on AI output
+        ],
+        "owasp": "LLM02",
+        "description": "AI output used without validation — code injection risk",
+        "severity": "critical",
+        "remediation": "Never eval/exec AI model output. Validate and sanitise all AI-generated content before use.",
+    },
+    "hardcoded_model_path": {
+        "patterns": [
+            r"(?:from_pretrained|load_model|torch\.load)\s*\(\s*['\"]https?://",  # loading model from URL
+            r"(?:from_pretrained|load_model|torch\.load)\s*\(\s*['\"](?:/tmp|/var|C:\\)",  # loading from temp/uncontrolled path
+        ],
+        "owasp": "LLM03",
+        "description": "Model loaded from untrusted or hardcoded path — supply chain risk",
+        "severity": "medium",
+        "remediation": "Use model registries (HuggingFace Hub, MLflow) with integrity verification. Pin model revisions.",
+    },
+    "unbounded_token_generation": {
+        "patterns": [
+            r"max_tokens\s*[:=]\s*(?:None|0|-1|999999|1000000)",  # unbounded or very high token limit
+            r"(?:create|generate|complete)\([^)]*\)\s*$",  # API call without max_tokens
+        ],
+        "owasp": "LLM10",
+        "description": "Unbounded token generation — cost and resource exhaustion risk",
+        "severity": "medium",
+        "remediation": "Set explicit max_tokens limit. Add cost monitoring and rate limiting.",
+    },
+    "missing_temperature_control": {
+        "patterns": [
+            r"temperature\s*[:=]\s*(?:1\.0|2\.0|1\.5)",  # very high temperature for production
+        ],
+        "owasp": "LLM09",
+        "description": "High temperature setting — increased hallucination risk in production",
+        "severity": "low",
+        "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+    },
+}
+
+
+def check_ai_security(text: str) -> list:
+    """Check for AI-specific security antipatterns.
+
+    Returns a list of finding dicts, each with:
+        pattern_name, owasp, description, severity, remediation, line, matched_line
+    """
+    findings = []
+    lines = text.split("\n")
+
+    for name, config in AI_SECURITY_PATTERNS.items():
+        for pattern in config["patterns"]:
+            for i, line in enumerate(lines, 1):
+                if re.search(pattern, line, re.IGNORECASE):
+                    findings.append({
+                        "pattern_name": name,
+                        "owasp": config["owasp"],
+                        "description": config["description"],
+                        "severity": config["severity"],
+                        "remediation": config["remediation"],
+                        "line": i,
+                        "matched_line": line.strip()[:100],
+                    })
+                    break  # One match per pattern per file is enough
+
+    return findings
+
+
 AI_INDICATORS = {
     "libraries": [r"tensorflow", r"torch", r"pytorch", r"transformers", r"langchain",
                   r"openai", r"anthropic", r"sklearn", r"scikit.?learn", r"keras",

@@ -822,6 +822,18 @@ def _check_article_15(project_path: str, files_index: list) -> tuple:
             if _search_content(content, hardcoded_secret_patterns):
                 gaps.append(f"Possible hardcoded secret in: {rel_path}")
 
+            # Check for AI security antipatterns
+            try:
+                from classify_risk import check_ai_security
+                sec_findings = check_ai_security(content)
+                for sf in sec_findings:
+                    if sf["severity"] in ("critical", "high"):
+                        gaps.append(f"AI security issue in {Path(rel_path).name}: {sf['description']} (OWASP {sf['owasp']})")
+                    else:
+                        evidence.append(f"AI security check ran on {Path(rel_path).name}")
+            except Exception:
+                pass
+
     if test_file_count > 1:
         evidence.append(f"Total test files found: {test_file_count}")
 

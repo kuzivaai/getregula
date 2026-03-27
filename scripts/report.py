@@ -17,7 +17,7 @@ from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS, PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS, generate_observations
+from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS, PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS, generate_observations, check_ai_security
 from log_event import query_events, verify_chain
 from credential_check import check_secrets
 from remediation import get_remediation
@@ -105,6 +105,24 @@ def scan_files(project_path: str, respect_ignores: bool = True) -> list:
                         "indicators": [sf.pattern_name],
                         "confidence_score": sf.confidence_score,
                         "suppressed": secret_suppressed,
+                    })
+            except Exception:
+                pass
+
+            # --- AI security antipattern checks (runs on all AI-related files) ---
+            try:
+                security_findings = check_ai_security(content)
+                for sf in security_findings:
+                    findings.append({
+                        "file": str(filepath.relative_to(project)),
+                        "line": sf["line"],
+                        "tier": "ai_security",
+                        "category": f"AI Security ({sf['owasp']})",
+                        "description": sf["description"],
+                        "indicators": [sf["pattern_name"]],
+                        "confidence_score": {"critical": 90, "high": 80, "medium": 60, "low": 40}.get(sf["severity"], 50),
+                        "suppressed": secret_suppressed or "*" in suppressed_rules,
+                        "remediation": sf["remediation"],
                     })
             except Exception:
                 pass
