@@ -1,0 +1,57 @@
+# OWASP Top 10 for Large Language Model Applications (2025)
+# Source: https://genai.owasp.org/llm-top-10/
+schema_version: "1.0"
+last_updated: "2026-03-27"
+source: "OWASP Foundation, 2025"
+
+items:
+  LLM01:
+    id: "LLM01"
+    name: "Prompt Injection"
+    description: "Manipulating LLMs through crafted inputs to cause unintended actions"
+    eu_ai_act_articles: ["13", "15"]
+  LLM02:
+    id: "LLM02"
+    name: "Sensitive Information Disclosure"
+    description: "LLMs inadvertently revealing confidential data"
+    eu_ai_act_articles: ["10", "15"]
+  LLM03:
+    id: "LLM03"
+    name: "Supply Chain Vulnerabilities"
+    description: "Risks from third-party components, training data, and pre-trained models"
+    eu_ai_act_articles: ["15"]
+  LLM04:
+    id: "LLM04"
+    name: "Data and Model Poisoning"
+    description: "Manipulation of training data or model weights"
+    eu_ai_act_articles: ["10", "15"]
+  LLM05:
+    id: "LLM05"
+    name: "Improper Output Handling"
+    description: "Insufficient validation of LLM outputs before downstream use"
+    eu_ai_act_articles: ["13", "14", "15"]
+  LLM06:
+    id: "LLM06"
+    name: "Excessive Agency"
+    description: "LLM systems granted too much autonomy without human oversight"
+    eu_ai_act_articles: ["14"]
+  LLM07:
+    id: "LLM07"
+    name: "System Prompt Leakage"
+    description: "Extraction of system prompts revealing sensitive business logic"
+    eu_ai_act_articles: ["13", "15"]
+  LLM08:
+    id: "LLM08"
+    name: "Vector and Embedding Weaknesses"
+    description: "Vulnerabilities in RAG retrieval systems and embeddings"
+    eu_ai_act_articles: ["10", "15"]
+  LLM09:
+    id: "LLM09"
+    name: "Misinformation"
+    description: "LLMs generating false or misleading information"
+    eu_ai_act_articles: ["13", "15"]
+  LLM10:
+    id: "LLM10"
+    name: "Unbounded Consumption"
+    description: "Resource exhaustion through uncontrolled LLM usage"
+    eu_ai_act_articles: ["15"]

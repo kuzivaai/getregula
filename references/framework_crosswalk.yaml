@@ -1,0 +1,175 @@
+# Framework Crosswalk: EU AI Act 2024/1689 <-> NIST AI RMF 1.0 <-> ISO/IEC 42001:2023
+# Maintained by Regula. Sources: EU AI Act text, NIST AI 100-1, ISO/IEC 42001:2023 Annex A.
+schema_version: "1.0"
+last_updated: "2026-03-26"
+
+mappings:
+  article_9:
+    eu_ai_act:
+      article: "9"
+      title: "Risk Management System"
+      requirement: "Establish, implement, document and maintain a risk management system"
+    nist_ai_rmf:
+      functions: ["GOVERN", "MAP", "MANAGE"]
+      subcategories:
+        - "GOVERN 1.1: Legal and regulatory requirements are identified"
+        - "MAP 1.1: Intended purposes, context of use, deployment are understood"
+        - "MAP 5.1: Likelihood and magnitude of each identified AI risk is assessed"
+        - "MANAGE 1.1: A determination is made as to whether the AI risk is manageable"
+        - "MANAGE 2.1: Resources required to manage AI risks are taken into account"
+    iso_42001:
+      controls:
+        - "6.1: Actions to address risks and opportunities"
+        - "A.5.3: AI risk management"
+        - "A.6.1: AI risk assessment"
+    owasp_llm_top10:
+      items: []
+    mitre_atlas:
+      techniques:
+        - "AML.T0031: Erode ML Model Integrity"
+        - "AML.T0043: Craft Adversarial Data"
+        - "AML.T0047: Evade ML Model"
+
+  article_10:
+    eu_ai_act:
+      article: "10"
+      title: "Data and Data Governance"
+      requirement: "Training, validation and testing data sets shall be subject to appropriate data governance"
+    nist_ai_rmf:
+      functions: ["MAP", "MEASURE"]
+      subcategories:
+        - "MAP 2.1: The specific tasks and methods for the AI system are defined"
+        - "MAP 2.2: Information about the AI systems knowledge limits is documented"
+        - "MEASURE 2.6: AI system performance or assurance criteria are measured"
+    iso_42001:
+      controls:
+        - "A.6.6: Data for AI systems"
+        - "A.7.4: Documentation of data"
+    owasp_llm_top10:
+      items:
+        - "LLM02: Sensitive Information Disclosure"
+        - "LLM04: Data and Model Poisoning"
+        - "LLM08: Vector and Embedding Weaknesses"
+    mitre_atlas:
+      techniques:
+        - "AML.T0018: Backdoor ML Model"
+        - "AML.T0019: Publish Poisoned Datasets"
+        - "AML.T0020: Poison Training Data"
+        - "AML.T0043: Craft Adversarial Data"
+
+  article_11:
+    eu_ai_act:
+      article: "11"
+      title: "Technical Documentation"
+      requirement: "Technical documentation shall be drawn up before the system is placed on the market"
+    nist_ai_rmf:
+      functions: ["GOVERN", "MAP"]
+      subcategories:
+        - "GOVERN 1.2: Trustworthy AI characteristics are integrated into organizational policies"
+        - "MAP 1.6: System requirements are defined"
+    iso_42001:
+      controls:
+        - "A.6.4: AI system documentation"
+        - "7.5: Documented information"
+    owasp_llm_top10:
+      items: []
+    mitre_atlas:
+      techniques: []
+
+  article_12:
+    eu_ai_act:
+      article: "12"
+      title: "Record-Keeping"
+      requirement: "High-risk AI systems shall technically allow for automatic recording of events"
+    nist_ai_rmf:
+      functions: ["MEASURE", "MANAGE"]
+      subcategories:
+        - "MEASURE 2.5: AI system is evaluated for runtime monitoring"
+        - "MANAGE 3.1: AI risks and benefits from third-party resources are regularly monitored"
+    iso_42001:
+      controls:
+        - "A.6.10: Logging and monitoring"
+    owasp_llm_top10:
+      items: []
+    mitre_atlas:
+      techniques: []
+
+  article_13:
+    eu_ai_act:
+      article: "13"
+      title: "Transparency and Provision of Information to Deployers"
+      requirement: "High-risk AI systems shall be designed to ensure their operation is sufficiently transparent"
+    nist_ai_rmf:
+      functions: ["GOVERN", "MAP"]
+      subcategories:
+        - "GOVERN 4.1: Organizational practices are in place for transparency"
+        - "MAP 1.5: Assumptions and limitations are documented"
+    iso_42001:
+      controls:
+        - "A.6.8: Transparency and explainability"
+    owasp_llm_top10:
+      items:
+        - "LLM01: Prompt Injection"
+        - "LLM05: Improper Output Handling"
+        - "LLM07: System Prompt Leakage"
+        - "LLM09: Misinformation"
+    mitre_atlas:
+      techniques:
+        - "AML.T0040: ML Model Inference API Access"
+        - "AML.T0048: Prompt Injection"
+
+  article_14:
+    eu_ai_act:
+      article: "14"
+      title: "Human Oversight"
+      requirement: "High-risk AI systems shall be designed so they can be effectively overseen by natural persons"
+    nist_ai_rmf:
+      functions: ["GOVERN", "MANAGE"]
+      subcategories:
+        - "GOVERN 1.3: Processes for human oversight are defined"
+        - "MANAGE 2.2: Mechanisms are in place for human oversight of deployed AI"
+    iso_42001:
+      controls:
+        - "A.6.3: Human oversight of AI systems"
+    owasp_llm_top10:
+      items:
+        - "LLM05: Improper Output Handling"
+        - "LLM06: Excessive Agency"
+    mitre_atlas:
+      techniques: []
+
+  article_15:
+    eu_ai_act:
+      article: "15"
+      title: "Accuracy, Robustness and Cybersecurity"
+      requirement: "High-risk AI systems shall be designed to achieve an appropriate level of accuracy, robustness and cybersecurity"
+    nist_ai_rmf:
+      functions: ["MEASURE", "MANAGE"]
+      subcategories:
+        - "MEASURE 1.1: Approaches for measurement of AI risks are documented"
+        - "MEASURE 2.6: AI system performance or assurance criteria are measured"
+        - "MANAGE 2.4: Mechanisms are in place to address AI risks"
+    iso_42001:
+      controls:
+        - "A.6.9: Performance and monitoring"
+        - "A.8.1: Cybersecurity for AI"
+    owasp_llm_top10:
+      items:
+        - "LLM01: Prompt Injection"
+        - "LLM02: Sensitive Information Disclosure"
+        - "LLM03: Supply Chain Vulnerabilities"
+        - "LLM04: Data and Model Poisoning"
+        - "LLM05: Improper Output Handling"
+        - "LLM07: System Prompt Leakage"
+        - "LLM08: Vector and Embedding Weaknesses"
+        - "LLM09: Misinformation"
+        - "LLM10: Unbounded Consumption"
+    mitre_atlas:
+      techniques:
+        - "AML.T0010: ML Supply Chain Compromise"
+        - "AML.T0018: Backdoor ML Model"
+        - "AML.T0031: Erode ML Model Integrity"
+        - "AML.T0040: ML Model Inference API Access"
+        - "AML.T0043: Craft Adversarial Data"
+        - "AML.T0047: Evade ML Model"
+        - "AML.T0048: Prompt Injection"

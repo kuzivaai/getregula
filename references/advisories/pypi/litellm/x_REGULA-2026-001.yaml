@@ -1,0 +1,47 @@
+schema_version: "1.7.5"
+id: "x_REGULA-2026-001"
+modified: "2026-03-25T16:45:07Z"
+published: "2026-03-24T11:15:14Z"
+aliases:
+  - "PYSEC-2026-2"
+  - "MAL-2026-2144"
+summary: "Credential-stealing malware in litellm via compromised CI/CD pipeline"
+details: |
+  After an API token exposure from an exploited Trivy GitHub Actions dependency,
+  two new releases of litellm were uploaded to PyPI containing automatically
+  activated malware (.pth file), harvesting API keys, SSH keys, cloud credentials,
+  and exfiltrating to a remote API (litellm.cloud).
+affected:
+  - package:
+      ecosystem: "PyPI"
+      name: "litellm"
+      purl: "pkg:pypi/litellm"
+    ranges:
+      - type: "ECOSYSTEM"
+        events:
+          - introduced: "1.82.7"
+          - last_affected: "1.82.8"
+    versions:
+      - "1.82.7"
+      - "1.82.8"
+references:
+  - type: "REPORT"
+    url: "https://github.com/BerriAI/litellm/issues/24518"
+  - type: "EVIDENCE"
+    url: "https://inspector.pypi.io/project/litellm/1.82.8/"
+  - type: "EVIDENCE"
+    url: "https://inspector.pypi.io/project/litellm/1.82.7/"
+  - type: "ARTICLE"
+    url: "https://futuresearch.ai/blog/litellm-pypi-supply-chain-attack/"
+credits:
+  - name: "Callum McMahon, Futuresearch"
+    type: "REPORTER"
+  - name: "Mike Fiedler"
+    type: "COORDINATOR"
+database_specific:
+  attack_vector: "supply_chain_ci_cd"
+  iocs:
+    urls: ["https://models.litellm.cloud/"]
+    domains: ["litellm.cloud"]
+  remediation: "Upgrade to >=1.82.9. Rotate ALL credentials accessible to the LiteLLM environment."
+  regula_action: "block"

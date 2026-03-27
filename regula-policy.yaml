@@ -1,6 +1,26 @@
 version: "1.0"
 organisation: "Your Organisation"
 
+# Named accountable person — EU AI Act Article 4(1) requires a natural person
+# or legal entity responsible for the AI system. ISO 42001 A.5.2 requires
+# defined roles and responsibilities for AI governance.
+governance:
+  ai_officer:
+    name: ""              # Required: natural person accountable for AI governance
+    role: ""              # e.g., "DPO", "AI Officer", "Chief AI Ethics Officer"
+    email: ""             # Contact for regulatory correspondence
+  dpo:
+    name: ""              # Data Protection Officer (if separate from AI Officer)
+    email: ""
+
+# Regulatory basis — declares which version of the regulation the patterns
+# are calibrated against. Auditors can verify this against the tool version.
+regulatory_basis:
+  eu_ai_act_version: "2024/1689"
+  pattern_version: "1.1.0"
+  last_reviewed: "2026-03-25"
+  notes: "Patterns aligned to original text. Digital Omnibus timeline changes tracked but not yet enacted."
+
 frameworks:
   - eu_ai_act
   # - iso_42001      # Planned: v1.2
@@ -18,20 +38,34 @@ rules:
     retention_years: 10
     export_format: [json, csv]
 
-# --- Fields below are planned but NOT YET IMPLEMENTED ---
-# They are included to show the intended configuration surface.
-# Do not rely on these having any effect in the current version.
-#
-# planned:
-#   approvals:
-#     high_risk:
-#       required: true
-#       approvers: ["dpo@company.com"]
-#       timeout_hours: 72
-#   blocking:
-#     prohibited: []
-#     require_approval: []
-#   logging:
-#     pii_redaction: true
-#   alerts:
-#     channels: []
+# Compliance status workflow for discovered AI systems.
+# Valid statuses: not_started → assessment → implementing → compliant → review_due
+# compliance:
+#   review_interval_months: 12
+#   require_sign_off: true
+
+# Severity thresholds for CI/CD integration
+thresholds:
+  block_on_prohibited: true
+  block_on_high_risk: false
+  min_dependency_pinning_score: 50
+  min_confidence: 0
+
+# Path and pattern exclusions
+exclusions:
+  paths:
+    - "tests/"
+    - "docs/"
+    - "examples/"
+  patterns:
+    - "test_*.py"
+    - "*_test.py"
+    - "*.spec.ts"
+
+# Approval workflow for high-risk AI systems (planned)
+# approvals:
+#   high_risk_systems:
+#     require_explicit_approval: true
+#     approvers:
+#       - role: "AI Governance Lead"
+#       - role: "Legal Counsel"

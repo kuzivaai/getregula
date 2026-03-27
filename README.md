@@ -1,6 +1,6 @@
 # Regula
 
-**AI Governance Risk Indication for Claude Code**
+**AI Governance Risk Indication for Code**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
@@ -50,6 +50,8 @@ When you write AI-related code, Regula:
 5. **Blocks** hardcoded API keys in tool inputs (OpenAI, Anthropic, AWS, GitHub)
 6. **Notes** GPAI transparency obligations when training patterns are detected
 7. **Logs** everything to a hash-chained audit trail
+8. **Generates** Annex IV technical documentation and QMS scaffolds
+9. **Tracks** compliance status across registered AI systems
 
 ### Example: High-Risk Indicator
 
@@ -157,18 +159,90 @@ python3 scripts/cli.py classify --input "import tensorflow; cv screening model"
 python3 scripts/cli.py report --format html -o report.html --include-audit
 python3 scripts/cli.py report --format sarif -o results.sarif.json
 
+# Generate documentation scaffolds
+python3 scripts/cli.py docs --project .                     # Annex IV only
+python3 scripts/cli.py docs --project . --qms               # Annex IV + QMS
+python3 scripts/cli.py docs --project . --all -o compliance  # All types
+
 # Discover AI systems and register them
 python3 scripts/cli.py discover --project . --register
 python3 scripts/cli.py status
+
+# Compliance status tracking
+python3 scripts/cli.py compliance                           # View all systems
+python3 scripts/cli.py compliance workflow                  # Show workflow
+python3 scripts/cli.py compliance update -s MyApp --status assessment --note "Starting review"
+python3 scripts/cli.py compliance history -s MyApp          # View history
 
 # Audit trail management
 python3 scripts/cli.py audit verify
 python3 scripts/cli.py audit export --format csv -o audit.csv
 
+# Compliance gap assessment (Articles 9-15)
+python3 scripts/cli.py gap --project .
+python3 scripts/cli.py gap --project . --article 14   # Article 14 only
+
+# Real-world validation benchmark
+python3 scripts/cli.py benchmark --project .
+python3 scripts/cli.py benchmark --project . -f csv -o findings.csv
+
 # Install hooks for a platform
 python3 scripts/cli.py install claude-code
 python3 scripts/cli.py install copilot-cli
 python3 scripts/cli.py install list
+```
+
+### Compliance Gap Assessment
+
+AST-powered compliance gap analysis checks whether your project has the required compliance infrastructure for Articles 9-15. Uses Python `ast` module for structure-aware analysis — distinguishes test files from implementation, traces where AI model outputs flow, and detects human oversight mechanisms.
+
+```bash
+regula gap --project .                   # Full assessment
+regula gap --project . --article 14      # Article 14 (human oversight) only
+regula gap --project . --format json     # Machine-readable output
+regula gap --project . --strict          # Exit 1 if score < 50 (CI/CD gate)
+```
+
+Example output:
+```
+Article 12  Record-Keeping       [100%] STRONG
+  Evidence: Structured logging in 5/7 AI files, audit trail configured
+Article 14  Human Oversight      [ 20%] WEAK
+  Evidence: No review/approve functions found
+  Gap: AI model output flows directly to return without human review
+  Gap: AST: 3 automated decision paths with no oversight mechanism
+```
+
+### Dependency Supply Chain Security
+
+AI-specific dependency pinning analysis addressing supply chain attacks like the LiteLLM incident (March 2026).
+
+```bash
+regula deps --project .                   # Full dependency analysis
+regula deps --project . --format json     # Machine-readable output
+regula deps --project . --strict          # Exit 1 if pinning score < 50 (CI/CD gate)
+```
+
+Checks: pinning quality (hash > exact > range > unpinned), lockfile presence, known compromised versions (OSV format). AI dependencies weighted 3x in scoring.
+
+### Cross-Framework Compliance Mapping
+
+Map findings simultaneously to EU AI Act, NIST AI RMF 1.0, ISO 42001:2023, OWASP Top 10 for LLMs, and MITRE ATLAS.
+
+```bash
+regula check . --framework all              # Map to all five frameworks
+regula check . --framework owasp-llm-top10  # OWASP LLM Top 10 only
+regula check . --framework mitre-atlas      # MITRE ATLAS only
+```
+
+### Real-World Validation Benchmark
+
+Measure Regula's precision and recall against real codebases. Outputs CSV for manual labelling, then calculates metrics from labelled data.
+
+```bash
+regula benchmark --project /path/to/project                    # Scan
+regula benchmark --project /path/to/project -f csv -o out.csv  # CSV for labelling
+regula benchmark --metrics labelled.csv                        # Precision/recall
 ```
 
 ### Inline Suppression
@@ -183,7 +257,7 @@ import sklearn
 
 ### Governance News Feed
 
-Curated AI governance news from 7 reputable sources (IAPP, NIST, Stanford HAI, ICO, EU AI Act, Brookings, Help Net Security). Keyword-filtered, deduplicated, cached.
+Curated AI governance news from 7 reputable sources (IAPP, NIST, EU AI Act Updates, MIT Technology Review, Future of Life Institute, Help Net Security, EFF). Keyword-filtered, deduplicated, cached.
 
 ```bash
 regula feed                              # CLI text output
@@ -219,6 +293,47 @@ regula baseline save                     # Save current state
 regula baseline compare --fail-on-new    # Fail CI on new findings
 ```
 
+### GitHub Action
+
+Integrate Regula into your CI/CD pipeline with one step:
+
+```yaml
+- uses: kuzivaai/getregula@main
+  with:
+    path: '.'
+    fail-on-prohibited: 'true'
+    upload-sarif: 'true'
+```
+
+Results appear in the GitHub Security tab alongside CodeQL findings. Configurable options: `fail-on-prohibited`, `fail-on-high-risk`, `min-dependency-score`, `upload-sarif`.
+
+### Compliance Status Tracking
+
+Track compliance progress across registered AI systems through a defined workflow.
+
+```bash
+regula compliance                        # View all systems
+regula compliance workflow               # Show status workflow
+regula compliance update -s MyApp --status assessment --note "DPO review initiated"
+regula compliance history -s MyApp       # View transition history
+```
+
+**Workflow:** `not_started` → `assessment` → `implementing` → `compliant` → `review_due`
+
+All transitions are logged to the audit trail with timestamps and notes.
+
+### Documentation Generation
+
+Generate Annex IV technical documentation scaffolds and Quality Management System (QMS) templates per Article 17.
+
+```bash
+regula docs --project .                  # Annex IV scaffold
+regula docs --project . --qms           # Annex IV + QMS scaffold
+regula docs --project . --all           # All documentation types
+```
+
+QMS scaffolds cover all Article 17 requirements: governance accountability, development procedures, testing/validation, data management, risk management, post-market monitoring, human oversight, and transparency.
+
 ### EU AI Act Timeline
 
 Current enforcement dates with Digital Omnibus status.
@@ -244,20 +359,36 @@ regula/
 │   ├── session.py                 # Session-level risk aggregation
 │   ├── baseline.py                # CI/CD baseline comparison
 │   ├── timeline.py                # EU AI Act enforcement dates
-│   ├── generate_documentation.py  # Annex IV scaffold generator
-│   └── discover_ai_systems.py     # AI system discovery and registry
+│   ├── generate_documentation.py  # Annex IV + QMS scaffold generator
+│   ├── discover_ai_systems.py     # AI system discovery, registry, compliance tracking
+│   ├── credential_check.py        # Secret detection (6 providers)
+│   ├── ast_analysis.py            # AST-based Python analysis (data flow, oversight, logging)
+│   ├── ast_engine.py              # Multi-language engine (Python AST + JS/TS/Java/Go regex)
+│   ├── compliance_check.py        # Compliance gap assessment (Articles 9-15)
+│   ├── dependency_scan.py         # AI dependency supply chain security
+│   ├── framework_mapper.py        # Cross-framework compliance mapping
+│   └── benchmark.py               # Real-world precision/recall validation
 ├── hooks/
 │   ├── pre_tool_use.py            # PreToolUse hook (CC/Copilot/Windsurf)
 │   ├── post_tool_use.py           # PostToolUse logging hook
 │   └── stop_hook.py               # Session summary hook
 ├── references/                    # Regulatory reference documents
+│   ├── owasp_llm_top10.yaml       # OWASP Top 10 for LLMs → EU AI Act mapping
+│   └── mitre_atlas.yaml           # MITRE ATLAS → EU AI Act mapping
 ├── tests/
-│   └── test_classification.py     # 59 tests, 177 assertions
+│   └── test_classification.py     # 116 tests, 360 assertions
 ├── docs/
 │   └── research-synthesis.md      # Research findings informing roadmap
 ├── regula-policy.yaml             # Policy configuration template
 └── .github/workflows/ci.yaml     # CI/CD
 ```
+
+### Language Support
+
+- **Python** — Full AST analysis (data flow tracing, human oversight detection, logging practices)
+- **JavaScript/TypeScript** — Regex import detection (tree-sitter optional for deeper analysis)
+- **Java** — Regex import detection (13 AI libraries including Google AI Platform, LangChain4j, DJL)
+- **Go** — Regex import detection (9 AI libraries including go-openai, langchaingo)
 
 ### Design Principles
 
@@ -266,6 +397,13 @@ regula/
 - **Confidence scores, not binary labels.** 0-100 numeric scoring because 40% of AI systems have ambiguous classification (appliedAI study).
 - **Inline suppression with audit trail.** `# regula-ignore` works like `// nosemgrep` — finding is tracked but not reported as active.
 - **SARIF for CI/CD.** Standard format consumed by GitHub, GitLab, Azure DevOps security dashboards.
+- **Named accountability.** Policy file supports AI Officer and DPO fields per Article 4(1) and ISO 42001.
+- **Compliance workflow.** Tracked status progression with audit trail and transition history.
+- **AST over regex where it matters.** Python `ast` module provides structure-aware analysis: real imports vs string mentions, data flow tracing, human oversight detection. Regex remains for cross-language pattern matching.
+- **Compliance gap assessment, not just risk flagging.** Checks whether Articles 9-15 compliance infrastructure actually exists in the codebase.
+- **AI-specific supply chain security.** Dependency pinning checks focus on AI libraries, not general packages.
+- **Cross-platform.** Unix/macOS (`fcntl`) and Windows (`msvcrt`) file locking. No platform restrictions.
+- **Multi-framework mapping.** EU AI Act, NIST AI RMF, ISO 42001, OWASP LLM Top 10, and MITRE ATLAS mapped via a single crosswalk data file.
 
 ## Configuration
 
@@ -274,6 +412,15 @@ Copy `regula-policy.yaml` to your project root and customise:
 ```yaml
 version: "1.0"
 organisation: "Your Organisation"
+
+governance:
+  ai_officer:
+    name: "Jane Smith"
+    role: "Chief AI Ethics Officer"
+    email: "jane.smith@company.com"
+  dpo:
+    name: "John Doe"
+    email: "dpo@company.com"
 
 rules:
   risk_classification:
@@ -291,7 +438,7 @@ For full YAML support, install pyyaml: `pip install pyyaml`. Without it, a minim
 python3 tests/test_classification.py
 ```
 
-65 test functions, 196+ assertions covering:
+116 tests, 360 assertions covering:
 - AI detection (libraries, model files, API endpoints, ML patterns)
 - All 8 prohibited practices
 - All 10+ high-risk categories
@@ -305,20 +452,29 @@ python3 tests/test_classification.py
 - Session aggregation, baseline comparison, timeline data accuracy
 - Secret detection (OpenAI/AWS keys, no false positives, redaction)
 - GPAI training detection (training vs inference distinction)
+- Compliance status workflow (transitions, history, audit logging)
+- QMS scaffold generation
+- AST analysis (import detection, context classification, data flow tracing)
+- Human oversight detection (Article 14) via AST
+- Logging practice detection (Article 12) via AST
+- Compliance gap assessment (Articles 9-15 evidence checks)
+- Cross-platform file locking (Unix + Windows)
+- Regulatory version pinning
 
 ## Constraints
 
-- **No required external dependencies** — stdlib only (pyyaml optional)
+- **No required external dependencies** — stdlib only (pyyaml optional; tree-sitter optional for JS/TS AST, regex fallback when not installed)
+- **Language support** — Python (full AST), JavaScript/TypeScript (regex + optional tree-sitter), Java (regex, 13 AI libraries), Go (regex, 9 AI libraries)
 - **Python 3.10+**
 - **Works offline** — no API calls required
+- **Cross-platform** — Unix, macOS, and Windows supported
 - **Append-only audit** — no deletion capability
-- **File-locked writes** — safe under concurrent hook execution
+- **File-locked writes** — safe under concurrent hook execution (fcntl on Unix, msvcrt on Windows)
 
 ## Roadmap
 
-- **v1.1:** ISO 42001 control mapping, NIST AI RMF integration
-- **v1.2:** DPO dashboard, Slack/Teams alerting, external timestamp authority
-- **v2.0:** Model card generation, bias testing integration
+- **v1.2:** DPO dashboard, Slack/Teams alerting, external timestamp authority, PDF export
+- **v2.0:** AST-based analysis, model card generation, bias testing integration
 
 ## License
 

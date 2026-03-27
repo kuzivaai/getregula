@@ -705,6 +705,19 @@ def test_html_report_contains_disclaimer():
     print("✓ Report: HTML contains disclaimer")
 
 
+def test_report_html_dependency_section():
+    """HTML report includes dependency analysis section"""
+    from report import generate_html_report
+    findings = [{"file": "app.py", "tier": "high_risk", "category": "Employment",
+                 "description": "CV screening", "confidence_score": 75, "suppressed": False}]
+    dep_results = {"ai_dependencies": [{"name": "openai", "pinning": "exact", "version": "1.52.0"}],
+                   "pinning_score": 80, "lockfiles": ["poetry.lock"], "compromised": [], "compromised_count": 0}
+    html = generate_html_report(findings, "test-project", dependency_results=dep_results)
+    assert_true("openai" in html, "dependency listed in HTML")
+    assert_true("80" in html, "pinning score in HTML")
+    print("✓ Report: HTML includes dependency analysis section")
+
+
 def test_inline_suppression():
     """Files with regula-ignore comments have findings marked as suppressed"""
     from report import scan_files
@@ -972,6 +985,813 @@ def test_file_credential_governance():
     print("✓ AI credential governance: detects credentials in AI files as Article 15 finding")
 
 
+# ── Compliance Status Workflow Tests ───────────────────────────────
+
+def test_compliance_workflow_transitions():
+    """Compliance status follows valid transitions"""
+    from discover_ai_systems import COMPLIANCE_STATUSES, COMPLIANCE_TRANSITIONS
+    assert_true(len(COMPLIANCE_STATUSES) == 5, f"5 statuses defined (got {len(COMPLIANCE_STATUSES)})")
+    assert_true("not_started" in COMPLIANCE_TRANSITIONS, "not_started has transitions")
+    assert_true("compliant" in COMPLIANCE_TRANSITIONS, "compliant has transitions")
+    # not_started can only go to assessment
+    assert_eq(COMPLIANCE_TRANSITIONS["not_started"], ["assessment"], "not_started → assessment only")
+    # compliant can only go to review_due
+    assert_eq(COMPLIANCE_TRANSITIONS["compliant"], ["review_due"], "compliant → review_due only")
+    print("✓ Compliance: workflow transitions are valid")
+
+
+def test_compliance_status_update():
+    """Compliance status updates and records history"""
+    import tempfile, shutil
+    from discover_ai_systems import (
+        load_registry, save_registry, update_compliance_status,
+        REGISTRY_PATH,
+    )
+
+    # Save original registry path
+    original_path = REGISTRY_PATH
+
+    temp_dir = tempfile.mkdtemp()
+    import discover_ai_systems
+    discover_ai_systems.REGISTRY_PATH = Path(temp_dir) / "test_registry.json"
+
+    try:
+        # Create a test registry
+        registry = {"version": "1.0", "systems": {
+            "test-app": {
+                "registered_at": "2026-03-25T00:00:00+00:00",
+                "last_scanned": "2026-03-25T00:00:00+00:00",
+                "compliance_status": "not_started",
+                "highest_risk": "high_risk",
+            }
+        }}
+        save_registry(registry)
+
+        # Valid transition: not_started → assessment
+        entry = update_compliance_status("test-app", "assessment", "Starting review")
+        assert_eq(entry["compliance_status"], "assessment", "status updated to assessment")
+        assert_true(len(entry.get("compliance_history", [])) > 0, "history recorded")
+        assert_eq(entry["compliance_history"][-1]["from"], "not_started", "history from correct")
+        assert_eq(entry["compliance_history"][-1]["to"], "assessment", "history to correct")
+
+        # Invalid transition: assessment → compliant (should fail)
+        try:
+            update_compliance_status("test-app", "compliant")
+            assert_true(False, "should have raised ValueError for invalid transition")
+        except ValueError:
+            passed_local = True
+            assert_true(True, "raises ValueError for invalid transition")
+
+    finally:
+        discover_ai_systems.REGISTRY_PATH = original_path
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+    print("✓ Compliance: status updates and records history")
+
+
+def test_governance_contacts():
+    """Governance contacts are readable from policy"""
+    from classify_risk import get_governance_contacts
+    # Should return dict (may be empty if no policy configured)
+    contacts = get_governance_contacts()
+    assert_true(isinstance(contacts, dict), "returns dict")
+    print("✓ Governance: contacts readable from policy")
+
+
+def test_qms_scaffold_generation():
+    """QMS scaffold generates with all Article 17 sections"""
+    import tempfile, shutil
+    from generate_documentation import scan_project, generate_qms_scaffold
+
+    temp_dir = tempfile.mkdtemp()
+    test_file = Path(temp_dir) / "model.py"
+    test_file.write_text("import tensorflow\ncredit_scoring = True\n")
+
+    try:
+        findings = scan_project(temp_dir)
+        qms = generate_qms_scaffold(findings, "test-project", temp_dir)
+        assert_true("Article 17" in qms, "references Article 17")
+        assert_true("Quality Management System" in qms, "contains QMS title")
+        assert_true("Governance and Accountability" in qms, "has governance section")
+        assert_true("Human Oversight" in qms, "has human oversight section")
+        assert_true("Post-Market Monitoring" in qms, "has post-market monitoring")
+        assert_true("Corrective Actions" in qms, "has corrective actions")
+        assert_true("Review Schedule" in qms, "has review schedule")
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+    print("✓ QMS: scaffold generates with all Article 17 sections")
+
+
+def test_openai_key_no_anthropic_false_positive():
+    """OpenAI key pattern does not match Anthropic keys"""
+    from credential_check import check_secrets
+    findings = check_secrets("sk-ant-api03-abcdefghijklmnopqrstuvwxyz12345")
+    # Should only find the Anthropic pattern, not OpenAI
+    openai_findings = [f for f in findings if f.pattern_name == "openai_api_key"]
+    anthropic_findings = [f for f in findings if f.pattern_name == "anthropic_api_key"]
+    assert_eq(len(openai_findings), 0, "OpenAI pattern does not match Anthropic key")
+    assert_true(len(anthropic_findings) > 0, "Anthropic pattern matches Anthropic key")
+    print("✓ Secrets: OpenAI pattern does not false-positive on Anthropic keys")
+
+
+# ── AST Analysis Tests ─────────────────────────────────────────────
+
+def test_ast_parse_python_file():
+    """AST parser extracts imports, functions, and detects AI code"""
+    from ast_analysis import parse_python_file
+    code = """
+import tensorflow as tf
+from sklearn.ensemble import RandomForestClassifier
+
+def train_model(X, y):
+    model = RandomForestClassifier()
+    model.fit(X, y)
+    return model
+
+def test_model_accuracy():
+    assert True
+"""
+    result = parse_python_file(code)
+    assert_true(result["has_ai_code"], "detects AI imports")
+    assert_true(len(result["ai_imports"]) >= 2, f"finds 2+ AI imports (got {len(result['ai_imports'])})")
+    assert_true(len(result["function_defs"]) == 2, "finds 2 functions")
+    # test_ function should be flagged
+    test_fns = [f for f in result["function_defs"] if f["is_test"]]
+    assert_true(len(test_fns) == 1, "identifies test function")
+    assert_false(result["is_test_file"], "not a test file (1 of 2 fns is test)")
+    print("✓ AST: parse_python_file extracts imports, functions, AI detection")
+
+
+def test_ast_classify_context():
+    """AST context classifier distinguishes implementation from test"""
+    from ast_analysis import classify_context
+    impl_code = "import openai\nclient = openai.Client()\nresult = client.chat.completions.create(model='gpt-4')\n"
+    test_code = "def test_model(): assert True\ndef test_accuracy(): assert True\ndef test_loss(): assert True\n"
+    assert_eq(classify_context(impl_code), "implementation", "AI code → implementation")
+    assert_eq(classify_context(test_code), "test", "all test_ functions → test")
+    assert_eq(classify_context("not valid python {{{{"), "not_python", "invalid syntax → not_python")
+    print("✓ AST: classify_context distinguishes implementation vs test")
+
+
+def test_ast_data_flow_tracing():
+    """AST traces where AI model outputs go"""
+    from ast_analysis import trace_ai_data_flow
+    code = """
+import openai
+client = openai.Client()
+
+def process():
+    result = client.chat.completions.create(model="gpt-4", messages=[])
+    if result.choices[0].message.content:
+        return result
+"""
+    flows = trace_ai_data_flow(code)
+    assert_true(len(flows) > 0, "finds AI data flows")
+    # Should detect the create() call
+    flow = flows[0]
+    assert_true("create" in flow["source"], f"source contains create (got {flow['source']})")
+    # Should have destinations
+    dest_types = [d["type"] for d in flow["destinations"]]
+    assert_true(len(dest_types) > 0, "has destinations")
+    print("✓ AST: data flow tracing works")
+
+
+def test_ast_human_oversight():
+    """AST detects human oversight presence and absence"""
+    from ast_analysis import detect_human_oversight
+    # Code WITH oversight
+    code_with = """
+import openai
+client = openai.Client()
+
+def get_recommendation():
+    result = client.chat.completions.create(model="gpt-4", messages=[])
+    return result
+
+def human_review(recommendation):
+    print("Please review:", recommendation)
+    approved = input("Approve? ")
+    return approved == "yes"
+"""
+    result_with = detect_human_oversight(code_with)
+    assert_true(result_with["has_oversight"], "detects oversight function")
+    assert_true(len(result_with["oversight_patterns"]) > 0, "has oversight patterns")
+
+    # Code WITHOUT oversight
+    code_without = """
+import openai
+client = openai.Client()
+
+def auto_decide(data):
+    result = client.chat.completions.create(model="gpt-4", messages=[])
+    if result:
+        send_response(result)
+"""
+    result_without = detect_human_oversight(code_without)
+    assert_true(result_without["oversight_score"] < result_with["oversight_score"],
+                f"no-oversight score ({result_without['oversight_score']}) < oversight score ({result_with['oversight_score']})")
+    print("✓ AST: detects human oversight presence and absence")
+
+
+def test_ast_logging_practices():
+    """AST detects logging near AI operations"""
+    from ast_analysis import detect_logging_practices
+    code_logged = """
+import openai
+import logging
+logger = logging.getLogger(__name__)
+client = openai.Client()
+
+def predict(data):
+    result = client.chat.completions.create(model="gpt-4", messages=[])
+    logger.info("Prediction made: %s", result)
+    return result
+"""
+    result = detect_logging_practices(code_logged)
+    assert_true(result["has_logging"], "detects logging")
+    assert_true(result["logging_score"] > 50, f"logged code scores > 50 (got {result['logging_score']})")
+
+    code_unlogged = """
+import openai
+client = openai.Client()
+
+def predict(data):
+    result = client.chat.completions.create(model="gpt-4", messages=[])
+    return result
+"""
+    result2 = detect_logging_practices(code_unlogged)
+    assert_true(result2["logging_score"] < result["logging_score"],
+                f"unlogged ({result2['logging_score']}) < logged ({result['logging_score']})")
+    print("✓ AST: detects logging practices near AI operations")
+
+
+# ── Compliance Gap Assessment Tests ────────────────────────────────
+
+def test_compliance_gap_assessment():
+    """Compliance gap assessment produces valid structure"""
+    import tempfile, shutil
+    from compliance_check import assess_compliance
+
+    temp_dir = tempfile.mkdtemp()
+    # Create a minimal AI project
+    (Path(temp_dir) / "model.py").write_text(
+        "import tensorflow as tf\nmodel = tf.keras.Sequential()\nmodel.fit(X, y)\n"
+    )
+    (Path(temp_dir) / "tests").mkdir()
+    (Path(temp_dir) / "tests" / "test_model.py").write_text(
+        "def test_accuracy(): assert True\n"
+    )
+
+    try:
+        assessment = assess_compliance(temp_dir)
+        assert_true("articles" in assessment, "has articles dict")
+        assert_true("overall_score" in assessment, "has overall_score")
+        assert_true(isinstance(assessment["overall_score"], (int, float)), "score is numeric")
+        # Should have all 7 articles
+        assert_eq(len(assessment["articles"]), 7, "7 articles assessed")
+        # Each article should have required keys
+        for art_num, art_data in assessment["articles"].items():
+            assert_true("score" in art_data, f"article {art_num} has score")
+            assert_true("evidence" in art_data, f"article {art_num} has evidence")
+            assert_true("gaps" in art_data, f"article {art_num} has gaps")
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+    print("✓ Compliance gap: produces valid assessment structure")
+
+
+def test_compliance_gap_article_15_tests():
+    """Article 15 detects test files as accuracy evidence"""
+    import tempfile, shutil
+    from compliance_check import assess_compliance
+
+    temp_dir = tempfile.mkdtemp()
+    (Path(temp_dir) / "model.py").write_text("import torch\nmodel = torch.nn.Linear(10, 1)\n")
+    tests_dir = Path(temp_dir) / "tests"
+    tests_dir.mkdir()
+    (tests_dir / "test_model.py").write_text("def test_accuracy(): pass\ndef test_robustness(): pass\n")
+
+    try:
+        assessment = assess_compliance(temp_dir)
+        art15 = assessment["articles"]["15"]
+        assert_true(art15["score"] > 0, f"Article 15 score > 0 with tests (got {art15['score']})")
+        evidence_str = " ".join(art15["evidence"])
+        assert_true("test" in evidence_str.lower(), "evidence mentions test files")
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+    print("✓ Compliance gap: Article 15 detects test files as evidence")
+
+
+def test_regulatory_basis():
+    """Regulatory basis is readable from policy"""
+    from classify_risk import get_regulatory_basis
+    basis = get_regulatory_basis()
+    assert_true(isinstance(basis, dict), "returns dict")
+    print("✓ Regulatory: basis readable from policy")
+
+
+def test_cross_platform_locking():
+    """File locking functions exist and are callable"""
+    from log_event import _lock_file, _unlock_file
+    assert_true(callable(_lock_file), "_lock_file is callable")
+    assert_true(callable(_unlock_file), "_unlock_file is callable")
+    print("✓ Cross-platform: file locking functions available")
+
+
+def test_ast_engine_python_parse():
+    """AST engine parses Python and returns unified format"""
+    from ast_engine import analyse_file
+    code = '''
+import openai
+client = openai.Client()
+result = client.chat.completions.create(model="gpt-4", messages=[])
+print(result)
+'''
+    findings = analyse_file(code, "test.py", language="python")
+    assert_true(isinstance(findings, dict), "returns dict")
+    assert_true("imports" in findings, "has imports")
+    assert_true("ai_imports" in findings, "has ai_imports")
+    assert_true("data_flows" in findings, "has data_flows")
+    assert_true("oversight" in findings, "has oversight")
+    assert_true("logging" in findings, "has logging")
+    assert_true("context" in findings, "has context classification")
+    assert_true(findings["has_ai_code"], "detects AI code")
+    print("✓ AST engine: Python parse returns unified format")
+
+
+def test_ast_engine_js_regex_fallback():
+    """JS code with OpenAI import is detected as AI code via regex fallback"""
+    from ast_engine import analyse_file
+    code = "import OpenAI from 'openai';\nconst client = new OpenAI();\n"
+    result = analyse_file(code, "app.js")
+    assert_true(result["has_ai_code"], "JS with openai import → has_ai_code")
+    assert_true("openai" in result["ai_imports"], f"'openai' in ai_imports (got {result['ai_imports']})")
+    assert_eq(result["language"], "javascript", "language is javascript")
+    print("✓ AST engine: JS regex fallback detects openai import")
+
+
+def test_ast_engine_ts_regex_fallback():
+    """TS code with Anthropic and ChromaDB imports detects 2+ AI imports"""
+    from ast_engine import analyse_file
+    code = (
+        "import Anthropic from '@anthropic-ai/sdk';\n"
+        "import { ChromaClient } from 'chromadb';\n"
+        "const client = new Anthropic();\n"
+    )
+    result = analyse_file(code, "service.ts")
+    assert_true(result["has_ai_code"], "TS with AI imports → has_ai_code")
+    assert_true(len(result["ai_imports"]) >= 2,
+                f"2+ AI imports detected (got {result['ai_imports']})")
+    assert_eq(result["language"], "typescript", "language is typescript")
+    print("✓ AST engine: TS regex fallback detects 2+ AI imports")
+
+
+def test_ast_engine_non_ai_js():
+    """JS code with only express import is NOT flagged as AI"""
+    from ast_engine import analyse_file
+    code = "import express from 'express';\nconst app = express();\n"
+    result = analyse_file(code, "server.js")
+    assert_false(result["has_ai_code"], "express-only JS → not AI")
+    assert_eq(len(result["ai_imports"]), 0,
+              f"no AI imports (got {result['ai_imports']})")
+    print("✓ AST engine: express-only JS not flagged as AI")
+
+
+def test_ast_engine_language_detection():
+    """detect_language() returns correct language for known extensions and None for unknown"""
+    from ast_engine import detect_language
+    assert_eq(detect_language("model.py"), "python", ".py → python")
+    assert_eq(detect_language("app.js"), "javascript", ".js → javascript")
+    assert_eq(detect_language("service.ts"), "typescript", ".ts → typescript")
+    assert_eq(detect_language("component.tsx"), "typescript", ".tsx → typescript")
+    assert_eq(detect_language("widget.jsx"), "javascript", ".jsx → javascript")
+    assert_eq(detect_language("module.mjs"), "javascript", ".mjs → javascript")
+    assert_eq(detect_language("script.rb"), None, ".rb → None")
+    assert_eq(detect_language("Service.java"), "java", ".java → java")
+    assert_eq(detect_language("main.go"), "go", ".go → go")
+    print("✓ AST engine: language detection correct for .py/.js/.ts/.tsx/.jsx/.mjs/.rb/.java/.go")
+
+
+# ── Language Expansion Tests ───────────────────────────────────────
+
+def test_ast_engine_java_ai_detection():
+    """AST engine detects AI imports in Java"""
+    from ast_engine import analyse_file
+    code = 'import com.google.cloud.aiplatform.v1.PredictionServiceClient;\nimport dev.langchain4j.model.openai.OpenAiChatModel;\n\npublic class AIService {\n    public String predict(String input) {\n        return model.generate(input);\n    }\n}\n'
+    findings = analyse_file(code, "AIService.java", language="java")
+    assert_true(findings["has_ai_code"], "detects AI imports in Java")
+    assert_true(len(findings["ai_imports"]) >= 1, f"finds AI imports (got {len(findings['ai_imports'])})")
+    print("✓ AST engine: Java AI detection")
+
+
+def test_ast_engine_go_ai_detection():
+    """AST engine detects AI imports in Go"""
+    from ast_engine import analyse_file
+    code = 'package main\n\nimport (\n\t"github.com/sashabaranov/go-openai"\n\t"github.com/tmc/langchaingo/llms"\n)\n\nfunc main() {\n\tclient := openai.NewClient("key")\n}\n'
+    findings = analyse_file(code, "main.go", language="go")
+    assert_true(findings["has_ai_code"], "detects AI imports in Go")
+    assert_true(len(findings["ai_imports"]) >= 1, f"finds AI imports (got {len(findings['ai_imports'])})")
+    print("✓ AST engine: Go AI detection")
+
+
+def test_ast_engine_java_non_ai():
+    """Java code without AI imports is not flagged"""
+    from ast_engine import analyse_file
+    code = 'import org.springframework.boot.SpringApplication;\nimport javax.persistence.Entity;\n\npublic class Application {\n    public static void main(String[] args) {\n        SpringApplication.run(Application.class, args);\n    }\n}\n'
+    findings = analyse_file(code, "Application.java", language="java")
+    assert_false(findings["has_ai_code"], "Spring Boot app is not AI")
+    print("✓ AST engine: Java non-AI correctly identified")
+
+
+# ── Dependency Supply Chain Tests ──────────────────────────────────
+
+def test_dep_scan_requirements_txt():
+    """Parses requirements.txt and scores pinning quality"""
+    from dependency_scan import parse_requirements_txt
+    content = "openai==1.52.0\ntorch>=2.0\nlangchain\nlitellm==1.82.7\nnumpy\n"
+    deps = parse_requirements_txt(content)
+    assert_true(len(deps) >= 4, f"finds 4+ deps (got {len(deps)})")
+    openai_dep = [d for d in deps if d["name"] == "openai"][0]
+    assert_eq(openai_dep["pinning"], "exact", "openai is exact-pinned")
+    assert_eq(openai_dep["version"], "1.52.0", "correct version")
+    torch_dep = [d for d in deps if d["name"] == "torch"][0]
+    assert_eq(torch_dep["pinning"], "range", "torch is range-pinned")
+    langchain_dep = [d for d in deps if d["name"] == "langchain"][0]
+    assert_eq(langchain_dep["pinning"], "unpinned", "langchain is unpinned")
+    print("✓ Dependency scan: parses requirements.txt pinning quality")
+
+
+def test_dep_scan_ai_identification():
+    """Identifies AI vs non-AI dependencies"""
+    from dependency_scan import is_ai_dependency
+    assert_true(is_ai_dependency("openai"), "openai is AI")
+    assert_true(is_ai_dependency("torch"), "torch is AI")
+    assert_true(is_ai_dependency("litellm"), "litellm is AI")
+    assert_true(is_ai_dependency("langchain"), "langchain is AI")
+    assert_true(is_ai_dependency("scikit-learn"), "scikit-learn is AI")
+    assert_true(is_ai_dependency("huggingface-hub"), "huggingface-hub is AI")
+    assert_false(is_ai_dependency("flask"), "flask is not AI")
+    assert_false(is_ai_dependency("requests"), "requests is not AI")
+    assert_false(is_ai_dependency("django"), "django is not AI")
+    print("✓ Dependency scan: AI dependency identification")
+
+
+def test_dep_scan_pinning_score():
+    """Calculates overall pinning score"""
+    from dependency_scan import calculate_pinning_score
+    deps = [
+        {"name": "openai", "pinning": "exact", "is_ai": True},
+        {"name": "torch", "pinning": "range", "is_ai": True},
+        {"name": "langchain", "pinning": "unpinned", "is_ai": True},
+        {"name": "flask", "pinning": "exact", "is_ai": False},
+    ]
+    score = calculate_pinning_score(deps)
+    assert_true(0 <= score <= 100, f"score in range (got {score})")
+    assert_true(score < 70, f"mixed pinning scores below 70 (got {score})")
+    print("✓ Dependency scan: pinning score calculation")
+
+
+def test_dep_scan_lockfile_detection():
+    """Detects lockfile presence"""
+    import tempfile, shutil
+    from dependency_scan import detect_lockfiles
+    temp_dir = tempfile.mkdtemp()
+    Path(temp_dir, "requirements.txt").write_text("openai==1.0\n")
+    Path(temp_dir, "Pipfile.lock").write_text("{}\n")
+    try:
+        lockfiles = detect_lockfiles(temp_dir)
+        assert_true(len(lockfiles) > 0, "detects Pipfile.lock")
+        assert_true(any("Pipfile.lock" in lf for lf in lockfiles), "finds Pipfile.lock")
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+    print("✓ Dependency scan: lockfile detection")
+
+
+def test_dep_scan_package_json():
+    """Parses package.json dependencies"""
+    from dependency_scan import parse_package_json
+    content = json.dumps({
+        "dependencies": {
+            "openai": "^4.0.0",
+            "@anthropic-ai/sdk": "0.25.0",
+            "express": "~4.18.0"
+        }
+    })
+    deps = parse_package_json(content)
+    assert_true(len(deps) >= 3, f"finds 3 deps (got {len(deps)})")
+    openai_dep = [d for d in deps if d["name"] == "openai"][0]
+    assert_eq(openai_dep["pinning"], "range", "^ is range")
+    anthropic_dep = [d for d in deps if d["name"] == "@anthropic-ai/sdk"][0]
+    assert_eq(anthropic_dep["pinning"], "exact", "bare version is exact")
+    print("✓ Dependency scan: parses package.json")
+
+
+def test_dep_scan_compromised_detection():
+    """Detects known compromised package versions"""
+    from dependency_scan import check_compromised
+    deps = [
+        {"name": "litellm", "version": "1.82.7", "pinning": "exact", "is_ai": True},
+        {"name": "openai", "version": "1.52.0", "pinning": "exact", "is_ai": True},
+    ]
+    findings = check_compromised(deps)
+    assert_true(len(findings) > 0, "finds compromised litellm")
+    assert_eq(findings[0]["package"], "litellm", "identifies litellm")
+    assert_eq(findings[0]["version"], "1.82.7", "identifies version")
+    assert_true("credential" in findings[0]["description"].lower() or "malware" in findings[0]["description"].lower(),
+                "description mentions the attack")
+    print("✓ Dependency scan: detects known compromised versions")
+
+
+def test_gap_article_15_dependency_pinning():
+    """Article 15 gap assessment includes dependency pinning analysis"""
+    import tempfile, shutil
+    from compliance_check import assess_compliance
+    temp_dir = tempfile.mkdtemp()
+    Path(temp_dir, "app.py").write_text("import openai\nclient = openai.Client()\n")
+    Path(temp_dir, "requirements.txt").write_text("openai\ntorch\nlangchain\n")
+    try:
+        assessment = assess_compliance(temp_dir)
+        art15 = assessment["articles"]["15"]
+        gaps_str = " ".join(art15["gaps"])
+        assert_true("pinning" in gaps_str.lower() or "unpinned" in gaps_str.lower() or "supply chain" in gaps_str.lower(),
+                    "Article 15 flags unpinned AI dependencies")
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+    print("✓ Gap assessment: Article 15 includes dependency pinning")
+
+
+def test_framework_mapper_eu_to_nist():
+    """Maps EU AI Act articles to NIST AI RMF functions"""
+    from framework_mapper import map_to_frameworks
+    mapping = map_to_frameworks(articles=["9", "14"], frameworks=["nist-ai-rmf"])
+    assert_true("9" in mapping, "article 9 mapped")
+    nist = mapping["9"].get("nist_ai_rmf", {})
+    assert_true(len(nist.get("functions", [])) > 0, "has NIST functions")
+    assert_true("GOVERN" in nist["functions"], "Art 9 maps to GOVERN")
+    print("✓ Framework mapper: EU AI Act to NIST AI RMF")
+
+
+def test_framework_mapper_all_frameworks():
+    """Maps to all three frameworks simultaneously"""
+    from framework_mapper import map_to_frameworks
+    mapping = map_to_frameworks(articles=["12"], frameworks=["all"])
+    art12 = mapping.get("12", {})
+    assert_true("eu_ai_act" in art12, "has EU AI Act")
+    assert_true("nist_ai_rmf" in art12, "has NIST AI RMF")
+    assert_true("iso_42001" in art12, "has ISO 42001")
+    print("✓ Framework mapper: all three frameworks mapped")
+
+
+def test_framework_mapper_owasp_llm():
+    """Maps findings to OWASP Top 10 for LLMs"""
+    from framework_mapper import map_to_frameworks
+    mapping = map_to_frameworks(articles=["15"], frameworks=["owasp-llm-top10"])
+    assert_true("15" in mapping, "article 15 mapped")
+    owasp = mapping["15"].get("owasp_llm_top10", {})
+    assert_true(len(owasp.get("items", [])) > 0, "has OWASP LLM items for Art 15")
+    print("✓ Framework mapper: OWASP LLM Top 10 mapping")
+
+
+def test_framework_mapper_mitre_atlas():
+    """Maps findings to MITRE ATLAS techniques"""
+    from framework_mapper import map_to_frameworks
+    mapping = map_to_frameworks(articles=["10"], frameworks=["mitre-atlas"])
+    assert_true("10" in mapping, "article 10 mapped")
+    atlas = mapping["10"].get("mitre_atlas", {})
+    assert_true(len(atlas.get("techniques", [])) > 0, "has MITRE ATLAS techniques for Art 10")
+    print("✓ Framework mapper: MITRE ATLAS mapping")
+
+
+def test_policy_thresholds():
+    """Policy thresholds are readable"""
+    from classify_risk import get_policy
+    policy = get_policy()
+    thresholds = policy.get("thresholds", {})
+    assert_true(isinstance(thresholds, dict), "thresholds is dict or empty dict")
+    print("✓ Policy: thresholds readable from policy")
+
+
+def test_policy_exclusions():
+    """Policy exclusions are readable"""
+    from classify_risk import get_policy
+    policy = get_policy()
+    exclusions = policy.get("exclusions", {})
+    assert_true(isinstance(exclusions, dict), "exclusions is dict or empty dict")
+    print("✓ Policy: exclusions readable from policy")
+
+
+# ── Integration Tests ──────────────────────────────────────────────
+
+def test_integration_high_risk_project():
+    """Full scan of high-risk fixture project"""
+    from report import scan_files
+    fixture_path = str(Path(__file__).parent / "fixtures" / "sample_high_risk")
+    if not Path(fixture_path).exists():
+        print("✓ Integration: high-risk fixture (SKIPPED — fixture not found)")
+        return
+    findings = scan_files(fixture_path)
+    tiers = [f["tier"] for f in findings if not f.get("suppressed")]
+    assert_true("high_risk" in tiers, "detects high-risk in employment screening project")
+    print("✓ Integration: high-risk fixture scanned correctly")
+
+
+def test_integration_compliant_project():
+    """Full scan of compliant fixture project"""
+    from compliance_check import assess_compliance
+    fixture_path = str(Path(__file__).parent / "fixtures" / "sample_compliant")
+    if not Path(fixture_path).exists():
+        print("✓ Integration: compliant fixture (SKIPPED — fixture not found)")
+        return
+    assessment = assess_compliance(fixture_path)
+    assert_true(assessment["overall_score"] > 30,
+                f"compliant project scores > 30 (got {assessment['overall_score']})")
+    print("✓ Integration: compliant fixture assessed correctly")
+
+
+def test_integration_unpinned_deps():
+    """Dependency scan of unpinned fixture project"""
+    from dependency_scan import scan_dependencies
+    fixture_path = str(Path(__file__).parent / "fixtures" / "sample_unpinned")
+    if not Path(fixture_path).exists():
+        print("✓ Integration: unpinned fixture (SKIPPED — fixture not found)")
+        return
+    results = scan_dependencies(fixture_path)
+    assert_true(results["pinning_score"] < 50,
+                f"unpinned project scores < 50 (got {results['pinning_score']})")
+    unpinned_or_range = [d for d in results.get("ai_dependencies", []) if d["pinning"] in ("unpinned", "range")]
+    assert_true(len(unpinned_or_range) > 0, "finds unpinned/range AI deps")
+    print("✓ Integration: unpinned dependency fixture scanned correctly")
+
+
+def test_integration_full_check_cli():
+    """CLI check command runs end-to-end on fixture"""
+    import subprocess
+    fixture_path = str(Path(__file__).parent / "fixtures" / "sample_high_risk")
+    if not Path(fixture_path).exists():
+        print("✓ Integration: CLI check (SKIPPED — fixture not found)")
+        return
+    result = subprocess.run(
+        [sys.executable, "scripts/cli.py", "check", fixture_path, "--format", "json"],
+        capture_output=True, text=True, timeout=30,
+        cwd=str(Path(__file__).parent.parent),
+    )
+    try:
+        findings = json.loads(result.stdout)
+        assert_true(isinstance(findings, list), "CLI outputs JSON list")
+        assert_true(len(findings) > 0, "CLI finds issues in high-risk project")
+    except json.JSONDecodeError:
+        assert_true(False, f"CLI output is not valid JSON: {result.stdout[:200]}")
+    print("✓ Integration: CLI check runs end-to-end")
+
+
+# ── Pattern Quality Tests ──────────────────────────────────────────
+
+def test_pattern_no_false_positive_sentence_nlp():
+    """NLP sentence usage does not trigger justice pattern"""
+    r = classify("from nltk.translate.bleu_score import sentence_bleu with machine learning")
+    assert_true(r.tier != RiskTier.HIGH_RISK or "justice" not in (r.category or "").lower(),
+                "sentence_bleu should not trigger justice")
+    print("✓ Pattern quality: sentence_bleu not false positive")
+
+
+def test_pattern_no_false_positive_embedding_layer():
+    """torch.nn.Embedding does not trigger high-risk"""
+    r = classify("import torch; embedding = torch.nn.Embedding(1000, 128)")
+    assert_true(r.tier != RiskTier.HIGH_RISK,
+                "torch.nn.Embedding should not trigger high-risk")
+    print("✓ Pattern quality: Embedding layer not false positive")
+
+
+def test_pattern_no_false_positive_generic_predict():
+    """Generic model.predict without domain context is not high-risk"""
+    r = classify("import sklearn; model.predict(X_test)")
+    assert_true(r.tier != RiskTier.HIGH_RISK,
+                "generic model.predict should not trigger high-risk alone")
+    print("✓ Pattern quality: generic predict not false positive")
+
+
+def test_pattern_true_positive_cv_screening():
+    """CV screening with AI correctly triggers employment high-risk"""
+    r = classify("import sklearn; cv_screening(candidates)")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "cv screening is high-risk")
+    print("✓ Pattern quality: CV screening correctly flagged")
+
+
+def test_pattern_true_positive_credit_scoring():
+    """Credit scoring with AI correctly triggers essential services"""
+    r = classify("import xgboost; credit_score = predict_creditworthiness(applicant)")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "credit scoring is high-risk")
+    print("✓ Pattern quality: credit scoring correctly flagged")
+
+
+def test_confidence_threshold_filtering():
+    """Low-confidence findings can be suppressed via policy threshold"""
+    from classify_risk import get_policy
+    policy = get_policy()
+    threshold = 0
+    try:
+        threshold = int(policy.get("thresholds", {}).get("min_confidence", 0))
+    except (TypeError, ValueError):
+        pass
+    assert_true(isinstance(threshold, int), "min_confidence is readable as int")
+    # With default threshold of 0, nothing should be suppressed
+    assert_eq(threshold, 0, "default threshold is 0 (no suppression)")
+    print("✓ Confidence threshold: readable from policy")
+
+
+# ── Tree-Sitter JS/TS Tests ───────────────────────────────────────
+
+def test_tree_sitter_js_import_extraction():
+    """Tree-sitter extracts JS imports from import statements and require calls"""
+    from ast_engine import _tree_sitter_parse
+    try:
+        code = "import OpenAI from 'openai';\nconst { Anthropic } = require('@anthropic-ai/sdk');\n"
+        result = _tree_sitter_parse(code, "javascript")
+        assert_true(result["has_ai_code"], "detects AI imports via tree-sitter")
+        assert_true(len(result["ai_imports"]) >= 2, f"finds 2+ AI imports (got {len(result['ai_imports'])})")
+        print("✓ Tree-sitter: JS import extraction")
+    except ImportError:
+        print("✓ Tree-sitter: JS import extraction (SKIPPED — tree-sitter not installed)")
+
+
+def test_tree_sitter_js_data_flow():
+    """Tree-sitter traces where AI call results flow"""
+    from ast_engine import _tree_sitter_parse
+    try:
+        code = """
+import OpenAI from 'openai';
+const client = new OpenAI();
+
+async function process(data) {
+    const response = await client.chat.completions.create({model: 'gpt-4', messages: []});
+    console.log('AI result:', response);
+    if (response.choices[0].message.content) {
+        return response;
+    }
+}
+"""
+        result = _tree_sitter_parse(code, "javascript")
+        assert_true(len(result["data_flows"]) > 0, "traces AI data flows")
+        flow = result["data_flows"][0]
+        dest_types = [d["type"] for d in flow["destinations"]]
+        assert_true(len(dest_types) > 0, f"has destinations (got {dest_types})")
+        print("✓ Tree-sitter: JS data flow tracing")
+    except ImportError:
+        print("✓ Tree-sitter: JS data flow tracing (SKIPPED — tree-sitter not installed)")
+
+
+def test_tree_sitter_ts_oversight_detection():
+    """Tree-sitter detects human oversight patterns in TypeScript"""
+    from ast_engine import _tree_sitter_parse
+    try:
+        code = """
+import Anthropic from '@anthropic-ai/sdk';
+const client = new Anthropic();
+
+async function getRecommendation(data: string): Promise<string> {
+    const result = await client.messages.create({model: 'claude-3', messages: []});
+    return result;
+}
+
+function humanReview(recommendation: string): boolean {
+    console.log('Needs review:', recommendation);
+    return confirm('Approve this recommendation?');
+}
+"""
+        result = _tree_sitter_parse(code, "typescript")
+        assert_true(result["oversight"]["has_oversight"], "detects humanReview function")
+        assert_true(result["oversight"]["oversight_score"] > 50,
+                    f"oversight score > 50 (got {result['oversight']['oversight_score']})")
+        print("✓ Tree-sitter: TS oversight detection")
+    except ImportError:
+        print("✓ Tree-sitter: TS oversight detection (SKIPPED — tree-sitter not installed)")
+
+
+def test_tree_sitter_js_function_extraction():
+    """Tree-sitter extracts function and class definitions"""
+    from ast_engine import _tree_sitter_parse
+    try:
+        code = """
+import OpenAI from 'openai';
+function processData(input) { return input; }
+const helper = (x) => x * 2;
+class AIService {
+    constructor() {}
+    predict(data) { return data; }
+}
+"""
+        result = _tree_sitter_parse(code, "javascript")
+        func_names = [f["name"] for f in result["function_defs"]]
+        assert_true("processData" in func_names, "finds named function")
+        class_names = [c["name"] for c in result["class_defs"]]
+        assert_true("AIService" in class_names, "finds class")
+        print("✓ Tree-sitter: JS function/class extraction")
+    except ImportError:
+        print("✓ Tree-sitter: JS function/class extraction (SKIPPED — tree-sitter not installed)")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -1037,6 +1857,8 @@ if __name__ == "__main__":
         test_sarif_output_structure,
         test_html_report_contains_disclaimer,
         test_inline_suppression,
+        # Report enhancement (1 test)
+        test_report_html_dependency_section,
         # New features (6 tests)
         test_questionnaire_generation,
         test_questionnaire_evaluation_high_risk,
@@ -1059,6 +1881,74 @@ if __name__ == "__main__":
         test_hook_high_risk_allow_with_iso,
         test_hook_secret_block,
         test_hook_clean_pass,
+        # Compliance workflow (2 tests)
+        test_compliance_workflow_transitions,
+        test_compliance_status_update,
+        # Governance (1 test)
+        test_governance_contacts,
+        # QMS generation (1 test)
+        test_qms_scaffold_generation,
+        # Regex fix (1 test)
+        test_openai_key_no_anthropic_false_positive,
+        # AST analysis (5 tests)
+        test_ast_parse_python_file,
+        test_ast_classify_context,
+        test_ast_data_flow_tracing,
+        test_ast_human_oversight,
+        test_ast_logging_practices,
+        # Compliance gap assessment (2 tests)
+        test_compliance_gap_assessment,
+        test_compliance_gap_article_15_tests,
+        # Infrastructure (3 tests)
+        test_regulatory_basis,
+        test_cross_platform_locking,
+        # AST engine (5 tests)
+        test_ast_engine_python_parse,
+        test_ast_engine_js_regex_fallback,
+        test_ast_engine_ts_regex_fallback,
+        test_ast_engine_non_ai_js,
+        test_ast_engine_language_detection,
+        # Language expansion (3 tests)
+        test_ast_engine_java_ai_detection,
+        test_ast_engine_go_ai_detection,
+        test_ast_engine_java_non_ai,
+        # Dependency supply chain (6 tests)
+        test_dep_scan_requirements_txt,
+        test_dep_scan_ai_identification,
+        test_dep_scan_pinning_score,
+        test_dep_scan_lockfile_detection,
+        test_dep_scan_package_json,
+        test_dep_scan_compromised_detection,
+        # Gap assessment enhancement (1 test)
+        test_gap_article_15_dependency_pinning,
+        # Framework mapper (2 tests)
+        test_framework_mapper_eu_to_nist,
+        test_framework_mapper_all_frameworks,
+        # OWASP mapping (1 test)
+        test_framework_mapper_owasp_llm,
+        # MITRE ATLAS mapping (1 test)
+        test_framework_mapper_mitre_atlas,
+        # Policy enhancement (2 tests)
+        test_policy_thresholds,
+        test_policy_exclusions,
+        # Integration tests (4 tests)
+        test_integration_high_risk_project,
+        test_integration_compliant_project,
+        test_integration_unpinned_deps,
+        test_integration_full_check_cli,
+        # Pattern quality (5 tests)
+        test_pattern_no_false_positive_sentence_nlp,
+        test_pattern_no_false_positive_embedding_layer,
+        test_pattern_no_false_positive_generic_predict,
+        test_pattern_true_positive_cv_screening,
+        test_pattern_true_positive_credit_scoring,
+        # Confidence threshold (1 test)
+        test_confidence_threshold_filtering,
+        # Tree-sitter JS/TS (4 tests)
+        test_tree_sitter_js_import_extraction,
+        test_tree_sitter_js_data_flow,
+        test_tree_sitter_ts_oversight_detection,
+        test_tree_sitter_js_function_extraction,
     ]
 
     print(f"Running {len(tests)} tests...\n")

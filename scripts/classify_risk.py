@@ -13,7 +13,6 @@ for human review, not as legal determinations.
 """
 
 import argparse
-import fcntl
 import json
 import os
 import re
@@ -153,7 +152,7 @@ HIGH_RISK_PATTERNS = {
         "description": "Critical infrastructure management",
     },
     "education": {
-        "patterns": [r"admission.?decision", r"student.?assess", r"exam.?scor", r"procto"],
+        "patterns": [r"admission.?decision", r"student.?assess", r"exam.?scor", r"procto\w*.{0,15}(exam|test|monitor|ai|automat|student|cheat)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 3",
         "description": "Education and vocational training",
@@ -186,7 +185,7 @@ HIGH_RISK_PATTERNS = {
         "description": "Migration, asylum, and border control",
     },
     "justice": {
-        "patterns": [r"judicial.?decision", r"court.?rul", r"sentenc", r"election.?influence"],
+        "patterns": [r"judicial.?decision", r"court.?rul", r"sentenc(ing|e\.?)\W{0,5}(recommend|decision|guidelines|court|judge|judicial|legal|verdict|criminal|prison|convict|parole|probation)", r"election.?influence"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 8",
         "description": "Justice and democratic processes",
@@ -367,6 +366,24 @@ _POLICY = _load_policy()
 
 def get_policy() -> dict:
     return _POLICY
+
+
+def get_governance_contacts() -> dict:
+    """Return the governance contacts from policy (AI Officer, DPO)."""
+    policy = get_policy()
+    governance = policy.get("governance", {})
+    if not isinstance(governance, dict):
+        return {}
+    return governance
+
+
+def get_regulatory_basis() -> dict:
+    """Return the regulatory basis from policy (version pinning for auditors)."""
+    policy = get_policy()
+    basis = policy.get("regulatory_basis", {})
+    if not isinstance(basis, dict):
+        return {}
+    return basis
 
 
 # ---------------------------------------------------------------------------
@@ -617,16 +634,34 @@ def classify(text: str) -> Classification:
 
     high_risk = check_high_risk(text)
     if high_risk:
-        return high_risk
+        result = high_risk
+    else:
+        limited_risk = check_limited_risk(text)
+        if limited_risk:
+            result = limited_risk
+        else:
+            result = Classification(
+                tier=RiskTier.MINIMAL_RISK, confidence="medium", action="allow",
+                message="Minimal-risk AI system. No specific EU AI Act requirements.",
+            )
 
-    limited_risk = check_limited_risk(text)
-    if limited_risk:
-        return limited_risk
+    # Confidence threshold filtering (policy-configurable)
+    policy = get_policy()
+    min_conf = 0
+    try:
+        min_conf = int(policy.get("thresholds", {}).get("min_confidence", 0))
+    except (TypeError, ValueError):
+        min_conf = 0
 
-    return Classification(
-        tier=RiskTier.MINIMAL_RISK, confidence="medium", action="allow",
-        message="Minimal-risk AI system. No specific EU AI Act requirements.",
-    )
+    if min_conf > 0 and result.tier != RiskTier.PROHIBITED and result.confidence_score < min_conf:
+        return Classification(
+            tier=RiskTier.MINIMAL_RISK, confidence="low",
+            action="allow",
+            message=f"Finding suppressed (confidence {result.confidence_score} < threshold {min_conf})",
+            confidence_score=result.confidence_score,
+        )
+
+    return result
 
 
 def main():
