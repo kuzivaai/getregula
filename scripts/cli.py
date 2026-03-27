@@ -23,12 +23,82 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 
+def _get_changed_files(project_path: str, git_ref: str = "HEAD~1") -> list[str]:
+    """Get list of files changed since git_ref.
+
+    Uses git diff to find changed/added files. Falls back to scanning all files
+    if git is not available or the path is not a git repo.
+    """
+    import subprocess
+    try:
+        result = subprocess.run(
+            ["git", "diff", "--name-only", "--diff-filter=ACMR", git_ref],
+            capture_output=True, text=True, timeout=10,
+            cwd=project_path,
+        )
+        if result.returncode == 0:
+            files = [f.strip() for f in result.stdout.strip().split("\n") if f.strip()]
+            return files
+    except (subprocess.SubprocessError, FileNotFoundError):
+        pass
+    return []  # Empty = scan all files (fallback)
+
+
+def _get_finding_tier_from_dict(finding: dict) -> str:
+    """Compute finding tier from a scan result dict using policy thresholds."""
+    from classify_risk import get_policy, RiskTier
+    policy = get_policy()
+    thresholds = policy.get("thresholds", {})
+    block_above = int(thresholds.get("block_above", 80))
+    warn_above = int(thresholds.get("warn_above", 50))
+
+    # Prohibited always blocks regardless of confidence
+    if finding.get("tier") == "prohibited":
+        return "block"
+
+    score = finding.get("confidence_score", 0)
+    if score >= block_above:
+        return "block"
+    elif score >= warn_above:
+        return "warn"
+    else:
+        return "info"
+
+
+def _print_remediation(finding):
+    """Print inline remediation for a finding (BLOCK/WARN only)."""
+    from remediation import get_remediation
+    tier_label = finding.get("_finding_tier", "info")
+    if tier_label == "info":
+        return
+    rem = get_remediation(
+        finding["tier"],
+        finding.get("category", ""),
+        finding.get("indicators", []),
+        finding["file"],
+        finding.get("description", ""),
+    )
+    if rem.get("fix_command"):
+        print(f"      Fix: {rem['fix_command']}")
+    if rem.get("summary"):
+        print(f"      {rem['summary']}")
+
+
 def cmd_check(args):
     """Scan files for risk indicators."""
     from report import scan_files
 
     project = str(Path(args.path).resolve())
     findings = scan_files(project, respect_ignores=not args.no_ignore)
+
+    # Diff mode: filter findings to only changed files
+    if args.diff:
+        changed = _get_changed_files(project, args.diff)
+        if changed:
+            findings = [f for f in findings if f.get("file", "") in changed]
+            print(f"  Diff mode: {len(changed)} files changed since {args.diff}", file=sys.stderr)
+        else:
+            print(f"  Diff mode: no changed files found since {args.diff} (showing all)", file=sys.stderr)
 
     active = [f for f in findings if not f.get("suppressed")]
     suppressed = [f for f in findings if f.get("suppressed")]
@@ -37,6 +107,14 @@ def cmd_check(args):
     credentials = [f for f in active if f["tier"] == "credential_exposure"]
     high_risk = [f for f in active if f["tier"] == "high_risk"]
     limited = [f for f in active if f["tier"] == "limited_risk"]
+
+    # Assign finding tiers to all active findings
+    for f in active:
+        f["_finding_tier"] = _get_finding_tier_from_dict(f)
+
+    block_findings = [f for f in active if f["_finding_tier"] == "block"]
+    warn_findings = [f for f in active if f["_finding_tier"] == "warn"]
+    info_findings = [f for f in active if f["_finding_tier"] == "info"]
 
     if args.format == "json":
         print(json.dumps(findings, indent=2))
@@ -55,40 +133,61 @@ def cmd_check(args):
         print(f"  High-risk:          {len(high_risk)}")
         print(f"  Limited-risk:       {len(limited)}")
         print(f"  Suppressed:         {len(suppressed)}")
+        print(f"  BLOCK tier:         {len(block_findings)}")
+        print(f"  WARN tier:          {len(warn_findings)}")
+        print(f"  INFO tier:          {len(info_findings)}")
 
         if prohibited:
             print(f"\n  PROHIBITED INDICATORS:")
             for f in prohibited:
                 score = f.get("confidence_score", 0)
-                print(f"    [{score:3d}] {f['file']} — {f.get('description', '')}")
+                tier_label = f.get("_finding_tier", "block").upper()
+                print(f"    [{tier_label}] [{score:3d}] {f['file']} — {f.get('description', '')}")
+                _print_remediation(f)
 
         if credentials:
             print(f"\n  CREDENTIAL EXPOSURE (Article 15):")
             for f in credentials:
                 score = f.get("confidence_score", 0)
-                print(f"    [{score:3d}] {f['file']}:{f.get('line', '?')} — {f.get('description', '')}")
+                tier_label = f.get("_finding_tier", "warn").upper()
+                print(f"    [{tier_label}] [{score:3d}] {f['file']}:{f.get('line', '?')} — {f.get('description', '')}")
+                _print_remediation(f)
 
         if high_risk:
             print(f"\n  HIGH-RISK INDICATORS:")
             for f in high_risk:
                 score = f.get("confidence_score", 0)
-                print(f"    [{score:3d}] {f['file']} — {f.get('description', '')}")
+                tier_label = f.get("_finding_tier", "warn").upper()
+                print(f"    [{tier_label}] [{score:3d}] {f['file']} — {f.get('description', '')}")
+                _print_remediation(f)
 
         if limited:
             print(f"\n  LIMITED-RISK:")
             for f in limited:
                 score = f.get("confidence_score", 0)
-                print(f"    [{score:3d}] {f['file']} — {f.get('description', '')}")
+                tier_label = f.get("_finding_tier", "info").upper()
+                if tier_label == "INFO" and not getattr(args, "verbose", False):
+                    continue
+                print(f"    [{tier_label}] [{score:3d}] {f['file']} — {f.get('description', '')}")
+
+        if getattr(args, "verbose", False) and info_findings:
+            info_non_limited = [f for f in info_findings if f["tier"] not in ("limited_risk",)]
+            if info_non_limited:
+                print(f"\n  INFO (verbose):")
+                for f in info_non_limited:
+                    score = f.get("confidence_score", 0)
+                    print(f"    [INFO] [{score:3d}] {f['file']} — {f.get('description', '')}")
 
         print(f"{'=' * 60}")
         print(f"  Confidence scores: 0-100 (higher = more indicators matched)")
+        print(f"  Tiers: BLOCK (>=80 or prohibited), WARN (50-79), INFO (<50)")
         print(f"  Suppress findings: add '# regula-ignore' to file")
         print()
 
-    # Exit code: 2 if prohibited found, 1 if high-risk, 0 otherwise
-    if prohibited:
+    # Exit codes: 2 if any BLOCK-tier findings, 1 if WARN-tier and --strict, 0 otherwise
+    if block_findings:
         sys.exit(2)
-    elif high_risk and args.strict:
+    elif warn_findings and args.strict:
         sys.exit(1)
     sys.exit(0)
 
@@ -158,6 +257,29 @@ def cmd_audit(args):
 
 def cmd_discover(args):
     """Discover AI systems."""
+    if args.csv:
+        from discover_ai_systems import format_registry_csv
+        print(format_registry_csv())
+        return
+
+    if args.eu_register:
+        from discover_ai_systems import generate_eu_registration
+        reg = generate_eu_registration(args.eu_register)
+        print(json.dumps(reg, indent=2))
+        return
+
+    if args.org:
+        from discover_ai_systems import scan_organization
+        results = scan_organization(args.project)
+        if args.format == "json":
+            print(json.dumps(results, indent=2, default=str))
+        else:
+            print(f"\nOrganization Scan: {results['base_path']}")
+            print(f"Projects scanned: {results['projects_scanned']}")
+            print(f"AI projects found: {results['ai_projects_found']}")
+            print(f"Risk distribution: {results['risk_distribution']}")
+        return
+
     sys.argv = ["discover_ai_systems.py"]
     if args.project:
         sys.argv += ["--project", args.project]
@@ -420,6 +542,33 @@ def cmd_sbom(args):
         print(content)
 
 
+def cmd_agent(args):
+    """Agentic AI governance monitoring."""
+    from agent_monitor import analyse_agent_session, check_mcp_config, format_agent_text, format_agent_json
+
+    if args.check_mcp:
+        findings = check_mcp_config(getattr(args, "config_file", None))
+        if args.format == "json":
+            print(json.dumps(findings, indent=2))
+        else:
+            if findings:
+                print(f"\nFound {len(findings)} credential(s) in MCP configuration:")
+                for f in findings:
+                    print(f"  {f['file']}: {f['description']}")
+            else:
+                print("No credentials found in MCP configuration files.")
+        return
+
+    analysis = analyse_agent_session(
+        session_id=args.session,
+        hours=args.hours,
+    )
+    if args.format == "json":
+        print(format_agent_json(analysis))
+    else:
+        print(format_agent_text(analysis))
+
+
 def cmd_deps(args):
     """Dependency supply chain analysis."""
     from dependency_scan import scan_dependencies, format_dep_text, format_dep_json
@@ -487,7 +636,10 @@ Examples:
     p_check.add_argument("--format", "-f", choices=["text", "json", "sarif"], default="text")
     p_check.add_argument("--name", "-n", help="Project name for SARIF output")
     p_check.add_argument("--no-ignore", action="store_true", help="Don't respect regula-ignore comments")
-    p_check.add_argument("--strict", action="store_true", help="Exit 1 on high-risk findings")
+    p_check.add_argument("--strict", action="store_true", help="Exit 1 on WARN-tier findings")
+    p_check.add_argument("--verbose", "-v", action="store_true", help="Show INFO-tier findings")
+    p_check.add_argument("--diff", metavar="REF", nargs="?", const="HEAD~1",
+                         help="Only scan files changed since REF (default: HEAD~1)")
     p_check.set_defaults(func=cmd_check)
 
     # --- classify ---
@@ -519,6 +671,10 @@ Examples:
     p_discover = subparsers.add_parser("discover", help="Discover AI systems in a project")
     p_discover.add_argument("--project", "-p", default=".")
     p_discover.add_argument("--register", "-r", action="store_true")
+    p_discover.add_argument("--org", action="store_true", help="Scan all projects in directory (org-level inventory)")
+    p_discover.add_argument("--csv", action="store_true", help="Export registry as CSV")
+    p_discover.add_argument("--eu-register", help="Generate EU AI Database registration for a system")
+    p_discover.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_discover.set_defaults(func=cmd_discover)
 
     # --- install ---
@@ -617,6 +773,15 @@ Examples:
     p_sbom.add_argument("--output", "-o", help="Output file path")
     p_sbom.add_argument("--name", "-n", help="Project name")
     p_sbom.set_defaults(func=cmd_sbom)
+
+    # --- agent ---
+    p_agent = subparsers.add_parser("agent", help="Agentic AI governance monitoring")
+    p_agent.add_argument("--session", "-s", help="Session ID")
+    p_agent.add_argument("--hours", type=int, default=8)
+    p_agent.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_agent.add_argument("--check-mcp", action="store_true", help="Check MCP configs for credentials")
+    p_agent.add_argument("--config-file", help="Specific MCP config to check")
+    p_agent.set_defaults(func=cmd_agent)
 
     args = parser.parse_args()
 

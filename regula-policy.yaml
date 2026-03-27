@@ -50,6 +50,10 @@ thresholds:
   block_on_high_risk: false
   min_dependency_pinning_score: 50
   min_confidence: 0
+  # Confidence-based finding tiers
+  block_above: 80    # score >= 80: BLOCK (CI fails, exit code 2)
+  warn_above: 50     # score 50-79: WARN (PR comment, CI passes)
+  # Below warn_above: INFO (full report only, not in PR or CI output)
 
 # Path and pattern exclusions
 exclusions:

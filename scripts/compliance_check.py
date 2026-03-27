@@ -332,6 +332,49 @@ def _check_article_10(project_path: str, files_index: list) -> tuple:
     return score, evidence, gaps
 
 
+# ---------------------------------------------------------------------------
+# Model card completeness validation
+# ---------------------------------------------------------------------------
+
+# Required sections for a complete model card (based on HuggingFace model card standard)
+MODEL_CARD_REQUIRED_SECTIONS = {
+    "intended_use": ["intended use", "intended purpose", "use case", "intended for"],
+    "limitations": ["limitation", "known issue", "known limitation", "not suitable", "should not be used"],
+    "training_data": ["training data", "dataset", "trained on", "fine-tuned on"],
+    "performance": ["performance", "accuracy", "metric", "evaluation", "benchmark", "f1", "precision", "recall"],
+    "ethical": ["ethical", "bias", "fairness", "responsible", "societal impact", "environmental"],
+}
+
+
+def validate_model_card(content: str) -> dict:
+    """Validate a model card for completeness against EU AI Act requirements.
+
+    Checks for presence of required sections matching Articles 11 and 13.
+    Returns dict with:
+        completeness_score: 0-100
+        sections_found: list of section names found
+        sections_missing: list of section names missing
+    """
+    content_lower = content.lower()
+    found = []
+    missing = []
+
+    for section_name, keywords in MODEL_CARD_REQUIRED_SECTIONS.items():
+        if any(kw in content_lower for kw in keywords):
+            found.append(section_name)
+        else:
+            missing.append(section_name)
+
+    total = len(MODEL_CARD_REQUIRED_SECTIONS)
+    score = int((len(found) / total) * 100) if total > 0 else 0
+
+    return {
+        "completeness_score": score,
+        "sections_found": found,
+        "sections_missing": missing,
+    }
+
+
 def _check_article_11(project_path: str, files_index: list) -> tuple:
     """Article 11 — Technical Documentation."""
     evidence = []
@@ -371,7 +414,18 @@ def _check_article_11(project_path: str, files_index: list) -> tuple:
                 evidence.append(f"Annex IV documentation: {rel_path}")
                 component_scores["annex_iv"] = 1
             elif "model_card" in basename_lower or "model-card" in basename_lower:
-                evidence.append(f"Model card: {rel_path}")
+                filepath = Path(abs_path)
+                try:
+                    card_content = filepath.read_text(encoding="utf-8", errors="ignore")
+                    validation = validate_model_card(card_content)
+                    if validation["completeness_score"] >= 60:
+                        evidence.append(f"Model card {validation['completeness_score']}% complete: {', '.join(validation['sections_found'])}")
+                    else:
+                        evidence.append(f"Model card found but only {validation['completeness_score']}% complete")
+                        for section in validation["sections_missing"]:
+                            gaps.append(f"Model card missing: {section.replace('_', ' ')}")
+                except Exception:
+                    evidence.append(f"Model card: {rel_path}")
                 component_scores["model_card"] = 1
             else:
                 evidence.append(f"Technical documentation: {rel_path}")
@@ -393,7 +447,13 @@ def _check_article_11(project_path: str, files_index: list) -> tuple:
             model_matched = _search_content(content, model_card_content)
             if len(model_matched) >= 2:
                 if component_scores["model_card"] == 0:
-                    evidence.append(f"Model description content in: {rel_path}")
+                    validation = validate_model_card(content)
+                    if validation["completeness_score"] >= 60:
+                        evidence.append(f"Model card {validation['completeness_score']}% complete: {', '.join(validation['sections_found'])}")
+                    else:
+                        evidence.append(f"Model description content in: {rel_path} (only {validation['completeness_score']}% complete)")
+                        for section in validation["sections_missing"]:
+                            gaps.append(f"Model card missing: {section.replace('_', ' ')}")
                     component_scores["model_card"] = 1
 
     if component_scores["annex_iv"] == 0:
@@ -532,7 +592,22 @@ def _check_article_13(project_path: str, files_index: list) -> tuple:
 
     for rel_path, abs_path in files_index:
         if _file_matches_glob(rel_path, transparency_file_patterns):
-            evidence.append(f"Transparency documentation: {rel_path}")
+            basename_lower = os.path.basename(rel_path).lower()
+            if "model_card" in basename_lower or "model-card" in basename_lower:
+                filepath = Path(abs_path)
+                try:
+                    card_content = filepath.read_text(encoding="utf-8", errors="ignore")
+                    validation = validate_model_card(card_content)
+                    if validation["completeness_score"] >= 60:
+                        evidence.append(f"Transparency model card {validation['completeness_score']}% complete: {', '.join(validation['sections_found'])}")
+                    else:
+                        evidence.append(f"Transparency model card found but only {validation['completeness_score']}% complete")
+                        for section in validation["sections_missing"]:
+                            gaps.append(f"Model card missing: {section.replace('_', ' ')}")
+                except Exception:
+                    evidence.append(f"Transparency documentation: {rel_path}")
+            else:
+                evidence.append(f"Transparency documentation: {rel_path}")
             component_scores["model_card"] = 1
 
         content = _read_file(abs_path)

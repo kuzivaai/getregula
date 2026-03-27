@@ -44,6 +44,27 @@ class Classification:
     exceptions: Optional[str] = None
     confidence_score: int = 0  # 0-100 numeric confidence
 
+    def get_finding_tier(self) -> str:
+        """Return finding tier based on confidence score and policy thresholds.
+
+        Returns: 'block', 'warn', or 'info'
+        """
+        policy = get_policy()
+        thresholds = policy.get("thresholds", {})
+        block_above = int(thresholds.get("block_above", 80))
+        warn_above = int(thresholds.get("warn_above", 50))
+
+        # Prohibited always blocks regardless of confidence
+        if self.tier == RiskTier.PROHIBITED:
+            return "block"
+
+        if self.confidence_score >= block_above:
+            return "block"
+        elif self.confidence_score >= warn_above:
+            return "warn"
+        else:
+            return "info"
+
     def to_dict(self) -> dict:
         result = asdict(self)
         result["tier"] = self.tier.value
