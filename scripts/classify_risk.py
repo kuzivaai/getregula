@@ -284,9 +284,8 @@ AI_SECURITY_PATTERNS = {
     },
     "no_output_validation": {
         "patterns": [
-            r"\.content\s*\)\s*$",  # raw AI output used directly at end of expression
-            r"eval\s*\(.*(?:response|result|output|completion)",  # eval on AI output
-            r"exec\s*\(.*(?:response|result|output|completion)",  # exec on AI output
+            r"\beval\s*\(.*(?:response|result|output|completion)",  # eval on AI output
+            r"\bexec\s*\(.*(?:response|result|output|completion)",  # exec on AI output
         ],
         "owasp": "LLM02",
         "description": "AI output used without validation — code injection risk",
@@ -306,7 +305,6 @@ AI_SECURITY_PATTERNS = {
     "unbounded_token_generation": {
         "patterns": [
             r"max_tokens\s*[:=]\s*(?:None|0|-1|999999|1000000)",  # unbounded or very high token limit
-            r"(?:create|generate|complete)\([^)]*\)\s*$",  # API call without max_tokens
         ],
         "owasp": "LLM10",
         "description": "Unbounded token generation — cost and resource exhaustion risk",
@@ -328,15 +326,40 @@ AI_SECURITY_PATTERNS = {
 def check_ai_security(text: str) -> list:
     """Check for AI-specific security antipatterns.
 
+    Skips comments and docstrings to avoid false positives on
+    documentation that merely mentions these patterns.
+
     Returns a list of finding dicts, each with:
         pattern_name, owasp, description, severity, remediation, line, matched_line
     """
     findings = []
     lines = text.split("\n")
+    in_docstring = False
 
     for name, config in AI_SECURITY_PATTERNS.items():
         for pattern in config["patterns"]:
             for i, line in enumerate(lines, 1):
+                stripped = line.strip()
+
+                # Skip comments (Python #, JS //, C++ //)
+                if stripped.startswith("#") or stripped.startswith("//"):
+                    continue
+
+                # Skip docstrings (triple quotes)
+                if '"""' in stripped or "'''" in stripped:
+                    # Toggle docstring state (simple heuristic)
+                    count = stripped.count('"""') + stripped.count("'''")
+                    if count == 1:
+                        in_docstring = not in_docstring
+                    continue
+                if in_docstring:
+                    continue
+
+                # Skip lines that are clearly string literals containing examples
+                # (e.g., docstring args descriptions, help text)
+                if stripped.startswith(("Args:", "Returns:", "Example:", ">>>", ".. ")):
+                    continue
+
                 if re.search(pattern, line, re.IGNORECASE):
                     findings.append({
                         "pattern_name": name,
@@ -345,9 +368,11 @@ def check_ai_security(text: str) -> list:
                         "severity": config["severity"],
                         "remediation": config["remediation"],
                         "line": i,
-                        "matched_line": line.strip()[:100],
+                        "matched_line": stripped[:100],
                     })
                     break  # One match per pattern per file is enough
+        # Reset docstring state between patterns
+        in_docstring = False
 
     return findings
 
