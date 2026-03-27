@@ -103,7 +103,7 @@ SECRET_PATTERNS = {
         "source": "secrets-patterns-db",
     },
     "connection_string": {
-        "pattern": r"(?i)(?:mongodb|postgres|mysql|redis|amqp):\/\/[^\s'\"]{10,}",
+        "pattern": r"(?i)(?:mongodb|postgres|mysql|redis|amqp):\/\/(?!localhost)[^\s'\"]{10,}",
         "confidence": "medium",
         "confidence_score": 70,
         "description": "Database connection string with possible credentials",
