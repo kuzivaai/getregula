@@ -1547,6 +1547,35 @@ def test_dep_scan_package_json():
     print("✓ Dependency scan: parses package.json")
 
 
+def test_advisory_load_fallback_pyc_path():
+    """_load_advisories() still finds advisories when __file__ resolves to a .pyc in __pycache__
+
+    Regression: here.parent resolves to scripts/__pycache__ instead of scripts/ when the .pyc
+    is used, making here.parent / 'references' / 'advisories' point at a non-existent path.
+    """
+    try:
+        import yaml  # noqa: F401
+    except ImportError:
+        print("✓ Advisory fallback: pyyaml not available, skipping")
+        return
+
+    from unittest.mock import patch
+    from pathlib import Path
+    import dependency_scan
+
+    # Simulate __file__ = scripts/__pycache__/dependency_scan.cpython-312.pyc
+    fake_file = str(
+        Path(dependency_scan.__file__).resolve().parent
+        / "__pycache__"
+        / "dependency_scan.cpython-312.pyc"
+    )
+    with patch.object(dependency_scan, "__file__", fake_file):
+        advisories = dependency_scan._load_advisories()
+
+    assert_true(len(advisories) > 0, "_load_advisories finds advisories despite pyc __file__")
+    print("✓ Advisory fallback: _load_advisories works from pyc __file__ path")
+
+
 def test_dep_scan_compromised_detection():
     """Detects known compromised package versions"""
     from dependency_scan import check_compromised
@@ -2093,6 +2122,29 @@ def test_fp_fix_credit_model_detected():
     r = classify("import xgboost; credit_model = train_credit_risk_model(data)")
     assert_eq(r.tier, RiskTier.HIGH_RISK, "credit risk model is high-risk")
     print("✓ FP fix: credit risk model correctly detected")
+
+
+def test_fn_fix_credit_scorer_function_names():
+    """train_credit_model + score_applicant as function names → HIGH-RISK (Annex III Cat 5)
+
+    Regression: \bcredit.?model fails when 'credit' is preceded by '_' (underscore is a word
+    char), causing train_credit_model to score minimal_risk instead of high_risk.
+    """
+    code = (
+        "import sklearn.ensemble\n"
+        "import pandas as pd\n"
+        "\n"
+        "def train_credit_model(features, labels):\n"
+        "    model = RandomForestClassifier()\n"
+        "    return model.fit(features, labels)\n"
+        "\n"
+        "def score_applicant(model, applicant_data):\n"
+        "    return model.predict_proba(applicant_data)\n"
+    )
+    r = classify(code)
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "train_credit_model is high-risk")
+    assert_eq(r.category, "Annex III, Category 5", "credit scoring is Category 5")
+    print("✓ FN fix: train_credit_model correctly detected as high-risk")
 
 
 def test_fp_fix_social_media_score():
@@ -2818,6 +2870,7 @@ if __name__ == "__main__":
         test_dep_scan_pinning_score,
         test_dep_scan_lockfile_detection,
         test_dep_scan_package_json,
+        test_advisory_load_fallback_pyc_path,
         test_dep_scan_compromised_detection,
         # Rust/C++ dependency parsing (2 tests)
         test_dep_scan_cargo_toml,
@@ -2868,6 +2921,7 @@ if __name__ == "__main__":
         test_fp_fix_invoice_recognition,
         test_fp_fix_page_estimation,
         test_fp_fix_credit_model_detected,
+        test_fn_fix_credit_scorer_function_names,
         test_fp_fix_social_media_score,
         # Article 6(3) exemption (2 tests)
         test_exemption_assessment_likely_exempt,
