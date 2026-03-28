@@ -17,8 +17,11 @@ This project uses [Semantic Versioning](https://semver.org/).
 - AST analysis wired into Annex IV documentation generator (`generate_documentation.py`). Section 2.1 now lists detected AI frameworks and function signatures. Section 3.3 now includes an AST-derived oversight score (0-100), specific oversight patterns with line numbers, and unreviewed automated decision paths. Section 3.4 now includes a logging coverage score (0-100), counts of logged vs unlogged AI operations, and an Article 12 gap warning when AI operations have no nearby logging. For non-Python projects the generator falls back to regex-based detection. Adds 4 new regression tests.
 - `ast_analyse_project()` helper in `generate_documentation.py` — aggregates `parse_python_file`, `detect_human_oversight`, and `detect_logging_practices` across all Python source files in a project, returning AI imports, function signatures, oversight score/evidence, and logging coverage metrics.
 
+- `parse_go_mod()` in `dependency_scan.py` — parses Go module dependencies from `go.mod` files. Handles block `require(...)` and single-line `require` statements. All go.mod versions treated as exact (Go modules have no range specifiers). 67 known AI Go modules registered including `github.com/tmc/langchaingo`, `github.com/sashabaranov/go-openai`, `github.com/ollama/ollama`, `github.com/anthropics/anthropic-sdk-go`.
+- `parse_build_gradle()` in `dependency_scan.py` — parses Java/Kotlin dependencies from `build.gradle` (Groovy DSL) and `build.gradle.kts` (Kotlin DSL). Handles string-style (`'group:artifact:version'`) and named-arg style (`group: 'g', name: 'a', version: 'v'`). 40+ known AI Java/Kotlin artifacts registered including `dev.langchain4j:langchain4j`, `ai.djl:api`, `org.deeplearning4j:deeplearning4j-core`, `org.tensorflow:tensorflow-core-platform`. Both parsers wired into `scan_dependencies()`.
+
 ### Tests
-- 356 tests / 8 new test functions added in this patch (was 348 at v1.2.0 release)
+- 362 tests / 14 new test functions added in this patch (was 348 at v1.2.0 release)
 
 ---
 
