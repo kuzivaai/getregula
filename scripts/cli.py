@@ -25,7 +25,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from errors import RegulaError, PathError
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
 
 def json_output(command: str, data, exit_code: int = 0):
