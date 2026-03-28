@@ -1803,8 +1803,10 @@ def test_integration_full_check_cli():
         cwd=str(Path(__file__).parent.parent),
     )
     try:
-        findings = json.loads(result.stdout)
-        assert_true(isinstance(findings, list), "CLI outputs JSON list")
+        envelope = json.loads(result.stdout)
+        assert_true(isinstance(envelope, dict) and "data" in envelope, "CLI outputs JSON envelope")
+        findings = envelope["data"]
+        assert_true(isinstance(findings, list), "CLI envelope data is a list")
         assert_true(len(findings) > 0, "CLI finds issues in high-risk project")
     except json.JSONDecodeError:
         assert_true(False, f"CLI output is not valid JSON: {result.stdout[:200]}")
@@ -2282,6 +2284,31 @@ def test_ai_security_no_false_positive_safe_torch():
 
 # ── Error Handling Foundation Tests ───────────────────────────────
 
+def test_doctor_command():
+    """Test regula doctor runs and returns structured results."""
+    import subprocess
+    r = subprocess.run(["python3", "scripts/cli.py", "doctor"], capture_output=True, text=True)
+    assert_eq(r.returncode, 0, "Doctor should exit 0")
+    assert_true("Python" in r.stdout, "Should check Python version")
+    assert_true("passed" in r.stdout.lower() or "PASS" in r.stdout, "Should show pass status")
+    r = subprocess.run(["python3", "scripts/cli.py", "doctor", "--format", "json"],
+                       capture_output=True, text=True)
+    assert_eq(r.returncode, 0, "Doctor JSON should exit 0")
+    data = json.loads(r.stdout)
+    assert_true("data" in data and "checks" in data["data"], "JSON output should have checks in envelope")
+    print("\u2713 Doctor command: runs, exits 0, supports JSON")
+
+
+def test_self_test_command():
+    """Test regula self-test runs built-in assertions."""
+    import subprocess
+    r = subprocess.run(["python3", "scripts/cli.py", "self-test"], capture_output=True, text=True)
+    assert_eq(r.returncode, 0, "Self-test should exit 0")
+    assert_true("PASS" in r.stdout, "Should show PASS")
+    assert_true("6/6" in r.stdout or "passed" in r.stdout.lower(), "Should show all passed")
+    print("\u2713 Self-test command: runs, exits 0, all assertions pass")
+
+
 def test_regula_error_hierarchy():
     """Test custom exception classes exist with correct exit codes."""
     from errors import RegulaError, PathError, ConfigError, ParseError, DependencyError
@@ -2338,6 +2365,37 @@ def test_graceful_degradation():
     assert_true(stderr_capture2.getvalue() == "", "Should not warn twice for same package")
     _warned.clear()
     print("✓ Graceful degradation: check_optional works correctly")
+
+
+def test_init_dry_run():
+    """Test regula init --dry-run shows analysis without creating files."""
+    import subprocess, tempfile, os
+    with tempfile.TemporaryDirectory() as tmpdir:
+        r = subprocess.run(["python3", "scripts/cli.py", "init", "--dry-run", "--project", tmpdir],
+                           capture_output=True, text=True)
+        assert_eq(r.returncode, 0, "Dry run should exit 0")
+        assert_true("dry run" in r.stdout.lower() or "no changes" in r.stdout.lower(),
+                     "Should mention dry run")
+        assert_true(not os.path.exists(os.path.join(tmpdir, "regula-policy.yaml")),
+                     "Dry run should not create files")
+    print("\u2713 Init dry-run: shows analysis, creates no files")
+
+
+def test_json_output_envelope():
+    """Test --format json output has standard envelope with format_version."""
+    import subprocess
+    r = subprocess.run(["python3", "scripts/cli.py", "check", "--format", "json", "."],
+                       capture_output=True, text=True)
+    assert_true(r.returncode in (0, 1), "Unexpected exit code")
+    data = json.loads(r.stdout)
+    assert_true("format_version" in data, "Missing format_version")
+    assert_eq(data["format_version"], "1.0", "format_version should be 1.0")
+    assert_true("regula_version" in data, "Missing regula_version")
+    assert_true("command" in data, "Missing command")
+    assert_eq(data["command"], "check", "command should be check")
+    assert_true("timestamp" in data, "Missing timestamp")
+    assert_true("data" in data, "Missing data field")
+    print("\u2713 JSON envelope: format_version, regula_version, command, timestamp, data all present")
 
 
 if __name__ == "__main__":
@@ -2542,11 +2600,17 @@ if __name__ == "__main__":
         test_ai_security_pickle_load,
         test_ai_security_eval_on_output,
         test_ai_security_no_false_positive_safe_torch,
+        # Doctor + Self-test (2 tests)
+        test_doctor_command,
+        test_self_test_command,
         # Error handling foundation (2 tests)
         test_regula_error_hierarchy,
         test_cli_exit_codes,
         # Graceful degradation (1 test)
         test_graceful_degradation,
+        # Init dry-run + JSON envelope (2 tests)
+        test_init_dry_run,
+        test_json_output_envelope,
     ]
 
     print(f"Running {len(tests)} tests...\n")
