@@ -23,14 +23,15 @@ REGULA_VERSION = "1.2.0"
 # ── Import existing Regula modules with fallbacks ─────────────────
 
 sys.path.insert(0, str(Path(__file__).parent))
+from degradation import check_optional
 
-try:
+if check_optional("ast_engine", "AST analysis for SBOM", "included with regula"):
     from ast_engine import analyse_project
-except ImportError:
+else:
     def analyse_project(project_path: str) -> list:
         return []
 
-try:
+if check_optional("dependency_scan", "dependency scanning for SBOM", "included with regula"):
     from dependency_scan import (
         scan_dependencies,
         is_ai_dependency,
@@ -38,7 +39,7 @@ try:
         _normalize,
         check_compromised,
     )
-except ImportError:
+else:
     AI_LIBRARIES = set()
 
     def scan_dependencies(project_path: str) -> dict:
@@ -59,9 +60,9 @@ except ImportError:
     def check_compromised(deps: list) -> list:
         return []
 
-try:
+if check_optional("classify_risk", "risk classification for SBOM", "included with regula"):
     from classify_risk import classify
-except ImportError:
+else:
     classify = None
 
 

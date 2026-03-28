@@ -10,8 +10,12 @@ remediation commands. Addresses risks like the LiteLLM supply chain attack
 import json
 import os
 import re
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+from degradation import check_optional
 
 # ── AI Library Registry ────────────────────────────────────────────
 
@@ -668,17 +672,15 @@ def _load_advisories() -> list[dict]:
 
     # YAML parser — prefer pyyaml, fall back to classify_risk helper
     yaml_load = None
-    try:
+    if check_optional("yaml", "using fallback YAML parser", "pip install pyyaml"):
         import yaml
         yaml_load = lambda text: yaml.safe_load(text) or {}  # noqa: E731
-    except ImportError:
-        pass
 
     if yaml_load is None:
-        try:
+        if check_optional("classify_risk", "YAML fallback parser", "included with regula"):
             from classify_risk import _parse_yaml_fallback
             yaml_load = _parse_yaml_fallback
-        except ImportError:
+        else:
             # No YAML parser available — cannot load advisories
             return []
 

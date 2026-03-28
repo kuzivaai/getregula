@@ -18,6 +18,7 @@ import os
 import re
 import sys
 from dataclasses import dataclass, field, asdict
+from degradation import check_optional
 from enum import Enum
 from pathlib import Path
 from typing import Optional
@@ -434,10 +435,10 @@ def _load_policy() -> dict:
             if path.suffix == ".json":
                 return json.loads(content)
             # YAML: try pyyaml first, then safe fallback
-            try:
+            if check_optional("yaml", "using fallback YAML parser", "pip install pyyaml"):
                 import yaml
                 return yaml.safe_load(content) or {}
-            except ImportError:
+            else:
                 return _parse_yaml_fallback(content)
         except Exception:
             continue

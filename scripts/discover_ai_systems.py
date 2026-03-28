@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+from degradation import check_optional
 
 from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS
 
@@ -294,11 +295,11 @@ def generate_eu_registration(project_name: str) -> dict:
         return {"error": f"System '{project_name}' not found in registry"}
 
     # Load governance contacts from policy
-    try:
+    if check_optional("classify_risk", "governance contacts for registry", "included with regula"):
         from classify_risk import get_governance_contacts, get_policy
         contacts = get_governance_contacts()
         policy = get_policy()
-    except ImportError:
+    else:
         contacts = {}
         policy = {}
 
