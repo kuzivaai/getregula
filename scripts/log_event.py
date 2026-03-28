@@ -28,12 +28,18 @@ if sys.platform == "win32":
     import msvcrt
 
     def _lock_file(f):
-        """Acquire exclusive lock (Windows)."""
+        """Acquire exclusive lock (Windows).
+
+        Always lock byte 0 so all concurrent processes contend on the
+        same byte regardless of append-mode file position.
+        """
+        f.seek(0)
         msvcrt.locking(f.fileno(), msvcrt.LK_LOCK, 1)
 
     def _unlock_file(f):
         """Release exclusive lock (Windows)."""
         try:
+            f.seek(0)
             msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
         except OSError:
             pass
@@ -87,19 +93,21 @@ def _read_last_hash(audit_file: Path) -> str:
     """Read the current_hash of the last event in the file.
 
     Called while holding the file lock — do not call independently.
+    Uses a separate read to avoid interfering with the append-mode
+    write handle that holds the lock.
     """
     if not audit_file.exists() or audit_file.stat().st_size == 0:
         return "0" * 64
     try:
-        with open(audit_file, "r", encoding="utf-8") as f:
-            last_line = ""
-            for line in f:
-                stripped = line.strip()
-                if stripped:
-                    last_line = stripped
-        if not last_line:
-            return "0" * 64
-        return json.loads(last_line).get("current_hash", "0" * 64)
+        # Read entire file content — audit files are append-only and bounded
+        # by monthly rotation, so size is manageable
+        content = audit_file.read_text(encoding="utf-8")
+        # Find last non-empty line
+        for line in reversed(content.splitlines()):
+            stripped = line.strip()
+            if stripped:
+                return json.loads(stripped).get("current_hash", "0" * 64)
+        return "0" * 64
     except (json.JSONDecodeError, OSError, KeyError):
         return "0" * 64
 
@@ -272,8 +280,12 @@ def main():
         )
         content = export_csv(events) if args.format == "csv" else json.dumps(events, indent=2)
         if args.output:
-            Path(args.output).write_text(content, encoding="utf-8")
-            print(f"Exported {len(events)} events to {args.output}")
+            out_path = Path(args.output).resolve()
+            if not out_path.parent.is_dir():
+                print(f"Error: parent directory does not exist: {out_path.parent}", file=sys.stderr)
+                sys.exit(1)
+            out_path.write_text(content, encoding="utf-8")
+            print(f"Exported {len(events)} events to {out_path}")
         else:
             print(content)
     elif args.command == "verify":

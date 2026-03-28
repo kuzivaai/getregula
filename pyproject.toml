@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=68.0"]
+requires = ["setuptools~=68.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "regula"
-version = "1.1.0"
+version = "1.2.0"
 description = "AI governance risk indication for code — EU AI Act compliance at the point of creation"
 readme = "README.md"
 license = {text = "MIT"}
@@ -24,9 +24,10 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-yaml = ["pyyaml>=6.0"]
-ast = ["tree-sitter>=0.23", "tree-sitter-javascript>=0.23", "tree-sitter-typescript>=0.23"]
-all = ["pyyaml>=6.0", "tree-sitter>=0.23", "tree-sitter-javascript>=0.23", "tree-sitter-typescript>=0.23"]
+yaml = ["pyyaml~=6.0"]
+ast = ["tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23"]
+test = ["pytest>=7.0"]
+all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23"]
 
 [project.urls]
 Homepage = "https://github.com/kuzivaai/getregula"
@@ -41,3 +42,8 @@ include = ["scripts*", "hooks*"]
 
 [tool.setuptools.package-data]
 "*" = ["*.yaml", "*.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]

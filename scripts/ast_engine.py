@@ -987,7 +987,7 @@ def _analyse_js_ts(content: str, filename: str) -> dict:
 _RE_JAVA_IMPORT = re.compile(r'import\s+(static\s+)?([\w.]+)\s*;', re.MULTILINE)
 _RE_JAVA_TEST_ANNOTATION = re.compile(r'@Test\b', re.MULTILINE)
 _RE_JAVA_CLASS_DEF = re.compile(r'(?:public\s+|private\s+|protected\s+|abstract\s+|final\s+)*class\s+(\w+)', re.MULTILINE)
-_RE_JAVA_METHOD_DEF = re.compile(r'(?:public|private|protected|static|\s)+[\w<>\[\]]+\s+(\w+)\s*\([^)]*\)\s*(?:throws\s+[\w,\s]+)?\s*\{', re.MULTILINE)
+_RE_JAVA_METHOD_DEF = re.compile(r'(?:(?:public|private|protected|static|abstract|final|synchronized)\s+)*[\w<>\[\].]{1,80}\s+(\w+)\s*\([^)]*\)\s*(?:throws\s+[\w,\s]+)?\s*\{', re.MULTILINE)
 
 
 def _analyse_java_regex(content: str) -> dict:

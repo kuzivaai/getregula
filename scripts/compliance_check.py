@@ -415,7 +415,7 @@ def _check_article_11(project_path: str, files_index: list) -> tuple:
                         evidence.append(f"Model card found but only {validation['completeness_score']}% complete")
                         for section in validation["sections_missing"]:
                             gaps.append(f"Model card missing: {section.replace('_', ' ')}")
-                except Exception:
+                except (OSError, IOError):
                     evidence.append(f"Model card: {rel_path}")
                 component_scores["model_card"] = 1
             else:
@@ -541,7 +541,7 @@ def _check_article_12(project_path: str, files_index: list) -> tuple:
                     if ast_result.get("structured"):
                         evidence.append(f"AST: structured logging in: {rel_path}")
                         component_scores["structured_logging"] = 1
-            except Exception:
+            except (SyntaxError, ValueError, TypeError):
                 pass
 
     if component_scores["logging_present"] == 0:
@@ -595,7 +595,7 @@ def _check_article_13(project_path: str, files_index: list) -> tuple:
                         evidence.append(f"Transparency model card found but only {validation['completeness_score']}% complete")
                         for section in validation["sections_missing"]:
                             gaps.append(f"Model card missing: {section.replace('_', ' ')}")
-                except Exception:
+                except (OSError, IOError):
                     evidence.append(f"Transparency documentation: {rel_path}")
             else:
                 evidence.append(f"Transparency documentation: {rel_path}")
@@ -698,7 +698,7 @@ def _check_article_14(project_path: str, files_index: list) -> tuple:
                             f"AST: review-before-action flow detected in: {rel_path}"
                         )
                         component_scores["review_before_action"] = 1
-            except Exception:
+            except (SyntaxError, ValueError, TypeError):
                 pass
 
     if component_scores["oversight_mechanisms"] == 0:
@@ -822,7 +822,7 @@ def _check_article_15(project_path: str, files_index: list) -> tuple:
                         gaps.append(f"AI security issue in {Path(rel_path).name}: {sf['description']} (OWASP {sf['owasp']})")
                     else:
                         evidence.append(f"AI security check ran on {Path(rel_path).name}")
-            except Exception:
+            except (ImportError, ValueError, TypeError):
                 pass
 
     if test_file_count > 1:
@@ -873,7 +873,7 @@ def _check_article_15(project_path: str, files_index: list) -> tuple:
 
             # Contribute to score: map pinning_score (0-100) → 0-1 component
             dep_pinning_score = 1 if pinning_score >= 50 else 0
-        except Exception:
+        except Exception:  # Intentional: multiple error sources
             pass
 
     total = sum(component_scores.values()) + dep_pinning_score

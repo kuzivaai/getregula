@@ -1,0 +1,8 @@
+[
+  {"name": "compliant", "path": "tests/fixtures/sample_compliant"},
+  {"name": "high_risk", "path": "tests/fixtures/sample_high_risk"},
+  {"name": "warn_tier", "path": "tests/fixtures/sample_warn_tier"},
+  {"name": "prohibited", "path": "tests/fixtures/sample_prohibited"},
+  {"name": "mixed_tier", "path": "tests/fixtures/sample_mixed_tier"},
+  {"name": "unpinned", "path": "tests/fixtures/sample_unpinned"}
+]

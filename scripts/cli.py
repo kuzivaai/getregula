@@ -17,7 +17,7 @@ Usage:
 import argparse
 import json
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 # Ensure scripts directory is importable
@@ -34,7 +34,7 @@ def json_output(command: str, data, exit_code: int = 0):
         "format_version": "1.0",
         "regula_version": VERSION,
         "command": command,
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "exit_code": exit_code,
         "data": data,
     }
@@ -42,10 +42,15 @@ def json_output(command: str, data, exit_code: int = 0):
 
 
 def _validate_path(path_str: str) -> Path:
-    """Validate a path exists. Raises PathError if not."""
-    p = Path(path_str)
+    """Validate and canonicalise a path. Raises PathError if invalid.
+
+    Resolves symlinks to prevent traversal via symlink chains.
+    """
+    p = Path(path_str).resolve()
     if not p.exists():
         raise PathError(f"Path does not exist: {path_str}")
+    if not p.is_dir():
+        raise PathError(f"Path is not a directory: {path_str}")
     return p
 
 
@@ -211,10 +216,11 @@ def cmd_check(args):
         print(f"  Suppress findings: add '# regula-ignore' to file")
         print()
 
-    # Exit codes: 1 if any BLOCK-tier findings, 1 if WARN-tier and --strict, 0 otherwise
+    # Exit codes: 1 if any BLOCK-tier findings, 1 if WARN-tier and (--strict or --ci), 0 otherwise
+    strict = args.strict or getattr(args, "ci", False)
     if block_findings:
         sys.exit(1)
-    elif warn_findings and args.strict:
+    elif warn_findings and strict:
         sys.exit(1)
     sys.exit(0)
 
@@ -248,41 +254,86 @@ def cmd_classify(args):
 
 def cmd_report(args):
     """Generate reports."""
+    from report import scan_files, generate_html_report, generate_sarif
+
     if hasattr(args, 'project') and args.project != ".":
         _validate_path(args.project)
-    # Delegate to report.py main
-    sys.argv = ["report.py"]
-    if args.project:
-        sys.argv += ["--project", args.project]
-    if args.format:
-        sys.argv += ["--format", args.format]
-    if args.output:
-        sys.argv += ["--output", args.output]
-    if args.name:
-        sys.argv += ["--name", args.name]
-    if args.include_audit:
-        sys.argv += ["--include-audit"]
 
-    from report import main as report_main
-    report_main()
+    project_path = str(Path(args.project).resolve())
+    project_name = args.name or Path(project_path).name
+
+    print(f"Scanning {project_path}...", file=sys.stderr)
+    findings = scan_files(project_path)
+    print(f"Found {len(findings)} findings in {len(set(f['file'] for f in findings))} files", file=sys.stderr)
+
+    audit_events = None
+    chain_valid = None
+    if args.include_audit:
+        try:
+            from log_event import query_events as _qe, verify_chain as _vc
+            audit_events = _qe(limit=10000)
+            chain_valid, _ = _vc()
+        except (OSError, ValueError, KeyError):
+            pass
+
+    if args.format == "html":
+        content = generate_html_report(findings, project_name, audit_events, chain_valid)
+    elif args.format == "sarif":
+        content = json.dumps(generate_sarif(findings, project_name), indent=2)
+    else:
+        content = json.dumps(findings, indent=2)
+
+    if args.output:
+        out_path = Path(args.output)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(content, encoding="utf-8")
+        print(f"Report written to {out_path}", file=sys.stderr)
+    else:
+        print(content)
 
 
 def cmd_audit(args):
     """Manage audit trail."""
-    sys.argv = ["log_event.py", args.subcommand or "verify"]
-    if args.subcommand == "export":
-        if args.audit_format:
-            sys.argv += ["--format", args.audit_format]
-        if args.output:
-            sys.argv += ["--output", args.output]
-    elif args.subcommand == "query":
-        if args.event_type:
-            sys.argv += ["--event-type", args.event_type]
-        if args.limit:
-            sys.argv += ["--limit", str(args.limit)]
+    from log_event import log_event as _log, query_events, verify_chain, export_csv
 
-    from log_event import main as audit_main
-    audit_main()
+    subcommand = args.subcommand or "verify"
+
+    if subcommand == "log":
+        data = json.loads(args.data) if getattr(args, "data", None) else {}
+        event = _log(args.event_type, data)
+        print(json.dumps({"status": "logged", "event_id": event.event_id}))
+    elif subcommand == "query":
+        events = query_events(
+            getattr(args, "event_type", None),
+            getattr(args, "after", None),
+            getattr(args, "before", None),
+            getattr(args, "limit", 100),
+        )
+        print(json.dumps(events, indent=2))
+    elif subcommand == "export":
+        events = query_events(
+            getattr(args, "event_type", None),
+            getattr(args, "after", None),
+            getattr(args, "before", None),
+            limit=100000,
+        )
+        fmt = getattr(args, "audit_format", "json") or "json"
+        content = export_csv(events) if fmt == "csv" else json.dumps(events, indent=2)
+        if args.output:
+            out_path = Path(args.output).resolve()
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            out_path.write_text(content, encoding="utf-8")
+            print(f"Exported {len(events)} events to {out_path}")
+        else:
+            print(content)
+    elif subcommand == "verify":
+        valid, error = verify_chain()
+        print(json.dumps({"status": "valid" if valid else "invalid", "error": error}))
+        if not valid:
+            sys.exit(1)
+    else:
+        print(f"Unknown audit subcommand: {subcommand}", file=sys.stderr)
+        sys.exit(2)
 
 
 def cmd_discover(args):
@@ -312,32 +363,141 @@ def cmd_discover(args):
             print(f"Risk distribution: {results['risk_distribution']}")
         return
 
-    sys.argv = ["discover_ai_systems.py"]
-    if args.project:
-        sys.argv += ["--project", args.project]
-    if args.register:
-        sys.argv += ["--register"]
+    from discover_ai_systems import discover, print_discovery, register_system, load_registry, REGISTRY_PATH
 
-    from discover_ai_systems import main as discover_main
-    discover_main()
+    if getattr(args, "sync", False):
+        # Re-scan all previously registered projects
+        registry = load_registry()
+        systems = registry.get("systems", {})
+        if not systems:
+            print("No systems registered. Run 'regula discover --register' first.")
+            return
+        synced = 0
+        for name, info in list(systems.items()):
+            project_path = info.get("project_path", "")
+            if not project_path or not Path(project_path).is_dir():
+                print(f"  Skipping {name}: path not found ({project_path})", file=sys.stderr)
+                continue
+            try:
+                disc = discover(project_path)
+                register_system(disc)
+                synced += 1
+                risk = disc["highest_risk"].upper().replace("_", "-")
+                print(f"  Synced: {name} ({risk})")
+            except Exception as e:  # Intentional: multiple error sources
+                print(f"  Error syncing {name}: {e}", file=sys.stderr)
+        print(f"\n{synced}/{len(systems)} systems synced.")
+        return
+
+    discovery = discover(args.project)
+
+    if args.format == "json":
+        print(json.dumps(discovery, indent=2))
+    else:
+        print_discovery(discovery)
+
+    if args.register:
+        register_system(discovery)
+        print(f"System '{discovery['project_name']}' registered in {REGISTRY_PATH}")
 
 
 def cmd_install(args):
     """Install hooks for a platform."""
-    sys.argv = ["install.py"]
-    if args.platform:
-        sys.argv += [args.platform]
-    if args.project:
-        sys.argv += ["--project", args.project]
+    from install import PLATFORMS, list_platforms, _find_regula_root
 
-    from install import main as install_main
-    install_main()
+    if not args.platform or args.platform == "list":
+        list_platforms()
+        return
+
+    regula_root = _find_regula_root()
+    project_dir = Path(args.project).resolve()
+
+    print(f"Regula root: {regula_root}")
+    print(f"Project: {project_dir}")
+    print(f"Platform: {args.platform}")
+    print()
+
+    installer = PLATFORMS[args.platform]
+    installer(regula_root, project_dir)
+
+    print()
+    print("Installation complete. Run 'python3 scripts/report.py --project .' to verify.")
 
 
 def cmd_status(args):
     """Show registry status."""
-    from discover_ai_systems import print_registry_status
-    print_registry_status()
+    from discover_ai_systems import load_registry, format_registry_csv
+
+    registry = load_registry()
+    systems = registry.get("systems", {})
+
+    # --show <name>: detailed view of one system
+    show_name = getattr(args, "show", None)
+    if show_name:
+        if show_name not in systems:
+            print(f"System '{show_name}' not found in registry.", file=sys.stderr)
+            sys.exit(1)
+        info = systems[show_name]
+        if getattr(args, "format", "text") == "json":
+            json_output("status", {show_name: info})
+        else:
+            risk = info.get("highest_risk", "unknown").upper().replace("_", "-")
+            prev = info.get("previous_highest_risk", "")
+            trend = ""
+            if prev:
+                trend = f" (was: {prev.upper().replace('_', '-')})"
+            print(f"\n  System:     {show_name}")
+            print(f"  Risk:       {risk}{trend}")
+            print(f"  Compliance: {info.get('compliance_status', 'unknown')}")
+            print(f"  Registered: {info.get('registered_at', 'unknown')[:10]}")
+            print(f"  Last scan:  {info.get('last_scanned', 'never')[:10]}")
+            print(f"  Path:       {info.get('project_path', 'unknown')}")
+            print(f"  Language:   {info.get('primary_language', 'unknown')}")
+            libs = info.get("ai_libraries", [])
+            print(f"  Libraries:  {', '.join(libs) if libs else 'none'}")
+            models = info.get("model_files", [])
+            print(f"  Model files: {len(models)}")
+            code_files = info.get("ai_code_files", [])
+            print(f"  AI files:   {len(code_files)}")
+            risks = info.get("risk_classifications", [])
+            if risks:
+                print(f"  Findings:")
+                for rc in risks:
+                    print(f"    [{rc.get('tier', '?').upper().replace('_', '-')}] "
+                          f"{rc.get('file', '?')} — {rc.get('description', '')}")
+            print()
+        return
+
+    # --format csv: export
+    fmt = getattr(args, "format", "text")
+    if fmt == "csv":
+        print(format_registry_csv(registry))
+        return
+
+    # --format json: structured export
+    if fmt == "json":
+        json_output("status", {"systems": systems, "count": len(systems)})
+        return
+
+    # Default: text table
+    if not systems:
+        print("No systems registered. Run 'regula discover --register' first.")
+        return
+
+    print(f"\n{'=' * 60}")
+    print(f"  Regula System Registry — {len(systems)} system(s)")
+    print(f"{'=' * 60}")
+
+    for name, info in systems.items():
+        risk = info.get("highest_risk", "unknown").upper().replace("_", "-")
+        prev = info.get("previous_highest_risk", "")
+        trend = f" (was {prev.upper().replace('_', '-')})" if prev else ""
+        status = info.get("compliance_status", "unknown")
+        libs = len(info.get("ai_libraries", []))
+        last = info.get("last_scanned", "never")[:10]
+        print(f"  {name:<30} {risk:<15}{trend:<20} {status:<15} {libs} libs  (scanned: {last})")
+
+    print(f"{'=' * 60}\n")
 
 
 def cmd_init(args):
@@ -360,7 +520,7 @@ def cmd_feed(args):
     articles = fetch_governance_news(days=args.days, use_cache=not args.no_cache)
     if args.format == "json":
         content = json.dumps({"format_version": "1.0", "regula_version": VERSION,
-                              "command": "feed", "timestamp": datetime.utcnow().isoformat() + "Z",
+                              "command": "feed", "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
                               "exit_code": 0, "data": articles}, indent=2, default=str)
     elif args.format == "html":
         content = format_html(articles)
@@ -430,20 +590,56 @@ def cmd_baseline(args):
 
 def cmd_docs(args):
     """Generate documentation scaffolds."""
-    sys.argv = ["generate_documentation.py"]
-    if args.project:
-        sys.argv += ["--project", args.project]
-    if args.output:
-        sys.argv += ["--output", args.output]
-    if args.name:
-        sys.argv += ["--name", args.name]
-    if args.qms:
-        sys.argv += ["--qms"]
-    if getattr(args, "all", False):
-        sys.argv += ["--all"]
+    from generate_documentation import scan_project, generate_annex_iv, generate_qms_scaffold, generate_model_card
+    from classify_risk import RiskTier
 
-    from generate_documentation import main as docs_main
-    docs_main()
+    project_path = str(Path(args.project).resolve())
+    project_name = args.name or Path(project_path).name
+
+    print(f"Scanning {project_path}...")
+    findings = scan_project(project_path)
+
+    ai_count = len(findings["ai_files"])
+    model_count = len(findings["model_files"])
+    highest = findings["highest_risk"]
+    if isinstance(highest, RiskTier):
+        highest = highest.value
+    print(f"Found {ai_count} AI-related files, {model_count} model files")
+    print(f"Highest risk tier: {highest.upper().replace('_', '-')}")
+
+    output_dir = Path(args.output)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    fmt = getattr(args, "format", "markdown")
+
+    if fmt == "model-card":
+        card = generate_model_card(findings, project_name, project_path)
+        card_file = output_dir / f"{project_name}_model_card.md"
+        card_file.write_text(card, encoding="utf-8")
+        print(f"Model card written to {card_file}")
+    else:
+        # Annex IV
+        output_file = output_dir / f"{project_name}_annex_iv.md"
+        doc = generate_annex_iv(findings, project_name, project_path)
+        output_file.write_text(doc, encoding="utf-8")
+        print(f"Annex IV documentation written to {output_file}")
+
+        # QMS scaffold
+        if args.qms or getattr(args, "all", False):
+            qms_file = output_dir / f"{project_name}_qms.md"
+            qms_doc = generate_qms_scaffold(findings, project_name, project_path)
+            qms_file.write_text(qms_doc, encoding="utf-8")
+            print(f"QMS scaffold written to {qms_file}")
+
+    try:
+        from log_event import log_event as _log
+        _log("documentation_generated", {
+            "project": project_name, "highest_risk": highest,
+            "ai_files": ai_count, "model_files": model_count,
+            "types": ["annex_iv"] + (["qms"] if args.qms or getattr(args, "all", False) else []),
+        })
+    except (OSError,):
+        pass
 
 
 def cmd_compliance(args):
@@ -542,7 +738,7 @@ def cmd_benchmark(args):
         content = format_labelling_csv(results)
     elif args.format == "json":
         envelope = {"format_version": "1.0", "regula_version": VERSION,
-                    "command": "benchmark", "timestamp": datetime.utcnow().isoformat() + "Z",
+                    "command": "benchmark", "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
                     "exit_code": 0, "data": results}
         content = json.dumps(envelope, indent=2, default=str)
     else:
@@ -678,10 +874,8 @@ Examples:
   regula audit verify                     Verify audit chain integrity
 """,
     )
-    parser.add_argument("--framework", choices=["eu-ai-act", "nist-ai-rmf", "iso-42001", "nist-csf", "soc2", "iso-27001", "owasp-llm-top10", "mitre-atlas", "all"], default="eu-ai-act",
-                        help="Compliance framework to map findings to")
     parser.add_argument("--ci", action="store_true",
-                        help="CI mode: exit 0=pass, 1=findings, 2=blocked")
+                        help="CI mode: exit 1 on any WARN or BLOCK finding (implies --strict)")
     parser.add_argument("--config", help="Custom policy configuration file path")
 
     subparsers = parser.add_subparsers(dest="command")
@@ -700,6 +894,8 @@ Examples:
     p_check.add_argument("--name", "-n", help="Project name for SARIF output")
     p_check.add_argument("--no-ignore", action="store_true", help="Don't respect regula-ignore comments")
     p_check.add_argument("--strict", action="store_true", help="Exit 1 on WARN-tier findings")
+    p_check.add_argument("--ci", action="store_true", default=False,
+                         help="CI mode: exit 1 on any WARN or BLOCK finding (implies --strict)")
     p_check.add_argument("--verbose", "-v", action="store_true", help="Show INFO-tier findings")
     p_check.add_argument("--diff", metavar="REF", nargs="?", const="HEAD~1",
                          help="Only scan files changed since REF (default: HEAD~1)")
@@ -737,6 +933,7 @@ Examples:
     p_discover.add_argument("--org", action="store_true", help="Scan all projects in directory (org-level inventory)")
     p_discover.add_argument("--csv", action="store_true", help="Export registry as CSV")
     p_discover.add_argument("--eu-register", help="Generate EU AI Database registration for a system")
+    p_discover.add_argument("--sync", action="store_true", help="Re-scan all previously registered projects")
     p_discover.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_discover.set_defaults(func=cmd_discover)
 
@@ -748,6 +945,8 @@ Examples:
 
     # --- status ---
     p_status = subparsers.add_parser("status", help="Show system registry status")
+    p_status.add_argument("--show", metavar="NAME", help="Show detailed info for one system")
+    p_status.add_argument("--format", "-f", choices=["text", "json", "csv"], default="text")
     p_status.set_defaults(func=cmd_status)
 
     # --- feed ---
@@ -787,6 +986,7 @@ Examples:
     p_docs.add_argument("--project", "-p", default=".")
     p_docs.add_argument("--output", "-o", default="docs", help="Output directory")
     p_docs.add_argument("--name", "-n", help="Project name")
+    p_docs.add_argument("--format", "-f", choices=["markdown", "model-card"], default="markdown")
     p_docs.add_argument("--qms", action="store_true", help="Also generate QMS scaffold (Article 17)")
     p_docs.add_argument("--all", action="store_true", help="Generate all documentation types")
     p_docs.set_defaults(func=cmd_docs)
@@ -874,6 +1074,10 @@ Examples:
         sys.exit(130)
     except BrokenPipeError:
         sys.exit(0)
+    except Exception as e:
+        print(f"Internal error: {e}", file=sys.stderr)
+        print("This is a bug in Regula. Please report it at https://github.com/kuzivaai/getregula/issues", file=sys.stderr)
+        sys.exit(2)
 
 
 if __name__ == "__main__":

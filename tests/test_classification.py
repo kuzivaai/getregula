@@ -11,6 +11,7 @@ from classify_risk import classify, RiskTier, is_ai_related
 
 passed = 0
 failed = 0
+_PYTEST_MODE = "pytest" in sys.modules
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:
@@ -26,6 +27,8 @@ def assert_eq(actual, expected, msg=""):
         passed += 1
     else:
         failed += 1
+        if _PYTEST_MODE:
+            raise AssertionError(f"{msg} — expected {expected!r}, got {actual!r}")
         print(f"  FAIL: {msg} — expected {expected}, got {actual}")
 
 
@@ -523,10 +526,10 @@ rules:
 
 def test_policy_check_overrides():
     """Policy overrides function works for non-prohibited tiers"""
-    import classify_risk
-    original = classify_risk._POLICY
+    import policy_config
+    original = policy_config._POLICY
 
-    classify_risk._POLICY = {
+    policy_config._POLICY = {
         "rules": {
             "risk_classification": {
                 "force_high_risk": ["fraud_detection", "customer_churn"],
@@ -541,17 +544,17 @@ def test_policy_check_overrides():
     r = classify("import openai; internal_chatbot_v2 update")
     assert_eq(r.tier, RiskTier.MINIMAL_RISK, "exempt system is minimal-risk")
 
-    classify_risk._POLICY = original
+    policy_config._POLICY = original
     print("✓ Policy engine: force_high_risk and exempt work")
 
 
 def test_policy_cannot_exempt_prohibited():
     """CRITICAL: Policy exempt list CANNOT override prohibited practices"""
-    import classify_risk
-    original = classify_risk._POLICY
+    import policy_config
+    original = policy_config._POLICY
 
     # Try to exempt a prohibited pattern via policy
-    classify_risk._POLICY = {
+    policy_config._POLICY = {
         "rules": {
             "risk_classification": {
                 "exempt": ["social_scoring_v2"],
@@ -563,7 +566,7 @@ def test_policy_cannot_exempt_prohibited():
     r = classify("social scoring v2 with tensorflow")
     assert_eq(r.tier, RiskTier.PROHIBITED, "prohibited CANNOT be exempted by policy")
 
-    classify_risk._POLICY = original
+    policy_config._POLICY = original
     print("✓ Policy engine: prohibited overrides policy exempt (safety-first)")
 
 
@@ -2426,6 +2429,262 @@ def test_exit_code_warn_tier():
     print("\u2713 Exit code 1: WARN-tier findings trigger exit 1")
 
 
+def test_ci_flag_compliant_exits_0():
+    """--ci flag on compliant code exits 0."""
+    import subprocess
+    r = subprocess.run(["python3", "scripts/cli.py", "check",
+                        "tests/fixtures/sample_compliant/", "--ci"],
+                       capture_output=True, text=True)
+    assert_eq(r.returncode, 0, f"--ci compliant should exit 0, got {r.returncode}")
+    print("\u2713 --ci flag: compliant code exits 0")
+
+
+def test_ci_flag_warn_tier_exits_1():
+    """--ci flag on WARN-tier code exits 1 (implies --strict)."""
+    import subprocess, tempfile, os
+    with tempfile.TemporaryDirectory() as tmpdir:
+        code = (
+            "import torch\n"
+            "from transformers import pipeline\n"
+            "\n"
+            "def rank_job_applicants(applications):\n"
+            "    classifier = pipeline('text-classification')\n"
+            "    return classifier(applications)\n"
+            "\n"
+            "def evaluate_employee_performance(data):\n"
+            "    model = torch.load('model.pt')\n"
+            "    return model(data)\n"
+        )
+        filepath = os.path.join(tmpdir, "hiring_system.py")
+        with open(filepath, "w") as f:
+            f.write(code)
+        r = subprocess.run(["python3", "scripts/cli.py", "check", tmpdir, "--ci"],
+                           capture_output=True, text=True)
+        assert_eq(r.returncode, 1,
+                  f"--ci WARN-tier should exit 1, got {r.returncode}. Output: {r.stdout[-200:]}")
+    print("\u2713 --ci flag: WARN-tier findings exit 1")
+
+
+def test_ci_flag_error_exits_2():
+    """--ci flag on error exits 2."""
+    import subprocess
+    r = subprocess.run(["python3", "scripts/cli.py", "check", "/nonexistent", "--ci"],
+                       capture_output=True, text=True)
+    assert_eq(r.returncode, 2, f"--ci error should exit 2, got {r.returncode}")
+    print("\u2713 --ci flag: error exits 2")
+
+
+def test_ci_flag_before_subcommand():
+    """--ci flag works when placed before the subcommand (global position)."""
+    import subprocess
+    r = subprocess.run(["python3", "scripts/cli.py", "--ci", "check",
+                        "tests/fixtures/sample_compliant/"],
+                       capture_output=True, text=True)
+    assert_eq(r.returncode, 0,
+              f"--ci before subcommand should exit 0 for compliant, got {r.returncode}")
+    print("\u2713 --ci flag: works before subcommand")
+
+
+def test_ci_flag_info_tier_exits_0():
+    """--ci flag on INFO-tier (below WARN) code exits 0."""
+    import subprocess
+    r = subprocess.run(["python3", "scripts/cli.py", "check",
+                        "tests/fixtures/sample_high_risk/", "--ci"],
+                       capture_output=True, text=True)
+    assert_eq(r.returncode, 0,
+              f"--ci INFO-tier should exit 0, got {r.returncode}")
+    print("\u2713 --ci flag: INFO-tier exits 0")
+
+
+# ── CLI Subcommand Smoke Tests ──────────────────────────────────────
+
+
+def _run_cli(*args):
+    """Helper: run CLI command and return subprocess result."""
+    import subprocess
+    return subprocess.run(["python3", "scripts/cli.py"] + list(args),
+                          capture_output=True, text=True, timeout=30)
+
+
+def _assert_json_envelope(stdout, command_name):
+    """Helper: validate standard JSON output envelope."""
+    data = json.loads(stdout)
+    assert_true("format_version" in data, f"{command_name}: missing format_version")
+    assert_true("regula_version" in data, f"{command_name}: missing regula_version")
+    assert_true("command" in data, f"{command_name}: missing command")
+    assert_true("timestamp" in data, f"{command_name}: missing timestamp")
+    return data
+
+
+def test_smoke_report():
+    """Smoke test: regula report --format json runs and exits 0."""
+    r = _run_cli("report", "--project", "tests/fixtures/sample_compliant/", "--format", "json")
+    assert_true(r.returncode in (0, 1), f"report exit {r.returncode}: {r.stderr[:200]}")
+    assert_true(len(r.stdout) > 10, "report should produce output")
+    print("\u2713 Smoke: report --format json exits 0 with output")
+
+
+def test_smoke_discover():
+    """Smoke test: regula discover runs and exits 0."""
+    r = _run_cli("discover", "--project", "tests/fixtures/sample_compliant/")
+    assert_true(r.returncode in (0, 1), f"discover exit {r.returncode}: {r.stderr[:200]}")
+    assert_true(len(r.stdout) > 10, "discover should produce output")
+    print("\u2713 Smoke: discover exits 0 with output")
+
+
+def test_smoke_install_help():
+    """Smoke test: regula install --help runs and exits 0."""
+    r = _run_cli("install", "--help")
+    assert_eq(r.returncode, 0, f"install --help exit {r.returncode}")
+    assert_true("platform" in r.stdout.lower(), "install help should mention platform")
+    print("\u2713 Smoke: install --help exits 0")
+
+
+def test_smoke_status():
+    """Smoke test: regula status runs and exits 0."""
+    r = _run_cli("status")
+    assert_eq(r.returncode, 0, f"status exit {r.returncode}: {r.stderr[:200]}")
+    print("\u2713 Smoke: status exits 0")
+
+
+def test_smoke_feed():
+    """Smoke test: regula feed --format json runs and exits 0."""
+    r = _run_cli("feed", "--format", "json")
+    assert_eq(r.returncode, 0, f"feed exit {r.returncode}: {r.stderr[:200]}")
+    data = _assert_json_envelope(r.stdout, "feed")
+    assert_true("data" in data, "feed: missing data field")
+    print("\u2713 Smoke: feed --format json exits 0 with envelope")
+
+
+def test_smoke_questionnaire():
+    """Smoke test: regula questionnaire --format json runs and exits 0."""
+    r = _run_cli("questionnaire", "--format", "json")
+    assert_eq(r.returncode, 0, f"questionnaire exit {r.returncode}: {r.stderr[:200]}")
+    data = _assert_json_envelope(r.stdout, "questionnaire")
+    assert_true("data" in data, "questionnaire: missing data field")
+    print("\u2713 Smoke: questionnaire --format json exits 0 with envelope")
+
+
+def test_smoke_session():
+    """Smoke test: regula session --format json runs and exits 0."""
+    r = _run_cli("session", "--format", "json")
+    assert_eq(r.returncode, 0, f"session exit {r.returncode}: {r.stderr[:200]}")
+    data = _assert_json_envelope(r.stdout, "session")
+    print("\u2713 Smoke: session --format json exits 0 with envelope")
+
+
+def test_smoke_baseline():
+    """Smoke test: regula baseline --help runs and exits 0."""
+    r = _run_cli("baseline", "--help")
+    assert_eq(r.returncode, 0, f"baseline --help exit {r.returncode}")
+    assert_true("baseline" in r.stdout.lower(), "baseline help should mention baseline")
+    print("\u2713 Smoke: baseline --help exits 0")
+
+
+def test_smoke_docs():
+    """Smoke test: regula docs --project <path> runs and exits 0."""
+    import tempfile, os
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # Create a minimal Python file so docs has something to scan
+        with open(os.path.join(tmpdir, "app.py"), "w") as f:
+            f.write("import openai\nclient = openai.Client()\n")
+        r = _run_cli("docs", "--project", tmpdir)
+        assert_eq(r.returncode, 0, f"docs exit {r.returncode}: {r.stderr[:200]}")
+        assert_true(len(r.stdout) > 10, "docs should produce output")
+    print("\u2713 Smoke: docs exits 0 with output")
+
+
+def test_smoke_compliance():
+    """Smoke test: regula compliance runs and exits 0."""
+    r = _run_cli("compliance")
+    assert_eq(r.returncode, 0, f"compliance exit {r.returncode}: {r.stderr[:200]}")
+    print("\u2713 Smoke: compliance exits 0")
+
+
+def test_smoke_gap():
+    """Smoke test: regula gap --format json runs and exits 0."""
+    r = _run_cli("gap", "--project", "tests/fixtures/sample_compliant/", "--format", "json")
+    assert_eq(r.returncode, 0, f"gap exit {r.returncode}: {r.stderr[:200]}")
+    data = _assert_json_envelope(r.stdout, "gap")
+    assert_true("data" in data, "gap: missing data field")
+    print("\u2713 Smoke: gap --format json exits 0 with envelope")
+
+
+def test_smoke_benchmark():
+    """Smoke test: regula benchmark --format json runs and exits 0."""
+    r = _run_cli("benchmark", "--project", "tests/fixtures/sample_compliant/", "--format", "json")
+    assert_eq(r.returncode, 0, f"benchmark exit {r.returncode}: {r.stderr[:200]}")
+    assert_true(len(r.stdout) > 10, "benchmark should produce output")
+    print("\u2713 Smoke: benchmark --format json exits 0 with output")
+
+
+def test_smoke_timeline():
+    """Smoke test: regula timeline --format json runs and exits 0."""
+    r = _run_cli("timeline", "--format", "json")
+    assert_eq(r.returncode, 0, f"timeline exit {r.returncode}: {r.stderr[:200]}")
+    data = _assert_json_envelope(r.stdout, "timeline")
+    assert_true("data" in data, "timeline: missing data field")
+    print("\u2713 Smoke: timeline --format json exits 0 with envelope")
+
+
+def test_smoke_deps():
+    """Smoke test: regula deps --format json runs and exits 0."""
+    r = _run_cli("deps", "--project", "tests/fixtures/sample_compliant/", "--format", "json")
+    assert_eq(r.returncode, 0, f"deps exit {r.returncode}: {r.stderr[:200]}")
+    data = _assert_json_envelope(r.stdout, "deps")
+    assert_true("data" in data, "deps: missing data field")
+    print("\u2713 Smoke: deps --format json exits 0 with envelope")
+
+
+def test_smoke_sbom():
+    """Smoke test: regula sbom --format json runs and exits 0."""
+    r = _run_cli("sbom", "--project", "tests/fixtures/sample_compliant/", "--format", "json")
+    assert_eq(r.returncode, 0, f"sbom exit {r.returncode}: {r.stderr[:200]}")
+    data = json.loads(r.stdout)
+    assert_true("bomFormat" in data, "sbom: missing bomFormat (CycloneDX)")
+    assert_eq(data["bomFormat"], "CycloneDX", "sbom should be CycloneDX format")
+    print("\u2713 Smoke: sbom --format json exits 0 with CycloneDX envelope")
+
+
+def test_smoke_agent():
+    """Smoke test: regula agent --format json runs and exits 0."""
+    r = _run_cli("agent", "--format", "json")
+    assert_eq(r.returncode, 0, f"agent exit {r.returncode}: {r.stderr[:200]}")
+    data = _assert_json_envelope(r.stdout, "agent")
+    print("\u2713 Smoke: agent --format json exits 0 with envelope")
+
+
+def test_generic_exception_handler():
+    """Test that non-RegulaError exceptions are caught with clean message."""
+    import subprocess
+    # Simulate by importing a module that will fail
+    code = '''
+import sys; sys.path.insert(0, "scripts")
+from cli import main
+import argparse
+# Monkey-patch a command to raise an unexpected exception
+import cli
+def bad_func(args): raise RuntimeError("unexpected boom")
+cli.cmd_check = bad_func
+sys.argv = ["regula", "check", "."]
+main()
+'''
+    r = subprocess.run(["python3", "-c", code], capture_output=True, text=True, timeout=10)
+    assert_eq(r.returncode, 2, f"Generic exception should exit 2, got {r.returncode}")
+    assert_true("internal error" in r.stderr.lower() or "bug" in r.stderr.lower(),
+                f"Should print internal error message, got: {r.stderr[:200]}")
+    print("\u2713 Generic exception handler: catches non-RegulaError, exits 2")
+
+
+def test_framework_flag_removed():
+    """Test that the unused --framework flag has been removed."""
+    r = _run_cli("--framework", "eu-ai-act", "check", "tests/fixtures/sample_compliant/")
+    assert_eq(r.returncode, 2, f"--framework should be unrecognized, got exit {r.returncode}")
+    assert_true("unrecognized" in r.stderr.lower() or "error" in r.stderr.lower(),
+                f"Should show error for --framework, got: {r.stderr[:200]}")
+    print("\u2713 --framework flag removed (unrecognized argument)")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -2641,6 +2900,32 @@ if __name__ == "__main__":
         test_json_output_envelope,
         # Exit code verification (1 test)
         test_exit_code_warn_tier,
+        # --ci flag (5 tests)
+        test_ci_flag_compliant_exits_0,
+        test_ci_flag_warn_tier_exits_1,
+        test_ci_flag_error_exits_2,
+        test_ci_flag_before_subcommand,
+        test_ci_flag_info_tier_exits_0,
+        # CLI subcommand smoke tests (16 tests)
+        test_smoke_report,
+        test_smoke_discover,
+        test_smoke_install_help,
+        test_smoke_status,
+        test_smoke_feed,
+        test_smoke_questionnaire,
+        test_smoke_session,
+        test_smoke_baseline,
+        test_smoke_docs,
+        test_smoke_compliance,
+        test_smoke_gap,
+        test_smoke_benchmark,
+        test_smoke_timeline,
+        test_smoke_deps,
+        test_smoke_sbom,
+        test_smoke_agent,
+        # Error handling & CLI hygiene (2 tests)
+        test_generic_exception_handler,
+        test_framework_flag_removed,
     ]
 
     print(f"Running {len(tests)} tests...\n")

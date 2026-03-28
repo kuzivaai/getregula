@@ -53,8 +53,8 @@ def _check_policy_file():
                 return {"name": "Policy file", "status": "FAIL",
                         "detail": f"Found but not readable: {p}"}
 
-    return {"name": "Policy file", "status": "WARN",
-            "detail": "No policy file found (using defaults)"}
+    return {"name": "Policy file", "status": "INFO",
+            "detail": "No policy file found (using defaults). Run 'regula init' to create one."}
 
 
 def _check_audit_directory():
@@ -93,8 +93,8 @@ def _check_hooks():
     if found:
         return {"name": "Hooks detected", "status": "PASS",
                 "detail": f"Found: {', '.join(found)}"}
-    return {"name": "Hooks detected", "status": "WARN",
-            "detail": "No hooks found in .claude/hooks/, .cursor/, .windsurf/"}
+    return {"name": "Hooks detected", "status": "INFO",
+            "detail": "No hooks installed. Run 'regula install <platform>' to set up."}
 
 
 def _check_config_validation():
@@ -104,13 +104,13 @@ def _check_config_validation():
         from classify_risk import get_policy
         policy = get_policy()
         if not policy:
-            return {"name": "Config validation", "status": "WARN",
+            return {"name": "Config validation", "status": "INFO",
                     "detail": "No policy loaded (using defaults)"}
         contacts = policy.get("governance", {}).get("contacts", {})
         if contacts.get("ai_officer"):
             return {"name": "Config validation", "status": "PASS",
                     "detail": "ai_officer defined in policy"}
-        return {"name": "Config validation", "status": "WARN",
+        return {"name": "Config validation", "status": "INFO",
                 "detail": "ai_officer not defined in policy (recommended for Article 4)"}
     except Exception as e:
         return {"name": "Config validation", "status": "WARN",
@@ -122,7 +122,7 @@ def _check_security():
     issues = []
 
     gitignore = Path.cwd() / ".gitignore"
-    audit_patterns = [".regula/audit", "regula-audit"]
+    audit_patterns = [".regula/", ".regula/audit", "regula-audit"]
     if gitignore.exists():
         try:
             content = gitignore.read_text(encoding="utf-8", errors="ignore")
@@ -133,17 +133,6 @@ def _check_security():
             issues.append("cannot read .gitignore")
     else:
         issues.append(".gitignore not found")
-
-    # Check policy file permissions (not world-readable)
-    for name in ["regula-policy.yaml", "regula-policy.json"]:
-        p = Path.cwd() / name
-        if p.exists():
-            try:
-                mode = p.stat().st_mode
-                if mode & 0o004:  # world-readable
-                    issues.append(f"{name} is world-readable")
-            except OSError:
-                pass
 
     if issues:
         return {"name": "Security", "status": "WARN",
@@ -173,6 +162,7 @@ def run_doctor(format_type="text"):
     ]
 
     pass_count = sum(1 for c in checks if c["status"] == "PASS")
+    info_count = sum(1 for c in checks if c["status"] == "INFO")
     warn_count = sum(1 for c in checks if c["status"] == "WARN")
     fail_count = sum(1 for c in checks if c["status"] == "FAIL")
     healthy = fail_count == 0
@@ -182,27 +172,37 @@ def run_doctor(format_type="text"):
         "checks": checks,
         "summary": {
             "passed": pass_count,
+            "info": info_count,
             "warnings": warn_count,
             "failures": fail_count,
         },
     }
 
     if format_type == "text":
-        _print_text(checks, pass_count, warn_count, fail_count)
+        _print_text(checks, pass_count, info_count, warn_count, fail_count)
 
     return result if format_type == "json" else healthy
 
 
-def _print_text(checks, pass_count, warn_count, fail_count):
+def _print_text(checks, pass_count, info_count, warn_count, fail_count):
     """Print human-readable doctor output."""
     print("\nRegula Doctor\n")
     for c in checks:
         status = c["status"]
         if status == "PASS":
             label = "  PASS "
+        elif status == "INFO":
+            label = "  INFO "
         elif status == "WARN":
             label = "  WARN "
         else:
             label = "  FAIL "
         print(f"  {label} {c['detail']}")
-    print(f"\n{pass_count} passed, {warn_count} warnings, {fail_count} failures\n")
+    parts = [f"{pass_count} passed"]
+    if info_count:
+        parts.append(f"{info_count} info")
+    if warn_count:
+        parts.append(f"{warn_count} warnings")
+    if fail_count:
+        parts.append(f"{fail_count} failures")
+    print(f"\n{', '.join(parts)}\n")

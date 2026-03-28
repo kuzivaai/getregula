@@ -212,6 +212,248 @@ def check_mcp_config(config_path: str = None) -> list:
     return findings
 
 
+# ---------------------------------------------------------------------------
+# MCP Server Permission Analysis
+# Based on: OWASP Agentic Top 10 (#1 Excessive Agency, #2 Uncontrolled Tool Use,
+# #5 Identity and Authentication Gaps)
+# ---------------------------------------------------------------------------
+
+# Known MCP server categories and their risk implications
+MCP_SERVER_RISK_PROFILES = {
+    "filesystem": {"category": "file_access", "severity": "HIGH",
+                   "description": "File system access — can read/write/delete files",
+                   "owasp_agentic": "#1 Excessive Agency, #2 Uncontrolled Tool Use"},
+    "postgres": {"category": "database", "severity": "HIGH",
+                 "description": "Database access — can read/modify/delete data",
+                 "owasp_agentic": "#1 Excessive Agency, #7 Data Exfiltration"},
+    "sqlite": {"category": "database", "severity": "MEDIUM",
+               "description": "Local database access",
+               "owasp_agentic": "#1 Excessive Agency"},
+    "github": {"category": "code_repository", "severity": "MEDIUM",
+               "description": "GitHub access — can read/modify repositories",
+               "owasp_agentic": "#1 Excessive Agency, #8 Supply Chain"},
+    "slack": {"category": "communication", "severity": "MEDIUM",
+              "description": "Slack messaging — can send messages as agent",
+              "owasp_agentic": "#1 Excessive Agency, #7 Data Exfiltration"},
+    "everything": {"category": "unrestricted", "severity": "CRITICAL",
+                   "description": "Unrestricted access — development/testing server",
+                   "owasp_agentic": "#1 Excessive Agency"},
+    "puppeteer": {"category": "browser", "severity": "HIGH",
+                  "description": "Browser automation — can navigate and interact with web pages",
+                  "owasp_agentic": "#2 Uncontrolled Tool Use, #7 Data Exfiltration"},
+    "fetch": {"category": "network", "severity": "MEDIUM",
+              "description": "HTTP request capability",
+              "owasp_agentic": "#2 Uncontrolled Tool Use"},
+}
+
+# Credential patterns in MCP config values
+_CREDENTIAL_PATTERNS = [
+    (r"sk-[a-zA-Z0-9\-]{20,}", "API key (OpenAI/Anthropic format)"),
+    (r"ghp_[A-Za-z0-9_]{36,}", "GitHub personal access token"),
+    (r"AKIA[0-9A-Z]{16}", "AWS access key"),
+    (r"password\s*[:=]\s*\S+", "Password in configuration"),
+    (r"://[^:]+:[^@]+@", "Credentials in connection string"),
+]
+
+
+def parse_mcp_servers(config: dict) -> list:
+    """Parse MCP server definitions from a config dict.
+
+    Handles both Claude Code format (mcpServers key) and
+    Cursor format (mcpServers key).
+
+    Returns list of server dicts with: name, command, args, env.
+    """
+    servers = []
+    mcp_section = config.get("mcpServers", {})
+
+    for name, server_config in mcp_section.items():
+        if not isinstance(server_config, dict):
+            continue
+        servers.append({
+            "name": name,
+            "command": server_config.get("command", ""),
+            "args": server_config.get("args", []),
+            "env": server_config.get("env", {}),
+        })
+
+    return servers
+
+
+def assess_mcp_risk(servers: list) -> list:
+    """Assess risk of MCP server configurations.
+
+    Maps to OWASP Agentic Top 10 and EU AI Act Article 14 (human oversight).
+
+    Returns list of risk findings, each with:
+        server, category, severity, description, owasp_agentic, remediation
+    """
+    risks = []
+
+    for server in servers:
+        name = server["name"]
+        args_str = " ".join(str(a) for a in server.get("args", []))
+        env = server.get("env", {})
+
+        # Check against known server profiles
+        for profile_key, profile in MCP_SERVER_RISK_PROFILES.items():
+            if profile_key in name.lower() or profile_key in args_str.lower():
+                risks.append({
+                    "server": name,
+                    "category": profile["category"],
+                    "severity": profile["severity"],
+                    "description": profile["description"],
+                    "owasp_agentic": profile["owasp_agentic"],
+                    "remediation": f"Review permissions for '{name}'. Apply least-privilege principle.",
+                })
+                break
+        else:
+            # Unknown server — flag for review
+            risks.append({
+                "server": name,
+                "category": "unknown",
+                "severity": "MEDIUM",
+                "description": f"Unknown MCP server '{name}' — capabilities not assessed",
+                "owasp_agentic": "#8 Supply Chain Risks",
+                "remediation": f"Review '{name}' capabilities and restrict to required tools.",
+            })
+
+        # Check for credentials in env
+        for env_key, env_val in env.items():
+            env_val_str = str(env_val)
+            for pattern, desc in _CREDENTIAL_PATTERNS:
+                if re.search(pattern, env_val_str):
+                    risks.append({
+                        "server": name,
+                        "category": "credential_in_env",
+                        "severity": "MEDIUM",
+                        "description": f"{desc} found in env var '{env_key}'",
+                        "owasp_agentic": "#5 Identity and Authentication Gaps",
+                        "remediation": "Use a secret manager instead of environment variables where possible.",
+                    })
+                    break
+
+        # Check for credentials hardcoded in args
+        for arg in server.get("args", []):
+            arg_str = str(arg)
+            for pattern, desc in _CREDENTIAL_PATTERNS:
+                if re.search(pattern, arg_str):
+                    risks.append({
+                        "server": name,
+                        "category": "credential_hardcoded",
+                        "severity": "HIGH",
+                        "description": f"{desc} hardcoded in command arguments",
+                        "owasp_agentic": "#5 Identity and Authentication Gaps",
+                        "remediation": "Move credentials to environment variables or secret manager.",
+                    })
+                    break
+
+    return risks
+
+
+def format_mcp_risk_text(risks: list) -> str:
+    """Format MCP risk assessment as human-readable text."""
+    if not risks:
+        return "No MCP server risks detected.\n"
+
+    lines = [
+        "",
+        "=" * 60,
+        "  MCP Server Risk Assessment",
+        "=" * 60,
+    ]
+
+    for r in risks:
+        severity = r["severity"]
+        lines.append(f"  [{severity}] {r['server']}: {r['description']}")
+        if r.get("owasp_agentic"):
+            lines.append(f"         OWASP Agentic: {r['owasp_agentic']}")
+        lines.append(f"         Fix: {r['remediation']}")
+
+    lines.append("=" * 60)
+    lines.append("")
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Autonomous Action Detection in Source Code
+# Based on: OWASP LLM08 (Excessive Agency), OWASP Agentic #6 (Unmonitored
+# Autonomous Actions), EU AI Act Article 14 (Human Oversight)
+# ---------------------------------------------------------------------------
+
+# Patterns where AI output flows to external actions
+_AI_OUTPUT_PATTERNS = [
+    r"(?:response|result|completion|output|message)\.(?:choices|content|text|data)",
+    r"(?:client|openai|anthropic)\.\w+\.(?:create|generate|invoke|run)",
+    r"model\.\w*(?:predict|generate|forward|infer)\(",
+]
+
+# External action patterns that should have human gates
+_EXTERNAL_ACTION_PATTERNS = [
+    (r"subprocess\.(?:run|call|Popen)", "System command execution"),
+    (r"os\.system\(", "System command execution"),
+    (r"requests\.(?:post|put|patch|delete)\(", "HTTP mutation request"),
+    (r"httpx\.(?:post|put|patch|delete)\(", "HTTP mutation request"),
+    (r"\.execute\(", "Database query execution"),
+    (r"\.send\(", "Message/email sending"),
+    (r"shutil\.(?:rmtree|move|copy)", "File system modification"),
+    (r"os\.(?:remove|unlink|rename)\(", "File system modification"),
+]
+
+# Human gate patterns that mitigate autonomous action risk
+_HUMAN_GATE_PATTERNS = [
+    r"if\s+.*(?:approved|confirmed|user_approved|human_review)",
+    r"input\(",
+    r"click\.confirm",
+    r"if\s+.*(?:dry_run|preview|simulate)",
+    r"approval_required",
+    r"human_in_the_loop",
+]
+
+
+def detect_autonomous_actions(code: str) -> list:
+    """Detect AI output -> external action patterns without human gates.
+
+    Scans for code where AI model output flows to external actions
+    (subprocess, HTTP requests, database writes) without an intervening
+    human approval check.
+
+    Returns list of findings, each with:
+        line, ai_pattern, action_pattern, description, owasp_ref, has_human_gate
+    """
+    findings = []
+    lines = code.split("\n")
+
+    # Check if code has AI patterns at all
+    has_ai = any(re.search(p, code, re.IGNORECASE) for p in _AI_OUTPUT_PATTERNS)
+    if not has_ai:
+        return findings
+
+    # Check for human gates anywhere in the code
+    has_gate = any(re.search(p, code, re.IGNORECASE) for p in _HUMAN_GATE_PATTERNS)
+
+    # Find external action patterns
+    for i, line in enumerate(lines, 1):
+        stripped = line.strip()
+        if stripped.startswith("#") or stripped.startswith("//"):
+            continue
+
+        for pattern, desc in _EXTERNAL_ACTION_PATTERNS:
+            if re.search(pattern, line):
+                findings.append({
+                    "line": i,
+                    "action_pattern": desc,
+                    "description": f"AI output may flow to {desc} (line {i})"
+                                   + (" — no human gate detected in code" if not has_gate
+                                      else " — human gate pattern detected nearby"),
+                    "owasp_ref": "LLM08 Excessive Agency / Agentic #6 Unmonitored Actions",
+                    "has_human_gate": has_gate,
+                })
+                break
+
+    return findings
+
+
 def format_agent_text(analysis: dict) -> str:
     """Format agent analysis for CLI output."""
     risk_labels = {

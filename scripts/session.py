@@ -180,7 +180,7 @@ def main():
         try:
             log_event("session_risk_profile", profile, session_id=args.session)
             print("  Profile logged to audit trail.", file=sys.stderr)
-        except Exception:
+        except (OSError,):
             pass
 
 
