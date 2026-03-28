@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Regula PreToolUse Hook — Intercepts and classifies tool calls."""
+"""Regula PreToolUse Hook — Intercepts and classifies tool calls.
+
+Supports content-aware filtering:
+- Write/Edit to documentation files (.md, .txt, .rst, .html) are allowed
+  without classification (documentation legitimately discusses AI concepts)
+- Content containing '# regula-ignore' is allowed without classification
+- Bash commands are always classified (they execute code)
+"""
 
 import json
 import sys
@@ -30,13 +37,68 @@ except ImportError:
     def format_secret_warning(findings): return ""
 
 
+# Documentation file extensions — these legitimately discuss AI concepts
+# and should not be blocked when writing/editing
+DOC_EXTENSIONS = {".md", ".txt", ".rst", ".html", ".adoc", ".tex", ".yaml", ".yml", ".json"}
+
+# Directories that contain documentation, not executable code
+DOC_DIRECTORIES = {"docs", "doc", "documentation", "references", "course", "guides", "tutorials"}
+
+
+def _is_documentation_write(tool_name: str, tool_input: dict) -> bool:
+    """Check if this is a Write/Edit to a documentation file.
+    
+    Documentation files legitimately reference prohibited AI concepts
+    (e.g., a course module explaining what Article 5 prohibits).
+    These should be allowed without classification.
+    """
+    if tool_name not in ("Write", "Edit", "MultiEdit"):
+        return False
+    
+    file_path = tool_input.get("file_path", "")
+    if not file_path:
+        return False
+    
+    p = Path(file_path)
+    
+    # Check extension
+    if p.suffix.lower() in DOC_EXTENSIONS:
+        return True
+    
+    # Check if in a documentation directory
+    parts = [part.lower() for part in p.parts]
+    if any(d in parts for d in DOC_DIRECTORIES):
+        return True
+    
+    return False
+
+
+def _content_has_regula_ignore(tool_input: dict) -> bool:
+    """Check if the content being written contains '# regula-ignore'.
+    
+    This is the standard suppression mechanism — if the developer
+    explicitly marks content as ignored, respect it in hooks too.
+    """
+    # Check Write tool content
+    content = tool_input.get("content", "")
+    if content and "regula-ignore" in content:
+        return True
+    
+    # Check Edit tool new_string
+    new_string = tool_input.get("new_string", "")
+    if new_string and "regula-ignore" in new_string:
+        return True
+    
+    return False
+
+
 def _build_prohibited_message(result) -> str:
     articles = result.applicable_articles
     article_str = articles[0] if articles else "5"
     indicators = ", ".join(result.indicators_matched) if result.indicators_matched else "unknown"
 
     lines = [
-        "PROHIBITED AI PRACTICE — ACTION BLOCKED",
+        "PROHIBITED AI PRACTICE \u2014 ACTION BLOCKED",
         "",
         "This operation matches a pattern associated with a prohibited",
         f"practice under EU AI Act Article {article_str}.",
@@ -45,12 +107,10 @@ def _build_prohibited_message(result) -> str:
         f"Pattern detected: {indicators}",
     ]
 
-    # Include conditions if available
     conditions = getattr(result, "conditions", None)
     if conditions:
         lines += ["", f"Conditions: {conditions}"]
 
-    # Include exceptions if available — this is legally important
     exceptions = getattr(result, "exceptions", None)
     if exceptions:
         lines += ["", f"Exceptions: {exceptions}"]
@@ -87,13 +147,13 @@ def _build_high_risk_message(result) -> str:
         "",
         "If this IS a high-risk system, these requirements apply",
         "(effective 2 August 2026):",
-        "  Art 9:  Risk management — ISO 42001: 6.1, A.5.3",
-        "  Art 10: Data governance — ISO 42001: A.6.6",
-        "  Art 11: Technical docs — ISO 42001: A.6.4, 7.5",
-        "  Art 12: Event logging — ISO 42001: A.6.10",
-        "  Art 13: Transparency — ISO 42001: A.6.8",
-        "  Art 14: Human oversight — ISO 42001: A.6.3",
-        "  Art 15: Accuracy/security — ISO 42001: A.6.9",
+        "  Art 9:  Risk management \u2014 ISO 42001: 6.1, A.5.3",
+        "  Art 10: Data governance \u2014 ISO 42001: A.6.6",
+        "  Art 11: Technical docs \u2014 ISO 42001: A.6.4, 7.5",
+        "  Art 12: Event logging \u2014 ISO 42001: A.6.10",
+        "  Art 13: Transparency \u2014 ISO 42001: A.6.8",
+        "  Art 14: Human oversight \u2014 ISO 42001: A.6.3",
+        "  Art 15: Accuracy/security \u2014 ISO 42001: A.6.9",
         "",
         "This action has been logged to the audit trail.",
     ])
@@ -121,8 +181,24 @@ def main():
     tool_name = input_data.get("tool_name", "")
     tool_input = input_data.get("tool_input", {})
     session_id = input_data.get("session_id")
-    text = f"{tool_name} {json.dumps(tool_input)}"
     response = {"hookSpecificOutput": {"hookEventName": "PreToolUse"}}
+
+    # --- Documentation bypass ---
+    # Writing/editing documentation files should not be blocked.
+    # Documentation legitimately discusses prohibited AI concepts.
+    if _is_documentation_write(tool_name, tool_input):
+        response["hookSpecificOutput"]["permissionDecision"] = "allow"
+        print(json.dumps(response))
+        sys.exit(0)
+
+    # --- regula-ignore bypass ---
+    # Content containing '# regula-ignore' should not be classified.
+    if _content_has_regula_ignore(tool_input):
+        response["hookSpecificOutput"]["permissionDecision"] = "allow"
+        print(json.dumps(response))
+        sys.exit(0)
+
+    text = f"{tool_name} {json.dumps(tool_input)}"
 
     # --- Secret detection (runs first, before AI risk classification) ---
     secret_findings = check_secrets(text)
@@ -140,17 +216,14 @@ def main():
             pass
 
         if high_confidence:
-            # Block: high-confidence credential in tool input
             warning = format_secret_warning(secret_findings)
             response["hookSpecificOutput"]["permissionDecision"] = "deny"
             response["hookSpecificOutput"]["permissionDecisionReason"] = warning
             print(json.dumps(response))
             sys.exit(2)
         else:
-            # Warn: medium-confidence patterns only
             warning = format_secret_warning(secret_findings)
             response["hookSpecificOutput"]["additionalContext"] = warning
-            # Don't return yet — continue to AI risk classification
 
     # --- AI risk classification ---
     result = classify(text)
@@ -178,7 +251,6 @@ def main():
     if result.tier.value == "high_risk":
         context = _build_high_risk_message(result)
 
-        # Add Article-specific governance observations from code patterns
         try:
             observations = generate_observations(text)
             if observations:
