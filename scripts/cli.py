@@ -17,12 +17,28 @@ Usage:
 import argparse
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
 
 # Ensure scripts directory is importable
 sys.path.insert(0, str(Path(__file__).parent))
 
 from errors import RegulaError, PathError
+
+VERSION = "1.1.0"
+
+
+def json_output(command: str, data, exit_code: int = 0):
+    """Standard JSON envelope for all --format json output."""
+    envelope = {
+        "format_version": "1.0",
+        "regula_version": VERSION,
+        "command": command,
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "exit_code": exit_code,
+        "data": data,
+    }
+    print(json.dumps(envelope, indent=2, default=str))
 
 
 def _validate_path(path_str: str) -> Path:
@@ -128,7 +144,7 @@ def cmd_check(args):
     info_findings = [f for f in active if f["_finding_tier"] == "info"]
 
     if args.format == "json":
-        print(json.dumps(findings, indent=2))
+        json_output("check", findings)
     elif args.format == "sarif":
         from report import generate_sarif
         name = args.name or Path(project).name
@@ -281,14 +297,14 @@ def cmd_discover(args):
     if args.eu_register:
         from discover_ai_systems import generate_eu_registration
         reg = generate_eu_registration(args.eu_register)
-        print(json.dumps(reg, indent=2))
+        json_output("discover", reg)
         return
 
     if args.org:
         from discover_ai_systems import scan_organization
         results = scan_organization(args.project)
         if args.format == "json":
-            print(json.dumps(results, indent=2, default=str))
+            json_output("discover", results)
         else:
             print(f"\nOrganization Scan: {results['base_path']}")
             print(f"Projects scanned: {results['projects_scanned']}")
@@ -327,7 +343,8 @@ def cmd_status(args):
 def cmd_init(args):
     """Guided setup wizard."""
     from init_wizard import run_init
-    run_init(Path(args.project).resolve(), interactive=args.interactive)
+    run_init(Path(args.project).resolve(), interactive=args.interactive,
+             dry_run=getattr(args, 'dry_run', False))
 
 
 def cmd_feed(args):
@@ -342,7 +359,9 @@ def cmd_feed(args):
         return
     articles = fetch_governance_news(days=args.days, use_cache=not args.no_cache)
     if args.format == "json":
-        content = json.dumps(articles, indent=2)
+        content = json.dumps({"format_version": "1.0", "regula_version": VERSION,
+                              "command": "feed", "timestamp": datetime.utcnow().isoformat() + "Z",
+                              "exit_code": 0, "data": articles}, indent=2, default=str)
     elif args.format == "html":
         content = format_html(articles)
     else:
@@ -372,7 +391,7 @@ def cmd_questionnaire(args):
     else:
         q = generate_questionnaire()
         if args.format == "json":
-            print(json.dumps(q, indent=2))
+            json_output("questionnaire", q)
         else:
             print(format_questionnaire_cli(q))
 
@@ -386,7 +405,7 @@ def cmd_session(args):
         hours=args.hours,
     )
     if args.format == "json":
-        print(json.dumps(profile, indent=2))
+        json_output("session", profile)
     else:
         print(format_session_text(profile))
 
@@ -400,7 +419,7 @@ def cmd_baseline(args):
     elif args.subcommand == "compare":
         result = compare_to_baseline(args.project, getattr(args, "baseline_file", None))
         if args.format == "json":
-            print(json.dumps(result, indent=2))
+            json_output("baseline", result)
         else:
             print(format_comparison_text(result))
         if args.fail_on_new and result.get("summary", {}).get("new", 0) > 0:
@@ -447,7 +466,7 @@ def cmd_compliance(args):
             sys.exit(1)
         history = system.get("compliance_history", [])
         if args.format == "json":
-            print(json.dumps(history, indent=2))
+            json_output("compliance", history)
         else:
             print(f"\n  Compliance History: {args.system}")
             print(f"  Current: {system.get('compliance_status', 'not_started')}")
@@ -475,7 +494,7 @@ def cmd_compliance(args):
             return
         if args.format == "json":
             summary = {name: {"status": s.get("compliance_status", "not_started"), "risk": s.get("highest_risk", "unknown")} for name, s in systems.items()}
-            print(json.dumps(summary, indent=2))
+            json_output("compliance", summary)
         else:
             print(f"\n  {'System':<30} {'Status':<20} {'Risk':<15}")
             print(f"  {'-'*30} {'-'*20} {'-'*15}")
@@ -490,11 +509,11 @@ def cmd_gap(args):
     """Compliance gap assessment."""
     if args.project != ".":
         _validate_path(args.project)
-    from compliance_check import assess_compliance, format_gap_text, format_gap_json
+    from compliance_check import assess_compliance, format_gap_text
     articles = [args.article] if args.article else None
     assessment = assess_compliance(args.project, articles=articles)
     if args.format == "json":
-        print(format_gap_json(assessment))
+        json_output("gap", assessment)
     else:
         print(format_gap_text(assessment))
     # Exit 1 if overall score < 50 and --strict
@@ -510,7 +529,7 @@ def cmd_benchmark(args):
     if args.metrics:
         results = load_labelled_results(args.metrics)
         metrics = calculate_metrics(results)
-        print(json.dumps(metrics, indent=2))
+        json_output("benchmark", metrics)
         return
 
     if args.manifest:
@@ -522,7 +541,10 @@ def cmd_benchmark(args):
     if args.format == "csv":
         content = format_labelling_csv(results)
     elif args.format == "json":
-        content = format_benchmark_json(results)
+        envelope = {"format_version": "1.0", "regula_version": VERSION,
+                    "command": "benchmark", "timestamp": datetime.utcnow().isoformat() + "Z",
+                    "exit_code": 0, "data": results}
+        content = json.dumps(envelope, indent=2, default=str)
     else:
         content = format_benchmark_text(results)
 
@@ -539,7 +561,7 @@ def cmd_timeline(args):
     from timeline import format_timeline_text, TIMELINE
     if args.format == "json":
         from datetime import date
-        print(json.dumps({"as_of": date.today().isoformat(), "timeline": TIMELINE}, indent=2))
+        json_output("timeline", {"as_of": date.today().isoformat(), "timeline": TIMELINE})
     else:
         print(format_timeline_text())
 
@@ -569,7 +591,7 @@ def cmd_agent(args):
     if args.check_mcp:
         findings = check_mcp_config(getattr(args, "config_file", None))
         if args.format == "json":
-            print(json.dumps(findings, indent=2))
+            json_output("agent", findings)
         else:
             if findings:
                 print(f"\nFound {len(findings)} credential(s) in MCP configuration:")
@@ -584,7 +606,7 @@ def cmd_agent(args):
         hours=args.hours,
     )
     if args.format == "json":
-        print(format_agent_json(analysis))
+        json_output("agent", analysis)
     else:
         print(format_agent_text(analysis))
 
@@ -593,16 +615,34 @@ def cmd_deps(args):
     """Dependency supply chain analysis."""
     if args.project != ".":
         _validate_path(args.project)
-    from dependency_scan import scan_dependencies, format_dep_text, format_dep_json
+    from dependency_scan import scan_dependencies, format_dep_text
     results = scan_dependencies(args.project)
     if args.format == "json":
-        print(format_dep_json(results))
+        json_output("deps", results)
     else:
         print(format_dep_text(results))
     if results.get("compromised_count", 0) > 0:
         sys.exit(1)
     elif args.strict and results.get("pinning_score", 100) < 50:
         sys.exit(1)
+
+
+def cmd_doctor(args):
+    """Check installation health."""
+    from doctor import run_doctor
+    result = run_doctor(format_type=args.format)
+    if args.format == "json":
+        json_output("doctor", result, exit_code=0 if result["healthy"] else 1)
+        sys.exit(0 if result["healthy"] else 1)
+    else:
+        sys.exit(0 if result else 1)
+
+
+def cmd_self_test(args):
+    """Run built-in self-test assertions."""
+    from self_test import run_self_test
+    ok = run_self_test()
+    sys.exit(0 if ok else 1)
 
 
 def main():
@@ -650,6 +690,7 @@ Examples:
     p_init = subparsers.add_parser("init", help="Guided setup wizard")
     p_init.add_argument("--project", "-p", default=".", help="Project directory")
     p_init.add_argument("--interactive", "-i", action="store_true", help="Interactive mode")
+    p_init.add_argument("--dry-run", action="store_true", help="Show analysis without creating files")
     p_init.set_defaults(func=cmd_init)
 
     # --- check ---
@@ -787,6 +828,15 @@ Examples:
     p_deps.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_deps.add_argument("--strict", action="store_true", help="Exit 1 if pinning score < 50")
     p_deps.set_defaults(func=cmd_deps)
+
+    # --- doctor ---
+    p_doctor = subparsers.add_parser("doctor", help="Check installation health")
+    p_doctor.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_doctor.set_defaults(func=cmd_doctor)
+
+    # --- self-test ---
+    p_selftest = subparsers.add_parser("self-test", help="Verify installation works")
+    p_selftest.set_defaults(func=cmd_self_test)
 
     # --- sbom ---
     p_sbom = subparsers.add_parser("sbom", help="Generate AI Software Bill of Materials (CycloneDX 1.6)")

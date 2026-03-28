@@ -90,13 +90,39 @@ def _run_quick_scan(project_dir: Path) -> dict:
         return {"error": str(e)}
 
 
-def run_init(project_dir: Path, interactive: bool = False) -> None:
+def run_init(project_dir: Path, interactive: bool = False, dry_run: bool = False) -> None:
     """Run the init wizard."""
     print()
     print("=" * 60)
     print("  Regula — AI Governance Setup")
     print("=" * 60)
     print()
+
+    if dry_run:
+        print("  (dry run — no changes will be made)\n")
+        platforms = _detect_platforms(project_dir)
+        py_version = _detect_python()
+        has_policy = _policy_exists(project_dir)
+        scan = _run_quick_scan(project_dir)
+
+        print(f"  Python:    {py_version}")
+        print(f"  Policy:    {'exists' if has_policy else 'not found'}")
+        print(f"  Platforms: {', '.join(platforms) if platforms else 'none detected'}")
+        if "error" not in scan:
+            total = scan.get("total_files", 0)
+            prohibited = scan.get("prohibited", 0)
+            high_risk = scan.get("high_risk", 0)
+            limited = scan.get("limited_risk", 0)
+            print(f"  AI files:  {total}")
+            print(f"  Findings:  {prohibited} prohibited, {high_risk} high-risk, {limited} limited-risk")
+        print()
+        print("  Recommended next steps:")
+        if not has_policy:
+            print("    regula init              Set up policy and hooks")
+        print("    regula check .           Full scan")
+        print("    regula gap --project .   Compliance gap assessment")
+        print()
+        return
 
     # 1. Environment detection
     python_version = _detect_python()
