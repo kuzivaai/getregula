@@ -120,7 +120,7 @@ HIGH_RISK_PATTERNS = {
     "essential_services": {
         "patterns": [r"\bcredit.?scor", r"\bcreditworth", r"\bloan.?decision", r"\binsurance.?pric",
                      r"\bbenefit.?eligib", r"\bemergency.?dispatch",
-                     r"\bcredit.?risk", r"\bcredit.?model", r"\bcredit.?predict",
+                     r"credit.?risk", r"credit.?model", r"credit.?predict",
                      r"\bloan.?approv", r"\blending.?decision"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 5",

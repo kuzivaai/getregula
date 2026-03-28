@@ -663,9 +663,17 @@ def _load_advisories() -> list[dict]:
     Uses pyyaml if available, otherwise falls back to _parse_yaml_fallback from
     classify_risk.  Returns a list of advisory dicts (empty list on any failure).
     """
-    # Locate the references/advisories directory relative to this file
+    # Locate the references/advisories directory relative to this file.
+    # If __file__ resolves to a .pyc inside __pycache__, step up an extra level
+    # so that 'here' always points at the scripts/ directory.
     here = Path(__file__).resolve().parent
+    if here.name == "__pycache__":
+        here = here.parent
     advisories_dir = here.parent / "references" / "advisories"
+
+    if not advisories_dir.exists():
+        # Fallback: try relative to cwd (e.g. invoked directly from repo root)
+        advisories_dir = Path.cwd() / "references" / "advisories"
 
     if not advisories_dir.exists():
         return []

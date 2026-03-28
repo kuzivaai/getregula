@@ -244,6 +244,150 @@ def test_docs_auto_fields_marked_verify():
     print("\u2713 Docs: auto-detected fields marked for verification")
 
 
+# ── AST Integration ─────────────────────────────────────────────────
+
+
+def test_docs_ast_development_methods_populated():
+    """Section 2.1 Development Methods is populated from AST (not blank) when AI functions exist."""
+    with tempfile.TemporaryDirectory() as tmp:
+        _make_fixture(tmp, "model.py",
+            "import torch\n"
+            "def train_model(features, labels):\n"
+            "    model = torch.nn.Linear(10, 1)\n"
+            "    return model\n"
+            "def predict(model, x):\n"
+            "    return model(x)\n"
+        )
+        out_dir = str(Path(tmp) / "out")
+        r = _run_docs(tmp, "--output", out_dir)
+        assert_eq(r.returncode, 0, f"docs exit 0: {r.stderr[:200]}")
+        content = _read_annex_output(tmp)
+        # Section 2.1 must not be entirely placeholder
+        assert_true(
+            "TO BE COMPLETED BY DEVELOPMENT TEAM" not in content.split("### 2.1")[1].split("###")[0],
+            "Section 2.1 should be populated by AST, not left as TO BE COMPLETED",
+        )
+    print("\u2713 Docs AST: section 2.1 populated from AST function analysis")
+
+
+def test_docs_ast_oversight_score_in_section_33():
+    """Section 3.3 reports an AST-derived oversight score for a file with AI calls."""
+    with tempfile.TemporaryDirectory() as tmp:
+        _make_fixture(tmp, "scorer.py",
+            "import sklearn.ensemble\n"
+            "def score(model, data):\n"
+            "    result = model.predict(data)\n"
+            "    return result\n"
+        )
+        out_dir = str(Path(tmp) / "out")
+        r = _run_docs(tmp, "--output", out_dir)
+        assert_eq(r.returncode, 0, f"docs exit 0: {r.stderr[:200]}")
+        content = _read_annex_output(tmp)
+        section_33 = content.split("### 3.3")[1].split("###")[0] if "### 3.3" in content else ""
+        # Should have a numeric oversight score or mention of automated decisions
+        assert_true(
+            "score" in section_33.lower() or "automated" in section_33.lower() or "/100" in section_33,
+            "Section 3.3 should contain oversight score or automated decision info from AST",
+        )
+    print("\u2713 Docs AST: section 3.3 populated with oversight score")
+
+
+def test_docs_ast_unlogged_ops_reported():
+    """Section 3.4 reports unlogged AI operations when AI calls have no nearby logging."""
+    with tempfile.TemporaryDirectory() as tmp:
+        _make_fixture(tmp, "decision.py",
+            "import openai\n"
+            "def decide(prompt):\n"
+            "    result = openai.chat.completions.create(\n"
+            "        model='gpt-4',\n"
+            "        messages=[{'role': 'user', 'content': prompt}]\n"
+            "    )\n"
+            "    return result\n"
+        )
+        out_dir = str(Path(tmp) / "out")
+        r = _run_docs(tmp, "--output", out_dir)
+        assert_eq(r.returncode, 0, f"docs exit 0: {r.stderr[:200]}")
+        content = _read_annex_output(tmp)
+        section_34 = content.split("### 3.4")[1].split("###")[0] if "### 3.4" in content else ""
+        # Should report logging score or unlogged count
+        assert_true(
+            "score" in section_34.lower() or "unlogged" in section_34.lower() or "/100" in section_34,
+            "Section 3.4 should report logging score or unlogged AI operations",
+        )
+    print("\u2713 Docs AST: section 3.4 reports logging score/unlogged ops")
+
+
+def test_docs_ast_ai_operations_listed():
+    """AI operations detected by AST are listed in the generated documentation."""
+    with tempfile.TemporaryDirectory() as tmp:
+        _make_fixture(tmp, "pipeline.py",
+            "import torch\n"
+            "model = torch.nn.Linear(10, 2)\n"
+            "def run(x):\n"
+            "    return model(x)\n"
+        )
+        out_dir = str(Path(tmp) / "out")
+        r = _run_docs(tmp, "--output", out_dir)
+        assert_eq(r.returncode, 0, f"docs exit 0: {r.stderr[:200]}")
+        content = _read_annex_output(tmp)
+        # AI operations (model calls, predict calls) should be mentioned
+        assert_true(
+            "ai operation" in content.lower() or "model(" in content.lower()
+            or "predict" in content.lower() or "function" in content.lower(),
+            "Generated doc should list AI operations or functions from AST",
+        )
+    print("\u2713 Docs AST: AI operations from data flow analysis are listed")
+
+
+# ── Skip-dirs / Nested Project ──────────────────────────────────────
+
+
+def test_docs_nested_in_tests_dir_not_blank():
+    """Projects nested under a 'tests/' parent dir still get AST-populated sections.
+
+    Regression: skip_dirs used filepath.parts (absolute path), so any project
+    located inside tests/ had every file silently skipped.
+    """
+    import tempfile, os
+    # Build a nested path: <tmp>/tests/my_project/model.py
+    with tempfile.TemporaryDirectory() as base:
+        nested = Path(base) / "tests" / "my_project"
+        nested.mkdir(parents=True)
+        (nested / "model.py").write_text(
+            "import torch\n"
+            "def train(x, y):\n"
+            "    model = torch.nn.Linear(2, 1)\n"
+            "    return model.fit(x, y)\n",
+            encoding="utf-8",
+        )
+        out_dir = str(Path(base) / "out")
+        r = _run_docs(str(nested), "--output", out_dir)
+        assert_eq(r.returncode, 0, f"docs exit 0: {r.stderr[:200]}")
+        # Read the generated file directly since _read_annex_output looks in tmp/out
+        out_files = list(Path(out_dir).glob("*annex*")) if Path(out_dir).exists() else []
+        content = out_files[0].read_text(encoding="utf-8") if out_files else ""
+        section_21 = content.split("### 2.1")[1].split("###")[0] if "### 2.1" in content else ""
+        assert_true(
+            "TO BE COMPLETED BY DEVELOPMENT TEAM" not in section_21,
+            "Section 2.1 should be populated even when project is nested inside tests/",
+        )
+    print("\u2713 Docs: projects nested inside tests/ dir still get AST analysis")
+
+
+def test_docs_version_string_is_current():
+    """Generated Annex IV should say v1.2.0, not v1.1.0."""
+    with tempfile.TemporaryDirectory() as tmp:
+        _make_fixture(tmp, "app.py", "import openai\nclient = openai.Client()\n")
+        out_dir = str(Path(tmp) / "out")
+        r = _run_docs(tmp, "--output", out_dir)
+        assert_eq(r.returncode, 0, f"docs exit 0: {r.stderr[:200]}")
+        out_files = list(Path(out_dir).glob("*annex*")) if Path(out_dir).exists() else []
+        content = out_files[0].read_text(encoding="utf-8") if out_files else ""
+        assert_true("v1.1.0" not in content, "Generated doc must not reference old v1.1.0")
+        assert_true("v1.2.0" in content, "Generated doc should reference current v1.2.0")
+    print("\u2713 Docs: version string is current (v1.2.0)")
+
+
 # ── Empty Project ───────────────────────────────────────────────────
 
 
@@ -271,6 +415,12 @@ if __name__ == "__main__":
         test_docs_risk_register_owasp,
         test_docs_model_card_format,
         test_docs_auto_fields_marked_verify,
+        test_docs_ast_development_methods_populated,
+        test_docs_ast_oversight_score_in_section_33,
+        test_docs_ast_unlogged_ops_reported,
+        test_docs_ast_ai_operations_listed,
+        test_docs_nested_in_tests_dir_not_blank,
+        test_docs_version_string_is_current,
         test_docs_empty_project_graceful,
     ]
 
