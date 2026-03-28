@@ -22,6 +22,16 @@ from pathlib import Path
 # Ensure scripts directory is importable
 sys.path.insert(0, str(Path(__file__).parent))
 
+from errors import RegulaError, PathError
+
+
+def _validate_path(path_str: str) -> Path:
+    """Validate a path exists. Raises PathError if not."""
+    p = Path(path_str)
+    if not p.exists():
+        raise PathError(f"Path does not exist: {path_str}")
+    return p
+
 
 def _get_changed_files(project_path: str, git_ref: str = "HEAD~1") -> list[str]:
     """Get list of files changed since git_ref.
@@ -40,7 +50,7 @@ def _get_changed_files(project_path: str, git_ref: str = "HEAD~1") -> list[str]:
             files = [f.strip() for f in result.stdout.strip().split("\n") if f.strip()]
             return files
     except (subprocess.SubprocessError, FileNotFoundError):
-        pass
+        print("Note: git not available, scanning all files", file=sys.stderr)
     return []  # Empty = scan all files (fallback)
 
 
@@ -88,6 +98,7 @@ def cmd_check(args):
     """Scan files for risk indicators."""
     from report import scan_files
 
+    _validate_path(args.path)
     project = str(Path(args.path).resolve())
     findings = scan_files(project, respect_ignores=not args.no_ignore)
 
@@ -184,9 +195,9 @@ def cmd_check(args):
         print(f"  Suppress findings: add '# regula-ignore' to file")
         print()
 
-    # Exit codes: 2 if any BLOCK-tier findings, 1 if WARN-tier and --strict, 0 otherwise
+    # Exit codes: 1 if any BLOCK-tier findings, 1 if WARN-tier and --strict, 0 otherwise
     if block_findings:
-        sys.exit(2)
+        sys.exit(1)
     elif warn_findings and args.strict:
         sys.exit(1)
     sys.exit(0)
@@ -197,6 +208,7 @@ def cmd_classify(args):
     from classify_risk import classify
 
     if args.file:
+        _validate_path(args.file)
         text = Path(args.file).read_text(encoding="utf-8", errors="ignore")
     elif args.input:
         text = args.input
@@ -220,6 +232,8 @@ def cmd_classify(args):
 
 def cmd_report(args):
     """Generate reports."""
+    if hasattr(args, 'project') and args.project != ".":
+        _validate_path(args.project)
     # Delegate to report.py main
     sys.argv = ["report.py"]
     if args.project:
@@ -257,6 +271,8 @@ def cmd_audit(args):
 
 def cmd_discover(args):
     """Discover AI systems."""
+    if args.project != ".":
+        _validate_path(args.project)
     if args.csv:
         from discover_ai_systems import format_registry_csv
         print(format_registry_csv())
@@ -472,6 +488,8 @@ def cmd_compliance(args):
 
 def cmd_gap(args):
     """Compliance gap assessment."""
+    if args.project != ".":
+        _validate_path(args.project)
     from compliance_check import assess_compliance, format_gap_text, format_gap_json
     articles = [args.article] if args.article else None
     assessment = assess_compliance(args.project, articles=articles)
@@ -528,6 +546,8 @@ def cmd_timeline(args):
 
 def cmd_sbom(args):
     """Generate AI Software Bill of Materials (CycloneDX 1.6)."""
+    if args.project != ".":
+        _validate_path(args.project)
     from sbom import generate_sbom, format_sbom_json, format_sbom_summary
     bom = generate_sbom(args.project, project_name=args.name)
     if args.format == "json":
@@ -571,6 +591,8 @@ def cmd_agent(args):
 
 def cmd_deps(args):
     """Dependency supply chain analysis."""
+    if args.project != ".":
+        _validate_path(args.project)
     from dependency_scan import scan_dependencies, format_dep_text, format_dep_json
     results = scan_dependencies(args.project)
     if args.format == "json":
@@ -578,7 +600,7 @@ def cmd_deps(args):
     else:
         print(format_dep_text(results))
     if results.get("compromised_count", 0) > 0:
-        sys.exit(2)
+        sys.exit(1)
     elif args.strict and results.get("pinning_score", 100) < 50:
         sys.exit(1)
 
@@ -791,9 +813,17 @@ Examples:
 
     if not args.command:
         parser.print_help()
-        sys.exit(0)
+        sys.exit(2)
 
-    args.func(args)
+    try:
+        args.func(args)
+    except RegulaError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(e.exit_code)
+    except KeyboardInterrupt:
+        sys.exit(130)
+    except BrokenPipeError:
+        sys.exit(0)
 
 
 if __name__ == "__main__":

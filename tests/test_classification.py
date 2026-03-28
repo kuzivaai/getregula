@@ -2280,6 +2280,41 @@ def test_ai_security_no_false_positive_safe_torch():
     print("✓ AI security: torch.load pattern tested (may flag safe usage — known limitation)")
 
 
+# ── Error Handling Foundation Tests ───────────────────────────────
+
+def test_regula_error_hierarchy():
+    """Test custom exception classes exist with correct exit codes."""
+    from errors import RegulaError, PathError, ConfigError, ParseError, DependencyError
+    e = RegulaError("test")
+    assert_eq(str(e), "test", "RegulaError message")
+    assert_eq(e.exit_code, 1, "RegulaError exit_code")
+    assert_eq(PathError("x").exit_code, 2, "PathError exit_code")
+    assert_eq(ConfigError("x").exit_code, 2, "ConfigError exit_code")
+    assert_eq(ParseError("x").exit_code, 2, "ParseError exit_code")
+    assert_eq(DependencyError("x").exit_code, 2, "DependencyError exit_code")
+    assert_true(isinstance(PathError("x"), RegulaError), "PathError is RegulaError")
+    assert_true(isinstance(ConfigError("x"), RegulaError), "ConfigError is RegulaError")
+    print("✓ Error hierarchy: all classes exist with correct exit codes")
+
+
+def test_cli_exit_codes():
+    """Test CLI exit code convention: 0=success, 1=findings, 2=tool error."""
+    import subprocess
+    r = subprocess.run(["python3", "scripts/cli.py"], capture_output=True, text=True)
+    assert_eq(r.returncode, 2, "No-args should exit 2")
+    r = subprocess.run(["python3", "scripts/cli.py", "check", "/nonexistent/path"],
+                       capture_output=True, text=True)
+    assert_eq(r.returncode, 2, "Bad path should exit 2")
+    assert_true("does not exist" in r.stderr.lower(), "Should print error to stderr")
+    r = subprocess.run(["python3", "scripts/cli.py", "classify", "--file", "/nonexistent.txt"],
+                       capture_output=True, text=True)
+    assert_eq(r.returncode, 2, "Bad file should exit 2")
+    r = subprocess.run(["python3", "scripts/cli.py", "classify", "--input", "print('hello')"],
+                       capture_output=True, text=True)
+    assert_eq(r.returncode, 0, "Clean input should exit 0")
+    print("✓ CLI exit codes: 0=success, 1=findings, 2=tool error")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -2482,6 +2517,9 @@ if __name__ == "__main__":
         test_ai_security_pickle_load,
         test_ai_security_eval_on_output,
         test_ai_security_no_false_positive_safe_torch,
+        # Error handling foundation (2 tests)
+        test_regula_error_hierarchy,
+        test_cli_exit_codes,
     ]
 
     print(f"Running {len(tests)} tests...\n")

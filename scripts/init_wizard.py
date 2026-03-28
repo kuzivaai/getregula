@@ -86,7 +86,7 @@ def _run_quick_scan(project_dir: Path) -> dict:
             "limited_risk": sum(1 for f in active if f["tier"] == "limited_risk"),
             "minimal_risk": sum(1 for f in active if f["tier"] == "minimal_risk"),
         }
-    except Exception as e:
+    except (OSError, ImportError) as e:
         return {"error": str(e)}
 
 
@@ -117,7 +117,10 @@ def run_init(project_dir: Path, interactive: bool = False) -> None:
     # 3. Create policy if missing
     if not has_policy:
         if interactive:
-            answer = input("  Create default regula-policy.yaml? [Y/n] ").strip().lower()
+            try:
+                answer = input("  Create default regula-policy.yaml? [Y/n] ").strip().lower()
+            except EOFError:
+                answer = "y"
             if answer in ("", "y", "yes"):
                 _create_default_policy(project_dir)
                 print("  Created regula-policy.yaml")
@@ -137,7 +140,10 @@ def run_init(project_dir: Path, interactive: bool = False) -> None:
             print(f"  Detected platform: {primary}")
             for i, p in enumerate(platforms):
                 print(f"    {i + 1}. {p}")
-            choice = input(f"  Install hooks for {primary}? [Y/n/number] ").strip().lower()
+            try:
+                choice = input(f"  Install hooks for {primary}? [Y/n/number] ").strip().lower()
+            except EOFError:
+                choice = "y"
             if choice.isdigit() and 1 <= int(choice) <= len(platforms):
                 primary = platforms[int(choice) - 1]
             elif choice in ("n", "no"):
@@ -153,7 +159,7 @@ def run_init(project_dir: Path, interactive: bool = False) -> None:
                     installer(regula_root, project_dir)
                 else:
                     print(f"  No installer for {primary}.")
-            except Exception as e:
+            except (OSError, PermissionError) as e:
                 print(f"  Hook installation failed: {e}")
                 print(f"  Run manually: python3 scripts/install.py {primary}")
     else:
