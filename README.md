@@ -229,10 +229,10 @@ Checks: pinning quality (hash > exact > range > unpinned), lockfile presence, AI
 
 ### Cross-Framework Compliance Mapping
 
-Map findings simultaneously to EU AI Act, NIST AI RMF 1.0, ISO 42001:2023, OWASP Top 10 for LLMs, and MITRE ATLAS.
+Map findings simultaneously to 8 compliance frameworks: EU AI Act, NIST AI RMF 1.0, ISO 42001:2023, NIST CSF 2.0, SOC 2, ISO 27001:2022, OWASP Top 10 for LLMs, and MITRE ATLAS.
 
 ```bash
-regula check . --framework all              # Map to all five frameworks
+regula check . --framework all              # Map to all eight frameworks
 regula check . --framework owasp-llm-top10  # OWASP LLM Top 10 only
 regula check . --framework mitre-atlas      # MITRE ATLAS only
 ```
@@ -363,12 +363,15 @@ regula/
 │   ├── timeline.py                # EU AI Act enforcement dates
 │   ├── generate_documentation.py  # Annex IV + QMS scaffold generator
 │   ├── discover_ai_systems.py     # AI system discovery, registry, compliance tracking
-│   ├── credential_check.py        # Secret detection (6 providers)
+│   ├── credential_check.py        # Secret detection (9 patterns: 6 high + 3 medium confidence)
 │   ├── ast_analysis.py            # AST-based Python analysis (data flow, oversight, logging)
-│   ├── ast_engine.py              # Multi-language engine (Python AST + JS/TS/Java/Go regex)
+│   ├── ast_engine.py              # Multi-language AST engine (Python + JS/TS tree-sitter + Java/Go/Rust/C/C++ regex)
 │   ├── compliance_check.py        # Compliance gap assessment (Articles 9-15)
 │   ├── dependency_scan.py         # AI dependency supply chain security
-│   ├── framework_mapper.py        # Cross-framework compliance mapping
+│   ├── framework_mapper.py        # Cross-framework compliance mapping (8 frameworks)
+│   ├── remediation.py             # Inline fix suggestions per Annex III category
+│   ├── agent_monitor.py           # Agentic AI governance (autonomy scoring, MCP config)
+│   ├── sbom.py                    # CycloneDX 1.6 AI SBOM generation
 │   └── benchmark.py               # Real-world precision/recall validation
 ├── hooks/
 │   ├── pre_tool_use.py            # PreToolUse hook (CC/Copilot/Windsurf)
@@ -378,7 +381,7 @@ regula/
 │   ├── owasp_llm_top10.yaml       # OWASP Top 10 for LLMs → EU AI Act mapping
 │   └── mitre_atlas.yaml           # MITRE ATLAS → EU AI Act mapping
 ├── tests/
-│   └── test_classification.py     # 136 tests, 402 assertions
+│   └── test_classification.py     # 152 tests, 434 assertions
 ├── docs/
 │   └── research-synthesis.md      # Research findings informing roadmap
 ├── regula-policy.yaml             # Policy configuration template
@@ -411,7 +414,7 @@ regula/
 - **Compliance gap assessment, not just risk flagging.** Checks whether Articles 9-15 compliance infrastructure actually exists in the codebase.
 - **AI-specific supply chain security.** Dependency pinning checks focus on AI libraries, not general packages.
 - **Cross-platform.** Unix/macOS (`fcntl`) and Windows (`msvcrt`) file locking. No platform restrictions.
-- **Multi-framework mapping.** EU AI Act, NIST AI RMF, ISO 42001, OWASP LLM Top 10, and MITRE ATLAS mapped via a single crosswalk data file.
+- **Multi-framework mapping.** 8 frameworks (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF 2.0, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS) mapped via a single crosswalk data file.
 
 ## Configuration
 
@@ -446,7 +449,7 @@ For full YAML support, install pyyaml: `pip install pyyaml`. Without it, a minim
 python3 tests/test_classification.py
 ```
 
-136 tests, 402 assertions covering:
+152 tests, 434 assertions covering:
 - AI detection (libraries, model files, API endpoints, ML patterns)
 - All 8 prohibited practices
 - All 10+ high-risk categories
@@ -472,7 +475,7 @@ python3 tests/test_classification.py
 ## Constraints
 
 - **No required external dependencies** — stdlib only (pyyaml optional; tree-sitter optional for JS/TS AST, regex fallback when not installed)
-- **Language support** — Python (full AST), JavaScript/TypeScript (regex + optional tree-sitter), Java (regex, 13 AI libraries), Go (regex, 9 AI libraries)
+- **Language support** — Python (full AST), JavaScript/TypeScript (tree-sitter AST + regex fallback), Java (regex, 13 AI libraries), Go (regex, 9 AI libraries), Rust (regex, 39 AI crates), C/C++ (regex, 43 AI headers)
 - **Python 3.10+**
 - **Works offline** — no API calls required
 - **Cross-platform** — Unix, macOS, and Windows supported
