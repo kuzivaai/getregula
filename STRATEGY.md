@@ -84,7 +84,7 @@ It is a risk *indication* tool, not a legal classifier. Article 6 risk classific
 | 1 | Fix credit scorer false negative | Real compliance gap — `train_credit_model` scores minimal_risk | 2h |
 | 2 | Advisory directory resolution fallback | Advisory loading fails depending on import method | 30m |
 | 3 | Wire AST into documentation generator | Annex IV docs are ~80% blank despite AST producing the data | 1 day |
-| 4 | go.mod + build.gradle parsing | Missing dependency parsers for 2 of 8 supported languages | 2h |
+| 4 | ~~go.mod + build.gradle parsing~~ | ~~Missing dependency parsers for 2 of 8 supported languages~~ | ✅ Done |
 
 ### Short-term (v1.3 scope)
 

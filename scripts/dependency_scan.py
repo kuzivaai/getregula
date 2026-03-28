@@ -83,6 +83,88 @@ _AI_ALIASES: dict[str, str] = {
     "sklearn": "scikit-learn",
 }
 
+# ── Go module AI library registry ─────────────────────────────────
+# Full module paths as they appear in go.mod require statements.
+_GO_AI_MODULES: set[str] = {
+    "github.com/tmc/langchaingo",
+    "github.com/sashabaranov/go-openai",
+    "github.com/google/generative-ai-go",
+    "github.com/anthropics/anthropic-sdk-go",
+    "github.com/ollama/ollama",
+    "github.com/ggerganov/whisper.go",
+    "github.com/nlpodyssey/spago",
+    "github.com/pkoukk/tiktoken-go",
+    "github.com/pkoukk/go-tiktoken",
+    "github.com/googleapis/google-cloud-go/aiplatform",
+    "github.com/openai/openai-go",
+    "github.com/cohere-ai/cohere-go",
+    "gonum.org/v1/gonum",
+}
+
+def _is_go_ai_module(name: str) -> bool:
+    """Check whether a Go module path is a known AI library."""
+    lower = name.lower()
+    for mod in _GO_AI_MODULES:
+        if lower == mod or lower.startswith(mod + "/"):
+            return True
+    return False
+
+
+# ── Java/Kotlin (Gradle/Maven) AI library registry ─────────────────
+# Stored as "groupId:artifactId" (colon-separated, lowercase).
+_JAVA_AI_ARTIFACTS: set[str] = {
+    # LangChain4j
+    "dev.langchain4j:langchain4j",
+    "dev.langchain4j:langchain4j-open-ai",
+    "dev.langchain4j:langchain4j-anthropic",
+    "dev.langchain4j:langchain4j-ollama",
+    "dev.langchain4j:langchain4j-google-ai-gemini",
+    # Deep Java Library (DJL)
+    "ai.djl:api",
+    "ai.djl.pytorch:pytorch-engine",
+    "ai.djl.tensorflow:tensorflow-engine",
+    "ai.djl.mxnet:mxnet-engine",
+    # DL4J / ND4J
+    "org.deeplearning4j:deeplearning4j-core",
+    "org.deeplearning4j:deeplearning4j-nn",
+    "org.nd4j:nd4j-native",
+    "org.nd4j:nd4j-cuda-11.6",
+    # TensorFlow Java
+    "org.tensorflow:tensorflow-core-platform",
+    "org.tensorflow:tensorflow-core-api",
+    # OpenAI / LLM provider SDKs
+    "com.theokanning.openai-gpt3-java:service",
+    "com.theokanning.openai-gpt3-java:api",
+    "io.github.stefanbratanov:jvm-openai",
+    "com.azure:azure-ai-openai",
+    "com.azure:azure-ai-inference",
+    # Ollama
+    "io.github.ollama4j:ollama4j",
+    # Semantic Kernel
+    "com.microsoft.semantic-kernel:semantickernel-api",
+    "com.microsoft.semantic-kernel:semantickernel-core",
+    # Tokenizers
+    "com.knuddels:jtokkit",
+    # Weka (classical ML)
+    "nz.ac.waikato.cms.weka:weka-stable",
+    # Smile (ML framework)
+    "com.github.haifengl:smile-core",
+    "com.github.haifengl:smile-nlp",
+}
+
+def _is_java_ai_artifact(group_artifact: str) -> bool:
+    """Check whether a 'groupId:artifactId' string is a known AI library."""
+    norm = group_artifact.lower().strip()
+    # Exact match
+    if norm in _JAVA_AI_ARTIFACTS:
+        return True
+    # Prefix match: catches sub-modules like dev.langchain4j:langchain4j-extra
+    for art in _JAVA_AI_ARTIFACTS:
+        if norm.startswith(art.split(":")[0] + ":"):
+            return True
+    return False
+
+
 LOCKFILE_NAMES: set[str] = {
     "Pipfile.lock",
     "poetry.lock",
@@ -655,6 +737,149 @@ def calculate_pinning_score(deps: list[dict], has_lockfile: bool = False) -> int
     return min(base, 100)
 
 
+# ── go.mod parser ──────────────────────────────────────────────────
+
+_RE_GO_REQUIRE_SINGLE = re.compile(r'^require\s+(\S+)\s+(v[\w.\-+]+)', re.IGNORECASE)
+_RE_GO_REQUIRE_BLOCK_ENTRY = re.compile(r'^\s+(\S+)\s+(v[\w.\-+]+)')
+
+
+def parse_go_mod(content: str) -> list[dict]:
+    """Parse dependencies from a go.mod file.
+
+    Handles both block require(...) and single-line require statements.
+    All go.mod versions are exact by definition (no range specifiers).
+    """
+    deps: list[dict] = []
+    in_require = False
+    line_num = 0
+
+    for raw_line in content.splitlines():
+        line_num += 1
+        line = raw_line.rstrip()
+
+        # Enter/exit require block
+        stripped = line.strip()
+        if stripped.startswith("require ("):
+            in_require = True
+            continue
+        if in_require and stripped == ")":
+            in_require = False
+            continue
+
+        # Single-line require
+        m = _RE_GO_REQUIRE_SINGLE.match(stripped)
+        if m and not in_require:
+            name, version = m.group(1), m.group(2)
+            deps.append({
+                "name": name,
+                "version": version,
+                "pinning": "exact",
+                "is_ai": _is_go_ai_module(name),
+                "line": line_num,
+            })
+            continue
+
+        # Block entry
+        if in_require:
+            m = _RE_GO_REQUIRE_BLOCK_ENTRY.match(line)
+            if m:
+                name, version = m.group(1), m.group(2)
+                # Strip // indirect comment already handled by regex not capturing it
+                name = name.rstrip()
+                deps.append({
+                    "name": name,
+                    "version": version,
+                    "pinning": "exact",
+                    "is_ai": _is_go_ai_module(name),
+                    "line": line_num,
+                })
+
+    return deps
+
+
+# ── build.gradle / build.gradle.kts parser ─────────────────────────
+
+# Matches string-style: 'group:artifact:version' or "group:artifact:version"
+_RE_GRADLE_STRING_DEP = re.compile(
+    r'''['"]([\w.\-]+):([\w.\-]+)(?::([\w.\-]+))?['"]'''
+)
+# Matches named-arg style: group: 'com.example', name: 'foo', version: '1.0'
+_RE_GRADLE_NAMED_DEP = re.compile(
+    r'''group\s*:\s*['"]([^'"]+)['"]\s*,\s*name\s*:\s*['"]([^'"]+)['"]\s*(?:,\s*version\s*:\s*['"]([^'"]+)['"])?'''
+)
+
+_GRADLE_CONFIG_PREFIXES = (
+    "implementation", "api", "compileonly", "runtimeonly",
+    "testimplementation", "testapi", "annotationprocessor",
+    "kapt", "ksp",
+)
+
+
+def parse_build_gradle(content: str) -> list[dict]:
+    """Parse dependencies from build.gradle (Groovy) or build.gradle.kts (Kotlin DSL).
+
+    Handles:
+      implementation 'group:artifact:version'
+      implementation("group:artifact:version")
+      implementation group: 'g', name: 'a', version: 'v'
+    """
+    deps: list[dict] = []
+    seen: set[str] = set()
+    in_dependencies = False
+    line_num = 0
+
+    for raw_line in content.splitlines():
+        line_num += 1
+        stripped = raw_line.strip().lower()
+
+        if stripped.startswith("dependencies") and "{" in stripped:
+            in_dependencies = True
+            continue
+        if in_dependencies and stripped == "}":
+            in_dependencies = False
+            continue
+        if not in_dependencies:
+            continue
+
+        # Named-arg style (Groovy only)
+        m = _RE_GRADLE_NAMED_DEP.search(raw_line)
+        if m:
+            group, artifact, version = m.group(1), m.group(2), m.group(3)
+            ga = f"{group}:{artifact}"
+            if ga not in seen:
+                seen.add(ga)
+                pinning = "exact" if version else "unpinned"
+                deps.append({
+                    "name": ga,
+                    "version": version,
+                    "pinning": pinning,
+                    "is_ai": _is_java_ai_artifact(ga),
+                    "line": line_num,
+                })
+            continue
+
+        # String-style: 'g:a:v' or 'g:a'
+        for m in _RE_GRADLE_STRING_DEP.finditer(raw_line):
+            group, artifact, version = m.group(1), m.group(2), m.group(3)
+            # Skip if this line doesn't look like a dependency declaration
+            line_lower = raw_line.lower()
+            if not any(line_lower.lstrip().startswith(p) for p in _GRADLE_CONFIG_PREFIXES):
+                continue
+            ga = f"{group}:{artifact}"
+            if ga not in seen:
+                seen.add(ga)
+                pinning = "exact" if version else "unpinned"
+                deps.append({
+                    "name": ga,
+                    "version": version,
+                    "pinning": pinning,
+                    "is_ai": _is_java_ai_artifact(ga),
+                    "line": line_num,
+                })
+
+    return deps
+
+
 # ── Advisory loading ───────────────────────────────────────────────
 
 def _load_advisories() -> list[dict]:
@@ -800,6 +1025,18 @@ def scan_dependencies(project_path: str) -> dict:
     vcpkg_json = root / "vcpkg.json"
     if vcpkg_json.exists():
         all_deps.extend(parse_vcpkg_json(vcpkg_json.read_text(encoding="utf-8")))
+
+    # go.mod (Go)
+    go_mod = root / "go.mod"
+    if go_mod.exists():
+        all_deps.extend(parse_go_mod(go_mod.read_text(encoding="utf-8")))
+
+    # build.gradle / build.gradle.kts (Java/Kotlin)
+    for gradle_file in ("build.gradle", "build.gradle.kts"):
+        gradle_path = root / gradle_file
+        if gradle_path.exists():
+            all_deps.extend(parse_build_gradle(gradle_path.read_text(encoding="utf-8")))
+            break  # only parse one (kts takes precedence if both exist)
 
     lockfiles = detect_lockfiles(project_path)
     ai_deps = [d for d in all_deps if d.get("is_ai")]

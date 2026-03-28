@@ -22,6 +22,7 @@
 | Priority 4: Fix advisory directory resolution | `__pycache__` path step-up + `Path.cwd()` fallback. 1 regression test added. |
 | Skip-dirs absolute path bug | `filepath.parts` → `filepath.relative_to(project).parts` in `code_analysis.py` and `generate_documentation.py`. 1 regression test added. |
 | Version string v1.1.0 → v1.2.0 | 6 occurrences corrected in `generate_documentation.py`. 1 regression test added. |
+| Priority 8: go.mod + build.gradle parsing | `parse_go_mod()` and `parse_build_gradle()` added to `dependency_scan.py`, wired into `scan_dependencies()`. 6 regression tests. |
 
 ---
 
