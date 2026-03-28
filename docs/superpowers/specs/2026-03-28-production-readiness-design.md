@@ -53,8 +53,8 @@ All inherit from `RegulaError`. Each carries an `exit_code` attribute (default 1
 
 | Code | Meaning | When |
 |------|---------|------|
-| 0 | Success, no actionable findings | Clean scan, successful command |
-| 1 | Findings detected OR scan failure | BLOCK/WARN findings, prohibited classification, strict threshold not met |
+| 0 | Success, or findings below WARN threshold | Clean scan, INFO-tier findings (confidence < 50), successful command |
+| 1 | BLOCK or WARN tier findings detected | Confidence >= 50, prohibited pattern, or strict threshold not met |
 | 2 | Tool error | Bad config, missing path, parse failure, usage error |
 | 130 | Interrupted | User pressed Ctrl+C |
 

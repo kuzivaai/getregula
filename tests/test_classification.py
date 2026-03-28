@@ -2398,6 +2398,34 @@ def test_json_output_envelope():
     print("\u2713 JSON envelope: format_version, regula_version, command, timestamp, data all present")
 
 
+def test_exit_code_warn_tier():
+    """Test exit code 1 when WARN-tier findings exist (confidence >= 50)."""
+    import subprocess, tempfile, os
+    # Create fixture OUTSIDE tests/ to avoid test-file deprioritisation (-40 penalty)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # Employment AI code — high_risk base(65) + 1 match(+8) = 73 = WARN tier
+        code = (
+            "import torch\n"
+            "from transformers import pipeline\n"
+            "\n"
+            "def rank_job_applicants(applications):\n"
+            "    classifier = pipeline('text-classification')\n"
+            "    return classifier(applications)\n"
+            "\n"
+            "def evaluate_employee_performance(data):\n"
+            "    model = torch.load('model.pt')\n"
+            "    return model(data)\n"
+        )
+        filepath = os.path.join(tmpdir, "hiring_system.py")
+        with open(filepath, "w") as f:
+            f.write(code)
+        r = subprocess.run(["python3", "scripts/cli.py", "check", tmpdir],
+                           capture_output=True, text=True)
+        assert_eq(r.returncode, 1,
+                  f"WARN-tier findings should exit 1, got {r.returncode}. Output: {r.stdout[-200:]}")
+    print("\u2713 Exit code 1: WARN-tier findings trigger exit 1")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -2611,6 +2639,8 @@ if __name__ == "__main__":
         # Init dry-run + JSON envelope (2 tests)
         test_init_dry_run,
         test_json_output_envelope,
+        # Exit code verification (1 test)
+        test_exit_code_warn_tier,
     ]
 
     print(f"Running {len(tests)} tests...\n")

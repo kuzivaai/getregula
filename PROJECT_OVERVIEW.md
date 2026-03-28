@@ -39,7 +39,7 @@ regula doctor                       # Verify installation health
 regula self-test                    # Run 6 built-in classification assertions
 
 # Run tests
-python3 tests/test_classification.py    # 159 tests, 471 assertions
+python3 tests/test_classification.py    # 160 tests, 472 assertions
 
 # Install hooks
 regula install claude-code          # Claude Code hooks
@@ -92,9 +92,10 @@ getregula/
 │   └── __init__.py
 │
 ├── tests/
-│   ├── test_classification.py  # 159 tests, 471 assertions
+│   ├── test_classification.py  # 160 tests, 472 assertions
 │   └── fixtures/
-│       ├── sample_high_risk/   # High-risk AI code example (app.py + requirements.txt)
+│       ├── sample_high_risk/   # High-risk AI code (scores INFO tier in tests/ due to deprioritisation)
+│       ├── sample_warn_tier/   # High-risk AI code (scores WARN tier when scanned outside tests/)
 │       ├── sample_compliant/   # Compliant AI code example (app.py + model_card.md)
 │       └── sample_unpinned/    # Unpinned dependency example (package.json)
 │
@@ -391,10 +392,12 @@ Three output formats:
 | `self-test` | Verify installation works | (no flags) |
 
 **Exit codes (scanner convention, research-validated):**
-- `0` — Success, no actionable findings
-- `1` — Findings detected (BLOCK/WARN/prohibited)
+- `0` — Success, or findings below WARN threshold (confidence < 50 = INFO tier, non-actionable)
+- `1` — BLOCK or WARN tier findings detected (confidence >= 50, or prohibited pattern)
 - `2` — Tool error (bad config, missing path, parse failure, usage error)
 - `130` — Interrupted (Ctrl+C)
+
+**Threshold logic:** A finding's confidence score (0-100) determines its tier: BLOCK >= 80 or prohibited, WARN 50-79, INFO < 50. Only BLOCK and WARN trigger exit 1. INFO findings are reported but exit 0.
 
 **JSON output envelope (all `--format json`):**
 ```json
@@ -541,8 +544,7 @@ exclusions:
 - `text_to_image` false positive on instructor library (known, documented in audit reports)
 - GitHub Action untested in a real PR workflow
 - Dependency pinning score of 30/100 on Regula's own optional deps
-- `--ci` flag documented in help text but interaction with new exit codes not fully tested
-- `--ci` flag interaction with new exit codes should be integration-tested
+- `--ci` flag interaction with new exit codes not integration-tested
 
 ---
 
