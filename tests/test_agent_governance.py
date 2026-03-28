@@ -436,6 +436,213 @@ def test_cli_min_tier_flag():
     print("\u2713 CLI: --min-tier flag works")
 
 
+# ── scan_files Edge Cases ───────────────────────────────────────────
+
+
+def test_scan_files_skip_tests_all_conventions():
+    """--skip-tests covers all test file naming conventions."""
+    from report import scan_files
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        patterns = [
+            ("tests/test_foo.py", "import openai\nclient = openai.Client()\n"),
+            ("__tests__/bar.py", "import openai\nclient = openai.Client()\n"),
+            ("foo_test.py", "import openai\nclient = openai.Client()\n"),
+            ("src/components/Foo.spec.ts", "const client = new OpenAI();\n"),
+            ("src/utils/Bar.test.js", "const client = new OpenAI();\n"),
+            ("libs/standard-tests/baz.py", "import openai\nclient = openai.Client()\n"),
+            ("src/langchain_tests/core.py", "import openai\nclient = openai.Client()\n"),
+            ("src/app_test/main.py", "import openai\nclient = openai.Client()\n"),
+        ]
+        for rel_path, content in patterns:
+            p = Path(tmpdir) / rel_path
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(content)
+
+        findings = scan_files(tmpdir, skip_tests=True)
+        excluded = {f["file"] for f in findings if any(
+            part.startswith("test") or part in {"tests", "__tests__", "standard-tests", "langchain_tests"}
+            for part in Path(f["file"]).parts
+        )}
+        assert_eq(len(excluded), 0, f"all test conventions excluded, found: {excluded}")
+    print("\u2713 scan_files: all test naming conventions excluded")
+
+
+def test_scan_files_min_tier_prohibited():
+    """--min-tier=prohibited keeps only prohibited findings."""
+    from report import scan_files
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        (Path(tmpdir) / "social_scoring.py").write_text(
+            "def score_people(people): return [p.score for p in people]\n"
+        )
+        findings = scan_files(tmpdir, min_tier="prohibited")
+        tiers = {f["tier"] for f in findings}
+        assert_true(
+            all(t in ("prohibited",) for t in tiers),
+            f"only prohibited should remain with min_tier=prohibited, got: {tiers}"
+        )
+    print("\u2713 scan_files: min_tier=prohibited filters correctly")
+
+
+def test_scan_files_min_tier_high_risk():
+    """--min-tier=high_risk keeps high_risk and prohibited."""
+    from report import scan_files
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        (Path(tmpdir) / "cv_screening.py").write_text(
+            "import sklearn; cv_screening(candidates)\n"
+        )
+        (Path(tmpdir) / "chatbot.py").write_text(
+            "import openai; client = openai.Client()\n"
+        )
+        findings = scan_files(tmpdir, min_tier="high_risk")
+        tiers = {f["tier"] for f in findings}
+        assert_true(
+            all(t in ("high_risk", "prohibited", "limited_risk", "agent_autonomy", "credential_exposure", "ai_security")
+                for t in tiers),
+            f"no minimal_risk with min_tier=high_risk, got: {tiers}"
+        )
+        assert_true(
+            "minimal_risk" not in tiers,
+            f"minimal_risk should be filtered at min_tier=high_risk, got: {tiers}"
+        )
+    print("\u2713 scan_files: min_tier=high_risk filters correctly")
+
+
+def test_scan_files_min_tier_preserves_agent_autonomy():
+    """--min-tier=limited_risk should NOT filter agent_autonomy findings."""
+    from report import scan_files
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        (Path(tmpdir) / "agents").mkdir(parents=True, exist_ok=True)
+        (Path(tmpdir) / "agents" / "shell.py").write_text(
+            "import subprocess\nsubprocess.run(['ls'])\n"
+        )
+        (Path(tmpdir) / "app.py").write_text(
+            "import openai\nclient = openai.Client()\n"
+        )
+        findings = scan_files(tmpdir, min_tier="limited_risk")
+        tiers = {f["tier"] for f in findings}
+        assert_true(
+            "agent_autonomy" in tiers,
+            f"agent_autonomy should be preserved at min_tier=limited_risk, got: {tiers}"
+        )
+    print("\u2713 scan_files: agent_autonomy preserved at min_tier=limited_risk")
+
+
+def test_scan_files_combined_skip_tests_and_min_tier():
+    """--skip-tests and --min-tier work together."""
+    from report import scan_files
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tests_dir = Path(tmpdir) / "tests"
+        tests_dir.mkdir()
+        (tests_dir / "test_app.py").write_text(
+            "import openai; client = openai.Client()\n"
+        )
+        (Path(tmpdir) / "agents").mkdir(parents=True, exist_ok=True)
+        (Path(tmpdir) / "agents" / "shell.py").write_text(
+            "import subprocess\nsubprocess.run(['ls'])\n"
+        )
+        (Path(tmpdir) / "chatbot.py").write_text(
+            "import openai\nclient = openai.Client()\n"
+        )
+        findings = scan_files(tmpdir, skip_tests=True, min_tier="limited_risk")
+        tiers = {f["tier"] for f in findings}
+        files = {f["file"] for f in findings}
+        assert_true("tests/test_app.py" not in files, "test file should be excluded")
+        assert_true("minimal_risk" not in tiers, "minimal_risk filtered")
+        assert_true(
+            any(f["tier"] == "agent_autonomy" for f in findings),
+            "agent_autonomy should be present"
+        )
+    print("\u2713 scan_files: combined skip_tests + min_tier works")
+
+
+def test_scan_files_respect_ignores_overrides_skip_tests():
+    """--skip-tests does not override explicit suppression."""
+    from report import scan_files
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tests_dir = Path(tmpdir) / "tests"
+        tests_dir.mkdir()
+        (tests_dir / "test_app.py").write_text(
+            "# regula-ignore\nimport openai\nclient = openai.Client()\n"
+        )
+        (Path(tmpdir) / "app.py").write_text(
+            "import openai\nclient = openai.Client()\n"
+        )
+        findings = scan_files(tmpdir, respect_ignores=True, skip_tests=False)
+        suppressed = [f for f in findings if f.get("suppressed")]
+        assert_true(
+            any("test_app.py" in f["file"] and f.get("suppressed") for f in findings),
+            "regula-ignore in test file should suppress even without --skip-tests"
+        )
+    print("\u2713 scan_files: explicit suppression overrides test inclusion")
+
+
+# ── CLI Combined Flag Tests ──────────────────────────────────────────
+
+
+def test_cli_combined_skip_tests_and_min_tier():
+    """CLI accepts --skip-tests and --min-tier together."""
+    import subprocess as sp
+    result = sp.run(
+        [sys.executable, "-m", "scripts.cli", "check",
+         "--skip-tests", "--min-tier", "limited_risk",
+         "--format", "json", "."],
+        capture_output=True, text=True,
+        cwd=str(Path(__file__).parent.parent),
+    )
+    assert_eq(result.returncode, 0, f"combined flags should not error, got: {result.stderr[:200]}")
+    data = json.loads(result.stdout)
+    tiers = {f.get("tier") for f in data.get("data", [])}
+    assert_true("minimal_risk" not in tiers, f"minimal_risk should be filtered, got: {tiers}")
+
+
+def test_cli_version_in_json_output():
+    """JSON envelope reports correct version."""
+    import subprocess as sp
+    result = sp.run(
+        [sys.executable, "-m", "scripts.cli", "check", "--help"],
+        capture_output=True, text=True,
+        cwd=str(Path(__file__).parent.parent),
+    )
+    assert_eq(result.returncode, 0, "check --help should succeed")
+    from scripts.cli import VERSION
+    assert_eq(VERSION, "1.2.0", f"VERSION should be 1.2.0, got: {VERSION}")
+    result2 = sp.run(
+        [sys.executable, "-m", "scripts.cli", "check", "--format", "json", "--min-tier", "high_risk",
+         str(Path(__file__).parent.parent / "tests" / "fixtures" / "sample_high_risk")],
+        capture_output=True, text=True,
+        cwd=str(Path(__file__).parent.parent),
+    )
+    if result2.returncode == 0:
+        data = json.loads(result2.stdout)
+        assert_eq(data.get("regula_version"), "1.2.0",
+                  f"JSON output version should be 1.2.0, got: {data.get('regula_version')}")
+        print("\u2713 CLI: version 1.2.0 confirmed in JSON output")
+
+
+def test_cli_min_tier_all_levels():
+    """CLI --min-tier accepts all valid choices."""
+    import subprocess as sp
+    fixture = str(Path(__file__).parent.parent / "tests" / "fixtures" / "sample_high_risk")
+    for tier in ("prohibited", "high_risk", "limited_risk", "minimal_risk"):
+        result = sp.run(
+            [sys.executable, "-m", "scripts.cli", "check",
+             "--min-tier", tier, "--format", "json", fixture],
+            capture_output=True, text=True,
+            cwd=str(Path(__file__).parent.parent),
+        )
+        assert_eq(
+            result.returncode, 0,
+            f"--min-tier={tier} should not error, got: {result.stderr[:100]}"
+        )
+    print("\u2713 CLI: all --min-tier choices accepted")
+
+
 # ── Runner ──────────────────────────────────────────────────────────
 
 
@@ -451,18 +658,28 @@ if __name__ == "__main__":
         test_agent_owasp_sensitive_disclosure,
         test_agent_owasp_excessive_autonomy,
         test_agent_risk_summary_format,
-        # New: contextual agent path detection
+        # Contextual agent path detection
         test_agent_contextual_path_detection,
         test_agent_contextual_path_variants,
         test_agent_contextual_with_human_gate,
-        # New: scan_files integration
+        # scan_files integration
         test_scan_files_skip_tests,
         test_scan_files_min_tier,
         test_scan_files_agent_autonomy_integration,
         test_scan_files_agent_autonomy_test_deprioritisation,
-        # New: CLI flags
+        # CLI flags
         test_cli_skip_tests_flag,
         test_cli_min_tier_flag,
+        # New: edge cases
+        test_scan_files_skip_tests_all_conventions,
+        test_scan_files_min_tier_prohibited,
+        test_scan_files_min_tier_high_risk,
+        test_scan_files_min_tier_preserves_agent_autonomy,
+        test_scan_files_combined_skip_tests_and_min_tier,
+        test_scan_files_respect_ignores_overrides_skip_tests,
+        test_cli_combined_skip_tests_and_min_tier,
+        test_cli_version_in_json_output,
+        test_cli_min_tier_all_levels,
     ]
 
     print(f"Running {len(tests)} agent governance tests...\n")

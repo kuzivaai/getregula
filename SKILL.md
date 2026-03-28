@@ -6,7 +6,7 @@ description: >
   to hash-chained audit trail. Triggers on: AI/ML libraries, model files,
   LLM API calls, biometric processing, automated decisions. Also when the
   user mentions compliance, governance, AI Act, risk assessment, or audit.
-version: 1.1.0
+version: 1.2.0
 license: MIT
 author: The Implementation Layer
 compatibility:
