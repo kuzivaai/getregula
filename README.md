@@ -142,7 +142,7 @@ All 10 Annex III categories are detected. Messages include Article 6 context: ma
 | **Git hooks** | Supported | `python3 scripts/install.py git-hooks` |
 | **CI/CD (GitHub Actions, GitLab)** | Via SARIF | `regula check --format sarif` |
 
-All three major AI coding agents (Claude Code, Copilot CLI, Windsurf) use the same hook protocol. Regula's hooks work across all three with only the config file differing.
+Claude Code, Copilot CLI, and Windsurf use the same hook protocol. Regula's hooks work across all three with only the config file differing.
 
 ## CLI Usage
 
@@ -259,7 +259,7 @@ import sklearn
 
 ### Governance News Feed
 
-Curated AI governance news from 7 reputable sources (IAPP, NIST, EU AI Act Updates, MIT Technology Review, Future of Life Institute, Help Net Security, EFF). Keyword-filtered, deduplicated, cached.
+Curated AI governance news from 7 sources (IAPP, NIST, EU AI Act Updates, MIT Technology Review, Future of Life Institute, Help Net Security, EFF). Keyword-filtered, deduplicated, cached.
 
 ```bash
 regula feed                              # CLI text output
@@ -383,7 +383,7 @@ regula/
 ├── tests/
 │   └── test_classification.py     # 152 tests, 434 assertions
 ├── docs/
-│   └── research-synthesis.md      # Research findings informing roadmap
+│   └── course/                    # Interactive 10-module governance course
 ├── regula-policy.yaml             # Policy configuration template
 └── .github/workflows/ci.yaml     # CI/CD
 ```
@@ -396,8 +396,8 @@ regula/
 | **JavaScript/TypeScript** | Moderate (tree-sitter) | Import extraction, data flow tracing, oversight detection, logging. Tree-sitter optional — falls back to regex. |
 | **Java** | Import detection (regex) | 13 AI libraries (Google AI Platform, LangChain4j, DJL, etc.) |
 | **Go** | Import detection (regex) | 9 AI libraries (go-openai, langchaingo, etc.) |
-| **Rust** | Import detection (regex) | 35 AI crates (candle, burn, tch, async-openai, etc.) + Cargo.toml parsing |
-| **C/C++** | Include detection (regex) | 37 AI headers (LibTorch, TensorFlow, ONNX Runtime, llama.cpp, etc.) + CMake/vcpkg parsing |
+| **Rust** | Import detection (regex) | 39 AI crates (candle, burn, tch, async-openai, etc.) + Cargo.toml parsing |
+| **C/C++** | Include detection (regex) | 43 AI headers (LibTorch, TensorFlow, ONNX Runtime, llama.cpp, etc.) + CMake/vcpkg parsing |
 
 **Honest note:** Only Python has deep AST analysis with data flow tracing. JS/TS with tree-sitter is moderate depth. Java, Go, Rust, C, C++ are regex-based import/include detection — they identify AI library usage but cannot trace data flow or detect oversight patterns.
 
@@ -452,7 +452,7 @@ python3 tests/test_classification.py
 152 tests, 434 assertions covering:
 - AI detection (libraries, model files, API endpoints, ML patterns)
 - All 8 prohibited practices
-- All 10+ high-risk categories
+- All 10 high-risk categories (Annex III)
 - Limited-risk and minimal-risk scenarios
 - Edge cases (empty input, case insensitivity, priority ordering)
 - Policy engine (force_high_risk, exempt, prohibited override safety)
@@ -484,8 +484,9 @@ python3 tests/test_classification.py
 
 ## Roadmap
 
-- **v1.2:** DPO dashboard, Slack/Teams alerting, external timestamp authority, PDF export
-- **v2.0:** AST-based analysis, model card generation, bias testing integration
+- **v1.2:** Production readiness (error handling, `regula doctor`, `regula self-test`, JSON output envelope)
+- **v1.3:** DPO dashboard, Slack/Teams alerting, external timestamp authority, PDF export
+- **v2.0:** Model card generation, bias testing integration
 
 ## License
 
