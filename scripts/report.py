@@ -121,7 +121,7 @@ def scan_files(project_path: str, respect_ignores: bool = True) -> list:
                         "confidence_score": max(sf.confidence_score - 40, 10) if _is_test_file(filepath) else sf.confidence_score,
                         "suppressed": secret_suppressed,
                     })
-            except Exception:
+            except (ValueError, KeyError, AttributeError):
                 pass
 
             # --- AI security antipattern checks (runs on all AI-related files) ---
@@ -139,7 +139,7 @@ def scan_files(project_path: str, respect_ignores: bool = True) -> list:
                         "suppressed": secret_suppressed or "*" in suppressed_rules,
                         "remediation": sf["remediation"],
                     })
-            except Exception:
+            except (ValueError, KeyError, AttributeError):
                 pass
 
             result = classify(content)
@@ -180,7 +180,7 @@ def scan_files(project_path: str, respect_ignores: bool = True) -> list:
             if result.tier == RiskTier.HIGH_RISK:
                 try:
                     observations = generate_observations(content)
-                except Exception:
+                except (ValueError, KeyError, TypeError):
                     pass
 
             findings.append({
@@ -689,7 +689,7 @@ def main():
         try:
             audit_events = query_events(limit=10000)
             chain_valid, _ = verify_chain()
-        except Exception:
+        except (OSError, ValueError, KeyError):
             pass
 
     if args.format == "html":
