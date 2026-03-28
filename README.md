@@ -151,6 +151,8 @@ Claude Code, Copilot CLI, and Windsurf use the same hook protocol. Regula's hook
 python3 scripts/cli.py check .
 python3 scripts/cli.py check . --format json
 python3 scripts/cli.py check . --format sarif    # For CI/CD integration
+python3 scripts/cli.py check . --ci              # Exit 1 on any WARN or BLOCK finding
+python3 scripts/cli.py check . --strict          # Exit 1 on WARN-tier findings
 
 # Classify a text input
 python3 scripts/cli.py classify --input "import tensorflow; cv screening model"
@@ -229,13 +231,7 @@ Checks: pinning quality (hash > exact > range > unpinned), lockfile presence, AI
 
 ### Cross-Framework Compliance Mapping
 
-Map findings simultaneously to 8 compliance frameworks: EU AI Act, NIST AI RMF 1.0, ISO 42001:2023, NIST CSF 2.0, SOC 2, ISO 27001:2022, OWASP Top 10 for LLMs, and MITRE ATLAS.
-
-```bash
-regula check . --framework all              # Map to all eight frameworks
-regula check . --framework owasp-llm-top10  # OWASP LLM Top 10 only
-regula check . --framework mitre-atlas      # MITRE ATLAS only
-```
+Regula maps findings to 8 compliance frameworks internally: EU AI Act, NIST AI RMF 1.0, ISO 42001:2023, NIST CSF 2.0, SOC 2, ISO 27001:2022, OWASP Top 10 for LLMs, and MITRE ATLAS. Framework mappings appear in check findings and gap assessments automatically.
 
 ### Real-World Validation Benchmark
 

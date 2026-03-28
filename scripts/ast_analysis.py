@@ -181,7 +181,7 @@ def _unparse_safe(node: ast.AST) -> str:
     """Return source text for an AST node, with graceful fallback."""
     try:
         return ast.unparse(node)
-    except Exception:
+    except (ValueError, TypeError):
         return "<unknown>"
 
 

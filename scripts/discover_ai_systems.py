@@ -202,6 +202,11 @@ def register_system(discovery: dict) -> dict:
     # Update or create entry
     if project_name in registry["systems"]:
         existing = registry["systems"][project_name]
+        # Track risk trend before overwriting
+        old_risk = existing.get("highest_risk")
+        new_risk = discovery["highest_risk"]
+        if old_risk and old_risk != new_risk:
+            existing["previous_highest_risk"] = old_risk
         existing.update({
             "last_scanned": discovery["discovered_at"],
             "ai_libraries": discovery["ai_libraries"],
@@ -209,7 +214,7 @@ def register_system(discovery: dict) -> dict:
             "ai_code_files": discovery["ai_code_files"],
             "api_endpoints": discovery["api_endpoints"],
             "risk_classifications": discovery["risk_classifications"],
-            "highest_risk": discovery["highest_risk"],
+            "highest_risk": new_risk,
         })
         # Preserve compliance_status if already set
     else:
@@ -264,7 +269,7 @@ def scan_organization(base_path: str, register: bool = True) -> dict:
                 results.append(discovery)
                 if register:
                     register_system(discovery)
-            except Exception:
+            except Exception:  # Intentional: multiple error sources
                 continue
 
     risk_dist = Counter()
@@ -437,7 +442,7 @@ def update_compliance_status(project_name: str, new_status: str, note: str = "")
             "to_status": new_status,
             "note": note,
         })
-    except Exception:
+    except (OSError,):
         pass
 
     return systems[project_name]

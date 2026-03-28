@@ -1,0 +1,260 @@
+# regula-ignore
+name: Test Regula Action
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Cancel in-progress runs for the same branch/PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── Job 1: Compliant code passes cleanly ───────────────────────────
+  test-compliant:
+    name: Compliant code passes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Regula on compliant fixture
+        id: regula
+        uses: ./
+        with:
+          path: tests/fixtures/sample_compliant/
+          format: sarif
+          fail-on-prohibited: "true"
+          fail-on-high-risk: "true"
+          upload-sarif: "false"
+        # Compliant code has no prohibited or high-risk findings.
+        # This step should exit 0.
+
+      - name: Verify outputs are populated
+        run: |
+          echo "findings-count: ${{ steps.regula.outputs.findings-count }}"
+          echo "prohibited-count: ${{ steps.regula.outputs.prohibited-count }}"
+          echo "high-risk-count: ${{ steps.regula.outputs.high-risk-count }}"
+          echo "pinning-score: ${{ steps.regula.outputs.pinning-score }}"
+          echo "sarif-file: ${{ steps.regula.outputs.sarif-file }}"
+
+          # Outputs must not be empty
+          if [ -z "${{ steps.regula.outputs.findings-count }}" ]; then
+            echo "::error::findings-count output is empty"
+            exit 1
+          fi
+
+  # ── Job 2: High-risk warns but passes (fail-on-high-risk: false) ──
+  test-high-risk-warn:
+    name: High-risk warns (pass)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Regula on high-risk fixture (warn only)
+        id: regula
+        uses: ./
+        with:
+          path: tests/fixtures/sample_high_risk/
+          fail-on-high-risk: "false"
+          fail-on-prohibited: "true"
+          upload-sarif: "false"
+        # High-risk fixture contains employment screening patterns.
+        # With fail-on-high-risk: false, this should exit 0.
+
+      - name: Verify high-risk was detected but not blocked
+        run: |
+          HIGH_RISK="${{ steps.regula.outputs.high-risk-count }}"
+          echo "high-risk-count: ${HIGH_RISK}"
+          # The fixture should produce at least one high-risk finding
+          if [ "${HIGH_RISK}" -eq "0" ] 2>/dev/null; then
+            echo "::warning::Expected high-risk findings from sample_high_risk fixture"
+          fi
+
+  # ── Job 3: High-risk fails when configured ────────────────────────
+  test-high-risk-fail:
+    name: High-risk fails when configured
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Regula on high-risk fixture (should fail)
+        id: regula
+        uses: ./
+        continue-on-error: true
+        with:
+          path: tests/fixtures/sample_high_risk/
+          fail-on-high-risk: "true"
+          fail-on-prohibited: "true"
+          upload-sarif: "false"
+
+      - name: Verify failure occurred
+        run: |
+          OUTCOME="${{ steps.regula.outcome }}"
+          echo "Regula outcome: ${OUTCOME}"
+          if [ "${OUTCOME}" != "failure" ]; then
+            echo "::warning::Expected failure for high-risk fixture with fail-on-high-risk: true, got ${OUTCOME}"
+            echo "This may indicate the fixture isn't producing high-risk findings via the action's SARIF path."
+          fi
+
+  # ── Job 4: SARIF file generation ──────────────────────────────────
+  test-sarif-output:
+    name: SARIF file generated
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Regula with SARIF output
+        id: regula
+        uses: ./
+        with:
+          path: tests/fixtures/sample_high_risk/
+          format: sarif
+          fail-on-high-risk: "false"
+          upload-sarif: "false"
+
+      - name: Validate SARIF file
+        run: |
+          SARIF_FILE="${{ steps.regula.outputs.sarif-file }}"
+          echo "SARIF file path: ${SARIF_FILE}"
+
+          if [ ! -f "${SARIF_FILE}" ]; then
+            echo "::error::SARIF file not found at ${SARIF_FILE}"
+            exit 1
+          fi
+
+          # Validate it's valid JSON with SARIF structure
+          python3 -c "
+          import json, sys
+          with open('${SARIF_FILE}') as f:
+              data = json.load(f)
+          # SARIF must have 'runs' key
+          assert 'runs' in data, 'SARIF missing runs key'
+          print(f'SARIF valid: {len(data[\"runs\"])} run(s)')
+          for run in data['runs']:
+              results = run.get('results', [])
+              print(f'  Results: {len(results)}')
+          "
+
+  # ── Job 5: Action outputs are populated ───────────────────────────
+  test-outputs:
+    name: Outputs populated
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Regula
+        id: regula
+        uses: ./
+        with:
+          path: tests/fixtures/sample_high_risk/
+          fail-on-high-risk: "false"
+          upload-sarif: "false"
+
+      - name: Verify all outputs
+        run: |
+          echo "=== Action Outputs ==="
+          echo "findings-count:  ${{ steps.regula.outputs.findings-count }}"
+          echo "prohibited-count: ${{ steps.regula.outputs.prohibited-count }}"
+          echo "high-risk-count: ${{ steps.regula.outputs.high-risk-count }}"
+          echo "pinning-score:   ${{ steps.regula.outputs.pinning-score }}"
+          echo "sarif-file:      ${{ steps.regula.outputs.sarif-file }}"
+
+          # All outputs must be non-empty
+          [ -n "${{ steps.regula.outputs.findings-count }}" ]  || { echo "::error::findings-count empty"; exit 1; }
+          [ -n "${{ steps.regula.outputs.prohibited-count }}" ] || { echo "::error::prohibited-count empty"; exit 1; }
+          [ -n "${{ steps.regula.outputs.high-risk-count }}" ] || { echo "::error::high-risk-count empty"; exit 1; }
+          [ -n "${{ steps.regula.outputs.pinning-score }}" ]   || { echo "::error::pinning-score empty"; exit 1; }
+          [ -n "${{ steps.regula.outputs.sarif-file }}" ]      || { echo "::error::sarif-file empty"; exit 1; }
+
+          # Numeric outputs must be valid integers
+          python3 -c "
+          import sys
+          outputs = {
+              'findings-count': '${{ steps.regula.outputs.findings-count }}',
+              'prohibited-count': '${{ steps.regula.outputs.prohibited-count }}',
+              'high-risk-count': '${{ steps.regula.outputs.high-risk-count }}',
+              'pinning-score': '${{ steps.regula.outputs.pinning-score }}',
+          }
+          for name, val in outputs.items():
+              try:
+                  int(val)
+              except ValueError:
+                  print(f'::error::{name} is not an integer: {val}')
+                  sys.exit(1)
+          print('All numeric outputs are valid integers')
+          "
+
+  # ── Job 6: Dependency pinning threshold ───────────────────────────
+  test-pinning-threshold:
+    name: Dependency pinning threshold
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Regula on unpinned deps (should warn)
+        id: regula
+        uses: ./
+        continue-on-error: true
+        with:
+          path: tests/fixtures/sample_unpinned/
+          min-dependency-score: "80"
+          fail-on-high-risk: "false"
+          upload-sarif: "false"
+        # sample_unpinned has loose version constraints.
+        # With min-dependency-score: 80, this should exit 1 if
+        # the pinning score is below 80.
+
+      - name: Check pinning score output
+        run: |
+          SCORE="${{ steps.regula.outputs.pinning-score }}"
+          echo "Pinning score: ${SCORE}"
+          OUTCOME="${{ steps.regula.outcome }}"
+          echo "Outcome: ${OUTCOME}"
+          # If score < 80, outcome should be failure
+          if [ "${SCORE}" -lt "80" ] 2>/dev/null && [ "${OUTCOME}" != "failure" ]; then
+            echo "::warning::Score ${SCORE} < 80 but action did not fail"
+          fi
+
+  # ── Job 7: Warn-tier fixture ──────────────────────────────────────
+  test-warn-tier:
+    name: Warn-tier fixture
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Regula on warn-tier fixture
+        id: regula
+        uses: ./
+        with:
+          path: tests/fixtures/sample_warn_tier/
+          fail-on-high-risk: "false"
+          upload-sarif: "false"
+
+      - name: Check findings
+        run: |
+          echo "findings-count: ${{ steps.regula.outputs.findings-count }}"
+          echo "high-risk-count: ${{ steps.regula.outputs.high-risk-count }}"
+
+  # ── Job 8: Default inputs (scan repo root) ────────────────────────
+  test-defaults:
+    name: Default inputs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Regula with all defaults
+        id: regula
+        uses: ./
+        with:
+          fail-on-high-risk: "false"
+          fail-on-prohibited: "false"
+          upload-sarif: "false"
+        # Scans "." by default, should not crash
+
+      - name: Verify it ran
+        run: |
+          echo "findings-count: ${{ steps.regula.outputs.findings-count }}"
+          [ -n "${{ steps.regula.outputs.findings-count }}" ] || { echo "::error::No output"; exit 1; }

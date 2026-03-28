@@ -163,7 +163,7 @@ def _detect_project_version(project_path: str) -> str:
         )
         if result.returncode == 0 and result.stdout.strip():
             return result.stdout.strip()
-    except Exception:
+    except (subprocess.SubprocessError, OSError):
         pass
     return "0.0.0"
 
@@ -256,7 +256,7 @@ def generate_sbom(project_path: str, project_name: str | None = None) -> dict:
                         "name": "regula:risk-tier",
                         "value": risk_result.tier.value,
                     })
-                except Exception:
+                except (ValueError, TypeError):
                     pass
             component["properties"] = props
 

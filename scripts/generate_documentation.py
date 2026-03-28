@@ -18,8 +18,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from classify_risk import classify, RiskTier, is_ai_related, get_governance_contacts
+from classify_risk import classify, RiskTier, is_ai_related, get_governance_contacts, check_ai_security
 from log_event import log_event
+from code_analysis import analyse_project_code
 
 
 def scan_project(project_path: str) -> dict:
@@ -163,43 +164,96 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
         for mf in findings["model_files"]:
             doc += f"- `{mf}`\n"
 
-    doc += """
----
+    # Auto-populate sections 2-4 from code analysis
+    analysis = analyse_project_code(project_path)
 
-## 2. Detailed Description of Elements and Development Process
+    doc += "\n---\n\n## 2. Detailed Description of Elements and Development Process\n\n"
 
-### 2.1 Development Methods
-_[TO BE COMPLETED BY DEVELOPMENT TEAM]_
+    # 2.1 Development Methods
+    doc += "### 2.1 Development Methods\n_[TO BE COMPLETED BY DEVELOPMENT TEAM]_\n\n"
 
-### 2.2 Data Requirements
-_[TO BE COMPLETED BY DEVELOPMENT TEAM]_
+    # 2.2 Data Requirements — auto-populated from detected sources
+    doc += "### 2.2 Data Requirements\n"
+    if analysis["data_sources"]:
+        doc += "_[AUTO-DETECTED — VERIFY]_ The following data sources were detected:\n\n"
+        for ds in analysis["data_sources"]:
+            doc += f"- {ds}\n"
+        doc += "\n_Review data governance requirements per Article 10._\n\n"
+    else:
+        doc += "_[TO BE COMPLETED BY DEVELOPMENT TEAM]_\n\n"
 
-### 2.3 Model Architecture
-_[TO BE COMPLETED BY DEVELOPMENT TEAM]_
+    # 2.3 Model Architecture — auto-populated from detected imports
+    doc += "### 2.3 Model Architecture\n"
+    if analysis["architectures"]:
+        doc += "_[AUTO-DETECTED — VERIFY]_ The following AI frameworks/architectures were detected:\n\n"
+        for arch in analysis["architectures"]:
+            doc += f"- {arch}\n"
+        doc += "\n_Document model parameters, training methodology, and performance characteristics._\n\n"
+    else:
+        doc += "_[TO BE COMPLETED BY DEVELOPMENT TEAM]_\n\n"
 
----
+    doc += "---\n\n## 3. Monitoring, Functioning, and Control\n\n"
 
-## 3. Monitoring, Functioning, and Control
+    # 3.1 Performance Metrics
+    doc += "### 3.1 Performance Metrics\n_[TO BE COMPLETED BY DEVELOPMENT TEAM]_\n\n"
 
-### 3.1 Performance Metrics
-_[TO BE COMPLETED BY DEVELOPMENT TEAM]_
+    # 3.2 Known Limitations
+    doc += "### 3.2 Known Limitations\n_[TO BE COMPLETED BY DEVELOPMENT TEAM]_\n\n"
 
-### 3.2 Known Limitations
-_[TO BE COMPLETED BY DEVELOPMENT TEAM]_
+    # 3.3 Human Oversight — auto-populated from detected patterns
+    doc += "### 3.3 Human Oversight\n"
+    if analysis["oversight"]:
+        doc += "_[AUTO-DETECTED — VERIFY]_ The following oversight mechanisms were detected:\n\n"
+        for o in analysis["oversight"]:
+            doc += f"- {o}\n"
+        doc += "\n_Verify these mechanisms meet Article 14 requirements._\n\n"
+    else:
+        doc += "_No human oversight patterns detected._ Review Article 14 requirements.\n\n"
 
-### 3.3 Human Oversight
-_[TO BE COMPLETED BY DEVELOPMENT TEAM]_
+    # 3.4 Logging — auto-populated from detected patterns
+    doc += "### 3.4 Logging Infrastructure\n"
+    if analysis["logging"]:
+        doc += "_[AUTO-DETECTED — VERIFY]_ The following logging mechanisms were detected:\n\n"
+        for lg in analysis["logging"]:
+            doc += f"- {lg}\n"
+        doc += "\n_Verify logging meets Article 12 record-keeping requirements._\n\n"
+    else:
+        doc += "_No logging infrastructure detected._ Article 12 requires automatic recording of events.\n\n"
 
----
+    # 4. Risk Register — auto-populated from security findings
+    doc += "---\n\n## 4. Risk Management System (Article 9)\n\n"
+    security_findings = []
+    for c in findings["classifications"]:
+        filepath = Path(project_path) / c["file"]
+        if filepath.exists():
+            try:
+                text = filepath.read_text(encoding="utf-8", errors="ignore")
+                sf = check_ai_security(text)
+                for f in sf:
+                    f["file"] = c["file"]
+                security_findings.extend(sf)
+            except OSError:
+                pass
 
-## 4. Risk Management System (Article 9)
-_[TO BE COMPLETED BY DEVELOPMENT TEAM]_
+    if security_findings or findings["classifications"]:
+        doc += "### Risk Register\n\n"
+        doc += "_[AUTO-DETECTED — VERIFY]_\n\n"
+        doc += "| Risk ID | File | Description | OWASP Mapping | Severity | Mitigation |\n"
+        doc += "|---------|------|-------------|---------------|----------|------------|\n"
+        rid = 1
+        for c in findings["classifications"]:
+            tier = c["tier"].upper().replace("_", "-")
+            doc += f"| R{rid:03d} | {c['file']} | {c['description']} ({tier}) | — | {tier} | _[TO BE COMPLETED]_ |\n"
+            rid += 1
+        for sf in security_findings:
+            doc += f"| R{rid:03d} | {sf['file']} | {sf['description']} | {sf['owasp']} | {sf['severity'].upper()} | {sf['remediation'][:60]} |\n"
+            rid += 1
+        doc += "\n"
+    else:
+        doc += "_[TO BE COMPLETED BY DEVELOPMENT TEAM]_\n\n"
 
----
+    doc += "---\n\n## 5. Compliance Requirements\n\n"
 
-## 5. Compliance Requirements
-
-"""
 
     if highest in ("high_risk", "prohibited"):
         doc += """The following EU AI Act articles apply to this system:
@@ -451,6 +505,107 @@ _Generated on {now}_
     return doc
 
 
+def generate_model_card(findings: dict, project_name: str, project_path: str) -> str:
+    """Generate a HuggingFace-compatible model card.
+
+    See https://huggingface.co/docs/hub/model-cards for format.
+    """
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    highest = findings["highest_risk"]
+    if isinstance(highest, RiskTier):
+        highest = highest.value
+
+    analysis = analyse_project_code(project_path)
+
+    doc = f"""---
+license: _[TO BE COMPLETED]_
+tags:
+  - regula-scanned
+  - eu-ai-act
+---
+
+# Model Card: {project_name}
+
+> _[AUTO-DETECTED — VERIFY]_ This model card was auto-generated by Regula v1.1.0.
+> All sections require human review before publication.
+
+## Model Details
+
+### Model Description
+
+- **Developed by:** _[TO BE COMPLETED]_
+- **Model type:** {', '.join(analysis['architectures']) if analysis['architectures'] else '_[TO BE COMPLETED]_'}
+- **Language(s):** _[TO BE COMPLETED]_
+- **License:** _[TO BE COMPLETED]_
+- **EU AI Act Risk Classification:** {highest.upper().replace('_', '-')}
+
+### Model Sources
+
+- **Repository:** {project_path}
+- **Documentation:** _[TO BE COMPLETED]_
+
+## Uses
+
+### Direct Use
+_[TO BE COMPLETED]_
+
+### Out-of-Scope Use
+_[TO BE COMPLETED]_
+
+## Training Details
+
+### Training Data
+"""
+    if analysis["data_sources"]:
+        doc += "_[AUTO-DETECTED — VERIFY]_ Detected data sources:\n\n"
+        for ds in analysis["data_sources"]:
+            doc += f"- {ds}\n"
+    else:
+        doc += "_[TO BE COMPLETED]_\n"
+
+    doc += """
+### Training Procedure
+_[TO BE COMPLETED]_
+
+## Evaluation
+
+### Metrics
+_[TO BE COMPLETED]_
+
+### Results
+_[TO BE COMPLETED]_
+
+## Environmental Impact
+_[TO BE COMPLETED]_
+
+## Technical Specifications
+_[TO BE COMPLETED]_
+
+## EU AI Act Compliance
+
+"""
+    if highest in ("high_risk", "prohibited"):
+        doc += f"**Risk tier:** {highest.upper().replace('_', '-')}\n\n"
+        doc += "Articles 9-15 apply. See Annex IV documentation for full compliance status.\n\n"
+        if analysis["oversight"]:
+            doc += "**Human oversight mechanisms detected:**\n\n"
+            for o in analysis["oversight"]:
+                doc += f"- _[AUTO-DETECTED — VERIFY]_ {o}\n"
+        else:
+            doc += "**No human oversight mechanisms detected.** Article 14 compliance required.\n"
+    elif highest == "limited_risk":
+        doc += "**Risk tier:** LIMITED-RISK\n\nArticle 50 transparency requirements apply.\n"
+    else:
+        doc += "**Risk tier:** MINIMAL-RISK\n\nNo specific EU AI Act requirements.\n"
+
+    doc += f"""
+---
+
+_Generated by Regula v1.1.0 on {now}_
+"""
+    return doc
+
+
 def main():
     parser = argparse.ArgumentParser(description="Generate Annex IV technical documentation and QMS scaffolds")
     parser.add_argument("--project", "-p", default=".", help="Project directory to scan")
@@ -504,7 +659,7 @@ def main():
             "ai_files": ai_count, "model_files": model_count,
             "types": ["annex_iv"] + (["qms"] if args.qms or getattr(args, "all", False) else []),
         })
-    except Exception:
+    except (OSError,):
         pass
 
 

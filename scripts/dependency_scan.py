@@ -691,7 +691,7 @@ def _load_advisories() -> list[dict]:
             data = yaml_load(text)
             if isinstance(data, dict):
                 advisories.append(data)
-        except Exception:
+        except Exception:  # Intentional: multiple error sources
             continue
     return advisories
 
