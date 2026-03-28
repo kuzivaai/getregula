@@ -243,7 +243,7 @@ def cmd_classify(args):
         if result.exceptions:
             print(f"  Exceptions: {result.exceptions}")
 
-    sys.exit(2 if result.tier.value == "prohibited" else 0)
+    sys.exit(1 if result.tier.value == "prohibited" else 0)
 
 
 def cmd_report(args):
