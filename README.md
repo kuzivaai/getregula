@@ -381,7 +381,7 @@ regula/
 │   ├── owasp_llm_top10.yaml       # OWASP Top 10 for LLMs → EU AI Act mapping
 │   └── mitre_atlas.yaml           # MITRE ATLAS → EU AI Act mapping
 ├── tests/
-│   └── test_classification.py     # 152 tests, 434 assertions
+│   └── test_classification.py     # 159 tests, 471 assertions
 ├── docs/
 │   └── course/                    # Interactive 10-module governance course
 ├── regula-policy.yaml             # Policy configuration template
@@ -449,7 +449,7 @@ For full YAML support, install pyyaml: `pip install pyyaml`. Without it, a minim
 python3 tests/test_classification.py
 ```
 
-152 tests, 434 assertions covering:
+159 tests, 471 assertions covering:
 - AI detection (libraries, model files, API endpoints, ML patterns)
 - All 8 prohibited practices
 - All 10 high-risk categories (Annex III)
