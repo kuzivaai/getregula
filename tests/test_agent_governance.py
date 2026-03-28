@@ -229,6 +229,213 @@ def test_agent_risk_summary_format():
     print("\u2713 Agent: risk summary produces formatted output")
 
 
+# ── Contextual Agent Path Detection (ASI02/ASI04) ──────────────────
+
+
+def test_agent_contextual_path_detection():
+    """Files in agent/tool paths with subprocess -> flagged even without AI imports."""
+    from agent_monitor import detect_autonomous_actions
+
+    code = '''
+import subprocess
+import tempfile
+
+def execute_shell(command: str) -> str:
+    result = subprocess.run(command, shell=True, capture_output=True)
+    return result.stdout.decode()
+'''
+    # Without agent path context — should NOT flag (no AI patterns)
+    findings = detect_autonomous_actions(code, filepath="utils/helpers.py")
+    assert_eq(len(findings), 0,
+              "non-agent path without AI patterns should not be flagged")
+
+    # With agent path context — SHOULD flag
+    findings = detect_autonomous_actions(code, filepath="agents/middleware/shell_tool.py")
+    assert_true(len(findings) > 0,
+                "agent infrastructure path with subprocess should be flagged")
+    assert_true(all("Agent tool infrastructure" in f["description"] for f in findings),
+                "description should mention agent tool infrastructure")
+    assert_true(all(f["detection_mode"] == "contextual" for f in findings),
+                "detection mode should be contextual for path-based detection")
+    print("\u2713 Agent: contextual path detection flags agent infrastructure subprocess")
+
+
+def test_agent_contextual_path_variants():
+    """Various agent-related path patterns are detected."""
+    from agent_monitor import detect_autonomous_actions
+
+    code = '''
+import subprocess
+subprocess.run(["ls", "-la"])
+'''
+    agent_paths = [
+        "tools/shell_executor.py",
+        "plugins/code_runner.py",
+        "middleware/execution.py",
+        "agent_framework/executor.py",
+        "sandbox/runner.py",
+    ]
+    for path in agent_paths:
+        findings = detect_autonomous_actions(code, filepath=path)
+        assert_true(len(findings) > 0,
+                    f"path '{path}' should trigger contextual detection")
+    print("\u2713 Agent: all agent path variants trigger detection")
+
+
+def test_agent_contextual_with_human_gate():
+    """Agent infrastructure with human gate -> lower risk."""
+    from agent_monitor import detect_autonomous_actions
+
+    code = '''
+import subprocess
+
+def execute_command(cmd: str, dry_run: bool = True) -> str:
+    if dry_run:
+        return f"Would run: {cmd}"
+    if user_approved(cmd):
+        return subprocess.run(cmd, shell=True, capture_output=True).stdout.decode()
+'''
+    findings = detect_autonomous_actions(code, filepath="agents/tools/shell.py")
+    assert_true(len(findings) > 0, "should still flag")
+    assert_true(all(f["has_human_gate"] for f in findings),
+                "human gate should be detected")
+    assert_true(all("human gate pattern detected" in f["description"] for f in findings),
+                "description should note human gate")
+    print("\u2713 Agent: contextual detection with human gate lowers risk")
+
+
+# ── scan_files Integration Tests ───────────────────────────────────
+
+
+def test_scan_files_skip_tests():
+    """--skip-tests flag excludes test files entirely."""
+    from report import scan_files
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # Create a test file and a non-test file
+        (Path(tmpdir) / "app.py").write_text("import openai\nclient = openai.Client()\n")
+        tests_dir = Path(tmpdir) / "tests"
+        tests_dir.mkdir()
+        (tests_dir / "test_app.py").write_text("import openai\ndef test_foo(): pass\n")
+
+        # Without skip_tests — both files should have findings
+        all_findings = scan_files(tmpdir, skip_tests=False)
+        files_found = {f["file"] for f in all_findings}
+        assert_true("app.py" in files_found, "app.py should be found")
+        assert_true("tests/test_app.py" in files_found, "test file should be found without skip_tests")
+
+        # With skip_tests — only non-test file
+        filtered = scan_files(tmpdir, skip_tests=True)
+        files_found = {f["file"] for f in filtered}
+        assert_true("app.py" in files_found, "app.py should still be found")
+        assert_true("tests/test_app.py" not in files_found, "test file should be excluded with skip_tests")
+    print("\u2713 scan_files: --skip-tests excludes test files")
+
+
+def test_scan_files_min_tier():
+    """--min-tier filters out lower tiers."""
+    from report import scan_files
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # Create a file that triggers minimal_risk (AI code, no risk indicators)
+        (Path(tmpdir) / "basic.py").write_text("import tensorflow\nmodel = tf.keras.Model()\n")
+
+        # With no min_tier — should have minimal_risk findings
+        all_findings = scan_files(tmpdir, min_tier="")
+        assert_true(any(f["tier"] == "minimal_risk" for f in all_findings),
+                    "should find minimal_risk without filter")
+
+        # With min_tier=limited_risk — minimal_risk should be filtered out
+        filtered = scan_files(tmpdir, min_tier="limited_risk")
+        assert_true(all(f["tier"] != "minimal_risk" for f in filtered),
+                    "minimal_risk should be excluded with min_tier=limited_risk")
+    print("\u2713 scan_files: --min-tier filters lower tiers")
+
+
+def test_scan_files_agent_autonomy_integration():
+    """Agent autonomy detection wired into scan_files."""
+    from report import scan_files
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # Create a file in an agent path with subprocess
+        agent_dir = Path(tmpdir) / "agents" / "tools"
+        agent_dir.mkdir(parents=True)
+        (agent_dir / "executor.py").write_text(
+            "import subprocess\n"
+            "def run_command(cmd):\n"
+            "    return subprocess.run(cmd, shell=True)\n"
+        )
+
+        findings = scan_files(tmpdir)
+        autonomy_findings = [f for f in findings if f["tier"] == "agent_autonomy"]
+        assert_true(len(autonomy_findings) > 0,
+                    "agent autonomy detection should produce findings via scan_files")
+        assert_true(all("Agent tool infrastructure" in f["description"] for f in autonomy_findings),
+                    "findings should describe agent tool infrastructure")
+    print("\u2713 scan_files: agent autonomy detection integrated")
+
+
+def test_scan_files_agent_autonomy_test_deprioritisation():
+    """Agent autonomy findings in test files get lower confidence."""
+    from report import scan_files
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # Agent tool in production code
+        agent_dir = Path(tmpdir) / "agents"
+        agent_dir.mkdir()
+        (agent_dir / "tool.py").write_text(
+            "import subprocess\ndef execute(cmd): subprocess.run(cmd)\n"
+        )
+        # Same pattern in test code
+        test_dir = Path(tmpdir) / "tests"
+        test_dir.mkdir()
+        (test_dir / "test_tool.py").write_text(
+            "import subprocess\ndef test_execute(): subprocess.run(['echo', 'hi'])\n"
+        )
+
+        findings = scan_files(tmpdir)
+        prod_findings = [f for f in findings if f["tier"] == "agent_autonomy" and "tests/" not in f["file"]]
+        test_findings = [f for f in findings if f["tier"] == "agent_autonomy" and "tests/" in f["file"]]
+
+        if prod_findings and test_findings:
+            assert_true(prod_findings[0]["confidence_score"] > test_findings[0]["confidence_score"],
+                        "test file agent autonomy should have lower confidence than production")
+    print("\u2713 scan_files: test file agent autonomy deprioritised")
+
+
+# ── CLI Flag Tests ─────────────────────────────────────────────────
+
+
+def test_cli_skip_tests_flag():
+    """CLI accepts --skip-tests flag."""
+    import subprocess as sp
+    result = sp.run(
+        [sys.executable, "-m", "scripts.cli", "check", "--skip-tests", "--format", "json", "."],
+        capture_output=True, text=True,
+        cwd=str(Path(__file__).parent.parent),
+    )
+    assert_eq(result.returncode, 0, f"--skip-tests should not cause error, got: {result.stderr[:200]}")
+    data = json.loads(result.stdout)
+    test_files = [f for f in data.get("data", []) if "test" in f.get("file", "").lower()]
+    assert_eq(len(test_files), 0, "no test files should appear with --skip-tests")
+    print("\u2713 CLI: --skip-tests flag works")
+
+
+def test_cli_min_tier_flag():
+    """CLI accepts --min-tier flag."""
+    import subprocess as sp
+    result = sp.run(
+        [sys.executable, "-m", "scripts.cli", "check", "--min-tier", "limited_risk", "--format", "json", "."],
+        capture_output=True, text=True,
+        cwd=str(Path(__file__).parent.parent),
+    )
+    assert_eq(result.returncode, 0, f"--min-tier should not cause error, got: {result.stderr[:200]}")
+    data = json.loads(result.stdout)
+    minimal = [f for f in data.get("data", []) if f.get("tier") == "minimal_risk"]
+    assert_eq(len(minimal), 0, "minimal_risk should be filtered with --min-tier=limited_risk")
+    print("\u2713 CLI: --min-tier flag works")
+
+
 # ── Runner ──────────────────────────────────────────────────────────
 
 
@@ -244,6 +451,18 @@ if __name__ == "__main__":
         test_agent_owasp_sensitive_disclosure,
         test_agent_owasp_excessive_autonomy,
         test_agent_risk_summary_format,
+        # New: contextual agent path detection
+        test_agent_contextual_path_detection,
+        test_agent_contextual_path_variants,
+        test_agent_contextual_with_human_gate,
+        # New: scan_files integration
+        test_scan_files_skip_tests,
+        test_scan_files_min_tier,
+        test_scan_files_agent_autonomy_integration,
+        test_scan_files_agent_autonomy_test_deprioritisation,
+        # New: CLI flags
+        test_cli_skip_tests_flag,
+        test_cli_min_tier_flag,
     ]
 
     print(f"Running {len(tests)} agent governance tests...\n")

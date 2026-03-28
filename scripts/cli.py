@@ -121,7 +121,12 @@ def cmd_check(args):
 
     _validate_path(args.path)
     project = str(Path(args.path).resolve())
-    findings = scan_files(project, respect_ignores=not args.no_ignore)
+    findings = scan_files(
+        project,
+        respect_ignores=not args.no_ignore,
+        skip_tests=getattr(args, "skip_tests", False),
+        min_tier=getattr(args, "min_tier", "") or "",
+    )
 
     # Diff mode: filter findings to only changed files
     if args.diff:
@@ -139,6 +144,7 @@ def cmd_check(args):
     credentials = [f for f in active if f["tier"] == "credential_exposure"]
     high_risk = [f for f in active if f["tier"] == "high_risk"]
     limited = [f for f in active if f["tier"] == "limited_risk"]
+    autonomy = [f for f in active if f["tier"] == "agent_autonomy"]
 
     # Assign finding tiers to all active findings
     for f in active:
@@ -163,6 +169,7 @@ def cmd_check(args):
         print(f"  Prohibited:         {len(prohibited)}")
         print(f"  Credentials:        {len(credentials)}")
         print(f"  High-risk:          {len(high_risk)}")
+        print(f"  Agent autonomy:     {len(autonomy)}")
         print(f"  Limited-risk:       {len(limited)}")
         print(f"  Suppressed:         {len(suppressed)}")
         print(f"  BLOCK tier:         {len(block_findings)}")
@@ -191,6 +198,14 @@ def cmd_check(args):
                 score = f.get("confidence_score", 0)
                 tier_label = f.get("_finding_tier", "warn").upper()
                 print(f"    [{tier_label}] [{score:3d}] {f['file']} — {f.get('description', '')}")
+                _print_remediation(f)
+
+        if autonomy:
+            print(f"\n  AGENT AUTONOMY (OWASP Agentic ASI02/ASI04):")
+            for f in autonomy:
+                score = f.get("confidence_score", 0)
+                tier_label = f.get("_finding_tier", "warn").upper()
+                print(f"    [{tier_label}] [{score:3d}] {f['file']}:{f.get('line', '?')} — {f.get('description', '')}")
                 _print_remediation(f)
 
         if limited:
@@ -897,6 +912,10 @@ Examples:
     p_check.add_argument("--ci", action="store_true", default=False,
                          help="CI mode: exit 1 on any WARN or BLOCK finding (implies --strict)")
     p_check.add_argument("--verbose", "-v", action="store_true", help="Show INFO-tier findings")
+    p_check.add_argument("--skip-tests", action="store_true",
+                         help="Exclude test files entirely from scan results")
+    p_check.add_argument("--min-tier", choices=["prohibited", "high_risk", "limited_risk", "minimal_risk"],
+                         default="", help="Minimum risk tier to include (filters out lower tiers)")
     p_check.add_argument("--diff", metavar="REF", nargs="?", const="HEAD~1",
                          help="Only scan files changed since REF (default: HEAD~1)")
     p_check.set_defaults(func=cmd_check)

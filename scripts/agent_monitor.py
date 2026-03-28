@@ -411,22 +411,37 @@ _HUMAN_GATE_PATTERNS = [
 ]
 
 
-def detect_autonomous_actions(code: str) -> list:
+def detect_autonomous_actions(code: str, filepath: str = "") -> list:
     """Detect AI output -> external action patterns without human gates.
 
-    Scans for code where AI model output flows to external actions
-    (subprocess, HTTP requests, database writes) without an intervening
-    human approval check.
+    Two detection modes:
+    1. Direct: AI output patterns + external actions in same file
+    2. Contextual: External actions in files whose path indicates agent/tool
+       infrastructure (agent/, tool/, middleware/, plugin/, executor/).
+       Per OWASP Agentic Top 10 (2026) ASI02 & ASI04, agent tool code that
+       executes subprocess/system commands is a risk even when AI output
+       is consumed in a different module.
 
     Returns list of findings, each with:
-        line, ai_pattern, action_pattern, description, owasp_ref, has_human_gate
+        line, action_pattern, description, owasp_ref, has_human_gate
     """
     findings = []
     lines = code.split("\n")
 
     # Check if code has AI patterns at all
     has_ai = any(re.search(p, code, re.IGNORECASE) for p in _AI_OUTPUT_PATTERNS)
-    if not has_ai:
+
+    # Contextual detection: files in agent/tool infrastructure paths
+    # These files provide tool capabilities to agents even if AI output
+    # is consumed in a separate orchestration module
+    _AGENT_PATH_INDICATORS = (
+        "agent", "tool", "middleware", "plugin", "executor",
+        "action", "capability", "sandbox",
+    )
+    fp_lower = filepath.lower()
+    is_agent_infra = any(ind in fp_lower for ind in _AGENT_PATH_INDICATORS)
+
+    if not has_ai and not is_agent_infra:
         return findings
 
     # Check for human gates anywhere in the code
@@ -440,14 +455,22 @@ def detect_autonomous_actions(code: str) -> list:
 
         for pattern, desc in _EXTERNAL_ACTION_PATTERNS:
             if re.search(pattern, line):
+                if has_ai:
+                    detail = f"AI output may flow to {desc}"
+                else:
+                    detail = f"Agent tool infrastructure: {desc}"
+                if not has_gate:
+                    detail += " — no human gate detected"
+                else:
+                    detail += " — human gate pattern detected nearby"
+
                 findings.append({
                     "line": i,
                     "action_pattern": desc,
-                    "description": f"AI output may flow to {desc} (line {i})"
-                                   + (" — no human gate detected in code" if not has_gate
-                                      else " — human gate pattern detected nearby"),
-                    "owasp_ref": "LLM08 Excessive Agency / Agentic #6 Unmonitored Actions",
+                    "description": detail,
+                    "owasp_ref": "OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails",
                     "has_human_gate": has_gate,
+                    "detection_mode": "direct" if has_ai else "contextual",
                 })
                 break
 
