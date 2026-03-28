@@ -2315,6 +2315,31 @@ def test_cli_exit_codes():
     print("✓ CLI exit codes: 0=success, 1=findings, 2=tool error")
 
 
+def test_graceful_degradation():
+    """Test check_optional utility for optional dependency messaging."""
+    from degradation import check_optional, _warned
+    _warned.clear()
+    assert_true(check_optional("json", "JSON support", "pip install json") is True,
+                "check_optional returns True for available package")
+    import io
+    stderr_capture = io.StringIO()
+    old_stderr = sys.stderr
+    sys.stderr = stderr_capture
+    result = check_optional("nonexistent_package_xyz", "test feature", "pip install xyz")
+    sys.stderr = old_stderr
+    assert_true(result is False, "check_optional returns False for missing package")
+    assert_true("nonexistent_package_xyz" in stderr_capture.getvalue(),
+                "check_optional prints warning to stderr")
+    # Second call should not warn again
+    stderr_capture2 = io.StringIO()
+    sys.stderr = stderr_capture2
+    check_optional("nonexistent_package_xyz", "test feature", "pip install xyz")
+    sys.stderr = old_stderr
+    assert_true(stderr_capture2.getvalue() == "", "Should not warn twice for same package")
+    _warned.clear()
+    print("✓ Graceful degradation: check_optional works correctly")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -2520,6 +2545,8 @@ if __name__ == "__main__":
         # Error handling foundation (2 tests)
         test_regula_error_hierarchy,
         test_cli_exit_codes,
+        # Graceful degradation (1 test)
+        test_graceful_degradation,
     ]
 
     print(f"Running {len(tests)} tests...\n")

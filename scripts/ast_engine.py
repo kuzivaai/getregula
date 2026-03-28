@@ -18,6 +18,9 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional
 
+sys.path.insert(0, str(Path(__file__).parent))
+from degradation import check_optional
+
 # Import existing Python AST analysis module
 sys.path.insert(0, str(Path(__file__).parent))
 from ast_analysis import (
@@ -229,15 +232,15 @@ def _tree_sitter_parse(content: str, language: str, filename: str = "unknown.js"
         Unified analysis result matching the format of _analyse_python().
     """
     # --- import tree-sitter packages (raise ImportError if missing) -------
-    try:
-        import tree_sitter_javascript as tsjs  # noqa: F401
-        import tree_sitter_typescript as tsts  # noqa: F401
-        from tree_sitter import Language, Parser
-    except ImportError:
+    if not check_optional("tree_sitter", "tree-sitter JS/TS parsing",
+                          "pip install tree-sitter tree-sitter-javascript tree-sitter-typescript"):
         raise ImportError(
             "tree-sitter is not installed. Install it with: "
             "pip install tree-sitter tree-sitter-javascript tree-sitter-typescript"
         )
+    import tree_sitter_javascript as tsjs  # noqa: F401
+    import tree_sitter_typescript as tsts  # noqa: F401
+    from tree_sitter import Language, Parser
 
     # --- build parser -----------------------------------------------------
     if language == "typescript":

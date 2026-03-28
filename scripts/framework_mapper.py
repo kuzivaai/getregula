@@ -15,6 +15,9 @@ import json
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent))
+from degradation import check_optional
+
 # Cache for loaded crosswalk data
 _crosswalk_cache: dict | None = None
 
@@ -58,10 +61,10 @@ def _load_crosswalk() -> dict:
 
     content = _CROSSWALK_PATH.read_text(encoding="utf-8")
 
-    try:
+    if check_optional("yaml", "using fallback YAML parser", "pip install pyyaml"):
         import yaml
         data = yaml.safe_load(content) or {}
-    except ImportError:
+    else:
         from classify_risk import _parse_yaml_fallback
         data = _parse_yaml_fallback(content)
 

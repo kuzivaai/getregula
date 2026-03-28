@@ -30,38 +30,29 @@ from typing import Optional
 _scripts_dir = str(Path(__file__).parent)
 if _scripts_dir not in sys.path:
     sys.path.insert(0, _scripts_dir)
+from degradation import check_optional
 
-_ast_analysis_available = False
-try:
+_ast_analysis_available = check_optional("ast_analysis", "AST logging/oversight detection", "included with regula")
+if _ast_analysis_available:
     from ast_analysis import detect_logging_practices, detect_human_oversight
-    _ast_analysis_available = True
-except ImportError:
-    pass
 
-_classify_available = False
-try:
+_classify_available = check_optional("classify_risk", "risk classification", "included with regula")
+if _classify_available:
     from classify_risk import classify, RiskTier, is_ai_related
-    _classify_available = True
-except ImportError:
-    pass
 
-_report_available = False
-try:
+_report_available = check_optional("report", "file scanning", "included with regula")
+if _report_available:
     from report import scan_files, SKIP_DIRS, CODE_EXTENSIONS
-    _report_available = True
-except ImportError:
+else:
     SKIP_DIRS = {
         ".git", "node_modules", "__pycache__", "venv", ".venv",
         "dist", "build", ".next", ".tox",
     }
     CODE_EXTENSIONS = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"}
 
-_dep_scan_available = False
-try:
+_dep_scan_available = check_optional("dependency_scan", "dependency scanning", "included with regula")
+if _dep_scan_available:
     from dependency_scan import scan_dependencies as _scan_dependencies
-    _dep_scan_available = True
-except ImportError:
-    pass
 
 
 # ---------------------------------------------------------------------------
