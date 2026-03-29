@@ -41,7 +41,9 @@ It is a risk *indication* tool, not a legal classifier. Article 6 risk classific
 
 ## Market Position
 
-**The gap we fill:** No incumbent AI governance platform works at the code level. All major players (Credo AI, Holistic AI, IBM OpenPages, Monitaur) operate at metadata/policy/workflow level. The developer persona is underserved.
+**The gap we fill:** No incumbent AI governance platform works at the **code** level. All major players (Credo AI, Holistic AI, IBM OpenPages, Monitaur) operate at metadata/policy/workflow level. The developer persona is underserved.
+
+**What is NOT a gap:** SME questionnaire/classification tools. At least 8 free English-language tools already exist, including the EC's own official checker (ai-act-service-desk.ec.europa.eu), the Digital SME Alliance Conformity Tool (digitalsme.eu), and the Future of Life Institute compliance checker (artificialintelligenceact.eu). Do not build in this direction.
 
 **Direct competitors (all early-stage):**
 

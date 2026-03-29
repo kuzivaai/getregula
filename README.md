@@ -37,7 +37,7 @@ regula init
 regula check .
 ```
 
-Run tests: `python3 tests/test_classification.py`
+Run tests: `pytest tests/ -q`
 
 ## What It Does
 
@@ -99,6 +99,31 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 - Article 5 prohibitions have conditions and exceptions that require human judgment
 - The audit trail is self-attesting (locally verifiable, not externally witnessed)
 - Not a substitute for legal advice or DPO review
+
+## Why Regula?
+
+Several EU AI Act tools exist. Here is an honest comparison with the closest ones.
+
+| | Regula | [Systima Comply](https://dev.to/systima/open-source-eu-ai-act-compliance-scanning-for-cicd-4ogj) | [AIR Blackbox](https://github.com/airblackbox) | [EuConform](https://github.com/Hiepler/EuConform) | [ark-forge MCP](https://github.com/ark-forge/mcp-eu-ai-act) |
+|---|---|---|---|---|---|
+| **Type** | CLI + pre-commit/git hooks | npm CLI + GitHub Action | MCP server | Web app (browser) | MCP server |
+| **Python analysis** | Full AST (data flow, oversight) | Unknown | Runtime tracing | None | Regex only |
+| **JS/TS analysis** | Moderate (tree-sitter) | **AST + 37 frameworks + call-chain** | LangChain/OpenAI focus | None | Regex only |
+| **Hook integration** | Claude Code, Copilot CLI, Windsurf | CI/CD only | Cursor, Claude Desktop | None | Cursor, Claude Desktop |
+| **Offline / no deps** | Yes (stdlib only) | Requires npm | Requires MCP client | Browser + Ollama | Single dep (mcp) |
+| **Gap assessment** | Articles 9-15 scored 0-100 | Unknown | 22 controls (SOC 2/ISO 27001) | Articles 5-15 classification | Doc file existence only |
+| **Audit trail** | Hash-chained, file-locked | Unknown | Deterministic replay | None | Unknown |
+| **Bias testing** | None | None | None | **CrowS-Pairs** | None |
+| **Fix generation** | None | None | **Yes** | None | None |
+| **License** | MIT | Apache 2.0 | Unknown | Unknown | Unknown |
+
+**Where Regula leads:** pre-commit hook integration, Python AST depth, compliance gap assessment (Articles 9-15), dependency pinning analysis, offline zero-dependency operation.
+
+**Where Regula falls short:** JS/TS analysis (Systima is deeper), fix code generation (AIR Blackbox has it, Regula doesn't), bias testing (EuConform has CrowS-Pairs, Regula doesn't), real-world user validation (0 external users as of v1.2.0).
+
+If your primary stack is TypeScript and you need CI/CD integration, Systima Comply is worth evaluating alongside Regula. If you need runtime interception and automated fix suggestions, AIR Blackbox serves a different need.
+
+---
 
 ## Regulatory Context
 
@@ -305,7 +330,7 @@ Integrate Regula into your CI/CD pipeline with one step:
     upload-sarif: 'true'
 ```
 
-Results appear in the GitHub Security tab alongside CodeQL findings. Configurable options: `fail-on-prohibited`, `fail-on-high-risk`, `min-dependency-score`, `upload-sarif`.
+**Status: defined, not yet validated in a production PR workflow.** The action definition exists and the SARIF output format is correct, but end-to-end integration with GitHub's Security tab has not been verified. Treat as experimental until confirmed.
 
 ### Compliance Status Tracking
 
@@ -387,7 +412,7 @@ regula/
 │   ├── test_registry.py           # AI system registry
 │   ├── test_reliability.py        # Edge cases and resilience
 │   └── test_security_hardening.py # Security hardening checks
-│   # 348 tests, 916 assertions total
+│   # 362 tests
 ├── docs/
 │   └── course/                    # Interactive 10-module governance course
 ├── regula-policy.yaml             # Policy configuration template
@@ -452,10 +477,10 @@ For full YAML support, install pyyaml: `pip install pyyaml`. Without it, a minim
 ## Testing
 
 ```bash
-python3 tests/test_classification.py   # or: pytest tests/
+pytest tests/ -q
 ```
 
-348 tests, 916 assertions covering:
+362 tests covering:
 - AI detection (libraries, model files, API endpoints, ML patterns)
 - All 8 prohibited practices
 - All 10 high-risk categories (Annex III)
@@ -490,9 +515,18 @@ python3 tests/test_classification.py   # or: pytest tests/
 
 ## Roadmap
 
-- **v1.2:** ~~Production readiness~~ — shipped 2026-03-28. Agent autonomy detection, `--skip-tests`, `--min-tier`, 348 tests.
-- **v1.3:** DPO dashboard, Slack/Teams alerting, external timestamp authority, PDF export
-- **v2.0:** Model card generation, bias testing integration
+- **v1.2:** ~~Production readiness~~ — shipped 2026-03-28. Agent autonomy detection, `--skip-tests`, `--min-tier`, 362 tests.
+- **v1.3 (candidates):** JS/TS tree-sitter data flow, AVID vulnerability database integration, typosquatting detection, GitHub Action validated in real PR workflow.
+- **Not planned yet:** DPO dashboard, Slack/Teams alerting, model card generation, bias testing. These require validation that there are users who want them first.
+
+## Contributing
+
+Bug reports and pull requests are welcome. A few things to know:
+
+- Tests are in `tests/`. Run `pytest tests/ -q` before opening a PR.
+- Pattern additions go in `scripts/classify_risk.py`. Each pattern should have a test.
+- The tool is intentionally risk *indication*, not legal classification. New patterns should be conservative — false positives erode trust more than false negatives for a developer tool.
+- See [CHANGELOG.md](CHANGELOG.md) for what has changed between versions.
 
 ## License
 
