@@ -610,7 +610,7 @@ def test_cli_version_in_json_output():
         cwd=str(Path(__file__).parent.parent),
     )
     assert_eq(result.returncode, 0, "check --help should succeed")
-    from scripts.cli import VERSION
+    from cli import VERSION
     assert_eq(VERSION, "1.2.0", f"VERSION should be 1.2.0, got: {VERSION}")
     result2 = sp.run(
         [sys.executable, "-m", "scripts.cli", "check", "--format", "json", "--min-tier", "high_risk",
