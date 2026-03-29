@@ -308,7 +308,13 @@ GOVERNANCE_OBSERVATIONS = {
         "observation": "Model predictions detected — Article 14 requires human oversight with ability to override or reverse AI outputs.",
     },
     "automated_decision_function": {
-        "patterns": [r"def\s+\w*(screen|filter|rank|score|decide|reject|accept|approve|deny)\w*\s*\("],
+        "patterns": [
+            # Python function definitions
+            r"def\s+\w*(screen|filter|rank|score|decide|reject|accept|approve|deny)\w*\s*\(",
+            # JS/TS function declarations and arrow functions (camelCase lowercased)
+            r"function\s+\w*(?:screen|filter|rank|score|decide|reject|accept|approve|deny)\w*\s*\(",
+            r"(?:const|let|var)\s+\w*(?:screen|filter|rank|score|decide|reject|accept|approve|deny)\w*\s*=\s*(?:async\s+)?(?:\([^)]*\)|\w+)\s*=>",
+        ],
         "article": "13",
         "observation": "Automated decision function detected — Article 13 requires transparency to deployers about capabilities and limitations.",
     },
@@ -317,5 +323,68 @@ GOVERNANCE_OBSERVATIONS = {
         "article": "12",
         "observation": None,  # Only flag ABSENCE — see check below
         "absence_observation": "No logging detected — Article 12 requires automatic recording of events for traceability.",
+    },
+}
+
+# ---------------------------------------------------------------------------
+# Bias Risk Patterns — Article 10(5)
+#
+# Detects protected class attributes used as model features in ML pipelines.
+# This is a "did you consider this?" check, NOT evidence of discrimination.
+# Article 10(5) requires training data to be examined for biases.
+# Limitation: can detect absence of attempt, not actual model bias.
+# ---------------------------------------------------------------------------
+
+BIAS_RISK_PATTERNS = {
+    "protected_class_as_feature": {
+        "patterns": [
+            # DataFrame/array column access with protected class names
+            r"""(?:df|X|features|X_train|X_test|train_data|dataset|data)\s*\[\s*['"](?:race|ethnicity|gender|sex\b|religion|nationality|disability|marital.status|national.origin)""",
+            # Protected attribute in feature list: ['income', 'race', 'age'] — before comma
+            r"""['"]\s*(?:race|ethnicity|religion|nationality|disability|marital.status|national.origin)\s*['"]\s*,""",
+            # Protected attribute as last element in a list: ['income', 'race']
+            r""",\s*['"]\s*(?:race|ethnicity|religion|nationality|disability|marital.status|national.origin)\s*['"]\s*[\]\)]""",
+            # Variable names strongly implying protected attribute as feature
+            r"""\b(?:race|ethnicity|nationality|disability)(?:_col|_column|_feature|_var|_field)\b""",
+        ],
+        "article": "10",
+        "article_clause": "10(5)",
+        "description": "Protected class attribute detected as potential model feature",
+        "observation": (
+            "Protected class attribute (race, ethnicity, religion, nationality, disability) "
+            "detected in a data or ML context. "
+            "Article 10(5) requires training data to be examined for biases for high-risk AI systems. "
+            "This flag does not mean your model is biased — it means: "
+            "(1) document why this attribute is included, "
+            "(2) perform disparate impact analysis before deploying in employment, credit, or essential services, "
+            "(3) check whether the system falls under Annex III obligations."
+        ),
+        "eu_ai_act_basis": (
+            "Article 10(5): training data must be examined for possible biases that could cause prohibited discrimination. "
+            "Recital 44: particular attention to elimination of discriminatory effects."
+        ),
+    },
+    "missing_fairness_evaluation": {
+        "patterns": [
+            # Fairness library imports — used for ABSENCE detection
+            r"fairlearn",
+            r"aif360",
+            r"themis[_\-]ml",
+            r"fairness[_\-]indicator",
+            r"equalized[_\.]odds",
+            r"demographic[_\.]parity",
+            r"disparate[_\.]impact",
+            r"audit[_\-]ai",
+        ],
+        "article": "10",
+        "article_clause": "10(5)",
+        "description": "No fairness evaluation detected",
+        "observation": None,
+        "absence_observation": (
+            "No fairness evaluation library detected alongside protected class attributes. "
+            "Article 10(5) requires training data to be examined for biases. "
+            "Consider: fairlearn, AIF360, or manual disparate impact analysis "
+            "before deploying in employment, credit, or essential services contexts."
+        ),
     },
 }
