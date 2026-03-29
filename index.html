@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regula — EU AI Act Compliance Scan for Developers | AI Governance Code Scanning</title>
+  <meta name="description" content="Regula scans your code for EU AI Act prohibited practices, high-risk patterns, and missing Articles 9–15 compliance infrastructure — as you write, not after you ship. Free, open-source CLI. Zero required dependencies.">
+  <meta property="og:title" content="Regula — EU AI Act Compliance Scan for Developers">
+  <meta property="og:description" content="Catch EU AI Act violations before git commit. Real-time hooks for Claude Code, GitHub Copilot, and Windsurf. Hash-chained audit trail. Free and open-source.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://kuzivaai.github.io/getregula/og-image.png">
+  <meta property="og:url" content="https://kuzivaai.github.io/getregula">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Regula — EU AI Act Compliance Scan for Developers">
+  <meta name="twitter:description" content="Scans your code for EU AI Act prohibited practices and high-risk patterns before they ship. Free CLI. Real-time hooks for Claude Code, Copilot, and Windsurf.">
+  <meta name="twitter:image" content="https://kuzivaai.github.io/getregula/og-image.png">
+  <link rel="canonical" href="https://kuzivaai.github.io/getregula">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2308090D'/><circle cx='10' cy='16' r='4' fill='%23C89B2A'/><rect x='16' y='13' width='10' height='2' rx='1' fill='%23C89B2A' opacity='.7'/><rect x='16' y='17' width='7' height='2' rx='1' fill='%23C89B2A' opacity='.4'/></svg>">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700;12..96,800&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── TOKENS ────────────────────────────────────────────────── */
+    :root {
+      --bg:       #08090D;
+      --surface:  #0C0E14;
+      --raised:   #12151E;
+      --line:     #1C2030;
+      --line-dim: #111420;
+
+      --ink:      #EBEEf5;
+      --ink-2:    #8E97AE;
+      --ink-3:    #4A5268;
+      --ink-4:    #262C3D;
+
+      --gold:     #C89B2A;
+      --gold-hi:  #E8B73A;
+      --gold-lo:  rgba(200,155,42,0.14);
+      --gold-glow:rgba(200,155,42,0.07);
+
+      --red:      #E05454;
+      --red-lo:   rgba(224,84,84,0.12);
+      --amber:    #D08A36;
+      --amber-lo: rgba(208,138,54,0.12);
+      --green:    #3BAD6A;
+      --green-lo: rgba(59,173,106,0.12);
+      --blue:     #4888D4;
+      --blue-lo:  rgba(72,136,212,0.12);
+
+      --f-head: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
+      --f-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --f-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+      --r-sm: 4px;
+      --r-md: 8px;
+      --r-lg: 14px;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--f-body);
+      font-size: 1rem;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Subtle grain */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 120px;
+      opacity: 0.018;
+    }
+
+    /* ── ACCESSIBILITY ──────────────────────────────────────────── */
+    .skip { position: absolute; top: -100%; left: 1rem; z-index: 9999; background: var(--gold); color: var(--bg); padding: .5rem 1rem; font-family: var(--f-mono); font-size: .8125rem; font-weight: 600; border-radius: 0 0 var(--r-sm) var(--r-sm); }
+    .skip:focus { top: 0; }
+    :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+
+    /* ── LAYOUT ─────────────────────────────────────────────────── */
+    .wrap { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+
+    /* ── NAV ────────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 100;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      transition: background .25s, border-color .25s;
+      border-bottom: 1px solid transparent;
+    }
+    nav.scrolled {
+      background: rgba(8,9,13,.9);
+      backdrop-filter: blur(20px);
+      border-color: var(--line);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; }
+    .logo {
+      font-family: var(--f-mono);
+      font-size: .9375rem;
+      font-weight: 500;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      text-decoration: none;
+      letter-spacing: -.02em;
+    }
+    .logo-pip {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: pip 4s ease-in-out infinite;
+    }
+    @keyframes pip { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.75)} }
+
+    .nav-r { display: flex; align-items: center; gap: .25rem; }
+
+    /* ── HAMBURGER (mobile only) ──────────────────────────────── */
+    .nav-ham {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: .5rem;
+      margin-left: .5rem;
+    }
+    .nav-ham span {
+      display: block;
+      width: 18px; height: 1.5px;
+      background: var(--ink-2);
+      border-radius: 1px;
+      transition: transform .2s var(--ease), opacity .2s;
+    }
+    .nav-ham[aria-expanded="true"] span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+    .nav-ham[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .nav-ham[aria-expanded="true"] span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+    .nav-mobile {
+      display: none;
+      position: fixed;
+      inset: 56px 0 0 0;
+      background: rgba(8,9,13,.97);
+      backdrop-filter: blur(20px);
+      z-index: 99;
+      flex-direction: column;
+      padding: 1.5rem 2rem;
+      gap: .25rem;
+      border-top: 1px solid var(--line);
+    }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a {
+      font-family: var(--f-mono);
+      font-size: .9375rem;
+      color: var(--ink-2);
+      text-decoration: none;
+      padding: .875rem 0;
+      border-bottom: 1px solid var(--line-dim);
+      display: block;
+      transition: color .15s;
+    }
+    .nav-mobile a:last-child { border-bottom: none; }
+    .nav-mobile a:hover { color: var(--ink); }
+
+    @media (max-width: 600px) {
+      .nav-ham { display: flex; }
+      .nav-link { display: none; }
+    }
+    .nav-link {
+      font-family: var(--f-mono);
+      font-size: .75rem;
+      color: var(--ink-2);
+      padding: .375rem .75rem;
+      border-radius: var(--r-sm);
+      text-decoration: none;
+      transition: color .15s, background .15s;
+    }
+    .nav-link:hover { color: var(--ink); background: var(--raised); }
+    .nav-cta {
+      font-family: var(--f-mono);
+      font-size: .75rem;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--gold);
+      padding: .375rem .875rem;
+      border-radius: var(--r-sm);
+      text-decoration: none;
+      transition: background .15s, transform .1s;
+      margin-left: .25rem;
+    }
+    .nav-cta:hover { background: var(--gold-hi); transform: translateY(-1px); }
+
+    /* ── HERO ───────────────────────────────────────────────────── */
+    #hero {
+      height: 100vh;
+      min-height: 640px;
+      max-height: 1000px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 56px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* background grid */
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--line-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line-dim) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse 90% 80% at 60% 40%, black 20%, transparent 80%);
+      opacity: .5;
+    }
+    /* amber glow top-left */
+    #hero::after {
+      content: '';
+      position: absolute;
+      top: -20%;
+      left: -5%;
+      width: 55%;
+      height: 70%;
+      background: radial-gradient(ellipse, rgba(200,155,42,.13) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .hero-body {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: center;
+      padding-bottom: 1rem;
+    }
+
+    /* ── HERO LEFT ──────────────────────────────────────────────── */
+    .hero-l { display: flex; flex-direction: column; gap: 0; }
+
+    .hero-alert {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: var(--f-mono);
+      font-size: .6875rem;
+      font-weight: 500;
+      color: var(--gold);
+      background: var(--gold-lo);
+      border: 1px solid rgba(200,155,42,.25);
+      border-radius: var(--r-sm);
+      padding: .3rem .7rem;
+      margin-bottom: 1.25rem;
+      width: fit-content;
+      letter-spacing: .04em;
+      animation: fadein .5s var(--ease) .1s both;
+    }
+    .hero-alert-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 6px var(--gold);
+      animation: pip 3s ease-in-out infinite;
+    }
+
+    h1 {
+      font-family: var(--f-head);
+      font-size: clamp(2.25rem, 3.8vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.04;
+      letter-spacing: -.03em;
+      color: var(--ink);
+      margin-bottom: 1.125rem;
+      animation: fadein .6s var(--ease) .2s both;
+    }
+    h1 .hl {
+      color: var(--gold);
+      position: relative;
+      display: inline;
+    }
+    h1 .code-word {
+      font-family: var(--f-mono);
+      font-size: .85em;
+      font-weight: 600;
+      color: var(--gold);
+      background: var(--gold-lo);
+      border: 1px solid rgba(200,155,42,.2);
+      border-radius: 4px;
+      padding: .05em .25em;
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--ink-2);
+      line-height: 1.65;
+      margin-bottom: 1.75rem;
+      max-width: 48ch;
+      animation: fadein .6s var(--ease) .33s both;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: .75rem;
+      align-items: center;
+      margin-bottom: 1.75rem;
+      animation: fadein .5s var(--ease) .45s both;
+    }
+
+    .btn-p {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--gold);
+      color: var(--bg);
+      font-family: var(--f-mono);
+      font-size: .8125rem;
+      font-weight: 700;
+      padding: .7rem 1.375rem;
+      border-radius: var(--r-sm);
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background .15s, transform .1s, box-shadow .2s;
+    }
+    .btn-p:hover { background: var(--gold-hi); color: var(--bg); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(200,155,42,.28); }
+
+    .btn-g {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: transparent;
+      color: var(--ink-2);
+      font-family: var(--f-mono);
+      font-size: .8125rem;
+      font-weight: 400;
+      padding: .7rem 1.125rem;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--line);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color .15s, border-color .15s, background .15s;
+    }
+    .btn-g:hover { color: var(--ink); border-color: var(--ink-3); background: var(--raised); }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      animation: fadein .5s var(--ease) .55s both;
+    }
+    .hero-meta-item {
+      font-family: var(--f-mono);
+      font-size: .6875rem;
+      color: var(--ink-3);
+      display: flex;
+      align-items: center;
+      gap: .375rem;
+    }
+    .hero-meta-item::before {
+      content: '';
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--ink-4);
+    }
+    .hero-meta-item:first-child::before { display: none; }
+
+    /* ── TERMINAL ───────────────────────────────────────────────── */
+    .hero-r { animation: slidein .7s var(--ease) .3s both; }
+
+    @keyframes fadein  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+    @keyframes slidein { from{opacity:0;transform:translateX(28px)} to{opacity:1;transform:none} }
+
+    .term {
+      background: #161B28;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.06) inset,
+        0 40px 80px rgba(0,0,0,.6),
+        0 0 60px rgba(200,155,42,.08);
+    }
+    .term-bar {
+      display: flex;
+      align-items: center;
+      gap: .875rem;
+      padding: .75rem 1rem;
+      background: #1C2235;
+      border-bottom: 1px solid var(--line);
+    }
+    .term-dots { display: flex; gap: 5px; }
+    .term-dots span { width: 10px; height: 10px; border-radius: 50%; }
+    .term-dots span:nth-child(1) { background: #FF5F57; }
+    .term-dots span:nth-child(2) { background: #FFBD2E; }
+    .term-dots span:nth-child(3) { background: #28CA41; }
+    .term-title { font-family: var(--f-mono); font-size: .6875rem; color: var(--ink-3); flex: 1; text-align: center; }
+
+    .term-tabs {
+      display: flex;
+      background: #1C2235;
+      border-bottom: 1px solid var(--line);
+    }
+    .ttab {
+      font-family: var(--f-mono);
+      font-size: .6875rem;
+      font-weight: 500;
+      color: var(--ink-3);
+      padding: .5rem 1rem;
+      border: none;
+      border-bottom: 2px solid transparent;
+      background: none;
+      cursor: pointer;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      transition: color .15s, border-color .15s;
+    }
+    .ttab:hover { color: var(--ink-2); }
+    .ttab.active[data-r="p"] { color: var(--red);   border-bottom-color: var(--red); }
+    .ttab.active[data-r="h"] { color: var(--amber); border-bottom-color: var(--amber); }
+    .ttab.active[data-r="c"] { color: var(--green); border-bottom-color: var(--green); }
+
+    .term-body {
+      padding: 1rem 1.125rem;
+      font-family: var(--f-mono);
+      font-size: .775rem;
+      line-height: 1.6;
+      min-height: 240px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .tp { display: none; }
+    .tp.on { display: block; }
+    .tline { display: flex; gap: .5rem; }
+    .tps { color: var(--green); user-select: none; }
+    .tout { color: var(--ink-2); }
+    .tgap { height: .5rem; }
+
+    .tres {
+      margin-top: .5rem;
+      padding: .875rem;
+      border-radius: var(--r-sm);
+      border-left: 3px solid;
+    }
+    .tres.p { background: var(--red-lo);   border-color: var(--red); }
+    .tres.h { background: var(--amber-lo); border-color: var(--amber); }
+    .tres.c { background: var(--green-lo); border-color: var(--green); }
+
+    .tbadge {
+      display: inline-block;
+      font-size: .625rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .2rem .5rem;
+      border-radius: 2px;
+      margin-bottom: .5rem;
+    }
+    .tbadge.p { color: var(--red);   background: var(--red-lo);   border: 1px solid rgba(224,84,84,.3); }
+    .tbadge.h { color: var(--amber); background: var(--amber-lo); border: 1px solid rgba(208,138,54,.3); }
+    .tbadge.c { color: var(--green); background: var(--green-lo); border: 1px solid rgba(59,173,106,.3); }
+
+    .tinfo { font-size: .725rem; color: var(--ink-2); line-height: 1.55; }
+    .tinfo strong { color: var(--ink); font-weight: 500; }
+    .tinfo .key { color: var(--ink-3); }
+    .tcursor { display: inline-block; width: 7px; height: 12px; background: var(--gold); vertical-align: text-bottom; animation: blink 1.1s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* scroll down indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .375rem;
+      z-index: 2;
+      animation: fadein 1s var(--ease) 1s both;
+      transition: opacity .4s ease;
+    }
+    .scroll-hint span { font-family: var(--f-mono); font-size: .625rem; color: var(--ink-4); letter-spacing: .08em; text-transform: uppercase; }
+    .scroll-arrow {
+      width: 20px; height: 20px;
+      border-right: 1.5px solid var(--ink-4);
+      border-bottom: 1.5px solid var(--ink-4);
+      transform: rotate(45deg);
+      animation: bounce 1.6s ease-in-out infinite;
+    }
+    @keyframes bounce { 0%,100%{transform:rotate(45deg) translateY(0)} 50%{transform:rotate(45deg) translateY(4px)} }
+
+    /* ── ENFORCEMENT BAR ────────────────────────────────────────── */
+    #enforce {
+      background: var(--surface);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 2.5rem 0;
+    }
+    .enforce-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .enforce-item {
+      padding: 1.25rem 1.5rem;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: .375rem;
+    }
+    .enforce-item:last-child { border-right: none; background: var(--raised); }
+    .enforce-status {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: var(--f-mono);
+      font-size: .6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .enforce-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .enforce-dot.red   { background: var(--red);   box-shadow: 0 0 6px var(--red); }
+    .enforce-dot.amber { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+    .enforce-dot.green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .enforce-label { font-size: .9375rem; font-family: var(--f-head); font-weight: 700; color: var(--ink); line-height: 1.2; }
+    .enforce-date { font-family: var(--f-mono); font-size: .6875rem; color: var(--ink-3); }
+
+    .enforce-penalty { display: flex; flex-direction: column; justify-content: center; gap: .25rem; padding: 1.25rem 1.75rem; }
+    .penalty-num { font-family: var(--f-head); font-size: 2rem; font-weight: 800; color: var(--red); letter-spacing: -.04em; line-height: 1; }
+    .penalty-or { font-family: var(--f-mono); font-size: .625rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: .08em; }
+    .penalty-pct { font-family: var(--f-head); font-size: 1.375rem; font-weight: 700; color: var(--amber); letter-spacing: -.02em; }
+    .penalty-caption { font-family: var(--f-mono); font-size: .6875rem; color: var(--ink-3); margin-top: .25rem; }
+
+    /* ── SECTION SHARED ─────────────────────────────────────────── */
+    section { position: relative; }
+
+    .s-eyebrow {
+      font-family: var(--f-mono);
+      font-size: .6875rem;
+      font-weight: 500;
+      color: var(--gold);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: .625rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .s-eyebrow::before { content: '//'; color: var(--ink-4); font-weight: 300; }
+
+    h2 {
+      font-family: var(--f-head);
+      font-size: clamp(1.875rem, 3.5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.07;
+      margin-bottom: .875rem;
+    }
+
+    .s-sub { font-size: .9375rem; color: var(--ink-2); line-height: 1.7; max-width: 60ch; }
+
+    /* scroll reveal */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .65s var(--ease), transform .65s var(--ease); }
+    .reveal.vis { opacity: 1; transform: none; }
+    .d1 { transition-delay: .1s; }
+    .d2 { transition-delay: .2s; }
+    .d3 { transition-delay: .3s; }
+    .d4 { transition-delay: .4s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; }
+      * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+
+    /* ── PROBLEM ────────────────────────────────────────────────── */
+    #problem { padding: 5rem 0; border-bottom: 1px solid var(--line); }
+    .problem-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      margin-top: 3rem;
+    }
+    .problem-text p {
+      font-size: .9375rem;
+      color: var(--ink-2);
+      line-height: 1.75;
+      margin-bottom: .875rem;
+      max-width: 50ch;
+    }
+    .problem-text p strong { color: var(--ink); font-weight: 600; }
+    .problem-text p:last-child { margin-bottom: 0; }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .srow {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--surface);
+      transition: background .2s;
+    }
+    .srow.dim { opacity: .45; }
+    .srow.lit { background: #161B28; border: 1px solid rgba(200,155,42,.35); border-left: 3px solid var(--gold); }
+    .srow-icon { font-size: 1.125rem; }
+    .srow-name { font-family: var(--f-mono); font-size: .8125rem; color: var(--ink-2); }
+    .srow.lit .srow-name { color: var(--ink); }
+    .srow-tag {
+      font-family: var(--f-mono);
+      font-size: .625rem;
+      color: var(--ink-3);
+      background: var(--raised);
+      border: 1px solid var(--line);
+      padding: .2rem .5rem;
+      border-radius: 2px;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+    .srow.lit .srow-tag { color: var(--gold); border-color: rgba(200,155,42,.35); background: var(--gold-lo); }
+
+    /* ── HOW IT WORKS ───────────────────────────────────────────── */
+    #how { padding: 5rem 0; border-bottom: 1px solid var(--line); }
+    .how-head { margin-bottom: 3rem; }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .step {
+      background: var(--surface);
+      padding: 1.875rem;
+      position: relative;
+      transition: background .2s;
+    }
+    .step:hover { background: var(--raised); }
+    .step-n {
+      font-family: var(--f-mono);
+      font-size: .625rem;
+      color: var(--ink-4);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .step-icon {
+      width: 36px; height: 36px;
+      background: var(--raised);
+      border: 1px solid var(--line);
+      border-radius: var(--r-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      margin-bottom: .875rem;
+    }
+    .step h3 {
+      font-family: var(--f-head);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -.01em;
+      margin-bottom: .5rem;
+    }
+    .step p { font-size: .8125rem; color: var(--ink-2); line-height: 1.6; max-width: 32ch; }
+    .step-code {
+      margin-top: .875rem;
+      background: var(--raised);
+      border: 1px solid var(--line);
+      border-radius: var(--r-sm);
+      padding: .75rem;
+      font-family: var(--f-mono);
+      font-size: .7rem;
+      color: var(--ink-3);
+      line-height: 1.55;
+    }
+    .step-code .cmd { color: var(--green); }
+    .step-code .arg { color: var(--gold); }
+    .step-code .cmt { color: var(--ink-4); font-style: italic; }
+
+    /* ── TIERS ──────────────────────────────────────────────────── */
+    #tiers { padding: 5rem 0; border-bottom: 1px solid var(--line); }
+    .tier-head { margin-bottom: 3rem; }
+    .tiers-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .tier-card { background: var(--surface); padding: 1.5rem; transition: background .2s; }
+    .tier-card:hover { background: var(--raised); }
+    .tier-pip { width: 8px; height: 8px; border-radius: 50%; margin-bottom: .875rem; }
+    .tier-pip.p { background: var(--red);   box-shadow: 0 0 8px var(--red); }
+    .tier-pip.h { background: var(--amber); box-shadow: 0 0 8px var(--amber); }
+    .tier-pip.l { background: var(--blue);  box-shadow: 0 0 8px var(--blue); }
+    .tier-pip.m { background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .tier-card h3 { font-family: var(--f-head); font-size: .9375rem; font-weight: 700; letter-spacing: -.01em; margin-bottom: .25rem; }
+    .tier-action {
+      font-family: var(--f-mono);
+      font-size: .625rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: .75rem;
+    }
+    .tier-action.p { color: var(--red); }
+    .tier-action.h { color: var(--amber); }
+    .tier-action.l { color: var(--blue); }
+    .tier-action.m { color: var(--green); }
+    .tier-card p { font-size: .8125rem; color: var(--ink-2); line-height: 1.55; max-width: 26ch; }
+    .tier-egs { margin-top: .75rem; display: flex; flex-direction: column; gap: .25rem; }
+    .tier-eg { font-family: var(--f-mono); font-size: .6875rem; color: var(--ink-3); }
+    .tier-eg::before { content: '→ '; }
+
+    /* ── FEATURES ───────────────────────────────────────────────── */
+    #features { padding: 5rem 0; border-bottom: 1px solid var(--line); }
+    .feat-head { margin-bottom: 3rem; }
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .feat {
+      background: var(--surface);
+      padding: 1.625rem;
+      position: relative;
+      transition: background .2s;
+    }
+    .feat:hover { background: var(--raised); }
+    .feat-icon { font-size: 1.25rem; margin-bottom: .75rem; display: block; }
+    .feat-tag {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      font-family: var(--f-mono);
+      font-size: .5625rem;
+      color: var(--ink-3);
+      background: var(--raised);
+      border: 1px solid var(--line);
+      padding: .175rem .4rem;
+      border-radius: 2px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .feat h3 { font-family: var(--f-head); font-size: .9375rem; font-weight: 700; letter-spacing: -.01em; margin-bottom: .375rem; }
+    .feat p { font-size: .8125rem; color: var(--ink-2); line-height: 1.6; max-width: 34ch; }
+    .feat-accent {
+      border-left: 2px solid rgba(200,155,42,.4);
+      background: linear-gradient(135deg, rgba(200,155,42,.04) 0%, transparent 60%);
+    }
+    .feat-accent:hover { background: linear-gradient(135deg, rgba(200,155,42,.07) 0%, var(--raised) 60%); }
+
+    /* ── INSTALL ────────────────────────────────────────────────── */
+    #install { padding: 5rem 0; border-bottom: 1px solid var(--line); }
+    .install-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 3rem;
+      margin-top: 3rem;
+      align-items: start;
+    }
+    .install-blocks { display: flex; flex-direction: column; gap: 1rem; }
+    .method-lbl {
+      font-family: var(--f-mono);
+      font-size: .625rem;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: .375rem;
+    }
+    .cblock {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      overflow: hidden;
+    }
+    .cblock-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .5rem .875rem;
+      background: var(--raised);
+      border-bottom: 1px solid var(--line);
+    }
+    .cblock-name { font-family: var(--f-mono); font-size: .625rem; color: var(--ink-3); letter-spacing: .04em; }
+    .copy-btn {
+      font-family: var(--f-mono);
+      font-size: .625rem;
+      color: var(--ink-3);
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      padding: .175rem .45rem;
+      cursor: pointer;
+      transition: color .15s, border-color .15s;
+    }
+    .copy-btn:hover { color: var(--gold); border-color: rgba(200,155,42,.4); }
+    .copy-btn.ok { color: var(--green); border-color: rgba(59,173,106,.4); }
+    .cblock pre {
+      padding: .875rem;
+      font-family: var(--f-mono);
+      font-size: .7875rem;
+      line-height: 1.6;
+      color: var(--ink-2);
+      overflow-x: auto;
+    }
+    .cblock .kw { color: var(--gold); }
+    .cblock .cm { color: var(--ink-3); font-style: italic; }
+
+    .install-aside { display: flex; flex-direction: column; gap: .875rem; }
+    .aside-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      padding: 1.25rem 1.375rem;
+    }
+    .aside-card h4 { font-family: var(--f-head); font-size: .875rem; font-weight: 700; margin-bottom: .75rem; }
+    .aside-card ul { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+    .aside-card li {
+      font-size: .8125rem;
+      color: var(--ink-2);
+      display: flex;
+      align-items: flex-start;
+      gap: .5rem;
+      line-height: 1.45;
+    }
+    .aside-card li::before { content: '✓'; color: var(--green); font-size: .75rem; font-weight: 700; flex-shrink: 0; margin-top: .1em; }
+
+    .gh-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      background: var(--raised);
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      color: var(--ink-2);
+      font-family: var(--f-mono);
+      font-size: .8125rem;
+      text-decoration: none;
+      padding: .75rem 1rem;
+      transition: color .15s, border-color .15s, background .15s;
+    }
+    .gh-btn:hover { color: var(--ink); border-color: var(--ink-3); background: var(--raised); }
+    .gh-btn svg { fill: currentColor; }
+
+    /* ── PLATFORMS ──────────────────────────────────────────────── */
+    #platforms { padding: 5rem 0; border-bottom: 1px solid var(--line); }
+    .plat-head { margin-bottom: 3rem; }
+    .plat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .plat {
+      background: var(--surface);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: .375rem;
+      transition: background .2s;
+    }
+    .plat:hover { background: var(--raised); }
+    .plat-status {
+      font-family: var(--f-mono);
+      font-size: .625rem;
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      gap: .375rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .plat-status::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--green); box-shadow: 0 0 5px var(--green); display: inline-block; }
+    .plat-status.via { color: var(--blue); }
+    .plat-status.via::before { background: var(--blue); box-shadow: 0 0 5px var(--blue); }
+    .plat-name { font-family: var(--f-head); font-size: .9375rem; font-weight: 700; letter-spacing: -.01em; }
+    .plat-cmd {
+      font-family: var(--f-mono);
+      font-size: .6875rem;
+      color: var(--ink-3);
+      background: var(--raised);
+      border: 1px solid var(--line);
+      border-radius: var(--r-sm);
+      padding: .4rem .625rem;
+      margin-top: .25rem;
+    }
+
+    /* ── DISCLAIMER ─────────────────────────────────────────────── */
+    #disclaimer { padding: 2rem 0; border-bottom: 1px solid var(--line); }
+    .dis-box {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      padding: 1rem 1.375rem;
+      display: flex;
+      gap: .875rem;
+      align-items: flex-start;
+    }
+    .dis-icon { font-size: .875rem; flex-shrink: 0; margin-top: .125em; }
+    .dis-text { font-size: .8125rem; color: var(--ink-3); line-height: 1.65; }
+    .dis-text strong { color: var(--ink-2); }
+
+    /* ── FOOTER ─────────────────────────────────────────────────── */
+    footer { padding: 2rem 0; }
+    .foot { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .foot-l { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+    .foot-logo { font-family: var(--f-mono); font-size: .8125rem; font-weight: 600; color: var(--ink-3); }
+    .foot-links { display: flex; gap: 1.25rem; list-style: none; }
+    .foot-links a { font-family: var(--f-mono); font-size: .6875rem; color: var(--ink-3); transition: color .15s; text-decoration: none; }
+    .foot-links a:hover { color: var(--ink-2); }
+    .foot-r { font-family: var(--f-mono); font-size: .6875rem; color: var(--ink-4); }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────────── */
+    @media (max-width: 960px) {
+      .hero-body { grid-template-columns: 1fr; }
+      .hero-r { display: none; }
+      #hero { height: auto; min-height: auto; padding-top: 4.5rem; padding-bottom: 4rem; }
+      .problem-layout { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .tiers-grid { grid-template-columns: repeat(2, 1fr); }
+      .feat-grid { grid-template-columns: repeat(2, 1fr); }
+      .install-layout { grid-template-columns: 1fr; }
+      .plat-grid { grid-template-columns: repeat(2, 1fr); }
+      .enforce-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 2.25rem; }
+      .tiers-grid { grid-template-columns: 1fr; }
+      .feat-grid { grid-template-columns: 1fr; }
+      .plat-grid { grid-template-columns: 1fr; }
+      .enforce-grid { grid-template-columns: 1fr; }
+      .foot { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip">Skip to content</a>
+
+<!-- ── NAV ─────────────────────────────────────────────────────── -->
+<nav id="nav" role="navigation" aria-label="Main navigation">
+  <div class="wrap">
+    <div class="nav-inner">
+      <a href="/" class="logo" aria-label="Regula home">
+        <span class="logo-pip" aria-hidden="true"></span>
+        regula
+      </a>
+      <div class="nav-r">
+        <a href="#how" class="nav-link">How it works</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#install" class="nav-link">Install</a>
+        <a href="https://github.com/kuzivaai/getregula" target="_blank" rel="noopener" class="nav-link" aria-label="GitHub (opens in new tab)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="vertical-align:middle;margin-right:.25rem"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          GitHub
+        </a>
+        <a href="#install" class="nav-cta">Install free →</a>
+        <button class="nav-ham" id="nav-ham" aria-expanded="false" aria-controls="nav-mobile" aria-label="Open navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+<nav id="nav-mobile" class="nav-mobile" role="navigation" aria-label="Mobile navigation" hidden>
+  <a href="#how" onclick="closeNav()">How it works</a>
+  <a href="#features" onclick="closeNav()">Features</a>
+  <a href="#install" onclick="closeNav()">Install</a>
+  <a href="https://github.com/kuzivaai/getregula" target="_blank" rel="noopener" onclick="closeNav()">GitHub ↗</a>
+  <a href="#install" onclick="closeNav()" style="color:var(--gold);font-weight:600">Install free →</a>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────────────── -->
+<section id="hero" aria-labelledby="h1">
+  <div class="wrap">
+    <div class="hero-body">
+
+      <!-- LEFT -->
+      <div class="hero-l">
+        <div class="hero-alert" role="status" aria-live="polite">
+          <span class="hero-alert-dot" aria-hidden="true"></span>
+          High-risk AI deadline: 2 Aug 2026 · up to €35M penalty
+        </div>
+
+        <h1 id="h1">
+          Ship AI code that<br>
+          won't trigger the<br>
+          <span class="hl">EU AI Act.</span>
+        </h1>
+
+        <p class="hero-sub">
+          Regula scans your code for prohibited practices, high-risk patterns, and missing compliance infrastructure — as you write, not after you ship. For engineering teams building AI systems subject to EU regulation.
+        </p>
+
+        <div class="hero-ctas">
+          <a href="#install" class="btn-p" aria-label="Jump to install instructions">
+            Run your first scan →
+          </a>
+          <a href="https://github.com/kuzivaai/getregula" target="_blank" rel="noopener" class="btn-g" aria-label="View on GitHub (opens in new tab)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            View on GitHub
+          </a>
+        </div>
+
+        <div class="hero-meta" role="list" aria-label="Key facts">
+          <span class="hero-meta-item" role="listitem">v1.2.0</span>
+          <span class="hero-meta-item" role="listitem">MIT License</span>
+          <span class="hero-meta-item" role="listitem">Zero required dependencies</span>
+          <span class="hero-meta-item" role="listitem">362 tests</span>
+          <span class="hero-meta-item" role="listitem">Works offline</span>
+          <span class="hero-meta-item" role="listitem"><a href="https://github.com/kuzivaai/getregula" target="_blank" rel="noopener" aria-label="Star on GitHub" style="display:inline-flex;align-items:center;gap:4px;color:inherit;text-decoration:none"><img src="https://img.shields.io/github/stars/kuzivaai/getregula?style=flat&label=Stars&color=C89B2A&labelColor=12151E&logo=github&logoColor=C89B2A" alt="" aria-hidden="true" style="height:17px;vertical-align:middle"></a></span>
+        </div>
+      </div>
+
+      <!-- RIGHT: TERMINAL -->
+      <div class="hero-r" role="region" aria-label="Live demo terminal">
+        <div class="term">
+          <div class="term-bar" aria-hidden="true">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <span class="term-title">regula — risk indication demo</span>
+            <div style="width:52px"></div>
+          </div>
+          <div class="term-tabs" role="tablist" aria-label="Risk scenario examples">
+            <button class="ttab active" data-r="p" data-panel="pp" role="tab" aria-selected="true" aria-controls="pp" id="tab-p">🔴 Prohibited</button>
+            <button class="ttab" data-r="h" data-panel="ph" role="tab" aria-selected="false" aria-controls="ph" id="tab-h">🟡 High-Risk</button>
+            <button class="ttab" data-r="c" data-panel="pc" role="tab" aria-selected="false" aria-controls="pc" id="tab-c">✅ Clear</button>
+          </div>
+          <div class="term-body">
+
+            <div class="tp on" id="pp" role="tabpanel" aria-labelledby="tab-p">
+              <div class="tline"><span class="tps" aria-hidden="true">$</span><span>regula check ./src/hiring_engine.py</span></div>
+              <div class="tgap"></div>
+              <div class="tres p" role="alert">
+                <div class="tbadge p">🔴 BLOCKED — Prohibited Practice</div>
+                <div class="tinfo">
+                  <span class="key">Prohibition: </span><strong>Article 5(1)(f)</strong><br>
+                  <span class="key">Pattern:     </span><strong>workplace_emotion_inference</strong><br>
+                  <span class="key">File:        </span><strong>hiring_engine.py:47</strong><br>
+                  <span class="key">Category:    </span><strong>Workplace Surveillance</strong>
+                </div>
+                <div class="tgap"></div>
+                <div class="tinfo" style="color:var(--ink-3)">Inferring employee emotions in workplace context<br>without medical or safety justification.</div>
+              </div>
+              <div class="tgap"></div>
+              <div class="tline"><span class="tout">→ Logged to audit trail. Consult your DPO.</span></div>
+            </div>
+
+            <div class="tp" id="ph" role="tabpanel" aria-labelledby="tab-h" hidden>
+              <div class="tline"><span class="tps" aria-hidden="true">$</span><span>regula check ./src/credit_model.py</span></div>
+              <div class="tgap"></div>
+              <div class="tres h">
+                <div class="tbadge h">🟡 WARNING — High-Risk Indicators</div>
+                <div class="tinfo">
+                  <span class="key">Category:   </span><strong>Annex III §5 — Financial Services</strong><br>
+                  <span class="key">Patterns:   </span><strong>credit_scoring, loan_decision</strong><br>
+                  <span class="key">Confidence: </span><strong>91 / 100</strong>
+                </div>
+                <div class="tgap"></div>
+                <div class="tinfo" style="color:var(--ink-3)">
+                  Art 9  Risk management system    <span style="color:var(--red)">[ MISSING ]</span><br>
+                  Art 10 Data governance docs      <span style="color:var(--red)">[ MISSING ]</span><br>
+                  Art 14 Human oversight mechanism <span style="color:var(--amber)">[ PARTIAL ]</span>
+                </div>
+              </div>
+              <div class="tgap"></div>
+              <div class="tline"><span class="tout">→ Run: regula gap --project . for full assessment</span></div>
+            </div>
+
+            <div class="tp" id="pc" role="tabpanel" aria-labelledby="tab-c" hidden>
+              <div class="tline"><span class="tps" aria-hidden="true">$</span><span>regula check ./src/recommender.py</span></div>
+              <div class="tgap"></div>
+              <div class="tres c">
+                <div class="tbadge c">✅ PASS — Minimal Risk</div>
+                <div class="tinfo">
+                  <span class="key">Category:   </span><strong>Minimal Risk — Recommendation</strong><br>
+                  <span class="key">Confidence: </span><strong>94 / 100</strong><br>
+                  <span class="key">Findings:   </span><strong>0 prohibited · 0 high-risk</strong>
+                </div>
+                <div class="tgap"></div>
+                <div class="tinfo" style="color:var(--ink-3)">No prohibited patterns detected.<br>Logged to audit trail. ✓</div>
+              </div>
+              <div class="tgap"></div>
+              <div class="tline"><span class="tout">→ <span class="tcursor" aria-hidden="true"></span></span></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <span>scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<main id="main">
+
+  <!-- ── ENFORCEMENT ──────────────────────────────────────────────── -->
+  <section id="enforce" aria-label="EU AI Act enforcement timeline">
+    <div class="wrap">
+      <p class="s-eyebrow reveal" style="margin-bottom:1.25rem">The enforcement clock is running</p>
+      <div class="enforce-grid reveal" role="list">
+        <div class="enforce-item" role="listitem">
+          <div class="enforce-status"><span class="enforce-dot red" aria-hidden="true"></span><span style="color:var(--red)">In Force</span></div>
+          <div class="enforce-label">Article 5 Prohibited Practices</div>
+          <div class="enforce-date">Since 2 February 2025</div>
+        </div>
+        <div class="enforce-item" role="listitem">
+          <div class="enforce-status"><span class="enforce-dot amber" aria-hidden="true"></span><span style="color:var(--amber)">In Force</span></div>
+          <div class="enforce-label">GPAI Model Obligations</div>
+          <div class="enforce-date">Since 2 August 2025</div>
+        </div>
+        <div class="enforce-item" role="listitem">
+          <div class="enforce-status"><span class="enforce-dot green" aria-hidden="true"></span><span style="color:var(--ink-2)">Upcoming</span></div>
+          <div class="enforce-label">High-Risk Requirements (Arts 9–15)</div>
+          <div class="enforce-date">2 August 2026</div>
+        </div>
+        <div class="enforce-penalty" role="listitem" aria-label="Maximum penalty">
+          <div class="penalty-num" aria-label="35 million euros">€35M</div>
+          <div class="penalty-or">or</div>
+          <div class="penalty-pct">7% global turnover</div>
+          <div class="penalty-caption">maximum penalty</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROBLEM ──────────────────────────────────────────────────── -->
+  <section id="problem" aria-labelledby="h-problem">
+    <div class="wrap">
+      <div class="reveal">
+        <div class="s-eyebrow">The gap</div>
+        <h2 id="h-problem">Governance tooling<br>stops at the policy layer.</h2>
+      </div>
+      <div class="problem-layout">
+        <div class="problem-text reveal d1">
+          <p>Every major AI compliance platform — Credo AI, IBM OpenScale, Holistic AI — operates at the <strong>metadata and workflow level</strong>. They manage assessments, track documentation, and run audits. None of them read your code.</p>
+          <p>By the time your AI system reaches a compliance review, <strong>prohibited patterns may already be baked into production</strong>. Regula moves the check to the only place it can reliably prevent problems: the moment the code is written.</p>
+          <p>It runs as a real-time hook inside your coding assistant. It scans entire codebases from the CLI. It logs everything to a hash-chained audit trail and generates the Annex IV documentation your DPO needs.</p>
+          <div style="margin-top:1.5rem">
+            <a href="#how" class="btn-g" style="display:inline-flex">
+              See how it works
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="reveal d2" role="list" aria-label="Governance stack — where Regula operates">
+          <div class="stack">
+            <div class="srow dim" role="listitem"><span class="srow-icon" aria-hidden="true">📊</span><span class="srow-name">Risk assessments &amp; dashboards</span><span class="srow-tag">Other tools</span></div>
+            <div class="srow dim" role="listitem"><span class="srow-icon" aria-hidden="true">📋</span><span class="srow-name">Policy &amp; compliance workflows</span><span class="srow-tag">Other tools</span></div>
+            <div class="srow dim" role="listitem"><span class="srow-icon" aria-hidden="true">🧪</span><span class="srow-name">Model testing &amp; evaluation</span><span class="srow-tag">Other tools</span></div>
+            <div class="srow lit" role="listitem" aria-label="Code layer — Regula operates here"><span class="srow-icon" aria-hidden="true">⚡</span><span class="srow-name">Code — where AI systems are built</span><span class="srow-tag">Regula</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ─────────────────────────────────────────────── -->
+  <section id="how" aria-labelledby="h-how">
+    <div class="wrap">
+      <div class="how-head reveal">
+        <div class="s-eyebrow">How it works</div>
+        <h2 id="h-how">Install once. Runs everywhere.</h2>
+        <p class="s-sub">One guided wizard handles platform detection, hook registration, and your first scan. No configuration required.</p>
+      </div>
+      <div class="steps reveal d1">
+        <div class="step">
+          <div class="step-n">01 / Install</div>
+          <div class="step-icon" aria-hidden="true">⚙️</div>
+          <h3>One command setup</h3>
+          <p>Guided wizard detects your platform, installs hooks, and runs your first scan. Works offline. Zero required dependencies.</p>
+          <div class="step-code" aria-label="Install commands">
+            <span class="cmd">pip install</span> <span class="arg">-e .</span><br>
+            <span class="cmd">regula init</span><br>
+            <span class="cmt"># detects platform, installs hooks</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">02 / Scan</div>
+          <div class="step-icon" aria-hidden="true">🔍</div>
+          <h3>Hooks fire on every write</h3>
+          <p>Pre-write hooks intercept code before it's saved. Or scan an entire project on demand. SARIF output for CI/CD pipelines.</p>
+          <div class="step-code" aria-label="Scan commands">
+            <span class="cmd">regula check</span> <span class="arg">.</span><br>
+            <span class="cmd">regula check</span> <span class="arg">. --ci</span><br>
+            <span class="cmt"># exits 1 on any finding</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">03 / Evidence</div>
+          <div class="step-icon" aria-hidden="true">📄</div>
+          <h3>Audit trail &amp; docs</h3>
+          <p>Every finding logs to a hash-chained, tamper-evident audit trail. Generate Annex IV documentation and Articles 9–15 gap reports.</p>
+          <div class="step-code" aria-label="Evidence commands">
+            <span class="cmd">regula gap</span> <span class="arg">--project .</span><br>
+            <span class="cmd">regula docs</span> <span class="arg">--all</span><br>
+            <span class="cmt"># Annex IV + QMS scaffolds</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TIERS ─────────────────────────────────────────────────────── -->
+  <section id="tiers" aria-labelledby="h-tiers">
+    <div class="wrap">
+      <div class="tier-head reveal">
+        <div class="s-eyebrow">Risk tiers</div>
+        <h2 id="h-tiers">Four tiers. One engine.</h2>
+        <p class="s-sub">Every scan produces a confidence score (0–100) and assigns a risk tier with the specific EU AI Act context for each finding.</p>
+      </div>
+      <div class="tiers-grid reveal d1" role="list">
+        <div class="tier-card" role="listitem">
+          <div class="tier-pip p" aria-hidden="true"></div>
+          <h3>Prohibited</h3>
+          <div class="tier-action p">Block</div>
+          <p>All 8 Article 5 categories detected with conditions and exceptions.</p>
+          <div class="tier-egs" aria-label="Prohibited examples">
+            <span class="tier-eg">Social scoring</span>
+            <span class="tier-eg">Real-time biometric ID</span>
+            <span class="tier-eg">Emotion in workplace</span>
+          </div>
+        </div>
+        <div class="tier-card" role="listitem">
+          <div class="tier-pip h" aria-hidden="true"></div>
+          <h3>High-Risk</h3>
+          <div class="tier-action h">Warn + Requirements</div>
+          <p>All 10 Annex III categories with Article 6 context and Articles 9–15 assessment.</p>
+          <div class="tier-egs" aria-label="High-risk examples">
+            <span class="tier-eg">CV screening</span>
+            <span class="tier-eg">Credit scoring</span>
+            <span class="tier-eg">Medical diagnosis</span>
+          </div>
+        </div>
+        <div class="tier-card" role="listitem">
+          <div class="tier-pip l" aria-hidden="true"></div>
+          <h3>Limited Risk</h3>
+          <div class="tier-action l">Transparency Note</div>
+          <p>Systems with transparency obligations. User notification and disclosure requirements.</p>
+          <div class="tier-egs" aria-label="Limited risk examples">
+            <span class="tier-eg">Chatbots</span>
+            <span class="tier-eg">Deepfake generation</span>
+            <span class="tier-eg">Emotion recognition</span>
+          </div>
+        </div>
+        <div class="tier-card" role="listitem">
+          <div class="tier-pip m" aria-hidden="true"></div>
+          <h3>Minimal Risk</h3>
+          <div class="tier-action m">Log only</div>
+          <p>No obligations beyond good practice. Logged for audit completeness.</p>
+          <div class="tier-egs" aria-label="Minimal risk examples">
+            <span class="tier-eg">Spam filters</span>
+            <span class="tier-eg">Recommendation engines</span>
+            <span class="tier-eg">Code completion</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FEATURES ──────────────────────────────────────────────────── -->
+  <section id="features" aria-labelledby="h-features">
+    <div class="wrap">
+      <div class="feat-head reveal">
+        <div class="s-eyebrow">Capabilities</div>
+        <h2 id="h-features">Everything a dev team needs<br>to stay ahead of the Act.</h2>
+      </div>
+      <div class="feat-grid reveal d1" role="list">
+        <div class="feat feat-accent" role="listitem"><span class="feat-icon" aria-hidden="true">🪝</span><span class="feat-tag">Real-time</span><h3>Live coding hooks</h3><p>Pre-write hooks for Claude Code, GitHub Copilot CLI, and Windsurf Cascade. Same protocol across all three platforms.</p></div>
+        <div class="feat feat-accent" role="listitem"><span class="feat-icon" aria-hidden="true">🔗</span><span class="feat-tag">Audit</span><h3>Hash-chained audit trail</h3><p>SHA-256 hash-chained, file-locked, tamper-evident logging. Append-only. Exportable to CSV or JSON.</p></div>
+        <div class="feat feat-accent" role="listitem"><span class="feat-icon" aria-hidden="true">📊</span><span class="feat-tag">Gap analysis</span><h3>Compliance gap assessment</h3><p>Checks whether your codebase has the risk management, logging, and human oversight code that Articles 9–15 require — not just the documentation.</p></div>
+        <div class="feat" role="listitem"><span class="feat-icon" aria-hidden="true">📦</span><span class="feat-tag">Supply chain</span><h3>Dependency pinning analysis</h3><p>Checks AI dependency pinning across 7 manifest formats. AI dependencies weighted 3× in scoring.</p></div>
+        <div class="feat" role="listitem"><span class="feat-icon" aria-hidden="true">📄</span><span class="feat-tag">Docs</span><h3>Annex IV documentation</h3><p>Generate Article 11 technical documentation scaffolds and Article 17 QMS templates for high-risk systems.</p></div>
+        <div class="feat" role="listitem"><span class="feat-icon" aria-hidden="true">🔄</span><span class="feat-tag">CI/CD</span><h3>SARIF output &amp; GitHub Action</h3><p>Findings appear in the GitHub Security tab alongside CodeQL. Baseline comparison prevents alert fatigue.</p></div>
+        <div class="feat" role="listitem"><span class="feat-icon" aria-hidden="true">🌐</span><span class="feat-tag">Offline</span><h3>Zero required dependencies</h3><p>Standard library only. Works completely offline. Optional: pyyaml, tree-sitter for JS/TS depth.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── INSTALL ────────────────────────────────────────────────────── -->
+  <section id="install" aria-labelledby="h-install">
+    <div class="wrap">
+      <div class="reveal">
+        <div class="s-eyebrow">Get started</div>
+        <h2 id="h-install">Install in under two minutes.</h2>
+        <p class="s-sub">Three ways to install. The guided wizard handles the rest — platform detection, hook registration, first scan.</p>
+      </div>
+      <div class="install-layout">
+        <div class="install-blocks reveal d1">
+          <div>
+            <div class="method-lbl">Recommended — pip</div>
+            <div class="cblock">
+              <div class="cblock-top"><span class="cblock-name">bash</span><button class="copy-btn" onclick="cp(this,'pip install -e .\nregula init')" aria-label="Copy pip install command">copy</button></div>
+              <pre aria-label="pip installation"><code><span class="kw">pip install</span> -e .
+<span class="kw">regula init</span>   <span class="cm"># guided setup</span></code></pre>
+            </div>
+          </div>
+          <div>
+            <div class="method-lbl">From source</div>
+            <div class="cblock">
+              <div class="cblock-top"><span class="cblock-name">bash</span><button class="copy-btn" onclick="cp(this,'git clone https://github.com/kuzivaai/getregula.git\ncd getregula\npython3 scripts/cli.py init')" aria-label="Copy git clone command">copy</button></div>
+              <pre aria-label="git clone installation"><code><span class="kw">git clone</span> https://github.com/kuzivaai/getregula.git
+<span class="kw">cd</span> getregula
+<span class="kw">python3</span> scripts/cli.py init</code></pre>
+            </div>
+          </div>
+          <div>
+            <div class="method-lbl">Manual hook install</div>
+            <div class="cblock">
+              <div class="cblock-top"><span class="cblock-name">bash</span><button class="copy-btn" onclick="cp(this,'regula install claude-code\nregula install copilot-cli\nregula install windsurf')" aria-label="Copy hook install commands">copy</button></div>
+              <pre aria-label="hook installation"><code><span class="kw">regula install</span> claude-code   <span class="cm"># Claude Code</span>
+<span class="kw">regula install</span> copilot-cli   <span class="cm"># GitHub Copilot CLI</span>
+<span class="kw">regula install</span> windsurf      <span class="cm"># Windsurf Cascade</span></code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="install-aside reveal d2">
+          <div class="aside-card">
+            <h4>Requirements</h4>
+            <ul>
+              <li>Python 3.10 or later</li>
+              <li>No external dependencies required</li>
+              <li>Linux, macOS, and Windows</li>
+              <li>Works completely offline</li>
+            </ul>
+          </div>
+          <div class="aside-card">
+            <h4>Optional enhancements</h4>
+            <ul>
+              <li>pyyaml — full YAML policy config</li>
+              <li>tree-sitter — deep JS/TS AST analysis</li>
+              <li>pytest — run the test suite (362 tests)</li>
+            </ul>
+          </div>
+          <a href="https://github.com/kuzivaai/getregula" target="_blank" rel="noopener" class="gh-btn" aria-label="Full documentation on GitHub (opens in new tab)">
+            <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            Full docs on GitHub →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PLATFORMS ─────────────────────────────────────────────────── -->
+  <section id="platforms" aria-labelledby="h-plat">
+    <div class="wrap">
+      <div class="plat-head reveal">
+        <div class="s-eyebrow">Supported platforms</div>
+        <h2 id="h-plat">Runs where you code.</h2>
+        <p class="s-sub">One installation supports all major AI coding assistants and CI/CD pipelines.</p>
+      </div>
+      <div class="plat-grid reveal d1" role="list">
+        <div class="plat" role="listitem"><div class="plat-status">Supported</div><div class="plat-name">Claude Code</div><div class="plat-cmd">regula install claude-code</div></div>
+        <div class="plat" role="listitem"><div class="plat-status">Supported</div><div class="plat-name">GitHub Copilot CLI</div><div class="plat-cmd">regula install copilot-cli</div></div>
+        <div class="plat" role="listitem"><div class="plat-status">Supported</div><div class="plat-name">Windsurf Cascade</div><div class="plat-cmd">regula install windsurf</div></div>
+        <div class="plat" role="listitem"><div class="plat-status">Supported</div><div class="plat-name">pre-commit</div><div class="plat-cmd">regula install pre-commit</div></div>
+        <div class="plat" role="listitem"><div class="plat-status">Supported</div><div class="plat-name">Git Hooks</div><div class="plat-cmd">regula install git-hooks</div></div>
+        <div class="plat" role="listitem"><div class="plat-status via">Via SARIF</div><div class="plat-name">GitHub Actions &amp; GitLab CI</div><div class="plat-cmd">regula check --format sarif</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DISCLAIMER ────────────────────────────────────────────────── -->
+  <section id="disclaimer" aria-label="Important limitations">
+    <div class="wrap">
+      <div class="dis-box" role="note">
+        <span class="dis-icon" aria-hidden="true">ℹ️</span>
+        <div class="dis-text">
+          <p><strong>What Regula is:</strong> A pattern-based risk indicator. It scans for code patterns associated with prohibited and high-risk AI practices under <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689" target="_blank" rel="noopener" style="color:var(--ink-3)">Regulation (EU) 2024/1689</a>.</p>
+          <p style="margin-top:.5rem"><strong>What it is not:</strong> A legal determination of risk classification. Article 6 classification requires human judgment about intended use and deployment context. False positives and negatives are inherent to pattern matching.</p>
+          <p style="margin-top:.5rem"><strong>What to do next:</strong> Share findings with your DPO or legal counsel. The audit trail is designed to support that conversation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── FINAL CTA ──────────────────────────────────────────────── -->
+<section id="cta-final" style="padding:4rem 0;border-top:1px solid var(--line);text-align:center">
+  <div class="wrap">
+    <p class="s-eyebrow" style="justify-content:center;margin-bottom:.75rem">Get started</p>
+    <h2 style="margin-bottom:.75rem;font-size:clamp(1.5rem,2.5vw,2.25rem)">Ready to scan your first project?</h2>
+    <p style="color:var(--ink-2);font-size:.9375rem;margin-bottom:1.5rem;max-width:44ch;margin-left:auto;margin-right:auto">Install takes under two minutes. The first scan runs immediately.</p>
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:.875rem 1.25rem;font-family:var(--f-mono);font-size:.8125rem;color:var(--ink-2);display:inline-block;margin-bottom:1.75rem;text-align:left">
+      <span style="color:var(--green)">pip install</span> -e . &amp;&amp; <span style="color:var(--green)">regula init</span>
+    </div>
+    <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+      <a href="#install" class="btn-p">Run your first scan →</a>
+      <a href="https://github.com/kuzivaai/getregula" target="_blank" rel="noopener" class="btn-g">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        View on GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ───────────────────────────────────────────────────── -->
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div class="foot-l">
+        <span class="foot-logo">regula</span>
+        <ul class="foot-links" role="list">
+          <li><a href="https://github.com/kuzivaai/getregula" target="_blank" rel="noopener" aria-label="GitHub (opens in new tab)">GitHub</a></li>
+          <li><a href="https://github.com/kuzivaai/getregula/blob/main/LICENSE.txt" target="_blank" rel="noopener" aria-label="MIT License (opens in new tab)">MIT License</a></li>
+          <li><a href="https://github.com/kuzivaai/getregula/blob/main/README.md" target="_blank" rel="noopener" aria-label="Docs (opens in new tab)">Docs</a></li>
+          <li><a href="https://theimplementationlayer.substack.com" target="_blank" rel="noopener" aria-label="The Implementation Layer (opens in new tab)">The Implementation Layer</a></li>
+        </ul>
+      </div>
+      <div class="foot-r">MIT · EU AI Act (Regulation 2024/1689) · Python 3.10+</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll state + scroll-hint dismiss
+  const nav = document.getElementById('nav');
+  const scrollHint = document.querySelector('.scroll-hint');
+  let t = false;
+  window.addEventListener('scroll', () => {
+    if (!t) {
+      requestAnimationFrame(() => {
+        nav.classList.toggle('scrolled', scrollY > 10);
+        if (scrollHint && scrollY > 80) scrollHint.style.opacity = '0';
+        t = false;
+      });
+      t = true;
+    }
+  }, { passive: true });
+
+  // Mobile nav (hamburger)
+  const ham = document.getElementById('nav-ham');
+  const mobileNav = document.getElementById('nav-mobile');
+  function closeNav() {
+    ham.setAttribute('aria-expanded', 'false');
+    mobileNav.classList.remove('open');
+    mobileNav.hidden = true;
+    document.body.style.overflow = '';
+  }
+  ham.addEventListener('click', () => {
+    const open = ham.getAttribute('aria-expanded') === 'true';
+    if (open) {
+      closeNav();
+    } else {
+      ham.setAttribute('aria-expanded', 'true');
+      mobileNav.classList.add('open');
+      mobileNav.hidden = false;
+      document.body.style.overflow = 'hidden';
+    }
+  });
+  // Close mobile nav on Escape
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeNav(); });
+
+  // Terminal tabs
+  document.querySelectorAll('.ttab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.ttab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+      document.querySelectorAll('.tp').forEach(p => { p.classList.remove('on'); p.hidden = true; });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected','true');
+      const p = document.getElementById(tab.dataset.panel);
+      p.classList.add('on');
+      p.hidden = false;
+    });
+    tab.addEventListener('keydown', e => {
+      const all = [...document.querySelectorAll('.ttab')];
+      const i = all.indexOf(tab);
+      if (e.key === 'ArrowRight') { e.preventDefault(); const n = all[(i+1)%all.length]; n.focus(); n.click(); }
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); const n = all[(i-1+all.length)%all.length]; n.focus(); n.click(); }
+    });
+  });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Copy to clipboard
+  function cp(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied!'; btn.classList.add('ok');
+      setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('ok'); }, 1800);
+    }).catch(() => {
+      const ta = Object.assign(document.createElement('textarea'), { value: text, style: 'position:fixed;opacity:0' });
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+      btn.textContent = 'copied!'; setTimeout(() => { btn.textContent = 'copy'; }, 1800);
+    });
+  }
+
+  // Reduced motion
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('vis'));
+</script>
+</body>
+</html>
