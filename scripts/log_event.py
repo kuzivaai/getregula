@@ -23,6 +23,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 
+# Optional RFC 3161 timestamping — imported lazily so log_event works without timestamp.py
+try:
+    sys.path.insert(0, str(Path(__file__).parent))
+    from timestamp import request_timestamp  # noqa: F401
+except ImportError:
+    request_timestamp = None  # type: ignore
+
 # Cross-platform file locking
 if sys.platform == "win32":
     import msvcrt
@@ -117,6 +124,7 @@ def log_event(
     data: Dict[str, Any],
     session_id: Optional[str] = None,
     project: Optional[str] = None,
+    external_timestamp: bool = False,
 ) -> AuditEvent:
     """Append an event to the audit trail with file locking.
 
@@ -138,10 +146,22 @@ def log_event(
                 event_type=event_type,
                 session_id=session_id or os.environ.get("CLAUDE_SESSION_ID"),
                 project=project or os.environ.get("REGULA_PROJECT"),
-                data=data,
+                data=dict(data),  # copy to allow mutation
                 previous_hash=previous_hash,
             )
             event.current_hash = compute_hash(event.to_dict(), previous_hash)
+
+            # Optional RFC 3161 external timestamp (best-effort, never blocks)
+            if external_timestamp:
+                try:
+                    tst = request_timestamp(event.current_hash)
+                    event.data["tst_hex"] = tst["tst_hex"]
+                    event.data["tsa_url"] = tst["tsa_url"]
+                    # Recompute hash with TST included in data
+                    event.current_hash = compute_hash(event.to_dict(), previous_hash)
+                except Exception:
+                    pass  # Timestamping is best-effort
+
             f.write(event.to_json() + "\n")
             f.flush()
         finally:

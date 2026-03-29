@@ -315,7 +315,8 @@ def cmd_audit(args):
 
     if subcommand == "log":
         data = json.loads(args.data) if getattr(args, "data", None) else {}
-        event = _log(args.event_type, data)
+        ext_ts = getattr(args, "external_timestamp", False)
+        event = _log(args.event_type, data, external_timestamp=ext_ts)
         print(json.dumps({"status": "logged", "event_id": event.event_id}))
     elif subcommand == "query":
         events = query_events(
@@ -943,6 +944,10 @@ Examples:
     p_audit.add_argument("--output", "-o")
     p_audit.add_argument("--event-type", "-t")
     p_audit.add_argument("--limit", type=int)
+    p_audit.add_argument(
+        "--external-timestamp", action="store_true",
+        help="Attach RFC 3161 timestamp from FreeTSA to new audit events (requires network)"
+    )
     p_audit.set_defaults(func=cmd_audit)
 
     # --- discover ---
