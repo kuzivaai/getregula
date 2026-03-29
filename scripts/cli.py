@@ -634,7 +634,27 @@ def cmd_docs(args):
 
     fmt = getattr(args, "format", "markdown")
 
-    if fmt == "model-card":
+    if fmt == "pdf":
+        from pdf_export import generate_annex_iv_html, render_to_pdf
+        html = generate_annex_iv_html(project_path, system_name=project_name)
+        pdf_bytes = render_to_pdf(html, fallback_to_html=True)
+        out_path = Path(args.output) if getattr(args, "output", None) and args.output != "docs" else Path(project_path) / "annex_iv.pdf"
+        if pdf_bytes[:4] == b'%PDF':
+            out_path.write_bytes(pdf_bytes)
+            print(f"PDF written to: {out_path}")
+        else:
+            html_path = out_path.with_suffix(".html")
+            html_path.write_text(html, encoding="utf-8")
+            print(f"weasyprint not installed. HTML written to: {html_path}")
+            print("Open in browser \u2192 File \u2192 Print \u2192 Save as PDF")
+    elif fmt == "conformity-declaration":
+        from generate_documentation import generate_conformity_declaration
+        doc = generate_conformity_declaration(project_path, system_name=project_name)
+        out_path = Path(project_path) / "declaration_of_conformity.md"
+        out_path.write_text(doc, encoding="utf-8")
+        print(f"Declaration of Conformity scaffold written to: {out_path}")
+        print("IMPORTANT: This document requires legal review and authorised signature before use.")
+    elif fmt == "model-card":
         card = generate_model_card(findings, project_name, project_path)
         card_file = output_dir / f"{project_name}_model_card.md"
         card_file.write_text(card, encoding="utf-8")
@@ -1020,7 +1040,7 @@ Examples:
     p_docs.add_argument("--project", "-p", default=".")
     p_docs.add_argument("--output", "-o", default="docs", help="Output directory")
     p_docs.add_argument("--name", "-n", help="Project name")
-    p_docs.add_argument("--format", "-f", choices=["markdown", "model-card"], default="markdown")
+    p_docs.add_argument("--format", "-f", choices=["markdown", "model-card", "pdf", "conformity-declaration"], default="markdown")
     p_docs.add_argument("--qms", action="store_true", help="Also generate QMS scaffold (Article 17)")
     p_docs.add_argument("--all", action="store_true", help="Generate all documentation types")
     p_docs.set_defaults(func=cmd_docs)
