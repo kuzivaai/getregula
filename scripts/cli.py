@@ -358,6 +358,30 @@ def cmd_mcp_server(args):
     run_server()
 
 
+def cmd_bias(args):
+    """Evaluate model stereotype bias using CrowS-Pairs dataset."""
+    from bias_eval import load_crowspairs_sample, evaluate_with_ollama
+    pairs = load_crowspairs_sample(csv_path=getattr(args, "csv", None), max_pairs=args.sample)
+    print(f"Loaded {len(pairs)} CrowS-Pairs pairs. Evaluating with {args.model}...")
+    result = evaluate_with_ollama(pairs, model=args.model, endpoint=args.endpoint)
+    fmt = getattr(args, "format", "text")
+    if fmt == "json":
+        json_output("bias", result)
+    else:
+        if result["status"] == "error":
+            print(f"Error: {result['message']}", file=sys.stderr)
+            sys.exit(1)
+        print(f"\nBias Evaluation Results ({result['pairs_evaluated']} pairs)\n")
+        print(f"{'Category':<25} {'Score':>6}  {'Interpretation'}")
+        print("-" * 60)
+        for cat, score in sorted(result["scores"].items()):
+            interp = "neutral" if 45 <= score <= 55 else ("stereotyped" if score > 55 else "anti-stereotype")
+            print(f"{cat:<25} {score:>5}%  {interp}")
+        print("-" * 60)
+        print(f"{'Overall':<25} {result['overall_score']:>5}%")
+        print(f"\n{result['interpretation']}")
+
+
 def cmd_discover(args):
     """Discover AI systems."""
     if args.project != ".":
@@ -979,6 +1003,15 @@ Examples:
     # --- mcp-server ---
     p_mcp = subparsers.add_parser("mcp-server", help="Start the Regula MCP server (stdio transport)")
     p_mcp.set_defaults(func=cmd_mcp_server)
+
+    # --- bias ---
+    p_bias = subparsers.add_parser("bias", help="Evaluate model bias using CrowS-Pairs dataset")
+    p_bias.add_argument("--model", default="llama3", help="Ollama model name (default: llama3)")
+    p_bias.add_argument("--endpoint", default="http://localhost:11434", help="Ollama API endpoint")
+    p_bias.add_argument("--sample", type=int, default=100, help="Number of pairs to evaluate (default: 100)")
+    p_bias.add_argument("--csv", help="Path to local CrowS-Pairs CSV file")
+    p_bias.add_argument("--format", choices=["text", "json"], default="text")
+    p_bias.set_defaults(func=cmd_bias)
 
     # --- discover ---
     p_discover = subparsers.add_parser("discover", help="Discover AI systems in a project")
