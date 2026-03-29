@@ -2685,6 +2685,20 @@ def test_framework_flag_removed():
     print("\u2713 --framework flag removed (unrecognized argument)")
 
 
+def test_github_action_structure():
+    """action.yml has required fields for GitHub Marketplace."""
+    action_path = Path(__file__).parent.parent / "action.yml"
+    assert action_path.exists(), "action.yml must exist at repo root"
+    content = action_path.read_text()
+    assert "name:" in content, "action.yml must have name field"
+    assert "description:" in content, "action.yml must have description field"
+    assert "branding:" in content, "action.yml must have branding (required for Marketplace)"
+    assert "inputs:" in content, "action.yml must define inputs"
+    assert "outputs:" in content, "action.yml must define outputs"
+    assert "runs:" in content, "action.yml must have runs section"
+    print("\u2713 GitHub Action: action.yml structure valid")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -2926,6 +2940,8 @@ if __name__ == "__main__":
         # Error handling & CLI hygiene (2 tests)
         test_generic_exception_handler,
         test_framework_flag_removed,
+        # GitHub Action structure (1 test)
+        test_github_action_structure,
     ]
 
     print(f"Running {len(tests)} tests...\n")

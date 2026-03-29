@@ -296,14 +296,29 @@ regula baseline compare --fail-on-new    # Fail CI on new findings
 Integrate Regula into your CI/CD pipeline with one step:
 
 ```yaml
-- uses: kuzivaai/getregula@main
+- name: Regula AI Governance Check
+  uses: kuzivaai/getregula@v1
   with:
-    path: '.'
-    fail-on-prohibited: 'true'
-    upload-sarif: 'true'
+    path: "."
+    fail-on-prohibited: "true"
+    fail-on-high-risk: "false"
 ```
 
-Results appear in the GitHub Security tab alongside CodeQL findings. Configurable options: `fail-on-prohibited`, `fail-on-high-risk`, `min-dependency-score`, `upload-sarif`.
+Results appear in the GitHub Security tab alongside CodeQL findings.
+
+**Inputs:**
+
+| Input | Default | Description |
+|-------|---------|-------------|
+| `path` | `.` | Path to the project to scan |
+| `format` | `sarif` | Output format: `sarif` or `json` |
+| `fail-on-prohibited` | `true` | Exit 2 if prohibited-use findings detected |
+| `fail-on-high-risk` | `false` | Exit 1 if high-risk findings detected |
+| `min-dependency-score` | `0` | Minimum dependency pinning score (0–100) |
+| `diff-mode` | `false` | Only scan files changed in this PR |
+| `upload-sarif` | `true` | Upload SARIF to GitHub Code Scanning |
+
+**Outputs:** `findings-count`, `prohibited-count`, `high-risk-count`, `pinning-score`, `sarif-file`
 
 ### Compliance Status Tracking
 
