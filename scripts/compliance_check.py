@@ -36,6 +36,12 @@ _ast_analysis_available = check_optional("ast_analysis", "AST logging/oversight 
 if _ast_analysis_available:
     from ast_analysis import detect_logging_practices, detect_human_oversight
 
+try:
+    from ast_engine import analyse_file as _ast_engine_analyse
+    _HAS_AST_ENGINE = True
+except ImportError:
+    _HAS_AST_ENGINE = False
+
 _classify_available = check_optional("classify_risk", "risk classification", "included with regula")
 if _classify_available:
     from classify_risk import classify, RiskTier, is_ai_related
@@ -699,6 +705,26 @@ def _check_article_14(project_path: str, files_index: list) -> tuple:
                         )
                         component_scores["review_before_action"] = 1
             except (SyntaxError, ValueError, TypeError):
+                pass
+
+    # JS/TS files: use ast_engine for oversight detection
+    if _HAS_AST_ENGINE:
+        js_ts_exts = {".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs"}
+        for rel_path, abs_path in files_index:
+            if Path(rel_path).suffix.lower() not in js_ts_exts:
+                continue
+            content = _read_file(abs_path)
+            if content is None:
+                continue
+            try:
+                engine_result = _ast_engine_analyse(content, rel_path)
+                oversight = engine_result.get("oversight", {})
+                if oversight.get("has_oversight"):
+                    evidence.append(f"JS/TS oversight pattern in: {rel_path}")
+                    component_scores["oversight_mechanisms"] = 1
+                for ad in oversight.get("automated_decisions", []):
+                    gaps.append(f"JS/TS automated decision without review: {rel_path}:{ad.get('line', '?')}")
+            except Exception:
                 pass
 
     if component_scores["oversight_mechanisms"] == 0:
