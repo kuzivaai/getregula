@@ -18,7 +18,7 @@ Regula is an open-source AI governance risk indication tool that detects EU AI A
 - **Build system:** setuptools (pyproject.toml)
 - **Database:** None. Audit trail stored as append-only JSONL files.
 - **External APIs:** None. Everything runs offline.
-- **Version:** 1.1.0
+- **Version:** 1.2.0
 - **License:** MIT
 - **Python package name:** `regula`
 - **CLI entry point:** `regula = "scripts.cli:main"`
@@ -55,15 +55,18 @@ regula install git-hooks            # git pre-commit hook
 
 ```
 getregula/
-├── scripts/                    # 29 Python modules (13,042 lines total)
-│   ├── cli.py                  # CLI dispatcher — 22 subcommands (880 lines, 28 functions)
-│   ├── classify_risk.py        # Risk classification engine (840 lines, 19 functions)
+├── scripts/                    # 32 Python modules
+│   ├── cli.py                  # CLI dispatcher — 22 subcommands (1,103 lines)
+│   ├── classify_risk.py        # Risk classification logic (377 lines) — split from monolith in v1.2.0
+│   ├── risk_types.py           # RiskTier enum, Classification dataclass (63 lines)
+│   ├── risk_patterns.py        # All EU AI Act pattern definitions (321 lines)
+│   ├── policy_config.py        # Policy loading, caching, accessors (132 lines)
 │   ├── ast_engine.py           # Multi-language AST analysis (1,725 lines, 17 functions)
 │   ├── ast_analysis.py         # Python-specific AST analysis (870 lines, 45 functions)
 │   ├── compliance_check.py     # Articles 9-15 gap assessment (1,104 lines, 19 functions)
 │   ├── dependency_scan.py      # Supply chain analysis (866 lines, 21 functions)
 │   ├── benchmark.py            # Precision/recall validation (777 lines, 17 functions)
-│   ├── report.py               # HTML/SARIF/JSON reports (715 lines, 7 functions)
+│   ├── report.py               # HTML/SARIF/JSON reports (796 lines, 7 functions)
 │   ├── discover_ai_systems.py  # AI system discovery & registry (532 lines, 14 functions)
 │   ├── generate_documentation.py # Annex IV + QMS scaffolds (512 lines, 5 functions)
 │   ├── sbom.py                 # CycloneDX 1.6 SBOM generation (481 lines, 13 functions)
@@ -71,7 +74,7 @@ getregula/
 │   ├── feed.py                 # AI governance news feed (460 lines, 15 functions)
 │   ├── remediation.py          # Inline fix suggestions (372 lines, 18 functions)
 │   ├── install.py              # Hook installation (300 lines, 9 functions)
-│   ├── agent_monitor.py        # Agentic AI governance (298 lines, 5 functions)
+│   ├── agent_monitor.py        # Agentic AI governance, autonomy detection (563 lines)
 │   ├── log_event.py            # Audit trail logging (288 lines, 15 functions)
 │   ├── init_wizard.py          # Setup wizard (235 lines, 7 functions)
 │   ├── framework_mapper.py     # 8-framework cross-mapping (210 lines, 5 functions)
@@ -92,7 +95,15 @@ getregula/
 │   └── __init__.py
 │
 ├── tests/
-│   ├── test_classification.py  # 160 tests, 472 assertions
+│   ├── test_classification.py      # Core classification (160 tests)
+│   ├── test_agent_governance.py    # Agent autonomy detection (19 tests)
+│   ├── test_coverage_critical.py   # Critical path coverage
+│   ├── test_documentation.py       # Documentation generation (10 tests)
+│   ├── test_hooks_audit.py         # Hook and audit trail
+│   ├── test_registry.py            # AI system registry (8 tests)
+│   ├── test_reliability.py         # Edge cases and resilience (12 tests)
+│   ├── test_security_hardening.py  # Security hardening checks
+│   # 348 tests, 916 assertions total (pytest tests/)
 │   └── fixtures/
 │       ├── sample_high_risk/   # High-risk AI code (scores INFO tier in tests/ due to deprioritisation)
 │       ├── sample_warn_tier/   # High-risk AI code (scores WARN tier when scanned outside tests/)
@@ -368,7 +379,7 @@ Three output formats:
 
 | Command | Purpose | Key Flags |
 |---|---|---|
-| `check <path>` | Scan files for risk indicators | `--format json\|sarif\|text`, `--strict`, `--diff` |
+| `check <path>` | Scan files for risk indicators | `--format json\|sarif\|text`, `--strict`, `--diff`, `--skip-tests`, `--min-tier` |
 | `classify` | Classify text input | `--input`, `--file`, stdin pipe |
 | `report` | Generate HTML/SARIF/JSON reports | `--format html\|sarif\|json`, `--output`, `--project` |
 | `audit` | Manage audit trail | `verify`, `export --format csv\|json` |
@@ -403,7 +414,7 @@ Three output formats:
 ```json
 {
   "format_version": "1.0",
-  "regula_version": "1.1.0",
+  "regula_version": "1.2.0",
   "command": "check",
   "timestamp": "2026-03-28T14:30:00Z",
   "exit_code": 0,
@@ -534,7 +545,7 @@ exclusions:
 
 ## Current Phase
 
-**Pre-launch.** Production-ready error handling, diagnostics, and output consistency shipped. 159 tests passing. Real-world validated against 4 OSS projects (instructor, pydantic-ai, openai-python, anthropic-cookbook). No human users yet outside the developer. GitHub Action defined but untested in a real PR workflow.
+**v1.2.0 shipped 2026-03-28.** 348 tests, 916 assertions. Real-world validated against LangChain (2,450 files, 16s scan). Agent autonomy detection wired into `check`. `--skip-tests` and `--min-tier` flags reduce signal-to-noise. No external users yet. GitHub Action defined but untested in a real PR workflow.
 
 ---
 
@@ -544,7 +555,8 @@ exclusions:
 - `text_to_image` false positive on instructor library (known, documented in audit reports)
 - GitHub Action untested in a real PR workflow
 - Dependency pinning score of 30/100 on Regula's own optional deps
-- `--ci` flag interaction with new exit codes not integration-tested
+- JS/TypeScript analysis is regex-only (tree-sitter path exists but shallow vs Python AST)
+- Cross-file data flow not supported — all tracing is single-file only
 
 ---
 

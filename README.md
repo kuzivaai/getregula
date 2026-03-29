@@ -135,11 +135,11 @@ All 10 Annex III categories are detected. Messages include Article 6 context: ma
 
 | Platform | Status | Install Command |
 |----------|--------|----------------|
-| **Claude Code** | Supported | `python3 scripts/install.py claude-code` |
-| **GitHub Copilot CLI** | Supported | `python3 scripts/install.py copilot-cli` |
-| **Windsurf Cascade** | Supported | `python3 scripts/install.py windsurf` |
-| **pre-commit** | Supported | `python3 scripts/install.py pre-commit` |
-| **Git hooks** | Supported | `python3 scripts/install.py git-hooks` |
+| **Claude Code** | Supported | `python3 scripts/cli.py install claude-code` |
+| **GitHub Copilot CLI** | Supported | `python3 scripts/cli.py install copilot-cli` |
+| **Windsurf Cascade** | Supported | `python3 scripts/cli.py install windsurf` |
+| **pre-commit** | Supported | `python3 scripts/cli.py install pre-commit` |
+| **Git hooks** | Supported | `python3 scripts/cli.py install git-hooks` |
 | **CI/CD (GitHub Actions, GitLab)** | Via SARIF | `regula check --format sarif` |
 
 Claude Code, Copilot CLI, and Windsurf use the same hook protocol. Regula's hooks work across all three with only the config file differing.
@@ -153,6 +153,8 @@ python3 scripts/cli.py check . --format json
 python3 scripts/cli.py check . --format sarif    # For CI/CD integration
 python3 scripts/cli.py check . --ci              # Exit 1 on any WARN or BLOCK finding
 python3 scripts/cli.py check . --strict          # Exit 1 on WARN-tier findings
+python3 scripts/cli.py check . --skip-tests      # Exclude test files from results
+python3 scripts/cli.py check . --min-tier limited_risk  # Filter out minimal_risk noise
 
 # Classify a text input
 python3 scripts/cli.py classify --input "import tensorflow; cv screening model"
@@ -377,7 +379,15 @@ regula/
 │   ├── owasp_llm_top10.yaml       # OWASP Top 10 for LLMs → EU AI Act mapping
 │   └── mitre_atlas.yaml           # MITRE ATLAS → EU AI Act mapping
 ├── tests/
-│   └── test_classification.py     # 160 tests, 472 assertions
+│   ├── test_classification.py     # Core classification tests
+│   ├── test_agent_governance.py   # Agent autonomy detection
+│   ├── test_coverage_critical.py  # Critical path coverage
+│   ├── test_documentation.py      # Documentation generation
+│   ├── test_hooks_audit.py        # Hook and audit trail
+│   ├── test_registry.py           # AI system registry
+│   ├── test_reliability.py        # Edge cases and resilience
+│   └── test_security_hardening.py # Security hardening checks
+│   # 348 tests, 916 assertions total
 ├── docs/
 │   └── course/                    # Interactive 10-module governance course
 ├── regula-policy.yaml             # Policy configuration template
@@ -442,10 +452,10 @@ For full YAML support, install pyyaml: `pip install pyyaml`. Without it, a minim
 ## Testing
 
 ```bash
-python3 tests/test_classification.py
+python3 tests/test_classification.py   # or: pytest tests/
 ```
 
-160 tests, 472 assertions covering:
+348 tests, 916 assertions covering:
 - AI detection (libraries, model files, API endpoints, ML patterns)
 - All 8 prohibited practices
 - All 10 high-risk categories (Annex III)
@@ -480,7 +490,7 @@ python3 tests/test_classification.py
 
 ## Roadmap
 
-- **v1.2:** Production readiness (error handling, `regula doctor`, `regula self-test`, JSON output envelope)
+- **v1.2:** ~~Production readiness~~ — shipped 2026-03-28. Agent autonomy detection, `--skip-tests`, `--min-tier`, 348 tests.
 - **v1.3:** DPO dashboard, Slack/Teams alerting, external timestamp authority, PDF export
 - **v2.0:** Model card generation, bias testing integration
 
