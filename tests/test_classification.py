@@ -2699,6 +2699,77 @@ def test_github_action_structure():
     print("\u2713 GitHub Action: action.yml structure valid")
 
 
+def test_mcp_server_tool_list():
+    """MCP server returns correct tools/list response."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from mcp_server import handle_request
+
+    request = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/list",
+        "params": {}
+    }
+    response = handle_request(request)
+    assert response["jsonrpc"] == "2.0"
+    assert response["id"] == 1
+    assert "result" in response
+    tools = response["result"]["tools"]
+    tool_names = [t["name"] for t in tools]
+    assert "regula_check" in tool_names, f"regula_check missing from tools: {tool_names}"
+    assert "regula_classify" in tool_names
+    assert "regula_gap" in tool_names
+    print("\u2713 MCP server: tools/list returns correct tool names")
+
+
+def test_mcp_server_initialize():
+    """MCP server responds to initialize with correct protocol version."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from mcp_server import handle_request
+
+    request = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+            "protocolVersion": "2024-11-05",
+            "capabilities": {},
+            "clientInfo": {"name": "test", "version": "1.0"}
+        }
+    }
+    response = handle_request(request)
+    assert response["result"]["protocolVersion"] == "2024-11-05"
+    assert response["result"]["serverInfo"]["name"] == "regula"
+    print("\u2713 MCP server: initialize returns correct protocolVersion")
+
+
+def test_mcp_server_classify_tool():
+    """regula_classify tool returns a tier for known AI pattern."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from mcp_server import handle_request
+
+    request = {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "tools/call",
+        "params": {
+            "name": "regula_classify",
+            "arguments": {"input": "import openai\nresponse = openai.chat.completions.create(model='gpt-4', messages=[])"}
+        }
+    }
+    response = handle_request(request)
+    assert "result" in response, f"No result in response: {response}"
+    content = response["result"]["content"]
+    assert isinstance(content, list) and len(content) > 0
+    text = content[0]["text"]
+    assert any(tier in text.upper() for tier in ["MINIMAL", "LIMITED", "HIGH", "PROHIBITED"]), \
+        f"Expected a tier in response, got: {text}"
+    print("\u2713 MCP server: regula_classify returns tier")
+
+
 def test_timestamp_build_tsq():
     """_build_tsq produces a valid DER structure for SHA-256 hash."""
     import sys
@@ -2986,6 +3057,10 @@ if __name__ == "__main__":
         test_framework_flag_removed,
         # GitHub Action structure (1 test)
         test_github_action_structure,
+        # MCP server (3 tests)
+        test_mcp_server_tool_list,
+        test_mcp_server_initialize,
+        test_mcp_server_classify_tool,
         # RFC 3161 external timestamping (3 tests)
         test_timestamp_build_tsq,
         test_timestamp_parse_response_invalid,

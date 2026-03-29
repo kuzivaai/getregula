@@ -352,6 +352,12 @@ def cmd_audit(args):
         sys.exit(2)
 
 
+def cmd_mcp_server(args):
+    """Start the Regula MCP server over stdio."""
+    from mcp_server import run_server
+    run_server()
+
+
 def cmd_discover(args):
     """Discover AI systems."""
     if args.project != ".":
@@ -949,6 +955,10 @@ Examples:
         help="Attach RFC 3161 timestamp from FreeTSA to new audit events (requires network)"
     )
     p_audit.set_defaults(func=cmd_audit)
+
+    # --- mcp-server ---
+    p_mcp = subparsers.add_parser("mcp-server", help="Start the Regula MCP server (stdio transport)")
+    p_mcp.set_defaults(func=cmd_mcp_server)
 
     # --- discover ---
     p_discover = subparsers.add_parser("discover", help="Discover AI systems in a project")
