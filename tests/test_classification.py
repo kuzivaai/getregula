@@ -2699,6 +2699,37 @@ def test_github_action_structure():
     print("\u2713 GitHub Action: action.yml structure valid")
 
 
+def test_pdf_export_html_fallback():
+    """pdf_export returns HTML bytes when weasyprint is not available."""
+    import sys, unittest.mock
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+
+    # Simulate weasyprint not installed
+    with unittest.mock.patch.dict("sys.modules", {"weasyprint": None}):
+        import importlib
+        import pdf_export
+        importlib.reload(pdf_export)
+        html_input = "<html><body><h1>Test Annex IV</h1></body></html>"
+        result = pdf_export.render_to_pdf(html_input, fallback_to_html=True)
+        assert isinstance(result, bytes)
+        assert b"Test Annex IV" in result
+    print("\u2713 PDF export: HTML fallback returns HTML bytes when weasyprint absent")
+
+
+def test_pdf_export_html_content_valid():
+    """generate_annex_iv_html produces valid HTML with required sections."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from pdf_export import generate_annex_iv_html
+    import tempfile, os
+    with tempfile.TemporaryDirectory() as tmpdir:
+        html = generate_annex_iv_html(tmpdir, "Test System")
+        assert "<html" in html.lower()
+        assert "Annex IV" in html
+        assert "Test System" in html
+    print("\u2713 PDF export: generate_annex_iv_html produces valid HTML")
+
+
 def test_mcp_server_tool_list():
     """MCP server returns correct tools/list response."""
     import sys
@@ -2770,6 +2801,61 @@ def test_mcp_server_classify_tool():
     print("\u2713 MCP server: regula_classify returns tier")
 
 
+def test_bias_eval_score_range():
+    """bias_eval returns scores between 0 and 100 for all categories."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from bias_eval import compute_stereotype_score
+
+    mock_results = [
+        {"category": "race", "preferred_stereotyped": True},
+        {"category": "race", "preferred_stereotyped": False},
+        {"category": "race", "preferred_stereotyped": True},
+        {"category": "gender", "preferred_stereotyped": True},
+        {"category": "gender", "preferred_stereotyped": True},
+    ]
+    scores = compute_stereotype_score(mock_results)
+    assert "race" in scores
+    assert "gender" in scores
+    assert 0 <= scores["race"] <= 100
+    assert 0 <= scores["gender"] <= 100
+    assert scores["race"] == 67, f"Expected 67, got {scores['race']}"
+    assert scores["gender"] == 100
+    print("\u2713 Bias eval: compute_stereotype_score returns correct per-category percentages")
+
+
+def test_bias_eval_dataset_sample():
+    """CrowS-Pairs dataset sample loads correctly."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from bias_eval import load_crowspairs_sample
+
+    pairs = load_crowspairs_sample()
+    assert len(pairs) > 0
+    assert len(pairs) >= 10
+    first = pairs[0]
+    assert "sent_more" in first
+    assert "sent_less" in first
+    assert "bias_type" in first
+    print(f"\u2713 Bias eval: CrowS-Pairs sample loaded {len(pairs)} pairs")
+
+
+def test_bias_eval_no_ollama():
+    """bias_eval handles Ollama unavailability gracefully."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from bias_eval import evaluate_with_ollama
+
+    result = evaluate_with_ollama(
+        [{"sent_more": "A", "sent_less": "B", "bias_type": "race"}],
+        endpoint="http://localhost:9999",
+        timeout=1,
+    )
+    assert result["status"] == "error"
+    assert "unavailable" in result["message"].lower() or "error" in result["message"].lower()
+    print("\u2713 Bias eval: handles Ollama unavailability gracefully")
+
+
 def test_timestamp_build_tsq():
     """_build_tsq produces a valid DER structure for SHA-256 hash."""
     import sys
@@ -2812,6 +2898,84 @@ def test_log_event_tst_field():
         event = le.log_event("test_event", {"tier": "minimal_risk"}, external_timestamp=True)
     assert event.data.get("tst_hex") == "deadbeef", "tst_hex must be stored in event data"
     print("\u2713 RFC 3161: log_event stores tst_hex when external_timestamp=True")
+
+
+def test_compliance_check_js_ts_article14():
+    """Article 14 gap check returns score > 0 for a JS file with review function."""
+    import sys, tempfile, os
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from compliance_check import check_compliance
+
+    js_content = """
+import OpenAI from 'openai';
+
+const client = new OpenAI();
+
+async function reviewAIOutput(output) {
+    // Human reviews AI output before action
+    return humanApproval(output);
+}
+
+async function main() {
+    const response = await client.chat.completions.create({
+        model: 'gpt-4',
+        messages: [{ role: 'user', content: 'Classify this text' }]
+    });
+    return reviewAIOutput(response.choices[0].message.content);
+}
+"""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        js_file = os.path.join(tmpdir, "app.js")
+        with open(js_file, "w") as f:
+            f.write(js_content)
+        results = check_compliance(tmpdir)
+
+    art14 = results.get("article_14") or results.get("14") or {}
+    score = art14.get("score", 0)
+    assert score > 20, f"Article 14 score should be > 20 for JS with review function, got {score}"
+    print(f"\u2713 Compliance check: JS/TS Article 14 wired correctly (score={score})")
+
+
+def test_conformity_declaration_structure():
+    """Declaration of Conformity contains all Annex XIII required fields."""
+    import sys, tempfile
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from generate_documentation import generate_conformity_declaration
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        doc = generate_conformity_declaration(tmpdir, system_name="Test AI System", version="1.0")
+
+    required_fields = [
+        "Provider",
+        "AI system",
+        "Annex III",
+        "conformity",
+        "Article 9",
+    ]
+    for field in required_fields:
+        assert field in doc, f"Declaration of Conformity missing required field: {field}"
+    print("\u2713 Declaration of Conformity: all Annex XIII required fields present")
+
+
+def test_benchmark_corpus_structure():
+    """run_public_corpus returns a dict with per-article results."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from benchmark import compute_article_pass_rates
+
+    mock_results = [
+        {"repo": "org/repo1", "article_9": 20, "article_12": 0,  "article_14": 30, "files": 10},
+        {"repo": "org/repo2", "article_9": 0,  "article_12": 0,  "article_14": 0,  "files": 5},
+        {"repo": "org/repo3", "article_9": 50, "article_12": 60, "article_14": 70, "files": 20},
+        {"repo": "org/repo4", "article_9": 80, "article_12": 40, "article_14": 50, "files": 15},
+        {"repo": "org/repo5", "article_9": 10, "article_12": 5,  "article_14": 10, "files": 8},
+    ]
+    rates = compute_article_pass_rates(mock_results, pass_threshold=50)
+    assert "article_9" in rates
+    assert "article_12" in rates
+    assert "article_14" in rates
+    assert rates["article_9"]["pass_rate"] == 40, f"Expected 40%, got {rates['article_9']['pass_rate']}"
+    print("\u2713 Benchmark: compute_article_pass_rates returns correct pass rates")
 
 
 if __name__ == "__main__":
@@ -3057,6 +3221,9 @@ if __name__ == "__main__":
         test_framework_flag_removed,
         # GitHub Action structure (1 test)
         test_github_action_structure,
+        # PDF export (2 tests)
+        test_pdf_export_html_fallback,
+        test_pdf_export_html_content_valid,
         # MCP server (3 tests)
         test_mcp_server_tool_list,
         test_mcp_server_initialize,
@@ -3065,6 +3232,16 @@ if __name__ == "__main__":
         test_timestamp_build_tsq,
         test_timestamp_parse_response_invalid,
         test_log_event_tst_field,
+        # Bias eval (3 tests)
+        test_bias_eval_score_range,
+        test_bias_eval_dataset_sample,
+        test_bias_eval_no_ollama,
+        # JS/TS compliance (1 test)
+        test_compliance_check_js_ts_article14,
+        # Declaration of Conformity (1 test)
+        test_conformity_declaration_structure,
+        # Benchmark (1 test)
+        test_benchmark_corpus_structure,
     ]
 
     print(f"Running {len(tests)} tests...\n")
