@@ -26,7 +26,7 @@ from risk_types import RiskTier, Classification
 from risk_patterns import (
     PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS,
     AI_SECURITY_PATTERNS, AI_INDICATORS, GPAI_TRAINING_PATTERNS,
-    ISO_42001_MAP, GOVERNANCE_OBSERVATIONS,
+    ISO_42001_MAP, GOVERNANCE_OBSERVATIONS, BIAS_RISK_PATTERNS,
 )
 
 # Policy configuration
@@ -62,6 +62,10 @@ _AI_INDICATORS_COMPILED = {
 _GOVERNANCE_COMPILED = {
     name: [re.compile(p) for p in cfg["patterns"]]
     for name, cfg in GOVERNANCE_OBSERVATIONS.items()
+}
+_BIAS_RISK_COMPILED = {
+    name: [re.compile(p, re.IGNORECASE) for p in cfg["patterns"]]
+    for name, cfg in BIAS_RISK_PATTERNS.items()
 }
 _AI_SECURITY_COMPILED = {
     name: [re.compile(p, re.IGNORECASE) for p in cfg["patterns"]]
@@ -190,6 +194,43 @@ def generate_observations(text: str) -> list:
             observations.append({
                 "article": config["article"],
                 "observation": config["observation"],
+            })
+
+    return observations
+
+
+def check_bias_risk(text: str) -> list:
+    """Detect protected class attributes used as ML features.
+
+    Returns a list of observation dicts (article + observation).
+    Only meaningful for code that also has AI indicators.
+
+    Limitation: this is a static pattern check. It can detect whether
+    protected attributes appear in ML code and whether fairness evaluation
+    is absent. It cannot determine whether a model is actually biased.
+    """
+    observations = []
+    text_lower = text.lower()
+
+    # Check for protected class feature usage
+    feature_patterns = _BIAS_RISK_COMPILED.get("protected_class_as_feature", [])
+    has_protected_feature = any(rx.search(text_lower) for rx in feature_patterns)
+
+    if has_protected_feature:
+        cfg = BIAS_RISK_PATTERNS["protected_class_as_feature"]
+        observations.append({
+            "article": cfg["article"],
+            "observation": cfg["observation"],
+        })
+
+        # Only check for missing fairness eval when protected features found
+        fairness_patterns = _BIAS_RISK_COMPILED.get("missing_fairness_evaluation", [])
+        has_fairness_eval = any(rx.search(text_lower) for rx in fairness_patterns)
+        if not has_fairness_eval:
+            cfg2 = BIAS_RISK_PATTERNS["missing_fairness_evaluation"]
+            observations.append({
+                "article": cfg2["article"],
+                "observation": cfg2["absence_observation"],
             })
 
     return observations

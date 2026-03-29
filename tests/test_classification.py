@@ -3143,3 +3143,68 @@ if __name__ == "__main__":
         sys.exit(1)
     else:
         print("✅ All tests passed!")
+
+
+# ---------------------------------------------------------------------------
+# Bias risk detection tests
+# ---------------------------------------------------------------------------
+
+def test_bias_protected_class_feature_detected():
+    """Protected class attribute in ML feature context triggers bias risk observation."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from classify_risk import check_bias_risk
+    text = "X_train = df[['income', 'race', 'age']]"
+    obs = check_bias_risk(text)
+    assert len(obs) >= 1, "Should detect protected class feature"
+    assert obs[0]["article"] == "10"
+    assert "Article 10(5)" in obs[0]["observation"] or "10(5)" in obs[0]["observation"]
+
+
+def test_bias_missing_fairness_flagged():
+    """Code with protected feature but no fairness library triggers absence warning."""
+    from classify_risk import check_bias_risk
+    text = "features = df[['salary', 'ethnicity', 'years_exp']]\nmodel.fit(features, labels)"
+    obs = check_bias_risk(text)
+    articles = [o["article"] for o in obs]
+    assert "10" in articles
+    # Should have both the feature finding AND the missing fairness eval
+    assert len(obs) == 2
+
+
+def test_bias_fairness_library_suppresses_absence():
+    """Code with protected feature AND fairness library does not trigger absence warning."""
+    from classify_risk import check_bias_risk
+    text = "import fairlearn\nX = df[['income', 'race']]\nfrom fairlearn.metrics import equalized_odds"
+    obs = check_bias_risk(text)
+    # Should still flag protected feature, but NOT flag missing fairness eval
+    assert len(obs) == 1
+    assert "protected class" in obs[0]["observation"].lower() or "Protected" in obs[0]["observation"]
+
+
+def test_bias_no_protected_features_no_observation():
+    """Normal ML code without protected class features produces no bias observations."""
+    from classify_risk import check_bias_risk
+    text = "X = df[['age', 'income', 'credit_score']]\nmodel.fit(X, y)"
+    obs = check_bias_risk(text)
+    assert obs == []
+
+
+def test_js_ts_automated_decision_function_detected():
+    """JS/TS camelCase decision function names trigger Article 13 observation."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from classify_risk import generate_observations
+    text = "const filterCandidates = async (applicants) => { return applicants.filter(a => a.score > threshold); }"
+    obs = generate_observations(text)
+    articles = [o["article"] for o in obs]
+    assert "13" in articles, f"Expected Article 13 observation, got: {obs}"
+
+
+def test_js_ts_function_declaration_detected():
+    """JS/TS function declaration with decision name triggers Article 13."""
+    from classify_risk import generate_observations
+    text = "function scoreApplicant(data) { return model.predict(data); }"
+    obs = generate_observations(text)
+    articles = [o["article"] for o in obs]
+    assert "13" in articles, f"Expected Article 13 observation for scoreApplicant, got: {obs}"
