@@ -2904,7 +2904,7 @@ def test_compliance_check_js_ts_article14():
     """Article 14 gap check returns score > 0 for a JS file with review function."""
     import sys, tempfile, os
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
-    from compliance_check import check_compliance
+    from compliance_check import assess_compliance as check_compliance
 
     js_content = """
 import OpenAI from 'openai';
@@ -2930,7 +2930,7 @@ async function main() {
             f.write(js_content)
         results = check_compliance(tmpdir)
 
-    art14 = results.get("article_14") or results.get("14") or {}
+    art14 = (results.get("articles") or {}).get("14") or results.get("article_14") or results.get("14") or {}
     score = art14.get("score", 0)
     assert score > 20, f"Article 14 score should be > 20 for JS with review function, got {score}"
     print(f"\u2713 Compliance check: JS/TS Article 14 wired correctly (score={score})")
