@@ -2699,6 +2699,50 @@ def test_github_action_structure():
     print("\u2713 GitHub Action: action.yml structure valid")
 
 
+def test_timestamp_build_tsq():
+    """_build_tsq produces a valid DER structure for SHA-256 hash."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from timestamp import _build_tsq
+    import hashlib
+    hash_bytes = hashlib.sha256(b"test input").digest()
+    tsq = _build_tsq(hash_bytes, nonce=12345678)
+    # Must be bytes
+    assert isinstance(tsq, bytes), "TSQ must be bytes"
+    # Must start with SEQUENCE tag (0x30)
+    assert tsq[0] == 0x30, "TSQ DER must start with SEQUENCE tag 0x30"
+    # Must contain the SHA-256 OID bytes (2.16.840.1.101.3.4.2.1)
+    sha256_oid_bytes = bytes([0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01])
+    assert sha256_oid_bytes in tsq, "TSQ must contain SHA-256 OID"
+    print("\u2713 RFC 3161: _build_tsq produces valid DER")
+
+
+def test_timestamp_parse_response_invalid():
+    """parse_tsr raises ValueError for garbage input."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from timestamp import parse_tsr
+    try:
+        parse_tsr(b"not a valid DER response")
+        assert False, "Should raise ValueError"
+    except ValueError:
+        pass
+    print("\u2713 RFC 3161: parse_tsr rejects invalid input")
+
+
+def test_log_event_tst_field():
+    """log_event stores tst_hex when external_timestamp=True (mocked)."""
+    import sys, unittest.mock
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    import log_event as le
+
+    fake_tst = {"tst_hex": "deadbeef", "tsa_url": "https://freetsa.org/tsr", "timestamp": "2026-03-29T00:00:00Z"}
+    with unittest.mock.patch("log_event.request_timestamp", return_value=fake_tst):
+        event = le.log_event("test_event", {"tier": "minimal_risk"}, external_timestamp=True)
+    assert event.data.get("tst_hex") == "deadbeef", "tst_hex must be stored in event data"
+    print("\u2713 RFC 3161: log_event stores tst_hex when external_timestamp=True")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -2942,6 +2986,10 @@ if __name__ == "__main__":
         test_framework_flag_removed,
         # GitHub Action structure (1 test)
         test_github_action_structure,
+        # RFC 3161 external timestamping (3 tests)
+        test_timestamp_build_tsq,
+        test_timestamp_parse_response_invalid,
+        test_log_event_tst_field,
     ]
 
     print(f"Running {len(tests)} tests...\n")
