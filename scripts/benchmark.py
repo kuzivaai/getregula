@@ -773,5 +773,42 @@ def _emit(content: str, output_path: Optional[str]) -> None:
         print(content)
 
 
+def compute_article_pass_rates(
+    results: list,
+    pass_threshold: int = 50,
+) -> dict:
+    """Compute per-article pass rates from a list of repo result dicts.
+
+    Parameters
+    ----------
+    results : list of dict
+        Each dict has keys: repo, article_9, article_12, article_14, files
+        (scores 0-100 per article)
+    pass_threshold : int
+        Score >= this value is counted as "passing". Default 50.
+
+    Returns
+    -------
+    dict mapping article key -> {pass_rate, avg_score, pass_count, total}
+    """
+    article_keys = [k for k in results[0].keys() if k.startswith("article_")] if results else []
+    output = {}
+    for key in article_keys:
+        scores = [r[key] for r in results if key in r]
+        if not scores:
+            continue
+        pass_count = sum(1 for s in scores if s >= pass_threshold)
+        pass_rate = round(pass_count / len(scores) * 100)
+        avg = round(sum(scores) / len(scores))
+        output[key] = {
+            "pass_rate": pass_rate,
+            "avg_score": avg,
+            "pass_count": pass_count,
+            "total": len(scores),
+            "fail_rate": 100 - pass_rate,
+        }
+    return output
+
+
 if __name__ == "__main__":
     main()
