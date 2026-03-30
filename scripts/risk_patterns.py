@@ -263,7 +263,7 @@ AI_INDICATORS = {
                   r"haystack", r"smolagents", r"ollama",
                   r"google\.generativeai", r"mistralai", r"groq",
                   r"dspy", r"vertexai", r"semantic_kernel",
-                  r"instructor", r"pydantic_ai", r"replicate"],
+                  r"instructor", r"pydantic_ai", r"together", r"replicate"],
     "model_files": [r"\.onnx", r"\.pt\b", r"\.pth\b", r"\.pkl\b", r"\.joblib\b",
                     r"\.h5\b", r"\.hdf5\b", r"\.safetensors", r"\.gguf\b", r"\.ggml\b"],
     "api_endpoints": [r"api\.openai\.com", r"api\.anthropic\.com",
