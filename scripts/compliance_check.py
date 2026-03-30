@@ -955,6 +955,7 @@ def _score_to_status(score: int) -> str:
 def assess_compliance(
     project_path: str,
     articles: Optional[list] = None,
+    frameworks: Optional[list] = None,
 ) -> dict:
     """Scan a project and return a compliance gap assessment.
 
@@ -1022,6 +1023,18 @@ def assess_compliance(
         parts.append(f"{status_counts['not_found']} have no evidence")
 
     summary = ". ".join(parts) + "." if parts else "No articles assessed."
+
+    # Optionally enrich each article result with cross-framework mappings
+    if frameworks:
+        try:
+            from framework_mapper import map_to_frameworks
+            for article_num, result_data in article_results.items():
+                fw_map = map_to_frameworks(articles=[article_num], frameworks=frameworks)
+                article_map = fw_map.get(article_num, {})
+                if article_map:
+                    result_data["frameworks"] = article_map
+        except ImportError:
+            pass  # framework_mapper unavailable — degrade silently
 
     return {
         "project": project_name,

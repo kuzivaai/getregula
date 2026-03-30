@@ -3435,3 +3435,55 @@ def test_smoke_inventory():
     # Output is either the table or the "No AI model identifiers" message
     assert result.stdout.strip(), "inventory produced no output"
     print("✓ Smoke: inventory exits 0 with output")
+
+
+# ---------------------------------------------------------------------------
+# Feature: Multi-framework wired into gap output
+# ---------------------------------------------------------------------------
+
+def test_compliance_check_framework_nist():
+    """assess_compliance with frameworks=['nist-ai-rmf'] includes nist_ai_rmf block."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from compliance_check import assess_compliance
+    result = assess_compliance(
+        str(Path(__file__).parent / "fixtures" / "sample_high_risk"),
+        articles=["10"],
+        frameworks=["nist-ai-rmf"],
+    )
+    article = result["articles"]["10"]
+    assert "frameworks" in article, f"Expected 'frameworks' key in article result, got: {list(article.keys())}"
+    assert "nist_ai_rmf" in article["frameworks"], f"Expected nist_ai_rmf in frameworks: {article['frameworks']}"
+    print("✓ Multi-framework: assess_compliance returns nist_ai_rmf block when requested")
+
+
+def test_compliance_check_no_framework_flag():
+    """assess_compliance without frameworks param returns no 'frameworks' key (backward compat)."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from compliance_check import assess_compliance
+    result = assess_compliance(
+        str(Path(__file__).parent / "fixtures" / "sample_high_risk"),
+        articles=["10"],
+    )
+    article = result["articles"]["10"]
+    assert "frameworks" not in article, "Default call must not include frameworks key (backward compat)"
+    print("✓ Multi-framework: no frameworks key when not requested (backward compat)")
+
+
+def test_smoke_gap_framework():
+    """regula gap --framework nist-ai-rmf exits 0."""
+    import subprocess
+    result = subprocess.run(
+        ["python3", "scripts/cli.py", "gap",
+         "--project", str(Path(__file__).parent / "fixtures" / "sample_high_risk"),
+         "--article", "10",
+         "--framework", "nist-ai-rmf",
+         "--format", "json"],
+        capture_output=True, text=True, cwd=str(Path(__file__).parent.parent)
+    )
+    assert result.returncode == 0, f"gap --framework failed: {result.stderr}"
+    import json as _json
+    data = _json.loads(result.stdout)
+    assert "data" in data
+    print("✓ Smoke: gap --framework nist-ai-rmf exits 0")
