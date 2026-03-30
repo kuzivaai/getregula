@@ -3260,3 +3260,85 @@ if __name__ == "__main__":
         sys.exit(1)
     else:
         print("✅ All tests passed!")
+
+
+# ---------------------------------------------------------------------------
+# Feature: Framework Coverage Expansion
+# ---------------------------------------------------------------------------
+
+def test_framework_detection_litellm():
+    """LiteLLM (multi-provider proxy) detected by import."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from code_analysis import ARCHITECTURE_PATTERNS
+    patterns = ARCHITECTURE_PATTERNS.get("LiteLLM (multi-provider proxy)", [])
+    assert patterns, "LiteLLM must be in ARCHITECTURE_PATTERNS"
+    import re
+    source = "from litellm import completion"
+    assert any(re.search(p, source) for p in patterns), "pattern must match 'from litellm'"
+    print("✓ Framework detection: LiteLLM")
+
+
+def test_framework_detection_crewai():
+    """CrewAI (multi-agent) detected by import."""
+    import sys, re
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from code_analysis import ARCHITECTURE_PATTERNS
+    patterns = ARCHITECTURE_PATTERNS.get("CrewAI (multi-agent orchestration)", [])
+    assert patterns, "CrewAI must be in ARCHITECTURE_PATTERNS"
+    assert any(re.search(p, "from crewai import Agent") for p in patterns)
+    print("✓ Framework detection: CrewAI")
+
+
+def test_framework_detection_autogen():
+    """AutoGen (Microsoft multi-agent) detected by import."""
+    import sys, re
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from code_analysis import ARCHITECTURE_PATTERNS
+    patterns = ARCHITECTURE_PATTERNS.get("AutoGen (multi-agent conversation)", [])
+    assert patterns, "AutoGen must be in ARCHITECTURE_PATTERNS"
+    assert any(re.search(p, "from autogen import AssistantAgent") for p in patterns)
+    print("✓ Framework detection: AutoGen")
+
+
+def test_framework_detection_haystack():
+    """Haystack (RAG pipeline) detected by import."""
+    import sys, re
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from code_analysis import ARCHITECTURE_PATTERNS
+    patterns = ARCHITECTURE_PATTERNS.get("Haystack (RAG / document pipeline)", [])
+    assert patterns, "Haystack must be in ARCHITECTURE_PATTERNS"
+    assert any(re.search(p, "from haystack import Pipeline") for p in patterns)
+    print("✓ Framework detection: Haystack")
+
+
+def test_framework_detection_smolagents():
+    """smolagents (HuggingFace) detected by import."""
+    import sys, re
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from code_analysis import ARCHITECTURE_PATTERNS
+    patterns = ARCHITECTURE_PATTERNS.get("smolagents (HuggingFace lightweight agents)", [])
+    assert patterns, "smolagents must be in ARCHITECTURE_PATTERNS"
+    assert any(re.search(p, "from smolagents import CodeAgent") for p in patterns)
+    print("✓ Framework detection: smolagents")
+
+
+def test_framework_detection_ollama():
+    """Ollama (local inference) detected by import."""
+    import sys, re
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from code_analysis import ARCHITECTURE_PATTERNS
+    patterns = ARCHITECTURE_PATTERNS.get("Ollama (local model inference)", [])
+    assert patterns, "Ollama must be in ARCHITECTURE_PATTERNS"
+    assert any(re.search(p, "import ollama") for p in patterns)
+    print("✓ Framework detection: Ollama")
+
+
+def test_framework_count_expanded():
+    """ARCHITECTURE_PATTERNS has at least 28 entries after expansion."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from code_analysis import ARCHITECTURE_PATTERNS
+    count = len(ARCHITECTURE_PATTERNS)
+    assert count >= 28, f"Expected ≥28 architecture patterns, got {count}"
+    print(f"✓ Framework detection: {count} architectures in ARCHITECTURE_PATTERNS")
