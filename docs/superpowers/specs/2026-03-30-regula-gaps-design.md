@@ -77,11 +77,11 @@ Default format: table. `--format json` for machine consumption or HTML report in
 
 | GPAI tier | Note |
 |-----------|------|
-| frontier | GPAI obligations may apply (Article 51) — verify systemic risk threshold |
-| open-weight | GPAI exemption likely (Article 53(1)) — verify compute threshold |
-| unknown | Model not in catalogue — classify manually |
+| frontier | Article 53 obligations apply. Systemic risk assessment required if training compute ≥ 10²⁵ FLOPs (Article 51(2) presumption) — verify with provider |
+| open-weight | Art 53(1)(a)+(b) obligations may be exempt if freely available open-source (Art 53(2)). Copyright policy + training data summary still required under Art 53(1)(c)+(d) |
+| unknown | Model not in catalogue — classify manually before market placement |
 
-These are flags for human review, not legal conclusions.
+These are flags for human review, not legal conclusions. Article 53 obligations have been in force since 2 August 2025.
 
 ### Tests
 
@@ -105,25 +105,27 @@ These are flags for human review, not legal conclusions.
 
 **Additions** (16 new entries, 12 → 28):
 
-| Framework | Import pattern | Description |
-|-----------|---------------|-------------|
-| AutoGen | `from autogen`, `import autogen`, `pyautogen` | Multi-agent conversation (Microsoft) |
-| CrewAI | `from crewai`, `import crewai` | Role-based multi-agent orchestration |
-| Haystack | `from haystack`, `import haystack` | RAG / document pipeline (deepset) |
-| DSPy | `from dspy`, `import dspy` | Programmatic LM pipelines (Stanford) |
-| Groq SDK | `from groq`, `import groq` | Groq inference API |
-| AWS Bedrock | `import boto3` + `bedrock`, `from botocore.*bedrock` | AWS managed model API |
-| Google Vertex AI | `from vertexai`, `import vertexai`, `google.cloud.aiplatform` | Google Cloud model API |
-| LiteLLM | `from litellm`, `import litellm` | Multi-provider LLM proxy |
-| Semantic Kernel | `from semantic_kernel`, `import semantic_kernel` | Microsoft SK (Python) |
-| Instructor | `from instructor`, `import instructor` | Structured outputs from LLMs |
-| PydanticAI | `from pydantic_ai`, `import pydantic_ai` | Type-safe agent framework |
-| SmolAgents | `from smolagents`, `import smolagents` | HuggingFace agent library |
-| Together AI | `from together`, `import together` | Together AI inference API |
-| Replicate | `import replicate`, `from replicate` | Replicate model hosting API |
-| Mistral SDK | `from mistralai`, `import mistralai` | Mistral AI Python SDK |
-| Google Generative AI | `import google.generativeai`, `from google.generativeai` | Gemini API (non-Vertex) |
-| Ollama | `import ollama`, `from ollama` | Local model inference |
+Priority order is based on actual PyPI download volume and GitHub stars as of March 2026. LiteLLM and CrewAI are the highest-priority additions — LiteLLM is the de facto multi-provider routing layer used across the ecosystem regardless of primary framework; CrewAI is the fastest-growing agent framework (45,900+ stars, raised $18M Series A).
+
+| Framework | Import pattern | Description | Priority |
+|-----------|---------------|-------------|----------|
+| LiteLLM | `from litellm`, `import litellm` | Multi-provider LLM proxy (100+ providers) | Highest |
+| CrewAI | `from crewai`, `import crewai` | Role-based multi-agent orchestration | Highest |
+| AutoGen | `from autogen`, `import autogen`, `pyautogen` | Multi-agent conversation (Microsoft) | High |
+| Haystack | `from haystack`, `import haystack` | RAG / document pipeline (deepset) | High |
+| SmolAgents | `from smolagents`, `import smolagents` | HuggingFace agent library (lightweight) | High |
+| Ollama | `import ollama`, `from ollama` | Local model inference | High |
+| Google Generative AI | `import google.generativeai`, `from google.generativeai` | Gemini API (non-Vertex) | Medium |
+| Mistral SDK | `from mistralai`, `import mistralai` | Mistral AI Python SDK | Medium |
+| Groq SDK | `from groq`, `import groq` | Groq inference API | Medium |
+| DSPy | `from dspy`, `import dspy` | Programmatic LM pipelines (Stanford) | Medium |
+| AWS Bedrock | `import boto3` + `bedrock`, `from botocore.*bedrock` | AWS managed model API | Medium |
+| Google Vertex AI | `from vertexai`, `import vertexai`, `google.cloud.aiplatform` | Google Cloud model API | Medium |
+| Semantic Kernel | `from semantic_kernel`, `import semantic_kernel` | Microsoft SK (Python) | Lower |
+| Instructor | `from instructor`, `import instructor` | Structured outputs from LLMs | Lower |
+| PydanticAI | `from pydantic_ai`, `import pydantic_ai` | Type-safe agent framework | Lower |
+| Together AI | `from together`, `import together` | Together AI inference API | Lower |
+| Replicate | `import replicate`, `from replicate` | Replicate model hosting API | Lower |
 
 Also expand `risk_patterns.py` `AI_INDICATORS["libraries"]` to match.
 
@@ -230,6 +232,11 @@ The `-o` flag (output file) is added alongside `--format html` support.
 │  FRAMEWORK MAPPING                      │
 │  Collapsible: NIST / ISO / OWASP refs   │
 ├─────────────────────────────────────────┤
+│  SEVERITY REFERENCE                     │
+│  What PROHIBITED / HIGH-RISK /          │
+│  LIMITED / MINIMAL means under the Act  │
+│  How findings are scored                │
+├─────────────────────────────────────────┤
 │  METHODOLOGY                            │
 │  What was checked · What wasn't         │
 │  Honest about static analysis limits    │
@@ -251,7 +258,7 @@ The `-o` flag (output file) is added alongside `--format html` support.
 
 ### Tests
 
-- `test_html_report_structure` — output contains all 6 sections (header, summary, findings, inventory, frameworks, methodology)
+- `test_html_report_structure` — output contains all 7 sections (header, summary, findings, inventory, frameworks, severity-reference, methodology)
 - `test_html_report_risk_badge_prohibited` — PROHIBITED projects get scarlet badge
 - `test_html_report_self_contained` — no `<script src=` or `<link href=` pointing to external resources (only Google Fonts `@import` exception)
 - `test_html_report_cli_integration` — `regula check --format html` exits 0 and produces valid HTML
@@ -291,9 +298,11 @@ Each feature is independently usable (CLI flags are optional). The HTML report d
 
 ## What This Does Not Do
 
-- **Call-chain tracing**: Regula still detects patterns, not data flow. It cannot trace how an AI output variable propagates through function calls.
-- **Live model registry**: The model inventory is static analysis. It does not know if a model is actually deployed or what version is in production.
+- **Call-chain tracing**: Regula detects patterns and imports. Systima Comply (TypeScript Compiler API, JS/TS only) traces how AI return values flow through assignments into UI renders, database writes, and downstream APIs. Regula does not do this.
+- **Live organisational model registry**: Regula's model inventory is shift-left static analysis — it finds model name strings in code. VerifyWise's Model Inventory is a live organisational registry tracking deployed models, versions, lineage, and compliance deadlines. These are complementary, not competing.
+- **Runtime cryptographic proof**: ArkForge's Trust Layer signs individual agent tool calls with Ed25519 at runtime, proving what actually executed. Regula's RFC 3161 timestamping proves a scan hash existed at a given time. Different claims.
 - **Multi-user dashboard**: The HTML report is a static file. No auth, no persistence, no team collaboration.
 - **Runtime monitoring**: All analysis is at scan time. No hooks into running systems.
+- **Python-only**: Framework detection covers Python imports. JS/TS is handled by `ast_engine.py` for compliance checks but framework detection expansion in Feature 2 targets Python. JS/TS framework detection is out of scope for this spec.
 
-These are honest limits, stated in the report's Methodology section.
+These limits are stated in the report's Methodology section. The honest framing is: Regula is a shift-left static analysis tool for developers who need to understand their EU AI Act exposure before deployment. It does not replace an organisational governance platform.
