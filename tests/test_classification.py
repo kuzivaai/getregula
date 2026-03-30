@@ -3555,3 +3555,37 @@ def test_html_report_model_inventory_section():
     assert "gpt-4o" in html, "gpt-4o must appear in model inventory section"
     assert "OpenAI" in html, "Provider must appear in model inventory section"
     print("✓ HTML report: model inventory section renders correctly")
+
+
+def test_smoke_check_html():
+    """regula check --format html exits 0 or 1 and produces valid HTML."""
+    import subprocess, sys
+    result = subprocess.run(
+        [sys.executable, "scripts/cli.py", "check", ".", "--format", "html"],
+        capture_output=True, text=True, cwd=str(Path(__file__).parent.parent)
+    )
+    assert result.returncode in (0, 1), f"check --format html crashed: {result.stderr}"
+    output = result.stdout.strip()
+    assert output.startswith("<!DOCTYPE html>"), f"Expected HTML output, got: {output[:100]}"
+    assert "regula-header" in output, "HTML must contain regula-header section"
+    print("✓ Smoke: check --format html exits and produces valid HTML")
+
+
+def test_smoke_check_html_output_file():
+    """regula check --format html -o /tmp/test_report.html writes file."""
+    import subprocess, sys, os, tempfile
+    with tempfile.NamedTemporaryFile(suffix=".html", delete=False) as tmp:
+        tmp_path = tmp.name
+    try:
+        result = subprocess.run(
+            [sys.executable, "scripts/cli.py", "check", ".", "--format", "html", "-o", tmp_path],
+            capture_output=True, text=True, cwd=str(Path(__file__).parent.parent)
+        )
+        assert result.returncode in (0, 1), f"check --format html -o failed: {result.stderr}"
+        assert os.path.exists(tmp_path), f"Output file not created: {tmp_path}"
+        content = Path(tmp_path).read_text()
+        assert "<!DOCTYPE html>" in content
+        print("✓ Smoke: check --format html -o writes HTML file")
+    finally:
+        if os.path.exists(tmp_path):
+            os.unlink(tmp_path)
