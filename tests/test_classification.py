@@ -3422,3 +3422,16 @@ def test_model_inventory_gpai_tiers():
     assert tiers.get("gpt-4o") == "frontier", f"gpt-4o should be frontier, got {tiers.get('gpt-4o')}"
     assert tiers.get("llama-3.1-8b") == "open_weight", f"llama-3.1-8b should be open_weight, got {tiers.get('llama-3.1-8b')}"
     print("✓ Model inventory: GPAI tiers correct for gpt-4o (frontier) and llama-3.1-8b (open_weight)")
+
+
+def test_smoke_inventory():
+    """regula inventory exits 0 and produces output."""
+    import subprocess
+    result = subprocess.run(
+        ["python3", "scripts/cli.py", "inventory", ".", "--format", "table"],
+        capture_output=True, text=True, cwd=str(Path(__file__).parent.parent)
+    )
+    assert result.returncode == 0, f"inventory failed: {result.stderr}"
+    # Output is either the table or the "No AI model identifiers" message
+    assert result.stdout.strip(), "inventory produced no output"
+    print("✓ Smoke: inventory exits 0 with output")

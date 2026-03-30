@@ -767,6 +767,32 @@ def cmd_compliance(args):
             print()
 
 
+def cmd_inventory(args):
+    """Scan codebase for AI model references with GPAI tier annotations."""
+    from model_inventory import scan_for_models, format_table
+    import json as _json
+
+    path = getattr(args, "path", ".") or "."
+    if path != ".":
+        _validate_path(path)
+
+    result = scan_for_models(path)
+    fmt = getattr(args, "format", "table")
+
+    if fmt == "json":
+        content = _json.dumps(result, indent=2)
+    else:
+        content = format_table(result)
+
+    output_file = getattr(args, "output", None)
+    if output_file:
+        from pathlib import Path as _Path
+        _Path(output_file).write_text(content, encoding="utf-8")
+        print(f"Inventory written to {output_file}", file=sys.stderr)
+    else:
+        print(content)
+
+
 def cmd_gap(args):
     """Compliance gap assessment."""
     if args.project != ".":
@@ -1141,6 +1167,13 @@ Examples:
     p_agent.add_argument("--check-mcp", action="store_true", help="Check MCP configs for credentials")
     p_agent.add_argument("--config-file", help="Specific MCP config to check")
     p_agent.set_defaults(func=cmd_agent)
+
+    # --- inventory ---
+    p_inventory = subparsers.add_parser("inventory", help="Scan codebase for AI model references (GPAI tier annotations)")
+    p_inventory.add_argument("path", nargs="?", default=".", help="Path to scan")
+    p_inventory.add_argument("--format", "-f", choices=["table", "json"], default="table")
+    p_inventory.add_argument("--output", "-o", help="Output file (optional)")
+    p_inventory.set_defaults(func=cmd_inventory)
 
     args = parser.parse_args()
 
