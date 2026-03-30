@@ -185,3 +185,463 @@ def render_to_pdf(html_content: str, fallback_to_html: bool = True) -> bytes:
             "weasyprint is not installed. Install it with: pip install 'regula[pdf]'\n"
             "Or open the HTML file in a browser and use File \u2192 Print \u2192 Save as PDF."
         )
+
+
+# regula-ignore
+# ---------------------------------------------------------------------------
+# Compliance HTML Report — editorial/institutional aesthetic for DPOs/auditors
+# ---------------------------------------------------------------------------
+
+_COMPLIANCE_REPORT_CSS = """
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --navy:      #1B2A4A;
+  --off-white: #FAFAF8;
+  --muted:     #6B7280;
+  --border:    #E4E1D9;
+  --prohibited: #C0392B;
+  --high-risk:  #D35400;
+  --limited:    #1A7A6E;
+  --minimal:    #27AE60;
+}
+
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--navy);
+  background: var(--off-white);
+  margin: 0;
+  padding: 0;
+}
+
+.container { max-width: 860px; margin: 0 auto; padding: 0 24px 64px; }
+
+/* Risk badge */
+.risk-badge {
+  padding: 20px 24px;
+  font-family: 'DM Mono', 'Courier New', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 0;
+}
+.risk-prohibited { background: var(--prohibited); }
+.risk-high-risk   { background: var(--high-risk); }
+.risk-limited     { background: var(--limited); }
+.risk-minimal     { background: var(--minimal); }
+
+/* Header */
+.report-header {
+  border-bottom: 3px solid var(--navy);
+  padding: 32px 0 24px;
+  margin-bottom: 40px;
+}
+.report-header h1 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 32px;
+  font-weight: 400;
+  margin: 0 0 6px;
+  line-height: 1.2;
+}
+.report-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+/* Section headings */
+h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--navy);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+  margin: 48px 0 20px;
+}
+h3 {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 28px 0 8px;
+}
+
+/* Summary grid */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+.summary-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 16px;
+  text-align: center;
+}
+.summary-card .count {
+  font-family: 'DM Serif Display', serif;
+  font-size: 36px;
+  line-height: 1;
+  color: var(--navy);
+}
+.summary-card .label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* Findings */
+.finding {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+  border-radius: 0 4px 4px 0;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+.finding.tier-prohibited  { border-left-color: var(--prohibited); }
+.finding.tier-high-risk   { border-left-color: var(--high-risk); }
+.finding.tier-limited     { border-left-color: var(--limited); }
+.finding.tier-minimal     { border-left-color: var(--minimal); }
+
+.finding-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0 0 4px;
+}
+.finding-desc { margin: 0 0 8px; font-size: 14px; }
+.finding-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Collapsible */
+details { margin-bottom: 8px; }
+details > summary {
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--navy);
+  letter-spacing: 0.04em;
+  list-style: none;
+  padding: 4px 0;
+  user-select: none;
+}
+details > summary::before { content: "▶  "; font-size: 9px; }
+details[open] > summary::before { content: "▼  "; }
+details .framework-refs {
+  background: #F4F3F0;
+  border-radius: 4px;
+  padding: 12px 16px;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 16px 0; }
+th {
+  background: var(--navy);
+  color: #fff;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  text-align: left;
+}
+td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: #F9F8F6; }
+
+/* Tier labels in tables */
+.tier-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.tier-frontier   { background: #FDE8E8; color: var(--prohibited); }
+.tier-open-weight { background: #E8F5E9; color: #1B5E20; }
+.tier-unknown    { background: #F3F4F6; color: var(--muted); }
+
+/* Severity reference */
+.severity-row { display: flex; gap: 16px; margin-bottom: 12px; align-items: flex-start; }
+.severity-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 3px;
+  white-space: nowrap;
+  min-width: 110px;
+  text-align: center;
+}
+.sev-prohibited { background: var(--prohibited); color: #fff; }
+.sev-high-risk  { background: var(--high-risk); color: #fff; }
+.sev-limited    { background: var(--limited); color: #fff; }
+.sev-minimal    { background: var(--minimal); color: #fff; }
+.severity-text  { font-size: 14px; }
+
+/* Print */
+@media print {
+  .risk-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  details { display: block; }
+  details > summary { display: none; }
+  .finding { break-inside: avoid; }
+  h2 { break-after: avoid; }
+}
+"""
+
+
+def generate_compliance_html_report(
+    findings: list,
+    project_name: str,
+    model_data: dict | None = None,
+    framework_names: list | None = None,
+) -> str:
+    """Generate a self-contained HTML compliance report for DPOs and auditors.
+
+    Args:
+        findings: List of finding dicts (from scan_files() or similar).
+        project_name: Display name for the project.
+        model_data: Optional output of model_inventory.scan_for_models().
+        framework_names: Optional list of framework keys for cross-refs in summary.
+
+    Returns:
+        Complete HTML document as a string (all CSS embedded).
+    """
+    from html import escape
+    from datetime import datetime, timezone
+
+    scan_date = datetime.now(timezone.utc).strftime("%d %B %Y, %H:%M UTC")
+
+    # Determine overall risk tier from findings
+    active = [f for f in findings if not f.get("suppressed")]
+    tiers = [f.get("tier", "") for f in active]
+    if "prohibited" in tiers:
+        tier_label = "PROHIBITED USE DETECTED"
+        tier_css = "risk-prohibited"
+    elif "high_risk" in tiers:
+        tier_label = "HIGH-RISK AI SYSTEM"
+        tier_css = "risk-high-risk"
+    elif "limited_risk" in tiers or "agent_autonomy" in tiers:
+        tier_label = "LIMITED-RISK AI SYSTEM"
+        tier_css = "risk-limited"
+    else:
+        tier_label = "MINIMAL-RISK AI SYSTEM"
+        tier_css = "risk-minimal"
+
+    prohibited_count = sum(1 for f in active if f.get("tier") == "prohibited")
+    high_risk_count = sum(1 for f in active if f.get("tier") == "high_risk")
+    limited_count = sum(1 for f in active if f.get("tier") in ("limited_risk", "agent_autonomy"))
+    total_files = len(set(f.get("file", "") for f in active))
+    model_count = model_data["summary"]["total"] if model_data else 0
+
+    # --- SECTION: Risk badge + Header ---
+    header_html = f"""
+<div class="risk-badge {tier_css}" id="regula-header">
+  {escape(tier_label)} &nbsp;&middot;&nbsp; {escape(project_name)} &nbsp;&middot;&nbsp; {escape(scan_date)}
+</div>
+<div class="container">
+<div class="report-header">
+  <h1>EU AI Act Compliance Report</h1>
+  <div class="report-meta">
+    Project: {escape(project_name)} &nbsp;|&nbsp;
+    Scanned: {escape(scan_date)} &nbsp;|&nbsp;
+    Generated by Regula v1.2.0
+  </div>
+</div>
+"""
+
+    # --- SECTION: Executive Summary ---
+    summary_html = f"""
+<section id="regula-summary">
+<h2>Executive Summary</h2>
+<div class="summary-grid">
+  <div class="summary-card">
+    <div class="count">{prohibited_count}</div>
+    <div class="label">Prohibited</div>
+  </div>
+  <div class="summary-card">
+    <div class="count">{high_risk_count}</div>
+    <div class="label">High-Risk</div>
+  </div>
+  <div class="summary-card">
+    <div class="count">{limited_count}</div>
+    <div class="label">Limited-Risk</div>
+  </div>
+  <div class="summary-card">
+    <div class="count">{total_files}</div>
+    <div class="label">Files Scanned</div>
+  </div>
+  <div class="summary-card">
+    <div class="count">{model_count}</div>
+    <div class="label">Models Detected</div>
+  </div>
+</div>
+</section>
+"""
+
+    # --- SECTION: Findings ---
+    tier_order = ["prohibited", "credential_exposure", "high_risk", "agent_autonomy", "limited_risk", "minimal_risk"]
+    tier_display = {
+        "prohibited": "Prohibited Use (Article 5)",
+        "credential_exposure": "Credential Exposure (Article 15)",
+        "high_risk": "High-Risk Indicators (Annex III)",
+        "agent_autonomy": "Agent Autonomy (OWASP Agentic ASI)",
+        "limited_risk": "Limited-Risk",
+        "minimal_risk": "Minimal-Risk",
+    }
+    tier_css_map = {
+        "prohibited": "tier-prohibited",
+        "credential_exposure": "tier-high-risk",
+        "high_risk": "tier-high-risk",
+        "agent_autonomy": "tier-high-risk",
+        "limited_risk": "tier-limited",
+        "minimal_risk": "tier-minimal",
+    }
+
+    findings_html = '<section id="regula-findings">\n<h2>Findings</h2>\n'
+    if not active:
+        findings_html += "<p>No findings detected. This project shows no EU AI Act risk indicators in the scanned files.</p>\n"
+    else:
+        by_tier: dict[str, list] = {}
+        for f in active:
+            t = f.get("tier", "minimal_risk")
+            by_tier.setdefault(t, []).append(f)
+        for tier in tier_order:
+            if tier not in by_tier:
+                continue
+            findings_html += f"<h3>{escape(tier_display.get(tier, tier))}</h3>\n"
+            for f in by_tier[tier]:
+                css = tier_css_map.get(tier, "")
+                desc = escape(f.get("description", ""))
+                file_ref = escape(f.get("file", ""))
+                line_ref = f.get("line", "")
+                score = f.get("confidence_score", 0)
+                articles = f.get("articles", [])
+                article_str = ", ".join(f"Art. {a}" for a in articles) if articles else ""
+                findings_html += f"""<div class="finding {css}">
+  <div class="finding-title">{escape(tier_display.get(tier, tier).split('(')[0].strip())}</div>
+  <div class="finding-desc">{desc}</div>
+  <div class="finding-meta">
+    {escape(file_ref)}:{line_ref} &nbsp;&middot;&nbsp; Confidence: {score}
+    {(' &nbsp;&middot;&nbsp; ' + escape(article_str)) if article_str else ''}
+  </div>
+</div>\n"""
+    findings_html += "</section>\n"
+
+    # --- SECTION: Model Inventory ---
+    inventory_html = '<section id="regula-inventory">\n<h2>Model Inventory</h2>\n'
+    if not model_data or not model_data.get("models"):
+        inventory_html += "<p>No AI model identifiers detected in scanned files. If your project references models via environment variables or external config, they will not appear here.</p>\n"
+    else:
+        s = model_data["summary"]
+        inventory_html += f"<p>{s['total']} model identifier(s) detected: {s['frontier']} frontier, {s['open_weight']} open-weight, {s['unknown']} unclassified.</p>\n"
+        inventory_html += '<table><thead><tr><th>Provider</th><th>Model</th><th>GPAI Tier</th><th>Files</th><th>EU AI Act Note</th></tr></thead><tbody>\n'
+        for m in model_data["models"]:
+            files_count = len(set(o["file"] for o in m["occurrences"]))
+            tier = m["gpai_tier"]
+            tier_cls = "tier-frontier" if tier == "frontier" else ("tier-open-weight" if tier == "open_weight" else "tier-unknown")
+            tier_label_str = tier.replace("_", "-")
+            inventory_html += f'<tr><td>{escape(m["provider"])}</td><td><code>{escape(m["model_id"])}</code></td>'
+            inventory_html += f'<td><span class="tier-label {tier_cls}">{escape(tier_label_str)}</span></td>'
+            inventory_html += f'<td>{files_count}</td><td>{escape(m["eu_note"])}</td></tr>\n'
+        inventory_html += '</tbody></table>\n'
+        inventory_html += '<p style="font-size:12px;color:#6B7280;">Notes are informational flags for human review, not legal conclusions. Art. 53 obligations in force 2 August 2025.</p>\n'
+    inventory_html += "</section>\n"
+
+    # --- SECTION: Framework Mapping ---
+    frameworks_html = '<section id="regula-frameworks">\n<h2>Framework Mapping</h2>\n'
+    if not framework_names:
+        frameworks_html += "<p>No cross-framework mapping requested. Run with <code>--framework nist-ai-rmf</code> (or <code>all</code>) to include NIST AI RMF, ISO 42001, OWASP LLM Top 10, and other framework cross-references.</p>\n"
+    else:
+        try:
+            from framework_mapper import map_to_frameworks, format_mapping_text
+            mapping = map_to_frameworks(frameworks=framework_names)
+            frameworks_html += "<details open><summary>Cross-framework controls</summary>\n"
+            frameworks_html += f'<div class="framework-refs"><pre>{escape(format_mapping_text(mapping))}</pre></div>\n</details>\n'
+        except ImportError:
+            frameworks_html += "<p>Framework mapper unavailable.</p>\n"
+    frameworks_html += "</section>\n"
+
+    # --- SECTION: Severity Reference ---
+    severity_html = """<section id="regula-severity-ref">
+<h2>Severity Reference</h2>
+<div class="severity-row">
+  <div class="severity-badge sev-prohibited">PROHIBITED</div>
+  <div class="severity-text"><strong>Article 5 — Prohibited practices.</strong> AI systems deploying manipulation techniques, exploiting vulnerabilities, social scoring by public authorities, or real-time remote biometric identification in public spaces (with narrow exceptions). Prohibited from market placement.</div>
+</div>
+<div class="severity-row">
+  <div class="severity-badge sev-high-risk">HIGH-RISK</div>
+  <div class="severity-text"><strong>Annex III — High-risk AI systems.</strong> Systems used in critical infrastructure, education, employment, essential services, law enforcement, migration, administration of justice, or democratic processes. Full obligations under Articles 9–15 apply before market placement.</div>
+</div>
+<div class="severity-row">
+  <div class="severity-badge sev-limited">LIMITED-RISK</div>
+  <div class="severity-text"><strong>Articles 50, 52 — Transparency obligations.</strong> Chatbots, AI-generated content, emotion recognition, and biometric categorisation systems must disclose AI involvement to users. No pre-market authorisation required.</div>
+</div>
+<div class="severity-row">
+  <div class="severity-badge sev-minimal">MINIMAL-RISK</div>
+  <div class="severity-text"><strong>No mandatory obligations</strong> under the EU AI Act. Includes AI-enabled spam filters, inventory management, and most AI features not in the above categories. Voluntary codes of conduct encouraged.</div>
+</div>
+<p style="font-size:12px;color:#6B7280;margin-top:16px;">Confidence scores (0–100) indicate how many risk indicators matched in the scanned file. Scores &ge;80 or any prohibited pattern = BLOCK tier. 50–79 = WARN. &lt;50 = INFO.</p>
+</section>
+"""
+
+    # --- SECTION: Methodology ---
+    methodology_html = """<section id="regula-methodology">
+<h2>Methodology</h2>
+<p>This report is produced by static analysis of source code, configuration files, and documentation. It does not execute the code or observe runtime behaviour.</p>
+<h3>What was checked</h3>
+<ul>
+  <li>Source files for EU AI Act Article 5 prohibited patterns, Annex III high-risk indicators, and limited-risk transparency obligations</li>
+  <li>Import statements and API endpoint references for AI framework usage</li>
+  <li>Quoted model identifier strings for AI model inventory</li>
+  <li>Credential patterns and agent autonomy indicators</li>
+</ul>
+<h3>Honest limits</h3>
+<ul>
+  <li><strong>No call-chain tracing.</strong> This tool detects import and pattern presence. It does not trace how AI outputs flow through function calls or data pipelines.</li>
+  <li><strong>No runtime knowledge.</strong> The model inventory identifies model names in code. It does not know which models are deployed, in which environment, or at what scale.</li>
+  <li><strong>Heuristic scoring.</strong> Confidence scores are based on indicator counts, not legal analysis. A high score flags a file for review; it does not constitute a compliance determination.</li>
+  <li><strong>Scope.</strong> Only files with extensions .py, .js, .ts, .jsx, .tsx, .mjs, .cjs were scanned. Infrastructure-as-code, notebooks, and binary files are excluded unless explicitly included.</li>
+</ul>
+<p style="font-size:12px;color:#6B7280;">Generated by Regula v1.2.0 — EU AI Act Governance Indication Tool. This report does not constitute legal advice.</p>
+</section>
+</div><!-- /container -->
+"""
+
+    body = header_html + summary_html + findings_html + inventory_html + frameworks_html + severity_html + methodology_html
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EU AI Act Compliance Report &mdash; {escape(project_name)}</title>
+<style>
+{_COMPLIANCE_REPORT_CSS}
+</style>
+</head>
+<body>
+{body}
+</body>
+</html>"""

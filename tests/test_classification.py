@@ -3487,3 +3487,71 @@ def test_smoke_gap_framework():
     data = _json.loads(result.stdout)
     assert "data" in data
     print("✓ Smoke: gap --framework nist-ai-rmf exits 0")
+
+
+# regula-ignore
+# ---------------------------------------------------------------------------
+# Feature: HTML compliance report
+# ---------------------------------------------------------------------------
+
+def test_html_report_structure():
+    """generate_compliance_html_report returns HTML with all 7 required sections."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from pdf_export import generate_compliance_html_report
+    findings = [
+        {"file": "app.py", "line": 1, "tier": "high_risk", "category": "biometric",
+         "description": "Biometric categorisation", "articles": ["6"], "confidence_score": 80,
+         "suppressed": False, "observations": [], "indicators": []},
+    ]
+    html = generate_compliance_html_report(findings, "test-project")
+    assert isinstance(html, str), "output must be a string"
+    for section_id in ["regula-header", "regula-summary", "regula-findings",
+                        "regula-inventory", "regula-frameworks",
+                        "regula-severity-ref", "regula-methodology"]:
+        assert section_id in html, f"HTML must contain section id='{section_id}'"
+    print("✓ HTML report: all 7 sections present")
+
+
+def test_html_report_risk_badge_prohibited():
+    """Report for a project with prohibited findings has the prohibited risk class."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from pdf_export import generate_compliance_html_report
+    findings = [
+        {"file": "app.py", "line": 5, "tier": "prohibited", "category": "manipulation",
+         "description": "Prohibited manipulation technique detected", "articles": ["5(1)(a)"],
+         "confidence_score": 95, "suppressed": False, "observations": [], "indicators": []},
+    ]
+    html = generate_compliance_html_report(findings, "test-project")
+    assert "risk-prohibited" in html or "PROHIBITED" in html, "HTML must indicate PROHIBITED risk tier"
+    print("✓ HTML report: PROHIBITED badge present for prohibited findings")
+
+
+def test_html_report_self_contained():
+    """HTML report has no external <script src=> or <link href=> (only @import for fonts is allowed)."""
+    import sys, re
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from pdf_export import generate_compliance_html_report
+    html = generate_compliance_html_report([], "test-project")
+    assert re.search(r'<script\s[^>]*src\s*=', html) is None, "No external <script src=>"
+    assert re.search(r'<link\s[^>]*href\s*=.*\.css', html) is None, "No external CSS <link href=>"
+    print("✓ HTML report: self-contained (no external script/link tags)")
+
+
+def test_html_report_model_inventory_section():
+    """HTML report renders model inventory when model_data provided."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from pdf_export import generate_compliance_html_report
+    model_data = {
+        "models": [
+            {"provider": "OpenAI", "model_id": "gpt-4o", "gpai_tier": "frontier",
+             "eu_note": "Art 53 obligations apply.", "occurrences": [{"file": "app.py", "line": 12}]}
+        ],
+        "summary": {"total": 1, "frontier": 1, "open_weight": 0, "unknown": 0},
+    }
+    html = generate_compliance_html_report([], "test-project", model_data=model_data)
+    assert "gpt-4o" in html, "gpt-4o must appear in model inventory section"
+    assert "OpenAI" in html, "Provider must appear in model inventory section"
+    print("✓ HTML report: model inventory section renders correctly")
