@@ -38,6 +38,60 @@ ARCHITECTURE_PATTERNS = {
     "Anthropic API": [r"import\s+anthropic", r"from\s+anthropic"],
     "spaCy (NLP)": [r"import\s+spacy", r"from\s+spacy"],
     "ONNX Runtime": [r"import\s+onnxruntime", r"from\s+onnxruntime"],
+    "LiteLLM (multi-provider proxy)": [
+        r"from\s+litellm", r"import\s+litellm",
+    ],
+    "CrewAI (multi-agent orchestration)": [
+        r"from\s+crewai", r"import\s+crewai",
+    ],
+    "AutoGen (multi-agent conversation)": [
+        r"from\s+autogen", r"import\s+autogen", r"import\s+pyautogen", r"from\s+pyautogen",
+    ],
+    "Haystack (RAG / document pipeline)": [
+        r"from\s+haystack", r"import\s+haystack",
+    ],
+    "smolagents (HuggingFace lightweight agents)": [
+        r"from\s+smolagents", r"import\s+smolagents",
+    ],
+    "Ollama (local model inference)": [
+        r"import\s+ollama", r"from\s+ollama",
+    ],
+    "Google Generative AI (Gemini API)": [
+        r"import\s+google\.generativeai", r"from\s+google\.generativeai",
+        r"import\s+google_generativeai",
+    ],
+    "Mistral AI SDK": [
+        r"from\s+mistralai", r"import\s+mistralai",
+    ],
+    "Groq SDK": [
+        r"from\s+groq\s+import", r"import\s+groq\b",
+    ],
+    "DSPy (programmatic LM pipelines)": [
+        r"import\s+dspy\b", r"from\s+dspy",
+    ],
+    "AWS Bedrock": [
+        r"bedrock(?:_runtime|_agent)?",
+        r"boto3.*bedrock", r"botocore.*bedrock",
+    ],
+    "Google Vertex AI": [
+        r"from\s+vertexai", r"import\s+vertexai",
+        r"google\.cloud\.aiplatform",
+    ],
+    "Semantic Kernel (Microsoft)": [
+        r"from\s+semantic_kernel", r"import\s+semantic_kernel",
+    ],
+    "Instructor (structured LLM output)": [
+        r"from\s+instructor", r"import\s+instructor\b",
+    ],
+    "PydanticAI (type-safe agents)": [
+        r"from\s+pydantic_ai", r"import\s+pydantic_ai",
+    ],
+    "Together AI": [
+        r"from\s+together\s+import", r"import\s+together\b",
+    ],
+    "Replicate": [
+        r"import\s+replicate\b", r"from\s+replicate",
+    ],
 }
 
 # Data source detection: code patterns → data source description
