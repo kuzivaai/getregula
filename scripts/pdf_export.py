@@ -575,8 +575,9 @@ def generate_compliance_html_report(
         frameworks_html += "<p>No cross-framework mapping requested. Run with <code>--framework nist-ai-rmf</code> (or <code>all</code>) to include NIST AI RMF, ISO 42001, OWASP LLM Top 10, and other framework cross-references.</p>\n"
     else:
         try:
-            from framework_mapper import map_to_frameworks, format_mapping_text
-            mapping = map_to_frameworks(frameworks=framework_names)
+            from framework_mapper import map_to_frameworks, format_mapping_text, _ARTICLE_KEY_MAP
+            all_articles = list(_ARTICLE_KEY_MAP.keys())
+            mapping = map_to_frameworks(articles=all_articles, frameworks=framework_names)
             frameworks_html += "<details open><summary>Cross-framework controls</summary>\n"
             frameworks_html += f'<div class="framework-refs"><pre>{escape(format_mapping_text(mapping))}</pre></div>\n</details>\n'
         except ImportError:

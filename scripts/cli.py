@@ -154,7 +154,31 @@ def cmd_check(args):
     warn_findings = [f for f in active if f["_finding_tier"] == "warn"]
     info_findings = [f for f in active if f["_finding_tier"] == "info"]
 
-    if args.format == "json":
+    if args.format == "html":
+        from pdf_export import generate_compliance_html_report
+        from model_inventory import scan_for_models
+        project_name = getattr(args, "name", None) or Path(project).name
+        # Gather model inventory
+        model_data = scan_for_models(project)
+        # Gather framework names if requested
+        fw_arg = getattr(args, "framework", None)
+        framework_names = [f.strip() for f in fw_arg.split(",")] if fw_arg else None
+        html_content = generate_compliance_html_report(
+            findings,
+            project_name,
+            model_data=model_data,
+            framework_names=framework_names,
+        )
+        output_file = getattr(args, "output", None)
+        if output_file:
+            out_path = Path(output_file)
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            out_path.write_text(html_content, encoding="utf-8")
+            print(f"Report written to {out_path}", file=sys.stderr)
+        else:
+            print(html_content)
+        sys.exit(1 if block_findings else 0)
+    elif args.format == "json":
         json_output("check", findings)
     elif args.format == "sarif":
         from report import generate_sarif
@@ -984,7 +1008,14 @@ Examples:
     # --- check ---
     p_check = subparsers.add_parser("check", help="Scan files for risk indicators")
     p_check.add_argument("path", nargs="?", default=".", help="Path to scan")
-    p_check.add_argument("--format", "-f", choices=["text", "json", "sarif"], default="text")
+    p_check.add_argument("--format", "-f", choices=["text", "json", "sarif", "html"], default="text")
+    p_check.add_argument("--output", "-o", help="Output file (use with --format html)")
+    p_check.add_argument(
+        "--framework",
+        metavar="FRAMEWORKS",
+        help="Include cross-framework mappings in HTML report (comma-separated): "
+             "nist-ai-rmf, iso-42001, nist-csf, soc2, iso-27001, owasp-llm-top10, mitre-atlas, all",
+    )
     p_check.add_argument("--name", "-n", help="Project name for SARIF output")
     p_check.add_argument("--no-ignore", action="store_true", help="Don't respect regula-ignore comments")
     p_check.add_argument("--strict", action="store_true", help="Exit 1 on WARN-tier findings")
