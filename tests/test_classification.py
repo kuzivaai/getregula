@@ -3342,3 +3342,83 @@ def test_framework_count_expanded():
     count = len(ARCHITECTURE_PATTERNS)
     assert count >= 28, f"Expected ≥28 architecture patterns, got {count}"
     print(f"✓ Framework detection: {count} architectures in ARCHITECTURE_PATTERNS")
+
+
+# ---------------------------------------------------------------------------
+# Feature: Model Inventory
+# ---------------------------------------------------------------------------
+
+def test_model_inventory_detects_gpt4o():
+    """Detects gpt-4o string in Python source file."""
+    import sys, tempfile, os
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from model_inventory import scan_for_models
+    with tempfile.TemporaryDirectory() as tmp:
+        Path(tmp, "app.py").write_text('client = OpenAI()\nresponse = client.chat.completions.create(model="gpt-4o", messages=[])\n')
+        result = scan_for_models(tmp)
+    ids = [m["model_id"] for m in result["models"]]
+    assert "gpt-4o" in ids, f"Expected gpt-4o in {ids}"
+    print("✓ Model inventory: detects gpt-4o")
+
+
+def test_model_inventory_detects_from_pretrained():
+    """Detects model name in from_pretrained() call."""
+    import sys, tempfile
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from model_inventory import scan_for_models
+    with tempfile.TemporaryDirectory() as tmp:
+        Path(tmp, "model.py").write_text('from transformers import AutoModel\nmodel = AutoModel.from_pretrained("llama-3.1-8b")\n')
+        result = scan_for_models(tmp)
+    ids = [m["model_id"] for m in result["models"]]
+    assert "llama-3.1-8b" in ids, f"Expected llama-3.1-8b in {ids}"
+    print("✓ Model inventory: detects from_pretrained model name")
+
+
+def test_model_inventory_json_schema():
+    """Output matches expected schema: models list + summary dict."""
+    import sys, tempfile
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from model_inventory import scan_for_models
+    with tempfile.TemporaryDirectory() as tmp:
+        Path(tmp, "app.py").write_text('model="gpt-4o"\n')
+        result = scan_for_models(tmp)
+    assert "models" in result, "output must have 'models' key"
+    assert "summary" in result, "output must have 'summary' key"
+    assert "total" in result["summary"]
+    assert "frontier" in result["summary"]
+    assert "open_weight" in result["summary"]
+    if result["models"]:
+        m = result["models"][0]
+        assert "provider" in m
+        assert "model_id" in m
+        assert "gpai_tier" in m
+        assert "eu_note" in m
+        assert "occurrences" in m
+    print("✓ Model inventory: JSON schema valid")
+
+
+def test_model_inventory_empty_project():
+    """Returns empty models list for a project with no AI model references."""
+    import sys, tempfile
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from model_inventory import scan_for_models
+    with tempfile.TemporaryDirectory() as tmp:
+        Path(tmp, "hello.py").write_text('print("hello world")\n')
+        result = scan_for_models(tmp)
+    assert result["models"] == [], f"Expected empty list, got {result['models']}"
+    assert result["summary"]["total"] == 0
+    print("✓ Model inventory: empty project returns empty list")
+
+
+def test_model_inventory_gpai_tiers():
+    """Frontier and open-weight models get correct gpai_tier values."""
+    import sys, tempfile
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from model_inventory import scan_for_models
+    with tempfile.TemporaryDirectory() as tmp:
+        Path(tmp, "app.py").write_text('model_a = "gpt-4o"\nmodel_b = "llama-3.1-8b"\n')
+        result = scan_for_models(tmp)
+    tiers = {m["model_id"]: m["gpai_tier"] for m in result["models"]}
+    assert tiers.get("gpt-4o") == "frontier", f"gpt-4o should be frontier, got {tiers.get('gpt-4o')}"
+    assert tiers.get("llama-3.1-8b") == "open_weight", f"llama-3.1-8b should be open_weight, got {tiers.get('llama-3.1-8b')}"
+    print("✓ Model inventory: GPAI tiers correct for gpt-4o (frontier) and llama-3.1-8b (open_weight)")
