@@ -799,7 +799,9 @@ def cmd_gap(args):
         _validate_path(args.project)
     from compliance_check import assess_compliance, format_gap_text
     articles = [args.article] if args.article else None
-    assessment = assess_compliance(args.project, articles=articles)
+    fw_arg = getattr(args, "framework", None)
+    frameworks = [f.strip() for f in fw_arg.split(",")] if fw_arg else None
+    assessment = assess_compliance(args.project, articles=articles, frameworks=frameworks)
     if args.format == "json":
         json_output("gap", assessment)
     else:
@@ -1119,6 +1121,12 @@ Examples:
     p_gap.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_gap.add_argument("--article", "-a", help="Check specific article only (e.g., 14)")
     p_gap.add_argument("--strict", action="store_true", help="Exit 1 if overall score < 50")
+    p_gap.add_argument(
+        "--framework",
+        metavar="FRAMEWORKS",
+        help="Cross-reference findings to other frameworks (comma-separated): "
+             "nist-ai-rmf, iso-42001, nist-csf, soc2, iso-27001, owasp-llm-top10, mitre-atlas, all",
+    )
     p_gap.set_defaults(func=cmd_gap)
 
     # --- benchmark ---
