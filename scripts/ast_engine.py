@@ -183,7 +183,8 @@ CPP_AI_LIBRARIES = {
 def detect_language(filename: str) -> Optional[str]:
     """Map a filename to a supported language string.
 
-    Returns one of "python", "javascript", "typescript", or None.
+    Returns one of "python", "javascript", "typescript", "java", "go",
+    "rust", "c", "cpp", or None.
     """
     ext = Path(filename).suffix.lower()
     return EXTENSION_MAP.get(ext)
