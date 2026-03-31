@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from classify_risk import classify, RiskTier, is_ai_related, get_governance_contacts, check_ai_security
 from log_event import log_event
 from code_analysis import analyse_project_code
-from ast_analysis import parse_python_file, detect_human_oversight, detect_logging_practices
+from ast_analysis import parse_python_file, detect_human_oversight, detect_logging_practices, trace_ai_data_flow
 
 
 def scan_project(project_path: str) -> dict:
@@ -101,6 +101,7 @@ def ast_analyse_project(project_path: str) -> dict:
     logging_scores: list = []
     total_logged = 0
     total_unlogged = 0
+    all_data_flows: list = []
 
     for filepath in project.rglob("*.py"):
         if any(d in filepath.relative_to(project).parts for d in skip_dirs):
@@ -142,6 +143,11 @@ def ast_analyse_project(project_path: str) -> dict:
         total_logged += logging["ai_operations_logged"]
         total_unlogged += logging["ai_operations_unlogged"]
 
+        # Data flow tracing
+        flows = trace_ai_data_flow(content)
+        for flow in flows:
+            all_data_flows.append(dict(flow, file=rel))
+
     oversight_score = int(sum(oversight_scores) / len(oversight_scores)) if oversight_scores else 50
     logging_score = int(sum(logging_scores) / len(logging_scores)) if logging_scores else 50
 
@@ -159,6 +165,7 @@ def ast_analyse_project(project_path: str) -> dict:
         "logging_score": logging_score,
         "total_logged": total_logged,
         "total_unlogged": total_unlogged,
+        "data_flows": all_data_flows,
     }
 
 
@@ -357,6 +364,23 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
         doc += "\n_Verify logging meets Article 12 record-keeping requirements._\n\n"
     else:
         doc += "_No logging infrastructure detected._ Article 12 requires automatic recording of events.\n\n"
+
+    # 3.5 Data Flow — AST-derived AI operation flow tracing
+    doc += "### 3.5 AI Data Flow\n"
+    if ast_data["data_flows"]:
+        doc += "_[AUTO-DETECTED — VERIFY]_ AST analysis traced the following AI operation data flows:\n\n"
+        for flow in ast_data["data_flows"][:15]:  # cap to avoid walls of text
+            dests = flow.get("destinations", [])
+            dest_strs = []
+            for d in dests:
+                dest_strs.append(f"{d['type']} (line {d['line']})")
+            dest_summary = ", ".join(dest_strs) if dest_strs else "no traced destinations"
+            doc += f"- AI operation at line {flow['source_line']} flows to: {dest_summary} — `{flow['file']}`\n"
+        if len(ast_data["data_flows"]) > 15:
+            doc += f"- _...and {len(ast_data['data_flows']) - 15} more_\n"
+        doc += "\n_Review data flow paths to ensure AI outputs pass through appropriate oversight and logging._\n\n"
+    else:
+        doc += "_No AI data flows detected._ If the system produces AI-generated outputs, document how they flow through the application.\n\n"
 
     # 4. Risk Register — auto-populated from security findings
     doc += "---\n\n## 4. Risk Management System (Article 9)\n\n"

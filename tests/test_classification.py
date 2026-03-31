@@ -3977,6 +3977,21 @@ def main():
     print("✓ Cross-function: no false positive on non-AI code")
 
 
+def test_docs_include_data_flow():
+    """regula docs output includes AST data flow analysis."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from generate_documentation import generate_annex_iv, scan_project
+    project_path = str(Path(__file__).parent.parent)
+    findings = scan_project(project_path)
+    project_name = Path(project_path).name
+    result = generate_annex_iv(findings, project_name, project_path)
+    assert isinstance(result, str)
+    assert len(result) > 100, "Annex IV output should be substantial"
+    assert "3.5 AI Data Flow" in result, "Annex IV must include data flow section"
+    print(f"✓ Docs integration: Annex IV output is {len(result)} chars")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -4299,6 +4314,8 @@ if __name__ == "__main__":
         test_cross_function_ai_flow_detected,
         test_cross_function_oversight_detected,
         test_cross_function_no_false_positive,
+        # Docs data flow integration (1 test)
+        test_docs_include_data_flow,
     ]
 
     print(f"Running {len(tests)} tests...\n")
