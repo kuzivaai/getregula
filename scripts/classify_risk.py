@@ -35,6 +35,13 @@ from policy_config import (
     _parse_yaml_fallback,
 )
 
+# Load custom rules (if any)
+try:
+    from custom_rules import load_custom_rules
+    _CUSTOM_RULES = load_custom_rules()
+except ImportError:
+    _CUSTOM_RULES = {}
+
 
 # ---------------------------------------------------------------------------
 # AI security check
@@ -223,12 +230,18 @@ def is_ai_related(text: str, stripped_text: str = None) -> bool:
     Uses full text by default -- AI library imports are in code, not comments.
     stripped_text parameter is accepted for API compatibility but not used here
     because import statements are never in comments.
+
+    Also checks custom AI indicators from regula-rules.yaml (if loaded).
     """
     check = text.lower()
     for category in AI_INDICATORS.values():
         for pattern in category:
             if re.search(pattern, check):
                 return True
+    # Check custom AI indicators
+    for indicator in _CUSTOM_RULES.get("ai_indicators", []):
+        if indicator.lower() in check:
+            return True
     return False
 
 
@@ -240,6 +253,18 @@ def check_prohibited(text: str, stripped_text: str = None) -> Optional[Classific
         for pattern in config["patterns"]:
             if re.search(pattern, text_lower):
                 matches.append(config | {"indicator": name})
+                break
+
+    # Check custom prohibited rules
+    for rule in _CUSTOM_RULES.get("prohibited", []):
+        for pattern in rule["patterns"]:
+            if re.search(pattern, text_lower):
+                matches.append({
+                    "indicator": rule["name"],
+                    "patterns": rule["patterns"],
+                    "description": rule["description"],
+                    "article": rule.get("article", "5"),
+                })
                 break
 
     if matches and stripped_lower is not None:
@@ -280,6 +305,19 @@ def check_high_risk(text: str, stripped_text: str = None) -> Optional[Classifica
                 matches.append(config | {"indicator": name})
                 break
 
+    # Check custom high-risk rules
+    for rule in _CUSTOM_RULES.get("high_risk", []):
+        for pattern in rule["patterns"]:
+            if re.search(pattern, text_lower):
+                matches.append({
+                    "indicator": rule["name"],
+                    "patterns": rule["patterns"],
+                    "description": rule["description"],
+                    "articles": rule.get("articles", ["6"]),
+                    "category": rule.get("category", "Custom High-Risk"),
+                })
+                break
+
     if matches and stripped_lower is not None:
         # Filter: keep only matches that also appear in stripped (non-comment) text
         confirmed = []
@@ -317,6 +355,17 @@ def check_limited_risk(text: str, stripped_text: str = None) -> Optional[Classif
         for pattern in config["patterns"]:
             if re.search(pattern, text_lower):
                 matches.append(config | {"indicator": name})
+                break
+
+    # Check custom limited-risk rules
+    for rule in _CUSTOM_RULES.get("limited_risk", []):
+        for pattern in rule["patterns"]:
+            if re.search(pattern, text_lower):
+                matches.append({
+                    "indicator": rule["name"],
+                    "patterns": rule["patterns"],
+                    "description": rule.get("description", "Custom limited-risk rule"),
+                })
                 break
 
     if matches and stripped_lower is not None:
