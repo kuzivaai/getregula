@@ -1082,6 +1082,33 @@ def format_gap_text(assessment: dict) -> str:
         for gap in result["gaps"]:
             lines.append(f"  Gap:      {gap}")
 
+        fw_data = result.get("frameworks", {})
+        if fw_data:
+            lines.append("  Frameworks:")
+            _FW_LABELS = {
+                "lgpd": "LGPD (Lei 13.709/2018 — Brasil)",
+                "marco_legal_ia": "Marco Legal da IA (PL 2338/2023 — Brasil)",
+                "nist_ai_rmf": "NIST AI RMF 1.0", "iso_42001": "ISO/IEC 42001:2023",
+                "nist_csf": "NIST CSF 2.0", "soc2": "SOC 2",
+                "iso_27001": "ISO 27001:2022", "owasp_llm_top10": "OWASP LLM Top 10",
+                "mitre_atlas": "MITRE ATLAS",
+            }
+            for fw_key, fw_content in fw_data.items():
+                label = _FW_LABELS.get(fw_key, fw_key.upper())
+                status = fw_content.get("status", "")
+                lines.append(f"    {label} [{status}]" if status else f"    {label}")
+                for art in fw_content.get("articles", []):
+                    lines.append(f"      \u2022 {art}")
+                for ctrl in fw_content.get("controls", []):
+                    lines.append(f"      \u2022 {ctrl}")
+                functions = fw_content.get("functions", [])
+                if functions:
+                    lines.append(f"      Functions: {', '.join(functions)}")
+                for sub in fw_content.get("subcategories", []):
+                    lines.append(f"      \u2022 {sub}")
+                if fw_content.get("notes"):
+                    lines.append(f"      Note: {fw_content['notes']}")
+
         lines.append("")
 
     lines.append(f"Summary: {assessment['summary']}")

@@ -3214,6 +3214,156 @@ def test_all_articles_have_lgpd_mapping():
     print(f"✓ All 7 EU AI Act articles (9-15) have LGPD mappings")
 
 
+# Bug fix: regula check accepts single file paths
+# ---------------------------------------------------------------------------
+
+def test_check_accepts_single_file():
+    """scan_files must accept a single .py file path, not just directories."""
+    import sys, tempfile, os
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from report import scan_files
+    code = "from transformers import pipeline\nclassifier = pipeline('text-classification')\n"
+    with tempfile.NamedTemporaryFile(suffix=".py", mode="w", delete=False, dir="/tmp") as f:
+        f.write(code)
+        tmp_path = f.name
+    try:
+        results = scan_files(tmp_path)
+        assert isinstance(results, list), f"scan_files({tmp_path!r}) must return a list, got {type(results)}"
+        print(f"✓ Bug fix: scan_files accepts single file path (found {len(results)} findings)")
+    finally:
+        os.unlink(tmp_path)
+
+
+def test_check_cli_single_file():
+    """regula check CLI must not raise PathError for a single .py file."""
+    import sys, subprocess, tempfile, os
+    tmp = tempfile.NamedTemporaryFile(suffix=".py", mode="w", delete=False, dir="/tmp")
+    tmp.write("from transformers import pipeline\n")
+    tmp.close()
+    try:
+        result = subprocess.run(
+            [sys.executable, "-m", "scripts.cli", "check", tmp.name],
+            capture_output=True, text=True,
+            cwd=str(Path(__file__).parent.parent)
+        )
+        assert "Path is not a directory" not in result.stderr, (
+            f"check rejected a single file: {result.stderr}"
+        )
+        assert result.returncode in (0, 1), f"Unexpected exit code {result.returncode}: {result.stderr}"
+        print(f"✓ Bug fix: CLI check accepts single file path (exit {result.returncode})")
+    finally:
+        os.unlink(tmp.name)
+
+
+# ---------------------------------------------------------------------------
+# Bug fix: metrics tier normalisation
+# ---------------------------------------------------------------------------
+
+def test_metrics_normalises_raw_tiers():
+    """get_stats must normalise raw classification tiers to BLOCK/WARN/INFO."""
+    import sys, tempfile, os
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    import metrics as m
+    with tempfile.TemporaryDirectory() as tmpdir:
+        orig_home = os.environ.get("HOME")
+        os.environ["HOME"] = tmpdir
+        try:
+            m.reset_stats()
+            m.record_scan([
+                {"tier": "HIGH_RISK"}, {"tier": "AI_SECURITY"}, {"tier": "CREDENTIAL_EXPOSURE"},
+                {"tier": "MINIMAL_RISK"}, {"tier": "AGENT_AUTONOMY"}, {"tier": "LIMITED_RISK"},
+                {"tier": "PROHIBITED"},
+            ])
+            stats = m.get_stats()
+            tiers = stats["findings_by_tier"]
+            unexpected = [k for k in tiers if k not in ("BLOCK", "WARN", "INFO")]
+            assert not unexpected, f"Unexpected raw tier keys: {unexpected}"
+            assert tiers.get("BLOCK", 0) == 4, f"Expected 4 BLOCK, got {tiers}"
+            print(f"✓ Bug fix: metrics normalises raw tiers → {tiers}")
+        finally:
+            if orig_home:
+                os.environ["HOME"] = orig_home
+            elif "HOME" in os.environ:
+                del os.environ["HOME"]
+
+
+def test_metrics_normalises_prohibited():
+    """PROHIBITED tier must normalise to BLOCK."""
+    import sys, tempfile, os
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    import metrics as m
+    with tempfile.TemporaryDirectory() as tmpdir:
+        orig_home = os.environ.get("HOME")
+        os.environ["HOME"] = tmpdir
+        try:
+            m.reset_stats()
+            m.record_scan([{"tier": "PROHIBITED"}, {"tier": "BLOCK"}])
+            stats = m.get_stats()
+            tiers = stats["findings_by_tier"]
+            assert tiers.get("BLOCK", 0) == 2, f"Expected 2 BLOCK, got {tiers}"
+            assert "PROHIBITED" not in tiers
+            print(f"✓ Bug fix: PROHIBITED normalised to BLOCK → {tiers}")
+        finally:
+            if orig_home:
+                os.environ["HOME"] = orig_home
+            elif "HOME" in os.environ:
+                del os.environ["HOME"]
+
+
+# ---------------------------------------------------------------------------
+# Bug fix: gap --framework renders cross-refs in text output
+# ---------------------------------------------------------------------------
+
+def test_gap_framework_text_includes_crossrefs():
+    """format_gap_text must render framework cross-refs when present."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from compliance_check import format_gap_text
+    assessment = {
+        "project": "test", "highest_risk": "minimal_risk",
+        "assessment_date": "2026-03-31T00:00:00Z", "overall_score": 80,
+        "summary": "Test.",
+        "articles": {"13": {
+            "title": "Transparency", "score": 80, "status": "strong",
+            "evidence": ["Some evidence"], "gaps": [],
+            "frameworks": {"lgpd": {
+                "articles": ["Art. 6 (transparência): Informações claras",
+                             "Art. 20: Direito à revisão de decisões automatizadas"],
+                "notes": "Test note.",
+            }}
+        }}
+    }
+    output = format_gap_text(assessment)
+    assert "LGPD" in output or "lgpd" in output.lower(), f"'LGPD' not in output:\n{output}"
+    assert "Art. 20" in output, f"'Art. 20' not in output:\n{output}"
+    print("✓ Bug fix: format_gap_text renders LGPD framework cross-refs")
+
+
+def test_gap_framework_text_multiple_frameworks():
+    """format_gap_text renders both lgpd and marco_legal_ia when present."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from compliance_check import format_gap_text
+    assessment = {
+        "project": "test", "highest_risk": "minimal_risk",
+        "assessment_date": "2026-03-31T00:00:00Z", "overall_score": 80,
+        "summary": "Test.",
+        "articles": {"14": {
+            "title": "Human Oversight", "score": 70, "status": "moderate",
+            "evidence": [], "gaps": [],
+            "frameworks": {
+                "lgpd": {"articles": ["Art. 20: direito à revisão"], "notes": "n"},
+                "marco_legal_ia": {"articles": ["Art. 8: Supervisão humana"],
+                                   "notes": "n", "status": "Projeto de lei"},
+            }
+        }}
+    }
+    output = format_gap_text(assessment)
+    assert "LGPD" in output or "lgpd" in output.lower()
+    assert "Marco Legal" in output or "marco" in output.lower()
+    print("✓ Bug fix: format_gap_text renders multiple framework cross-refs")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -3494,6 +3644,13 @@ if __name__ == "__main__":
         test_marco_legal_ia_framework_mapping,
         test_lgpd_article_14_has_art20,
         test_all_articles_have_lgpd_mapping,
+        # Bug fixes (6 tests)
+        test_check_accepts_single_file,
+        test_check_cli_single_file,
+        test_metrics_normalises_raw_tiers,
+        test_metrics_normalises_prohibited,
+        test_gap_framework_text_includes_crossrefs,
+        test_gap_framework_text_multiple_frameworks,
     ]
 
     print(f"Running {len(tests)} tests...\n")
@@ -3842,3 +3999,5 @@ def test_smoke_check_html_output_file():
         if os.path.exists(tmp_path):
             os.unlink(tmp_path)
 
+
+# ---------------------------------------------------------------------------
