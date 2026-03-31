@@ -3889,6 +3889,29 @@ def test_bias_eval_rejects_non_http_endpoint():
     print("✓ Security: bias_eval rejects non-HTTP endpoints")
 
 
+def test_custom_rule_redos_protection():
+    """Custom rules with catastrophic backtracking patterns are rejected."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from classify_risk import _compile_custom_pattern
+    # Nested quantifier pattern
+    try:
+        _compile_custom_pattern("(a+)+$")
+        assert False, "Should have raised ValueError for nested quantifiers"
+    except ValueError as e:
+        assert "nested quantifier" in str(e).lower()
+    # Long pattern
+    try:
+        _compile_custom_pattern("a" * 501)
+        assert False, "Should have raised ValueError for long pattern"
+    except ValueError as e:
+        assert "too long" in str(e).lower()
+    # Valid pattern should work
+    result = _compile_custom_pattern("social.*scoring")
+    assert result is not None
+    print("✓ Security: ReDoS protection for custom rule patterns")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -4204,8 +4227,9 @@ if __name__ == "__main__":
         test_custom_rules_loads_yaml,
         test_custom_rules_no_file,
         test_custom_prohibited_rule_detected,
-        # Security (1 test)
+        # Security (2 tests)
         test_bias_eval_rejects_non_http_endpoint,
+        test_custom_rule_redos_protection,
     ]
 
     print(f"Running {len(tests)} tests...\n")
