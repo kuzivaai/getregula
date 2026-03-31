@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regula &mdash; Verifica&ccedil;&atilde;o de Conformidade com a Lei de IA da UE</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: #0a0a0a;
+            color: #e5e5e5;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        code, pre, .mono { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', Consolas, monospace; }
+        a { color: #3b82f6; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+        .lang-switch {
+            text-align: right;
+            padding: 12px 24px;
+            font-size: 14px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 100px 0 80px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 64px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+        }
+        .hero .tagline {
+            font-size: 22px;
+            color: #a0a0a0;
+            margin-bottom: 8px;
+        }
+        .hero .subtext {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.85; text-decoration: none; }
+        .btn-primary { background: #3b82f6; color: #fff; }
+        .btn-secondary { background: #1a1a1a; color: #e5e5e5; border: 1px solid #333; }
+
+        /* Sections */
+        section { padding: 80px 0; border-top: 1px solid #1a1a1a; }
+        section h2 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 40px;
+            letter-spacing: -0.5px;
+        }
+
+        /* Brazil highlight */
+        .brazil-hero {
+            background: #0d1117;
+            border: 1px solid #1a2332;
+            border-radius: 12px;
+            padding: 36px;
+            margin-bottom: 48px;
+        }
+        .brazil-hero h3 {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+        .brazil-hero ul {
+            list-style: none;
+            padding: 0;
+        }
+        .brazil-hero li {
+            padding: 8px 0;
+            color: #a0a0a0;
+            font-size: 15px;
+        }
+        .brazil-hero li::before {
+            content: "\25B8";
+            margin-right: 10px;
+            color: #3b82f6;
+        }
+        .brazil-hero .note {
+            margin-top: 16px;
+            color: #666;
+            font-size: 13px;
+            font-style: italic;
+        }
+
+        /* Three-column grid */
+        .grid-3 {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        .grid-3 > div {
+            flex: 1;
+            min-width: 240px;
+            background: #111;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 28px;
+        }
+        .grid-3 h3 {
+            font-size: 18px;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .grid-3 .icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .grid-3 p { color: #999; font-size: 15px; }
+
+        /* Two-column grid */
+        .grid-2 {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .grid-2 > div {
+            flex: 1;
+            min-width: 280px;
+            background: #111;
+            border: 1px solid #1a1a1a;
+            border-radius: 10px;
+            padding: 24px;
+        }
+        .grid-2 h3 {
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .grid-2 p { color: #999; font-size: 14px; }
+
+        /* Scope */
+        .scope-block { max-width: 640px; }
+        .scope-block h3 {
+            font-size: 18px;
+            color: #fff;
+            margin: 24px 0 12px;
+        }
+        .scope-block ul {
+            list-style: none;
+            padding: 0;
+        }
+        .scope-block li {
+            padding: 6px 0;
+            color: #999;
+            font-size: 15px;
+        }
+        .scope-block li::before {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+        .scope-block .is li::before { content: "\2713"; color: #22c55e; }
+        .scope-block .isnt li::before { content: "\2717"; color: #666; }
+        .scope-block .note {
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Install */
+        .install-block pre {
+            background: #111;
+            border: 1px solid #1a1a1a;
+            border-radius: 10px;
+            padding: 24px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #c8c8c8;
+        }
+        .install-block .comment { color: #555; }
+        .install-block .cmd { color: #3b82f6; }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid #1a1a1a;
+            padding: 48px 0;
+            text-align: center;
+            color: #555;
+            font-size: 14px;
+        }
+        footer .tagline-footer {
+            color: #888;
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+        footer .links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        footer .disclaimer {
+            color: #444;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="lang-switch">
+    <a href="index.html">&#x1F1EC;&#x1F1E7; English</a>
+</div>
+
+<div class="container">
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1>Regula</h1>
+        <p class="tagline">Verifica&ccedil;&atilde;o de conformidade com a Lei de IA da UE para o seu c&oacute;digo</p>
+        <p class="subtext">C&oacute;digo aberto. Zero depend&ecirc;ncias. Roda no seu terminal.</p>
+        <div class="cta-group">
+            <a href="#instalacao" class="btn btn-primary">Come&ccedil;ar</a>
+            <a href="https://github.com/kuzivaai/getregula" class="btn btn-secondary">Ver no GitHub</a>
+        </div>
+    </div>
+
+    <!-- Brazilian Market — Primary Focus -->
+    <section>
+        <h2>Conformidade para o mercado brasileiro</h2>
+        <div class="brazil-hero">
+            <h3>Primeira ferramenta de c&oacute;digo aberto com suporte a LGPD e Marco Legal da IA</h3>
+            <ul>
+                <li>LGPD (Lei 13.709/2018) &mdash; mapeamento completo de obriga&ccedil;&otilde;es</li>
+                <li>Marco Legal da IA (PL 2338/2023) &mdash; artigos e requisitos mapeados</li>
+                <li>Sa&iacute;da em portugu&ecirc;s: <code class="mono">regula check . --lang pt-BR</code></li>
+                <li>An&aacute;lise de lacunas: <code class="mono">regula gap --project . --framework lgpd</code></li>
+            </ul>
+            <p class="note">O Marco Legal da IA (PL 2338/2023) foi aprovado pelo Senado em dezembro de 2024 e est&aacute; em tramita&ccedil;&atilde;o na C&acirc;mara dos Deputados.</p>
+        </div>
+    </section>
+
+    <!-- O que o Regula faz -->
+    <section>
+        <h2>O que o Regula faz</h2>
+        <div class="grid-3">
+            <div>
+                <span class="icon">&#x1F50D;</span>
+                <h3>Detectar</h3>
+                <p>Analisa 8 linguagens em busca de padr&otilde;es de IA e indicadores de risco no seu c&oacute;digo-fonte.</p>
+            </div>
+            <div>
+                <span class="icon">&#x2696;</span>
+                <h3>Classificar</h3>
+                <p>Mapeia achados para n&iacute;veis de risco da Lei de IA da UE: proibido, alto risco e risco limitado.</p>
+            </div>
+            <div>
+                <span class="icon">&#x1F4CB;</span>
+                <h3>Reportar</h3>
+                <p>Sa&iacute;da em SARIF, JSON e HTML para integra&ccedil;&atilde;o com CI/CD e fluxos de conformidade.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- O que o Regula e (e nao e) -->
+    <section>
+        <h2>O que o Regula &eacute; (e n&atilde;o &eacute;)</h2>
+        <div class="scope-block">
+            <h3>Regula &eacute;:</h3>
+            <ul class="is">
+                <li>Uma ferramenta de an&aacute;lise est&aacute;tica em tempo de desenvolvimento que detecta padr&otilde;es de c&oacute;digo relacionados a IA e os mapeia para obriga&ccedil;&otilde;es da Lei de IA da UE</li>
+                <li>Um scanner de conformidade shift-left &mdash; como ESLint para risco regulat&oacute;rio, rodando no seu terminal ou pipeline CI/CD</li>
+                <li>Um ponto de partida para consci&ecirc;ncia de conformidade, n&atilde;o uma linha de chegada</li>
+            </ul>
+            <h3>Regula n&atilde;o &eacute;:</h3>
+            <ul class="isnt">
+                <li>Um sistema de monitoramento em tempo de execu&ccedil;&atilde;o (analisa c&oacute;digo-fonte, n&atilde;o sistemas em execu&ccedil;&atilde;o)</li>
+                <li>Um certificado de conformidade legal (achados s&atilde;o indicadores, n&atilde;o determina&ccedil;&otilde;es legais)</li>
+                <li>Um substituto para plataformas GRC corporativas como Credo AI ou Holistic AI (ele as complementa)</li>
+                <li>Uma ferramenta de teste de vi&eacute;s ou equidade (detecta padr&otilde;es de c&oacute;digo, n&atilde;o comportamento de modelos)</li>
+                <li>Assessoria jur&iacute;dica (consulte advogados qualificados para decis&otilde;es de conformidade)</li>
+            </ul>
+            <p class="note">O Regula ajuda equipes de desenvolvimento a entender sua exposi&ccedil;&atilde;o &agrave; Lei de IA da UE cedo. Ele n&atilde;o substitui o trabalho organizacional, processual e jur&iacute;dico necess&aacute;rio para conformidade total.</p>
+        </div>
+    </section>
+
+    <!-- Funcionalidades -->
+    <section>
+        <h2>Funcionalidades</h2>
+        <div class="grid-2">
+            <div>
+                <h3>10 Frameworks de Conformidade</h3>
+                <p>Lei de IA da UE, NIST AI RMF, ISO 42001, LGPD, Marco Legal da IA e mais &mdash; mapeados e referenciados.</p>
+            </div>
+            <div>
+                <h3>Classifica&ccedil;&atilde;o com Contexto</h3>
+                <p>Remo&ccedil;&atilde;o de coment&aacute;rios e an&aacute;lise de escopo reduzem falsos positivos. Detec&ccedil;&otilde;es refletem c&oacute;digo real, n&atilde;o documenta&ccedil;&atilde;o.</p>
+            </div>
+            <div>
+                <h3>Gera&ccedil;&atilde;o de SBOM CycloneDX</h3>
+                <p>Produza uma lista de materiais de software para seus componentes de IA, pronta para auditorias de cadeia de suprimentos.</p>
+            </div>
+            <div>
+                <h3>Motor de Regras Customizado</h3>
+                <p>Defina seus pr&oacute;prios padr&otilde;es de detec&ccedil;&atilde;o e mapeamentos de risco. Em breve.</p>
+            </div>
+            <div>
+                <h3>Suporte ao Mercado Brasileiro</h3>
+                <p>LGPD (Lei 13.709/2018) e Marco Legal da IA (PL 2338/2023) totalmente mapeados com sa&iacute;da em portugu&ecirc;s.</p>
+            </div>
+            <div>
+                <h3>Suporte a 8 Linguagens</h3>
+                <p>Python, JavaScript, TypeScript, Java, C#, Go, Rust e C++ com an&aacute;lise em n&iacute;vel de AST.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Instalacao -->
+    <section id="instalacao">
+        <h2>Instala&ccedil;&atilde;o</h2>
+        <div class="install-block">
+            <pre><span class="comment"># Instalar via PyPI</span>
+<span class="cmd">pip install regula</span>
+
+<span class="comment"># Escanear seu projeto</span>
+<span class="cmd">regula check .</span>
+
+<span class="comment"># Executar an&aacute;lise de lacunas contra um framework</span>
+<span class="cmd">regula gap --project . --framework lgpd</span></pre>
+        </div>
+    </section>
+
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <p class="tagline-footer">Feito para desenvolvedores que constroem IA com responsabilidade.</p>
+        <div class="links">
+            <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+            <a href="https://pypi.org/project/regula/">PyPI</a>
+            <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Guia de Contribui&ccedil;&atilde;o</a>
+        </div>
+        <p class="disclaimer">O Regula n&atilde;o &eacute; assessoria jur&iacute;dica.</p>
+    </div>
+</footer>
+
+</body>
+</html>
