@@ -3876,6 +3876,19 @@ rules:
         os.unlink(tmp_path)
 
 
+def test_bias_eval_rejects_non_http_endpoint():
+    """bias_eval rejects file:// and ftp:// endpoints."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from bias_eval import evaluate_with_ollama
+    try:
+        evaluate_with_ollama([], endpoint="file:///etc/passwd")
+        assert False, "Should have raised ValueError"
+    except ValueError as e:
+        assert "http" in str(e).lower()
+    print("✓ Security: bias_eval rejects non-HTTP endpoints")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -4191,6 +4204,8 @@ if __name__ == "__main__":
         test_custom_rules_loads_yaml,
         test_custom_rules_no_file,
         test_custom_prohibited_rule_detected,
+        # Security (1 test)
+        test_bias_eval_rejects_non_http_endpoint,
     ]
 
     print(f"Running {len(tests)} tests...\n")
