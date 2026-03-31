@@ -23,6 +23,7 @@ from log_event import query_events, verify_chain
 from credential_check import check_secrets
 from remediation import get_remediation
 from agent_monitor import detect_autonomous_actions
+from scan_cache import ScanCache
 
 
 # ---------------------------------------------------------------------------
@@ -69,6 +70,13 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     """
     project = Path(project_path).resolve()
     findings = []
+
+    # Initialise scan cache (failures must never block a scan)
+    cache = None
+    try:
+        cache = ScanCache()
+    except Exception:
+        pass
 
     # Tier ordering for --min-tier filtering
     _TIER_ORDER = {
@@ -121,6 +129,19 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             content = "\n".join(lines)
             rel_path = str(filepath.relative_to(project))
 
+            # Check scan cache — if content unchanged, reuse cached findings
+            try:
+                if cache is not None:
+                    cached = cache.get(rel_path, content)
+                    if cached is not None:
+                        findings.extend(cached)
+                        continue
+            except Exception:
+                pass
+
+            # Track per-file findings for caching
+            file_findings_start = len(findings)
+
             # Agent autonomy detection runs on ALL code files (not just AI-related)
             # because agent tool infrastructure (shell_tool.py, executor.py) may not
             # import AI libraries directly but still expose dangerous capabilities.
@@ -157,6 +178,12 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     pass
 
             if not is_ai_related(content):
+                # Cache findings collected so far for this file
+                try:
+                    if cache is not None:
+                        cache.put(rel_path, content, findings[file_findings_start:])
+                except Exception:
+                    pass
                 continue
 
             # Check for suppression comments
@@ -235,11 +262,23 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         "confidence_score": 20,
                         "suppressed": "*" in suppressed_rules,
                     })
+                # Cache findings collected so far for this file
+                try:
+                    if cache is not None:
+                        cache.put(rel_path, content, findings[file_findings_start:])
+                except Exception:
+                    pass
                 continue
 
             # Skip findings below min_tier threshold
             tier_level = _TIER_ORDER.get(result.tier.value, 0)
             if tier_level < min_tier_level:
+                # Cache findings collected so far for this file
+                try:
+                    if cache is not None:
+                        cache.put(rel_path, content, findings[file_findings_start:])
+                except Exception:
+                    pass
                 continue
 
             is_suppressed = "*" in suppressed_rules
@@ -280,6 +319,20 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 "suppressed": is_suppressed,
                 "observations": observations,
             })
+
+            # Cache findings collected for this file
+            try:
+                if cache is not None:
+                    cache.put(rel_path, content, findings[file_findings_start:])
+            except Exception:
+                pass
+
+    # Flush cache to disk
+    try:
+        if cache is not None:
+            cache.flush()
+    except Exception:
+        pass
 
     return findings
 
