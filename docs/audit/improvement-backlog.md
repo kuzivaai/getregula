@@ -1,7 +1,28 @@
-# Regula v1.2 — Prioritised Improvement Backlog
+# Regula — Improvement Backlog
 
 **Based on:** False positive audit, AST depth audit, compliance evidence audit, dependency security audit, CI/CD audit, competitive positioning audit.
-**Date:** 2026-03-27
+**Last updated:** 2026-03-28 (v1.2.0)
+
+## ✓ Completed in v1.2.0
+
+| Item | Notes |
+|------|-------|
+| Priority 1: Fix 4 high-FP regex patterns | `face.?recogn`, `voice.?recogn`, `age.?estimat`, `support.?bot` — word boundaries added. Also `race.?detect`, `face.?scrap`, `predictive.?policing`. |
+| Priority 5: Systematic word boundary audit | Applied across prohibted + limited-risk patterns |
+| Priority 6: Qualify language support claims | README has honest depth table with "Full AST / Moderate / Import detection" |
+| Priority 7: Qualify dependency security claims | README says "pinning hygiene checker, not vulnerability scanner" + pip-audit recommendation |
+| P0 #1 (recommendations.md): Remove fcntl from classify_risk.py | Already absent — not present in current file |
+| P0 #2: Fix SARIF version | Already 2.1.0 |
+| P0 #3: Tighten `sentenc` regex | Done in v1.2.0 |
+| P0 #4/#5: README test count + roadmap | Updated 2026-03-28 |
+| Agent autonomy detection wired into check | New in v1.2.0 — contextual path detection (OWASP ASI02/ASI04) |
+| --skip-tests / --min-tier flags | New in v1.2.0 |
+| Priority 2: Fix credit scorer false negative | `train_credit_model` → HIGH-RISK. Removed `\b` from `credit.?model`, `credit.?risk`, `credit.?predict`. 1 regression test added. |
+| Priority 3: Wire AST into documentation generator | Sections 2.1, 3.3, 3.4 now populated from AST. `ast_analyse_project()` added. 4 regression tests. |
+| Priority 4: Fix advisory directory resolution | `__pycache__` path step-up + `Path.cwd()` fallback. 1 regression test added. |
+| Skip-dirs absolute path bug | `filepath.parts` → `filepath.relative_to(project).parts` in `code_analysis.py` and `generate_documentation.py`. 1 regression test added. |
+| Version string v1.1.0 → v1.2.0 | 6 occurrences corrected in `generate_documentation.py`. 1 regression test added. |
+| Priority 8: go.mod + build.gradle parsing | `parse_go_mod()` and `parse_build_gradle()` added to `dependency_scan.py`, wired into `scan_dependencies()`. 6 regression tests. |
 
 ---
 

@@ -5,6 +5,26 @@ All notable changes to Regula are documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased] — 2026-03-28 (post-v1.2.0 fixes)
+
+### Fixed
+- Credit scorer false negative — `train_credit_model` and similar underscore-prefixed identifiers now correctly match `essential_services` high-risk patterns. Root cause: `\b` word-boundary anchor fails when the keyword is preceded by `_` (a word character). Fixed `credit.?model`, `credit.?risk`, `credit.?predict` in `risk_patterns.py`. Adds regression test `test_fn_fix_credit_scorer_function_names`.
+- Advisory directory resolution — `_load_advisories()` in `dependency_scan.py` returned empty when Python loaded the module from `__pycache__` (`.pyc`), causing `here.parent` to resolve to `scripts/__pycache__` instead of `scripts/`. Fix: step up an extra level when `here.name == "__pycache__"`, with `Path.cwd() / "references" / "advisories"` as a final fallback. Adds regression test `test_advisory_load_fallback_pyc_path`.
+- `skip_dirs` absolute path bug in `code_analysis.py` and `generate_documentation.py` — both used `filepath.parts` (absolute path) to check skip directories, causing any project nested inside a directory named `tests/`, `build/`, `venv/`, etc. to have all files silently skipped. Fixed to use `filepath.relative_to(project).parts`. Adds regression test `test_docs_nested_in_tests_dir_not_blank`.
+- Version string in generated documentation was `v1.1.0` in 6 places; corrected to `v1.2.0`.
+
+### Added
+- AST analysis wired into Annex IV documentation generator (`generate_documentation.py`). Section 2.1 now lists detected AI frameworks and function signatures. Section 3.3 now includes an AST-derived oversight score (0-100), specific oversight patterns with line numbers, and unreviewed automated decision paths. Section 3.4 now includes a logging coverage score (0-100), counts of logged vs unlogged AI operations, and an Article 12 gap warning when AI operations have no nearby logging. For non-Python projects the generator falls back to regex-based detection. Adds 4 new regression tests.
+- `ast_analyse_project()` helper in `generate_documentation.py` — aggregates `parse_python_file`, `detect_human_oversight`, and `detect_logging_practices` across all Python source files in a project, returning AI imports, function signatures, oversight score/evidence, and logging coverage metrics.
+
+- `parse_go_mod()` in `dependency_scan.py` — parses Go module dependencies from `go.mod` files. Handles block `require(...)` and single-line `require` statements. All go.mod versions treated as exact (Go modules have no range specifiers). 67 known AI Go modules registered including `github.com/tmc/langchaingo`, `github.com/sashabaranov/go-openai`, `github.com/ollama/ollama`, `github.com/anthropics/anthropic-sdk-go`.
+- `parse_build_gradle()` in `dependency_scan.py` — parses Java/Kotlin dependencies from `build.gradle` (Groovy DSL) and `build.gradle.kts` (Kotlin DSL). Handles string-style (`'group:artifact:version'`) and named-arg style (`group: 'g', name: 'a', version: 'v'`). 40+ known AI Java/Kotlin artifacts registered including `dev.langchain4j:langchain4j`, `ai.djl:api`, `org.deeplearning4j:deeplearning4j-core`, `org.tensorflow:tensorflow-core-platform`. Both parsers wired into `scan_dependencies()`.
+
+### Tests
+- 362 tests / 14 new test functions added in this patch (was 348 at v1.2.0 release)
+
+---
+
 ## [1.2.0] — 2026-03-28
 
 ### Added
@@ -37,6 +57,14 @@ This project uses [Semantic Versioning](https://semver.org/).
 - Pytest compatibility — tests run via both `python3 tests/test_*.py` and `pytest tests/`
 - 2 new test fixtures: `sample_prohibited` (Article 5), `sample_mixed_tier` (employment + chatbot)
 - Benchmark manifest at `tests/fixtures/benchmark_manifest.json`
+
+- `--skip-tests` flag for `check` — excludes test files entirely from scan results (removes ~27% noise on typical AI codebases)
+- `--min-tier` flag for `check` — filters output to a minimum risk tier (`prohibited`, `high_risk`, `limited_risk`, `minimal_risk`); combined with `--skip-tests` reduces LangChain's 2,108 raw findings to 19 actionable ones
+- Agent autonomy detection wired into `check` — `detect_autonomous_actions()` now runs on all code files, not just via `agent` subcommand
+- Contextual agent path detection — files in `agent/`, `tool/`, `middleware/`, `plugin/`, `executor/`, `sandbox/` paths are flagged for subprocess/exec even without AI imports (OWASP Agentic ASI02/ASI04)
+- `agent_autonomy` tier in SARIF output and text report
+- `_is_test_file()` extended to catch suffix patterns (`standard-tests/`, `langchain_tests/`)
+- `test_security_hardening.py` — security hardening assertions (no eval/exec in source, no os.system, self-scan clean)
 
 ### Changed
 - Refactored 5 CLI commands (report, audit, install, docs, discover) from sys.argv manipulation to direct function calls

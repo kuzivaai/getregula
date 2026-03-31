@@ -231,7 +231,7 @@ def analyse_project_code(project_path: str) -> dict:
     all_logging = set()
 
     for filepath in project.rglob("*"):
-        if any(d in filepath.parts for d in skip_dirs):
+        if any(d in filepath.relative_to(project).parts for d in skip_dirs):
             continue
         if filepath.suffix not in code_extensions:
             continue

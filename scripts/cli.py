@@ -48,9 +48,15 @@ def _validate_path(path_str: str) -> Path:
     """
     p = Path(path_str).resolve()
     if not p.exists():
-        raise PathError(f"Path does not exist: {path_str}")
+        raise PathError(
+            f"Path does not exist: {path_str}\n"
+            f"  Check the path is correct and try again."
+        )
     if not p.is_dir() and not p.is_file():
-        raise PathError(f"Path is not a file or directory: {path_str}")
+        raise PathError(
+            f"Path is not a file or directory: {path_str}\n"
+            f"  Usage: regula check /path/to/project or regula check file.py"
+        )
     return p
 
 
