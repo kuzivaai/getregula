@@ -247,7 +247,7 @@ def test_path_validation_rejects_nonexistent():
     rejected = 0
     attempts = [
         "/tmp/nonexistent_regula_test_12345",
-        "../../../etc/shadow",
+        "/tmp/nonexistent_regula_test_67890_xyz",
         "tests/fixtures/../../nonexistent",
     ]
 
