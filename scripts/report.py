@@ -134,6 +134,10 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 if cache is not None:
                     cached = cache.get(rel_path, content)
                     if cached is not None:
+                        # Apply min_tier filter to cached results
+                        if min_tier_level > 0:
+                            cached = [f for f in cached
+                                      if _TIER_ORDER.get(f.get("tier", ""), 0) >= min_tier_level]
                         findings.extend(cached)
                         continue
             except Exception:
