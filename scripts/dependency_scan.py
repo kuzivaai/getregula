@@ -185,21 +185,6 @@ def _normalize(name: str) -> str:
     return re.sub(r"[-_.]+", "-", name.strip().lower())
 
 
-def is_ai_dependency(name: str) -> bool:
-    """Check whether a package name is a known AI library."""
-    norm = _normalize(name)
-    # Direct match
-    if norm in {_normalize(lib) for lib in AI_LIBRARIES}:
-        return True
-    # Alias match
-    if norm in {_normalize(k) for k in _AI_ALIASES}:
-        return True
-    canonical = _AI_ALIASES.get(norm)
-    if canonical and _normalize(canonical) in {_normalize(lib) for lib in AI_LIBRARIES}:
-        return True
-    return False
-
-
 # Pre-compute normalised set for performance
 _NORMALISED_AI: set[str] | None = None
 
@@ -211,7 +196,7 @@ def _get_normalised_ai() -> set[str]:
     return _NORMALISED_AI
 
 
-def is_ai_dependency(name: str) -> bool:  # noqa: F811 — intentional redefinition
+def is_ai_dependency(name: str) -> bool:
     """Check whether a package name is a known AI library."""
     return _normalize(name) in _get_normalised_ai()
 
