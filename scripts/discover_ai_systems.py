@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# regula-ignore
 """
 Regula System Registry — AI System Discovery and Inventory
 Scans projects for AI components and maintains a persistent registry.

@@ -3057,6 +3057,43 @@ def test_metrics_empty():
                 os.environ["HOME"] = orig_home
 
 
+# ---------------------------------------------------------------------------
+# Feature: Security self-check (defined here so __main__ can reference them)
+# ---------------------------------------------------------------------------
+
+def test_security_self_check_passes():
+    """security-self-check runs and passes on regula's own source."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from security_self_check import run_security_self_check
+    result = run_security_self_check(format_type="silent")
+    assert isinstance(result, dict)
+    assert "passed" in result
+    assert "total_findings" in result
+    assert "unexpected_findings" in result
+    assert "known_acceptable" in result
+    # The self-check should pass (no unexpected findings)
+    assert result["passed"], (
+        f"Unexpected findings in regula source: {result['unexpected_findings']}"
+    )
+    print(f"✓ Security self-check: passed ({result['total_findings']} total, "
+          f"{len(result['known_acceptable'])} known acceptable)")
+
+
+def test_security_self_check_result_structure():
+    """result dict has all required keys and correct types."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from security_self_check import run_security_self_check
+    result = run_security_self_check(format_type="silent")
+    assert isinstance(result["passed"], bool)
+    assert isinstance(result["total_findings"], int)
+    assert isinstance(result["unexpected_findings"], list)
+    assert isinstance(result["known_acceptable"], list)
+    assert isinstance(result["message"], str)
+    print("✓ Security self-check: result structure is correct")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -3325,6 +3362,9 @@ if __name__ == "__main__":
         test_metrics_record_and_get,
         test_metrics_reset,
         test_metrics_empty,
+        # Security self-check (2 tests)
+        test_security_self_check_passes,
+        test_security_self_check_result_structure,
     ]
 
     print(f"Running {len(tests)} tests...\n")
@@ -3672,4 +3712,5 @@ def test_smoke_check_html_output_file():
     finally:
         if os.path.exists(tmp_path):
             os.unlink(tmp_path)
+
 

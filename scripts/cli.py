@@ -964,6 +964,15 @@ def cmd_doctor(args):
         sys.exit(0 if result else 1)
 
 
+def cmd_security_self_check(args):
+    """Scan regula's own source with its own rules."""
+    from security_self_check import run_security_self_check
+    result = run_security_self_check(format_type=args.format)
+    if args.format == "json":
+        json_output("security-self-check", result, exit_code=0 if result["passed"] else 1)
+    sys.exit(0 if result["passed"] else 1)
+
+
 def _print_metrics_text(stats: dict) -> None:
     """Print metrics in human-readable format."""
     print("\nRegula Metrics (local only — never sent)\n")
@@ -1242,6 +1251,11 @@ Examples:
     p_metrics.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_metrics.add_argument("--reset", action="store_true", help="Clear all local metrics")
     p_metrics.set_defaults(func=cmd_metrics)
+
+    # --- security-self-check ---
+    p_ssc = subparsers.add_parser("security-self-check", help="Verify regula's own source is clean")
+    p_ssc.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_ssc.set_defaults(func=cmd_security_self_check)
 
     # --- self-test ---
     p_selftest = subparsers.add_parser("self-test", help="Verify installation works")
