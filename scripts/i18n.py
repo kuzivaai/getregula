@@ -105,11 +105,59 @@ _STRINGS = {
         "error_prefix": "Erro:",
         "not_legal_advice": "Os achados são indicadores, não determinações legais.",
     },
+    "de": {
+        # Scan output
+        "scan_header": "Regula Prüfung: {path}",
+        "files_scanned": "Geprüfte Dateien:",
+        "prohibited": "Verboten:",
+        "credentials": "Zugangsdaten:",
+        "high_risk": "Hochrisiko:",
+        "agent_autonomy": "Agentenautonomie:",
+        "limited_risk": "Begrenztes Risiko:",
+        "suppressed": "Unterdrückt:",
+        "block_tier": "Stufe BLOCKIEREN:",
+        "warn_tier": "Stufe WARNUNG:",
+        "info_tier": "Stufe INFO:",
+        "confidence_note": "Konfidenzwerte: 0-100 (höher = mehr Indikatoren gefunden)",
+        "tier_note": "Stufen: BLOCKIEREN (>=80 oder verboten), WARNUNG (50-79), INFO (<50)",
+        "suppress_note": "Ergebnisse unterdrücken: '# regula-ignore' zur Datei hinzufügen",
+
+        # Classification tiers
+        "tier_prohibited": "VERBOTEN",
+        "tier_high_risk": "HOCHRISIKO",
+        "tier_limited_risk": "BEGRENZTES RISIKO",
+        "tier_minimal_risk": "MINIMALES RISIKO",
+
+        # Gap assessment
+        "gap_header": "KI-Gesetz der EU Konformitätsbewertung: {project}",
+        "gap_highest_risk": "Höchste Risikostufe: {tier}",
+        "gap_date": "Bewertungsdatum:",
+        "gap_score": "Gesamtbewertung:",
+        "gap_evidence": "Nachweis:",
+        "gap_finding": "Lücke:",
+        "gap_frameworks": "Rahmenwerke:",
+        "gap_summary": "Zusammenfassung:",
+
+        # Doctor
+        "doctor_header": "Regula Diagnose",
+
+        # Metrics
+        "metrics_header": "Regula Metriken (nur lokal — werden nie gesendet)",
+        "metrics_total_scans": "Gesamtprüfungen:",
+        "metrics_total_findings": "Gesamtbefunde:",
+        "metrics_first_scan": "Erste Prüfung:",
+        "metrics_last_scan": "Letzte Prüfung:",
+        "metrics_by_tier": "Befunde nach Stufe:",
+
+        # General
+        "error_prefix": "Fehler:",
+        "not_legal_advice": "Befunde sind Hinweise, keine rechtlichen Feststellungen.",
+    },
 }
 
 
 def set_language(lang: str) -> None:
-    """Set the output language. Supported: 'en', 'pt-BR'."""
+    """Set the output language. Supported: 'en', 'pt-BR', 'de'."""
     global _LANG
     if lang in _STRINGS:
         _LANG = lang
