@@ -236,7 +236,7 @@ Every feature claimed in README or landing page, verified against actual code:
 | Competitor | Pricing | Key Strengths | Funding/Team | Weakness vs Regula |
 |-----------|---------|--------------|-------------|-------------------|
 | Credo AI | Custom enterprise (~$50K+/yr) | Forrester Wave Leader (Q3 2025). Policy packs, risk assessment, inventory. Partners: Microsoft, IBM, Databricks | $41.3M raised, $101M valuation | Zero code-level analysis |
-| Holistic AI | Custom enterprise | Bias testing, hallucination detection, shadow AI discovery. UCL academic roots | Undisclosed VC. ~73 employees, ~$8M rev | No code scanning |
+| Holistic AI | Custom enterprise | Bias testing, hallucination detection, shadow AI discovery. UCL academic roots | $200M raised. ~79 employees, ~$8M rev | No code scanning |
 | Monitaur | Custom (per-model) | "Policy-to-proof" lifecycle. Forrester Strong Performer + Customer Favourite | Undisclosed. Founded 2019 | Model validation only |
 | IBM watsonx.governance | Enterprise ($100K+/yr) | Gartner MQ Leader for GRC. Model transparency, explainability | IBM ($60B+ revenue) | No developer CLI. Overkill for startups |
 | ServiceNow AI Control Tower | Part of GRC suite | ISO 42001 + EU AI Act blueprint. Integrates ITOM/IRM | ServiceNow ($10B+ revenue) | Platform lock-in. No code analysis |
@@ -256,8 +256,10 @@ Every feature claimed in README or landing page, verified against actual code:
 | Competitor | Relevance | Weakness vs Regula |
 |-----------|----------|-------------------|
 | Vanta ($10K-$80K/yr) | SOC 2/ISO 27001 adding EU AI Act | Basic AI Act coverage. No code scanning |
+| Drata | Compliance automation adding EU AI Act | Same category as Vanta. No code scanning |
+| Sprinto | Compliance automation for startups/mid-market | Fintech/healthtech focus. No code scanning |
 | Fiddler AI ($100M raised) | AI observability, 100+ metrics, guardrails | Runtime monitoring, not static analysis |
-| Protect AI (acquired by Palo Alto) | MLSecOps, model scanning | Supply chain security, not compliance |
+| Protect AI (acquired by Palo Alto, $500M+) | MLSecOps, model scanning | Supply chain security, not compliance |
 
 ### 6.3 Differentiation Analysis
 
@@ -314,7 +316,7 @@ Sources: Credo AI Forrester Wave Q3 2025, Bloomberg $101M valuation, Crunchbase,
 |--------|--------|
 | Total deployed | $691M across 47 deals (2022-2025), with 2024 being 48% of capital |
 | Key raises | Credo AI $24M Series C (Feb 2026), Holistic AI $200M (2024), Fiddler $30M Series C (Jan 2026) |
-| Acquisitions (2025) | Protect AI by Palo Alto ($500-700M), CalypsoAI by F5 ($180M), Lakera by Check Point (undisclosed) -- implies 4-6x multiples on total funding |
+| Acquisitions (2025) | Protect AI by Palo Alto ($500M+), CalypsoAI by F5 ($180M), Lakera by Check Point (~$300M) -- implies 4-6x multiples on total funding |
 | Failures | None identified. Category insulated by regulatory demand |
 
 Sources: Gartner AI Governance Platform forecast Feb 2026, EU Commission AI Act impact assessment, Crunchbase, Bloomberg, PitchBook.

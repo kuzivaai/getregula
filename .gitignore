@@ -16,7 +16,9 @@ venv/
 .venv/
 .coverage
 docs/tmp*_annex_iv.md
+docs/site/
 .claude/
 .playwright-cli/
 docs/superpowers/
 vscode-extension/node_modules/
+.handover.md
