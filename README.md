@@ -7,7 +7,23 @@
 [![EU AI Act](https://img.shields.io/badge/EU%20AI%20Act-Risk%20Indication-blue.svg)](#regulatory-coverage)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
 
-Regula is a Claude Code skill that detects AI governance risk indicators in real-time. It flags patterns associated with EU AI Act risk tiers, blocks patterns matching prohibited practices, and maintains a hash-chained audit trail.
+Regula is a static analysis tool that detects AI governance risk indicators in source code. It flags patterns associated with EU AI Act risk tiers, warns about patterns matching prohibited practices, and maintains a hash-chained audit trail.
+
+## What Regula Is (and Isn't)
+
+**Regula is:**
+- A development-time static analysis tool that detects AI-related code patterns and maps them to EU AI Act obligations
+- A shift-left compliance scanner — like ESLint for regulatory risk, running in your terminal or CI/CD pipeline
+- A starting point for compliance awareness, not a finish line
+
+**Regula is not:**
+- A runtime monitoring system (it analyses source code, not running systems)
+- A legal compliance certificate (findings are indicators, not legal determinations)
+- A replacement for enterprise GRC platforms like Credo AI or Holistic AI (it complements them)
+- A bias or fairness testing tool (it detects code patterns, not model behaviour)
+- Legal advice (consult qualified legal counsel for compliance decisions)
+
+Regula helps development teams understand their EU AI Act exposure early. It does not replace the organisational, procedural, and legal work required for full compliance.
 
 ## Quick Start
 
