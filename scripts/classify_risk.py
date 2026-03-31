@@ -150,21 +150,91 @@ def _compute_confidence_score(tier: str, num_matches: int, has_ai_indicator: boo
     return min(base + match_bonus + ai_bonus, 100)
 
 
+
+# ---------------------------------------------------------------------------
+# Comment stripping for false positive reduction
+# ---------------------------------------------------------------------------
+
+def strip_comments(text: str, language: str = "python") -> str:
+    """Strip comments to reduce false positives in pattern matching.
+
+    Returns text with comment lines replaced by empty lines (preserving line
+    numbers for error reporting). Strips single-line comments and block comments
+    but preserves docstrings -- docstrings describe the code's actual purpose
+    and are relevant for risk classification.
+    """
+    lines = text.split("\n")
+    result = []
+    in_block_comment = False
+
+    for line in lines:
+        stripped = line.strip()
+
+        if language == "python":
+            # Single-line comments (full line)
+            if stripped.startswith("#"):
+                result.append("")
+                continue
+
+            # Inline comment -- keep the code part, strip the comment
+            if "#" in line:
+                # Strip from first # that's not inside quotes
+                in_str = False
+                str_char = None
+                for i, c in enumerate(line):
+                    if c in ('"', "'") and not in_str:
+                        in_str = True
+                        str_char = c
+                    elif c == str_char and in_str:
+                        in_str = False
+                    elif c == "#" and not in_str:
+                        line = line[:i]
+                        break
+                result.append(line)
+                continue
+
+        elif language in ("javascript", "typescript", "java", "go", "rust", "c", "cpp"):
+            # Single-line comments
+            if stripped.startswith("//"):
+                result.append("")
+                continue
+            # Block comment start
+            if stripped.startswith("/*"):
+                in_block_comment = True
+                result.append("")
+                continue
+            if in_block_comment:
+                if "*/" in stripped:
+                    in_block_comment = False
+                result.append("")
+                continue
+
+        result.append(line)
+
+    return "\n".join(result)
+
 # ---------------------------------------------------------------------------
 # Core classification functions
 # ---------------------------------------------------------------------------
 
-def is_ai_related(text: str) -> bool:
-    text_lower = text.lower()
+def is_ai_related(text: str, stripped_text: str = None) -> bool:
+    """Check if text contains AI indicators.
+
+    Uses full text by default -- AI library imports are in code, not comments.
+    stripped_text parameter is accepted for API compatibility but not used here
+    because import statements are never in comments.
+    """
+    check = text.lower()
     for category in AI_INDICATORS.values():
         for pattern in category:
-            if re.search(pattern, text_lower):
+            if re.search(pattern, check):
                 return True
     return False
 
 
-def check_prohibited(text: str) -> Optional[Classification]:
+def check_prohibited(text: str, stripped_text: str = None) -> Optional[Classification]:
     text_lower = text.lower()
+    stripped_lower = stripped_text.lower() if stripped_text else None
     matches = []
     for name, config in PROHIBITED_PATTERNS.items():
         for pattern in config["patterns"]:
@@ -172,9 +242,19 @@ def check_prohibited(text: str) -> Optional[Classification]:
                 matches.append(config | {"indicator": name})
                 break
 
+    if matches and stripped_lower is not None:
+        # Filter: keep only matches that also appear in stripped (non-comment) text
+        confirmed = []
+        for m in matches:
+            for pattern in m.get("patterns", PROHIBITED_PATTERNS.get(m["indicator"], {}).get("patterns", [])):
+                if re.search(pattern, stripped_lower):
+                    confirmed.append(m)
+                    break
+        matches = confirmed
+
     if matches:
         primary = matches[0]
-        has_ai = is_ai_related(text)
+        has_ai = is_ai_related(text, stripped_text=stripped_text)
         return Classification(
             tier=RiskTier.PROHIBITED,
             confidence="high" if len(matches) >= 2 else "medium",
@@ -190,14 +270,25 @@ def check_prohibited(text: str) -> Optional[Classification]:
     return None
 
 
-def check_high_risk(text: str) -> Optional[Classification]:
+def check_high_risk(text: str, stripped_text: str = None) -> Optional[Classification]:
     text_lower = text.lower()
+    stripped_lower = stripped_text.lower() if stripped_text else None
     matches = []
     for name, config in HIGH_RISK_PATTERNS.items():
         for pattern in config["patterns"]:
             if re.search(pattern, text_lower):
                 matches.append(config | {"indicator": name})
                 break
+
+    if matches and stripped_lower is not None:
+        # Filter: keep only matches that also appear in stripped (non-comment) text
+        confirmed = []
+        for m in matches:
+            for pattern in m.get("patterns", HIGH_RISK_PATTERNS.get(m["indicator"], {}).get("patterns", [])):
+                if re.search(pattern, stripped_lower):
+                    confirmed.append(m)
+                    break
+        matches = confirmed
 
     if matches:
         all_articles = set()
@@ -218,14 +309,25 @@ def check_high_risk(text: str) -> Optional[Classification]:
     return None
 
 
-def check_limited_risk(text: str) -> Optional[Classification]:
+def check_limited_risk(text: str, stripped_text: str = None) -> Optional[Classification]:
     text_lower = text.lower()
+    stripped_lower = stripped_text.lower() if stripped_text else None
     matches = []
     for name, config in LIMITED_RISK_PATTERNS.items():
         for pattern in config["patterns"]:
             if re.search(pattern, text_lower):
                 matches.append(config | {"indicator": name})
                 break
+
+    if matches and stripped_lower is not None:
+        # Filter: keep only matches that also appear in stripped (non-comment) text
+        confirmed = []
+        for m in matches:
+            for pattern in m.get("patterns", LIMITED_RISK_PATTERNS.get(m["indicator"], {}).get("patterns", [])):
+                if re.search(pattern, stripped_lower):
+                    confirmed.append(m)
+                    break
+        matches = confirmed
 
     if matches:
         primary = matches[0]
@@ -294,16 +396,23 @@ def _check_policy_overrides(text: str) -> Optional[Classification]:
     return None
 
 
-def classify(text: str) -> Classification:
+def classify(text: str, language: str = "python") -> Classification:
     """Classify text against EU AI Act risk tiers.
 
     Priority order (safety-first):
       1. Prohibited practices — ALWAYS checked, CANNOT be overridden by policy
       2. Policy overrides (force_high_risk, exempt)
       3. Pattern-based classification (high-risk, limited-risk, minimal-risk)
+
+    Args:
+        text: The full source text to classify.
+        language: Programming language for comment stripping (default: "python").
     """
+    # Strip comments/docstrings to reduce false positives
+    stripped = strip_comments(text, language)
+
     # 1. ALWAYS check prohibited first — policy cannot override Article 5
-    prohibited = check_prohibited(text)
+    prohibited = check_prohibited(text, stripped_text=stripped)
     if prohibited:
         return prohibited
 
@@ -313,17 +422,17 @@ def classify(text: str) -> Classification:
         return policy_result
 
     # 3. Standard classification
-    if not is_ai_related(text):
+    if not is_ai_related(text, stripped_text=stripped):
         return Classification(
             tier=RiskTier.NOT_AI, confidence="high",
             action="allow", message="No AI indicators detected.",
         )
 
-    high_risk = check_high_risk(text)
+    high_risk = check_high_risk(text, stripped_text=stripped)
     if high_risk:
         result = high_risk
     else:
-        limited_risk = check_limited_risk(text)
+        limited_risk = check_limited_risk(text, stripped_text=stripped)
         if limited_risk:
             result = limited_risk
         else:
