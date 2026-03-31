@@ -1,6 +1,6 @@
 # Regula Competitive Gaps — Design Spec
 **Date:** 2026-03-30
-**Status:** Approved
+**Status:** Completed — shipped post-v1.2.0 (2026-03-30)
 
 ## Overview
 

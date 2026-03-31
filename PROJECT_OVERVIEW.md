@@ -39,7 +39,7 @@ regula doctor                       # Verify installation health
 regula self-test                    # Run 6 built-in classification assertions
 
 # Run tests
-python3 tests/test_classification.py    # 160 tests, 472 assertions
+pytest tests/ -q                        # 435 tests, 1,044 assertions
 
 # Install hooks
 regula install claude-code          # Claude Code hooks
@@ -55,8 +55,8 @@ regula install git-hooks            # git pre-commit hook
 
 ```
 getregula/
-├── scripts/                    # 32 Python modules
-│   ├── cli.py                  # CLI dispatcher — 22 subcommands (1,103 lines)
+├── scripts/                    # 43 Python modules
+│   ├── cli.py                  # CLI dispatcher — 28 subcommands
 │   ├── classify_risk.py        # Risk classification logic (377 lines) — split from monolith in v1.2.0
 │   ├── risk_types.py           # RiskTier enum, Classification dataclass (63 lines)
 │   ├── risk_patterns.py        # All EU AI Act pattern definitions (321 lines)
@@ -77,7 +77,7 @@ getregula/
 │   ├── agent_monitor.py        # Agentic AI governance, autonomy detection (563 lines)
 │   ├── log_event.py            # Audit trail logging (288 lines, 15 functions)
 │   ├── init_wizard.py          # Setup wizard (235 lines, 7 functions)
-│   ├── framework_mapper.py     # 8-framework cross-mapping (210 lines, 5 functions)
+│   ├── framework_mapper.py     # 10-framework cross-mapping (210 lines, 5 functions)
 │   ├── doctor.py               # Installation health check (208 lines, 9 functions)
 │   ├── credential_check.py     # Secret detection (197 lines, 4 functions)
 │   ├── session.py              # Session-level aggregation (188 lines, 3 functions)
@@ -95,15 +95,15 @@ getregula/
 │   └── __init__.py
 │
 ├── tests/
-│   ├── test_classification.py      # Core classification (160 tests)
-│   ├── test_agent_governance.py    # Agent autonomy detection (19 tests)
-│   ├── test_coverage_critical.py   # Critical path coverage
-│   ├── test_documentation.py       # Documentation generation (10 tests)
-│   ├── test_hooks_audit.py         # Hook and audit trail
+│   ├── test_classification.py      # Core classification (265 tests)
+│   ├── test_agent_governance.py    # Agent autonomy detection (28 tests)
+│   ├── test_coverage_critical.py   # Critical path coverage (45 tests)
+│   ├── test_documentation.py       # Documentation generation (16 tests)
+│   ├── test_hooks_audit.py         # Hook and audit trail (50 tests)
 │   ├── test_registry.py            # AI system registry (8 tests)
 │   ├── test_reliability.py         # Edge cases and resilience (12 tests)
-│   ├── test_security_hardening.py  # Security hardening checks
-│   # 348 tests, 916 assertions total (pytest tests/)
+│   ├── test_security_hardening.py  # Security hardening checks (12 tests)
+│   # 435 tests, 1,044 assertions total (pytest tests/)
 │   └── fixtures/
 │       ├── sample_high_risk/   # High-risk AI code (scores INFO tier in tests/ due to deprioritisation)
 │       ├── sample_warn_tier/   # High-risk AI code (scores WARN tier when scanned outside tests/)
@@ -111,7 +111,7 @@ getregula/
 │       └── sample_unpinned/    # Unpinned dependency example (package.json)
 │
 ├── references/                 # Static reference data
-│   ├── framework_crosswalk.yaml    # 8-framework compliance mapping
+│   ├── framework_crosswalk.yaml    # 10-framework compliance mapping
 │   ├── risk_indicators.yaml        # Pattern definitions
 │   ├── eu_ai_act_articles_9_15.md  # High-risk requirements reference
 │   ├── gpai_obligations.md         # General-purpose AI obligations
@@ -324,7 +324,7 @@ Scoring: 0-100% per article. STRONG >=70%, MODERATE 40-69%, WEAK <40%.
 
 ### Framework Cross-Mapping (`scripts/framework_mapper.py`)
 
-Maps findings to 8 compliance frameworks via `references/framework_crosswalk.yaml`:
+Maps findings to 10 compliance frameworks via `references/framework_crosswalk.yaml`:
 
 1. **EU AI Act** — Primary (Articles 5, 6, 9-15, 50)
 2. **NIST AI RMF 1.0** — Map, Measure, Manage, Govern
@@ -334,6 +334,8 @@ Maps findings to 8 compliance frameworks via `references/framework_crosswalk.yam
 6. **ISO 27001:2022** — Information security controls
 7. **OWASP LLM Top 10** — AI-specific security
 8. **MITRE ATLAS** — AI attack techniques
+9. **LGPD** — Brazil's General Data Protection Law
+10. **Marco Legal da IA** — Brazil's AI legal framework
 
 ### Report Generation (`scripts/report.py`)
 
@@ -363,7 +365,7 @@ Three output formats:
 | AI indicators | `scripts/classify_risk.py` (inline dict) | Python dict | Library names, model file extensions, API endpoints, ML patterns |
 | Secret patterns | `scripts/credential_check.py` (inline dict) | Python dict | 9 credential detection regexes |
 | AI library registries | `scripts/ast_engine.py` (inline sets) | Python sets | 124 AI libraries across 5 language ecosystems |
-| Framework crosswalk | `references/framework_crosswalk.yaml` | YAML | 8-framework compliance mapping |
+| Framework crosswalk | `references/framework_crosswalk.yaml` | YAML | 10-framework compliance mapping |
 | Security advisories | `references/advisories/` | YAML (OSV format) | Known compromised AI packages |
 | EU AI Act articles | `references/eu_ai_act_articles_9_15.md` | Markdown | Article text for gap assessment |
 | News feeds | `scripts/feed.py` (inline list) | RSS/Atom URLs | 7 AI governance news sources |
@@ -375,7 +377,7 @@ Three output formats:
 
 ---
 
-## CLI Commands (22 subcommands)
+## CLI Commands (28 subcommands)
 
 | Command | Purpose | Key Flags |
 |---|---|---|
@@ -401,6 +403,12 @@ Three output formats:
 | `agent` | Agentic AI governance monitoring | `--check-mcp`, `--config-file`, `--format` |
 | `doctor` | Installation health check | `--format json\|text` |
 | `self-test` | Verify installation works | (no flags) |
+| `mcp-server` | Start Regula MCP server (stdio) | (no flags) |
+| `bias` | Evaluate model bias (CrowS-Pairs) | `--model`, `--format` |
+| `metrics` | Show local usage statistics | `--format` |
+| `security-self-check` | Verify Regula's own source is clean | (no flags) |
+| `inventory` | Scan for AI model references (GPAI) | `--project`, `--format` |
+| `config` | Config management (validate) | `validate` |
 
 **Exit codes (scanner convention, research-validated):**
 - `0` — Success, or findings below WARN threshold (confidence < 50 = INFO tier, non-actionable)
@@ -545,7 +553,7 @@ exclusions:
 
 ## Current Phase
 
-**v1.2.0 shipped 2026-03-28.** 348 tests, 916 assertions. Real-world validated against LangChain (2,450 files, 16s scan). Agent autonomy detection wired into `check`. `--skip-tests` and `--min-tier` flags reduce signal-to-noise. No external users yet. GitHub Action defined but untested in a real PR workflow.
+**v1.2.0 shipped 2026-03-28.** 435 tests, 1,044 assertions. Real-world validated against LangChain (2,450 files, 16s scan). Agent autonomy detection wired into `check`. `--skip-tests` and `--min-tier` flags reduce signal-to-noise. Bias testing via CrowS-Pairs. 10-framework compliance mapping. No external users yet. GitHub Action defined but untested in a real PR workflow.
 
 ---
 

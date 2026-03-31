@@ -1,7 +1,7 @@
 # Regula Production Readiness — Design Spec
 
 **Date:** 2026-03-28
-**Status:** Approved for implementation
+**Status:** Completed — shipped in v1.2.0 (2026-03-28)
 **Baseline:** v1.1.0 — 152 tests, 434 assertions, 20 subcommands, 22 `except Exception` blocks, 13 JSON output paths
 
 ---
