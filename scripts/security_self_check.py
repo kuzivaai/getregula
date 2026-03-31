@@ -39,6 +39,10 @@ def run_security_self_check(format_type: str = "text") -> dict:
     """
     Scan scripts/ directory with regula's own scanner.
 
+    Args:
+        format_type: "text" prints human-readable output; "json" returns dict silently;
+                     "silent" is for tests only — returns dict without any output.
+
     Returns dict:
     {
         "passed": bool,              # True if no unexpected findings
