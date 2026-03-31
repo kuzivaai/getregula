@@ -146,7 +146,7 @@ def validate_config(path: str | None = None, format_type: str = "text") -> dict:
     warn_above_valid = True
 
     if block_above is not None:
-        if not isinstance(block_above, int) or not (0 <= block_above <= 100):
+        if isinstance(block_above, bool) or not isinstance(block_above, int) or not (0 <= block_above <= 100):
             errors.append(
                 f"thresholds.block_above ({block_above!r}) must be an integer 0-100"
             )
@@ -155,7 +155,7 @@ def validate_config(path: str | None = None, format_type: str = "text") -> dict:
         warnings.append("thresholds.block_above missing (will use default: 80)")
 
     if warn_above is not None:
-        if not isinstance(warn_above, int) or not (0 <= warn_above <= 100):
+        if isinstance(warn_above, bool) or not isinstance(warn_above, int) or not (0 <= warn_above <= 100):
             errors.append(
                 f"thresholds.warn_above ({warn_above!r}) must be an integer 0-100"
             )
