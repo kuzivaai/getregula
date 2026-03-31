@@ -77,7 +77,14 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     }
     min_tier_level = _TIER_ORDER.get(min_tier, 0)
 
-    for root, dirs, files in os.walk(project):
+    # Single-file mode: synthesise a walk-compatible structure for one file
+    if project.is_file():
+        walk_iter = [(str(project.parent), [], [project.name])]
+        project = project.parent
+    else:
+        walk_iter = os.walk(project)
+
+    for root, dirs, files in walk_iter:
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             filepath = Path(root) / filename
