@@ -185,6 +185,28 @@ All 10 Annex III categories are detected. Messages include Article 6 context: ma
 
 Claude Code, Copilot CLI, and Windsurf use the same hook protocol. Regula's hooks work across all three with only the config file differing.
 
+## CI/CD Integration
+
+Add EU AI Act scanning to your GitHub Actions workflow:
+
+```yaml
+name: AI Governance Check
+on: [push, pull_request]
+
+jobs:
+  regula:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kuzivaai/getregula@v1
+        with:
+          path: '.'
+          upload-sarif: 'true'
+          fail-on-prohibited: 'true'
+```
+
+Findings appear in your repository's Security tab alongside CodeQL and Dependabot.
+
 ## CLI Usage
 
 ```bash
