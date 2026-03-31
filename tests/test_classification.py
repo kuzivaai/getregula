@@ -3340,6 +3340,68 @@ def test_config_validate_no_file():
 
 
 # ---------------------------------------------------------------------------
+# Feature: Quickstart onboarding command
+# ---------------------------------------------------------------------------
+
+def test_quickstart_creates_policy():
+    """quickstart creates a policy file in a clean directory."""
+    import sys, tempfile, shutil
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from quickstart import run_quickstart
+    tmp = Path(tempfile.mkdtemp())
+    try:
+        result = run_quickstart(project_dir=str(tmp), org="Test Org", format_type="silent")
+        assert result["policy_created"] is True
+        assert (tmp / "regula-policy.yaml").exists()
+        content = (tmp / "regula-policy.yaml").read_text()
+        assert "Test Org" in content
+        print("✓ Quickstart: creates policy file with org name")
+    finally:
+        shutil.rmtree(tmp)
+
+
+def test_quickstart_skips_existing_policy():
+    """quickstart does not overwrite an existing policy file."""
+    import sys, tempfile, shutil
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from quickstart import run_quickstart
+    tmp = Path(tempfile.mkdtemp())
+    try:
+        (tmp / "regula-policy.yaml").write_text("version: '2.0'\n")
+        result = run_quickstart(project_dir=str(tmp), format_type="silent")
+        assert result["policy_created"] is False
+        content = (tmp / "regula-policy.yaml").read_text()
+        assert "2.0" in content, "Existing policy should not be overwritten"
+        print("✓ Quickstart: skips existing policy file")
+    finally:
+        shutil.rmtree(tmp)
+
+
+def test_quickstart_result_structure():
+    """quickstart returns expected keys."""
+    import sys, tempfile, shutil
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from quickstart import run_quickstart
+    tmp = Path(tempfile.mkdtemp())
+    try:
+        result = run_quickstart(project_dir=str(tmp), format_type="silent")
+        assert "policy_created" in result
+        assert "policy_path" in result
+        assert "scan_summary" in result
+        assert "elapsed_seconds" in result
+        assert "next_steps" in result
+        s = result["scan_summary"]
+        assert "total_findings" in s
+        assert "block" in s
+        assert "warn" in s
+        assert "info" in s
+        assert "files_scanned" in s
+        print("✓ Quickstart: result structure has all expected keys")
+    finally:
+        shutil.rmtree(tmp)
+
+
+# ---------------------------------------------------------------------------
 # Feature: Brazilian market — LGPD + Marco Legal da IA framework mapping
 # ---------------------------------------------------------------------------
 
@@ -4098,6 +4160,10 @@ if __name__ == "__main__":
         test_config_validate_valid_file,
         test_config_validate_invalid_thresholds,
         test_config_validate_no_file,
+        # Quickstart onboarding (3 tests)
+        test_quickstart_creates_policy,
+        test_quickstart_skips_existing_policy,
+        test_quickstart_result_structure,
         # Brazilian market: LGPD + Marco Legal da IA (4 tests)
         test_lgpd_framework_mapping,
         test_marco_legal_ia_framework_mapping,

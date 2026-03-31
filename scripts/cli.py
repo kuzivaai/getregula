@@ -345,7 +345,16 @@ def cmd_report(args):
     elif args.format == "sarif":
         content = json.dumps(generate_sarif(findings, project_name), indent=2)
     else:
-        content = json.dumps(findings, indent=2)
+        # JSON format — wrap in standard envelope
+        envelope = {
+            "format_version": "1.0",
+            "regula_version": VERSION,
+            "command": "report",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "exit_code": 0,
+            "data": findings,
+        }
+        content = json.dumps(envelope, indent=2, default=str)
 
     if args.output:
         out_path = Path(args.output)
@@ -366,7 +375,7 @@ def cmd_audit(args):
         data = json.loads(args.data) if getattr(args, "data", None) else {}
         ext_ts = getattr(args, "external_timestamp", False)
         event = _log(args.event_type, data, external_timestamp=ext_ts)
-        print(json.dumps({"status": "logged", "event_id": event.event_id}))
+        json_output("audit log", {"status": "logged", "event_id": event.event_id})
     elif subcommand == "query":
         events = query_events(
             getattr(args, "event_type", None),
@@ -374,7 +383,7 @@ def cmd_audit(args):
             getattr(args, "before", None),
             getattr(args, "limit", 100),
         )
-        print(json.dumps(events, indent=2))
+        json_output("audit query", events)
     elif subcommand == "export":
         events = query_events(
             getattr(args, "event_type", None),
@@ -393,7 +402,8 @@ def cmd_audit(args):
             print(content)
     elif subcommand == "verify":
         valid, error = verify_chain()
-        print(json.dumps({"status": "valid" if valid else "invalid", "error": error}))
+        json_output("audit verify", {"status": "valid" if valid else "invalid", "error": error},
+                    exit_code=0 if valid else 1)
         if not valid:
             sys.exit(1)
     else:
@@ -615,9 +625,15 @@ def cmd_feed(args):
         return
     articles = fetch_governance_news(days=args.days, use_cache=not args.no_cache)
     if args.format == "json":
-        content = json.dumps({"format_version": "1.0", "regula_version": VERSION,
-                              "command": "feed", "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-                              "exit_code": 0, "data": articles}, indent=2, default=str)
+        envelope = {
+            "format_version": "1.0",
+            "regula_version": VERSION,
+            "command": "feed",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "exit_code": 0,
+            "data": articles,
+        }
+        content = json.dumps(envelope, indent=2, default=str)
     elif args.format == "html":
         content = format_html(articles)
     else:
@@ -1049,6 +1065,19 @@ def cmd_self_test(args):
     sys.exit(0 if ok else 1)
 
 
+def cmd_quickstart(args):
+    """60-second onboarding — create policy, run first scan, show next steps."""
+    from quickstart import run_quickstart
+    result = run_quickstart(
+        project_dir=args.project,
+        org=getattr(args, "org", "My Organisation"),
+        format_type=args.format,
+    )
+    if args.format == "json":
+        json_output("quickstart", result)
+    sys.exit(0)
+
+
 def cmd_config(args):
     """Config management commands."""
     from config_validator import validate_config
@@ -1336,6 +1365,13 @@ Examples:
     p_inventory.add_argument("--format", "-f", choices=["table", "json"], default="table")
     p_inventory.add_argument("--output", "-o", help="Output file (optional)")
     p_inventory.set_defaults(func=cmd_inventory)
+
+    # --- quickstart ---
+    p_qs = subparsers.add_parser("quickstart", help="60-second onboarding (create policy + first scan)")
+    p_qs.add_argument("--project", "-p", default=".", help="Project directory")
+    p_qs.add_argument("--org", default="My Organisation", help="Organisation name for policy file")
+    p_qs.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_qs.set_defaults(func=cmd_quickstart)
 
     # --- config ---
     p_config = subparsers.add_parser("config", help="Config management (validate, etc.)")
