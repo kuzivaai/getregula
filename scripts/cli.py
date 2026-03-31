@@ -154,6 +154,13 @@ def cmd_check(args):
     warn_findings = [f for f in active if f["_finding_tier"] == "warn"]
     info_findings = [f for f in active if f["_finding_tier"] == "info"]
 
+    # Record scan metrics (best-effort, never blocks a scan)
+    try:
+        from metrics import record_scan as _record_scan
+        _record_scan(active)
+    except Exception:
+        pass
+
     if args.format == "html":
         from pdf_export import generate_compliance_html_report
         from model_inventory import scan_for_models
@@ -952,6 +959,45 @@ def cmd_doctor(args):
         sys.exit(0 if result else 1)
 
 
+def _print_metrics_text(stats: dict) -> None:
+    """Print metrics in human-readable format."""
+    print("\nRegula Metrics (local only — never sent)\n")
+
+    total_scans = stats.get("total_scans", 0)
+    total_findings = stats.get("total_findings", 0)
+    first_scan = stats.get("first_scan")
+    last_scan = stats.get("last_scan")
+
+    first_str = first_scan[:10] if first_scan else "—"
+    last_str = last_scan[:10] if last_scan else "—"
+
+    print(f"  Total scans:     {total_scans}")
+    print(f"  Total findings:  {total_findings}")
+    print(f"  First scan:      {first_str}")
+    print(f"  Last scan:       {last_str}")
+
+    findings_by_tier = stats.get("findings_by_tier", {})
+    if findings_by_tier:
+        print("\n  Findings by tier:")
+        for tier, count in sorted(findings_by_tier.items()):
+            print(f"    {tier:<8} {count}")
+    print()
+
+
+def cmd_metrics(args):
+    """Show local usage statistics."""
+    from metrics import get_stats, reset_stats
+    if args.reset:
+        reset_stats()
+        print("Metrics reset.")
+        return
+    stats = get_stats()
+    if args.format == "json":
+        json_output("metrics", stats)
+    else:
+        _print_metrics_text(stats)
+
+
 def cmd_self_test(args):
     """Run built-in self-test assertions."""
     from self_test import run_self_test
@@ -1185,6 +1231,12 @@ Examples:
     p_doctor = subparsers.add_parser("doctor", help="Check installation health")
     p_doctor.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_doctor.set_defaults(func=cmd_doctor)
+
+    # --- metrics ---
+    p_metrics = subparsers.add_parser("metrics", help="Show local usage statistics (never sent)")
+    p_metrics.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_metrics.add_argument("--reset", action="store_true", help="Clear all local metrics")
+    p_metrics.set_defaults(func=cmd_metrics)
 
     # --- self-test ---
     p_selftest = subparsers.add_parser("self-test", help="Verify installation works")

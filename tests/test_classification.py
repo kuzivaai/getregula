@@ -2978,6 +2978,85 @@ def test_benchmark_corpus_structure():
     print("\u2713 Benchmark: compute_article_pass_rates returns correct pass rates")
 
 
+# ---------------------------------------------------------------------------
+# Feature: Local metrics
+# ---------------------------------------------------------------------------
+
+def test_metrics_record_and_get():
+    """record_scan increments counts; get_stats returns correct structure."""
+    import tempfile, os
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    import metrics as m
+
+    # Use temp dir to avoid polluting real metrics
+    orig_home = os.environ.get("HOME")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        os.environ["HOME"] = tmpdir
+        try:
+            # Reset state
+            m.reset_stats()
+
+            # Record two scans
+            m.record_scan([{"tier": "BLOCK"}, {"tier": "WARN"}, {"tier": "WARN"}])
+            m.record_scan([{"tier": "BLOCK"}])
+
+            stats = m.get_stats()
+            assert stats["total_scans"] == 2
+            assert stats["total_findings"] == 4
+            assert stats["findings_by_tier"]["BLOCK"] == 2
+            assert stats["findings_by_tier"]["WARN"] == 2
+            assert stats["first_scan"] is not None
+            assert stats["last_scan"] is not None
+            print("✓ Metrics: record_scan and get_stats work correctly")
+        finally:
+            if orig_home:
+                os.environ["HOME"] = orig_home
+            else:
+                del os.environ["HOME"]
+
+
+def test_metrics_reset():
+    """reset_stats clears all data."""
+    import tempfile, os
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    import metrics as m
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        os.environ["HOME"] = tmpdir
+        orig_home = os.environ.get("HOME")
+        try:
+            m.record_scan([{"tier": "BLOCK"}])
+            m.reset_stats()
+            stats = m.get_stats()
+            assert stats["total_scans"] == 0
+            assert stats["total_findings"] == 0
+            print("✓ Metrics: reset_stats clears all data")
+        finally:
+            if orig_home:
+                os.environ["HOME"] = orig_home
+
+
+def test_metrics_empty():
+    """get_stats returns zeros when no metrics file exists."""
+    import tempfile, os
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    import metrics as m
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        os.environ["HOME"] = tmpdir
+        orig_home = os.environ.get("HOME")
+        try:
+            stats = m.get_stats()
+            assert stats["total_scans"] == 0
+            assert stats["total_findings"] == 0
+            assert stats["first_scan"] is None
+            assert stats["last_scan"] is None
+            print("✓ Metrics: get_stats returns zeros when no file exists")
+        finally:
+            if orig_home:
+                os.environ["HOME"] = orig_home
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -3242,6 +3321,10 @@ if __name__ == "__main__":
         test_conformity_declaration_structure,
         # Benchmark (1 test)
         test_benchmark_corpus_structure,
+        # Local metrics (3 tests)
+        test_metrics_record_and_get,
+        test_metrics_reset,
+        test_metrics_empty,
     ]
 
     print(f"Running {len(tests)} tests...\n")
@@ -3589,3 +3672,4 @@ def test_smoke_check_html_output_file():
     finally:
         if os.path.exists(tmp_path):
             os.unlink(tmp_path)
+
