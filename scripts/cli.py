@@ -294,7 +294,13 @@ def cmd_classify(args):
     result = classify(text)
 
     if args.format == "json":
-        print(result.to_json())
+        import json as _json
+        try:
+            data = _json.loads(result.to_json())
+        except Exception:
+            data = result.to_json()
+        json_output("classify", data)
+        return
     else:
         print(result.message)
         if result.exceptions:
@@ -474,7 +480,8 @@ def cmd_discover(args):
     discovery = discover(args.project)
 
     if args.format == "json":
-        print(json.dumps(discovery, indent=2))
+        json_output("discover", discovery)
+        return
     else:
         print_discovery(discovery)
 
@@ -629,7 +636,15 @@ def cmd_questionnaire(args):
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(1)
         result = evaluate_questionnaire(answers)
-        print(result.to_json() if args.format == "json" else result.message)
+        if args.format == "json":
+            import json as _json
+            try:
+                data = _json.loads(result.to_json())
+            except Exception:
+                data = result.to_json()
+            json_output("questionnaire", data)
+            return
+        print(result.message)
     else:
         q = generate_questionnaire()
         if args.format == "json":
@@ -815,12 +830,19 @@ def cmd_inventory(args):
     result = scan_for_models(path)
     fmt = getattr(args, "format", "table")
 
+    output_file = getattr(args, "output", None)
     if fmt == "json":
-        content = _json.dumps(result, indent=2)
+        if output_file:
+            content = _json.dumps(result, indent=2)
+            from pathlib import Path as _Path
+            _Path(output_file).write_text(content, encoding="utf-8")
+            print(f"Inventory written to {output_file}", file=sys.stderr)
+        else:
+            json_output("inventory", result)
+        return
     else:
         content = format_table(result)
 
-    output_file = getattr(args, "output", None)
     if output_file:
         from pathlib import Path as _Path
         _Path(output_file).write_text(content, encoding="utf-8")
