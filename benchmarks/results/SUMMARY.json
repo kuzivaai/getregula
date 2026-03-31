@@ -1,0 +1,51 @@
+{
+  "instructor": {
+    "total_findings": 288,
+    "by_tier": {
+      "minimal_risk": 285,
+      "limited_risk": 2,
+      "agent_autonomy": 1
+    },
+    "scan_seconds": 2.8
+  },
+  "pydantic-ai": {
+    "total_findings": 353,
+    "by_tier": {
+      "minimal_risk": 337,
+      "limited_risk": 5,
+      "agent_autonomy": 4,
+      "ai_security": 3,
+      "credential_exposure": 4
+    },
+    "scan_seconds": 9.3
+  },
+  "langchain": {
+    "total_findings": 2112,
+    "by_tier": {
+      "minimal_risk": 2069,
+      "ai_security": 1,
+      "agent_autonomy": 37,
+      "limited_risk": 4,
+      "credential_exposure": 1
+    },
+    "scan_seconds": 13.6
+  },
+  "scikit-learn": {
+    "total_findings": 962,
+    "by_tier": {
+      "minimal_risk": 894,
+      "ai_security": 63,
+      "agent_autonomy": 5
+    },
+    "scan_seconds": 15.2
+  },
+  "openai-python": {
+    "total_findings": 401,
+    "by_tier": {
+      "minimal_risk": 396,
+      "agent_autonomy": 4,
+      "ai_security": 1
+    },
+    "scan_seconds": 3.7
+  }
+}
