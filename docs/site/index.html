@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regula — EU AI Act Compliance Scanning</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: #0a0a0a;
+            color: #e5e5e5;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        code, pre, .mono { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', Consolas, monospace; }
+        a { color: #3b82f6; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+        .lang-switch {
+            text-align: right;
+            padding: 12px 24px;
+            font-size: 14px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 100px 0 80px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 64px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+        }
+        .hero .tagline {
+            font-size: 22px;
+            color: #a0a0a0;
+            margin-bottom: 8px;
+        }
+        .hero .subtext {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        .hero .subtext code {
+            color: #888;
+            font-size: 14px;
+        }
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.85; text-decoration: none; }
+        .btn-primary { background: #3b82f6; color: #fff; }
+        .btn-secondary { background: #1a1a1a; color: #e5e5e5; border: 1px solid #333; }
+
+        /* Sections */
+        section { padding: 80px 0; border-top: 1px solid #1a1a1a; }
+        section h2 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 40px;
+            letter-spacing: -0.5px;
+        }
+
+        /* Three-column grid */
+        .grid-3 {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        .grid-3 > div {
+            flex: 1;
+            min-width: 240px;
+            background: #111;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 28px;
+        }
+        .grid-3 h3 {
+            font-size: 18px;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .grid-3 .icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .grid-3 p { color: #999; font-size: 15px; }
+
+        /* Two-column grid */
+        .grid-2 {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .grid-2 > div {
+            flex: 1;
+            min-width: 280px;
+            background: #111;
+            border: 1px solid #1a1a1a;
+            border-radius: 10px;
+            padding: 24px;
+        }
+        .grid-2 h3 {
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .grid-2 p { color: #999; font-size: 14px; }
+
+        /* Scope */
+        .scope-block { max-width: 640px; }
+        .scope-block h3 {
+            font-size: 18px;
+            color: #fff;
+            margin: 24px 0 12px;
+        }
+        .scope-block ul {
+            list-style: none;
+            padding: 0;
+        }
+        .scope-block li {
+            padding: 6px 0;
+            color: #999;
+            font-size: 15px;
+        }
+        .scope-block li::before {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+        .scope-block .is li::before { content: "\2713"; color: #22c55e; }
+        .scope-block .isnt li::before { content: "\2717"; color: #666; }
+        .scope-block .note {
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Install */
+        .install-block pre {
+            background: #111;
+            border: 1px solid #1a1a1a;
+            border-radius: 10px;
+            padding: 24px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #c8c8c8;
+        }
+        .install-block .comment { color: #555; }
+        .install-block .cmd { color: #3b82f6; }
+
+        /* Brazil */
+        .brazil-block {
+            background: #0d1117;
+            border: 1px solid #1a2332;
+            border-radius: 12px;
+            padding: 36px;
+        }
+        .brazil-block h3 {
+            font-size: 24px;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        .brazil-block ul {
+            list-style: none;
+            padding: 0;
+        }
+        .brazil-block li {
+            padding: 8px 0;
+            color: #a0a0a0;
+            font-size: 15px;
+        }
+        .brazil-block li::before {
+            content: "\25B8";
+            margin-right: 10px;
+            color: #3b82f6;
+        }
+        .brazil-block .cta {
+            margin-top: 24px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid #1a1a1a;
+            padding: 48px 0;
+            text-align: center;
+            color: #555;
+            font-size: 14px;
+        }
+        footer .tagline-footer {
+            color: #888;
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+        footer .links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        footer .disclaimer {
+            color: #444;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="lang-switch">
+    <a href="pt-br.html">&#x1F1E7;&#x1F1F7; Portugu&ecirc;s</a>
+</div>
+
+<div class="container">
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1>Regula</h1>
+        <p class="tagline">EU AI Act compliance scanning for your codebase</p>
+        <p class="subtext">Open source. Zero dependencies. Runs in your terminal.</p>
+        <div class="cta-group">
+            <a href="#install" class="btn btn-primary">Get Started</a>
+            <a href="https://github.com/kuzivaai/getregula" class="btn btn-secondary">View on GitHub</a>
+        </div>
+    </div>
+
+    <!-- What Regula Does -->
+    <section>
+        <h2>What Regula Does</h2>
+        <div class="grid-3">
+            <div>
+                <span class="icon">&#x1F50D;</span>
+                <h3>Detect</h3>
+                <p>Scans 8 languages for AI patterns and risk indicators in your source code.</p>
+            </div>
+            <div>
+                <span class="icon">&#x2696;</span>
+                <h3>Classify</h3>
+                <p>Maps findings to EU AI Act risk tiers: prohibited, high-risk, and limited-risk.</p>
+            </div>
+            <div>
+                <span class="icon">&#x1F4CB;</span>
+                <h3>Report</h3>
+                <p>SARIF, JSON, and HTML output for CI/CD integration and compliance workflows.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- What Regula Is (and Isn't) -->
+    <section>
+        <h2>What Regula Is (and Isn't)</h2>
+        <div class="scope-block">
+            <h3>Regula is:</h3>
+            <ul class="is">
+                <li>A development-time static analysis tool that detects AI-related code patterns and maps them to EU AI Act obligations</li>
+                <li>A shift-left compliance scanner &mdash; like ESLint for regulatory risk, running in your terminal or CI/CD pipeline</li>
+                <li>A starting point for compliance awareness, not a finish line</li>
+            </ul>
+            <h3>Regula is not:</h3>
+            <ul class="isnt">
+                <li>A runtime monitoring system (it analyses source code, not running systems)</li>
+                <li>A legal compliance certificate (findings are indicators, not legal determinations)</li>
+                <li>A replacement for enterprise GRC platforms like Credo AI or Holistic AI (it complements them)</li>
+                <li>A bias or fairness testing tool (it detects code patterns, not model behaviour)</li>
+                <li>Legal advice (consult qualified legal counsel for compliance decisions)</li>
+            </ul>
+            <p class="note">Regula helps development teams understand their EU AI Act exposure early. It does not replace the organisational, procedural, and legal work required for full compliance.</p>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section>
+        <h2>Features</h2>
+        <div class="grid-2">
+            <div>
+                <h3>10 Compliance Frameworks</h3>
+                <p>EU AI Act, NIST AI RMF, ISO 42001, LGPD, Marco Legal da IA, and more &mdash; mapped and cross-referenced.</p>
+            </div>
+            <div>
+                <h3>Context-Aware Classification</h3>
+                <p>Comment stripping and scope analysis reduce false positives. Detections reflect actual code, not documentation.</p>
+            </div>
+            <div>
+                <h3>CycloneDX SBOM Generation</h3>
+                <p>Produce a software bill of materials for your AI components, ready for supply chain audits.</p>
+            </div>
+            <div>
+                <h3>Custom Rule Engine</h3>
+                <p>Define your own detection patterns and risk mappings. Coming soon.</p>
+            </div>
+            <div>
+                <h3>Brazilian Market Support</h3>
+                <p>LGPD (Lei 13.709/2018) and Marco Legal da IA (PL 2338/2023) fully mapped with Portuguese output.</p>
+            </div>
+            <div>
+                <h3>8 Language Support</h3>
+                <p>Python, JavaScript, TypeScript, Java, C#, Go, Rust, and C++ with AST-level analysis.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Install -->
+    <section id="install">
+        <h2>Install</h2>
+        <div class="install-block">
+            <pre><span class="comment"># Install from PyPI</span>
+<span class="cmd">pip install regula</span>
+
+<span class="comment"># Scan your project</span>
+<span class="cmd">regula check .</span>
+
+<span class="comment"># Run a gap analysis against a framework</span>
+<span class="cmd">regula gap --project . --framework lgpd</span></pre>
+        </div>
+    </section>
+
+    <!-- Brazilian Market -->
+    <section>
+        <h2>Para empresas brasileiras</h2>
+        <div class="brazil-block">
+            <h3>Conformidade regulat&oacute;ria para o mercado brasileiro</h3>
+            <ul>
+                <li>LGPD (Lei 13.709/2018) &mdash; mapeamento completo</li>
+                <li>Marco Legal da IA (PL 2338/2023) &mdash; artigos mapeados</li>
+                <li>Sa&iacute;da em portugu&ecirc;s: <code class="mono">regula check . --lang pt-BR</code></li>
+            </ul>
+            <div class="cta">
+                <a href="pt-br.html" class="btn btn-primary">Ver em Portugu&ecirc;s &#x2192;</a>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <p class="tagline-footer">Made for developers who build AI responsibly.</p>
+        <div class="links">
+            <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+            <a href="https://pypi.org/project/regula/">PyPI</a>
+            <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contributing Guide</a>
+        </div>
+        <p class="disclaimer">Regula is not legal advice.</p>
+    </div>
+</footer>
+
+</body>
+</html>
