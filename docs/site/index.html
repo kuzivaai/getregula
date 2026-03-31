@@ -7,22 +7,26 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            font-family: system-ui, -apple-system, sans-serif;
             background: #0a0a0a;
             color: #e5e5e5;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
-        code, pre, .mono { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', Consolas, monospace; }
+        code, pre, .mono { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; }
         a { color: #3b82f6; text-decoration: none; }
         a:hover { text-decoration: underline; }
-        .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
-        .lang-switch {
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+        /* Language bar */
+        .lang-bar {
             text-align: right;
-            padding: 12px 24px;
-            font-size: 14px;
-            border-bottom: 1px solid #1a1a1a;
+            padding: 10px 24px;
+            font-size: 13px;
+            color: #666;
         }
+        .lang-bar a { color: #888; margin-left: 12px; }
+        .lang-bar .active { color: #e5e5e5; }
 
         /* Hero */
         .hero {
@@ -30,43 +34,70 @@
             text-align: center;
         }
         .hero h1 {
-            font-size: 64px;
+            font-size: 48px;
             font-weight: 700;
             color: #fff;
-            letter-spacing: -2px;
+            letter-spacing: -1.5px;
             margin-bottom: 16px;
+            line-height: 1.1;
         }
-        .hero .tagline {
-            font-size: 22px;
+        .hero .subline {
+            font-size: 18px;
             color: #a0a0a0;
-            margin-bottom: 8px;
-        }
-        .hero .subtext {
-            font-size: 16px;
-            color: #666;
             margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .hero .subtext code {
-            color: #888;
-            font-size: 14px;
-        }
-        .cta-group {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .btn {
+        .pip-install {
             display: inline-block;
-            padding: 12px 28px;
+            background: #1a1a1a;
+            border: 1px solid #333;
             border-radius: 8px;
-            font-size: 15px;
-            font-weight: 500;
-            transition: opacity 0.2s;
+            padding: 14px 28px;
+            font-size: 16px;
+            color: #22c55e;
+            cursor: default;
+            letter-spacing: 0.3px;
         }
-        .btn:hover { opacity: 0.85; text-decoration: none; }
-        .btn-primary { background: #3b82f6; color: #fff; }
-        .btn-secondary { background: #1a1a1a; color: #e5e5e5; border: 1px solid #333; }
+        .pip-install .dollar { color: #666; margin-right: 8px; }
+
+        /* Terminal demo */
+        .terminal {
+            max-width: 520px;
+            margin: 0 auto;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .terminal-bar {
+            padding: 12px 16px;
+            display: flex;
+            gap: 8px;
+            background: #222;
+            border-bottom: 1px solid #333;
+        }
+        .terminal-dot {
+            width: 12px; height: 12px; border-radius: 50%;
+        }
+        .terminal-dot.red { background: #ff5f57; }
+        .terminal-dot.yellow { background: #febc2e; }
+        .terminal-dot.green { background: #28c840; }
+        .terminal-body {
+            padding: 20px 24px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #c8c8c8;
+        }
+        .terminal-body .prompt { color: #22c55e; }
+        .terminal-body .cmd { color: #fff; }
+        .terminal-body .header { color: #3b82f6; font-weight: 600; }
+        .terminal-body .separator { color: #3b82f6; }
+        .terminal-body .label { color: #999; }
+        .terminal-body .val-zero { color: #22c55e; }
+        .terminal-body .val-warn { color: #eab308; }
+        .terminal-body .val-info { color: #a0a0a0; }
 
         /* Sections */
         section { padding: 80px 0; border-top: 1px solid #1a1a1a; }
@@ -81,83 +112,73 @@
         /* Three-column grid */
         .grid-3 {
             display: flex;
-            gap: 32px;
+            gap: 24px;
             flex-wrap: wrap;
         }
         .grid-3 > div {
             flex: 1;
-            min-width: 240px;
-            background: #111;
-            border: 1px solid #1a1a1a;
-            border-radius: 12px;
-            padding: 28px;
-        }
-        .grid-3 h3 {
-            font-size: 18px;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-        .grid-3 .icon {
-            font-size: 28px;
-            margin-bottom: 12px;
-            display: block;
-        }
-        .grid-3 p { color: #999; font-size: 15px; }
-
-        /* Two-column grid */
-        .grid-2 {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .grid-2 > div {
-            flex: 1;
             min-width: 280px;
             background: #111;
             border: 1px solid #1a1a1a;
-            border-radius: 10px;
-            padding: 24px;
+            border-radius: 8px;
+            padding: 28px;
+            text-align: center;
         }
-        .grid-2 h3 {
-            font-size: 16px;
-            color: #fff;
-            margin-bottom: 6px;
-        }
-        .grid-2 p { color: #999; font-size: 14px; }
+        .grid-3 .icon { font-size: 32px; margin-bottom: 12px; display: block; }
+        .grid-3 h3 { font-size: 18px; color: #fff; margin-bottom: 8px; }
+        .grid-3 p { color: #999; font-size: 15px; }
 
         /* Scope */
-        .scope-block { max-width: 640px; }
+        .scope-block { max-width: 700px; }
         .scope-block h3 {
             font-size: 18px;
             color: #fff;
             margin: 24px 0 12px;
         }
-        .scope-block ul {
-            list-style: none;
-            padding: 0;
-        }
-        .scope-block li {
-            padding: 6px 0;
-            color: #999;
-            font-size: 15px;
-        }
-        .scope-block li::before {
-            margin-right: 8px;
-            font-size: 14px;
-        }
+        .scope-block ul { list-style: none; padding: 0; }
+        .scope-block li { padding: 6px 0; color: #999; font-size: 15px; }
+        .scope-block li::before { margin-right: 8px; font-size: 14px; }
         .scope-block .is li::before { content: "\2713"; color: #22c55e; }
         .scope-block .isnt li::before { content: "\2717"; color: #666; }
-        .scope-block .note {
-            margin-top: 20px;
-            color: #666;
-            font-size: 14px;
+        .scope-block .note { margin-top: 20px; color: #666; font-size: 14px; }
+
+        /* Framework grid */
+        .fw-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
         }
+        .fw-grid span {
+            background: #111;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 14px;
+            color: #c8c8c8;
+            white-space: nowrap;
+        }
+
+        /* Market section */
+        .market-block {
+            background: #0d1117;
+            border: 1px solid #1a2332;
+            border-radius: 8px;
+            padding: 36px;
+            max-width: 700px;
+        }
+        .market-block h3 { font-size: 22px; color: #fff; margin-bottom: 16px; }
+        .market-block p { color: #a0a0a0; font-size: 15px; line-height: 1.7; }
+
+        /* Custom rules teaser */
+        .teaser { max-width: 700px; }
+        .teaser p { color: #999; font-size: 15px; }
+        .teaser code { background: #1a1a1a; padding: 2px 6px; border-radius: 4px; color: #c8c8c8; font-size: 14px; }
 
         /* Install */
         .install-block pre {
-            background: #111;
-            border: 1px solid #1a1a1a;
-            border-radius: 10px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
             padding: 24px;
             overflow-x: auto;
             font-size: 14px;
@@ -167,36 +188,6 @@
         .install-block .comment { color: #555; }
         .install-block .cmd { color: #3b82f6; }
 
-        /* Brazil */
-        .brazil-block {
-            background: #0d1117;
-            border: 1px solid #1a2332;
-            border-radius: 12px;
-            padding: 36px;
-        }
-        .brazil-block h3 {
-            font-size: 24px;
-            color: #fff;
-            margin-bottom: 20px;
-        }
-        .brazil-block ul {
-            list-style: none;
-            padding: 0;
-        }
-        .brazil-block li {
-            padding: 8px 0;
-            color: #a0a0a0;
-            font-size: 15px;
-        }
-        .brazil-block li::before {
-            content: "\25B8";
-            margin-right: 10px;
-            color: #3b82f6;
-        }
-        .brazil-block .cta {
-            margin-top: 24px;
-        }
-
         /* Footer */
         footer {
             border-top: 1px solid #1a1a1a;
@@ -205,11 +196,6 @@
             color: #555;
             font-size: 14px;
         }
-        footer .tagline-footer {
-            color: #888;
-            font-size: 15px;
-            margin-bottom: 16px;
-        }
         footer .links {
             display: flex;
             gap: 24px;
@@ -217,50 +203,73 @@
             margin-bottom: 16px;
             flex-wrap: wrap;
         }
-        footer .disclaimer {
-            color: #444;
-            font-size: 13px;
-            margin-top: 12px;
+        footer .disclaimer { color: #444; font-size: 13px; margin-top: 12px; }
+
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 32px; }
+            .grid-3 > div { min-width: 100%; }
+            .fw-grid span { font-size: 13px; padding: 8px 14px; }
         }
     </style>
 </head>
 <body>
 
-<div class="lang-switch">
-    <a href="pt-br.html">&#x1F1E7;&#x1F1F7; Portugu&ecirc;s</a>
+<div class="lang-bar">
+    <span class="active">&#x1F1EC;&#x1F1E7; English</span>
+    <a href="pt-br.html">&#x1F1E7;&#x1F1F7; Brasil</a>
+    <a href="de.html">&#x1F1E9;&#x1F1EA; Deutschland</a>
 </div>
 
 <div class="container">
 
     <!-- Hero -->
     <div class="hero">
-        <h1>Regula</h1>
-        <p class="tagline">EU AI Act compliance scanning for your codebase</p>
-        <p class="subtext">Open source. Zero dependencies. Runs in your terminal.</p>
-        <div class="cta-group">
-            <a href="#install" class="btn btn-primary">Get Started</a>
-            <a href="https://github.com/kuzivaai/getregula" class="btn btn-secondary">View on GitHub</a>
-        </div>
+        <h1>Know your AI risk before you ship</h1>
+        <p class="subline">Static analysis for EU AI Act compliance. 8 languages. 10 frameworks. Zero dependencies.</p>
+        <div class="pip-install"><span class="dollar">$</span>pip install regula</div>
     </div>
 
-    <!-- What Regula Does -->
+    <!-- Terminal demo -->
+    <section style="border-top: none; padding-top: 0;">
+        <div class="terminal">
+            <div class="terminal-bar">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+            </div>
+            <div class="terminal-body">
+                <div><span class="prompt">$ </span><span class="cmd">regula check .</span></div>
+                <br>
+                <div class="header">Regula Scan: my-ai-project</div>
+                <div class="separator">══════════════════════════</div>
+                <div><span class="label">  Files scanned:      </span><span>47</span></div>
+                <div><span class="label">  Prohibited:          </span><span class="val-zero">0</span></div>
+                <div><span class="label">  High-risk:           </span><span class="val-warn">2</span></div>
+                <div><span class="label">  Limited-risk:        </span><span class="val-info">1</span></div>
+                <div><span class="label">  BLOCK tier:          </span><span class="val-zero">0</span></div>
+                <div><span class="label">  WARN tier:           </span><span class="val-warn">2</span></div>
+                <div><span class="label">  INFO tier:           </span><span class="val-info">1</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value props -->
     <section>
-        <h2>What Regula Does</h2>
         <div class="grid-3">
             <div>
                 <span class="icon">&#x1F50D;</span>
                 <h3>Detect</h3>
-                <p>Scans 8 languages for AI patterns and risk indicators in your source code.</p>
+                <p>Scan 8 languages for AI patterns</p>
             </div>
             <div>
-                <span class="icon">&#x2696;</span>
+                <span class="icon">&#x1F3F7;&#xFE0F;</span>
                 <h3>Classify</h3>
-                <p>Maps findings to EU AI Act risk tiers: prohibited, high-risk, and limited-risk.</p>
+                <p>Map to EU AI Act risk tiers</p>
             </div>
             <div>
                 <span class="icon">&#x1F4CB;</span>
                 <h3>Report</h3>
-                <p>SARIF, JSON, and HTML output for CI/CD integration and compliance workflows.</p>
+                <p>SARIF + JSON for CI/CD</p>
             </div>
         </div>
     </section>
@@ -287,40 +296,43 @@
         </div>
     </section>
 
-    <!-- Features -->
+    <!-- Framework grid -->
     <section>
-        <h2>Features</h2>
-        <div class="grid-2">
-            <div>
-                <h3>10 Compliance Frameworks</h3>
-                <p>EU AI Act, NIST AI RMF, ISO 42001, LGPD, Marco Legal da IA, and more &mdash; mapped and cross-referenced.</p>
-            </div>
-            <div>
-                <h3>Context-Aware Classification</h3>
-                <p>Comment stripping and scope analysis reduce false positives. Detections reflect actual code, not documentation.</p>
-            </div>
-            <div>
-                <h3>CycloneDX SBOM Generation</h3>
-                <p>Produce a software bill of materials for your AI components, ready for supply chain audits.</p>
-            </div>
-            <div>
-                <h3>Custom Rule Engine</h3>
-                <p>Define your own detection patterns and risk mappings. Coming soon.</p>
-            </div>
-            <div>
-                <h3>Brazilian Market Support</h3>
-                <p>LGPD (Lei 13.709/2018) and Marco Legal da IA (PL 2338/2023) fully mapped with Portuguese output.</p>
-            </div>
-            <div>
-                <h3>8 Language Support</h3>
-                <p>Python, JavaScript, TypeScript, Java, C#, Go, Rust, and C++ with AST-level analysis.</p>
-            </div>
+        <h2>10 Compliance Frameworks</h2>
+        <div class="fw-grid">
+            <span>EU AI Act</span>
+            <span>NIST AI RMF</span>
+            <span>ISO 42001</span>
+            <span>NIST CSF 2.0</span>
+            <span>SOC 2</span>
+            <span>ISO 27001</span>
+            <span>OWASP LLM Top 10</span>
+            <span>MITRE ATLAS</span>
+            <span>LGPD &#x1F1E7;&#x1F1F7;</span>
+            <span>Marco Legal da IA &#x1F1E7;&#x1F1F7;</span>
         </div>
     </section>
 
-    <!-- Install -->
+    <!-- Market-specific: EU deadline -->
+    <section>
+        <h2>Built for the August 2026 deadline</h2>
+        <div class="market-block">
+            <h3>EU AI Act enforcement begins August 2026</h3>
+            <p>Prohibited AI practices are already banned as of February 2025. High-risk obligations take effect in August 2026. Regula gives your team visibility into which categories your code falls under &mdash; before enforcement, not after.</p>
+        </div>
+    </section>
+
+    <!-- Custom rules teaser -->
+    <section>
+        <h2>Your rules, your compliance</h2>
+        <div class="teaser">
+            <p>Define custom detection patterns and risk mappings in <code>regula-rules.yaml</code>. Extend the built-in rule set with your organisation's specific compliance requirements.</p>
+        </div>
+    </section>
+
+    <!-- Install + Quick Start -->
     <section id="install">
-        <h2>Install</h2>
+        <h2>Quick Start</h2>
         <div class="install-block">
             <pre><span class="comment"># Install from PyPI</span>
 <span class="cmd">pip install regula</span>
@@ -328,24 +340,14 @@
 <span class="comment"># Scan your project</span>
 <span class="cmd">regula check .</span>
 
-<span class="comment"># Run a gap analysis against a framework</span>
-<span class="cmd">regula gap --project . --framework lgpd</span></pre>
-        </div>
-    </section>
+<span class="comment"># Run a gap analysis</span>
+<span class="cmd">regula gap --project .</span>
 
-    <!-- Brazilian Market -->
-    <section>
-        <h2>Para empresas brasileiras</h2>
-        <div class="brazil-block">
-            <h3>Conformidade regulat&oacute;ria para o mercado brasileiro</h3>
-            <ul>
-                <li>LGPD (Lei 13.709/2018) &mdash; mapeamento completo</li>
-                <li>Marco Legal da IA (PL 2338/2023) &mdash; artigos mapeados</li>
-                <li>Sa&iacute;da em portugu&ecirc;s: <code class="mono">regula check . --lang pt-BR</code></li>
-            </ul>
-            <div class="cta">
-                <a href="pt-br.html" class="btn btn-primary">Ver em Portugu&ecirc;s &#x2192;</a>
-            </div>
+<span class="comment"># Gap analysis against a specific framework</span>
+<span class="cmd">regula gap --project . --framework lgpd</span>
+
+<span class="comment"># Output in German</span>
+<span class="cmd">regula check . --lang de</span></pre>
         </div>
     </section>
 
@@ -354,13 +356,12 @@
 <!-- Footer -->
 <footer>
     <div class="container">
-        <p class="tagline-footer">Made for developers who build AI responsibly.</p>
         <div class="links">
             <a href="https://github.com/kuzivaai/getregula">GitHub</a>
             <a href="https://pypi.org/project/regula/">PyPI</a>
-            <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contributing Guide</a>
+            <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>
         </div>
-        <p class="disclaimer">Regula is not legal advice.</p>
+        <p class="disclaimer">Not legal advice. Findings are indicators.</p>
     </div>
 </footer>
 
