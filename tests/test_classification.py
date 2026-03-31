@@ -3485,6 +3485,40 @@ def test_strip_comments_javascript():
     assert "function foo()" in stripped
     print('check strip_comments: JavaScript comments stripped correctly')
 
+
+# ---------------------------------------------------------------------------
+# Feature: Portuguese language support (i18n)
+# ---------------------------------------------------------------------------
+
+def test_i18n_english_default():
+    """Default language is English."""
+    from i18n import t, set_language, get_language
+    set_language("en")
+    assert get_language() == "en"
+    assert t("scan_header", path="/tmp") == "Regula Scan: /tmp"
+    assert t("prohibited") == "Prohibited:"
+    print("✓ i18n: English default works")
+
+
+def test_i18n_portuguese():
+    """Portuguese translation returns pt-BR strings."""
+    from i18n import t, set_language
+    set_language("pt-BR")
+    assert t("scan_header", path="/tmp") == "Verificação Regula: /tmp"
+    assert t("prohibited") == "Proibidos:"
+    assert t("tier_prohibited") == "PROIBIDO"
+    set_language("en")  # Reset
+    print("✓ i18n: Portuguese translation works")
+
+
+def test_i18n_fallback():
+    """Unknown keys fall back to the key name."""
+    from i18n import t, set_language
+    set_language("en")
+    assert t("nonexistent_key") == "nonexistent_key"
+    print("✓ i18n: fallback to key name for unknown keys")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -3778,6 +3812,10 @@ if __name__ == "__main__":
         test_actual_code_still_classified,
         test_strip_comments_python,
         test_strip_comments_javascript,
+        # Portuguese language support (i18n) (3 tests)
+        test_i18n_english_default,
+        test_i18n_portuguese,
+        test_i18n_fallback,
     ]
 
     print(f"Running {len(tests)} tests...\n")

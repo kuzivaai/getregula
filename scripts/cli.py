@@ -198,19 +198,20 @@ def cmd_check(args):
         print(json.dumps(generate_sarif(findings, name), indent=2))
     else:
         # Human-readable output
-        print(f"\nRegula Scan: {project}")
+        from i18n import t
+        print(f"\n{t('scan_header', path=project)}")
         print(f"{'=' * 60}")
         total_files = len(set(f["file"] for f in findings))
-        print(f"  Files scanned:      {total_files}")
-        print(f"  Prohibited:         {len(prohibited)}")
-        print(f"  Credentials:        {len(credentials)}")
-        print(f"  High-risk:          {len(high_risk)}")
-        print(f"  Agent autonomy:     {len(autonomy)}")
-        print(f"  Limited-risk:       {len(limited)}")
-        print(f"  Suppressed:         {len(suppressed)}")
-        print(f"  BLOCK tier:         {len(block_findings)}")
-        print(f"  WARN tier:          {len(warn_findings)}")
-        print(f"  INFO tier:          {len(info_findings)}")
+        print(f"  {t('files_scanned'):<20}{total_files}")
+        print(f"  {t('prohibited'):<20}{len(prohibited)}")
+        print(f"  {t('credentials'):<20}{len(credentials)}")
+        print(f"  {t('high_risk'):<20}{len(high_risk)}")
+        print(f"  {t('agent_autonomy'):<20}{len(autonomy)}")
+        print(f"  {t('limited_risk'):<20}{len(limited)}")
+        print(f"  {t('suppressed'):<20}{len(suppressed)}")
+        print(f"  {t('block_tier'):<20}{len(block_findings)}")
+        print(f"  {t('warn_tier'):<20}{len(warn_findings)}")
+        print(f"  {t('info_tier'):<20}{len(info_findings)}")
 
         if prohibited:
             print(f"\n  PROHIBITED INDICATORS:")
@@ -262,9 +263,9 @@ def cmd_check(args):
                     print(f"    [INFO] [{score:3d}] {f['file']} — {f.get('description', '')}")
 
         print(f"{'=' * 60}")
-        print(f"  Confidence scores: 0-100 (higher = more indicators matched)")
-        print(f"  Tiers: BLOCK (>=80 or prohibited), WARN (50-79), INFO (<50)")
-        print(f"  Suppress findings: add '# regula-ignore' to file")
+        print(f"  {t('confidence_note')}")
+        print(f"  {t('tier_note')}")
+        print(f"  {t('suppress_note')}")
         print()
 
     # Exit codes: 1 if any BLOCK-tier findings, 1 if WARN-tier and (--strict or --ci), 0 otherwise
@@ -997,7 +998,8 @@ def cmd_security_self_check(args):
 
 def _print_metrics_text(stats: dict) -> None:
     """Print metrics in human-readable format."""
-    print("\nRegula Metrics (local only — never sent)\n")
+    from i18n import t
+    print(f"\n{t('metrics_header')}\n")
 
     total_scans = stats.get("total_scans", 0)
     total_findings = stats.get("total_findings", 0)
@@ -1007,14 +1009,14 @@ def _print_metrics_text(stats: dict) -> None:
     first_str = first_scan[:10] if first_scan else "N/A"
     last_str = last_scan[:10] if last_scan else "N/A"
 
-    print(f"  Total scans:     {total_scans}")
-    print(f"  Total findings:  {total_findings}")
-    print(f"  First scan:      {first_str}")
-    print(f"  Last scan:       {last_str}")
+    print(f"  {t('metrics_total_scans'):<20}{total_scans}")
+    print(f"  {t('metrics_total_findings'):<20}{total_findings}")
+    print(f"  {t('metrics_first_scan'):<20}{first_str}")
+    print(f"  {t('metrics_last_scan'):<20}{last_str}")
 
     findings_by_tier = stats.get("findings_by_tier", {})
     if findings_by_tier:
-        print("\n  Findings by tier:")
+        print(f"\n  {t('metrics_by_tier')}")
         for tier, count in sorted(findings_by_tier.items()):
             print(f"    {tier:<8} {count}")
     print()
@@ -1093,6 +1095,9 @@ Examples:
     parser.add_argument("--ci", action="store_true",
                         help="CI mode: exit 1 on any WARN or BLOCK finding (implies --strict)")
     parser.add_argument("--config", help="Custom policy configuration file path")
+    parser.add_argument("--rules", help="Path to custom rules file (regula-rules.yaml)")
+    parser.add_argument("--lang", choices=["en", "pt-BR"], default="en",
+                        help="Output language (default: en)")
 
     subparsers = parser.add_subparsers(dest="command")
 
@@ -1126,6 +1131,8 @@ Examples:
                          default="", help="Minimum risk tier to include (filters out lower tiers)")
     p_check.add_argument("--diff", metavar="REF", nargs="?", const="HEAD~1",
                          help="Only scan files changed since REF (default: HEAD~1)")
+    p_check.add_argument("--lang", choices=["en", "pt-BR"], default=None,
+                         help="Output language (default: en)")
     p_check.set_defaults(func=cmd_check)
 
     # --- classify ---
@@ -1335,9 +1342,18 @@ Examples:
 
     args = parser.parse_args()
 
+    if hasattr(args, 'lang') and args.lang:
+        from i18n import set_language
+        set_language(args.lang)
+
     if hasattr(args, 'config') and args.config:
         import os
         os.environ["REGULA_POLICY"] = args.config
+
+    if hasattr(args, 'rules') and args.rules:
+        from custom_rules import load_custom_rules
+        import classify_risk
+        classify_risk._CUSTOM_RULES = load_custom_rules(args.rules)
 
     if not args.command:
         parser.print_help()
