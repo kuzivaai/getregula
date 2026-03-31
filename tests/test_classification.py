@@ -3912,6 +3912,71 @@ def test_custom_rule_redos_protection():
     print("✓ Security: ReDoS protection for custom rule patterns")
 
 
+# ---------------------------------------------------------------------------
+# Cross-function data flow tracing (depth moat)
+# ---------------------------------------------------------------------------
+
+def test_cross_function_ai_flow_detected():
+    """AI call in helper function, used in caller — flow is traced."""
+    from ast_analysis import trace_ai_data_flow
+    code = '''
+import openai
+
+def get_prediction(prompt):
+    client = openai.OpenAI()
+    return client.chat.completions.create(model="gpt-4", messages=[{"role":"user","content":prompt}])
+
+def handle_request(user_input):
+    result = get_prediction(user_input)
+    if result.choices[0].message.content == "approved":
+        approve_application()
+    return result
+'''
+    flows = trace_ai_data_flow(code)
+    assert len(flows) >= 1, f"Expected at least 1 flow, got {len(flows)}"
+    all_dests = []
+    for f in flows:
+        all_dests.extend(f.get("destinations", []))
+    dest_types = [d["type"] for d in all_dests]
+    assert "return" in dest_types or "automated_action" in dest_types, \
+        f"Expected cross-function flow, got: {dest_types}"
+    print("✓ Cross-function: AI flow traced through helper function")
+
+
+def test_cross_function_oversight_detected():
+    """Oversight in different function from AI call — both detected."""
+    from ast_analysis import detect_human_oversight
+    code = '''
+import sklearn
+def predict(data):
+    model = sklearn.ensemble.RandomForestClassifier()
+    return model.predict(data)
+
+def process_with_review(data):
+    result = predict(data)
+    reviewed = send_for_approval(result)
+    return reviewed
+'''
+    oversight = detect_human_oversight(code)
+    assert oversight["has_oversight"] is True, f"Expected oversight, got: {oversight}"
+    print("✓ Cross-function: oversight across function boundaries")
+
+
+def test_cross_function_no_false_positive():
+    """Non-AI helper should not trigger cross-function tracing."""
+    from ast_analysis import trace_ai_data_flow
+    code = '''
+def get_config():
+    return {"key": "value"}
+def main():
+    config = get_config()
+    print(config)
+'''
+    flows = trace_ai_data_flow(code)
+    assert len(flows) == 0, f"Expected 0 flows, got {len(flows)}"
+    print("✓ Cross-function: no false positive on non-AI code")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -4230,6 +4295,10 @@ if __name__ == "__main__":
         # Security (2 tests)
         test_bias_eval_rejects_non_http_endpoint,
         test_custom_rule_redos_protection,
+        # Cross-function data flow tracing (3 tests)
+        test_cross_function_ai_flow_detected,
+        test_cross_function_oversight_detected,
+        test_cross_function_no_false_positive,
     ]
 
     print(f"Running {len(tests)} tests...\n")

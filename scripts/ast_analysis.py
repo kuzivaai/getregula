@@ -384,14 +384,89 @@ class _AICallCollector(ast.NodeVisitor):
         return False
 
 
+class _CallGraphBuilder(ast.NodeVisitor):
+    """Build a per-file function call graph and resolve transitive AI returns."""
+
+    def __init__(self, ai_call_lines: Set[int]) -> None:
+        self._ai_call_lines = ai_call_lines
+        self.calls: Dict[str, Set[str]] = {}       # function → set of callees
+        self.returns_ai: Dict[str, bool] = {}       # function → has AI data
+        self.defined_functions: Set[str] = set()
+        self._current_function: Optional[str] = None
+        # Track line ranges for each function to check AI call containment.
+        self._function_ranges: Dict[str, Tuple[int, int]] = {}
+
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        self._visit_func(node)
+
+    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+        self._visit_func(node)
+
+    def _visit_func(self, node) -> None:
+        name = node.name
+        self.defined_functions.add(name)
+        self.calls.setdefault(name, set())
+
+        # Determine line range for this function body.
+        start = node.lineno
+        end = node.end_lineno if hasattr(node, "end_lineno") and node.end_lineno else start
+        self._function_ranges[name] = (start, end)
+
+        # Check if any AI call lines fall within this function.
+        has_direct_ai = any(start <= line <= end for line in self._ai_call_lines)
+        self.returns_ai[name] = has_direct_ai
+
+        prev = self._current_function
+        self._current_function = name
+        self.generic_visit(node)
+        self._current_function = prev
+
+    def visit_Call(self, node: ast.Call) -> None:
+        if self._current_function is not None:
+            callee = self._callee_name(node)
+            if callee:
+                self.calls[self._current_function].add(callee)
+        self.generic_visit(node)
+
+    @staticmethod
+    def _callee_name(node: ast.Call) -> Optional[str]:
+        """Extract simple function name from a Call node."""
+        if isinstance(node.func, ast.Name):
+            return node.func.id
+        if isinstance(node.func, ast.Attribute):
+            return node.func.attr
+        return None
+
+    def resolve_transitive_ai(self) -> Set[str]:
+        """Propagate AI returns through call graph until stable.
+
+        Returns the set of function names that (transitively) return AI data.
+        """
+        changed = True
+        while changed:
+            changed = False
+            for func, callees in self.calls.items():
+                if self.returns_ai.get(func):
+                    continue
+                for callee in callees:
+                    if callee in self.defined_functions and self.returns_ai.get(callee):
+                        self.returns_ai[func] = True
+                        changed = True
+                        break
+        return {f for f, v in self.returns_ai.items() if v}
+
+
 class _FlowTracer(ast.NodeVisitor):
     """Trace where AI call results flow within function bodies."""
 
-    def __init__(self, ai_calls: List[Dict]) -> None:
+    def __init__(self, ai_calls: List[Dict],
+                 ai_returning_functions: Optional[Set[str]] = None) -> None:
         # Map source_line → ai_call dict for quick lookup.
         self._ai_lines: Dict[int, Dict] = {c["source_line"]: c for c in ai_calls}
         # Map variable name → source_line of the AI call that produced it.
         self._var_origins: Dict[str, int] = {}
+        # Functions that transitively return AI data (cross-function tracing).
+        self._ai_returning_functions: Set[str] = ai_returning_functions or set()
         self.flows: List[Dict] = []  # Final output.
         # Intermediate: source_line → list of destination dicts.
         self._destinations: Dict[int, List[Dict]] = {
@@ -475,10 +550,32 @@ class _FlowTracer(ast.NodeVisitor):
             line = getattr(node, "lineno", None)
             if line in self._ai_lines:
                 return line
+            # Cross-function: call to a function that returns AI data.
+            callee = self._call_func_name(node)
+            if callee and callee in self._ai_returning_functions:
+                # Create a synthetic AI origin for this call line so
+                # downstream destinations are tracked.
+                if line is not None and line not in self._ai_lines:
+                    self._ai_lines[line] = {
+                        "source": _unparse_safe(node),
+                        "source_line": line,
+                        "method": callee,
+                    }
+                    self._destinations[line] = []
+                return line
         if isinstance(node, ast.Attribute):
             return self._value_origin(node.value)
         if isinstance(node, ast.Subscript):
             return self._value_origin(node.value)
+        return None
+
+    @staticmethod
+    def _call_func_name(node: ast.Call) -> Optional[str]:
+        """Extract the simple function name from a Call node."""
+        if isinstance(node.func, ast.Name):
+            return node.func.id
+        if isinstance(node.func, ast.Attribute):
+            return node.func.attr
         return None
 
     def _classify_call(self, node: ast.Call) -> str:
@@ -555,7 +652,13 @@ def trace_ai_data_flow(content: str) -> List[Dict]:
     if not collector.ai_calls:
         return []
 
-    tracer = _FlowTracer(collector.ai_calls)
+    # Build call graph for cross-function tracing.
+    ai_call_lines = {c["source_line"] for c in collector.ai_calls}
+    cg = _CallGraphBuilder(ai_call_lines)
+    cg.visit(tree)
+    ai_returning = cg.resolve_transitive_ai()
+
+    tracer = _FlowTracer(collector.ai_calls, ai_returning_functions=ai_returning)
     return tracer.analyse(tree)
 
 
