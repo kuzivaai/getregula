@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# regula-ignore
 """
 Regula Secret Detection — Credential Leak Prevention in AI Tool Inputs
 

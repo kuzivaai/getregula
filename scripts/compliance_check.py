@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# regula-ignore
 """
 Regula EU AI Act Compliance Gap Assessment
 

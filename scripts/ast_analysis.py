@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# regula-ignore
 """
 Regula AST Analysis Engine — Structure-Aware Python Code Analysis
 
