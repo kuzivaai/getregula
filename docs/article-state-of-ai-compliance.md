@@ -56,10 +56,10 @@ pip install regula-ai
 regula check .
 ```
 
-For a specific framework scan:
+For a compliance gap assessment against Articles 9-15:
 
 ```bash
-regula check . --framework eu-ai-act
+regula gap --project .
 ```
 
 To add Regula to your CI/CD pipeline as a GitHub Action:
