@@ -129,13 +129,13 @@ Several EU AI Act tools exist. Here is an honest comparison with the closest one
 | **Offline / no deps** | Yes (stdlib only) | Requires npm | Requires MCP client | Browser + Ollama | Single dep (mcp) |
 | **Gap assessment** | Articles 9-15 scored 0-100 | Unknown | 22 controls (SOC 2/ISO 27001) | Articles 5-15 classification | Doc file existence only |
 | **Audit trail** | Hash-chained, file-locked | Unknown | Deterministic replay | None | Unknown |
-| **Bias testing** | None | None | None | **CrowS-Pairs** | None |
+| **Bias testing** | CrowS-Pairs (`regula bias`) | None | None | **CrowS-Pairs** | None |
 | **Fix generation** | None | None | **Yes** | None | None |
 | **License** | MIT | Apache 2.0 | Unknown | Unknown | Unknown |
 
 **Where Regula leads:** pre-commit hook integration, Python AST depth, compliance gap assessment (Articles 9-15), dependency pinning analysis, offline zero-dependency operation.
 
-**Where Regula falls short:** JS/TS analysis (Systima is deeper), fix code generation (AIR Blackbox has it, Regula doesn't), bias testing (EuConform has CrowS-Pairs, Regula doesn't), real-world user validation (0 external users as of v1.2.0).
+**Where Regula falls short:** JS/TS analysis (Systima is deeper), fix code generation (AIR Blackbox has it, Regula doesn't), real-world user validation (0 external users as of v1.2.0).
 
 If your primary stack is TypeScript and you need CI/CD integration, Systima Comply is worth evaluating alongside Regula. If you need runtime interception and automated fix suggestions, AIR Blackbox serves a different need.
 
@@ -274,7 +274,7 @@ Checks: pinning quality (hash > exact > range > unpinned), lockfile presence, AI
 
 ### Cross-Framework Compliance Mapping
 
-Regula maps findings to 8 compliance frameworks internally: EU AI Act, NIST AI RMF 1.0, ISO 42001:2023, NIST CSF 2.0, SOC 2, ISO 27001:2022, OWASP Top 10 for LLMs, and MITRE ATLAS. Framework mappings appear in check findings and gap assessments automatically.
+Regula maps findings to 10 compliance frameworks internally: EU AI Act, NIST AI RMF 1.0, ISO 42001:2023, NIST CSF 2.0, SOC 2, ISO 27001:2022, OWASP Top 10 for LLMs, MITRE ATLAS, LGPD (Brazil), and Marco Legal da IA (Brazil). Framework mappings appear in check findings and gap assessments automatically.
 
 ### Real-World Validation Benchmark
 
@@ -424,7 +424,7 @@ regula/
 │   ├── ast_engine.py              # Multi-language AST engine (Python + JS/TS tree-sitter + Java/Go/Rust/C/C++ regex)
 │   ├── compliance_check.py        # Compliance gap assessment (Articles 9-15)
 │   ├── dependency_scan.py         # AI dependency supply chain security
-│   ├── framework_mapper.py        # Cross-framework compliance mapping (8 frameworks)
+│   ├── framework_mapper.py        # Cross-framework compliance mapping (10 frameworks)
 │   ├── remediation.py             # Inline fix suggestions per Annex III category
 │   ├── agent_monitor.py           # Agentic AI governance (autonomy scoring, MCP config)
 │   ├── sbom.py                    # CycloneDX 1.6 AI SBOM generation
@@ -445,7 +445,7 @@ regula/
 │   ├── test_registry.py           # AI system registry
 │   ├── test_reliability.py        # Edge cases and resilience
 │   └── test_security_hardening.py # Security hardening checks
-│   # 362 tests
+│   # 435 tests, 1,044 assertions
 ├── docs/
 │   └── course/                    # Interactive 10-module governance course
 ├── regula-policy.yaml             # Policy configuration template
@@ -478,7 +478,7 @@ regula/
 - **Compliance gap assessment, not just risk flagging.** Checks whether Articles 9-15 compliance infrastructure actually exists in the codebase.
 - **AI-specific supply chain security.** Dependency pinning checks focus on AI libraries, not general packages.
 - **Cross-platform.** Unix/macOS (`fcntl`) and Windows (`msvcrt`) file locking. No platform restrictions.
-- **Multi-framework mapping.** 8 frameworks (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF 2.0, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS) mapped via a single crosswalk data file.
+- **Multi-framework mapping.** 10 frameworks (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF 2.0, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, LGPD, Marco Legal da IA) mapped via a single crosswalk data file.
 
 ## Configuration
 
@@ -513,7 +513,7 @@ For full YAML support, install pyyaml: `pip install pyyaml`. Without it, a minim
 pytest tests/ -q
 ```
 
-362 tests covering:
+435 tests, 1,044 assertions covering:
 - AI detection (libraries, model files, API endpoints, ML patterns)
 - All 8 prohibited practices
 - All 10 high-risk categories (Annex III)
@@ -548,7 +548,7 @@ pytest tests/ -q
 
 ## Roadmap
 
-- **v1.2:** ~~Production readiness~~ — shipped 2026-03-28. Agent autonomy detection, `--skip-tests`, `--min-tier`, 362 tests.
+- **v1.2:** ~~Production readiness~~ — shipped 2026-03-28. Agent autonomy detection, `--skip-tests`, `--min-tier`, bias testing, 10-framework mapping, 435 tests.
 - **v1.3 (candidates):** JS/TS tree-sitter data flow, AVID vulnerability database integration, typosquatting detection, GitHub Action validated in real PR workflow.
 - **Not planned yet:** DPO dashboard, Slack/Teams alerting, model card generation, bias testing. These require validation that there are users who want them first.
 

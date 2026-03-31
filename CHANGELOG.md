@@ -21,7 +21,7 @@ This project uses [Semantic Versioning](https://semver.org/).
 - `parse_build_gradle()` in `dependency_scan.py` — parses Java/Kotlin dependencies from `build.gradle` (Groovy DSL) and `build.gradle.kts` (Kotlin DSL). Handles string-style (`'group:artifact:version'`) and named-arg style (`group: 'g', name: 'a', version: 'v'`). 40+ known AI Java/Kotlin artifacts registered including `dev.langchain4j:langchain4j`, `ai.djl:api`, `org.deeplearning4j:deeplearning4j-core`, `org.tensorflow:tensorflow-core-platform`. Both parsers wired into `scan_dependencies()`.
 
 ### Tests
-- 362 tests / 14 new test functions added in this patch (was 348 at v1.2.0 release)
+- 435 tests, 1,044 assertions (was 348 at v1.2.0 release)
 
 ---
 
@@ -48,7 +48,7 @@ This project uses [Semantic Versioning](https://semver.org/).
 - `tests/test_registry.py` — 8 test functions / 21 assertions for registry features
 - `--ci` flag for check command — implies `--strict`, exits 1 on any WARN or BLOCK finding
 - Generic exception handler in CLI — non-RegulaError exceptions produce a clean message with bug report link instead of raw tracebacks
-- Smoke tests for all 21 CLI subcommands (previously only 5 of 21 were tested)
+- Smoke tests for CLI subcommands (previously only 5 were tested)
 - Tests for `--ci` flag behaviour (5 tests: compliant, warn-tier, error, global position, info-tier)
 - Tests for generic exception handler and `--framework` removal
 - 3 hook resilience tests: empty stdin, large payload (500KB), binary content edge cases

@@ -17,7 +17,7 @@ It is a risk *indication* tool, not a legal classifier. Article 6 risk classific
 | Dimension | Status |
 |-----------|--------|
 | Version | 1.2.0 (shipped 2026-03-28) |
-| Tests | 348 functions, 916 assertions |
+| Tests | 435 functions, 1,044 assertions |
 | Benchmark | LangChain (2,450 files) scanned in 16s |
 | Real-world validated | LangChain, anthropic-cookbook, pydantic-ai, openai-python |
 | External users | 0 |

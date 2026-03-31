@@ -88,7 +88,7 @@ You've learned to:
 - Detect AI-specific security vulnerabilities
 - Integrate into CI/CD pipelines
 - Generate compliance documentation
-- Map findings across 8 frameworks
+- Map findings across 10 frameworks
 - Build custom detection patterns
 
 **What's next:**

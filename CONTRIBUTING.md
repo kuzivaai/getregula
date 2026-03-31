@@ -16,8 +16,8 @@ python3 -m scripts --help
 pip install pyyaml tree-sitter
 
 # Run the test suite
-python3 tests/test_classification.py
-# Must output: "All tests passed"
+pytest tests/ -q
+# Must output: "X passed"
 ```
 
 ## Project Structure
@@ -35,7 +35,14 @@ scripts/
 ├── remediation.py         # Fix suggestions
 └── ...                    # See scripts/ for full list
 tests/
-└── test_classification.py # Main test file (all tests live here)
+├── test_classification.py     # Core classification tests
+├── test_agent_governance.py   # Agent autonomy detection
+├── test_coverage_critical.py  # Critical path coverage
+├── test_documentation.py      # Documentation generation
+├── test_hooks_audit.py        # Hook and audit trail
+├── test_registry.py           # AI system registry
+├── test_reliability.py        # Edge cases and resilience
+└── test_security_hardening.py # Security hardening checks
 ```
 
 ## How to Add a Risk Pattern
@@ -74,11 +81,13 @@ Regula scans source code for AI-related patterns. To add support for a new progr
 
 ## Testing
 
-All tests live in `tests/test_classification.py`. The test pattern is:
+Tests are spread across 8 files in `tests/`. The main classification tests live in `tests/test_classification.py`; other test files cover agent governance, documentation, hooks, registry, reliability, security hardening, and critical path coverage. Run all tests with `pytest tests/ -q`.
+
+The test pattern is:
 
 1. Define a test function that exercises the behaviour you want to verify.
-2. Register it in the `tests` list before the `if __name__ == "__main__":` block.
-3. Run with `python3 tests/test_classification.py`.
+2. Add it to the appropriate test file (or `test_classification.py` for classification logic).
+3. Run with `pytest tests/ -q`.
 
 ```python
 def test_my_new_pattern():
@@ -109,7 +118,7 @@ tests = [
 2. Create a feature branch: `git checkout -b my-feature`.
 3. Write a failing test for your change.
 4. Implement the change.
-5. Run `python3 tests/test_classification.py` — all tests must pass.
+5. Run `pytest tests/ -q` — all tests must pass.
 6. Commit with a clear message: `feat: add detection for XYZ library`.
 7. Push and open a PR against `main`.
 
@@ -117,7 +126,7 @@ tests = [
 
 Before submitting, verify:
 
-- [ ] `python3 tests/test_classification.py` shows "All tests passed"
+- [ ] `pytest tests/ -q` shows "X passed"
 - [ ] New behaviour has at least one test
 - [ ] No new external dependencies added to core (discuss first if needed)
 - [ ] Commit messages follow conventional format (`feat:`, `fix:`, `docs:`, etc.)

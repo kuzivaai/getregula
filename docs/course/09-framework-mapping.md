@@ -3,7 +3,7 @@
 
 ## What You'll Learn
 
-- Map findings to 8 compliance frameworks simultaneously
+- Map findings to 10 compliance frameworks simultaneously
 - Understand the crosswalk between EU AI Act and other standards
 
 ## Supported Frameworks
@@ -18,6 +18,8 @@
 | ISO 27001:2022 | Information security controls (Annex A) |
 | OWASP LLM Top 10 | 10 LLM-specific vulnerability categories |
 | MITRE ATLAS | Adversarial threat techniques for AI systems |
+| LGPD | Brazil's General Data Protection Law |
+| Marco Legal da IA | Brazil's AI legal framework |
 
 ## Using Framework Mapping
 
