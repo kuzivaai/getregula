@@ -3094,6 +3094,61 @@ def test_security_self_check_result_structure():
     print("✓ Security self-check: result structure is correct")
 
 
+# ---------------------------------------------------------------------------
+# Feature: Config validation
+# ---------------------------------------------------------------------------
+
+def test_config_validate_valid_file():
+    """validate_config returns valid=True for the repo's own regula-policy.yaml."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from config_validator import validate_config
+    # Use the repo's own regula-policy.yaml
+    policy_path = str(Path(__file__).parent.parent / "regula-policy.yaml")
+    result = validate_config(path=policy_path, format_type="silent")
+    assert isinstance(result, dict)
+    assert result["valid"] is True
+    assert "errors" in result
+    assert "warnings" in result
+    assert len(result["errors"]) == 0
+    print(f"✓ Config validate: repo policy is valid ({len(result['warnings'])} warnings)")
+
+
+def test_config_validate_invalid_thresholds():
+    """validate_config returns valid=False when warn_above >= block_above."""
+    import sys, tempfile, os
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from config_validator import validate_config
+    bad_config = """
+version: "1.0"
+thresholds:
+  block_above: 50
+  warn_above: 80
+"""
+    with tempfile.NamedTemporaryFile(suffix=".yaml", mode="w", delete=False) as f:
+        f.write(bad_config)
+        tmp_path = f.name
+    try:
+        result = validate_config(path=tmp_path, format_type="silent")
+        assert result["valid"] is False
+        assert len(result["errors"]) > 0
+        assert any("warn_above" in e for e in result["errors"])
+        print("✓ Config validate: invalid thresholds correctly rejected")
+    finally:
+        os.unlink(tmp_path)
+
+
+def test_config_validate_no_file():
+    """validate_config with explicit nonexistent path returns valid=False."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from config_validator import validate_config
+    result = validate_config(path="/nonexistent/path/to/config.yaml", format_type="silent")
+    assert result["valid"] is False
+    assert len(result["errors"]) > 0
+    print("✓ Config validate: nonexistent explicit path returns valid=False")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -3365,6 +3420,10 @@ if __name__ == "__main__":
         # Security self-check (2 tests)
         test_security_self_check_passes,
         test_security_self_check_result_structure,
+        # Config validation (3 tests)
+        test_config_validate_valid_file,
+        test_config_validate_invalid_thresholds,
+        test_config_validate_no_file,
     ]
 
     print(f"Running {len(tests)} tests...\n")
@@ -3712,5 +3771,4 @@ def test_smoke_check_html_output_file():
     finally:
         if os.path.exists(tmp_path):
             os.unlink(tmp_path)
-
 
