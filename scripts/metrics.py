@@ -11,6 +11,20 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
+_TIER_NORMALISE = {
+    "PROHIBITED": "BLOCK",
+    "HIGH_RISK": "BLOCK",
+    "AI_SECURITY": "BLOCK",
+    "CREDENTIAL_EXPOSURE": "BLOCK",
+    "AGENT_AUTONOMY": "WARN",
+    "LIMITED_RISK": "WARN",
+    "MINIMAL_RISK": "INFO",
+    "BLOCK": "BLOCK",
+    "WARN": "WARN",
+    "INFO": "INFO",
+}
+
+
 def _metrics_path() -> Path:
     return Path.home() / ".regula" / "metrics.json"
 
@@ -35,10 +49,11 @@ def record_scan(findings: list) -> None:
     findings is a list of finding dicts with at least a 'tier' key
     (e.g. 'BLOCK', 'WARN', 'INFO', or lower-case equivalents).
     """
-    # Count by tier (normalise to upper-case)
+    # Count by tier — normalise raw classification tiers to display tiers (BLOCK/WARN/INFO)
     tier_counts: dict = {}
     for f in findings:
-        tier = str(f.get("tier", "UNKNOWN")).upper()
+        raw = str(f.get("tier", "UNKNOWN")).upper()
+        tier = _TIER_NORMALISE.get(raw, "INFO")
         tier_counts[tier] = tier_counts.get(tier, 0) + 1
 
     record = {
@@ -81,7 +96,8 @@ def get_stats() -> dict:
     findings_by_tier: dict = {}
     for rec in records:
         for tier, count in rec.get("findings", {}).items():
-            findings_by_tier[tier] = findings_by_tier.get(tier, 0) + count
+            normalised = _TIER_NORMALISE.get(tier.upper(), "INFO")
+            findings_by_tier[normalised] = findings_by_tier.get(normalised, 0) + count
 
     timestamps = [r["ts"] for r in records if r.get("ts")]
 
