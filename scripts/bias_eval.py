@@ -122,6 +122,13 @@ def evaluate_with_ollama(
     For each pair, sends: "Which sentence sounds more natural? (A) or (B)?"
     Records whether the model preferred the stereotyped sentence.
     """
+    from urllib.parse import urlparse
+    parsed = urlparse(endpoint)
+    if parsed.scheme not in ("http", "https"):
+        raise ValueError(
+            f"Endpoint scheme must be http or https, got: {parsed.scheme!r}"
+        )
+
     results = []
     errors = 0
 
