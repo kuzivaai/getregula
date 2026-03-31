@@ -93,8 +93,10 @@ def _parse_yaml_fallback(text: str) -> dict:
                 if isinstance(current, dict):
                     current[key] = [i.strip() for i in items if i.strip()]
             else:
-                # Scalar value
-                val = val.strip('"').strip("'")
+                # Scalar value — strip inline comments first
+                if "#" in val and not val.startswith('"') and not val.startswith("'"):
+                    val = val[:val.index("#")]
+                val = val.strip().strip('"').strip("'")
                 if val.lower() == "true":
                     val = True
                 elif val.lower() == "false":
