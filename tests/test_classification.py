@@ -1547,6 +1547,35 @@ def test_dep_scan_package_json():
     print("✓ Dependency scan: parses package.json")
 
 
+def test_advisory_load_fallback_pyc_path():
+    """_load_advisories() still finds advisories when __file__ resolves to a .pyc in __pycache__
+
+    Regression: here.parent resolves to scripts/__pycache__ instead of scripts/ when the .pyc
+    is used, making here.parent / 'references' / 'advisories' point at a non-existent path.
+    """
+    try:
+        import yaml  # noqa: F401
+    except ImportError:
+        print("✓ Advisory fallback: pyyaml not available, skipping")
+        return
+
+    from unittest.mock import patch
+    from pathlib import Path
+    import dependency_scan
+
+    # Simulate __file__ = scripts/__pycache__/dependency_scan.cpython-312.pyc
+    fake_file = str(
+        Path(dependency_scan.__file__).resolve().parent
+        / "__pycache__"
+        / "dependency_scan.cpython-312.pyc"
+    )
+    with patch.object(dependency_scan, "__file__", fake_file):
+        advisories = dependency_scan._load_advisories()
+
+    assert_true(len(advisories) > 0, "_load_advisories finds advisories despite pyc __file__")
+    print("✓ Advisory fallback: _load_advisories works from pyc __file__ path")
+
+
 def test_dep_scan_compromised_detection():
     """Detects known compromised package versions"""
     from dependency_scan import check_compromised
@@ -1569,6 +1598,144 @@ def test_dep_scan_compromised_detection():
     assert_true("credential" in findings[0]["description"].lower() or "malware" in findings[0]["description"].lower(),
                 "description mentions the attack")
     print("✓ Dependency scan: detects known compromised versions")
+
+
+# Go / Java dependency parsing (6 tests)
+
+def test_dep_scan_go_mod_basic():
+    """Parses go.mod require blocks and identifies deps"""
+    from dependency_scan import parse_go_mod
+    content = '''\
+module github.com/myuser/myapp
+
+go 1.21
+
+require (
+\tgithub.com/tmc/langchaingo v0.1.12
+\tgithub.com/sashabaranov/go-openai v1.24.0
+\tgithub.com/google/uuid v1.6.0 // indirect
+)
+
+require github.com/ollama/ollama v0.3.0
+'''
+    deps = parse_go_mod(content)
+    names = [d["name"] for d in deps]
+    assert_true("github.com/tmc/langchaingo" in names, "finds langchaingo")
+    assert_true("github.com/sashabaranov/go-openai" in names, "finds go-openai")
+    assert_true("github.com/google/uuid" in names, "finds uuid")
+    assert_true("github.com/ollama/ollama" in names, "finds ollama (single-line require)")
+    print("✓ Dependency scan: go.mod basic parsing")
+
+
+def test_dep_scan_go_mod_ai_flagged():
+    """AI Go modules are flagged is_ai=True, standard libs are not"""
+    from dependency_scan import parse_go_mod
+    content = '''\
+module github.com/myuser/myapp
+
+go 1.21
+
+require (
+\tgithub.com/tmc/langchaingo v0.1.12
+\tgithub.com/sashabaranov/go-openai v1.20.0
+\tgithub.com/google/uuid v1.6.0
+)
+'''
+    deps = parse_go_mod(content)
+    langchain = [d for d in deps if "langchaingo" in d["name"]]
+    assert_true(len(langchain) > 0, "finds langchaingo")
+    assert_true(langchain[0]["is_ai"], "langchaingo is AI")
+    openai = [d for d in deps if "go-openai" in d["name"]]
+    assert_true(len(openai) > 0, "finds go-openai")
+    assert_true(openai[0]["is_ai"], "go-openai is AI")
+    uuid = [d for d in deps if "uuid" in d["name"]]
+    assert_true(len(uuid) > 0, "finds uuid")
+    assert_false(uuid[0]["is_ai"], "uuid is not AI")
+    print("✓ Dependency scan: go.mod AI detection")
+
+
+def test_dep_scan_go_mod_pinning():
+    """go.mod versions are always exact (no ranges in Go modules)"""
+    from dependency_scan import parse_go_mod
+    content = '''\
+module github.com/myuser/myapp
+
+go 1.21
+
+require (
+\tgithub.com/tmc/langchaingo v0.1.12
+\tgithub.com/sashabaranov/go-openai v1.24.0
+)
+'''
+    deps = parse_go_mod(content)
+    for d in deps:
+        assert_eq(d["pinning"], "exact", f"{d['name']} should be exact-pinned in go.mod")
+    print("✓ Dependency scan: go.mod pinning is always exact")
+
+
+def test_dep_scan_build_gradle_groovy():
+    """Parses build.gradle (Groovy DSL) dependencies"""
+    from dependency_scan import parse_build_gradle
+    content = """\
+plugins {
+    id 'java'
+}
+
+dependencies {
+    implementation 'dev.langchain4j:langchain4j:0.31.0'
+    implementation "org.deeplearning4j:deeplearning4j-core:1.0.0-M2.1"
+    implementation group: 'ai.djl', name: 'api', version: '0.28.0'
+    testImplementation 'junit:junit:4.13.2'
+    implementation 'com.google.guava:guava:32.1.3-jre'
+}
+"""
+    deps = parse_build_gradle(content)
+    names = [d["name"] for d in deps]
+    assert_true("dev.langchain4j:langchain4j" in names, "finds langchain4j")
+    assert_true("org.deeplearning4j:deeplearning4j-core" in names, "finds deeplearning4j")
+    assert_true("ai.djl:api" in names, "finds djl (named group syntax)")
+    assert_true("junit:junit" in names, "finds junit")
+    print("✓ Dependency scan: build.gradle Groovy DSL parsing")
+
+
+def test_dep_scan_build_gradle_kts():
+    """Parses build.gradle.kts (Kotlin DSL) dependencies"""
+    from dependency_scan import parse_build_gradle
+    content = """\
+dependencies {
+    implementation("dev.langchain4j:langchain4j:0.31.0")
+    implementation("org.tensorflow:tensorflow-core-platform:0.5.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    implementation("io.github.ollama4j:ollama4j:1.0.79")
+}
+"""
+    deps = parse_build_gradle(content)
+    names = [d["name"] for d in deps]
+    assert_true("dev.langchain4j:langchain4j" in names, "finds langchain4j (kts)")
+    assert_true("org.tensorflow:tensorflow-core-platform" in names, "finds tensorflow-core")
+    assert_true("io.github.ollama4j:ollama4j" in names, "finds ollama4j")
+    print("✓ Dependency scan: build.gradle.kts Kotlin DSL parsing")
+
+
+def test_dep_scan_build_gradle_ai_flagged():
+    """AI Java/Kotlin deps in build.gradle are flagged is_ai=True"""
+    from dependency_scan import parse_build_gradle
+    content = """\
+dependencies {
+    implementation 'dev.langchain4j:langchain4j:0.31.0'
+    implementation 'com.google.guava:guava:32.1.3-jre'
+    implementation 'ai.djl:api:0.28.0'
+}
+"""
+    deps = parse_build_gradle(content)
+    lc = [d for d in deps if "langchain4j" in d["name"]]
+    assert_true(len(lc) > 0 and lc[0]["is_ai"], "langchain4j is AI")
+    djl = [d for d in deps if "djl" in d["name"]]
+    assert_true(len(djl) > 0 and djl[0]["is_ai"], "ai.djl is AI")
+    guava = [d for d in deps if "guava" in d["name"]]
+    assert_true(len(guava) > 0, "finds guava")
+    assert_false(guava[0]["is_ai"], "guava is not AI")
+    print("✓ Dependency scan: build.gradle AI detection")
 
 
 # Rust/C++ dependency parsing (2 tests)
@@ -2093,6 +2260,29 @@ def test_fp_fix_credit_model_detected():
     r = classify("import xgboost; credit_model = train_credit_risk_model(data)")
     assert_eq(r.tier, RiskTier.HIGH_RISK, "credit risk model is high-risk")
     print("✓ FP fix: credit risk model correctly detected")
+
+
+def test_fn_fix_credit_scorer_function_names():
+    """train_credit_model + score_applicant as function names → HIGH-RISK (Annex III Cat 5)
+
+    Regression: \bcredit.?model fails when 'credit' is preceded by '_' (underscore is a word
+    char), causing train_credit_model to score minimal_risk instead of high_risk.
+    """
+    code = (
+        "import sklearn.ensemble\n"
+        "import pandas as pd\n"
+        "\n"
+        "def train_credit_model(features, labels):\n"
+        "    model = RandomForestClassifier()\n"
+        "    return model.fit(features, labels)\n"
+        "\n"
+        "def score_applicant(model, applicant_data):\n"
+        "    return model.predict_proba(applicant_data)\n"
+    )
+    r = classify(code)
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "train_credit_model is high-risk")
+    assert_eq(r.category, "Annex III, Category 5", "credit scoring is Category 5")
+    print("✓ FN fix: train_credit_model correctly detected as high-risk")
 
 
 def test_fp_fix_social_media_score():
@@ -3757,7 +3947,15 @@ if __name__ == "__main__":
         test_dep_scan_pinning_score,
         test_dep_scan_lockfile_detection,
         test_dep_scan_package_json,
+        test_advisory_load_fallback_pyc_path,
         test_dep_scan_compromised_detection,
+        # Go / Java dependency parsing (6 tests)
+        test_dep_scan_go_mod_basic,
+        test_dep_scan_go_mod_ai_flagged,
+        test_dep_scan_go_mod_pinning,
+        test_dep_scan_build_gradle_groovy,
+        test_dep_scan_build_gradle_kts,
+        test_dep_scan_build_gradle_ai_flagged,
         # Rust/C++ dependency parsing (2 tests)
         test_dep_scan_cargo_toml,
         test_dep_scan_vcpkg_json,
@@ -3807,6 +4005,7 @@ if __name__ == "__main__":
         test_fp_fix_invoice_recognition,
         test_fp_fix_page_estimation,
         test_fp_fix_credit_model_detected,
+        test_fn_fix_credit_scorer_function_names,
         test_fp_fix_social_media_score,
         # Article 6(3) exemption (2 tests)
         test_exemption_assessment_likely_exempt,
@@ -4276,3 +4475,65 @@ def test_smoke_check_html_output_file():
 
 
 # ---------------------------------------------------------------------------
+# Bias risk detection tests
+# ---------------------------------------------------------------------------
+
+def test_bias_protected_class_feature_detected():
+    """Protected class attribute in ML feature context triggers bias risk observation."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from classify_risk import check_bias_risk
+    text = "X_train = df[['income', 'race', 'age']]"
+    obs = check_bias_risk(text)
+    assert len(obs) >= 1, "Should detect protected class feature"
+    assert obs[0]["article"] == "10"
+    assert "Article 10(5)" in obs[0]["observation"] or "10(5)" in obs[0]["observation"]
+
+
+def test_bias_missing_fairness_flagged():
+    """Code with protected feature but no fairness library triggers absence warning."""
+    from classify_risk import check_bias_risk
+    text = "features = df[['salary', 'ethnicity', 'years_exp']]\nmodel.fit(features, labels)"
+    obs = check_bias_risk(text)
+    articles = [o["article"] for o in obs]
+    assert "10" in articles
+    # Should have both the feature finding AND the missing fairness eval
+    assert len(obs) == 2
+
+
+def test_bias_fairness_library_suppresses_absence():
+    """Code with protected feature AND fairness library does not trigger absence warning."""
+    from classify_risk import check_bias_risk
+    text = "import fairlearn\nX = df[['income', 'race']]\nfrom fairlearn.metrics import equalized_odds"
+    obs = check_bias_risk(text)
+    # Should still flag protected feature, but NOT flag missing fairness eval
+    assert len(obs) == 1
+    assert "protected class" in obs[0]["observation"].lower() or "Protected" in obs[0]["observation"]
+
+
+def test_bias_no_protected_features_no_observation():
+    """Normal ML code without protected class features produces no bias observations."""
+    from classify_risk import check_bias_risk
+    text = "X = df[['age', 'income', 'credit_score']]\nmodel.fit(X, y)"
+    obs = check_bias_risk(text)
+    assert obs == []
+
+
+def test_js_ts_automated_decision_function_detected():
+    """JS/TS camelCase decision function names trigger Article 13 observation."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from classify_risk import generate_observations
+    text = "const filterCandidates = async (applicants) => { return applicants.filter(a => a.score > threshold); }"
+    obs = generate_observations(text)
+    articles = [o["article"] for o in obs]
+    assert "13" in articles, f"Expected Article 13 observation, got: {obs}"
+
+
+def test_js_ts_function_declaration_detected():
+    """JS/TS function declaration with decision name triggers Article 13."""
+    from classify_risk import generate_observations
+    text = "function scoreApplicant(data) { return model.predict(data); }"
+    obs = generate_observations(text)
+    articles = [o["article"] for o in obs]
+    assert "13" in articles, f"Expected Article 13 observation for scoreApplicant, got: {obs}"
