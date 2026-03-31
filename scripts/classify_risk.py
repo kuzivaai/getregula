@@ -322,6 +322,22 @@ def strip_comments(text: str, language: str = "python") -> str:
     return "\n".join(result)
 
 # ---------------------------------------------------------------------------
+# ReDoS protection for custom rule patterns
+# ---------------------------------------------------------------------------
+
+_MAX_PATTERN_LENGTH = 500
+
+
+def _compile_custom_pattern(pattern: str) -> "re.Pattern":
+    """Compile a custom rule pattern with basic ReDoS protection."""
+    if len(pattern) > _MAX_PATTERN_LENGTH:
+        raise ValueError(f"Pattern too long ({len(pattern)} chars, max {_MAX_PATTERN_LENGTH})")
+    if re.search(r'\([^)]*[+*][^)]*\)[+*]', pattern):
+        raise ValueError(f"Pattern contains nested quantifiers (potential ReDoS): {pattern[:50]}")
+    return re.compile(pattern, re.IGNORECASE)
+
+
+# ---------------------------------------------------------------------------
 # Core classification functions
 # ---------------------------------------------------------------------------
 
@@ -359,14 +375,18 @@ def check_prohibited(text: str, stripped_text: str = None) -> Optional[Classific
     # Check custom prohibited rules
     for rule in _CUSTOM_RULES.get("prohibited", []):
         for pattern in rule["patterns"]:
-            if re.search(pattern, text_lower):
-                matches.append({
-                    "indicator": rule["name"],
-                    "patterns": rule["patterns"],
-                    "description": rule["description"],
-                    "article": rule.get("article", "5"),
-                })
-                break
+            try:
+                compiled = _compile_custom_pattern(pattern)
+                if compiled.search(text_lower):
+                    matches.append({
+                        "indicator": rule["name"],
+                        "patterns": rule["patterns"],
+                        "description": rule["description"],
+                        "article": rule.get("article", "5"),
+                    })
+                    break
+            except ValueError:
+                continue  # Skip unsafe patterns silently
 
     if matches and stripped_lower is not None:
         # Filter: keep only matches that also appear in stripped (non-comment) text
@@ -409,15 +429,19 @@ def check_high_risk(text: str, stripped_text: str = None) -> Optional[Classifica
     # Check custom high-risk rules
     for rule in _CUSTOM_RULES.get("high_risk", []):
         for pattern in rule["patterns"]:
-            if re.search(pattern, text_lower):
-                matches.append({
-                    "indicator": rule["name"],
-                    "patterns": rule["patterns"],
-                    "description": rule["description"],
-                    "articles": rule.get("articles", ["6"]),
-                    "category": rule.get("category", "Custom High-Risk"),
-                })
-                break
+            try:
+                compiled = _compile_custom_pattern(pattern)
+                if compiled.search(text_lower):
+                    matches.append({
+                        "indicator": rule["name"],
+                        "patterns": rule["patterns"],
+                        "description": rule["description"],
+                        "articles": rule.get("articles", ["6"]),
+                        "category": rule.get("category", "Custom High-Risk"),
+                    })
+                    break
+            except ValueError:
+                continue  # Skip unsafe patterns silently
 
     if matches and stripped_lower is not None:
         # Filter: keep only matches that also appear in stripped (non-comment) text
@@ -461,13 +485,17 @@ def check_limited_risk(text: str, stripped_text: str = None) -> Optional[Classif
     # Check custom limited-risk rules
     for rule in _CUSTOM_RULES.get("limited_risk", []):
         for pattern in rule["patterns"]:
-            if re.search(pattern, text_lower):
-                matches.append({
-                    "indicator": rule["name"],
-                    "patterns": rule["patterns"],
-                    "description": rule.get("description", "Custom limited-risk rule"),
-                })
-                break
+            try:
+                compiled = _compile_custom_pattern(pattern)
+                if compiled.search(text_lower):
+                    matches.append({
+                        "indicator": rule["name"],
+                        "patterns": rule["patterns"],
+                        "description": rule.get("description", "Custom limited-risk rule"),
+                    })
+                    break
+            except ValueError:
+                continue  # Skip unsafe patterns silently
 
     if matches and stripped_lower is not None:
         # Filter: keep only matches that also appear in stripped (non-comment) text
