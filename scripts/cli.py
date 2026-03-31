@@ -1019,6 +1019,22 @@ def cmd_self_test(args):
     sys.exit(0 if ok else 1)
 
 
+def cmd_config(args):
+    """Config management commands."""
+    from config_validator import validate_config
+    if args.config_action == "validate":
+        result = validate_config(
+            path=getattr(args, "file", None),
+            format_type=args.format,
+        )
+        if args.format == "json":
+            json_output("config validate", result, exit_code=0 if result["valid"] else 2)
+        sys.exit(0 if result["valid"] else 2)
+    else:
+        print(f"Unknown config action: {args.config_action}", file=sys.stderr)
+        sys.exit(2)
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="regula",
@@ -1284,6 +1300,16 @@ Examples:
     p_inventory.add_argument("--format", "-f", choices=["table", "json"], default="table")
     p_inventory.add_argument("--output", "-o", help="Output file (optional)")
     p_inventory.set_defaults(func=cmd_inventory)
+
+    # --- config ---
+    p_config = subparsers.add_parser("config", help="Config management (validate, etc.)")
+    config_sub = p_config.add_subparsers(dest="config_action")
+
+    p_config_validate = config_sub.add_parser("validate", help="Validate policy config file")
+    p_config_validate.add_argument("--file", "-f", help="Path to config file (auto-discovers if omitted)")
+    p_config_validate.add_argument("--format", choices=["text", "json"], default="text")
+    p_config.set_defaults(func=cmd_config, config_action="validate")
+    p_config_validate.set_defaults(func=cmd_config, config_action="validate")
 
     args = parser.parse_args()
 
