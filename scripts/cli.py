@@ -157,7 +157,12 @@ def cmd_check(args):
     # Record scan metrics (best-effort, never blocks a scan)
     try:
         from metrics import record_scan as _record_scan
-        _record_scan(active)
+        display_tier_findings = (
+            [{"tier": "BLOCK"}] * len(block_findings)
+            + [{"tier": "WARN"}] * len(warn_findings)
+            + [{"tier": "INFO"}] * len(info_findings)
+        )
+        _record_scan(display_tier_findings)
     except Exception:
         pass
 
@@ -968,8 +973,8 @@ def _print_metrics_text(stats: dict) -> None:
     first_scan = stats.get("first_scan")
     last_scan = stats.get("last_scan")
 
-    first_str = first_scan[:10] if first_scan else "—"
-    last_str = last_scan[:10] if last_scan else "—"
+    first_str = first_scan[:10] if first_scan else "N/A"
+    last_str = last_scan[:10] if last_scan else "N/A"
 
     print(f"  Total scans:     {total_scans}")
     print(f"  Total findings:  {total_findings}")

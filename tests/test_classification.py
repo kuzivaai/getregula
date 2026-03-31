@@ -3021,9 +3021,9 @@ def test_metrics_reset():
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     import metrics as m
 
+    orig_home = os.environ.get("HOME")
     with tempfile.TemporaryDirectory() as tmpdir:
         os.environ["HOME"] = tmpdir
-        orig_home = os.environ.get("HOME")
         try:
             m.record_scan([{"tier": "BLOCK"}])
             m.reset_stats()
@@ -3042,9 +3042,9 @@ def test_metrics_empty():
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     import metrics as m
 
+    orig_home = os.environ.get("HOME")
     with tempfile.TemporaryDirectory() as tmpdir:
         os.environ["HOME"] = tmpdir
-        orig_home = os.environ.get("HOME")
         try:
             stats = m.get_stats()
             assert stats["total_scans"] == 0
