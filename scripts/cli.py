@@ -1096,7 +1096,7 @@ Examples:
                         help="CI mode: exit 1 on any WARN or BLOCK finding (implies --strict)")
     parser.add_argument("--config", help="Custom policy configuration file path")
     parser.add_argument("--rules", help="Path to custom rules file (regula-rules.yaml)")
-    parser.add_argument("--lang", choices=["en", "pt-BR"], default="en",
+    parser.add_argument("--lang", choices=["en", "pt-BR", "de"], default="en",
                         help="Output language (default: en)")
 
     subparsers = parser.add_subparsers(dest="command")
@@ -1132,7 +1132,7 @@ Examples:
     p_check.add_argument("--diff", metavar="REF", nargs="?", const="HEAD~1",
                          help="Only scan files changed since REF (default: HEAD~1)")
     p_check.add_argument("--rules", help="Path to custom rules file (regula-rules.yaml)")
-    p_check.add_argument("--lang", choices=["en", "pt-BR"], default=None,
+    p_check.add_argument("--lang", choices=["en", "pt-BR", "de"], default=None,
                          help="Output language (default: en)")
     p_check.set_defaults(func=cmd_check)
 

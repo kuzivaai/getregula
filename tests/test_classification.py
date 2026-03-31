@@ -3519,6 +3519,19 @@ def test_i18n_fallback():
     print("✓ i18n: fallback to key name for unknown keys")
 
 
+def test_i18n_german():
+    """German translation returns de strings."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from i18n import t, set_language
+    set_language("de")
+    assert t("scan_header", path="/tmp") == "Regula Prüfung: /tmp"
+    assert t("prohibited") == "Verboten:"
+    assert t("tier_prohibited") == "VERBOTEN"
+    set_language("en")  # Reset
+    print("✓ i18n: German translation works")
+
+
 # ---------------------------------------------------------------------------
 # Feature: Custom rule engine
 # ---------------------------------------------------------------------------
@@ -3904,10 +3917,11 @@ if __name__ == "__main__":
         test_actual_code_still_classified,
         test_strip_comments_python,
         test_strip_comments_javascript,
-        # Portuguese language support (i18n) (3 tests)
+        # Language support (i18n) (4 tests)
         test_i18n_english_default,
         test_i18n_portuguese,
         test_i18n_fallback,
+        test_i18n_german,
         # Custom rule engine (3 tests)
         test_custom_rules_loads_yaml,
         test_custom_rules_no_file,
