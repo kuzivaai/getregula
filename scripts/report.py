@@ -18,6 +18,7 @@ from typing import Optional
 sys.path.insert(0, str(Path(__file__).parent))
 
 from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS, PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS, generate_observations, check_ai_security
+from ast_engine import detect_language
 from log_event import query_events, verify_chain
 from credential_check import check_secrets
 from remediation import get_remediation
@@ -219,7 +220,8 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 except (ValueError, KeyError, AttributeError):
                     pass
 
-            result = classify(content)
+            lang = detect_language(filename) or "python"
+            result = classify(content, language=lang)
             if result.tier in (RiskTier.NOT_AI, RiskTier.MINIMAL_RISK) and not result.indicators_matched:
                 # Only log bare minimal-risk AI files if tier threshold allows
                 if min_tier_level <= 1:
