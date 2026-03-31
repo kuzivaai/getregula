@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regula — EU AI Act Compliance Scanning</title>
+    <title>Regula &mdash; Verifica&ccedil;&atilde;o de Conformidade com a Lei de IA da UE</title>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -45,7 +45,7 @@
             font-size: 18px;
             color: #a0a0a0;
             margin-bottom: 40px;
-            max-width: 600px;
+            max-width: 660px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -167,7 +167,10 @@
             max-width: 700px;
         }
         .market-block h3 { font-size: 22px; color: #fff; margin-bottom: 16px; }
-        .market-block p { color: #a0a0a0; font-size: 15px; line-height: 1.7; }
+        .market-block ul { list-style: none; padding: 0; }
+        .market-block li { padding: 8px 0; color: #a0a0a0; font-size: 15px; }
+        .market-block li::before { content: "\25B8"; margin-right: 10px; color: #3b82f6; }
+        .market-block .note { margin-top: 16px; color: #666; font-size: 13px; font-style: italic; }
 
         /* Custom rules teaser */
         .teaser { max-width: 700px; }
@@ -215,8 +218,8 @@
 <body>
 
 <div class="lang-bar">
-    <span class="active">&#x1F1EC;&#x1F1E7; English</span>
-    <a href="pt-br.html">&#x1F1E7;&#x1F1F7; Brasil</a>
+    <a href="index.html">&#x1F1EC;&#x1F1E7; English</a>
+    <span class="active">&#x1F1E7;&#x1F1F7; Brasil</span>
     <a href="de.html">&#x1F1E9;&#x1F1EA; Deutschland</a>
 </div>
 
@@ -224,8 +227,8 @@
 
     <!-- Hero -->
     <div class="hero">
-        <h1>Know your AI risk before you ship</h1>
-        <p class="subline">Static analysis for EU AI Act compliance. 8 languages. 10 frameworks. Zero dependencies.</p>
+        <h1>Conhe&ccedil;a o risco da sua IA antes de lan&ccedil;ar</h1>
+        <p class="subline">An&aacute;lise est&aacute;tica para conformidade com a Lei de IA da UE, LGPD e Marco Legal da IA. 8 linguagens. 10 marcos regulat&oacute;rios. Zero depend&ecirc;ncias.</p>
         <div class="pip-install"><span class="dollar">$</span>pip install regula</div>
     </div>
 
@@ -258,47 +261,47 @@
         <div class="grid-3">
             <div>
                 <span class="icon">&#x1F50D;</span>
-                <h3>Detect</h3>
-                <p>Scan 8 languages for AI patterns</p>
+                <h3>Detectar</h3>
+                <p>Analisa 8 linguagens em busca de padr&otilde;es de IA</p>
             </div>
             <div>
                 <span class="icon">&#x1F3F7;&#xFE0F;</span>
-                <h3>Classify</h3>
-                <p>Map to EU AI Act risk tiers</p>
+                <h3>Classificar</h3>
+                <p>Mapeia para n&iacute;veis de risco da Lei de IA da UE</p>
             </div>
             <div>
                 <span class="icon">&#x1F4CB;</span>
-                <h3>Report</h3>
-                <p>SARIF + JSON for CI/CD</p>
+                <h3>Reportar</h3>
+                <p>SARIF + JSON para CI/CD</p>
             </div>
         </div>
     </section>
 
-    <!-- What Regula Is (and Isn't) -->
+    <!-- O que o Regula e (e nao e) -->
     <section>
-        <h2>What Regula Is (and Isn't)</h2>
+        <h2>O que o Regula &eacute; (e n&atilde;o &eacute;)</h2>
         <div class="scope-block">
-            <h3>Regula is:</h3>
+            <h3>Regula &eacute;:</h3>
             <ul class="is">
-                <li>A development-time static analysis tool that detects AI-related code patterns and maps them to EU AI Act obligations</li>
-                <li>A shift-left compliance scanner &mdash; like ESLint for regulatory risk, running in your terminal or CI/CD pipeline</li>
-                <li>A starting point for compliance awareness, not a finish line</li>
+                <li>Uma ferramenta de an&aacute;lise est&aacute;tica em tempo de desenvolvimento que detecta padr&otilde;es de c&oacute;digo relacionados a IA e os mapeia para obriga&ccedil;&otilde;es da Lei de IA da UE</li>
+                <li>Um scanner de conformidade shift-left &mdash; como ESLint para risco regulat&oacute;rio, rodando no seu terminal ou pipeline CI/CD</li>
+                <li>Um ponto de partida para consci&ecirc;ncia de conformidade, n&atilde;o uma linha de chegada</li>
             </ul>
-            <h3>Regula is not:</h3>
+            <h3>Regula n&atilde;o &eacute;:</h3>
             <ul class="isnt">
-                <li>A runtime monitoring system (it analyses source code, not running systems)</li>
-                <li>A legal compliance certificate (findings are indicators, not legal determinations)</li>
-                <li>A replacement for enterprise GRC platforms like Credo AI or Holistic AI (it complements them)</li>
-                <li>A bias or fairness testing tool (it detects code patterns, not model behaviour)</li>
-                <li>Legal advice (consult qualified legal counsel for compliance decisions)</li>
+                <li>Um sistema de monitoramento em tempo de execu&ccedil;&atilde;o (analisa c&oacute;digo-fonte, n&atilde;o sistemas em execu&ccedil;&atilde;o)</li>
+                <li>Um certificado de conformidade legal (achados s&atilde;o indicadores, n&atilde;o determina&ccedil;&otilde;es legais)</li>
+                <li>Um substituto para plataformas GRC corporativas como Credo AI ou Holistic AI (ele as complementa)</li>
+                <li>Uma ferramenta de teste de vi&eacute;s ou equidade (detecta padr&otilde;es de c&oacute;digo, n&atilde;o comportamento de modelos)</li>
+                <li>Assessoria jur&iacute;dica (consulte advogados qualificados para decis&otilde;es de conformidade)</li>
             </ul>
-            <p class="note">Regula helps development teams understand their EU AI Act exposure early. It does not replace the organisational, procedural, and legal work required for full compliance.</p>
+            <p class="note">O Regula ajuda equipes de desenvolvimento a entender sua exposi&ccedil;&atilde;o &agrave; Lei de IA da UE cedo. Ele n&atilde;o substitui o trabalho organizacional, processual e jur&iacute;dico necess&aacute;rio para conformidade total.</p>
         </div>
     </section>
 
     <!-- Framework grid -->
     <section>
-        <h2>10 Compliance Frameworks</h2>
+        <h2>10 Marcos Regulat&oacute;rios</h2>
         <div class="fw-grid">
             <span>EU AI Act</span>
             <span>NIST AI RMF</span>
@@ -313,41 +316,47 @@
         </div>
     </section>
 
-    <!-- Market-specific: EU deadline -->
+    <!-- Market-specific: Brazil -->
     <section>
-        <h2>Built for the August 2026 deadline</h2>
+        <h2>Para empresas brasileiras</h2>
         <div class="market-block">
-            <h3>EU AI Act enforcement begins August 2026</h3>
-            <p>Prohibited AI practices are already banned as of February 2025. High-risk obligations take effect in August 2026. Regula gives your team visibility into which categories your code falls under &mdash; before enforcement, not after.</p>
+            <h3>Conformidade regulat&oacute;ria para o mercado brasileiro</h3>
+            <ul>
+                <li>LGPD (Lei 13.709/2018) &mdash; mapeamento completo, incluindo Art. 20 (decis&otilde;es automatizadas)</li>
+                <li>Marco Legal da IA (PL 2338/2023) &mdash; artigos e requisitos mapeados</li>
+                <li>Sa&iacute;da em portugu&ecirc;s: <code class="mono">regula check . --lang pt-BR</code></li>
+                <li>An&aacute;lise de lacunas: <code class="mono">regula gap --project . --framework lgpd</code></li>
+            </ul>
+            <p class="note">O Marco Legal da IA (PL 2338/2023) foi aprovado pelo Senado em dezembro de 2024 e est&aacute; em tramita&ccedil;&atilde;o na C&acirc;mara dos Deputados.</p>
         </div>
     </section>
 
     <!-- Custom rules teaser -->
     <section>
-        <h2>Your rules, your compliance</h2>
+        <h2>Suas regras, sua conformidade</h2>
         <div class="teaser">
-            <p>Define custom detection patterns and risk mappings in <code>regula-rules.yaml</code>. Extend the built-in rule set with your organisation's specific compliance requirements.</p>
+            <p>Defina padr&otilde;es de detec&ccedil;&atilde;o e mapeamentos de risco customizados em <code>regula-rules.yaml</code>. Estenda o conjunto de regras integrado com os requisitos espec&iacute;ficos de conformidade da sua organiza&ccedil;&atilde;o.</p>
         </div>
     </section>
 
     <!-- Install + Quick Start -->
-    <section id="install">
-        <h2>Quick Start</h2>
+    <section id="instalacao">
+        <h2>Come&ccedil;ar</h2>
         <div class="install-block">
-            <pre><span class="comment"># Install from PyPI</span>
+            <pre><span class="comment"># Instalar via PyPI</span>
 <span class="cmd">pip install regula</span>
 
-<span class="comment"># Scan your project</span>
+<span class="comment"># Escanear seu projeto</span>
 <span class="cmd">regula check .</span>
 
-<span class="comment"># Run a gap analysis</span>
+<span class="comment"># An&aacute;lise de lacunas</span>
 <span class="cmd">regula gap --project .</span>
 
-<span class="comment"># Gap analysis against a specific framework</span>
+<span class="comment"># An&aacute;lise de lacunas contra LGPD</span>
 <span class="cmd">regula gap --project . --framework lgpd</span>
 
-<span class="comment"># Output in German</span>
-<span class="cmd">regula check . --lang de</span></pre>
+<span class="comment"># Sa&iacute;da em portugu&ecirc;s</span>
+<span class="cmd">regula check . --lang pt-BR</span></pre>
         </div>
     </section>
 
@@ -361,7 +370,7 @@
             <a href="https://pypi.org/project/regula/">PyPI</a>
             <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>
         </div>
-        <p class="disclaimer">Not legal advice. Findings are indicators.</p>
+        <p class="disclaimer">N&atilde;o &eacute; assessoria jur&iacute;dica. Achados s&atilde;o indicadores.</p>
     </div>
 </footer>
 

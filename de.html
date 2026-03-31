@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regula — EU AI Act Compliance Scanning</title>
+    <title>Regula &mdash; EU-KI-Gesetz-Konformit&auml;tspr&uuml;fung</title>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -45,7 +45,7 @@
             font-size: 18px;
             color: #a0a0a0;
             margin-bottom: 40px;
-            max-width: 600px;
+            max-width: 640px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -168,6 +168,9 @@
         }
         .market-block h3 { font-size: 22px; color: #fff; margin-bottom: 16px; }
         .market-block p { color: #a0a0a0; font-size: 15px; line-height: 1.7; }
+        .market-block ul { list-style: none; padding: 0; }
+        .market-block li { padding: 8px 0; color: #a0a0a0; font-size: 15px; }
+        .market-block li::before { content: "\25B8"; margin-right: 10px; color: #3b82f6; }
 
         /* Custom rules teaser */
         .teaser { max-width: 700px; }
@@ -215,17 +218,17 @@
 <body>
 
 <div class="lang-bar">
-    <span class="active">&#x1F1EC;&#x1F1E7; English</span>
+    <a href="index.html">&#x1F1EC;&#x1F1E7; English</a>
     <a href="pt-br.html">&#x1F1E7;&#x1F1F7; Brasil</a>
-    <a href="de.html">&#x1F1E9;&#x1F1EA; Deutschland</a>
+    <span class="active">&#x1F1E9;&#x1F1EA; Deutschland</span>
 </div>
 
 <div class="container">
 
     <!-- Hero -->
     <div class="hero">
-        <h1>Know your AI risk before you ship</h1>
-        <p class="subline">Static analysis for EU AI Act compliance. 8 languages. 10 frameworks. Zero dependencies.</p>
+        <h1>Kennen Sie Ihr KI-Risiko vor dem Release</h1>
+        <p class="subline">Statische Analyse f&uuml;r EU-KI-Gesetz-Konformit&auml;t. 8 Sprachen. 10 Rahmenwerke. Null Abh&auml;ngigkeiten.</p>
         <div class="pip-install"><span class="dollar">$</span>pip install regula</div>
     </div>
 
@@ -238,17 +241,17 @@
                 <span class="terminal-dot green"></span>
             </div>
             <div class="terminal-body">
-                <div><span class="prompt">$ </span><span class="cmd">regula check .</span></div>
+                <div><span class="prompt">$ </span><span class="cmd">regula check . --lang de</span></div>
                 <br>
-                <div class="header">Regula Scan: my-ai-project</div>
-                <div class="separator">══════════════════════════</div>
-                <div><span class="label">  Files scanned:      </span><span>47</span></div>
-                <div><span class="label">  Prohibited:          </span><span class="val-zero">0</span></div>
-                <div><span class="label">  High-risk:           </span><span class="val-warn">2</span></div>
-                <div><span class="label">  Limited-risk:        </span><span class="val-info">1</span></div>
-                <div><span class="label">  BLOCK tier:          </span><span class="val-zero">0</span></div>
-                <div><span class="label">  WARN tier:           </span><span class="val-warn">2</span></div>
-                <div><span class="label">  INFO tier:           </span><span class="val-info">1</span></div>
+                <div class="header">Regula Pr&uuml;fung: my-ai-project</div>
+                <div class="separator">══════════════════════════════</div>
+                <div><span class="label">  Gepr&uuml;fte Dateien:   </span><span>47</span></div>
+                <div><span class="label">  Verboten:            </span><span class="val-zero">0</span></div>
+                <div><span class="label">  Hochrisiko:           </span><span class="val-warn">2</span></div>
+                <div><span class="label">  Begrenztes Risiko:    </span><span class="val-info">1</span></div>
+                <div><span class="label">  Stufe BLOCKIEREN:     </span><span class="val-zero">0</span></div>
+                <div><span class="label">  Stufe WARNUNG:        </span><span class="val-warn">2</span></div>
+                <div><span class="label">  Stufe INFO:           </span><span class="val-info">1</span></div>
             </div>
         </div>
     </section>
@@ -258,47 +261,47 @@
         <div class="grid-3">
             <div>
                 <span class="icon">&#x1F50D;</span>
-                <h3>Detect</h3>
-                <p>Scan 8 languages for AI patterns</p>
+                <h3>Erkennen</h3>
+                <p>8 Programmiersprachen auf KI-Muster pr&uuml;fen</p>
             </div>
             <div>
                 <span class="icon">&#x1F3F7;&#xFE0F;</span>
-                <h3>Classify</h3>
-                <p>Map to EU AI Act risk tiers</p>
+                <h3>Klassifizieren</h3>
+                <p>Zuordnung zu EU-KI-Gesetz-Risikostufen</p>
             </div>
             <div>
                 <span class="icon">&#x1F4CB;</span>
-                <h3>Report</h3>
-                <p>SARIF + JSON for CI/CD</p>
+                <h3>Berichten</h3>
+                <p>SARIF + JSON f&uuml;r CI/CD</p>
             </div>
         </div>
     </section>
 
-    <!-- What Regula Is (and Isn't) -->
+    <!-- Was Regula ist (und was nicht) -->
     <section>
-        <h2>What Regula Is (and Isn't)</h2>
+        <h2>Was Regula ist (und was nicht)</h2>
         <div class="scope-block">
-            <h3>Regula is:</h3>
+            <h3>Regula ist:</h3>
             <ul class="is">
-                <li>A development-time static analysis tool that detects AI-related code patterns and maps them to EU AI Act obligations</li>
-                <li>A shift-left compliance scanner &mdash; like ESLint for regulatory risk, running in your terminal or CI/CD pipeline</li>
-                <li>A starting point for compliance awareness, not a finish line</li>
+                <li>Ein statisches Analysetool f&uuml;r die Entwicklungsphase, das KI-bezogene Codemuster erkennt und sie den Pflichten des EU-KI-Gesetzes zuordnet</li>
+                <li>Ein Shift-Left-Compliance-Scanner &mdash; wie ESLint f&uuml;r regulatorisches Risiko, l&auml;uft in Ihrem Terminal oder Ihrer CI/CD-Pipeline</li>
+                <li>Ein Ausgangspunkt f&uuml;r Compliance-Bewusstsein, kein Endpunkt</li>
             </ul>
-            <h3>Regula is not:</h3>
+            <h3>Regula ist nicht:</h3>
             <ul class="isnt">
-                <li>A runtime monitoring system (it analyses source code, not running systems)</li>
-                <li>A legal compliance certificate (findings are indicators, not legal determinations)</li>
-                <li>A replacement for enterprise GRC platforms like Credo AI or Holistic AI (it complements them)</li>
-                <li>A bias or fairness testing tool (it detects code patterns, not model behaviour)</li>
-                <li>Legal advice (consult qualified legal counsel for compliance decisions)</li>
+                <li>Ein Laufzeit&uuml;berwachungssystem (es analysiert Quellcode, keine laufenden Systeme)</li>
+                <li>Ein rechtliches Konformit&auml;tszertifikat (Befunde sind Hinweise, keine rechtlichen Feststellungen)</li>
+                <li>Ein Ersatz f&uuml;r Enterprise-GRC-Plattformen wie Credo AI oder Holistic AI (es erg&auml;nzt sie)</li>
+                <li>Ein Bias- oder Fairness-Test-Tool (es erkennt Codemuster, kein Modellverhalten)</li>
+                <li>Rechtsberatung (wenden Sie sich an qualifizierte Rechtsberater f&uuml;r Compliance-Entscheidungen)</li>
             </ul>
-            <p class="note">Regula helps development teams understand their EU AI Act exposure early. It does not replace the organisational, procedural, and legal work required for full compliance.</p>
+            <p class="note">Regula hilft Entwicklungsteams, ihre Exposition gegen&uuml;ber dem EU-KI-Gesetz fr&uuml;hzeitig zu verstehen. Es ersetzt nicht die organisatorische, prozessuale und rechtliche Arbeit, die f&uuml;r vollst&auml;ndige Konformit&auml;t erforderlich ist.</p>
         </div>
     </section>
 
     <!-- Framework grid -->
     <section>
-        <h2>10 Compliance Frameworks</h2>
+        <h2>10 Compliance-Rahmenwerke</h2>
         <div class="fw-grid">
             <span>EU AI Act</span>
             <span>NIST AI RMF</span>
@@ -313,40 +316,45 @@
         </div>
     </section>
 
-    <!-- Market-specific: EU deadline -->
+    <!-- Market-specific: Germany -->
     <section>
-        <h2>Built for the August 2026 deadline</h2>
+        <h2>F&uuml;r deutsche Unternehmen</h2>
         <div class="market-block">
-            <h3>EU AI Act enforcement begins August 2026</h3>
-            <p>Prohibited AI practices are already banned as of February 2025. High-risk obligations take effect in August 2026. Regula gives your team visibility into which categories your code falls under &mdash; before enforcement, not after.</p>
+            <h3>KI-Regulierung in Deutschland</h3>
+            <ul>
+                <li>Das EU-KI-Gesetz (AI Act) gilt unmittelbar in allen EU-Mitgliedstaaten ab August 2026</li>
+                <li>Deutschland setzt das Gesetz durch das KI-Ma&szlig;nahmen-Implementierungsgesetz (KI-MIG) um</li>
+                <li>Deutsche Ausgabe: <code class="mono">regula check . --lang de</code></li>
+                <li>L&uuml;ckenanalyse: <code class="mono">regula gap --project . --framework eu-ai-act</code></li>
+            </ul>
         </div>
     </section>
 
     <!-- Custom rules teaser -->
     <section>
-        <h2>Your rules, your compliance</h2>
+        <h2>Ihre Regeln, Ihre Konformit&auml;t</h2>
         <div class="teaser">
-            <p>Define custom detection patterns and risk mappings in <code>regula-rules.yaml</code>. Extend the built-in rule set with your organisation's specific compliance requirements.</p>
+            <p>Definieren Sie eigene Erkennungsmuster und Risikozuordnungen in <code>regula-rules.yaml</code>. Erweitern Sie den integrierten Regelsatz um die spezifischen Compliance-Anforderungen Ihrer Organisation.</p>
         </div>
     </section>
 
     <!-- Install + Quick Start -->
-    <section id="install">
-        <h2>Quick Start</h2>
+    <section id="installation">
+        <h2>Schnellstart</h2>
         <div class="install-block">
-            <pre><span class="comment"># Install from PyPI</span>
+            <pre><span class="comment"># Von PyPI installieren</span>
 <span class="cmd">pip install regula</span>
 
-<span class="comment"># Scan your project</span>
+<span class="comment"># Projekt pr&uuml;fen</span>
 <span class="cmd">regula check .</span>
 
-<span class="comment"># Run a gap analysis</span>
+<span class="comment"># L&uuml;ckenanalyse durchf&uuml;hren</span>
 <span class="cmd">regula gap --project .</span>
 
-<span class="comment"># Gap analysis against a specific framework</span>
+<span class="comment"># L&uuml;ckenanalyse f&uuml;r LGPD</span>
 <span class="cmd">regula gap --project . --framework lgpd</span>
 
-<span class="comment"># Output in German</span>
+<span class="comment"># Ausgabe auf Deutsch</span>
 <span class="cmd">regula check . --lang de</span></pre>
         </div>
     </section>
@@ -361,7 +369,7 @@
             <a href="https://pypi.org/project/regula/">PyPI</a>
             <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>
         </div>
-        <p class="disclaimer">Not legal advice. Findings are indicators.</p>
+        <p class="disclaimer">Keine Rechtsberatung. Befunde sind Hinweise.</p>
     </div>
 </footer>
 
