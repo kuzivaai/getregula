@@ -3519,6 +3519,98 @@ def test_i18n_fallback():
     print("✓ i18n: fallback to key name for unknown keys")
 
 
+# ---------------------------------------------------------------------------
+# Feature: Custom rule engine
+# ---------------------------------------------------------------------------
+
+def test_custom_rules_loads_yaml():
+    """load_custom_rules returns correct structure from a YAML file."""
+    import sys, tempfile, os
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from custom_rules import load_custom_rules
+
+    yaml_content = """
+version: "1.0"
+rules:
+  prohibited:
+    - name: test_prohibited
+      patterns:
+        - "forbidden_pattern_xyz"
+      description: "Test prohibited rule"
+      article: "5"
+  high_risk:
+    - name: test_high_risk
+      patterns:
+        - "risky_pattern_abc"
+      description: "Test high risk"
+      articles: ["9"]
+      category: "Test Category"
+"""
+    with tempfile.NamedTemporaryFile(suffix=".yaml", mode="w", delete=False) as f:
+        f.write(yaml_content)
+        tmp_path = f.name
+    try:
+        rules = load_custom_rules(tmp_path)
+        assert "prohibited" in rules
+        assert len(rules["prohibited"]) == 1
+        assert rules["prohibited"][0]["name"] == "test_prohibited"
+        assert "high_risk" in rules
+        assert len(rules["high_risk"]) == 1
+        print("✓ Custom rules: YAML loading works correctly")
+    finally:
+        os.unlink(tmp_path)
+
+
+def test_custom_rules_no_file():
+    """load_custom_rules returns empty structure when no file exists."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from custom_rules import load_custom_rules
+    rules = load_custom_rules("/nonexistent/path.yaml")
+    assert rules.get("prohibited", []) == []
+    assert rules.get("high_risk", []) == []
+    print("✓ Custom rules: missing file returns empty structure")
+
+
+def test_custom_prohibited_rule_detected():
+    """Custom prohibited rule triggers classification."""
+    import sys, tempfile, os
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    import classify_risk
+    from custom_rules import load_custom_rules
+
+    yaml_content = """
+version: "1.0"
+rules:
+  prohibited:
+    - name: test_forbidden
+      patterns:
+        - "forbidden_pattern_xyz_123"
+      description: "Test custom prohibited"
+      article: "5"
+  ai_indicators:
+    - "test_ai_lib_xyz"
+"""
+    with tempfile.NamedTemporaryFile(suffix=".yaml", mode="w", delete=False) as f:
+        f.write(yaml_content)
+        tmp_path = f.name
+    try:
+        # Load custom rules into the classifier
+        old_rules = getattr(classify_risk, '_CUSTOM_RULES', {})
+        classify_risk._CUSTOM_RULES = load_custom_rules(tmp_path)
+
+        # Test with matching text
+        from classify_risk import classify, RiskTier
+        result = classify("import test_ai_lib_xyz\nforbidden_pattern_xyz_123 detected")
+        assert result.tier == RiskTier.PROHIBITED, (
+            f"Custom prohibited rule should trigger, got {result.tier.value}"
+        )
+        print("✓ Custom rules: custom prohibited pattern correctly detected")
+    finally:
+        classify_risk._CUSTOM_RULES = old_rules
+        os.unlink(tmp_path)
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -3816,6 +3908,10 @@ if __name__ == "__main__":
         test_i18n_english_default,
         test_i18n_portuguese,
         test_i18n_fallback,
+        # Custom rule engine (3 tests)
+        test_custom_rules_loads_yaml,
+        test_custom_rules_no_file,
+        test_custom_prohibited_rule_detected,
     ]
 
     print(f"Running {len(tests)} tests...\n")

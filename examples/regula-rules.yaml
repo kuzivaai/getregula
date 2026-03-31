@@ -1,0 +1,49 @@
+# regula-rules.yaml — Custom risk patterns for your organisation
+#
+# Place this file in your project root (./regula-rules.yaml) or in your
+# home directory (~/.regula/regula-rules.yaml). You can also pass an
+# explicit path with: regula check --rules /path/to/rules.yaml
+#
+# Custom rules SUPPLEMENT Regula's built-in patterns — they cannot
+# override or weaken built-in classifications.
+
+version: "1.0"
+
+rules:
+  # Prohibited practices (Article 5)
+  # These patterns flag code that may implement practices banned outright.
+  prohibited:
+    - name: internal_social_scoring
+      patterns:
+        - "employee.*scoring.*system"
+        - "worker.*rank.*algorithm"
+      description: "Internal employee social scoring system"
+      article: "5"
+
+  # High-risk systems (Annex III / Article 6)
+  # These patterns flag code that may fall under high-risk requirements.
+  high_risk:
+    - name: automated_hiring
+      patterns:
+        - "resume.*screen"
+        - "cv.*filter"
+        - "candidate.*rank"
+      description: "Automated hiring/screening system"
+      articles: ["6", "9", "14"]
+      category: "Employment (Annex III)"
+
+  # Limited-risk systems (Article 50)
+  # These patterns flag code needing transparency disclosures.
+  limited_risk:
+    - name: customer_chatbot
+      patterns:
+        - "chatbot.*customer"
+        - "virtual.*assistant.*support"
+      description: "Customer-facing chatbot requiring transparency disclosure"
+
+  # Additional AI indicators
+  # Strings that indicate AI/ML usage (library names, SDK identifiers).
+  # These help Regula detect that a codebase uses AI at all.
+  ai_indicators:
+    - "internal_ml_framework"
+    - "company_ai_sdk"

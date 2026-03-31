@@ -1131,6 +1131,7 @@ Examples:
                          default="", help="Minimum risk tier to include (filters out lower tiers)")
     p_check.add_argument("--diff", metavar="REF", nargs="?", const="HEAD~1",
                          help="Only scan files changed since REF (default: HEAD~1)")
+    p_check.add_argument("--rules", help="Path to custom rules file (regula-rules.yaml)")
     p_check.add_argument("--lang", choices=["en", "pt-BR"], default=None,
                          help="Output language (default: en)")
     p_check.set_defaults(func=cmd_check)
