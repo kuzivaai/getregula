@@ -48,6 +48,7 @@ def run_quickstart(project_dir: str = ".", org: str = "My Organisation",
     from report import scan_files
 
     project = Path(project_dir).resolve()
+    project.mkdir(parents=True, exist_ok=True)
     start = time.time()
 
     # Step 1: Policy file

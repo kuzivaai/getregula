@@ -3,7 +3,7 @@ requires = ["setuptools~=68.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "regula"
+name = "regula-ai"
 version = "1.2.0"
 description = "AI governance risk indication for code — EU AI Act compliance at the point of creation"
 readme = "README.md"
