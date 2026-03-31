@@ -51,6 +51,17 @@ mappings:
         - "AML.T0031: Erode ML Model Integrity"
         - "AML.T0043: Craft Adversarial Data"
         - "AML.T0047: Evade ML Model"
+    lgpd:
+      articles:
+        - "Art. 6 (prevenção): Sistema de prevenção de danos ao titular"
+        - "Art. 37: Relatório de Impacto à Proteção de Dados (RIPD) obrigatório"
+      notes: "O sistema de gestão de riscos da IA deve cobrir riscos ao titular dos dados pessoais."
+    marco_legal_ia:
+      status: "Projeto de lei — aprovado pelo Senado em dezembro/2024, em tramitação na Câmara"
+      articles:
+        - "Art. 3: Categorias de risco (risco inaceitável, alto risco, uso geral)"
+        - "Art. 14: Avaliação de conformidade para sistemas de IA de alto risco"
+      notes: "Sistemas de IA de alto risco requerem avaliação prévia de riscos."
 
   article_10:
     eu_ai_act:
@@ -96,6 +107,18 @@ mappings:
         - "AML.T0019: Publish Poisoned Datasets"
         - "AML.T0020: Poison Training Data"
         - "AML.T0043: Craft Adversarial Data"
+    lgpd:
+      articles:
+        - "Art. 6 (qualidade): Dados devem ser exatos, claros, relevantes e atualizados"
+        - "Art. 7: Base legal para tratamento de dados pessoais"
+        - "Art. 11: Tratamento de dados pessoais sensíveis (incluindo dados biométricos)"
+      notes: "Governança de dados de treinamento deve respeitar as bases legais da LGPD."
+    marco_legal_ia:
+      status: "Projeto de lei — aprovado pelo Senado em dezembro/2024, em tramitação na Câmara"
+      articles:
+        - "Art. 14: Documentação técnica inclui descrição dos dados de treinamento"
+        - "Art. 3: Sistemas de IA de alto risco com dados biométricos ou dados sensíveis"
+      notes: "Dados de treinamento de IA de alto risco sujeitos a requisitos de documentação."
 
   article_11:
     eu_ai_act:
@@ -131,6 +154,16 @@ mappings:
       items: []
     mitre_atlas:
       techniques: []
+    lgpd:
+      articles:
+        - "Art. 37: Relatório de Impacto à Proteção de Dados (RIPD) como documentação técnica"
+        - "Art. 6 (responsabilização): Comprovação de conformidade com medidas adotadas"
+      notes: "O RIPD serve como documentação técnica para sistemas de IA que tratam dados pessoais."
+    marco_legal_ia:
+      status: "Projeto de lei — aprovado pelo Senado em dezembro/2024, em tramitação na Câmara"
+      articles:
+        - "Art. 14: Documentação técnica obrigatória para sistemas de IA de alto risco"
+      notes: "Documentação técnica deve ser mantida e disponibilizada à autoridade competente."
 
   article_12:
     eu_ai_act:
@@ -164,6 +197,17 @@ mappings:
       items: []
     mitre_atlas:
       techniques: []
+    lgpd:
+      articles:
+        - "Art. 6 (responsabilização): Demonstração do cumprimento das normas de proteção de dados"
+        - "Art. 37: Registros relacionados ao RIPD devem ser mantidos"
+      notes: "Registros de auditoria de sistemas de IA apoiam a prestação de contas exigida pela LGPD."
+    marco_legal_ia:
+      status: "Projeto de lei — aprovado pelo Senado em dezembro/2024, em tramitação na Câmara"
+      articles:
+        - "Art. 14: Sistemas de IA de alto risco devem manter registros de funcionamento"
+        - "Art. 22: Registros necessários para responsabilização e redress"
+      notes: "Logs de funcionamento são requisito para sistemas de alto risco."
 
   article_13:
     eu_ai_act:
@@ -201,6 +245,19 @@ mappings:
       techniques:
         - "AML.T0040: ML Model Inference API Access"
         - "AML.T0048: Prompt Injection"
+    lgpd:
+      articles:
+        - "Art. 6 (transparência): Informações claras e adequadas sobre o tratamento"
+        - "Art. 18, I: Direito do titular à confirmação da existência de tratamento"
+        - "Art. 18, II: Direito do titular ao acesso aos dados"
+        - "Art. 20: Direito à revisão de decisões automatizadas e à informação sobre critérios utilizados"
+      notes: "A transparência exigida pelo Art. 13 da Lei IA europeia complementa os direitos do titular da LGPD."
+    marco_legal_ia:
+      status: "Projeto de lei — aprovado pelo Senado em dezembro/2024, em tramitação na Câmara"
+      articles:
+        - "Art. 20: Transparência para usuários que interagem com sistemas de IA"
+        - "Art. 22: Direito à explicação sobre decisões tomadas por sistemas de IA"
+      notes: "Usuários têm direito de saber quando interagem com um sistema de IA."
 
   article_14:
     eu_ai_act:
@@ -236,6 +293,17 @@ mappings:
         - "LLM06: Excessive Agency"
     mitre_atlas:
       techniques: []
+    lgpd:
+      articles:
+        - "Art. 20: O titular tem direito a solicitar revisão de decisões tomadas unicamente com base em tratamento automatizado"
+        - "Art. 20, §1: O controlador deve fornecer informações claras e adequadas sobre os critérios utilizados"
+      notes: "O direito de revisão humana do Art. 20 da LGPD é o equivalente mais direto ao Art. 14 da Lei IA europeia."
+    marco_legal_ia:
+      status: "Projeto de lei — aprovado pelo Senado em dezembro/2024, em tramitação na Câmara"
+      articles:
+        - "Art. 18: Supervisão humana obrigatória para sistemas de IA de alto risco"
+        - "Art. 22: Mecanismos de contestação e redress para decisões automatizadas"
+      notes: "Sistemas de IA de alto risco devem permitir intervenção humana significativa."
 
   article_15:
     eu_ai_act:
@@ -297,3 +365,15 @@ mappings:
         - "AML.T0043: Craft Adversarial Data"
         - "AML.T0047: Evade ML Model"
         - "AML.T0048: Prompt Injection"
+    lgpd:
+      articles:
+        - "Art. 6 (qualidade): Dados utilizados devem ser exatos e atualizados"
+        - "Art. 6 (segurança): Medidas técnicas e administrativas para proteger os dados"
+        - "Art. 46: Medidas de segurança, técnicas e administrativas para proteção dos dados pessoais"
+      notes: "Requisitos de segurança e precisão do sistema de IA devem incluir proteção dos dados pessoais processados."
+    marco_legal_ia:
+      status: "Projeto de lei — aprovado pelo Senado em dezembro/2024, em tramitação na Câmara"
+      articles:
+        - "Art. 14: Sistemas de IA de alto risco devem demonstrar robustez e segurança"
+        - "Art. 3: Avaliação de riscos inclui riscos de segurança e precisão"
+      notes: "Requisitos técnicos de segurança e robustez são centrais para a classificação de risco."

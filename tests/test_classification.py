@@ -3149,6 +3149,71 @@ def test_config_validate_no_file():
     print("✓ Config validate: nonexistent explicit path returns valid=False")
 
 
+# ---------------------------------------------------------------------------
+# Feature: Brazilian market — LGPD + Marco Legal da IA framework mapping
+# ---------------------------------------------------------------------------
+
+def test_lgpd_framework_mapping():
+    """LGPD maps to all EU AI Act articles 9-15."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from framework_mapper import map_to_frameworks
+    # Article 13 (transparency) has the most LGPD touchpoints
+    result = map_to_frameworks(["13"], frameworks=["lgpd"])
+    assert "13" in result, "Article 13 must be in result"
+    lgpd = result["13"].get("lgpd", {})
+    assert lgpd, "LGPD mapping for Article 13 must be non-empty"
+    assert "articles" in lgpd, "LGPD mapping must have 'articles' key"
+    assert len(lgpd["articles"]) > 0, "LGPD mapping must have at least one article reference"
+    # Verify Art. 20 (automated decision review) is referenced
+    all_refs = " ".join(lgpd["articles"])
+    assert "20" in all_refs, "LGPD Art. 20 (automated decision review) must be in Article 13 mapping"
+    print(f"✓ LGPD framework: Article 13 maps to {len(lgpd['articles'])} LGPD references")
+
+
+def test_marco_legal_ia_framework_mapping():
+    """Marco Legal da IA maps to all EU AI Act articles 9-15."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from framework_mapper import map_to_frameworks
+    # Article 14 (human oversight) is key for Marco Legal da IA
+    result = map_to_frameworks(["14"], frameworks=["marco-legal-ia"])
+    assert "14" in result
+    marco = result["14"].get("marco_legal_ia", {})
+    assert marco, "Marco Legal da IA mapping for Article 14 must be non-empty"
+    assert "articles" in marco
+    assert len(marco["articles"]) > 0
+    # Verify status field is present (important for user awareness)
+    assert "status" in marco, "Marco Legal da IA mapping must have 'status' field"
+    print(f"✓ Marco Legal da IA: Article 14 maps to {len(marco['articles'])} references")
+
+
+def test_lgpd_article_14_has_art20():
+    """LGPD Article 14 mapping includes Art. 20 (automated decision review)."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from framework_mapper import map_to_frameworks
+    result = map_to_frameworks(["14"], frameworks=["lgpd"])
+    lgpd = result["14"].get("lgpd", {})
+    refs = " ".join(lgpd.get("articles", []))
+    assert "20" in refs, "LGPD Art. 20 must be in Article 14 mapping (most direct human oversight equivalent)"
+    print("✓ LGPD Art. 20 (direito à revisão de decisões automatizadas) present in Article 14 mapping")
+
+
+def test_all_articles_have_lgpd_mapping():
+    """All EU AI Act articles 9-15 have LGPD mappings."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from framework_mapper import map_to_frameworks
+    articles = ["9", "10", "11", "12", "13", "14", "15"]
+    result = map_to_frameworks(articles, frameworks=["lgpd"])
+    for art in articles:
+        lgpd = result.get(art, {}).get("lgpd", {})
+        assert lgpd, f"Article {art} must have LGPD mapping"
+        assert lgpd.get("articles"), f"Article {art} LGPD mapping must have at least one article reference"
+    print(f"✓ All 7 EU AI Act articles (9-15) have LGPD mappings")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -3424,6 +3489,11 @@ if __name__ == "__main__":
         test_config_validate_valid_file,
         test_config_validate_invalid_thresholds,
         test_config_validate_no_file,
+        # Brazilian market: LGPD + Marco Legal da IA (4 tests)
+        test_lgpd_framework_mapping,
+        test_marco_legal_ia_framework_mapping,
+        test_lgpd_article_14_has_art20,
+        test_all_articles_have_lgpd_mapping,
     ]
 
     print(f"Running {len(tests)} tests...\n")

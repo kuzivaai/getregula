@@ -6,6 +6,13 @@ Framework Mapper — Cross-framework compliance mapping for EU AI Act articles.
 Maps EU AI Act articles (9-15) to equivalent controls in:
   - NIST AI RMF 1.0
   - ISO/IEC 42001:2023
+  - NIST CSF 2.0
+  - SOC 2 TSC (AICPA 2017)
+  - ISO 27001:2022
+  - OWASP LLM Top 10 (2025)
+  - MITRE ATLAS
+  - LGPD (Lei Geral de Proteção de Dados, Lei 13.709/2018 — Brasil)
+  - Marco Legal da IA (PL 2338/2023 — Brasil, aprovado pelo Senado em dezembro/2024)
 
 Uses references/framework_crosswalk.yaml as the data source.
 """
@@ -45,6 +52,8 @@ _FRAMEWORK_KEYS = {
     "iso-27001": "iso_27001",
     "owasp-llm-top10": "owasp_llm_top10",
     "mitre-atlas": "mitre_atlas",
+    "lgpd": "lgpd",
+    "marco-legal-ia": "marco_legal_ia",
 }
 
 
@@ -161,6 +170,23 @@ def format_mapping_text(mapping: dict) -> str:
             lines.append("  ISO/IEC 42001")
             for ctrl in iso.get("controls", []):
                 lines.append(f"    • {ctrl}")
+
+        lgpd = frameworks.get("lgpd", {})
+        if lgpd:
+            lines.append("  LGPD (Lei 13.709/2018 — Brasil)")
+            for art in lgpd.get("articles", []):
+                lines.append(f"    • {art}")
+            if lgpd.get("notes"):
+                lines.append(f"    Nota: {lgpd['notes']}")
+
+        marco = frameworks.get("marco_legal_ia", {})
+        if marco:
+            status = marco.get("status", "")
+            lines.append(f"  Marco Legal da IA — {status}" if status else "  Marco Legal da IA (PL 2338/2023 — Brasil)")
+            for art in marco.get("articles", []):
+                lines.append(f"    • {art}")
+            if marco.get("notes"):
+                lines.append(f"    Nota: {marco['notes']}")
 
         lines.append("")
 
