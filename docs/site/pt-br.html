@@ -3,376 +3,323 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regula &mdash; Verifica&ccedil;&atilde;o de Conformidade com a Lei de IA da UE</title>
+    <title>Regula — Verificação de Conformidade com a Lei de IA da UE para Código</title>
+    <meta name="description" content="Análise estática open-source que verifica seu código de IA contra 115 padrões de risco da Lei de IA da UE em 8 linguagens. Zero dependências.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background: #0a0a0a;
-            color: #e5e5e5;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
-        code, pre, .mono { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; }
-        a { color: #3b82f6; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #09090b; color: #a1a1aa; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        code, .mono { font-family: 'JetBrains Mono', monospace; }
+        a { color: #38bdf8; text-decoration: none; }
+        a:hover { color: #7dd3fc; }
 
-        /* Language bar */
-        .lang-bar {
-            text-align: right;
-            padding: 10px 24px;
-            font-size: 13px;
-            color: #666;
-        }
-        .lang-bar a { color: #888; margin-left: 12px; }
-        .lang-bar .active { color: #e5e5e5; }
+        /* NAV */
+        .nav { position: sticky; top: 0; z-index: 100; height: 52px; padding: 0 24px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid transparent; transition: all 0.2s; }
+        .nav.scrolled { background: rgba(9,9,11,0.95); backdrop-filter: blur(12px); border-color: #27272a; }
+        .nav-brand { font-weight: 700; font-size: 16px; color: #fafafa; letter-spacing: -0.02em; }
+        .nav-right { display: flex; gap: 20px; font-size: 13px; align-items: center; }
+        .nav-right a { color: #71717a; } .nav-right a:hover { color: #d4d4d8; }
+        .nav-right .active { color: #e4e4e7; font-weight: 600; }
 
-        /* Hero */
-        .hero {
-            padding: 100px 0 80px;
-            text-align: center;
-        }
-        .hero h1 {
-            font-size: 48px;
-            font-weight: 700;
-            color: #fff;
-            letter-spacing: -1.5px;
-            margin-bottom: 16px;
-            line-height: 1.1;
-        }
-        .hero .subline {
-            font-size: 18px;
-            color: #a0a0a0;
-            margin-bottom: 40px;
-            max-width: 660px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .pip-install {
-            display: inline-block;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 14px 28px;
-            font-size: 16px;
-            color: #22c55e;
-            cursor: default;
-            letter-spacing: 0.3px;
-        }
-        .pip-install .dollar { color: #666; margin-right: 8px; }
+        /* HERO — two column */
+        .hero { max-width: 1120px; margin: 0 auto; padding: 64px 24px 0;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+        .hero-text { max-width: 480px; }
+        .badge { display: inline-flex; align-items: center; gap: 6px;
+            font-size: 12px; color: #71717a; border: 1px solid #27272a; border-radius: 100px;
+            padding: 4px 12px; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; }
+        .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: #22c55e; }
+        .hero h1 { font-size: 40px; font-weight: 700; color: #fafafa; line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 16px; }
+        .hero h1 .hl { color: #38bdf8; }
+        .hero .sub { font-size: 16px; color: #a1a1aa; line-height: 1.6; margin-bottom: 28px; }
+        .install-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .install-box { display: inline-flex; align-items: center; gap: 10px;
+            background: #18181b; border: 1px solid #27272a; border-radius: 8px;
+            padding: 10px 16px; cursor: pointer; transition: border-color 0.2s; }
+        .install-box:hover { border-color: #3f3f46; }
+        .install-box .dollar { color: #52525b; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+        .install-box .cmd { color: #38bdf8; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+        .install-box .cp { color: #3f3f46; font-size: 11px; }
+        .gh-link { display: inline-flex; align-items: center; gap: 6px; color: #52525b; font-size: 13px; }
+        .gh-link:hover { color: #a1a1aa; }
+        .gh-link svg { width: 16px; height: 16px; fill: currentColor; }
 
-        /* Terminal demo */
-        .terminal {
-            max-width: 520px;
-            margin: 0 auto;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .terminal-bar {
-            padding: 12px 16px;
-            display: flex;
-            gap: 8px;
-            background: #222;
-            border-bottom: 1px solid #333;
-        }
-        .terminal-dot {
-            width: 12px; height: 12px; border-radius: 50%;
-        }
-        .terminal-dot.red { background: #ff5f57; }
-        .terminal-dot.yellow { background: #febc2e; }
-        .terminal-dot.green { background: #28c840; }
-        .terminal-body {
-            padding: 20px 24px;
-            font-size: 14px;
-            line-height: 1.7;
-            color: #c8c8c8;
-        }
-        .terminal-body .prompt { color: #22c55e; }
-        .terminal-body .cmd { color: #fff; }
-        .terminal-body .header { color: #3b82f6; font-weight: 600; }
-        .terminal-body .separator { color: #3b82f6; }
-        .terminal-body .label { color: #999; }
-        .terminal-body .val-zero { color: #22c55e; }
-        .terminal-body .val-warn { color: #eab308; }
-        .terminal-body .val-info { color: #a0a0a0; }
+        /* TERMINAL */
+        .term { background: #18181b; border: 1px solid #27272a; border-radius: 10px; overflow: hidden;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
+        .term-bar { display: flex; gap: 6px; padding: 10px 14px; background: #1c1c1f; border-bottom: 1px solid #27272a; }
+        .term-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .td-r { background: #ef4444; } .td-y { background: #eab308; } .td-g { background: #22c55e; }
+        .term pre { padding: 16px 20px; font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px; line-height: 1.7; color: #a1a1aa; overflow-x: auto; margin: 0; }
+        .term .p { color: #52525b; } .term .c { color: #e4e4e7; }
+        .term .h { color: #38bdf8; font-weight: 500; }
+        .term .g { color: #22c55e; } .term .y { color: #eab308; } .term .m { color: #52525b; }
+        .term hr { border: none; border-top: 1px solid #27272a; margin: 6px 0; }
 
-        /* Sections */
-        section { padding: 80px 0; border-top: 1px solid #1a1a1a; }
-        section h2 {
-            font-size: 32px;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 40px;
-            letter-spacing: -0.5px;
-        }
+        /* STATS */
+        .stats { max-width: 1120px; margin: 0 auto; padding: 48px 24px 0;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .st { background: #18181b; border: 1px solid #27272a; border-radius: 8px;
+            padding: 20px; text-align: center; }
+        .st-n { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 600; color: #fafafa; }
+        .st-l { font-size: 13px; color: #52525b; margin-top: 2px; }
 
-        /* Three-column grid */
-        .grid-3 {
-            display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
-        }
-        .grid-3 > div {
-            flex: 1;
-            min-width: 280px;
-            background: #111;
-            border: 1px solid #1a1a1a;
-            border-radius: 8px;
-            padding: 28px;
-            text-align: center;
-        }
-        .grid-3 .icon { font-size: 32px; margin-bottom: 12px; display: block; }
-        .grid-3 h3 { font-size: 18px; color: #fff; margin-bottom: 8px; }
-        .grid-3 p { color: #999; font-size: 15px; }
+        /* SECTIONS */
+        .sec { max-width: 1120px; margin: 0 auto; padding: 56px 24px 0; }
+        .sec-head { font-size: 22px; font-weight: 600; color: #fafafa; letter-spacing: -0.02em; margin-bottom: 8px; }
+        .sec-head .hl { color: #38bdf8; }
+        .sec-sub { font-size: 14px; color: #52525b; margin-bottom: 24px; }
+        .sep { max-width: 1120px; margin: 48px auto 0; height: 1px; background: #27272a; }
 
-        /* Scope */
-        .scope-block { max-width: 700px; }
-        .scope-block h3 {
-            font-size: 18px;
-            color: #fff;
-            margin: 24px 0 12px;
-        }
-        .scope-block ul { list-style: none; padding: 0; }
-        .scope-block li { padding: 6px 0; color: #999; font-size: 15px; }
-        .scope-block li::before { margin-right: 8px; font-size: 14px; }
-        .scope-block .is li::before { content: "\2713"; color: #22c55e; }
-        .scope-block .isnt li::before { content: "\2717"; color: #666; }
-        .scope-block .note { margin-top: 20px; color: #666; font-size: 14px; }
+        /* 3-STEP */
+        .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .step { background: #18181b; border: 1px solid #27272a; border-radius: 8px; padding: 24px; }
+        .step-n { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #38bdf8;
+            text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+        .step h3 { font-size: 16px; font-weight: 600; color: #e4e4e7; margin-bottom: 6px; }
+        .step p { font-size: 13px; color: #71717a; line-height: 1.5; }
+        .step code { font-size: 12px; color: #38bdf8; background: rgba(56,189,248,0.08);
+            padding: 2px 6px; border-radius: 3px; display: inline-block; margin-top: 10px; }
 
-        /* Framework grid */
-        .fw-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .fw-grid span {
-            background: #111;
-            border: 1px solid #1a1a1a;
-            border-radius: 8px;
-            padding: 12px 20px;
-            font-size: 14px;
-            color: #c8c8c8;
-            white-space: nowrap;
-        }
+        /* ARTICLE GRID */
+        .art-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .art-card { background: #18181b; border: 1px solid #27272a; border-radius: 8px; padding: 16px 18px; }
+        .art-card .tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #38bdf8;
+            margin-bottom: 4px; font-weight: 500; }
+        .art-card h4 { font-size: 14px; font-weight: 600; color: #d4d4d8; margin-bottom: 3px; }
+        .art-card p { font-size: 12px; color: #52525b; line-height: 1.4; }
 
-        /* Market section */
-        .market-block {
-            background: #0d1117;
-            border: 1px solid #1a2332;
-            border-radius: 8px;
-            padding: 36px;
-            max-width: 700px;
-        }
-        .market-block h3 { font-size: 22px; color: #fff; margin-bottom: 16px; }
-        .market-block ul { list-style: none; padding: 0; }
-        .market-block li { padding: 8px 0; color: #a0a0a0; font-size: 15px; }
-        .market-block li::before { content: "\25B8"; margin-right: 10px; color: #3b82f6; }
-        .market-block .note { margin-top: 16px; color: #666; font-size: 13px; font-style: italic; }
+        /* URGENCY */
+        .urgency { max-width: 1120px; margin: 0 auto; padding: 48px 24px 0; }
+        .urgency-box { display: flex; gap: 24px; align-items: flex-start;
+            background: #18181b; border: 1px solid #27272a; border-left: 3px solid #eab308;
+            border-radius: 0 8px 8px 0; padding: 24px; }
+        .urgency-box .date { font-family: 'JetBrains Mono', monospace; font-size: 13px;
+            color: #eab308; font-weight: 500; white-space: nowrap; min-width: 80px; }
+        .urgency-box .body { font-size: 14px; color: #a1a1aa; line-height: 1.6; }
+        .urgency-box strong { color: #e4e4e7; }
 
-        /* Custom rules teaser */
-        .teaser { max-width: 700px; }
-        .teaser p { color: #999; font-size: 15px; }
-        .teaser code { background: #1a1a1a; padding: 2px 6px; border-radius: 4px; color: #c8c8c8; font-size: 14px; }
+        /* CMD GRID */
+        .cmds { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .cm { display: flex; align-items: baseline; gap: 10px; background: #18181b;
+            border: 1px solid #27272a; border-radius: 6px; padding: 10px 14px; }
+        .cm code { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #38bdf8; white-space: nowrap; }
+        .cm span { font-size: 12px; color: #52525b; }
 
-        /* Install */
-        .install-block pre {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 24px;
-            overflow-x: auto;
-            font-size: 14px;
-            line-height: 1.8;
-            color: #c8c8c8;
-        }
-        .install-block .comment { color: #555; }
-        .install-block .cmd { color: #3b82f6; }
+        /* FW */
+        .fw-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 40px; }
+        .fw { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #a1a1aa; padding: 4px 0; }
+        .fw-d { width: 5px; height: 5px; border-radius: 50%; background: #38bdf8; flex-shrink: 0; }
+        .fw.pri { color: #e4e4e7; font-weight: 500; }
 
-        /* Footer */
-        footer {
-            border-top: 1px solid #1a1a1a;
-            padding: 48px 0;
-            text-align: center;
-            color: #555;
-            font-size: 14px;
-        }
-        footer .links {
-            display: flex;
-            gap: 24px;
-            justify-content: center;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-        footer .disclaimer { color: #444; font-size: 13px; margin-top: 12px; }
+        /* FINAL CTA */
+        .final { text-align: center; padding: 56px 24px 48px;
+            background: linear-gradient(180deg, transparent, rgba(56,189,248,0.02) 50%, transparent); }
+        .final h2 { font-size: 24px; font-weight: 600; color: #fafafa; margin-bottom: 8px; letter-spacing: -0.02em; }
+        .final p { font-size: 14px; color: #52525b; margin-bottom: 20px; }
 
-        @media (max-width: 640px) {
-            .hero h1 { font-size: 32px; }
-            .grid-3 > div { min-width: 100%; }
-            .fw-grid span { font-size: 13px; padding: 8px 14px; }
+        /* FOOTER */
+        .foot { max-width: 1120px; margin: 0 auto; padding: 24px; border-top: 1px solid #27272a;
+            display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+        .foot-links { display: flex; gap: 20px; }
+        .foot-links a { color: #52525b; } .foot-links a:hover { color: #a1a1aa; }
+        .foot-legal { color: #3f3f46; text-align: right; }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .hero { grid-template-columns: 1fr; gap: 32px; padding: 48px 20px 0; }
+            .hero h1 { font-size: 30px; }
+            .stats { grid-template-columns: repeat(2, 1fr); padding: 32px 20px 0; }
+            .steps { grid-template-columns: 1fr; }
+            .art-grid { grid-template-columns: 1fr; }
+            .cmds { grid-template-columns: 1fr; }
+            .fw-list { grid-template-columns: 1fr; }
+            .sec { padding: 40px 20px 0; }
+            .urgency { padding: 40px 20px 0; }
+            .foot { flex-direction: column; gap: 12px; text-align: center; }
+            .foot-legal { text-align: center; }
+            .term pre { font-size: 11px; padding: 12px 16px; }
         }
     </style>
 </head>
 <body>
 
-<div class="lang-bar">
-    <a href="index.html">&#x1F1EC;&#x1F1E7; English</a>
-    <span class="active">&#x1F1E7;&#x1F1F7; Brasil</span>
-    <a href="de.html">&#x1F1E9;&#x1F1EA; Deutschland</a>
+<nav class="nav">
+    <div class="nav-brand">Regula</div>
+    <div class="nav-right">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="index.html">EN</a>
+        <span class="active">BR</span>
+        <a href="de.html">DE</a>
+    </div>
+</nav>
+
+<!-- HERO: text left, terminal right -->
+<div class="hero">
+    <div class="hero-text">
+        <div class="badge"><span class="badge-dot"></span> CLI open-source &middot; v1.2.0</div>
+        <h1>Verifique seu c&oacute;digo de IA contra <span class="hl">115 padr&otilde;es de risco</span> da Lei de IA da UE.</h1>
+        <p class="sub">An&aacute;lise est&aacute;tica para Python, JS, TS, Java, Go, Rust, C, C++. Mapeia achados para n&iacute;veis de risco, gera evid&ecirc;ncias de conformidade. Zero depend&ecirc;ncias. Funciona offline.</p>
+        <div class="install-row">
+            <div class="install-box" onclick="navigator.clipboard.writeText('pip install regula-ai');this.querySelector('.cp').textContent='copiado'">
+                <span class="dollar">$</span>
+                <span class="cmd">pip install regula-ai</span>
+                <span class="cp">copiar</span>
+            </div>
+            <a href="https://github.com/kuzivaai/getregula" class="gh-link">
+                <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                Ver no GitHub
+            </a>
+        </div>
+    </div>
+    <div class="term">
+        <div class="term-bar"><div class="term-dot td-r"></div><div class="term-dot td-y"></div><div class="term-dot td-g"></div></div>
+        <pre><span class="p">$</span> <span class="c">regula check .</span>
+
+<span class="h">Regula Scan: servico-ml-pagamento</span>
+<hr>  Arquivos verificados: <span class="c">47</span>
+  Proibido:             <span class="g">0</span>
+  Alto risco:           <span class="y">2</span>       <span class="m"># Art. 6 pontua&ccedil;&atilde;o de cr&eacute;dito</span>
+  Credenciais:          <span class="g">0</span>
+  N&iacute;vel BLOQUEAR:       <span class="g">0</span>
+  N&iacute;vel ALERTA:         <span class="y">2</span>
+<hr>  <span class="g">&#10004; Nenhuma pr&aacute;tica proibida (Art. 5)</span>
+  <span class="y">&#9888; 2 alto risco: revisar gest&atilde;o de risco Art. 9</span></pre>
+    </div>
 </div>
 
-<div class="container">
-
-    <!-- Hero -->
-    <div class="hero">
-        <h1>Conhe&ccedil;a o risco da sua IA antes de lan&ccedil;ar</h1>
-        <p class="subline">An&aacute;lise est&aacute;tica para conformidade com a Lei de IA da UE, LGPD e Marco Legal da IA. 8 linguagens. 10 marcos regulat&oacute;rios. Zero depend&ecirc;ncias.</p>
-        <div class="pip-install"><span class="dollar">$</span>pip install regula</div>
-    </div>
-
-    <!-- Terminal demo -->
-    <section style="border-top: none; padding-top: 0;">
-        <div class="terminal">
-            <div class="terminal-bar">
-                <span class="terminal-dot red"></span>
-                <span class="terminal-dot yellow"></span>
-                <span class="terminal-dot green"></span>
-            </div>
-            <div class="terminal-body">
-                <div><span class="prompt">$ </span><span class="cmd">regula check .</span></div>
-                <br>
-                <div class="header">Regula Scan: my-ai-project</div>
-                <div class="separator">══════════════════════════</div>
-                <div><span class="label">  Files scanned:      </span><span>47</span></div>
-                <div><span class="label">  Prohibited:          </span><span class="val-zero">0</span></div>
-                <div><span class="label">  High-risk:           </span><span class="val-warn">2</span></div>
-                <div><span class="label">  Limited-risk:        </span><span class="val-info">1</span></div>
-                <div><span class="label">  BLOCK tier:          </span><span class="val-zero">0</span></div>
-                <div><span class="label">  WARN tier:           </span><span class="val-warn">2</span></div>
-                <div><span class="label">  INFO tier:           </span><span class="val-info">1</span></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Value props -->
-    <section>
-        <div class="grid-3">
-            <div>
-                <span class="icon">&#x1F50D;</span>
-                <h3>Detectar</h3>
-                <p>Analisa 8 linguagens em busca de padr&otilde;es de IA</p>
-            </div>
-            <div>
-                <span class="icon">&#x1F3F7;&#xFE0F;</span>
-                <h3>Classificar</h3>
-                <p>Mapeia para n&iacute;veis de risco da Lei de IA da UE</p>
-            </div>
-            <div>
-                <span class="icon">&#x1F4CB;</span>
-                <h3>Reportar</h3>
-                <p>SARIF + JSON para CI/CD</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- O que o Regula e (e nao e) -->
-    <section>
-        <h2>O que o Regula &eacute; (e n&atilde;o &eacute;)</h2>
-        <div class="scope-block">
-            <h3>Regula &eacute;:</h3>
-            <ul class="is">
-                <li>Uma ferramenta de an&aacute;lise est&aacute;tica em tempo de desenvolvimento que detecta padr&otilde;es de c&oacute;digo relacionados a IA e os mapeia para obriga&ccedil;&otilde;es da Lei de IA da UE</li>
-                <li>Um scanner de conformidade shift-left &mdash; como ESLint para risco regulat&oacute;rio, rodando no seu terminal ou pipeline CI/CD</li>
-                <li>Um ponto de partida para consci&ecirc;ncia de conformidade, n&atilde;o uma linha de chegada</li>
-            </ul>
-            <h3>Regula n&atilde;o &eacute;:</h3>
-            <ul class="isnt">
-                <li>Um sistema de monitoramento em tempo de execu&ccedil;&atilde;o (analisa c&oacute;digo-fonte, n&atilde;o sistemas em execu&ccedil;&atilde;o)</li>
-                <li>Um certificado de conformidade legal (achados s&atilde;o indicadores, n&atilde;o determina&ccedil;&otilde;es legais)</li>
-                <li>Um substituto para plataformas GRC corporativas como Credo AI ou Holistic AI (ele as complementa)</li>
-                <li>Uma ferramenta de teste de vi&eacute;s ou equidade (detecta padr&otilde;es de c&oacute;digo, n&atilde;o comportamento de modelos)</li>
-                <li>Assessoria jur&iacute;dica (consulte advogados qualificados para decis&otilde;es de conformidade)</li>
-            </ul>
-            <p class="note">O Regula ajuda equipes de desenvolvimento a entender sua exposi&ccedil;&atilde;o &agrave; Lei de IA da UE cedo. Ele n&atilde;o substitui o trabalho organizacional, processual e jur&iacute;dico necess&aacute;rio para conformidade total.</p>
-        </div>
-    </section>
-
-    <!-- Framework grid -->
-    <section>
-        <h2>10 Marcos Regulat&oacute;rios</h2>
-        <div class="fw-grid">
-            <span>EU AI Act</span>
-            <span>NIST AI RMF</span>
-            <span>ISO 42001</span>
-            <span>NIST CSF 2.0</span>
-            <span>SOC 2</span>
-            <span>ISO 27001</span>
-            <span>OWASP LLM Top 10</span>
-            <span>MITRE ATLAS</span>
-            <span>LGPD &#x1F1E7;&#x1F1F7;</span>
-            <span>Marco Legal da IA &#x1F1E7;&#x1F1F7;</span>
-        </div>
-    </section>
-
-    <!-- Market-specific: Brazil -->
-    <section>
-        <h2>Para empresas brasileiras</h2>
-        <div class="market-block">
-            <h3>Conformidade regulat&oacute;ria para o mercado brasileiro</h3>
-            <ul>
-                <li>LGPD (Lei 13.709/2018) &mdash; mapeamento completo, incluindo Art. 20 (decis&otilde;es automatizadas)</li>
-                <li>Marco Legal da IA (PL 2338/2023) &mdash; artigos e requisitos mapeados</li>
-                <li>Sa&iacute;da em portugu&ecirc;s: <code class="mono">regula check . --lang pt-BR</code></li>
-                <li>An&aacute;lise de lacunas: <code class="mono">regula gap --project . --framework lgpd</code></li>
-            </ul>
-            <p class="note">O Marco Legal da IA (PL 2338/2023) foi aprovado pelo Senado em dezembro de 2024 e est&aacute; em tramita&ccedil;&atilde;o na C&acirc;mara dos Deputados.</p>
-        </div>
-    </section>
-
-    <!-- Custom rules teaser -->
-    <section>
-        <h2>Suas regras, sua conformidade</h2>
-        <div class="teaser">
-            <p>Defina padr&otilde;es de detec&ccedil;&atilde;o e mapeamentos de risco customizados em <code>regula-rules.yaml</code>. Estenda o conjunto de regras integrado com os requisitos espec&iacute;ficos de conformidade da sua organiza&ccedil;&atilde;o.</p>
-        </div>
-    </section>
-
-    <!-- Install + Quick Start -->
-    <section id="instalacao">
-        <h2>Come&ccedil;ar</h2>
-        <div class="install-block">
-            <pre><span class="comment"># Instalar via PyPI</span>
-<span class="cmd">pip install regula</span>
-
-<span class="comment"># Escanear seu projeto</span>
-<span class="cmd">regula check .</span>
-
-<span class="comment"># An&aacute;lise de lacunas</span>
-<span class="cmd">regula gap --project .</span>
-
-<span class="comment"># An&aacute;lise de lacunas contra LGPD</span>
-<span class="cmd">regula gap --project . --framework lgpd</span>
-
-<span class="comment"># Sa&iacute;da em portugu&ecirc;s</span>
-<span class="cmd">regula check . --lang pt-BR</span></pre>
-        </div>
-    </section>
-
+<!-- STATS -->
+<div class="stats">
+    <div class="st"><div class="st-n">115</div><div class="st-l">padr&otilde;es de risco</div></div>
+    <div class="st"><div class="st-n">8</div><div class="st-l">linguagens</div></div>
+    <div class="st"><div class="st-n">10</div><div class="st-l">marcos regulat&oacute;rios</div></div>
+    <div class="st"><div class="st-n">0</div><div class="st-l">depend&ecirc;ncias</div></div>
 </div>
 
-<!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="links">
-            <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-            <a href="https://pypi.org/project/regula/">PyPI</a>
-            <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>
-        </div>
-        <p class="disclaimer">N&atilde;o &eacute; assessoria jur&iacute;dica. Achados s&atilde;o indicadores.</p>
+<!-- URGENCY -->
+<div class="urgency">
+    <div class="urgency-box">
+        <div class="date">AGO 2026</div>
+        <div class="body"><strong>Pr&aacute;ticas de IA proibidas</strong> banidas desde fev 2025. <strong>Obriga&ccedil;&otilde;es de alto risco</strong> entram em vigor em agosto de 2026. O Regula mostra em qual n&iacute;vel de risco seu c&oacute;digo se enquadra &mdash; antes da fiscaliza&ccedil;&atilde;o, n&atilde;o depois.</div>
     </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- 3 STEPS -->
+<div class="sec">
+    <div class="sec-head">Tr&ecirc;s passos para visibilidade de conformidade</div>
+    <p class="sec-sub">Instalar, verificar, revisar. Sem configura&ccedil;&atilde;o, sem chave de API, sem conta.</p>
+    <div class="steps">
+        <div class="step">
+            <div class="step-n">01 &mdash; Instalar</div>
+            <h3>Um comando</h3>
+            <p>Via PyPI. Sem configura&ccedil;&atilde;o, sem acesso &agrave; rede. Funciona totalmente offline.</p>
+            <code>pip install regula-ai</code>
+        </div>
+        <div class="step">
+            <div class="step-n">02 &mdash; Verificar</div>
+            <h3>Aponte para seu c&oacute;digo</h3>
+            <p>Detecta imports de bibliotecas de IA, arquivos de modelo, padr&otilde;es de API. Classifica nos n&iacute;veis de risco da Lei de IA da UE com pontua&ccedil;&atilde;o de confian&ccedil;a.</p>
+            <code>regula check .</code>
+        </div>
+        <div class="step">
+            <div class="step-n">03 &mdash; Revisar</div>
+            <h3>Aja sobre os achados</h3>
+            <p>An&aacute;lise de lacunas de conformidade para Artigos 9&ndash;15. Scaffolds de documenta&ccedil;&atilde;o Anexo IV. SARIF para gates de CI/CD.</p>
+            <code>regula gap --project .</code>
+        </div>
+    </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- WHAT IT CHECKS -->
+<div class="sec">
+    <div class="sec-head">O que o Regula verifica</div>
+    <p class="sec-sub">Indicadores a n&iacute;vel de c&oacute;digo mapeados para os artigos da Lei de IA da UE relevantes para sistemas de alto risco.</p>
+    <div class="art-grid">
+        <div class="art-card"><div class="tag">Artigo 5</div><h4>Pr&aacute;ticas proibidas</h4><p>Pontua&ccedil;&atilde;o social, manipula&ccedil;&atilde;o subliminar, biometria em tempo real, infer&ecirc;ncia de emo&ccedil;&otilde;es no trabalho</p></div>
+        <div class="art-card"><div class="tag">Artigo 6</div><h4>Classifica&ccedil;&atilde;o de alto risco</h4><p>Pontua&ccedil;&atilde;o de cr&eacute;dito, emprego, identifica&ccedil;&atilde;o biom&eacute;trica, sa&uacute;de, educa&ccedil;&atilde;o, aplica&ccedil;&atilde;o da lei, migra&ccedil;&atilde;o</p></div>
+        <div class="art-card"><div class="tag">Artigo 9</div><h4>Gest&atilde;o de riscos</h4><p>Lacunas na avalia&ccedil;&atilde;o de riscos, documenta&ccedil;&atilde;o ausente, casos extremos n&atilde;o testados em pipelines de IA</p></div>
+        <div class="art-card"><div class="tag">Artigo 10</div><h4>Governan&ccedil;a de dados</h4><p>Documenta&ccedil;&atilde;o de dados de treinamento, detec&ccedil;&atilde;o de vi&eacute;s, indicadores de qualidade de dados</p></div>
+        <div class="art-card"><div class="tag">Artigo 12</div><h4>Manuten&ccedil;&atilde;o de registros</h4><p>Completude de logs, integridade de trilha de auditoria, rastreabilidade de eventos</p></div>
+        <div class="art-card"><div class="tag">Artigo 13</div><h4>Transpar&ecirc;ncia</h4><p>Fun&ccedil;&otilde;es de decis&atilde;o automatizada, notifica&ccedil;&atilde;o ao usu&aacute;rio, lacunas de explicabilidade</p></div>
+        <div class="art-card"><div class="tag">Artigo 14</div><h4>Supervis&atilde;o humana</h4><p>Mecanismos de override, gates de aprova&ccedil;&atilde;o, padr&otilde;es de humano no loop</p></div>
+        <div class="art-card"><div class="tag">Artigo 15</div><h4>Precis&atilde;o e robustez</h4><p>Cobertura de testes, tratamento de erros, mecanismos de fallback, valida&ccedil;&atilde;o de entrada</p></div>
+        <div class="art-card"><div class="tag">Anexo IV</div><h4>Documenta&ccedil;&atilde;o t&eacute;cnica</h4><p>Gera scaffolds cobrindo todos os 15 requisitos de documenta&ccedil;&atilde;o do Anexo IV</p></div>
+    </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- COMMANDS -->
+<div class="sec">
+    <div class="sec-head"><span class="hl">29</span> comandos CLI</div>
+    <p class="sec-sub">Tudo a partir de um &uacute;nico bin&aacute;rio.</p>
+    <div class="cmds">
+        <div class="cm"><code>regula check .</code> <span>Verificar indicadores de risco</span></div>
+        <div class="cm"><code>regula gap --project .</code> <span>An&aacute;lise de lacunas de conformidade</span></div>
+        <div class="cm"><code>regula docs --qms</code> <span>Gerar docs Anexo IV + QMS</span></div>
+        <div class="cm"><code>regula sbom</code> <span>AI Software Bill of Materials</span></div>
+        <div class="cm"><code>regula deps --project .</code> <span>Cadeia de suprimentos de depend&ecirc;ncias</span></div>
+        <div class="cm"><code>regula baseline compare</code> <span>Conformidade incremental CI/CD</span></div>
+        <div class="cm"><code>regula inventory</code> <span>Registro de modelos + n&iacute;veis GPAI</span></div>
+        <div class="cm"><code>regula quickstart</code> <span>Onboarding em 60 segundos</span></div>
+    </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- FRAMEWORKS -->
+<div class="sec">
+    <div class="sec-head"><span class="hl">10</span> marcos regulat&oacute;rios</div>
+    <div class="fw-list" style="margin-top:16px;">
+        <div class="fw pri"><div class="fw-d"></div>Lei de IA da UE (2024/1689)</div>
+        <div class="fw"><div class="fw-d"></div>NIST CSF 2.0</div>
+        <div class="fw"><div class="fw-d"></div>NIST AI RMF 1.0</div>
+        <div class="fw"><div class="fw-d"></div>SOC 2</div>
+        <div class="fw"><div class="fw-d"></div>ISO/IEC 42001:2023</div>
+        <div class="fw"><div class="fw-d"></div>ISO 27001:2022</div>
+        <div class="fw"><div class="fw-d"></div>OWASP LLM Top 10</div>
+        <div class="fw"><div class="fw-d"></div>MITRE ATLAS</div>
+        <div class="fw pri"><div class="fw-d"></div>LGPD (Brasil)</div>
+        <div class="fw pri"><div class="fw-d"></div>Marco Legal da IA (Brasil)</div>
+    </div>
+</div>
+
+<!-- FINAL CTA -->
+<div class="final">
+    <h2>Comece a verificar em 30 segundos</h2>
+    <p>Sem conta, sem chave de API, sem rede.</p>
+    <div class="install-box" onclick="navigator.clipboard.writeText('pip install regula-ai');this.querySelector('.cp').textContent='copiado'" style="margin:0 auto;">
+        <span class="dollar">$</span>
+        <span class="cmd">pip install regula-ai</span>
+        <span class="cp">copiar</span>
+    </div>
+</div>
+
+<footer class="foot">
+    <div class="foot-links">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contribuir</a>
+    </div>
+    <div class="foot-legal">Open source &middot; Licen&ccedil;a MIT &middot; Achados s&atilde;o indicadores, n&atilde;o determina&ccedil;&otilde;es legais.</div>
 </footer>
 
+<script>
+document.addEventListener('scroll', () => {
+    document.querySelector('.nav').classList.toggle('scrolled', window.scrollY > 20);
+});
+</script>
 </body>
 </html>
