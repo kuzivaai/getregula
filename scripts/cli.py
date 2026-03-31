@@ -49,8 +49,8 @@ def _validate_path(path_str: str) -> Path:
     p = Path(path_str).resolve()
     if not p.exists():
         raise PathError(f"Path does not exist: {path_str}")
-    if not p.is_dir():
-        raise PathError(f"Path is not a directory: {path_str}")
+    if not p.is_dir() and not p.is_file():
+        raise PathError(f"Path is not a file or directory: {path_str}")
     return p
 
 
