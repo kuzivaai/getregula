@@ -19,6 +19,11 @@ Claude Code config (~/.claude/settings.json):
   }
 """
 
+# SECURITY NOTE: This server uses stdio transport only and has no
+# authentication. This is standard for MCP stdio servers (the parent
+# process controls access). Do NOT expose this server over TCP/HTTP
+# without adding authentication first.
+
 import json
 import sys
 import os
