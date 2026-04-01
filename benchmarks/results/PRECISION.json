@@ -1,0 +1,59 @@
+{
+  "total_labelled": 257,
+  "total_unlabelled": 0,
+  "overall_precision": 0.152,
+  "by_tier": {
+    "agent_autonomy": {
+      "tp": 2,
+      "fp": 3,
+      "precision": 0.4
+    },
+    "limited_risk": {
+      "tp": 1,
+      "fp": 2,
+      "precision": 0.333
+    },
+    "minimal_risk": {
+      "tp": 36,
+      "fp": 205,
+      "precision": 0.149
+    },
+    "ai_security": {
+      "tp": 0,
+      "fp": 6,
+      "precision": 0.0
+    },
+    "credential_exposure": {
+      "tp": 0,
+      "fp": 2,
+      "precision": 0.0
+    }
+  },
+  "by_project": {
+    "instructor": {
+      "tp": 2,
+      "fp": 49,
+      "precision": 0.039
+    },
+    "langchain": {
+      "tp": 12,
+      "fp": 41,
+      "precision": 0.226
+    },
+    "openai-python": {
+      "tp": 0,
+      "fp": 51,
+      "precision": 0.0
+    },
+    "pydantic-ai": {
+      "tp": 10,
+      "fp": 42,
+      "precision": 0.192
+    },
+    "scikit-learn": {
+      "tp": 15,
+      "fp": 35,
+      "precision": 0.3
+    }
+  }
+}
