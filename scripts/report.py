@@ -18,6 +18,7 @@ from typing import Optional
 sys.path.insert(0, str(Path(__file__).parent))
 
 from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS, PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS, generate_observations, check_ai_security
+from domain_scoring import compute_domain_boost
 from ast_engine import detect_language
 from log_event import query_events, verify_chain
 from credential_check import check_secrets
@@ -55,6 +56,56 @@ def _is_test_file(filepath: Path) -> bool:
     if any(p.endswith("tests") or p.endswith("_tests") or p.startswith("test_") for p in parts):
         return True
     return False
+
+
+def _is_example_file(filepath: Path) -> bool:
+    """Detect example/demo/tutorial files (findings should be deprioritised)."""
+    parts = [p.lower() for p in filepath.parts]
+    return any(p in ("example", "examples", "demo", "demos", "tutorial",
+                      "tutorials", "sample", "samples", "cookbook")
+               for p in parts)
+
+
+def _is_init_file(filepath: Path) -> bool:
+    """Detect __init__.py files (usually re-exports, not real logic)."""
+    return filepath.name == "__init__.py"
+
+
+def _has_mock_patterns(content: str) -> bool:
+    """Detect if file is primarily mock/fixture/stub code."""
+    indicators = 0
+    lower = content.lower()
+    for pattern in ("unittest.mock", "from mock import", "mock.patch",
+                    "@patch", "mocker.patch", "pytest.fixture",
+                    "create_autospec", "magicmock", "fakeclient"):
+        if pattern in lower:
+            indicators += 1
+    return indicators >= 2
+
+
+def _compute_context_penalty(filepath: Path, content: str, is_test: bool) -> int:
+    """Compute additional confidence penalty based on file context.
+
+    Returns a penalty to subtract (0 = no penalty). Test files keep the
+    existing -40 flat penalty; this function adds penalties for other
+    low-signal contexts that weren't previously handled.
+    """
+    # Test files handled separately (existing -40 flat, don't double-penalise)
+    if is_test:
+        return 0
+
+    penalty = 0
+
+    if _is_example_file(filepath):
+        penalty = max(penalty, 20)
+
+    if _is_init_file(filepath):
+        penalty = max(penalty, 25)
+
+    if _has_mock_patterns(content):
+        penalty = max(penalty, 25)
+
+    return penalty
 
 
 def scan_files(project_path: str, respect_ignores: bool = True,
@@ -296,11 +347,22 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 "limited_risk": 45, "minimal_risk": 20,
             }.get(result.tier.value, 20)
             indicator_bonus = min(len(result.indicators_matched) * 8, 15)
-            confidence_score = min(base_score + indicator_bonus, 100)
+
+            # Domain-aware boost: co-occurrence of AI + regulatory domain keywords
+            domain_result = compute_domain_boost(content, is_ai_related(content))
+            domain_boost = domain_result["boost"]
+
+            confidence_score = min(base_score + indicator_bonus + domain_boost, 100)
 
             # Deprioritise test file findings (reduce to INFO tier)
             if is_test and result.tier.value != "prohibited":
                 confidence_score = max(confidence_score - 40, 10)
+
+            # Context-aware penalty for examples, __init__, mocks
+            if result.tier.value != "prohibited":
+                ctx_penalty = _compute_context_penalty(filepath, content, is_test)
+                if ctx_penalty > 0:
+                    confidence_score = max(confidence_score - ctx_penalty, 10)
 
             # Generate Article-specific observations for high-risk findings
             observations = []

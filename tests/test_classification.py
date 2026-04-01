@@ -4196,6 +4196,170 @@ def test_explain_compliance_status_detected():
     print("✓ Explain: compliance status detected for Article 12 logging")
 
 
+# ---------------------------------------------------------------------------
+# Context weighting tests
+# ---------------------------------------------------------------------------
+
+def test_context_penalty_example_dir():
+    """Example directory files get confidence penalty."""
+    from report import _is_example_file
+    from pathlib import Path
+    assert_true(_is_example_file(Path("examples/demo.py")), "examples/ should be detected")
+    assert_true(_is_example_file(Path("cookbook/recipe.py")), "cookbook/ should be detected")
+    assert_false(_is_example_file(Path("scripts/cli.py")), "scripts/ should not be example")
+    print("✓ Context: example directory detection works")
+
+
+def test_context_penalty_init_file():
+    """__init__.py files get confidence penalty."""
+    from report import _is_init_file
+    from pathlib import Path
+    assert_true(_is_init_file(Path("ml/__init__.py")), "__init__.py should be detected")
+    assert_false(_is_init_file(Path("ml/scoring.py")), "regular file should not match")
+    print("✓ Context: __init__.py detection works")
+
+
+def test_context_penalty_mock_patterns():
+    """Files with mock/fixture patterns get confidence penalty."""
+    from report import _has_mock_patterns
+    mock_code = "from unittest.mock import patch, MagicMock\n@patch('ml.model')\ndef test_score():\n    pass"
+    assert_true(_has_mock_patterns(mock_code), "mock code should be detected")
+    real_code = "import torch\nmodel = torch.load('model.pt')\nresult = model.predict(data)"
+    assert_false(_has_mock_patterns(real_code), "real code should not match")
+    print("✓ Context: mock pattern detection works")
+
+
+def test_context_penalty_combined():
+    """Context penalty correctly computed for various file types."""
+    from report import _compute_context_penalty
+    from pathlib import Path
+    mock_code = "from unittest.mock import patch, MagicMock\n@patch('x')\ndef test(): pass"
+    # Example dir, not test
+    assert_true(_compute_context_penalty(Path("examples/demo.py"), "import torch", False) > 0,
+                "example dir should get penalty")
+    # __init__.py
+    assert_true(_compute_context_penalty(Path("ml/__init__.py"), "import torch", False) > 0,
+                "__init__.py should get penalty")
+    # Mock code
+    assert_true(_compute_context_penalty(Path("src/test_utils.py"), mock_code, False) > 0,
+                "mock code should get penalty")
+    # Normal code, not test
+    assert_eq(_compute_context_penalty(Path("src/model.py"), "import torch", False), 0,
+              "normal code should get no penalty")
+    # Test file — penalty is 0 because existing -40 flat handles it
+    assert_eq(_compute_context_penalty(Path("tests/test_model.py"), "import torch", True), 0,
+              "test files return 0 (handled by existing -40)")
+    print("✓ Context: combined penalty computation correct")
+
+
+# ---------------------------------------------------------------------------
+# Cross-file import resolution tests
+# ---------------------------------------------------------------------------
+
+def test_cross_file_import_map():
+    """Import map resolves module names to file paths."""
+    import tempfile, os
+    from ast_analysis import build_import_map
+    with tempfile.TemporaryDirectory() as d:
+        os.makedirs(os.path.join(d, "ml"))
+        with open(os.path.join(d, "utils.py"), "w") as f:
+            f.write("def helper(): pass")
+        with open(os.path.join(d, "ml", "__init__.py"), "w") as f:
+            f.write("")
+        with open(os.path.join(d, "ml", "scoring.py"), "w") as f:
+            f.write("import torch\ndef score(): return model.predict(x)")
+        imap = build_import_map(d)
+        assert_true("utils" in imap, "should resolve utils.py")
+        assert_true("ml.scoring" in imap, "should resolve ml/scoring.py")
+        assert_true("ml" in imap, "should resolve ml/__init__.py")
+    print("✓ Cross-file: import map resolves module names to file paths")
+
+
+def test_cross_file_ai_flow_detection():
+    """Cross-file resolution detects AI data flowing between files."""
+    import tempfile, os
+    from ast_analysis import resolve_cross_file_ai_flows
+    with tempfile.TemporaryDirectory() as d:
+        # utils.py has AI code
+        with open(os.path.join(d, "utils.py"), "w") as f:
+            f.write("import torch\ndef predict(data):\n    return model.predict(data)\n")
+        # app.py imports from utils
+        with open(os.path.join(d, "app.py"), "w") as f:
+            f.write("from utils import predict\nresult = predict(user_data)\n")
+        flows = resolve_cross_file_ai_flows(d)
+        assert_true(len(flows) > 0, "should detect cross-file AI flow")
+        flow = flows[0]
+        assert_eq(flow["source_file"], "app.py", "source should be app.py")
+        assert_eq(flow["imported_file"], "utils.py", "target should be utils.py")
+    print("✓ Cross-file: AI data flow detected between files")
+
+
+def test_cross_file_no_false_positive():
+    """Non-AI imports don't generate cross-file flows."""
+    import tempfile, os
+    from ast_analysis import resolve_cross_file_ai_flows
+    with tempfile.TemporaryDirectory() as d:
+        with open(os.path.join(d, "utils.py"), "w") as f:
+            f.write("def add(a, b):\n    return a + b\n")
+        with open(os.path.join(d, "app.py"), "w") as f:
+            f.write("from utils import add\nresult = add(1, 2)\n")
+        flows = resolve_cross_file_ai_flows(d)
+        assert_eq(len(flows), 0, "non-AI imports should not generate flows")
+    print("✓ Cross-file: non-AI imports correctly ignored")
+
+
+# ---------------------------------------------------------------------------
+# Domain-aware scoring tests
+# ---------------------------------------------------------------------------
+
+def test_domain_scoring_employment():
+    """Employment domain keywords boost confidence when AI is present."""
+    from domain_scoring import compute_domain_boost
+    code = "import torch\ndef screen_candidates(resumes):\n    scores = model.predict(resumes)\n    hiring_decision = scores > threshold"
+    result = compute_domain_boost(code, has_ai_indicator=True)
+    assert_true(result["boost"] > 0, "employment keywords should boost score")
+    assert_true("employment" in result["domains_matched"], "should detect employment domain")
+    print("✓ Domain scoring: employment keywords detected with AI")
+
+
+def test_domain_scoring_no_ai_no_boost():
+    """Domain keywords without AI indicators get zero boost."""
+    from domain_scoring import compute_domain_boost
+    code = "def process_application(candidate):\n    hiring_decision = review(candidate)\n    return hiring_decision"
+    result = compute_domain_boost(code, has_ai_indicator=False)
+    assert_eq(result["boost"], 0, "no AI = no boost regardless of domain keywords")
+    print("✓ Domain scoring: no boost without AI indicators")
+
+
+def test_domain_scoring_decision_logic():
+    """Decision logic detection adds extra boost."""
+    from domain_scoring import compute_domain_boost
+    code = "import torch\ndef approve_loan(applicant):\n    score = model.predict(applicant)\n    if score > threshold:\n        return approve(applicant)"
+    result = compute_domain_boost(code, has_ai_indicator=True)
+    assert_true(result["has_decision_logic"], "should detect decision logic")
+    assert_true(result["boost"] > 15, "decision logic should add extra boost beyond domain")
+    print("✓ Domain scoring: decision logic adds extra boost")
+
+
+def test_domain_scoring_multiple_domains():
+    """Multiple domain matches use highest boost."""
+    from domain_scoring import compute_domain_boost
+    code = "import torch\ndef assess_patient_credit(patient_data):\n    diagnosis = model.predict(patient_data)\n    credit_score = score_model.predict(patient_data)"
+    result = compute_domain_boost(code, has_ai_indicator=True)
+    assert_true(len(result["domains_matched"]) >= 2, "should match multiple domains")
+    print("✓ Domain scoring: multiple domains detected")
+
+
+def test_domain_scoring_generic_code():
+    """Generic AI code without domain keywords gets no boost."""
+    from domain_scoring import compute_domain_boost
+    code = "import torch\nmodel = torch.load('model.pt')\nresult = model(data)"
+    result = compute_domain_boost(code, has_ai_indicator=True)
+    assert_eq(result["boost"], 0, "generic AI code should get no domain boost")
+    assert_eq(len(result["domains_matched"]), 0, "no domains should match")
+    print("✓ Domain scoring: generic AI code gets no boost")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -4526,6 +4690,21 @@ if __name__ == "__main__":
         test_ast_function_extraction_enhanced,
         test_dependency_extraction,
         test_docs_function_table_in_output,
+        # Context weighting (4 tests)
+        test_context_penalty_example_dir,
+        test_context_penalty_init_file,
+        test_context_penalty_mock_patterns,
+        test_context_penalty_combined,
+        # Cross-file import resolution (3 tests)
+        test_cross_file_import_map,
+        test_cross_file_ai_flow_detection,
+        test_cross_file_no_false_positive,
+        # Domain-aware scoring (5 tests)
+        test_domain_scoring_employment,
+        test_domain_scoring_no_ai_no_boost,
+        test_domain_scoring_decision_logic,
+        test_domain_scoring_multiple_domains,
+        test_domain_scoring_generic_code,
         # Explainable classification (9 tests)
         test_explain_classification_high_risk,
         test_explain_classification_minimal_risk,

@@ -17,6 +17,7 @@ import ast
 import json
 import sys
 import textwrap
+from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
 # ---------------------------------------------------------------------------
@@ -927,6 +928,132 @@ def detect_logging_practices(content: str) -> dict:
         "ai_operations_unlogged": unlogged,
         "logging_score": logging_score,
     }
+
+
+# =========================================================================
+# Cross-File Import Resolution
+# =========================================================================
+
+
+def build_import_map(project_path: str) -> Dict[str, str]:
+    """Build a mapping from Python module names to file paths within a project.
+
+    Returns: {"utils": "utils.py", "ml.scoring": "ml/scoring.py", ...}
+    Handles simple modules and packages (with __init__.py).
+    Does NOT handle namespace packages or dynamic imports.
+    """
+    root = Path(project_path).resolve()
+    import_map: Dict[str, str] = {}
+
+    skip_dirs = {".git", "node_modules", "__pycache__", "venv", ".venv",
+                 "dist", "build", ".next", ".tox"}
+
+    for py_file in root.rglob("*.py"):
+        if any(d in py_file.relative_to(root).parts for d in skip_dirs):
+            continue
+
+        rel = py_file.relative_to(root)
+
+        # Module name: ml/scoring.py → "ml.scoring"
+        parts = list(rel.parts)
+        if parts[-1] == "__init__.py":
+            # Package: ml/__init__.py → "ml"
+            module_name = ".".join(parts[:-1])
+        else:
+            # Module: ml/scoring.py → "ml.scoring"
+            module_name = ".".join(parts)[:-3]  # strip .py
+
+        if module_name:
+            import_map[module_name] = str(rel)
+
+        # Also register the short name for top-level modules
+        # "scoring.py" → "scoring" (so `from scoring import X` resolves)
+        if len(parts) == 1 and parts[0] != "__init__.py":
+            short = parts[0][:-3]
+            import_map[short] = str(rel)
+
+    return import_map
+
+
+def resolve_cross_file_ai_flows(project_path: str) -> List[Dict]:
+    """Resolve AI data flows that cross file boundaries.
+
+    For each Python file:
+      1. Parse imports and identify which resolve to local project files
+      2. Check if the imported file contains AI operations (from parse_python_file)
+      3. If so, tag the importing file as transitively AI-related
+
+    Returns a list of cross-file flow dicts:
+        {source_file, imports_from, imported_file, ai_functions, description}
+    """
+    root = Path(project_path).resolve()
+    import_map = build_import_map(project_path)
+
+    skip_dirs = {".git", "node_modules", "__pycache__", "venv", ".venv",
+                 "dist", "build", ".next", ".tox", "tests"}
+
+    # First pass: determine which files have AI code
+    file_ai_status: Dict[str, bool] = {}
+    file_ai_functions: Dict[str, List[str]] = {}
+
+    for py_file in root.rglob("*.py"):
+        if any(d in py_file.relative_to(root).parts for d in skip_dirs):
+            continue
+        try:
+            content = py_file.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+
+        rel = str(py_file.relative_to(root))
+        parsed = parse_python_file(content)
+        file_ai_status[rel] = parsed["has_ai_code"]
+        if parsed["has_ai_code"]:
+            file_ai_functions[rel] = [
+                f["name"] for f in parsed["function_defs"]
+                if not f["is_test"]
+            ]
+
+    # Second pass: check imports and resolve cross-file AI flows
+    flows: List[Dict] = []
+
+    for py_file in root.rglob("*.py"):
+        if any(d in py_file.relative_to(root).parts for d in skip_dirs):
+            continue
+        try:
+            content = py_file.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+
+        rel = str(py_file.relative_to(root))
+        parsed = parse_python_file(content)
+
+        # Check each import: does it resolve to a local AI-containing file?
+        for imp in parsed["imports"]:
+            # Try progressively shorter prefixes: "ml.scoring.predict" → "ml.scoring" → "ml"
+            parts = imp.split(".")
+            resolved_file = None
+            for i in range(len(parts), 0, -1):
+                candidate = ".".join(parts[:i])
+                if candidate in import_map:
+                    resolved_file = import_map[candidate]
+                    break
+
+            if resolved_file and resolved_file != rel:
+                if file_ai_status.get(resolved_file, False):
+                    ai_funcs = file_ai_functions.get(resolved_file, [])
+                    flows.append({
+                        "source_file": rel,
+                        "imports_from": imp,
+                        "imported_file": resolved_file,
+                        "ai_functions_in_target": ai_funcs[:5],
+                        "description": (
+                            f"{rel} imports from {resolved_file} which contains "
+                            f"AI operations ({len(ai_funcs)} AI-related functions). "
+                            f"AI data may flow transitively into {rel}."
+                        ),
+                    })
+
+    return flows
 
 
 # =========================================================================

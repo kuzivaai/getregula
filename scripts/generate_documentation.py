@@ -23,7 +23,7 @@ from classify_risk import classify, RiskTier, is_ai_related, get_governance_cont
 from cli import VERSION
 from log_event import log_event
 from code_analysis import analyse_project_code
-from ast_analysis import parse_python_file, detect_human_oversight, detect_logging_practices, trace_ai_data_flow
+from ast_analysis import parse_python_file, detect_human_oversight, detect_logging_practices, trace_ai_data_flow, resolve_cross_file_ai_flows
 from dependency_scan import parse_requirements_txt, parse_pyproject_toml, is_ai_dependency
 
 
@@ -513,8 +513,28 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
         doc += "\n_Review data flow paths to ensure AI outputs pass through appropriate oversight and logging._\n\n"
         completion["3.5"] = "auto"
     else:
-        doc += "_No AI data flows detected._ If the system produces AI-generated outputs, document how they flow through the application.\n\n"
+        doc += "_No intra-file AI data flows detected._\n\n"
         completion["3.5"] = "empty"
+
+    # Cross-file AI data flows (Python only)
+    try:
+        cross_flows = resolve_cross_file_ai_flows(project_path)
+        if cross_flows:
+            doc += "**[AUTO-DETECTED] Cross-file AI data flows:**\n\n"
+            doc += "| Importing File | Imports From | AI File | AI Functions |\n"
+            doc += "|----------------|--------------|---------|-------------|\n"
+            for cf in cross_flows[:15]:
+                funcs = ", ".join(cf["ai_functions_in_target"][:3])
+                if len(cf["ai_functions_in_target"]) > 3:
+                    funcs += f" +{len(cf['ai_functions_in_target']) - 3} more"
+                doc += f"| {cf['source_file']} | {cf['imports_from']} | {cf['imported_file']} | {funcs} |\n"
+            if len(cross_flows) > 15:
+                doc += f"\n_...and {len(cross_flows) - 15} more cross-file flows_\n"
+            doc += "\n_Files importing AI modules inherit regulatory obligations from those modules._\n\n"
+            if completion["3.5"] == "empty":
+                completion["3.5"] = "partial"
+    except Exception:
+        pass  # Cross-file resolution must never block doc generation
 
     # 4. Risk Register — auto-populated from security findings
     doc += "---\n\n## 4. Risk Management System (Article 9)\n\n"
