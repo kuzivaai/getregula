@@ -92,6 +92,41 @@ ARCHITECTURE_PATTERNS = {
     "Replicate": [
         r"import\s+replicate\b", r"from\s+replicate",
     ],
+    "Google ADK (Agent Development Kit)": [
+        r"from\s+google\.adk", r"import\s+google\.adk", r"from\s+adk\s+import",
+        r"adk\.Agent", r"adk\.Runner",
+    ],
+    "Claude Agent SDK (Anthropic)": [
+        r"from\s+claude_agent_sdk", r"import\s+claude_agent_sdk",
+        r"claude_agent_sdk\.Agent",
+    ],
+    "OpenAI Agents SDK": [
+        r"from\s+openai\.agents", r"from\s+agents\s+import\s+Agent",
+        r"openai\.agents\.Agent",
+    ],
+    "LangGraph (graph orchestration)": [
+        r"from\s+langgraph", r"import\s+langgraph",
+        r"StateGraph", r"langgraph\.graph",
+    ],
+    "Vercel AI SDK": [
+        r"from\s+['\"]ai['\"]", r"import\s+\{.*useChat", r"@ai-sdk/",
+        r"import\s+\{.*generateText", r"import\s+\{.*streamText",
+    ],
+    "Mastra (TypeScript agents)": [
+        r"from\s+['\"]@mastra", r"import\s+\{.*Mastra",
+        r"@mastra/core",
+    ],
+    "Cohere SDK": [
+        r"import\s+cohere", r"from\s+cohere", r"cohere\.Client",
+    ],
+    "vLLM (inference serving)": [
+        r"from\s+vllm", r"import\s+vllm", r"vllm\.LLM",
+        r"SamplingParams",
+    ],
+    "Fireworks AI": [
+        r"import\s+fireworks", r"from\s+fireworks",
+        r"fireworks\.client",
+    ],
 }
 
 # Data source detection: code patterns → data source description

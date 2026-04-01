@@ -1037,6 +1037,9 @@ def assess_compliance(
         except ImportError:
             pass  # framework_mapper unavailable — degrade silently
 
+    # Add multi-regulation overlap data
+    regulation_overlap = _compute_regulation_overlap(highest_risk)
+
     return {
         "project": project_name,
         "highest_risk": highest_risk,
@@ -1044,7 +1047,69 @@ def assess_compliance(
         "articles": article_results,
         "overall_score": overall_score,
         "summary": summary,
+        "regulation_overlap": regulation_overlap,
     }
+
+
+# ---------------------------------------------------------------------------
+# Multi-regulation overlap
+# ---------------------------------------------------------------------------
+
+# Static mapping of EU AI Act articles to overlapping regulation obligations.
+# These overlaps are based on the regulation texts, not dynamic analysis.
+_REGULATION_OVERLAP = {
+    "9": {
+        "gdpr": "Article 35 — DPIA required when AI processing creates high risk to rights",
+        "dora": None,
+        "nis2": None,
+    },
+    "10": {
+        "gdpr": "Articles 5(1)(d), 25 — Data accuracy and data protection by design",
+        "dora": None,
+        "nis2": None,
+    },
+    "11": {
+        "gdpr": "Article 30 — Records of processing activities",
+        "dora": "Article 9 — ICT risk management documentation",
+        "nis2": None,
+    },
+    "12": {
+        "gdpr": "Article 30 — Records of processing activities; Article 33 — Breach notification logs",
+        "dora": "Article 10 — Incident detection and logging",
+        "nis2": "Article 21 — Incident handling and logging",
+    },
+    "13": {
+        "gdpr": "Articles 13-14 — Right to information about automated decision-making",
+        "dora": None,
+        "nis2": None,
+    },
+    "14": {
+        "gdpr": "Article 22 — Right not to be subject to solely automated decisions",
+        "dora": None,
+        "nis2": None,
+    },
+    "15": {
+        "gdpr": "Article 32 — Security of processing",
+        "dora": "Articles 5-7 — ICT risk management, testing, resilience",
+        "nis2": "Article 21 — Cybersecurity risk management measures",
+    },
+}
+
+
+def _compute_regulation_overlap(highest_risk: str) -> dict:
+    """Return regulation overlap data for the gap assessment."""
+    if highest_risk not in ("high_risk", "prohibited"):
+        return {}
+
+    overlap = {}
+    for article, regs in _REGULATION_OVERLAP.items():
+        active = {}
+        for reg_name, obligation in regs.items():
+            if obligation:
+                active[reg_name] = obligation
+        if active:
+            overlap[article] = active
+    return overlap
 
 
 # ---------------------------------------------------------------------------
@@ -1110,6 +1175,20 @@ def format_gap_text(assessment: dict) -> str:
                     lines.append(f"      Note: {fw_content['notes']}")
 
         lines.append("")
+
+    # Regulation overlap section
+    overlap = assessment.get("regulation_overlap", {})
+    if overlap:
+        lines.append("Regulation Overlap (AI Act + GDPR + DORA + NIS2):")
+        lines.append("")
+        _REG_LABELS = {"gdpr": "GDPR", "dora": "DORA", "nis2": "NIS2"}
+        for article_num in sorted(overlap.keys(), key=int):
+            regs = overlap[article_num]
+            lines.append(f"  Article {article_num}:")
+            for reg_key, obligation in regs.items():
+                label = _REG_LABELS.get(reg_key, reg_key.upper())
+                lines.append(f"    {label}: {obligation}")
+            lines.append("")
 
     lines.append(f"Summary: {assessment['summary']}")
     return "\n".join(lines)

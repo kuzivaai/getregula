@@ -5062,7 +5062,7 @@ def test_framework_count_expanded():
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from code_analysis import ARCHITECTURE_PATTERNS
     count = len(ARCHITECTURE_PATTERNS)
-    assert count >= 28, f"Expected ≥28 architecture patterns, got {count}"
+    assert count >= 38, f"Expected ≥38 architecture patterns, got {count}"
     print(f"✓ Framework detection: {count} architectures in ARCHITECTURE_PATTERNS")
 
 
