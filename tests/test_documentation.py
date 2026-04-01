@@ -293,7 +293,7 @@ def test_docs_ast_oversight_score_in_section_33():
 
 
 def test_docs_ast_unlogged_ops_reported():
-    """Section 3.4 reports unlogged AI operations when AI calls have no nearby logging."""
+    """Section 3.2 reports unlogged AI operations when AI calls have no nearby logging."""
     with tempfile.TemporaryDirectory() as tmp:
         _make_fixture(tmp, "decision.py",
             "import openai\n"
@@ -308,14 +308,14 @@ def test_docs_ast_unlogged_ops_reported():
         r = _run_docs(tmp, "--output", out_dir)
         assert_eq(r.returncode, 0, f"docs exit 0: {r.stderr[:200]}")
         content = _read_annex_output(tmp)
-        section_34 = content.split("### 3.4")[1].split("###")[0] if "### 3.4" in content else ""
+        section_32 = content.split("### 3.2")[1].split("###")[0] if "### 3.2" in content else ""
         # Should report logging coverage or unlogged count
         assert_true(
-            "coverage" in section_34.lower() or "score" in section_34.lower()
-            or "unlogged" in section_34.lower() or "/100" in section_34,
-            "Section 3.4 should report logging coverage or unlogged AI operations",
+            "coverage" in section_32.lower() or "score" in section_32.lower()
+            or "unlogged" in section_32.lower() or "/100" in section_32,
+            "Section 3.2 should report logging coverage or unlogged AI operations",
         )
-    print("\u2713 Docs AST: section 3.4 reports logging score/unlogged ops")
+    print("\u2713 Docs AST: section 3.2 reports logging score/unlogged ops")
 
 
 def test_docs_ast_ai_operations_listed():
@@ -376,7 +376,7 @@ def test_docs_nested_in_tests_dir_not_blank():
 
 
 def test_docs_version_string_is_current():
-    """Generated Annex IV should say v1.2.0, not v1.1.0."""
+    """Generated Annex IV should reference the current VERSION."""
     with tempfile.TemporaryDirectory() as tmp:
         _make_fixture(tmp, "app.py", "import openai\nclient = openai.Client()\n")
         out_dir = str(Path(tmp) / "out")
@@ -384,9 +384,10 @@ def test_docs_version_string_is_current():
         assert_eq(r.returncode, 0, f"docs exit 0: {r.stderr[:200]}")
         out_files = list(Path(out_dir).glob("*annex*")) if Path(out_dir).exists() else []
         content = out_files[0].read_text(encoding="utf-8") if out_files else ""
+        from cli import VERSION
         assert_true("v1.1.0" not in content, "Generated doc must not reference old v1.1.0")
-        assert_true("v1.2.0" in content, "Generated doc should reference current v1.2.0")
-    print("\u2713 Docs: version string is current (v1.2.0)")
+        assert_true(VERSION in content, f"Generated doc should reference current v{VERSION}")
+    print("\u2713 Docs: version string is current")
 
 
 # ── Empty Project ───────────────────────────────────────────────────
