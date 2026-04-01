@@ -145,7 +145,22 @@ class _StructureVisitor(ast.NodeVisitor):
 
         args = []
         for arg in node.args.args:
-            args.append(arg.arg)
+            ann = _unparse_safe(arg.annotation) if arg.annotation else None
+            args.append(arg.arg if not ann else f"{arg.arg}: {ann}")
+
+        # Return type annotation
+        return_type = _unparse_safe(node.returns) if node.returns else None
+
+        # Docstring extraction
+        docstring = None
+        if (node.body
+            and isinstance(node.body[0], ast.Expr)
+            and isinstance(node.body[0].value, (ast.Constant, ast.Str))):
+            val = node.body[0].value
+            raw = val.value if isinstance(val, ast.Constant) else val.s
+            if isinstance(raw, str):
+                # Take first line only for brevity
+                docstring = raw.strip().split("\n")[0]
 
         in_test_class = any(c.startswith("Test") for c in self._class_stack)
         is_test = node.name.startswith("test_") or in_test_class
@@ -155,6 +170,9 @@ class _StructureVisitor(ast.NodeVisitor):
             "args": args,
             "decorators": decorators,
             "is_test": is_test,
+            "line": node.lineno,
+            "return_type": return_type,
+            "docstring": docstring,
         })
         self.generic_visit(node)
 

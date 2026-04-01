@@ -197,7 +197,36 @@ def cmd_check(args):
             print(html_content)
         sys.exit(1 if block_findings else 0)
     elif args.format == "json":
-        json_output("check", findings)
+        if getattr(args, "explain", False):
+            from explain import explain_classification
+            from ast_engine import detect_language as _detect_lang_json
+            project_root = Path(args.path).resolve()
+            explained = []
+            seen_files = set()
+            for f in active:
+                if f["tier"] in ("minimal_risk",) or f["file"] in seen_files:
+                    continue
+                seen_files.add(f["file"])
+                full_path = project_root / f["file"]
+                if not full_path.is_file():
+                    continue
+                try:
+                    content = full_path.read_text(encoding="utf-8", errors="ignore")
+                except (PermissionError, OSError):
+                    continue
+                lang = _detect_lang_json(full_path.name) or "python"
+                result = explain_classification(content, filepath=f["file"], language=lang)
+                explained.append({
+                    "file": f["file"],
+                    "classification": result["classification"].to_dict(),
+                    "pattern_matches": result["pattern_matches"],
+                    "provider_deployer": result["provider_deployer"],
+                    "obligation_roadmap": result["obligation_roadmap"],
+                    "total_effort_hours": result["total_effort_hours"],
+                })
+            json_output("check", {"findings": findings, "explanations": explained})
+        else:
+            json_output("check", findings)
     elif args.format == "sarif":
         from report import generate_sarif
         name = args.name or Path(project).name
@@ -273,6 +302,36 @@ def cmd_check(args):
         print(f"  {t('tier_note')}")
         print(f"  {t('suppress_note')}")
         print()
+
+    # Explain mode: show detailed reasoning for each file
+    if getattr(args, "explain", False) and args.format == "text":
+        from explain import explain_classification, format_explanation
+        from ast_engine import detect_language as _detect_lang
+
+        # Collect unique files with non-trivial findings
+        explain_files = set()
+        for f in active:
+            if f["tier"] not in ("minimal_risk",):
+                explain_files.add(f["file"])
+
+        if explain_files:
+            print(f"\n{'=' * 60}")
+            print(f"  DETAILED EXPLANATION")
+            print(f"{'=' * 60}")
+            project_root = Path(args.path).resolve()
+            for rel_path in sorted(explain_files):
+                full_path = project_root / rel_path
+                if not full_path.is_file():
+                    continue
+                try:
+                    content = full_path.read_text(encoding="utf-8", errors="ignore")
+                except (PermissionError, OSError):
+                    continue
+                lang = _detect_lang(full_path.name) or "python"
+                result = explain_classification(content, filepath=rel_path, language=lang)
+                print(f"\n--- {rel_path} ---")
+                print(format_explanation(result, filepath=rel_path))
+                print()
 
     # Exit codes: 1 if any BLOCK-tier findings, 1 if WARN-tier and (--strict or --ci), 0 otherwise
     strict = args.strict or getattr(args, "ci", False)
@@ -764,6 +823,12 @@ def cmd_docs(args):
         output_file.write_text(doc, encoding="utf-8")
         print(f"Annex IV documentation written to {output_file}")
 
+        # Completion report
+        if getattr(args, "completion", False):
+            from generate_documentation import generate_completion_report
+            print()
+            print(generate_completion_report(project_name))
+
         # QMS scaffold
         if args.qms or getattr(args, "all", False):
             qms_file = output_dir / f"{project_name}_qms.md"
@@ -1167,6 +1232,8 @@ Examples:
     p_check.add_argument("--diff", metavar="REF", nargs="?", const="HEAD~1",
                          help="Only scan files changed since REF (default: HEAD~1)")
     p_check.add_argument("--rules", help="Path to custom rules file (regula-rules.yaml)")
+    p_check.add_argument("--explain", action="store_true",
+                         help="Show detailed classification reasoning, obligation roadmap, and effort estimates")
     p_check.add_argument("--lang", choices=["en", "pt-BR", "de"], default=None,
                          help="Output language (default: en)")
     p_check.set_defaults(func=cmd_check)
@@ -1276,6 +1343,7 @@ Examples:
     p_docs.add_argument("--format", "-f", choices=["markdown", "model-card", "pdf", "conformity-declaration"], default="markdown")
     p_docs.add_argument("--qms", action="store_true", help="Also generate QMS scaffold (Article 17)")
     p_docs.add_argument("--all", action="store_true", help="Generate all documentation types")
+    p_docs.add_argument("--completion", action="store_true", help="Show completion percentage per Annex IV section")
     p_docs.set_defaults(func=cmd_docs)
 
     # --- compliance ---

@@ -3992,6 +3992,210 @@ def test_docs_include_data_flow():
     print(f"✓ Docs integration: Annex IV output is {len(result)} chars")
 
 
+# ---------------------------------------------------------------------------
+# Documentation auto-population tests
+# ---------------------------------------------------------------------------
+
+def test_docs_auto_populated_sections():
+    """Annex IV output contains auto-populated markers and guided templates."""
+    from generate_documentation import generate_annex_iv, scan_project
+    project_path = str(Path(__file__).parent.parent)
+    findings = scan_project(project_path)
+    doc = generate_annex_iv(findings, "test-project", project_path)
+    # Should have auto-detected markers
+    assert_true("[AUTO-DETECTED]" in doc, "should have [AUTO-DETECTED] sections")
+    # Should have guided templates (fill-in-the-blank)
+    assert_true("[COMPLETE THESE]" in doc, "should have [COMPLETE THESE] templates")
+    assert_true("__________" in doc, "should have blank fields for human input")
+    # Should have structured metric tables
+    assert_true("| Metric |" in doc, "should have performance metrics table template")
+    print("✓ Docs: auto-populated sections and guided templates present")
+
+
+def test_docs_completion_report():
+    """Completion report shows section-level status after generation."""
+    from generate_documentation import generate_annex_iv, generate_completion_report, scan_project
+    project_path = str(Path(__file__).parent.parent)
+    findings = scan_project(project_path)
+    generate_annex_iv(findings, "test-project", project_path)
+    report = generate_completion_report("test-project")
+    assert_true("Auto-populated:" in report, "should show auto-populated count")
+    assert_true("Partial:" in report, "should show partial count")
+    assert_true("Needs input:" in report, "should show needs-input count")
+    assert_true("General Description" in report, "should list section names")
+    print("✓ Docs: completion report shows per-section status")
+
+
+def test_ast_function_extraction_enhanced():
+    """AST parser extracts docstrings, line numbers, and return types."""
+    from ast_analysis import parse_python_file
+    code = '''import torch
+def predict_risk(features: list) -> float:
+    """Calculate risk score for applicant."""
+    return model.predict(features)
+'''
+    parsed = parse_python_file(code)
+    fns = [f for f in parsed["function_defs"] if f["name"] == "predict_risk"]
+    assert_eq(len(fns), 1, "should find predict_risk function")
+    fn = fns[0]
+    assert_eq(fn["line"], 2, "should report correct line number")
+    assert_eq(fn["return_type"], "float", "should extract return type")
+    assert_true(fn["docstring"] is not None, "should extract docstring")
+    assert_true("risk score" in fn["docstring"].lower(), "docstring content should match")
+    # Args should include type hints
+    assert_true(any("list" in a for a in fn["args"]), "should include type hints in args")
+    print("✓ AST: enhanced function extraction with docstring, line, return type")
+
+
+def test_dependency_extraction():
+    """Dependency extraction parses AI libraries from requirements.txt."""
+    from generate_documentation import extract_ai_dependencies
+    import tempfile, os
+    with tempfile.TemporaryDirectory() as tmpdir:
+        req_path = os.path.join(tmpdir, "requirements.txt")
+        with open(req_path, "w") as f:
+            f.write("torch==2.1.0\nnumpy>=1.24\nopenai==1.12.0\nflask>=2.0\n")
+        deps = extract_ai_dependencies(tmpdir)
+        names = [d["name"] for d in deps]
+        assert_true("torch" in names, "should detect torch as AI dep")
+        assert_true("openai" in names, "should detect openai as AI dep")
+        assert_true("flask" not in names, "should not flag flask as AI dep")
+        # Check versions
+        torch_dep = [d for d in deps if d["name"] == "torch"][0]
+        assert_eq(torch_dep["version"], "2.1.0", "should extract pinned version")
+    print("✓ Docs: dependency extraction finds AI libraries with versions")
+
+
+def test_docs_function_table_in_output():
+    """When AI functions exist, Annex IV includes a function table."""
+    from generate_documentation import generate_annex_iv, scan_project
+    import tempfile, os
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # Create a minimal AI file
+        ai_file = os.path.join(tmpdir, "model.py")
+        with open(ai_file, "w") as f:
+            f.write('import torch\ndef score_applicant(data: dict) -> float:\n    """Score the applicant."""\n    return model.predict(data)\n')
+        findings = scan_project(tmpdir)
+        doc = generate_annex_iv(findings, "test", tmpdir)
+        assert_true("| Function |" in doc, "should have function table header")
+        assert_true("score_applicant" in doc, "should list detected function")
+    print("✓ Docs: function table included in Annex IV output")
+
+
+# ---------------------------------------------------------------------------
+# Explainable classification tests
+# ---------------------------------------------------------------------------
+
+def test_explain_classification_high_risk():
+    """Explain produces pattern matches, roadmap, and provider/deployer for high-risk code."""
+    from explain import explain_classification
+    code = "import torch\ndef screen_candidates(resumes):\n    return model.predict(resumes)\ncv_screening = True"
+    result = explain_classification(code, filepath="app.py", language="python")
+    cls = result["classification"]
+    assert_eq(cls.tier, RiskTier.HIGH_RISK, "should classify as high-risk")
+    assert_true(len(result["pattern_matches"]) > 0, "should have pattern matches")
+    # Check pattern match has required fields
+    m = result["pattern_matches"][0]
+    assert_true("line" in m, "match should have line number")
+    assert_true("legal_basis" in m, "match should have legal basis")
+    assert_true("false_positive_if" in m, "match should have false positive guidance")
+    assert_true(m["line"] >= 1, "line should be >= 1")
+    # Should have obligation roadmap
+    assert_true(len(result["obligation_roadmap"]) > 0, "should have obligations")
+    # Should have effort hours
+    assert_true(result["total_effort_hours"][0] > 0, "should have effort estimate")
+    print("✓ Explain: high-risk code produces full explanation")
+
+
+def test_explain_classification_minimal_risk():
+    """Explain on minimal-risk code produces no obligations."""
+    from explain import explain_classification
+    code = "import torch\nresult = model.predict(data)"
+    result = explain_classification(code, filepath="simple.py", language="python")
+    assert_eq(len(result["obligation_roadmap"]), 0, "minimal risk should have no obligations")
+    print("✓ Explain: minimal-risk code produces no obligation roadmap")
+
+
+def test_explain_provider_detection():
+    """Provider detection identifies training code."""
+    from explain import detect_provider_deployer
+    code = "import torch\nmodel.fit(X_train, y_train)\ntorch.save(model, 'model.pt')"
+    result = detect_provider_deployer(code)
+    assert_eq(result["role"], "provider", "should detect provider role")
+    assert_true(len(result["evidence"]) >= 1, "should have evidence")
+    print("✓ Explain: provider detected from training code")
+
+
+def test_explain_deployer_detection():
+    """Deployer detection identifies API-only usage."""
+    from explain import detect_provider_deployer
+    code = "from openai import OpenAI\nclient = OpenAI()\nresult = client.chat.completions.create(model='gpt-4')"
+    result = detect_provider_deployer(code)
+    assert_eq(result["role"], "deployer", "should detect deployer role")
+    assert_true(len(result["evidence"]) >= 1, "should have evidence")
+    print("✓ Explain: deployer detected from API usage")
+
+
+def test_explain_provider_deployer_unclear():
+    """Unclear role when no indicators present."""
+    from explain import detect_provider_deployer
+    code = "x = 1 + 2\nprint(x)"
+    result = detect_provider_deployer(code)
+    assert_eq(result["role"], "unclear", "should be unclear with no AI code")
+    print("✓ Explain: unclear role when no AI indicators")
+
+
+def test_explain_obligation_roadmap_articles():
+    """Obligation roadmap includes all high-risk articles with correct structure."""
+    from explain import explain_classification
+    code = "import torch\ndef hiring_decision(candidate):\n    return model.predict(candidate.features)"
+    result = explain_classification(code, filepath="hr.py")
+    roadmap = result["obligation_roadmap"]
+    articles_in_roadmap = [o["article"] for o in roadmap]
+    for art in ["9", "10", "12", "14"]:
+        assert_true(art in articles_in_roadmap, f"Article {art} should be in roadmap")
+    # Check structure
+    for o in roadmap:
+        assert_true("priority" in o, "obligation should have priority")
+        assert_true("effort_hours" in o, "obligation should have effort hours")
+        assert_true("status" in o, "obligation should have status")
+    print("✓ Explain: obligation roadmap covers required articles")
+
+
+def test_explain_format_output():
+    """Format explanation produces readable text output."""
+    from explain import explain_classification, format_explanation
+    code = "import torch\ndef cv_screening(resume):\n    score = model.predict(resume)\n    return score > threshold"
+    result = explain_classification(code, filepath="screen.py")
+    output = format_explanation(result, filepath="screen.py")
+    assert_true("Classification:" in output, "should have classification header")
+    assert_true("WHY:" in output, "should have WHY section")
+    assert_true("ROLE:" in output, "should have ROLE section")
+    assert_true("OBLIGATIONS:" in output, "should have OBLIGATIONS section")
+    assert_true("screen.py:" in output, "should reference the file path")
+    print("✓ Explain: formatted output has all required sections")
+
+
+def test_explain_line_level_match():
+    """Pattern matches report correct line numbers."""
+    from explain import find_pattern_matches
+    code = "import torch\n\n\ndef credit_scoring(applicant):\n    return model.predict(applicant)"
+    matches = find_pattern_matches(code, language="python")
+    credit_matches = [m for m in matches if m["pattern_name"] == "essential_services"]
+    assert_true(len(credit_matches) > 0, "should find credit_scoring pattern")
+    assert_eq(credit_matches[0]["line"], 4, "credit_scoring is on line 4")
+    print("✓ Explain: line-level match reports correct line number")
+
+
+def test_explain_compliance_status_detected():
+    """Compliance status detected when logging patterns are present."""
+    from explain import _detect_compliance_status
+    code = "import logging\nlogger = logging.getLogger(__name__)\nlogger.info('audit event')"
+    status = _detect_compliance_status("12", code)
+    assert_eq(status, "detected", "logging should be detected for Article 12")
+    print("✓ Explain: compliance status detected for Article 12 logging")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -4316,6 +4520,22 @@ if __name__ == "__main__":
         test_cross_function_no_false_positive,
         # Docs data flow integration (1 test)
         test_docs_include_data_flow,
+        # Documentation auto-population (5 tests)
+        test_docs_auto_populated_sections,
+        test_docs_completion_report,
+        test_ast_function_extraction_enhanced,
+        test_dependency_extraction,
+        test_docs_function_table_in_output,
+        # Explainable classification (10 tests)
+        test_explain_classification_high_risk,
+        test_explain_classification_minimal_risk,
+        test_explain_provider_detection,
+        test_explain_deployer_detection,
+        test_explain_provider_deployer_unclear,
+        test_explain_obligation_roadmap_articles,
+        test_explain_format_output,
+        test_explain_line_level_match,
+        test_explain_compliance_status_detected,
     ]
 
     print(f"Running {len(tests)} tests...\n")
