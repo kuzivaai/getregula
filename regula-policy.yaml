@@ -26,6 +26,19 @@ frameworks:
   # - iso_42001      # Planned: v1.2
   # - nist_ai_rmf    # Planned: v1.2
 
+# System declaration — declare your AI system's domain and risk level.
+# Regula adjusts severity based on this: the same finding becomes critical
+# in a credit-scoring system but informational in internal tooling.
+#
+# Supported domains:
+#   creditworthiness, employment, insurance, education, legal,
+#   law_enforcement, migration, biometric, medical,
+#   customer_support, internal_tooling, content_generation, general_purpose
+system:
+  name: ""                  # e.g., "Lending Risk Engine"
+  domain: general_purpose   # One of the domains above
+  risk_level: ""            # prohibited, high_risk, limited_risk, minimal_risk, or "" for auto-detect
+
 rules:
   risk_classification:
     # Systems to always treat as high-risk (e.g., fraud_detection)
