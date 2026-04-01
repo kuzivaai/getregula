@@ -4526,7 +4526,7 @@ if __name__ == "__main__":
         test_ast_function_extraction_enhanced,
         test_dependency_extraction,
         test_docs_function_table_in_output,
-        # Explainable classification (10 tests)
+        # Explainable classification (9 tests)
         test_explain_classification_high_risk,
         test_explain_classification_minimal_risk,
         test_explain_provider_detection,
