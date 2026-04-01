@@ -9,8 +9,8 @@
     "indicators": [
       "System command execution"
     ],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Example/demo code, not production"
   },
   {
     "project": "instructor",
@@ -22,8 +22,8 @@
     "indicators": [
       "synthetic_content"
     ],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "API marshalling, not content generation"
   },
   {
     "project": "instructor",
@@ -33,8 +33,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -44,8 +44,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -55,8 +55,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -66,8 +66,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "instructor",
@@ -77,8 +77,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -88,8 +88,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -99,8 +99,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "instructor",
@@ -110,8 +110,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -121,8 +121,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -132,8 +132,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -143,8 +143,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -154,8 +154,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "instructor",
@@ -165,8 +165,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -176,8 +176,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -187,8 +187,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -198,8 +198,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "instructor",
@@ -209,8 +209,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "instructor",
@@ -220,8 +220,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "instructor",
@@ -231,8 +231,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Model-related module"
   },
   {
     "project": "instructor",
@@ -242,8 +242,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "instructor",
@@ -253,8 +253,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Utility module"
   },
   {
     "project": "instructor",
@@ -264,8 +264,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Provider/client invoking AI inference"
   },
   {
     "project": "instructor",
@@ -275,8 +275,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -286,8 +286,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -297,8 +297,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -308,8 +308,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "instructor",
@@ -319,8 +319,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Utility module"
   },
   {
     "project": "instructor",
@@ -330,8 +330,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "instructor",
@@ -341,8 +341,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "instructor",
@@ -352,8 +352,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -363,8 +363,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -374,8 +374,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -385,8 +385,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -396,8 +396,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -407,8 +407,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -418,8 +418,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -429,8 +429,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "instructor",
@@ -440,8 +440,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "instructor",
@@ -451,8 +451,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -462,8 +462,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "instructor",
@@ -473,8 +473,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -484,8 +484,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -495,8 +495,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -506,8 +506,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -517,8 +517,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "instructor",
@@ -528,8 +528,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "instructor",
@@ -539,8 +539,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -550,8 +550,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "instructor",
@@ -561,8 +561,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "langchain",
@@ -574,8 +574,8 @@
     "indicators": [
       "Database query execution"
     ],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Shell tool for agent command execution"
   },
   {
     "project": "langchain",
@@ -587,8 +587,8 @@
     "indicators": [
       "missing_temperature_control"
     ],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "langchain",
@@ -600,8 +600,8 @@
     "indicators": [
       "openai_api_key"
     ],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "langchain",
@@ -613,8 +613,8 @@
     "indicators": [
       "chatbots"
     ],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "ConversationChain is a real chatbot building block"
   },
   {
     "project": "langchain",
@@ -624,8 +624,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Schema/data class definition"
   },
   {
     "project": "langchain",
@@ -635,8 +635,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "__init__.py re-export"
   },
   {
     "project": "langchain",
@@ -646,8 +646,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "langchain",
@@ -657,8 +657,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "langchain",
@@ -668,8 +668,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Data loading/storage, not AI inference"
   },
   {
     "project": "langchain",
@@ -679,8 +679,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "langchain",
@@ -690,8 +690,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "langchain",
@@ -701,8 +701,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "__init__.py re-export"
   },
   {
     "project": "langchain",
@@ -712,8 +712,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "langchain",
@@ -723,8 +723,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "__init__.py re-export"
   },
   {
     "project": "langchain",
@@ -734,8 +734,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "__init__.py re-export"
   },
   {
     "project": "langchain",
@@ -745,8 +745,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "langchain",
@@ -756,8 +756,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Agent module \u2014 orchestrates AI operations"
   },
   {
     "project": "langchain",
@@ -767,8 +767,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Utility module"
   },
   {
     "project": "langchain",
@@ -778,8 +778,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "langchain",
@@ -789,8 +789,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "langchain",
@@ -800,8 +800,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Core utility/framework plumbing"
   },
   {
     "project": "langchain",
@@ -811,8 +811,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Schema/data class definition"
   },
   {
     "project": "langchain",
@@ -822,8 +822,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "LLM/chat/embedding provider \u2014 invokes AI inference"
   },
   {
     "project": "langchain",
@@ -833,8 +833,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "langchain",
@@ -844,8 +844,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Model-related module"
   },
   {
     "project": "langchain",
@@ -855,8 +855,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "LLM/chat/embedding provider \u2014 invokes AI inference"
   },
   {
     "project": "langchain",
@@ -866,8 +866,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Core utility/framework plumbing"
   },
   {
     "project": "langchain",
@@ -877,8 +877,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "langchain",
@@ -888,8 +888,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Utility module"
   },
   {
     "project": "langchain",
@@ -899,8 +899,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Data loading/storage, not AI inference"
   },
   {
     "project": "langchain",
@@ -910,8 +910,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "langchain",
@@ -921,8 +921,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "langchain",
@@ -932,8 +932,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "langchain",
@@ -943,8 +943,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "__init__.py re-export"
   },
   {
     "project": "langchain",
@@ -954,8 +954,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "__init__.py re-export"
   },
   {
     "project": "langchain",
@@ -965,8 +965,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "langchain",
@@ -976,8 +976,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Data loading/storage, not AI inference"
   },
   {
     "project": "langchain",
@@ -987,8 +987,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "langchain",
@@ -998,8 +998,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "langchain",
@@ -1009,8 +1009,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "LLM/chat/embedding provider \u2014 invokes AI inference"
   },
   {
     "project": "langchain",
@@ -1020,8 +1020,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "langchain",
@@ -1031,8 +1031,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "langchain",
@@ -1042,8 +1042,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "__init__.py re-export"
   },
   {
     "project": "langchain",
@@ -1053,8 +1053,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "LLM/chat/embedding provider \u2014 invokes AI inference"
   },
   {
     "project": "langchain",
@@ -1064,8 +1064,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "LLM/chat/embedding provider \u2014 invokes AI inference"
   },
   {
     "project": "langchain",
@@ -1075,8 +1075,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Agent module \u2014 orchestrates AI operations"
   },
   {
     "project": "langchain",
@@ -1086,8 +1086,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Agent module \u2014 orchestrates AI operations"
   },
   {
     "project": "langchain",
@@ -1097,8 +1097,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "LLM/chat/embedding provider \u2014 invokes AI inference"
   },
   {
     "project": "langchain",
@@ -1108,8 +1108,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "__init__.py re-export"
   },
   {
     "project": "langchain",
@@ -1119,8 +1119,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Data loading/storage, not AI inference"
   },
   {
     "project": "langchain",
@@ -1130,8 +1130,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "langchain",
@@ -1141,8 +1141,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Data loading/storage, not AI inference"
   },
   {
     "project": "langchain",
@@ -1152,8 +1152,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "openai-python",
@@ -1165,8 +1165,8 @@
     "indicators": [
       "Message/email sending"
     ],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "HTTP transport client, not an agent"
   },
   {
     "project": "openai-python",
@@ -1178,8 +1178,8 @@
     "indicators": [
       "unbounded_token_generation"
     ],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "openai-python",
@@ -1189,8 +1189,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "openai-python",
@@ -1200,8 +1200,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Utility module"
   },
   {
     "project": "openai-python",
@@ -1211,8 +1211,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "openai-python",
@@ -1222,8 +1222,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1233,8 +1233,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1244,8 +1244,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "openai-python",
@@ -1255,8 +1255,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1266,8 +1266,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1277,8 +1277,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1288,8 +1288,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "openai-python",
@@ -1299,8 +1299,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "openai-python",
@@ -1310,8 +1310,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "openai-python",
@@ -1321,8 +1321,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1332,8 +1332,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "openai-python",
@@ -1343,8 +1343,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1354,8 +1354,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1365,8 +1365,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1376,8 +1376,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "openai-python",
@@ -1387,8 +1387,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1398,8 +1398,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "openai-python",
@@ -1409,8 +1409,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1420,8 +1420,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "openai-python",
@@ -1431,8 +1431,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1442,8 +1442,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1453,8 +1453,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "openai-python",
@@ -1464,8 +1464,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1475,8 +1475,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1486,8 +1486,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1497,8 +1497,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1508,8 +1508,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1519,8 +1519,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1530,8 +1530,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "openai-python",
@@ -1541,8 +1541,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1552,8 +1552,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "openai-python",
@@ -1563,8 +1563,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1574,8 +1574,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "openai-python",
@@ -1585,8 +1585,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "openai-python",
@@ -1596,8 +1596,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1607,8 +1607,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "openai-python",
@@ -1618,8 +1618,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "openai-python",
@@ -1629,8 +1629,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1640,8 +1640,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1651,8 +1651,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "openai-python",
@@ -1662,8 +1662,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "openai-python",
@@ -1673,8 +1673,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1684,8 +1684,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1695,8 +1695,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Type stub/parameter definition"
   },
   {
     "project": "openai-python",
@@ -1706,8 +1706,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "openai-python",
@@ -1717,8 +1717,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "pydantic-ai",
@@ -1730,8 +1730,8 @@
     "indicators": [
       "Message/email sending"
     ],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Core agent class orchestrating tool calls"
   },
   {
     "project": "pydantic-ai",
@@ -1743,8 +1743,8 @@
     "indicators": [
       "unbounded_token_generation"
     ],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -1756,8 +1756,8 @@
     "indicators": [
       "private_key"
     ],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -1769,8 +1769,8 @@
     "indicators": [
       "chatbots"
     ],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -1780,8 +1780,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -1791,8 +1791,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -1802,8 +1802,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -1813,8 +1813,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -1824,8 +1824,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -1835,8 +1835,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "LLM/chat/embedding provider \u2014 invokes AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -1846,8 +1846,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -1857,8 +1857,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -1868,8 +1868,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -1879,8 +1879,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -1890,8 +1890,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -1901,8 +1901,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -1912,8 +1912,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -1923,8 +1923,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -1934,8 +1934,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -1945,8 +1945,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -1956,8 +1956,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Provider/client invoking AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -1967,8 +1967,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Model-related module"
   },
   {
     "project": "pydantic-ai",
@@ -1978,8 +1978,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Model-related module"
   },
   {
     "project": "pydantic-ai",
@@ -1989,8 +1989,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2000,8 +2000,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "LLM/chat/embedding provider \u2014 invokes AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2011,8 +2011,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2022,8 +2022,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Provider/client invoking AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2033,8 +2033,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -2044,8 +2044,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2055,8 +2055,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2066,8 +2066,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2077,8 +2077,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -2088,8 +2088,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -2099,8 +2099,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -2110,8 +2110,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Provider/client invoking AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2121,8 +2121,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2132,8 +2132,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Model-related module"
   },
   {
     "project": "pydantic-ai",
@@ -2143,8 +2143,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2154,8 +2154,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2165,8 +2165,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -2176,8 +2176,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2187,8 +2187,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -2198,8 +2198,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2209,8 +2209,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2220,8 +2220,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2231,8 +2231,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2242,8 +2242,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2253,8 +2253,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -2264,8 +2264,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Provider/client invoking AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2275,8 +2275,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "pydantic-ai",
@@ -2286,8 +2286,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "pydantic-ai",
@@ -2297,8 +2297,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Framework infrastructure, not direct AI inference"
   },
   {
     "project": "scikit-learn",
@@ -2310,8 +2310,8 @@
     "indicators": [
       "File system modification"
     ],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Build/CI vendor script"
   },
   {
     "project": "scikit-learn",
@@ -2323,8 +2323,8 @@
     "indicators": [
       "unsafe_deserialization"
     ],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "scikit-learn",
@@ -2336,8 +2336,8 @@
     "indicators": [
       "unsafe_deserialization"
     ],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "scikit-learn",
@@ -2349,8 +2349,8 @@
     "indicators": [
       "unsafe_deserialization"
     ],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "scikit-learn",
@@ -2360,8 +2360,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "scikit-learn",
@@ -2371,8 +2371,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "scikit-learn module \u2014 likely ML operations"
   },
   {
     "project": "scikit-learn",
@@ -2382,8 +2382,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "ML algorithm implementation"
   },
   {
     "project": "scikit-learn",
@@ -2393,8 +2393,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "scikit-learn",
@@ -2404,8 +2404,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "scikit-learn",
@@ -2415,8 +2415,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Model-related module"
   },
   {
     "project": "scikit-learn",
@@ -2426,8 +2426,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Utility module"
   },
   {
     "project": "scikit-learn",
@@ -2437,8 +2437,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Model-related module"
   },
   {
     "project": "scikit-learn",
@@ -2448,8 +2448,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "scikit-learn",
@@ -2459,8 +2459,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "scikit-learn",
@@ -2470,8 +2470,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "scikit-learn",
@@ -2481,8 +2481,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "scikit-learn",
@@ -2492,8 +2492,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "scikit-learn",
@@ -2503,8 +2503,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "scikit-learn module \u2014 likely ML operations"
   },
   {
     "project": "scikit-learn",
@@ -2514,8 +2514,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "scikit-learn module \u2014 likely ML operations"
   },
   {
     "project": "scikit-learn",
@@ -2525,8 +2525,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "scikit-learn",
@@ -2536,8 +2536,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "scikit-learn module \u2014 likely ML operations"
   },
   {
     "project": "scikit-learn",
@@ -2547,8 +2547,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "scikit-learn module \u2014 likely ML operations"
   },
   {
     "project": "scikit-learn",
@@ -2558,8 +2558,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "scikit-learn",
@@ -2569,8 +2569,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "scikit-learn module \u2014 likely ML operations"
   },
   {
     "project": "scikit-learn",
@@ -2580,8 +2580,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Utility/validation code"
   },
   {
     "project": "scikit-learn",
@@ -2591,8 +2591,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "scikit-learn",
@@ -2602,8 +2602,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "scikit-learn module \u2014 likely ML operations"
   },
   {
     "project": "scikit-learn",
@@ -2613,8 +2613,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "scikit-learn",
@@ -2624,8 +2624,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "scikit-learn",
@@ -2635,8 +2635,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "scikit-learn",
@@ -2646,8 +2646,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "scikit-learn",
@@ -2657,8 +2657,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Model-related module"
   },
   {
     "project": "scikit-learn",
@@ -2668,8 +2668,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Utility module"
   },
   {
     "project": "scikit-learn",
@@ -2679,8 +2679,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "scikit-learn module \u2014 likely ML operations"
   },
   {
     "project": "scikit-learn",
@@ -2690,8 +2690,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "scikit-learn",
@@ -2701,8 +2701,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "scikit-learn",
@@ -2712,8 +2712,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "scikit-learn module \u2014 likely ML operations"
   },
   {
     "project": "scikit-learn",
@@ -2723,8 +2723,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "scikit-learn",
@@ -2734,8 +2734,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "Model-related module"
   },
   {
     "project": "scikit-learn",
@@ -2745,8 +2745,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "scikit-learn",
@@ -2756,8 +2756,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "scikit-learn",
@@ -2767,8 +2767,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Utility module"
   },
   {
     "project": "scikit-learn",
@@ -2778,8 +2778,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "scikit-learn",
@@ -2789,8 +2789,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "__init__.py re-export"
   },
   {
     "project": "scikit-learn",
@@ -2800,8 +2800,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "__init__.py re-export"
   },
   {
     "project": "scikit-learn",
@@ -2811,8 +2811,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Utility module"
   },
   {
     "project": "scikit-learn",
@@ -2822,8 +2822,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Could not determine \u2014 conservative fp"
   },
   {
     "project": "scikit-learn",
@@ -2833,8 +2833,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "scikit-learn",
@@ -2844,8 +2844,8 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "fp",
+    "notes": "Test file"
   },
   {
     "project": "scikit-learn",
@@ -2855,7 +2855,7 @@
     "description": "AI-related code with no specific risk indicators",
     "confidence_score": 20,
     "indicators": [],
-    "label": null,
-    "notes": ""
+    "label": "tp",
+    "notes": "scikit-learn module \u2014 likely ML operations"
   }
 ]
