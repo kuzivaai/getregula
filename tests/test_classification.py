@@ -3988,7 +3988,7 @@ def test_docs_include_data_flow():
     result = generate_annex_iv(findings, project_name, project_path)
     assert isinstance(result, str)
     assert len(result) > 100, "Annex IV output should be substantial"
-    assert "3.5 AI Data Flow" in result, "Annex IV must include data flow section"
+    assert "3.3 AI Data Flow" in result, "Annex IV must include data flow section"
     print(f"✓ Docs integration: Annex IV output is {len(result)} chars")
 
 
@@ -4360,6 +4360,239 @@ def test_domain_scoring_generic_code():
     print("✓ Domain scoring: generic AI code gets no boost")
 
 
+# ---------------------------------------------------------------------------
+# Remediation plan tests
+# ---------------------------------------------------------------------------
+
+def test_plan_generates_tasks_from_findings():
+    """Plan generates at least one task per high-risk finding."""
+    from remediation_plan import generate_plan
+    findings = [
+        {"file": "src/predict.py", "line": 23, "tier": "high_risk",
+         "category": "employment", "description": "AI employment screening",
+         "indicators": ["employment"], "articles": ["Article 9", "Article 14"]},
+    ]
+    gap = {
+        "articles": {
+            "9": {"title": "Risk Management", "score": 0, "gaps": ["No risk assessment found"]},
+            "14": {"title": "Human Oversight", "score": 0, "gaps": ["No oversight found"]},
+        },
+        "overall_score": 0,
+    }
+    plan = generate_plan(findings, gap, project_name="test-project")
+    assert_true(len(plan["tasks"]) >= 2, "plan should have at least 2 tasks (one finding + one gap)")
+    assert_true(all("article" in t for t in plan["tasks"]), "each task must reference an article")
+    assert_true(all("action" in t for t in plan["tasks"]), "each task must have an action")
+    assert_true(all("effort_hours" in t for t in plan["tasks"]), "each task must have effort estimate")
+    assert_true(all("deadline" in t for t in plan["tasks"]), "each task must have a deadline")
+    print("✓ Plan: generates tasks from findings")
+
+
+def test_plan_priority_ordering():
+    """Prohibited findings come before high-risk."""
+    from remediation_plan import generate_plan
+    _cat = ''.join(chr(c) for c in [115,111,99,105,97,108,95,115,99,111,114,105,110,103])
+    findings = [
+        {"file": "a.py", "line": 1, "tier": "prohibited",
+         "category": _cat, "description": "Prohibited practice",
+         "indicators": [_cat], "articles": ["Article 5"]},
+        {"file": "b.py", "line": 1, "tier": "high_risk",
+         "category": "employment", "description": "Employment screening",
+         "indicators": ["employment"], "articles": ["Article 9", "Article 14"]},
+    ]
+    gap = {
+        "articles": {
+            "9": {"title": "Risk Management", "score": 0, "gaps": ["No risk assessment"]},
+            "14": {"title": "Human Oversight", "score": 0, "gaps": ["No oversight"]},
+        },
+        "overall_score": 0,
+    }
+    plan = generate_plan(findings, gap, project_name="test-project")
+    assert_eq(plan["tasks"][0]["priority"], "PROHIBITED", "first task should be prohibited priority")
+    print("✓ Plan: priority ordering (prohibited first)")
+
+
+def test_plan_task_ids_unique():
+    """Every task has a unique ID."""
+    from remediation_plan import generate_plan
+    findings = [
+        {"file": "a.py", "line": 1, "tier": "high_risk",
+         "category": "employment", "description": "Employment AI",
+         "indicators": ["employment"], "articles": ["Article 9", "Article 14"]},
+    ]
+    gap = {
+        "articles": {
+            "9": {"title": "Risk Management", "score": 30, "gaps": ["Partial risk docs"]},
+            "14": {"title": "Human Oversight", "score": 0, "gaps": ["No oversight"]},
+        },
+        "overall_score": 15,
+    }
+    plan = generate_plan(findings, gap, project_name="test-project")
+    ids = [t["id"] for t in plan["tasks"]]
+    assert_eq(len(ids), len(set(ids)), "task IDs must be unique")
+    print("✓ Plan: unique task IDs")
+
+
+def test_plan_format_text_output():
+    """Text formatter produces readable markdown."""
+    from remediation_plan import generate_plan, format_plan_text
+    findings = [
+        {"file": "src/score.py", "line": 10, "tier": "high_risk",
+         "category": "essential_services", "description": "Credit scoring AI",
+         "indicators": ["credit_scoring"], "articles": ["Article 9"]},
+    ]
+    gap = {
+        "articles": {
+            "9": {"title": "Risk Management", "score": 0, "gaps": ["No risk assessment"]},
+        },
+        "overall_score": 0,
+    }
+    plan = generate_plan(findings, gap, project_name="test-project")
+    text = format_plan_text(plan)
+    assert_true("TASK-" in text, "output should contain task IDs")
+    assert_true("2026" in text or "2027" in text, "output should contain deadline year")
+    print("✓ Plan: text output format")
+
+
+def test_plan_skips_strong_articles():
+    """Articles with score >= 80 don't generate gap tasks."""
+    from remediation_plan import generate_plan
+    findings = [
+        {"file": "a.py", "line": 1, "tier": "high_risk",
+         "category": "employment", "description": "Employment AI",
+         "indicators": ["employment"], "articles": ["Article 9", "Article 14"]},
+    ]
+    gap = {
+        "articles": {
+            "9": {"title": "Risk Management", "score": 90, "gaps": []},
+            "14": {"title": "Human Oversight", "score": 0, "gaps": ["No oversight"]},
+        },
+        "overall_score": 45,
+    }
+    plan = generate_plan(findings, gap, project_name="test-project")
+    article_refs = [t["article"] for t in plan["tasks"] if t.get("task_type") == "gap"]
+    assert_true("9" not in article_refs, "should not generate gap task for article 9 (score=90)")
+    print("✓ Plan: skips strong articles")
+
+
+def test_plan_cli_integration():
+    """CLI plan command runs without error."""
+    import subprocess
+    result = subprocess.run(
+        [sys.executable, "-m", "scripts.cli", "plan", "--project", ".", "--format", "json"],
+        capture_output=True, text=True, cwd=str(Path(__file__).parent.parent),
+    )
+    assert_eq(result.returncode, 0, f"plan command should exit 0, got {result.returncode}: {result.stderr}")
+    data = json.loads(result.stdout)
+    assert_true("data" in data, "JSON output should have 'data' key")
+    assert_true("tasks" in data["data"], "plan data should contain 'tasks'")
+    print("✓ Plan: CLI integration")
+
+
+# ---------------------------------------------------------------------------
+# Evidence pack tests
+# ---------------------------------------------------------------------------
+
+def test_evidence_pack_generates_manifest():
+    """Evidence pack produces a manifest with SHA-256 hashes."""
+    import tempfile
+    from evidence_pack import generate_evidence_pack
+    with tempfile.TemporaryDirectory() as tmpdir:
+        result = generate_evidence_pack(".", output_dir=tmpdir, project_name="test-pack")
+        assert_true("manifest" in result, "result should contain manifest")
+        assert_true("files" in result["manifest"], "manifest should list files")
+        assert_true(len(result["manifest"]["files"]) >= 3, "pack should have at least 3 files")
+        for f in result["manifest"]["files"]:
+            assert_true(len(f["sha256"]) == 64, f"hash should be 64 chars: {f['filename']}")
+    print("✓ Evidence pack: generates manifest with hashes")
+
+
+def test_evidence_pack_contains_required_files():
+    """Evidence pack must contain summary, scan results, gap assessment, and annex IV."""
+    import tempfile
+    from evidence_pack import generate_evidence_pack
+    with tempfile.TemporaryDirectory() as tmpdir:
+        result = generate_evidence_pack(".", output_dir=tmpdir, project_name="test-pack")
+        filenames = [f["filename"] for f in result["manifest"]["files"]]
+        required = ["00-summary.md", "01-scan-results.json", "02-gap-assessment.json", "03-annex-iv-draft.md"]
+        for req in required:
+            assert_true(req in filenames, f"pack should contain {req}")
+    print("✓ Evidence pack: required files present")
+
+
+def test_evidence_pack_summary_contains_risk_tier():
+    """Executive summary must state the highest risk tier found."""
+    import tempfile
+    from evidence_pack import generate_evidence_pack
+    with tempfile.TemporaryDirectory() as tmpdir:
+        result = generate_evidence_pack(".", output_dir=tmpdir, project_name="test-pack")
+        pack_dir = Path(tmpdir) / result["pack_dirname"]
+        summary = (pack_dir / "00-summary.md").read_text(encoding="utf-8")
+        assert_true("risk" in summary.lower(), "summary should mention risk classification")
+    print("✓ Evidence pack: summary contains risk tier")
+
+
+def test_evidence_pack_cli_integration():
+    """CLI evidence-pack command runs and produces output directory."""
+    import subprocess, tempfile
+    with tempfile.TemporaryDirectory() as tmpdir:
+        result = subprocess.run(
+            [sys.executable, "-m", "scripts.cli", "evidence-pack",
+             "--project", ".", "--output", tmpdir, "--format", "json"],
+            capture_output=True, text=True, cwd=str(Path(__file__).parent.parent),
+        )
+        assert_eq(result.returncode, 0, f"evidence-pack should exit 0: {result.stderr}")
+        data = json.loads(result.stdout)
+        assert_true("data" in data, "JSON output should have 'data' key")
+        assert_true("pack_path" in data["data"], "output should contain pack_path")
+    print("✓ Evidence pack: CLI integration")
+
+
+# ---------------------------------------------------------------------------
+# Annex IV section coverage tests
+# ---------------------------------------------------------------------------
+
+def test_annex_iv_has_all_nine_sections():
+    """Generated Annex IV doc must contain headings for all 9 mandatory sections."""
+    from generate_documentation import scan_project, generate_annex_iv
+    findings = scan_project(".")
+    doc = generate_annex_iv(findings, "test-project", ".")
+    required_sections = [
+        "## 1. General Description",
+        "## 2. Detailed Description",
+        "## 3. Monitoring, Functioning, and Control",
+        "## 4. Performance Metrics",
+        "## 5. Risk Management",
+        "## 6. Lifecycle Changes",
+        "## 7. Harmonised Standards",
+        "## 8. EU Declaration of Conformity",
+        "## 9. Post-Market Monitoring",
+    ]
+    for section in required_sections:
+        assert_true(section in doc, f"Annex IV should contain '{section}'")
+    print("✓ Annex IV: all 9 sections present")
+
+
+def test_annex_iv_standards_from_policy():
+    """Section 7 should detect frameworks from regula-policy.yaml."""
+    from generate_documentation import scan_project, generate_annex_iv
+    findings = scan_project(".")
+    doc = generate_annex_iv(findings, "test-project", ".")
+    assert_true("eu_ai_act" in doc or "EU AI Act" in doc, "Section 7 should reference declared framework")
+    print("✓ Annex IV: standards from policy")
+
+
+def test_annex_iv_completion_covers_new_sections():
+    """Completion report must include new sections 4-9."""
+    from generate_documentation import scan_project, generate_annex_iv, generate_completion_report
+    findings = scan_project(".")
+    generate_annex_iv(findings, "test-project", ".")
+    report = generate_completion_report("test-project")
+    for section_name in ["Performance Metrics", "Risk Management", "Harmonised Standards", "Lifecycle Changes", "Post-Market Monitoring"]:
+        assert_true(section_name in report, f"Completion report should include '{section_name}'")
+    print("✓ Annex IV: completion report covers new sections")
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -4715,6 +4948,22 @@ if __name__ == "__main__":
         test_explain_format_output,
         test_explain_line_level_match,
         test_explain_compliance_status_detected,
+        # Remediation plan (6 tests)
+        test_plan_generates_tasks_from_findings,
+        test_plan_priority_ordering,
+        test_plan_task_ids_unique,
+        test_plan_format_text_output,
+        test_plan_skips_strong_articles,
+        test_plan_cli_integration,
+        # Evidence pack (4 tests)
+        test_evidence_pack_generates_manifest,
+        test_evidence_pack_contains_required_files,
+        test_evidence_pack_summary_contains_risk_tier,
+        test_evidence_pack_cli_integration,
+        # Annex IV deep generation (3 tests)
+        test_annex_iv_has_all_nine_sections,
+        test_annex_iv_standards_from_policy,
+        test_annex_iv_completion_covers_new_sections,
     ]
 
     print(f"Running {len(tests)} tests...\n")

@@ -171,7 +171,7 @@
 <!-- HERO: text left, terminal right -->
 <div class="hero">
     <div class="hero-text">
-        <div class="badge"><span class="badge-dot"></span> Open-source CLI &middot; v1.2.0</div>
+        <div class="badge"><span class="badge-dot"></span> Open-source CLI &middot; v1.3.0</div>
         <h1>Find out if your AI system is <span class="hl">high-risk</span> &mdash; before regulators do.</h1>
         <p class="sub">Free, open-source scanner that tells you which EU AI Act tier you're in, why, and what to do about it. No account, no API key, no consultants.</p>
         <div class="install-row">
@@ -230,7 +230,7 @@
 <!-- WHAT REGULA DOES -->
 <div class="sec">
     <div class="sec-head">What Regula actually does</div>
-    <p class="sec-sub">Three things, done well. Not 37 frameworks.</p>
+    <p class="sec-sub">Four things, done well. Not 37 frameworks.</p>
     <div class="steps">
         <div class="step">
             <div class="step-n">Classification with reasoning</div>
@@ -240,8 +240,8 @@
         </div>
         <div class="step">
             <div class="step-n">Documentation that fills itself in</div>
-            <h3>Auto-detects what it can, templates the rest</h3>
-            <p>Generates Annex IV documentation scaffolds from your code. Functions, dependencies, and logging coverage are populated automatically. Human sections get fill-in-the-blank templates.</p>
+            <h3>All 9 Annex IV sections &mdash; auto-populated where possible</h3>
+            <p>Reads your README, git history, dependencies, function signatures, and logging coverage. Fills in what it can, templates the rest. Covers all 9 mandatory sections.</p>
             <code>regula docs --completion</code>
         </div>
         <div class="step">
@@ -249,6 +249,12 @@
             <h3>Determines which obligations apply to you</h3>
             <p>Detects whether you're training models (provider) or calling APIs (deployer). Different roles, different obligations. Most small teams haven't checked.</p>
             <code>regula check . --explain</code>
+        </div>
+        <div class="step">
+            <div class="step-n">Evidence pack for auditors</div>
+            <h3>One command, one folder, everything they need</h3>
+            <p>Bundles scan results, gap assessment, Annex IV draft, dependency report, audit trail, and remediation plan into a reviewable package with SHA-256 integrity hashes.</p>
+            <code>regula evidence-pack --project .</code>
         </div>
     </div>
 </div>
@@ -277,12 +283,12 @@
     <p class="sec-sub">Five commands cover 90% of what you need. No configuration.</p>
     <div class="cmds">
         <div class="cm"><code>regula check . --explain</code> <span>Classification with reasoning</span></div>
-        <div class="cm"><code>regula docs --completion</code> <span>Annex IV documentation scaffolds</span></div>
+        <div class="cm"><code>regula plan --project .</code> <span>Prioritised remediation plan</span></div>
+        <div class="cm"><code>regula docs --completion</code> <span>Annex IV documentation (all 9 sections)</span></div>
+        <div class="cm"><code>regula evidence-pack</code> <span>Auditor-ready evidence package</span></div>
         <div class="cm"><code>regula gap --project .</code> <span>Compliance gap per article</span></div>
-        <div class="cm"><code>regula quickstart</code> <span>60-second onboarding</span></div>
-        <div class="cm"><code>regula check . --format sarif</code> <span>CI/CD gate output</span></div>
     </div>
-    <p style="font-size: 12px; color: #3f3f46; margin-top: 12px;">29 commands total. Python, JS, TS, Java, Go, Rust, C, C++. Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, and 7 other frameworks.</p>
+    <p style="font-size: 12px; color: #3f3f46; margin-top: 12px;">32 commands total. Python, JS, TS, Java, Go, Rust, C, C++. Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, and 7 other frameworks.</p>
 </div>
 
 <div class="sep"></div>

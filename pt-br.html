@@ -78,7 +78,7 @@
         .sep { max-width: 1120px; margin: 48px auto 0; height: 1px; background: #27272a; }
 
         /* 3-STEP */
-        .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
         .step { background: #18181b; border: 1px solid #27272a; border-radius: 8px; padding: 24px; }
         .step-n { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #38bdf8;
             text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
@@ -164,7 +164,7 @@
 <!-- HERO: text left, terminal right -->
 <div class="hero">
     <div class="hero-text">
-        <div class="badge"><span class="badge-dot"></span> CLI open-source &middot; v1.2.0</div>
+        <div class="badge"><span class="badge-dot"></span> CLI open-source &middot; v1.3.0</div>
         <h1>Descubra se seu sistema de IA &eacute; de <span class="hl">alto risco</span> &mdash; antes que os reguladores descubram.</h1>
         <p class="sub">Scanner gratuito e open-source que mostra em qual n&iacute;vel de risco da Lei de IA da UE voc&ecirc; est&aacute;, por qu&ecirc;, e o que fazer. Sem conta, sem API key, sem consultores.</p>
         <div class="install-row">
@@ -215,7 +215,7 @@
 
 <!-- 3 STEPS -->
 <div class="sec">
-    <div class="sec-head">Tr&ecirc;s passos para visibilidade de conformidade</div>
+    <div class="sec-head">Quatro passos para visibilidade de conformidade</div>
     <p class="sec-sub">Instalar, verificar, revisar. Sem configura&ccedil;&atilde;o, sem chave de API, sem conta.</p>
     <div class="steps">
         <div class="step">
@@ -233,8 +233,14 @@
         <div class="step">
             <div class="step-n">03 &mdash; Revisar</div>
             <h3>Aja sobre os achados</h3>
-            <p>An&aacute;lise de lacunas de conformidade para Artigos 9&ndash;15. Scaffolds de documenta&ccedil;&atilde;o Anexo IV. SARIF para gates de CI/CD.</p>
+            <p>An&aacute;lise de lacunas de conformidade para Artigos 9&ndash;15. Todas as 9 se&ccedil;&otilde;es do Anexo IV. SARIF para gates de CI/CD.</p>
             <code>regula gap --project .</code>
+        </div>
+        <div class="step">
+            <div class="step-n">Pacote de evid&ecirc;ncias para auditores</div>
+            <h3>Um comando, uma pasta, tudo que precisam</h3>
+            <p>Re&uacute;ne resultados de varredura, an&aacute;lise de lacunas, rascunho do Anexo IV, relat&oacute;rio de depend&ecirc;ncias, trilha de auditoria e plano de remedia&ccedil;&atilde;o em um pacote verific&aacute;vel com hashes SHA-256.</p>
+            <code>regula evidence-pack --project .</code>
         </div>
     </div>
 </div>
@@ -262,7 +268,7 @@
 
 <!-- COMMANDS -->
 <div class="sec">
-    <div class="sec-head"><span class="hl">29</span> comandos CLI</div>
+    <div class="sec-head"><span class="hl">32</span> comandos CLI</div>
     <p class="sec-sub">Tudo a partir de um &uacute;nico bin&aacute;rio.</p>
     <div class="cmds">
         <div class="cm"><code>regula check .</code> <span>Verificar indicadores de risco</span></div>
@@ -273,6 +279,8 @@
         <div class="cm"><code>regula baseline compare</code> <span>Conformidade incremental CI/CD</span></div>
         <div class="cm"><code>regula inventory</code> <span>Registro de modelos + n&iacute;veis GPAI</span></div>
         <div class="cm"><code>regula quickstart</code> <span>Onboarding em 60 segundos</span></div>
+        <div class="cm"><code>regula plan --project .</code> <span>Plano de remedia&ccedil;&atilde;o priorizado</span></div>
+        <div class="cm"><code>regula evidence-pack</code> <span>Pacote de evid&ecirc;ncias para auditores</span></div>
     </div>
 </div>
 

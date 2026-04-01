@@ -164,7 +164,7 @@
 <!-- HERO: text left, terminal right -->
 <div class="hero">
     <div class="hero-text">
-        <div class="badge"><span class="badge-dot"></span> Open-Source-CLI &middot; v1.2.0</div>
+        <div class="badge"><span class="badge-dot"></span> Open-Source-CLI &middot; v1.3.0</div>
         <h1>Finden Sie heraus, ob Ihr KI-System <span class="hl">hochriskant</span> ist &mdash; bevor die Aufsichtsbeh&ouml;rden es tun.</h1>
         <p class="sub">Kostenloser Open-Source-Scanner, der Ihnen zeigt, in welche EU-KI-Gesetz-Risikostufe Sie fallen, warum, und was zu tun ist. Kein Konto, kein API-Key, keine Berater.</p>
         <div class="install-row">
@@ -215,7 +215,7 @@
 
 <!-- 3 STEPS -->
 <div class="sec">
-    <div class="sec-head">Drei Schritte zur Konformit&auml;ts&uuml;bersicht</div>
+    <div class="sec-head">Vier Schritte zur Konformit&auml;ts&uuml;bersicht</div>
     <p class="sec-sub">Installieren, pr&uuml;fen, &uuml;berpr&uuml;fen. Keine Konfiguration, keine API-Schl&uuml;ssel, kein Konto.</p>
     <div class="steps">
         <div class="step">
@@ -233,8 +233,14 @@
         <div class="step">
             <div class="step-n">03 &mdash; &Uuml;berpr&uuml;fen</div>
             <h3>Befunde bearbeiten</h3>
-            <p>Konformit&auml;tsl&uuml;ckenanalyse f&uuml;r Artikel 9&ndash;15. Anhang-IV-Dokumentationsger&uuml;ste. SARIF f&uuml;r CI/CD-Gates.</p>
+            <p>Konformit&auml;tsl&uuml;ckenanalyse f&uuml;r Artikel 9&ndash;15. Alle 9 Abschnitte gem&auml;&szlig; Anhang IV. SARIF f&uuml;r CI/CD-Gates.</p>
             <code>regula gap --project .</code>
+        </div>
+        <div class="step">
+            <div class="step-n">Evidenzpaket f&uuml;r Pr&uuml;fer</div>
+            <h3>Ein Befehl, ein Ordner, alles was sie brauchen</h3>
+            <p>B&uuml;ndelt Scan-Ergebnisse, L&uuml;ckenanalyse, Anhang-IV-Entwurf, Abh&auml;ngigkeitsbericht, Pr&uuml;fpfad und Ma&szlig;nahmenplan in einem &uuml;berpr&uuml;fbaren Paket mit SHA-256-Integrit&auml;tspr&uuml;fsummen.</p>
+            <code>regula evidence-pack --project .</code>
         </div>
     </div>
 </div>
@@ -262,7 +268,7 @@
 
 <!-- COMMANDS -->
 <div class="sec">
-    <div class="sec-head"><span class="hl">29</span> CLI-Befehle</div>
+    <div class="sec-head"><span class="hl">32</span> CLI-Befehle</div>
     <p class="sec-sub">Alles aus einer einzigen Bin&auml;rdatei.</p>
     <div class="cmds">
         <div class="cm"><code>regula check .</code> <span>Risikoindikatoren scannen</span></div>
@@ -273,6 +279,8 @@
         <div class="cm"><code>regula baseline compare</code> <span>CI/CD inkrementelle Konformit&auml;t</span></div>
         <div class="cm"><code>regula inventory</code> <span>Modellregister &amp; GPAI-Stufen</span></div>
         <div class="cm"><code>regula quickstart</code> <span>60-Sekunden-Einf&uuml;hrung</span></div>
+        <div class="cm"><code>regula plan --project .</code> <span>Priorisierter Ma&szlig;nahmenplan</span></div>
+        <div class="cm"><code>regula evidence-pack</code> <span>Evidenzpaket f&uuml;r Pr&uuml;fer</span></div>
     </div>
 </div>
 

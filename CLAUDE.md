@@ -2,7 +2,7 @@
 
 ## Identity
 
-Regula v1.2.0 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only core. 29 CLI commands, 121 risk patterns, 8 languages, 10 compliance frameworks. Zero production dependencies.
+Regula v1.3.0 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only core. 32 CLI commands, 121 risk patterns, 8 languages, 10 compliance frameworks. Zero production dependencies.
 
 GitHub: kuzivaai/getregula | PyPI: regula-ai | CLI command: regula
 

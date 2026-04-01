@@ -25,7 +25,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from errors import RegulaError, PathError
 
-VERSION = "1.2.0"
+VERSION = "1.3.0"
 
 
 def json_output(command: str, data, exit_code: int = 0):
@@ -957,6 +957,76 @@ def cmd_gap(args):
         sys.exit(1)
 
 
+def cmd_plan(args):
+    """Generate prioritised remediation plan."""
+    if args.project != ".":
+        _validate_path(args.project)
+    project_path = str(Path(args.project).resolve())
+    project_name = args.name or Path(project_path).name
+
+    from report import scan_files
+    from compliance_check import assess_compliance
+    from remediation_plan import generate_plan, format_plan_text, format_plan_status
+    from remediation_plan import load_plan_status, mark_task_done
+
+    if args.done:
+        status = mark_task_done(project_path, args.done)
+        print(f"Marked {args.done} as completed.")
+        return
+
+    if args.status:
+        print(f"Scanning {project_path}...", file=sys.stderr)
+        findings = scan_files(project_path)
+        gap = assess_compliance(project_path)
+        plan = generate_plan(findings, gap, project_name=project_name)
+        status = load_plan_status(project_path)
+        print(format_plan_status(plan, status))
+        return
+
+    print(f"Scanning {project_path}...", file=sys.stderr)
+    findings = scan_files(project_path)
+    gap = assess_compliance(project_path)
+    plan = generate_plan(findings, gap, project_name=project_name)
+
+    if args.format == "json":
+        json_output("plan", plan)
+    else:
+        output = format_plan_text(plan)
+        if args.output:
+            out_path = Path(args.output)
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            out_path.write_text(output, encoding="utf-8")
+            print(f"Plan written to {out_path}", file=sys.stderr)
+        else:
+            print(output)
+
+
+def cmd_evidence_pack(args):
+    """Generate compliance evidence pack."""
+    if args.project != ".":
+        _validate_path(args.project)
+    project_path = str(Path(args.project).resolve())
+    project_name = args.name or Path(project_path).name
+
+    from evidence_pack import generate_evidence_pack
+
+    print(f"Generating evidence pack for {project_path}...", file=sys.stderr)
+    result = generate_evidence_pack(
+        project_path,
+        output_dir=args.output,
+        project_name=project_name,
+    )
+
+    if args.format == "json":
+        json_output("evidence-pack", result)
+    else:
+        pack_path = result["pack_path"]
+        file_count = len(result["manifest"]["files"])
+        print(f"Evidence pack written to: {pack_path}")
+        print(f"Contains {file_count} files with SHA-256 integrity hashes.")
+        print(f"Start with: {pack_path}/00-summary.md")
+
+
 def cmd_benchmark(args):
     """Run real-world validation benchmark."""
     from benchmark import benchmark_project, benchmark_suite, calculate_metrics, load_labelled_results
@@ -1368,6 +1438,24 @@ Examples:
              "nist-ai-rmf, iso-42001, nist-csf, soc2, iso-27001, owasp-llm-top10, mitre-atlas, all",
     )
     p_gap.set_defaults(func=cmd_gap)
+
+    # --- plan ---
+    p_plan = subparsers.add_parser("plan", help="Generate prioritised remediation plan")
+    p_plan.add_argument("--project", "-p", default=".")
+    p_plan.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_plan.add_argument("--output", "-o", help="Write plan to file")
+    p_plan.add_argument("--name", "-n", help="Project name")
+    p_plan.add_argument("--status", action="store_true", help="Show completion progress")
+    p_plan.add_argument("--done", metavar="TASK-ID", help="Mark a task as completed")
+    p_plan.set_defaults(func=cmd_plan)
+
+    # --- evidence-pack ---
+    p_evidence = subparsers.add_parser("evidence-pack", help="Generate compliance evidence pack for auditors")
+    p_evidence.add_argument("--project", "-p", default=".")
+    p_evidence.add_argument("--output", "-o", default=".", help="Output directory for the pack folder")
+    p_evidence.add_argument("--name", "-n", help="Project name")
+    p_evidence.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_evidence.set_defaults(func=cmd_evidence_pack)
 
     # --- benchmark ---
     p_bench = subparsers.add_parser("benchmark", help="Real-world validation benchmark")

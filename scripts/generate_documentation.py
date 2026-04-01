@@ -244,6 +244,8 @@ _[TO BE COMPLETED — configure in regula-policy.yaml]_
 
 def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> str:
     """Generate Annex IV compliant documentation."""
+    skip_dirs = {".git", "node_modules", "__pycache__", "venv", ".venv", "dist", "build", ".next", ".tox", "tests"}
+    code_extensions = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"}
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     highest = findings["highest_risk"]
     if isinstance(highest, RiskTier):
@@ -403,33 +405,8 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
 
     doc += "---\n\n## 3. Monitoring, Functioning, and Control\n\n"
 
-    # 3.1 Performance Metrics — guided template
-    doc += "### 3.1 Performance Metrics\n\n"
-    doc += "**[COMPLETE THESE]** (Article 13 — Transparency)\n\n"
-    doc += "| Metric | Value | Dataset | Date Measured |\n"
-    doc += "|--------|-------|---------|---------------|\n"
-    doc += "| Accuracy | __________ | __________ | __________ |\n"
-    doc += "| Precision | __________ | __________ | __________ |\n"
-    doc += "| Recall | __________ | __________ | __________ |\n"
-    doc += "| F1 Score | __________ | __________ | __________ |\n"
-    doc += "| False positive rate | __________ | __________ | __________ |\n\n"
-    doc += "> Acceptable performance thresholds: __________\n"
-    doc += "> Performance degrades when: __________\n\n"
-    completion["3.1"] = "empty"
-
-    # 3.2 Known Limitations — guided template
-    doc += "### 3.2 Known Limitations\n\n"
-    doc += "**[COMPLETE THESE]** (Article 13 — Transparency)\n\n"
-    doc += "| Limitation | Impact | Mitigation |\n"
-    doc += "|-----------|--------|------------|\n"
-    doc += "| __________ | __________ | __________ |\n"
-    doc += "| __________ | __________ | __________ |\n\n"
-    doc += "> Foreseeable misuse scenarios: __________\n"
-    doc += "> Populations the system should NOT be used for: __________\n\n"
-    completion["3.2"] = "empty"
-
-    # 3.3 Human Oversight — AST-derived score + evidence (Article 14)
-    doc += "### 3.3 Human Oversight\n\n"
+    # 3.1 Human Oversight — AST-derived score + evidence (Article 14)
+    doc += "### 3.1 Human Oversight\n\n"
     has_ai_ops = ast_data["total_logged"] + ast_data["total_unlogged"] > 0
     if has_ai_ops or ast_data["oversight_evidence"] or ast_data["automated_decisions"]:
         doc += "**[AUTO-DETECTED]** AST analysis found the following oversight indicators:\n\n"
@@ -447,19 +424,19 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
         elif not ast_data["oversight_evidence"]:
             doc += "_No human review gates detected in AI operation paths._\n\n"
         doc += "_Verify these mechanisms meet Article 14 requirements (human oversight, override capability)._\n\n"
-        completion["3.3"] = "partial"
+        completion["3.1"] = "partial"
     elif analysis["oversight"]:
         doc += "**[AUTO-DETECTED]** Oversight patterns found:\n\n"
         for o in analysis["oversight"]:
             doc += f"- {o}\n"
         doc += "\n_Verify these mechanisms meet Article 14 requirements._\n\n"
-        completion["3.3"] = "partial"
+        completion["3.1"] = "partial"
     else:
         doc += "_No human oversight patterns detected._ Review Article 14 requirements.\n\n"
-        completion["3.3"] = "empty"
+        completion["3.1"] = "empty"
 
-    # 3.4 Logging — AST-derived score + per-operation coverage table (Article 12)
-    doc += "### 3.4 Logging Infrastructure\n\n"
+    # 3.2 Logging — AST-derived score + per-operation coverage table (Article 12)
+    doc += "### 3.2 Logging Infrastructure\n\n"
     total_ops = ast_data["total_logged"] + ast_data["total_unlogged"]
     if total_ops > 0:
         pct = int(ast_data["total_logged"] / total_ops * 100) if total_ops > 0 else 0
@@ -486,19 +463,19 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
             )
         else:
             doc += "_All detected AI operations have logging coverage._\n\n"
-        completion["3.4"] = "partial" if ast_data["total_unlogged"] > 0 else "auto"
+        completion["3.2"] = "partial" if ast_data["total_unlogged"] > 0 else "auto"
     elif analysis["logging"]:
         doc += "**[AUTO-DETECTED]** Logging mechanisms found:\n\n"
         for lg in analysis["logging"]:
             doc += f"- {lg}\n"
         doc += "\n_Verify logging meets Article 12 record-keeping requirements._\n\n"
-        completion["3.4"] = "partial"
+        completion["3.2"] = "partial"
     else:
         doc += "_No logging infrastructure detected._ Article 12 requires automatic recording of events.\n\n"
-        completion["3.4"] = "empty"
+        completion["3.2"] = "empty"
 
-    # 3.5 Data Flow — AST-derived AI operation flow tracing
-    doc += "### 3.5 AI Data Flow\n\n"
+    # 3.3 Data Flow — AST-derived AI operation flow tracing
+    doc += "### 3.3 AI Data Flow\n\n"
     if ast_data["data_flows"]:
         doc += "**[AUTO-DETECTED]** AST analysis traced the following AI operation data flows:\n\n"
         for flow in ast_data["data_flows"][:15]:  # cap to avoid walls of text
@@ -511,10 +488,10 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
         if len(ast_data["data_flows"]) > 15:
             doc += f"- _...and {len(ast_data['data_flows']) - 15} more_\n"
         doc += "\n_Review data flow paths to ensure AI outputs pass through appropriate oversight and logging._\n\n"
-        completion["3.5"] = "auto"
+        completion["3.3"] = "auto"
     else:
         doc += "_No intra-file AI data flows detected._\n\n"
-        completion["3.5"] = "empty"
+        completion["3.3"] = "empty"
 
     # Cross-file AI data flows (Python only)
     try:
@@ -531,13 +508,35 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
             if len(cross_flows) > 15:
                 doc += f"\n_...and {len(cross_flows) - 15} more cross-file flows_\n"
             doc += "\n_Files importing AI modules inherit regulatory obligations from those modules._\n\n"
-            if completion["3.5"] == "empty":
-                completion["3.5"] = "partial"
+            if completion["3.3"] == "empty":
+                completion["3.3"] = "partial"
     except Exception:
         pass  # Cross-file resolution must never block doc generation
 
-    # 4. Risk Register — auto-populated from security findings
-    doc += "---\n\n## 4. Risk Management System (Article 9)\n\n"
+    # --- Section 4: Performance Metrics Appropriateness (Annex IV, point 4) ---
+    doc += "---\n\n## 4. Performance Metrics Appropriateness\n\n"
+    doc += "**[COMPLETE THESE]** (Annex IV, point 4)\n\n"
+    doc += "Describe why the chosen metrics are appropriate for this AI system's intended purpose:\n\n"
+    doc += "| Metric | Value | Why Appropriate | Dataset | Date Measured |\n"
+    doc += "|--------|-------|-----------------|---------|---------------|\n"
+    doc += "| Accuracy | __________ | __________ | __________ | __________ |\n"
+    doc += "| Precision | __________ | __________ | __________ | __________ |\n"
+    doc += "| Recall | __________ | __________ | __________ | __________ |\n"
+    doc += "| F1 Score | __________ | __________ | __________ | __________ |\n"
+    doc += "| False positive rate | __________ | __________ | __________ | __________ |\n\n"
+    doc += "> Acceptable performance thresholds: __________\n"
+    doc += "> Performance degrades when: __________\n"
+    doc += "> Potentially discriminatory impacts assessed: __________\n\n"
+    doc += "### Known Limitations\n\n"
+    doc += "| Limitation | Impact | Mitigation |\n"
+    doc += "|-----------|--------|------------|\n"
+    doc += "| __________ | __________ | __________ |\n\n"
+    doc += "> Foreseeable misuse scenarios: __________\n"
+    doc += "> Populations the system should NOT be used for: __________\n\n"
+    completion["4"] = "empty"
+
+    # --- Section 5: Risk Management System (Annex IV, point 5 / Article 9) ---
+    doc += "---\n\n## 5. Risk Management System (Article 9)\n\n"
     security_findings = []
     for c in findings["classifications"]:
         filepath = Path(project_path) / c["file"]
@@ -566,54 +565,254 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
             doc += f"| R{rid:03d} | {sf['file']} | {sf['description']} | {sf['owasp']} | {sf['severity'].upper()} | {sf['remediation'][:60]} |\n"
             rid += 1
         doc += "\n"
-        completion["4"] = "partial"
+        completion["5"] = "partial"
     else:
         doc += "_[TO BE COMPLETED BY DEVELOPMENT TEAM]_\n\n"
-        completion["4"] = "empty"
+        completion["5"] = "empty"
 
-    doc += "---\n\n## 5. Compliance Requirements\n\n"
+    # --- Section 6: Lifecycle Changes (Annex IV, point 6) ---
+    doc += "---\n\n## 6. Lifecycle Changes\n\n"
 
+    import subprocess as _sp
+    git_log_lines = []
+    try:
+        result = _sp.run(
+            ["git", "log", "--oneline", "-20", "--no-merges"],
+            capture_output=True, text=True, cwd=project_path, timeout=5,
+        )
+        if result.returncode == 0:
+            git_log_lines = [l.strip() for l in result.stdout.strip().split("\n") if l.strip()]
+    except (OSError, _sp.TimeoutExpired):
+        pass
 
-    if highest in ("high_risk", "prohibited"):
-        doc += """The following EU AI Act articles apply to this system:
-
-| Article | Requirement | Status |
-|---------|-------------|--------|
-| Article 9 | Risk management system | [ ] Not started |
-| Article 10 | Data governance | [ ] Not started |
-| Article 11 | Technical documentation | [ ] In progress (this document) |
-| Article 12 | Record-keeping | [ ] Not started |
-| Article 13 | Transparency | [ ] Not started |
-| Article 14 | Human oversight | [ ] Not started |
-| Article 15 | Accuracy, robustness, cybersecurity | [ ] Not started |
-
-**Compliance deadline:** 2 August 2026
-"""
-    elif highest == "limited_risk":
-        doc += """**Article 50 (Transparency) applies.**
-
-| Requirement | Status |
-|-------------|--------|
-| Users informed of AI interaction | [ ] Not started |
-| AI-generated content labelled | [ ] Not started |
-"""
+    if git_log_lines:
+        doc += "**[AUTO-DETECTED]** Recent development history (last 20 commits):\n\n"
+        doc += "| Commit | Description |\n"
+        doc += "|--------|-------------|\n"
+        for line in git_log_lines:
+            parts = line.split(" ", 1)
+            sha = parts[0] if parts else "?"
+            msg = parts[1] if len(parts) > 1 else ""
+            doc += f"| `{sha}` | {msg} |\n"
+        doc += "\n"
+        completion["6"] = "partial"
     else:
-        doc += "No specific EU AI Act compliance requirements identified for this risk tier.\n"
+        completion["6"] = "empty"
 
-    doc += f"""
----
+    try:
+        result = _sp.run(
+            ["git", "tag", "--sort=-creatordate"],
+            capture_output=True, text=True, cwd=project_path, timeout=5,
+        )
+        if result.returncode == 0:
+            tags = [t.strip() for t in result.stdout.strip().split("\n") if t.strip()][:10]
+            if tags:
+                doc += "**Version tags:**\n\n"
+                for tag in tags:
+                    doc += f"- `{tag}`\n"
+                doc += "\n"
+    except (OSError, _sp.TimeoutExpired):
+        pass
 
-## 6. Audit Trail Reference
+    doc += "**[COMPLETE THESE]**\n\n"
+    doc += "Significant changes since initial deployment:\n"
+    doc += "> _[List major changes to the AI system, including model updates, data changes, and architectural modifications]_\n\n"
+    doc += "Change management process:\n"
+    doc += "> _[Describe how changes are reviewed, tested, and approved before deployment]_\n\n"
 
-Regula audit events for this system are stored in `~/.regula/audit/`.
-Verify chain integrity: `python3 scripts/log_event.py verify`
+    # --- Section 7: Harmonised Standards (Annex IV, point 7) ---
+    doc += "---\n\n## 7. Harmonised Standards and Specifications\n\n"
 
----
+    import re as _re
+    policy_frameworks = []
+    policy_path = Path(project_path) / "regula-policy.yaml"
+    if not policy_path.exists():
+        policy_path = Path(project_path) / "regula-policy.yml"
+    if policy_path.exists():
+        try:
+            content = policy_path.read_text(encoding="utf-8", errors="ignore")
+            in_frameworks = False
+            for line in content.split("\n"):
+                stripped = line.strip()
+                if stripped.startswith("frameworks:"):
+                    in_frameworks = True
+                    continue
+                if in_frameworks:
+                    if stripped.startswith("- "):
+                        fw = stripped[2:].strip().strip('"').strip("'")
+                        if fw and not fw.startswith("#"):
+                            policy_frameworks.append(fw)
+                    elif stripped and not stripped.startswith("#"):
+                        in_frameworks = False
+        except OSError:
+            pass
 
-## 7. EU Declaration of Conformity
-_[TO BE COMPLETED BEFORE MARKET PLACEMENT]_
+    if policy_frameworks:
+        doc += "**[AUTO-DETECTED]** Frameworks declared in `regula-policy.yaml`:\n\n"
+        for fw in policy_frameworks:
+            doc += f"- {fw}\n"
+        doc += "\n"
+        completion["7"] = "partial"
+    else:
+        completion["7"] = "empty"
 
----
+    standards_keywords = {
+        "ISO 42001": r"iso.?42001",
+        "ISO 27001": r"iso.?27001",
+        "NIST AI RMF": r"nist.?ai.?rmf|ai.?risk.?management.?framework",
+        "OWASP LLM Top 10": r"owasp.?llm|llm.?top.?10",
+        "SOC 2": r"soc.?2",
+        "NIST CSF": r"nist.?csf|cybersecurity.?framework",
+    }
+    detected_standards = set()
+    resolved_project = str(Path(project_path).resolve())
+    for root, dirs, files in os.walk(resolved_project):
+        dirs[:] = [d for d in dirs if d not in skip_dirs]
+        for filename in files:
+            fp = Path(root) / filename
+            if fp.suffix in {".md", ".txt", ".rst", ".yaml", ".yml", ".py", ".js", ".ts"}:
+                try:
+                    text = fp.read_text(encoding="utf-8", errors="ignore")[:5000]
+                    for std_name, pattern in standards_keywords.items():
+                        if _re.search(pattern, text, _re.IGNORECASE):
+                            detected_standards.add(std_name)
+                except OSError:
+                    continue
+
+    if detected_standards:
+        doc += "**[AUTO-DETECTED]** Standards referenced in project files:\n\n"
+        for std in sorted(detected_standards):
+            doc += f"- {std}\n"
+        doc += "\n"
+        if completion.get("7") == "empty":
+            completion["7"] = "partial"
+
+    doc += "**[COMPLETE THESE]**\n\n"
+    doc += "Harmonised standards applied (Article 40):\n"
+    doc += "> _[List any harmonised standards, or common specifications under Article 41]_\n\n"
+    doc += "Where no harmonised standards apply, describe alternative solutions:\n"
+    doc += "> _[Detailed description of solutions adopted to meet Chapter III, Section 2 requirements]_\n\n"
+
+    # --- Section 8: EU Declaration of Conformity (Annex IV, point 8) ---
+    doc += "---\n\n## 8. EU Declaration of Conformity\n\n"
+    doc += "_[TO BE COMPLETED BEFORE MARKET PLACEMENT — Article 47]_\n\n"
+
+    pyproject_path = Path(project_path) / "pyproject.toml"
+    if pyproject_path.exists():
+        try:
+            pyproject_text = pyproject_path.read_text(encoding="utf-8", errors="ignore")
+            name_match = _re.search(r'name\s*=\s*"([^"]+)"', pyproject_text)
+            author_match = _re.search(r'authors\s*=\s*\[\s*\{[^}]*name\s*=\s*"([^"]+)"', pyproject_text)
+            if not author_match:
+                author_match = _re.search(r'authors\s*=\s*\[\s*"([^"]+)"', pyproject_text)
+
+            if name_match or author_match:
+                doc += "**[AUTO-DETECTED]** Provider information from `pyproject.toml`:\n\n"
+                if name_match:
+                    doc += f"- **System/Package name:** {name_match.group(1)}\n"
+                if author_match:
+                    doc += f"- **Provider name:** {author_match.group(1)}\n"
+                doc += "\n"
+                completion["8"] = "partial"
+            else:
+                completion["8"] = "empty"
+        except OSError:
+            completion["8"] = "empty"
+    else:
+        completion["8"] = "empty"
+
+    doc += "Provider details:\n"
+    doc += "> **Name:** _[Legal entity name]_\n"
+    doc += "> **Address:** _[Registered address]_\n"
+    doc += "> **Authorised representative:** _[Name and signature]_\n"
+    doc += "> **Date:** _[Date of declaration]_\n\n"
+
+    # --- Section 9: Post-Market Monitoring (Annex IV, point 9 / Article 72) ---
+    doc += "---\n\n## 9. Post-Market Monitoring Plan (Article 72)\n\n"
+
+    monitoring_indicators = []
+    monitoring_patterns_re = [
+        (r"health.?check|readiness.?probe|liveness.?probe", "Health check endpoint"),
+        (r"alert|pagerduty|opsgenie|datadog|sentry|prometheus|grafana", "Alerting/monitoring service"),
+        (r"model.?monitor|drift.?detect|data.?drift|concept.?drift", "Model/data drift detection"),
+        (r"incident.?report|post.?mortem|runbook", "Incident response process"),
+    ]
+    resolved_project_9 = Path(project_path).resolve()
+    for root, dirs, files in os.walk(str(resolved_project_9)):
+        dirs[:] = [d for d in dirs if d not in skip_dirs]
+        for filename in files:
+            fp = Path(root) / filename
+            if fp.suffix in code_extensions | {".yaml", ".yml", ".md", ".txt"}:
+                try:
+                    text = fp.read_text(encoding="utf-8", errors="ignore")[:5000]
+                    for pattern, label in monitoring_patterns_re:
+                        if _re.search(pattern, text, _re.IGNORECASE):
+                            rel_p = str(fp.relative_to(resolved_project_9))
+                            monitoring_indicators.append(f"{label}: `{rel_p}`")
+                            break
+                except OSError:
+                    continue
+
+    if monitoring_indicators:
+        doc += "**[AUTO-DETECTED]** Monitoring infrastructure found:\n\n"
+        seen_indicators = set()
+        for ind in monitoring_indicators:
+            if ind not in seen_indicators:
+                doc += f"- {ind}\n"
+                seen_indicators.add(ind)
+        doc += "\n"
+        completion["9"] = "partial"
+    else:
+        doc += "_No monitoring infrastructure detected._\n\n"
+        completion["9"] = "empty"
+
+    doc += "**[COMPLETE THESE]** (Article 72 — Post-Market Monitoring)\n\n"
+    doc += "Monitoring plan:\n"
+    doc += "> Monitoring frequency: __________\n"
+    doc += "> Performance metrics tracked: __________\n"
+    doc += "> Drift detection method: __________\n"
+    doc += "> Incident escalation process: __________\n"
+    doc += "> Serious incident reporting timeline: within __________ of awareness (Article 73)\n\n"
+
+    # --- README-based system description (supplements Section 1) ---
+    readme_content = None
+    for readme_name in ["README.md", "README.rst", "README.txt", "README"]:
+        readme_path = Path(project_path) / readme_name
+        if readme_path.exists():
+            try:
+                readme_content = readme_path.read_text(encoding="utf-8", errors="ignore")
+                break
+            except OSError:
+                continue
+
+    if readme_content:
+        lines_r = readme_content.split("\n")
+        purpose_lines = []
+        found_content = False
+        for line in lines_r:
+            stripped = line.strip()
+            if not stripped:
+                if found_content:
+                    break
+                continue
+            if stripped.startswith("#"):
+                found_content = False
+                continue
+            if stripped.startswith("![") or stripped.startswith("[!["):
+                continue
+            if stripped.startswith("---") or stripped.startswith("==="):
+                continue
+            found_content = True
+            purpose_lines.append(stripped)
+            if len(purpose_lines) >= 5:
+                break
+
+        if purpose_lines:
+            doc += "---\n\n### System Purpose (from README)\n\n"
+            doc += "**[AUTO-DETECTED]**\n\n"
+            doc += "> " + " ".join(purpose_lines) + "\n\n"
+
+    doc += f"""---
 
 _Generated by Regula v{VERSION} — AI Governance Risk Indication_
 _Template based on EU AI Act (Regulation 2024/1689) Annex IV_
@@ -649,12 +848,15 @@ def generate_completion_report(project_name: str) -> str:
         "2.1": "Development Methods",
         "2.2": "Data Requirements",
         "2.3": "Model Architecture",
-        "3.1": "Performance Metrics",
-        "3.2": "Known Limitations",
-        "3.3": "Human Oversight",
-        "3.4": "Logging Infrastructure",
-        "3.5": "AI Data Flow",
-        "4": "Risk Management",
+        "3.1": "Human Oversight (Article 14)",
+        "3.2": "Logging Infrastructure (Article 12)",
+        "3.3": "AI Data Flow",
+        "4": "Performance Metrics",
+        "5": "Risk Management",
+        "6": "Lifecycle Changes",
+        "7": "Harmonised Standards",
+        "8": "Declaration of Conformity",
+        "9": "Post-Market Monitoring",
     }
 
     status_labels = {
