@@ -43,6 +43,8 @@ DOMAIN_KEYWORDS = {
             r"\bcredit.?scor", r"\bcreditworth", r"\bloan", r"\binsurance.?pric",
             r"\bunderwriting", r"\bdefault.?risk", r"\bdebt.?collect",
             r"\bmortgage", r"\bfinancial.?decision",
+            r"\bcredit.?risk", r"\bcredit.?assess", r"\bassess.?credit",
+            r"\bcredit.?model", r"\bcredit.?predict", r"\bcredit.?decision",
         ],
         "category": "Annex III, Category 5",
         "boost": 15,
