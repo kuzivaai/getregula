@@ -309,10 +309,11 @@ def test_docs_ast_unlogged_ops_reported():
         assert_eq(r.returncode, 0, f"docs exit 0: {r.stderr[:200]}")
         content = _read_annex_output(tmp)
         section_34 = content.split("### 3.4")[1].split("###")[0] if "### 3.4" in content else ""
-        # Should report logging score or unlogged count
+        # Should report logging coverage or unlogged count
         assert_true(
-            "score" in section_34.lower() or "unlogged" in section_34.lower() or "/100" in section_34,
-            "Section 3.4 should report logging score or unlogged AI operations",
+            "coverage" in section_34.lower() or "score" in section_34.lower()
+            or "unlogged" in section_34.lower() or "/100" in section_34,
+            "Section 3.4 should report logging coverage or unlogged AI operations",
         )
     print("\u2713 Docs AST: section 3.4 reports logging score/unlogged ops")
 
