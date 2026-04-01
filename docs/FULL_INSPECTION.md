@@ -47,7 +47,7 @@
 - `hooks/stop_hook.py` -- session summary
 - `scripts/mcp_server.py` -- MCP server (stdio transport)
 
-**Data flow:** CLI args / hook stdin -> `classify_risk.py` (pattern matching) -> `risk_patterns.py` (115 regex) + `ast_analysis.py` (Python AST) + `ast_engine.py` (JS/TS tree-sitter) -> risk tier assignment -> `report.py` (HTML/SARIF/JSON output) + `log_event.py` (audit trail)
+**Data flow:** CLI args / hook stdin -> `classify_risk.py` (pattern matching) -> `risk_patterns.py` (121 regex) + `ast_analysis.py` (Python AST) + `ast_engine.py` (JS/TS tree-sitter) -> risk tier assignment -> `report.py` (HTML/SARIF/JSON output) + `log_event.py` (audit trail)
 
 **External dependencies:** Zero for core. Optional: PyYAML (config), tree-sitter (JS/TS AST), weasyprint (PDF), pytest (testing).
 
@@ -87,7 +87,7 @@ Every feature claimed in README or landing page, verified against actual code:
 | # | Feature Claimed | Implementation | Tests | Status | Evidence |
 |---|----------------|---------------|-------|--------|----------|
 | 1 | 8 language detection | classify_risk.py, ast_engine.py | Yes | Verified | Python AST (deep), JS/TS tree-sitter (moderate), Java/Go/Rust/C/C++ (regex) |
-| 2 | 115 risk patterns | risk_patterns.py | Yes | Verified | 32 prohibited + 52 high-risk + 17 limited + 14 AI security regex strings |
+| 2 | 121 risk patterns | risk_patterns.py | Yes | Verified | 32 prohibited + 58 high-risk + 17 limited + 14 AI security regex strings |
 | 3 | 10 compliance frameworks | framework_mapper.py | Yes | Verified | EU AI Act, NIST CSF, NIST AI RMF, SOC 2, ISO 42001, ISO 27001, OWASP LLM, MITRE ATLAS, LGPD, Marco Legal da IA |
 | 4 | Zero dependencies | pyproject.toml | N/A | Verified | Core uses only stdlib |
 | 5 | SARIF output | report.py:generate_sarif | Yes | Verified | Valid SARIF 2.1.0 |
@@ -364,7 +364,7 @@ Sources: Gartner AI Governance Platform forecast Feb 2026, EU Commission AI Act 
 
 ### 9.1 Three Hardest Truths
 
-**1. The product is feature-complete but distribution-zero.** 29 CLI commands, 115 patterns, 639+ test assertions, 10 frameworks -- and 0 external users. The engineering is strong. The go-to-market is non-existent. Features don't matter if nobody knows the tool exists. Every day closer to August 2026 is a day of shrinking window.
+**1. The product is feature-complete but distribution-zero.** 29 CLI commands, 121 patterns, 666+ test assertions, 10 frameworks -- and 0 external users. The engineering is strong. The go-to-market is non-existent. Features don't matter if nobody knows the tool exists. Every day closer to August 2026 is a day of shrinking window.
 
 **2. The moat is effectively zero.** Pattern-matching regex against EU AI Act articles is not defensible. Any team with a weekend and the AI Act text could replicate the core detection. The competitive advantage is execution speed (being first with a working CLI tool), not technical depth. This advantage has an expiry date.
 
