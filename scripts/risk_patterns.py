@@ -112,7 +112,9 @@ HIGH_RISK_PATTERNS = {
     "employment": {
         "patterns": [r"\bcv.?screen", r"\bresume.?filt", r"\bhiring.?decision", r"\brecruit\w*\W{0,3}automat",
                      r"\bautomat\w*\W{0,3}recruit", r"\bcandidate.?rank", r"\bpromotion.?decision",
-                     r"\btermination.?decision", r"\bperformance.?review.{0,10}(ai|automat|model|predict)"],
+                     r"\btermination.?decision", r"\bperformance.?review.{0,10}(ai|automat|model|predict)",
+                     r"\bscreen.?candidate", r"\bjob.?candidate", r"\bcandidate.?screen",
+                     r"\bapplicant.?scor", r"\bapplicant.?rank", r"\bemployee.?assess"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 4",
         "description": "Employment and workers management",
