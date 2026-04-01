@@ -1070,7 +1070,7 @@ _REGULATION_OVERLAP = {
     },
     "11": {
         "gdpr": "Article 30 — Records of processing activities",
-        "dora": "Article 9 — ICT risk management documentation",
+        "dora": "Article 9 — Protection and prevention (documented ICT policies and procedures)",
         "nis2": None,
     },
     "12": {
