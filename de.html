@@ -54,12 +54,12 @@
             box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
         .term-bar { display: flex; gap: 6px; padding: 10px 14px; background: #1c1c1f; border-bottom: 1px solid #27272a; }
         .term-dot { width: 10px; height: 10px; border-radius: 50%; }
-        .td-r { background: #ef4444; } .td-y { background: #eab308; } .td-g { background: #22c55e; }
+        .td-r { background: #ef4444; } .td-y { background: #eab298; } .td-g { background: #22c55e; }
         .term pre { padding: 16px 20px; font-family: 'JetBrains Mono', monospace;
             font-size: 12.5px; line-height: 1.7; color: #a1a1aa; overflow-x: auto; margin: 0; }
         .term .p { color: #52525b; } .term .c { color: #e4e4e7; }
         .term .h { color: #38bdf8; font-weight: 500; }
-        .term .g { color: #22c55e; } .term .y { color: #eab308; } .term .m { color: #52525b; }
+        .term .g { color: #22c55e; } .term .y { color: #eab298; } .term .m { color: #52525b; }
         .term hr { border: none; border-top: 1px solid #27272a; margin: 6px 0; }
 
         /* STATS */
@@ -98,10 +98,10 @@
         /* URGENCY */
         .urgency { max-width: 1120px; margin: 0 auto; padding: 48px 24px 0; }
         .urgency-box { display: flex; gap: 24px; align-items: flex-start;
-            background: #18181b; border: 1px solid #27272a; border-left: 3px solid #eab308;
+            background: #18181b; border: 1px solid #27272a; border-left: 3px solid #eab298;
             border-radius: 0 8px 8px 0; padding: 24px; }
         .urgency-box .date { font-family: 'JetBrains Mono', monospace; font-size: 13px;
-            color: #eab308; font-weight: 500; white-space: nowrap; min-width: 80px; }
+            color: #eab298; font-weight: 500; white-space: nowrap; min-width: 80px; }
         .urgency-box .body { font-size: 14px; color: #a1a1aa; line-height: 1.6; }
         .urgency-box strong { color: #e4e4e7; }
 
@@ -134,7 +134,7 @@
         /* MOBILE */
         @media (max-width: 768px) {
             .hero { grid-template-columns: 1fr; gap: 32px; padding: 48px 20px 0; }
-            .hero h1 { font-size: 30px; }
+            .hero h1 { font-size: 29px; }
             .stats { grid-template-columns: repeat(2, 1fr); padding: 32px 20px 0; }
             .steps { grid-template-columns: 1fr; }
             .art-grid { grid-template-columns: 1fr; }
@@ -165,8 +165,8 @@
 <div class="hero">
     <div class="hero-text">
         <div class="badge"><span class="badge-dot"></span> Open-Source-CLI &middot; v1.2.0</div>
-        <h1>Pr&uuml;fen Sie Ihren KI-Code gegen <span class="hl">115 EU-KI-Gesetz</span>-Risikomuster.</h1>
-        <p class="sub">Statische Analyse f&uuml;r Python, JS, TS, Java, Go, Rust, C, C++. Ordnet Befunde Risikostufen zu, erstellt Konformit&auml;tsnachweise. Null Abh&auml;ngigkeiten. Funktioniert offline.</p>
+        <h1>Finden Sie heraus, ob Ihr KI-System <span class="hl">hochriskant</span> ist &mdash; bevor die Aufsichtsbeh&ouml;rden es tun.</h1>
+        <p class="sub">Kostenloser Open-Source-Scanner, der Ihnen zeigt, in welche EU-KI-Gesetz-Risikostufe Sie fallen, warum, und was zu tun ist. Kein Konto, kein API-Key, keine Berater.</p>
         <div class="install-row">
             <div class="install-box" onclick="navigator.clipboard.writeText('pip install regula-ai');this.querySelector('.cp').textContent='kopiert'">
                 <span class="dollar">$</span>
@@ -197,17 +197,17 @@
 
 <!-- STATS -->
 <div class="stats">
+    <div class="st"><div class="st-n">Kostenlos</div><div class="st-l">Open Source</div></div>
     <div class="st"><div class="st-n">115</div><div class="st-l">Risikomuster</div></div>
     <div class="st"><div class="st-n">8</div><div class="st-l">Sprachen</div></div>
-    <div class="st"><div class="st-n">10</div><div class="st-l">Rahmenwerke</div></div>
     <div class="st"><div class="st-n">0</div><div class="st-l">Abh&auml;ngigkeiten</div></div>
 </div>
 
 <!-- URGENCY -->
 <div class="urgency">
     <div class="urgency-box">
-        <div class="date">AUG 2026</div>
-        <div class="body"><strong>Verbotene KI-Praktiken</strong> seit Feb 2025 untersagt. <strong>Hochrisiko-Pflichten</strong> gelten ab August 2026. Regula zeigt, welcher Risikostufe Ihr Code unterliegt &mdash; vor der Durchsetzung, nicht danach.</div>
+        <div class="date">2026&ndash;27</div>
+        <div class="body"><strong>Hochrisiko-Pflichten</strong> beginnen August 2026 &mdash; oder Dezember 2027, wenn der Digital Omnibus verabschiedet wird (Parlament stimmte 569&ndash;45 daf&uuml;r, M&auml;rz 2026). So oder so: die Anforderungen &auml;ndern sich nicht. <strong>Sie m&uuml;ssen wissen, wo Sie stehen.</strong></div>
     </div>
 </div>
 
@@ -297,7 +297,7 @@
 
 <!-- FINAL CTA -->
 <div class="final">
-    <h2>Starten Sie in 30 Sekunden</h2>
+    <h2>Starten Sie in 29 Sekunden</h2>
     <p>Kein Konto, kein API-Schl&uuml;ssel, kein Netzwerk.</p>
     <div class="install-box" onclick="navigator.clipboard.writeText('pip install regula-ai');this.querySelector('.cp').textContent='kopiert'" style="margin:0 auto;">
         <span class="dollar">$</span>

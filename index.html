@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regula — EU AI Act Compliance Scanning for Code</title>
-    <meta name="description" content="Open-source static analysis that scans your AI code against 115 EU AI Act risk patterns across 8 languages. Zero dependencies.">
+    <title>Regula — Find out if your AI system is high-risk under the EU AI Act</title>
+    <meta name="description" content="Free, open-source CLI that tells you which EU AI Act risk tier your code is in, why, and what to do about it. No account, no consultants.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -165,8 +165,8 @@
 <div class="hero">
     <div class="hero-text">
         <div class="badge"><span class="badge-dot"></span> Open-source CLI &middot; v1.2.0</div>
-        <h1>Scan your AI code against <span class="hl">115 EU AI Act</span> risk patterns.</h1>
-        <p class="sub">Static analysis for Python, JS, TS, Java, Go, Rust, C, C++. Maps findings to risk tiers, generates compliance evidence. Zero dependencies. Works offline.</p>
+        <h1>Find out if your AI system is <span class="hl">high-risk</span> &mdash; before regulators do.</h1>
+        <p class="sub">Free, open-source scanner that tells you which EU AI Act tier you're in, why, and what to do about it. No account, no API key, no consultants.</p>
         <div class="install-row">
             <div class="install-box" onclick="navigator.clipboard.writeText('pip install regula-ai');this.querySelector('.cp').textContent='copied'">
                 <span class="dollar">$</span>
@@ -181,60 +181,67 @@
     </div>
     <div class="term">
         <div class="term-bar"><div class="term-dot td-r"></div><div class="term-dot td-y"></div><div class="term-dot td-g"></div></div>
-        <pre><span class="p">$</span> <span class="c">regula check .</span>
+        <pre><span class="p">$</span> <span class="c">regula check . --explain</span>
 
-<span class="h">Regula Scan: payment-ml-service</span>
-<hr>  Files scanned:      <span class="c">47</span>
-  Prohibited:         <span class="g">0</span>
-  High-risk:          <span class="y">2</span>       <span class="m"># Art. 6 credit scoring</span>
-  Credentials:        <span class="g">0</span>
-  BLOCK tier:         <span class="g">0</span>
-  WARN tier:          <span class="y">2</span>
-<hr>  <span class="g">&#10004; No prohibited practices (Art. 5)</span>
-  <span class="y">&#9888; 2 high-risk: review Art. 9 risk management</span></pre>
+<span class="h">Classification: HIGH-RISK</span>
+  Annex III, Category 5
+
+<span class="y">WHY:</span>
+  scoring.py:23 &mdash; essential_services
+    <span class="m">Code: score = model.predict(applicant)</span>
+    Legal basis: Annex III &mdash; Articles 9-15
+    False positive if: not a credit decision
+
+<span class="h">ROLE:</span> DEPLOYER (confidence: high)
+  <span class="m">- OpenAI API usage</span>
+
+<span class="y">OBLIGATIONS:</span>
+  <span class="c">[HIGH]</span> Art. 9  Risk management   &mdash; 40-60h
+  <span class="c">[HIGH]</span> Art. 14 Human oversight   &mdash; 16-24h
+  Total: 160-324h | Deadline: <span class="y">Aug 2026</span></pre>
     </div>
 </div>
 
 <!-- STATS -->
 <div class="stats">
+    <div class="st"><div class="st-n">Free</div><div class="st-l">open source</div></div>
     <div class="st"><div class="st-n">115</div><div class="st-l">risk patterns</div></div>
     <div class="st"><div class="st-n">8</div><div class="st-l">languages</div></div>
-    <div class="st"><div class="st-n">10</div><div class="st-l">frameworks</div></div>
     <div class="st"><div class="st-n">0</div><div class="st-l">dependencies</div></div>
 </div>
 
 <!-- URGENCY -->
 <div class="urgency">
     <div class="urgency-box">
-        <div class="date">AUG 2026</div>
-        <div class="body"><strong>Prohibited AI practices</strong> banned since Feb 2025. <strong>High-risk obligations</strong> enforce August 2026. Regula shows which risk tier your code falls under &mdash; before enforcement, not after.</div>
+        <div class="date">2026&ndash;27</div>
+        <div class="body"><strong>High-risk obligations</strong> start August 2026 &mdash; or December 2027 if the Digital Omnibus passes (Parliament voted 569&ndash;45 in favour, March 2026). Either way, the requirements don't change. <strong>You need to know where you stand.</strong></div>
     </div>
 </div>
 
 <div class="sep"></div>
 
-<!-- 3 STEPS -->
+<!-- WHAT REGULA DOES -->
 <div class="sec">
-    <div class="sec-head">Three steps to compliance visibility</div>
-    <p class="sec-sub">Install, scan, review. No configuration, no API keys, no account.</p>
+    <div class="sec-head">What Regula actually does</div>
+    <p class="sec-sub">Three things, done well. Not 37 frameworks.</p>
     <div class="steps">
         <div class="step">
-            <div class="step-n">01 &mdash; Install</div>
-            <h3>One command</h3>
-            <p>From PyPI. No config needed, no network access required. Works fully offline.</p>
-            <code>pip install regula-ai</code>
+            <div class="step-n">Classification with reasoning</div>
+            <h3>Not just "HIGH-RISK" &mdash; why, and what it means</h3>
+            <p>Points to the exact line of code that triggered classification, cites the legal basis, and tells you when it might be a false positive.</p>
+            <code>regula check . --explain</code>
         </div>
         <div class="step">
-            <div class="step-n">02 &mdash; Scan</div>
-            <h3>Point at your code</h3>
-            <p>Detects AI library imports, model files, API patterns. Classifies to EU AI Act risk tiers with confidence scoring.</p>
-            <code>regula check .</code>
+            <div class="step-n">Documentation that fills itself in</div>
+            <h3>Auto-detects what it can, templates the rest</h3>
+            <p>Generates Annex IV documentation scaffolds from your code. Functions, dependencies, and logging coverage are populated automatically. Human sections get fill-in-the-blank templates.</p>
+            <code>regula docs --completion</code>
         </div>
         <div class="step">
-            <div class="step-n">03 &mdash; Review</div>
-            <h3>Act on findings</h3>
-            <p>Compliance gap assessment for Articles 9&ndash;15. Annex IV documentation scaffolds. SARIF for CI/CD gates.</p>
-            <code>regula gap --project .</code>
+            <div class="step-n">Provider or deployer?</div>
+            <h3>Determines which obligations apply to you</h3>
+            <p>Detects whether you're training models (provider) or calling APIs (deployer). Different roles, different obligations. Most small teams haven't checked.</p>
+            <code>regula check . --explain</code>
         </div>
     </div>
 </div>
@@ -243,62 +250,63 @@
 
 <!-- WHAT IT CHECKS -->
 <div class="sec">
-    <div class="sec-head">What Regula checks</div>
-    <p class="sec-sub">Code-level indicators mapped to the EU AI Act articles that matter for high-risk systems.</p>
+    <div class="sec-head">Deep <span class="hl">EU AI Act</span> coverage</div>
+    <p class="sec-sub">Maps your code to Articles 5&ndash;15 and Annex IV. Not a checklist &mdash; actual code analysis.</p>
     <div class="art-grid">
         <div class="art-card"><div class="tag">Article 5</div><h4>Prohibited practices</h4><p>Social scoring, subliminal manipulation, real-time biometrics, emotion inference in workplaces</p></div>
-        <div class="art-card"><div class="tag">Article 6</div><h4>High-risk classification</h4><p>Credit scoring, employment, biometric ID, medical, education, law enforcement, migration</p></div>
-        <div class="art-card"><div class="tag">Article 9</div><h4>Risk management</h4><p>Risk assessment gaps, missing documentation, untested edge cases in AI pipelines</p></div>
-        <div class="art-card"><div class="tag">Article 10</div><h4>Data governance</h4><p>Training data documentation, bias detection, data quality indicators</p></div>
-        <div class="art-card"><div class="tag">Article 12</div><h4>Record-keeping</h4><p>Logging completeness, audit trail integrity, event traceability</p></div>
-        <div class="art-card"><div class="tag">Article 13</div><h4>Transparency</h4><p>Automated decision functions, user notification, explainability gaps</p></div>
-        <div class="art-card"><div class="tag">Article 14</div><h4>Human oversight</h4><p>Override mechanisms, approval gates, human-in-the-loop patterns</p></div>
-        <div class="art-card"><div class="tag">Article 15</div><h4>Accuracy &amp; robustness</h4><p>Testing coverage, error handling, fallback mechanisms, input validation</p></div>
-        <div class="art-card"><div class="tag">Annex IV</div><h4>Technical documentation</h4><p>Generates scaffolds covering all 15 Annex IV documentation requirements</p></div>
+        <div class="art-card"><div class="tag">Article 6</div><h4>Risk classification</h4><p>8 Annex III categories plus medical devices and safety components: credit, employment, biometrics, education, law enforcement, and more</p></div>
+        <div class="art-card"><div class="tag">Articles 9&ndash;15</div><h4>High-risk obligations</h4><p>Risk management, data governance, logging, transparency, human oversight, accuracy &mdash; with effort estimates per article</p></div>
+        <div class="art-card"><div class="tag">Annex IV</div><h4>Technical documentation</h4><p>Auto-populated scaffolds with your actual functions, dependencies, and logging coverage</p></div>
+        <div class="art-card"><div class="tag">Article 15</div><h4>Security</h4><p>OWASP LLM Top 10 patterns: prompt injection, unsafe deserialisation, unbounded generation</p></div>
+        <div class="art-card"><div class="tag">Article 50</div><h4>Transparency</h4><p>Chatbot disclosure, synthetic content labelling, deepfake detection obligations</p></div>
     </div>
 </div>
 
 <div class="sep"></div>
 
-<!-- COMMANDS -->
+<!-- COMMANDS — highlight 5, not 29 -->
 <div class="sec">
-    <div class="sec-head"><span class="hl">29</span> CLI commands</div>
-    <p class="sec-sub">Everything from a single binary.</p>
+    <div class="sec-head">Get started</div>
+    <p class="sec-sub">Five commands cover 90% of what you need. No configuration.</p>
     <div class="cmds">
-        <div class="cm"><code>regula check .</code> <span>Scan for risk indicators</span></div>
-        <div class="cm"><code>regula gap --project .</code> <span>Compliance gap analysis</span></div>
-        <div class="cm"><code>regula docs --qms</code> <span>Generate Annex IV + QMS docs</span></div>
-        <div class="cm"><code>regula sbom</code> <span>AI Software Bill of Materials</span></div>
-        <div class="cm"><code>regula deps --project .</code> <span>Dependency supply chain</span></div>
-        <div class="cm"><code>regula baseline compare</code> <span>CI/CD incremental compliance</span></div>
-        <div class="cm"><code>regula inventory</code> <span>Model registry + GPAI tiers</span></div>
+        <div class="cm"><code>regula check . --explain</code> <span>Classification with reasoning</span></div>
+        <div class="cm"><code>regula docs --completion</code> <span>Annex IV documentation scaffolds</span></div>
+        <div class="cm"><code>regula gap --project .</code> <span>Compliance gap per article</span></div>
         <div class="cm"><code>regula quickstart</code> <span>60-second onboarding</span></div>
+        <div class="cm"><code>regula check . --format sarif</code> <span>CI/CD gate output</span></div>
     </div>
+    <p style="font-size: 12px; color: #3f3f46; margin-top: 12px;">29 commands total. Python, JS, TS, Java, Go, Rust, C, C++. Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, and 7 other frameworks.</p>
 </div>
 
 <div class="sep"></div>
 
-<!-- FRAMEWORKS -->
+<!-- COST POSITIONING -->
 <div class="sec">
-    <div class="sec-head"><span class="hl">10</span> compliance frameworks</div>
-    <div class="fw-list" style="margin-top:16px;">
-        <div class="fw pri"><div class="fw-d"></div>EU AI Act (2024/1689)</div>
-        <div class="fw"><div class="fw-d"></div>NIST CSF 2.0</div>
-        <div class="fw"><div class="fw-d"></div>NIST AI RMF 1.0</div>
-        <div class="fw"><div class="fw-d"></div>SOC 2</div>
-        <div class="fw"><div class="fw-d"></div>ISO/IEC 42001:2023</div>
-        <div class="fw"><div class="fw-d"></div>ISO 27001:2022</div>
-        <div class="fw"><div class="fw-d"></div>OWASP LLM Top 10</div>
-        <div class="fw"><div class="fw-d"></div>MITRE ATLAS</div>
-        <div class="fw"><div class="fw-d"></div>LGPD (Brazil)</div>
-        <div class="fw"><div class="fw-d"></div>Marco Legal da IA (Brazil)</div>
+    <div class="sec-head">Enterprise platforms cost <span class="hl">$50,000+/year</span></div>
+    <p class="sec-sub">Regula is free and open source. MIT licence.</p>
+    <div class="steps" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="step">
+            <div class="step-n">Enterprise tier</div>
+            <h3>$50K&ndash;$500K/year</h3>
+            <p>OneTrust, Credo AI, Holistic AI, IBM watsonx.governance. Custom pricing, long sales cycles, dedicated compliance teams required.</p>
+        </div>
+        <div class="step">
+            <div class="step-n">Mid-market</div>
+            <h3>&euro;10K&ndash;&euro;80K/year</h3>
+            <p>trail, Vanta AI modules, AuditBoard (acquired FairNow). Still assumes you have budget and a GRC workflow.</p>
+        </div>
+        <div class="step" style="border-color: #38bdf8;">
+            <div class="step-n" style="color: #22c55e;">Regula</div>
+            <h3 style="color: #22c55e;">Free &amp; open source</h3>
+            <p>CLI that runs on your machine. No account, no API key, no consultants. Covers the gap between &euro;0 and &euro;10K where nothing else exists.</p>
+        </div>
     </div>
 </div>
 
 <!-- FINAL CTA -->
 <div class="final">
-    <h2>Start scanning in 30 seconds</h2>
-    <p>No account, no API key, no network required.</p>
+    <h2>Find out where you stand</h2>
+    <p>One command. No account, no API key, no consultants.</p>
     <div class="install-box" onclick="navigator.clipboard.writeText('pip install regula-ai');this.querySelector('.cp').textContent='copied'" style="margin:0 auto;">
         <span class="dollar">$</span>
         <span class="cmd">pip install regula-ai</span>
