@@ -58,10 +58,17 @@ TIMELINE = [
     },
     {
         "date": "2026-10-30",
-        "event": "prEN 18286 (Quality Management System) public enquiry closes",
+        "event": "prEN 18286 (Quality Management System) — public enquiry closed Jan 2026",
         "status": "in_progress",
-        "source": "CEN/CENELEC",
-        "note": "First harmonised standard for AI. Addresses Article 17 requirements.",
+        "source": "CEN/CENELEC JTC 21",
+        "note": "First harmonised standard for AI Act. Addresses Article 17 (QMS). Enquiry ran 30 Oct 2025 — 22 Jan 2026. Publication expected Q4 2026.",
+    },
+    {
+        "date": "2026-12-31",
+        "event": "Target: CEN-CENELEC AI Act standards publication",
+        "status": "in_progress",
+        "source": "CEN/CENELEC acceleration measures, Oct 2025",
+        "note": "Standards expected to cover: risk management (Art 9), data governance (Art 10), transparency (Art 13), human oversight (Art 14), accuracy/robustness (Art 15). Accelerated process adopted Oct 2025 to allow direct publication without separate Formal Vote.",
     },
     {
         "date": "2027-12-02",

@@ -25,7 +25,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from errors import RegulaError, PathError
 
-VERSION = "1.3.0"
+VERSION = "1.4.0"
 
 
 def json_output(command: str, data, exit_code: int = 0):
@@ -1001,6 +1001,85 @@ def cmd_plan(args):
             print(output)
 
 
+def cmd_fix(args):
+    """Generate compliance fix scaffolds for findings."""
+    if args.project != ".":
+        _validate_path(args.project)
+    project_path = str(Path(args.project).resolve())
+
+    from report import scan_files
+    from remediation import get_remediation
+
+    print(f"Scanning {project_path}...", file=sys.stderr)
+    findings = scan_files(project_path)
+
+    # Filter to actionable findings (high-risk and prohibited only)
+    actionable = [
+        f for f in findings
+        if f.get("tier") in ("high_risk", "prohibited") and not f.get("suppressed")
+    ]
+
+    if not actionable:
+        if args.format == "json":
+            json_output("fix", {"fixes": [], "message": "No actionable findings."})
+        else:
+            print("No high-risk or prohibited findings to fix.")
+        return
+
+    fixes = []
+    for finding in actionable:
+        rem = get_remediation(finding)
+        fix_entry = {
+            "file": finding.get("file", "?"),
+            "line": finding.get("line", "?"),
+            "tier": finding["tier"],
+            "category": finding.get("category", "unknown"),
+            "summary": rem.get("summary", ""),
+            "article": rem.get("article", ""),
+            "explanation": rem.get("explanation", ""),
+            "fix_code": rem.get("fix_code", ""),
+        }
+        fixes.append(fix_entry)
+
+    if args.format == "json":
+        json_output("fix", {"fixes": fixes, "total": len(fixes)})
+    else:
+        print(f"# Compliance Fixes — {len(fixes)} actionable findings\n")
+        seen_categories = set()
+        for fix in fixes:
+            cat = fix["category"]
+            if cat in seen_categories:
+                continue
+            seen_categories.add(cat)
+
+            print(f"## {fix['file']}:{fix['line']} — {fix['tier'].upper().replace('_', '-')}")
+            print(f"   Category: {fix['category']}")
+            print(f"   Article: {fix['article']}")
+            print(f"   {fix['summary']}")
+            print(f"   {fix['explanation']}")
+            if fix["fix_code"]:
+                print(f"\n   Suggested code scaffold:")
+                print(f"   {'─' * 40}")
+                for code_line in fix["fix_code"].replace("\\n", "\n").split("\n"):
+                    print(f"   {code_line}")
+                print(f"   {'─' * 40}")
+            print()
+
+        if args.output:
+            out_path = Path(args.output)
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            lines = []
+            for fix in fixes:
+                cat = fix["category"]
+                lines.append(f"# {fix['file']}:{fix['line']} — {fix['article']}")
+                lines.append(f"# {fix['summary']}")
+                if fix["fix_code"]:
+                    lines.append(fix["fix_code"].replace("\\n", "\n"))
+                lines.append("")
+            out_path.write_text("\n".join(lines), encoding="utf-8")
+            print(f"Fix scaffolds written to {out_path}", file=sys.stderr)
+
+
 def cmd_evidence_pack(args):
     """Generate compliance evidence pack."""
     if args.project != ".":
@@ -1448,6 +1527,13 @@ Examples:
     p_plan.add_argument("--status", action="store_true", help="Show completion progress")
     p_plan.add_argument("--done", metavar="TASK-ID", help="Mark a task as completed")
     p_plan.set_defaults(func=cmd_plan)
+
+    # --- fix ---
+    p_fix = subparsers.add_parser("fix", help="Generate compliance fix scaffolds for findings")
+    p_fix.add_argument("--project", "-p", default=".")
+    p_fix.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_fix.add_argument("--output", "-o", help="Write fix scaffolds to file")
+    p_fix.set_defaults(func=cmd_fix)
 
     # --- evidence-pack ---
     p_evidence = subparsers.add_parser("evidence-pack", help="Generate compliance evidence pack for auditors")
