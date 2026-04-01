@@ -31,7 +31,7 @@
 |------|-----|------|
 | tests/test_classification.py | 4,605 | Main test suite |
 | scripts/ast_engine.py | 1,727 | Multi-language AST analysis |
-| scripts/cli.py | 1,421 | CLI entry point, 29 subcommands |
+| scripts/cli.py | ~1,490 | CLI entry point, 29 subcommands |
 | tests/test_hooks_audit.py | 1,173 | Hook + audit tests |
 | scripts/compliance_check.py | 1,171 | Articles 9-15 gap assessment |
 | scripts/dependency_scan.py | 1,096 | AI dependency supply chain |
@@ -152,7 +152,7 @@ Every feature claimed in README or landing page, verified against actual code:
 
 | ID | Location | Issue | Severity | Effort | Blocks |
 |----|----------|-------|----------|--------|--------|
-| TD-1 | cli.py | God file, 1,421 LOC, all 29 commands | P2 | L | Maintainability |
+| TD-1 | cli.py | God file, ~1,490 LOC, all 29 commands | P2 | L | Maintainability |
 | TD-2 | ast_engine.py | 1,727 LOC, all 8 languages in one file | P2 | L | Adding languages |
 | TD-3 | -- | No linter/formatter config | P2 | S | Code consistency |
 | TD-4 | mcp_server.py | No tests | P1 | M | MCP reliability |
@@ -364,7 +364,7 @@ Sources: Gartner AI Governance Platform forecast Feb 2026, EU Commission AI Act 
 
 ### 9.1 Three Hardest Truths
 
-**1. The product is feature-complete but distribution-zero.** 29 CLI commands, 115 patterns, 438 tests, 10 frameworks -- and 0 external users. The engineering is strong. The go-to-market is non-existent. Features don't matter if nobody knows the tool exists. Every day closer to August 2026 is a day of shrinking window.
+**1. The product is feature-complete but distribution-zero.** 29 CLI commands, 115 patterns, 639+ test assertions, 10 frameworks -- and 0 external users. The engineering is strong. The go-to-market is non-existent. Features don't matter if nobody knows the tool exists. Every day closer to August 2026 is a day of shrinking window.
 
 **2. The moat is effectively zero.** Pattern-matching regex against EU AI Act articles is not defensible. Any team with a weekend and the AI Act text could replicate the core detection. The competitive advantage is execution speed (being first with a working CLI tool), not technical depth. This advantage has an expiry date.
 
@@ -372,7 +372,7 @@ Sources: Gartner AI Governance Platform forecast Feb 2026, EU Commission AI Act 
 
 ### 9.2 Three Genuine Strengths
 
-**1. Remarkable engineering quality for a solo project.** 27,100 LOC, 438 tests, zero dependencies, 8 languages, 29 CLI commands, 3 i18n locales, honest competitive comparison in the README. This is not a weekend hack -- it is a real tool with genuine depth.
+**1. Remarkable engineering quality for a solo project.** ~28K LOC, 639+ test assertions, zero dependencies, 8 languages, 29 CLI commands, 3 i18n locales, honest competitive comparison in the README. This is not a weekend hack -- it is a real tool with genuine depth.
 
 **2. Perfect market timing.** The EU AI Act high-risk deadline (Aug 2026) is 5 months away. Every AI company in Europe needs compliance tooling. The window is open right now.
 
