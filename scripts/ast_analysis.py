@@ -156,9 +156,8 @@ class _StructureVisitor(ast.NodeVisitor):
         docstring = None
         if (node.body
             and isinstance(node.body[0], ast.Expr)
-            and isinstance(node.body[0].value, (ast.Constant, ast.Str))):
-            val = node.body[0].value
-            raw = val.value if isinstance(val, ast.Constant) else val.s
+            and isinstance(node.body[0].value, ast.Constant)):
+            raw = node.body[0].value.value
             if isinstance(raw, str):
                 # Take first line only for brevity
                 docstring = raw.strip().split("\n")[0]
