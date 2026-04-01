@@ -128,6 +128,40 @@ _DECISION_PATTERNS = [
 ]
 
 
+# Regulated domains where findings become critical
+REGULATED_DOMAINS = {
+    "creditworthiness", "employment", "insurance", "education", "legal",
+    "law_enforcement", "migration", "biometric", "medical",
+}
+
+# Non-regulated domains where findings are informational
+INFORMATIONAL_DOMAINS = {
+    "customer_support", "internal_tooling", "content_generation", "general_purpose",
+}
+
+
+def get_declared_domain() -> dict:
+    """Read domain declaration from regula-policy.yaml.
+
+    Returns: {"domain": str, "risk_level": str, "name": str, "is_regulated": bool}
+    """
+    try:
+        from policy_config import get_policy
+        policy = get_policy()
+        system = policy.get("system", {})
+        if not isinstance(system, dict):
+            return {"domain": "general_purpose", "risk_level": "", "name": "", "is_regulated": False}
+        domain = system.get("domain", "general_purpose") or "general_purpose"
+        return {
+            "domain": domain,
+            "risk_level": system.get("risk_level", "") or "",
+            "name": system.get("name", "") or "",
+            "is_regulated": domain in REGULATED_DOMAINS,
+        }
+    except Exception:
+        return {"domain": "general_purpose", "risk_level": "", "name": "", "is_regulated": False}
+
+
 def compute_domain_boost(text: str, has_ai_indicator: bool) -> dict:
     """Compute confidence boost from domain keyword co-occurrence.
 
@@ -144,6 +178,27 @@ def compute_domain_boost(text: str, has_ai_indicator: bool) -> dict:
     """
     if not has_ai_indicator:
         return {"boost": 0, "domains_matched": [], "has_decision_logic": False, "detail": ""}
+
+    # Check declared domain from policy — overrides keyword detection
+    declared = get_declared_domain()
+    if declared["is_regulated"] and declared["domain"]:
+        # Map declared domain to our internal domain names
+        domain_map = {
+            "creditworthiness": "finance", "employment": "employment",
+            "insurance": "finance", "education": "education",
+            "legal": "law_enforcement", "law_enforcement": "law_enforcement",
+            "migration": "migration", "biometric": "biometrics",
+            "medical": "medical",
+        }
+        mapped = domain_map.get(declared["domain"])
+        if mapped and mapped in _DOMAIN_COMPILED:
+            cfg = _DOMAIN_COMPILED[mapped]
+            return {
+                "boost": cfg["boost"],
+                "domains_matched": [mapped],
+                "has_decision_logic": False,
+                "detail": f"Declared domain: {declared['domain']} (from regula-policy.yaml)",
+            }
 
     text_lower = text.lower()
     matched_domains = []

@@ -11,6 +11,10 @@ inputs:
     description: Path to the project to scan
     required: false
     default: "."
+  comment-on-pr:
+    description: Post a compliance summary comment on pull requests
+    required: false
+    default: "true"
   format:
     description: Output format for findings (sarif or json)
     required: false
@@ -225,6 +229,143 @@ runs:
         else
           echo "### Status: PASS" >> "$GITHUB_STEP_SUMMARY"
         fi
+
+    - name: Post PR compliance comment
+      if: inputs.comment-on-pr == 'true' && github.event_name == 'pull_request'
+      shell: bash
+      run: |
+        FINDINGS="${{ steps.count-findings.outputs.findings_count }}"
+        PROHIBITED="${{ steps.count-findings.outputs.prohibited_count }}"
+        HIGH_RISK="${{ steps.count-findings.outputs.high_risk_count }}"
+        PINNING="${{ steps.deps-scan.outputs.pinning_score }}"
+
+        # Determine status
+        if [ "${PROHIBITED}" -gt "0" ]; then
+          STATUS="PROHIBITED"
+          ICON="🔴"
+        elif [ "${HIGH_RISK}" -gt "0" ]; then
+          STATUS="HIGH-RISK"
+          ICON="🟡"
+        else
+          STATUS="PASS"
+          ICON="🟢"
+        fi
+
+        # Build obligation table from SARIF findings
+        python3 - <<'PYEOF'
+        import json, os, sys
+
+        sarif_file = os.environ.get("SARIF_FILE", "")
+        try:
+            with open(sarif_file) as f:
+                data = json.load(f)
+        except Exception:
+            data = {"runs": [{"results": []}]}
+
+        results = []
+        for run in data.get("runs", []):
+            results.extend(run.get("results", []))
+
+        # Group by tier
+        tiers = {}
+        for r in results:
+            rule_id = r.get("ruleId", "unknown")
+            tags = r.get("properties", {}).get("tags", [])
+            tier = "info"
+            for t in tags:
+                if "prohibited" in t.lower(): tier = "prohibited"
+                elif "high" in t.lower(): tier = "high_risk"
+                elif "limited" in t.lower(): tier = "limited_risk"
+                elif "security" in t.lower(): tier = "ai_security"
+                elif "credential" in t.lower(): tier = "credential"
+                elif "agent" in t.lower(): tier = "agent_autonomy"
+            tiers[tier] = tiers.get(tier, 0) + 1
+
+        # Build finding details (top 5 non-suppressed)
+        details = []
+        for r in results[:10]:
+            loc = r.get("locations", [{}])[0].get("physicalLocation", {})
+            path = loc.get("artifactLocation", {}).get("uri", "?")
+            line = loc.get("region", {}).get("startLine", "?")
+            msg = r.get("message", {}).get("text", "")[:100]
+            rule = r.get("ruleId", "")
+            details.append(f"| `{path}:{line}` | {rule} | {msg} |")
+
+        # Write markdown
+        lines = []
+        lines.append(f"## {os.environ.get('ICON', '🟢')} Regula Compliance: {os.environ.get('STATUS', 'PASS')}")
+        lines.append("")
+        lines.append(f"| Metric | Value |")
+        lines.append(f"|--------|-------|")
+        lines.append(f"| Findings | {os.environ.get('FINDINGS', '0')} |")
+        lines.append(f"| Prohibited | {os.environ.get('PROHIBITED', '0')} |")
+        lines.append(f"| High-Risk | {os.environ.get('HIGH_RISK', '0')} |")
+        lines.append(f"| Dependency Pinning | {os.environ.get('PINNING', '0')}/100 |")
+        lines.append("")
+
+        if details:
+            lines.append("<details><summary>Top findings</summary>\n")
+            lines.append("| Location | Rule | Description |")
+            lines.append("|----------|------|-------------|")
+            lines.extend(details[:5])
+            lines.append("\n</details>")
+            lines.append("")
+
+        lines.append("---")
+        lines.append("*Scanned by [Regula](https://github.com/kuzivaai/getregula) — EU AI Act risk indication for code*")
+        lines.append("*Findings are indicators, not legal determinations.*")
+
+        comment_body = "\n".join(lines)
+
+        # Write to file for the gh command
+        with open(os.environ.get("COMMENT_FILE", "/tmp/regula-comment.md"), "w") as f:
+            f.write(comment_body)
+
+        print(comment_body)
+        PYEOF
+      env:
+        SARIF_FILE: ${{ runner.temp }}/regula-results.sarif.json
+        COMMENT_FILE: ${{ runner.temp }}/regula-comment.md
+        FINDINGS: ${{ steps.count-findings.outputs.findings_count }}
+        PROHIBITED: ${{ steps.count-findings.outputs.prohibited_count }}
+        HIGH_RISK: ${{ steps.count-findings.outputs.high_risk_count }}
+        PINNING: ${{ steps.deps-scan.outputs.pinning_score }}
+        STATUS: ""
+        ICON: ""
+
+    - name: Create or update PR comment
+      if: inputs.comment-on-pr == 'true' && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const body = fs.readFileSync('${{ runner.temp }}/regula-comment.md', 'utf8');
+          const marker = '<!-- regula-compliance-comment -->';
+          const fullBody = marker + '\n' + body;
+
+          // Find existing comment to update (avoid spam)
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+          const existing = comments.find(c => c.body.includes(marker));
+
+          if (existing) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: existing.id,
+              body: fullBody,
+            });
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: fullBody,
+            });
+          }
 
     - name: Upload SARIF to GitHub Code Scanning
       if: inputs.upload-sarif == 'true' && always()

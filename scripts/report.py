@@ -9,6 +9,7 @@ stakeholders (DPOs, compliance officers, auditors).
 
 import json
 import os
+import re
 import sys
 from datetime import datetime, timezone
 from html import escape
@@ -34,6 +35,59 @@ from scan_cache import ScanCache
 SKIP_DIRS = {".git", "node_modules", "__pycache__", "venv", ".venv", "dist", "build", ".next", ".tox"}
 CODE_EXTENSIONS = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"}
 MODEL_EXTENSIONS = {".onnx", ".pt", ".pth", ".pkl", ".joblib", ".h5", ".hdf5", ".safetensors", ".gguf", ".ggml"}
+CONFIG_FILES = {".env", ".env.production", ".env.local", "docker-compose.yml", "docker-compose.yaml", "Dockerfile"}
+
+# AI service patterns in config/env files
+_AI_CONFIG_PATTERNS = [
+    (re.compile(r"OPENAI_API_KEY|ANTHROPIC_API_KEY|COHERE_API_KEY|MISTRAL_API_KEY|GROQ_API_KEY|REPLICATE_API_TOKEN|HUGGINGFACE_TOKEN|HF_TOKEN", re.IGNORECASE), "AI API key configured"),
+    (re.compile(r"AZURE_OPENAI|VERTEX_AI|BEDROCK|SAGEMAKER", re.IGNORECASE), "Cloud AI service configured"),
+    (re.compile(r"tensorflow/serving|vllm|ollama|tritonserver|text-generation-inference", re.IGNORECASE), "AI model serving container"),
+    (re.compile(r"openai|anthropic|google.generativeai|aws.sagemaker|azurerm_openai", re.IGNORECASE), "AI provider reference"),
+]
+
+
+def scan_config_files(project_path: str) -> list:
+    """Scan config/env files for AI service references.
+
+    Returns findings for AI infrastructure detected in configuration files.
+    """
+    project = Path(project_path).resolve()
+    findings = []
+
+    for root, dirs, files in os.walk(project):
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        for filename in files:
+            if filename not in CONFIG_FILES:
+                continue
+            filepath = Path(root) / filename
+            try:
+                content = filepath.read_text(encoding="utf-8", errors="ignore")
+            except (PermissionError, OSError):
+                continue
+
+            rel_path = str(filepath.relative_to(project))
+            for rx, description in _AI_CONFIG_PATTERNS:
+                match = rx.search(content)
+                if match:
+                    # Find line number
+                    line_num = 1
+                    for i, line in enumerate(content.split("\n"), 1):
+                        if rx.search(line):
+                            line_num = i
+                            break
+                    findings.append({
+                        "file": rel_path,
+                        "line": line_num,
+                        "tier": "minimal_risk",
+                        "category": "AI Infrastructure",
+                        "description": f"{description}: {match.group()[:40]}",
+                        "indicators": ["ai_config"],
+                        "confidence_score": 30,
+                        "suppressed": False,
+                    })
+                    break  # One finding per config file
+
+    return findings
 
 
 def _is_test_file(filepath: Path) -> bool:
@@ -397,6 +451,14 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     try:
         if cache is not None:
             cache.flush()
+    except Exception:
+        pass
+
+    # Config/env file scanning for AI service references
+    try:
+        config_findings = scan_config_files(project_path)
+        if min_tier_level <= 1:  # only include if minimal_risk tier is in scope
+            findings.extend(config_findings)
     except Exception:
         pass
 
