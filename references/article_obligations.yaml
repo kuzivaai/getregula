@@ -1,0 +1,170 @@
+# EU AI Act High-Risk AI System Obligations (Articles 9-15)
+# Used by Regula --explain to generate obligation roadmaps with effort estimates.
+#
+# Effort estimates are indicative ranges for SMEs (1-10 person teams) building
+# a single AI system. They are NOT sourced from a specific study. Ranges reflect
+# the scope of each article's requirements, varying by system complexity, existing
+# processes, and team size. For reference: CEPS estimated EUR 193K-330K for a full
+# QMS from scratch (all articles combined), not broken down per article.
+
+articles:
+  9:
+    title: "Risk Management System"
+    short: "Risk management"
+    description: "Establish, implement, document, and maintain a risk management system throughout the AI system lifecycle."
+    requirements:
+      - "Identify and analyse known and reasonably foreseeable risks"
+      - "Estimate and evaluate risks during intended use and foreseeable misuse"
+      - "Adopt appropriate and targeted risk management measures"
+      - "Test to ensure consistent performance and compliance"
+    detection_present:
+      - "Risk assessment documentation or framework references"
+      - "Risk registry or risk matrix patterns"
+    detection_absent:
+      - "No risk management references detected in codebase"
+    effort_hours: [40, 60]
+    priority: "HIGH"
+    deadline_note: "Must be in place before placing system on the market"
+
+  10:
+    title: "Data and Data Governance"
+    short: "Data governance"
+    description: "Training, validation, and testing datasets must be subject to appropriate data governance and management practices."
+    requirements:
+      - "Document design choices for datasets"
+      - "Document data collection processes and origin"
+      - "Document preparation operations (annotation, labelling, cleaning)"
+      - "Assess availability, quantity, and suitability of datasets"
+      - "Examine possible biases affecting health, safety, or fundamental rights"
+      - "Identify data gaps or shortcomings and how they are addressed"
+    detection_present:
+      - "Training data loading, preprocessing, or validation code"
+      - "Bias detection or fairness evaluation libraries"
+    detection_absent:
+      - "No data governance documentation detected"
+      - "No bias examination detected alongside training code"
+    effort_hours: [24, 80]
+    priority: "HIGH"
+    deadline_note: "Requires ongoing monitoring, not a one-time exercise"
+
+  11:
+    title: "Technical Documentation"
+    short: "Technical docs"
+    description: "Draw up technical documentation before the system is placed on the market, following Annex IV format."
+    requirements:
+      - "General description of the AI system"
+      - "Detailed description of elements and development process"
+      - "Monitoring, functioning, and control description"
+      - "Risk management system description"
+      - "Changes throughout the lifecycle"
+      - "Standards applied"
+      - "EU declaration of conformity"
+    detection_present:
+      - "Annex IV template or technical documentation files"
+      - "Model cards or system documentation"
+    detection_absent:
+      - "No Annex IV documentation detected"
+    effort_hours: [40, 80]
+    priority: "MED"
+    deadline_note: "Can be populated incrementally during development"
+
+  12:
+    title: "Record-Keeping"
+    short: "Logging"
+    description: "High-risk AI systems must technically allow for automatic recording of events (logs)."
+    requirements:
+      - "Record period of use (start and end dates)"
+      - "Record reference database against which input data is checked"
+      - "Record input data that led to a match"
+      - "Identify natural persons involved in verification of results"
+    detection_present:
+      - "Logging framework usage (logging module, structured logging)"
+      - "Audit trail or event recording patterns"
+    detection_absent:
+      - "No logging detected in AI operations"
+    effort_hours: [8, 16]
+    priority: "HIGH"
+    deadline_note: "Must be built into the system architecture"
+
+  13:
+    title: "Transparency and Information to Deployers"
+    short: "Transparency"
+    description: "Design and develop the system to ensure operation is sufficiently transparent to deployers."
+    requirements:
+      - "Instructions for use including provider identity and contact"
+      - "Characteristics, capabilities, and limitations of performance"
+      - "Intended purpose and foreseeable misuse scenarios"
+      - "Human oversight measures"
+      - "Expected lifetime and maintenance measures"
+      - "Computational and hardware resources needed"
+    detection_present:
+      - "README, user documentation, or API documentation"
+      - "Model card or system description files"
+    detection_absent:
+      - "No deployer-facing documentation detected"
+    effort_hours: [16, 24]
+    priority: "MED"
+    deadline_note: "Must accompany the system when provided to deployers"
+
+  14:
+    title: "Human Oversight"
+    short: "Human oversight"
+    description: "Enable effective oversight by natural persons during the period of use."
+    requirements:
+      - "Enable human override or reversal of AI outputs"
+      - "Human-in-the-loop for significant decisions"
+      - "Allow the human to understand AI system capabilities and limitations"
+      - "Allow the human to correctly interpret outputs"
+      - "Allow the human to decide not to use or override the system"
+    detection_present:
+      - "Human review gates, approval workflows, or override mechanisms"
+      - "Confirmation prompts before automated decisions"
+    detection_absent:
+      - "No human oversight gates detected in decision pipeline"
+    effort_hours: [16, 24]
+    priority: "HIGH"
+    deadline_note: "Architectural — harder to retrofit; implement early"
+
+  15:
+    title: "Accuracy, Robustness, and Cybersecurity"
+    short: "Accuracy & security"
+    description: "Achieve appropriate levels of accuracy, robustness, and cybersecurity throughout the lifecycle."
+    requirements:
+      - "Declare and document accuracy metrics"
+      - "Implement resilience against errors, faults, and inconsistencies"
+      - "Implement resilience against adversarial manipulation (adversarial robustness)"
+      - "Apply cybersecurity measures appropriate to the circumstances"
+    detection_present:
+      - "Test suites, accuracy metrics, or evaluation scripts"
+      - "Input validation, sanitisation, or security measures"
+      - "Adversarial testing or robustness evaluation"
+    detection_absent:
+      - "No accuracy metrics or evaluation detected"
+      - "No cybersecurity measures detected in AI pipeline"
+    effort_hours: [16, 40]
+    priority: "HIGH"
+    deadline_note: "Ongoing — includes post-market monitoring"
+
+# Provider vs deployer heuristics
+provider_indicators:
+  - "model training code (model.fit, model.train, Trainer)"
+  - "fine-tuning code (fine_tune, finetune, peft, lora)"
+  - "custom model architecture definition (nn.Module, tf.keras.Model)"
+  - "dataset preparation for training (DataLoader, Dataset)"
+  - "model export or serialization (save_pretrained, torch.save)"
+  - "hyperparameter tuning (optuna, ray.tune, grid_search)"
+
+deployer_indicators:
+  - "API-only usage (openai.ChatCompletion, anthropic.messages)"
+  - "Pre-trained model loading without modification (from_pretrained, pipeline)"
+  - "Inference-only code (model.predict, model.generate, no .fit/.train)"
+  - "Third-party model wrapper usage (langchain, litellm)"
+
+# Omnibus timeline context
+timeline:
+  current_law: "2 August 2026"
+  omnibus_proposed:
+    annex_iii: "2 December 2027"
+    annex_i: "2 August 2028"
+  omnibus_status: "Trilogue negotiations; Parliament voted 569-45-23 (March 2026)"
+  guidance: "Plan for August 2026 until Omnibus is formally enacted"
