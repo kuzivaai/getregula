@@ -4548,6 +4548,70 @@ def test_evidence_pack_cli_integration():
     print("✓ Evidence pack: CLI integration")
 
 
+def test_evidence_pack_sha256_integrity():
+    """SHA-256 hashes in manifest match actual file contents."""
+    import tempfile, hashlib
+    from evidence_pack import generate_evidence_pack
+    with tempfile.TemporaryDirectory() as tmpdir:
+        result = generate_evidence_pack(".", output_dir=tmpdir, project_name="test-sha")
+        pack_dir = Path(tmpdir) / result["pack_dirname"]
+        for file_record in result["manifest"]["files"]:
+            filepath = pack_dir / file_record["filename"]
+            actual_hash = hashlib.sha256(filepath.read_bytes()).hexdigest()
+            assert_eq(actual_hash, file_record["sha256"],
+                      f"SHA-256 mismatch for {file_record['filename']}")
+    print("✓ Evidence pack: SHA-256 integrity verified")
+
+
+# ---------------------------------------------------------------------------
+# Transparency disclosure tests
+# ---------------------------------------------------------------------------
+
+def test_disclose_chatbot_article():
+    """Chatbot disclosure references Article 50(1)."""
+    from transparency import generate_disclosure
+    result = generate_disclosure("chatbot", "text")
+    assert_eq(result["article"], "Article 50(1)", "chatbot should reference Article 50(1)")
+    assert_true("text" in result, "should contain text template")
+    assert_true(len(result["text"]) > 20, "text template should be substantial")
+    print("✓ Disclose: chatbot references Article 50(1)")
+
+
+def test_disclose_all_types():
+    """All disclosure types generate without error."""
+    from transparency import generate_disclosure
+    result = generate_disclosure("all", "all")
+    assert_true(isinstance(result, dict), "all mode returns dict")
+    for dtype in ["chatbot", "synthetic_text", "emotion_recognition", "deepfake"]:
+        assert_true(dtype in result, f"all mode should include {dtype}")
+        assert_true("article" in result[dtype], f"{dtype} should have article reference")
+    print("✓ Disclose: all 4 types generate correctly")
+
+
+def test_disclose_format_text_output():
+    """Text formatter produces readable output."""
+    from transparency import generate_disclosure, format_disclosure_text
+    result = generate_disclosure("chatbot", "all")
+    text = format_disclosure_text({"chatbot": result})
+    assert_true("Article 50" in text, "output should reference Article 50")
+    assert_true("Requirement:" in text, "output should contain requirement section")
+    print("✓ Disclose: text format output")
+
+
+def test_disclose_cli_integration():
+    """CLI disclose command runs without error."""
+    import subprocess
+    result = subprocess.run(
+        [sys.executable, "-m", "scripts.cli", "disclose", "--type", "chatbot", "--format", "json"],
+        capture_output=True, text=True, cwd=str(Path(__file__).parent.parent),
+    )
+    assert_eq(result.returncode, 0, f"disclose should exit 0: {result.stderr}")
+    data = json.loads(result.stdout)
+    assert_true("data" in data, "JSON output should have 'data' key")
+    assert_eq(data["data"]["article"], "Article 50(1)", "chatbot should be Article 50(1)")
+    print("✓ Disclose: CLI integration")
+
+
 # ---------------------------------------------------------------------------
 # Annex IV section coverage tests
 # ---------------------------------------------------------------------------
@@ -4960,6 +5024,12 @@ if __name__ == "__main__":
         test_evidence_pack_contains_required_files,
         test_evidence_pack_summary_contains_risk_tier,
         test_evidence_pack_cli_integration,
+        test_evidence_pack_sha256_integrity,
+        # Transparency disclosure (4 tests)
+        test_disclose_chatbot_article,
+        test_disclose_all_types,
+        test_disclose_format_text_output,
+        test_disclose_cli_integration,
         # Annex IV deep generation (3 tests)
         test_annex_iv_has_all_nine_sections,
         test_annex_iv_standards_from_policy,

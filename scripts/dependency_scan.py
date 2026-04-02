@@ -1089,8 +1089,3 @@ def format_dep_text(results: dict) -> str:
             lines.append(f"  {c.get('name', 'unknown')}: {c.get('detail', '')}")
 
     return "\n".join(lines)
-
-
-def format_dep_json(results: dict) -> str:
-    """Format scan results as JSON string."""
-    return json.dumps(results, indent=2, default=str)
