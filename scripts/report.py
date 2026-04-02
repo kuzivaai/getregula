@@ -7,6 +7,11 @@ HTML reports are single-file, portable, and designed for non-developer
 stakeholders (DPOs, compliance officers, auditors).
 """
 
+__all__ = [
+    "scan_files", "scan_config_files",
+    "generate_html_report", "generate_sarif",
+]
+
 import json
 import os
 import re
@@ -160,6 +165,114 @@ def _compute_context_penalty(filepath: Path, content: str, is_test: bool) -> int
     return penalty
 
 
+def _scan_agent_autonomy(content, lines, rel_path, is_test, respect_ignores):
+    """Detect agent autonomy risks in a single file.
+
+    Runs on ALL code files (not just AI-related) because agent tool
+    infrastructure may not import AI libraries directly.
+    """
+    results = []
+    try:
+        autonomy_findings = detect_autonomous_actions(content, rel_path)
+        for af in autonomy_findings:
+            base_confidence = 70 if not af["has_human_gate"] else 45
+            if af.get("detection_mode") == "contextual":
+                base_confidence -= 10
+            confidence = max(base_confidence - (40 if is_test else 0), 10)
+
+            suppressed = False
+            if respect_ignores:
+                for line in lines:
+                    stripped = line.strip()
+                    if "regula-ignore" in stripped:
+                        if "regula-ignore:" not in stripped:
+                            suppressed = True
+                        elif "agent-autonomy" in stripped:
+                            suppressed = True
+
+            results.append({
+                "file": rel_path,
+                "line": af["line"],
+                "tier": "agent_autonomy",
+                "category": f"Agent Autonomy ({af['owasp_ref']})",
+                "description": af["description"],
+                "indicators": [af["action_pattern"]],
+                "confidence_score": confidence,
+                "suppressed": suppressed,
+            })
+    except (ValueError, KeyError, AttributeError):
+        pass
+    return results
+
+
+def _scan_credentials(content, lines, rel_path, is_test, suppressed):
+    """Detect credential exposure in a single file."""
+    results = []
+    try:
+        secret_findings = check_secrets(content)
+        for sf in secret_findings:
+            secret_line = 1
+            for i, line_text in enumerate(lines, 1):
+                if sf.redacted_value[:4] in line_text:
+                    secret_line = i
+                    break
+
+            results.append({
+                "file": rel_path,
+                "line": secret_line,
+                "tier": "credential_exposure",
+                "category": "AI Credential Governance (Article 15)",
+                "description": (
+                    f"{sf.description} in AI system code. "
+                    f"Article 15 requires cybersecurity measures for high-risk systems. "
+                    f"Fix: {sf.remediation}"
+                ),
+                "indicators": [sf.pattern_name],
+                "confidence_score": max(sf.confidence_score - 40, 10) if is_test else sf.confidence_score,
+                "suppressed": suppressed,
+            })
+    except (ValueError, KeyError, AttributeError):
+        pass
+    return results
+
+
+def _scan_ai_security(content, rel_path, is_test, suppressed):
+    """Detect AI security antipatterns in a single file."""
+    results = []
+    try:
+        security_findings = check_ai_security(content)
+        for sf in security_findings:
+            results.append({
+                "file": rel_path,
+                "line": sf["line"],
+                "tier": "ai_security",
+                "category": f"AI Security ({sf['owasp']})",
+                "description": sf["description"],
+                "indicators": [sf["pattern_name"]],
+                "confidence_score": max({"critical": 90, "high": 80, "medium": 60, "low": 40}.get(sf["severity"], 50) - (40 if is_test else 0), 10),
+                "suppressed": suppressed,
+                "remediation": sf["remediation"],
+            })
+    except (ValueError, KeyError, AttributeError):
+        pass
+    return results
+
+
+def _parse_suppression_rules(lines, respect_ignores):
+    """Extract suppression rules from regula-ignore comments."""
+    suppressed_rules = set()
+    if respect_ignores:
+        for line in lines:
+            stripped = line.strip()
+            if "regula-ignore" in stripped:
+                if ":" in stripped and "regula-ignore:" in stripped:
+                    rule_part = stripped.split("regula-ignore:")[-1].strip()
+                    suppressed_rules.add(rule_part.lower())
+                else:
+                    suppressed_rules.add("*")
+    return suppressed_rules
+
+
 def scan_files(project_path: str, respect_ignores: bool = True,
                skip_tests: bool = False, min_tier: str = "") -> list:
     """Scan project files and return findings with file locations.
@@ -237,7 +350,6 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 if cache is not None:
                     cached = cache.get(rel_path, content)
                     if cached is not None:
-                        # Apply min_tier filter to cached results
                         if min_tier_level > 0:
                             cached = [f for f in cached
                                       if _TIER_ORDER.get(f.get("tier", ""), 0) >= min_tier_level]
@@ -249,43 +361,11 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # Track per-file findings for caching
             file_findings_start = len(findings)
 
-            # Agent autonomy detection runs on ALL code files (not just AI-related)
-            # because agent tool infrastructure (shell_tool.py, executor.py) may not
-            # import AI libraries directly but still expose dangerous capabilities.
+            # Agent autonomy detection (runs on ALL code files)
             if min_tier_level <= _TIER_ORDER.get("agent_autonomy", 3):
-                try:
-                    autonomy_findings = detect_autonomous_actions(content, rel_path)
-                    for af in autonomy_findings:
-                        base_confidence = 70 if not af["has_human_gate"] else 45
-                        if af.get("detection_mode") == "contextual":
-                            base_confidence -= 10  # slightly lower for path-based detection
-                        confidence = max(base_confidence - (40 if is_test else 0), 10)
-
-                        suppressed = False
-                        if respect_ignores:
-                            for line in lines:
-                                stripped = line.strip()
-                                if "regula-ignore" in stripped:
-                                    if "regula-ignore:" not in stripped:
-                                        suppressed = True
-                                    elif "agent-autonomy" in stripped:
-                                        suppressed = True
-
-                        findings.append({
-                            "file": rel_path,
-                            "line": af["line"],
-                            "tier": "agent_autonomy",
-                            "category": f"Agent Autonomy ({af['owasp_ref']})",
-                            "description": af["description"],
-                            "indicators": [af["action_pattern"]],
-                            "confidence_score": confidence,
-                            "suppressed": suppressed,
-                        })
-                except (ValueError, KeyError, AttributeError):
-                    pass
+                findings.extend(_scan_agent_autonomy(content, lines, rel_path, is_test, respect_ignores))
 
             if not is_ai_related(content):
-                # Cache findings collected so far for this file
                 try:
                     if cache is not None:
                         cache.put(rel_path, content, findings[file_findings_start:])
@@ -293,71 +373,20 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     pass
                 continue
 
-            # Check for suppression comments
-            suppressed_rules = set()
-            if respect_ignores:
-                for line in lines:
-                    stripped = line.strip()
-                    if "regula-ignore" in stripped:
-                        # Parse rule ID if specified
-                        if ":" in stripped and "regula-ignore:" in stripped:
-                            rule_part = stripped.split("regula-ignore:")[-1].strip()
-                            suppressed_rules.add(rule_part.lower())
-                        else:
-                            suppressed_rules.add("*")  # Suppress all
+            suppressed_rules = _parse_suppression_rules(lines, respect_ignores)
 
-            # --- AI credential governance (runs on ALL AI-related files) ---
+            # Credential governance (AI-related files only)
             secret_suppressed = "*" in suppressed_rules or "secrets" in suppressed_rules
             if min_tier_level <= _TIER_ORDER.get("credential_exposure", 3):
-                try:
-                    secret_findings = check_secrets(content)
-                    for sf in secret_findings:
-                        secret_line = 1
-                        for i, line_text in enumerate(lines, 1):
-                            if sf.redacted_value[:4] in line_text:
-                                secret_line = i
-                                break
+                findings.extend(_scan_credentials(content, lines, rel_path, is_test, secret_suppressed))
 
-                        findings.append({
-                            "file": rel_path,
-                            "line": secret_line,
-                            "tier": "credential_exposure",
-                            "category": "AI Credential Governance (Article 15)",
-                            "description": (
-                                f"{sf.description} in AI system code. "
-                                f"Article 15 requires cybersecurity measures for high-risk systems. "
-                                f"Fix: {sf.remediation}"
-                            ),
-                            "indicators": [sf.pattern_name],
-                            "confidence_score": max(sf.confidence_score - 40, 10) if is_test else sf.confidence_score,
-                            "suppressed": secret_suppressed,
-                        })
-                except (ValueError, KeyError, AttributeError):
-                    pass
-
-            # --- AI security antipattern checks (runs on all AI-related files) ---
+            # AI security antipatterns
             if min_tier_level <= _TIER_ORDER.get("ai_security", 3):
-                try:
-                    security_findings = check_ai_security(content)
-                    for sf in security_findings:
-                        findings.append({
-                            "file": rel_path,
-                            "line": sf["line"],
-                            "tier": "ai_security",
-                            "category": f"AI Security ({sf['owasp']})",
-                            "description": sf["description"],
-                            "indicators": [sf["pattern_name"]],
-                            "confidence_score": max({"critical": 90, "high": 80, "medium": 60, "low": 40}.get(sf["severity"], 50) - (40 if is_test else 0), 10),
-                            "suppressed": secret_suppressed or "*" in suppressed_rules,
-                            "remediation": sf["remediation"],
-                        })
-                except (ValueError, KeyError, AttributeError):
-                    pass
+                findings.extend(_scan_ai_security(content, rel_path, is_test, secret_suppressed or "*" in suppressed_rules))
 
             lang = detect_language(filename) or "python"
             result = classify(content, language=lang)
             if result.tier in (RiskTier.NOT_AI, RiskTier.MINIMAL_RISK) and not result.indicators_matched:
-                # Only log bare minimal-risk AI files if tier threshold allows
                 if min_tier_level <= 1:
                     findings.append({
                         "file": rel_path,
@@ -369,7 +398,6 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         "confidence_score": 20,
                         "suppressed": "*" in suppressed_rules,
                     })
-                # Cache findings collected so far for this file
                 try:
                     if cache is not None:
                         cache.put(rel_path, content, findings[file_findings_start:])
@@ -380,7 +408,6 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # Skip findings below min_tier threshold
             tier_level = _TIER_ORDER.get(result.tier.value, 0)
             if tier_level < min_tier_level:
-                # Cache findings collected so far for this file
                 try:
                     if cache is not None:
                         cache.put(rel_path, content, findings[file_findings_start:])

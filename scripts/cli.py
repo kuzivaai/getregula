@@ -23,9 +23,8 @@ from pathlib import Path
 # Ensure scripts directory is importable
 sys.path.insert(0, str(Path(__file__).parent))
 
+from constants import VERSION
 from errors import RegulaError, PathError
-
-VERSION = "1.5.0"
 
 
 def json_output(command: str, data, exit_code: int = 0):
@@ -83,23 +82,8 @@ def _get_changed_files(project_path: str, git_ref: str = "HEAD~1") -> list[str]:
 
 def _get_finding_tier_from_dict(finding: dict) -> str:
     """Compute finding tier from a scan result dict using policy thresholds."""
-    from classify_risk import get_policy, RiskTier
-    policy = get_policy()
-    thresholds = policy.get("thresholds", {})
-    block_above = int(thresholds.get("block_above", 80))
-    warn_above = int(thresholds.get("warn_above", 50))
-
-    # Prohibited always blocks regardless of confidence
-    if finding.get("tier") == "prohibited":
-        return "block"
-
-    score = finding.get("confidence_score", 0)
-    if score >= block_above:
-        return "block"
-    elif score >= warn_above:
-        return "warn"
-    else:
-        return "info"
+    from risk_types import compute_finding_tier
+    return compute_finding_tier(finding.get("tier", ""), finding.get("confidence_score", 0))
 
 
 def _print_remediation(finding):

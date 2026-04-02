@@ -20,7 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from classify_risk import classify, RiskTier, is_ai_related, get_governance_contacts, check_ai_security
-from cli import VERSION
+from constants import VERSION
 from log_event import log_event
 from code_analysis import analyse_project_code
 from ast_analysis import parse_python_file, detect_human_oversight, detect_logging_practices, trace_ai_data_flow, resolve_cross_file_ai_flows

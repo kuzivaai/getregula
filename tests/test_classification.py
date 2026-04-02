@@ -4657,401 +4657,64 @@ def test_annex_iv_completion_covers_new_sections():
     print("✓ Annex IV: completion report covers new sections")
 
 
-if __name__ == "__main__":
-    tests = [
-        # AI Detection (5 tests)
-        test_ai_detection_python_libraries,
-        test_ai_detection_model_files,
-        test_ai_detection_api_endpoints,
-        test_ai_detection_ml_patterns,
-        test_ai_detection_non_ai,
-        # Prohibited (8 tests)
-        test_prohibited_social_scoring,
-        test_prohibited_emotion_workplace,
-        test_prohibited_emotion_school,
-        test_prohibited_realtime_biometric,
-        test_prohibited_biometric_sensitive,
-        test_prohibited_criminal_prediction,
-        test_prohibited_subliminal,
-        test_prohibited_facial_scraping,
-        # High-Risk (12 tests)
-        test_high_risk_employment,
-        test_high_risk_credit_scoring,
-        test_high_risk_biometrics,
-        test_high_risk_medical,
-        test_high_risk_education,
-        test_high_risk_critical_infrastructure,
-        test_high_risk_law_enforcement,
-        test_high_risk_migration,
-        test_high_risk_justice,
-        test_high_risk_safety,
-        test_high_risk_articles,
-        test_high_risk_performance_review,
-        # Limited-Risk (4 tests)
-        test_limited_risk_chatbot,
-        test_limited_risk_deepfake,
-        test_limited_risk_age_estimation,
-        test_limited_risk_emotion_no_workplace,
-        # Minimal-Risk (3 tests)
-        test_minimal_risk_recommendation,
-        test_minimal_risk_code_completion,
-        test_minimal_risk_spam_filter,
-        # Edge Cases (9 tests)
-        test_edge_empty_input,
-        test_edge_case_insensitivity,
-        test_edge_multiple_indicators,
-        test_edge_prohibited_without_ai_indicator,
-        test_edge_prohibited_overrides_high_risk,
-        test_edge_high_risk_overrides_limited,
-        test_classification_action_field,
-        test_classification_to_dict,
-        test_classification_to_json,
-        # Policy Engine (4 tests)
-        test_policy_yaml_parser,
-        test_policy_check_overrides,
-        test_policy_cannot_exempt_prohibited,
-        test_prohibited_has_exceptions_field,
-        # Audit Trail (2 tests)
-        test_audit_hash_chain,
-        test_audit_export_csv,
-        # Confidence Scoring (3 tests)
-        test_confidence_score_numeric,
-        test_confidence_score_ordering,
-        test_multiple_indicators_increase_score,
-        # Reports (3 tests)
-        test_sarif_output_structure,
-        test_html_report_contains_disclaimer,
-        test_inline_suppression,
-        # Report enhancement (1 test)
-        test_report_html_dependency_section,
-        # New features (6 tests)
-        test_questionnaire_generation,
-        test_questionnaire_evaluation_high_risk,
-        test_questionnaire_evaluation_minimal_risk,
-        test_session_aggregation,
-        test_baseline_save_and_compare,
-        test_timeline_data,
-        # Secret detection (4 tests)
-        test_secret_detection_openai_key,
-        test_secret_detection_aws_key,
-        test_secret_detection_no_false_positive,
-        test_secret_redaction,
-        # GPAI awareness (2 tests)
-        test_gpai_training_detection,
-        test_gpai_inference_not_training,
-        # AI credential governance (1 test)
-        test_file_credential_governance,
-        # Hook integration (4 tests)
-        test_hook_prohibited_block,
-        test_hook_high_risk_allow_with_iso,
-        test_hook_secret_block,
-        test_hook_clean_pass,
-        # AI System Registry (2 tests)
-        test_registry_scan_organization,
-        test_registry_csv_export,
-        # Compliance workflow (2 tests)
-        test_compliance_workflow_transitions,
-        test_compliance_status_update,
-        # Governance (1 test)
-        test_governance_contacts,
-        # QMS generation (1 test)
-        test_qms_scaffold_generation,
-        # Regex fix (1 test)
-        test_openai_key_no_anthropic_false_positive,
-        # AST analysis (5 tests)
-        test_ast_parse_python_file,
-        test_ast_classify_context,
-        test_ast_data_flow_tracing,
-        test_ast_human_oversight,
-        test_ast_logging_practices,
-        # Compliance gap assessment (2 tests)
-        test_compliance_gap_assessment,
-        test_compliance_gap_article_15_tests,
-        # Infrastructure (3 tests)
-        test_regulatory_basis,
-        test_cross_platform_locking,
-        # AST engine (5 tests)
-        test_ast_engine_python_parse,
-        test_ast_engine_js_regex_fallback,
-        test_ast_engine_ts_regex_fallback,
-        test_ast_engine_non_ai_js,
-        test_ast_engine_language_detection,
-        # Language expansion (3 tests)
-        test_ast_engine_java_ai_detection,
-        test_ast_engine_go_ai_detection,
-        test_ast_engine_java_non_ai,
-        # Rust/C/C++ language support (3 tests)
-        test_ast_engine_rust_ai_detection,
-        test_ast_engine_cpp_ai_detection,
-        test_ast_engine_rust_non_ai,
-        # Dependency supply chain (6 tests)
-        test_dep_scan_requirements_txt,
-        test_dep_scan_ai_identification,
-        test_dep_scan_pinning_score,
-        test_dep_scan_lockfile_detection,
-        test_dep_scan_package_json,
-        test_advisory_load_fallback_pyc_path,
-        test_dep_scan_compromised_detection,
-        # Go / Java dependency parsing (6 tests)
-        test_dep_scan_go_mod_basic,
-        test_dep_scan_go_mod_ai_flagged,
-        test_dep_scan_go_mod_pinning,
-        test_dep_scan_build_gradle_groovy,
-        test_dep_scan_build_gradle_kts,
-        test_dep_scan_build_gradle_ai_flagged,
-        # Rust/C++ dependency parsing (2 tests)
-        test_dep_scan_cargo_toml,
-        test_dep_scan_vcpkg_json,
-        # Gap assessment enhancement (1 test)
-        test_gap_article_15_dependency_pinning,
-        # Framework mapper (2 tests)
-        test_framework_mapper_eu_to_nist,
-        test_framework_mapper_all_frameworks,
-        # OWASP mapping (1 test)
-        test_framework_mapper_owasp_llm,
-        # MITRE ATLAS mapping (1 test)
-        test_framework_mapper_mitre_atlas,
-        # Additional framework mappings (4 tests)
-        test_framework_mapper_nist_csf,
-        test_framework_mapper_soc2,
-        test_framework_mapper_iso_27001,
-        test_framework_mapper_all_8_frameworks,
-        # Policy enhancement (2 tests)
-        test_policy_thresholds,
-        test_policy_exclusions,
-        # Integration tests (4 tests)
-        test_integration_high_risk_project,
-        test_integration_compliant_project,
-        test_integration_unpinned_deps,
-        test_integration_full_check_cli,
-        # Pattern quality (5 tests)
-        test_pattern_no_false_positive_sentence_nlp,
-        test_pattern_no_false_positive_embedding_layer,
-        test_pattern_no_false_positive_generic_predict,
-        test_pattern_true_positive_cv_screening,
-        test_pattern_true_positive_credit_scoring,
-        # Confidence threshold (1 test)
-        test_confidence_threshold_filtering,
-        # Confidence tiers (2 tests)
-        test_confidence_tier_block,
-        test_confidence_tier_info,
-        # Tree-sitter JS/TS (4 tests)
-        test_tree_sitter_js_import_extraction,
-        test_tree_sitter_js_data_flow,
-        test_tree_sitter_ts_oversight_detection,
-        test_tree_sitter_js_function_extraction,
-        # SBOM generation (3 tests)
-        test_sbom_cyclonedx_structure,
-        test_sbom_ai_library_detection,
-        test_sbom_model_file_detection,
-        # False positive fixes (4 tests)
-        test_fp_fix_invoice_recognition,
-        test_fp_fix_page_estimation,
-        test_fp_fix_credit_model_detected,
-        test_fn_fix_credit_scorer_function_names,
-        test_fp_fix_social_media_score,
-        # Article 6(3) exemption (2 tests)
-        test_exemption_assessment_likely_exempt,
-        test_exemption_assessment_not_exempt,
-        # Model card validation (2 tests)
-        test_model_card_validation_complete,
-        test_model_card_validation_incomplete,
-        # Diff scanning (1 test)
-        test_diff_mode_changed_files,
-        # Remediation engine (2 tests)
-        test_remediation_high_risk_employment,
-        test_remediation_credential,
-        # Agent monitoring (2 tests)
-        test_agent_monitor_empty_session,
-        test_agent_mcp_config_check,
-        # AI security patterns (3 tests)
-        test_ai_security_pickle_load,
-        test_ai_security_eval_on_output,
-        test_ai_security_no_false_positive_safe_torch,
-        # Doctor + Self-test (2 tests)
-        test_doctor_command,
-        test_self_test_command,
-        # Error handling foundation (2 tests)
-        test_regula_error_hierarchy,
-        test_cli_exit_codes,
-        # Graceful degradation (1 test)
-        test_graceful_degradation,
-        # Init dry-run + JSON envelope (2 tests)
-        test_init_dry_run,
-        test_json_output_envelope,
-        # Exit code verification (1 test)
-        test_exit_code_warn_tier,
-        # --ci flag (5 tests)
-        test_ci_flag_compliant_exits_0,
-        test_ci_flag_warn_tier_exits_1,
-        test_ci_flag_error_exits_2,
-        test_ci_flag_before_subcommand,
-        test_ci_flag_info_tier_exits_0,
-        # CLI subcommand smoke tests (16 tests)
-        test_smoke_report,
-        test_smoke_discover,
-        test_smoke_install_help,
-        test_smoke_status,
-        test_smoke_feed,
-        test_smoke_questionnaire,
-        test_smoke_session,
-        test_smoke_baseline,
-        test_smoke_docs,
-        test_smoke_compliance,
-        test_smoke_gap,
-        test_smoke_benchmark,
-        test_smoke_timeline,
-        test_smoke_deps,
-        test_smoke_sbom,
-        test_smoke_agent,
-        # Error handling & CLI hygiene (2 tests)
-        test_generic_exception_handler,
-        test_framework_flag_removed,
-        # GitHub Action structure (1 test)
-        test_github_action_structure,
-        # PDF export (2 tests)
-        test_pdf_export_html_fallback,
-        test_pdf_export_html_content_valid,
-        # MCP server (3 tests)
-        test_mcp_server_tool_list,
-        test_mcp_server_initialize,
-        test_mcp_server_classify_tool,
-        # RFC 3161 external timestamping (3 tests)
-        test_timestamp_build_tsq,
-        test_timestamp_parse_response_invalid,
-        test_log_event_tst_field,
-        # Bias eval (3 tests)
-        test_bias_eval_score_range,
-        test_bias_eval_dataset_sample,
-        test_bias_eval_no_ollama,
-        # JS/TS compliance (1 test)
-        test_compliance_check_js_ts_article14,
-        # Declaration of Conformity (1 test)
-        test_conformity_declaration_structure,
-        # Benchmark (1 test)
-        test_benchmark_corpus_structure,
-        # Local metrics (3 tests)
-        test_metrics_record_and_get,
-        test_metrics_reset,
-        test_metrics_empty,
-        # Security self-check (2 tests)
-        test_security_self_check_passes,
-        test_security_self_check_result_structure,
-        # Config validation (3 tests)
-        test_config_validate_valid_file,
-        test_config_validate_invalid_thresholds,
-        test_config_validate_no_file,
-        # Quickstart onboarding (3 tests)
-        test_quickstart_creates_policy,
-        test_quickstart_skips_existing_policy,
-        test_quickstart_result_structure,
-        # Brazilian market: LGPD + Marco Legal da IA (4 tests)
-        test_lgpd_framework_mapping,
-        test_marco_legal_ia_framework_mapping,
-        test_lgpd_article_14_has_art20,
-        test_all_articles_have_lgpd_mapping,
-        # Bug fixes (6 tests)
-        test_check_accepts_single_file,
-        test_check_cli_single_file,
-        test_metrics_normalises_raw_tiers,
-        test_metrics_normalises_prohibited,
-        test_gap_framework_text_includes_crossrefs,
-        test_gap_framework_text_multiple_frameworks,
-        # Context-aware false positive reduction (5 tests)
-        test_comment_not_classified_prohibited,
-        test_docstring_not_classified_high_risk,
-        test_actual_code_still_classified,
-        test_strip_comments_python,
-        test_strip_comments_javascript,
-        # Language support (i18n) (4 tests)
-        test_i18n_english_default,
-        test_i18n_portuguese,
-        test_i18n_fallback,
-        test_i18n_german,
-        # Custom rule engine (3 tests)
-        test_custom_rules_loads_yaml,
-        test_custom_rules_no_file,
-        test_custom_prohibited_rule_detected,
-        # Security (2 tests)
-        test_bias_eval_rejects_non_http_endpoint,
-        test_custom_rule_redos_protection,
-        # Cross-function data flow tracing (3 tests)
-        test_cross_function_ai_flow_detected,
-        test_cross_function_oversight_detected,
-        test_cross_function_no_false_positive,
-        # Docs data flow integration (1 test)
-        test_docs_include_data_flow,
-        # Documentation auto-population (5 tests)
-        test_docs_auto_populated_sections,
-        test_docs_completion_report,
-        test_ast_function_extraction_enhanced,
-        test_dependency_extraction,
-        test_docs_function_table_in_output,
-        # Context weighting (4 tests)
-        test_context_penalty_example_dir,
-        test_context_penalty_init_file,
-        test_context_penalty_mock_patterns,
-        test_context_penalty_combined,
-        # Cross-file import resolution (3 tests)
-        test_cross_file_import_map,
-        test_cross_file_ai_flow_detection,
-        test_cross_file_no_false_positive,
-        # Domain-aware scoring (5 tests)
-        test_domain_scoring_employment,
-        test_domain_scoring_no_ai_no_boost,
-        test_domain_scoring_decision_logic,
-        test_domain_scoring_multiple_domains,
-        test_domain_scoring_generic_code,
-        # Explainable classification (9 tests)
-        test_explain_classification_high_risk,
-        test_explain_classification_minimal_risk,
-        test_explain_provider_detection,
-        test_explain_deployer_detection,
-        test_explain_provider_deployer_unclear,
-        test_explain_obligation_roadmap_articles,
-        test_explain_format_output,
-        test_explain_line_level_match,
-        test_explain_compliance_status_detected,
-        # Remediation plan (6 tests)
-        test_plan_generates_tasks_from_findings,
-        test_plan_priority_ordering,
-        test_plan_task_ids_unique,
-        test_plan_format_text_output,
-        test_plan_skips_strong_articles,
-        test_plan_cli_integration,
-        # Evidence pack (4 tests)
-        test_evidence_pack_generates_manifest,
-        test_evidence_pack_contains_required_files,
-        test_evidence_pack_summary_contains_risk_tier,
-        test_evidence_pack_cli_integration,
-        test_evidence_pack_sha256_integrity,
-        # Transparency disclosure (4 tests)
-        test_disclose_chatbot_article,
-        test_disclose_all_types,
-        test_disclose_format_text_output,
-        test_disclose_cli_integration,
-        # Annex IV deep generation (3 tests)
-        test_annex_iv_has_all_nine_sections,
-        test_annex_iv_standards_from_policy,
-        test_annex_iv_completion_covers_new_sections,
-    ]
+# ---------------------------------------------------------------------------
+# Tech debt fixes — new pattern coverage + error handling (2026-04-02)
+# ---------------------------------------------------------------------------
 
-    print(f"Running {len(tests)} tests...\n")
+def test_safety_driverless_variant():
+    """'driverless' should trigger high-risk safety classification."""
+    r = classify("import tensorflow; driverless car navigation system")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "driverless variant")
+    print("✓ Safety: driverless variant detected")
 
-    for test in tests:
-        try:
-            test()
-        except Exception as e:
-            failed += 1
-            print(f"  EXCEPTION in {test.__name__}: {e}")
 
-    print(f"\n{'=' * 50}")
-    print(f"Results: {passed} passed, {failed} failed ({len(tests)} test functions)")
-    if failed:
-        print("❌ SOME TESTS FAILED")
-        sys.exit(1)
-    else:
-        print("✅ All tests passed!")
+def test_safety_automated_driving_variant():
+    """'automated driving' should trigger high-risk safety classification."""
+    r = classify("import torch; automated driving control module")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "automated driving variant")
+    print("✓ Safety: automated driving variant detected")
+
+
+def test_safety_vehicle_control_system():
+    """'vehicle control system' should trigger high-risk safety classification."""
+    r = classify("import sklearn; vehicle control system with ML predictions")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "vehicle control system variant")
+    print("✓ Safety: vehicle control system detected")
+
+
+def test_chatbot_dialogue_system():
+    """'dialogue system' should trigger limited-risk chatbot classification."""
+    r = classify("import openai; build a dialogue system for customer support")
+    assert_eq(r.tier, RiskTier.LIMITED_RISK, "dialogue system variant")
+    print("✓ Chatbot: dialogue system detected")
+
+
+def test_chatbot_conversational_model():
+    """'conversational model' should trigger limited-risk chatbot classification."""
+    r = classify("import transformers; fine-tune conversational model")
+    assert_eq(r.tier, RiskTier.LIMITED_RISK, "conversational model variant")
+    print("✓ Chatbot: conversational model detected")
+
+
+def test_compile_custom_pattern_invalid_regex():
+    """Invalid regex should raise ValueError, not re.error."""
+    from classify_risk import _compile_custom_pattern
+    try:
+        _compile_custom_pattern("(unclosed")
+        assert False, "Should have raised ValueError"
+    except ValueError as e:
+        assert_true("Invalid regex" in str(e), "error message mentions invalid regex")
+    print("✓ Custom pattern: invalid regex raises ValueError")
+
+
+def test_finding_tier_shared_logic():
+    """compute_finding_tier should match Classification.get_finding_tier."""
+    from risk_types import compute_finding_tier
+    assert_eq(compute_finding_tier("prohibited", 10), "block", "prohibited always blocks")
+    assert_eq(compute_finding_tier("high_risk", 90), "block", "score 90 → block")
+    assert_eq(compute_finding_tier("high_risk", 60), "warn", "score 60 → warn")
+    assert_eq(compute_finding_tier("high_risk", 30), "info", "score 30 → info")
+    print("✓ Shared finding tier logic works correctly")
 
 
 # ---------------------------------------------------------------------------
@@ -5446,3 +5109,443 @@ def test_js_ts_function_declaration_detected():
     obs = generate_observations(text)
     articles = [o["article"] for o in obs]
     assert "13" in articles, f"Expected Article 13 observation for scoreApplicant, got: {obs}"
+
+
+if __name__ == "__main__":
+    tests = [
+        # AI Detection (5 tests)
+        test_ai_detection_python_libraries,
+        test_ai_detection_model_files,
+        test_ai_detection_api_endpoints,
+        test_ai_detection_ml_patterns,
+        test_ai_detection_non_ai,
+        # Prohibited (8 tests)
+        test_prohibited_social_scoring,
+        test_prohibited_emotion_workplace,
+        test_prohibited_emotion_school,
+        test_prohibited_realtime_biometric,
+        test_prohibited_biometric_sensitive,
+        test_prohibited_criminal_prediction,
+        test_prohibited_subliminal,
+        test_prohibited_facial_scraping,
+        # High-Risk (12 tests)
+        test_high_risk_employment,
+        test_high_risk_credit_scoring,
+        test_high_risk_biometrics,
+        test_high_risk_medical,
+        test_high_risk_education,
+        test_high_risk_critical_infrastructure,
+        test_high_risk_law_enforcement,
+        test_high_risk_migration,
+        test_high_risk_justice,
+        test_high_risk_safety,
+        test_high_risk_articles,
+        test_high_risk_performance_review,
+        # Limited-Risk (4 tests)
+        test_limited_risk_chatbot,
+        test_limited_risk_deepfake,
+        test_limited_risk_age_estimation,
+        test_limited_risk_emotion_no_workplace,
+        # Minimal-Risk (3 tests)
+        test_minimal_risk_recommendation,
+        test_minimal_risk_code_completion,
+        test_minimal_risk_spam_filter,
+        # Edge Cases (9 tests)
+        test_edge_empty_input,
+        test_edge_case_insensitivity,
+        test_edge_multiple_indicators,
+        test_edge_prohibited_without_ai_indicator,
+        test_edge_prohibited_overrides_high_risk,
+        test_edge_high_risk_overrides_limited,
+        test_classification_action_field,
+        test_classification_to_dict,
+        test_classification_to_json,
+        # Policy Engine (4 tests)
+        test_policy_yaml_parser,
+        test_policy_check_overrides,
+        test_policy_cannot_exempt_prohibited,
+        test_prohibited_has_exceptions_field,
+        # Audit Trail (2 tests)
+        test_audit_hash_chain,
+        test_audit_export_csv,
+        # Confidence Scoring (3 tests)
+        test_confidence_score_numeric,
+        test_confidence_score_ordering,
+        test_multiple_indicators_increase_score,
+        # Reports (3 tests)
+        test_sarif_output_structure,
+        test_html_report_contains_disclaimer,
+        test_inline_suppression,
+        # Report enhancement (1 test)
+        test_report_html_dependency_section,
+        # New features (6 tests)
+        test_questionnaire_generation,
+        test_questionnaire_evaluation_high_risk,
+        test_questionnaire_evaluation_minimal_risk,
+        test_session_aggregation,
+        test_baseline_save_and_compare,
+        test_timeline_data,
+        # Secret detection (4 tests)
+        test_secret_detection_openai_key,
+        test_secret_detection_aws_key,
+        test_secret_detection_no_false_positive,
+        test_secret_redaction,
+        # GPAI awareness (2 tests)
+        test_gpai_training_detection,
+        test_gpai_inference_not_training,
+        # AI credential governance (1 test)
+        test_file_credential_governance,
+        # Hook integration (4 tests)
+        test_hook_prohibited_block,
+        test_hook_high_risk_allow_with_iso,
+        test_hook_secret_block,
+        test_hook_clean_pass,
+        # AI System Registry (2 tests)
+        test_registry_scan_organization,
+        test_registry_csv_export,
+        # Compliance workflow (2 tests)
+        test_compliance_workflow_transitions,
+        test_compliance_status_update,
+        # Governance (1 test)
+        test_governance_contacts,
+        # QMS generation (1 test)
+        test_qms_scaffold_generation,
+        # Regex fix (1 test)
+        test_openai_key_no_anthropic_false_positive,
+        # AST analysis (5 tests)
+        test_ast_parse_python_file,
+        test_ast_classify_context,
+        test_ast_data_flow_tracing,
+        test_ast_human_oversight,
+        test_ast_logging_practices,
+        # Compliance gap assessment (2 tests)
+        test_compliance_gap_assessment,
+        test_compliance_gap_article_15_tests,
+        # Infrastructure (3 tests)
+        test_regulatory_basis,
+        test_cross_platform_locking,
+        # AST engine (5 tests)
+        test_ast_engine_python_parse,
+        test_ast_engine_js_regex_fallback,
+        test_ast_engine_ts_regex_fallback,
+        test_ast_engine_non_ai_js,
+        test_ast_engine_language_detection,
+        # Language expansion (3 tests)
+        test_ast_engine_java_ai_detection,
+        test_ast_engine_go_ai_detection,
+        test_ast_engine_java_non_ai,
+        # Rust/C/C++ language support (3 tests)
+        test_ast_engine_rust_ai_detection,
+        test_ast_engine_cpp_ai_detection,
+        test_ast_engine_rust_non_ai,
+        # Dependency supply chain (6 tests)
+        test_dep_scan_requirements_txt,
+        test_dep_scan_ai_identification,
+        test_dep_scan_pinning_score,
+        test_dep_scan_lockfile_detection,
+        test_dep_scan_package_json,
+        test_advisory_load_fallback_pyc_path,
+        test_dep_scan_compromised_detection,
+        # Go / Java dependency parsing (6 tests)
+        test_dep_scan_go_mod_basic,
+        test_dep_scan_go_mod_ai_flagged,
+        test_dep_scan_go_mod_pinning,
+        test_dep_scan_build_gradle_groovy,
+        test_dep_scan_build_gradle_kts,
+        test_dep_scan_build_gradle_ai_flagged,
+        # Rust/C++ dependency parsing (2 tests)
+        test_dep_scan_cargo_toml,
+        test_dep_scan_vcpkg_json,
+        # Gap assessment enhancement (1 test)
+        test_gap_article_15_dependency_pinning,
+        # Framework mapper (2 tests)
+        test_framework_mapper_eu_to_nist,
+        test_framework_mapper_all_frameworks,
+        # OWASP mapping (1 test)
+        test_framework_mapper_owasp_llm,
+        # MITRE ATLAS mapping (1 test)
+        test_framework_mapper_mitre_atlas,
+        # Additional framework mappings (4 tests)
+        test_framework_mapper_nist_csf,
+        test_framework_mapper_soc2,
+        test_framework_mapper_iso_27001,
+        test_framework_mapper_all_8_frameworks,
+        # Policy enhancement (2 tests)
+        test_policy_thresholds,
+        test_policy_exclusions,
+        # Integration tests (4 tests)
+        test_integration_high_risk_project,
+        test_integration_compliant_project,
+        test_integration_unpinned_deps,
+        test_integration_full_check_cli,
+        # Pattern quality (5 tests)
+        test_pattern_no_false_positive_sentence_nlp,
+        test_pattern_no_false_positive_embedding_layer,
+        test_pattern_no_false_positive_generic_predict,
+        test_pattern_true_positive_cv_screening,
+        test_pattern_true_positive_credit_scoring,
+        # Confidence threshold (1 test)
+        test_confidence_threshold_filtering,
+        # Confidence tiers (2 tests)
+        test_confidence_tier_block,
+        test_confidence_tier_info,
+        # Tree-sitter JS/TS (4 tests)
+        test_tree_sitter_js_import_extraction,
+        test_tree_sitter_js_data_flow,
+        test_tree_sitter_ts_oversight_detection,
+        test_tree_sitter_js_function_extraction,
+        # SBOM generation (3 tests)
+        test_sbom_cyclonedx_structure,
+        test_sbom_ai_library_detection,
+        test_sbom_model_file_detection,
+        # False positive fixes (4 tests)
+        test_fp_fix_invoice_recognition,
+        test_fp_fix_page_estimation,
+        test_fp_fix_credit_model_detected,
+        test_fn_fix_credit_scorer_function_names,
+        test_fp_fix_social_media_score,
+        # Article 6(3) exemption (2 tests)
+        test_exemption_assessment_likely_exempt,
+        test_exemption_assessment_not_exempt,
+        # Model card validation (2 tests)
+        test_model_card_validation_complete,
+        test_model_card_validation_incomplete,
+        # Diff scanning (1 test)
+        test_diff_mode_changed_files,
+        # Remediation engine (2 tests)
+        test_remediation_high_risk_employment,
+        test_remediation_credential,
+        # Agent monitoring (2 tests)
+        test_agent_monitor_empty_session,
+        test_agent_mcp_config_check,
+        # AI security patterns (3 tests)
+        test_ai_security_pickle_load,
+        test_ai_security_eval_on_output,
+        test_ai_security_no_false_positive_safe_torch,
+        # Doctor + Self-test (2 tests)
+        test_doctor_command,
+        test_self_test_command,
+        # Error handling foundation (2 tests)
+        test_regula_error_hierarchy,
+        test_cli_exit_codes,
+        # Graceful degradation (1 test)
+        test_graceful_degradation,
+        # Init dry-run + JSON envelope (2 tests)
+        test_init_dry_run,
+        test_json_output_envelope,
+        # Exit code verification (1 test)
+        test_exit_code_warn_tier,
+        # --ci flag (5 tests)
+        test_ci_flag_compliant_exits_0,
+        test_ci_flag_warn_tier_exits_1,
+        test_ci_flag_error_exits_2,
+        test_ci_flag_before_subcommand,
+        test_ci_flag_info_tier_exits_0,
+        # CLI subcommand smoke tests (16 tests)
+        test_smoke_report,
+        test_smoke_discover,
+        test_smoke_install_help,
+        test_smoke_status,
+        test_smoke_feed,
+        test_smoke_questionnaire,
+        test_smoke_session,
+        test_smoke_baseline,
+        test_smoke_docs,
+        test_smoke_compliance,
+        test_smoke_gap,
+        test_smoke_benchmark,
+        test_smoke_timeline,
+        test_smoke_deps,
+        test_smoke_sbom,
+        test_smoke_agent,
+        # Error handling & CLI hygiene (2 tests)
+        test_generic_exception_handler,
+        test_framework_flag_removed,
+        # GitHub Action structure (1 test)
+        test_github_action_structure,
+        # PDF export (2 tests)
+        test_pdf_export_html_fallback,
+        test_pdf_export_html_content_valid,
+        # MCP server (3 tests)
+        test_mcp_server_tool_list,
+        test_mcp_server_initialize,
+        test_mcp_server_classify_tool,
+        # RFC 3161 external timestamping (3 tests)
+        test_timestamp_build_tsq,
+        test_timestamp_parse_response_invalid,
+        test_log_event_tst_field,
+        # Bias eval (3 tests)
+        test_bias_eval_score_range,
+        test_bias_eval_dataset_sample,
+        test_bias_eval_no_ollama,
+        # JS/TS compliance (1 test)
+        test_compliance_check_js_ts_article14,
+        # Declaration of Conformity (1 test)
+        test_conformity_declaration_structure,
+        # Benchmark (1 test)
+        test_benchmark_corpus_structure,
+        # Local metrics (3 tests)
+        test_metrics_record_and_get,
+        test_metrics_reset,
+        test_metrics_empty,
+        # Security self-check (2 tests)
+        test_security_self_check_passes,
+        test_security_self_check_result_structure,
+        # Config validation (3 tests)
+        test_config_validate_valid_file,
+        test_config_validate_invalid_thresholds,
+        test_config_validate_no_file,
+        # Quickstart onboarding (3 tests)
+        test_quickstart_creates_policy,
+        test_quickstart_skips_existing_policy,
+        test_quickstart_result_structure,
+        # Brazilian market: LGPD + Marco Legal da IA (4 tests)
+        test_lgpd_framework_mapping,
+        test_marco_legal_ia_framework_mapping,
+        test_lgpd_article_14_has_art20,
+        test_all_articles_have_lgpd_mapping,
+        # Bug fixes (6 tests)
+        test_check_accepts_single_file,
+        test_check_cli_single_file,
+        test_metrics_normalises_raw_tiers,
+        test_metrics_normalises_prohibited,
+        test_gap_framework_text_includes_crossrefs,
+        test_gap_framework_text_multiple_frameworks,
+        # Context-aware false positive reduction (5 tests)
+        test_comment_not_classified_prohibited,
+        test_docstring_not_classified_high_risk,
+        test_actual_code_still_classified,
+        test_strip_comments_python,
+        test_strip_comments_javascript,
+        # Language support (i18n) (4 tests)
+        test_i18n_english_default,
+        test_i18n_portuguese,
+        test_i18n_fallback,
+        test_i18n_german,
+        # Custom rule engine (3 tests)
+        test_custom_rules_loads_yaml,
+        test_custom_rules_no_file,
+        test_custom_prohibited_rule_detected,
+        # Security (2 tests)
+        test_bias_eval_rejects_non_http_endpoint,
+        test_custom_rule_redos_protection,
+        # Cross-function data flow tracing (3 tests)
+        test_cross_function_ai_flow_detected,
+        test_cross_function_oversight_detected,
+        test_cross_function_no_false_positive,
+        # Docs data flow integration (1 test)
+        test_docs_include_data_flow,
+        # Documentation auto-population (5 tests)
+        test_docs_auto_populated_sections,
+        test_docs_completion_report,
+        test_ast_function_extraction_enhanced,
+        test_dependency_extraction,
+        test_docs_function_table_in_output,
+        # Context weighting (4 tests)
+        test_context_penalty_example_dir,
+        test_context_penalty_init_file,
+        test_context_penalty_mock_patterns,
+        test_context_penalty_combined,
+        # Cross-file import resolution (3 tests)
+        test_cross_file_import_map,
+        test_cross_file_ai_flow_detection,
+        test_cross_file_no_false_positive,
+        # Domain-aware scoring (5 tests)
+        test_domain_scoring_employment,
+        test_domain_scoring_no_ai_no_boost,
+        test_domain_scoring_decision_logic,
+        test_domain_scoring_multiple_domains,
+        test_domain_scoring_generic_code,
+        # Explainable classification (9 tests)
+        test_explain_classification_high_risk,
+        test_explain_classification_minimal_risk,
+        test_explain_provider_detection,
+        test_explain_deployer_detection,
+        test_explain_provider_deployer_unclear,
+        test_explain_obligation_roadmap_articles,
+        test_explain_format_output,
+        test_explain_line_level_match,
+        test_explain_compliance_status_detected,
+        # Remediation plan (6 tests)
+        test_plan_generates_tasks_from_findings,
+        test_plan_priority_ordering,
+        test_plan_task_ids_unique,
+        test_plan_format_text_output,
+        test_plan_skips_strong_articles,
+        test_plan_cli_integration,
+        # Evidence pack (4 tests)
+        test_evidence_pack_generates_manifest,
+        test_evidence_pack_contains_required_files,
+        test_evidence_pack_summary_contains_risk_tier,
+        test_evidence_pack_cli_integration,
+        test_evidence_pack_sha256_integrity,
+        # Transparency disclosure (4 tests)
+        test_disclose_chatbot_article,
+        test_disclose_all_types,
+        test_disclose_format_text_output,
+        test_disclose_cli_integration,
+        # Annex IV deep generation (3 tests)
+        test_annex_iv_has_all_nine_sections,
+        test_annex_iv_standards_from_policy,
+        test_annex_iv_completion_covers_new_sections,
+        # Tech debt fixes (7 tests)
+        test_safety_driverless_variant,
+        test_safety_automated_driving_variant,
+        test_safety_vehicle_control_system,
+        test_chatbot_dialogue_system,
+        test_chatbot_conversational_model,
+        test_compile_custom_pattern_invalid_regex,
+        test_finding_tier_shared_logic,
+        # Framework detection expansion (7 tests)
+        test_framework_detection_litellm,
+        test_framework_detection_crewai,
+        test_framework_detection_autogen,
+        test_framework_detection_haystack,
+        test_framework_detection_smolagents,
+        test_framework_detection_ollama,
+        test_framework_count_expanded,
+        # Model inventory (5 tests)
+        test_model_inventory_detects_gpt4o,
+        test_model_inventory_detects_from_pretrained,
+        test_model_inventory_json_schema,
+        test_model_inventory_empty_project,
+        test_model_inventory_gpai_tiers,
+        # Compliance check variants (2 tests)
+        test_compliance_check_framework_nist,
+        test_compliance_check_no_framework_flag,
+        # HTML report enhancements (4 tests)
+        test_html_report_structure,
+        test_html_report_risk_badge_prohibited,
+        test_html_report_self_contained,
+        test_html_report_model_inventory_section,
+        # Bias observations (4 tests)
+        test_bias_protected_class_feature_detected,
+        test_bias_missing_fairness_flagged,
+        test_bias_fairness_library_suppresses_absence,
+        test_bias_no_protected_features_no_observation,
+        # JS/TS decision function detection (2 tests)
+        test_js_ts_automated_decision_function_detected,
+        test_js_ts_function_declaration_detected,
+        # Additional smoke tests (4 tests)
+        test_smoke_inventory,
+        test_smoke_gap_framework,
+        test_smoke_check_html,
+        test_smoke_check_html_output_file,
+    ]
+
+    print(f"Running {len(tests)} tests...\n")
+
+    for test in tests:
+        try:
+            test()
+        except Exception as e:
+            failed += 1
+            print(f"  EXCEPTION in {test.__name__}: {e}")
+
+    print(f"\n{'=' * 50}")
+    print(f"Results: {passed} passed, {failed} failed ({len(tests)} test functions)")
+    if failed:
+        print("❌ SOME TESTS FAILED")
+        sys.exit(1)
+    else:
+        print("✅ All tests passed!")
