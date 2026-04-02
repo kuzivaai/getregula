@@ -25,7 +25,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from errors import RegulaError, PathError
 
-VERSION = "1.4.0"
+VERSION = "1.5.0"
 
 
 def json_output(command: str, data, exit_code: int = 0):
@@ -234,6 +234,7 @@ def cmd_check(args):
     else:
         # Human-readable output
         from i18n import t
+        from term_style import red, yellow, blue, magenta, bold, dim
         print(f"\n{t('scan_header', path=project)}")
         print(f"{'=' * 60}")
         total_files = len(set(f["file"] for f in findings))
@@ -249,7 +250,7 @@ def cmd_check(args):
         print(f"  {t('info_tier'):<20}{len(info_findings)}")
 
         if prohibited:
-            print(f"\n  PROHIBITED INDICATORS:")
+            print(f"\n  {red('PROHIBITED INDICATORS')}:")
             for f in prohibited:
                 score = f.get("confidence_score", 0)
                 tier_label = f.get("_finding_tier", "block").upper()
@@ -257,7 +258,7 @@ def cmd_check(args):
                 _print_remediation(f)
 
         if credentials:
-            print(f"\n  CREDENTIAL EXPOSURE (Article 15):")
+            print(f"\n  {red('CREDENTIAL EXPOSURE')} (Article 15):")
             for f in credentials:
                 score = f.get("confidence_score", 0)
                 tier_label = f.get("_finding_tier", "warn").upper()
@@ -265,7 +266,7 @@ def cmd_check(args):
                 _print_remediation(f)
 
         if high_risk:
-            print(f"\n  HIGH-RISK INDICATORS:")
+            print(f"\n  {yellow('HIGH-RISK INDICATORS')}:")
             for f in high_risk:
                 score = f.get("confidence_score", 0)
                 tier_label = f.get("_finding_tier", "warn").upper()
@@ -273,7 +274,7 @@ def cmd_check(args):
                 _print_remediation(f)
 
         if autonomy:
-            print(f"\n  AGENT AUTONOMY (OWASP Agentic ASI02/ASI04):")
+            print(f"\n  {magenta('AGENT AUTONOMY')} (OWASP Agentic ASI02/ASI04):")
             for f in autonomy:
                 score = f.get("confidence_score", 0)
                 tier_label = f.get("_finding_tier", "warn").upper()
@@ -281,7 +282,7 @@ def cmd_check(args):
                 _print_remediation(f)
 
         if limited:
-            print(f"\n  LIMITED-RISK:")
+            print(f"\n  {blue('LIMITED-RISK')}:")
             for f in limited:
                 score = f.get("confidence_score", 0)
                 tier_label = f.get("_finding_tier", "info").upper()
@@ -1001,6 +1002,26 @@ def cmd_plan(args):
             print(output)
 
 
+def cmd_disclose(args):
+    """Generate Article 50 transparency disclosures."""
+    from transparency import generate_disclosure, format_disclosure_text
+
+    disclosure_type = args.type
+    output_fmt = getattr(args, "template_format", "all")
+    system_name = args.name or "AI System"
+
+    result = generate_disclosure(disclosure_type, output_fmt, system_name)
+
+    if args.format == "json":
+        json_output("disclose", result)
+    else:
+        if isinstance(result, dict) and "type" not in result and "error" not in result:
+            text = format_disclosure_text(result)
+        else:
+            text = format_disclosure_text({result.get("type", "?"): result})
+        print(text)
+
+
 def cmd_fix(args):
     """Generate compliance fix scaffolds for findings."""
     if args.project != ".":
@@ -1374,10 +1395,12 @@ Examples:
     p_check.add_argument("--ci", action="store_true", default=False,
                          help="CI mode: exit 1 on any WARN or BLOCK finding (implies --strict)")
     p_check.add_argument("--verbose", "-v", action="store_true", help="Show INFO-tier findings")
-    p_check.add_argument("--skip-tests", action="store_true",
-                         help="Exclude test files entirely from scan results")
+    p_check.add_argument("--skip-tests", action="store_true", default=True,
+                         help="Exclude test files from results (default: on, use --no-skip-tests to include)")
+    p_check.add_argument("--no-skip-tests", dest="skip_tests", action="store_false",
+                         help="Include test files in results")
     p_check.add_argument("--min-tier", choices=["prohibited", "high_risk", "limited_risk", "minimal_risk"],
-                         default="", help="Minimum risk tier to include (filters out lower tiers)")
+                         default="limited_risk", help="Minimum risk tier to include (default: limited_risk, use minimal_risk to see all)")
     p_check.add_argument("--diff", metavar="REF", nargs="?", const="HEAD~1",
                          help="Only scan files changed since REF (default: HEAD~1)")
     p_check.add_argument("--rules", help="Path to custom rules file (regula-rules.yaml)")
@@ -1527,6 +1550,16 @@ Examples:
     p_plan.add_argument("--status", action="store_true", help="Show completion progress")
     p_plan.add_argument("--done", metavar="TASK-ID", help="Mark a task as completed")
     p_plan.set_defaults(func=cmd_plan)
+
+    # --- disclose ---
+    p_disclose = subparsers.add_parser("disclose", help="Generate Article 50 transparency disclosures")
+    p_disclose.add_argument("--type", "-t", choices=["chatbot", "synthetic_text", "emotion_recognition", "deepfake", "all"],
+                            default="all", help="Disclosure type (default: all)")
+    p_disclose.add_argument("--template-format", choices=["text", "html", "code", "all"], default="all",
+                            help="Template format to generate")
+    p_disclose.add_argument("--name", "-n", help="AI system name for templates")
+    p_disclose.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_disclose.set_defaults(func=cmd_disclose)
 
     # --- fix ---
     p_fix = subparsers.add_parser("fix", help="Generate compliance fix scaffolds for findings")
