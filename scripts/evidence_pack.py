@@ -77,7 +77,7 @@ def generate_evidence_pack(
         dep_report = scan_dependencies(str(project))
         dep_json = json.dumps(dep_report, indent=2, default=str)
         _write_and_record(pack_dir, "04-dependency-report.json", dep_json, file_records)
-    except (ImportError, Exception):
+    except (ImportError, OSError, ValueError, KeyError):
         pass
 
     # --- 05: Audit trail ---

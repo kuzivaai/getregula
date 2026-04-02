@@ -16,7 +16,10 @@ venv/
 .venv/
 .coverage
 docs/*_annex_iv.md
+docs/tmp*_annex_iv.md
 docs/site/
+evidence-pack-*/
+.pytest_cache/
 .claude/
 .playwright-cli/
 docs/superpowers/

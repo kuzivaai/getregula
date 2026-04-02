@@ -17,8 +17,11 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-# ── Regula version ────────────────────────────────────────────────
-REGULA_VERSION = "1.2.0"
+# ── Regula version (imported from single source of truth) ─────────
+try:
+    from cli import VERSION as REGULA_VERSION
+except ImportError:
+    REGULA_VERSION = "1.5.0"
 
 # ── Import existing Regula modules with fallbacks ─────────────────
 

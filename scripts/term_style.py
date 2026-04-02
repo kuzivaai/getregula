@@ -60,21 +60,3 @@ def magenta(s: str) -> str:
 
 def dim(s: str) -> str:
     return f"{DIM}{s}{RESET}"
-
-
-# Tier-specific colours
-TIER_COLORS = {
-    "prohibited": RED,
-    "high_risk": YELLOW,
-    "limited_risk": BLUE,
-    "minimal_risk": DIM,
-    "agent_autonomy": MAGENTA,
-    "credential_exposure": RED,
-    "ai_security": YELLOW,
-}
-
-
-def tier_color(tier: str, text: str) -> str:
-    """Colour text based on risk tier."""
-    color = TIER_COLORS.get(tier, "")
-    return f"{color}{text}{RESET}" if color else text
