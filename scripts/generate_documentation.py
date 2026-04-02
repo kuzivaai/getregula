@@ -76,7 +76,7 @@ def scan_project(project_path: str) -> dict:
     }
 
     skip_dirs = {".git", "node_modules", "__pycache__", "venv", ".venv", "dist", "build", ".next"}
-    code_extensions = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"}
+    code_extensions = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs", ".java", ".go", ".rs", ".c", ".cpp"}
     model_extensions = {".onnx", ".pt", ".pth", ".pkl", ".joblib", ".h5", ".hdf5", ".safetensors", ".gguf", ".ggml"}
 
     for root, dirs, files in os.walk(project):
@@ -245,7 +245,7 @@ _[TO BE COMPLETED — configure in regula-policy.yaml]_
 def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> str:
     """Generate Annex IV compliant documentation."""
     skip_dirs = {".git", "node_modules", "__pycache__", "venv", ".venv", "dist", "build", ".next", ".tox", "tests"}
-    code_extensions = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"}
+    code_extensions = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs", ".java", ".go", ".rs", ".c", ".cpp"}
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     highest = findings["highest_risk"]
     if isinstance(highest, RiskTier):

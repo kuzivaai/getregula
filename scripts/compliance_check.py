@@ -55,7 +55,7 @@ else:
         ".git", "node_modules", "__pycache__", "venv", ".venv",
         "dist", "build", ".next", ".tox",
     }
-    CODE_EXTENSIONS = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"}
+    CODE_EXTENSIONS = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs", ".java", ".go", ".rs", ".c", ".cpp"}
 
 _dep_scan_available = check_optional("dependency_scan", "dependency scanning", "included with regula")
 if _dep_scan_available:
