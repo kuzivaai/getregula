@@ -395,8 +395,9 @@ _EXTERNAL_ACTION_PATTERNS = [
     (r"os\.system\(", "System command execution"),
     (r"requests\.(?:post|put|patch|delete)\(", "HTTP mutation request"),
     (r"httpx\.(?:post|put|patch|delete)\(", "HTTP mutation request"),
-    (r"\.execute\(", "Database query execution"),
-    (r"\.send\(", "Message/email sending"),
+    (r"(?:cursor|conn|connection|session|db|engine)\.execute\(", "Database query execution"),
+    (r"(?:smtp|email|mail|sendgrid|ses|postmark|mailgun|twilio|slack).*\.send\(", "Message/email sending"),
+    (r"send_(?:email|message|notification|sms)\(", "Message/email sending"),
     (r"shutil\.(?:rmtree|move|copy)", "File system modification"),
     (r"os\.(?:remove|unlink|rename)\(", "File system modification"),
 ]

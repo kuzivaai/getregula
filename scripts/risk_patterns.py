@@ -178,7 +178,8 @@ LIMITED_RISK_PATTERNS = {
     },
     "synthetic_content": {
         "patterns": [r"deepfake", r"synthetic.?media", r"face.?swap", r"voice.?clon",
-                     r"ai.{0,5}generat\w*.{0,5}image", r"text.?to.?image"],
+                     r"ai[\s_-]generated[\s_-]image", r"text[\s_-]to[\s_-]image",
+                     r"generate_(?:deepfake|synthetic)", r"image_generat(?:or|ion)"],
         "article": "50",
         "description": "Synthetic content generation",
     },
