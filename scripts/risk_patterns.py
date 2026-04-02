@@ -153,7 +153,8 @@ HIGH_RISK_PATTERNS = {
         "description": "AI components of medical devices",
     },
     "safety_components": {
-        "patterns": [r"\bautonomous.?vehicle", r"\bself.?driv", r"\baviation.?safety", r"\bmachinery.?safety"],
+        "patterns": [r"\bautonomous.?vehicle", r"\bself.?driv", r"\bdriverless", r"\bautomat\w*\W{0,3}driv",
+                     r"\bvehicle.?control.?system", r"\baviation.?safety", r"\bmachinery.?safety"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Safety Components",
         "description": "Safety components under Union harmonisation legislation",
@@ -162,7 +163,8 @@ HIGH_RISK_PATTERNS = {
 
 LIMITED_RISK_PATTERNS = {
     "chatbots": {
-        "patterns": [r"\bchatbot", r"conversational.?ai", r"virtual.?assist", r"support.?bot\b"],
+        "patterns": [r"\bchatbot", r"conversational.?ai", r"conversational.?model", r"virtual.?assist",
+                     r"dialogue.?system", r"support.?bot\b"],
         "article": "50",
         "description": "Chatbots and conversational AI",
     },

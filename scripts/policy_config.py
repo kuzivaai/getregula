@@ -5,6 +5,10 @@ Loads regula-policy.yaml/json from standard locations, provides cached
 access to policy values, governance contacts, and regulatory basis.
 """
 
+__all__ = [
+    "get_policy", "get_governance_contacts", "get_regulatory_basis",
+]
+
 import json
 import os
 import re
@@ -112,8 +116,33 @@ def _parse_yaml_fallback(text: str) -> dict:
 _POLICY = _load_policy()
 
 
-def get_policy() -> dict:
+def get_policy(path: str = None) -> dict:
+    """Return the cached policy, or load from a specific path if given.
+
+    The path parameter exists for testability — callers can inject a
+    different policy file without monkeypatching module state.
+    """
+    if path is not None:
+        return _load_policy_from(path)
     return _POLICY
+
+
+def _load_policy_from(path: str) -> dict:
+    """Load policy from a specific file path."""
+    p = Path(path)
+    if not p.exists():
+        return {}
+    try:
+        content = p.read_text(encoding="utf-8")
+        if p.suffix == ".json":
+            return json.loads(content)
+        if check_optional("yaml", "using fallback YAML parser", "pip install pyyaml"):
+            import yaml
+            return yaml.safe_load(content) or {}
+        else:
+            return _parse_yaml_fallback(content)
+    except Exception:
+        return {}
 
 
 def get_governance_contacts() -> dict:

@@ -18,10 +18,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 # ── Regula version (imported from single source of truth) ─────────
-try:
-    from cli import VERSION as REGULA_VERSION
-except ImportError:
-    REGULA_VERSION = "1.5.0"
+from constants import VERSION as REGULA_VERSION
 
 # ── Import existing Regula modules with fallbacks ─────────────────
 

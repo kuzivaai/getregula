@@ -11,6 +11,11 @@ meets ISO 27001 A.12.4 or SOC 2 standards, supplement with an external
 timestamp authority (RFC 3161) or remote log forwarding.
 """
 
+__all__ = [
+    "AuditEvent", "log_event", "query_events", "verify_chain",
+    "export_csv", "get_audit_dir",
+]
+
 import argparse
 import csv
 import hashlib

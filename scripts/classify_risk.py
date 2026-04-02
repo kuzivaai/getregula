@@ -12,6 +12,13 @@ pattern matching cannot provide. Results should be treated as flags
 for human review, not as legal determinations.
 """
 
+__all__ = [
+    "classify", "is_ai_related", "check_prohibited", "check_high_risk",
+    "check_limited_risk", "check_ai_security", "check_bias_risk",
+    "generate_observations", "is_training_activity", "strip_comments",
+    "RiskTier", "Classification",
+]
+
 import argparse
 import json
 import re
@@ -267,9 +274,10 @@ def strip_comments(text: str, language: str = "python") -> str:
     """Strip comments to reduce false positives in pattern matching.
 
     Returns text with comment lines replaced by empty lines (preserving line
-    numbers for error reporting). Strips single-line comments and block comments
-    but preserves docstrings -- docstrings describe the code's actual purpose
-    and are relevant for risk classification.
+    numbers for error reporting). Strips single-line comments and block comments.
+    Does not handle Python triple-quoted docstrings (these are preserved as-is,
+    which is intentional -- docstrings describe the code's actual purpose
+    and are relevant for risk classification).
     """
     lines = text.split("\n")
     result = []
@@ -334,7 +342,10 @@ def _compile_custom_pattern(pattern: str) -> "re.Pattern":
         raise ValueError(f"Pattern too long ({len(pattern)} chars, max {_MAX_PATTERN_LENGTH})")
     if re.search(r'\([^)]*[+*][^)]*\)[+*]', pattern):
         raise ValueError(f"Pattern contains nested quantifiers (potential ReDoS): {pattern[:50]}")
-    return re.compile(pattern, re.IGNORECASE)
+    try:
+        return re.compile(pattern, re.IGNORECASE)
+    except re.error as e:
+        raise ValueError(f"Invalid regex pattern: {e}") from e
 
 
 # ---------------------------------------------------------------------------

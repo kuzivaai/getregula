@@ -1,7 +1,7 @@
 # Regula — Full Project Inspection
 
 **Generated:** 2026-03-31
-**Version:** 1.2.0
+**Version:** 1.5.0
 **Inspector:** Claude Opus 4.6 (automated, evidence-based)
 **Status:** All claims verified against code unless noted otherwise
 
@@ -47,7 +47,7 @@
 - `hooks/stop_hook.py` -- session summary
 - `scripts/mcp_server.py` -- MCP server (stdio transport)
 
-**Data flow:** CLI args / hook stdin -> `classify_risk.py` (pattern matching) -> `risk_patterns.py` (121 regex) + `ast_analysis.py` (Python AST) + `ast_engine.py` (JS/TS tree-sitter) -> risk tier assignment -> `report.py` (HTML/SARIF/JSON output) + `log_event.py` (audit trail)
+**Data flow:** CLI args / hook stdin -> `classify_risk.py` (pattern matching) -> `risk_patterns.py` (128 regex) + `ast_analysis.py` (Python AST) + `ast_engine.py` (JS/TS tree-sitter) -> risk tier assignment -> `report.py` (HTML/SARIF/JSON output) + `log_event.py` (audit trail)
 
 **External dependencies:** Zero for core. Optional: PyYAML (config), tree-sitter (JS/TS AST), weasyprint (PDF), pytest (testing).
 
@@ -87,7 +87,7 @@ Every feature claimed in README or landing page, verified against actual code:
 | # | Feature Claimed | Implementation | Tests | Status | Evidence |
 |---|----------------|---------------|-------|--------|----------|
 | 1 | 8 language detection | classify_risk.py, ast_engine.py | Yes | Verified | Python AST (deep), JS/TS tree-sitter (moderate), Java/Go/Rust/C/C++ (regex) |
-| 2 | 121 risk patterns | risk_patterns.py | Yes | Verified | 32 prohibited + 58 high-risk + 17 limited + 14 AI security regex strings |
+| 2 | 121 risk patterns | risk_patterns.py | Yes | Verified | 32 prohibited + 61 high-risk + 21 limited + 14 AI security regex strings |
 | 3 | 10 compliance frameworks | framework_mapper.py | Yes | Verified | EU AI Act, NIST CSF, NIST AI RMF, SOC 2, ISO 42001, ISO 27001, OWASP LLM, MITRE ATLAS, LGPD, Marco Legal da IA |
 | 4 | Zero dependencies | pyproject.toml | N/A | Verified | Core uses only stdlib |
 | 5 | SARIF output | report.py:generate_sarif | Yes | Verified | Valid SARIF 2.1.0 |
@@ -263,11 +263,11 @@ Every feature claimed in README or landing page, verified against actual code:
 
 ### 6.3 Differentiation Analysis
 
-**What Regula does that no competitor does:**
-1. Code-level static analysis for EU AI Act compliance (unique)
-2. Python AST data flow tracing for regulatory patterns (unique)
+**What Regula does differently:**
+1. Code-level static analysis with 128 risk patterns across 4 EU AI Act tiers (Systima Comply and ArkForge also scan code, but with different approaches — AST-only and import-only respectively)
+2. Python AST data flow tracing for regulatory patterns (not replicated in other tools as of April 2026)
 3. Real-time developer hook interception (Claude Code, Copilot, Windsurf)
-4. Multi-language (8) with zero dependencies
+4. Multi-language (8) with zero production dependencies
 5. Compliance gap assessment with scored articles (0-100)
 
 **What competitors do that Regula cannot:**
@@ -342,7 +342,7 @@ Sources: Gartner AI Governance Platform forecast Feb 2026, EU Commission AI Act 
 | Dimension | Score (1-5) | Evidence |
 |-----------|------------|----------|
 | Problem-solution fit | 4 | Real regulatory deadline (Aug 2026), code-level scanning is a gap |
-| Competitive differentiation | 3 | Code-layer scanning is unique, but pattern matching is replicable |
+| Competitive differentiation | 3 | Code-layer scanning shared with Systima Comply and ArkForge; pattern matching is replicable |
 | Moat strength | 2 | No data moat, no network effects, no switching costs |
 | Market timing | 5 | Perfect -- Aug 2026 deadline creates urgency now |
 | Go-to-market clarity | 2 | No distribution strategy, no pricing, no sales motion |
@@ -364,7 +364,7 @@ Sources: Gartner AI Governance Platform forecast Feb 2026, EU Commission AI Act 
 
 ### 9.1 Three Hardest Truths
 
-**1. The product is feature-complete but distribution-zero.** 29 CLI commands, 121 patterns, 666+ test assertions, 10 frameworks -- and 0 external users. The engineering is strong. The go-to-market is non-existent. Features don't matter if nobody knows the tool exists. Every day closer to August 2026 is a day of shrinking window.
+**1. The product is feature-complete but distribution-zero.** 29 CLI commands, 128 patterns, 748+ test assertions, 10 frameworks -- and 0 external users. The engineering is strong. The go-to-market is non-existent. Features don't matter if nobody knows the tool exists. Every day closer to August 2026 is a day of shrinking window.
 
 **2. The moat is effectively zero.** Pattern-matching regex against EU AI Act articles is not defensible. Any team with a weekend and the AI Act text could replicate the core detection. The competitive advantage is execution speed (being first with a working CLI tool), not technical depth. This advantage has an expiry date.
 
