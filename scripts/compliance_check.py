@@ -51,11 +51,7 @@ _report_available = check_optional("report", "file scanning", "included with reg
 if _report_available:
     from report import scan_files, SKIP_DIRS, CODE_EXTENSIONS
 else:
-    SKIP_DIRS = {
-        ".git", "node_modules", "__pycache__", "venv", ".venv",
-        "dist", "build", ".next", ".tox",
-    }
-    CODE_EXTENSIONS = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs", ".java", ".go", ".rs", ".c", ".cpp"}
+    from constants import CODE_EXTENSIONS, SKIP_DIRS
 
 _dep_scan_available = check_optional("dependency_scan", "dependency scanning", "included with regula")
 if _dep_scan_available:

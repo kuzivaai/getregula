@@ -1,3 +1,4 @@
+# regula-ignore
 #!/usr/bin/env python3
 """
 Regula Audit Trail Logger

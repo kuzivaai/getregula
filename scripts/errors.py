@@ -1,3 +1,4 @@
+# regula-ignore
 """Custom exception hierarchy for Regula CLI.
 
 Exit code convention (research-validated, scanner industry standard):

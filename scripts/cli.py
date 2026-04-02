@@ -1329,49 +1329,24 @@ def cmd_config(args):
         sys.exit(2)
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        prog="regula",
-        description="AI Governance Risk Indication for Code",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+_MAIN_EPILOG = """
 Examples:
   regula check .                          Scan current directory
   regula check --format sarif .           Output SARIF for CI/CD
-  regula classify --input "import torch"  Classify a text input
-  regula report --format html -o report.html  Generate HTML report
-  regula feed                             AI governance news feed
-  regula feed --format html -o feed.html  Feed as HTML digest
-  regula questionnaire                    Context-driven risk assessment
-  regula session                          Session risk aggregation
-  regula baseline save                    Save compliance baseline
-  regula baseline compare --fail-on-new   CI/CD incremental compliance
-  regula compliance                       View compliance status of all systems
-  regula compliance update -s MyApp --status assessment
-  regula gap --project .                  Compliance gap assessment (Articles 9-15)
-  regula gap --project . --article 14    Check Article 14 (human oversight) only
-  regula compliance workflow              Show compliance status transitions
+  regula plan --project .                 Prioritised remediation plan
+  regula evidence-pack --project .        Auditor-ready evidence package
+  regula fix --project .                  Compliance code scaffolds
+  regula disclose --type chatbot          Article 50 transparency notices
   regula docs --project . --qms          Generate Annex IV + QMS scaffolds
-  regula benchmark --project .           Benchmark precision/recall
-  regula benchmark --project . -f csv -o findings.csv  Export for labelling
+  regula gap --project .                  Compliance gap assessment (Articles 9-15)
   regula timeline                         EU AI Act enforcement dates
   regula deps --project .                 AI dependency supply chain analysis
-  regula deps --project . --format json  Dependency scan as JSON
-  regula install claude-code              Install Claude Code hooks
-  regula install copilot-cli              Install Copilot CLI hooks
   regula audit verify                     Verify audit chain integrity
-""",
-    )
-    parser.add_argument("--ci", action="store_true",
-                        help="CI mode: exit 1 on any WARN or BLOCK finding (implies --strict)")
-    parser.add_argument("--config", help="Custom policy configuration file path")
-    parser.add_argument("--rules", help="Path to custom rules file (regula-rules.yaml)")
-    parser.add_argument("--lang", choices=["en", "pt-BR", "de"], default="en",
-                        help="Output language (default: en)")
+"""
 
-    subparsers = parser.add_subparsers(dest="command")
 
-    # --- init ---
+def _build_subparsers(subparsers):
+    """Define all CLI subcommands. Extracted from main() for readability."""
     p_init = subparsers.add_parser("init", help="Guided setup wizard")
     p_init.add_argument("--project", "-p", default=".", help="Project directory")
     p_init.add_argument("--interactive", "-i", action="store_true", help="Interactive mode")
@@ -1657,6 +1632,24 @@ Examples:
     p_config_validate.add_argument("--format", choices=["text", "json"], default="text")
     p_config.set_defaults(func=cmd_config, config_action="validate")
     p_config_validate.set_defaults(func=cmd_config, config_action="validate")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog="regula",
+        description="AI Governance Risk Indication for Code",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=_MAIN_EPILOG,
+    )
+    parser.add_argument("--ci", action="store_true",
+                        help="CI mode: exit 1 on any WARN or BLOCK finding (implies --strict)")
+    parser.add_argument("--config", help="Custom policy configuration file path")
+    parser.add_argument("--rules", help="Path to custom rules file (regula-rules.yaml)")
+    parser.add_argument("--lang", choices=["en", "pt-BR", "de"], default="en",
+                        help="Output language (default: en)")
+
+    subparsers = parser.add_subparsers(dest="command")
+    _build_subparsers(subparsers)
 
     args = parser.parse_args()
 

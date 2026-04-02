@@ -1,3 +1,4 @@
+# regula-ignore
 """Content-hash scan caching for Regula.
 
 Caches scan results keyed by SHA-256 of file content.

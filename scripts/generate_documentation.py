@@ -25,6 +25,7 @@ from log_event import log_event
 from code_analysis import analyse_project_code
 from ast_analysis import parse_python_file, detect_human_oversight, detect_logging_practices, trace_ai_data_flow, resolve_cross_file_ai_flows
 from dependency_scan import parse_requirements_txt, parse_pyproject_toml, is_ai_dependency
+from constants import CODE_EXTENSIONS, SKIP_DIRS, MODEL_EXTENSIONS
 
 
 def extract_ai_dependencies(project_path: str) -> list:
@@ -75,21 +76,17 @@ def scan_project(project_path: str) -> dict:
         RiskTier.LIMITED_RISK: 2, RiskTier.HIGH_RISK: 3, RiskTier.PROHIBITED: 4,
     }
 
-    skip_dirs = {".git", "node_modules", "__pycache__", "venv", ".venv", "dist", "build", ".next"}
-    code_extensions = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs", ".java", ".go", ".rs", ".c", ".cpp"}
-    model_extensions = {".onnx", ".pt", ".pth", ".pkl", ".joblib", ".h5", ".hdf5", ".safetensors", ".gguf", ".ggml"}
-
     for root, dirs, files in os.walk(project):
-        dirs[:] = [d for d in dirs if d not in skip_dirs]
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             filepath = Path(root) / filename
             rel_path = filepath.relative_to(project)
 
-            if filepath.suffix in model_extensions:
+            if filepath.suffix in MODEL_EXTENSIONS:
                 findings["model_files"].append(str(rel_path))
                 continue
 
-            if filepath.suffix in code_extensions:
+            if filepath.suffix in CODE_EXTENSIONS:
                 try:
                     content = filepath.read_text(encoding="utf-8", errors="ignore")
                 except (PermissionError, OSError):
@@ -125,8 +122,6 @@ def ast_analyse_project(project_path: str) -> dict:
         total_unlogged  — AI operations without nearby logging
     """
     project = Path(project_path).resolve()
-    skip_dirs = {".git", "node_modules", "__pycache__", "venv", ".venv",
-                 "dist", "build", ".next", ".tox", "tests"}
 
     all_ai_imports: set = set()
     all_ai_functions: list = []
@@ -139,7 +134,7 @@ def ast_analyse_project(project_path: str) -> dict:
     all_data_flows: list = []
 
     for filepath in project.rglob("*.py"):
-        if any(d in filepath.relative_to(project).parts for d in skip_dirs):
+        if any(d in filepath.relative_to(project).parts for d in SKIP_DIRS):
             continue
         try:
             content = filepath.read_text(encoding="utf-8", errors="ignore")
@@ -244,8 +239,6 @@ _[TO BE COMPLETED — configure in regula-policy.yaml]_
 
 def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> str:
     """Generate Annex IV compliant documentation."""
-    skip_dirs = {".git", "node_modules", "__pycache__", "venv", ".venv", "dist", "build", ".next", ".tox", "tests"}
-    code_extensions = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs", ".java", ".go", ".rs", ".c", ".cpp"}
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     highest = findings["highest_risk"]
     if isinstance(highest, RiskTier):
@@ -667,7 +660,7 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
     detected_standards = set()
     resolved_project = str(Path(project_path).resolve())
     for root, dirs, files in os.walk(resolved_project):
-        dirs[:] = [d for d in dirs if d not in skip_dirs]
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             fp = Path(root) / filename
             if fp.suffix in {".md", ".txt", ".rst", ".yaml", ".yml", ".py", ".js", ".ts"}:
@@ -739,10 +732,10 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
     ]
     resolved_project_9 = Path(project_path).resolve()
     for root, dirs, files in os.walk(str(resolved_project_9)):
-        dirs[:] = [d for d in dirs if d not in skip_dirs]
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             fp = Path(root) / filename
-            if fp.suffix in code_extensions | {".yaml", ".yml", ".md", ".txt"}:
+            if fp.suffix in CODE_EXTENSIONS | {".yaml", ".yml", ".md", ".txt"}:
                 try:
                     text = fp.read_text(encoding="utf-8", errors="ignore")[:5000]
                     for pattern, label in monitoring_patterns_re:
