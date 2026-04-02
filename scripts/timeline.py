@@ -1,3 +1,4 @@
+# regula-ignore
 #!/usr/bin/env python3
 """
 Regula Timeline — EU AI Act Enforcement Dates

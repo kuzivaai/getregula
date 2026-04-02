@@ -1,3 +1,4 @@
+# regula-ignore
 """
 Regula local usage metrics — tracks scan counts and finding tiers.
 

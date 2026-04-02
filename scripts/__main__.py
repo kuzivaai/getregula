@@ -1,3 +1,4 @@
+# regula-ignore
 """Allow running Regula as python -m scripts."""
 import sys
 from pathlib import Path

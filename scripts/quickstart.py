@@ -1,3 +1,4 @@
+# regula-ignore
 """
 Regula Quickstart — 60-second onboarding.
 

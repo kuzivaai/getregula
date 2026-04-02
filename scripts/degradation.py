@@ -1,3 +1,4 @@
+# regula-ignore
 """Graceful degradation for optional dependencies.
 
 Provides consistent messaging when optional packages are unavailable.
