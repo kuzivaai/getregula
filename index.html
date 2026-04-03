@@ -16,165 +16,648 @@
     <link rel="alternate" hreflang="en" href="https://getregula.com/">
     <link rel="alternate" hreflang="de" href="https://getregula.com/de.html">
     <link rel="alternate" hreflang="pt-BR" href="https://getregula.com/pt-br.html">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%231d4ed8'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        /* ===== RESET & BASE ===== */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', system-ui, sans-serif; background: #faf9f7; color: #3d3d4e; line-height: 1.6; -webkit-font-smoothing: antialiased;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23c9c6c0' fill-opacity='0.08'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #070711;
+            color: #e2e2f0;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
         code, .mono { font-family: 'JetBrains Mono', monospace; }
-        a { color: #1d4ed8; text-decoration: none; }
-        a:hover { color: #2563eb; }
+        a { color: #3b82f6; text-decoration: none; transition: color 0.15s; }
+        a:hover { color: #60a5fa; }
 
-        /* NAV */
-        .nav { position: sticky; top: 0; z-index: 100; height: 52px; padding: 0 24px;
-            display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 1px solid transparent; transition: all 0.2s; }
-        .nav.scrolled { background: rgba(250,249,247,0.95); backdrop-filter: blur(12px); border-color: #e5e3df; }
-        .nav-brand { font-weight: 700; font-size: 16px; color: #1a1a2e; letter-spacing: -0.02em; }
-        .nav-right { display: flex; gap: 20px; font-size: 13px; align-items: center; }
-        .nav-right a { color: #6b6b80; } .nav-right a:hover { color: #1a1a2e; }
-        .nav-right .active { color: #1a1a2e; font-weight: 600; }
+        /* ===== SCROLL PROGRESS BAR ===== */
+        #progress-bar {
+            position: fixed;
+            top: 0; left: 0;
+            width: 0%;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #7c3aed);
+            z-index: 999;
+            transition: width 0.1s linear;
+        }
 
-        /* HERO — two column */
-        .hero { max-width: 1200px; margin: 0 auto; padding: 32px 24px 0;
-            display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
-        .hero-text { max-width: 480px; }
-        .badge { display: inline-flex; align-items: center; gap: 6px;
-            font-size: 12px; color: #6b6b80; border: 1px solid #d4d2cd; border-radius: 100px;
-            padding: 4px 12px; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; }
-        .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: #16a34a; }
-        .hero h1 { font-size: 40px; font-weight: 700; color: #1a1a2e; line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 16px; }
-        .hero h1 .hl { color: #1d4ed8; }
-        .hero .sub { font-size: 16px; color: #5a5a6e; line-height: 1.6; margin-bottom: 28px; }
+        /* ===== NAV ===== */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: 52px;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid transparent;
+            transition: background 0.2s, border-color 0.2s, backdrop-filter 0.2s;
+        }
+        .nav.scrolled {
+            background: rgba(7, 7, 17, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-color: rgba(255,255,255,0.07);
+        }
+        .nav-brand {
+            font-weight: 700;
+            font-size: 16px;
+            color: #e2e2f0;
+            letter-spacing: -0.02em;
+        }
+        .nav-right {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            align-items: center;
+        }
+        .nav-right a { color: #8888aa; }
+        .nav-right a:hover { color: #e2e2f0; }
+        .nav-right .active { color: #e2e2f0; font-weight: 600; }
+
+        /* ===== HERO ===== */
+        .hero-wrap {
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-glow {
+            position: absolute;
+            top: -20%;
+            right: -5%;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 72px 32px 48px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 56px;
+            align-items: center;
+            position: relative;
+        }
+        .hero-text { max-width: 520px; }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #8888aa;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 100px;
+            padding: 4px 12px;
+            margin-bottom: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255,255,255,0.03);
+        }
+        .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: #10b981; }
+        .hero h1 {
+            font-size: 60px;
+            font-weight: 700;
+            color: #e2e2f0;
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+            margin-bottom: 20px;
+        }
+        .hero h1 .hl { color: #3b82f6; }
+        .hero .sub {
+            font-size: 16px;
+            color: #8888aa;
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+        .hero .sub strong { color: #e2e2f0; }
+
+        /* COUNTDOWN */
+        .countdown-wrap {
+            margin-bottom: 28px;
+            padding: 14px 16px;
+            background: rgba(245, 158, 11, 0.07);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .countdown-label {
+            font-size: 11px;
+            color: #8888aa;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 6px;
+        }
+        .countdown-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #f59e0b;
+            font-weight: 500;
+        }
+        .countdown-caveat {
+            font-size: 11px;
+            color: #44445a;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        /* INSTALL */
         .install-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-        .install-box { display: inline-flex; align-items: center; gap: 10px;
-            background: #1a1a2e; border: 1px solid #2d2d4a; border-radius: 8px;
-            padding: 10px 16px; cursor: pointer; transition: border-color 0.2s; }
-        .install-box:hover { border-color: #4a4a6a; }
-        .install-box .dollar { color: #6b6b8a; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+        .install-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #0e0e1a;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 12px 18px;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .install-box:hover { border-color: rgba(255,255,255,0.2); background: #141428; }
+        .install-box .dollar { color: #44445a; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
         .install-box .cmd { color: #7dd3fc; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
-        .install-box .cp { color: #8888a4; font-size: 11px; }
-        .gh-link { display: inline-flex; align-items: center; gap: 6px; color: #6b6b80; font-size: 13px; }
-        .gh-link:hover { color: #1a1a2e; }
+        .install-box .cp {
+            color: #44445a;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            transition: color 0.2s;
+        }
+        .install-box.copied .cp { color: #10b981; }
+        .gh-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #8888aa;
+            font-size: 13px;
+        }
+        .gh-link:hover { color: #e2e2f0; }
         .gh-link svg { width: 16px; height: 16px; fill: currentColor; }
 
-        /* TERMINAL — stays dark (it's a terminal) */
-        .term { background: #1a1a2e; border: 1px solid #2d2d4a; border-radius: 10px; overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
-        .term-bar { display: flex; gap: 6px; padding: 10px 14px; background: #16162a; border-bottom: 1px solid #2d2d4a; }
+        /* ===== TERMINAL ===== */
+        .term-wrap {
+            background: #0e0e1a;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+        }
+        .term-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: #080813;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
         .term-dot { width: 10px; height: 10px; border-radius: 50%; }
         .td-r { background: #ef4444; } .td-y { background: #eab308; } .td-g { background: #22c55e; }
-        .term pre { padding: 16px 20px; font-family: 'JetBrains Mono', monospace;
-            font-size: 12.5px; line-height: 1.7; color: #a1a1aa; overflow-x: auto; margin: 0; }
-        .term .p { color: #6b6b8a; } .term .c { color: #e4e4e7; }
-        .term .h { color: #38bdf8; font-weight: 500; }
-        .term .g { color: #22c55e; } .term .y { color: #eab308; } .term .m { color: #6b6b8a; }
-        .term hr { border: none; border-top: 1px solid #2d2d4a; margin: 6px 0; }
-
-        /* STATS */
-        .stats { max-width: 1200px; margin: 0 auto; padding: 48px 24px 0;
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-        .st { background: #ffffff; border: 1px solid #e5e3df; border-radius: 8px;
-            padding: 20px; text-align: center; }
-        .st-n { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 600; color: #1a1a2e; }
-        .st-l { font-size: 13px; color: #6b6b80; margin-top: 2px; }
-
-        /* SECTIONS */
-        .sec { max-width: 1200px; margin: 0 auto; padding: 56px 24px 0; }
-        .sec-head { font-size: 22px; font-weight: 600; color: #1a1a2e; letter-spacing: -0.02em; margin-bottom: 8px; }
-        .sec-head .hl { color: #1d4ed8; }
-        .sec-sub { font-size: 14px; color: #6b6b80; margin-bottom: 24px; }
-        .sep { max-width: 1200px; margin: 48px auto 0; height: 1px; background: #e5e3df; }
-
-        /* 3-STEP */
-        .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-        .step { background: #ffffff; border: 1px solid #e5e3df; border-radius: 8px; padding: 24px; }
-        .step-n { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #1d4ed8;
-            text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
-        .step h3 { font-size: 16px; font-weight: 600; color: #1a1a2e; margin-bottom: 6px; }
-        .step p { font-size: 13px; color: #5a5a6e; line-height: 1.5; }
-        .step code { font-size: 12px; color: #1d4ed8; background: rgba(29,78,216,0.06);
-            padding: 2px 6px; border-radius: 3px; display: inline-block; margin-top: 10px; }
-
-        /* ARTICLE GRID */
-        .art-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .art-card { background: #ffffff; border: 1px solid #e5e3df; border-radius: 8px; padding: 16px 18px; }
-        .art-card .tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #1d4ed8;
-            margin-bottom: 4px; font-weight: 500; }
-        .art-card h4 { font-size: 14px; font-weight: 600; color: #1a1a2e; margin-bottom: 3px; }
-        .art-card p { font-size: 12px; color: #6b6b80; line-height: 1.4; }
-
-        /* URGENCY */
-        .urgency { max-width: 1200px; margin: 0 auto; padding: 48px 24px 0; }
-        .urgency-box { display: flex; gap: 24px; align-items: flex-start;
-            background: #fffbeb; border: 1px solid #fde68a; border-left: 3px solid #d97706;
-            border-radius: 0 8px 8px 0; padding: 24px; }
-        .urgency-box .date { font-family: 'JetBrains Mono', monospace; font-size: 13px;
-            color: #d97706; font-weight: 500; white-space: nowrap; min-width: 80px; }
-        .urgency-box .body { font-size: 14px; color: #5a5a6e; line-height: 1.6; }
-        .urgency-box strong { color: #1a1a2e; }
-
-        /* CMD GRID */
-        .cmds { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .cm { display: flex; align-items: baseline; gap: 10px; background: #1a1a2e;
-            border: 1px solid #2d2d4a; border-radius: 6px; padding: 10px 14px; }
-        .cm code { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #7dd3fc; white-space: nowrap; }
-        .cm span { font-size: 12px; color: #8888a4; }
-
-        /* FW */
-        .fw-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 40px; }
-        .fw { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #5a5a6e; padding: 4px 0; }
-        .fw-d { width: 5px; height: 5px; border-radius: 50%; background: #1d4ed8; flex-shrink: 0; }
-        .fw.pri { color: #1a1a2e; font-weight: 500; }
-
-        /* FINAL CTA */
-        .final { text-align: center; padding: 56px 24px 48px;
-            background: linear-gradient(180deg, transparent, rgba(29,78,216,0.03) 50%, transparent); }
-        .final h2 { font-size: 24px; font-weight: 600; color: #1a1a2e; margin-bottom: 8px; letter-spacing: -0.02em; }
-        .final p { font-size: 14px; color: #6b6b80; margin-bottom: 20px; }
-
-        /* FOOTER */
-        .foot { max-width: 1200px; margin: 0 auto; padding: 24px; border-top: 1px solid #e5e3df;
-            display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-        .foot-links { display: flex; gap: 20px; }
-        .foot-links a { color: #6b6b80; } .foot-links a:hover { color: #1a1a2e; }
-        .foot-legal { color: #9b9baa; text-align: right; }
-
-        /* MOBILE */
-        @media (max-width: 768px) {
-            .hero { grid-template-columns: 1fr; gap: 32px; padding: 48px 20px 0; }
-            .hero h1 { font-size: 30px; }
-            .stats { grid-template-columns: repeat(2, 1fr); padding: 32px 20px 0; }
-            .steps { grid-template-columns: 1fr; }
-            .art-grid { grid-template-columns: 1fr; }
-            .cmds { grid-template-columns: 1fr; }
-            .fw-list { grid-template-columns: 1fr; }
-            .sec { padding: 40px 20px 0; }
-            .urgency { padding: 40px 20px 0; }
-            .foot { flex-direction: column; gap: 12px; text-align: center; }
-            .foot-legal { text-align: center; }
-            .term pre { font-size: 11px; padding: 12px 16px; }
+        .term-tabs {
+            display: flex;
+            gap: 0;
+            padding: 0 16px;
+            background: #080813;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
         }
-        /* EMAIL CAPTURE */
-        .notify { max-width: 480px; margin: 24px auto 0; display: flex; gap: 8px; }
-        .notify input { flex: 1; padding: 10px 14px; border: 1px solid #e5e3df; border-radius: 8px;
-            font-size: 14px; font-family: inherit; background: #ffffff; color: #1a1a2e; }
-        .notify input::placeholder { color: #9b9baa; }
-        .notify button { padding: 10px 20px; background: #1d4ed8; color: #ffffff; border: none;
-            border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; }
-        .notify button:hover { background: #1e40af; }
-        .notify-msg { text-align: center; font-size: 13px; color: #6b6b80; margin-top: 8px; }
+        .term-tab {
+            padding: 7px 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #44445a;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: color 0.15s, border-color 0.15s;
+            user-select: none;
+        }
+        .term-tab:hover { color: #8888aa; }
+        .term-tab.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+        .term-body { position: relative; min-height: 340px; }
+        .term-panel {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+        .term-panel.active {
+            opacity: 1;
+            position: relative;
+            pointer-events: auto;
+        }
+        .term-panel pre {
+            padding: 20px 22px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.75;
+            color: #8888aa;
+            overflow-x: auto;
+            margin: 0;
+            white-space: pre;
+        }
+        .t-p { color: #44445a; }
+        .t-c { color: #e2e2f0; }
+        .t-h { color: #38bdf8; font-weight: 500; }
+        .t-g { color: #10b981; }
+        .t-y { color: #eab308; }
+        .t-r { color: #ef4444; }
+        .t-m { color: #44445a; }
+        .t-b { color: #3b82f6; }
+        .term-panel pre hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 4px 0; display: block; }
+
+        /* ===== STATS BAR ===== */
+        .stats-bar {
+            background: #0e0e1a;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            margin-top: 64px;
+        }
+        .stats-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+        .stat-item {
+            padding: 28px 24px;
+            text-align: center;
+            border-right: 1px solid rgba(255,255,255,0.07);
+        }
+        .stat-item:last-child { border-right: none; }
+        .stat-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 32px;
+            font-weight: 600;
+            color: #3b82f6;
+            line-height: 1;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+        .stat-label { font-size: 12px; color: #8888aa; }
+
+        /* ===== SECTIONS ===== */
+        .sec {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 32px 0;
+        }
+        .sec-head {
+            font-size: 28px;
+            font-weight: 600;
+            color: #e2e2f0;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+        .sec-head .hl { color: #3b82f6; }
+        .sec-sub { font-size: 14px; color: #8888aa; margin-bottom: 32px; }
+        .sep {
+            max-width: 1200px;
+            margin: 80px auto 0;
+            height: 1px;
+            background: rgba(255,255,255,0.06);
+        }
+
+        /* ===== RISK TIER VISUAL ===== */
+        .tiers { display: flex; flex-direction: column; gap: 6px; }
+        .tier {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            cursor: default;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .tier:hover {
+            transform: translateX(4px) scaleY(1.02);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .tier-r  { background: rgba(239,68,68,0.08);   border-color: rgba(239,68,68,0.2); }
+        .tier-a  { background: rgba(245,158,11,0.08);  border-color: rgba(245,158,11,0.2); }
+        .tier-y  { background: rgba(234,179,8,0.08);   border-color: rgba(234,179,8,0.2); }
+        .tier-g  { background: rgba(16,185,129,0.08);  border-color: rgba(16,185,129,0.2); }
+        .tier-r:hover  { border-color: rgba(239,68,68,0.45); }
+        .tier-a:hover  { border-color: rgba(245,158,11,0.45); }
+        .tier-y:hover  { border-color: rgba(234,179,8,0.45); }
+        .tier-g:hover  { border-color: rgba(16,185,129,0.45); }
+        .tier-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            min-width: 100px;
+            text-align: center;
+        }
+        .tier-r .tier-badge { background: rgba(239,68,68,0.15); color: #ef4444; }
+        .tier-a .tier-badge { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .tier-y .tier-badge { background: rgba(234,179,8,0.15); color: #eab308; }
+        .tier-g .tier-badge { background: rgba(16,185,129,0.15); color: #10b981; }
+        .tier-examples { font-size: 13px; color: #8888aa; flex: 1; }
+        .tier-hint {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #44445a;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .tier:hover .tier-hint { opacity: 1; }
+        .tier-cta { font-size: 13px; color: #8888aa; margin-top: 20px; }
+
+        /* ===== WHAT YOU GET — 4 STEPS ===== */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .step {
+            background: #0e0e1a;
+            padding: 28px;
+            transition: background 0.2s;
+        }
+        .step:hover { background: #141428; }
+        .step-n {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 32px;
+            font-weight: 600;
+            color: rgba(59,130,246,0.25);
+            line-height: 1;
+            margin-bottom: 16px;
+            letter-spacing: -0.04em;
+        }
+        .step h3 { font-size: 15px; font-weight: 600; color: #e2e2f0; margin-bottom: 8px; }
+        .step p { font-size: 13px; color: #8888aa; line-height: 1.6; }
+        .step-cmd {
+            display: inline-block;
+            margin-top: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #3b82f6;
+            background: rgba(59,130,246,0.08);
+            border: 1px solid rgba(59,130,246,0.15);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        /* ===== WHAT IT COVERS ===== */
+        .art-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .art-card {
+            background: #0e0e1a;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 8px;
+            padding: 18px 20px;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+        .art-card:hover {
+            border-color: rgba(255,255,255,0.14);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        .art-card .tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 2px 7px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        .tag-red    { background: rgba(239,68,68,0.12);   color: #ef4444; }
+        .tag-amber  { background: rgba(245,158,11,0.12);  color: #f59e0b; }
+        .tag-blue   { background: rgba(59,130,246,0.12);  color: #3b82f6; }
+        .tag-purple { background: rgba(124,58,237,0.12);  color: #7c3aed; }
+        .art-card h4 { font-size: 14px; font-weight: 600; color: #e2e2f0; margin-bottom: 5px; }
+        .art-card p  { font-size: 12px; color: #8888aa; line-height: 1.5; }
+
+        /* ===== COMMANDS ===== */
+        .cmds { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .cm {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            background: #0e0e1a;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 6px;
+            padding: 12px 16px;
+            transition: border-color 0.2s;
+        }
+        .cm:hover { border-color: rgba(255,255,255,0.14); }
+        .cm code { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #7dd3fc; white-space: nowrap; }
+        .cm span  { font-size: 12px; color: #8888aa; }
+
+        /* ===== COST COMPARISON ===== */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .price-card {
+            background: #0e0e1a;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px;
+            padding: 24px;
+        }
+        .price-card.featured {
+            border-color: rgba(59,130,246,0.4);
+            background: rgba(59,130,246,0.05);
+        }
+        .price-tier {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #8888aa;
+            margin-bottom: 10px;
+        }
+        .price-featured-tier { color: #10b981; }
+        .price-amount {
+            font-size: 22px;
+            font-weight: 700;
+            color: #e2e2f0;
+            letter-spacing: -0.03em;
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+        .price-featured-amount { color: #10b981; }
+        .price-desc { font-size: 13px; color: #8888aa; line-height: 1.6; }
+
+        /* ===== FINAL CTA ===== */
+        .final-wrap {
+            position: relative;
+            overflow: hidden;
+            margin-top: 80px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .final-glow {
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        .final {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 80px 32px;
+            text-align: center;
+            position: relative;
+        }
+        .final h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #e2e2f0;
+            letter-spacing: -0.03em;
+            margin-bottom: 10px;
+        }
+        .final p { font-size: 15px; color: #8888aa; margin-bottom: 28px; line-height: 1.6; }
+        .final .install-box { margin: 0 auto 24px; }
+
+        /* EMAIL */
+        .notify {
+            max-width: 400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 8px;
+        }
+        .notify input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #0e0e1a;
+            color: #e2e2f0;
+            transition: border-color 0.2s;
+        }
+        .notify input:focus { outline: none; border-color: rgba(59,130,246,0.5); }
+        .notify input::placeholder { color: #44445a; }
+        .notify button {
+            padding: 10px 20px;
+            background: #3b82f6;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s;
+        }
+        .notify button:hover { background: #60a5fa; }
+        .notify-msg { text-align: center; font-size: 12px; color: #44445a; margin-top: 10px; }
+
+        /* ===== FOOTER ===== */
+        .foot {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 28px 32px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .foot-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+        }
+        .foot-left {}
+        .foot-brand {
+            font-weight: 700;
+            font-size: 14px;
+            color: #e2e2f0;
+            margin-bottom: 6px;
+        }
+        .foot-links {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .foot-links a { color: #8888aa; font-size: 13px; }
+        .foot-links a:hover { color: #e2e2f0; }
+        .foot-right { text-align: right; max-width: 400px; }
+        .foot-legal {
+            font-size: 12px;
+            color: #44445a;
+            line-height: 1.6;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 6px;
+        }
+        .foot-legal strong { color: #8888aa; }
+        .foot-copy { font-size: 12px; color: #44445a; margin-top: 8px; }
+
+        /* ===== SCROLL REVEAL ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== MOBILE ===== */
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; gap: 36px; padding: 48px 20px 32px; }
+            .hero h1 { font-size: 36px; }
+            .stats-inner { grid-template-columns: repeat(2, 1fr); }
+            .stat-item:nth-child(2) { border-right: none; }
+            .art-grid { grid-template-columns: 1fr; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            .cmds { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .nav { padding: 0 16px; }
+            .hero { padding: 36px 16px 24px; }
+            .sec { padding: 56px 16px 0; }
+            .sep { margin: 56px auto 0; }
+            .steps { grid-template-columns: 1fr; }
+            .stats-inner { grid-template-columns: repeat(2, 1fr); }
+            .tiers {}
+            .tier-hint { display: none; }
+            .foot-inner { flex-direction: column; }
+            .foot-right { text-align: left; max-width: 100%; }
+            .final { padding: 56px 16px; }
+            .notify { flex-direction: column; }
+            .hero-glow { width: 400px; height: 400px; }
+        }
     </style>
-    <!-- Analytics: replace data-domain with your actual domain -->
+    <!-- Analytics -->
     <script defer data-domain="getregula.com" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
-<nav class="nav">
+<div id="progress-bar"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
     <div class="nav-brand">Regula</div>
     <div class="nav-right">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
@@ -185,204 +668,450 @@
     </div>
 </nav>
 
-<!-- HERO: text left, terminal right -->
-<div class="hero">
-    <div class="hero-text">
-        <div class="badge"><span class="badge-dot"></span> Open-source CLI &middot; v1.5.0</div>
-        <h1>Is your AI app <span class="hl">legal</span> in the EU?</h1>
-        <p class="sub">The EU AI Act is law. Fines run up to <strong style="color:#1a1a2e;">&euro;35&nbsp;million</strong>. Most teams haven't checked where they stand. Regula scans your code and tells you &mdash; in seconds, for free.</p>
-        <div class="install-row">
-            <div class="install-box" onclick="navigator.clipboard.writeText('pip install regula-ai');this.querySelector('.cp').textContent='copied'">
-                <span class="dollar">$</span>
-                <span class="cmd">pip install regula-ai</span>
-                <span class="cp">copy</span>
-            </div>
-            <a href="https://github.com/kuzivaai/getregula" class="gh-link">
-                <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-                View on GitHub
-            </a>
-        </div>
-    </div>
-    <div class="term">
-        <div class="term-bar"><div class="term-dot td-r"></div><div class="term-dot td-y"></div><div class="term-dot td-g"></div></div>
-        <pre><span class="p">$</span> <span class="c">regula check . --explain</span>
+<!-- HERO -->
+<div class="hero-wrap">
+    <div class="hero-glow"></div>
+    <div class="hero">
+        <div class="hero-text">
+            <div class="badge"><span class="badge-dot"></span> Open-source CLI &middot; v1.5.0 &middot; MIT</div>
+            <h1>Is your AI app <span class="hl">legal</span> in Europe?</h1>
+            <p class="sub">The EU AI Act is law. Fines reach <strong>&euro;35M</strong>. Regula scans your code and tells you which rules apply &mdash; free, in seconds, with no account.</p>
 
-<span class="h">Classification: HIGH-RISK</span>
+            <div class="countdown-wrap" id="countdown-wrap">
+                <div class="countdown-label">EU AI Act enforcement</div>
+                <div class="countdown-display" id="countdown">calculating&hellip;</div>
+                <div class="countdown-caveat">(or Dec 2027 if Digital Omnibus passes)</div>
+            </div>
+
+            <div class="install-row">
+                <div class="install-box" id="install-btn" onclick="copyInstall(this)">
+                    <span class="dollar">$</span>
+                    <span class="cmd">pip install regula-ai</span>
+                    <span class="cp">copy</span>
+                </div>
+                <a href="https://github.com/kuzivaai/getregula" class="gh-link">
+                    <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                    View on GitHub
+                </a>
+            </div>
+        </div>
+
+        <!-- TERMINAL -->
+        <div class="term-wrap">
+            <div class="term-bar">
+                <div class="term-dot td-r"></div>
+                <div class="term-dot td-y"></div>
+                <div class="term-dot td-g"></div>
+            </div>
+            <div class="term-tabs">
+                <div class="term-tab active" onclick="switchTab('check', this)">check</div>
+                <div class="term-tab" onclick="switchTab('plan', this)">plan</div>
+                <div class="term-tab" onclick="switchTab('gap', this)">gap</div>
+            </div>
+            <div class="term-body">
+                <div class="term-panel active" id="tab-check">
+                    <pre><span class="t-p">$</span> <span class="t-c">regula check . --explain</span>
+
+<span class="t-h">Classification: HIGH-RISK</span>
   Annex III, Category 5
 
-<span class="y">WHY:</span>
+<span class="t-y">WHY:</span>
   scoring.py:23 &mdash; essential_services
-    <span class="m">Code: score = model.predict(applicant)</span>
+    <span class="t-m">Code: score = model.predict(applicant)</span>
     Legal basis: Annex III &mdash; Articles 9-15
     False positive if: not a credit decision
 
-<span class="h">ROLE:</span> DEPLOYER (confidence: high)
-  <span class="m">- OpenAI API usage</span>
+<span class="t-h">ROLE:</span> DEPLOYER (confidence: high)
+  <span class="t-m">- OpenAI API usage detected</span>
 
-<span class="y">OBLIGATIONS:</span>
-  <span class="c">[HIGH]</span> Art. 9  Risk management   &mdash; 40-60h
-  <span class="c">[HIGH]</span> Art. 14 Human oversight   &mdash; 16-24h
-  Total: 160-324h | Deadline: <span class="y">Aug 2026</span></pre>
+<span class="t-y">OBLIGATIONS:</span>
+  <span class="t-c">[HIGH]</span> Art. 9  Risk management   &mdash; 40-60h
+  <span class="t-c">[HIGH]</span> Art. 14 Human oversight  &mdash; 16-24h
+  Total: 160-324h | Deadline: <span class="t-y">Aug 2026</span></pre>
+                </div>
+                <div class="term-panel" id="tab-plan">
+                    <pre><span class="t-p">$</span> <span class="t-c">regula plan .</span>
+
+<span class="t-h">COMPLIANCE PLAN  &middot;  HIGH-RISK (Annex III, Category 5)</span>
+
+Priority 1 &mdash; Risk Management System (Art. 9)
+  Effort: 40&ndash;60h
+  <span class="t-r">&times;</span> No risk assessment file found
+  <span class="t-r">&times;</span> No model evaluation documented
+
+Priority 2 &mdash; Human Oversight (Art. 14)
+  Effort: 16&ndash;24h
+  <span class="t-r">&times;</span> No review-before-action pattern detected
+  <span class="t-r">&times;</span> No override mechanism found
+
+Priority 3 &mdash; Technical Documentation (Art. 11)
+  Effort: 8&ndash;12h
+  <span class="t-g">&#10003;</span> Annex IV template: regula docs .
+
+Total: 64&ndash;96h estimated effort</pre>
+                </div>
+                <div class="term-panel" id="tab-gap">
+                    <pre><span class="t-p">$</span> <span class="t-c">regula gap .</span>
+
+<span class="t-h">COMPLIANCE GAP ASSESSMENT</span>
+
+Art. 9  Risk management    <span class="t-r">&#9608;&#9608;</span><span class="t-m">&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;</span>  20%  <span class="t-r">FAIL</span>
+Art. 10 Data governance    <span class="t-y">&#9608;&#9608;&#9608;&#9608;</span><span class="t-m">&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;</span>  40%  <span class="t-y">WARN</span>
+Art. 11 Documentation      <span class="t-y">&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;</span><span class="t-m">&#9617;&#9617;&#9617;&#9617;</span>  60%  <span class="t-y">WARN</span>
+Art. 12 Record-keeping     <span class="t-g">&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;</span><span class="t-m">&#9617;&#9617;</span>  80%  <span class="t-g">PASS</span>
+Art. 13 Transparency       <span class="t-m">&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;</span>   0%  <span class="t-r">FAIL</span>
+Art. 14 Human oversight    <span class="t-r">&#9608;&#9608;&#9608;</span><span class="t-m">&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;</span>  30%  <span class="t-r">FAIL</span>
+Art. 15 Accuracy           <span class="t-y">&#9608;&#9608;&#9608;&#9608;&#9608;</span><span class="t-m">&#9617;&#9617;&#9617;&#9617;&#9617;</span>  50%  <span class="t-y">WARN</span>
+
+Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- STATS -->
-<div class="stats">
-    <div class="st"><div class="st-n">Free</div><div class="st-l">open source &middot; MIT</div></div>
-    <div class="st"><div class="st-n">32</div><div class="st-l">risk pattern groups</div></div>
-    <div class="st"><div class="st-n">8</div><div class="st-l">programming languages</div></div>
-    <div class="st"><div class="st-n">0</div><div class="st-l">external dependencies</div></div>
+<!-- STATS BAR -->
+<div class="stats-bar reveal">
+    <div class="stats-inner">
+        <div class="stat-item">
+            <div class="stat-num">Free</div>
+            <div class="stat-label">open source &middot; MIT licence</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">32</div>
+            <div class="stat-label">risk pattern groups</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">8</div>
+            <div class="stat-label">programming languages</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">0</div>
+            <div class="stat-label">external dependencies</div>
+        </div>
+    </div>
 </div>
+
+<!-- RISK TIER VISUAL -->
+<div class="sec reveal">
+    <div class="sec-head">Four tiers. One command tells you which one.</div>
+    <p class="sec-sub">The EU AI Act sorts every AI system into a risk category. The obligations — and fines — scale accordingly.</p>
+    <div class="tiers">
+        <div class="tier tier-r">
+            <div class="tier-badge">Prohibited</div>
+            <div class="tier-examples">Social scoring &middot; Emotion inference &middot; Real-time biometrics &middot; Subliminal manipulation</div>
+            <div class="tier-hint">Art. 5 &mdash; banned outright &rarr;</div>
+        </div>
+        <div class="tier tier-a">
+            <div class="tier-badge">High-Risk</div>
+            <div class="tier-examples">Credit scoring &middot; Hiring &middot; Medical diagnosis &middot; Education &middot; Law enforcement</div>
+            <div class="tier-hint">Art. 9&ndash;15 apply &rarr;</div>
+        </div>
+        <div class="tier tier-y">
+            <div class="tier-badge">Limited Risk</div>
+            <div class="tier-examples">Chatbots &middot; Synthetic content &middot; Emotion recognition &middot; Deep fakes</div>
+            <div class="tier-hint">Transparency rules &rarr;</div>
+        </div>
+        <div class="tier tier-g">
+            <div class="tier-badge">Minimal Risk</div>
+            <div class="tier-examples">Spam filters &middot; AI games &middot; Basic recommendations &middot; Search ranking</div>
+            <div class="tier-hint">No mandatory requirements &rarr;</div>
+        </div>
+    </div>
+    <p class="tier-cta">Regula tells you where your code lands &mdash; and exactly why.</p>
+</div>
+
+<div class="sep"></div>
 
 <!-- WHO IS THIS FOR -->
-<div class="sec">
-    <div class="sec-head">Built an AI app? This is for you.</div>
+<div class="sec reveal">
+    <div class="sec-head">Built something with AI? This is for you.</div>
     <p class="sec-sub">Whether you wrote every line or an AI wrote it for you.</p>
-    <div class="steps" style="grid-template-columns: repeat(2, 1fr);">
+    <div class="steps">
         <div class="step">
-            <div class="step-n">Building with AI tools</div>
-            <h3>Used Cursor, Lovable, Bolt, or Claude to build your app?</h3>
-            <p>If your app uses AI models &mdash; a chatbot, a screening tool, a recommendation engine &mdash; the EU AI Act probably applies. Regula checks your code and tells you which rules apply in plain English.</p>
+            <div class="step-n">01</div>
+            <h3>Shipping AI features to Europe</h3>
+            <p>If your app uses AI models &mdash; a chatbot, a screening tool, a recommendation engine &mdash; the EU AI Act likely applies. Regula checks your code and tells you which rules apply in plain English.</p>
+            <span class="step-cmd">regula check . --explain</span>
         </div>
         <div class="step">
-            <div class="step-n">Shipping AI to production</div>
-            <h3>Developer deploying AI features to the EU market?</h3>
-            <p>Regula maps your code to the exact EU AI Act articles, shows which risk tier you're in, estimates the compliance effort per article, and generates the documentation auditors need.</p>
+            <div class="step-n">02</div>
+            <h3>Built with Cursor, Lovable, Bolt, or Claude?</h3>
+            <p>AI-generated code has the same compliance obligations as hand-written code. Regula reads what was built and maps it to the regulation &mdash; no matter how it was written.</p>
+            <span class="step-cmd">regula check .</span>
+        </div>
+        <div class="step">
+            <div class="step-n">03</div>
+            <h3>Need to prepare for an audit?</h3>
+            <p>Regula generates the technical documentation, gap assessment, and evidence bundle that compliance auditors expect to see. You fill in the business context.</p>
+            <span class="step-cmd">regula evidence-pack .</span>
+        </div>
+        <div class="step">
+            <div class="step-n">04</div>
+            <h3>Responsible for AI governance?</h3>
+            <p>Run Regula as part of your CI pipeline. Get a machine-readable compliance report on every pull request. Cross-maps to ISO 42001, NIST AI RMF, and 9 other frameworks.</p>
+            <span class="step-cmd">regula gap . --format json</span>
         </div>
     </div>
 </div>
 
 <div class="sep"></div>
 
-<!-- URGENCY -->
-<div class="urgency">
-    <div class="urgency-box">
-        <div class="date">2026&ndash;27</div>
-        <div class="body"><strong>High-risk obligations</strong> start August 2026 &mdash; or December 2027 if the Digital Omnibus passes (Parliament voted 569&ndash;45 in favour, March 2026). Either way, the requirements don't change. <strong>You need to know where you stand.</strong></div>
-    </div>
-</div>
-
-<div class="sep"></div>
-
-<!-- WHAT REGULA DOES -->
-<div class="sec">
+<!-- WHAT YOU GET -->
+<div class="sec reveal">
     <div class="sec-head">What you get</div>
     <p class="sec-sub">Run one command. Get answers you can act on.</p>
     <div class="steps">
         <div class="step">
-            <div class="step-n">1. Your risk level</div>
-            <h3>Prohibited, high-risk, limited, or minimal &mdash; with the reason why</h3>
-            <p>Points to the exact line of code that triggered the classification, cites the legal basis, and tells you when it might be a false positive. No guessing.</p>
-            <code>regula check . --explain</code>
+            <div class="step-n">01</div>
+            <h3>Your risk level &mdash; with the reason why</h3>
+            <p>Points to the exact line of code that triggered the classification, cites the legal basis, and flags when it might be a false positive. No guessing.</p>
+            <span class="step-cmd">regula check . --explain</span>
         </div>
         <div class="step">
-            <div class="step-n">2. What you need to do</div>
-            <h3>A prioritised list of compliance tasks with effort estimates</h3>
-            <p>If you're high-risk, the EU AI Act requires specific actions (risk management, logging, human oversight, documentation). Regula tells you exactly which ones apply and how long each takes.</p>
-            <code>regula plan --project .</code>
+            <div class="step-n">02</div>
+            <h3>A prioritised list of tasks with effort estimates</h3>
+            <p>If you're high-risk, the EU AI Act requires specific actions: risk management, logging, human oversight, documentation. Regula lists which apply and estimates hours per item.</p>
+            <span class="step-cmd">regula plan .</span>
         </div>
         <div class="step">
-            <div class="step-n">3. Documentation that writes itself</div>
-            <h3>Technical documentation pulled from your actual code</h3>
-            <p>Reads your dependencies, function signatures, and logging coverage. Generates the documentation skeleton that the law requires. You fill in the business context.</p>
-            <code>regula docs --completion</code>
+            <div class="step-n">03</div>
+            <h3>Documentation generated from your actual code</h3>
+            <p>Reads your dependencies, function signatures, and logging coverage. Generates the Annex IV documentation skeleton the law requires. You fill in the business context.</p>
+            <span class="step-cmd">regula docs .</span>
         </div>
         <div class="step">
-            <div class="step-n">4. Proof for auditors</div>
-            <h3>One command, one folder &mdash; everything an auditor needs</h3>
-            <p>Bundles scan results, gap assessment, documentation draft, dependency report, and audit trail into a single reviewable package with integrity verification.</p>
-            <code>regula evidence-pack --project .</code>
+            <div class="step-n">04</div>
+            <h3>One folder with everything an auditor needs</h3>
+            <p>Bundles scan results, gap assessment, documentation draft, dependency report, and an integrity-verified audit trail into a single reviewable package.</p>
+            <span class="step-cmd">regula evidence-pack .</span>
         </div>
     </div>
 </div>
 
 <div class="sep"></div>
 
-<!-- WHAT IT CHECKS -->
-<div class="sec">
+<!-- WHAT IT COVERS -->
+<div class="sec reveal">
     <div class="sec-head">What the law covers &mdash; and what Regula checks</div>
     <p class="sec-sub">Not a questionnaire. Regula reads your code and maps it to the regulation.</p>
     <div class="art-grid">
-        <div class="art-card"><div class="tag">Banned uses</div><h4>Is your app prohibited?</h4><p>Social scoring, subliminal manipulation, real-time facial recognition, emotion inference in workplaces &mdash; all banned outright.</p></div>
-        <div class="art-card"><div class="tag">High-risk uses</div><h4>Does your app make important decisions?</h4><p>Credit scoring, hiring, medical diagnosis, education assessment, law enforcement, border control &mdash; all classified as high-risk with strict requirements.</p></div>
-        <div class="art-card"><div class="tag">Compliance gaps</div><h4>What&rsquo;s missing from your codebase?</h4><p>Risk management, data governance, logging, transparency, human oversight, accuracy &mdash; scored per article with effort estimates.</p></div>
-        <div class="art-card"><div class="tag">Documentation</div><h4>Can you prove compliance?</h4><p>Auto-generates technical documentation from your actual code &mdash; functions, dependencies, and logging coverage already filled in.</p></div>
-        <div class="art-card"><div class="tag">Security</div><h4>Is your AI code secure?</h4><p>Checks for prompt injection, unsafe model loading, unvalidated AI output, hardcoded keys, and other AI-specific vulnerabilities.</p></div>
-        <div class="art-card"><div class="tag">Transparency</div><h4>Do your users know it&rsquo;s AI?</h4><p>Chatbots must disclose they&rsquo;re not human. Deepfakes must be labelled. Regula checks if your code handles this.</p></div>
+        <div class="art-card">
+            <div class="tag tag-red">Banned uses</div>
+            <h4>Is your app prohibited?</h4>
+            <p>Social scoring, subliminal manipulation, real-time facial recognition, emotion inference in workplaces &mdash; all banned outright under Art. 5.</p>
+        </div>
+        <div class="art-card">
+            <div class="tag tag-amber">High-risk uses</div>
+            <h4>Does your app make important decisions?</h4>
+            <p>Credit scoring, hiring, medical diagnosis, education assessment, law enforcement, border control &mdash; classified as high-risk with strict requirements.</p>
+        </div>
+        <div class="art-card">
+            <div class="tag tag-blue">Compliance gaps</div>
+            <h4>What's missing from your codebase?</h4>
+            <p>Risk management, data governance, logging, transparency, human oversight, accuracy &mdash; scored per article with effort estimates.</p>
+        </div>
+        <div class="art-card">
+            <div class="tag tag-blue">Documentation</div>
+            <h4>Can you prove compliance?</h4>
+            <p>Auto-generates Annex IV technical documentation from your actual code &mdash; functions, dependencies, and logging coverage already populated.</p>
+        </div>
+        <div class="art-card">
+            <div class="tag tag-purple">Security</div>
+            <h4>Is your AI code secure?</h4>
+            <p>Checks for prompt injection, unsafe model loading, unvalidated AI output, hardcoded keys, and other AI-specific vulnerabilities.</p>
+        </div>
+        <div class="art-card">
+            <div class="tag tag-amber">Transparency</div>
+            <h4>Do your users know it's AI?</h4>
+            <p>Chatbots must disclose they're not human. Deepfakes must be labelled. Regula checks whether your code handles this.</p>
+        </div>
     </div>
 </div>
 
 <div class="sep"></div>
 
 <!-- COMMANDS -->
-<div class="sec">
+<div class="sec reveal">
     <div class="sec-head">Five commands. No setup.</div>
     <p class="sec-sub">Install, run, get answers. Works on any project with AI code.</p>
     <div class="cmds">
         <div class="cm"><code>regula check .</code> <span>Find out your risk level</span></div>
         <div class="cm"><code>regula plan .</code> <span>Get a prioritised to-do list</span></div>
-        <div class="cm"><code>regula gap .</code> <span>See what&rsquo;s missing per article</span></div>
+        <div class="cm"><code>regula gap .</code> <span>See what's missing per article</span></div>
         <div class="cm"><code>regula docs .</code> <span>Generate required documentation</span></div>
         <div class="cm"><code>regula evidence-pack .</code> <span>Bundle everything for an auditor</span></div>
     </div>
-    <p style="font-size: 12px; color: #9b9baa; margin-top: 12px;">33 commands. Python, JS, TS, Java, Go, Rust, C, C++. Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU Cyber Resilience Act, and 6 other frameworks.</p>
+    <p style="font-size:12px;color:#44445a;margin-top:14px;font-family:'JetBrains Mono',monospace;">
+        33 commands &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU Cyber Resilience Act, and 7 other frameworks.
+    </p>
 </div>
 
 <div class="sep"></div>
 
-<!-- COST POSITIONING -->
-<div class="sec">
-    <div class="sec-head">Other options cost <span class="hl">$50,000+/year</span></div>
+<!-- COST COMPARISON -->
+<div class="sec reveal">
+    <div class="sec-head">Other options cost <span class="hl">orders of magnitude</span> more</div>
     <p class="sec-sub">Regula is free, open source, and runs on your machine.</p>
-    <div class="steps" style="grid-template-columns: repeat(3, 1fr);">
-        <div class="step">
-            <div class="step-n">Enterprise platforms</div>
-            <h3>$50K&ndash;$500K/year</h3>
-            <p>AI governance dashboards with long sales cycles. Built for large compliance teams, not individual developers or small teams shipping fast.</p>
+    <div class="pricing-grid">
+        <div class="price-card">
+            <div class="price-tier">Enterprise platforms</div>
+            <div class="price-amount">No published prices</div>
+            <p class="price-desc">Enterprise AI governance contracts. No published pricing — long sales cycles, dedicated implementation teams. Built for large compliance departments.</p>
         </div>
-        <div class="step">
-            <div class="step-n">Mid-market tools</div>
-            <h3>&euro;10K&ndash;&euro;80K/year</h3>
-            <p>Compliance platforms adding AI Act modules. Assumes you already have budget, a GRC workflow, and dedicated staff.</p>
+        <div class="price-card">
+            <div class="price-tier">Mid-market tools</div>
+            <div class="price-amount">From &euro;10K+/year</div>
+            <p class="price-desc">Compliance platforms adding AI Act modules. Assumes you already have budget, a GRC workflow, and dedicated staff.</p>
         </div>
-        <div class="step" style="border-color: #1d4ed8;">
-            <div class="step-n" style="color: #16a34a;">Regula</div>
-            <h3 style="color: #16a34a;">Free &amp; open source</h3>
-            <p>Runs on your laptop. No account, no API key, no sales call. Install in 10 seconds, scan your project, get a clear answer. MIT licence.</p>
+        <div class="price-card featured">
+            <div class="price-tier price-featured-tier">Regula</div>
+            <div class="price-amount price-featured-amount">Free &amp; open source</div>
+            <p class="price-desc">Runs on your laptop. No account, no API key, no sales call. Install in 10 seconds, scan your project, get a clear answer. MIT licence.</p>
         </div>
     </div>
 </div>
 
 <!-- FINAL CTA -->
-<div class="final">
-    <h2>Find out where you stand</h2>
-    <p>One command. Takes 10 seconds. No account needed.</p>
-    <div class="install-box" onclick="navigator.clipboard.writeText('pip install regula-ai');this.querySelector('.cp').textContent='copied'" style="margin:0 auto;">
-        <span class="dollar">$</span>
-        <span class="cmd">pip install regula-ai</span>
-        <span class="cp">copy</span>
+<div class="final-wrap">
+    <div class="final-glow"></div>
+    <div class="final reveal">
+        <h2>Find out where you stand</h2>
+        <p>One command. Takes 10 seconds. No account needed.</p>
+        <div class="install-box" id="install-btn-2" onclick="copyInstall(this)" style="display:inline-flex;">
+            <span class="dollar">$</span>
+            <span class="cmd">pip install regula-ai</span>
+            <span class="cp">copy</span>
+        </div>
+        <form class="notify" action="https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID" method="POST">
+            <input type="email" name="email" placeholder="your@email.com" aria-label="Email for updates" required>
+            <button type="submit">Get updates</button>
+        </form>
+        <p class="notify-msg">No spam. Major releases and EU AI Act deadline reminders only.</p>
     </div>
-    <form class="notify" action="https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID" method="POST">
-        <input type="email" name="email" placeholder="your@email.com" aria-label="Email for updates" required>
-        <button type="submit">Get updates</button>
-    </form>
-    <p class="notify-msg">No spam. Only major releases and EU AI Act deadline reminders.</p>
 </div>
 
-<footer class="foot">
-    <div class="foot-links">
-        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-        <a href="https://pypi.org/project/regula-ai/">PyPI</a>
-        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
-        <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contributing</a>
+<!-- FOOTER -->
+<footer>
+    <div class="foot">
+        <div class="foot-inner">
+            <div class="foot-left">
+                <div class="foot-brand">Regula</div>
+                <div class="foot-links">
+                    <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                    <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contributing</a>
+                </div>
+                <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2025 Regula</div>
+            </div>
+            <div class="foot-right">
+                <div class="foot-legal">
+                    <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions.
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="foot-legal">Open source &middot; MIT licence &middot; Regula flags risks for human review &mdash; it does not provide legal advice.</div>
 </footer>
 
 <script>
-document.addEventListener('scroll', () => {
-    document.querySelector('.nav').classList.toggle('scrolled', window.scrollY > 20);
-});
+    // ===== SCROLL PROGRESS BAR =====
+    const progressBar = document.getElementById('progress-bar');
+    function updateProgress() {
+        const scrollTop = document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = pct + '%';
+    }
+
+    // ===== NAV SCROLL =====
+    function updateNav() {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    }
+
+    window.addEventListener('scroll', () => {
+        updateProgress();
+        updateNav();
+    }, { passive: true });
+
+    // ===== COUNTDOWN TIMER =====
+    const DEADLINE = new Date('2026-08-02T00:00:00Z');
+    function updateCountdown() {
+        const now = new Date();
+        const diff = DEADLINE - now;
+        if (diff <= 0) {
+            document.getElementById('countdown').textContent = 'Enforcement deadline has passed';
+            return;
+        }
+        const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        document.getElementById('countdown').textContent =
+            days + ' days ' + hours + ' hours ' + minutes + ' min ' + seconds + ' sec until enforcement';
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // ===== TERMINAL TABS =====
+    function switchTab(name, el) {
+        // Deactivate all tabs and panels
+        document.querySelectorAll('.term-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.term-panel').forEach(p => {
+            p.classList.remove('active');
+        });
+        // Activate selected
+        el.classList.add('active');
+        const panel = document.getElementById('tab-' + name);
+        if (panel) panel.classList.add('active');
+    }
+
+    // ===== COPY BUTTON =====
+    function copyInstall(el) {
+        navigator.clipboard.writeText('pip install regula-ai').then(() => {
+            const cp = el.querySelector('.cp');
+            el.classList.add('copied');
+            cp.textContent = '&#10003; copied';
+            setTimeout(() => {
+                el.classList.remove('copied');
+                cp.textContent = 'copy';
+            }, 2000);
+        }).catch(() => {
+            // Fallback for browsers that don't support clipboard API
+            const cp = el.querySelector('.cp');
+            cp.textContent = 'copy';
+        });
+    }
+    // Fix: set innerHTML for copied state
+    function copyInstall(el) {
+        navigator.clipboard.writeText('pip install regula-ai').then(() => {
+            const cp = el.querySelector('.cp');
+            el.classList.add('copied');
+            cp.innerHTML = '&#10003;&nbsp;copied';
+            setTimeout(() => {
+                el.classList.remove('copied');
+                cp.textContent = 'copy';
+            }, 2000);
+        });
+    }
+
+    // ===== SCROLL REVEAL =====
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // Don't unobserve — keep visible
+            }
+        });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal, .sec, .step, .art-card').forEach(el => {
+        // Only add reveal class if not already set
+        if (!el.classList.contains('reveal')) {
+            el.classList.add('reveal');
+        }
+        revealObserver.observe(el);
+    });
 </script>
 </body>
 </html>
