@@ -18,7 +18,7 @@ I built it because the EU AI Act takes effect in August 2026 (high-risk Annex II
 
 What it does:
 
-- `regula check .` — classifies your project against 133 risk patterns across 4 tiers
+- `regula check .` — classifies your project against 53 risk pattern groups across 4 tiers
 - `regula gap .` — scores you on Articles 9-15 (risk management, logging, human oversight, etc.)
 - `regula docs .` — generates Annex IV technical documentation from your actual code
 - `regula plan .` — prioritised remediation tasks with effort estimates
@@ -31,7 +31,7 @@ What it doesn't do: it doesn't catch general security vulnerabilities (use Semgr
 GitHub: https://github.com/kuzivaai/getregula
 PyPI: pip install regula-ai
 
-Happy to answer questions about the EU AI Act, the detection approach, or the false positive rate. On a 10-case classification benchmark with clear and ambiguous inputs, we measure 100% precision. On self-scan (142 findings on our own codebase, which discusses AI patterns without being an AI system), raw precision is 3.5% — but with the default filters (skip-tests, min-tier, regula-ignore), all false positives are suppressed. The honest answer is: precision depends heavily on your codebase and filter settings. We'd welcome real-world data if you run it.
+Happy to answer questions about the EU AI Act, the detection approach, or the false positive rate. The built-in self-test covers 6 fixture cases (prohibited, high-risk, limited-risk, mixed-tier, compliant, and warn-tier) and passes on every install. On self-scan (137 findings on our own codebase, which discusses AI patterns without being an AI system), raw false-positive rate is high without filters — but with the default filters (skip-tests, min-tier, regula-ignore), all false positives are suppressed. The honest answer is: precision depends heavily on your codebase and filter settings. We'd welcome real-world data if you run it.
 
 ---
 
@@ -39,11 +39,11 @@ Happy to answer questions about the EU AI Act, the detection approach, or the fa
 
 ### "How is this different from Semgrep?"
 
-Semgrep is a general static analysis tool — you write custom rules for security bugs, code patterns, etc. Regula is specifically for EU AI Act risk classification. It maps your code to the regulation's risk tiers, articles, and annexes. Semgrep could do some of this if you wrote the rules, but Regula ships with 130 patterns pre-mapped to specific EU AI Act articles and generates the compliance documentation the law requires.
+Semgrep is a general static analysis tool — you write custom rules for security bugs, code patterns, etc. Regula is specifically for EU AI Act risk classification. It maps your code to the regulation's risk tiers, articles, and annexes. Semgrep could do some of this if you wrote the rules, but Regula ships with 53 named detection patterns pre-mapped to specific EU AI Act articles and generates the compliance documentation the law requires.
 
 ### "What about false positives?"
 
-It depends on the codebase. On code that clearly implements AI features (chatbots, screening tools, recommendation engines), precision is high — our 10-case benchmark scores 100%. On code that *discusses* AI patterns without implementing them (like our own scanner codebase), raw precision drops to ~4% because regex patterns match keywords in comments, variable names, and documentation. The default filters handle this: `--skip-tests` removes test file noise, `--min-tier limited_risk` filters low-confidence findings, and `# regula-ignore` suppresses known false positives. With defaults on, our own codebase shows 0 false positives. We use comment stripping, confidence scoring (0-100), and context penalties for test/example files. It's designed to over-report rather than miss something — you can always suppress, but you can't unsee a missed prohibited practice.
+It depends on the codebase. On code that clearly implements AI features (chatbots, screening tools, recommendation engines), precision is high — our 6 built-in fixture cases all classify correctly. On code that *discusses* AI patterns without implementing them (like our own scanner codebase), raw false-positive rate is high because regex patterns match keywords in comments, variable names, and documentation. The default filters handle this: `--skip-tests` removes test file noise, `--min-tier limited_risk` filters low-confidence findings, and `# regula-ignore` suppresses known false positives. With defaults on, our own codebase shows 0 false positives. We use comment stripping, confidence scoring (0-100), and context penalties for test/example files. It's designed to over-report rather than miss something — you can always suppress, but you can't unsee a missed prohibited practice.
 
 ### "Why not just read the regulation?"
 
@@ -59,7 +59,7 @@ The European Parliament voted 569-45 in March 2026 to potentially push high-risk
 
 ### "This looks like it could generate a lot of noise on real codebases"
 
-It can. Use `--skip-tests` to exclude test files (removes ~27% of findings) and `--min-tier high_risk` to focus on actionable items. On a 20K-star LangChain fork, this reduced 2,108 raw findings to 19 actionable ones.
+It can. Use `--skip-tests` to exclude test files (removes the majority of findings on codebases that discuss AI patterns in tests) and `--min-tier high_risk` to focus on actionable items. 
 
 ---
 
