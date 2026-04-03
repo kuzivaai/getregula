@@ -31,7 +31,7 @@ What it doesn't do: it doesn't catch general security vulnerabilities (use Semgr
 GitHub: https://github.com/kuzivaai/getregula
 PyPI: pip install regula-ai
 
-Happy to answer questions about the EU AI Act, the detection approach, or the false positive rate (~67% precision on our benchmark corpus).
+Happy to answer questions about the EU AI Act, the detection approach, or the false positive rate (we measured 15% on our initial benchmark of 257 labelled findings, then tightened patterns significantly — we'd welcome real-world data if you run it).
 
 ---
 
@@ -67,8 +67,26 @@ It can. Use `--skip-tests` to exclude test files (removes ~27% of findings) and 
 
 - [ ] PyPI package published and working
 - [ ] Landing page live at getregula.com
-- [ ] Post Tuesday-Thursday, 8-10am ET (peak HN engagement per Markepear)
-- [ ] Be online for 6+ hours after posting to answer comments
+- [ ] Post when you can commit to answering comments for several hours (morning ET on weekdays is commonly cited but 2025 data shows weekends may perform better for Show HN)
 - [ ] Link to GitHub repo, not landing page (HN prefers repos)
 - [ ] No superlatives in title (no "fastest", "best", "first")
-- [ ] Ready to acknowledge limitations honestly when asked
+- [ ] Ready to acknowledge limitations honestly when asked — especially the precision numbers
+
+## Distribution channels (ranked by audience fit)
+
+### Phase 1: Launch week (developer-focused)
+- [ ] **Show HN** — primary launch. Link to GitHub repo.
+- [ ] **DEV.to article** — "I scanned 5 open-source AI projects for EU AI Act compliance." Show real output.
+- [ ] **awesome-claude-code** — submit PR to list Regula (has Claude Code hooks)
+- [ ] **MCP server directories** — list the Regula MCP server where Claude/Cursor users discover tools
+
+### Phase 2: Compliance ecosystem (where your actual audience is)
+- [ ] **artificialintelligenceact.eu** — the main EU AI Act community hub (400K+ visitors). Explore getting listed or contributing content.
+- [ ] **IAPP** (International Association of Privacy Professionals) — their AI Act compliance matrix is the reference for DPOs. Contribute or get listed.
+- [ ] **European DIGITAL SME Alliance** — targets SMEs with AI Act tools. They maintain a directory.
+- [ ] **AI Act Service Desk** (EC official) — EU's own support channel highlights tools for startups/SMEs.
+- [ ] **LinkedIn** — short posts about what the law requires + "here's a free tool." Target DPO and CTO audience.
+
+### Phase 3: Developer communities (be a member first)
+- [ ] **r/python, r/programming, r/artificial** — participate in relevant threads first. Reddit's 80/20 rule: 80% genuine participation, 20% self-promotion. Frame as results, not marketing.
+- [ ] **Product Hunt** — second wave after HN. Good for broader visibility.
