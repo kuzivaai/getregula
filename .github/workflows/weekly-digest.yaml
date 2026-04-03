@@ -1,0 +1,124 @@
+name: Weekly Triage Digest
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"  # Every Monday 09:00 UTC
+  workflow_dispatch:       # Allow manual trigger for testing
+
+permissions:
+  contents: write
+  issues: read
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check for open issues
+        id: issue_check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          COUNT=$(gh issue list --repo "$REPO" --state open --limit 1 --json number | python3 -c "import json,sys; print(len(json.load(sys.stdin)))")
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+      - name: Generate triage digest
+        if: steps.issue_check.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          REPO: ${{ github.repository }}
+        run: |
+          python3 - <<'PYEOF'
+          import json, os, urllib.request, subprocess
+          from datetime import date
+
+          # Fetch open issues safely via gh CLI (no shell injection risk)
+          result = subprocess.run(
+              ["gh", "issue", "list", "--repo", os.environ["REPO"],
+               "--state", "open", "--limit", "100",
+               "--json", "number,title,labels,createdAt,body"],
+              capture_output=True, text=True, check=True,
+          )
+          issues = json.loads(result.stdout)
+
+          if not issues:
+              print("No open issues — skipping digest")
+              exit(0)
+
+          issues_text = json.dumps(issues, indent=2)
+          today = date.today().isoformat()
+
+          prompt = f"""You are a triage assistant for Regula, a Python CLI tool for EU AI Act compliance.
+          Here are all open GitHub issues (JSON):
+
+          {issues_text}
+
+          Write a TRIAGE.md in markdown. Today's date: {today}.
+
+          Structure:
+          # Regula Triage — {today}
+          > Auto-generated weekly digest. Do not edit — overwritten each Monday.
+
+          ## Crashes
+          List each issue with label 'crash': issue number as #N link, title, one-line error summary.
+          **Priority pick:** [most urgent crash and why, 1 sentence]
+
+          ## False Positives
+          List each issue with label 'false-positive': #N, title, which pattern was flagged.
+          **Priority pick:** [most impactful false positive to fix and why, 1 sentence]
+
+          ## False Negatives
+          List each issue with label 'false-negative': #N, title, which risk was missed.
+          **Priority pick:** [most important missed risk and why, 1 sentence]
+
+          ## Feature Requests
+          List each issue with label 'feature-request': #N, title, one-line description.
+
+          ## Questions & Docs
+          List each issue with label 'question' or 'docs': #N, title.
+
+          ## This Week — Top 3 to Fix
+          Pick the 3 highest-impact issues across all categories. For each: #N title — one sentence rationale.
+
+          Be concise. No filler sentences. If a section has no issues, write 'None this week.'"""
+
+          payload = {
+              "model": "claude-sonnet-4-6",
+              "max_tokens": 2000,
+              "messages": [{"role": "user", "content": prompt}],
+          }
+
+          req = urllib.request.Request(
+              "https://api.anthropic.com/v1/messages",
+              data=json.dumps(payload).encode(),
+              headers={
+                  "x-api-key": os.environ["ANTHROPIC_API_KEY"],
+                  "anthropic-version": "2023-06-01",
+                  "content-type": "application/json",
+              },
+          )
+          with urllib.request.urlopen(req) as resp:
+              result = json.loads(resp.read())
+
+          digest = result["content"][0]["text"]
+          with open("TRIAGE.md", "w") as f:
+              f.write(digest + "\n")
+
+          print("TRIAGE.md written successfully")
+          PYEOF
+
+      - name: Skip message when no issues
+        if: steps.issue_check.outputs.count == '0'
+        run: echo "No open issues — skipping digest this week"
+
+      - name: Commit TRIAGE.md
+        if: steps.issue_check.outputs.count != '0'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add TRIAGE.md
+          git diff --cached --quiet || git commit -m "chore: weekly triage digest $(date +%Y-%m-%d) [skip ci]"
+          git push
