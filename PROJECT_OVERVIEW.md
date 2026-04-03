@@ -56,7 +56,7 @@ regula install git-hooks            # git pre-commit hook
 ```
 getregula/
 ├── scripts/                    # 43 Python modules
-│   ├── cli.py                  # CLI dispatcher — 28 subcommands
+│   ├── cli.py                  # CLI dispatcher — 33 subcommands
 │   ├── classify_risk.py        # Risk classification logic (377 lines) — split from monolith in v1.2.0
 │   ├── risk_types.py           # RiskTier enum, Classification dataclass (63 lines)
 │   ├── risk_patterns.py        # All EU AI Act pattern definitions (321 lines)
@@ -77,7 +77,7 @@ getregula/
 │   ├── agent_monitor.py        # Agentic AI governance, autonomy detection (563 lines)
 │   ├── log_event.py            # Audit trail logging (288 lines, 15 functions)
 │   ├── init_wizard.py          # Setup wizard (235 lines, 7 functions)
-│   ├── framework_mapper.py     # 10-framework cross-mapping (210 lines, 5 functions)
+│   ├── framework_mapper.py     # 11-framework cross-mapping (210 lines, 5 functions)
 │   ├── doctor.py               # Installation health check (208 lines, 9 functions)
 │   ├── credential_check.py     # Secret detection (197 lines, 4 functions)
 │   ├── session.py              # Session-level aggregation (188 lines, 3 functions)
@@ -111,7 +111,7 @@ getregula/
 │       └── sample_unpinned/    # Unpinned dependency example (package.json)
 │
 ├── references/                 # Static reference data
-│   ├── framework_crosswalk.yaml    # 10-framework compliance mapping
+│   ├── framework_crosswalk.yaml    # 11-framework compliance mapping
 │   ├── risk_indicators.yaml        # Pattern definitions
 │   ├── eu_ai_act_articles_9_15.md  # High-risk requirements reference
 │   ├── gpai_obligations.md         # General-purpose AI obligations
@@ -324,7 +324,7 @@ Scoring: 0-100% per article. STRONG >=70%, MODERATE 40-69%, WEAK <40%.
 
 ### Framework Cross-Mapping (`scripts/framework_mapper.py`)
 
-Maps findings to 10 compliance frameworks via `references/framework_crosswalk.yaml`:
+Maps findings to 11 compliance frameworks via `references/framework_crosswalk.yaml`:
 
 1. **EU AI Act** — Primary (Articles 5, 6, 9-15, 50)
 2. **NIST AI RMF 1.0** — Map, Measure, Manage, Govern
@@ -365,7 +365,7 @@ Three output formats:
 | AI indicators | `scripts/classify_risk.py` (inline dict) | Python dict | Library names, model file extensions, API endpoints, ML patterns |
 | Secret patterns | `scripts/credential_check.py` (inline dict) | Python dict | 9 credential detection regexes |
 | AI library registries | `scripts/ast_engine.py` (inline sets) | Python sets | 124 AI libraries across 5 language ecosystems |
-| Framework crosswalk | `references/framework_crosswalk.yaml` | YAML | 10-framework compliance mapping |
+| Framework crosswalk | `references/framework_crosswalk.yaml` | YAML | 11-framework compliance mapping |
 | Security advisories | `references/advisories/` | YAML (OSV format) | Known compromised AI packages |
 | EU AI Act articles | `references/eu_ai_act_articles_9_15.md` | Markdown | Article text for gap assessment |
 | News feeds | `scripts/feed.py` (inline list) | RSS/Atom URLs | 7 AI governance news sources |
@@ -377,7 +377,7 @@ Three output formats:
 
 ---
 
-## CLI Commands (28 subcommands)
+## CLI Commands (33 subcommands)
 
 | Command | Purpose | Key Flags |
 |---|---|---|

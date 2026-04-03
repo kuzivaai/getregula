@@ -39,7 +39,7 @@ Happy to answer questions about the EU AI Act, the detection approach, or the fa
 
 ### "How is this different from Semgrep?"
 
-Semgrep is a general static analysis tool — you write custom rules for security bugs, code patterns, etc. Regula is specifically for EU AI Act risk classification. It maps your code to the regulation's risk tiers, articles, and annexes. Semgrep could do some of this if you wrote the rules, but Regula ships with 53 named detection patterns pre-mapped to specific EU AI Act articles and generates the compliance documentation the law requires.
+Semgrep is a general static analysis tool — you write custom rules for security bugs, code patterns, etc. Regula is specifically for EU AI Act risk classification. It maps your code to the regulation's risk tiers, articles, and annexes. Semgrep could do some of this if you wrote the rules, but Regula ships with 49 named detection patterns pre-mapped to specific EU AI Act articles and generates the compliance documentation the law requires.
 
 ### "What about false positives?"
 
