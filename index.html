@@ -6,7 +6,7 @@
     <title>Regula — Find out if your AI system is high-risk under the EU AI Act</title>
     <meta name="description" content="Free, open-source CLI that tells you which EU AI Act risk tier your code is in, why, and what to do about it. No account, no consultants.">
     <meta property="og:title" content="Regula — Find out if your AI system is high-risk under the EU AI Act">
-    <meta property="og:description" content="Free, open-source scanner that tells you which EU AI Act tier you're in, why, and what to do about it. 128 risk patterns, 8 languages, zero dependencies.">
+    <meta property="og:description" content="Free, open-source scanner that tells you which EU AI Act tier you're in, why, and what to do about it. 130 risk patterns, 8 languages, zero dependencies.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com">
     <meta name="twitter:card" content="summary">
@@ -18,125 +18,126 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', system-ui, sans-serif; background: #09090b; color: #a1a1aa; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #faf9f7; color: #3d3d4e; line-height: 1.6; -webkit-font-smoothing: antialiased;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23c9c6c0' fill-opacity='0.08'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
         code, .mono { font-family: 'JetBrains Mono', monospace; }
-        a { color: #38bdf8; text-decoration: none; }
-        a:hover { color: #7dd3fc; }
+        a { color: #1d4ed8; text-decoration: none; }
+        a:hover { color: #2563eb; }
 
         /* NAV */
         .nav { position: sticky; top: 0; z-index: 100; height: 52px; padding: 0 24px;
             display: flex; align-items: center; justify-content: space-between;
             border-bottom: 1px solid transparent; transition: all 0.2s; }
-        .nav.scrolled { background: rgba(9,9,11,0.95); backdrop-filter: blur(12px); border-color: #27272a; }
-        .nav-brand { font-weight: 700; font-size: 16px; color: #fafafa; letter-spacing: -0.02em; }
+        .nav.scrolled { background: rgba(250,249,247,0.95); backdrop-filter: blur(12px); border-color: #e5e3df; }
+        .nav-brand { font-weight: 700; font-size: 16px; color: #1a1a2e; letter-spacing: -0.02em; }
         .nav-right { display: flex; gap: 20px; font-size: 13px; align-items: center; }
-        .nav-right a { color: #71717a; } .nav-right a:hover { color: #d4d4d8; }
-        .nav-right .active { color: #e4e4e7; font-weight: 600; }
+        .nav-right a { color: #6b6b80; } .nav-right a:hover { color: #1a1a2e; }
+        .nav-right .active { color: #1a1a2e; font-weight: 600; }
 
         /* HERO — two column */
-        .hero { max-width: 1120px; margin: 0 auto; padding: 64px 24px 0;
+        .hero { max-width: 1200px; margin: 0 auto; padding: 32px 24px 0;
             display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
         .hero-text { max-width: 480px; }
         .badge { display: inline-flex; align-items: center; gap: 6px;
-            font-size: 12px; color: #71717a; border: 1px solid #27272a; border-radius: 100px;
+            font-size: 12px; color: #6b6b80; border: 1px solid #d4d2cd; border-radius: 100px;
             padding: 4px 12px; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; }
-        .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: #22c55e; }
-        .hero h1 { font-size: 40px; font-weight: 700; color: #fafafa; line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 16px; }
-        .hero h1 .hl { color: #38bdf8; }
-        .hero .sub { font-size: 16px; color: #a1a1aa; line-height: 1.6; margin-bottom: 28px; }
+        .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: #16a34a; }
+        .hero h1 { font-size: 40px; font-weight: 700; color: #1a1a2e; line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 16px; }
+        .hero h1 .hl { color: #1d4ed8; }
+        .hero .sub { font-size: 16px; color: #5a5a6e; line-height: 1.6; margin-bottom: 28px; }
         .install-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
         .install-box { display: inline-flex; align-items: center; gap: 10px;
-            background: #18181b; border: 1px solid #27272a; border-radius: 8px;
+            background: #1a1a2e; border: 1px solid #2d2d4a; border-radius: 8px;
             padding: 10px 16px; cursor: pointer; transition: border-color 0.2s; }
-        .install-box:hover { border-color: #3f3f46; }
-        .install-box .dollar { color: #52525b; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
-        .install-box .cmd { color: #38bdf8; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
-        .install-box .cp { color: #3f3f46; font-size: 11px; }
-        .gh-link { display: inline-flex; align-items: center; gap: 6px; color: #52525b; font-size: 13px; }
-        .gh-link:hover { color: #a1a1aa; }
+        .install-box:hover { border-color: #4a4a6a; }
+        .install-box .dollar { color: #6b6b8a; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+        .install-box .cmd { color: #7dd3fc; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+        .install-box .cp { color: #8888a4; font-size: 11px; }
+        .gh-link { display: inline-flex; align-items: center; gap: 6px; color: #6b6b80; font-size: 13px; }
+        .gh-link:hover { color: #1a1a2e; }
         .gh-link svg { width: 16px; height: 16px; fill: currentColor; }
 
-        /* TERMINAL */
-        .term { background: #18181b; border: 1px solid #27272a; border-radius: 10px; overflow: hidden;
-            box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
-        .term-bar { display: flex; gap: 6px; padding: 10px 14px; background: #1c1c1f; border-bottom: 1px solid #27272a; }
+        /* TERMINAL — stays dark (it's a terminal) */
+        .term { background: #1a1a2e; border: 1px solid #2d2d4a; border-radius: 10px; overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+        .term-bar { display: flex; gap: 6px; padding: 10px 14px; background: #16162a; border-bottom: 1px solid #2d2d4a; }
         .term-dot { width: 10px; height: 10px; border-radius: 50%; }
         .td-r { background: #ef4444; } .td-y { background: #eab308; } .td-g { background: #22c55e; }
         .term pre { padding: 16px 20px; font-family: 'JetBrains Mono', monospace;
             font-size: 12.5px; line-height: 1.7; color: #a1a1aa; overflow-x: auto; margin: 0; }
-        .term .p { color: #52525b; } .term .c { color: #e4e4e7; }
+        .term .p { color: #6b6b8a; } .term .c { color: #e4e4e7; }
         .term .h { color: #38bdf8; font-weight: 500; }
-        .term .g { color: #22c55e; } .term .y { color: #eab308; } .term .m { color: #52525b; }
-        .term hr { border: none; border-top: 1px solid #27272a; margin: 6px 0; }
+        .term .g { color: #22c55e; } .term .y { color: #eab308; } .term .m { color: #6b6b8a; }
+        .term hr { border: none; border-top: 1px solid #2d2d4a; margin: 6px 0; }
 
         /* STATS */
-        .stats { max-width: 1120px; margin: 0 auto; padding: 48px 24px 0;
+        .stats { max-width: 1200px; margin: 0 auto; padding: 48px 24px 0;
             display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-        .st { background: #18181b; border: 1px solid #27272a; border-radius: 8px;
+        .st { background: #ffffff; border: 1px solid #e5e3df; border-radius: 8px;
             padding: 20px; text-align: center; }
-        .st-n { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 600; color: #fafafa; }
-        .st-l { font-size: 13px; color: #52525b; margin-top: 2px; }
+        .st-n { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 600; color: #1a1a2e; }
+        .st-l { font-size: 13px; color: #6b6b80; margin-top: 2px; }
 
         /* SECTIONS */
-        .sec { max-width: 1120px; margin: 0 auto; padding: 56px 24px 0; }
-        .sec-head { font-size: 22px; font-weight: 600; color: #fafafa; letter-spacing: -0.02em; margin-bottom: 8px; }
-        .sec-head .hl { color: #38bdf8; }
-        .sec-sub { font-size: 14px; color: #52525b; margin-bottom: 24px; }
-        .sep { max-width: 1120px; margin: 48px auto 0; height: 1px; background: #27272a; }
+        .sec { max-width: 1200px; margin: 0 auto; padding: 56px 24px 0; }
+        .sec-head { font-size: 22px; font-weight: 600; color: #1a1a2e; letter-spacing: -0.02em; margin-bottom: 8px; }
+        .sec-head .hl { color: #1d4ed8; }
+        .sec-sub { font-size: 14px; color: #6b6b80; margin-bottom: 24px; }
+        .sep { max-width: 1200px; margin: 48px auto 0; height: 1px; background: #e5e3df; }
 
         /* 3-STEP */
         .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-        .step { background: #18181b; border: 1px solid #27272a; border-radius: 8px; padding: 24px; }
-        .step-n { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #38bdf8;
+        .step { background: #ffffff; border: 1px solid #e5e3df; border-radius: 8px; padding: 24px; }
+        .step-n { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #1d4ed8;
             text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
-        .step h3 { font-size: 16px; font-weight: 600; color: #e4e4e7; margin-bottom: 6px; }
-        .step p { font-size: 13px; color: #71717a; line-height: 1.5; }
-        .step code { font-size: 12px; color: #38bdf8; background: rgba(56,189,248,0.08);
+        .step h3 { font-size: 16px; font-weight: 600; color: #1a1a2e; margin-bottom: 6px; }
+        .step p { font-size: 13px; color: #5a5a6e; line-height: 1.5; }
+        .step code { font-size: 12px; color: #1d4ed8; background: rgba(29,78,216,0.06);
             padding: 2px 6px; border-radius: 3px; display: inline-block; margin-top: 10px; }
 
         /* ARTICLE GRID */
         .art-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .art-card { background: #18181b; border: 1px solid #27272a; border-radius: 8px; padding: 16px 18px; }
-        .art-card .tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #38bdf8;
+        .art-card { background: #ffffff; border: 1px solid #e5e3df; border-radius: 8px; padding: 16px 18px; }
+        .art-card .tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #1d4ed8;
             margin-bottom: 4px; font-weight: 500; }
-        .art-card h4 { font-size: 14px; font-weight: 600; color: #d4d4d8; margin-bottom: 3px; }
-        .art-card p { font-size: 12px; color: #52525b; line-height: 1.4; }
+        .art-card h4 { font-size: 14px; font-weight: 600; color: #1a1a2e; margin-bottom: 3px; }
+        .art-card p { font-size: 12px; color: #6b6b80; line-height: 1.4; }
 
         /* URGENCY */
-        .urgency { max-width: 1120px; margin: 0 auto; padding: 48px 24px 0; }
+        .urgency { max-width: 1200px; margin: 0 auto; padding: 48px 24px 0; }
         .urgency-box { display: flex; gap: 24px; align-items: flex-start;
-            background: #18181b; border: 1px solid #27272a; border-left: 3px solid #eab308;
+            background: #fffbeb; border: 1px solid #fde68a; border-left: 3px solid #d97706;
             border-radius: 0 8px 8px 0; padding: 24px; }
         .urgency-box .date { font-family: 'JetBrains Mono', monospace; font-size: 13px;
-            color: #eab308; font-weight: 500; white-space: nowrap; min-width: 80px; }
-        .urgency-box .body { font-size: 14px; color: #a1a1aa; line-height: 1.6; }
-        .urgency-box strong { color: #e4e4e7; }
+            color: #d97706; font-weight: 500; white-space: nowrap; min-width: 80px; }
+        .urgency-box .body { font-size: 14px; color: #5a5a6e; line-height: 1.6; }
+        .urgency-box strong { color: #1a1a2e; }
 
         /* CMD GRID */
         .cmds { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .cm { display: flex; align-items: baseline; gap: 10px; background: #18181b;
-            border: 1px solid #27272a; border-radius: 6px; padding: 10px 14px; }
-        .cm code { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #38bdf8; white-space: nowrap; }
-        .cm span { font-size: 12px; color: #52525b; }
+        .cm { display: flex; align-items: baseline; gap: 10px; background: #1a1a2e;
+            border: 1px solid #2d2d4a; border-radius: 6px; padding: 10px 14px; }
+        .cm code { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #7dd3fc; white-space: nowrap; }
+        .cm span { font-size: 12px; color: #8888a4; }
 
         /* FW */
         .fw-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 40px; }
-        .fw { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #a1a1aa; padding: 4px 0; }
-        .fw-d { width: 5px; height: 5px; border-radius: 50%; background: #38bdf8; flex-shrink: 0; }
-        .fw.pri { color: #e4e4e7; font-weight: 500; }
+        .fw { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #5a5a6e; padding: 4px 0; }
+        .fw-d { width: 5px; height: 5px; border-radius: 50%; background: #1d4ed8; flex-shrink: 0; }
+        .fw.pri { color: #1a1a2e; font-weight: 500; }
 
         /* FINAL CTA */
         .final { text-align: center; padding: 56px 24px 48px;
-            background: linear-gradient(180deg, transparent, rgba(56,189,248,0.02) 50%, transparent); }
-        .final h2 { font-size: 24px; font-weight: 600; color: #fafafa; margin-bottom: 8px; letter-spacing: -0.02em; }
-        .final p { font-size: 14px; color: #52525b; margin-bottom: 20px; }
+            background: linear-gradient(180deg, transparent, rgba(29,78,216,0.03) 50%, transparent); }
+        .final h2 { font-size: 24px; font-weight: 600; color: #1a1a2e; margin-bottom: 8px; letter-spacing: -0.02em; }
+        .final p { font-size: 14px; color: #6b6b80; margin-bottom: 20px; }
 
         /* FOOTER */
-        .foot { max-width: 1120px; margin: 0 auto; padding: 24px; border-top: 1px solid #27272a;
+        .foot { max-width: 1200px; margin: 0 auto; padding: 24px; border-top: 1px solid #e5e3df;
             display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
         .foot-links { display: flex; gap: 20px; }
-        .foot-links a { color: #52525b; } .foot-links a:hover { color: #a1a1aa; }
-        .foot-legal { color: #3f3f46; text-align: right; }
+        .foot-links a { color: #6b6b80; } .foot-links a:hover { color: #1a1a2e; }
+        .foot-legal { color: #9b9baa; text-align: right; }
 
         /* MOBILE */
         @media (max-width: 768px) {
@@ -172,8 +173,8 @@
 <div class="hero">
     <div class="hero-text">
         <div class="badge"><span class="badge-dot"></span> Open-source CLI &middot; v1.5.0</div>
-        <h1>Find out if your AI system is <span class="hl">high-risk</span> &mdash; before regulators do.</h1>
-        <p class="sub">Free, open-source scanner that tells you which EU AI Act tier you're in, why, and what to do about it. No account, no API key, no consultants.</p>
+        <h1>Is your AI app <span class="hl">legal</span> in the EU?</h1>
+        <p class="sub">The EU AI Act is law. Fines run up to <strong style="color:#1a1a2e;">&euro;35&nbsp;million</strong>. Most teams haven't checked where they stand. Regula scans your code and tells you &mdash; in seconds, for free.</p>
         <div class="install-row">
             <div class="install-box" onclick="navigator.clipboard.writeText('pip install regula-ai');this.querySelector('.cp').textContent='copied'">
                 <span class="dollar">$</span>
@@ -211,11 +212,31 @@
 
 <!-- STATS -->
 <div class="stats">
-    <div class="st"><div class="st-n">Free</div><div class="st-l">open source</div></div>
-    <div class="st"><div class="st-n">128</div><div class="st-l">risk patterns</div></div>
-    <div class="st"><div class="st-n">8</div><div class="st-l">languages</div></div>
-    <div class="st"><div class="st-n">0</div><div class="st-l">dependencies</div></div>
+    <div class="st"><div class="st-n">Free</div><div class="st-l">open source &middot; MIT</div></div>
+    <div class="st"><div class="st-n">130</div><div class="st-l">risk patterns checked</div></div>
+    <div class="st"><div class="st-n">8</div><div class="st-l">programming languages</div></div>
+    <div class="st"><div class="st-n">0</div><div class="st-l">external dependencies</div></div>
 </div>
+
+<!-- WHO IS THIS FOR -->
+<div class="sec">
+    <div class="sec-head">Built an AI app? This is for you.</div>
+    <p class="sec-sub">Whether you wrote every line or an AI wrote it for you.</p>
+    <div class="steps" style="grid-template-columns: repeat(2, 1fr);">
+        <div class="step">
+            <div class="step-n">Building with AI tools</div>
+            <h3>Used Cursor, Lovable, Bolt, or Claude to build your app?</h3>
+            <p>If your app uses AI models &mdash; a chatbot, a screening tool, a recommendation engine &mdash; the EU AI Act probably applies. Regula checks your code and tells you which rules apply in plain English.</p>
+        </div>
+        <div class="step">
+            <div class="step-n">Shipping AI to production</div>
+            <h3>Developer deploying AI features to the EU market?</h3>
+            <p>Regula maps your code to the exact EU AI Act articles, shows which risk tier you're in, estimates the compliance effort per article, and generates the documentation auditors need.</p>
+        </div>
+    </div>
+</div>
+
+<div class="sep"></div>
 
 <!-- URGENCY -->
 <div class="urgency">
@@ -229,31 +250,31 @@
 
 <!-- WHAT REGULA DOES -->
 <div class="sec">
-    <div class="sec-head">What Regula actually does</div>
-    <p class="sec-sub">Four things, done well. Not 37 frameworks.</p>
+    <div class="sec-head">What you get</div>
+    <p class="sec-sub">Run one command. Get answers you can act on.</p>
     <div class="steps">
         <div class="step">
-            <div class="step-n">Classification with reasoning</div>
-            <h3>Not just "HIGH-RISK" &mdash; why, and what it means</h3>
-            <p>Points to the exact line of code that triggered classification, cites the legal basis, and tells you when it might be a false positive.</p>
+            <div class="step-n">1. Your risk level</div>
+            <h3>Prohibited, high-risk, limited, or minimal &mdash; with the reason why</h3>
+            <p>Points to the exact line of code that triggered the classification, cites the legal basis, and tells you when it might be a false positive. No guessing.</p>
             <code>regula check . --explain</code>
         </div>
         <div class="step">
-            <div class="step-n">Documentation that fills itself in</div>
-            <h3>All 9 Annex IV sections &mdash; auto-populated where possible</h3>
-            <p>Reads your README, git history, dependencies, function signatures, and logging coverage. Fills in what it can, templates the rest. Covers all 9 mandatory sections.</p>
+            <div class="step-n">2. What you need to do</div>
+            <h3>A prioritised list of compliance tasks with effort estimates</h3>
+            <p>If you're high-risk, the EU AI Act requires specific actions (risk management, logging, human oversight, documentation). Regula tells you exactly which ones apply and how long each takes.</p>
+            <code>regula plan --project .</code>
+        </div>
+        <div class="step">
+            <div class="step-n">3. Documentation that writes itself</div>
+            <h3>Technical documentation pulled from your actual code</h3>
+            <p>Reads your dependencies, function signatures, and logging coverage. Generates the documentation skeleton that the law requires. You fill in the business context.</p>
             <code>regula docs --completion</code>
         </div>
         <div class="step">
-            <div class="step-n">Provider or deployer?</div>
-            <h3>Determines which obligations apply to you</h3>
-            <p>Detects whether you're training models (provider) or calling APIs (deployer). Different roles, different obligations. Most small teams haven't checked.</p>
-            <code>regula check . --explain</code>
-        </div>
-        <div class="step">
-            <div class="step-n">Evidence pack for auditors</div>
-            <h3>One command, one folder, everything they need</h3>
-            <p>Bundles scan results, gap assessment, Annex IV draft, dependency report, audit trail, and remediation plan into a reviewable package with SHA-256 integrity hashes.</p>
+            <div class="step-n">4. Proof for auditors</div>
+            <h3>One command, one folder &mdash; everything an auditor needs</h3>
+            <p>Bundles scan results, gap assessment, documentation draft, dependency report, and audit trail into a single reviewable package with integrity verification.</p>
             <code>regula evidence-pack --project .</code>
         </div>
     </div>
@@ -263,55 +284,55 @@
 
 <!-- WHAT IT CHECKS -->
 <div class="sec">
-    <div class="sec-head">Deep <span class="hl">EU AI Act</span> coverage</div>
-    <p class="sec-sub">Maps your code to Articles 5&ndash;15 and Annex IV. Not a checklist &mdash; actual code analysis.</p>
+    <div class="sec-head">What the law covers &mdash; and what Regula checks</div>
+    <p class="sec-sub">Not a questionnaire. Regula reads your code and maps it to the regulation.</p>
     <div class="art-grid">
-        <div class="art-card"><div class="tag">Article 5</div><h4>Prohibited practices</h4><p>Social scoring, subliminal manipulation, real-time biometrics, emotion inference in workplaces</p></div>
-        <div class="art-card"><div class="tag">Article 6</div><h4>Risk classification</h4><p>8 Annex III categories plus medical devices and safety components: credit, employment, biometrics, education, law enforcement, and more</p></div>
-        <div class="art-card"><div class="tag">Articles 9&ndash;15</div><h4>High-risk obligations</h4><p>Risk management, data governance, logging, transparency, human oversight, accuracy &mdash; with effort estimates per article</p></div>
-        <div class="art-card"><div class="tag">Annex IV</div><h4>Technical documentation</h4><p>Auto-populated scaffolds with your actual functions, dependencies, and logging coverage</p></div>
-        <div class="art-card"><div class="tag">Article 15</div><h4>Security</h4><p>OWASP LLM Top 10 patterns: prompt injection, unsafe deserialisation, unbounded generation</p></div>
-        <div class="art-card"><div class="tag">Article 50</div><h4>Transparency</h4><p>Chatbot disclosure, synthetic content labelling, deepfake detection obligations</p></div>
+        <div class="art-card"><div class="tag">Banned uses</div><h4>Is your app prohibited?</h4><p>Social scoring, subliminal manipulation, real-time facial recognition, emotion inference in workplaces &mdash; all banned outright.</p></div>
+        <div class="art-card"><div class="tag">High-risk uses</div><h4>Does your app make important decisions?</h4><p>Credit scoring, hiring, medical diagnosis, education assessment, law enforcement, border control &mdash; all classified as high-risk with strict requirements.</p></div>
+        <div class="art-card"><div class="tag">Compliance gaps</div><h4>What&rsquo;s missing from your codebase?</h4><p>Risk management, data governance, logging, transparency, human oversight, accuracy &mdash; scored per article with effort estimates.</p></div>
+        <div class="art-card"><div class="tag">Documentation</div><h4>Can you prove compliance?</h4><p>Auto-generates technical documentation from your actual code &mdash; functions, dependencies, and logging coverage already filled in.</p></div>
+        <div class="art-card"><div class="tag">Security</div><h4>Is your AI code secure?</h4><p>Checks for prompt injection, unsafe model loading, unvalidated AI output, hardcoded keys, and other AI-specific vulnerabilities.</p></div>
+        <div class="art-card"><div class="tag">Transparency</div><h4>Do your users know it&rsquo;s AI?</h4><p>Chatbots must disclose they&rsquo;re not human. Deepfakes must be labelled. Regula checks if your code handles this.</p></div>
     </div>
 </div>
 
 <div class="sep"></div>
 
-<!-- COMMANDS — highlight 5, not 29 -->
+<!-- COMMANDS -->
 <div class="sec">
-    <div class="sec-head">Get started</div>
-    <p class="sec-sub">Five commands cover 90% of what you need. No configuration.</p>
+    <div class="sec-head">Five commands. No setup.</div>
+    <p class="sec-sub">Install, run, get answers. Works on any project with AI code.</p>
     <div class="cmds">
-        <div class="cm"><code>regula check . --explain</code> <span>Classification with reasoning</span></div>
-        <div class="cm"><code>regula plan --project .</code> <span>Prioritised remediation plan</span></div>
-        <div class="cm"><code>regula docs --completion</code> <span>Annex IV documentation (all 9 sections)</span></div>
-        <div class="cm"><code>regula evidence-pack</code> <span>Auditor-ready evidence package</span></div>
-        <div class="cm"><code>regula gap --project .</code> <span>Compliance gap per article</span></div>
+        <div class="cm"><code>regula check .</code> <span>Find out your risk level</span></div>
+        <div class="cm"><code>regula plan .</code> <span>Get a prioritised to-do list</span></div>
+        <div class="cm"><code>regula gap .</code> <span>See what&rsquo;s missing per article</span></div>
+        <div class="cm"><code>regula docs .</code> <span>Generate required documentation</span></div>
+        <div class="cm"><code>regula evidence-pack .</code> <span>Bundle everything for an auditor</span></div>
     </div>
-    <p style="font-size: 12px; color: #3f3f46; margin-top: 12px;">34 commands total. Python, JS, TS, Java, Go, Rust, C, C++. Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, and 7 other frameworks.</p>
+    <p style="font-size: 12px; color: #9b9baa; margin-top: 12px;">33 commands total. Python, JS, TS, Java, Go, Rust, C, C++. Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU Cyber Resilience Act, and 7 other frameworks.</p>
 </div>
 
 <div class="sep"></div>
 
 <!-- COST POSITIONING -->
 <div class="sec">
-    <div class="sec-head">Enterprise platforms cost <span class="hl">$50,000+/year</span></div>
-    <p class="sec-sub">Regula is free and open source. MIT licence.</p>
+    <div class="sec-head">Other options cost <span class="hl">$50,000+/year</span></div>
+    <p class="sec-sub">Regula is free, open source, and runs on your machine.</p>
     <div class="steps" style="grid-template-columns: repeat(3, 1fr);">
         <div class="step">
-            <div class="step-n">Enterprise tier</div>
+            <div class="step-n">Enterprise platforms</div>
             <h3>$50K&ndash;$500K/year</h3>
-            <p>OneTrust, Credo AI, Holistic AI, IBM watsonx.governance. Custom pricing, long sales cycles, dedicated compliance teams required.</p>
+            <p>AI governance dashboards with long sales cycles. Built for large compliance teams, not individual developers or small teams shipping fast.</p>
         </div>
         <div class="step">
-            <div class="step-n">Mid-market</div>
+            <div class="step-n">Mid-market tools</div>
             <h3>&euro;10K&ndash;&euro;80K/year</h3>
-            <p>trail, Vanta AI modules, AuditBoard (acquired FairNow). Still assumes you have budget and a GRC workflow.</p>
+            <p>Compliance platforms adding AI Act modules. Assumes you already have budget, a GRC workflow, and dedicated staff.</p>
         </div>
-        <div class="step" style="border-color: #38bdf8;">
-            <div class="step-n" style="color: #22c55e;">Regula</div>
-            <h3 style="color: #22c55e;">Free &amp; open source</h3>
-            <p>CLI that runs on your machine. No account, no API key, no consultants. Combines risk scanning, remediation planning, and auditor-ready evidence packaging with zero dependencies.</p>
+        <div class="step" style="border-color: #1d4ed8;">
+            <div class="step-n" style="color: #16a34a;">Regula</div>
+            <h3 style="color: #16a34a;">Free &amp; open source</h3>
+            <p>Runs on your laptop. No account, no API key, no sales call. Install in 10 seconds, scan your project, get a clear answer. MIT licence.</p>
         </div>
     </div>
 </div>
@@ -319,7 +340,7 @@
 <!-- FINAL CTA -->
 <div class="final">
     <h2>Find out where you stand</h2>
-    <p>One command. No account, no API key, no consultants.</p>
+    <p>One command. Takes 10 seconds. No account needed.</p>
     <div class="install-box" onclick="navigator.clipboard.writeText('pip install regula-ai');this.querySelector('.cp').textContent='copied'" style="margin:0 auto;">
         <span class="dollar">$</span>
         <span class="cmd">pip install regula-ai</span>
@@ -334,7 +355,7 @@
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contributing</a>
     </div>
-    <div class="foot-legal">Open source &middot; MIT licence &middot; Findings are indicators, not legal determinations.</div>
+    <div class="foot-legal">Open source &middot; MIT licence &middot; Regula flags risks for human review &mdash; it does not provide legal advice.</div>
 </footer>
 
 <script>

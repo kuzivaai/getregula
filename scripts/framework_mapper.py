@@ -11,6 +11,7 @@ Maps EU AI Act articles (9-15) to equivalent controls in:
   - ISO 27001:2022
   - OWASP LLM Top 10 (2025)
   - MITRE ATLAS
+  - EU Cyber Resilience Act (2024/2847)
   - LGPD (Lei Geral de Proteção de Dados, Lei 13.709/2018 — Brasil)
   - Marco Legal da IA (PL 2338/2023 — Brasil, aprovado pelo Senado em dezembro/2024)
 
@@ -54,6 +55,8 @@ _FRAMEWORK_KEYS = {
     "mitre-atlas": "mitre_atlas",
     "lgpd": "lgpd",
     "marco-legal-ia": "marco_legal_ia",
+    "cra": "cra",
+    "cyber-resilience-act": "cra",
 }
 
 
@@ -187,6 +190,14 @@ def format_mapping_text(mapping: dict) -> str:
                 lines.append(f"    • {art}")
             if marco.get("notes"):
                 lines.append(f"    Nota: {marco['notes']}")
+
+        cra = frameworks.get("cra", {})
+        if cra:
+            lines.append("  EU Cyber Resilience Act (2024/2847)")
+            for req in cra.get("requirements", []):
+                lines.append(f"    • {req}")
+            if cra.get("notes"):
+                lines.append(f"    Note: {cra['notes']}")
 
         lines.append("")
 

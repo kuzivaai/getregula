@@ -1,9 +1,9 @@
-# Framework Crosswalk: EU AI Act 2024/1689 mapped to 7 frameworks
+# Framework Crosswalk: EU AI Act 2024/1689 mapped to 8 frameworks
 # Sources: EU AI Act text, NIST AI 100-1, ISO/IEC 42001:2023, NIST CSF 2.0,
 #          SOC 2 TSC (AICPA 2017), ISO 27001:2022, OWASP LLM Top 10 (2025),
-#          MITRE ATLAS
-schema_version: "2.0"
-last_updated: "2026-03-27"
+#          MITRE ATLAS, EU Cyber Resilience Act (2024/2847)
+schema_version: "2.1"
+last_updated: "2026-04-02"
 
 mappings:
   article_9:
@@ -63,6 +63,12 @@ mappings:
         - "Art. 13: Usos vedados (risco excessivo) — proibição absoluta"
         - "Art. 14: Definição de sistemas de IA de alto risco"
       notes: "Sistemas de IA de alto risco requerem avaliação prévia de riscos (Art. 12) e conformidade com as categorias de alto risco (Art. 14)."
+    cra:
+      regulation: "EU Cyber Resilience Act (2024/2847)"
+      requirements:
+        - "Annex I, Part I (2): Products shall be designed with appropriate level of cybersecurity based on risks"
+        - "Art. 13: Obligations of manufacturers — cybersecurity risk assessment before placing on market"
+      notes: "CRA risk assessment overlaps with AI Act Art. 9 — both require pre-market risk identification. CRA focuses on cybersecurity risks; AI Act on fundamental rights risks."
 
   article_10:
     eu_ai_act:
@@ -120,6 +126,11 @@ mappings:
         - "Art. 18, I(a): Documentação adequada de todas as etapas do ciclo de vida do sistema"
         - "Art. 14, III: Sistemas de alto risco incluem recrutamento e gestão de trabalhadores com dados sensíveis"
       notes: "Dados de treinamento de IA de alto risco sujeitos a requisitos de documentação (Art. 18)."
+    cra:
+      regulation: "EU Cyber Resilience Act (2024/2847)"
+      requirements:
+        - "Annex I, Part I (2)(d): Protect confidentiality and integrity of stored, transmitted or processed data"
+      notes: "CRA data protection requirements complement AI Act Art. 10 data governance — CRA covers data-in-transit/at-rest security."
 
   article_11:
     eu_ai_act:
@@ -166,6 +177,12 @@ mappings:
         - "Art. 18, I(a): Documentação técnica obrigatória para sistemas de IA de alto risco"
         - "Art. 18, II(a): Desenvolvedor deve manter registros das medidas de governança adotadas"
       notes: "Documentação técnica deve ser mantida e disponibilizada à autoridade competente (Art. 18)."
+    cra:
+      regulation: "EU Cyber Resilience Act (2024/2847)"
+      requirements:
+        - "Art. 13: Technical documentation shall include cybersecurity risk assessment"
+        - "Art. 13(8): Technical documentation and declaration of conformity kept for at least 10 years"
+      notes: "CRA requires technical documentation for all products with digital elements — overlaps with AI Act Art. 11 for AI-enabled products."
 
   article_12:
     eu_ai_act:
@@ -210,6 +227,12 @@ mappings:
         - "Art. 18, I(b): Ferramentas de registro para avaliação de acurácia e robustez do sistema"
         - "Art. 18, II(a): Desenvolvedor mantém registros das medidas de governança para prestação de contas"
       notes: "Registros de funcionamento são requisito para sistemas de alto risco (Art. 18)."
+    cra:
+      regulation: "EU Cyber Resilience Act (2024/2847)"
+      requirements:
+        - "Annex I, Part I (2)(g): Record and monitor relevant internal activity, including data access"
+        - "Art. 14(2)(a): Actively exploited vulnerability notification within 24 hours"
+      notes: "CRA logging requirements overlap with AI Act Art. 12 — CRA adds mandatory vulnerability reporting timelines."
 
   article_13:
     eu_ai_act:
@@ -261,6 +284,12 @@ mappings:
         - "Art. 6, II: Explicações sobre decisões automatizadas de alto impacto"
         - "Art. 18, I(f): Disponibilização de informações que permitam interpretar resultados do sistema"
       notes: "Usuários têm direito de saber quando interagem com um sistema de IA (Art. 5) e de receber explicações (Art. 6)."
+    cra:
+      regulation: "EU Cyber Resilience Act (2024/2847)"
+      requirements:
+        - "Annex II: Information and instructions to the user, including security properties"
+        - "Art. 13(1): Products placed on market shall comply with Annex I essential requirements"
+      notes: "CRA transparency obligations complement AI Act Art. 13 — CRA covers cybersecurity disclosures to users."
 
   article_14:
     eu_ai_act:
@@ -307,6 +336,11 @@ mappings:
         - "Art. 8: Supervisão humana de sistemas de IA de alto risco — compreender, interpretar, decidir e intervir"
         - "Art. 6, III: Direito à revisão humana de decisões automatizadas de alto impacto"
       notes: "Sistemas de IA de alto risco devem permitir intervenção humana significativa (Art. 8)."
+    cra:
+      regulation: "EU Cyber Resilience Act (2024/2847)"
+      requirements:
+        - "Annex I, Part II (1): Manufacturers shall identify and document vulnerabilities, including third-party components"
+      notes: "CRA does not directly address human oversight, but vulnerability management processes require human decision-making on patch prioritisation."
 
   article_15:
     eu_ai_act:
@@ -380,3 +414,13 @@ mappings:
         - "Art. 3, VIII: Princípio de confiabilidade e robustez do sistema de IA"
         - "Art. 18, I(b–c): Avaliação de acurácia, robustez e testes de segurança para sistemas de alto risco"
       notes: "Requisitos técnicos de segurança e robustez são exigidos pelo Art. 18 para sistemas de alto risco."
+    cra:
+      regulation: "EU Cyber Resilience Act (2024/2847)"
+      requirements:
+        - "Annex I, Part I (2)(a): Products shall be designed with no known exploitable vulnerabilities"
+        - "Annex I, Part I (2)(b): Secure by default configuration"
+        - "Annex I, Part I (2)(c): Protect against unauthorised access by appropriate control mechanisms"
+        - "Annex I, Part II (1): Identify and document vulnerabilities including SBOM"
+        - "Annex I, Part II (3): Apply effective and regular tests and reviews"
+        - "Art. 14(2): Report actively exploited vulnerabilities within 24 hours to ENISA"
+      notes: "Art. 15 (cybersecurity) is where AI Act and CRA overlap most directly. Both require products to be resilient against attacks. CRA adds mandatory SBOM, vulnerability disclosure, and 5-year security update obligations."

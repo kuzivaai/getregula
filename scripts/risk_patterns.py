@@ -256,6 +256,26 @@ AI_SECURITY_PATTERNS = {
         "severity": "low",
         "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
     },
+    # Vibe-coding architecture gaps — common in AI-generated code that skips
+    # security review. These map to CRA secure-by-design and AI Act Art. 15.
+    "no_error_handling_ai_call": {
+        "patterns": [
+            r"(?:chat\.completions|messages\.create|llm\.invoke|model\.predict)\s*\([^)]*\)\s*$",  # bare AI call with no try/except on same or next line
+        ],
+        "owasp": "LLM06",
+        "description": "AI API call without error handling — service failures will crash the application",
+        "severity": "medium",
+        "remediation": "Wrap AI API calls in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    },
+    "exposed_api_key_env": {
+        "patterns": [
+            r"(?:OPENAI_API_KEY|ANTHROPIC_API_KEY)\s*[:=]\s*['\"]sk-[a-zA-Z0-9]",  # hardcoded key in config
+        ],
+        "owasp": "LLM06",
+        "description": "AI API key appears hardcoded — credential exposure risk",
+        "severity": "critical",
+        "remediation": "Use environment variables or a secrets manager. Never commit API keys to source code. CRA Annex I (2)(c) requires access control.",
+    },
 }
 
 AI_INDICATORS = {
