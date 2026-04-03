@@ -1026,13 +1026,17 @@ def cmd_feedback(args):
     no_browser = getattr(args, "no_browser", False)
     in_ci = not sys.stdin.isatty() or bool(os.environ.get("CI"))
 
+    note = "(Label will apply automatically if it exists in the repo)"
+
     if no_browser or in_ci:
         print(f"Report URL:\n{url}")
+        print(note)
         return
 
     import webbrowser
     print(f"Opening GitHub Issue in browser...")
     print(f"URL: {url}")
+    print(note)
     webbrowser.open(url)
 
 
@@ -1726,9 +1730,11 @@ def main():
 
     args = parser.parse_args()
 
-    # Telemetry: prompt on first run, then init Sentry if consented
+    # Telemetry: prompt on first run, then init Sentry if consented.
+    # Skip prompt when user is explicitly managing telemetry settings.
     from telemetry import prompt_consent_if_needed, init_sentry
-    prompt_consent_if_needed()
+    if args.command != "telemetry":
+        prompt_consent_if_needed()
     init_sentry()
 
     if hasattr(args, 'lang') and args.lang:
