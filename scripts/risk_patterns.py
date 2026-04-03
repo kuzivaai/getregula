@@ -111,7 +111,8 @@ HIGH_RISK_PATTERNS = {
     },
     "employment": {
         "patterns": [r"\bcv.?screen", r"\bresume.?filt", r"\bhiring.?decision", r"\brecruit\w*\W{0,3}automat",
-                     r"\bautomat\w*\W{0,3}recruit", r"\bcandidate.?rank", r"\bpromotion.?decision",
+                     r"\bautomat\w*\W{0,3}recruit", r"\bcandidate[_\W]?rank", r"rank[_\W]?candidate",
+                     r"\bpromotion.?decision",
                      r"\btermination.?decision", r"\bperformance.?review.{0,10}(ai|automat|model|predict)",
                      r"\bscreen.?candidate", r"\bjob.?candidate", r"\bcandidate.?screen",
                      r"\bapplicant.?scor", r"\bapplicant.?rank", r"\bemployee.?assess"],
@@ -181,7 +182,8 @@ LIMITED_RISK_PATTERNS = {
     "synthetic_content": {
         "patterns": [r"deepfake", r"synthetic.?media", r"face.?swap", r"voice.?clon",
                      r"ai[\s_-]generated[\s_-]image", r"text[\s_-]to[\s_-]image",
-                     r"generate_(?:deepfake|synthetic)", r"image_generat(?:or|ion)"],
+                     r"generate_(?:deepfake|synthetic)", r"image_generat(?:or|ion)",
+                     r"\.Image\.create\b", r"generate.?image\b"],
         "article": "50",
         "description": "Synthetic content generation",
     },
