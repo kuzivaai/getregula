@@ -316,7 +316,7 @@ phases = [
     # ─ Phase 2: Launch (May)
     ("Phase 2\nLaunch", "May 2026",
      "Show HN submitted",
-     "□ Post on Monday or Tuesday morning ET\n□ Title: Option A or C from SHOW_HN_DRAFT.md\n□ Link to GitHub repo, not landing page\n□ Be present for 4+ hours to answer comments\n□ Answer every technical question honestly",
+     "□ Post on Monday or Tuesday morning ET\n□ Title: Write a direct, honest HN title\n□ Link to GitHub repo, not landing page\n□ Be present for 4+ hours to answer comments\n□ Answer every technical question honestly",
      "You", "Top 30 on HN front page", "Not started", "P0",
      "Primary launch channel"),
     ("Phase 2\nLaunch", "May 2026",
@@ -892,7 +892,7 @@ weeks = [
      "", "Article is evidence. Show the tool working, not just describe it."),
     ("Wk 4", "Apr 24–30", "Show HN prep",
      "□ Read 10 recent successful Show HN posts — note what made them land\n"
-     "□ Finalise HN post title (from SHOW_HN_DRAFT.md)\n"
+     "□ Finalise HN post title\n"
      "□ Prepare answers to all 6 predictable questions in draft\n"
      "□ Choose a Tuesday or Wednesday morning to post\n"
      "□ Block 4 hours in calendar for that day",
