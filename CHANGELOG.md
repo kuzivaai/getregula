@@ -35,7 +35,7 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [Unreleased] — 2026-03-28 (post-v1.2.0 fixes)
+## [1.3.0] — 2026-03-28
 
 ### Fixed
 - Credit scorer false negative — `train_credit_model` and similar underscore-prefixed identifiers now correctly match `essential_services` high-risk patterns. Root cause: `\b` word-boundary anchor fails when the keyword is preceded by `_` (a word character). Fixed `credit.?model`, `credit.?risk`, `credit.?predict` in `risk_patterns.py`. Adds regression test `test_fn_fix_credit_scorer_function_names`.
