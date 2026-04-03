@@ -13,6 +13,9 @@
     <meta name="twitter:title" content="Regula — EU AI Act Risk Scanner">
     <meta name="twitter:description" content="Free CLI that classifies your AI code against EU AI Act risk tiers. Shows why, what to do, and how long it takes.">
     <link rel="canonical" href="https://getregula.com/">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/">
+    <link rel="alternate" hreflang="de" href="https://getregula.com/de.html">
+    <link rel="alternate" hreflang="pt-BR" href="https://getregula.com/pt-br.html">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%231d4ed8'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -359,10 +362,10 @@
         <span class="cmd">pip install regula-ai</span>
         <span class="cp">copy</span>
     </div>
-    <div class="notify" id="notify-form">
-        <input type="email" id="notify-email" placeholder="your@email.com" aria-label="Email for updates">
-        <button onclick="document.getElementById('notify-form').innerHTML='<p class=notify-msg>Thanks! We\'ll let you know about major updates.</p>'">Get updates</button>
-    </div>
+    <form class="notify" action="https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID" method="POST">
+        <input type="email" name="email" placeholder="your@email.com" aria-label="Email for updates" required>
+        <button type="submit">Get updates</button>
+    </form>
     <p class="notify-msg">No spam. Only major releases and EU AI Act deadline reminders.</p>
 </div>
 
