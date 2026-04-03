@@ -142,6 +142,30 @@ def _check_security():
             "detail": "Audit patterns in .gitignore, no world-readable policy files"}
 
 
+def _check_telemetry():
+    """Check telemetry consent status and DSN configuration."""
+    try:
+        from telemetry import get_consent, dsn_is_configured
+        consent = get_consent()
+        dsn_ok = dsn_is_configured()
+
+        if consent is None:
+            return {"name": "Telemetry", "status": "INFO",
+                    "detail": "Not yet configured — run 'regula telemetry enable|disable'"}
+        if consent and not dsn_ok:
+            return {"name": "Telemetry", "status": "WARN",
+                    "detail": "Consent is enabled but Sentry DSN is not set — crashes will not be reported. "
+                              "Set _SENTRY_DSN in scripts/telemetry.py"}
+        if consent and dsn_ok:
+            return {"name": "Telemetry", "status": "PASS",
+                    "detail": "Enabled — anonymous crash reports active"}
+        return {"name": "Telemetry", "status": "INFO",
+                "detail": "Disabled — run 'regula telemetry enable' to opt in"}
+    except Exception as exc:
+        return {"name": "Telemetry", "status": "WARN",
+                "detail": f"Could not check telemetry: {exc}"}
+
+
 def run_doctor(format_type="text"):
     """Run all health checks.
 
@@ -160,6 +184,7 @@ def run_doctor(format_type="text"):
         _check_hooks(),
         _check_config_validation(),
         _check_security(),
+        _check_telemetry(),
     ]
 
     pass_count = sum(1 for c in checks if c["status"] == "PASS")
