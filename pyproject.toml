@@ -39,10 +39,11 @@ Issues = "https://github.com/kuzivaai/getregula/issues"
 regula = "scripts.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["scripts*", "hooks*"]
+include = ["scripts*", "hooks*", "references*"]
 
 [tool.setuptools.package-data]
 "*" = ["*.yaml", "*.md"]
+"references" = ["*.yaml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

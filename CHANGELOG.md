@@ -5,6 +5,36 @@ All notable changes to Regula are documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/).
 
+## [1.5.0] — 2026-04-03
+
+### Added
+- EU Cyber Resilience Act (2024/2847) as 11th compliance framework mapped to Articles 9-15
+- 2 vibe-coding architecture antipatterns: no_error_handling_ai_call, exposed_api_key_env
+- Vibe coder quickstart guide (docs/QUICKSTART_VIBE_CODERS.md)
+- `Finding` dataclass — formalises the scan finding contract (12 fields, backward-compatible)
+- `compute_finding_tier()` — single source of truth for block/warn/info logic
+- `get_policy(path=)` override for testability
+- `__all__` on 6 key public API modules (constants, risk_types, classify_risk, report, log_event, policy_config)
+- 5 new risk patterns: driverless, automated driving, vehicle control system, dialogue system, conversational model
+- 28 orphaned tests added to manual runner (324 total, 748 assertions)
+
+### Changed
+- Landing page: light cream theme with hexagonal tile pattern, research-validated copy targeting both vibe coders and production developers
+- VERSION moved to constants.py — breaks circular import chain (evidence_pack/gen_docs/sbom no longer import cli.py)
+- report.py refactored: extracted _scan_agent_autonomy(), _scan_credentials(), _scan_ai_security(), _parse_suppression_rules()
+- Removed unverifiable competitive claims ("unique", "The only") from all landing pages and docs
+- Competitor landscape updated with verified data: Systima Comply, ArkForge, EuConform, ClawGuard, VerifyWise
+- Risk pattern count: 130 (was 123). Command count corrected: 33 (was 34).
+- _compile_custom_pattern() now catches re.error
+- strip_comments() docstring corrected to match actual behaviour
+
+### Fixed
+- docs/FULL_INSPECTION.md version 1.2.0 → 1.5.0
+- CRA crosswalk misattributions: Art. 13(15) → Annex II, Annex VII → Art. 13(8)
+- Pattern breakdown in FULL_INSPECTION.md (32+61+21+16=130)
+
+---
+
 ## [Unreleased] — 2026-03-28 (post-v1.2.0 fixes)
 
 ### Fixed

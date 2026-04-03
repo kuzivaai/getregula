@@ -29,8 +29,12 @@ from degradation import check_optional
 # Cache for loaded crosswalk data
 _crosswalk_cache: dict | None = None
 
-# Path to the crosswalk file (relative to repo root)
-_CROSSWALK_PATH = Path(__file__).parent.parent / "references" / "framework_crosswalk.yaml"
+# Path to the crosswalk file — check installed package location first, then repo root
+_CROSSWALK_CANDIDATES = [
+    Path(__file__).parent.parent / "references" / "framework_crosswalk.yaml",  # repo root
+    Path(__file__).parent / ".." / "references" / "framework_crosswalk.yaml",  # installed package
+]
+_CROSSWALK_PATH = next((p for p in _CROSSWALK_CANDIDATES if p.exists()), _CROSSWALK_CANDIDATES[0])
 
 # Mapping from article number to crosswalk key
 _ARTICLE_KEY_MAP = {
