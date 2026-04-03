@@ -28,7 +28,9 @@ yaml = ["pyyaml~=6.0"]
 ast = ["tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23"]
 test = ["pytest>=7.0"]
 pdf = ["weasyprint~=62.0"]
-all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint~=62.0"]
+sentry = ["sentry-sdk~=2.0"]
+telemetry = ["sentry-sdk~=2.0"]
+all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint~=62.0", "sentry-sdk~=2.0"]
 
 [project.urls]
 Homepage = "https://github.com/kuzivaai/getregula"

@@ -1008,6 +1008,57 @@ def cmd_disclose(args):
         print(text)
 
 
+def cmd_feedback(args):
+    """Open a pre-filled GitHub Issue to report a false positive, false negative, or bug."""
+    import os
+    from telemetry import build_feedback_url
+
+    kind = getattr(args, "feedback_kind", "false-positive") or "false-positive"
+    url = build_feedback_url(
+        kind=kind,
+        pattern_id=getattr(args, "pattern", None),
+        file_path=getattr(args, "file", None),
+        line_number=getattr(args, "line", None),
+        regula_version=VERSION,
+        description=getattr(args, "description", None),
+    )
+
+    no_browser = getattr(args, "no_browser", False)
+    in_ci = not sys.stdin.isatty() or bool(os.environ.get("CI"))
+
+    if no_browser or in_ci:
+        print(f"Report URL:\n{url}")
+        return
+
+    import webbrowser
+    print(f"Opening GitHub Issue in browser...")
+    print(f"URL: {url}")
+    webbrowser.open(url)
+
+
+def cmd_telemetry(args):
+    """Manage anonymous crash report consent (GDPR Article 7)."""
+    from telemetry import get_consent, set_consent
+    action = getattr(args, "telemetry_action", "status") or "status"
+
+    if action == "status":
+        consent = get_consent()
+        if consent is None:
+            print("Telemetry: not yet configured (will be asked on next run)")
+        elif consent:
+            print("Telemetry: enabled — anonymous crash reports are sent to help fix bugs")
+            print("  To opt out: regula telemetry disable")
+        else:
+            print("Telemetry: disabled — no data is sent")
+            print("  To opt in:  regula telemetry enable")
+    elif action == "enable":
+        set_consent(True)
+        print("Telemetry enabled. Thank you — crash reports help fix bugs faster.")
+    elif action == "disable":
+        set_consent(False)
+        print("Telemetry disabled. No crash reports will be sent.")
+
+
 def cmd_fix(args):
     """Generate compliance fix scaffolds for findings."""
     if args.project != ".":
@@ -1609,6 +1660,42 @@ def _build_subparsers(subparsers):
     p_qs.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_qs.set_defaults(func=cmd_quickstart)
 
+    # --- feedback ---
+    p_feedback = subparsers.add_parser(
+        "feedback",
+        help="Report a false positive, false negative, or bug (opens pre-filled GitHub Issue)",
+    )
+    feedback_sub = p_feedback.add_subparsers(dest="feedback_kind")
+
+    p_fp = feedback_sub.add_parser("false-positive", help="Regula flagged code that is not a risk")
+    p_fp.add_argument("--pattern", "-p", help="Pattern ID that was incorrectly flagged")
+    p_fp.add_argument("--file", "-f", help="File where the false positive occurred")
+    p_fp.add_argument("--line", "-l", type=int, help="Line number")
+    p_fp.add_argument("--no-browser", action="store_true", help="Print URL instead of opening browser")
+    p_fp.set_defaults(func=cmd_feedback, feedback_kind="false-positive")
+
+    p_fn = feedback_sub.add_parser("false-negative", help="Regula missed a risk that should have been flagged")
+    p_fn.add_argument("--pattern", "-p", help="Pattern ID that should have been flagged (if known)")
+    p_fn.add_argument("--file", "-f", help="File where the risk exists")
+    p_fn.add_argument("--line", "-l", type=int, help="Line number")
+    p_fn.add_argument("--no-browser", action="store_true", help="Print URL instead of opening browser")
+    p_fn.set_defaults(func=cmd_feedback, feedback_kind="false-negative")
+
+    p_bug = feedback_sub.add_parser("bug", help="Regula crashed or behaved unexpectedly")
+    p_bug.add_argument("--description", "-d", help="One-line description of what happened")
+    p_bug.add_argument("--no-browser", action="store_true", help="Print URL instead of opening browser")
+    p_bug.set_defaults(func=cmd_feedback, feedback_kind="bug")
+
+    p_feedback.set_defaults(func=cmd_feedback, feedback_kind="false-positive")
+
+    # --- telemetry ---
+    p_telemetry = subparsers.add_parser("telemetry", help="Manage anonymous crash report consent")
+    telemetry_sub = p_telemetry.add_subparsers(dest="telemetry_action")
+    telemetry_sub.add_parser("status", help="Show current telemetry setting")
+    telemetry_sub.add_parser("enable", help="Opt in to anonymous crash reports")
+    telemetry_sub.add_parser("disable", help="Opt out of anonymous crash reports")
+    p_telemetry.set_defaults(func=cmd_telemetry, telemetry_action="status")
+
     # --- config ---
     p_config = subparsers.add_parser("config", help="Config management (validate, etc.)")
     config_sub = p_config.add_subparsers(dest="config_action")
@@ -1639,6 +1726,11 @@ def main():
 
     args = parser.parse_args()
 
+    # Telemetry: prompt on first run, then init Sentry if consented
+    from telemetry import prompt_consent_if_needed, init_sentry
+    prompt_consent_if_needed()
+    init_sentry()
+
     if hasattr(args, 'lang') and args.lang:
         from i18n import set_language
         set_language(args.lang)
@@ -1666,8 +1758,14 @@ def main():
     except BrokenPipeError:
         sys.exit(0)
     except Exception as e:
+        try:
+            import sentry_sdk
+            sentry_sdk.capture_exception(e)
+        except Exception:
+            pass
         print(f"Internal error: {e}", file=sys.stderr)
         print("This is a bug in Regula. Please report it at https://github.com/kuzivaai/getregula/issues", file=sys.stderr)
+        print("Or run: regula feedback --bug \"<description>\"", file=sys.stderr)
         sys.exit(2)
 
 
