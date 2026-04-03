@@ -603,7 +603,7 @@ competitors = [
     ("compl-ai",         "?",     "OSS eval framework",       "Open-source compliance-centred evaluation for generative AI. compl-ai.org. Research-grade.",                              "No",  "Partial",          "Python",                          "Research-focused, not developer-focused. Different use case.",               "Could grow into developer tool territory"),
     ("Microsoft Agent\nGovernance Toolkit", "N/A", "Enterprise toolkit", "Policy enforcement, zero-trust identity, sandboxing for AI agents. Published 2 Apr 2026.",                 "Via SDK","Yes",           "Python",                          "Enterprise-only. Microsoft ecosystem. Not code scanning.",                   "High credibility. Developer mindshare risk."),
     ("OneTrust/Credo AI","N/A",   "Enterprise GRC",           "Est. $50K+/year for enterprise contracts. Risk management, documentation, lifecycle.",                                 "No",  "No",               "Platform",                        "We're free. Entirely different buyer. Not a real competitor at our stage.","Credibility comparison if enterprise asks why not use them"),
-    ("ARQNXS/eu-ai-act\n-compliance-checker", "?", "CLI / script",  "Python script. Scans codebases for EU AI Act compliance. GitHub repo (ARQNXS/eu-ai-act-compliance-checker).", "Yes", "No", "Python",          "Very early stage. No CI/CD integration, no framework mapping, no doc generation.", "Low — different depth. Found Apr 2026."),
+    ("ARQNXS/eu-ai-act\n-compliance-checker", "?", "Web questionnaire", "Browser-based compliance questionnaire (arqnxs.github.io). Generates report from answers. Proprietary licence (all rights reserved). No codebase scanning.", "No", "No", "N/A (form-based)", "No code scanning, no CLI, no CI/CD. Different approach entirely — self-assessment form, not static analysis.", "Very low — different approach. Found Apr 2026."),
 ]
 
 comp_row_bgs = [
@@ -647,7 +647,7 @@ ws4.row_dimensions[_body].height = 90
 ws4.merge_cells(f"A{_body}:I{_body}")
 c = ws4.cell(_body, 1,
     "Regula has the broadest feature set in the open-source CLI space (33 commands, 8 languages, 11 frameworks, 36 named pattern groups, Annex IV doc generation, evidence pack, gap scoring, remediation plan). "
-    "Two direct CLI+CI/CD competitors: Systima Comply (TS-native + tree-sitter, 37+ frameworks, PDF reports, org created 6 Mar 2026, 0 stars) and ARQNXS/eu-ai-act-compliance-checker (Python script, early stage). "
+    "One direct CLI+CI/CD competitor: Systima Comply (TS-native + tree-sitter, 37+ frameworks, PDF reports, org created 6 Mar 2026, 0 stars). ARQNXS/eu-ai-act-compliance-checker is a browser questionnaire, not a scanner (proprietary, no code analysis). "
     "Regula's advantage over Systima: 33 commands vs scan-only; 36 named pattern groups with dedicated per-language depth; SBOM, inventory, bias eval, and Annex IV docs in one tool. Both tools generate compliance documentation. "
     "EuConform leads on OSS mindshare (107 ★ as of Apr 2026 — browser-only, no CLI, no CI/CD).\n\n"
     "The honest risk: EuConform has 107 stars and 4 months head start. Systima is a direct technical competitor with CLI + CI/CD + compliance doc generation. "
