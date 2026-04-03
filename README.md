@@ -135,7 +135,7 @@ Several EU AI Act tools exist. Here is an honest comparison with the closest one
 
 **Where Regula leads:** pre-commit hook integration, Python AST depth, compliance gap assessment (Articles 9-15), dependency pinning analysis, offline zero-dependency operation.
 
-**Where Regula falls short:** JS/TS analysis (Systima is deeper), fix code generation (AIR Blackbox has it, Regula doesn't), real-world user validation (0 external users as of v1.2.0).
+**Where Regula falls short:** JS/TS analysis (Systima is deeper), fix code generation (AIR Blackbox has it, Regula doesn't).
 
 If your primary stack is TypeScript and you need CI/CD integration, Systima Comply is worth evaluating alongside Regula. If you need runtime interception and automated fix suggestions, AIR Blackbox serves a different need.
 
@@ -467,7 +467,7 @@ regula/
 │   ├── test_registry.py           # AI system registry
 │   ├── test_reliability.py        # Edge cases and resilience
 │   └── test_security_hardening.py # Security hardening checks
-│   # 435 tests, 1,044 assertions
+│   # 525 tests
 ├── docs/
 │   └── course/                    # Interactive 10-module governance course
 ├── regula-policy.yaml             # Policy configuration template
@@ -535,7 +535,7 @@ For full YAML support, install pyyaml: `pip install pyyaml`. Without it, a minim
 pytest tests/ -q
 ```
 
-435 tests, 1,044 assertions covering:
+525 tests covering:
 - AI detection (libraries, model files, API endpoints, ML patterns)
 - All 8 prohibited practices
 - All 10 high-risk categories (Annex III)
@@ -570,7 +570,7 @@ pytest tests/ -q
 
 ## Roadmap
 
-- **v1.2:** ~~Production readiness~~ — shipped 2026-03-28. Agent autonomy detection, `--skip-tests`, `--min-tier`, bias testing, 10-framework mapping, 435 tests.
+- **v1.2:** ~~Production readiness~~ — shipped 2026-03-28. Agent autonomy detection, `--skip-tests`, `--min-tier`, bias testing, 10-framework mapping, 525 tests.
 - **v1.3 (candidates):** JS/TS tree-sitter data flow, AVID vulnerability database integration, typosquatting detection, GitHub Action validated in real PR workflow.
 - **Not planned yet:** DPO dashboard, Slack/Teams alerting, model card generation, bias testing. These require validation that there are users who want them first.
 

@@ -24,3 +24,7 @@ evidence-pack-*/
 .playwright-cli/
 docs/superpowers/
 vscode-extension/node_modules/
+regula-course.html
+docs/FULL_INSPECTION.md
+docs/SHOW_HN_DRAFT.md
+docs/audit/
