@@ -296,7 +296,7 @@ Checks: pinning quality (hash > exact > range > unpinned), lockfile presence, AI
 
 ### Cross-Framework Compliance Mapping
 
-Regula maps findings to 10 compliance frameworks internally: EU AI Act, NIST AI RMF 1.0, ISO 42001:2023, NIST CSF 2.0, SOC 2, ISO 27001:2022, OWASP Top 10 for LLMs, MITRE ATLAS, LGPD (Brazil), and Marco Legal da IA (Brazil). Framework mappings appear in check findings and gap assessments automatically.
+Regula maps findings to 11 compliance frameworks internally: EU AI Act, NIST AI RMF 1.0, ISO 42001:2023, NIST CSF 2.0, SOC 2, ISO 27001:2022, OWASP Top 10 for LLMs, MITRE ATLAS, LGPD (Brazil), Marco Legal da IA (Brazil), and EU Cyber Resilience Act. Framework mappings appear in check findings and gap assessments automatically.
 
 ### Real-World Validation Benchmark
 
@@ -446,7 +446,7 @@ regula/
 │   ├── ast_engine.py              # Multi-language AST engine (Python + JS/TS tree-sitter + Java/Go/Rust/C/C++ regex)
 │   ├── compliance_check.py        # Compliance gap assessment (Articles 9-15)
 │   ├── dependency_scan.py         # AI dependency supply chain security
-│   ├── framework_mapper.py        # Cross-framework compliance mapping (10 frameworks)
+│   ├── framework_mapper.py        # Cross-framework compliance mapping (11 frameworks)
 │   ├── remediation.py             # Inline fix suggestions per Annex III category
 │   ├── agent_monitor.py           # Agentic AI governance (autonomy scoring, MCP config)
 │   ├── sbom.py                    # CycloneDX 1.6 AI SBOM generation
@@ -500,7 +500,7 @@ regula/
 - **Compliance gap assessment, not just risk flagging.** Checks whether Articles 9-15 compliance infrastructure actually exists in the codebase.
 - **AI-specific supply chain security.** Dependency pinning checks focus on AI libraries, not general packages.
 - **Cross-platform.** Unix/macOS (`fcntl`) and Windows (`msvcrt`) file locking. No platform restrictions.
-- **Multi-framework mapping.** 10 frameworks (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF 2.0, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, LGPD, Marco Legal da IA) mapped via a single crosswalk data file.
+- **Multi-framework mapping.** 11 frameworks (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF 2.0, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, LGPD, Marco Legal da IA, EU CRA) mapped via a single crosswalk data file.
 
 ## Configuration
 
