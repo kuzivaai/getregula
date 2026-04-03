@@ -591,7 +591,7 @@ header_row(ws4, 3, [
 ], NAVY, WHITE, height=30)
 
 competitors = [
-    ("Regula (ours)",    "0 ★",   "CLI / code scanner",       "Regex + AST + tree-sitter. 33 commands, 32 named pattern groups, 11 frameworks, 8 languages. Generates Annex IV docs, evidence packs, remediation plans.",  "Yes", "Yes (action.yml)", "8 (Py/JS/TS/Java/Go/Rust/C/C++)", "Most commands (33), most languages (8), only tool with Annex IV doc generation + evidence pack + gap scoring. Free.", "Starting from 0. Late entrant. Systima overlaps on CLI+CI/CD."),
+    ("Regula (ours)",    "0 ★",   "CLI / code scanner",       "Regex + AST + tree-sitter. 33 commands, 36 named pattern groups, 11 frameworks, 8 languages. Generates Annex IV docs, evidence packs, remediation plans.",  "Yes", "Yes (action.yml)", "8 (Py/JS/TS/Java/Go/Rust/C/C++)", "Most commands (33), most languages (8), only tool with Annex IV doc generation + evidence pack + gap scoring. Free.", "Starting from 0. Late entrant. Systima overlaps on CLI+CI/CD."),
     ("EuConform",        "107 ★\n(Apr 2026)", "Browser app",         "Risk classification (Art.6/7) + bias eval (CrowS-Pairs). Offline-first, no cloud. PDF reports.",                       "No",  "No",               "N/A (form-based)",               "No CLI, no CI/CD. Cannot integrate into a dev workflow. No codebase scanning.", "107 stars as of Apr 2026 — strong first-mover advantage in OSS space"),
     ("Systima Comply",   "0 ★",   "CLI / GitHub Action",      "npm package + GitHub Action + TypeScript API. Scans codebase for EU AI Act risks. Domain-based severity. PDF reports. Call-chain tracing.", "Yes", "Yes (GH Action)",  "TS-native; also scans Py/Go/Java/Rust via tree-sitter", "Regula covers 8 languages with dedicated patterns; Systima is TypeScript-native. Regula has 33 commands and generates Annex IV docs.", "Direct competitor — CLI + CI/CD + codebase scanning. Created 14 Mar 2026."),
     ("AgentGuard",       "10 ★",  "Runtime middleware",       "3-line Python import. Wraps LLM agents. Runtime policy enforcement, not code scanning.",                                "No",  "Yes (SDK)",        "Python (middleware)",             "Different use case: runtime vs scan-time. Complementary, not competitive.", "Could expand to code scanning"),
@@ -641,7 +641,7 @@ merge_title(ws4, 14, 1, 9, "HONEST ASSESSMENT", ACCENT, WHITE, 13)
 ws4.row_dimensions[15].height = 70
 ws4.merge_cells("A15:I15")
 c = ws4.cell(15, 1,
-    "Regula has the broadest feature set in the open-source space (33 commands, 8 languages, 11 frameworks, 32 named pattern groups, Annex IV doc generation). "
+    "Regula has the broadest feature set in the open-source space (33 commands, 8 languages, 11 frameworks, 36 named pattern groups, Annex IV doc generation). "
     "One direct CLI+CI/CD competitor exists: Systima Comply (TypeScript-native, also scans Py/Go/Java/Rust via tree-sitter, created 14 Mar 2026, 0 stars). "
     "Regula's advantage over Systima is pattern depth (32 named groups vs scanner heuristics) and command breadth (33 commands vs scan-only). EuConform leads on OSS mindshare (107 stars, Apr 2026).\n\n"
     "The honest risk: EuConform has 107 stars and 4 months head start. Systima is a newer but direct competitor. "
