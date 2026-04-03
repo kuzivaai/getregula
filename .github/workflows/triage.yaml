@@ -1,0 +1,90 @@
+name: Issue Triage
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Classify and label issue
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          # Write issue content to temp files to avoid shell injection
+          cat > /tmp/issue_title.txt << 'ISSUE_TITLE_EOF'
+          ${{ github.event.issue.title }}
+          ISSUE_TITLE_EOF
+
+          cat > /tmp/issue_body.txt << 'ISSUE_BODY_EOF'
+          ${{ github.event.issue.body }}
+          ISSUE_BODY_EOF
+
+          # Build JSON payload safely using Python — no shell variable expansion in content
+          python3 - <<'PYEOF'
+          import json, os, subprocess
+
+          title = open("/tmp/issue_title.txt").read().strip()
+          body = open("/tmp/issue_body.txt").read().strip()
+
+          prompt = f"""You are a triage bot for Regula, an EU AI Act compliance CLI tool.
+          Classify this GitHub issue into EXACTLY ONE of these labels:
+          - false-positive  (user says Regula incorrectly flagged their code)
+          - false-negative  (user says Regula missed a risk that should have been flagged)
+          - crash           (Regula threw an unhandled exception or exited unexpectedly)
+          - feature-request (user wants new functionality)
+          - question        (user needs help understanding something)
+          - docs            (documentation is wrong or missing)
+
+          Issue title: {title}
+          Issue body: {body}
+
+          Respond with ONLY the label name. No explanation. No punctuation."""
+
+          payload = {
+              "model": "claude-haiku-4-5-20251001",
+              "max_tokens": 20,
+              "messages": [{"role": "user", "content": prompt}],
+          }
+
+          import urllib.request
+          req = urllib.request.Request(
+              "https://api.anthropic.com/v1/messages",
+              data=json.dumps(payload).encode(),
+              headers={
+                  "x-api-key": os.environ["ANTHROPIC_API_KEY"],
+                  "anthropic-version": "2023-06-01",
+                  "content-type": "application/json",
+              },
+          )
+          with urllib.request.urlopen(req) as resp:
+              result = json.loads(resp.read())
+
+          label = result["content"][0]["text"].strip().lower()
+          valid = {"false-positive", "false-negative", "crash", "feature-request", "question", "docs"}
+
+          if label not in valid:
+              print(f"Claude returned unexpected label '{label}' — skipping")
+          else:
+              with open("/tmp/triage_label.txt", "w") as f:
+                  f.write(label)
+              print(f"Label to apply: {label}")
+          PYEOF
+
+          # Apply label if classification succeeded
+          if [ -f /tmp/triage_label.txt ]; then
+            LABEL=$(cat /tmp/triage_label.txt)
+            # Create label if it doesn't exist (ignore error if it does)
+            COLORS='{"false-positive":"e4e669","false-negative":"fbca04","crash":"d93f0b","feature-request":"0075ca","question":"d876e3","docs":"0052cc"}'
+            COLOR=$(python3 -c "import json,sys; d=json.loads(sys.argv[1]); print(d.get(sys.argv[2], 'ededed'))" "$COLORS" "$LABEL")
+            gh label create "$LABEL" --repo "$REPO" --color "$COLOR" 2>/dev/null || true
+            gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --add-label "$LABEL"
+            echo "Applied label: $LABEL to issue #$ISSUE_NUMBER"
+          fi
