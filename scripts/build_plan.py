@@ -133,7 +133,7 @@ merge_title(ws1, 12, 1, 7, "MARKET CONTEXT (verified, April 2026)", DGRAY, WHITE
 context_rows = [
     ("AI governance market size 2026",      "$492M (Gartner Feb 2026)",          "Growing to $1B+ by 2030"),
     ("EU AI Act high-risk deadline",        "2 August 2026 (Annex III)",         "Digital Omnibus may extend to Dec 2027 — treat Aug as binding"),
-    ("Enterprise compliance platforms",     "$50,000+/year",                      "Regula is free. Gap is real."),
+    ("Enterprise GRC platforms (OneTrust, IBM)", "$50,000+/year (est.)",          "Regula is free. Gap is real. KLA Digital SaaS starts €299/mo."),
     ("SME self-assessment cost",            "€9,500 – €14,500 + internal time",  "Regula eliminates the triage phase"),
     ("Max penalty",                         "€35M or 7% global turnover",        "Exceeds GDPR — real compliance urgency"),
     ("Top open-source competitor",          "EuConform — 107 stars (Dec 2025)",  "Browser-based, no CLI, no CI/CD integration"),
@@ -258,7 +258,7 @@ phases = [
     ("Phase 3\nEcosystem", "Jun 2026",
      "Listed on artificialintelligenceact.eu",
      "□ Contact the site editors\n□ Submit tool to their tools/resources directory\n□ Offer to write a guest article on code-level risk detection",
-     "You", "Listed on site (400K+ visitors)", "Not started", "P0",
+     "You", "Listed on site (150K+ users/mo)", "Not started", "P0",
      "Highest-ROI channel for this audience"),
     ("Phase 3\nEcosystem", "Jun 2026",
      "EU Digital SME Alliance outreach",
@@ -384,7 +384,7 @@ channels = [
      "Not started"),
     ("P0", "artificialintelligenceact.eu",
      "EU AI Act practitioners — highest conversion",
-     "400K+ visitors/month",
+     "150K+ users/month (self-reported)",
      "Med (outreach + article pitch)",
      "Jun 2026",
      "Contact site editors. Submit to tools directory. Offer guest article: 'Code-level EU AI Act risk detection — how it works'.",
@@ -515,14 +515,15 @@ header_row(ws4, 3, [
 ], NAVY, WHITE, height=30)
 
 competitors = [
-    ("Regula (ours)",    "0 ★",   "CLI / code scanner",       "Regex + AST + tree-sitter. 33 commands, 53 patterns, 11 frameworks, 8 languages. Generates Annex IV docs.",           "Yes", "Yes (action.yml)", "8 (Py/JS/TS/Java/Go/Rust/C/C++)", "Only tool with code-level depth + full CLI + CI/CD + doc generation. Free.", "Starting from 0. Late entrant."),
-    ("EuConform",        "107 ★", "Browser app",              "Risk classification (Art.6/7) + bias eval (CrowS-Pairs). Offline-first, no cloud. PDF reports.",                      "No",  "No",               "N/A (form-based)",               "No CLI, no CI/CD. Cannot integrate into a dev workflow. No code scanning.", "107 stars vs 0 — strong first-mover advantage in OSS space"),
-    ("AgentGuard",       "10 ★",  "Runtime middleware",       "3-line Python import. Wraps LLM agents. Runtime policy enforcement, not code scanning.",                               "No",  "Yes (SDK)",        "Python (middleware)",             "Different use case: runtime vs scan-time. Complementary, not competitive.", "Could expand to code scanning, eating our niche"),
-    ("EU AI Radar",      "?",     "Static web tool",          "5-question quiz. Maps to risk band. No code scanning.",                                                                "No",  "No",               "N/A",                            "Trivial tool. Regula does what it does + 32 more commands.",               "Very low — different depth"),
-    ("mcp-eu-ai-act",    "2 ★",   "MCP server",               "ArkForge MCP scanner. Detects EU AI Act violations via MCP protocol.",                                                "Via MCP", "Via MCP",     "MCP-compatible",                 "Very early. Our MCP server is a distribution channel, not a competitor.", "Could gain traction with Claude/Cursor users before us"),
-    ("G0 (AgentBouncr)", "?",     "Agent control layer",      "Scan, test, monitor for AI agents. LangChain/CrewAI/AutoGen/RAG. HMAC audit chains. ConsentGate.",                   "No",  "Yes",              "Python",                         "Agent-focused vs code-focused. Different buyer.",                          "Could expand to code scanning"),
-    ("KLA Digital",      "N/A",   "SaaS platform",            "AI governance SaaS. Cross-framework mapping. €299+/month.",                                                           "No",  "No",               "Platform",                        "We're free. They target enterprise compliance officers, not developers.",  "Credibility: established brand vs unknown"),
-    ("OneTrust/Credo AI","N/A",   "Enterprise GRC",           "$50K+/year. Risk management, documentation, lifecycle.",                                                               "No",  "No",               "Platform",                        "We're free. Entirely different buyer. Not a real competitor at our stage.","Credibility comparison if enterprise asks why not use them"),
+    ("Regula (ours)",    "0 ★",   "CLI / code scanner",       "Regex + AST + tree-sitter. 33 commands, 53 patterns, 11 frameworks, 8 languages. Generates Annex IV docs, evidence packs, remediation plans.",  "Yes", "Yes (action.yml)", "8 (Py/JS/TS/Java/Go/Rust/C/C++)", "Most commands (33), most languages (8), only tool with Annex IV doc generation + evidence pack + gap scoring. Free.", "Starting from 0. Late entrant. Systima overlaps on CLI+CI/CD."),
+    ("EuConform",        "107 ★", "Browser app",              "Risk classification (Art.6/7) + bias eval (CrowS-Pairs). Offline-first, no cloud. PDF reports.",                       "No",  "No",               "N/A (form-based)",               "No CLI, no CI/CD. Cannot integrate into a dev workflow. No codebase scanning.", "107 stars vs 0 — strong first-mover advantage in OSS space"),
+    ("Systima Comply",   "0 ★",   "CLI / GitHub Action",      "npm package + GitHub Action + TypeScript API. Scans codebase for EU AI Act risks. Domain-based severity. PDF reports. Call-chain tracing.", "Yes", "Yes (GH Action)",  "JS/TS (npm)",                    "Regula covers 8 languages vs JS/TS only. Regula has 33 commands and generates Annex IV docs; Systima focuses on scanning.", "Direct competitor — CLI + CI/CD + codebase scanning. Created 14 Mar 2026."),
+    ("AgentGuard",       "10 ★",  "Runtime middleware",       "3-line Python import. Wraps LLM agents. Runtime policy enforcement, not code scanning.",                                "No",  "Yes (SDK)",        "Python (middleware)",             "Different use case: runtime vs scan-time. Complementary, not competitive.", "Could expand to code scanning"),
+    ("EU AI Radar",      "?",     "Static web tool",          "5-question quiz. Maps to risk band. No code scanning.",                                                                 "No",  "No",               "N/A",                            "Trivial tool. Different depth entirely.",                                   "Very low — different depth"),
+    ("mcp-eu-ai-act",    "2 ★",   "MCP server",               "ArkForge MCP scanner. Detects EU AI Act violations via MCP protocol.",                                                 "Via MCP", "Via MCP",     "MCP-compatible",                 "Very early. Our MCP server is a distribution channel, not a competitor.", "Could gain traction with Claude/Cursor users before us"),
+    ("G0 (AgentBouncr)", "?",     "Agent control layer",      "Scan, test, monitor for AI agents. LangChain/CrewAI/AutoGen/RAG. HMAC audit chains. ConsentGate.",                    "No",  "Yes",              "Python",                         "Agent-focused vs code-focused. Different buyer.",                          "Could expand to code scanning"),
+    ("KLA Digital",      "N/A",   "SaaS platform",            "AI governance SaaS. Cross-framework mapping. €299+/month.",                                                            "No",  "No",               "Platform",                        "We're free. They target enterprise compliance officers, not developers.",  "Credibility: established brand vs unknown"),
+    ("OneTrust/Credo AI","N/A",   "Enterprise GRC",           "Est. $50K+/year for enterprise contracts. Risk management, documentation, lifecycle.",                                 "No",  "No",               "Platform",                        "We're free. Entirely different buyer. Not a real competitor at our stage.","Credibility comparison if enterprise asks why not use them"),
 ]
 
 comp_row_bgs = [
@@ -561,12 +562,12 @@ merge_title(ws4, 14, 1, 9, "HONEST ASSESSMENT", ACCENT, WHITE, 13)
 ws4.row_dimensions[15].height = 70
 ws4.merge_cells("A15:I15")
 c = ws4.cell(15, 1,
-    "Regula has the deepest feature set in the open-source space (33 commands vs competitors' 1-5). "
-    "The differentiation is real: code-level scanning + CLI + CI/CD + multi-language + doc generation in one free tool. "
-    "No other open-source tool does all of this.\n\n"
-    "The honest risk: EuConform has 107 stars and 4 months head start. "
+    "Regula has the broadest feature set in the open-source space (33 commands, 8 languages, 11 frameworks, Annex IV doc generation). "
+    "One direct competitor on CLI + CI/CD exists: Systima Comply (npm/GitHub Action, JS/TS only, created 14 Mar 2026, 0 stars). "
+    "Regula's advantage over Systima is language breadth (8 vs 2) and depth (33 commands vs a scanner). EuConform leads on OSS mindshare (107 stars).\n\n"
+    "The honest risk: EuConform has 107 stars and 4 months head start. Systima is a newer but direct competitor. "
     "Distribution — not product quality — is the critical path. "
-    "Every week without a Show HN post or distribution action is a week EuConform compounds its lead.\n\n"
+    "Every week without a Show HN post or distribution action is a week competitors compound their lead.\n\n"
     "The window is August 2026. After the deadline passes, urgency drops and the market fragments further.")
 c.fill = fill(LGRAY)
 c.font = font(BLACK, sz=10)
