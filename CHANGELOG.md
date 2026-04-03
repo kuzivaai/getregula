@@ -29,9 +29,7 @@ This project uses [Semantic Versioning](https://semver.org/).
 - strip_comments() docstring corrected to match actual behaviour
 
 ### Fixed
-- docs/FULL_INSPECTION.md version 1.2.0 → 1.5.0
 - CRA crosswalk misattributions: Art. 13(15) → Annex II, Annex VII → Art. 13(8)
-- Pattern breakdown in FULL_INSPECTION.md (32+61+21+16=130)
 
 ---
 
