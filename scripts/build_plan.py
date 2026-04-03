@@ -11,8 +11,84 @@ from openpyxl.styles import (
 from openpyxl.utils import get_column_letter
 # from openpyxl.styles.numbers import FORMAT_NUMBER_COMMA_SEPARATED1  # unused
 from openpyxl.chart import BarChart, Reference
+from openpyxl.worksheet.datavalidation import DataValidation
+from openpyxl.formatting.rule import CellIsRule
 from datetime import date, timedelta
 import calendar
+
+
+# ── Data validation helpers ──────────────────────────────────────
+def dv_list(formula, allow_blank=True, show_dropdown=True):
+    """Create a list-type DataValidation from a quoted comma-separated string."""
+    dv = DataValidation(
+        type="list",
+        formula1=formula,
+        allow_blank=allow_blank,
+        showDropDown=False,   # False = show the arrow (counter-intuitive but correct)
+        showErrorMessage=True,
+        error="Choose a value from the dropdown.",
+        errorTitle="Invalid entry",
+        showInputMessage=True,
+    )
+    return dv
+
+
+STATUS_VALS  = '"Not started,In progress,Done,Blocked"'
+PRIORITY_VALS = '"P0,P1,P2,P3"'
+RAG_VALS     = '"G,A,R"'
+DONE_VALS    = '"Done,Not done,Skipped"'
+
+
+def add_dv(ws, dv, cell_range):
+    dv.sqref = cell_range
+    ws.add_data_validation(dv)
+
+
+def cf_rag(ws, col_letter, start_row, end_row):
+    """Conditional formatting: G=green, A=amber, R=red for RAG column."""
+    col = col_letter
+    r = f"{col}{start_row}:{col}{end_row}"
+    ws.conditional_formatting.add(r, CellIsRule(
+        operator="equal", formula=['"G"'],
+        fill=PatternFill("solid", fgColor="C8E6C9"),
+        font=Font(color="1B5E20", bold=True, name="Calibri", size=9)
+    ))
+    ws.conditional_formatting.add(r, CellIsRule(
+        operator="equal", formula=['"A"'],
+        fill=PatternFill("solid", fgColor="FFF9C4"),
+        font=Font(color="F57F17", bold=True, name="Calibri", size=9)
+    ))
+    ws.conditional_formatting.add(r, CellIsRule(
+        operator="equal", formula=['"R"'],
+        fill=PatternFill("solid", fgColor="FFCDD2"),
+        font=Font(color="B71C1C", bold=True, name="Calibri", size=9)
+    ))
+
+
+def cf_status(ws, col_letter, start_row, end_row):
+    """Conditional formatting for Status column."""
+    col = col_letter
+    r = f"{col}{start_row}:{col}{end_row}"
+    ws.conditional_formatting.add(r, CellIsRule(
+        operator="equal", formula=['"Done"'],
+        fill=PatternFill("solid", fgColor="C8E6C9"),
+        font=Font(color="1B5E20", bold=True, name="Calibri", size=9)
+    ))
+    ws.conditional_formatting.add(r, CellIsRule(
+        operator="equal", formula=['"In progress"'],
+        fill=PatternFill("solid", fgColor="FFF9C4"),
+        font=Font(color="E65100", bold=True, name="Calibri", size=9)
+    ))
+    ws.conditional_formatting.add(r, CellIsRule(
+        operator="equal", formula=['"Blocked"'],
+        fill=PatternFill("solid", fgColor="FFCDD2"),
+        font=Font(color="B71C1C", bold=True, name="Calibri", size=9)
+    ))
+    ws.conditional_formatting.add(r, CellIsRule(
+        operator="equal", formula=['"Not started"'],
+        fill=PatternFill("solid", fgColor="F5F5F5"),
+        font=Font(color="757575", bold=False, name="Calibri", size=9)
+    ))
 
 wb = Workbook()
 
@@ -132,11 +208,11 @@ ws1.row_dimensions[11].height = 10
 merge_title(ws1, 12, 1, 7, "MARKET CONTEXT (verified, April 2026)", DGRAY, WHITE, 12)
 context_rows = [
     ("AI governance market size 2026",      "$492M (Gartner Feb 2026)",          "Growing to $1B+ by 2030"),
-    ("EU AI Act high-risk deadline",        "2 August 2026 (Annex III)",         "Digital Omnibus may extend to Dec 2027 — treat Aug as binding"),
-    ("Enterprise GRC platforms (OneTrust, IBM)", "$50,000+/year (est.)",          "Regula is free. Gap is real. KLA Digital SaaS starts €299/mo."),
-    ("SME self-assessment cost",            "€9,500 – €14,500 + internal time",  "Regula eliminates the triage phase"),
-    ("Max penalty",                         "€35M or 7% global turnover",        "Exceeds GDPR — real compliance urgency"),
-    ("Top open-source competitor",          "EuConform — 107 stars (Dec 2025)",  "Browser-based, no CLI, no CI/CD integration"),
+    ("EU AI Act high-risk deadline",        "2 August 2026 (Annex III)",         "Digital Omnibus Council backstop: 2 Dec 2027 — trilogues ongoing. Treat Aug 2026 as working deadline until final text adopted."),
+    ("Enterprise GRC platforms (OneTrust, IBM)", "No published list prices",     "Regula is free. OneTrust/IBM do not disclose AI governance pricing; analyst reports cite annual contracts well above €10,000."),
+    ("SME self-assessment cost",            "€9,500 – €14,500 + internal time",  "Source: Intellera Consulting (2024). Covers compliance + conformity assessment per high-risk AI system. Regula eliminates the triage phase."),
+    ("Max penalty (prohibited AI, Art.5)",  "€35M or 7% global turnover",        "For prohibited practices only. High-risk AI non-compliance (Art.99): €15M or 3% turnover. Most SMEs face the lower tier."),
+    ("Top open-source competitor",          "EuConform — 107 ★ (Apr 2026)",      "Browser-based, no CLI, no CI/CD integration. Verified via GitHub API, April 2026."),
     ("Regula GitHub stars at launch",       "0 (repo created 25 Mar 2026)",      "Honest starting point"),
     ("Regula PyPI",                         "regula-ai v1.5.0 — live",           "748 tests passing, 0 open issues"),
 ]
@@ -215,7 +291,7 @@ ws2 = wb.create_sheet("2 · 12-Month Roadmap")
 ws2.sheet_view.showGridLines = False
 
 merge_title(ws2, 1, 1, 9, "12-MONTH MILESTONE ROADMAP  ·  April 2026 – March 2027", BLACK, WHITE, 16)
-merge_title(ws2, 2, 1, 9, "Key external date: EU AI Act Annex III enforcement — 2 August 2026", ACCENT, WHITE, 13)
+merge_title(ws2, 2, 1, 9, "Working deadline: EU AI Act Annex III — 2 Aug 2026 (Digital Omnibus backstop: 2 Dec 2027, trilogues ongoing)", ACCENT, WHITE, 13)
 
 header_row(ws2, 3, ["Phase", "Month", "Milestone", "Actions Required", "Owner", "Success Metric", "Status", "Priority", "Notes"], NAVY, WHITE, height=24)
 
@@ -516,13 +592,13 @@ header_row(ws4, 3, [
 
 competitors = [
     ("Regula (ours)",    "0 ★",   "CLI / code scanner",       "Regex + AST + tree-sitter. 33 commands, 53 patterns, 11 frameworks, 8 languages. Generates Annex IV docs, evidence packs, remediation plans.",  "Yes", "Yes (action.yml)", "8 (Py/JS/TS/Java/Go/Rust/C/C++)", "Most commands (33), most languages (8), only tool with Annex IV doc generation + evidence pack + gap scoring. Free.", "Starting from 0. Late entrant. Systima overlaps on CLI+CI/CD."),
-    ("EuConform",        "107 ★", "Browser app",              "Risk classification (Art.6/7) + bias eval (CrowS-Pairs). Offline-first, no cloud. PDF reports.",                       "No",  "No",               "N/A (form-based)",               "No CLI, no CI/CD. Cannot integrate into a dev workflow. No codebase scanning.", "107 stars vs 0 — strong first-mover advantage in OSS space"),
+    ("EuConform",        "107 ★\n(Apr 2026)", "Browser app",         "Risk classification (Art.6/7) + bias eval (CrowS-Pairs). Offline-first, no cloud. PDF reports.",                       "No",  "No",               "N/A (form-based)",               "No CLI, no CI/CD. Cannot integrate into a dev workflow. No codebase scanning.", "107 stars as of Apr 2026 — strong first-mover advantage in OSS space"),
     ("Systima Comply",   "0 ★",   "CLI / GitHub Action",      "npm package + GitHub Action + TypeScript API. Scans codebase for EU AI Act risks. Domain-based severity. PDF reports. Call-chain tracing.", "Yes", "Yes (GH Action)",  "JS/TS (npm)",                    "Regula covers 8 languages vs JS/TS only. Regula has 33 commands and generates Annex IV docs; Systima focuses on scanning.", "Direct competitor — CLI + CI/CD + codebase scanning. Created 14 Mar 2026."),
     ("AgentGuard",       "10 ★",  "Runtime middleware",       "3-line Python import. Wraps LLM agents. Runtime policy enforcement, not code scanning.",                                "No",  "Yes (SDK)",        "Python (middleware)",             "Different use case: runtime vs scan-time. Complementary, not competitive.", "Could expand to code scanning"),
     ("EU AI Radar",      "?",     "Static web tool",          "5-question quiz. Maps to risk band. No code scanning.",                                                                 "No",  "No",               "N/A",                            "Trivial tool. Different depth entirely.",                                   "Very low — different depth"),
     ("mcp-eu-ai-act",    "2 ★",   "MCP server",               "ArkForge MCP scanner. Detects EU AI Act violations via MCP protocol.",                                                 "Via MCP", "Via MCP",     "MCP-compatible",                 "Very early. Our MCP server is a distribution channel, not a competitor.", "Could gain traction with Claude/Cursor users before us"),
     ("G0 (AgentBouncr)", "?",     "Agent control layer",      "Scan, test, monitor for AI agents. LangChain/CrewAI/AutoGen/RAG. HMAC audit chains. ConsentGate.",                    "No",  "Yes",              "Python",                         "Agent-focused vs code-focused. Different buyer.",                          "Could expand to code scanning"),
-    ("KLA Digital",      "N/A",   "SaaS platform",            "AI governance SaaS. Cross-framework mapping. €299+/month.",                                                            "No",  "No",               "Platform",                        "We're free. They target enterprise compliance officers, not developers.",  "Credibility: established brand vs unknown"),
+    ("KLA Digital",      "N/A",   "SaaS platform",            "AI governance SaaS. Cross-framework mapping. Pricing on request — no public list prices (Apr 2026).",              "No",  "No",               "Platform",                        "We're free. They target enterprise compliance officers, not developers.",  "Credibility: established brand vs unknown"),
     ("OneTrust/Credo AI","N/A",   "Enterprise GRC",           "Est. $50K+/year for enterprise contracts. Risk management, documentation, lifecycle.",                                 "No",  "No",               "Platform",                        "We're free. Entirely different buyer. Not a real competitor at our stage.","Credibility comparison if enterprise asks why not use them"),
 ]
 
@@ -762,6 +838,67 @@ for i, (wk, dates, focus, tasks, done, notes) in enumerate(weeks):
     c.alignment = align("center", "center")
 
 set_col_widths(ws6, [7, 11, 18, 60, 12, 32])
+
+
+# ═══════════════════════════════════════════════════════════════
+# INTERACTIVITY — Data Validations, Conditional Formatting,
+#                 Freeze Panes, Auto-Filter
+# ═══════════════════════════════════════════════════════════════
+
+# ── Tab 1: Vision & OKRs ─────────────────────────────────────
+ws1.freeze_panes = "A3"   # freeze title rows
+# Status column (col 7 = G), OKR rows 26–40
+dv1_status = dv_list(STATUS_VALS)
+add_dv(ws1, dv1_status, f"G26:G40")
+cf_status(ws1, "G", 26, 40)
+
+# ── Tab 2: 12-Month Roadmap ───────────────────────────────────
+ws2.freeze_panes = "A4"   # freeze title + header
+ws2.auto_filter.ref = "A3:I3"
+# Status col 7 (G), Priority col 8 (H), data rows 4–25
+dv2_status   = dv_list(STATUS_VALS)
+dv2_priority = dv_list(PRIORITY_VALS)
+add_dv(ws2, dv2_status,   "G4:G25")
+add_dv(ws2, dv2_priority, "H4:H25")
+cf_status(ws2, "G", 4, 25)
+
+# ── Tab 3: Distribution Channels ─────────────────────────────
+ws3.freeze_panes = "A3"
+ws3.auto_filter.ref = "A2:H2"
+# Status col 8 (H), data rows 3–20
+dv3_status   = dv_list(STATUS_VALS)
+dv3_priority = dv_list(PRIORITY_VALS)
+add_dv(ws3, dv3_status,   "H3:H20")
+add_dv(ws3, dv3_priority, "A3:A20")
+cf_status(ws3, "H", 3, 20)
+
+# ── Tab 5: OKR Tracker ───────────────────────────────────────
+ws5.freeze_panes = "A3"
+# RAG column 8 (H) — apply to every data-entry row in the sheet
+dv5_rag = dv_list(RAG_VALS)
+add_dv(ws5, dv5_rag, "H4:H80")
+cf_rag(ws5, "H", 4, 80)
+# Input guidance: update cell hints for week columns
+for row in range(4, 80):
+    c = ws5.cell(row, 8)
+    if c.value == "R / A / G":
+        c.comment = None  # placeholder; user types G/A/R directly
+
+# ── Tab 6: First 8 Weeks ─────────────────────────────────────
+ws6.freeze_panes = "A4"
+# "Done?" column 5 (E), rows 4–12
+dv6_done = dv_list(DONE_VALS)
+add_dv(ws6, dv6_done, "E4:E12")
+ws6.conditional_formatting.add("E4:E12", CellIsRule(
+    operator="equal", formula=['"Done"'],
+    fill=PatternFill("solid", fgColor="C8E6C9"),
+    font=Font(color="1B5E20", bold=True, name="Calibri", size=9)
+))
+ws6.conditional_formatting.add("E4:E12", CellIsRule(
+    operator="equal", formula=['"Skipped"'],
+    fill=PatternFill("solid", fgColor="FFF9C4"),
+    font=Font(color="F57F17", bold=True, name="Calibri", size=9)
+))
 
 
 # ─── Save ───────────────────────────────────────────────────────
