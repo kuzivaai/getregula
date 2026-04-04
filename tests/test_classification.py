@@ -5089,6 +5089,73 @@ def test_cross_file_call_chain_detection():
 
 
 # ---------------------------------------------------------------------------
+# Assess module tests
+# ---------------------------------------------------------------------------
+
+def test_assess_format_result_not_in_scope():
+    """format_result returns correct text for out-of-scope products."""
+    from assess import format_result, TIER_NOT_IN_SCOPE
+    result = format_result(TIER_NOT_IN_SCOPE, False)
+    assert "NOT IN SCOPE" in result
+    assert "EU AI Act does" in result
+    print("✓ assess: not-in-scope result formatted correctly")
+
+
+def test_assess_format_result_limited_risk():
+    """format_result returns Article 50 obligations for limited-risk tier."""
+    from assess import format_result, TIER_LIMITED
+    result = format_result(TIER_LIMITED, False)
+    assert "LIMITED-RISK" in result
+    assert "Article 50" in result
+    assert "2 August 2026" in result
+    assert "NOT proposed for delay" in result
+    print("✓ assess: limited-risk result includes Article 50 and correct deadline")
+
+
+def test_assess_format_result_high_risk_eu():
+    """format_result returns Articles 9-15 for high-risk EU provider."""
+    from assess import format_result, TIER_HIGH
+    result = format_result(TIER_HIGH, False)
+    assert "HIGH-RISK" in result
+    assert "Art. 9" in result
+    assert "Art. 14" in result
+    assert "2 August 2026" in result
+    assert "NOT yet law" in result
+    # EU provider: no AR requirement
+    assert "Authorised Representative" not in result
+    print("✓ assess: high-risk EU provider result correct")
+
+
+def test_assess_format_result_high_risk_non_eu():
+    """format_result includes Authorised Representative requirement for non-EU providers."""
+    from assess import format_result, TIER_HIGH
+    result = format_result(TIER_HIGH, True)
+    assert "Authorised Representative" in result
+    assert "Article 22" in result
+    assert "EUR 2-10K" in result
+    print("✓ assess: high-risk non-EU provider includes AR requirement")
+
+
+def test_assess_format_result_minimal_risk():
+    """format_result returns no mandatory obligations for minimal-risk."""
+    from assess import format_result, TIER_MINIMAL
+    result = format_result(TIER_MINIMAL, False)
+    assert "MINIMAL-RISK" in result
+    assert "no mandatory" in result
+    print("✓ assess: minimal-risk result shows no mandatory obligations")
+
+
+def test_assess_format_result_prohibited():
+    """format_result returns prohibition enforcement context."""
+    from assess import format_result, TIER_PROHIBITED
+    result = format_result(TIER_PROHIBITED, False)
+    assert "PROHIBITED" in result
+    assert "35 million" in result
+    assert "2 February 2025" in result
+    print("✓ assess: prohibited result includes enforcement date and penalty")
+
+
+# ---------------------------------------------------------------------------
 # Bias risk detection tests
 # ---------------------------------------------------------------------------
 
@@ -5574,6 +5641,13 @@ if __name__ == "__main__":
         test_smoke_check_html,
         test_smoke_check_html_output_file,
         test_cross_file_call_chain_detection,
+        # Assess module (6 tests)
+        test_assess_format_result_not_in_scope,
+        test_assess_format_result_limited_risk,
+        test_assess_format_result_high_risk_eu,
+        test_assess_format_result_high_risk_non_eu,
+        test_assess_format_result_minimal_risk,
+        test_assess_format_result_prohibited,
     ]
 
     print(f"Running {len(tests)} tests...\n")
