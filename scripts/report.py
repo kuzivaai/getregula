@@ -657,6 +657,56 @@ personnel. This is not legal advice.
 </div>
 """
 
+    # Executive summary — plain-English block for non-technical readers
+    if prohibited_count > 0:
+        exec_verdict = "Action required before deployment"
+        exec_colour = "#dc2626"
+        exec_detail = (
+            f"This codebase contains {prohibited_count} pattern(s) associated with practices "
+            "that are prohibited under EU AI Act Article 5 (e.g. social scoring, real-time biometric surveillance). "
+            "These must be resolved before the system can lawfully enter the EU market."
+        )
+    elif high_risk_count > 0:
+        exec_verdict = "High-risk indicators detected — compliance review needed"
+        exec_colour = "#d97706"
+        exec_detail = (
+            f"This codebase contains {high_risk_count} indicator(s) of high-risk AI functionality "
+            "(Article 6). If this system is deployed in the EU in a high-risk context (e.g. credit scoring, "
+            "employment, healthcare), it will be subject to mandatory obligations including risk management, "
+            "data governance, human oversight, and technical documentation. "
+            "A compliance review is recommended before deployment."
+        )
+    elif credential_count > 0:
+        exec_verdict = "Credential exposure detected — security review needed"
+        exec_colour = "#7c3aed"
+        exec_detail = (
+            f"No prohibited or high-risk AI patterns were found, but {credential_count} credential "
+            "finding(s) were detected. Exposed API keys or secrets represent a data security risk "
+            "and should be reviewed and rotated before deployment."
+        )
+    else:
+        exec_verdict = "No prohibited or high-risk patterns detected"
+        exec_colour = "#16a34a"
+        exec_detail = (
+            "This codebase does not show patterns associated with prohibited or high-risk AI under the EU AI Act. "
+            f"{limited_count} limited-risk indicator(s) were found — these carry transparency obligations "
+            "(e.g. disclosing automated decision-making to users) but do not require the full high-risk compliance regime."
+            if limited_count > 0 else
+            "This codebase does not show patterns associated with prohibited, high-risk, or limited-risk AI under the EU AI Act."
+        )
+
+    html += f"""
+<div class="section" style="border-left:4px solid {exec_colour};padding-left:20px;margin-bottom:24px;">
+<h2 style="color:{exec_colour};margin-bottom:8px;">Executive Summary</h2>
+<p style="font-size:1.05rem;font-weight:600;color:#1a1a2e;margin-bottom:8px;">{escape(exec_verdict)}</p>
+<p style="color:#5a5a6e;line-height:1.6;">{exec_detail}</p>
+<p style="margin-top:12px;font-size:0.85rem;color:#9b9baa;">
+Scanned {total_files} file(s) &middot; {prohibited_count} prohibited &middot; {high_risk_count} high-risk &middot;
+{limited_count} limited-risk &middot; {credential_count} credential finding(s) &middot; Generated {now}
+</p>
+</div>
+"""
+
     # Top risks section
     if top_risks:
         html += '<div class="section"><h2>Priority Risk Indicators</h2><ul class="top3">'
