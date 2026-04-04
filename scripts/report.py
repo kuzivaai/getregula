@@ -699,7 +699,7 @@ personnel. This is not legal advice.
 <div class="section" style="border-left:4px solid {exec_colour};padding-left:20px;margin-bottom:24px;">
 <h2 style="color:{exec_colour};margin-bottom:8px;">Executive Summary</h2>
 <p style="font-size:1.05rem;font-weight:600;color:#1a1a2e;margin-bottom:8px;">{escape(exec_verdict)}</p>
-<p style="color:#5a5a6e;line-height:1.6;">{exec_detail}</p>
+<p style="color:#5a5a6e;line-height:1.6;">{escape(exec_detail)}</p>
 <p style="margin-top:12px;font-size:0.85rem;color:#9b9baa;">
 Scanned {total_files} file(s) &middot; {prohibited_count} prohibited &middot; {high_risk_count} high-risk &middot;
 {limited_count} limited-risk &middot; {credential_count} credential finding(s) &middot; Generated {now}
