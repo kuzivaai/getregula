@@ -364,7 +364,7 @@ def cmd_classify(args):
 
 def cmd_report(args):
     """Generate reports."""
-    from report import scan_files, generate_html_report, generate_sarif
+    from report import scan_files, generate_html_report, generate_sarif, generate_sales_report
 
     if hasattr(args, 'project') and args.project != ".":
         _validate_path(args.project)
@@ -388,6 +388,8 @@ def cmd_report(args):
 
     if args.format == "html":
         content = generate_html_report(findings, project_name, audit_events, chain_valid)
+    elif args.format == "sales":
+        content = generate_sales_report(findings, project_name)
     elif args.format == "sarif":
         content = json.dumps(generate_sarif(findings, project_name), indent=2)
     else:
@@ -1443,7 +1445,7 @@ def _build_subparsers(subparsers):
     # --- report ---
     p_report = subparsers.add_parser("report", help="Generate reports (HTML, SARIF, JSON)")
     p_report.add_argument("--project", "-p", default=".")
-    p_report.add_argument("--format", "-f", choices=["html", "sarif", "json"], default="html")
+    p_report.add_argument("--format", "-f", choices=["html", "sarif", "json", "sales"], default="html")
     p_report.add_argument("--output", "-o", help="Output file")
     p_report.add_argument("--name", "-n", help="Project name")
     p_report.add_argument("--include-audit", action="store_true", help="Include audit trail data")
