@@ -658,7 +658,16 @@ personnel. This is not legal advice.
 """
 
     # Executive summary — plain-English block for non-technical readers
-    if prohibited_count > 0:
+    scanned_files = len(set(f["file"] for f in findings if not f.get("suppressed")))
+    if total_files == 0:
+        exec_verdict = "No AI-related files detected"
+        exec_colour = "#6b7280"
+        exec_detail = (
+            "Regula did not find any AI-related source files in the scanned directory. "
+            "This may mean the scan path is incorrect, the project has not yet integrated AI components, "
+            "or all files were excluded by ignore rules. Verify the scan path before treating this as a clean result."
+        )
+    elif prohibited_count > 0:
         exec_verdict = "Action required before deployment"
         exec_colour = "#dc2626"
         exec_detail = (
@@ -666,6 +675,10 @@ personnel. This is not legal advice.
             "that are prohibited under EU AI Act Article 5 (e.g. social scoring, real-time biometric surveillance). "
             "These must be resolved before the system can lawfully enter the EU market."
         )
+        if credential_count > 0:
+            exec_detail += (
+                f" Additionally, {credential_count} credential finding(s) were detected and should be reviewed."
+            )
     elif high_risk_count > 0:
         exec_verdict = "High-risk indicators detected — compliance review needed"
         exec_colour = "#d97706"
@@ -676,6 +689,10 @@ personnel. This is not legal advice.
             "data governance, human oversight, and technical documentation. "
             "A compliance review is recommended before deployment."
         )
+        if credential_count > 0:
+            exec_detail += (
+                f" Additionally, {credential_count} credential finding(s) were detected and should be reviewed."
+            )
     elif credential_count > 0:
         exec_verdict = "Credential exposure detected — security review needed"
         exec_colour = "#7c3aed"
