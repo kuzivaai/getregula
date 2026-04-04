@@ -6,7 +6,7 @@
     <title>Regula — Find out if your AI system is high-risk under the EU AI Act</title>
     <meta name="description" content="Free, open-source CLI that tells you which EU AI Act risk tier your code is in, why, and what to do about it. No account, no consultants.">
     <meta property="og:title" content="Regula — Find out if your AI system is high-risk under the EU AI Act">
-    <meta property="og:description" content="Free, open-source scanner that tells you which EU AI Act tier you're in, why, and what to do about it. 36 risk pattern groups, 8 languages, zero dependencies.">
+    <meta property="og:description" content="Free, open-source scanner that tells you which EU AI Act tier you're in, why, and what to do about it. 145 risk patterns, 8 languages, zero dependencies.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com">
     <meta name="twitter:card" content="summary">
@@ -19,19 +19,23 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ===== RESET & BASE ===== */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'DM Sans', system-ui, sans-serif;
             background: #070711;
             color: #e2e2f0;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
         code, .mono { font-family: 'JetBrains Mono', monospace; }
+        h1, h2, .sec-head, .final h2 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-style: normal;
+        }
         a { color: #3b82f6; text-decoration: none; transition: color 0.15s; }
         a:hover { color: #60a5fa; }
 
@@ -414,6 +418,90 @@
             border-radius: 4px;
         }
 
+        /* ===== DUAL AUDIENCE ===== */
+        .audience-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .audience-card {
+            border-radius: 10px;
+            padding: 32px;
+        }
+        .audience-biz {
+            background: rgba(245,158,11,0.05);
+            border: 1px solid rgba(245,158,11,0.18);
+        }
+        .audience-dev {
+            background: rgba(59,130,246,0.05);
+            border: 1px solid rgba(59,130,246,0.18);
+        }
+        .audience-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 14px;
+        }
+        .audience-biz .audience-label { color: #f59e0b; }
+        .audience-dev .audience-label { color: #3b82f6; }
+        .audience-card h3 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #e2e2f0;
+            margin-bottom: 12px;
+            line-height: 1.3;
+            letter-spacing: -0.02em;
+        }
+        .audience-card p {
+            font-size: 13px;
+            color: #8888aa;
+            line-height: 1.65;
+            margin-bottom: 10px;
+        }
+        .audience-card ul {
+            margin: 12px 0;
+            padding-left: 0;
+            list-style: none;
+        }
+        .audience-card ul li {
+            font-size: 13px;
+            color: #8888aa;
+            padding: 4px 0;
+            padding-left: 16px;
+            position: relative;
+            line-height: 1.5;
+        }
+        .audience-card ul li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #44445a;
+            font-size: 11px;
+        }
+        .audience-fwd {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 18px;
+            background: rgba(245,158,11,0.08);
+            border: 1px solid rgba(245,158,11,0.2);
+            border-radius: 6px;
+            padding: 9px 14px;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            color: #f59e0b;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            user-select: none;
+        }
+        .audience-fwd:hover { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.35); }
+        @media (max-width: 700px) {
+            .audience-grid { grid-template-columns: 1fr; }
+        }
+
         /* ===== WHAT IT COVERS ===== */
         .art-grid {
             display: grid;
@@ -774,16 +862,16 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 <div class="stats-bar reveal">
     <div class="stats-inner">
         <div class="stat-item">
-            <div class="stat-num">Free</div>
-            <div class="stat-label">open source &middot; MIT licence</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num">36</div>
-            <div class="stat-label">risk pattern groups</div>
+            <div class="stat-num">145</div>
+            <div class="stat-label">risk patterns checked</div>
         </div>
         <div class="stat-item">
             <div class="stat-num">8</div>
             <div class="stat-label">programming languages</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">11</div>
+            <div class="stat-label">compliance frameworks</div>
         </div>
         <div class="stat-item">
             <div class="stat-num">0</div>
@@ -825,66 +913,30 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 
 <!-- WHO IS THIS FOR -->
 <div class="sec reveal">
-    <div class="sec-head">Built something with AI? This is for you.</div>
-    <p class="sec-sub">Whether you wrote every line or an AI wrote it for you.</p>
-    <div class="steps">
-        <div class="step">
-            <div class="step-n">01</div>
-            <h3>Shipping AI features to Europe</h3>
-            <p>If your app uses AI models &mdash; a chatbot, a screening tool, a recommendation engine &mdash; the EU AI Act likely applies. Regula checks your code and tells you which rules apply in plain English.</p>
-            <span class="step-cmd">regula check . --explain</span>
+    <div class="sec-head">Who is this for?</div>
+    <p class="sec-sub">Two entry points. One tool.</p>
+    <div class="audience-grid">
+        <div class="audience-card audience-biz">
+            <div class="audience-label">If you run the business</div>
+            <h3>Your business uses AI. Do you know your legal exposure?</h3>
+            <p>Whether your team uses AI tools for research and writing, you're building products with AI, or AI makes decisions in your workflows &mdash; the EU AI Act may create obligations for your business. Fines for prohibited uses reach &euro;35M.</p>
+            <p>You don't need to understand the code. Send this page to your developer or technical lead. They run one command. You get a written report you can show your board, insurer, or legal team.</p>
+            <div class="audience-fwd" onclick="copyPageUrl(this)">
+                <span class="fwd-icon">&#8599;</span>
+                <span class="fwd-txt">Copy link to send to your developer</span>
+            </div>
         </div>
-        <div class="step">
-            <div class="step-n">02</div>
-            <h3>Built with Cursor, Lovable, Bolt, or Claude?</h3>
-            <p>AI-generated code has the same compliance obligations as hand-written code. Regula reads what was built and maps it to the regulation &mdash; no matter how it was written.</p>
-            <span class="step-cmd">regula check .</span>
-        </div>
-        <div class="step">
-            <div class="step-n">03</div>
-            <h3>Need to prepare for an audit?</h3>
-            <p>Regula generates the technical documentation, gap assessment, and evidence bundle that compliance auditors expect to see. You fill in the business context.</p>
-            <span class="step-cmd">regula evidence-pack .</span>
-        </div>
-        <div class="step">
-            <div class="step-n">04</div>
-            <h3>Responsible for AI governance?</h3>
-            <p>Run Regula as part of your CI pipeline. Get a machine-readable compliance report on every pull request. Cross-maps to ISO 42001, NIST AI RMF, and 9 other frameworks.</p>
-            <span class="step-cmd">regula gap . --format json</span>
-        </div>
-    </div>
-</div>
-
-<div class="sep"></div>
-
-<!-- WHAT YOU GET -->
-<div class="sec reveal">
-    <div class="sec-head">What you get</div>
-    <p class="sec-sub">Run one command. Get answers you can act on.</p>
-    <div class="steps">
-        <div class="step">
-            <div class="step-n">01</div>
-            <h3>Your risk level &mdash; with the reason why</h3>
-            <p>Points to the exact line of code that triggered the classification, cites the legal basis, and flags when it might be a false positive. No guessing.</p>
-            <span class="step-cmd">regula check . --explain</span>
-        </div>
-        <div class="step">
-            <div class="step-n">02</div>
-            <h3>A prioritised list of tasks with effort estimates</h3>
-            <p>If you're high-risk, the EU AI Act requires specific actions: risk management, logging, human oversight, documentation. Regula lists which apply and estimates hours per item.</p>
-            <span class="step-cmd">regula plan .</span>
-        </div>
-        <div class="step">
-            <div class="step-n">03</div>
-            <h3>Documentation generated from your actual code</h3>
-            <p>Reads your dependencies, function signatures, and logging coverage. Generates the Annex IV documentation skeleton the law requires. You fill in the business context.</p>
-            <span class="step-cmd">regula docs .</span>
-        </div>
-        <div class="step">
-            <div class="step-n">04</div>
-            <h3>One folder with everything an auditor needs</h3>
-            <p>Bundles scan results, gap assessment, documentation draft, dependency report, and an integrity-verified audit trail into a single reviewable package.</p>
-            <span class="step-cmd">regula evidence-pack .</span>
+        <div class="audience-card audience-dev">
+            <div class="audience-label">If you write the code</div>
+            <h3>Scan any project. Get your risk tier in seconds.</h3>
+            <p>Run Regula on any codebase that uses AI &mdash; whether you wrote it, an AI wrote it, or both. Get the exact risk classification, the line of code that triggered it, and the legal basis.</p>
+            <ul>
+                <li>Works on AI-generated code (Cursor, Lovable, Bolt, Claude)</li>
+                <li>Generates Annex IV documentation from your actual code</li>
+                <li>Bundles evidence pack for auditors &mdash; one command</li>
+                <li>CI/CD integration &middot; JSON output &middot; 11 compliance frameworks</li>
+            </ul>
+            <span class="step-cmd" style="margin-top:18px;">regula check . --explain</span>
         </div>
     </div>
 </div>
@@ -933,7 +985,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 
 <!-- COMMANDS -->
 <div class="sec reveal">
-    <div class="sec-head">Five commands. No setup.</div>
+    <div class="sec-head">Core commands. No setup.</div>
     <p class="sec-sub">Install, run, get answers. Works on any project with AI code.</p>
     <div class="cmds">
         <div class="cm"><code>regula check .</code> <span>Find out your risk level</span></div>
@@ -943,7 +995,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
         <div class="cm"><code>regula evidence-pack .</code> <span>Bundle everything for an auditor</span></div>
     </div>
     <p style="font-size:12px;color:#44445a;margin-top:14px;font-family:'JetBrains Mono',monospace;">
-        33 commands &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU Cyber Resilience Act, and 7 other frameworks.
+        35 commands &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU Cyber Resilience Act, and 7 other frameworks.
     </p>
 </div>
 
@@ -961,7 +1013,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
         </div>
         <div class="price-card">
             <div class="price-tier">Mid-market tools</div>
-            <div class="price-amount">From &euro;10K+/year</div>
+            <div class="price-amount">Typically &euro;10K+/year</div>
             <p class="price-desc">Compliance platforms adding AI Act modules. Assumes you already have budget, a GRC workflow, and dedicated staff.</p>
         </div>
         <div class="price-card featured">
@@ -983,9 +1035,12 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
             <span class="cmd">pip install regula-ai</span>
             <span class="cp">copy</span>
         </div>
-        <form class="notify" action="https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID" method="POST">
-            <input type="email" name="email" placeholder="your@email.com" aria-label="Email for updates" required>
-            <button type="submit">Get updates</button>
+        <div data-fs-success style="display:none;font-size:13px;color:#10b981;margin-bottom:8px;">You're on the list. Major releases only.</div>
+        <div data-fs-error style="display:none;font-size:13px;color:#ef4444;margin-bottom:8px;"></div>
+        <form id="notify-form" class="notify">
+            <input type="email" id="notify-email" name="email" placeholder="your@email.com" aria-label="Email for updates" data-fs-field required>
+            <span data-fs-error="email" style="font-size:11px;color:#ef4444;"></span>
+            <button type="submit" data-fs-submit-btn>Get updates</button>
         </form>
         <p class="notify-msg">No spam. Major releases and EU AI Act deadline reminders only.</p>
     </div>
@@ -1003,7 +1058,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contributing</a>
                 </div>
-                <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2025 Regula</div>
+                <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula</div>
             </div>
             <div class="foot-right">
                 <div class="foot-legal">
@@ -1071,27 +1126,20 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
         navigator.clipboard.writeText('pip install regula-ai').then(() => {
             const cp = el.querySelector('.cp');
             el.classList.add('copied');
-            cp.textContent = '&#10003; copied';
-            setTimeout(() => {
-                el.classList.remove('copied');
-                cp.textContent = 'copy';
-            }, 2000);
-        }).catch(() => {
-            // Fallback for browsers that don't support clipboard API
-            const cp = el.querySelector('.cp');
-            cp.textContent = 'copy';
-        });
-    }
-    // Fix: set innerHTML for copied state
-    function copyInstall(el) {
-        navigator.clipboard.writeText('pip install regula-ai').then(() => {
-            const cp = el.querySelector('.cp');
-            el.classList.add('copied');
             cp.innerHTML = '&#10003;&nbsp;copied';
             setTimeout(() => {
                 el.classList.remove('copied');
                 cp.textContent = 'copy';
             }, 2000);
+        });
+    }
+
+    // ===== COPY PAGE URL (for business owner CTA) =====
+    function copyPageUrl(el) {
+        navigator.clipboard.writeText('https://getregula.com').then(() => {
+            const txt = el.querySelector('.fwd-txt');
+            txt.textContent = '✓ Link copied — paste it to your developer';
+            setTimeout(() => { txt.textContent = 'Copy link to send to your developer'; }, 3000);
         });
     }
 
@@ -1113,5 +1161,11 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
         revealObserver.observe(el);
     });
 </script>
+
+<script>
+    window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+    formspree('initForm', { formElement: '#notify-form', formId: 'xjgppkkn' });
+</script>
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 </body>
 </html>
