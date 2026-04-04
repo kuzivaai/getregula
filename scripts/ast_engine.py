@@ -1587,6 +1587,125 @@ def analyse_file(content: str, filename: str, language: Optional[str] = None) ->
         }
 
 
+def _build_cross_file_chains(results: List[dict]) -> List[dict]:
+    """Identify cross-file AI call chains from per-file analysis results.
+
+    After all files are analysed individually, this post-processing step links
+    AI call sites to the functions that invoke them from other files, enabling
+    traceability across module boundaries (Article 12).
+
+    Only Python files are linked (full AST available). JS/TS and other languages
+    contribute as AI call sources but are not traversed for caller relationships.
+
+    Returns
+    -------
+    list[dict]
+        Each entry describes one AI call chain::
+
+            {
+                "ai_file": "services/llm_client.py",
+                "ai_call": "openai.chat.completions.create",
+                "ai_call_line": 42,
+                "propagated_to": [
+                    {"file": "api/views.py", "function": "handle_request", "line": 18}
+                ]
+            }
+    """
+    # Step 1: build module-name → file path index (Python only, relative paths)
+    # e.g. "services/llm_client.py" → module key "services.llm_client"
+    module_to_file: Dict[str, str] = {}
+    for r in results:
+        if r.get("language") != "python":
+            continue
+        rel = r.get("file", "")
+        # Convert path separators and strip .py → dotted module name
+        mod = rel.replace("/", ".").replace("\\", ".")
+        if mod.endswith(".py"):
+            mod = mod[:-3]
+        # Also register the bare filename stem for single-dir imports
+        stem = Path(rel).stem
+        module_to_file[mod] = rel
+        module_to_file[stem] = rel
+
+    # Step 2: build file → set of function names it defines
+    file_functions: Dict[str, set] = {}
+    for r in results:
+        fpath = r.get("file", "")
+        names = {f["name"] for f in r.get("function_defs", [])}
+        file_functions[fpath] = names
+
+    # Step 3: collect files that make direct AI calls (have non-empty data_flows
+    # or have ai_imports used in function bodies)
+    ai_call_files: Dict[str, List[dict]] = {}  # file → list of call dicts
+    for r in results:
+        fpath = r.get("file", "")
+        flows = r.get("data_flows", [])
+        if flows:
+            ai_call_files[fpath] = [
+                {"source": f["source"], "line": f.get("source_line", 0)}
+                for f in flows
+            ]
+        elif r.get("ai_imports"):
+            # File has AI imports but data_flows not available (non-Python / regex path)
+            ai_call_files[fpath] = [
+                {"source": imp, "line": 0} for imp in r["ai_imports"]
+            ]
+
+    if not ai_call_files:
+        return []
+
+    # Step 4: for each Python file, check its imports against ai_call_files.
+    # If it imports a module that makes AI calls, record the calling functions.
+    chains: List[dict] = []
+    seen_chains: set = set()
+
+    for r in results:
+        if r.get("language") != "python":
+            continue
+        caller_file = r.get("file", "")
+        imports = r.get("imports", [])
+        function_defs = r.get("function_defs", [])
+
+        for imp in imports:
+            # Normalise import: "from services.llm_client import chat" → "services.llm_client"
+            parts = imp.split(".")
+            # Try progressively shorter prefixes to match module keys
+            for length in range(len(parts), 0, -1):
+                mod_key = ".".join(parts[:length])
+                if mod_key in module_to_file:
+                    target_file = module_to_file[mod_key]
+                    if target_file in ai_call_files and target_file != caller_file:
+                        for call in ai_call_files[target_file]:
+                            chain_key = (caller_file, target_file, call["source"])
+                            if chain_key in seen_chains:
+                                continue
+                            seen_chains.add(chain_key)
+
+                            # Record which functions in the caller file are
+                            # plausible entry points (all non-test functions,
+                            # since we can't resolve which one calls the import
+                            # without full call-graph analysis)
+                            propagated = [
+                                {
+                                    "file": caller_file,
+                                    "function": fn["name"],
+                                    "line": fn.get("line", 0),
+                                }
+                                for fn in function_defs
+                                if not fn.get("is_test", False)
+                            ]
+
+                            chains.append({
+                                "ai_file": target_file,
+                                "ai_call": call["source"],
+                                "ai_call_line": call["line"],
+                                "propagated_to": propagated,
+                            })
+                    break
+
+    return chains
+
+
 def analyse_project(project_path: str) -> List[dict]:
     """Walk a directory and analyse all supported source files.
 
@@ -1599,7 +1718,9 @@ def analyse_project(project_path: str) -> List[dict]:
     -------
     list[dict]
         List of analysis results, one per file. Each dict includes an extra
-        "file" key with the relative file path.
+        "file" key with the relative file path. A top-level
+        ``"call_chains"`` key is appended to the first result (index 0) so
+        callers can retrieve cross-file chains without a separate return value.
     """
     results = []
     root = Path(project_path)
@@ -1630,6 +1751,11 @@ def analyse_project(project_path: str) -> List[dict]:
             result = analyse_file(content, fname, language=lang)
             result["file"] = str(filepath.relative_to(root))
             results.append(result)
+
+    # Post-process: build cross-file call chains
+    if results:
+        chains = _build_cross_file_chains(results)
+        results[0]["call_chains"] = chains
 
     return results
 
