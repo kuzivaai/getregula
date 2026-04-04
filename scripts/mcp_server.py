@@ -34,8 +34,10 @@ from typing import Any, Dict
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+from constants import VERSION
+
 PROTOCOL_VERSION = "2024-11-05"
-SERVER_INFO = {"name": "regula", "version": "1.2.0"}
+SERVER_INFO = {"name": "regula", "version": VERSION}
 
 TOOLS = [
     {

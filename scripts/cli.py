@@ -1741,6 +1741,7 @@ def main():
     parser.add_argument("--rules", help="Path to custom rules file (regula-rules.yaml)")
     parser.add_argument("--lang", choices=["en", "pt-BR", "de"], default="en",
                         help="Output language (default: en)")
+    parser.add_argument("--version", action="version", version=f"regula {VERSION}")
 
     subparsers = parser.add_subparsers(dest="command")
     _build_subparsers(subparsers)
