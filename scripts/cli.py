@@ -1341,6 +1341,13 @@ def cmd_self_test(args):
     sys.exit(0 if ok else 1)
 
 
+def cmd_assess(args):
+    """EU AI Act applicability check -- no code required."""
+    from assess import run_assess
+    output_format = getattr(args, "format", "text")
+    sys.exit(run_assess(output_format))
+
+
 def cmd_quickstart(args):
     """60-second onboarding — create policy, run first scan, show next steps."""
     from quickstart import run_quickstart
@@ -1656,6 +1663,14 @@ def _build_subparsers(subparsers):
     p_inventory.add_argument("--format", "-f", choices=["table", "json"], default="table")
     p_inventory.add_argument("--output", "-o", help="Output file (optional)")
     p_inventory.set_defaults(func=cmd_inventory)
+
+    # --- assess ---
+    p_assess = subparsers.add_parser(
+        "assess",
+        help="EU AI Act applicability check -- does this apply to your product? (no code required)",
+    )
+    p_assess.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_assess.set_defaults(func=cmd_assess)
 
     # --- quickstart ---
     p_qs = subparsers.add_parser("quickstart", help="60-second onboarding (create policy + first scan)")
