@@ -5046,6 +5046,48 @@ def test_smoke_check_html_output_file():
             os.unlink(tmp_path)
 
 
+def test_cross_file_call_chain_detection():
+    """_build_cross_file_chains links an importer to an AI call file."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from ast_engine import _build_cross_file_chains
+
+    # Simulate: llm_client.py makes an AI call; api.py imports llm_client
+    results = [
+        {
+            "file": "services/llm_client.py",
+            "language": "python",
+            "imports": ["openai"],
+            "ai_imports": ["openai"],
+            "function_defs": [{"name": "chat", "line": 10, "is_test": False}],
+            "data_flows": [{"source": "openai.chat.completions.create", "source_line": 15}],
+        },
+        {
+            "file": "api/views.py",
+            "language": "python",
+            "imports": ["services.llm_client"],
+            "ai_imports": [],
+            "function_defs": [
+                {"name": "handle_request", "line": 5, "is_test": False},
+                {"name": "test_view", "line": 20, "is_test": True},
+            ],
+            "data_flows": [],
+        },
+    ]
+
+    chains = _build_cross_file_chains(results)
+
+    assert len(chains) == 1, f"Expected 1 chain, got {len(chains)}"
+    chain = chains[0]
+    assert chain["ai_file"] == "services/llm_client.py"
+    assert "openai" in chain["ai_call"]
+    # Only non-test functions propagated
+    propagated_names = [p["function"] for p in chain["propagated_to"]]
+    assert "handle_request" in propagated_names
+    assert "test_view" not in propagated_names
+    print("✓ Cross-file call chain: importer linked to AI call site, test functions excluded")
+
+
 # ---------------------------------------------------------------------------
 # Bias risk detection tests
 # ---------------------------------------------------------------------------
@@ -5531,6 +5573,7 @@ if __name__ == "__main__":
         test_smoke_gap_framework,
         test_smoke_check_html,
         test_smoke_check_html_output_file,
+        test_cross_file_call_chain_detection,
     ]
 
     print(f"Running {len(tests)} tests...\n")
