@@ -772,6 +772,14 @@
             </div>
 
             <div class="install-row">
+                <div class="install-box" id="assess-btn" onclick="copyCmd(this, 'regula assess')" style="border-color:rgba(16,185,129,0.3);">
+                    <span class="dollar">$</span>
+                    <span class="cmd" style="color:#6ee7b7;">regula assess</span>
+                    <span class="cp">copy</span>
+                </div>
+            </div>
+            <p style="font-size:12px;color:#44445a;margin:8px 0 16px;font-family:'JetBrains Mono',monospace;">5 yes/no questions &mdash; no code required &mdash; tells you your risk tier and obligations</p>
+            <div class="install-row">
                 <div class="install-box" id="install-btn" onclick="copyInstall(this)">
                     <span class="dollar">$</span>
                     <span class="cmd">pip install regula-ai</span>
@@ -870,7 +878,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
             <div class="stat-label">programming languages</div>
         </div>
         <div class="stat-item">
-            <div class="stat-num">11</div>
+            <div class="stat-num">12</div>
             <div class="stat-label">compliance frameworks</div>
         </div>
         <div class="stat-item">
@@ -914,7 +922,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 <!-- WHO IS THIS FOR -->
 <div class="sec reveal">
     <div class="sec-head">Who is this for?</div>
-    <p class="sec-sub">Two entry points. One tool.</p>
+    <p class="sec-sub">Solo founders, small teams, and developers shipping AI products &mdash; and the businesses that use them.</p>
     <div class="audience-grid">
         <div class="audience-card audience-biz">
             <div class="audience-label">If you run the business</div>
@@ -927,16 +935,16 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
             </div>
         </div>
         <div class="audience-card audience-dev">
-            <div class="audience-label">If you write the code</div>
-            <h3>Scan any project. Get your risk tier in seconds.</h3>
-            <p>Run Regula on any codebase that uses AI &mdash; whether you wrote it, an AI wrote it, or both. Get the exact risk classification, the line of code that triggered it, and the legal basis.</p>
+            <div class="audience-label">If you write the code &mdash; or ship without writing much of it</div>
+            <h3>Built something with AI and have EU users? Find out what applies.</h3>
+            <p>EU AI Act Article 2 is extraterritorial: if your app has users in the EU, the rules apply regardless of where you are based. Most chatbots and productivity tools are limited-risk &mdash; one transparency disclosure required, nothing more. Run Regula to confirm your tier and get the exact obligations.</p>
             <ul>
-                <li>Works on AI-generated code (Cursor, Lovable, Bolt, Claude)</li>
+                <li>Works on AI-generated code (Cursor, Lovable, Bolt, Claude Code)</li>
+                <li>Solo founders and small teams: start with <code>regula assess</code> &mdash; no code required</li>
                 <li>Generates Annex IV documentation from your actual code</li>
-                <li>Bundles evidence pack for auditors &mdash; one command</li>
-                <li>CI/CD integration &middot; JSON output &middot; 11 compliance frameworks</li>
+                <li>CI/CD integration &middot; JSON output &middot; 12 compliance frameworks</li>
             </ul>
-            <span class="step-cmd" style="margin-top:18px;">regula check . --explain</span>
+            <span class="step-cmd" style="margin-top:18px;">regula assess</span>
         </div>
     </div>
 </div>
@@ -988,14 +996,15 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
     <div class="sec-head">Core commands. No setup.</div>
     <p class="sec-sub">Install, run, get answers. Works on any project with AI code.</p>
     <div class="cmds">
-        <div class="cm"><code>regula check .</code> <span>Find out your risk level</span></div>
+        <div class="cm"><code>regula assess</code> <span>5 yes/no questions &mdash; no code needed &mdash; get your tier</span></div>
+        <div class="cm"><code>regula check .</code> <span>Scan your codebase and get your risk level</span></div>
         <div class="cm"><code>regula plan .</code> <span>Get a prioritised to-do list</span></div>
         <div class="cm"><code>regula gap .</code> <span>See what's missing per article</span></div>
         <div class="cm"><code>regula docs .</code> <span>Generate required documentation</span></div>
         <div class="cm"><code>regula evidence-pack .</code> <span>Bundle everything for an auditor</span></div>
     </div>
     <p style="font-size:12px;color:#44445a;margin-top:14px;font-family:'JetBrains Mono',monospace;">
-        35 commands &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU Cyber Resilience Act, and 7 other frameworks.
+        35 commands &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU Cyber Resilience Act, and 8 other frameworks.
     </p>
 </div>
 
@@ -1125,6 +1134,22 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
     function copyInstall(el) {
         const cp = el.querySelector('.cp');
         navigator.clipboard.writeText('pip install regula-ai').then(() => {
+            el.classList.add('copied');
+            cp.innerHTML = '&#10003;&nbsp;copied';
+            setTimeout(() => {
+                el.classList.remove('copied');
+                cp.textContent = 'copy';
+            }, 2000);
+        }).catch(() => {
+            cp.textContent = 'copy failed';
+            setTimeout(() => { cp.textContent = 'copy'; }, 2000);
+        });
+    }
+
+    // ===== COPY ARBITRARY COMMAND =====
+    function copyCmd(el, cmd) {
+        const cp = el.querySelector('.cp');
+        navigator.clipboard.writeText(cmd).then(() => {
             el.classList.add('copied');
             cp.innerHTML = '&#10003;&nbsp;copied';
             setTimeout(() => {

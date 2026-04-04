@@ -7,7 +7,15 @@
 [![EU AI Act](https://img.shields.io/badge/EU%20AI%20Act-Risk%20Indication-blue.svg)](#regulatory-coverage)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
 
-Regula is a static analysis tool that detects AI governance risk indicators in source code. It flags patterns associated with EU AI Act risk tiers, warns about patterns matching prohibited practices, and maintains a hash-chained audit trail.
+If you ship an AI product to EU users, the EU AI Act applies to you — regardless of where you are based or how small your team is. Article 2 is extraterritorial: it covers any provider whose system is used in the EU.
+
+Regula scans your code for risk indicators, tells you which tier your system falls into, and flags what you need to do before the August 2026 deadline. Most solo founders building chatbots or productivity tools will land in the limited-risk tier — meaning lightweight transparency obligations under Article 50, not the full Annex III high-risk requirements. Regula tells you that clearly, rather than leaving you guessing.
+
+## Who Is This For?
+
+- **Solo founders and indie hackers** building AI products (with Claude Code, Cursor, Lovable, Bolt, or similar) who have EU users and are not sure what the EU AI Act means for them
+- **Small teams** who want to understand their compliance exposure before it becomes a sales blocker — enterprise procurement is already asking for AI Act evidence
+- **Engineering teams** who want to add EU AI Act scanning to CI/CD and catch high-risk or prohibited patterns before they ship
 
 ## What Regula Is (and Isn't)
 
@@ -30,27 +38,28 @@ Regula helps development teams understand their EU AI Act exposure early. It doe
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
+pip install -e .
 
+# First: find out if and how the EU AI Act applies to your product
+# 5 questions, no code required, under 2 minutes
+regula assess
+
+# Then: scan your codebase for risk indicators
+regula check /path/to/project
+
+# Generate an HTML report for your DPO or enterprise customer
+regula report --format html --output report.html --include-audit
+```
+
+Or clone and run without installing:
+```bash
 # Guided setup (detects platform, installs hooks, runs first scan)
 python3 scripts/cli.py init
 
-# Or install manually for your platform:
+# Install hooks for your editor
 python3 scripts/cli.py install claude-code     # Claude Code
 python3 scripts/cli.py install copilot-cli     # GitHub Copilot CLI
 python3 scripts/cli.py install windsurf        # Windsurf Cascade
-
-# Scan a project
-python3 scripts/cli.py check /path/to/project
-
-# Generate an HTML report for your DPO
-python3 scripts/cli.py report --format html --output report.html --include-audit
-```
-
-Or install via pip:
-```bash
-pip install -e .
-regula init
-regula check .
 ```
 
 Run tests: `pytest tests/ -q`
@@ -153,6 +162,8 @@ The EU AI Act (Regulation 2024/1689) is now in force:
 
 Penalties: up to EUR 35 million or 7% of global annual turnover.
 
+**Digital Omnibus:** The European Commission proposed in December 2025 to delay the Annex III high-risk obligations to December 2027 for certain providers. This is not yet law — it remains in trilogue as of April 2026. The August 2026 deadline remains in effect until and unless the Omnibus is formally adopted. Do not plan around the extension without monitoring its legislative progress.
+
 ## Regulatory Coverage
 
 ### Risk Tiers
@@ -210,6 +221,9 @@ Findings appear in your repository's Security tab alongside CodeQL and Dependabo
 ## CLI Usage
 
 ```bash
+# Find out if the EU AI Act applies to your product (5 questions, no code required)
+python3 scripts/cli.py assess
+
 # Scan a project for risk indicators
 python3 scripts/cli.py check .
 python3 scripts/cli.py check . --format json
@@ -296,7 +310,7 @@ Checks: pinning quality (hash > exact > range > unpinned), lockfile presence, AI
 
 ### Cross-Framework Compliance Mapping
 
-Regula maps findings to 11 compliance frameworks internally: EU AI Act, NIST AI RMF 1.0, ISO 42001:2023, NIST CSF 2.0, SOC 2, ISO 27001:2022, OWASP Top 10 for LLMs, MITRE ATLAS, LGPD (Brazil), Marco Legal da IA (Brazil), and EU Cyber Resilience Act. Framework mappings appear in check findings and gap assessments automatically.
+Regula maps findings to 12 compliance frameworks internally: EU AI Act, NIST AI RMF 1.0, ISO 42001:2023, NIST CSF 2.0, SOC 2, ISO 27001:2022, OWASP Top 10 for LLMs, MITRE ATLAS, LGPD (Brazil), Marco Legal da IA (Brazil), EU Cyber Resilience Act, and UK ICO AI Guidance. Framework mappings appear in check findings and gap assessments automatically.
 
 ### Real-World Validation Benchmark
 
@@ -500,7 +514,7 @@ regula/
 - **Compliance gap assessment, not just risk flagging.** Checks whether Articles 9-15 compliance infrastructure actually exists in the codebase.
 - **AI-specific supply chain security.** Dependency pinning checks focus on AI libraries, not general packages.
 - **Cross-platform.** Unix/macOS (`fcntl`) and Windows (`msvcrt`) file locking. No platform restrictions.
-- **Multi-framework mapping.** 11 frameworks (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF 2.0, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, LGPD, Marco Legal da IA, EU CRA) mapped via a single crosswalk data file.
+- **Multi-framework mapping.** 12 frameworks (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF 2.0, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, LGPD, Marco Legal da IA, EU CRA, UK ICO) mapped via a single crosswalk data file.
 
 ## Configuration
 
