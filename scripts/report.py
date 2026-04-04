@@ -810,26 +810,56 @@ Scanned {total_files} file(s) &middot; {prohibited_count} prohibited &middot; {h
             html += "</tbody>\n</table>\n"
         html += "</div>\n"
 
-    # Framework mapping section
+    # Framework mapping section — auto-load if not supplied by caller
+    if framework_mappings is None:
+        try:
+            from framework_mapper import map_to_frameworks
+            framework_mappings = map_to_frameworks(["9", "10", "11", "12", "13", "14", "15"])
+        except Exception:
+            framework_mappings = None
+
     if framework_mappings is not None:
         html += """
 <div class="section">
 <h2>Regulatory Framework Mappings</h2>
 <table class="framework-table">
 <thead>
-<tr><th>Article</th><th>EU AI Act</th><th>NIST AI RMF</th><th>ISO 42001</th></tr>
+<tr><th>Article</th><th>EU AI Act</th><th>NIST AI RMF</th><th>ISO 42001</th><th>UK ICO</th></tr>
 </thead>
 <tbody>
 """
         for article, mapping in framework_mappings.items():
-            eu_text = escape(str(mapping.get("eu_ai_act", "—")))
-            nist_text = escape(str(mapping.get("nist_ai_rmf", "—")))
-            iso_text = escape(str(mapping.get("iso_42001", "—")))
+            eu = mapping.get("eu_ai_act", {})
+            eu_text = escape(eu.get("title", "—")) if isinstance(eu, dict) else escape(str(eu))
+
+            nist = mapping.get("nist_ai_rmf", {})
+            if isinstance(nist, dict) and nist.get("subcategories"):
+                nist_text = escape(", ".join(nist["subcategories"][:2]))
+            elif isinstance(nist, dict) and nist.get("functions"):
+                nist_text = escape(", ".join(nist["functions"]))
+            else:
+                nist_text = escape(str(nist)) if nist else "—"
+
+            iso = mapping.get("iso_42001", {})
+            if isinstance(iso, dict) and iso.get("controls"):
+                iso_text = escape(", ".join(iso["controls"][:2]))
+            else:
+                iso_text = escape(str(iso)) if iso else "—"
+
+            ico = mapping.get("ico_ai", {})
+            if isinstance(ico, dict) and ico.get("principles"):
+                ico_text = escape("; ".join(ico["principles"][:2]))
+            elif isinstance(ico, dict) and ico.get("source"):
+                ico_text = escape(ico["source"])
+            else:
+                ico_text = "—"
+
             html += f"""<tr>
-<td><strong>{escape(str(article))}</strong></td>
+<td><strong>Art. {escape(str(article))}</strong></td>
 <td>{eu_text}</td>
 <td>{nist_text}</td>
 <td>{iso_text}</td>
+<td>{ico_text}</td>
 </tr>
 """
         html += "</tbody>\n</table>\n</div>\n"
