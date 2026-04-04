@@ -6,7 +6,7 @@
     <title>Regula — Find out if your AI system is high-risk under the EU AI Act</title>
     <meta name="description" content="Free, open-source CLI that tells you which EU AI Act risk tier your code is in, why, and what to do about it. No account, no consultants.">
     <meta property="og:title" content="Regula — Find out if your AI system is high-risk under the EU AI Act">
-    <meta property="og:description" content="Free, open-source scanner that tells you which EU AI Act tier you're in, why, and what to do about it. 145 risk patterns, 8 languages, zero dependencies.">
+    <meta property="og:description" content="Free, open-source scanner that tells you which EU AI Act tier you're in, why, and what to do about it. 126 risk patterns, 8 languages, zero dependencies.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com">
     <meta name="twitter:card" content="summary">
@@ -862,7 +862,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 <div class="stats-bar reveal">
     <div class="stats-inner">
         <div class="stat-item">
-            <div class="stat-num">145</div>
+            <div class="stat-num">126</div>
             <div class="stat-label">risk patterns checked</div>
         </div>
         <div class="stat-item">
@@ -1123,14 +1123,17 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 
     // ===== COPY BUTTON =====
     function copyInstall(el) {
+        const cp = el.querySelector('.cp');
         navigator.clipboard.writeText('pip install regula-ai').then(() => {
-            const cp = el.querySelector('.cp');
             el.classList.add('copied');
             cp.innerHTML = '&#10003;&nbsp;copied';
             setTimeout(() => {
                 el.classList.remove('copied');
                 cp.textContent = 'copy';
             }, 2000);
+        }).catch(() => {
+            cp.textContent = 'copy failed';
+            setTimeout(() => { cp.textContent = 'copy'; }, 2000);
         });
     }
 
