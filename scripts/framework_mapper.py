@@ -61,6 +61,9 @@ _FRAMEWORK_KEYS = {
     "marco-legal-ia": "marco_legal_ia",
     "cra": "cra",
     "cyber-resilience-act": "cra",
+    "ico-ai-guidance": "ico_ai",
+    "ico": "ico_ai",
+    "uk-ico": "ico_ai",
 }
 
 
@@ -202,6 +205,15 @@ def format_mapping_text(mapping: dict) -> str:
                 lines.append(f"    • {req}")
             if cra.get("notes"):
                 lines.append(f"    Note: {cra['notes']}")
+
+        ico = frameworks.get("ico_ai", {})
+        if ico:
+            source = ico.get("source", "ICO AI Guidance + DSIT Principles (non-statutory)")
+            lines.append(f"  UK — {source}")
+            for principle in ico.get("principles", []):
+                lines.append(f"    • {principle}")
+            if ico.get("notes"):
+                lines.append(f"    Note: {ico['notes']}")
 
         lines.append("")
 
