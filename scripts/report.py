@@ -9,7 +9,7 @@ stakeholders (DPOs, compliance officers, auditors).
 
 __all__ = [
     "scan_files", "scan_config_files",
-    "generate_html_report", "generate_sarif",
+    "generate_html_report", "generate_sarif", "generate_sales_report",
 ]
 
 import json
@@ -1057,12 +1057,135 @@ def generate_sarif(findings: list, project_name: str) -> dict:
 # CLI entry point
 # ---------------------------------------------------------------------------
 
+def generate_sales_report(findings: list, project_name: str) -> str:
+    """Generate a compact, shareable HTML compliance summary.
+
+    Designed to be sent to enterprise buyers who ask for evidence of EU AI Act
+    compliance awareness before signing contracts. Single-file, no external deps.
+    """
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    active = [f for f in findings if not f.get("suppressed")]
+    prohibited = [f for f in active if f["tier"] == "prohibited"]
+    high_risk = [f for f in active if f["tier"] == "high_risk"]
+    limited = [f for f in active if f["tier"] == "limited_risk"]
+    total_files = len(set(f["file"] for f in findings))
+
+    # Overall status
+    if prohibited:
+        status_label = "Action Required — Prohibited Pattern"
+        status_color = "#dc2626"
+        status_bg = "#fef2f2"
+    elif high_risk:
+        status_label = "High-Risk Indicators Detected"
+        status_color = "#d97706"
+        status_bg = "#fffbeb"
+    elif limited:
+        status_label = "Limited-Risk — Transparency Obligations Apply"
+        status_color = "#2563eb"
+        status_bg = "#eff6ff"
+    else:
+        status_label = "No High-Risk Indicators Found"
+        status_color = "#16a34a"
+        status_bg = "#f0fdf4"
+
+    def _rows(items: list) -> str:
+        if not items:
+            return "<tr><td colspan='3' style='color:#6b7280;font-style:italic'>None detected</td></tr>"
+        rows = []
+        for f in items[:10]:  # cap at 10 rows
+            cat = escape(f.get("category", f.get("tier", "")))
+            art = ", ".join(f"Art. {a}" for a in f.get("articles", []))
+            file_ = escape(f.get("file", ""))
+            rows.append(f"<tr><td>{cat}</td><td>{art}</td><td style='font-family:monospace;font-size:0.8em'>{file_}</td></tr>")
+        return "\n".join(rows)
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EU AI Act Compliance Summary — {escape(project_name)}</title>
+<style>
+*{{box-sizing:border-box;margin:0;padding:0}}
+body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#111;background:#f9fafb;padding:32px 16px}}
+.card{{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:28px;max-width:800px;margin:0 auto}}
+h1{{font-size:1.3rem;font-weight:700;margin-bottom:4px}}
+.sub{{color:#6b7280;font-size:0.9rem;margin-bottom:24px}}
+.status{{padding:16px 20px;border-radius:6px;background:{status_bg};border-left:4px solid {status_color};margin-bottom:24px}}
+.status-label{{font-weight:700;color:{status_color};font-size:1rem}}
+.grid{{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}}
+.stat{{background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;padding:14px;text-align:center}}
+.stat-n{{font-size:1.8rem;font-weight:800;line-height:1}}
+.stat-l{{font-size:0.75rem;color:#6b7280;margin-top:4px}}
+h2{{font-size:1rem;font-weight:600;margin:20px 0 10px}}
+table{{width:100%;border-collapse:collapse;font-size:0.85rem}}
+th{{text-align:left;padding:8px 10px;background:#f3f4f6;border-bottom:1px solid #e5e7eb;font-weight:600}}
+td{{padding:8px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top}}
+.footer{{margin-top:28px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:0.8rem;color:#9ca3af}}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>EU AI Act Compliance Summary</h1>
+  <div class="sub">{escape(project_name)} &nbsp;·&nbsp; Scanned {now} &nbsp;·&nbsp; {total_files} files</div>
+
+  <div class="status">
+    <div class="status-label">{status_label}</div>
+    <div style="margin-top:6px;font-size:0.875rem;color:#374151">
+      Pattern-based risk indication. Findings are indicators for human review,
+      not legal determinations. Full report available on request.
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="stat">
+      <div class="stat-n" style="color:#dc2626">{len(prohibited)}</div>
+      <div class="stat-l">Prohibited<br>indicators</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n" style="color:#d97706">{len(high_risk)}</div>
+      <div class="stat-l">High-risk<br>indicators</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n" style="color:#2563eb">{len(limited)}</div>
+      <div class="stat-l">Limited-risk<br>indicators</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n" style="color:#374151">{total_files}</div>
+      <div class="stat-l">Files<br>scanned</div>
+    </div>
+  </div>
+
+  <h2>High-Risk Indicators (Annex III)</h2>
+  <table>
+    <thead><tr><th>Category</th><th>Articles</th><th>File</th></tr></thead>
+    <tbody>{_rows(high_risk)}</tbody>
+  </table>
+
+  <h2>Prohibited Practice Indicators (Article 5)</h2>
+  <table>
+    <thead><tr><th>Category</th><th>Article</th><th>File</th></tr></thead>
+    <tbody>{_rows(prohibited)}</tbody>
+  </table>
+
+  <div class="footer">
+    Generated by <strong>Regula</strong> (github.com/kuzivaai/getregula) &nbsp;·&nbsp;
+    EU AI Act pattern-based risk indication &nbsp;·&nbsp;
+    This summary does not constitute legal advice. For full compliance
+    assessment, consult qualified legal counsel.
+  </div>
+</div>
+</body>
+</html>"""
+    return html
+
+
 def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Generate Regula reports")
     parser.add_argument("--project", "-p", default=".", help="Project to scan")
-    parser.add_argument("--format", "-f", choices=["html", "sarif", "json"], default="html")
+    parser.add_argument("--format", "-f", choices=["html", "sarif", "json", "sales"], default="html")
     parser.add_argument("--output", "-o", help="Output file path")
     parser.add_argument("--name", "-n", help="Project name")
     parser.add_argument("--include-audit", action="store_true", help="Include audit trail data")
