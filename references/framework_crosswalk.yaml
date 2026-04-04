@@ -1,9 +1,11 @@
-# Framework Crosswalk: EU AI Act 2024/1689 mapped to 8 frameworks
+# Framework Crosswalk: EU AI Act 2024/1689 mapped to 9 frameworks
 # Sources: EU AI Act text, NIST AI 100-1, ISO/IEC 42001:2023, NIST CSF 2.0,
 #          SOC 2 TSC (AICPA 2017), ISO 27001:2022, OWASP LLM Top 10 (2025),
-#          MITRE ATLAS, EU Cyber Resilience Act (2024/2847)
-schema_version: "2.1"
-last_updated: "2026-04-02"
+#          MITRE ATLAS, EU Cyber Resilience Act (2024/2847),
+#          ICO AI Guidance (ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/artificial-intelligence),
+#          DSIT AI Principles (gov.uk/government/publications/ai-regulation-a-pro-innovation-approach, updated 2024)
+schema_version: "2.2"
+last_updated: "2026-04-04"
 
 mappings:
   article_9:
@@ -69,6 +71,13 @@ mappings:
         - "Annex I, Part I (2): Products shall be designed with appropriate level of cybersecurity based on risks"
         - "Art. 13: Obligations of manufacturers — cybersecurity risk assessment before placing on market"
       notes: "CRA risk assessment overlaps with AI Act Art. 9 — both require pre-market risk identification. CRA focuses on cybersecurity risks; AI Act on fundamental rights risks."
+    ico_ai:
+      source: "ICO AI Auditing Framework + DSIT 5 cross-sectoral principles (non-statutory, April 2026)"
+      principles:
+        - "DSIT Principle 1 — Safety, security and robustness: Risk management processes must identify and mitigate foreseeable harms before deployment"
+        - "DSIT Principle 5 — Accountability and governance: Organisations must implement appropriate governance structures and assign clear accountability for AI risk"
+        - "ICO Accountability (Art. 5(2) UK GDPR): Demonstrate compliance with data protection obligations in AI system design"
+      notes: "UK has no statutory AI Act as of April 2026. ICO guidance and DSIT principles are non-binding but represent regulatory expectation. ICO enforcement via UK GDPR remains binding."
 
   article_10:
     eu_ai_act:
@@ -131,6 +140,14 @@ mappings:
       requirements:
         - "Annex I, Part I (2)(d): Protect confidentiality and integrity of stored, transmitted or processed data"
       notes: "CRA data protection requirements complement AI Act Art. 10 data governance — CRA covers data-in-transit/at-rest security."
+    ico_ai:
+      source: "ICO AI Auditing Framework + UK GDPR data minimisation principles (non-statutory, April 2026)"
+      principles:
+        - "ICO Data minimisation (Art. 5(1)(c) UK GDPR): Only personal data adequate, relevant and limited to what is necessary"
+        - "ICO Storage limitation (Art. 5(1)(e) UK GDPR): Data not kept longer than necessary for training or evaluation"
+        - "ICO Accuracy (Art. 5(1)(d) UK GDPR): Training data should be accurate and kept up to date"
+        - "DSIT Principle 3 — Fairness: Training data governance must include bias assessment and representation checks"
+      notes: "ICO expects organisations using personal data in AI training to conduct DPIAs. ICO 'Explaining decisions made with AI' guidance applies when outputs affect individuals."
 
   article_11:
     eu_ai_act:
@@ -183,6 +200,13 @@ mappings:
         - "Art. 13: Technical documentation shall include cybersecurity risk assessment"
         - "Art. 13(8): Technical documentation and declaration of conformity kept for at least 10 years"
       notes: "CRA requires technical documentation for all products with digital elements — overlaps with AI Act Art. 11 for AI-enabled products."
+    ico_ai:
+      source: "ICO AI Auditing Framework — accountability documentation (non-statutory, April 2026)"
+      principles:
+        - "DSIT Principle 5 — Accountability and governance: Document AI system design, data sources and intended purpose"
+        - "ICO Accountability (Art. 5(2) UK GDPR): Maintain records of processing activities where AI processes personal data"
+        - "ICO DPIA requirement: High-risk AI processing personal data requires a DPIA before deployment"
+      notes: "ICO 'Accountability and governance' guidance requires documentation of AI system purpose, risks, and mitigations. Not equivalent to Annex IV but aligns in intent."
 
   article_12:
     eu_ai_act:
@@ -233,6 +257,13 @@ mappings:
         - "Annex I, Part I (2)(g): Record and monitor relevant internal activity, including data access"
         - "Art. 14(2)(a): Actively exploited vulnerability notification within 24 hours"
       notes: "CRA logging requirements overlap with AI Act Art. 12 — CRA adds mandatory vulnerability reporting timelines."
+    ico_ai:
+      source: "ICO AI Auditing Framework — audit trail and accountability logging (non-statutory, April 2026)"
+      principles:
+        - "ICO Accountability (Art. 5(2) UK GDPR): Maintain records sufficient to demonstrate compliance with data protection principles"
+        - "DSIT Principle 5 — Accountability and governance: Audit logs support post-incident review and regulatory enquiry"
+        - "ICO 'Explaining decisions made with AI': Organisations should retain logs to explain automated decisions affecting individuals"
+      notes: "UK has no mandatory AI logging obligation equivalent to Art. 12, but ICO expects records sufficient for accountability demonstrations under UK GDPR."
 
   article_13:
     eu_ai_act:
@@ -290,6 +321,13 @@ mappings:
         - "Annex II: Information and instructions to the user, including security properties"
         - "Art. 13(1): Products placed on market shall comply with Annex I essential requirements"
       notes: "CRA transparency obligations complement AI Act Art. 13 — CRA covers cybersecurity disclosures to users."
+    ico_ai:
+      source: "ICO 'Explaining decisions made with AI' guidance + DSIT principles (non-statutory, April 2026)"
+      principles:
+        - "DSIT Principle 2 — Appropriate transparency and explainability: Users should understand when AI is involved in decisions and how it works"
+        - "ICO 'Explaining decisions made with AI': Meaningful information about AI-driven decisions must be provided to individuals"
+        - "ICO Right to explanation (Art. 22 UK GDPR): Where solely automated decisions produce legal/significant effects, individuals have rights to explanation and human review"
+      notes: "ICO guidance distinguishes between transparency to deployers (Art. 13) and to individuals affected (Art. 14 UK GDPR right to explanation). Both apply where AI processes personal data."
 
   article_14:
     eu_ai_act:
@@ -341,6 +379,13 @@ mappings:
       requirements:
         - "Annex I, Part II (1): Manufacturers shall identify and document vulnerabilities, including third-party components"
       notes: "CRA does not directly address human oversight, but vulnerability management processes require human decision-making on patch prioritisation."
+    ico_ai:
+      source: "ICO AI Auditing Framework — human review and contestability (non-statutory, April 2026)"
+      principles:
+        - "DSIT Principle 5 — Contestability and redress: Individuals should be able to challenge AI decisions; appropriate mechanisms must exist"
+        - "ICO Art. 22 UK GDPR: Solely automated decisions with legal/significant effects require human review mechanism on request"
+        - "ICO 'Explaining decisions made with AI': Human review processes must be meaningful, not a rubber-stamp"
+      notes: "ICO has issued enforcement notices against solely automated decision-making without adequate human review. This is an active enforcement area, not aspirational guidance."
 
   article_15:
     eu_ai_act:
@@ -424,3 +469,11 @@ mappings:
         - "Annex I, Part II (3): Apply effective and regular tests and reviews"
         - "Art. 14(2): Report actively exploited vulnerabilities within 24 hours to ENISA"
       notes: "Art. 15 (cybersecurity) is where AI Act and CRA overlap most directly. Both require products to be resilient against attacks. CRA adds mandatory SBOM, vulnerability disclosure, and 5-year security update obligations."
+    ico_ai:
+      source: "ICO AI Auditing Framework — accuracy and security (non-statutory, April 2026)"
+      principles:
+        - "DSIT Principle 1 — Safety, security and robustness: AI systems must be technically secure and perform reliably across foreseeable contexts"
+        - "ICO Accuracy (Art. 5(1)(d) UK GDPR): AI outputs used in decisions about individuals must be accurate; inaccurate outputs that lead to wrong decisions may breach UK GDPR"
+        - "ICO Security (Art. 5(1)(f) UK GDPR): Appropriate technical and organisational measures required to protect against unauthorised processing and accidental loss"
+        - "DSIT Principle 3 — Fairness: Accuracy requirements include ensuring outputs do not systematically disadvantage protected groups"
+      notes: "ICO has powers to issue enforcement notices and fines under UK GDPR for accuracy failures in automated systems. Accuracy obligation is binding, not aspirational."
