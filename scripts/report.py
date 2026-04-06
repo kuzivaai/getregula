@@ -23,7 +23,7 @@ from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS, PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS, generate_observations, check_ai_security
+from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS, PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS, AI_SECURITY_PATTERNS, generate_observations, check_ai_security
 from domain_scoring import compute_domain_boost
 from ast_engine import detect_language
 from log_event import query_events, verify_chain
@@ -487,7 +487,60 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     except Exception:
         pass
 
+    # Enrich each finding with Omnibus-aware enforcement deadline
+    _enrich_deadlines(findings)
+
     return findings
+
+
+def _enrich_deadlines(findings: list) -> None:
+    """Add deadline and deadline_note to each finding based on Omnibus status.
+
+    The Digital Omnibus (trilogue in progress as of April 2026) proposes
+    different deadlines for different risk tiers. Both co-legislators are
+    aligned, but the regulation is not yet adopted. We tag each finding
+    with both the current law deadline and the proposed Omnibus deadline.
+    """
+    for f in findings:
+        tier = f.get("tier", "")
+        category = f.get("category", "")
+
+        if tier == "prohibited":
+            f["deadline"] = "2025-02-02"
+            f["deadline_status"] = "enforceable"
+            f["deadline_note"] = "Article 5 prohibitions enforceable since 2 Feb 2025. Not affected by Omnibus."
+        elif tier in ("high_risk", "ai_security"):
+            # Annex III vs Annex I distinction
+            annex_i_keywords = ("Safety Component", "Medical Device", "Machinery",
+                                "harmonisation", "sectoral")
+            if any(kw.lower() in category.lower() for kw in annex_i_keywords):
+                f["deadline"] = "2026-08-02"
+                f["deadline_status"] = "current_law"
+                f["deadline_note"] = "Current law: 2 Aug 2026. Omnibus proposes: 2 Aug 2028 (Annex I / sectoral). Trilogue in progress."
+                f["omnibus_deadline"] = "2028-08-02"
+            else:
+                f["deadline"] = "2026-08-02"
+                f["deadline_status"] = "current_law"
+                f["deadline_note"] = "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress."
+                f["omnibus_deadline"] = "2027-12-02"
+        elif tier == "credential_exposure":
+            f["deadline"] = "2026-08-02"
+            f["deadline_status"] = "current_law"
+            f["deadline_note"] = "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+        elif tier == "limited_risk":
+            f["deadline"] = "2026-08-02"
+            f["deadline_status"] = "current_law"
+            f["deadline_note"] = "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress."
+            f["omnibus_deadline"] = "2026-11-02"
+        elif tier == "agent_autonomy":
+            f["deadline"] = "2026-08-02"
+            f["deadline_status"] = "current_law"
+            f["deadline_note"] = "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027."
+            f["omnibus_deadline"] = "2027-12-02"
+        else:
+            f["deadline"] = None
+            f["deadline_status"] = "none"
+            f["deadline_note"] = "Minimal-risk: no mandatory deadline."
 
 
 # ---------------------------------------------------------------------------
@@ -983,6 +1036,19 @@ def generate_sarif(findings: list, project_name: str) -> dict:
             "helpUri": "https://artificialintelligenceact.eu/article/15/",
         }
 
+    for rule_id, config in AI_SECURITY_PATTERNS.items():
+        rules[f"regula/ai-security/{rule_id}"] = {
+            "id": f"regula/ai-security/{rule_id}",
+            "name": rule_id.replace("_", " ").title(),
+            "shortDescription": {"text": config["description"]},
+            "fullDescription": {"text": f"OWASP LLM Top 10 {config.get('owasp', '')}: {config['description']}. {config.get('remediation', '')}"},
+            "defaultConfiguration": {"level": "warning"},
+            "helpUri": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+        }
+
+    # Agent autonomy rules (dynamic — generated from findings rather than static patterns)
+    # These are added on-demand below if a finding references them
+
     for rule_id, config in LIMITED_RISK_PATTERNS.items():
         rules[f"regula/limited-risk/{rule_id}"] = {
             "id": f"regula/limited-risk/{rule_id}",
@@ -1011,6 +1077,16 @@ def generate_sarif(findings: list, project_name: str) -> dict:
             rule_id = f"regula/high-risk/{primary_indicator}"
         elif tier == "agent_autonomy":
             rule_id = f"regula/agent-autonomy/{primary_indicator}"
+            # Add rule definition on-demand if not already present
+            if rule_id not in rules:
+                rules[rule_id] = {
+                    "id": rule_id,
+                    "name": primary_indicator.replace("_", " ").title(),
+                    "shortDescription": {"text": f.get("description", "Autonomous AI action without human oversight")},
+                    "fullDescription": {"text": f"EU AI Act Article 14 (Human Oversight): {f.get('description', 'Autonomous action detected')}"},
+                    "defaultConfiguration": {"level": "warning"},
+                    "helpUri": "https://artificialintelligenceact.eu/article/14/",
+                }
         elif tier == "ai_security":
             rule_id = f"regula/ai-security/{primary_indicator}"
         elif tier == "limited_risk":
@@ -1032,6 +1108,9 @@ def generate_sarif(findings: list, project_name: str) -> dict:
             }],
             "properties": {
                 "confidence_score": f.get("confidence_score", 0),
+                "deadline": f.get("deadline"),
+                "deadline_status": f.get("deadline_status"),
+                "omnibus_deadline": f.get("omnibus_deadline"),
             },
         }
         results.append(result)

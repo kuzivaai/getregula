@@ -611,7 +611,8 @@ def test_cli_version_in_json_output():
     )
     assert_eq(result.returncode, 0, "check --help should succeed")
     from cli import VERSION
-    assert_eq(VERSION, "1.5.0", f"VERSION should be 1.5.0, got: {VERSION}")
+    import re as _re
+    assert_eq(bool(_re.match(r'^\d+\.\d+\.\d+', VERSION)), True, f"VERSION should be semver, got: {VERSION}")
     result2 = sp.run(
         [sys.executable, "-m", "scripts.cli", "check", "--format", "json", "--min-tier", "high_risk",
          str(Path(__file__).parent.parent / "tests" / "fixtures" / "sample_high_risk")],
@@ -620,9 +621,9 @@ def test_cli_version_in_json_output():
     )
     if result2.returncode == 0:
         data = json.loads(result2.stdout)
-        assert_eq(data.get("regula_version"), "1.5.0",
-                  f"JSON output version should be 1.5.0, got: {data.get('regula_version')}")
-        print("\u2713 CLI: version 1.5.0 confirmed in JSON output")
+        assert_eq(data.get("regula_version"), VERSION,
+                  f"JSON output version should be {VERSION}, got: {data.get('regula_version')}")
+        print(f"\u2713 CLI: version {VERSION} confirmed in JSON output")
 
 
 def test_cli_min_tier_all_levels():

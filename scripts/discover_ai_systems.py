@@ -135,6 +135,11 @@ def scan_code_files(project_path: Path) -> dict:
             except (PermissionError, OSError):
                 continue
 
+            # Respect file-level regula-ignore directive (first 10 lines)
+            first_lines = "\n".join(content.split("\n")[:10])
+            if "regula-ignore" in first_lines and "regula-ignore:" not in first_lines:
+                continue
+
             if not is_ai_related(content):
                 continue
 

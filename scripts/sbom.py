@@ -168,9 +168,179 @@ def _detect_project_version(project_path: str) -> str:
     return "0.0.0"
 
 
+# ── GPAI tier → EU AI Act article mapping ────────────────────────
+
+_GPAI_TIER_ARTICLES = {
+    "frontier": "Art 51, Art 53, Art 54, Art 55",
+    "open_weight": "Art 53(1)(c), Art 53(1)(d), Art 53(2)",
+    "unknown": "Art 53 (tier unconfirmed — manual review required)",
+}
+
+# ── Dataset detection patterns ───────────────────────────────────
+
+_DATASET_PATTERNS = [
+    # (regex, source_label)
+    (re.compile(r'''datasets\.load_dataset\(\s*["']([^"']+)["']'''), "huggingface-datasets"),
+    (re.compile(r'''pd\.read_csv\(\s*["']([^"']+)["']'''), "pandas-csv"),
+    (re.compile(r'''pd\.read_parquet\(\s*["']([^"']+)["']'''), "pandas-parquet"),
+    # DataLoader takes a variable, not a string literal — capture for context only
+    (re.compile(r'''DataLoader\(\s*(\w+)'''), "pytorch-dataloader-var"),
+    (re.compile(r'''tf\.data\.Dataset'''), "tensorflow-dataset"),
+]
+
+_DATASET_SCAN_EXTENSIONS = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"}
+_DATASET_SKIP_DIRS = {
+    "node_modules", ".git", "__pycache__", ".venv", "venv",
+    "env", ".env", "dist", "build", ".next", ".nuxt",
+    "coverage", ".tox", ".mypy_cache",
+}
+
+
+def _scan_datasets(project_path: str) -> list[dict]:
+    """Scan project for dataset loading patterns."""
+    root = Path(project_path)
+    datasets: list[dict] = []
+    seen: set[str] = set()
+
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in _DATASET_SKIP_DIRS]
+        for fname in filenames:
+            ext = Path(fname).suffix.lower()
+            if ext not in _DATASET_SCAN_EXTENSIONS:
+                continue
+            fpath = Path(dirpath, fname)
+            try:
+                content = fpath.read_text(encoding="utf-8", errors="ignore")
+            except OSError:
+                continue
+            rel = str(fpath.relative_to(root))
+            for lineno, line in enumerate(content.splitlines(), 1):
+                for pattern, source_label in _DATASET_PATTERNS:
+                    m = pattern.search(line)
+                    if m:
+                        dataset_name = m.group(1) if m.lastindex else source_label
+                        key = f"{source_label}:{dataset_name}"
+                        if key not in seen:
+                            seen.add(key)
+                            datasets.append({
+                                "name": dataset_name,
+                                "source_pattern": source_label,
+                                "file": rel,
+                                "line": lineno,
+                            })
+    return datasets
+
+
+def _enrich_ai_bom(project_path: str, components: list[dict],
+                   seen_names: set[str]) -> tuple[list[dict], list[dict]]:
+    """Enrich SBOM components with AI BOM data.
+
+    Returns (updated_components, extra_metadata_properties).
+    """
+    extra_meta: list[dict] = []
+
+    # ── Model provenance ─────────────────────────────────────────
+    try:
+        from model_inventory import scan_for_models
+        model_result = scan_for_models(project_path)
+    except ImportError:
+        model_result = {"models": [], "summary": {"total": 0}}
+
+    # Filter models: skip those only found in regula-ignore files (e.g. catalogues)
+    root = Path(project_path).resolve()
+    models_found = model_result.get("models", [])
+    for model in models_found:
+        model_id = model["model_id"]
+        comp_key = f"ai-model:{model_id}"
+        if comp_key in seen_names:
+            continue
+
+        # Check if ALL occurrences are in regula-ignore files
+        occurrences = model.get("occurrences", [])
+        real_occurrences = []
+        for occ in occurrences:
+            occ_path = root / occ.get("file", "")
+            try:
+                first_lines = "\n".join(occ_path.read_text(encoding="utf-8", errors="ignore").split("\n")[:10])
+                if "regula-ignore" in first_lines and "regula-ignore:" not in first_lines:
+                    continue  # This occurrence is in a catalogue/config file
+            except (OSError, PermissionError):
+                pass
+            real_occurrences.append(occ)
+
+        if not real_occurrences:
+            continue  # All occurrences were in regula-ignore files — skip this model
+
+        seen_names.add(comp_key)
+
+        gpai_tier = model.get("gpai_tier", "unknown")
+        provider = model.get("provider", "unknown")
+        eu_note = model.get("eu_note", "")
+        eu_articles = _GPAI_TIER_ARTICLES.get(gpai_tier, _GPAI_TIER_ARTICLES["unknown"])
+        occurrences = real_occurrences  # Use filtered list, not original
+
+        # Build properties
+        props = [
+            {"name": "regula:gpai-tier", "value": gpai_tier},
+            {"name": "regula:provider", "value": provider},
+            {"name": "regula:eu-note", "value": eu_note},
+            {"name": "regula:eu-ai-act-articles", "value": eu_articles},
+        ]
+        # Add first occurrence as source reference
+        if occurrences:
+            props.append({"name": "regula:source-file", "value": occurrences[0]["file"]})
+            props.append({"name": "regula:source-line", "value": str(occurrences[0]["line"])})
+
+        component: dict = {
+            "type": "machine-learning-model",
+            "name": model_id,
+            "properties": props,
+        }
+
+        # CycloneDX 1.6 modelCard — approach.type must be from the spec enum
+        model_params: dict = {}
+        if provider != "unknown":
+            model_params["owner"] = provider
+        model_card: dict = {"modelParameters": model_params} if model_params else {}
+        component["modelCard"] = model_card
+
+        components.append(component)
+
+    extra_meta.append({
+        "name": "regula:ai-bom-models-detected",
+        "value": str(len(models_found)),
+    })
+
+    # ── Dataset detection ────────────────────────────────────────
+    datasets = _scan_datasets(project_path)
+    for ds in datasets:
+        ds_key = f"dataset:{ds['source_pattern']}:{ds['name']}"
+        if ds_key in seen_names:
+            continue
+        seen_names.add(ds_key)
+
+        components.append({
+            "type": "data",
+            "name": ds["name"],
+            "properties": [
+                {"name": "regula:source-pattern", "value": ds["source_pattern"]},
+                {"name": "regula:source-file", "value": ds["file"]},
+                {"name": "regula:source-line", "value": str(ds["line"])},
+            ],
+        })
+
+    extra_meta.append({
+        "name": "regula:ai-bom-datasets-detected",
+        "value": str(len(datasets)),
+    })
+
+    return components, extra_meta
+
+
 # ── Main SBOM generation ─────────────────────────────────────────
 
-def generate_sbom(project_path: str, project_name: str | None = None) -> dict:
+def generate_sbom(project_path: str, project_name: str | None = None,
+                   ai_bom: bool = False) -> dict:
     """Generate a CycloneDX 1.6 AI SBOM for a project.
 
     Parameters
@@ -179,6 +349,9 @@ def generate_sbom(project_path: str, project_name: str | None = None) -> dict:
         Path to the project root directory.
     project_name : str, optional
         Human-readable project name. Defaults to directory name.
+    ai_bom : bool
+        When True, enrich with model provenance, GPAI tiers, and dataset
+        detection (AI Bill of Materials mode).
 
     Returns
     -------
@@ -303,6 +476,10 @@ def generate_sbom(project_path: str, project_name: str | None = None) -> dict:
 
         vulnerabilities.append(vuln)
 
+    # ── AI BOM enrichment ─────────────────────────────────────────
+    if ai_bom:
+        components, bom_meta_extra = _enrich_ai_bom(str(root), components, seen_names)
+
     # ── Assemble BOM ──────────────────────────────────────────────
     bom: dict = {
         "bomFormat": "CycloneDX",
@@ -331,10 +508,15 @@ def generate_sbom(project_path: str, project_name: str | None = None) -> dict:
         bom["vulnerabilities"] = vulnerabilities
 
     # Store pinning score in metadata properties for summary use
-    bom["metadata"]["properties"] = [
+    meta_props = [
         {"name": "regula:pinning-score", "value": str(pinning_score)},
         {"name": "regula:ai-files-scanned", "value": str(len(ast_results))},
     ]
+    if ai_bom:
+        meta_props.append({"name": "regula:ai-bom", "value": "true"})
+        for p in bom_meta_extra:
+            meta_props.append(p)
+    bom["metadata"]["properties"] = meta_props
 
     return bom
 

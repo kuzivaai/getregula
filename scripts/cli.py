@@ -16,6 +16,7 @@ Usage:
 
 import argparse
 import json
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -59,6 +60,9 @@ def _validate_path(path_str: str) -> Path:
     return p
 
 
+_SAFE_GIT_REF = re.compile(r'^[a-zA-Z0-9_.~^@{}/:\-]+$')
+
+
 def _get_changed_files(project_path: str, git_ref: str = "HEAD~1") -> list[str]:
     """Get list of files changed since git_ref.
 
@@ -66,6 +70,9 @@ def _get_changed_files(project_path: str, git_ref: str = "HEAD~1") -> list[str]:
     if git is not available or the path is not a git repo.
     """
     import subprocess
+    if not _SAFE_GIT_REF.match(git_ref):
+        print(f"Error: unsafe git ref: {git_ref!r}", file=sys.stderr)
+        return []
     try:
         result = subprocess.run(
             ["git", "diff", "--name-only", "--diff-filter=ACMR", git_ref],
@@ -1092,7 +1099,13 @@ def cmd_fix(args):
 
     fixes = []
     for finding in actionable:
-        rem = get_remediation(finding)
+        rem = get_remediation(
+            finding.get("tier", ""),
+            finding.get("category", ""),
+            finding.get("indicators", []),
+            finding.get("file", ""),
+            finding.get("description", ""),
+        )
         fix_entry = {
             "file": finding.get("file", "?"),
             "line": finding.get("line", "?"),
@@ -1170,6 +1183,34 @@ def cmd_evidence_pack(args):
         print(f"Start with: {pack_path}/00-summary.md")
 
 
+def cmd_conform(args):
+    """Generate conformity assessment evidence pack."""
+    if args.project != ".":
+        _validate_path(args.project)
+    project_path = str(Path(args.project).resolve())
+    project_name = args.name or Path(project_path).name
+
+    from conform import generate_conformity_pack
+
+    print(f"Generating conformity assessment evidence pack for {project_path}...", file=sys.stderr)
+    result = generate_conformity_pack(
+        project_path,
+        output_dir=args.output,
+        project_name=project_name,
+    )
+
+    if args.format == "json":
+        json_output("conform", result)
+    else:
+        pack_path = result["pack_path"]
+        file_count = len(result["manifest"]["files"])
+        readiness = result["summary"]["overall_readiness"]
+        print(f"Conformity evidence pack written to: {pack_path}")
+        print(f"Contains {file_count} files with SHA-256 integrity hashes.")
+        print(f"Overall readiness: {readiness}")
+        print(f"Start with: {pack_path}/00-assessment-summary.json")
+
+
 def cmd_benchmark(args):
     """Run real-world validation benchmark."""
     from benchmark import benchmark_project, benchmark_suite, calculate_metrics, load_labelled_results
@@ -1220,7 +1261,7 @@ def cmd_sbom(args):
     if args.project != ".":
         _validate_path(args.project)
     from sbom import generate_sbom, format_sbom_json, format_sbom_summary
-    bom = generate_sbom(args.project, project_name=args.name)
+    bom = generate_sbom(args.project, project_name=args.name, ai_bom=getattr(args, 'ai_bom', False))
     if args.format == "json":
         content = format_sbom_json(bom)
     else:
@@ -1377,6 +1418,60 @@ def cmd_config(args):
     else:
         print(f"Unknown config action: {args.config_action}", file=sys.stderr)
         sys.exit(2)
+
+
+def cmd_oversight(args):
+    """Article 14 human oversight analysis (cross-file)."""
+    from cross_file_flow import analyse_project_oversight
+
+    project = getattr(args, "project", ".")
+    result = analyse_project_oversight(project)
+    fmt = getattr(args, "format", "text")
+
+    if fmt == "json":
+        json_output("oversight", result)
+        return
+
+    # Text output
+    summary = result["summary"]
+    print("Article 14 Human Oversight Analysis")
+    print("=" * 36)
+    print("Scope: Static analysis of direct imports and explicit function calls.")
+    print("NOT analysed: dynamic imports, decorator-wrapped routes, cross-service calls,")
+    print("              third-party library internals.")
+    print()
+
+    ai_count = len(result.get("ai_sources", []))
+    total = summary.get("total_paths", 0)
+    if ai_count == 0:
+        print("No AI output sources found in scanned Python files.")
+    else:
+        print(f"Found {ai_count} AI output source{'s' if ai_count != 1 else ''}:")
+        for src in result["ai_sources"]:
+            print(f"  - {src['source']} at {src['file']}:{src['source_line']}")
+        print()
+
+        reviewed = summary["reviewed"]
+        print(f"Human oversight gates detected on flow path: {reviewed} of {total}")
+        for path in result["flow_paths"]:
+            marker = "\u2713" if path["has_oversight"] else "\u26a0"
+            loc = f"{path['source_file']}:{path['source_line']}"
+            if path["hops"]:
+                hop = path["hops"][0]
+                target = f"{hop['to_file']}:{hop['line']} ({hop['function']})"
+                tag = "human oversight detected" if path["has_oversight"] else "NO oversight gate found"
+                print(f"  {marker} {loc} \u2192 {target} ({tag})")
+            else:
+                tag = "in-file oversight" if path["has_oversight"] else "NO oversight gate found"
+                print(f"  {marker} {loc} ({tag})")
+
+    print()
+    print(f"Confidence: {result['confidence'].upper()}")
+    print("Note: This analysis detects code paths for oversight, not whether oversight")
+    print("      is meaningfully exercised. See ICO ADM guidance (March 2026).")
+
+    if summary["unreviewed"] > 0:
+        sys.exit(1)
 
 
 _MAIN_EPILOG = """
@@ -1601,6 +1696,14 @@ def _build_subparsers(subparsers):
     p_evidence.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_evidence.set_defaults(func=cmd_evidence_pack)
 
+    # --- conform ---
+    p_conform = subparsers.add_parser("conform", help="Generate conformity assessment evidence pack (Article 43)")
+    p_conform.add_argument("--project", "-p", default=".")
+    p_conform.add_argument("--output", "-o", default=".", help="Output directory for the pack folder")
+    p_conform.add_argument("--name", "-n", help="Project name")
+    p_conform.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_conform.set_defaults(func=cmd_conform)
+
     # --- benchmark ---
     p_bench = subparsers.add_parser("benchmark", help="Real-world validation benchmark")
     p_bench.add_argument("--project", "-p", default=".")
@@ -1648,6 +1751,7 @@ def _build_subparsers(subparsers):
     p_sbom.add_argument("--format", "-f", choices=["json", "text"], default="json")
     p_sbom.add_argument("--output", "-o", help="Output file path")
     p_sbom.add_argument("--name", "-n", help="Project name")
+    p_sbom.add_argument("--ai-bom", action="store_true", help="Include AI-specific BOM fields (model provenance, GPAI tiers, datasets)")
     p_sbom.set_defaults(func=cmd_sbom)
 
     # --- agent ---
@@ -1726,6 +1830,15 @@ def _build_subparsers(subparsers):
     p_config_validate.add_argument("--format", choices=["text", "json"], default="text")
     p_config.set_defaults(func=cmd_config, config_action="validate")
     p_config_validate.set_defaults(func=cmd_config, config_action="validate")
+
+    # --- oversight ---
+    p_oversight = subparsers.add_parser(
+        "oversight",
+        help="Article 14 human oversight analysis (cross-file)",
+    )
+    p_oversight.add_argument("--project", "-p", default=".", help="Project directory to analyse")
+    p_oversight.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_oversight.set_defaults(func=cmd_oversight)
 
 
 def main():
