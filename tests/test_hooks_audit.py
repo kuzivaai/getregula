@@ -201,13 +201,13 @@ def test_pre_hook_doc_bypass_directory():
 
 
 def test_pre_hook_doc_bypass_yaml():
-    """Write to .yaml file -> exit 0, bypass (doc extension)"""
+    """Write to .yaml file -> classified, not bypassed (security fix)."""
     rc, out, stderr, tmpdir = _run_hook("pre_tool_use", "Write", {
         "file_path": "/project/config/policy.yaml",
         "content": "social_scoring: prohibited"
     })
-    assert_eq(rc, 0, ".yaml file bypasses classification")
-    print("✓ PreHook: .yaml file -> bypass")
+    assert_eq(rc, 2, ".yaml file goes through classification (security fix)")
+    print("✓ PreHook: .yaml file -> classified (not bypassed)")
 
 
 def test_pre_hook_regula_ignore_bypass():
