@@ -144,7 +144,7 @@ def _tasks_from_findings(findings: list, start_id: int) -> list:
             "effort_hours": ARTICLE_EFFORT.get(
                 article_nums[0] if article_nums else "9", (8, 16)
             ),
-            "deadline": DEADLINE_HIGH_RISK,
+            "deadline": finding.get("deadline_note") or DEADLINE_HIGH_RISK,
             "status": "not_started",
             "_sort_tier": tier,
         }

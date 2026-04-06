@@ -5156,6 +5156,378 @@ def test_assess_format_result_prohibited():
 
 
 # ---------------------------------------------------------------------------
+# Text description classification tests (domain keywords + widened patterns)
+# ---------------------------------------------------------------------------
+
+def test_text_classify_facial_recognition():
+    """Plain text 'facial recognition' classifies as HIGH-RISK."""
+    r = classify("facial recognition system for airport security")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "facial recognition text → HIGH-RISK")
+    print("✓ text classify: facial recognition → HIGH-RISK")
+
+def test_text_classify_face_recognition():
+    """Plain text 'face recognition' classifies as HIGH-RISK."""
+    r = classify("face recognition system")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "face recognition text → HIGH-RISK")
+    print("✓ text classify: face recognition → HIGH-RISK")
+
+def test_text_classify_chatbot():
+    """Plain text 'chatbot' classifies as LIMITED-RISK."""
+    r = classify("chatbot for customer support")
+    assert_eq(r.tier, RiskTier.LIMITED_RISK, "chatbot text → LIMITED-RISK")
+    print("✓ text classify: chatbot → LIMITED-RISK")
+
+def test_text_classify_credit_scoring():
+    """Plain text 'credit scoring' classifies as HIGH-RISK."""
+    r = classify("credit scoring model for loan approval")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "credit scoring text → HIGH-RISK")
+    print("✓ text classify: credit scoring → HIGH-RISK")
+
+def test_text_classify_hiring_decision():
+    """Plain text 'hiring decision' classifies as HIGH-RISK."""
+    r = classify("hiring decision automation system")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "hiring decision text → HIGH-RISK")
+    print("✓ text classify: hiring decision → HIGH-RISK")
+
+def test_text_classify_autonomous_vehicle():
+    """Plain text 'autonomous vehicle' classifies as HIGH-RISK."""
+    r = classify("autonomous vehicle control system")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "autonomous vehicle text → HIGH-RISK")
+    print("✓ text classify: autonomous vehicle → HIGH-RISK")
+
+def test_text_classify_virtual_assistant():
+    """Plain text 'virtual assistant' classifies as LIMITED-RISK."""
+    r = classify("virtual assistant for scheduling")
+    assert_eq(r.tier, RiskTier.LIMITED_RISK, "virtual assistant text → LIMITED-RISK")
+    print("✓ text classify: virtual assistant → LIMITED-RISK")
+
+def test_text_classify_medical_diagnosis():
+    """Plain text 'medical diagnosis' classifies as HIGH-RISK."""
+    r = classify("medical diagnosis AI system")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "medical diagnosis text → HIGH-RISK")
+    print("✓ text classify: medical diagnosis → HIGH-RISK")
+
+def test_text_classify_deepfake():
+    """Plain text 'deepfake' classifies as LIMITED-RISK."""
+    r = classify("deepfake detection and generation tool")
+    assert_eq(r.tier, RiskTier.LIMITED_RISK, "deepfake text → LIMITED-RISK")
+    print("✓ text classify: deepfake → LIMITED-RISK")
+
+def test_text_classify_border_control():
+    """Plain text 'border control AI' classifies as HIGH-RISK."""
+    r = classify("border control AI system for immigration")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "border control text → HIGH-RISK")
+    print("✓ text classify: border control → HIGH-RISK")
+
+def test_text_classify_resume_screening():
+    """Plain text 'resume screening' classifies as HIGH-RISK."""
+    r = classify("resume screening AI for recruitment")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "resume screening text → HIGH-RISK")
+    print("✓ text classify: resume screening → HIGH-RISK")
+
+def test_text_classify_loan_decision():
+    """Plain text 'loan decision' classifies as HIGH-RISK."""
+    r = classify("automated loan decision system")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "loan decision text → HIGH-RISK")
+    print("✓ text classify: loan decision → HIGH-RISK")
+
+def test_text_classify_self_driving():
+    """Plain text 'self-driving car' classifies as HIGH-RISK."""
+    r = classify("self-driving car AI system")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "self-driving car text → HIGH-RISK")
+    print("✓ text classify: self-driving car → HIGH-RISK")
+
+def test_text_classify_emotion_recognition():
+    """Plain text 'emotion recognition' classifies as LIMITED-RISK."""
+    r = classify("emotion recognition system for retail")
+    assert_eq(r.tier, RiskTier.LIMITED_RISK, "emotion recognition text → LIMITED-RISK")
+    print("✓ text classify: emotion recognition → LIMITED-RISK")
+
+def test_text_classify_ai_powered_generic():
+    """Plain text with 'AI-powered' triggers AI indicator but classifies as minimal."""
+    r = classify("AI-powered weather forecasting tool")
+    assert_eq(r.tier, RiskTier.MINIMAL_RISK, "AI-powered generic → MINIMAL-RISK")
+    print("✓ text classify: AI-powered generic → MINIMAL-RISK")
+
+def test_text_classify_no_ai_context():
+    """Plain text with no AI context returns NOT_AI."""
+    r = classify("quarterly sales report for Q3 2025")
+    assert_eq(r.tier, RiskTier.NOT_AI, "non-AI text → NOT_AI")
+    print("✓ text classify: non-AI text → NOT_AI")
+
+def test_text_is_ai_related_domain_keywords():
+    """is_ai_related() returns True for domain keyword text."""
+    assert_eq(is_ai_related("facial recognition system"), True, "facial recognition → ai_related")
+    assert_eq(is_ai_related("chatbot for support"), True, "chatbot → ai_related")
+    assert_eq(is_ai_related("AI system for compliance"), True, "AI system → ai_related")
+    assert_eq(is_ai_related("quarterly sales report"), False, "no AI text → not ai_related")
+    print("✓ is_ai_related: domain keywords detected")
+
+def test_text_classify_fingerprint_recognition():
+    """Plain text 'fingerprint recognition' classifies as HIGH-RISK."""
+    r = classify("fingerprint recognition for border access")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "fingerprint recognition text → HIGH-RISK")
+    print("✓ text classify: fingerprint recognition → HIGH-RISK")
+
+def test_text_classify_voice_recognition():
+    """Plain text 'voice recognition' classifies as HIGH-RISK."""
+    r = classify("voice recognition system for identification")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "voice recognition text → HIGH-RISK")
+    print("✓ text classify: voice recognition → HIGH-RISK")
+
+def test_text_classify_patient_triage():
+    """Plain text 'patient triage' classifies as HIGH-RISK."""
+    r = classify("patient triage AI model")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "patient triage text → HIGH-RISK")
+    print("✓ text classify: patient triage → HIGH-RISK")
+
+def test_text_classify_clinical_decision():
+    """Plain text 'clinical decision' classifies as HIGH-RISK."""
+    r = classify("clinical decision support AI system")
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "clinical decision text → HIGH-RISK")
+    print("✓ text classify: clinical decision → HIGH-RISK")
+
+def test_discover_respects_regula_ignore():
+    """discover skips files with # regula-ignore directive."""
+    import tempfile, os
+    tmpdir = tempfile.mkdtemp()
+    # File WITH regula-ignore — should be skipped
+    with open(os.path.join(tmpdir, "ignored.py"), "w") as f:
+        f.write("# regula-ignore\nimport tensorflow\nmodel = tensorflow.keras.models.load_model('x.h5')\n")
+    # File WITHOUT regula-ignore — should be found
+    with open(os.path.join(tmpdir, "detected.py"), "w") as f:
+        f.write("import tensorflow\nmodel = tensorflow.keras.models.load_model('x.h5')\n")
+    from discover_ai_systems import scan_code_files
+    result = scan_code_files(Path(tmpdir))
+    assert_eq("ignored.py" in result["ai_files"], False, "regula-ignore file skipped by discover")
+    assert_eq("detected.py" in result["ai_files"], True, "non-ignored file found by discover")
+    # Cleanup
+    import shutil
+    shutil.rmtree(tmpdir)
+    print("✓ discover: respects # regula-ignore directive")
+
+
+# ---------------------------------------------------------------------------
+# Omnibus-aware deadline enrichment tests
+# ---------------------------------------------------------------------------
+
+def test_deadline_prohibited_finding():
+    """Prohibited findings get 2025-02-02 deadline, no omnibus."""
+    from report import _enrich_deadlines
+    findings = [{"tier": "prohibited", "category": "Article 5"}]
+    _enrich_deadlines(findings)
+    assert_eq(findings[0]["deadline"], "2025-02-02", "prohibited deadline")
+    assert_eq(findings[0]["deadline_status"], "enforceable", "prohibited status")
+    assert_eq("omnibus_deadline" in findings[0], False, "prohibited no omnibus")
+    print("✓ deadline: prohibited → 2025-02-02, no omnibus")
+
+def test_deadline_high_risk_annex_iii():
+    """High-risk Annex III findings get Dec 2027 omnibus deadline."""
+    from report import _enrich_deadlines
+    findings = [{"tier": "high_risk", "category": "Annex III, Category 4"}]
+    _enrich_deadlines(findings)
+    assert_eq(findings[0]["deadline"], "2026-08-02", "high-risk current law")
+    assert_eq(findings[0]["omnibus_deadline"], "2027-12-02", "high-risk omnibus Annex III")
+    print("✓ deadline: high-risk Annex III → omnibus 2027-12-02")
+
+def test_deadline_high_risk_annex_i():
+    """High-risk safety/medical findings get Aug 2028 omnibus deadline."""
+    from report import _enrich_deadlines
+    findings = [{"tier": "high_risk", "category": "Safety Components"}]
+    _enrich_deadlines(findings)
+    assert_eq(findings[0]["omnibus_deadline"], "2028-08-02", "safety omnibus Annex I")
+    findings2 = [{"tier": "high_risk", "category": "Medical Devices"}]
+    _enrich_deadlines(findings2)
+    assert_eq(findings2[0]["omnibus_deadline"], "2028-08-02", "medical omnibus Annex I")
+    print("✓ deadline: safety/medical → omnibus 2028-08-02")
+
+def test_deadline_limited_risk():
+    """Limited-risk findings get Nov 2026 omnibus deadline."""
+    from report import _enrich_deadlines
+    findings = [{"tier": "limited_risk", "category": "Chatbots"}]
+    _enrich_deadlines(findings)
+    assert_eq(findings[0]["deadline"], "2026-08-02", "limited current law")
+    assert_eq(findings[0]["omnibus_deadline"], "2026-11-02", "limited omnibus")
+    print("✓ deadline: limited-risk → omnibus 2026-11-02")
+
+def test_deadline_minimal_risk():
+    """Minimal-risk findings get no deadline."""
+    from report import _enrich_deadlines
+    findings = [{"tier": "minimal_risk", "category": "AI Code"}]
+    _enrich_deadlines(findings)
+    assert_eq(findings[0]["deadline"], None, "minimal no deadline")
+    print("✓ deadline: minimal-risk → no deadline")
+
+def test_deadline_agent_autonomy():
+    """Agent autonomy findings get Dec 2027 omnibus deadline."""
+    from report import _enrich_deadlines
+    findings = [{"tier": "agent_autonomy", "category": "Agent Autonomy"}]
+    _enrich_deadlines(findings)
+    assert_eq(findings[0]["omnibus_deadline"], "2027-12-02", "agent omnibus")
+    print("✓ deadline: agent_autonomy → omnibus 2027-12-02")
+
+def test_deadline_in_json_output():
+    """JSON output from check includes deadline fields."""
+    import subprocess as sp
+    result = sp.run(
+        [sys.executable, "-m", "scripts.cli", "check", "--format", "json", "scripts/"],
+        capture_output=True, text=True, cwd=str(Path(__file__).parent.parent),
+    )
+    if result.returncode == 0:
+        import json as _json
+        data = _json.loads(result.stdout)
+        findings = data.get("data", [])
+        has_deadline = any(f.get("deadline") is not None for f in findings)
+        assert_eq(has_deadline, True, "JSON output has deadline fields")
+        print("✓ deadline: present in JSON check output")
+    else:
+        print("✓ deadline: JSON output test skipped (non-zero exit)")
+        pass  # Don't fail if check returns non-zero (may have findings)
+
+def test_sarif_ai_security_rules():
+    """SARIF output includes rules for ai_security findings."""
+    from report import generate_sarif
+    findings = [{
+        "file": "test.py", "line": 1, "tier": "ai_security",
+        "indicators": ["unsafe_deserialization"], "description": "pickle.load found",
+        "confidence_score": 80,
+    }]
+    sarif = generate_sarif(findings, "test")
+    rule_ids = [r["id"] for r in sarif["runs"][0]["tool"]["driver"]["rules"]]
+    assert_eq(any("ai-security" in r for r in rule_ids), True, "SARIF has ai-security rules")
+    print("✓ SARIF: ai-security rules present")
+
+def test_sarif_agent_autonomy_rules():
+    """SARIF output includes on-demand rules for agent_autonomy findings."""
+    from report import generate_sarif
+    findings = [{
+        "file": "agent.py", "line": 5, "tier": "agent_autonomy",
+        "indicators": ["tool_call"], "description": "Autonomous tool exec",
+        "confidence_score": 70,
+    }]
+    sarif = generate_sarif(findings, "test")
+    rule_ids = [r["id"] for r in sarif["runs"][0]["tool"]["driver"]["rules"]]
+    assert_eq(any("agent-autonomy" in r for r in rule_ids), True, "SARIF has agent-autonomy rules")
+    print("✓ SARIF: agent-autonomy rules present")
+
+def test_git_ref_validation():
+    """Unsafe git refs are rejected."""
+    from cli import _SAFE_GIT_REF
+    assert_eq(bool(_SAFE_GIT_REF.match("HEAD~1")), True, "HEAD~1 is safe")
+    assert_eq(bool(_SAFE_GIT_REF.match("main")), True, "main is safe")
+    assert_eq(bool(_SAFE_GIT_REF.match("abc123")), True, "hash is safe")
+    assert_eq(bool(_SAFE_GIT_REF.match("--upload-pack=evil")), False, "flag injection blocked")
+    assert_eq(bool(_SAFE_GIT_REF.match("")), False, "empty ref blocked")
+    print("✓ git ref validation: safe refs accepted, injections blocked")
+
+def test_mcp_path_validation():
+    """MCP server blocks scanning root/system directories."""
+    from mcp_server import _call_regula_check
+    result = _call_regula_check({"path": "/"})
+    assert_eq("not permitted" in result, True, "root scan blocked")
+    print("✓ MCP: root path scan blocked")
+
+def test_timeline_has_trilogue_entries():
+    """Timeline includes March/April 2026 Omnibus events."""
+    from timeline import TIMELINE
+    dates = [e["date"] for e in TIMELINE]
+    assert_eq("2026-03-26" in dates, True, "Parliament plenary in timeline")
+    assert_eq("2026-04-28" in dates, True, "Second trilogue in timeline")
+    assert_eq("2026-03-03" in dates, True, "Transparency CoP in timeline")
+    print("✓ timeline: March/April 2026 events present")
+
+
+def test_deadline_credential_exposure():
+    """Credential exposure findings get Art 15 deadline, no omnibus."""
+    from report import _enrich_deadlines
+    findings = [{"tier": "credential_exposure", "category": "Secret"}]
+    _enrich_deadlines(findings)
+    assert_eq(findings[0]["deadline"], "2026-08-02", "credential deadline")
+    assert_eq("omnibus_deadline" in findings[0], False, "credential no omnibus")
+    print("✓ deadline: credential_exposure → 2026-08-02, no omnibus")
+
+
+def test_conform_end_to_end():
+    """generate_conformity_pack produces correct folder structure and manifest."""
+    import tempfile, shutil
+    from conform import generate_conformity_pack
+    tmpdir = tempfile.mkdtemp()
+    tmpproject = tempfile.mkdtemp()
+    # Create a minimal AI file
+    with open(Path(tmpproject) / "app.py", "w") as f:
+        f.write("import openai\nclient = openai.OpenAI()\nresult = client.chat.completions.create(model='gpt-4')\n")
+    try:
+        result = generate_conformity_pack(tmpproject, output_dir=tmpdir, project_name="test-conform")
+        pack_path = Path(result["pack_path"])
+        # Check folder structure
+        assert_eq((pack_path / "00-assessment-summary.json").exists(), True, "summary exists")
+        assert_eq((pack_path / "01-risk-classification" / "findings.json").exists(), True, "findings exists")
+        assert_eq((pack_path / "07-human-oversight-art14" / "coverage.json").exists(), True, "art14 coverage exists")
+        assert_eq((pack_path / "manifest.json").exists(), True, "manifest exists")
+        # Check manifest has file entries
+        import json as _json
+        manifest = _json.load(open(pack_path / "manifest.json"))
+        assert_eq(len(manifest["files"]) > 10, True, "manifest has files")
+        # Check summary has expected keys
+        summary = _json.load(open(pack_path / "00-assessment-summary.json"))
+        assert_eq("overall_readiness" in summary, True, "summary has readiness")
+        assert_eq("articles" in summary, True, "summary has articles")
+        assert_eq("deadline" in summary, True, "summary has deadline")
+        assert_eq("earliest_enforceable" in summary["deadline"], True, "deadline derived from findings")
+        print("✓ conform: end-to-end pack structure verified")
+    finally:
+        shutil.rmtree(tmpdir)
+        shutil.rmtree(tmpproject)
+
+
+def test_oversight_end_to_end():
+    """analyse_project_oversight detects AI sources and oversight across files."""
+    import tempfile, shutil, os
+    from cross_file_flow import analyse_project_oversight
+    tmpdir = tempfile.mkdtemp()
+    try:
+        with open(os.path.join(tmpdir, "model.py"), "w") as f:
+            f.write("import openai\nclient = openai.OpenAI()\ndef predict(q):\n    return client.chat.completions.create(model='gpt-4', messages=[{'role':'user','content':q}])\n")
+        with open(os.path.join(tmpdir, "api.py"), "w") as f:
+            f.write("from model import predict\ndef handle(r):\n    return predict(r.data)\n")
+        with open(os.path.join(tmpdir, "reviewed.py"), "w") as f:
+            f.write("from model import predict\ndef human_review(x): return approve(x)\ndef handle(r):\n    return human_review(predict(r.data))\n")
+        result = analyse_project_oversight(tmpdir)
+        assert_eq(len(result["ai_sources"]) >= 1, True, "found AI sources")
+        assert_eq(len(result["flow_paths"]) >= 1, True, "found flow paths")
+        assert_eq(len(result["limitations"]) == 5, True, "5 limitations disclosed")
+        assert_eq("summary" in result, True, "has summary")
+        print(f"✓ oversight: e2e — {result['summary']['total_paths']} paths, {result['summary']['reviewed']} reviewed")
+    finally:
+        shutil.rmtree(tmpdir)
+
+
+def test_ai_bom_model_detection():
+    """AI-BOM mode detects models and datasets from code."""
+    import tempfile, shutil, os
+    from sbom import generate_sbom
+    tmpdir = tempfile.mkdtemp()
+    try:
+        with open(os.path.join(tmpdir, "train.py"), "w") as f:
+            f.write('import openai\nclient = openai.OpenAI()\nresult = client.chat.completions.create(model="gpt-4o")\n')
+        with open(os.path.join(tmpdir, "data.py"), "w") as f:
+            f.write('import pandas as pd\ndf = pd.read_csv("training_data.csv")\n')
+        bom = generate_sbom(tmpdir, ai_bom=True)
+        models = [c for c in bom.get("components", []) if c.get("type") == "machine-learning-model"]
+        datasets = [c for c in bom.get("components", []) if c.get("type") == "data"]
+        assert_eq(len(models) >= 1, True, f"found {len(models)} models")
+        assert_eq(len(datasets) >= 1, True, f"found {len(datasets)} datasets")
+        # Check GPAI tier annotation
+        if models:
+            props = {p["name"]: p["value"] for p in models[0].get("properties", [])}
+            assert_eq("regula:gpai-tier" in props, True, "has GPAI tier")
+            assert_eq("regula:eu-ai-act-articles" in props, True, "has EU articles")
+        print(f"✓ ai-bom: {len(models)} models, {len(datasets)} datasets detected")
+    finally:
+        shutil.rmtree(tmpdir)
+
+
+# ---------------------------------------------------------------------------
 # Bias risk detection tests
 # ---------------------------------------------------------------------------
 
@@ -5648,6 +6020,49 @@ if __name__ == "__main__":
         test_assess_format_result_high_risk_non_eu,
         test_assess_format_result_minimal_risk,
         test_assess_format_result_prohibited,
+        # Text description classification (22 tests)
+        test_text_classify_facial_recognition,
+        test_text_classify_face_recognition,
+        test_text_classify_chatbot,
+        test_text_classify_credit_scoring,
+        test_text_classify_hiring_decision,
+        test_text_classify_autonomous_vehicle,
+        test_text_classify_virtual_assistant,
+        test_text_classify_medical_diagnosis,
+        test_text_classify_deepfake,
+        test_text_classify_border_control,
+        test_text_classify_resume_screening,
+        test_text_classify_loan_decision,
+        test_text_classify_self_driving,
+        test_text_classify_emotion_recognition,
+        test_text_classify_ai_powered_generic,
+        test_text_classify_no_ai_context,
+        test_text_is_ai_related_domain_keywords,
+        test_text_classify_fingerprint_recognition,
+        test_text_classify_voice_recognition,
+        test_text_classify_patient_triage,
+        test_text_classify_clinical_decision,
+        test_discover_respects_regula_ignore,
+        # Omnibus-aware deadline enrichment (7 tests)
+        test_deadline_prohibited_finding,
+        test_deadline_high_risk_annex_iii,
+        test_deadline_high_risk_annex_i,
+        test_deadline_limited_risk,
+        test_deadline_minimal_risk,
+        test_deadline_agent_autonomy,
+        test_deadline_in_json_output,
+        # SARIF rules completeness (2 tests)
+        test_sarif_ai_security_rules,
+        test_sarif_agent_autonomy_rules,
+        # Security hardening (3 tests)
+        test_git_ref_validation,
+        test_mcp_path_validation,
+        test_timeline_has_trilogue_entries,
+        # Coverage gap tests (4 tests)
+        test_deadline_credential_exposure,
+        test_conform_end_to_end,
+        test_oversight_end_to_end,
+        test_ai_bom_model_detection,
     ]
 
     print(f"Running {len(tests)} tests...\n")

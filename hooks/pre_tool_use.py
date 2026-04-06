@@ -38,8 +38,10 @@ except ImportError:
 
 
 # Documentation file extensions — these legitimately discuss AI concepts
-# and should not be blocked when writing/editing
-DOC_EXTENSIONS = {".md", ".txt", ".rst", ".html", ".adoc", ".tex", ".yaml", ".yml", ".json"}
+# and should not be blocked by AI risk classification when writing/editing.
+# Note: .yaml/.yml/.json are NOT included — they are config/data formats
+# that can contain real secrets and must always go through secret detection.
+DOC_EXTENSIONS = {".md", ".txt", ".rst", ".html", ".adoc", ".tex"}
 
 # Directories that contain documentation, not executable code
 DOC_DIRECTORIES = {"docs", "doc", "documentation", "references", "course", "guides", "tutorials"}
@@ -183,24 +185,9 @@ def main():
     session_id = input_data.get("session_id")
     response = {"hookSpecificOutput": {"hookEventName": "PreToolUse"}}
 
-    # --- Documentation bypass ---
-    # Writing/editing documentation files should not be blocked.
-    # Documentation legitimately discusses prohibited AI concepts.
-    if _is_documentation_write(tool_name, tool_input):
-        response["hookSpecificOutput"]["permissionDecision"] = "allow"
-        print(json.dumps(response))
-        sys.exit(0)
-
-    # --- regula-ignore bypass ---
-    # Content containing '# regula-ignore' should not be classified.
-    if _content_has_regula_ignore(tool_input):
-        response["hookSpecificOutput"]["permissionDecision"] = "allow"
-        print(json.dumps(response))
-        sys.exit(0)
-
     text = f"{tool_name} {json.dumps(tool_input)}"
 
-    # --- Secret detection (runs first, before AI risk classification) ---
+    # --- Secret detection ALWAYS runs first, even for doc files ---
     secret_findings = check_secrets(text)
     if secret_findings:
         high_confidence = [f for f in secret_findings if f.confidence == "high"]
@@ -224,6 +211,14 @@ def main():
         else:
             warning = format_secret_warning(secret_findings)
             response["hookSpecificOutput"]["additionalContext"] = warning
+
+    # --- Documentation / regula-ignore bypass ---
+    # Skip AI risk classification (but NOT secret detection, which already ran above)
+    # for documentation files and content with regula-ignore.
+    if _is_documentation_write(tool_name, tool_input) or _content_has_regula_ignore(tool_input):
+        response["hookSpecificOutput"]["permissionDecision"] = "allow"
+        print(json.dumps(response))
+        sys.exit(0)
 
     # --- AI risk classification ---
     result = classify(text)

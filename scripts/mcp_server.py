@@ -117,10 +117,20 @@ TOOLS = [
 def _call_regula_check(arguments: dict) -> str:
     """Invoke regula check and return text output."""
     from report import scan_files
+    from pathlib import Path as _Path
 
     path = arguments.get("path", ".")
     skip_tests = arguments.get("skip_tests", False)
     min_tier = arguments.get("min_tier", "")
+
+    # Validate path — prevent unbounded filesystem scans
+    resolved = _Path(path).resolve()
+    if not resolved.is_dir() and not resolved.is_file():
+        return f"Error: path does not exist: {path}"
+    # Block scanning root or system directories
+    blocked = {"/", "/etc", "/usr", "/var", "/bin", "/sbin", "/tmp", "/home", "/root"}
+    if str(resolved) in blocked:
+        return f"Error: scanning {resolved} is not permitted — specify a project directory."
 
     try:
         findings = scan_files(path, skip_tests=skip_tests, min_tier=min_tier)

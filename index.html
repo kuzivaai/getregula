@@ -6,7 +6,7 @@
     <title>Regula — Find out if your AI system is high-risk under the EU AI Act</title>
     <meta name="description" content="Free, open-source CLI that tells you which EU AI Act risk tier your code is in, why, and what to do about it. No account, no consultants.">
     <meta property="og:title" content="Regula — Find out if your AI system is high-risk under the EU AI Act">
-    <meta property="og:description" content="Free, open-source scanner that tells you which EU AI Act tier you're in, why, and what to do about it. 126 risk patterns, 8 languages, zero dependencies.">
+    <meta property="og:description" content="Free, open-source scanner that tells you which EU AI Act tier you're in, why, and what to do about it. 330 risk patterns, 8 languages, zero dependencies.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com">
     <meta name="twitter:card" content="summary">
@@ -380,42 +380,155 @@
         .tier:hover .tier-hint { opacity: 1; }
         .tier-cta { font-size: 13px; color: #8888aa; margin-top: 20px; }
 
-        /* ===== WHAT YOU GET — 4 STEPS ===== */
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1px;
-            background: rgba(255,255,255,0.06);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .step {
-            background: #0e0e1a;
-            padding: 28px;
-            transition: background 0.2s;
-        }
-        .step:hover { background: #141428; }
-        .step-n {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 32px;
+        /* ===== PRIMARY CTA PILL ===== */
+        .cta-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            font-size: 15px;
             font-weight: 600;
-            color: rgba(59,130,246,0.25);
-            line-height: 1;
-            margin-bottom: 16px;
-            letter-spacing: -0.04em;
+            padding: 14px 28px;
+            border-radius: 100px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 20px rgba(16,185,129,0.3);
+            letter-spacing: -0.01em;
+            font-family: 'DM Sans', system-ui, sans-serif;
         }
-        .step h3 { font-size: 15px; font-weight: 600; color: #e2e2f0; margin-bottom: 8px; }
-        .step p { font-size: 13px; color: #8888aa; line-height: 1.6; }
-        .step-cmd {
-            display: inline-block;
+        .cta-pill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(16,185,129,0.4);
+        }
+        .cta-pill.copied { background: linear-gradient(135deg, #059669, #047857); }
+        .cta-secondary {
             margin-top: 14px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
-            color: #3b82f6;
-            background: rgba(59,130,246,0.08);
-            border: 1px solid rgba(59,130,246,0.15);
-            padding: 3px 8px;
-            border-radius: 4px;
+            color: #44445a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .cta-install {
+            color: #7dd3fc;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+            font-size: inherit;
+            padding: 0;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            text-decoration-color: rgba(125,211,252,0.3);
+            transition: color 0.15s;
+        }
+        .cta-install:hover { color: #bae6fd; }
+        .social-proof {
+            margin-top: 18px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #44445a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .social-proof .sp-star { color: #f59e0b; }
+        .social-proof .sp-sep { color: #1e1e2e; }
+
+        /* ===== JOURNEY SECTION ===== */
+        .journey-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 32px 0;
+        }
+        .journey-head { text-align: center; margin-bottom: 56px; }
+        .journey-nodes {
+            position: relative;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+        .journey-track {
+            position: absolute;
+            left: 27px;
+            top: 28px;
+            bottom: 28px;
+            width: 2px;
+            background: linear-gradient(to bottom,
+                rgba(16,185,129,0.8) 0%,
+                rgba(16,185,129,0.4) 50%,
+                rgba(16,185,129,0.1) 100%);
+            z-index: 0;
+        }
+        .journey-node {
+            display: flex;
+            align-items: flex-start;
+            gap: 32px;
+            margin-bottom: 52px;
+            position: relative;
+        }
+        .journey-node:last-child { margin-bottom: 0; }
+        .j-hex {
+            flex-shrink: 0;
+            width: 56px;
+            height: 56px;
+            background: #070711;
+            border: 2px solid #10b981;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            transition: background 0.2s;
+        }
+        .journey-node:hover .j-hex { background: rgba(16,185,129,0.08); }
+        .j-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 18px;
+            font-weight: 600;
+            color: #10b981;
+        }
+        .j-content { padding-top: 6px; flex: 1; }
+        .j-content h3 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #e2e2f0;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+        .j-content p { font-size: 13px; color: #8888aa; line-height: 1.6; margin-bottom: 10px; }
+        .j-link {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #10b981;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.15s;
+            text-decoration: none;
+        }
+        .j-link:hover { color: #6ee7b7; }
+        .j-link code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(16,185,129,0.08);
+            border: 1px solid rgba(16,185,129,0.2);
+            padding: 2px 7px;
+            border-radius: 3px;
+            font-size: 10px;
+            color: #6ee7b7;
+        }
+        @media (max-width: 640px) {
+            .journey-nodes { max-width: 100%; }
+            .journey-track { left: 21px; }
+            .j-hex { width: 44px; height: 44px; }
+            .j-num { font-size: 14px; }
+            .j-content h3 { font-size: 17px; }
         }
 
         /* ===== DUAL AUDIENCE ===== */
@@ -763,32 +876,30 @@
         <div class="hero-text">
             <div class="badge"><span class="badge-dot"></span> Open-source CLI &middot; v1.5.1 &middot; MIT</div>
             <h1>Is your AI app <span class="hl">legal</span> in Europe?</h1>
-            <p class="sub">The EU AI Act is law. Fines reach <strong>&euro;35M</strong>. Regula scans your code and tells you which rules apply &mdash; free, in seconds, with no account.</p>
+            <p class="sub">Know your EU AI Act obligations in under 2 minutes. Regula tells you which tier you&rsquo;re in, exactly why, and what you need to do &mdash; <strong>free, open source, no account.</strong> Enforcement starts August 2026.</p>
 
             <div class="countdown-wrap" id="countdown-wrap">
                 <div class="countdown-label">EU AI Act enforcement</div>
                 <div class="countdown-display" id="countdown">calculating&hellip;</div>
-                <div class="countdown-caveat">(or Dec 2027 if Digital Omnibus passes)</div>
+                <div class="countdown-caveat">(Annex III deadline proposed Dec 2027 via Digital Omnibus &mdash; not yet law)</div>
             </div>
 
-            <div class="install-row">
-                <div class="install-box" id="assess-btn" onclick="copyCmd(this, 'regula assess')" style="border-color:rgba(16,185,129,0.3);">
-                    <span class="dollar">$</span>
-                    <span class="cmd" style="color:#6ee7b7;">regula assess</span>
-                    <span class="cp">copy</span>
-                </div>
+            <button class="cta-pill" id="assess-pill" onclick="copyPill(this, 'regula assess')">
+                <span>&#9654;</span>
+                Check your AI in 2 minutes &mdash; no codebase needed
+            </button>
+
+            <div class="cta-secondary">
+                or install first:
+                <button class="cta-install" id="install-btn" onclick="copyInstallInline(this)">pip install regula-ai</button>
+                &middot;
+                <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
-            <p style="font-size:12px;color:#44445a;margin:8px 0 16px;font-family:'JetBrains Mono',monospace;">5 yes/no questions &mdash; no code required &mdash; tells you your risk tier and obligations</p>
-            <div class="install-row">
-                <div class="install-box" id="install-btn" onclick="copyInstall(this)">
-                    <span class="dollar">$</span>
-                    <span class="cmd">pip install regula-ai</span>
-                    <span class="cp">copy</span>
-                </div>
-                <a href="https://github.com/kuzivaai/getregula" class="gh-link">
-                    <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-                    View on GitHub
-                </a>
+
+            <div class="social-proof">
+                <span class="sp-sep">MIT licence</span>
+                <span class="sp-sep">&middot;</span> zero dependencies
+                <span class="sp-sep">&middot;</span> free forever
             </div>
         </div>
 
@@ -870,7 +981,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 <div class="stats-bar reveal">
     <div class="stats-inner">
         <div class="stat-item">
-            <div class="stat-num">126</div>
+            <div class="stat-num">330</div>
             <div class="stat-label">risk patterns checked</div>
         </div>
         <div class="stat-item">
@@ -888,8 +999,48 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
     </div>
 </div>
 
+<!-- JOURNEY SECTION -->
+<div class="journey-wrap reveal">
+    <div class="journey-head">
+        <div class="sec-head">Three steps. No consultants needed.</div>
+        <p class="sec-sub">From zero to knowing your obligations in under 5 minutes.</p>
+    </div>
+    <div class="journey-nodes">
+        <div class="journey-track"></div>
+
+        <div class="journey-node">
+            <div class="j-hex"><span class="j-num">1</span></div>
+            <div class="j-content">
+                <h3>Run assess</h3>
+                <p>No install needed. Answer 5 yes/no questions about what your product does &mdash; no code required, takes under 2 minutes.</p>
+                <a href="#commands" class="j-link">Go to &rarr; <code>regula assess</code></a>
+            </div>
+        </div>
+
+        <div class="journey-node">
+            <div class="j-hex"><span class="j-num">2</span></div>
+            <div class="j-content">
+                <h3>Get your tier</h3>
+                <p>Prohibited &middot; High-risk &middot; Limited &middot; Minimal. Regula tells you which tier applies and exactly why, referencing the specific article.</p>
+                <a href="#tiers" class="j-link">See the four tiers &rarr;</a>
+            </div>
+        </div>
+
+        <div class="journey-node">
+            <div class="j-hex"><span class="j-num">3</span></div>
+            <div class="j-content">
+                <h3>Get your fix</h3>
+                <p>The exact articles that apply, estimated effort to comply, and the commands that generate the documentation or code scaffolds you need.</p>
+                <a href="#commands" class="j-link">See the commands &rarr;</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="sep"></div>
+
 <!-- RISK TIER VISUAL -->
-<div class="sec reveal">
+<div class="sec reveal" id="tiers">
     <div class="sec-head">Four tiers. One command tells you which one.</div>
     <p class="sec-sub">The EU AI Act sorts every AI system into a risk category. The obligations — and fines — scale accordingly.</p>
     <div class="tiers">
@@ -954,7 +1105,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 <!-- WHAT IT COVERS -->
 <div class="sec reveal">
     <div class="sec-head">What the law covers &mdash; and what Regula checks</div>
-    <p class="sec-sub">Not a questionnaire. Regula reads your code and maps it to the regulation.</p>
+    <p class="sec-sub">Not just a questionnaire &mdash; Regula reads your code directly and maps it to the regulation.</p>
     <div class="art-grid">
         <div class="art-card">
             <div class="tag tag-red">Banned uses</div>
@@ -992,7 +1143,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 <div class="sep"></div>
 
 <!-- COMMANDS -->
-<div class="sec reveal">
+<div class="sec reveal" id="commands">
     <div class="sec-head">Core commands. No setup.</div>
     <p class="sec-sub">Install, run, get answers. Works on any project with AI code.</p>
     <div class="cmds">
@@ -1004,7 +1155,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
         <div class="cm"><code>regula evidence-pack .</code> <span>Bundle everything for an auditor</span></div>
     </div>
     <p style="font-size:12px;color:#44445a;margin-top:14px;font-family:'JetBrains Mono',monospace;">
-        35 commands &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU Cyber Resilience Act, and 8 other frameworks.
+        38 commands &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU Cyber Resilience Act, and 8 other frameworks.
     </p>
 </div>
 
@@ -1159,6 +1310,34 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
         }).catch(() => {
             cp.textContent = 'copy failed';
             setTimeout(() => { cp.textContent = 'copy'; }, 2000);
+        });
+    }
+
+    // ===== PILL BUTTON COPY =====
+    function copyPill(el, cmd) {
+        const original = el.innerHTML;
+        navigator.clipboard.writeText(cmd).then(() => {
+            el.classList.add('copied');
+            el.innerHTML = '<span>&#10003;</span> Copied &mdash; paste it in your terminal';
+            setTimeout(() => {
+                el.classList.remove('copied');
+                el.innerHTML = original;
+            }, 2500);
+        }).catch(() => {
+            el.innerHTML = '<span>&#9888;</span> Copy failed &mdash; type: ' + cmd;
+            setTimeout(() => { el.innerHTML = original; }, 2500);
+        });
+    }
+
+    // ===== INLINE INSTALL COPY =====
+    function copyInstallInline(el) {
+        const original = el.textContent;
+        navigator.clipboard.writeText('pip install regula-ai').then(() => {
+            el.textContent = '✓ copied';
+            setTimeout(() => { el.textContent = original; }, 2000);
+        }).catch(() => {
+            el.textContent = 'copy failed';
+            setTimeout(() => { el.textContent = original; }, 2000);
         });
     }
 

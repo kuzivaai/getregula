@@ -4,13 +4,15 @@
 Regula Timeline — EU AI Act Enforcement Dates
 
 Displays current enforcement dates with Digital Omnibus status.
-Updated with verified information as of 25 March 2026.
+Updated with verified information as of 5 April 2026.
 
 Sources:
 - EU AI Act implementation timeline (artificialintelligenceact.eu)
-- Digital Omnibus: Parliament committees voted 101-9 on 18 March 2026
-- IAPP coverage of Commission missed deadline
-- Council position 13 March 2026
+- Digital Omnibus: Parliament plenary confirmed 26 March 2026 (569-45)
+- Council agreed negotiating mandate 13 March 2026
+- First trilogue completed late March 2026; second trilogue 28 April 2026
+- IAPP coverage of Commission missed Article 6 deadline
+- Transparency Code of Practice second draft, 3 March 2026
 """
 
 import json
@@ -48,7 +50,28 @@ TIMELINE = [
         "event": "Article 6 guidance deadline (MISSED)",
         "status": "overdue",
         "source": "IAPP, March 2026",
-        "note": "European Commission missed its own deadline for publishing guidance on high-risk classification. Draft expected 'by end of month' (not yet published as of 25 March 2026).",
+        "note": "European Commission missed its own deadline for publishing guidance on high-risk classification. Still not published as of 5 April 2026.",
+    },
+    {
+        "date": "2026-03-03",
+        "event": "Transparency Code of Practice — second draft published",
+        "status": "in_progress",
+        "source": "EC, 3 March 2026",
+        "note": "Second draft of Code of Practice on marking and labelling AI-generated content. Two-layered system: secured metadata + digital watermarking. Stakeholder feedback closed 30 March 2026. Finalization expected May-June 2026.",
+    },
+    {
+        "date": "2026-03-26",
+        "event": "Parliament plenary confirms Omnibus position (569-45)",
+        "status": "effective",
+        "source": "European Parliament, 26 March 2026",
+        "note": "Parliament confirmed committee position on Digital Omnibus. Key additions: reinstated registration for non-high-risk AI systems, November 2026 watermarking deadline, new prohibition on non-consensual intimate deepfakes.",
+    },
+    {
+        "date": "2026-04-28",
+        "event": "Second Omnibus trilogue (expected)",
+        "status": "proposed",
+        "source": "Table.Briefings, Lewis Silkin analysis, April 2026",
+        "note": "Final agreement possible at this session. First trilogue completed late March. Both co-legislators aligned on key elements: Annex III delay to Dec 2027, new deepfake prohibition.",
     },
     {
         "date": "2026-08-02",
@@ -75,8 +98,8 @@ TIMELINE = [
         "date": "2027-12-02",
         "event": "Proposed: High-risk Annex III systems deadline (Digital Omnibus)",
         "status": "proposed",
-        "source": "EU Parliament committees vote 101-9, 18 March 2026",
-        "note": "NOT YET LAW. Parliament plenary vote expected 26 March 2026, followed by trilogue negotiations. Would replace August 2026 deadline for Annex III systems (employment, credit, education, biometrics, etc.).",
+        "source": "EU Parliament plenary 569-45, 26 March 2026; Council mandate 13 March 2026",
+        "note": "NOT YET LAW — trilogue in progress. Both co-legislators aligned. Would replace August 2026 deadline for Annex III systems (employment, credit, education, biometrics, etc.). Second trilogue expected 28 April 2026.",
     },
     {
         "date": "2028-08-02",

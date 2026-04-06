@@ -92,7 +92,7 @@ PROHIBITED_PATTERNS = {
 
 HIGH_RISK_PATTERNS = {
     "biometrics": {
-        "patterns": [r"\bbiometric.?ident", r"\bface.?recogn", r"\bfingerprint.?recogn", r"\bvoice.?recogn"],
+        "patterns": [r"\bbiometric.?ident", r"\bfac(?:ial|e)\s*[\W_]?recogn", r"\bfingerprint\s*[\W_]?recogn", r"\bvoice\s*[\W_]?recogn"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 1",
         "description": "Biometric identification and categorisation",
@@ -114,7 +114,7 @@ HIGH_RISK_PATTERNS = {
                      r"\bautomat\w*\W{0,3}recruit", r"\bcandidate[_\W]?rank", r"rank[_\W]?candidate",
                      r"\bpromotion.?decision",
                      r"\btermination.?decision", r"\bperformance.?review.{0,10}(ai|automat|model|predict)",
-                     r"\bscreen.?candidate", r"\bjob.?candidate", r"\bcandidate.?screen",
+                     r"\bscreen.?candidate", r"\bjob.?candidate", r"\bcandidate.?screen", r"\bresume\s*[\W_]?screen",
                      r"\bapplicant.?scor", r"\bapplicant.?rank", r"\bemployee.?assess"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 4",
@@ -310,6 +310,47 @@ AI_INDICATORS = {
                     r"vectorstore", r"llm\.invoke", r"chat\.completions",
                     r"messages\.create", r"from_pretrained", r"fine.?tune",
                     r"neural.?network", r"deep.?learning", r"machine.?learning"],
+    # Domain keywords so classify() works on plain-text system descriptions,
+    # not only on code with library imports. Must mirror HIGH_RISK_PATTERNS
+    # vocabulary to avoid false negatives on Annex III descriptions.
+    "domain_keywords": [
+        # Biometrics (Annex III Cat 1)
+        r"\bfacial\s+recognition\b", r"\bface\s+recognition\b", r"\bface\s+detection\b",
+        r"\bfingerprint\s+recognition\b", r"\bvoice\s+recognition\b", r"\bvoice\s+identification\b",
+        r"\bbiometric\s+identification\b", r"\bbiometric\s+authentication\b", r"\bbiometric\s+scanning\b",
+        # Critical infrastructure (Annex III Cat 2)
+        r"\benergy\s+grid\b", r"\bwater\s+supply\b", r"\btraffic\s+control\b", r"\belectricity\s+manage",
+        # Education (Annex III Cat 3)
+        r"\bstudent\s+assess", r"\badmission\s+decision\b", r"\bexam\s+scor",
+        # Employment (Annex III Cat 4)
+        r"\bcv\s+screen", r"\bresume\s+screen", r"\bresume\s+filt",
+        r"\bhiring\s+decision\b", r"\brecruitment\s+ai\b",
+        r"\bcandidate\s+rank", r"\bcandidate\s+screen", r"\bapplicant\s+scor",
+        # Essential services (Annex III Cat 5)
+        r"\bcredit\s+scor", r"\bcreditworth", r"\bloan\s+decision\b", r"\bloan\s+approv",
+        r"\binsurance\s+pric", r"\bbenefit\s+eligib", r"\bemergency\s+dispatch",
+        # Law enforcement (Annex III Cat 6)
+        r"\bpolygraph\b", r"\blie\s+detect",
+        # Migration (Annex III Cat 7)
+        r"\bborder\s+control\b", r"\bvisa\s+application\b", r"\basylum\s+application\b", r"\bimmigration\s+decision\b",
+        # Justice (Annex III Cat 8)
+        r"\bjudicial\s+decision\b", r"\bcourt\s+rul", r"\bsentenc(?:ing|e)\b",
+        # Medical devices
+        r"\bmedical\s+diagnosis\b", r"\bclinical\s+decision\b", r"\bpatient\s+triage\b",
+        r"\btreatment\s+recommend",
+        # Safety components
+        r"\bautonomous\s+vehicle\b", r"\bself[\s-]driving\s+car\b", r"\bdriverless\s+car\b",
+        r"\bautonomous\s+driv", r"\baviation\s+safety\b",
+        # Limited-risk (Article 50)
+        r"\bemotion\s+detection\b", r"\bemotion\s+recognition\b",
+        r"\bchatbot\b", r"\bvirtual\s+assistant\b", r"\bconversational\s+ai\b",
+        r"\bdeepfake\b", r"\bface\s+swap\b", r"\bsynthetic\s+media\b",
+        # Prohibited (Article 5)
+        r"\bpredictive\s+policing\b",
+        # Generic AI indicators for descriptions
+        r"\bautomated\s+decision\b", r"\bautomated\s+assessment\b",
+        r"\bai\s+system\b", r"\bai\s+model\b", r"\bai[\s-]powered\b", r"\bai\b",
+    ],
 }
 
 # Patterns that indicate model TRAINING (not just inference) — may trigger
