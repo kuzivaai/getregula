@@ -899,7 +899,7 @@
             <div class="social-proof">
                 <span class="sp-sep">MIT licence</span>
                 <span class="sp-sep">&middot;</span> zero dependencies
-                <span class="sp-sep">&middot;</span> free forever
+                <span class="sp-sep">&middot;</span> free and open source
             </div>
         </div>
 
@@ -1002,8 +1002,8 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 <!-- JOURNEY SECTION -->
 <div class="journey-wrap reveal">
     <div class="journey-head">
-        <div class="sec-head">Three steps. No consultants needed.</div>
-        <p class="sec-sub">From zero to knowing your obligations in under 5 minutes.</p>
+        <div class="sec-head">Three steps to knowing your obligations.</div>
+        <p class="sec-sub">Install, scan, get a clear answer.</p>
     </div>
     <div class="journey-nodes">
         <div class="journey-track"></div>
@@ -1012,7 +1012,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
             <div class="j-hex"><span class="j-num">1</span></div>
             <div class="j-content">
                 <h3>Run assess</h3>
-                <p>No install needed. Answer 5 yes/no questions about what your product does &mdash; no code required, takes under 2 minutes.</p>
+                <p>No install needed. Answer a few yes/no questions about what your product does &mdash; no code required.</p>
                 <a href="#commands" class="j-link">Go to &rarr; <code>regula assess</code></a>
             </div>
         </div>
@@ -1144,15 +1144,18 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 
 <!-- COMMANDS -->
 <div class="sec reveal" id="commands">
-    <div class="sec-head">Core commands. No setup.</div>
-    <p class="sec-sub">Install, run, get answers. Works on any project with AI code.</p>
+    <div class="sec-head">Core commands</div>
+    <p class="sec-sub"><code>pip install regula-ai</code>, then run any of these on your project.</p>
     <div class="cmds">
-        <div class="cm"><code>regula assess</code> <span>5 yes/no questions &mdash; no code needed &mdash; get your tier</span></div>
+        <div class="cm"><code>regula assess</code> <span>A few yes/no questions &mdash; no code needed &mdash; get your tier</span></div>
         <div class="cm"><code>regula check .</code> <span>Scan your codebase and get your risk level</span></div>
         <div class="cm"><code>regula plan .</code> <span>Get a prioritised to-do list</span></div>
         <div class="cm"><code>regula gap .</code> <span>See what's missing per article</span></div>
         <div class="cm"><code>regula docs .</code> <span>Generate required documentation</span></div>
         <div class="cm"><code>regula evidence-pack .</code> <span>Bundle everything for an auditor</span></div>
+        <div class="cm"><code>regula conform .</code> <span>Article 43 conformity assessment evidence &mdash; 26 files, article-mapped, SHA-256 hashed</span></div>
+        <div class="cm"><code>regula oversight .</code> <span>Cross-file Article 14 analysis &mdash; traces AI output to user-facing endpoints, flags missing human review</span></div>
+        <div class="cm"><code>regula sbom --ai-bom .</code> <span>AI Bill of Materials &mdash; model provenance, GPAI tier annotations, dataset detection (CycloneDX 1.6)</span></div>
     </div>
     <p style="font-size:12px;color:#44445a;margin-top:14px;font-family:'JetBrains Mono',monospace;">
         38 commands &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU Cyber Resilience Act, and 8 other frameworks.
@@ -1161,10 +1164,35 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 
 <div class="sep"></div>
 
+<!-- BEYOND SCANNING -->
+<div class="sec reveal">
+    <div class="sec-head">Beyond scanning &mdash; evidence you can hand to an auditor</div>
+    <p class="sec-sub">Regula generates structured compliance artefacts from your actual code, not from questionnaires.</p>
+    <div class="art-grid">
+        <div class="art-card">
+            <div class="tag tag-purple">New</div>
+            <h4>Conformity assessment evidence</h4>
+            <p><code>regula conform .</code> generates an Article 43 evidence pack &mdash; 26 files mapped to Articles 9-15, per-article readiness scores, SHA-256 integrity hashes. Clearly marks what's auto-generated vs what needs human input.</p>
+        </div>
+        <div class="art-card">
+            <div class="tag tag-purple">New</div>
+            <h4>AI Bill of Materials</h4>
+            <p><code>regula sbom --ai-bom .</code> produces CycloneDX 1.6 AI-BOMs with model provenance extracted from your code, GPAI tier annotations per EU AI Act Art 51-55, and detected training datasets.</p>
+        </div>
+        <div class="art-card">
+            <div class="tag tag-purple">New</div>
+            <h4>Human oversight analysis</h4>
+            <p><code>regula oversight .</code> traces AI model outputs across files and checks whether each path to a user-facing endpoint passes through a human review gate. Reports confidence per path and discloses what it cannot analyse.</p>
+        </div>
+    </div>
+</div>
+
+<div class="sep"></div>
+
 <!-- COST COMPARISON -->
 <div class="sec reveal">
-    <div class="sec-head">Other options cost <span class="hl">orders of magnitude</span> more</div>
-    <p class="sec-sub">Regula is free, open source, and runs on your machine.</p>
+    <div class="sec-head">Regula is free. Most alternatives are not.</div>
+    <p class="sec-sub">Open source, runs on your machine, no account required.</p>
     <div class="pricing-grid">
         <div class="price-card">
             <div class="price-tier">Enterprise platforms</div>
@@ -1179,7 +1207,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
         <div class="price-card featured">
             <div class="price-tier price-featured-tier">Regula</div>
             <div class="price-amount price-featured-amount">Free &amp; open source</div>
-            <p class="price-desc">Runs on your laptop. No account, no API key, no sales call. Install in 10 seconds, scan your project, get a clear answer. MIT licence.</p>
+            <p class="price-desc">Runs on your laptop. No account, no API key, no sales call. <code>pip install regula-ai</code>, scan your project, get a clear answer. MIT licence.</p>
         </div>
     </div>
 </div>

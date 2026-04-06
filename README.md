@@ -41,7 +41,7 @@ cd getregula
 pip install -e .
 
 # First: find out if and how the EU AI Act applies to your product
-# 5 questions, no code required, under 2 minutes
+# A few yes/no questions, no code required
 regula assess
 
 # Then: scan your codebase for risk indicators
@@ -77,6 +77,9 @@ When you write AI-related code, Regula:
 7. **Logs** everything to a hash-chained audit trail
 8. **Generates** Annex IV technical documentation and QMS scaffolds
 9. **Tracks** compliance status across registered AI systems
+10. **Produces** conformity assessment evidence packs (Article 43) with per-article readiness scoring
+11. **Traces** AI model outputs across files to detect human oversight gaps (Article 14)
+12. **Creates** AI Bills of Materials with model provenance and GPAI tier annotations (CycloneDX 1.6)
 
 ### Example: High-Risk Indicator
 
@@ -221,7 +224,7 @@ Findings appear in your repository's Security tab alongside CodeQL and Dependabo
 ## CLI Usage
 
 ```bash
-# Find out if the EU AI Act applies to your product (5 questions, no code required)
+# Find out if the EU AI Act applies to your product (a few yes/no questions, no code required)
 python3 scripts/cli.py assess
 
 # Scan a project for risk indicators
@@ -267,6 +270,17 @@ python3 scripts/cli.py gap --project . --article 14   # Article 14 only
 python3 scripts/cli.py benchmark --project .
 python3 scripts/cli.py benchmark --project . -f csv -o findings.csv
 
+# Conformity assessment evidence pack (Article 43)
+python3 scripts/cli.py conform --project .
+python3 scripts/cli.py conform --project . --format json
+
+# Cross-file Article 14 human oversight analysis
+python3 scripts/cli.py oversight --project .
+
+# AI Bill of Materials (CycloneDX 1.6 with GPAI tier annotations)
+python3 scripts/cli.py sbom --project .
+python3 scripts/cli.py sbom --project . --ai-bom    # Include model provenance + datasets
+
 # Install hooks for a platform
 python3 scripts/cli.py install claude-code
 python3 scripts/cli.py install copilot-cli
@@ -292,6 +306,39 @@ Article 14  Human Oversight      [ 20%] WEAK
   Evidence: No review/approve functions found
   Gap: AI model output flows directly to return without human review
   Gap: AST: 3 automated decision paths with no oversight mechanism
+```
+
+### Conformity Assessment Evidence Pack
+
+Generates a structured evidence folder for Article 43 internal conformity assessment (Annex VI, Module A). Each sub-folder maps to a specific EU AI Act article with auto-generated evidence and a coverage file that clearly states what was auto-detected vs what requires human input.
+
+```bash
+regula conform --project .                    # Generate evidence pack
+regula conform --project . --format json      # Machine-readable summary
+```
+
+Output: 26 files across 12 folders, including Annex IV draft, audit trail, SBOM, remediation plan, Article 14 oversight analysis, and an Article 47 declaration of conformity template. All files SHA-256 hashed in a manifest for tamper detection.
+
+**Important:** This is a compliance evidence scaffold, not a legal determination. The `00-assessment-summary.json` file lists what Regula auto-generated and what requires human input (intended purpose, FRIA, training data provenance, etc.).
+
+### Cross-File Human Oversight Analysis (Article 14)
+
+Traces AI model outputs across Python files to check whether each path from an AI call to a user-facing endpoint passes through a human review gate.
+
+```bash
+regula oversight --project .                  # Text output
+regula oversight --project . --format json    # Machine-readable
+```
+
+Reports per-path confidence (high/medium/low) and always discloses five limitations: dynamic imports not analysed, decorator-wrapped routes not resolved, third-party library internals not traced, cross-service calls not detected, and that detecting a code path does not verify oversight is meaningfully exercised (per ICO ADM guidance).
+
+### AI Bill of Materials
+
+Extends the CycloneDX 1.6 SBOM with AI-specific metadata: model provenance extracted from code (which models are loaded, from which providers), GPAI tier annotations per EU AI Act Articles 51-55, and detected training dataset references.
+
+```bash
+regula sbom --project .                       # Standard SBOM
+regula sbom --project . --ai-bom              # With AI-specific metadata
 ```
 
 ### AI Dependency Pinning Analysis
