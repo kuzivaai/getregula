@@ -58,7 +58,7 @@ South Africa already has a substantial body of law that touches AI systems even 
 - **Copyright Act, 1978** (and the unsigned Copyright Amendment Bill) — relevant to training-data provenance and to AI-generated outputs.
 - **Competition Act, 1998** — relevant to algorithmic pricing, market concentration in AI infrastructure, and data-driven anti-competitive conduct.
 - **Patents Act, 1978** — relevant to AI-generated inventions; the *Thaler* line of decisions has been tested in South African courts.
-- **King IV / King V Codes on Corporate Governance** — non-statutory but widely adopted; King V is expected to expand AI governance expectations.
+- **King IV / King V Codes on Corporate Governance** — non-statutory but widely adopted. **King V was adopted by the Institute of Directors in South Africa (IoDSA) on 31 October 2025 and is in force for financial years commencing on or after January 2026.** It consolidates King IV's 17 principles into 13 and introduces explicit AI governance principles alongside enhanced cyber risk provisions — governing bodies are now expected to oversee AI use and AI-related risk as a board-level matter under King V's "apply and explain" regime (see IoDSA publications and the Clyde & Co analysis, November 2025).
 
 None of these are specific to AI. The Framework's stated intent is to give regulators a unified policy direction so that sector-specific rules can be written on a consistent base.
 
