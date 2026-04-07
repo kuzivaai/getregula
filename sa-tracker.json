@@ -1,0 +1,51 @@
+{
+  "$schema": "https://getregula.com/sa-tracker.schema.json",
+  "version": "1.0",
+  "last_updated": "2026-04-07",
+  "gazette_status": "pending",
+  "next_review": "Within 7 days of gazette publication",
+  "rows": [
+    {
+      "label": "October 2024 Framework",
+      "value": "Published by DCDT, public comment closed 29 Nov 2024",
+      "state": "verified",
+      "source": "https://www.dcdt.gov.za"
+    },
+    {
+      "label": "DCDT briefs Parliament",
+      "value": "24 February 2026 — SEIAS clearance, DG cluster concurrence (per Michalsons reporting)",
+      "state": "secondary",
+      "source": "https://www.michalsons.com"
+    },
+    {
+      "label": "Cabinet approval",
+      "value": "Reportedly 2 April 2026 — announced by Minister Khumbudzo Ntshavheni",
+      "state": "secondary",
+      "source": "https://www.michalsons.com"
+    },
+    {
+      "label": "Gazette publication",
+      "value": "Pending as of 7 April 2026",
+      "state": "pending",
+      "source": null
+    },
+    {
+      "label": "Public comment window",
+      "value": "60 days from gazette date (estimated April–June 2026)",
+      "state": "estimated",
+      "source": null
+    },
+    {
+      "label": "Final policy",
+      "value": "2026/2027 financial year (target)",
+      "state": "estimated",
+      "source": null
+    },
+    {
+      "label": "Sector regulations",
+      "value": "2027/2028 financial year (target)",
+      "state": "estimated",
+      "source": null
+    }
+  ]
+}
