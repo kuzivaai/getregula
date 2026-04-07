@@ -41,7 +41,11 @@ Issues = "https://github.com/kuzivaai/getregula/issues"
 regula = "scripts.cli:main"
 
 [tool.setuptools.packages.find]
+# Explicitly include only packages that are part of the public CLI surface.
+# Internal go-to-market tooling and ad-hoc scripts must NOT be added here —
+# put them under tools/ (not packaged) instead.
 include = ["scripts*", "hooks*", "references*"]
+exclude = ["tools*", "benchmarks*", "tests*"]
 
 [tool.setuptools.package-data]
 "*" = ["*.yaml", "*.md"]
