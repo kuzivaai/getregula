@@ -328,6 +328,17 @@
         .tracker-row .val { color: #e2e2f0; }
         .tracker-row .val .ok { color: #10b981; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
         .tracker-row .val .pend { color: #f59e0b; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+        .tracker-row .val .est { color: #64748b; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+        .tracker-ts {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: #44445a;
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0;
+            margin-left: 10px;
+        }
+        .tracker-ts.live { color: #10b981; }
 
         /* CONTENT */
         .content {
@@ -606,35 +617,37 @@
             <p class="lede">An independent reference page tracking the South African National AI Policy from the verified October 2024 Framework through to the draft policy Cabinet reportedly approved for public comment on 2 April 2026. We separate what is checkable against primary sources from what is not, and we will update this page within seven days of the gazette publication.</p>
             <p class="last-updated"><strong>Last updated:</strong> 7 April 2026 &nbsp;·&nbsp; <strong>Maintained by:</strong> Regula (open source) &nbsp;·&nbsp; <a href="https://github.com/kuzivaai/getregula/issues" target="_blank" rel="noopener">Report a correction</a></p>
 
-            <div class="tracker">
-                <h2>Live tracker</h2>
-                <div class="tracker-row">
-                    <div class="lbl">October 2024 Framework</div>
-                    <div class="val">Published by DCDT, public comment closed 29 Nov 2024 &nbsp;<span class="ok">VERIFIED</span></div>
-                </div>
-                <div class="tracker-row">
-                    <div class="lbl">DCDT briefs Parliament</div>
-                    <div class="val">24 February 2026 — SEIAS clearance, DG cluster concurrence (per Michalsons reporting) &nbsp;<span class="pend">SECONDARY</span></div>
-                </div>
-                <div class="tracker-row">
-                    <div class="lbl">Cabinet approval</div>
-                    <div class="val">Reportedly 2 April 2026 — announced by Minister Khumbudzo Ntshavheni &nbsp;<span class="pend">SECONDARY</span></div>
-                </div>
-                <div class="tracker-row">
-                    <div class="lbl">Gazette publication</div>
-                    <div class="val">Pending as of 7 April 2026 &nbsp;<span class="pend">PENDING</span></div>
-                </div>
-                <div class="tracker-row">
-                    <div class="lbl">Public comment window</div>
-                    <div class="val">60 days from gazette date (estimated April–June 2026)</div>
-                </div>
-                <div class="tracker-row">
-                    <div class="lbl">Final policy</div>
-                    <div class="val">2026/2027 financial year (target)</div>
-                </div>
-                <div class="tracker-row">
-                    <div class="lbl">Sector regulations</div>
-                    <div class="val">2027/2028 financial year (target)</div>
+            <div class="tracker" id="sa-tracker" data-src="/sa-tracker.json">
+                <h2>Live tracker <span id="tracker-ts" class="tracker-ts"></span></h2>
+                <div id="tracker-rows">
+                    <div class="tracker-row">
+                        <div class="lbl">October 2024 Framework</div>
+                        <div class="val">Published by DCDT, public comment closed 29 Nov 2024 &nbsp;<span class="ok">VERIFIED</span></div>
+                    </div>
+                    <div class="tracker-row">
+                        <div class="lbl">DCDT briefs Parliament</div>
+                        <div class="val">24 February 2026 — SEIAS clearance, DG cluster concurrence (per Michalsons reporting) &nbsp;<span class="pend">SECONDARY</span></div>
+                    </div>
+                    <div class="tracker-row">
+                        <div class="lbl">Cabinet approval</div>
+                        <div class="val">Reportedly 2 April 2026 — announced by Minister Khumbudzo Ntshavheni &nbsp;<span class="pend">SECONDARY</span></div>
+                    </div>
+                    <div class="tracker-row">
+                        <div class="lbl">Gazette publication</div>
+                        <div class="val">Pending as of 7 April 2026 &nbsp;<span class="pend">PENDING</span></div>
+                    </div>
+                    <div class="tracker-row">
+                        <div class="lbl">Public comment window</div>
+                        <div class="val">60 days from gazette date (estimated April–June 2026)</div>
+                    </div>
+                    <div class="tracker-row">
+                        <div class="lbl">Final policy</div>
+                        <div class="val">2026/2027 financial year (target)</div>
+                    </div>
+                    <div class="tracker-row">
+                        <div class="lbl">Sector regulations</div>
+                        <div class="val">2027/2028 financial year (target)</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -871,6 +884,59 @@
             const scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
             document.getElementById('progress-bar').style.width = scroll + '%';
         });
+
+        // Progressive-enhancement tracker: fetch sa-tracker.json and replace
+        // the static rows if the JSON is newer. Static HTML remains the SEO
+        // and no-JS fallback, so nothing breaks if the fetch fails.
+        (function() {
+            const STATE_LABELS = {
+                verified: { text: 'VERIFIED', cls: 'ok' },
+                secondary: { text: 'SECONDARY', cls: 'pend' },
+                pending: { text: 'PENDING', cls: 'pend' },
+                estimated: { text: 'ESTIMATED', cls: 'est' },
+                gazetted: { text: 'GAZETTED', cls: 'ok' }
+            };
+
+            function esc(s) {
+                return String(s)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;');
+            }
+
+            function renderRow(row) {
+                const state = STATE_LABELS[row.state] || null;
+                const tag = state
+                    ? ' &nbsp;<span class="' + state.cls + '">' + state.text + '</span>'
+                    : '';
+                return '<div class="tracker-row">'
+                    + '<div class="lbl">' + esc(row.label) + '</div>'
+                    + '<div class="val">' + esc(row.value) + tag + '</div>'
+                    + '</div>';
+            }
+
+            const tracker = document.getElementById('sa-tracker');
+            if (!tracker) return;
+            const src = tracker.getAttribute('data-src');
+            if (!src || !window.fetch) return;
+
+            fetch(src, { cache: 'no-cache' })
+                .then(function(r) { return r.ok ? r.json() : null; })
+                .then(function(data) {
+                    if (!data || !Array.isArray(data.rows)) return;
+                    const rowsEl = document.getElementById('tracker-rows');
+                    const tsEl = document.getElementById('tracker-ts');
+                    if (rowsEl) {
+                        rowsEl.innerHTML = data.rows.map(renderRow).join('');
+                    }
+                    if (tsEl && data.last_updated) {
+                        tsEl.textContent = '· live · updated ' + data.last_updated;
+                        tsEl.classList.add('live');
+                    }
+                })
+                .catch(function() { /* static fallback already rendered */ });
+        })();
     </script>
 </body>
 </html>
