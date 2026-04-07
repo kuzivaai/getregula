@@ -369,6 +369,26 @@ regula benchmark --project /path/to/project -f csv -o out.csv  # CSV for labelli
 regula benchmark --metrics labelled.csv                        # Precision/recall
 ```
 
+### Scan Time Benchmark
+
+Reproducible scan-time numbers against public repositories. Shallow-clones each repo, runs `regula check`, and prints a markdown table with wall-clock time, file count, and finding count. Designed to be re-run on your own hardware.
+
+```bash
+python3 scripts/scan_benchmarks.py                  # default repo list
+python3 scripts/scan_benchmarks.py --self           # this repo only
+python3 scripts/scan_benchmarks.py --json           # machine-readable
+```
+
+Sample run on `Linux-6.6.87.2-microsoft-standard-WSL2-x86_64` (Python 3.12.3, Regula 1.5.1):
+
+| Target | Commit | Files scanned | Findings | Wall time | Files/sec |
+|---|---|---:|---:|---:|---:|
+| [psf/requests](https://github.com/psf/requests) | `ef439eb779c1` | 36 | 2 | 0.35s | 103.2 |
+| [openai/openai-python](https://github.com/openai/openai-python) | `58184ad545ee` | 1,218 | 404 | 5.76s | 211.5 |
+| [encode/httpx](https://github.com/encode/httpx) | `b5addb64f016` | 60 | 8 | 0.57s | 105.1 |
+
+Numbers are from a single run on one machine. Re-run the script on your own hardware before citing them. No precision/recall claims are made — see the validation benchmark above for accuracy measurement.
+
 ### Inline Suppression
 
 Add `# regula-ignore` to any file to suppress all findings for that file, or `# regula-ignore: RULE_ID` to suppress a specific rule. Suppressions are tracked and visible in reports.

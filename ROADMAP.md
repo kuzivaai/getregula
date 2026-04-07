@@ -20,10 +20,8 @@ Status: Backlog → In Progress → Done.
 - Implemented in `scripts/notebook.py` + wired into `report.py`. `.ipynb` is in `CODE_EXTENSIONS`. 3 tests cover extract/corrupt-file/end-to-end.
 - Limitation: line numbers refer to position in the joined extracted source, not the original notebook cell. Cell-aware mapping is a future enhancement.
 
-### Publish scan time benchmarks
-- **Why:** Users (and prospects) ask "how fast is it on a real repo?" Regula has no published answer.
-- **What:** Time `regula check` against 3–5 named public repos (chosen for size and language mix). Publish the table in README with Regula version, repo commit SHA, and machine specs.
-- **Feasibility:** Low. `time` + a small script. Honest, reproducible, no fabrication risk.
+### ~~Publish scan time benchmarks~~ — DONE 2026-04-07
+- `scripts/scan_benchmarks.py` shallow-clones a default repo set (`psf/requests`, `openai/openai-python`, `encode/httpx`), runs `regula check`, and prints a markdown table with commit SHA, file count, finding count, wall time, and files/sec. Re-runnable by anyone with `--self`, `--repos`, and `--json` modes. README has a sample run table with disclosed machine specs and a "re-run on your hardware" caveat. 1 test covers self-mode.
 
 ### ~~Domain-based severity adjustment~~ — ALREADY IMPLEMENTED
 - `scripts/domain_scoring.py` reads `system.domain` from `regula-policy.yaml` and applies confidence boosts in `report.py:440`. 5 tests in `test_classification.py`. Roadmap item was stale.
