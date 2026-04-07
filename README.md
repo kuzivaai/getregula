@@ -269,6 +269,7 @@ regula mcp-server                          # start the stdio MCP server
 See also:
 - [`docs/cli-reference.md`](docs/cli-reference.md) — full command reference
 - [`docs/architecture.md`](docs/architecture.md) — internal layout, modules, design principles, language support
+- [`docs/article-south-africa-ai-policy.md`](docs/article-south-africa-ai-policy.md) — South Africa's National AI Policy Framework, what is verified, what isn't, and what it means for code
 
 ## Configuration
 
