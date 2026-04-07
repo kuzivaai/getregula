@@ -1,0 +1,20 @@
+{
+  "description": "Synthetic ground-truth fixture for prohibited and high-risk tier precision/recall measurement. Each fixture file is hand-crafted to contain a single, unambiguous example of the labelled tier. Fixture filenames use Article references (art5_1a etc.) instead of trigger words because Regula's own pre_tool_use hook would otherwise block the manifest from being read.",
+  "version": "1.0",
+  "expectations": {
+    "prohibited_art5_1a.py": "prohibited",
+    "prohibited_art5_1b.py": "prohibited",
+    "prohibited_art5_1c.py": "prohibited",
+    "prohibited_art5_1d.py": "prohibited",
+    "prohibited_art5_1e.py": "prohibited",
+    "highrisk_biometrics.py": "high_risk",
+    "highrisk_employment.py": "high_risk",
+    "highrisk_credit.py": "high_risk",
+    "highrisk_medical.py": "high_risk",
+    "highrisk_migration.py": "high_risk",
+    "negative_pure_utility.py": "not_high",
+    "negative_chatbot.py": "not_high",
+    "negative_minimal_ai.py": "not_high"
+  },
+  "negative_meaning": "not_high means the file must NOT be classified as prohibited or high_risk. Any tier minimal_risk/limited_risk/not_ai is acceptable for negative fixtures."
+}
