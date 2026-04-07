@@ -376,3 +376,40 @@ def test_register_cli_force_overwrites_existing(tmp_path, monkeypatch):
     # Third run with --force — succeeds
     cmd_register(argparse.Namespace(**base_kwargs, force=True))
     print("✓ register: --force overwrite semantics correct")
+
+
+def test_register_legacy_shim_returns_compatible_dict(monkeypatch, tmp_path):
+    """discover_ai_systems.generate_eu_registration() still returns the legacy keys
+    so existing callers don't break, but the implementation delegates to register.build_packet."""
+    import policy_config
+    monkeypatch.setattr(policy_config, "get_policy",
+                        lambda path=None: {"organisation": "Acme",
+                                           "governance_contacts": {"ai_officer": {"email": "a@b.c"}}})
+
+    from discover_ai_systems import register_system, generate_eu_registration
+
+    fake_discovery = {
+        "project_name": "legacy_demo",
+        "project_path": str(tmp_path),
+        "discovered_at": "2026-04-07T00:00:00Z",
+        "ai_libraries": ["openai"],
+        "primary_language": "python",
+        "model_files": [],
+        "ai_code_files": [],
+        "api_endpoints": [],
+        "risk_classifications": [{"tier": "high_risk", "category": "employment"}],
+        "highest_risk": "high_risk",
+    }
+    register_system(fake_discovery)
+    result = generate_eu_registration("legacy_demo")
+
+    # Legacy keys must still be present for back-compat
+    for legacy_key in ("registration_type", "article", "system_name",
+                       "provider_name", "intended_purpose", "risk_classification"):
+        assert legacy_key in result, f"missing legacy key {legacy_key}: {list(result.keys())}"
+    assert result["article"] == "49(1)"
+
+    # New-style packet should be available under _packet
+    assert "_packet" in result
+    assert result["_packet"]["kind"] == "registration_required"
+    print("✓ register: legacy generate_eu_registration shim still returns expected keys")
