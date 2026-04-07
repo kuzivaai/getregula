@@ -290,6 +290,21 @@ def scan_organization(base_path: str, register: bool = True) -> dict:
     }
 
 
+def _legacy_provider_contact() -> str:
+    """Legacy: pull AI officer email from policy_config for provider_contact field.
+
+    The new register.build_packet treats provider_identity as a single combined
+    'org <email>' string. The legacy generate_eu_registration callers wanted just
+    the email here, so we resolve it independently.
+    """
+    try:
+        from policy_config import get_policy
+        policy = get_policy() or {}
+        return (policy.get("governance_contacts", {}).get("ai_officer", {}) or {}).get("email") or ""
+    except Exception:
+        return ""
+
+
 def generate_eu_registration(project_name: str) -> dict:
     """Legacy shim — prefer `regula register` CLI command.
 
@@ -328,8 +343,7 @@ def generate_eu_registration(project_name: str) -> dict:
         "system_name": project_name,
         "provider_name": (fields.get("provider_identity") or {}).get("value")
                          or "[TO BE COMPLETED]",
-        "provider_contact": (fields.get("provider_identity") or {}).get("value")
-                            or "[TO BE COMPLETED]",
+        "provider_contact": _legacy_provider_contact() or "[TO BE COMPLETED]",
         "intended_purpose": (fields.get("intended_purpose") or {}).get("value")
                             or "[TO BE COMPLETED — describe the system's intended purpose]",
         "risk_classification": system.get("highest_risk", "unknown"),
