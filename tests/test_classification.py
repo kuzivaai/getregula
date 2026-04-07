@@ -9,9 +9,37 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 from classify_risk import classify, RiskTier, is_ai_related
 
+# Pull in regula register tests so the auto-discoverer picks them up.
+# (See commit a90009f — the runner walks this file's globals to find test_* functions.)
+sys.path.insert(0, str(Path(__file__).parent))
+import test_register as _test_register  # noqa: F401
+
 passed = 0
 failed = 0
 _PYTEST_MODE = "pytest" in sys.modules
+
+# Bring register tests into this module's globals so the custom runner picks
+# them up via globals() walk. Skip tests that require pytest fixtures
+# (monkeypatch / tmp_path / capsys) when running under the custom runner —
+# pytest discovers them natively from tests/test_register.py and runs them
+# with proper fixture injection.
+import inspect as _inspect
+_PYTEST_FIXTURES = {"monkeypatch", "tmp_path", "capsys", "tmpdir", "request"}
+for _name in dir(_test_register):
+    if not _name.startswith("test_"):
+        continue
+    _fn = getattr(_test_register, _name)
+    if not callable(_fn):
+        continue
+    try:
+        _params = set(_inspect.signature(_fn).parameters)
+    except (TypeError, ValueError):
+        _params = set()
+    if _params & _PYTEST_FIXTURES:
+        # Pytest-only — skip in custom runner; pytest still finds it via test_register.py
+        continue
+    globals()[_name] = _fn
+del _inspect, _name, _fn, _params, _PYTEST_FIXTURES, _test_register
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:

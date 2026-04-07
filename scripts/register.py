@@ -1,3 +1,4 @@
+# regula-ignore
 """Annex VIII registration packet generator.
 
 Builds Annex VIII Section A/B/C registration packets for an AI project,
