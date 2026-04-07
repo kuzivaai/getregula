@@ -41,3 +41,46 @@ These findings need manual labelling as true positive (TP) or false positive (FP
 2. For each finding, assess whether the flagged code genuinely represents the identified risk tier
 3. Mark as TP (true positive) or FP (false positive)
 4. Calculate precision = TP / (TP + FP) per tier
+
+## Precision (measured 2026-04-01)
+
+After hand-labelling 257 findings sampled across the five projects above
+(see `labels.json`), the measured precision is in `results/PRECISION.json`.
+Headline:
+
+| Cut | TP | FP | Precision |
+|---|---:|---:|---:|
+| **Overall** (all tiers) | 39 | 218 | **15.2%** |
+| `agent_autonomy` | 2 | 3 | 40.0% |
+| `limited_risk` | 1 | 2 | 33.3% |
+| `minimal_risk` (94% of findings) | 36 | 205 | 14.9% |
+| `ai_security` | 0 | 6 | 0.0% |
+| `credential_exposure` | 0 | 2 | 0.0% |
+
+This is the honest current state. The minimal_risk tier dominates the
+sample and is noisy on general-purpose libraries — that is the next
+pattern-tuning target. The labelled sample contains no `prohibited` or
+`high_risk` findings because none of the five OSS libraries scanned
+actually trigger those tiers, so precision for those tiers cannot be
+estimated from this benchmark.
+
+**Limitations of this benchmark.** N=257 hand-labelled findings is small.
+Recall is not estimable from labelled findings alone (we don't know what
+the scanner missed). Labels reflect one reviewer's judgement and are not
+peer-validated. Numbers are tied to Regula's pattern set as of
+2026-04-01 and may move as patterns evolve. **No "99%" claim is being
+made and none should be.**
+
+## Reproduce
+
+```bash
+python3 benchmarks/run_benchmark.py        # rescan all five projects (shallow clones)
+python3 benchmarks/label.py sample         # sample new findings for labelling
+python3 benchmarks/label.py score          # recompute precision from labels.json
+```
+
+The first command shallow-clones each repo, runs `regula check`, and
+writes per-project JSON to `results/`. `label.py score` reads
+`labels.json` and recomputes the table above. The labels in
+`labels.json` are keyed by project + file + line so you can re-import
+them after a rescan without re-labelling from scratch.

@@ -369,6 +369,21 @@ regula benchmark --project /path/to/project -f csv -o out.csv  # CSV for labelli
 regula benchmark --metrics labelled.csv                        # Precision/recall
 ```
 
+**Self-benchmark precision (measured 2026-04-01).** Hand-labelled 257 findings sampled across five OSS AI projects (`instructor`, `pydantic-ai`, `langchain`, `scikit-learn`, `openai-python`):
+
+| Cut | TP | FP | Precision |
+|---|---:|---:|---:|
+| **Overall** | 39 | 218 | **15.2%** |
+| `agent_autonomy` | 2 | 3 | 40.0% |
+| `limited_risk` | 1 | 2 | 33.3% |
+| `minimal_risk` (94% of findings) | 36 | 205 | 14.9% |
+| `ai_security` | 0 | 6 | 0.0% |
+| `credential_exposure` | 0 | 2 | 0.0% |
+
+This is the honest current state. The minimal_risk tier dominates the sample on general-purpose libraries and is noisy — that's the next pattern-tuning target. None of the five repos triggered `prohibited` or `high_risk` findings, so precision for the tiers that actually block merges cannot be estimated from this benchmark and is a separate piece of work.
+
+Recall is not estimable from labelled findings alone and is reported as `null`. **No "99%" claim is being made and none should be.** Full methodology, per-project breakdown, and limitations: [`benchmarks/README.md`](benchmarks/README.md). Reproduce with `python3 benchmarks/label.py score`.
+
 ### Scan Time Benchmark
 
 Reproducible scan-time numbers against public repositories. Shallow-clones each repo, runs `regula check`, and prints a markdown table with wall-clock time, file count, and finding count. Designed to be re-run on your own hardware.

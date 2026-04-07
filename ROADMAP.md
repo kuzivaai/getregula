@@ -87,9 +87,9 @@ These items have a values conflict with Regula's stated principles ("zero produc
 
 ## Blocked on prerequisites
 
-### Publish precision / recall benchmarks
-- **Status:** BLOCKED. The `regula benchmark` command exists, but there is no labelled ground-truth dataset to benchmark against. Building a credible labelled corpus is a multi-week effort and is the actual work.
-- **Next step:** Treat dataset construction as its own project. Until a labelled corpus exists and is committed (or pointed to), do not publish a precision/recall number — fabricated accuracy claims would violate Regula's own honesty rules.
+### ~~Publish precision / recall benchmarks~~ — UNBLOCKED 2026-04-07
+- A labelled benchmark already existed in `benchmarks/` (257 hand-labelled findings across 5 OSS projects, last labelled 2026-04-01) but was not surfaced anywhere user-facing. Now published in `README.md` and `benchmarks/README.md` with the honest **15.2% overall precision**, per-tier breakdown, methodology, limitations ("no `prohibited`/`high_risk` findings in this sample → those tiers cannot be estimated here", "recall not estimable from labelled findings alone"), and a reproducible `benchmarks/label.py score` command. Test `test_published_precision_matches_labels` fails the build if labels move and the README isn't updated.
+- **Next step (separate work):** the minimal_risk tier dominates and is noisy on general-purpose libraries — this is the next pattern-tuning target. Also need a benchmark fixture that actually triggers `prohibited`/`high_risk` so those tiers can be measured.
 
 ---
 
