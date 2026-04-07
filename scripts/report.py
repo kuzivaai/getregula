@@ -23,7 +23,7 @@ from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS, PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS, AI_SECURITY_PATTERNS, generate_observations, check_ai_security
+from classify_risk import classify, RiskTier, is_ai_related, PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS, AI_SECURITY_PATTERNS, generate_observations, check_ai_security
 from domain_scoring import compute_domain_boost
 from ast_engine import detect_language
 from log_event import query_events, verify_chain

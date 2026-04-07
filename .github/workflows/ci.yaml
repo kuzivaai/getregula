@@ -17,7 +17,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install pyyaml pytest
-      - run: pytest tests/ -q
+      - name: Custom test runner (manual list — asserts every test is registered)
+        run: python3 tests/test_classification.py
+      - name: pytest discovery (catches anything not in the manual list)
+        run: pytest tests/ -q
+      - name: Built-in self-test
+        run: python3 -m scripts.cli self-test
+      - name: Doctor health checks
+        run: python3 -m scripts.cli doctor
 
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'

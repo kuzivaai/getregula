@@ -24,7 +24,7 @@ from constants import VERSION
 from log_event import log_event
 from code_analysis import analyse_project_code
 from ast_analysis import parse_python_file, detect_human_oversight, detect_logging_practices, trace_ai_data_flow, resolve_cross_file_ai_flows
-from dependency_scan import parse_requirements_txt, parse_pyproject_toml, is_ai_dependency
+from dependency_scan import parse_requirements_txt, parse_pyproject_toml
 from constants import CODE_EXTENSIONS, SKIP_DIRS, MODEL_EXTENSIONS
 
 

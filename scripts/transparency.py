@@ -11,8 +11,6 @@ Generates EU AI Act transparency notices for:
 
 Output is copy-paste-ready text for integration into AI applications.
 """
-
-import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path

@@ -17,10 +17,7 @@ conclusions. Article 53 obligations have been in force since 2 August 2025.
 
 import json
 import re
-import sys
 from pathlib import Path
-from typing import Optional
-
 # ---------------------------------------------------------------------------
 # Known-models catalogue
 # ---------------------------------------------------------------------------
