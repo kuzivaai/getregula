@@ -314,3 +314,65 @@ def test_register_write_gaps_yaml_only_contains_gap_fields(tmp_path):
     assert "value:" in text   # empty slots
     assert "Description of intended purpose" in text  # label as comment
     print(f"✓ register: gaps.yaml written ({len(text)} bytes)")
+
+
+def test_register_cli_json_format_emits_envelope(tmp_path, monkeypatch, capsys):
+    """`regula register --format json` emits a json_output envelope with command='register'."""
+    import policy_config
+    monkeypatch.setattr(policy_config, "get_policy",
+                        lambda path=None: {"organisation": "Acme",
+                                           "governance_contacts": {"ai_officer": {"email": "a@b.c"}}})
+
+    # Build a tiny fake project that classifies as high-risk via openai usage
+    proj = tmp_path / "demo_proj"
+    proj.mkdir()
+    (proj / "main.py").write_text(
+        "import openai\nclient = openai.OpenAI()\n"
+        "# screening candidates for hire\n"
+        "def screen(cv): return client.chat.completions.create(model='gpt-4', messages=[])\n"
+    )
+
+    monkeypatch.chdir(tmp_path)
+    from cli import cmd_register
+    import argparse
+    args = argparse.Namespace(
+        path=str(proj), section="auto", target="auto", deployer_type="none",
+        output=None, format="json", force=False, no_gaps_yaml=True,
+        art_6_3_exempted=False,
+    )
+    cmd_register(args)
+    out = capsys.readouterr().out
+    assert '"command": "register"' in out
+    assert '"format_version": "1.0"' in out
+    print("✓ register: CLI json envelope emitted")
+
+
+def test_register_cli_force_overwrites_existing(tmp_path, monkeypatch):
+    """Second run without --force fails (sys.exit 2); with --force succeeds."""
+    import policy_config
+    monkeypatch.setattr(policy_config, "get_policy",
+                        lambda path=None: {"organisation": "Acme",
+                                           "governance_contacts": {"ai_officer": {"email": "a@b.c"}}})
+
+    proj = tmp_path / "p2"
+    proj.mkdir()
+    (proj / "main.py").write_text("import openai\nopenai.OpenAI()\n")
+    monkeypatch.chdir(tmp_path)
+
+    from cli import cmd_register
+    import argparse
+    base_kwargs = dict(path=str(proj), section="auto", target="auto",
+                       deployer_type="none", output=None, format="text",
+                       no_gaps_yaml=True, art_6_3_exempted=False)
+
+    # First run — succeeds
+    cmd_register(argparse.Namespace(**base_kwargs, force=False))
+
+    # Second run — must raise SystemExit because the file already exists
+    import pytest as _pt
+    with _pt.raises(SystemExit):
+        cmd_register(argparse.Namespace(**base_kwargs, force=False))
+
+    # Third run with --force — succeeds
+    cmd_register(argparse.Namespace(**base_kwargs, force=True))
+    print("✓ register: --force overwrite semantics correct")
