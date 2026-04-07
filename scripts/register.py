@@ -84,7 +84,29 @@ def detect_section_and_target(role: str, annex_iii_point: int | None,
             "kind": "registration_required",
         }
 
-    # Deployer / fallback branches handled in Task 3 — placeholder for now
+    # Deployer branches
+    if role == "deployer" and annex_iii_point is not None:
+        if deployer_type == "public_authority":
+            target = ("eu_database_non_public"
+                      if annex_iii_point in _PROVIDER_NON_PUBLIC_POINTS
+                      else "eu_database_public")
+            return {
+                "section": "C",
+                "target": target,
+                "article": "49(3)",
+                "fields_excluded": [],
+                "kind": "registration_required",
+            }
+        # Private-sector deployer — out of Art 49 scope
+        return {
+            "section": None,
+            "target": None,
+            "article": None,
+            "fields_excluded": [],
+            "kind": "not_applicable",
+        }
+
+    # Anything else (no Annex III area, unclear role) → not applicable
     return {
         "section": None,
         "target": None,
@@ -92,3 +114,22 @@ def detect_section_and_target(role: str, annex_iii_point: int | None,
         "fields_excluded": [],
         "kind": "not_applicable",
     }
+
+
+def build_redirects(kind: str) -> list[str]:
+    """Return user-facing next-step suggestions for non-registration cases.
+
+    NEVER references `regula explain` — that command does not exist
+    (verified by grep of cli.py during planning).
+    """
+    if kind == "not_applicable":
+        return [
+            "regula gap        — Article 26 deployer obligations gap assessment",
+            "regula oversight  — human oversight checks (Article 14)",
+        ]
+    if kind == "no_registration_required":
+        return [
+            "regula check      — keep scanning for risk indicators",
+            "regula classify   — confirm classification on individual files",
+        ]
+    return []

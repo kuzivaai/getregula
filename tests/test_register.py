@@ -114,3 +114,47 @@ def test_register_detects_migration_routes_to_non_public():
     assert decision["article"] == "49(4)"
     assert sorted(decision["fields_excluded"]) == [6, 8, 9]
     print("✓ register: migration → non_public")
+
+
+def test_register_section_b_for_provider_with_art_6_3_self_exemption():
+    """Provider self-exempted via Art 6(3) → Section B, mandatory, omnibus note present in schema."""
+    from register import detect_section_and_target, load_schema
+    decision = detect_section_and_target(role="provider", annex_iii_point=4, deployer_type="none", art_6_3_exempted=True)
+    assert decision["section"] == "B"
+    assert decision["article"] == "49(2)"
+    assert decision["target"] == "eu_database_public"
+    schema_b = load_schema()["sections"]["B"]
+    assert schema_b["submission_status"] == "mandatory"
+    assert "pending_trilogue" in schema_b["omnibus_field_simplification"]
+    print("✓ register: Art 6(3) exemption → B mandatory")
+
+
+def test_register_section_c_for_public_authority_deployer():
+    """Public-authority deployer of any Annex III high-risk → Section C, Art 49(3)."""
+    from register import detect_section_and_target
+    decision = detect_section_and_target(role="deployer", annex_iii_point=4, deployer_type="public_authority", art_6_3_exempted=False)
+    assert decision["section"] == "C"
+    assert decision["article"] == "49(3)"
+    assert decision["target"] == "eu_database_public"
+    print("✓ register: public-authority deployer → C / public")
+
+
+def test_register_section_c_public_authority_biometrics_routes_non_public():
+    """Public authority deploying an Annex III point 1/6/7 system → Section C with non-public target."""
+    from register import detect_section_and_target
+    decision = detect_section_and_target(role="deployer", annex_iii_point=1, deployer_type="public_authority", art_6_3_exempted=False)
+    assert decision["section"] == "C"
+    assert decision["target"] == "eu_database_non_public"
+    print("✓ register: public-authority biometrics → C / non_public")
+
+
+def test_register_not_applicable_for_private_sector_deployer():
+    """Private-sector deployer of high-risk → kind=not_applicable, redirects to gap+oversight."""
+    from register import detect_section_and_target, build_redirects
+    decision = detect_section_and_target(role="deployer", annex_iii_point=4, deployer_type="none", art_6_3_exempted=False)
+    assert decision["kind"] == "not_applicable"
+    redirects = build_redirects(decision["kind"])
+    assert any("regula gap" in r for r in redirects)
+    assert any("regula oversight" in r for r in redirects)
+    assert not any("regula explain" in r for r in redirects), "must NOT reference non-existent explain command"
+    print("✓ register: private deployer → not_applicable + correct redirects")
