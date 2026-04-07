@@ -138,9 +138,14 @@ Regula's design choices, stated on their own terms:
 - **EU AI Act-shaped.** Risk tiers, finding categories, and the conformity evidence pack are aligned to the regulation's structure (Article 5 prohibited practices, Annex III high-risk categories, Articles 9–15 obligations) rather than to a generic SAST taxonomy.
 - **Honest about its own precision.** The benchmark in `benchmarks/` measures Regula against five labelled OSS projects and publishes the actual number — see *Real-World Validation Benchmark* below.
 
-A side-by-side comparison against other EU AI Act tools belongs in a separate document with primary-source citations per claim, not on this front page. An earlier version of this section listed several competitors with feature-by-feature comparisons that could not be backed by primary sources at the time of writing — that table has been removed rather than carried as unverified marketing.
+### How Regula maps to the AICDI corporate AI governance gaps
 
-If your primary stack is TypeScript and you need CI/CD integration, Systima Comply is worth evaluating alongside Regula. If you need runtime interception and automated fix suggestions, AIR Blackbox serves a different need.
+The 2026 [UNESCO + Thomson Reuters Foundation AI Company Data Initiative report](https://www.unesco.org/en/articles/pioneering-report-thomson-reuters-foundation-and-unesco-sheds-light-way-3000-companies-approach-ai) measured 2,972 global companies and found large gaps between AI adoption and AI governance. Regula addresses some of those gaps directly, others partially, and many not at all.
+
+For an honest, gap-by-gap mapping with citations and explicit out-of-scope items, see [`docs/landscape.md`](docs/landscape.md). Headline:
+
+- **Yes, addressed by Regula:** technical AI model registry (closes the 2.7% gap), Article 14 human-oversight verification (partial — closes part of the 12% gap), Article 9–15 conformity evidence pack, GPAI Code of Practice signatory annotation on detected vendors.
+- **No, not addressed by Regula:** AI strategy adoption (44%), board oversight (40%), worker protection policies (14%), AI training programmes (31%), environmental impact assessments (11%), ethical impact assessments (5%), complaints mechanisms (2.3%). These are organisational and human-process gaps that no static code scanner can fix.
 
 ---
 

@@ -66,6 +66,13 @@ TIMELINE = [
         "note": "Parliament confirmed committee position on Digital Omnibus. Key additions: reinstated registration for non-high-risk AI systems, November 2026 watermarking deadline, new prohibition on non-consensual intimate deepfakes.",
     },
     {
+        "date": "2026-04-01",
+        "event": "AICDI corporate AI governance report published",
+        "status": "effective",
+        "source": "UNESCO + Thomson Reuters Foundation, Apr 2026",
+        "note": "Largest dataset on corporate AI adoption: 100,000+ data points across 2,972 companies, 11 sectors, 6 regions. Headline gaps: only 10% publicly committed to a governance framework, 12% have human oversight policies, 11% evaluate environmental impact, 7% evaluate human rights impact, 2.7% have a formal AI model registry, 2.3% have an AI complaints mechanism. URL: https://www.unesco.org/en/articles/pioneering-report-thomson-reuters-foundation-and-unesco-sheds-light-way-3000-companies-approach-ai",
+    },
+    {
         "date": "2026-04-28",
         "event": "Second Omnibus trilogue (expected)",
         "status": "proposed",
