@@ -226,7 +226,8 @@ def test_register_build_packet_envelope_shape(monkeypatch):
 
     required = {"system_id", "system_name", "annex_viii_section", "article",
                 "submission_target", "submission_status", "fields", "_gaps",
-                "completeness", "deadlines", "schema_provenance", "kind"}
+                "completeness", "deadlines", "schema_provenance", "kind",
+                "fields_excluded_under_49_4"}
     missing = required - set(packet.keys())
     assert not missing, f"missing keys: {missing}"
     assert packet["annex_viii_section"] == "A"
@@ -236,8 +237,12 @@ def test_register_build_packet_envelope_shape(monkeypatch):
     print(f"✓ register: build_packet envelope shape ({packet['completeness']})")
 
 
-def test_register_build_packet_dual_timeline_present():
+def test_register_build_packet_dual_timeline_present(monkeypatch):
     """Every packet carries both the current law and the Omnibus proposed deadlines."""
+    import policy_config
+    monkeypatch.setattr(policy_config, "get_policy",
+                        lambda path=None: {"organisation": "Acme",
+                                           "governance_contacts": {"ai_officer": {"email": "a@b.c"}}})
     from register import build_packet
     discovery = {"project_name": "x", "project_path": "/tmp/x",
                  "compliance_status": "not_started", "ai_libraries": [],
@@ -251,8 +256,12 @@ def test_register_build_packet_dual_timeline_present():
     print("✓ register: dual timeline present")
 
 
-def test_register_build_packet_schema_provenance_present():
+def test_register_build_packet_schema_provenance_present(monkeypatch):
     """Every packet carries schema provenance (sources + verified date)."""
+    import policy_config
+    monkeypatch.setattr(policy_config, "get_policy",
+                        lambda path=None: {"organisation": "Acme",
+                                           "governance_contacts": {"ai_officer": {"email": "a@b.c"}}})
     from register import build_packet
     discovery = {"project_name": "x", "project_path": "/tmp/x",
                  "compliance_status": "not_started", "ai_libraries": [],

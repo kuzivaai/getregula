@@ -8,6 +8,7 @@ No network calls. No interactive flow. See
 docs/superpowers/specs/2026-04-07-regula-register-annex-viii-design.md
 for the full design and primary-source verification.
 """
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -251,15 +252,27 @@ def _gap_reason(source) -> str:
     return f"Source '{source}' did not return a value for this project"
 
 
-import hashlib
 
 
 def build_packet(discovery: dict, role: str, annex_iii_point,
                  deployer_type: str = "none", art_6_3_exempted: bool = False) -> dict:
     """Build the full Annex VIII packet `data` block (the inside of json_output's envelope).
 
-    For non-applicable / no-registration cases, returns a packet with kind set
-    accordingly and a `redirects` list instead of fields.
+    Returns one of three packet shapes depending on the input:
+
+    1. ``kind="no_registration_required"`` — when discovery's highest_risk is
+       not_ai or minimal_risk. Contains: system_id, system_name, kind, reason,
+       redirects, schema_provenance, deadlines.
+
+    2. ``kind="not_applicable"`` — when the section detector returns not_applicable
+       (e.g., private-sector deployer outside Article 49 scope). Contains:
+       system_id, system_name, kind, reason, redirects, schema_provenance,
+       deadlines.
+
+    3. ``kind="registration_required"`` — the full registration packet. Contains:
+       system_id, system_name, annex_viii_section, article, submission_target,
+       submission_status, fields_excluded_under_49_4, fields, _gaps,
+       completeness, deadlines, schema_provenance, kind.
     """
     schema = load_schema()
     decision = detect_section_and_target(role=role, annex_iii_point=annex_iii_point,
