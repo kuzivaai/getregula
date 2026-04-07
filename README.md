@@ -463,10 +463,16 @@ Results appear in the GitHub Security tab alongside CodeQL findings.
 | `min-dependency-score` | `0` | Minimum dependency pinning score (0–100) |
 | `diff-mode` | `false` | Only scan files changed in this PR |
 | `upload-sarif` | `true` | Upload SARIF to GitHub Code Scanning |
+| `comment-on-pr` | `true` | Post a single rolled-up summary comment on PRs |
+| `inline-pr-comments` | `false` | Post per-finding inline review comments anchored to changed lines |
+| `inline-comment-max` | `20` | Cap on inline review comments per PR (anti-spam) |
+| `inline-comment-min-tier` | `high_risk` | Minimum tier eligible for inline comments |
 
 **Outputs:** `findings-count`, `prohibited-count`, `high-risk-count`, `pinning-score`, `sarif-file`
 
-**Status: defined, not yet validated in a production PR workflow.** The action definition exists and the SARIF output format is correct, but end-to-end integration with GitHub's Security tab has not been verified. Treat as experimental until confirmed.
+**Inline review comments.** When `inline-pr-comments: true`, the action fetches the PR's diff via the GitHub API, builds a set of changed line numbers per file, and posts a single review (`event: COMMENT`) containing one inline comment per finding whose `file:line` falls inside the diff. Findings outside the diff are silently dropped — no spam on unchanged code. The default minimum tier is `high_risk`; set `inline-comment-min-tier: minimal_risk` to comment on everything. The default cap of 20 prevents large PRs from generating hundreds of comments.
+
+**Status: defined, not yet validated end-to-end in a production PR workflow.** The action definition is correct and the SARIF + summary-comment paths are exercised by `.github/workflows/regula-scan.yaml`, but the inline-review-comment path was added in this revision and has not yet been observed against a real GitHub PR. The first run on a real PR is the verification. Treat the inline-comment feature as experimental until that confirmation.
 
 ### Compliance Status Tracking
 

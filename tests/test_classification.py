@@ -5660,6 +5660,31 @@ def test_notebook_scan_end_to_end():
 
 
 # ---------------------------------------------------------------------------
+# GitHub Action sanity (action.yml structure)
+# ---------------------------------------------------------------------------
+
+def test_action_yml_has_inline_pr_comment_step():
+    """action.yml exposes inline-pr-comments input and the step that posts them."""
+    if not _HAS_PYYAML:
+        print("⊘ action.yml: skipped (pyyaml not installed)")
+        return
+    from pathlib import Path as _P
+    doc = yaml.safe_load(_P(__file__).parent.parent.joinpath("action.yml").read_text())
+    inputs = doc.get("inputs", {})
+    for name in ("inline-pr-comments", "inline-comment-max", "inline-comment-min-tier"):
+        assert name in inputs, f"action.yml missing input: {name}"
+    steps = doc.get("runs", {}).get("steps", [])
+    step_names = [s.get("name", "") for s in steps]
+    assert "Post inline PR review comments" in step_names, f"action.yml missing inline review step. Steps: {step_names}"
+    inline_step = next(s for s in steps if s.get("name") == "Post inline PR review comments")
+    script = inline_step.get("with", {}).get("script", "")
+    assert "pulls.listFiles" in script, "inline step must call pulls.listFiles to get diff"
+    assert "createReview" in script, "inline step must call createReview to post comments"
+    assert "side: 'RIGHT'" in script, "inline comments must target the RIGHT side of the diff"
+    print(f"✓ action.yml: inline PR review step present (3 inputs, {len(steps)} steps)")
+
+
+# ---------------------------------------------------------------------------
 # Domain boost surfaces in finding output
 # ---------------------------------------------------------------------------
 
@@ -6231,6 +6256,8 @@ if __name__ == "__main__":
         test_domain_boost_surfaces_in_finding,
         # MCP server protocol smoke test (1 test)
         test_mcp_server_initialize_and_list_tools,
+        # GitHub Action sanity (1 test)
+        test_action_yml_has_inline_pr_comment_step,
     ]
 
     print(f"Running {len(tests)} tests...\n")
