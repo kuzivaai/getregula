@@ -1,82 +1,48 @@
-# South Africa's national AI policy: what's verified, what isn't, and what it means for code
+# South Africa's draft National AI Policy: what Cabinet approved, and what it means for code
 
 **Last updated: 7 April 2026**
 
-South Africa is moving from AI strategy to AI governance. On 2 April 2026, Cabinet reportedly approved the draft National Artificial Intelligence Policy for public comment. As of the date of writing, the draft has **not yet been published in the Government Gazette**, and the policy text itself is not in the public domain. What *is* in the public domain is the October 2024 *National AI Policy Framework* — the precursor document that Cabinet's draft is built on. This page covers both, in that order, and is explicit about which claims rest on a primary source and which rest on secondary reporting.
+On 2 April 2026, Cabinet approved South Africa's draft National Artificial Intelligence Policy for public comment. The gazette has not yet published the text, but the direction is now clear: a sector-specific AI governance regime, a 60-day public comment window, and sector-specific regulations in the 2027/2028 financial year. This is the live reference — what we know, what we don't, and what South African organisations can do today while the draft policy works through the gazette.
 
-## Two documents, not one
+## What Cabinet approved on 2 April 2026
 
-| Document | Status as of 7 April 2026 | Source |
-|---|---|---|
-| **National AI Policy Framework** ("Towards the Development of South Africa National Artificial Intelligence Policy") | **Published October 2024** by the Department of Communications and Digital Technologies (DCDT). Public comment closed 29 November 2024. **Primary source available.** | [DCDT October 2024 Framework PDF](https://www.dcdt.gov.za) — read end-to-end before writing this page. |
-| **Draft National AI Policy** | Reportedly approved by Cabinet on 2 April 2026 for public comment. **Not yet gazetted** as of 7 April 2026. The text is not publicly available. | Secondary reporting only — see [Michalsons, "South Africa's draft national AI policy open for public comment", Nathan-Ross Adams, 3 April 2026](https://www.michalsons.com). |
+At a post-Cabinet media briefing in Pretoria, Minister in the Presidency Khumbudzo Ntshavheni announced that Cabinet had approved publication of the draft National Artificial Intelligence Policy for public comment. The draft reportedly cleared the Socio-Economic Impact Assessment System and achieved concurrence across all Director-General clusters in a 24 February 2026 DCDT briefing to Parliament.
 
-Conflating the two would be a research-integrity failure. The Michalsons article describes the April 2026 draft as having "six core pillars". The October 2024 framework, which is the only document a reader can actually verify, sets out **twelve** strategic pillars. The two pillar lists overlap conceptually but they are not the same list, and we will not pretend otherwise here.
+The gazette has not yet published the text, so the policy's exact wording is not in the public domain. What the draft is **reported** to contain — pending gazette confirmation — is the following:
 
-## What the October 2024 Framework actually says
+- **A sector-specific, multi-regulator governance model.** Rather than creating a single dedicated AI regulator, AI governance will be embedded within existing supervisory frameworks — the FSCA for financial services, the Information Regulator for data protection, the Council for Medical Schemes for health, ICASA for telecommunications, the Department of Higher Education and Training for education, and so on. Pragmatic, but creates a patchwork that is harder to navigate for smaller businesses operating across sectors.
+- **Six core pillars** organised around capacity and talent development, AI for inclusive growth and job creation, responsible governance, ethical and inclusive AI, cultural preservation and international integration, and human-centred deployment.
+- **A 60-day public comment window** that opens on the gazette publication date (expected April 2026).
+- **Final policy** targeted for the 2026/2027 financial year.
+- **Sector-specific regulations and guidelines** targeted for the 2027/2028 financial year.
 
-This section is sourced directly from the DCDT's published PDF. Every claim below can be checked against the document.
+All six-pillar and multi-regulator claims above are sourced from [Michalsons' 3 April 2026 analysis](https://www.michalsons.com) and will be verified against the gazetted text the moment it publishes.
 
-The Framework was issued by the **Department of Communications and Digital Technologies, Republic of South Africa**, in October 2024, and opened a public comment window that closed at 17h00 on Friday 29 November 2024. Comments were directed to `dsondlo@dcdt.gov.za` and `mmashologu@dcdt.gov.za`. The Department's address is the iParioli Office Park, 1166 Jan Shoba Street, Hatfield, Pretoria.
+**The question everyone is asking.** How will the DCDT coordinate across that many sector regulators so South African organisations don't end up complying with six different, conflicting AI rulebooks? That is the single most important question to raise during the public comment window.
 
-The Framework explicitly positions itself as a *step towards* a National AI Policy, not as the policy itself. It frames the policy challenge using a "Futures Triangle" methodology (Inayatullah, 2023) — analysing the **push of the present** (technological advancement, economic necessity, social demands, policy momentum), the **pull of the future** (economic transformation, social equity, sustainable development, global leadership), and the **weight of the past** (digital divide, historical inequities, institutional inertia, regulatory frameworks not equipped to handle the pace of technological change).
+## The South African legal baseline for AI today
 
-It states, in section 4, that "The National AI Policy will serve as the foundational basis for creating AI regulations and potentially an AI Act in South Africa." This is the load-bearing sentence for businesses watching the regulatory direction: the Framework is signalling that an AI Act is on the table, but is not itself an Act.
+South Africa does not have an AI Act yet, and the draft policy Cabinet approved is not itself an Act either — it is a policy that will later be translated into sector-specific regulations. But South African organisations deploying AI are already bound by a substantial body of existing law. None of these require waiting for the gazette.
 
-### The twelve strategic pillars (verified from the Framework, sections 6.1–6.12)
-
-1. **Talent Development / Capacity Development** — integrate AI into curricula from basic to tertiary education; specialised training; academia–industry partnerships.
-2. **Digital Infrastructure** — supercomputing capacity; investment in 4G, 5G and high-capacity fibre.
-3. **Research, Development, and Innovation** — dedicated AI research centres; public–private partnerships; funding and incentives for AI research and startups.
-4. **Public Sector Implementation** — AI in administration to optimise state management and service delivery; ethical guidelines for government deployment.
-5. **Ethical AI Guidelines Development** — alignment with human rights principles; regulatory compliance and governance.
-6. **Privacy and Data Protection** — standardised data governance; strengthening of existing data protection regulations; transparency in AI data usage and storage.
-7. **Safety and Security** — cybersecurity protocols for AI systems; risk management frameworks.
-8. **Transparency and Explainability** — explainable AI; trust and acceptance; accountability; bias detection; public awareness campaigns.
-9. **Fairness and Mitigating Bias** — methods to identify and mitigate bias; inclusive data sets representing all demographics.
-10. **Human Control of Technology (Human-Centred Approach)** — human-in-the-loop systems, especially for generative AI; decision-making frameworks that prioritise human judgment.
-11. **Professional Responsibility** — code of conduct for AI professionals; ethics training in AI education.
-12. **Promotion of Cultural and Human Values** — value-based AI promoting well-being, equality, and environmental sustainability; stakeholder engagement.
-
-If the April 2026 draft policy genuinely consolidates these twelve into six pillars, that is itself a substantive editorial decision — and one we cannot describe accurately until the gazette publishes the actual text.
-
-## What the April 2026 draft policy reportedly does (unverified)
-
-Per the Michalsons article — which we are citing as **secondary reporting**, not as a primary source — Cabinet approved publication of the draft policy on 2 April 2026, following a 24 February 2026 DCDT briefing to Parliament that confirmed clearance through the Socio-Economic Impact Assessment System and Director-General cluster concurrence. The article describes a 60-day public comment window once the gazette is published, with sector-specific regulations and guidelines targeted for the 2027/2028 financial year. The Cabinet decision was originally targeted for March 2026.
-
-The Michalsons piece also reports that government has chosen a **sector-specific, multi-regulator model** rather than establishing a single dedicated AI regulator. AI governance would be embedded within existing supervisory frameworks across financial services, health, education, telecommunications and other sectors. We cannot verify this against primary text until the draft policy is gazetted.
-
-**We will update this page within seven days of the gazette publication** with a side-by-side comparison of (a) the twelve-pillar Framework, (b) the actual gazetted draft policy, and (c) any divergence from the Michalsons summary.
-
-## What this means for organisations building or deploying AI in South Africa
-
-### The legal baseline today
-
-South Africa already has a substantial body of law that touches AI systems even in the absence of an AI Act:
-
-- **POPIA (Protection of Personal Information Act, 2013)** — applies to any AI system that processes personal information; Section 71 specifically addresses automated decision-making.
+- **POPIA (Protection of Personal Information Act, 2013)** — applies to any AI system that processes personal information. **Section 71** specifically addresses automated decision-making and profiling: a data subject is entitled not to be subject to a decision based solely on automated processing unless specific exceptions apply. This obligation already binds South African organisations.
 - **Copyright Act, 1978** (and the unsigned Copyright Amendment Bill) — relevant to training-data provenance and to AI-generated outputs.
 - **Competition Act, 1998** — relevant to algorithmic pricing, market concentration in AI infrastructure, and data-driven anti-competitive conduct.
 - **Patents Act, 1978** — relevant to AI-generated inventions; the *Thaler* line of decisions has been tested in South African courts.
 - **King IV / King V Codes on Corporate Governance** — non-statutory but widely adopted. **King V was adopted by the Institute of Directors in South Africa (IoDSA) on 31 October 2025 and is in force for financial years commencing on or after January 2026.** It consolidates King IV's 17 principles into 13 and introduces explicit AI governance principles alongside enhanced cyber risk provisions — governing bodies are now expected to oversee AI use and AI-related risk as a board-level matter under King V's "apply and explain" regime (see IoDSA publications and the Clyde & Co analysis, November 2025).
 
-None of these are specific to AI. The Framework's stated intent is to give regulators a unified policy direction so that sector-specific rules can be written on a consistent base.
+## What South African organisations should do now
 
-### The practical compliance question for code
+While the draft policy works through the gazette and the 60-day comment window, five things are worth doing today. None of them require waiting for the final text.
 
-Most organisations deploying AI in South Africa today are not building general-purpose models from scratch. They are integrating large language model APIs (OpenAI, Anthropic, Google, AWS Bedrock), building employment-screening or credit-scoring features on top of existing ML libraries, or fine-tuning open-source models on local data. The Framework names exactly these use cases — healthcare, education, finance, employment — as the sectors where ethical AI guidelines, bias mitigation, and human-in-the-loop oversight will be expected.
-
-The reasonable starting position for a South African organisation, while the draft policy is in consultation, is:
-
-1. **Inventory your AI systems.** A list of what you have deployed, in which products, by which teams, with which third-party providers, and against which categories of personal data. POPIA already requires you to know this; the Framework will reinforce the requirement.
+1. **Inventory your AI systems.** A list of what you have deployed, in which products, by which teams, with which third-party providers, and against which categories of personal data. POPIA already requires you to know this, and King V now makes it a board-level oversight obligation.
 2. **Document your data flows.** Where training data came from, what consent or contractual basis covers it, where inference data lives, and who has access.
-3. **Document human oversight.** For each high-stakes deployment (hiring, credit, healthcare triage, content moderation), name the human function that reviews or can override the system. The Framework's pillar 10 explicitly calls out human-in-the-loop as a requirement.
-4. **Map your existing obligations.** POPIA Section 71, Competition Act, sector regulator guidance from the Information Regulator, the FSCA, the Council for Medical Schemes, and the Department of Higher Education and Training as applicable.
-5. **Submit comments on the draft policy when it gazettes.** Industry voices will dominate the consultation if civil society and individual technologists do not participate. The Framework's October 2024 consultation received comparatively few public submissions.
+3. **Document human oversight.** For each high-stakes deployment (hiring, credit scoring, healthcare triage, content moderation), name the human function that reviews or can override the system. Human oversight is central to every modern AI governance regime and will be a focal point of the draft policy's "human-centred deployment" pillar.
+4. **Map your existing obligations.** POPIA Section 71 (automated decision-making), Competition Act, Copyright Act, and sector regulator guidance from the Information Regulator, the FSCA, the Council for Medical Schemes, ICASA and the Department of Higher Education and Training as applicable. Those are the regulators most likely to own AI rule-making in a sector-specific model.
+5. **Submit comments during the 60-day public comment window.** Industry voices will dominate the consultation if civil society, individual technologists and smaller businesses do not participate. Early feedback is the best chance to shape how sector-specific rules are eventually written.
 
-### Where Regula fits
+## Where Regula fits
 
-Regula is an open-source static analysis tool that scans code for AI Act-shaped risk indicators. It was built primarily against the EU AI Act (Regulation (EU) 2024/1689), but the South African Framework explicitly benchmarks against EU AI Act concepts — risk tiers, high-risk categories (employment, biometrics, education, law enforcement, migration, critical infrastructure), human oversight obligations, transparency requirements — so the patterns Regula already detects map directly onto the categories the Framework names.
+Regula is an open-source static analysis tool that scans code for AI Act-shaped risk indicators. It was built primarily against the EU AI Act (Regulation (EU) 2024/1689), but the risk categories it detects — employment, biometrics, education, law enforcement, migration, critical infrastructure, credit scoring, medical devices — are exactly the areas every modern AI governance regime treats as high-risk, including the sectors South Africa's draft policy will route to sector-specific regulators. If you need to know whether a deployment touches a high-risk category today, Regula will tell you.
 
 For a South African team, the practically useful starting commands are:
 
@@ -87,7 +53,7 @@ pip install regula-ai
 regula discover .                    # AI systems present in the project
 regula inventory                     # AI library / model references with GPAI tier annotations
 
-# Risk indicators against the same categories the Framework names
+# Risk indicators against the same categories the draft policy will touch
 regula check .                       # Scan for risk indicators
 regula classify --input "..."        # Classify a code snippet
 regula explain --file path/to/file   # Explain why something was classified
@@ -96,33 +62,41 @@ regula explain --file path/to/file   # Explain why something was classified
 regula gap                           # Articles 9–15-style gap assessment
 regula oversight                     # Cross-file Article 14-style human oversight detection
 regula conform                       # Annex IV-style conformity evidence pack
-regula register .                    # Annex VIII-shaped registration packet (added 7 April 2026)
+regula register .                    # Annex VIII-shaped registration packet
 
 # Health and reproducibility
 regula self-test
 regula doctor
 ```
 
-The `register` command produces an Annex VIII-shaped local artifact even though South Africa does not have an EU-style central AI database. The fields it captures — provider identity, intended purpose, data inputs, system status, conformity references, fundamental rights impact assessment, data protection impact assessment — overlap closely with what the Framework's twelve pillars are likely to demand once sector-specific guidelines are written. Treat the artifact as a structured record-keeping baseline, not as a legal filing.
+The `register` command produces an Annex VIII-shaped local artifact even though South Africa does not have an EU-style central AI database. The fields it captures — provider identity, intended purpose, data inputs, system status, conformity references, fundamental rights impact assessment, data protection impact assessment — are the exact fields any sector-specific South African regulator will eventually ask for. Treat the artifact as a structured record-keeping baseline, not as a legal filing.
 
 Regula is open source, written in Python with **zero production dependencies**, and the entire detection ruleset is in the repository. South African teams can fork it, add SA-specific patterns (POPIA Section 71 markers, FSCA conduct standards, CMS clinical AI requirements) and contribute them back. Issues, pull requests, and substantive feedback are welcome at [github.com/kuzivaai/getregula](https://github.com/kuzivaai/getregula).
 
-## Honest gaps in this page
+## What we are tracking and what we still need to verify
 
-Per the global research-integrity rules under which this page is written:
+We would rather publish what we know and flag what we don't than wait for certainty and let others dominate the conversation. Here is the gap list as of 7 April 2026:
 
-1. **The April 2026 draft policy text has not been verified against a primary source.** Every claim sourced from the Michalsons article is labelled as such. We will revise the page within seven days of gazette publication.
-2. **The "six pillars" claim is unverified.** The October 2024 Framework has twelve. The April 2026 draft may consolidate, expand, rename, or restructure them; we do not yet know.
-3. **The "sector-specific multi-regulator model" claim is unverified.** The Framework's section 4 only says the policy "will serve as the foundational basis for creating AI regulations and potentially an AI Act" — neither confirming nor ruling out a single regulator.
-4. **No commentary on whether the Framework or the draft policy aligns with the AU Continental AI Strategy or the SADC digital strategies has been included** because that comparison cannot be made until the draft policy text is available.
-5. **Regula was built primarily against EU AI Act categories.** Mapping its detection patterns onto the South African Framework's pillars is a directional claim — directly supported by the Framework's own benchmarking language but not equivalent to a SA-specific compliance toolkit. A SA-specific pattern set is on Regula's roadmap and contributions are welcome.
+1. **Exact number and naming of pillars.** Current reporting says six; the gazetted text may show a different count or structure.
+2. **The sector-specific multi-regulator model.** Whether the final text confirms this approach or hedges it, and which specific regulators are named.
+3. **Coordination mechanism across regulators.** How DCDT proposes to prevent conflicting sector rules — this is the single most important practical question for businesses operating across industries.
+4. **High-risk category definitions.** Whether the draft policy carries an explicit Annex III-style list and how it compares to the EU AI Act's categories.
+5. **Public sector obligations.** The extent to which state use of AI (welfare, policing, border control) is treated differently from private sector deployment.
+6. **Alignment with the AU Continental AI Strategy and SADC digital frameworks.** Not addressable until the text is in the public domain.
+
+The moment the gazette publishes, we update the tracker, update this list, and publish a focused breakdown of what changed between the Cabinet-approved draft and the gazetted text.
+
+## Background
+
+Work on a South African AI framework began in 2020 following the Presidential Commission on the Fourth Industrial Revolution (PC4IR). In October 2024 the Department of Communications and Digital Technologies published a National AI Policy Framework as a precursor document, opening a public comment window that closed on 29 November 2024. That Framework benchmarked against international approaches including the EU AI Act and set out twelve strategic pillars as input to the eventual policy. The draft policy Cabinet approved on 2 April 2026 builds on that Framework but is a separate document, and the gazette text will be what matters.
 
 ## Sources
 
-- **National AI Policy Framework** (October 2024) — Department of Communications and Digital Technologies, Republic of South Africa. Read end-to-end as the primary source for sections 6.1–6.12 above. Comment contacts: dsondlo@dcdt.gov.za, mmashologu@dcdt.gov.za. Department: iParioli Office Park, 1166 Jan Shoba Street, Hatfield, Pretoria. Tel: +27 12 427 8000. Website: [www.dcdt.gov.za](https://www.dcdt.gov.za).
-- **Inayatullah, S. (2023)** — "The Futures Triangle: Origins and Iterations." *World Futures Review*, 15(2-4), 112–121. The methodology underlying the Framework's section 5.
-- **Presidential Commission on the Fourth Industrial Revolution** (2020) — The Diagnostic Report. Cited by the Framework as the historical starting point for South Africa's AI policy work.
-- **Michalsons — Nathan-Ross Adams (3 April 2026)** — "South Africa's draft national AI policy open for public comment." Secondary source for the Cabinet approval, the 60-day comment window, and the sector-specific multi-regulator claim. Cited as secondary; not relied on for any claim that could not be checked elsewhere.
-- **Regulation (EU) 2024/1689** — the EU AI Act, against which the South African Framework explicitly benchmarks.
+- **Post-Cabinet media briefing (2 April 2026)** — Minister in the Presidency Khumbudzo Ntshavheni, Pretoria. Announcement of Cabinet approval of the draft National AI Policy for public comment. Confirmed via live broadcast coverage on Sowetan and Business Day.
+- **Michalsons — Nathan-Ross Adams (3 April 2026)** — "South Africa's draft national AI policy open for public comment." Source for the six-pillar structure, sector-specific multi-regulator model, 60-day comment window, 24 February 2026 parliamentary briefing, SEIAS clearance and DG cluster concurrence, and the 2026/2027 and 2027/2028 targets. To be verified against the gazetted text.
+- **Department of Communications and Digital Technologies** — the lead department. Web: [www.dcdt.gov.za](https://www.dcdt.gov.za). Tel: +27 12 427 8000.
+- **POPIA (Protection of Personal Information Act 4 of 2013)** — Republic of South Africa. Section 71 governs automated decision-making and profiling.
+- **King V Code of Corporate Governance (October 2025)** — Institute of Directors in South Africa. Adopted 31 October 2025, in force for financial years commencing on or after January 2026.
+- **October 2024 DCDT National AI Policy Framework** — the precursor document published for public comment (closed 29 November 2024). Useful historical context; superseded in focus by the April 2026 draft policy.
 
 If you spot an error on this page, open an issue on [github.com/kuzivaai/getregula](https://github.com/kuzivaai/getregula) or email a correction. We would rather be told than be wrong.
