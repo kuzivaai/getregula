@@ -27,12 +27,20 @@ CODE_EXTENSIONS = {
 }
 
 # Directories skipped during recursive scanning.
+#
+# `benchmarks` is in this set because it contains test infrastructure:
+# synthetic fixtures with intentional prohibited/high-risk patterns,
+# and cached scan results for OSS projects. Including it in a default
+# `regula check .` would produce noise for users and false high-risk
+# findings on Regula's own repo. The synthetic-fixture runner passes
+# the absolute fixture path explicitly, so it bypasses this skip.
 SKIP_DIRS = {
     ".git", "node_modules", "__pycache__",
     "venv", ".venv",
     "dist", "build",
     ".next", ".tox",
     "egg-info",
+    "benchmarks",
 }
 
 # Model file extensions (binary ML model files).
