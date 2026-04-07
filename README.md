@@ -672,7 +672,39 @@ rules:
   risk_classification:
     force_high_risk: []       # Always treat as high-risk
     exempt: []                # Confirmed low-risk (cannot exempt prohibited)
+
+# Domain-aware severity adjustment
+system:
+  name: "Lending Risk Engine"
+  domain: creditworthiness    # See list below
+  risk_level: high_risk       # Or "" for auto-detect
 ```
+
+### Domain-aware severity
+
+Regula adjusts confidence scores based on the declared system domain. The same finding (e.g. an OpenAI call combined with credit-scoring keywords) becomes a higher-confidence finding in a fintech project than in a demo. This is implemented in `scripts/domain_scoring.py` and applied in `scripts/report.py` during scanning.
+
+Set `system.domain` in `regula-policy.yaml` to one of:
+
+- **Regulated** (Annex III categories — boost applied): `creditworthiness`, `employment`, `insurance`, `education`, `legal`, `law_enforcement`, `migration`, `biometric`, `medical`
+- **Informational** (no boost): `customer_support`, `internal_tooling`, `content_generation`, `general_purpose`
+
+Findings that received a domain boost include a `domain_boost` field in JSON output:
+
+```json
+{
+  "file": "credit.py",
+  "tier": "high_risk",
+  "confidence_score": 95,
+  "domain_boost": {
+    "boost": 15,
+    "domains_matched": ["finance"],
+    "detail": "Domain keywords detected: finance + automated decision logic"
+  }
+}
+```
+
+If `system.domain` is unset, Regula falls back to keyword-based detection (employment, finance, medical, education, law_enforcement, biometrics, infrastructure, migration). The boost is only applied when AI indicators are also present — a file with employment keywords but no AI code gets zero boost.
 
 Policy exemptions **cannot override** Article 5 prohibited practice detection. Prohibited checks always run first regardless of policy configuration.
 
