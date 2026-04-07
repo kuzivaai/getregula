@@ -381,10 +381,16 @@ def test_register_cli_force_overwrites_existing(tmp_path, monkeypatch):
 def test_register_legacy_shim_returns_compatible_dict(monkeypatch, tmp_path):
     """discover_ai_systems.generate_eu_registration() still returns the legacy keys
     so existing callers don't break, but the implementation delegates to register.build_packet."""
+    monkeypatch.setenv("REGULA_REGISTRY", str(tmp_path / "registry.json"))
+
     import policy_config
     monkeypatch.setattr(policy_config, "get_policy",
                         lambda path=None: {"organisation": "Acme",
                                            "governance_contacts": {"ai_officer": {"email": "a@b.c"}}})
+
+    import importlib
+    import discover_ai_systems
+    importlib.reload(discover_ai_systems)
 
     from discover_ai_systems import register_system, generate_eu_registration
 
