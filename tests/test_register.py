@@ -419,3 +419,34 @@ def test_register_legacy_shim_returns_compatible_dict(monkeypatch, tmp_path):
     assert "_packet" in result
     assert result["_packet"]["kind"] == "registration_required"
     print("✓ register: legacy generate_eu_registration shim still returns expected keys")
+
+
+def test_register_highest_annex_iii_point_reads_indicators_and_description():
+    """Regression: _highest_annex_iii_point must read the actual discover() shape
+    (indicators + description), not the non-existent category/patterns keys.
+
+    Bug shipped in Task 7, caught at end-of-branch review: with the wrong keys
+    the helper always returned None and every packet fell through to not_applicable
+    even for unambiguous high-risk provider projects.
+    """
+    from cli import _highest_annex_iii_point
+
+    discovery = {
+        "risk_classifications": [
+            {
+                "file": "train.py",
+                "tier": "high_risk",
+                "indicators": ["employment"],
+                "description": "Employment and workers management",
+            }
+        ],
+    }
+    assert _highest_annex_iii_point(discovery) == 4
+
+    d2 = {"risk_classifications": [{"indicators": ["biometrics"], "description": "Remote biometric ID"}]}
+    assert _highest_annex_iii_point(d2) == 1
+
+    assert _highest_annex_iii_point({"risk_classifications": []}) is None
+    assert _highest_annex_iii_point({}) is None
+
+    print("✓ register: _highest_annex_iii_point reads indicators+description (regression)")
