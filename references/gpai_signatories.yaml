@@ -1,0 +1,131 @@
+# GPAI Code of Practice Signatories
+#
+# Providers that have signed the EU AI Act General-Purpose AI (GPAI) Code of
+# Practice. Signing creates a "rebuttable presumption of conformity" with
+# Articles 53 and 55 of the EU AI Act.
+#
+# Source: European Commission, "The General-Purpose AI Code of Practice",
+#         https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai
+# Cross-reference: Bristows EU AI Act analysis (April 2026),
+#                  Nemko Digital coverage (July 2025).
+#
+# Last updated: 2026-04-07
+# Maintenance: this list changes infrequently. Re-verify against the
+# Commission's published list before each Regula release.
+#
+# Why this file matters: Article 53 enforceability since 2 August 2025
+# means downstream deployers (i.e. anyone whose code calls these providers'
+# SDKs) inherits some of the provenance and documentation expectations.
+# Regula uses this list to annotate AI Bill of Materials entries with each
+# vendor's signing status, so a deployer running `regula sbom --ai-bom`
+# can see at a glance which of their AI vendors has the rebuttable
+# presumption and which does not.
+
+schema_version: "1.0"
+last_verified: "2026-04-07"
+total_signatories: 26
+source_url: "https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai"
+
+# Each entry maps Python/JS package names to the legal entity that signed
+# the GPAI Code of Practice. `signed: true` is the strict claim — only
+# include vendors with verifiable public sign-on. Anyone whose status is
+# uncertain or who has only signalled intent without signing is omitted.
+#
+# Format:
+#   - sdk_packages: list of import names that detect this vendor
+#     legal_entity: who actually signed (may differ from product brand)
+#     signed: true | false
+#     signed_date: ISO date or null
+#     source: URL to the public confirmation
+#     notes: any caveats
+
+vendors:
+  - id: openai
+    sdk_packages: ["openai"]
+    legal_entity: "OpenAI, L.L.C."
+    signed: true
+    signed_date: "2025-07-21"
+    source: "https://digital.nemko.com/news/openai-anthropic-signs-eu-ai-code"
+    notes: "Signed alongside Anthropic on 21 July 2025."
+
+  - id: anthropic
+    sdk_packages: ["anthropic"]
+    legal_entity: "Anthropic, PBC"
+    signed: true
+    signed_date: "2025-07-21"
+    source: "https://digital.nemko.com/news/openai-anthropic-signs-eu-ai-code"
+    notes: "Signed alongside OpenAI on 21 July 2025."
+
+  - id: google_genai
+    sdk_packages: ["google.genai", "google.generativeai", "vertexai"]
+    legal_entity: "Google Ireland Limited / Google LLC"
+    signed: true
+    signed_date: null
+    source: "https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai"
+    notes: "One of the 26 confirmed signatories. Exact signing date varies by entity."
+
+  - id: aws_bedrock
+    sdk_packages: ["boto3", "botocore"]
+    legal_entity: "Amazon Web Services EMEA SARL"
+    signed: true
+    signed_date: null
+    source: "https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai"
+    notes: "AWS signed via its EU entity. boto3 import only signals AI use if Bedrock client is instantiated; this is a heuristic, not a guarantee."
+
+  - id: azure_openai
+    sdk_packages: ["openai", "azure.ai", "azure-ai-inference"]
+    legal_entity: "Microsoft Ireland Operations Limited"
+    signed: true
+    signed_date: null
+    source: "https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai"
+    notes: "Azure OpenAI uses the upstream openai SDK. Detection overlaps with vanilla OpenAI usage."
+
+  - id: mistral
+    sdk_packages: ["mistralai", "mistral_common"]
+    legal_entity: "Mistral AI SAS"
+    signed: true
+    signed_date: null
+    source: "https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai"
+    notes: "EU-headquartered (France). Mistral was an early signatory."
+
+  - id: cohere
+    sdk_packages: ["cohere"]
+    legal_entity: "Cohere Inc."
+    signed: true
+    signed_date: null
+    source: "https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai"
+    notes: ""
+
+  - id: huggingface
+    sdk_packages: ["transformers", "huggingface_hub", "datasets", "diffusers"]
+    legal_entity: "Hugging Face, Inc."
+    signed: true
+    signed_date: null
+    source: "https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai"
+    notes: "Hugging Face is a hub, not a model provider per se. Detection of `transformers` import does not necessarily mean a Hugging Face hosted model is being called — could be a locally-loaded model from any provider."
+
+# Vendors NOT in the GPAI Code of Practice signatory list as of 2026-04-07.
+# Listed here for completeness so the absence is intentional, not an
+# oversight. If your code uses these and you need GPAI rebuttable
+# presumption, the vendor will need to sign or you will need to demonstrate
+# Article 53 conformity through other means.
+#
+# This list is small on purpose — don't speculate. Only include vendors
+# that have a known SDK and a known absence-of-signing status.
+non_signatories:
+  - id: ollama
+    sdk_packages: ["ollama"]
+    notes: "Ollama is a local-model runner, not a provider. The provider obligations attach to whoever trained the model being run."
+  - id: replicate
+    sdk_packages: ["replicate"]
+    notes: "Replicate hosts third-party models. Provider status depends on the model owner, not Replicate."
+
+# Schema notes for downstream consumers:
+# - `signed: true` means the legal entity has signed the GPAI Code of
+#   Practice as published on digital-strategy.ec.europa.eu. It does NOT
+#   mean the entity has been audited or certified.
+# - `signed_date: null` means the date is not in this file but the entity
+#   is on the published list. Add specific dates as they are confirmed.
+# - This file is read by `regula sbom --ai-bom` to annotate detected
+#   vendors. If a vendor is not in this file, it is treated as "unknown
+#   status" and not as "not signed".
