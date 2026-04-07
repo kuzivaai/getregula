@@ -15,7 +15,7 @@ __all__ = ["VERSION", "CODE_EXTENSIONS", "SKIP_DIRS", "MODEL_EXTENSIONS"]
 VERSION = "1.5.1"
 
 # File extensions scanned for AI patterns and risk classification.
-# Covers: Python, JavaScript, TypeScript, Java, Go, Rust, C, C++
+# Covers: Python, JavaScript, TypeScript, Java, Go, Rust, C, C++, Jupyter notebooks
 CODE_EXTENSIONS = {
     ".py",
     ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs",
@@ -23,6 +23,7 @@ CODE_EXTENSIONS = {
     ".go",
     ".rs",
     ".c", ".cpp",
+    ".ipynb",
 }
 
 # Directories skipped during recursive scanning.

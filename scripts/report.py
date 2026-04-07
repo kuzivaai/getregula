@@ -337,12 +337,21 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             if filepath.suffix not in CODE_EXTENSIONS:
                 continue
 
-            try:
-                lines = filepath.read_text(encoding="utf-8", errors="ignore").split("\n")
-            except (PermissionError, OSError):
-                continue
-
-            content = "\n".join(lines)
+            # Jupyter notebooks: extract code cells from the .ipynb JSON.
+            # Line numbers in findings refer to the joined-source position,
+            # not the original notebook cell — see scripts/notebook.py.
+            if filepath.suffix.lower() == ".ipynb":
+                from notebook import extract_code
+                content = extract_code(filepath)
+                if not content:
+                    continue
+                lines = content.split("\n")
+            else:
+                try:
+                    lines = filepath.read_text(encoding="utf-8", errors="ignore").split("\n")
+                except (PermissionError, OSError):
+                    continue
+                content = "\n".join(lines)
             rel_path = str(filepath.relative_to(project))
 
             # Check scan cache — if content unchanged, reuse cached findings
