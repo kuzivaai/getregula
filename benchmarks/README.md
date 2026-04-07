@@ -42,18 +42,24 @@ These findings need manual labelling as true positive (TP) or false positive (FP
 3. Mark as TP (true positive) or FP (false positive)
 4. Calculate precision = TP / (TP + FP) per tier
 
-## Precision (measured 2026-04-01 — staleness warning below)
+## Precision (labels 2026-04-01, re-validated 2026-04-07)
 
-> ⚠ **Staleness.** Labels in `labels.json` were generated against
-> pattern files as of 2026-04-01. Pattern files have been modified at
-> least six times since (commits `3634275`, `e63ac5f`, `0963aa2`,
-> `9a64ef3`, `619c6ee`, `352d097`, `1fbb712`). Commit `0963aa2`'s
-> message claims "projected precision 15% → ~67%" after that change,
-> but a projection is not a measurement. Until a rescan + relabel is
-> performed, the table below is the only **measured** number that exists
-> and is the number `python3 benchmarks/label.py score` reproduces from
-> the committed labels — accept it as a 2026-04-01 snapshot, not a
-> current measurement.
+> **Re-validation result.** Labels in `labels.json` were generated
+> against pattern files as of 2026-04-01. Pattern files have been
+> modified six times since (`3634275`, `e63ac5f`, `0963aa2`, `9a64ef3`,
+> `619c6ee`, `352d097`, `1fbb712`). Commit `0963aa2`'s message
+> projected "precision 15% → ~67%" after that change. **A full rescan
+> on 2026-04-07 (rerun `python3 benchmarks/run_benchmark.py`) found
+> that 252 of 257 labels (98%) still appear in current scan output, and
+> precision on the matched subset is 15.1% — within 0.1pp of the
+> published 15.2%. The projected ~67% did not materialise in
+> measurement against this corpus.**
+>
+> **Coverage caveat.** The same rescan produced 3,927 findings that
+> have no label. The published number is honest but covers only ~6%
+> (252/4179) of what the scanner currently emits on these five repos.
+> A precision figure that covers the full output requires labelling
+> that delta and is the next piece of work.
 
 After hand-labelling 257 findings sampled across the five projects above
 (see `labels.json`), the measured precision is in `results/PRECISION.json`.
