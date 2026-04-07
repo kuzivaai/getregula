@@ -1092,7 +1092,13 @@ def cmd_register(args):
 
 
 def _highest_annex_iii_point(discovery: dict):
-    """Return the Annex III point number for the highest-risk classification, or None."""
+    """Return the Annex III point number for the highest-risk classification, or None.
+
+    Reads the actual discover_ai_systems shape: each risk_classifications entry has
+    `indicators` (list of pattern names) and `description` (free text). Earlier
+    revisions of this helper looked for `category`/`patterns` which don't exist,
+    causing all packets to fall through to not_applicable. Fixed.
+    """
     risk_classifications = discovery.get("risk_classifications", []) or []
     pattern_to_point = {
         "biometrics": 1,
@@ -1105,9 +1111,14 @@ def _highest_annex_iii_point(discovery: dict):
         "justice": 8,
     }
     for rc in risk_classifications:
-        cat = (rc.get("category") or "").lower()
+        # Search indicators (the actual pattern names) and description (free text)
+        haystack = " ".join([
+            *(rc.get("indicators") or []),
+            (rc.get("description") or ""),
+            (rc.get("category") or ""),  # legacy compatibility, harmless
+        ]).lower()
         for k, v in pattern_to_point.items():
-            if k in cat:
+            if k in haystack:
                 return v
         for pat in (rc.get("patterns") or []):
             for k, v in pattern_to_point.items():
