@@ -5660,6 +5660,40 @@ def test_notebook_scan_end_to_end():
 
 
 # ---------------------------------------------------------------------------
+# Published precision matches the labelled benchmark
+# ---------------------------------------------------------------------------
+
+def test_published_precision_matches_labels():
+    """The README/benchmark precision number must match labels.json."""
+    from pathlib import Path as _P
+    root = _P(__file__).parent.parent
+    labels_path = root / "benchmarks" / "labels.json"
+    if not labels_path.exists():
+        print("⊘ precision: skipped (no labels.json)")
+        return
+    labels = json.loads(labels_path.read_text())
+    tp = sum(1 for x in labels if x.get("label") == "tp")
+    fp = sum(1 for x in labels if x.get("label") == "fp")
+    if tp + fp == 0:
+        print("⊘ precision: skipped (no tp/fp labels)")
+        return
+    measured = round(tp / (tp + fp), 3)
+    # README publishes 15.2% — fail loudly if labels move and the README isn't updated.
+    bench_readme = (root / "benchmarks" / "README.md").read_text()
+    main_readme = (root / "README.md").read_text()
+    pct_str = f"{measured * 100:.1f}%"
+    assert pct_str in bench_readme, (
+        f"benchmarks/README.md publishes a precision number that does not match "
+        f"labels.json. Labels say {pct_str}; update the README table or relabel."
+    )
+    assert pct_str in main_readme, (
+        f"README.md publishes a precision number that does not match labels.json. "
+        f"Labels say {pct_str}; update the README table or relabel."
+    )
+    print(f"✓ precision: published number {pct_str} matches labels.json (tp={tp}, fp={fp})")
+
+
+# ---------------------------------------------------------------------------
 # GitHub Action sanity (action.yml structure)
 # ---------------------------------------------------------------------------
 
@@ -6258,6 +6292,8 @@ if __name__ == "__main__":
         test_mcp_server_initialize_and_list_tools,
         # GitHub Action sanity (1 test)
         test_action_yml_has_inline_pr_comment_step,
+        # Published precision regression guard (1 test)
+        test_published_precision_matches_labels,
     ]
 
     print(f"Running {len(tests)} tests...\n")
