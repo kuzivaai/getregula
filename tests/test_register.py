@@ -272,3 +272,45 @@ def test_register_build_packet_schema_provenance_present(monkeypatch):
     assert p["verified_date"] == "2026-04-07"
     assert isinstance(p["sources"], list) and len(p["sources"]) >= 3
     print("✓ register: schema provenance present")
+
+
+def test_register_write_packet_creates_canonical_json(tmp_path):
+    """write_packet() creates the .json file under output_dir/<system-id>.json."""
+    from register import write_packet
+    packet = {
+        "system_id": "abc123",
+        "system_name": "demo",
+        "annex_viii_section": "A",
+        "_gaps": [],
+        "kind": "registration_required",
+    }
+    out = write_packet(packet, output_dir=tmp_path, force=False)
+    assert out.exists()
+    assert out.name == "abc123.json"
+
+    import json as _json
+    loaded = _json.loads(out.read_text())
+    assert loaded["system_id"] == "abc123"
+    print(f"✓ register: write_packet wrote {out}")
+
+
+def test_register_write_gaps_yaml_only_contains_gap_fields(tmp_path):
+    """The companion .gaps.yaml lists every gap field with an empty value: slot."""
+    from register import write_gaps_yaml
+    packet = {
+        "system_id": "abc123",
+        "_gaps": [
+            {"field": "intended_purpose", "section_point": 5,
+             "label": "Description of intended purpose", "why": "manual entry required"},
+            {"field": "member_states", "section_point": 10,
+             "label": "Member States...", "why": "manual entry required"},
+        ],
+    }
+    out = write_gaps_yaml(packet, output_dir=tmp_path)
+    assert out.exists()
+    text = out.read_text()
+    assert "intended_purpose:" in text
+    assert "member_states:" in text
+    assert "value:" in text   # empty slots
+    assert "Description of intended purpose" in text  # label as comment
+    print(f"✓ register: gaps.yaml written ({len(text)} bytes)")
