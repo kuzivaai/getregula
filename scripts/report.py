@@ -472,6 +472,11 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 "confidence_score": confidence_score,
                 "suppressed": is_suppressed,
                 "observations": observations,
+                "domain_boost": {
+                    "boost": domain_boost,
+                    "domains_matched": domain_result.get("domains_matched", []),
+                    "detail": domain_result.get("detail", ""),
+                } if domain_boost > 0 else None,
             })
 
             # Cache findings collected for this file
