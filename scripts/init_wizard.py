@@ -8,7 +8,6 @@ creates a default policy file, and runs an initial scan.
 """
 
 import json
-import os
 import sys
 from pathlib import Path
 

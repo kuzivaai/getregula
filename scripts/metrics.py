@@ -7,7 +7,6 @@ Metrics are never sent anywhere; they exist only on the local machine.
 """
 
 import json
-import os
 from datetime import datetime, timezone
 from pathlib import Path
 

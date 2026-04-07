@@ -8,7 +8,6 @@ remediation commands. Addresses risks like the LiteLLM supply chain attack
 """
 
 import json
-import os
 import re
 import sys
 from datetime import datetime, timezone

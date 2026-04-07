@@ -17,7 +17,6 @@ Usage:
 """
 
 import json
-import sys
 import urllib.request
 import urllib.error
 from pathlib import Path

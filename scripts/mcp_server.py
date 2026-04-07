@@ -27,8 +27,6 @@ Claude Code config (~/.claude/settings.json):
 
 import json
 import sys
-import os
-import tempfile
 from pathlib import Path
 from typing import Any, Dict
 
