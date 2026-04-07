@@ -34,9 +34,6 @@ from typing import Optional
 sys.path.insert(0, str(Path(__file__).parent))
 
 from report import scan_files, SKIP_DIRS, CODE_EXTENSIONS, MODEL_EXTENSIONS
-from classify_risk import classify, RiskTier, is_ai_related
-
-
 # ---------------------------------------------------------------------------
 # Context extraction
 # ---------------------------------------------------------------------------

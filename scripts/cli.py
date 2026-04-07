@@ -225,7 +225,7 @@ def cmd_check(args):
     else:
         # Human-readable output
         from i18n import t
-        from term_style import red, yellow, blue, magenta, bold, dim
+        from term_style import red, yellow, blue, magenta
         print(f"\n{t('scan_header', path=project)}")
         print(f"{'=' * 60}")
         total_files = len(set(f["file"] for f in findings))
@@ -845,7 +845,7 @@ def cmd_docs(args):
 
 def cmd_compliance(args):
     """Manage compliance status of registered AI systems."""
-    from discover_ai_systems import update_compliance_status, load_registry, COMPLIANCE_TRANSITIONS, COMPLIANCE_STATUSES
+    from discover_ai_systems import update_compliance_status, load_registry, COMPLIANCE_TRANSITIONS
 
     if args.subcommand == "update":
         try:
@@ -1214,7 +1214,7 @@ def cmd_conform(args):
 def cmd_benchmark(args):
     """Run real-world validation benchmark."""
     from benchmark import benchmark_project, benchmark_suite, calculate_metrics, load_labelled_results
-    from benchmark import format_benchmark_text, format_benchmark_json, format_labelling_csv
+    from benchmark import format_benchmark_text, format_labelling_csv
 
     if args.metrics:
         results = load_labelled_results(args.metrics)
@@ -1276,7 +1276,7 @@ def cmd_sbom(args):
 
 def cmd_agent(args):
     """Agentic AI governance monitoring."""
-    from agent_monitor import analyse_agent_session, check_mcp_config, format_agent_text, format_agent_json
+    from agent_monitor import analyse_agent_session, check_mcp_config, format_agent_text
 
     if args.check_mcp:
         findings = check_mcp_config(getattr(args, "config_file", None))

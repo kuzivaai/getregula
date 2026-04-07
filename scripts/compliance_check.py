@@ -45,11 +45,11 @@ except ImportError:
 
 _classify_available = check_optional("classify_risk", "risk classification", "included with regula")
 if _classify_available:
-    from classify_risk import classify, RiskTier, is_ai_related
+    from classify_risk import classify, RiskTier
 
 _report_available = check_optional("report", "file scanning", "included with regula")
 if _report_available:
-    from report import scan_files, SKIP_DIRS, CODE_EXTENSIONS
+    from report import SKIP_DIRS, CODE_EXTENSIONS
 else:
     from constants import CODE_EXTENSIONS, SKIP_DIRS
 

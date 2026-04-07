@@ -11,8 +11,6 @@ Produces human-readable explanations for risk classifications:
 import re
 import sys
 from pathlib import Path
-from typing import Optional
-
 sys.path.insert(0, str(Path(__file__).parent))
 
 from risk_types import RiskTier, Classification

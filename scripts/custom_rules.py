@@ -10,8 +10,6 @@ Rule file locations (checked in order):
   2. ./regula-rules.yaml (project root)
   3. ~/.regula/regula-rules.yaml (user home)
 """
-
-import os
 from pathlib import Path
 
 try:

@@ -23,9 +23,6 @@ Design decisions:
 
 import re
 from dataclasses import dataclass
-from typing import Optional
-
-
 @dataclass
 class SecretFinding:
     pattern_name: str

@@ -20,11 +20,9 @@ import re
 import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional
-
 sys.path.insert(0, str(Path(__file__).parent))
 
-from log_event import query_events, log_event
+from log_event import query_events
 
 
 # Sensitive resource patterns that agents should not access without oversight
