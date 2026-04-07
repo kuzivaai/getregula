@@ -134,22 +134,22 @@ def cmd_check(args):
         else:
             print(f"  Diff mode: no changed files found since {args.diff} (showing all)", file=sys.stderr)
 
-    active = [f for f in findings if not f.get("suppressed")]
-    suppressed = [f for f in findings if f.get("suppressed")]
-
-    prohibited = [f for f in active if f["tier"] == "prohibited"]
-    credentials = [f for f in active if f["tier"] == "credential_exposure"]
-    high_risk = [f for f in active if f["tier"] == "high_risk"]
-    limited = [f for f in active if f["tier"] == "limited_risk"]
-    autonomy = [f for f in active if f["tier"] == "agent_autonomy"]
-
-    # Assign finding tiers to all active findings
-    for f in active:
-        f["_finding_tier"] = _get_finding_tier_from_dict(f)
-
-    block_findings = [f for f in active if f["_finding_tier"] == "block"]
-    warn_findings = [f for f in active if f["_finding_tier"] == "warn"]
-    info_findings = [f for f in active if f["_finding_tier"] == "info"]
+    # Partition findings via the pure function in findings_view.
+    # This used to be 16 inlined lines mutating the input list; the
+    # extraction lets us unit-test the partition (test_findings_view.py)
+    # without going through the CLI.
+    from findings_view import partition_findings
+    _view = partition_findings(findings)
+    active = _view["active"]
+    suppressed = _view["suppressed"]
+    prohibited = _view["prohibited"]
+    credentials = _view["credentials"]
+    high_risk = _view["high_risk"]
+    limited = _view["limited"]
+    autonomy = _view["autonomy"]
+    block_findings = _view["block"]
+    warn_findings = _view["warn"]
+    info_findings = _view["info"]
 
     # Record scan metrics (best-effort, never blocks a scan)
     try:
