@@ -87,9 +87,10 @@ These items have a values conflict with Regula's stated principles ("zero produc
 
 ## Blocked on prerequisites
 
-### ~~Publish precision / recall benchmarks~~ — UNBLOCKED 2026-04-07
-- A labelled benchmark already existed in `benchmarks/` (257 hand-labelled findings across 5 OSS projects, last labelled 2026-04-01) but was not surfaced anywhere user-facing. Now published in `README.md` and `benchmarks/README.md` with the honest **15.2% overall precision**, per-tier breakdown, methodology, limitations ("no `prohibited`/`high_risk` findings in this sample → those tiers cannot be estimated here", "recall not estimable from labelled findings alone"), and a reproducible `benchmarks/label.py score` command. Test `test_published_precision_matches_labels` fails the build if labels move and the README isn't updated.
-- **Next step (separate work):** the minimal_risk tier dominates and is noisy on general-purpose libraries — this is the next pattern-tuning target. Also need a benchmark fixture that actually triggers `prohibited`/`high_risk` so those tiers can be measured.
+### Publish precision / recall benchmarks — partial (2026-04-07)
+- The 2026-04-01 labelled corpus (257 findings, 15.2% precision) is now surfaced in `README.md` and `benchmarks/README.md` with explicit staleness warning. `python3 benchmarks/label.py score` reproduces the number from `labels.json` and `test_published_precision_matches_labels` enforces that the README stays in sync with the file.
+- **BLOCKED on rescan.** Pattern files were modified at least six times after labels were generated (notably `0963aa2` whose own commit message claims "projected precision 15% → ~67%"). The published 15.2% is therefore a 2026-04-01 snapshot, not a current measurement. Next step: rerun `benchmarks/run_benchmark.py`, diff against `labels.json` to identify findings that no longer fire and findings that need fresh labels, relabel the delta, and update the published number.
+- **Also still TODO:** the minimal_risk tier dominates and is noisy on general-purpose libraries (next pattern-tuning target); the labelled sample contains zero `prohibited`/`high_risk` findings so those tiers cannot be estimated from this corpus and need a separate fixture.
 
 ---
 
