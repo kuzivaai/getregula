@@ -484,6 +484,59 @@ regula timeline                          # Display timeline
 regula timeline --format json            # Machine-readable
 ```
 
+### MCP Server (use Regula from Claude Code, Cursor, Windsurf)
+
+Regula ships an MCP (Model Context Protocol) server that exposes
+`regula_check`, `regula_classify`, and `regula_gap` as tools an AI coding
+assistant can call directly. The server uses stdio transport and JSON-RPC
+2.0; no network exposure, no authentication needed (the parent process
+controls access).
+
+```bash
+regula mcp-server                          # Start MCP server (stdio)
+```
+
+**Claude Code** (`~/.claude/settings.json`):
+
+```json
+{
+  "mcpServers": {
+    "regula": {
+      "command": "python3",
+      "args": ["/absolute/path/to/getregula/scripts/mcp_server.py"]
+    }
+  }
+}
+```
+
+If you installed Regula via `pip install regula-ai`, you can use the
+console entry point instead:
+
+```json
+{
+  "mcpServers": {
+    "regula": {
+      "command": "regula",
+      "args": ["mcp-server"]
+    }
+  }
+}
+```
+
+**Cursor** (`~/.cursor/mcp.json`) and **Windsurf** (`~/.codeium/windsurf/mcp_config.json`)
+use the same `mcpServers` schema — copy the same block.
+
+After restarting your client, the assistant gains three tools:
+
+- `regula_check` — scan a project directory; returns findings with tier,
+  confidence, and remediation guidance.
+- `regula_classify` — classify a code snippet against EU AI Act risk tiers.
+- `regula_gap` — assess Articles 9–15 compliance gaps with per-article scores.
+
+**Security note.** The MCP server is stdio-only and inherits the
+permissions of the parent process. Do not expose it over TCP/HTTP without
+adding authentication first.
+
 ## Architecture
 
 ```
