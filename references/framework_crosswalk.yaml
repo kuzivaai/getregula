@@ -477,3 +477,75 @@ mappings:
         - "ICO Security (Art. 5(1)(f) UK GDPR): Appropriate technical and organisational measures required to protect against unauthorised processing and accidental loss"
         - "DSIT Principle 3 — Fairness: Accuracy requirements include ensuring outputs do not systematically disadvantage protected groups"
       notes: "ICO has powers to issue enforcement notices and fines under UK GDPR for accuracy failures in automated systems. Accuracy obligation is binding, not aspirational."
+
+# ---------------------------------------------------------------------------
+# NIST AI 600-1 — Generative AI Profile (July 2024)
+# ---------------------------------------------------------------------------
+# 12 risks unique to or exacerbated by generative AI, mapped to the EU AI Act
+# articles where they create obligations. This is a SEPARATE top-level section
+# from `mappings:` because the NIST GenAI risks are not 1:1 with EU AI Act
+# articles — each risk maps to multiple articles, and each article touches
+# multiple risks.
+#
+# Source: NIST.AI.600-1, "Artificial Intelligence Risk Management Framework:
+#         Generative Artificial Intelligence Profile", July 2024
+# URL: https://airc.nist.gov/docs/NIST.AI.600-1.GenAI-Profile.ipd.pdf
+# Authority: NIST (US National Institute of Standards and Technology)
+#
+nist_ai_600_1_genai_profile:
+  source: "NIST AI 600-1 (July 2024)"
+  url: "https://airc.nist.gov/docs/NIST.AI.600-1.GenAI-Profile.ipd.pdf"
+  description: "12 risks unique to or exacerbated by generative AI, with mapping to EU AI Act articles where each risk creates an obligation."
+  risks:
+    - id: cbrn
+      name: "CBRN Information or Capabilities"
+      description: "GenAI may lower barriers to chemical, biological, radiological, and nuclear threat information."
+      maps_to_eu_ai_act_articles: ["9", "15"]
+    - id: confabulation
+      name: "Confabulation"
+      description: "Confidently stated but false or internally inconsistent outputs (hallucinations)."
+      maps_to_eu_ai_act_articles: ["13", "14", "15"]
+    - id: dangerous_violent_hateful
+      name: "Dangerous, Violent, or Hateful Content"
+      description: "Generation of content that promotes or incites violence, hatred, or harm."
+      maps_to_eu_ai_act_articles: ["9", "15"]
+    - id: data_privacy
+      name: "Data Privacy"
+      description: "Models may leak, generate, or infer sensitive information about individuals (data memorization)."
+      maps_to_eu_ai_act_articles: ["10", "15"]
+    - id: environmental_impacts
+      name: "Environmental Impacts"
+      description: "Energy consumption and carbon emissions of training and serving large generative models."
+      maps_to_eu_ai_act_articles: ["9"]
+      notes: "EU AI Act has limited explicit environmental obligations; NIST profile flags this as a gap."
+    - id: harmful_bias_homogenization
+      name: "Harmful Bias or Homogenization"
+      description: "GenAI outputs may amplify training-data bias or homogenize cultural and stylistic diversity."
+      maps_to_eu_ai_act_articles: ["10"]
+    - id: human_ai_configuration
+      name: "Human-AI Configuration"
+      description: "Misalignment of human roles with AI capabilities, including over-reliance and under-reliance."
+      maps_to_eu_ai_act_articles: ["13", "14"]
+    - id: information_integrity
+      name: "Information Integrity"
+      description: "Risks to information ecosystems including misinformation and synthetic media."
+      maps_to_eu_ai_act_articles: ["10", "13", "50"]
+    - id: information_security
+      name: "Information Security"
+      description: "Adversarial attacks (prompt injection, model extraction, data poisoning) on GenAI systems."
+      maps_to_eu_ai_act_articles: ["12", "15"]
+    - id: intellectual_property
+      name: "Intellectual Property"
+      description: "Training data may include copyrighted material; outputs may reproduce or derive from it."
+      maps_to_eu_ai_act_articles: ["10", "53"]
+      notes: "Article 53(1)(c) requires GPAI providers to publish a copyright policy."
+    - id: obscene_degrading_abusive
+      name: "Obscene, Degrading, and/or Abusive Content"
+      description: "Generation of CSAM, non-consensual intimate imagery, and abusive content."
+      maps_to_eu_ai_act_articles: ["5", "15"]
+      notes: "Digital Omnibus (March 2026) introduces new prohibition on non-consensual intimate deepfakes."
+    - id: value_chain_component_integration
+      name: "Value Chain and Component Integration"
+      description: "Risks introduced when integrating third-party models, datasets, and APIs into a system."
+      maps_to_eu_ai_act_articles: ["11", "16"]
+      notes: "Maps to Annex IV technical documentation requirements for component provenance."

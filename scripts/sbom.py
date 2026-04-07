@@ -231,6 +231,71 @@ def _scan_datasets(project_path: str) -> list[dict]:
     return datasets
 
 
+def _load_gpai_signatories() -> dict:
+    """Load the GPAI Code of Practice signatory metadata from references/.
+
+    Returns a dict mapping vendor id (lowercase) → signatory entry, plus
+    a `provider_alias` index from common provider strings. Best-effort —
+    if the file is missing or yaml unavailable, returns empty maps so
+    the enrichment becomes a no-op rather than blocking the BOM.
+    """
+    out = {"by_id": {}, "by_alias": {}}
+    try:
+        ref_path = Path(__file__).resolve().parent.parent / "references" / "gpai_signatories.yaml"
+        if not ref_path.is_file():
+            return out
+        try:
+            import yaml
+        except ImportError:
+            return out
+        data = yaml.safe_load(ref_path.read_text(encoding="utf-8")) or {}
+    except Exception:
+        return out
+
+    for vendor in data.get("vendors", []) or []:
+        vid = (vendor.get("id") or "").lower()
+        if not vid:
+            continue
+        out["by_id"][vid] = vendor
+        # Index by every alias we can think of: id, legal entity stripped, sdk packages
+        aliases = {vid}
+        legal = (vendor.get("legal_entity") or "").lower().split(",")[0].strip()
+        if legal:
+            aliases.add(legal)
+        for pkg in vendor.get("sdk_packages") or []:
+            aliases.add(pkg.lower())
+            aliases.add(pkg.lower().replace("-", "_"))
+            aliases.add(pkg.lower().replace("_", "-"))
+        for alias in aliases:
+            out["by_alias"].setdefault(alias, vendor)
+    return out
+
+
+_GPAI_SIGNATORIES = _load_gpai_signatories()
+
+
+def _gpai_status_for_provider(provider: str) -> dict:
+    """Return GPAI signing status props for a detected provider, or empty list."""
+    if not provider or provider == "unknown":
+        return {"signed": "unknown"}
+    key = provider.lower().strip()
+    entry = _GPAI_SIGNATORIES["by_alias"].get(key)
+    if not entry:
+        # Try a partial match (e.g. "OpenAI" vs "openai")
+        for alias, e in _GPAI_SIGNATORIES["by_alias"].items():
+            if key in alias or alias in key:
+                entry = e
+                break
+    if not entry:
+        return {"signed": "unknown"}
+    return {
+        "signed": "true" if entry.get("signed") else "false",
+        "legal_entity": entry.get("legal_entity", ""),
+        "signed_date": entry.get("signed_date") or "",
+        "source": entry.get("source", ""),
+    }
+
+
 def _enrich_ai_bom(project_path: str, components: list[dict],
                    seen_names: set[str]) -> tuple[list[dict], list[dict]]:
     """Enrich SBOM components with AI BOM data.
@@ -286,6 +351,18 @@ def _enrich_ai_bom(project_path: str, components: list[dict],
             {"name": "regula:eu-note", "value": eu_note},
             {"name": "regula:eu-ai-act-articles", "value": eu_articles},
         ]
+
+        # GPAI Code of Practice signatory status (Article 53 rebuttable
+        # presumption of conformity). See references/gpai_signatories.yaml
+        # for the source list and methodology.
+        gpai_status = _gpai_status_for_provider(provider)
+        props.append({"name": "regula:gpai-code-signed", "value": gpai_status.get("signed", "unknown")})
+        if gpai_status.get("legal_entity"):
+            props.append({"name": "regula:gpai-legal-entity", "value": gpai_status["legal_entity"]})
+        if gpai_status.get("signed_date"):
+            props.append({"name": "regula:gpai-signed-date", "value": gpai_status["signed_date"]})
+        if gpai_status.get("source"):
+            props.append({"name": "regula:gpai-source", "value": gpai_status["source"]})
         # Add first occurrence as source reference
         if occurrences:
             props.append({"name": "regula:source-file", "value": occurrences[0]["file"]})
@@ -481,9 +558,17 @@ def generate_sbom(project_path: str, project_name: str | None = None,
         components, bom_meta_extra = _enrich_ai_bom(str(root), components, seen_names)
 
     # ── Assemble BOM ──────────────────────────────────────────────
+    # CycloneDX 1.7 (October 2025, ECMA-424 2nd Edition) is the current
+    # standard. v1.7 adds AI/ML-specific fields including model card
+    # extensions for packaging, serialization behaviour, structural
+    # modifications (quantization, adapters), and runtime probes — see
+    # https://cyclonedx.org/capabilities/mlbom/
+    # Regula's existing field set is a subset of v1.7's allowed schema,
+    # so the spec bump is additive: existing consumers continue to work,
+    # and v1.7-aware tooling sees the correct version string.
     bom: dict = {
         "bomFormat": "CycloneDX",
-        "specVersion": "1.6",
+        "specVersion": "1.7",
         "version": 1,
         "serialNumber": f"urn:uuid:{uuid.uuid4()}",
         "metadata": {

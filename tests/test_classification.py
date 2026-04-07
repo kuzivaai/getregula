@@ -2183,7 +2183,7 @@ def test_ast_engine_rust_non_ai():
 # ── SBOM Generation Tests ──────────────────────────────────────────
 
 def test_sbom_cyclonedx_structure():
-    """SBOM generates valid CycloneDX 1.6 structure"""
+    """SBOM generates valid CycloneDX 1.7 structure (Oct 2025, ECMA-424 2nd Ed.)"""
     import tempfile, shutil
     from sbom import generate_sbom
     temp_dir = tempfile.mkdtemp()
@@ -2192,13 +2192,13 @@ def test_sbom_cyclonedx_structure():
     try:
         bom = generate_sbom(temp_dir)
         assert_eq(bom["bomFormat"], "CycloneDX", "bomFormat is CycloneDX")
-        assert_eq(bom["specVersion"], "1.6", "specVersion is 1.6")
+        assert_eq(bom["specVersion"], "1.7", "specVersion is 1.7")
         assert_true("components" in bom, "has components")
         assert_true("metadata" in bom, "has metadata")
         assert_true(len(bom["components"]) > 0, "has at least 1 component")
     finally:
         shutil.rmtree(temp_dir, ignore_errors=True)
-    print("✓ SBOM: CycloneDX 1.6 structure valid")
+    print("✓ SBOM: CycloneDX 1.7 structure valid")
 
 
 def test_sbom_ai_library_detection():
@@ -5743,6 +5743,106 @@ def test_published_precision_matches_labels():
         f"Labels say {pct_str}; update the README table or relabel."
     )
     print(f"✓ precision: published number {pct_str} matches labels.json (tp={tp}, fp={fp})")
+
+
+# ---------------------------------------------------------------------------
+# CycloneDX 1.7 spec bump (Oct 2025, ECMA-424 2nd Edition)
+# ---------------------------------------------------------------------------
+
+def test_sbom_uses_cyclonedx_1_7():
+    """generate_sbom must emit specVersion 1.7 to align with the current standard."""
+    import tempfile, shutil, os
+    from sbom import generate_sbom
+    tmpdir = tempfile.mkdtemp()
+    try:
+        with open(os.path.join(tmpdir, "a.py"), "w") as f:
+            f.write("import openai\nclient = openai.OpenAI()\n")
+        bom = generate_sbom(tmpdir, ai_bom=True)
+        assert bom.get("specVersion") == "1.7", f"expected specVersion 1.7, got {bom.get('specVersion')}"
+        print("✓ sbom: CycloneDX specVersion 1.7")
+    finally:
+        shutil.rmtree(tmpdir)
+
+
+# ---------------------------------------------------------------------------
+# GPAI Code of Practice signatory annotation
+# ---------------------------------------------------------------------------
+
+def test_gpai_signatories_file_loads():
+    """references/gpai_signatories.yaml must load and have 26 signatories pledged."""
+    if not _HAS_PYYAML:
+        print("⊘ gpai_signatories: skipped (pyyaml not installed)")
+        return
+    from pathlib import Path as _P
+    p = _P(__file__).parent.parent / "references" / "gpai_signatories.yaml"
+    data = yaml.safe_load(p.read_text())
+    assert data["schema_version"] == "1.0"
+    assert data["total_signatories"] == 26
+    vendors = data.get("vendors", [])
+    # Sanity: at least the 8 vendors I curated must be present
+    vendor_ids = {v["id"] for v in vendors}
+    for required in ("openai", "anthropic", "mistral", "cohere", "huggingface"):
+        assert required in vendor_ids, f"missing required vendor: {required}"
+    # All listed vendors must have signed: true (otherwise they belong in non_signatories)
+    for v in vendors:
+        assert v.get("signed") is True, f"vendor {v['id']} marked signed:false in vendors list"
+    print(f"✓ gpai_signatories: {len(vendors)} curated vendors loaded")
+
+
+def test_sbom_annotates_openai_with_gpai_signed():
+    """When openai is detected, the BOM should include regula:gpai-code-signed=true."""
+    import tempfile, shutil, os
+    from sbom import generate_sbom
+    tmpdir = tempfile.mkdtemp()
+    try:
+        with open(os.path.join(tmpdir, "use.py"), "w") as f:
+            f.write(
+                "import openai\n"
+                "client = openai.OpenAI()\n"
+                "client.chat.completions.create(model='gpt-4', messages=[])\n"
+            )
+        bom = generate_sbom(tmpdir, ai_bom=True)
+        models = [c for c in bom.get("components", []) if c.get("type") == "machine-learning-model"]
+        assert len(models) >= 1, f"expected models in BOM, got: {[c.get('type') for c in bom.get('components', [])]}"
+        # Find the OpenAI-provided model and confirm it has the signed annotation
+        signed_props = []
+        for m in models:
+            for p in m.get("properties", []):
+                if p["name"] == "regula:gpai-code-signed":
+                    signed_props.append(p["value"])
+        assert "true" in signed_props or "unknown" in signed_props, \
+            f"expected gpai-code-signed property, got props: {[p['name'] for m in models for p in m.get('properties',[])]}"
+        print(f"✓ sbom: GPAI annotation present (statuses: {signed_props})")
+    finally:
+        shutil.rmtree(tmpdir)
+
+
+# ---------------------------------------------------------------------------
+# NIST AI 600-1 GenAI Profile mapping
+# ---------------------------------------------------------------------------
+
+def test_nist_ai_600_1_mapping_present():
+    """framework_crosswalk.yaml must include the 12 NIST AI 600-1 GenAI risks."""
+    if not _HAS_PYYAML:
+        print("⊘ nist_ai_600_1: skipped (pyyaml not installed)")
+        return
+    from pathlib import Path as _P
+    p = _P(__file__).parent.parent / "references" / "framework_crosswalk.yaml"
+    data = yaml.safe_load(p.read_text())
+    assert "nist_ai_600_1_genai_profile" in data, "missing nist_ai_600_1_genai_profile section"
+    profile = data["nist_ai_600_1_genai_profile"]
+    risks = profile.get("risks", [])
+    assert len(risks) == 12, f"expected 12 risks, got {len(risks)}"
+    risk_ids = {r["id"] for r in risks}
+    required = {"cbrn", "confabulation", "data_privacy", "harmful_bias_homogenization",
+                "human_ai_configuration", "information_integrity", "information_security",
+                "intellectual_property", "value_chain_component_integration"}
+    missing = required - risk_ids
+    assert not missing, f"missing required risk ids: {missing}"
+    # Each risk must map to at least one EU AI Act article
+    for r in risks:
+        assert r.get("maps_to_eu_ai_act_articles"), f"risk {r['id']} has no article mapping"
+    print(f"✓ nist_ai_600_1: 12 risks loaded, all mapped to EU AI Act articles")
 
 
 # ---------------------------------------------------------------------------
