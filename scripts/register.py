@@ -249,3 +249,89 @@ def _gap_reason(source) -> str:
     if source is None:
         return "Cannot be derived from code — manual entry required"
     return f"Source '{source}' did not return a value for this project"
+
+
+import hashlib
+
+
+def build_packet(discovery: dict, role: str, annex_iii_point,
+                 deployer_type: str = "none", art_6_3_exempted: bool = False) -> dict:
+    """Build the full Annex VIII packet `data` block (the inside of json_output's envelope).
+
+    For non-applicable / no-registration cases, returns a packet with kind set
+    accordingly and a `redirects` list instead of fields.
+    """
+    schema = load_schema()
+    decision = detect_section_and_target(role=role, annex_iii_point=annex_iii_point,
+                                         deployer_type=deployer_type,
+                                         art_6_3_exempted=art_6_3_exempted)
+
+    project_name = discovery.get("project_name", "<unknown>")
+    project_path = discovery.get("project_path", "")
+    system_id = hashlib.sha256(project_path.encode("utf-8")).hexdigest()[:16]
+
+    # Edge cases — not_applicable / no_registration_required
+    highest_risk = discovery.get("highest_risk", "minimal_risk")
+    if highest_risk in ("not_ai", "minimal_risk"):
+        return {
+            "system_id": system_id,
+            "system_name": project_name,
+            "kind": "no_registration_required",
+            "reason": f"Project classified as {highest_risk}; Annex VIII registration does not apply.",
+            "redirects": build_redirects("no_registration_required"),
+            "schema_provenance": _provenance(schema),
+            "deadlines": schema["deadlines"],
+        }
+
+    if decision["kind"] == "not_applicable":
+        return {
+            "system_id": system_id,
+            "system_name": project_name,
+            "kind": "not_applicable",
+            "reason": "Private-sector deployer — outside Article 49 scope. "
+                      "Article 26 obligations still apply.",
+            "redirects": build_redirects("not_applicable"),
+            "schema_provenance": _provenance(schema),
+            "deadlines": schema["deadlines"],
+        }
+
+    section = decision["section"]
+    section_def = schema["sections"][section]
+    fields_def = section_def["fields"]
+
+    filled, gaps = resolve_autofill(fields_def, discovery=discovery,
+                                    exclude_points=decision["fields_excluded"])
+
+    total = len(fields_def) - len(decision["fields_excluded"])
+    filled_count = sum(1 for f in filled.values() if f["verified"])
+
+    submission_status = section_def.get("submission_status", "mandatory")
+
+    return {
+        "system_id": system_id,
+        "system_name": project_name,
+        "annex_viii_section": section,
+        "article": decision["article"],
+        "submission_target": decision["target"],
+        "submission_status": submission_status,
+        "fields_excluded_under_49_4": decision["fields_excluded"],
+        "fields": filled,
+        "_gaps": gaps,
+        "completeness": {
+            "filled": filled_count,
+            "total": total,
+            "percentage": int(round(100 * filled_count / total)) if total else 0,
+        },
+        "deadlines": schema["deadlines"],
+        "schema_provenance": _provenance(schema),
+        "kind": "registration_required",
+    }
+
+
+def _provenance(schema: dict) -> dict:
+    md = schema["metadata"]
+    return {
+        "verified_date": md["verified_date"],
+        "verification_method": md["verification_method"],
+        "sources": list(md["sources"]),
+    }

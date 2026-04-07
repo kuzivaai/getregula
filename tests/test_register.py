@@ -206,3 +206,60 @@ def test_register_resolve_autofill_lists_undriveable_fields_in_gaps():
     for g in gaps:
         assert "field" in g and "section_point" in g and "label" in g and "why" in g
     print(f"✓ register: gap list contains {len(gaps)} undriveable fields")
+
+
+def test_register_build_packet_envelope_shape(monkeypatch):
+    """build_packet() returns a dict with all required top-level keys."""
+    from register import build_packet
+    import policy_config
+    monkeypatch.setattr(policy_config, "get_policy",
+                        lambda path=None: {"organisation": "Acme",
+                                           "governance_contacts": {"ai_officer": {"email": "a@b.c"}}})
+
+    discovery = {"project_name": "demo", "project_path": "/tmp/demo",
+                 "compliance_status": "in_progress",
+                 "ai_libraries": ["openai"], "model_files": [],
+                 "highest_risk": "high_risk"}
+
+    packet = build_packet(discovery=discovery, role="provider", annex_iii_point=4,
+                          deployer_type="none", art_6_3_exempted=False)
+
+    required = {"system_id", "system_name", "annex_viii_section", "article",
+                "submission_target", "submission_status", "fields", "_gaps",
+                "completeness", "deadlines", "schema_provenance", "kind"}
+    missing = required - set(packet.keys())
+    assert not missing, f"missing keys: {missing}"
+    assert packet["annex_viii_section"] == "A"
+    assert packet["article"] == "49(1)"
+    assert packet["completeness"]["total"] == 13
+    assert packet["completeness"]["filled"] >= 1
+    print(f"✓ register: build_packet envelope shape ({packet['completeness']})")
+
+
+def test_register_build_packet_dual_timeline_present():
+    """Every packet carries both the current law and the Omnibus proposed deadlines."""
+    from register import build_packet
+    discovery = {"project_name": "x", "project_path": "/tmp/x",
+                 "compliance_status": "not_started", "ai_libraries": [],
+                 "model_files": [], "highest_risk": "high_risk"}
+    packet = build_packet(discovery=discovery, role="provider", annex_iii_point=4,
+                          deployer_type="none", art_6_3_exempted=False)
+    d = packet["deadlines"]
+    assert d["applicable_deadline"] == "2026-08-02"
+    assert d["omnibus_proposed_deadline"] == "2027-12-02"
+    assert "trilogue_in_progress" in d["omnibus_status"]
+    print("✓ register: dual timeline present")
+
+
+def test_register_build_packet_schema_provenance_present():
+    """Every packet carries schema provenance (sources + verified date)."""
+    from register import build_packet
+    discovery = {"project_name": "x", "project_path": "/tmp/x",
+                 "compliance_status": "not_started", "ai_libraries": [],
+                 "model_files": [], "highest_risk": "high_risk"}
+    packet = build_packet(discovery=discovery, role="provider", annex_iii_point=4,
+                          deployer_type="none", art_6_3_exempted=False)
+    p = packet["schema_provenance"]
+    assert p["verified_date"] == "2026-04-07"
+    assert isinstance(p["sources"], list) and len(p["sources"]) >= 3
+    print("✓ register: schema provenance present")
