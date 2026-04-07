@@ -38,15 +38,15 @@
       "omnibus_field_simplification": "pending_trilogue_as_of_2026-04-07",
       "heading": "Information to be submitted by providers of high-risk AI systems in accordance with Article 49(2)",
       "fields": [
-        {"point": 1, "key": "provider_identity",                  "label": "Provider name, address and contact details",                                  "autofill_source": "policy_config"},
-        {"point": 2, "key": "submission_agent_identity",          "label": "Submission agent name, address and contact details (if applicable)",          "autofill_source": null},
-        {"point": 3, "key": "authorised_representative_identity", "label": "Authorised representative name, address and contact details (if applicable)", "autofill_source": "policy_config"},
-        {"point": 4, "key": "ai_system_trade_name",               "label": "AI system trade name and identification reference",                            "autofill_source": "discover"},
-        {"point": 5, "key": "intended_purpose",                   "label": "Description of intended purpose",                                              "autofill_source": null},
-        {"point": 6, "key": "art_6_3_condition",                  "label": "Applicable condition under Article 6(3) for not-high-risk classification",     "autofill_source": null},
-        {"point": 7, "key": "art_6_3_grounds",                    "label": "Summary of grounds for not-high-risk determination",                           "autofill_source": null},
-        {"point": 8, "key": "system_status",                      "label": "System status (on market / in service / no longer available / recalled)",      "autofill_source": "discover"},
-        {"point": 9, "key": "member_states",                      "label": "Member States where system was placed on market or put into service",          "autofill_source": null}
+        {"point": 1, "key": "provider_identity",                  "label": "Provider name, address and contact details",                                  "autofill_source": "policy_config", "excluded_under_49_4": false},
+        {"point": 2, "key": "submission_agent_identity",          "label": "Submission agent name, address and contact details (if applicable)",          "autofill_source": null,            "excluded_under_49_4": false},
+        {"point": 3, "key": "authorised_representative_identity", "label": "Authorised representative name, address and contact details (if applicable)", "autofill_source": "policy_config", "excluded_under_49_4": false},
+        {"point": 4, "key": "ai_system_trade_name",               "label": "AI system trade name and identification reference",                            "autofill_source": "discover",      "excluded_under_49_4": false},
+        {"point": 5, "key": "intended_purpose",                   "label": "Description of intended purpose",                                              "autofill_source": null,            "excluded_under_49_4": false},
+        {"point": 6, "key": "art_6_3_condition",                  "label": "Applicable condition under Article 6(3) for not-high-risk classification",     "autofill_source": null,            "excluded_under_49_4": false},
+        {"point": 7, "key": "art_6_3_grounds",                    "label": "Summary of grounds for not-high-risk determination",                           "autofill_source": null,            "excluded_under_49_4": false},
+        {"point": 8, "key": "system_status",                      "label": "System status (on market / in service / no longer available / recalled)",      "autofill_source": "discover",      "excluded_under_49_4": false},
+        {"point": 9, "key": "member_states",                      "label": "Member States where system was placed on market or put into service",          "autofill_source": null,            "excluded_under_49_4": false}
       ]
     },
     "C": {
@@ -54,11 +54,11 @@
       "obligated_party": "deployer_public_authority",
       "heading": "Information to be submitted by deployers of high-risk AI systems in accordance with Article 49(3)",
       "fields": [
-        {"point": 1, "key": "deployer_identity",          "label": "Deployer name, address and contact details",                                                "autofill_source": "policy_config"},
-        {"point": 2, "key": "submission_agent_identity",  "label": "Submission agent name and contact details",                                                 "autofill_source": null},
-        {"point": 3, "key": "provider_db_entry_url",      "label": "URL of the entry of the AI system in the EU database by its provider",                      "autofill_source": null},
-        {"point": 4, "key": "fria_summary",               "label": "Summary of the findings of the fundamental rights impact assessment (Art. 27)",             "autofill_source": "assess"},
-        {"point": 5, "key": "dpia_summary",               "label": "Summary of the data protection impact assessment (GDPR Art. 35) where applicable",          "autofill_source": null}
+        {"point": 1, "key": "deployer_identity",          "label": "Deployer name, address and contact details",                                                "autofill_source": "policy_config", "excluded_under_49_4": false},
+        {"point": 2, "key": "submission_agent_identity",  "label": "Submission agent name and contact details",                                                 "autofill_source": null,            "excluded_under_49_4": false},
+        {"point": 3, "key": "provider_db_entry_url",      "label": "URL of the entry of the AI system in the EU database by its provider",                      "autofill_source": null,            "excluded_under_49_4": false},
+        {"point": 4, "key": "fria_summary",               "label": "Summary of the findings of the fundamental rights impact assessment (Art. 27)",             "autofill_source": "assess",        "excluded_under_49_4": false},
+        {"point": 5, "key": "dpia_summary",               "label": "Summary of the data protection impact assessment (GDPR Art. 35) where applicable",          "autofill_source": null,            "excluded_under_49_4": false}
       ]
     }
   },
