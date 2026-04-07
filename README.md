@@ -130,24 +130,15 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 
 ## Why Regula?
 
-Several EU AI Act tools exist. Here is an honest comparison with the closest ones.
+Regula's design choices, stated on their own terms:
 
-| | Regula | [Systima Comply](https://dev.to/systima/open-source-eu-ai-act-compliance-scanning-for-cicd-4ogj) | [AIR Blackbox](https://github.com/airblackbox) | [EuConform](https://github.com/Hiepler/EuConform) | [ark-forge MCP](https://github.com/ark-forge/mcp-eu-ai-act) |
-|---|---|---|---|---|---|
-| **Type** | CLI + pre-commit/git hooks | npm CLI + GitHub Action | MCP server | Web app (browser) | MCP server |
-| **Python analysis** | Full AST (data flow, oversight) | Unknown | Runtime tracing | None | Regex only |
-| **JS/TS analysis** | Moderate (tree-sitter) | **AST + 37 frameworks + call-chain** | LangChain/OpenAI focus | None | Regex only |
-| **Hook integration** | Claude Code, Copilot CLI, Windsurf | CI/CD only | Cursor, Claude Desktop | None | Cursor, Claude Desktop |
-| **Offline / no deps** | Yes (stdlib only) | Requires npm | Requires MCP client | Browser + Ollama | Single dep (mcp) |
-| **Gap assessment** | Articles 9-15 scored 0-100 | Unknown | 22 controls (SOC 2/ISO 27001) | Articles 5-15 classification | Doc file existence only |
-| **Audit trail** | Hash-chained, file-locked | Unknown | Deterministic replay | None | Unknown |
-| **Bias testing** | CrowS-Pairs (`regula bias`) | None | None | **CrowS-Pairs** | None |
-| **Fix generation** | None | None | **Yes** | None | None |
-| **License** | MIT | Apache 2.0 | Unknown | Unknown | Unknown |
+- **CLI-first.** A single executable that runs in CI, in pre-commit hooks, and from a developer's terminal. No browser, no SaaS account, no model service.
+- **Stdlib-only core.** The base scanner has zero required production dependencies. PyYAML, tree-sitter, WeasyPrint, and Sentry are all optional and gated behind explicit feature flags.
+- **Static analysis only.** Regula reads source files. It does not run code, call models, or send data anywhere. Air-gapped environments are a first-class use case.
+- **EU AI Act-shaped.** Risk tiers, finding categories, and the conformity evidence pack are aligned to the regulation's structure (Article 5 prohibited practices, Annex III high-risk categories, Articles 9–15 obligations) rather than to a generic SAST taxonomy.
+- **Honest about its own precision.** The benchmark in `benchmarks/` measures Regula against five labelled OSS projects and publishes the actual number — see *Real-World Validation Benchmark* below.
 
-**Where Regula leads:** pre-commit hook integration, Python AST depth, compliance gap assessment (Articles 9-15), dependency pinning analysis, offline zero-dependency operation.
-
-**Where Regula falls short:** JS/TS analysis (Systima is deeper), fix code generation (AIR Blackbox has it, Regula doesn't).
+A side-by-side comparison against other EU AI Act tools belongs in a separate document with primary-source citations per claim, not on this front page. An earlier version of this section listed several competitors with feature-by-feature comparisons that could not be backed by primary sources at the time of writing — that table has been removed rather than carried as unverified marketing.
 
 If your primary stack is TypeScript and you need CI/CD integration, Systima Comply is worth evaluating alongside Regula. If you need runtime interception and automated fix suggestions, AIR Blackbox serves a different need.
 
