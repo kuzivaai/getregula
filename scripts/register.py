@@ -348,3 +348,54 @@ def _provenance(schema: dict) -> dict:
         "verification_method": md["verification_method"],
         "sources": list(md["sources"]),
     }
+
+
+REGISTRY_RELATIVE = Path(".regula") / "registry"
+
+
+def write_packet(packet: dict, output_dir=None, force: bool = False) -> Path:
+    """Write the canonical packet JSON to <output_dir>/<system_id>.json.
+
+    Defaults output_dir to .regula/registry under the current working directory.
+    Raises FileExistsError if the file exists and force=False.
+    """
+    out_dir = Path(output_dir) if output_dir else REGISTRY_RELATIVE
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_file = out_dir / f"{packet['system_id']}.json"
+
+    if out_file.exists() and not force:
+        raise FileExistsError(
+            f"Packet already exists at {out_file}. Re-run with --force to overwrite."
+        )
+
+    out_file.write_text(json.dumps(packet, indent=2, default=str), encoding="utf-8")
+    return out_file
+
+
+def write_gaps_yaml(packet: dict, output_dir=None) -> Path:
+    """Write the companion gaps YAML containing only gap fields, for hand-editing.
+
+    YAML is hand-emitted (no PyYAML), keeping with Regula's stdlib-only stance.
+    Format is intentionally minimal: one key per gap with an empty value: slot
+    and the label/why as comments.
+    """
+    out_dir = Path(output_dir) if output_dir else REGISTRY_RELATIVE
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_file = out_dir / f"{packet['system_id']}.gaps.yaml"
+
+    lines = [
+        f"# Annex VIII gaps for system_id={packet['system_id']}",
+        "# Edit each `value:` slot in place. Lines starting with # are comments.",
+        "# After editing, the canonical JSON packet at <system_id>.json remains",
+        "# the source of truth — fold values back manually for v1.",
+        "",
+    ]
+    for gap in packet.get("_gaps", []):
+        lines.append(f"# Section point {gap['section_point']}: {gap['label']}")
+        lines.append(f"# Why gap: {gap['why']}")
+        lines.append(f"{gap['field']}:")
+        lines.append("  value:")
+        lines.append("")
+
+    out_file.write_text("\n".join(lines), encoding="utf-8")
+    return out_file
