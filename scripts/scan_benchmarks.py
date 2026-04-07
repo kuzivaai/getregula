@@ -174,5 +174,16 @@ def _git_available() -> bool:
     return shutil.which("git") is not None
 
 
+def self_benchmark_dict() -> dict:
+    """Programmatic entry point for tests/CI: benchmark this repo against itself.
+
+    Returns a small dict with files_scanned, findings, and wall_seconds.
+    Network-free (only scans the local checkout).
+    """
+    repo_root = Path(__file__).resolve().parent.parent
+    sha = _git_head_sha(repo_root)
+    return benchmark_path("getregula (self)", repo_root, sha)
+
+
 if __name__ == "__main__":
     sys.exit(main())
