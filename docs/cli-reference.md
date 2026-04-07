@@ -104,6 +104,36 @@ Output: 26 files across 12 folders, including Annex IV draft, audit trail, SBOM,
 
 **Important:** This is a compliance evidence scaffold, not a legal determination. The `00-assessment-summary.json` file lists what Regula auto-generated and what requires human input (intended purpose, FRIA, training data provenance, etc.).
 
+### Annex VIII Registration Packet (Article 49)
+
+Generates an Annex VIII Section A/B/C registration packet for an AI project, branching by provider/deployer role and Annex III area, auto-filling fields from existing Regula scan artifacts, and listing the gaps that require manual entry.
+
+```bash
+regula register .                              # auto-detect role + section
+regula register . --section B                  # force Section B (Art 6(3) self-exemption)
+regula register . --deployer-type public_authority  # force public-authority deployer (Section C)
+regula register . --format json                # emit json_output envelope
+regula register . --force                      # overwrite existing packet
+```
+
+Output: `.regula/registry/<system-id>.json` (canonical packet) plus `.regula/registry/<system-id>.gaps.yaml` (companion file with empty `value:` slots for fields needing human input). Both files include the dual deadline annotation (`2026-08-02` current law / `2027-12-02` Omnibus pending) and the schema provenance block listing the three sources used to verify the field schemas.
+
+**Branching logic** (verified against Regulation (EU) 2024/1689):
+
+| Detected role | Annex III point | Section | Submission target | Article |
+|---|---|---|---|---|
+| Provider | 1 (biometrics) | A subset (excl. 6, 8, 9) | `eu_database_non_public` | 49(4) |
+| Provider | 2 (critical infrastructure) | A full | `national_authority` | 49(5) |
+| Provider | 3, 4, 5, 8 | A full | `eu_database_public` | 49(1) |
+| Provider | 6 (law enforcement) | A subset (excl. 6, 8, 9) | `eu_database_non_public` | 49(4) |
+| Provider | 7 (migration/asylum/border) | A subset (excl. 6, 8, 9) | `eu_database_non_public` | 49(4) |
+| Provider self-exempted via Art 6(3) | n/a | B (mandatory; field set may simplify under Omnibus) | `eu_database_public` | 49(2) |
+| Public-authority deployer | any | C | varies by point | 49(3) |
+| Private-sector deployer | any | n/a — out of Art 49 scope | n/a | see `regula gap` (Article 26) |
+| `not_ai` / `minimal_risk` | n/a | n/a | n/a — `no_registration_required` packet | n/a |
+
+**Important:** This is a local packet generator. The EU AI Act database (Art. 71) is not user-writable as of 2026-04-07; the packet is the credible CLI-side artifact. The schema source of truth lives at `references/annex_viii_sections.json` with `verification_method: three_independent_sources_agree_exact` and a documented EUR-Lex unreachability note.
+
 ### Cross-File Human Oversight Analysis (Article 14)
 
 Traces AI model outputs across Python files to check whether each path from an AI call to a user-facing endpoint passes through a human review gate.

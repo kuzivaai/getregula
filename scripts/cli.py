@@ -1017,6 +1017,163 @@ def cmd_disclose(args):
         print(text)
 
 
+def cmd_register(args):
+    """Generate an Annex VIII registration packet for a project (Article 49)."""
+    import os
+    from register import build_packet, write_packet, write_gaps_yaml
+    from discover_ai_systems import discover
+    from explain import detect_provider_deployer
+
+    project_path = args.path or "."
+    try:
+        project = _validate_path(project_path)
+    except PathError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(2)
+
+    if not project.is_dir():
+        print(f"register: PATH must be a directory, got {project}", file=sys.stderr)
+        sys.exit(2)
+
+    # Determine output directory before chdir so relative --output is interpreted from CWD
+    if args.output:
+        out_dir = Path(args.output).parent
+        if not out_dir.is_absolute():
+            out_dir = (Path.cwd() / out_dir).resolve()
+    else:
+        out_dir = (project / ".regula" / "registry").resolve()
+
+    # chdir into project so resolve_autofill's Path(".regula/...") helpers see the right files
+    original_cwd = Path.cwd()
+    try:
+        os.chdir(project)
+
+        discovery = discover(str(project))
+        annex_iii_point = _highest_annex_iii_point(discovery)
+        code_blob = _read_code_blob(project)
+        pd = detect_provider_deployer(code_blob)
+        role = pd["role"]  # provider | deployer | unclear
+
+        deployer_type = getattr(args, "deployer_type", "none") or "none"
+        art_6_3_exempted = getattr(args, "art_6_3_exempted", False)
+
+        forced_section = getattr(args, "section", "auto")
+        if forced_section != "auto":
+            if forced_section == "B":
+                art_6_3_exempted = True
+            elif forced_section == "C" and role != "deployer":
+                print(f"register: --section C requires a deployer role, got {role}", file=sys.stderr)
+                sys.exit(2)
+
+        try:
+            packet = build_packet(
+                discovery=discovery, role=role, annex_iii_point=annex_iii_point,
+                deployer_type=deployer_type, art_6_3_exempted=art_6_3_exempted,
+            )
+        except Exception as e:
+            print(f"register: failed to build packet: {e}", file=sys.stderr)
+            sys.exit(2)
+    finally:
+        os.chdir(original_cwd)
+
+    try:
+        out_path = write_packet(packet, output_dir=out_dir, force=args.force)
+    except FileExistsError as e:
+        print(f"register: {e}", file=sys.stderr)
+        sys.exit(2)
+
+    if not getattr(args, "no_gaps_yaml", False) and packet.get("_gaps"):
+        write_gaps_yaml(packet, output_dir=out_dir)
+
+    if args.format == "json":
+        json_output("register", packet)
+    else:
+        _print_register_text(packet, out_path)
+
+
+def _highest_annex_iii_point(discovery: dict):
+    """Return the Annex III point number for the highest-risk classification, or None.
+
+    Reads the actual discover_ai_systems shape: each risk_classifications entry has
+    `indicators` (list of pattern names) and `description` (free text). Earlier
+    revisions of this helper looked for `category`/`patterns` which don't exist,
+    causing all packets to fall through to not_applicable. Fixed.
+    """
+    risk_classifications = discovery.get("risk_classifications", []) or []
+    pattern_to_point = {
+        "biometrics": 1,
+        "critical_infrastructure": 2,
+        "education": 3,
+        "employment": 4,
+        "essential_services": 5,
+        "law_enforcement": 6,
+        "migration": 7,
+        "justice": 8,
+    }
+    for rc in risk_classifications:
+        # Search indicators (the actual pattern names) and description (free text)
+        haystack = " ".join([
+            *(rc.get("indicators") or []),
+            (rc.get("description") or ""),
+            (rc.get("category") or ""),  # legacy compatibility, harmless
+        ]).lower()
+        for k, v in pattern_to_point.items():
+            if k in haystack:
+                return v
+        for pat in (rc.get("patterns") or []):
+            for k, v in pattern_to_point.items():
+                if k in pat.lower():
+                    return v
+    return None
+
+
+def _read_code_blob(project: Path) -> str:
+    """Concatenate up to ~200 KB of .py source from the project for role detection."""
+    chunks = []
+    total = 0
+    for py in project.rglob("*.py"):
+        s = str(py)
+        if "/.regula/" in s or "/__pycache__/" in s:
+            continue
+        try:
+            content = py.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        chunks.append(content)
+        total += len(content)
+        if total > 200_000:
+            break
+    return "\n".join(chunks)
+
+
+def _print_register_text(packet: dict, out_path) -> None:
+    """Human-readable summary."""
+    print(f"\n=== Annex VIII Registration Packet ===")
+    print(f"  System:           {packet.get('system_name', '?')}")
+    print(f"  System ID:        {packet.get('system_id', '?')}")
+    kind = packet.get("kind", "?")
+    print(f"  Kind:             {kind}")
+    if kind == "registration_required":
+        print(f"  Section:          {packet.get('annex_viii_section')} (Article {packet.get('article')})")
+        print(f"  Submission target: {packet.get('submission_target')}")
+        print(f"  Status:           {packet.get('submission_status')}")
+        comp = packet.get("completeness", {})
+        print(f"  Completeness:     {comp.get('filled')}/{comp.get('total')} ({comp.get('percentage')}%)")
+        gaps = packet.get("_gaps", [])
+        if gaps:
+            print(f"  Gaps to fill:     {len(gaps)} field(s) — see {out_path.with_suffix('.gaps.yaml').name}")
+    else:
+        print(f"  Reason:           {packet.get('reason', '')}")
+        print(f"  Next steps:")
+        for r in packet.get("redirects", []):
+            print(f"    - {r}")
+    d = packet.get("deadlines", {})
+    print(f"\n  Deadline (current law):    {d.get('applicable_deadline')}")
+    print(f"  Deadline (Omnibus prop.):  {d.get('omnibus_proposed_deadline')}  [{d.get('omnibus_status')}]")
+    print(f"\n  Packet written to: {out_path}")
+    print()
+
+
 def cmd_feedback(args):
     """Open a pre-filled GitHub Issue to report a false positive, false negative, or bug."""
     import os
@@ -1680,6 +1837,23 @@ def _build_subparsers(subparsers):
     p_disclose.add_argument("--name", "-n", help="AI system name for templates")
     p_disclose.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_disclose.set_defaults(func=cmd_disclose)
+
+    # --- register ---
+    p_register = subparsers.add_parser("register", help="Generate Annex VIII registration packet (Article 49)")
+    p_register.add_argument("path", nargs="?", default=".", help="Project path (default: current dir)")
+    p_register.add_argument("--section", choices=["auto", "A", "B", "C"], default="auto",
+                            help="Force a section (default: auto-detect via role)")
+    p_register.add_argument("--target", choices=["auto", "eu_public", "eu_non_public", "national"],
+                            default="auto", help="Force submission target")
+    p_register.add_argument("--deployer-type", choices=["none", "public_authority"],
+                            default="none", help="Override role detection")
+    p_register.add_argument("--art-6-3-exempted", action="store_true",
+                            help="Provider has self-assessed as non-high-risk under Art 6(3)")
+    p_register.add_argument("--output", "-o", help="Output path (default: .regula/registry/<system-id>.json)")
+    p_register.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_register.add_argument("--force", action="store_true", help="Overwrite existing packet")
+    p_register.add_argument("--no-gaps-yaml", action="store_true", help="Skip companion .gaps.yaml")
+    p_register.set_defaults(func=cmd_register)
 
     # --- fix ---
     p_fix = subparsers.add_parser("fix", help="Generate compliance fix scaffolds for findings")

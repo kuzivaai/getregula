@@ -2,14 +2,14 @@
 
 ## Identity
 
-Regula v1.5.1 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only core. 38 CLI commands, 330 risk patterns, 38 architecture detections, 8 languages, 12 compliance frameworks. Zero production dependencies.
+Regula v1.5.1 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only core. 39 CLI commands, 330 risk patterns, 38 architecture detections, 8 languages, 12 compliance frameworks. Zero production dependencies.
 
 GitHub: kuzivaai/getregula | PyPI: regula-ai | CLI command: regula
 
 ## Commands
 
 ```bash
-# Primary test runner (custom — tests must be in the manual list at bottom of file)
+# Primary test runner (custom — auto-discovers test_* functions in test_classification.py globals)
 python3 tests/test_classification.py
 
 # Secondary (pytest — discovers test_ functions automatically)
@@ -40,9 +40,9 @@ This works because every file has `sys.path.insert(0, str(Path(__file__).parent)
 
 ## Test Convention
 
-1. Define the test function in `tests/test_classification.py`
-2. Add it to the **manual list** at the bottom of the file (inside `if __name__ == "__main__":`)
-3. Both steps are required — the custom runner only executes functions in that list
+1. Define the test function in `tests/test_<topic>.py` (or directly in `tests/test_classification.py`)
+2. The custom runner walks `globals()` of `tests/test_classification.py` and runs every `test_*` function it finds (auto-discovery added in commit `a90009f`). Pytest discovers separate `tests/test_*.py` files natively.
+3. To make tests in a separate file visible to the custom runner: import the module as an alias and bind the `test_*` functions into globals — see the `test_register` wiring at the top of `test_classification.py` for the pattern (it also filters out tests requiring pytest fixtures so they only run under pytest).
 
 ## Version
 
