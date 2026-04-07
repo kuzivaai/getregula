@@ -6,34 +6,28 @@
   "next_review": "Within 7 days of gazette publication",
   "rows": [
     {
-      "label": "October 2024 Framework",
-      "value": "Published by DCDT, public comment closed 29 Nov 2024",
-      "state": "verified",
-      "source": "https://www.dcdt.gov.za"
-    },
-    {
-      "label": "DCDT briefs Parliament",
-      "value": "24 February 2026 — SEIAS clearance, DG cluster concurrence (per Michalsons reporting)",
-      "state": "secondary",
-      "source": "https://www.michalsons.com"
-    },
-    {
       "label": "Cabinet approval",
-      "value": "Reportedly 2 April 2026 — announced by Minister Khumbudzo Ntshavheni",
-      "state": "secondary",
-      "source": "https://www.michalsons.com"
+      "value": "2 April 2026 — draft approved for public comment by Minister in the Presidency Khumbudzo Ntshavheni at a post-Cabinet briefing",
+      "state": "verified",
+      "source": "https://www.sowetan.co.za/news/2026-04-02-watch-live-minister-in-the-presidency-khumbudzo-ntshavheni-holds-a-post-cabinet-briefing/"
     },
     {
       "label": "Gazette publication",
-      "value": "Pending as of 7 April 2026",
+      "value": "Pending as of 7 April 2026 — we will update the moment it drops",
       "state": "pending",
       "source": null
     },
     {
       "label": "Public comment window",
-      "value": "60 days from gazette date (estimated April–June 2026)",
+      "value": "60 days from gazette date (expected April–June 2026)",
       "state": "estimated",
       "source": null
+    },
+    {
+      "label": "Regulatory model",
+      "value": "Sector-specific, multi-regulator (financial services, health, education, telecoms) — per Michalsons reporting; confirm on gazette",
+      "state": "secondary",
+      "source": "https://www.michalsons.com"
     },
     {
       "label": "Final policy",
@@ -46,6 +40,12 @@
       "value": "2027/2028 financial year (target)",
       "state": "estimated",
       "source": null
+    },
+    {
+      "label": "Background",
+      "value": "October 2024 DCDT Policy Framework published as the precursor document",
+      "state": null,
+      "source": "https://www.dcdt.gov.za"
     }
   ]
 }
