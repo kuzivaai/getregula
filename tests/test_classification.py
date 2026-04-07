@@ -5746,6 +5746,75 @@ def test_published_precision_matches_labels():
 
 
 # ---------------------------------------------------------------------------
+# findings_view.partition_findings — extracted from cli.cmd_check (C2)
+# ---------------------------------------------------------------------------
+
+def test_partition_findings_separates_suppressed():
+    from findings_view import partition_findings
+    findings = [
+        {"file": "a.py", "tier": "high_risk", "confidence_score": 70, "suppressed": False},
+        {"file": "b.py", "tier": "high_risk", "confidence_score": 70, "suppressed": True},
+    ]
+    view = partition_findings(findings)
+    assert len(view["active"]) == 1
+    assert len(view["suppressed"]) == 1
+    assert view["suppressed"][0]["file"] == "b.py"
+    print("✓ findings_view: suppressed split correctly")
+
+
+def test_partition_findings_groups_by_tier():
+    from findings_view import partition_findings
+    findings = [
+        {"file": "p.py", "tier": "prohibited", "confidence_score": 90},
+        {"file": "h.py", "tier": "high_risk", "confidence_score": 80},
+        {"file": "l.py", "tier": "limited_risk", "confidence_score": 50},
+        {"file": "a.py", "tier": "agent_autonomy", "confidence_score": 60},
+        {"file": "c.py", "tier": "credential_exposure", "confidence_score": 90},
+        {"file": "m.py", "tier": "minimal_risk", "confidence_score": 20},
+    ]
+    view = partition_findings(findings)
+    assert len(view["prohibited"]) == 1 and view["prohibited"][0]["file"] == "p.py"
+    assert len(view["high_risk"]) == 1 and view["high_risk"][0]["file"] == "h.py"
+    assert len(view["limited"]) == 1 and view["limited"][0]["file"] == "l.py"
+    assert len(view["autonomy"]) == 1 and view["autonomy"][0]["file"] == "a.py"
+    assert len(view["credentials"]) == 1 and view["credentials"][0]["file"] == "c.py"
+    print("✓ findings_view: 5 tiers grouped correctly")
+
+
+def test_partition_findings_does_not_mutate_input():
+    """The original cli.cmd_check inlined version mutated the input list
+    by adding _finding_tier to each finding. The extracted partition must
+    NOT mutate inputs."""
+    from findings_view import partition_findings
+    original = {"file": "x.py", "tier": "high_risk", "confidence_score": 70}
+    findings = [original]
+    _ = partition_findings(findings)
+    assert "_finding_tier" not in original, "input was mutated"
+    print("✓ findings_view: input list not mutated")
+
+
+def test_partition_findings_assigns_display_tier():
+    """Active findings come back annotated with _finding_tier (block/warn/info)."""
+    from findings_view import partition_findings
+    findings = [
+        {"file": "p.py", "tier": "prohibited", "confidence_score": 90},
+    ]
+    view = partition_findings(findings)
+    assert view["active"][0]["_finding_tier"] in ("block", "warn", "info")
+    print(f"✓ findings_view: display tier annotated ({view['active'][0]['_finding_tier']})")
+
+
+def test_partition_findings_empty_input():
+    from findings_view import partition_findings
+    view = partition_findings([])
+    assert view["active"] == []
+    assert view["suppressed"] == []
+    assert view["prohibited"] == []
+    assert view["block"] == []
+    print("✓ findings_view: empty input handled")
+
+
+# ---------------------------------------------------------------------------
 # GitHub Action sanity (action.yml structure)
 # ---------------------------------------------------------------------------
 
