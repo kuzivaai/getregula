@@ -5592,6 +5592,73 @@ def test_js_ts_function_declaration_detected():
     assert "13" in articles, f"Expected Article 13 observation for scoreApplicant, got: {obs}"
 
 
+# ---------------------------------------------------------------------------
+# Jupyter notebook (.ipynb) source extraction
+# ---------------------------------------------------------------------------
+
+def test_notebook_extract_code_cells():
+    """extract_code returns only code cells, joined with blank lines."""
+    import tempfile, os, json
+    from notebook import extract_code
+    nb = {
+        "cells": [
+            {"cell_type": "markdown", "source": "# Title\nSome text"},
+            {"cell_type": "code", "source": ["import openai\n", "client = openai.OpenAI()\n"]},
+            {"cell_type": "code", "source": "model = 'gpt-4'\n"},
+            {"cell_type": "raw", "source": "ignore me"},
+        ],
+        "metadata": {}, "nbformat": 4, "nbformat_minor": 5,
+    }
+    with tempfile.NamedTemporaryFile("w", suffix=".ipynb", delete=False) as f:
+        json.dump(nb, f)
+        path = f.name
+    try:
+        text = extract_code(path)
+        assert "import openai" in text, f"missing openai import: {text!r}"
+        assert "gpt-4" in text, f"missing second cell: {text!r}"
+        assert "Title" not in text, "markdown cell leaked into code extraction"
+        assert "ignore me" not in text, "raw cell leaked into code extraction"
+        print("✓ notebook: extract_code returns code cells only")
+    finally:
+        os.unlink(path)
+
+
+def test_notebook_corrupt_returns_empty():
+    """Corrupt or non-JSON .ipynb files return empty string, never raise."""
+    import tempfile, os
+    from notebook import extract_code
+    with tempfile.NamedTemporaryFile("w", suffix=".ipynb", delete=False) as f:
+        f.write("this is not valid json {{")
+        path = f.name
+    try:
+        assert extract_code(path) == "", "corrupt notebook should return empty string"
+        print("✓ notebook: corrupt file returns empty string without raising")
+    finally:
+        os.unlink(path)
+
+
+def test_notebook_scan_end_to_end():
+    """scan_files picks up .ipynb files and classifies them via existing pipeline."""
+    import tempfile, shutil, os, json
+    from report import scan_files
+    tmpdir = tempfile.mkdtemp()
+    try:
+        nb = {
+            "cells": [
+                {"cell_type": "code", "source": "import openai\nclient = openai.OpenAI()\nresult = client.chat.completions.create(model='gpt-4', messages=[])\n"},
+            ],
+            "metadata": {}, "nbformat": 4, "nbformat_minor": 5,
+        }
+        with open(os.path.join(tmpdir, "train.ipynb"), "w") as f:
+            json.dump(nb, f)
+        findings = scan_files(tmpdir)
+        ipynb_findings = [f for f in findings if f.get("file", "").endswith(".ipynb")]
+        assert len(ipynb_findings) >= 1, f"expected findings in .ipynb, got: {findings}"
+        print(f"✓ notebook: scan_files found {len(ipynb_findings)} findings in .ipynb")
+    finally:
+        shutil.rmtree(tmpdir)
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -6063,6 +6130,10 @@ if __name__ == "__main__":
         test_conform_end_to_end,
         test_oversight_end_to_end,
         test_ai_bom_model_detection,
+        # Jupyter notebook scanning (3 tests)
+        test_notebook_extract_code_cells,
+        test_notebook_corrupt_returns_empty,
+        test_notebook_scan_end_to_end,
     ]
 
     print(f"Running {len(tests)} tests...\n")
