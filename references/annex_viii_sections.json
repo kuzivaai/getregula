@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "regulation": "Regulation (EU) 2024/1689",
+    "verified_date": "2026-04-07",
+    "verification_method": "three_independent_sources_agree_exact",
+    "sources": [
+      "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-49",
+      "https://ai-act-law.eu/annex/8/",
+      "https://www.euaiact.com/annex/8"
+    ],
+    "primary_source_attempted": "EUR-Lex CELEX:32024R1689 — content truncated via WebFetch on 2026-04-07; OJ text not directly reachable through available tools. Three secondary sources cross-verified, one of which is the European Commission's own AI Act Service Desk."
+  },
+  "sections": {
+    "A": {
+      "article": "49(1)",
+      "obligated_party": "provider",
+      "heading": "Information to be submitted by providers of high-risk AI systems in accordance with Article 49(1)",
+      "fields": [
+        {"point": 1,  "key": "provider_identity",                    "label": "Provider name, address and contact details",                                  "autofill_source": "policy_config",       "excluded_under_49_4": false},
+        {"point": 2,  "key": "submission_agent_identity",            "label": "Submission agent name, address and contact details (if applicable)",          "autofill_source": null,                  "excluded_under_49_4": false},
+        {"point": 3,  "key": "authorised_representative_identity",   "label": "Authorised representative name, address and contact details (if applicable)", "autofill_source": "policy_config",       "excluded_under_49_4": false},
+        {"point": 4,  "key": "ai_system_trade_name",                 "label": "AI system trade name and identification reference",                            "autofill_source": "discover",            "excluded_under_49_4": false},
+        {"point": 5,  "key": "intended_purpose",                     "label": "Description of intended purpose and supported components/functions",           "autofill_source": null,                  "excluded_under_49_4": false},
+        {"point": 6,  "key": "data_inputs_and_logic",                "label": "Basic description of data inputs and operating logic",                         "autofill_source": "model_inventory",     "excluded_under_49_4": true},
+        {"point": 7,  "key": "system_status",                        "label": "System status (on market / in service / no longer available / recalled)",      "autofill_source": "discover",            "excluded_under_49_4": false},
+        {"point": 8,  "key": "certificate_details",                  "label": "Certificate type, number, expiry date, notified body identification",          "autofill_source": null,                  "excluded_under_49_4": true},
+        {"point": 9,  "key": "certificate_scan",                     "label": "Scanned copy of certificate (if applicable)",                                  "autofill_source": null,                  "excluded_under_49_4": true},
+        {"point": 10, "key": "member_states",                        "label": "Member States where AI system was placed on market or put into service",       "autofill_source": null,                  "excluded_under_49_4": false},
+        {"point": 11, "key": "eu_declaration_of_conformity",         "label": "Copy of EU declaration of conformity",                                         "autofill_source": "conform",             "excluded_under_49_4": false},
+        {"point": 12, "key": "instructions_for_use",                 "label": "Electronic instructions for use",                                              "autofill_source": "evidence_pack",       "excluded_under_49_4": false},
+        {"point": 13, "key": "additional_info_url",                  "label": "URL for additional information (optional)",                                    "autofill_source": null,                  "excluded_under_49_4": false}
+      ]
+    },
+    "B": {
+      "article": "49(2)",
+      "obligated_party": "provider_self_exempted",
+      "submission_status": "mandatory",
+      "omnibus_field_simplification": "pending_trilogue_as_of_2026-04-07",
+      "heading": "Information to be submitted by providers of high-risk AI systems in accordance with Article 49(2)",
+      "fields": [
+        {"point": 1, "key": "provider_identity",                  "label": "Provider name, address and contact details",                                  "autofill_source": "policy_config", "excluded_under_49_4": false},
+        {"point": 2, "key": "submission_agent_identity",          "label": "Submission agent name, address and contact details (if applicable)",          "autofill_source": null,            "excluded_under_49_4": false},
+        {"point": 3, "key": "authorised_representative_identity", "label": "Authorised representative name, address and contact details (if applicable)", "autofill_source": "policy_config", "excluded_under_49_4": false},
+        {"point": 4, "key": "ai_system_trade_name",               "label": "AI system trade name and identification reference",                            "autofill_source": "discover",      "excluded_under_49_4": false},
+        {"point": 5, "key": "intended_purpose",                   "label": "Description of intended purpose",                                              "autofill_source": null,            "excluded_under_49_4": false},
+        {"point": 6, "key": "art_6_3_condition",                  "label": "Applicable condition under Article 6(3) for not-high-risk classification",     "autofill_source": null,            "excluded_under_49_4": false},
+        {"point": 7, "key": "art_6_3_grounds",                    "label": "Summary of grounds for not-high-risk determination",                           "autofill_source": null,            "excluded_under_49_4": false},
+        {"point": 8, "key": "system_status",                      "label": "System status (on market / in service / no longer available / recalled)",      "autofill_source": "discover",      "excluded_under_49_4": false},
+        {"point": 9, "key": "member_states",                      "label": "Member States where system was placed on market or put into service",          "autofill_source": null,            "excluded_under_49_4": false}
+      ]
+    },
+    "C": {
+      "article": "49(3)",
+      "obligated_party": "deployer_public_authority",
+      "heading": "Information to be submitted by deployers of high-risk AI systems in accordance with Article 49(3)",
+      "fields": [
+        {"point": 1, "key": "deployer_identity",          "label": "Deployer name, address and contact details",                                                "autofill_source": "policy_config", "excluded_under_49_4": false},
+        {"point": 2, "key": "submission_agent_identity",  "label": "Submission agent name and contact details",                                                 "autofill_source": null,            "excluded_under_49_4": false},
+        {"point": 3, "key": "provider_db_entry_url",      "label": "URL of the entry of the AI system in the EU database by its provider",                      "autofill_source": null,            "excluded_under_49_4": false},
+        {"point": 4, "key": "fria_summary",               "label": "Summary of the findings of the fundamental rights impact assessment (Art. 27)",             "autofill_source": "assess",        "excluded_under_49_4": false},
+        {"point": 5, "key": "dpia_summary",               "label": "Summary of the data protection impact assessment (GDPR Art. 35) where applicable",          "autofill_source": null,            "excluded_under_49_4": false}
+      ]
+    }
+  },
+  "deadlines": {
+    "applicable_deadline": "2026-08-02",
+    "omnibus_proposed_deadline": "2027-12-02",
+    "omnibus_status": "trilogue_in_progress_as_of_2026-04-07"
+  }
+}

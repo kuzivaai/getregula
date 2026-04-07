@@ -247,7 +247,7 @@ Reproduce with `python3 benchmarks/label.py score` (OSS labels) and `python3 ben
 
 ## CLI Usage
 
-Regula has 38 CLI subcommands. The full reference (with examples for each) lives in [`docs/cli-reference.md`](docs/cli-reference.md). Top-level summary:
+Regula has 39 CLI subcommands. The full reference (with examples for each) lives in [`docs/cli-reference.md`](docs/cli-reference.md). Top-level summary:
 
 ```bash
 regula --help                              # list all subcommands
@@ -256,6 +256,7 @@ regula check .                             # scan for risk indicators
 regula classify --input "some code..."    # classify a snippet
 regula gap                                 # Articles 9-15 compliance gap assessment
 regula conform                             # generate Annex IV evidence pack
+regula register                            # generate Annex VIII Section A/B/C packet (Article 49)
 regula sbom --ai-bom                       # AI Bill of Materials (CycloneDX)
 regula report --format html                # HTML report
 regula doctor                              # health checks
