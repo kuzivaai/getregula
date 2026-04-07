@@ -133,3 +133,119 @@ def build_redirects(kind: str) -> list[str]:
             "regula classify   — confirm classification on individual files",
         ]
     return []
+
+
+def resolve_autofill(fields_def: list, discovery: dict,
+                     exclude_points: list | None = None) -> tuple:
+    """Build the {field_key: {value, source, verified}} dict and the gap list.
+
+    Args:
+        fields_def: list of field definitions from the schema (one section's "fields")
+        discovery: result of discover_ai_systems.discover() for the project
+        exclude_points: section point numbers to skip entirely (Art 49(4) exclusions)
+
+    Returns:
+        (filled_fields, gaps) — filled_fields is a dict keyed by field "key";
+        gaps is a list of {field, section_point, label, why} dicts for fields
+        whose value could not be derived.
+    """
+    exclude = set(exclude_points or [])
+    filled = {}
+    gaps = []
+
+    # Pull policy lazily so tests can monkeypatch
+    from policy_config import get_policy
+    policy = get_policy() or {}
+
+    for fd in fields_def:
+        if fd["point"] in exclude:
+            continue
+
+        key = fd["key"]
+        source = fd.get("autofill_source")
+        value = _resolve_one(key, source, policy, discovery)
+
+        if value is not None:
+            filled[key] = {"value": value, "source": source, "verified": True}
+        else:
+            filled[key] = {"value": None, "source": source, "verified": False}
+            gaps.append({
+                "field": key,
+                "section_point": fd["point"],
+                "label": fd["label"],
+                "why": _gap_reason(source),
+            })
+
+    return filled, gaps
+
+
+def _resolve_one(key: str, source, policy: dict, discovery: dict):
+    """Resolve a single field value from the named source. Returns None if unresolvable."""
+    if source is None:
+        return None
+
+    if source == "policy_config":
+        if key in ("provider_identity", "deployer_identity"):
+            org = policy.get("organisation")
+            email = (policy.get("governance_contacts", {}).get("ai_officer", {}) or {}).get("email")
+            if org and email:
+                return f"{org} <{email}>"
+            if org:
+                return org
+            return None
+        if key == "authorised_representative_identity":
+            return policy.get("authorised_representative")
+        return None
+
+    if source == "discover":
+        if key == "ai_system_trade_name":
+            return discovery.get("project_name")
+        if key == "system_status":
+            return _map_status(discovery.get("compliance_status", "not_started"))
+        return None
+
+    if source == "model_inventory":
+        if key == "data_inputs_and_logic":
+            libs = discovery.get("ai_libraries") or []
+            models = discovery.get("model_files") or []
+            if libs or models:
+                parts = []
+                if libs:
+                    parts.append(f"AI libraries: {', '.join(libs)}")
+                if models:
+                    parts.append(f"Model files: {len(models)}")
+                return "; ".join(parts)
+            return None
+        return None
+
+    if source == "conform":
+        # Reference path only — present if .regula/conform/ exists
+        from pathlib import Path as _P
+        cp = _P(".regula") / "conform" / "evidence_pack.json"
+        return str(cp) if cp.exists() else None
+
+    if source == "evidence_pack":
+        from pathlib import Path as _P
+        ep = _P(".regula") / "evidence" / "README.md"
+        return str(ep) if ep.exists() else None
+
+    if source == "assess":
+        from pathlib import Path as _P
+        ap = _P(".regula") / "assess" / "fria.json"
+        return str(ap) if ap.exists() else None
+
+    return None
+
+
+def _map_status(compliance_status: str) -> str:
+    return {
+        "not_started": "in development",
+        "in_progress": "in development",
+        "completed": "on market",
+    }.get(compliance_status, "in development")
+
+
+def _gap_reason(source) -> str:
+    if source is None:
+        return "Cannot be derived from code — manual entry required"
+    return f"Source '{source}' did not return a value for this project"
