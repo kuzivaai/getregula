@@ -5659,6 +5659,30 @@ def test_notebook_scan_end_to_end():
         shutil.rmtree(tmpdir)
 
 
+# ---------------------------------------------------------------------------
+# Scan time benchmark script (self-mode, no network)
+# ---------------------------------------------------------------------------
+
+def test_scan_benchmarks_self_mode():
+    """benchmark_path returns timing + counts for a local directory."""
+    import tempfile, os
+    from scan_benchmarks import benchmark_path
+    from pathlib import Path as _P
+    tmp = tempfile.mkdtemp()
+    try:
+        with open(os.path.join(tmp, "a.py"), "w") as f:
+            f.write("import openai\nclient = openai.OpenAI()\n")
+        result = benchmark_path("test", _P(tmp))
+        assert result["files_scanned"] >= 1, f"expected files counted, got: {result}"
+        assert result["wall_seconds"] >= 0, f"expected timing, got: {result}"
+        assert "findings" in result, f"missing findings field: {result}"
+        assert result["files_per_second"] >= 0, f"missing fps: {result}"
+        print(f"✓ scan_benchmarks: self-mode returned {result['files_scanned']} files in {result['wall_seconds']}s")
+    finally:
+        import shutil
+        shutil.rmtree(tmp)
+
+
 if __name__ == "__main__":
     tests = [
         # AI Detection (5 tests)
@@ -6134,6 +6158,8 @@ if __name__ == "__main__":
         test_notebook_extract_code_cells,
         test_notebook_corrupt_returns_empty,
         test_notebook_scan_end_to_end,
+        # Scan time benchmark (1 test)
+        test_scan_benchmarks_self_mode,
     ]
 
     print(f"Running {len(tests)} tests...\n")
