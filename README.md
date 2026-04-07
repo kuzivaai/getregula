@@ -369,7 +369,19 @@ regula benchmark --project /path/to/project -f csv -o out.csv  # CSV for labelli
 regula benchmark --metrics labelled.csv                        # Precision/recall
 ```
 
-**Self-benchmark precision (measured 2026-04-01).** Hand-labelled 257 findings sampled across five OSS AI projects (`instructor`, `pydantic-ai`, `langchain`, `scikit-learn`, `openai-python`):
+**Self-benchmark precision (labels measured 2026-04-01, currently being re-validated).**
+
+> ⚠ **Staleness disclosure.** The labels in `benchmarks/labels.json` were
+> generated against pattern files as of 2026-04-01. Pattern files have
+> been modified at least six times since (notably commit `0963aa2`,
+> "tighten patterns to reduce false positives — projected precision 15%
+> → ~67%"). The 15.2% number below is what `labels.json` literally
+> contains and what `python3 benchmarks/label.py score` reproduces; it
+> is **not** necessarily what current patterns produce against the same
+> findings. A rescan + relabel is the next item of work and will
+> replace this table when complete.
+
+Hand-labelled 257 findings sampled across five OSS AI projects (`instructor`, `pydantic-ai`, `langchain`, `scikit-learn`, `openai-python`):
 
 | Cut | TP | FP | Precision |
 |---|---:|---:|---:|
