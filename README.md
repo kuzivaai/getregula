@@ -516,21 +516,36 @@ controls access).
 regula mcp-server                          # Start MCP server (stdio)
 ```
 
-**Claude Code** (`~/.claude/settings.json`):
+**Claude Code** — recommended method is the CLI:
+
+```bash
+claude mcp add regula -- python3 /absolute/path/to/getregula/scripts/mcp_server.py
+
+# Or, if you installed Regula via `pip install regula-ai`:
+claude mcp add regula -- regula mcp-server
+```
+
+This writes to `~/.claude.json` (user scope) or `.mcp.json` in your project
+root (project scope, checked into source control). If you prefer to edit
+the JSON directly, the schema is:
 
 ```json
 {
   "mcpServers": {
     "regula": {
-      "command": "python3",
-      "args": ["/absolute/path/to/getregula/scripts/mcp_server.py"]
+      "type": "stdio",
+      "command": "regula",
+      "args": ["mcp-server"]
     }
   }
 }
 ```
 
-If you installed Regula via `pip install regula-ai`, you can use the
-console entry point instead:
+See the [Claude Code MCP docs](https://code.claude.com/docs/en/mcp) for
+the full scope hierarchy.
+
+**Cursor** (`~/.cursor/mcp.json`) and **Windsurf**
+(`~/.codeium/windsurf/mcp_config.json`) use the same `mcpServers` schema:
 
 ```json
 {
@@ -543,8 +558,8 @@ console entry point instead:
 }
 ```
 
-**Cursor** (`~/.cursor/mcp.json`) and **Windsurf** (`~/.codeium/windsurf/mcp_config.json`)
-use the same `mcpServers` schema — copy the same block.
+Replace `regula` / `["mcp-server"]` with `python3` and the absolute path
+to `scripts/mcp_server.py` if you have not installed via pip.
 
 After restarting your client, the assistant gains three tools:
 
