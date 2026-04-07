@@ -7,7 +7,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_evals/pydantic_evals/generation.py",
@@ -17,7 +20,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_evals/pydantic_evals/dataset.py",
@@ -27,7 +33,36 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_evals/pydantic_evals/otel/_context_subtree.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_evals/pydantic_evals/otel/_context_in_memory_span_exporter.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_evals/pydantic_evals/evaluators/spec.py",
@@ -37,7 +72,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_evals/pydantic_evals/evaluators/report_evaluator.py",
@@ -47,7 +85,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_evals/pydantic_evals/evaluators/__init__.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_evals/pydantic_evals/evaluators/_base.py",
@@ -57,7 +111,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_evals/pydantic_evals/evaluators/_run_evaluator.py",
@@ -67,7 +124,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_evals/pydantic_evals/evaluators/llm_as_a_judge.py",
@@ -77,7 +137,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_evals/pydantic_evals/evaluators/common.py",
@@ -87,7 +150,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "scripts/verify_vertex_gcs_tool_result.py",
@@ -97,7 +163,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "scripts/upload_test_files.py",
@@ -107,7 +176,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "scripts/verify_vertex_gcs_all_types.py",
@@ -117,7 +189,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "scripts/verify_bedrock_access.py",
@@ -127,7 +202,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "scripts/check_cassettes.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "scripts/verify_vertex_gcs.py",
@@ -137,7 +228,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_graph/pydantic_graph/_utils.py",
@@ -147,7 +241,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_graph/pydantic_graph/graph.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_graph/pydantic_graph/beta/paths.py",
@@ -157,7 +267,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_graph/pydantic_graph/beta/step.py",
@@ -167,7 +280,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_graph/pydantic_graph/persistence/__init__.py",
@@ -177,7 +293,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/pydantic_model.py",
@@ -187,7 +306,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/roulette_wheel.py",
@@ -197,7 +319,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "examples/pydantic_ai_examples/chat_app.ts",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/question_graph.py",
@@ -207,7 +345,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/__main__.py",
@@ -217,7 +358,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/data_analyst.py",
@@ -227,7 +371,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/weather_agent.py",
@@ -237,7 +384,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/stream_whales.py",
@@ -247,7 +397,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/weather_agent_gradio.py",
@@ -262,9 +415,20 @@
       "50"
     ],
     "exceptions": null,
-    "confidence_score": 53,
+    "confidence_score": 45,
     "suppressed": false,
-    "observations": []
+    "observations": [],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "examples/pydantic_ai_examples/chat_app.py",
@@ -274,7 +438,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/bank_support.py",
@@ -284,7 +451,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/flight_booking.py",
@@ -294,7 +464,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/sql_gen.py",
@@ -304,7 +477,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/rag.py",
@@ -316,19 +492,11 @@
       "Database query execution"
     ],
     "confidence_score": 70,
-    "suppressed": false
-  },
-  {
-    "file": "examples/pydantic_ai_examples/rag.py",
-    "line": 158,
-    "tier": "agent_autonomy",
-    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
-    "description": "AI output may flow to Database query execution \u2014 no human gate detected",
-    "indicators": [
-      "Database query execution"
-    ],
-    "confidence_score": 70,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "examples/pydantic_ai_examples/rag.py",
@@ -340,7 +508,11 @@
       "Database query execution"
     ],
     "confidence_score": 70,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "examples/pydantic_ai_examples/rag.py",
@@ -350,7 +522,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/stream_markdown.py",
@@ -360,7 +535,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/ag_ui/__main__.py",
@@ -370,7 +548,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "examples/pydantic_ai_examples/ag_ui/__init__.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/ag_ui/api/tool_based_generative_ui.py",
@@ -380,7 +574,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/ag_ui/api/predictive_state_updates.py",
@@ -390,7 +587,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/ag_ui/api/agentic_generative_ui.py",
@@ -400,7 +600,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "examples/pydantic_ai_examples/ag_ui/api/__init__.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/ag_ui/api/agentic_chat.py",
@@ -410,7 +626,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/ag_ui/api/human_in_the_loop.py",
@@ -420,7 +639,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/ag_ui/api/shared_state.py",
@@ -430,7 +652,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/slack_lead_qualifier/agent.py",
@@ -440,7 +665,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/slack_lead_qualifier/modal.py",
@@ -450,7 +678,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/slack_lead_qualifier/models.py",
@@ -460,7 +691,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/evals/example_03_unit_testing.py",
@@ -470,7 +704,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/evals/agent.py",
@@ -480,7 +717,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/evals/custom_evaluators.py",
@@ -490,7 +730,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/evals/example_01_generate_dataset.py",
@@ -500,7 +743,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/evals/example_02_add_custom_evaluators.py",
@@ -510,7 +756,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/pydantic_ai_examples/evals/example_04_compare_models.py",
@@ -520,7 +769,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/_a2a.py",
@@ -530,7 +782,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/ag_ui.py",
@@ -540,7 +795,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/_mcp.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/_agent_graph.py",
@@ -550,7 +821,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/format_prompt.py",
@@ -560,7 +834,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/_instrumentation.py",
@@ -570,7 +847,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/mcp.py",
@@ -580,7 +860,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/_utils.py",
@@ -590,7 +873,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/__main__.py",
@@ -600,7 +886,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/_spec.py",
@@ -610,7 +899,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/_output.py",
@@ -620,7 +912,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/_thinking_part.py",
@@ -630,7 +925,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/_otel_messages.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/__init__.py",
@@ -640,7 +951,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/_history_processor.py",
@@ -650,7 +964,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/_tool_manager.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/output.py",
@@ -660,7 +990,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/_run_context.py",
@@ -670,7 +1003,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/messages.py",
@@ -680,7 +1016,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/tools.py",
@@ -690,7 +1029,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/settings.py",
@@ -700,7 +1042,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/result.py",
@@ -710,7 +1055,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/concurrency.py",
@@ -720,7 +1068,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/retries.py",
@@ -730,7 +1081,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/_parts_manager.py",
@@ -740,7 +1094,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/_instructions.py",
@@ -750,7 +1107,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/direct.py",
@@ -760,7 +1120,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/usage.py",
@@ -770,7 +1133,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/_template.py",
@@ -780,7 +1146,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/run.py",
@@ -790,17 +1159,38 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/builtin_tools.py",
     "line": 1,
-    "tier": "minimal_risk",
-    "category": "AI Code",
-    "description": "AI-related code with no specific risk indicators",
-    "indicators": [],
-    "confidence_score": 20,
-    "suppressed": false
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 68,
+    "suppressed": false,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: biometrics"
+    },
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/toolsets/abstract.py",
@@ -810,7 +1200,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/toolsets/function.py",
@@ -820,7 +1213,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/toolsets/external.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/toolsets/approval_required.py",
@@ -830,7 +1239,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/toolsets/fastmcp.py",
@@ -840,7 +1252,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/profiles/qwen.py",
@@ -850,7 +1265,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/profiles/groq.py",
@@ -860,7 +1278,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/profiles/openai.py",
@@ -870,7 +1291,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/profiles/google.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/profiles/__init__.py",
@@ -880,7 +1317,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/profiles/cohere.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/profiles/harmony.py",
@@ -890,7 +1343,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/profiles/anthropic.py",
@@ -900,7 +1356,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/agent/spec.py",
@@ -910,19 +1369,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
-  },
-  {
-    "file": "pydantic_ai_slim/pydantic_ai/agent/abstract.py",
-    "line": 1052,
-    "tier": "agent_autonomy",
-    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
-    "description": "Agent tool infrastructure: Message/email sending \u2014 no human gate detected",
-    "indicators": [
-      "Message/email sending"
-    ],
-    "confidence_score": 60,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/agent/abstract.py",
@@ -932,7 +1382,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/agent/wrapper.py",
@@ -942,7 +1395,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/agent/__init__.py",
@@ -952,7 +1408,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/dbos/_mcp.py",
@@ -962,7 +1421,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/dbos/_mcp_server.py",
@@ -972,7 +1434,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/dbos/_agent.py",
@@ -982,7 +1447,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/dbos/_fastmcp_toolset.py",
@@ -992,7 +1460,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/dbos/_model.py",
@@ -1002,7 +1473,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/temporal/_mcp.py",
@@ -1012,7 +1486,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/temporal/_mcp_server.py",
@@ -1022,7 +1499,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/temporal/_dynamic_toolset.py",
@@ -1032,7 +1512,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/temporal/_agent.py",
@@ -1042,7 +1525,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/temporal/_fastmcp_toolset.py",
@@ -1052,7 +1538,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/temporal/__init__.py",
@@ -1062,7 +1551,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/temporal/_workflow.py",
@@ -1072,7 +1564,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/temporal/_toolset.py",
@@ -1082,7 +1577,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/temporal/_logfire.py",
@@ -1092,7 +1590,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/temporal/_run_context.py",
@@ -1102,7 +1603,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/temporal/_function_toolset.py",
@@ -1112,7 +1616,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/temporal/_model.py",
@@ -1122,7 +1629,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/prefect/_mcp_server.py",
@@ -1132,7 +1642,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/prefect/_types.py",
@@ -1142,7 +1655,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/prefect/_agent.py",
@@ -1152,7 +1668,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/prefect/__init__.py",
@@ -1162,7 +1681,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/prefect/_toolset.py",
@@ -1172,7 +1694,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/prefect/_cache_policies.py",
@@ -1182,7 +1707,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/prefect/_function_toolset.py",
@@ -1192,7 +1720,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/durable_exec/prefect/_model.py",
@@ -1202,7 +1733,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/common_tools/tavily.py",
@@ -1212,7 +1746,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/common_tools/web_fetch.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/common_tools/duckduckgo.py",
@@ -1222,7 +1772,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/common_tools/exa.py",
@@ -1232,7 +1785,33 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/common_tools/image_generation.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots",
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 60,
+    "suppressed": false,
+    "observations": [],
+    "domain_boost": null,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/embeddings/bedrock.py",
@@ -1242,7 +1821,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/embeddings/voyageai.py",
@@ -1252,7 +1834,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/embeddings/wrapper.py",
@@ -1262,7 +1847,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/embeddings/base.py",
@@ -1272,7 +1860,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/embeddings/openai.py",
@@ -1282,7 +1873,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/embeddings/google.py",
@@ -1292,7 +1886,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/embeddings/__init__.py",
@@ -1302,7 +1899,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/embeddings/cohere.py",
@@ -1312,7 +1912,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/embeddings/settings.py",
@@ -1322,7 +1925,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/embeddings/result.py",
@@ -1332,7 +1938,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/embeddings/instrumented.py",
@@ -1342,7 +1951,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/embeddings/sentence_transformers.py",
@@ -1352,7 +1964,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/embeddings/test.py",
@@ -1362,7 +1977,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/capabilities/thread_executor.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/capabilities/prepare_tools.py",
@@ -1372,7 +2003,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/capabilities/abstract.py",
@@ -1382,7 +2016,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/capabilities/wrapper.py",
@@ -1392,7 +2029,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/capabilities/thinking.py",
@@ -1402,7 +2042,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/capabilities/builtin_or_local.py",
@@ -1412,7 +2055,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/capabilities/hooks.py",
@@ -1422,7 +2068,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/capabilities/mcp.py",
@@ -1432,7 +2081,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/capabilities/combined.py",
@@ -1442,7 +2094,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/capabilities/builtin_tool.py",
@@ -1452,7 +2107,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/capabilities/web_fetch.py",
@@ -1462,7 +2120,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/capabilities/history_processor.py",
@@ -1472,7 +2133,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/capabilities/toolset.py",
@@ -1482,7 +2146,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/capabilities/web_search.py",
@@ -1492,17 +2159,39 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/capabilities/image_generation.py",
     "line": 1,
-    "tier": "minimal_risk",
-    "category": "AI Code",
-    "description": "AI-related code with no specific risk indicators",
-    "indicators": [],
-    "confidence_score": 20,
-    "suppressed": false
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots",
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 72,
+    "suppressed": false,
+    "observations": [],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/capabilities/prefix_tools.py",
@@ -1512,7 +2201,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/bedrock.py",
@@ -1522,7 +2214,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/fallback.py",
@@ -1532,7 +2227,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/groq.py",
@@ -1542,7 +2240,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/function.py",
@@ -1552,17 +2253,38 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/openai.py",
     "line": 1,
-    "tier": "minimal_risk",
-    "category": "AI Code",
-    "description": "AI-related code with no specific risk indicators",
-    "indicators": [],
-    "confidence_score": 20,
-    "suppressed": false
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 65,
+    "suppressed": false,
+    "observations": [],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/google.py",
@@ -1572,7 +2294,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/huggingface.py",
@@ -1582,7 +2307,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/__init__.py",
@@ -1592,7 +2320,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/cerebras.py",
@@ -1602,7 +2333,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/mistral.py",
@@ -1612,7 +2346,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/cohere.py",
@@ -1622,7 +2359,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/xai.py",
@@ -1632,7 +2372,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/mcp_sampling.py",
@@ -1642,7 +2385,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/concurrency.py",
@@ -1652,7 +2398,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/anthropic.py",
@@ -1662,7 +2411,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/instrumented.py",
@@ -1672,7 +2424,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/openrouter.py",
@@ -1682,7 +2437,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/gemini.py",
@@ -1692,7 +2450,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/models/outlines.py",
@@ -1702,7 +2463,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/ui/_event_stream.py",
@@ -1712,7 +2476,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/ui/_messages_builder.py",
@@ -1722,7 +2489,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/ui/_adapter.py",
@@ -1732,7 +2502,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/ui/_web/api.py",
@@ -1742,7 +2515,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/ui/_web/app.py",
@@ -1752,7 +2528,49 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/ui/_web/__init__.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/ui/ag_ui/_event_stream.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/ui/ag_ui/_adapter.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/ui/ag_ui/app.py",
@@ -1762,7 +2580,36 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/ui/ag_ui/__init__.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/ui/vercel_ai/_event_stream.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/ui/vercel_ai/_utils.py",
@@ -1772,7 +2619,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/ui/vercel_ai/_adapter.py",
@@ -1782,7 +2632,62 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/ui/vercel_ai/__init__.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/ui/vercel_ai/response_types.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/ui/vercel_ai/request_types.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/ui/vercel_ai/_models.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/ext/langchain.py",
@@ -1792,7 +2697,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/ext/aci.py",
@@ -1802,7 +2710,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/_cli/web.py",
@@ -1812,7 +2723,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/_cli/__init__.py",
@@ -1822,7 +2736,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/bedrock.py",
@@ -1832,7 +2749,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/groq.py",
@@ -1842,7 +2762,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/voyageai.py",
@@ -1852,7 +2775,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/nebius.py",
@@ -1862,7 +2788,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/deepseek.py",
@@ -1872,7 +2801,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/ovhcloud.py",
@@ -1882,7 +2814,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/azure.py",
@@ -1892,7 +2827,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/gateway.py",
@@ -1902,7 +2840,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/alibaba.py",
@@ -1912,7 +2853,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/vercel.py",
@@ -1922,7 +2866,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/openai.py",
@@ -1932,7 +2879,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/google.py",
@@ -1942,7 +2892,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/huggingface.py",
@@ -1952,7 +2905,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/sambanova.py",
@@ -1962,7 +2918,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/together.py",
@@ -1972,7 +2931,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/__init__.py",
@@ -1982,7 +2944,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/cerebras.py",
@@ -1992,7 +2957,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/mistral.py",
@@ -2002,7 +2970,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/cohere.py",
@@ -2012,7 +2983,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/xai.py",
@@ -2022,7 +2996,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/litellm.py",
@@ -2032,7 +3009,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/anthropic.py",
@@ -2042,7 +3022,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/google_gla.py",
@@ -2052,7 +3035,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/google_vertex.py",
@@ -2062,7 +3048,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/openrouter.py",
@@ -2072,7 +3061,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/sentence_transformers.py",
@@ -2082,7 +3074,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/github.py",
@@ -2092,7 +3087,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/fireworks.py",
@@ -2102,7 +3100,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/outlines.py",
@@ -2112,7 +3113,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/ollama.py",
@@ -2122,7 +3126,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/heroku.py",
@@ -2132,7 +3139,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/moonshotai.py",
@@ -2142,7 +3152,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "pydantic_ai_slim/pydantic_ai/providers/grok.py",
@@ -2152,7 +3165,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "docs/.hooks/main.py",
@@ -2162,7 +3178,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "docs/.hooks/algolia.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "docs/.hooks/snippets.py",
@@ -2172,7 +3204,38 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "docs/javascripts/algolia-search.js",
+    "line": 2,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Move credentials to environment variables or a secrets manager.",
+    "indicators": [
+      "generic_api_key"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  },
+  {
+    "file": "docs/javascripts/algolia-search.js",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_function_schema.py",
@@ -2182,7 +3245,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_thinking_part.py",
@@ -2192,7 +3258,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/import_examples.py",
@@ -2202,7 +3271,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_vercel_ai.py",
@@ -2212,7 +3284,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/json_body_serializer.py",
@@ -2222,7 +3297,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_builtin_tools.py",
@@ -2232,7 +3310,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/typed_agent.py",
@@ -2242,7 +3323,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_history_processor.py",
@@ -2252,17 +3336,51 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_capabilities.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 25,
+    "suppressed": false,
+    "observations": [],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
+  },
+  {
+    "file": "tests/mcp_server.py",
     "line": 1,
     "tier": "minimal_risk",
     "category": "AI Code",
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_tavily.py",
@@ -2272,7 +3390,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_exceptions.py",
@@ -2285,7 +3406,11 @@
     ],
     "confidence_score": 40,
     "suppressed": false,
-    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files."
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "tests/test_exceptions.py",
@@ -2298,7 +3423,11 @@
     ],
     "confidence_score": 40,
     "suppressed": false,
-    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files."
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "tests/test_exceptions.py",
@@ -2308,7 +3437,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_cli.py",
@@ -2318,7 +3450,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_fastmcp.py",
@@ -2328,7 +3463,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_settings.py",
@@ -2338,7 +3476,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_prefect.py",
@@ -2348,7 +3489,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_template.py",
@@ -2358,7 +3502,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_embeddings.py",
@@ -2368,7 +3515,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/parts_from_messages.py",
@@ -2378,7 +3528,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_concurrency.py",
@@ -2388,7 +3541,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_ui_web.py",
@@ -2398,7 +3554,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_temporal.py",
@@ -2408,7 +3567,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_thinking.py",
@@ -2418,7 +3580,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_direct.py",
@@ -2428,7 +3593,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_logfire.py",
@@ -2438,7 +3606,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_dbos.py",
@@ -2448,7 +3619,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "tests/test_streaming_errors.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_ui.py",
@@ -2458,7 +3645,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_mcp.py",
@@ -2468,11 +3658,27 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "tests/test_web_fetch.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_agent.py",
-    "line": 8618,
+    "line": 8639,
     "tier": "ai_security",
     "category": "AI Security (LLM10)",
     "description": "Unbounded token generation \u2014 cost and resource exhaustion risk",
@@ -2481,7 +3687,11 @@
     ],
     "confidence_score": 20,
     "suppressed": false,
-    "remediation": "Set explicit max_tokens limit. Add cost monitoring and rate limiting."
+    "remediation": "Set explicit max_tokens limit. Add cost monitoring and rate limiting.",
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "tests/test_agent.py",
@@ -2491,7 +3701,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_validation_context.py",
@@ -2501,7 +3714,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_format_as_xml.py",
@@ -2511,7 +3727,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_toolsets.py",
@@ -2521,7 +3740,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_ssrf.py",
@@ -2531,7 +3753,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "tests/test_native_tool_search_vcr.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_cassette_utils.py",
@@ -2541,7 +3779,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_deps.py",
@@ -2551,7 +3792,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_spec.py",
@@ -2561,7 +3805,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_tools.py",
@@ -2571,7 +3818,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_a2a.py",
@@ -2581,11 +3831,14 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/conftest.py",
-    "line": 638,
+    "line": 642,
     "tier": "credential_exposure",
     "category": "AI Credential Governance (Article 15)",
     "description": "AWS access key ID detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use AWS credential provider chain or environment variables.",
@@ -2593,7 +3846,10 @@
       "aws_access_key"
     ],
     "confidence_score": 55,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
   },
   {
     "file": "tests/conftest.py",
@@ -2605,7 +3861,10 @@
       "aws_secret_key"
     ],
     "confidence_score": 35,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
   },
   {
     "file": "tests/conftest.py",
@@ -2615,7 +3874,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_uuid.py",
@@ -2625,17 +3887,38 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_messages.py",
     "line": 1,
-    "tier": "minimal_risk",
-    "category": "AI Code",
-    "description": "AI-related code with no specific risk indicators",
-    "indicators": [],
-    "confidence_score": 20,
-    "suppressed": false
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 25,
+    "suppressed": false,
+    "observations": [],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "tests/test_examples.py",
@@ -2650,9 +3933,34 @@
       "50"
     ],
     "exceptions": null,
-    "confidence_score": 13,
+    "confidence_score": 28,
     "suppressed": false,
-    "observations": []
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "education",
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: education, law_enforcement"
+    },
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
+  },
+  {
+    "file": "tests/test_tool_search.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_native_output_schema.py",
@@ -2662,7 +3970,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_usage_limits.py",
@@ -2672,7 +3983,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_ag_ui.py",
@@ -2682,7 +3996,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/typed_deps.py",
@@ -2692,7 +4009,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_tenacity.py",
@@ -2702,7 +4022,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_json_schema.py",
@@ -2712,7 +4035,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_agent_output_schemas.py",
@@ -2722,7 +4048,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_utils.py",
@@ -2732,7 +4061,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_streaming.py",
@@ -2742,7 +4074,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_parts_manager.py",
@@ -2752,7 +4087,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/profiles/test_google.py",
@@ -2762,7 +4100,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/profiles/test_openai.py",
@@ -2772,7 +4113,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/profiles/test_anthropic.py",
@@ -2782,7 +4126,23 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "tests/example_modules/mcp_server.py",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "AI Code",
+    "description": "AI-related code with no specific risk indicators",
+    "indicators": [],
+    "confidence_score": 20,
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/evals/test_otel.py",
@@ -2792,7 +4152,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/evals/test_evaluator_spec.py",
@@ -2802,7 +4165,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/evals/test_dataset.py",
@@ -2812,7 +4178,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/evals/test_evaluator_common.py",
@@ -2822,7 +4191,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/evals/test_llm_as_a_judge.py",
@@ -2832,7 +4204,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/evals/test_evaluators.py",
@@ -2842,7 +4217,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_download_item.py",
@@ -2852,7 +4230,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/xai_proto_cassettes.py",
@@ -2862,7 +4243,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_instrumented.py",
@@ -2872,7 +4256,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_xai.py",
@@ -2882,7 +4269,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_fallback.py",
@@ -2892,7 +4282,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_model.py",
@@ -2902,7 +4295,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_mcp_sampling.py",
@@ -2912,7 +4308,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/mock_openai.py",
@@ -2922,7 +4321,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_google.py",
@@ -2931,15 +4333,29 @@
     "category": "Limited Risk (Article 50)",
     "description": "Chatbots and conversational AI",
     "indicators": [
-      "chatbots"
+      "chatbots",
+      "synthetic_content"
     ],
     "articles": [
       "50"
     ],
     "exceptions": null,
-    "confidence_score": 13,
+    "confidence_score": 35,
     "suppressed": false,
-    "observations": []
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "employment",
+        "education",
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: employment, education, law_enforcement"
+    },
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "tests/models/test_groq.py",
@@ -2949,7 +4365,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_cerebras.py",
@@ -2959,7 +4378,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_bedrock.py",
@@ -2974,9 +4396,21 @@
       "50"
     ],
     "exceptions": null,
-    "confidence_score": 13,
+    "confidence_score": 28,
     "suppressed": false,
-    "observations": []
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "education",
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: education, law_enforcement"
+    },
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "tests/models/mock_xai.py",
@@ -2986,11 +4420,14 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_openai_responses.py",
-    "line": 1643,
+    "line": 1663,
     "tier": "credential_exposure",
     "category": "AI Credential Governance (Article 15)",
     "description": "OpenAI API key detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable OPENAI_API_KEY instead of hardcoding.",
@@ -2998,17 +4435,40 @@
       "openai_api_key"
     ],
     "confidence_score": 55,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
   },
   {
     "file": "tests/models/test_openai_responses.py",
     "line": 1,
-    "tier": "minimal_risk",
-    "category": "AI Code",
-    "description": "AI-related code with no specific risk indicators",
-    "indicators": [],
-    "confidence_score": 20,
-    "suppressed": false
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 28,
+    "suppressed": false,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "medical",
+        "education",
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: medical, education, law_enforcement"
+    },
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "tests/models/test_model_test.py",
@@ -3018,7 +4478,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_model_names.py",
@@ -3028,7 +4491,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_model_function.py",
@@ -3038,27 +4504,61 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_openai.py",
     "line": 1,
-    "tier": "minimal_risk",
-    "category": "AI Code",
-    "description": "AI-related code with no specific risk indicators",
-    "indicators": [],
-    "confidence_score": 20,
-    "suppressed": false
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 28,
+    "suppressed": false,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "education",
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: education, law_enforcement"
+    },
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "tests/models/test_model_request_parameters.py",
     "line": 1,
-    "tier": "minimal_risk",
-    "category": "AI Code",
-    "description": "AI-related code with no specific risk indicators",
-    "indicators": [],
-    "confidence_score": 20,
-    "suppressed": false
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 13,
+    "suppressed": false,
+    "observations": [],
+    "domain_boost": null,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "tests/models/test_cohere.py",
@@ -3068,7 +4568,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_gemini.py",
@@ -3083,9 +4586,21 @@
       "50"
     ],
     "exceptions": null,
-    "confidence_score": 13,
+    "confidence_score": 28,
     "suppressed": false,
-    "observations": []
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "employment",
+        "education"
+      ],
+      "detail": "Domain keywords detected: employment, education"
+    },
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "tests/models/test_mistral.py",
@@ -3095,7 +4610,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_anthropic.py",
@@ -3105,7 +4623,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_multimodal_tool_returns.py",
@@ -3115,7 +4636,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_gemini_vertex.py",
@@ -3125,7 +4649,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_openrouter.py",
@@ -3135,7 +4662,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_outlines.py",
@@ -3145,7 +4675,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/mock_async_stream.py",
@@ -3155,7 +4688,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_model_settings.py",
@@ -3165,7 +4701,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_huggingface.py",
@@ -3175,7 +4714,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/test_deepseek.py",
@@ -3185,7 +4727,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/anthropic/test_output.py",
@@ -3195,7 +4740,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/anthropic/__init__.py",
@@ -3205,7 +4753,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/models/anthropic/conftest.py",
@@ -3215,7 +4766,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/ext/test_langchain.py",
@@ -3225,7 +4779,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_gateway.py",
@@ -3235,7 +4792,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_google_vertex.py",
@@ -3247,7 +4807,10 @@
       "private_key"
     ],
     "confidence_score": 58,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
   },
   {
     "file": "tests/providers/test_google_vertex.py",
@@ -3257,7 +4820,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_heroku.py",
@@ -3267,7 +4833,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_xai.py",
@@ -3277,7 +4846,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_nebius.py",
@@ -3287,7 +4859,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_azure.py",
@@ -3297,7 +4872,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_ollama.py",
@@ -3307,7 +4885,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_google_gla.py",
@@ -3317,7 +4898,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_fireworks.py",
@@ -3327,7 +4911,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_alibaba_provider.py",
@@ -3337,7 +4924,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_groq.py",
@@ -3347,7 +4937,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_cerebras.py",
@@ -3357,7 +4950,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_litellm.py",
@@ -3367,7 +4963,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_bedrock.py",
@@ -3377,7 +4976,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_moonshotai.py",
@@ -3387,7 +4989,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_provider_names.py",
@@ -3397,7 +5002,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_openai.py",
@@ -3407,7 +5015,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_cohere.py",
@@ -3417,7 +5028,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_grok.py",
@@ -3427,7 +5041,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_voyageai.py",
@@ -3437,7 +5054,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_sambanova_provider.py",
@@ -3447,7 +5067,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_mistral.py",
@@ -3457,7 +5080,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_anthropic.py",
@@ -3467,7 +5093,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_github.py",
@@ -3477,7 +5106,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_openrouter.py",
@@ -3487,7 +5119,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_outlines.py",
@@ -3497,7 +5132,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_together.py",
@@ -3507,7 +5145,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_huggingface.py",
@@ -3517,7 +5158,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_deepseek.py",
@@ -3527,7 +5171,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_ovhcloud.py",
@@ -3537,7 +5184,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/providers/test_vercel.py",
@@ -3547,7 +5197,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "docs-site/src/index.ts",
@@ -3557,7 +5210,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "clai/update_readme.py",
@@ -3567,7 +5223,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "clai/clai/__main__.py",
@@ -3577,7 +5236,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "clai/clai/__init__.py",
@@ -3587,6 +5249,9 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   }
 ]

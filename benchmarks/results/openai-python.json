@@ -7,7 +7,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_types.py",
@@ -17,7 +20,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_streaming.py",
@@ -27,7 +33,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_resource.py",
@@ -37,7 +46,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_files.py",
@@ -47,7 +59,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/__init__.py",
@@ -57,31 +72,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
-  },
-  {
-    "file": "src/openai/_base_client.py",
-    "line": 1005,
-    "tier": "agent_autonomy",
-    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
-    "description": "AI output may flow to Message/email sending \u2014 no human gate detected",
-    "indicators": [
-      "Message/email sending"
-    ],
-    "confidence_score": 70,
-    "suppressed": false
-  },
-  {
-    "file": "src/openai/_base_client.py",
-    "line": 1604,
-    "tier": "agent_autonomy",
-    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
-    "description": "AI output may flow to Message/email sending \u2014 no human gate detected",
-    "indicators": [
-      "Message/email sending"
-    ],
-    "confidence_score": 70,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_base_client.py",
@@ -91,7 +85,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_legacy_response.py",
@@ -101,7 +98,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_exceptions.py",
@@ -111,7 +111,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_client.py",
@@ -121,7 +124,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_models.py",
@@ -131,7 +137,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_module_client.py",
@@ -141,7 +150,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_version.py",
@@ -151,7 +163,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/cli/_cli.py",
@@ -161,7 +176,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/cli/_utils.py",
@@ -171,7 +189,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/cli/_errors.py",
@@ -181,7 +202,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/cli/_tools/fine_tunes.py",
@@ -191,7 +215,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/cli/_tools/_main.py",
@@ -201,7 +228,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/cli/_tools/migrate.py",
@@ -213,7 +243,11 @@
       "File system modification"
     ],
     "confidence_score": 60,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "src/openai/cli/_tools/migrate.py",
@@ -225,7 +259,11 @@
       "File system modification"
     ],
     "confidence_score": 60,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "src/openai/cli/_tools/migrate.py",
@@ -235,7 +273,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/cli/_api/completions.py",
@@ -245,7 +286,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/cli/_api/files.py",
@@ -255,7 +299,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/cli/_api/chat/completions.py",
@@ -265,7 +312,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/cli/_api/fine_tuning/jobs.py",
@@ -275,7 +325,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/completions.py",
@@ -285,7 +338,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/images.py",
@@ -295,7 +351,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/__init__.py",
@@ -305,7 +364,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/models.py",
@@ -315,7 +377,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/embeddings.py",
@@ -325,7 +390,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/videos.py",
@@ -335,7 +403,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/moderations.py",
@@ -345,7 +416,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/batches.py",
@@ -355,7 +429,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/files.py",
@@ -365,7 +442,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/beta/assistants.py",
@@ -375,7 +455,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/beta/beta.py",
@@ -385,7 +468,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/beta/threads/threads.py",
@@ -395,7 +481,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/beta/threads/messages.py",
@@ -405,7 +494,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/beta/threads/runs/steps.py",
@@ -415,7 +507,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/beta/threads/runs/runs.py",
@@ -425,7 +520,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/beta/chatkit/threads.py",
@@ -435,7 +533,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/beta/chatkit/sessions.py",
@@ -445,7 +546,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/beta/chatkit/chatkit.py",
@@ -455,7 +559,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/beta/realtime/realtime.py",
@@ -465,7 +572,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/beta/realtime/sessions.py",
@@ -475,7 +585,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/beta/realtime/transcription_sessions.py",
@@ -485,7 +598,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/webhooks/webhooks.py",
@@ -495,7 +611,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/containers/containers.py",
@@ -505,7 +624,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/containers/files/content.py",
@@ -515,7 +637,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/containers/files/files.py",
@@ -525,7 +650,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/skills/content.py",
@@ -535,7 +663,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/skills/skills.py",
@@ -545,7 +676,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/skills/versions/content.py",
@@ -555,7 +689,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/skills/versions/versions.py",
@@ -565,7 +702,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/chat/chat.py",
@@ -575,7 +715,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/chat/completions/completions.py",
@@ -585,7 +728,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/chat/completions/messages.py",
@@ -595,7 +741,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/uploads/uploads.py",
@@ -605,7 +754,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/uploads/parts.py",
@@ -615,7 +767,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/fine_tuning/fine_tuning.py",
@@ -625,7 +780,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/fine_tuning/jobs/checkpoints.py",
@@ -635,7 +793,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/fine_tuning/jobs/jobs.py",
@@ -645,7 +806,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/fine_tuning/checkpoints/checkpoints.py",
@@ -655,7 +819,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/fine_tuning/checkpoints/permissions.py",
@@ -665,7 +832,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/fine_tuning/alpha/alpha.py",
@@ -675,7 +845,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/fine_tuning/alpha/graders.py",
@@ -685,7 +858,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/vector_stores/file_batches.py",
@@ -695,7 +871,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/vector_stores/__init__.py",
@@ -705,7 +884,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/vector_stores/vector_stores.py",
@@ -715,7 +897,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/vector_stores/files.py",
@@ -725,7 +910,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/audio/audio.py",
@@ -735,7 +923,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/audio/translations.py",
@@ -745,7 +936,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/audio/transcriptions.py",
@@ -755,7 +949,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/audio/speech.py",
@@ -765,7 +962,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/evals/evals.py",
@@ -775,7 +975,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/evals/runs/output_items.py",
@@ -785,7 +988,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/evals/runs/runs.py",
@@ -795,7 +1001,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/responses/input_items.py",
@@ -805,7 +1014,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/responses/responses.py",
@@ -815,7 +1027,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/responses/input_tokens.py",
@@ -825,7 +1040,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/conversations/items.py",
@@ -835,7 +1053,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/conversations/conversations.py",
@@ -845,7 +1066,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/realtime/calls.py",
@@ -855,7 +1079,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/realtime/realtime.py",
@@ -865,7 +1092,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/resources/realtime/client_secrets.py",
@@ -875,7 +1105,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_extras/_common.py",
@@ -885,7 +1118,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/lib/_old_api.py",
@@ -895,7 +1131,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/lib/_realtime.py",
@@ -905,7 +1144,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/lib/azure.py",
@@ -915,7 +1157,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/lib/_validators.py",
@@ -925,7 +1170,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/lib/_parsing/_completions.py",
@@ -935,7 +1183,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/lib/streaming/chat/_completions.py",
@@ -945,7 +1196,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/model.py",
@@ -955,7 +1209,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/batch.py",
@@ -965,7 +1222,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/file_purpose.py",
@@ -975,7 +1235,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/batch_usage.py",
@@ -985,7 +1248,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/upload_create_params.py",
@@ -995,7 +1261,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/completion_create_params.py",
@@ -1005,7 +1274,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/embedding.py",
@@ -1015,7 +1287,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/create_embedding_response.py",
@@ -1025,7 +1300,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/vector_store_search_response.py",
@@ -1035,7 +1313,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/vector_store_search_params.py",
@@ -1045,7 +1326,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/__init__.py",
@@ -1055,7 +1339,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/upload.py",
@@ -1065,7 +1352,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/batch_create_params.py",
@@ -1075,7 +1365,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/vector_store.py",
@@ -1085,7 +1378,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/moderation_create_params.py",
@@ -1095,7 +1391,31 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "src/openai/types/eval_create_response.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 53,
+    "suppressed": false,
+    "observations": [],
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "src/openai/types/vector_store_list_params.py",
@@ -1105,7 +1425,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/file_object.py",
@@ -1115,7 +1438,73 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "src/openai/types/eval_update_response.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 53,
+    "suppressed": false,
+    "observations": [],
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
+  },
+  {
+    "file": "src/openai/types/eval_retrieve_response.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 53,
+    "suppressed": false,
+    "observations": [],
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
+  },
+  {
+    "file": "src/openai/types/eval_create_params.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 53,
+    "suppressed": false,
+    "observations": [],
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "src/openai/types/embedding_create_params.py",
@@ -1125,7 +1514,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/vector_store_update_params.py",
@@ -1135,7 +1527,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/image.py",
@@ -1145,7 +1540,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/embedding_model.py",
@@ -1155,7 +1553,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/image_generate_params.py",
@@ -1165,7 +1566,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/vector_store_deleted.py",
@@ -1175,7 +1579,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/vector_store_create_params.py",
@@ -1185,7 +1592,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/file_create_params.py",
@@ -1195,7 +1605,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/image_create_variation_params.py",
@@ -1205,7 +1618,31 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "src/openai/types/eval_list_response.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 53,
+    "suppressed": false,
+    "observations": [],
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "src/openai/types/image_edit_params.py",
@@ -1215,7 +1652,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/assistant_create_params.py",
@@ -1225,7 +1665,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/file_search_tool.py",
@@ -1235,7 +1678,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/thread.py",
@@ -1245,7 +1691,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/thread_update_params.py",
@@ -1255,7 +1704,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/file_search_tool_param.py",
@@ -1265,7 +1717,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/assistant.py",
@@ -1275,7 +1730,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/thread_create_params.py",
@@ -1285,7 +1743,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/assistant_update_params.py",
@@ -1295,7 +1756,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/thread_create_and_run_params.py",
@@ -1305,7 +1769,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/assistant_stream_event.py",
@@ -1315,7 +1782,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/image_file_delta.py",
@@ -1325,7 +1795,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/image_file_param.py",
@@ -1335,7 +1808,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/image_file.py",
@@ -1345,7 +1821,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/run_create_params.py",
@@ -1355,7 +1834,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/message.py",
@@ -1365,7 +1847,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/image_file_content_block_param.py",
@@ -1375,7 +1860,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/required_action_function_tool_call.py",
@@ -1385,7 +1873,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/image_file_content_block.py",
@@ -1395,7 +1886,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/image_file_delta_block.py",
@@ -1405,7 +1899,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/run.py",
@@ -1415,7 +1912,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/runs/step_retrieve_params.py",
@@ -1425,7 +1925,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/runs/code_interpreter_tool_call.py",
@@ -1435,7 +1938,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/runs/run_step.py",
@@ -1445,7 +1951,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/runs/code_interpreter_output_image.py",
@@ -1455,7 +1964,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/runs/function_tool_call.py",
@@ -1465,7 +1977,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/runs/function_tool_call_delta.py",
@@ -1475,7 +1990,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/threads/runs/step_list_params.py",
@@ -1485,7 +2003,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/chatkit/chatkit_thread_item_list.py",
@@ -1495,7 +2016,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/realtime/transcription_session_update_param.py",
@@ -1505,7 +2029,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/realtime/session_update_event_param.py",
@@ -1515,7 +2042,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/realtime/session_create_params.py",
@@ -1525,7 +2055,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/realtime/transcription_session_create_params.py",
@@ -1535,7 +2068,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/realtime/transcription_session_update.py",
@@ -1545,7 +2081,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/realtime/session_update_event.py",
@@ -1555,7 +2094,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/realtime/session.py",
@@ -1565,7 +2107,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/beta/realtime/transcription_session.py",
@@ -1575,7 +2120,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/graders/score_model_grader_param.py",
@@ -1585,7 +2133,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/graders/score_model_grader.py",
@@ -1595,7 +2146,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/chat/chat_completion_content_part_image_param.py",
@@ -1605,7 +2159,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/chat/chat_completion_content_part_text.py",
@@ -1615,7 +2172,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/chat/completion_create_params.py",
@@ -1625,7 +2185,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/chat/parsed_function_tool_call.py",
@@ -1635,7 +2198,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/chat/chat_completion_stream_options_param.py",
@@ -1645,7 +2211,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/chat/chat_completion_content_part_image.py",
@@ -1655,7 +2224,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/chat/chat_completion_audio_param.py",
@@ -1665,7 +2237,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/chat/chat_completion_content_part_param.py",
@@ -1675,7 +2250,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/chat/chat_completion_message.py",
@@ -1685,7 +2263,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/chat/chat_completion_assistant_message_param.py",
@@ -1695,7 +2276,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/chat/chat_completion_audio.py",
@@ -1705,7 +2289,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/chat/chat_completion_chunk.py",
@@ -1715,7 +2302,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/chat/chat_completion.py",
@@ -1725,7 +2315,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/chat/chat_completion_content_part_input_audio_param.py",
@@ -1735,7 +2328,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/chat/chat_completion_content_part_text_param.py",
@@ -1745,7 +2341,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/shared/reasoning.py",
@@ -1755,7 +2354,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/shared/response_format_text_grammar.py",
@@ -1765,7 +2367,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/shared/function_definition.py",
@@ -1775,7 +2380,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/shared/response_format_json_schema.py",
@@ -1785,7 +2393,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/shared/response_format_text_python.py",
@@ -1795,7 +2406,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/fine_tuning/job_create_params.py",
@@ -1805,7 +2419,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/fine_tuning/fine_tuning_job.py",
@@ -1815,7 +2432,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/fine_tuning/fine_tuning_job_wandb_integration.py",
@@ -1825,7 +2445,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/fine_tuning/jobs/fine_tuning_job_checkpoint.py",
@@ -1835,7 +2458,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/fine_tuning/checkpoints/permission_retrieve_response.py",
@@ -1845,7 +2471,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/fine_tuning/checkpoints/permission_delete_response.py",
@@ -1855,7 +2484,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/fine_tuning/checkpoints/permission_list_response.py",
@@ -1865,7 +2497,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/fine_tuning/checkpoints/permission_create_response.py",
@@ -1875,7 +2510,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/fine_tuning/alpha/grader_run_params.py",
@@ -1885,7 +2523,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/vector_stores/file_batch_create_params.py",
@@ -1895,7 +2536,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/vector_stores/__init__.py",
@@ -1905,7 +2549,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/vector_stores/vector_store_file.py",
@@ -1915,7 +2562,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/vector_stores/vector_store_file_batch.py",
@@ -1925,7 +2575,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/vector_stores/vector_store_file_deleted.py",
@@ -1935,7 +2588,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/vector_stores/file_create_params.py",
@@ -1945,7 +2601,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/audio/transcription_create_params.py",
@@ -1955,7 +2614,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/audio/translation_create_params.py",
@@ -1965,7 +2627,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/audio/transcription_text_done_event.py",
@@ -1975,7 +2640,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/audio/transcription_text_segment_event.py",
@@ -1985,7 +2653,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/audio/transcription_text_delta_event.py",
@@ -1995,7 +2666,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/audio/speech_create_params.py",
@@ -2005,7 +2679,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/evals/create_eval_completions_run_data_source_param.py",
@@ -2015,7 +2692,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/evals/run_create_response.py",
@@ -2025,7 +2705,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/evals/run_cancel_response.py",
@@ -2035,7 +2718,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/evals/run_create_params.py",
@@ -2045,7 +2731,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/evals/run_list_response.py",
@@ -2055,7 +2744,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/evals/create_eval_completions_run_data_source.py",
@@ -2065,7 +2757,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/evals/run_retrieve_response.py",
@@ -2075,7 +2770,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/shared_params/reasoning.py",
@@ -2085,7 +2783,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/shared_params/function_definition.py",
@@ -2095,7 +2796,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/shared_params/response_format_json_schema.py",
@@ -2105,7 +2809,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_function_tool_call_item.py",
@@ -2115,7 +2822,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_prompt.py",
@@ -2125,17 +2835,31 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/tool.py",
     "line": 1,
-    "tier": "minimal_risk",
-    "category": "AI Code",
-    "description": "AI-related code with no specific risk indicators",
-    "indicators": [],
-    "confidence_score": 20,
-    "suppressed": false
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 68,
+    "suppressed": false,
+    "observations": [],
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "src/openai/types/responses/response_create_params.py",
@@ -2145,17 +2869,31 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/tool_choice_types_param.py",
     "line": 1,
-    "tier": "minimal_risk",
-    "category": "AI Code",
-    "description": "AI-related code with no specific risk indicators",
-    "indicators": [],
-    "confidence_score": 20,
-    "suppressed": false
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 53,
+    "suppressed": false,
+    "observations": [],
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "src/openai/types/responses/web_search_preview_tool_param.py",
@@ -2165,7 +2903,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_computer_tool_call_param.py",
@@ -2175,7 +2916,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/custom_tool_param.py",
@@ -2185,7 +2929,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_compact_params.py",
@@ -2195,7 +2942,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_compaction_item.py",
@@ -2205,7 +2955,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_custom_tool_call_output_param.py",
@@ -2215,7 +2968,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_input_image_content_param.py",
@@ -2225,7 +2981,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_custom_tool_call_output.py",
@@ -2235,7 +2994,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_function_web_search_param.py",
@@ -2245,7 +3007,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_text_config_param.py",
@@ -2255,7 +3020,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/computer_use_preview_tool.py",
@@ -2265,7 +3033,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/input_token_count_params.py",
@@ -2275,7 +3046,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_prompt_param.py",
@@ -2285,7 +3059,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/file_search_tool.py",
@@ -2295,7 +3072,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_function_tool_call_param.py",
@@ -2305,7 +3085,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_format_text_json_schema_config.py",
@@ -2315,7 +3098,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/function_tool_param.py",
@@ -2325,7 +3111,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/computer_tool_param.py",
@@ -2335,7 +3124,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_custom_tool_call.py",
@@ -2345,7 +3137,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/computer_tool.py",
@@ -2355,7 +3150,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/file_search_tool_param.py",
@@ -2365,7 +3163,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_reasoning_item_param.py",
@@ -2375,7 +3176,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/web_search_preview_tool.py",
@@ -2385,7 +3189,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_function_web_search.py",
@@ -2395,7 +3202,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_file_search_tool_call.py",
@@ -2405,17 +3215,31 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/tool_choice_types.py",
     "line": 1,
-    "tier": "minimal_risk",
-    "category": "AI Code",
-    "description": "AI-related code with no specific risk indicators",
-    "indicators": [],
-    "confidence_score": 20,
-    "suppressed": false
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 53,
+    "suppressed": false,
+    "observations": [],
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "src/openai/types/responses/response_file_search_tool_call_param.py",
@@ -2425,7 +3249,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_computer_tool_call.py",
@@ -2435,7 +3262,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_retrieve_params.py",
@@ -2445,17 +3275,31 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/tool_param.py",
     "line": 1,
-    "tier": "minimal_risk",
-    "category": "AI Code",
-    "description": "AI-related code with no specific risk indicators",
-    "indicators": [],
-    "confidence_score": 20,
-    "suppressed": false
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 68,
+    "suppressed": false,
+    "observations": [],
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "src/openai/types/responses/responses_client_event.py",
@@ -2465,7 +3309,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_input_image_param.py",
@@ -2475,7 +3322,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_reasoning_item.py",
@@ -2485,7 +3335,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_function_tool_call.py",
@@ -2495,7 +3348,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_input_image_content.py",
@@ -2505,7 +3361,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/function_tool.py",
@@ -2515,7 +3374,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_custom_tool_call_param.py",
@@ -2525,7 +3387,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_compaction_item_param.py",
@@ -2535,7 +3400,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/web_search_tool.py",
@@ -2545,7 +3413,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_text_config.py",
@@ -2555,7 +3426,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/custom_tool.py",
@@ -2565,7 +3439,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response.py",
@@ -2575,7 +3452,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_usage.py",
@@ -2585,7 +3465,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_format_text_json_schema_config_param.py",
@@ -2595,7 +3478,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_input_image.py",
@@ -2605,7 +3491,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/responses_client_event_param.py",
@@ -2615,7 +3504,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/response_compaction_item_param_param.py",
@@ -2625,7 +3517,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/web_search_tool_param.py",
@@ -2635,7 +3530,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/responses/computer_use_preview_tool_param.py",
@@ -2645,7 +3543,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/conversations/item_retrieve_params.py",
@@ -2655,7 +3556,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/conversations/item_create_params.py",
@@ -2665,7 +3569,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/realtime_transcription_session_audio_input.py",
@@ -2675,7 +3582,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/realtime_response_create_params_param.py",
@@ -2685,7 +3595,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/realtime_tools_config_union_param.py",
@@ -2695,7 +3608,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/audio_transcription_param.py",
@@ -2705,7 +3621,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/realtime_session_create_response.py",
@@ -2715,7 +3634,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/realtime_tools_config_param.py",
@@ -2725,7 +3647,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/realtime_transcription_session_audio_input_param.py",
@@ -2735,7 +3660,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/realtime_server_event.py",
@@ -2745,7 +3673,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/realtime_response_create_params.py",
@@ -2755,7 +3686,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/realtime_tools_config_union.py",
@@ -2765,7 +3699,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/realtime_audio_config_input_param.py",
@@ -2775,7 +3712,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/call_accept_params.py",
@@ -2785,7 +3725,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/realtime_session_create_request_param.py",
@@ -2795,7 +3738,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/output_audio_buffer_clear_event.py",
@@ -2805,7 +3751,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/realtime_response_create_mcp_tool_param.py",
@@ -2815,7 +3764,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/audio_transcription.py",
@@ -2825,7 +3777,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/output_audio_buffer_clear_event_param.py",
@@ -2835,7 +3790,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/realtime_session_create_request.py",
@@ -2845,7 +3803,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/realtime_response_create_mcp_tool.py",
@@ -2855,7 +3816,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/types/realtime/realtime_audio_config_input.py",
@@ -2865,7 +3829,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_utils/_utils.py",
@@ -2875,7 +3842,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_utils/_path.py",
@@ -2885,7 +3855,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_utils/_resources_proxy.py",
@@ -2895,7 +3868,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "src/openai/_utils/_logs.py",
@@ -2905,7 +3881,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "scripts/detect-breaking-changes.py",
@@ -2915,7 +3894,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/video.py",
@@ -2925,7 +3907,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/azure_ad.py",
@@ -2935,7 +3920,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/parsing_stream.py",
@@ -2945,7 +3933,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/azure.py",
@@ -2955,7 +3946,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/text_to_speech.py",
@@ -2965,7 +3959,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/parsing_tools.py",
@@ -2975,7 +3972,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/picture.py",
@@ -2985,7 +3985,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/responses_input_tokens.py",
@@ -2995,7 +3998,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/module_client.py",
@@ -3005,7 +4011,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/speech_to_text.py",
@@ -3015,7 +4024,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/async_demo.py",
@@ -3025,7 +4037,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/audio.py",
@@ -3035,7 +4050,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/uploads.py",
@@ -3045,7 +4063,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/streaming.py",
@@ -3055,7 +4076,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/parsing.py",
@@ -3065,7 +4089,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/demo.py",
@@ -3075,17 +4102,31 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/image_stream.py",
     "line": 1,
-    "tier": "minimal_risk",
-    "category": "AI Code",
-    "description": "AI-related code with no specific risk indicators",
-    "indicators": [],
-    "confidence_score": 20,
-    "suppressed": false
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 45,
+    "suppressed": false,
+    "observations": [],
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "examples/parsing_tools_stream.py",
@@ -3095,7 +4136,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/responses/structured_outputs.py",
@@ -3105,7 +4149,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/responses/structured_outputs_tools.py",
@@ -3115,7 +4162,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/responses/background_streaming.py",
@@ -3125,7 +4175,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/responses/background_async.py",
@@ -3135,7 +4188,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/responses/background_streaming_async.py",
@@ -3145,7 +4201,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/responses/streaming.py",
@@ -3155,7 +4214,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/responses/websocket.py",
@@ -3165,7 +4227,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/responses/background.py",
@@ -3175,7 +4240,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/responses/streaming_tools.py",
@@ -3185,7 +4253,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/realtime/push_to_talk_app.py",
@@ -3195,7 +4266,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/realtime/realtime.py",
@@ -3205,7 +4279,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/realtime/audio_util.py",
@@ -3215,7 +4292,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "examples/realtime/azure_realtime.py",
@@ -3225,7 +4305,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_websocket_connection_options.py",
@@ -3235,7 +4318,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_files.py",
@@ -3245,7 +4331,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_deepcopy.py",
@@ -3255,7 +4344,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/utils.py",
@@ -3265,7 +4357,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_qs.py",
@@ -3275,7 +4370,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_models.py",
@@ -3285,7 +4383,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_extract_files.py",
@@ -3295,7 +4396,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_response.py",
@@ -3305,7 +4409,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_required_args.py",
@@ -3315,7 +4422,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_transform.py",
@@ -3325,7 +4435,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/conftest.py",
@@ -3335,7 +4448,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_client.py",
@@ -3345,7 +4461,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_legacy_response.py",
@@ -3355,7 +4474,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_module_client.py",
@@ -3365,7 +4487,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_streaming.py",
@@ -3375,7 +4500,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/lib/snapshots.py",
@@ -3385,7 +4513,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/lib/test_azure.py",
@@ -3395,7 +4526,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/lib/test_old_api.py",
@@ -3405,7 +4539,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/lib/test_audio.py",
@@ -3415,7 +4552,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/lib/test_pydantic.py",
@@ -3425,7 +4565,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/lib/test_assistants.py",
@@ -3435,7 +4578,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/lib/chat/test_completions_streaming.py",
@@ -3445,7 +4591,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/lib/chat/test_completions.py",
@@ -3455,7 +4604,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/lib/responses/test_responses.py",
@@ -3465,7 +4617,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_responses.py",
@@ -3475,7 +4630,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_vector_stores.py",
@@ -3485,7 +4643,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_files.py",
@@ -3495,7 +4656,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_embeddings.py",
@@ -3505,7 +4669,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_moderations.py",
@@ -3515,7 +4682,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_images.py",
@@ -3525,7 +4695,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_models.py",
@@ -3535,7 +4708,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_webhooks.py",
@@ -3545,7 +4721,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_videos.py",
@@ -3555,7 +4734,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_uploads.py",
@@ -3565,7 +4747,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_containers.py",
@@ -3575,7 +4760,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_conversations.py",
@@ -3585,7 +4773,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_skills.py",
@@ -3595,7 +4786,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_evals.py",
@@ -3605,7 +4799,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_batches.py",
@@ -3615,7 +4812,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/test_completions.py",
@@ -3625,7 +4825,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/beta/test_threads.py",
@@ -3635,7 +4838,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/beta/test_assistants.py",
@@ -3645,7 +4851,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/beta/threads/test_messages.py",
@@ -3655,7 +4864,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/beta/threads/test_runs.py",
@@ -3665,7 +4877,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/beta/threads/runs/test_steps.py",
@@ -3675,7 +4890,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/beta/chatkit/test_threads.py",
@@ -3685,7 +4903,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/beta/chatkit/test_sessions.py",
@@ -3695,7 +4916,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/containers/test_files.py",
@@ -3705,7 +4929,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/containers/files/test_content.py",
@@ -3715,7 +4942,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/skills/test_content.py",
@@ -3725,7 +4955,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/skills/test_versions.py",
@@ -3735,7 +4968,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/skills/versions/test_content.py",
@@ -3745,7 +4981,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/chat/test_completions.py",
@@ -3758,7 +4997,11 @@
     ],
     "confidence_score": 20,
     "suppressed": false,
-    "remediation": "Set explicit max_tokens limit. Add cost monitoring and rate limiting."
+    "remediation": "Set explicit max_tokens limit. Add cost monitoring and rate limiting.",
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "tests/api_resources/chat/test_completions.py",
@@ -3768,7 +5011,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/chat/completions/test_messages.py",
@@ -3778,7 +5024,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/uploads/test_parts.py",
@@ -3788,7 +5037,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/fine_tuning/test_jobs.py",
@@ -3798,7 +5050,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/fine_tuning/jobs/test_checkpoints.py",
@@ -3808,7 +5063,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/fine_tuning/checkpoints/test_permissions.py",
@@ -3818,7 +5076,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/fine_tuning/alpha/test_graders.py",
@@ -3828,7 +5089,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/vector_stores/test_files.py",
@@ -3838,7 +5102,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/vector_stores/test_file_batches.py",
@@ -3848,7 +5115,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/audio/test_translations.py",
@@ -3858,7 +5128,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/audio/test_speech.py",
@@ -3868,7 +5141,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/audio/test_transcriptions.py",
@@ -3878,7 +5154,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/evals/test_runs.py",
@@ -3888,7 +5167,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/evals/runs/test_output_items.py",
@@ -3898,7 +5180,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/responses/test_input_tokens.py",
@@ -3908,7 +5193,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/responses/test_input_items.py",
@@ -3918,7 +5206,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/conversations/test_items.py",
@@ -3928,7 +5219,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/realtime/test_client_secrets.py",
@@ -3938,7 +5232,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/api_resources/realtime/test_calls.py",
@@ -3948,7 +5245,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/compat/test_tool_param.py",
@@ -3958,7 +5258,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_utils/test_typing.py",
@@ -3968,7 +5271,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_utils/test_datetime_parse.py",
@@ -3978,7 +5284,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_utils/test_json.py",
@@ -3988,7 +5297,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_utils/test_proxy.py",
@@ -3998,7 +5310,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_utils/test_path.py",
@@ -4008,7 +5323,10 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   },
   {
     "file": "tests/test_utils/test_logging.py",
@@ -4018,6 +5336,9 @@
     "description": "AI-related code with no specific risk indicators",
     "indicators": [],
     "confidence_score": 20,
-    "suppressed": false
+    "suppressed": false,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
   }
 ]

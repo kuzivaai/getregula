@@ -87,9 +87,10 @@ These items have a values conflict with Regula's stated principles ("zero produc
 
 ## Blocked on prerequisites
 
-### Publish precision / recall benchmarks — partial (2026-04-07)
-- The 2026-04-01 labelled corpus (257 findings, 15.2% precision) is now surfaced in `README.md` and `benchmarks/README.md` with explicit staleness warning. `python3 benchmarks/label.py score` reproduces the number from `labels.json` and `test_published_precision_matches_labels` enforces that the README stays in sync with the file.
-- **BLOCKED on rescan.** Pattern files were modified at least six times after labels were generated (notably `0963aa2` whose own commit message claims "projected precision 15% → ~67%"). The published 15.2% is therefore a 2026-04-01 snapshot, not a current measurement. Next step: rerun `benchmarks/run_benchmark.py`, diff against `labels.json` to identify findings that no longer fire and findings that need fresh labels, relabel the delta, and update the published number.
+### Publish precision / recall benchmarks — re-validated 2026-04-07 (partial)
+- The 2026-04-01 labelled corpus (257 findings, 15.2% precision) is published in `README.md` and `benchmarks/README.md`. `python3 benchmarks/label.py score` reproduces the number from `labels.json`; `test_published_precision_matches_labels` enforces that the README stays in sync with the file.
+- **Re-validated 2026-04-07.** Full rescan via `benchmarks/run_benchmark.py` shows that 252 of 257 labels (98%) still appear in current scan output and precision on that matched subset is 15.1% — within 0.1pp of the published 15.2%. Commit `0963aa2`'s "projected precision 15% → ~67%" did not materialise in measurement.
+- **Coverage gap (next work).** The same rescan produced 3,927 unlabelled new findings on the same five repos. The published number is honest on the labelled subset but covers ~6% of current output. A comprehensive number requires labelling that delta — out of scope for a single agent session because labelling is human judgement work.
 - **Also still TODO:** the minimal_risk tier dominates and is noisy on general-purpose libraries (next pattern-tuning target); the labelled sample contains zero `prohibited`/`high_risk` findings so those tiers cannot be estimated from this corpus and need a separate fixture.
 
 ---
