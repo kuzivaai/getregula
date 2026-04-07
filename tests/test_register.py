@@ -35,3 +35,30 @@ def test_register_schema_loads_with_correct_field_counts():
     assert "verification_method" in md
     assert "sources" in md and len(md["sources"]) >= 3
     print("✓ register: schema loads with A=13, B=9, C=5")
+
+
+def test_register_schema_excluded_under_49_4_flags_are_correct():
+    """Section A points 6, 8, 9 are excluded under Art 49(4); all other A points and all B/C points are not."""
+    from register import load_schema
+
+    schema = load_schema()
+
+    # Section A: every field must carry the flag, exactly points 6/8/9 are True
+    a_fields = schema["sections"]["A"]["fields"]
+    excluded_a_points = sorted(f["point"] for f in a_fields if f["excluded_under_49_4"])
+    assert excluded_a_points == [6, 8, 9], \
+        f"Section A excluded points must be [6, 8, 9], got {excluded_a_points}"
+    for f in a_fields:
+        assert "excluded_under_49_4" in f, \
+            f"Section A point {f['point']} missing excluded_under_49_4"
+        assert isinstance(f["excluded_under_49_4"], bool)
+
+    # Sections B and C: every field must carry the flag, all values must be False
+    for sec in ("B", "C"):
+        for f in schema["sections"][sec]["fields"]:
+            assert "excluded_under_49_4" in f, \
+                f"Section {sec} point {f['point']} missing excluded_under_49_4"
+            assert f["excluded_under_49_4"] is False, \
+                f"Section {sec} point {f['point']} must be False, got {f['excluded_under_49_4']}"
+
+    print("✓ register: excluded_under_49_4 flags correct (A: 6/8/9 only, B/C: all False)")
