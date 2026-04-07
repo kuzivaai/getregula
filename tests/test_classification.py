@@ -5660,6 +5660,39 @@ def test_notebook_scan_end_to_end():
 
 
 # ---------------------------------------------------------------------------
+# Synthetic prohibited / high-risk fixture — regression guard
+# ---------------------------------------------------------------------------
+
+def test_synthetic_fixture_perfect_precision_recall():
+    """Pin the synthetic-fixture baseline: prohibited and high_risk tiers
+    must achieve 100% precision and 100% recall against the labelled
+    fixture in benchmarks/synthetic/. This guards against the bug fixed
+    by the early prohibited check in report.py — the scanner used to
+    short-circuit on non-AI-importing files and skip Article 5 entirely.
+    """
+    import sys
+    from pathlib import Path as _P
+    sys.path.insert(0, str(_P(__file__).parent.parent / "benchmarks" / "synthetic"))
+    # Reset module cache so the test imports the script's metrics_dict
+    if "run" in sys.modules:
+        del sys.modules["run"]
+    from run import metrics_dict  # noqa: E402
+    # Clear scanner cache so test isolates current code path
+    import shutil
+    cache_dir = _P.home() / ".regula" / "cache"
+    if cache_dir.exists():
+        shutil.rmtree(cache_dir, ignore_errors=True)
+    metrics = metrics_dict()
+    for tier in ("prohibited", "high_risk"):
+        m = metrics[tier]
+        assert m["precision"] == 1.0, f"{tier} precision regression: got {m['precision']}, expected 1.0. tp={m['tp']} fp={m['fp']}"
+        assert m["recall"] == 1.0, f"{tier} recall regression: got {m['recall']}, expected 1.0. tp={m['tp']} fn={m['fn']}"
+        assert m["fp"] == 0, f"{tier} false positive on synthetic fixture: {m}"
+        assert m["fn"] == 0, f"{tier} false negative on synthetic fixture: {m}"
+    print("✓ synthetic: prohibited 100/100, high_risk 100/100 (5 TP each, 0 FP, 0 FN)")
+
+
+# ---------------------------------------------------------------------------
 # Published precision matches the labelled benchmark
 # ---------------------------------------------------------------------------
 
@@ -6294,6 +6327,8 @@ if __name__ == "__main__":
         test_action_yml_has_inline_pr_comment_step,
         # Published precision regression guard (1 test)
         test_published_precision_matches_labels,
+        # Synthetic fixture regression guard (1 test)
+        test_synthetic_fixture_perfect_precision_recall,
     ]
 
     print(f"Running {len(tests)} tests...\n")

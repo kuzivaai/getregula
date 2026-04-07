@@ -374,6 +374,45 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             if min_tier_level <= _TIER_ORDER.get("agent_autonomy", 3):
                 findings.extend(_scan_agent_autonomy(content, lines, rel_path, is_test, respect_ignores))
 
+            # Article 5 prohibited practices must be detected REGARDLESS of
+            # whether the file imports an AI library — the prohibition is on
+            # the practice, not the framework. classify() already enforces
+            # this order internally, but the pre-AI-related gate below would
+            # otherwise short-circuit the entire classification path for
+            # non-AI-importing files. Run a one-shot prohibited check here,
+            # honouring regula-ignore suppressions and stripping comments
+            # so the scanner does not flag itself when reading pattern
+            # definitions or docstrings discussing the patterns.
+            if min_tier_level <= _TIER_ORDER.get("prohibited", 4):
+                from classify_risk import check_prohibited, strip_comments as _strip
+                _early_suppress = _parse_suppression_rules(lines, respect_ignores)
+                _early_silenced = "*" in _early_suppress or "prohibited" in _early_suppress
+                if not _early_silenced:
+                    _early_lang = detect_language(filename) or "python"
+                    _early_stripped = _strip(content, _early_lang)
+                    prohibited_early = check_prohibited(content, stripped_text=_early_stripped)
+                    if prohibited_early is not None:
+                        findings.append({
+                            "file": rel_path,
+                            "line": 1,
+                            "tier": "prohibited",
+                            "category": prohibited_early.category or "Prohibited (Article 5)",
+                            "description": prohibited_early.description or prohibited_early.message or "",
+                            "indicators": prohibited_early.indicators_matched,
+                            "articles": prohibited_early.applicable_articles,
+                            "exceptions": prohibited_early.exceptions,
+                            "confidence_score": 90,
+                            "suppressed": False,
+                            "observations": [],
+                            "domain_boost": None,
+                        })
+                        try:
+                            if cache is not None:
+                                cache.put(rel_path, content, findings[file_findings_start:])
+                        except Exception:
+                            pass
+                        continue
+
             if not is_ai_related(content):
                 try:
                     if cache is not None:
