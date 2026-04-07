@@ -15,6 +15,18 @@ inputs:
     description: Post a compliance summary comment on pull requests
     required: false
     default: "true"
+  inline-pr-comments:
+    description: Post per-finding inline review comments on the PR diff (only for findings on changed lines)
+    required: false
+    default: "false"
+  inline-comment-max:
+    description: Maximum number of inline review comments to post per PR (avoid spam)
+    required: false
+    default: "20"
+  inline-comment-min-tier:
+    description: Minimum tier for inline comments (prohibited|high_risk|limited_risk|minimal_risk)
+    required: false
+    default: "high_risk"
   format:
     description: Output format for findings (sarif or json)
     required: false
@@ -365,6 +377,123 @@ runs:
               issue_number: context.issue.number,
               body: fullBody,
             });
+          }
+
+    - name: Post inline PR review comments
+      if: inputs.inline-pr-comments == 'true' && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      env:
+        SARIF_FILE: ${{ runner.temp }}/regula-results.sarif.json
+        MAX_COMMENTS: ${{ inputs.inline-comment-max }}
+        MIN_TIER: ${{ inputs.inline-comment-min-tier }}
+      with:
+        script: |
+          const fs = require('fs');
+          let sarif;
+          try {
+            sarif = JSON.parse(fs.readFileSync(process.env.SARIF_FILE, 'utf8'));
+          } catch (e) {
+            core.warning(`Could not read SARIF: ${e.message}`);
+            return;
+          }
+
+          // Tier ordering — only post comments at or above MIN_TIER
+          const tierOrder = { prohibited: 4, high_risk: 3, ai_security: 3, credential_exposure: 3, agent_autonomy: 3, limited_risk: 2, minimal_risk: 1 };
+          const minLevel = tierOrder[process.env.MIN_TIER] || 3;
+          const maxComments = parseInt(process.env.MAX_COMMENTS, 10) || 20;
+
+          // Fetch the changed files in this PR with their diff hunks
+          const { data: prFiles } = await github.rest.pulls.listFiles({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number,
+            per_page: 300,
+          });
+
+          // Build a map: filename -> Set of changed line numbers (RIGHT side of diff)
+          const changedLines = new Map();
+          for (const f of prFiles) {
+            if (!f.patch) continue;
+            const lines = new Set();
+            let rightLine = 0;
+            for (const ln of f.patch.split('\n')) {
+              const hunk = ln.match(/^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@/);
+              if (hunk) { rightLine = parseInt(hunk[1], 10); continue; }
+              if (ln.startsWith('+') && !ln.startsWith('+++')) {
+                lines.add(rightLine);
+                rightLine++;
+              } else if (!ln.startsWith('-')) {
+                rightLine++;
+              }
+            }
+            changedLines.set(f.filename, lines);
+          }
+
+          // Collect SARIF results into review comments
+          const allResults = [];
+          for (const run of sarif.runs || []) {
+            for (const r of run.results || []) {
+              allResults.push(r);
+            }
+          }
+
+          const tierFromTags = (tags) => {
+            for (const t of tags || []) {
+              const lt = String(t).toLowerCase();
+              if (lt.includes('prohibited')) return 'prohibited';
+              if (lt.includes('high')) return 'high_risk';
+              if (lt.includes('credential')) return 'credential_exposure';
+              if (lt.includes('agent')) return 'agent_autonomy';
+              if (lt.includes('limited')) return 'limited_risk';
+            }
+            return 'minimal_risk';
+          };
+
+          const comments = [];
+          for (const r of allResults) {
+            if (comments.length >= maxComments) break;
+            const tags = (r.properties && r.properties.tags) || [];
+            const tier = tierFromTags(tags);
+            if ((tierOrder[tier] || 0) < minLevel) continue;
+
+            const loc = (r.locations && r.locations[0] && r.locations[0].physicalLocation) || {};
+            const path = loc.artifactLocation && loc.artifactLocation.uri;
+            const line = loc.region && loc.region.startLine;
+            if (!path || !line) continue;
+
+            const fileLines = changedLines.get(path);
+            if (!fileLines || !fileLines.has(line)) continue;  // skip findings outside the diff
+
+            const ruleId = r.ruleId || 'regula';
+            const msg = (r.message && r.message.text) || '';
+            const articles = (r.properties && r.properties.articles) || [];
+            const articleStr = articles.length ? ` (Art. ${articles.join(', ')})` : '';
+
+            comments.push({
+              path,
+              line,
+              side: 'RIGHT',
+              body: `**Regula · ${tier.replace('_', ' ')}${articleStr}** — ${ruleId}\n\n${msg}\n\n_Indicator only, not a legal determination. See [Regula docs](https://github.com/kuzivaai/getregula)._`,
+            });
+          }
+
+          if (comments.length === 0) {
+            core.info('No findings on changed lines — no inline comments to post.');
+            return;
+          }
+
+          try {
+            await github.rest.pulls.createReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              event: 'COMMENT',
+              body: `Regula posted ${comments.length} inline finding${comments.length === 1 ? '' : 's'} on changed lines.`,
+              comments,
+            });
+            core.info(`Posted ${comments.length} inline review comments.`);
+          } catch (e) {
+            core.warning(`Failed to post inline review: ${e.message}`);
           }
 
     - name: Upload SARIF to GitHub Code Scanning
