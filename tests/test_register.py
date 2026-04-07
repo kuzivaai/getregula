@@ -62,3 +62,55 @@ def test_register_schema_excluded_under_49_4_flags_are_correct():
                 f"Section {sec} point {f['point']} must be False, got {f['excluded_under_49_4']}"
 
     print("✓ register: excluded_under_49_4 flags correct (A: 6/8/9 only, B/C: all False)")
+
+
+def test_register_detects_section_a_for_provider_annex3_point4_employment():
+    """Provider building an Annex III point 4 (employment) system → Section A, eu_database_public, Art 49(1)."""
+    from register import detect_section_and_target
+    decision = detect_section_and_target(role="provider", annex_iii_point=4, deployer_type="none", art_6_3_exempted=False)
+    assert decision["section"] == "A", f"section: {decision}"
+    assert decision["target"] == "eu_database_public", f"target: {decision}"
+    assert decision["article"] == "49(1)", f"article: {decision}"
+    assert decision["fields_excluded"] == [], f"exclusions: {decision}"
+    print("✓ register: provider point 4 → A / public")
+
+
+def test_register_detects_critical_infra_routes_to_national():
+    """Provider of Annex III point 2 (critical infrastructure) → national_authority per Art. 49(5)."""
+    from register import detect_section_and_target
+    decision = detect_section_and_target(role="provider", annex_iii_point=2, deployer_type="none", art_6_3_exempted=False)
+    assert decision["section"] == "A"
+    assert decision["target"] == "national_authority", f"target: {decision}"
+    assert decision["article"] == "49(5)"
+    print("✓ register: critical infra → national")
+
+
+def test_register_detects_biometrics_routes_to_non_public():
+    """Provider of Annex III point 1 (biometrics) → eu_database_non_public, fields 6/8/9 excluded (Art 49(4))."""
+    from register import detect_section_and_target
+    decision = detect_section_and_target(role="provider", annex_iii_point=1, deployer_type="none", art_6_3_exempted=False)
+    assert decision["section"] == "A"
+    assert decision["target"] == "eu_database_non_public", f"target: {decision}"
+    assert decision["article"] == "49(4)"
+    assert sorted(decision["fields_excluded"]) == [6, 8, 9], f"exclusions: {decision}"
+    print("✓ register: biometrics → non_public, excludes 6,8,9")
+
+
+def test_register_detects_law_enforcement_routes_to_non_public():
+    """Provider of Annex III point 6 (law enforcement) → eu_database_non_public + same exclusions."""
+    from register import detect_section_and_target
+    decision = detect_section_and_target(role="provider", annex_iii_point=6, deployer_type="none", art_6_3_exempted=False)
+    assert decision["target"] == "eu_database_non_public"
+    assert decision["article"] == "49(4)"
+    assert sorted(decision["fields_excluded"]) == [6, 8, 9]
+    print("✓ register: law enforcement → non_public")
+
+
+def test_register_detects_migration_routes_to_non_public():
+    """Provider of Annex III point 7 (migration/asylum/border) → eu_database_non_public + same exclusions."""
+    from register import detect_section_and_target
+    decision = detect_section_and_target(role="provider", annex_iii_point=7, deployer_type="none", art_6_3_exempted=False)
+    assert decision["target"] == "eu_database_non_public"
+    assert decision["article"] == "49(4)"
+    assert sorted(decision["fields_excluded"]) == [6, 8, 9]
+    print("✓ register: migration → non_public")
