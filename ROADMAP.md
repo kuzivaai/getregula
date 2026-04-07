@@ -2,124 +2,120 @@
 
 Last updated: 2026-04-07
 
-Items are prioritised by competitive gap severity and implementation feasibility.
+Items are prioritised by intrinsic value to Regula's users and implementation feasibility.
 Status: Backlog → In Progress → Done.
 
-Source: 57-tool competitive analysis, April 2026.
+> **Note on competitor references.** Earlier drafts of this roadmap cited specific
+> vendor feature claims (e.g. "Competitor X claims 99.8% precision") as
+> justification. Those claims were not backed by captured primary sources and have
+> been removed. Roadmap items are now justified on their intrinsic merit to Regula's
+> users. If a competitor claim is reintroduced, it must be backed by a dated
+> primary-source capture in `references/competitive/<vendor>.md`.
 
 ---
 
 ## Priority: High
 
-### Publish precision/recall benchmarks
-- **Gap:** No published accuracy metrics. Quethos Sentinel claims 99.8% precision.
-- **What:** Run benchmark suite against labelled open-source projects, publish precision/recall numbers in README and on the website.
-- **Feasibility:** Low effort — `regula benchmark` already exists. Need labelled test data.
+### Jupyter notebook scanning (.ipynb)
+- **Why:** ML and data science work happens in notebooks. Regula currently ignores `.ipynb` files because they aren't in `CODE_EXTENSIONS`, so a large slice of AI code is invisible to it.
+- **What:** Add a notebook parser that extracts code cells from `.ipynb` JSON and feeds them through the existing classification pipeline. Preserve cell index in findings so output points back to the notebook cell.
+- **Feasibility:** Low–Medium. `.ipynb` is JSON; the existing pipeline handles raw source.
 
 ### Publish scan time benchmarks
-- **Gap:** Systima claims 8-second scans on 20k-star repos. Regula has no published scan time.
-- **What:** Time `regula check` against well-known repos (langchain, transformers, openai-python). Publish results.
-- **Feasibility:** Low effort — `time` command. Add to README.
+- **Why:** Users (and prospects) ask "how fast is it on a real repo?" Regula has no published answer.
+- **What:** Time `regula check` against 3–5 named public repos (chosen for size and language mix). Publish the table in README with Regula version, repo commit SHA, and machine specs.
+- **Feasibility:** Low. `time` + a small script. Honest, reproducible, no fabrication risk.
 
-### PR inline comments for CI/CD
-- **Gap:** Systima Comply and Sentinel post findings as PR comments. Regula only outputs SARIF/JSON.
-- **What:** GitHub Action enhancement that posts findings as inline PR review comments on changed files.
-- **Feasibility:** Low effort — GitHub API, findings already have file:line data.
+### Domain-based severity adjustment
+- **Why:** A credit-scoring pattern in a fintech repo is materially higher risk than the same pattern in a demo. Regula treats both identically, which produces noisy output for high-stakes users.
+- **What:** Add a `regula-policy.yaml` (or `--domain` flag) that declares the project's domain (e.g. `healthcare`, `finance`, `recruitment`, `education`, `law-enforcement`). Apply a confidence/severity multiplier in `classify`.
+- **Feasibility:** Low. Config file + multiplier hook in the existing classifier.
 
-### Jupyter notebook scanning (.ipynb)
-- **Gap:** Quethos Sentinel scans Jupyter notebooks. Regula does not — `.ipynb` is not in `CODE_EXTENSIONS`.
-- **What:** Add notebook parser that extracts code cells and feeds them through existing classification pipeline.
-- **Feasibility:** Medium — JSON parsing of .ipynb format. ML/data science is a major Regula audience.
+### Document the existing MCP server
+- **Why:** Regula already ships `regula mcp-server`, but the README and landing page do not explain how to wire it into Claude Code, Cursor, or Windsurf. Users cannot adopt a feature they don't know exists.
+- **What:** Add an MCP section to the README with tested config snippets for Claude Code, Cursor, and Windsurf. Add a short landing-page mention.
+- **Feasibility:** Low. Pure documentation. Verify each snippet locally before publishing.
 
 ---
 
 ## Priority: Medium
 
-### Domain-based severity adjustment
-- **Gap:** Systima lets users declare their system domain (healthcare, finance) to adjust risk severity. Regula treats all code the same.
-- **What:** Add `--domain` flag or `regula-policy.yaml` config that adjusts confidence scores based on declared domain.
-- **Feasibility:** Low effort — config file addition, score multiplier in classify.
+### LGPD / Marco Legal da IA references in `regula conform`
+- **Why:** `regula gap` already supports LGPD and Marco Legal da IA via `framework_mapper`, but the conformity evidence pack is EU-AI-Act-only. Brazilian users get half a tool.
+- **What:** Extend `conform.py` so that when `--framework lgpd` or `--framework marco-legal-ia` is passed, the per-article evidence section includes the relevant LGPD / Marco Legal article cross-references already present in the framework mapper.
+- **Feasibility:** Medium. Data exists; needs wiring into `conform` output and tests.
 
-### Conformity assessment for LGPD / Marco Legal da IA
-- **Gap:** `regula conform` generates EU AI Act evidence only. Gap command supports LGPD/Marco Legal but conform pack doesn't.
-- **What:** Extend `conform.py` to include LGPD article cross-references when `--framework` flag is set.
-- **Feasibility:** Medium — framework mapper data exists, needs integration.
+### External RFC 3161 timestamping for evidence packs
+- **Why:** Regula's SHA-256 manifest is self-attesting — a local user could rewrite the evidence pack and the manifest. An external timestamp closes that loop.
+- **What:** Verify that `scripts/timestamp.py` actually exists and works as the prior session claimed. If yes, integrate it as an opt-in step in `regula conform` (`--timestamp <tsa-url>`). If no, descope.
+- **Feasibility:** Unknown until the existing module is verified. Treat as research-then-decide.
 
-### JS/TS AST analysis depth
-- **Gap:** Systima uses TypeScript Compiler API + tree-sitter WASM for deep AST analysis. Regula uses regex for JS/TS.
-- **What:** Use existing tree-sitter optional dep for JS/TS pattern matching. Degrade gracefully when not installed.
-- **Feasibility:** Medium — tree-sitter is already optional dep.
-
-### MCP server documentation and discovery
-- **Gap:** ark-forge and SonnyLabs MCP servers are documented for Claude/Cursor/Windsurf. Regula has `mcp-server` but it's not documented.
-- **What:** Document MCP server usage in README and landing page. Add example configs for Claude Code, Cursor, Windsurf.
-- **Feasibility:** Low effort — feature exists, just needs docs.
+### Multi-EU-regulation pattern coverage (NIS2, GDPR-for-AI)
+- **Why:** AI systems that process personal data have GDPR obligations on top of AI Act obligations, and AI systems that are part of essential services have NIS2 obligations. Regula's pattern set today is AI-Act-shaped.
+- **What:** Add a focused pattern set for the GDPR-for-AI overlap (automated decision-making under Art. 22, DPIA triggers) and NIS2-relevant patterns where they intersect with AI systems. Wire through `framework_mapper`.
+- **Feasibility:** Medium. New pattern research, but the architecture supports it.
 
 ### R language support
-- **Gap:** Quethos Sentinel scans R. Regula doesn't.
-- **What:** Add `.R` and `.r` to `CODE_EXTENSIONS`. R-specific patterns for tidymodels, caret, mlr3.
-- **Feasibility:** Medium — pattern research needed. R is significant in academic/statistical AI.
-
-### CE Marking workflow
-- **Gap:** Modulos has explicit CE Marking workflow for high-risk systems. Regula's conform pack stops at evidence generation.
-- **What:** Add `regula ce-mark` command that generates the EU declaration of conformity in the format required for CE marking.
-- **Feasibility:** Low — declaration template already exists in conform pack. Needs format compliance check.
-
-### Triage tickets (not just plans)
-- **Gap:** Quethos generates triage tickets. Regula generates remediation plans but not tickets.
-- **What:** Add `--export jira|github|linear` flag to `regula plan` that creates issues directly.
-- **Feasibility:** Low — plan output already structured. Just needs API integrations.
-
-### Slack/Teams webhook integration
-- **Gap:** tibet-audit posts to webhooks. Regula has no notification channels.
-- **What:** Add `--webhook URL` flag to `regula check --ci` that posts summary to Slack/Teams on findings.
-- **Feasibility:** Low — single HTTP POST.
-
-### Multi-jurisdiction frameworks (Asian, African, Americas)
-- **Gap:** tibet-audit covers PIPA (Korea), APPI (Japan), PDPA (Singapore), Gulf PDPL, NDPR (Nigeria). Centraleyes CAIF covers California/Colorado/China AI laws. Regula has 12 frameworks but mostly EU/Brazil.
-- **What:** Add framework mappings for: California AI law (SB 1047), Colorado AI Act, South Korea AI Act, China AI regulations, Japan APPI, Singapore PDPA.
-- **Feasibility:** High effort — requires legal research per jurisdiction. Phase by region.
-
-### Multi-EU-regulation coverage
-- **Gap:** EuroComply covers AI Act + NIS2 + GDPR + CRA + Data Act + VdS 10000. Regula covers AI Act + CRA only.
-- **What:** Extend Regula to detect NIS2 and GDPR-relevant patterns for AI systems processing personal data.
-- **Feasibility:** Medium — new pattern set, but framework_mapper architecture supports it.
-
-### Self-attesting audit chain → externally witnessed
-- **Gap:** Sentinel has immutable evidence ledger. Regula's SHA-256 manifest is self-attesting (a local user can rewrite it).
-- **What:** Optional integration with external timestamping (already have RFC 3161 in `timestamp.py`). Document as best practice.
-- **Feasibility:** Low — code exists, needs integration with conform pack output.
+- **Why:** Statistical and academic AI work uses R heavily; ignoring it leaves a real audience uncovered.
+- **What:** Add `.R` and `.r` to `CODE_EXTENSIONS`. Add R-specific patterns for the common ML libraries (`tidymodels`, `caret`, `mlr3`).
+- **Feasibility:** Medium. Pattern research is the bulk of the work.
 
 ---
 
-## Priority: Low (different tool category — not planned)
+## Priority: Decide explicitly before building
 
-These are capabilities of fundamentally different tools. Documented for awareness, not planned for Regula.
+These items have a values conflict with Regula's stated principles ("zero production dependencies", "offline operation", "CLI-first"). They should not be built until the trade-off is accepted explicitly.
 
-- **Runtime monitoring** (Holistic AI, OneTrust, IBM watsonx, MS AGT)
-- **Bias/fairness model testing** (EuConform CrowS-Pairs, Holistic AI) — would require executing models
-- **AI red-teaming / LLM output testing** (Promptfoo) — Regula is static, not behavioural
-- **PII redaction at runtime** (AgentGuard) — Regula detects credentials but doesn't intercept
-- **Content watermarking** (SonnyLabs) — runtime concern, not static
-- **Deepfake labelling generation** (SonnyLabs) — different problem
-- **Offline LLM-assisted classification** (EuConform with Ollama) — Regula is pure static analysis
-- **SSO/RBAC/multi-user** (all enterprise platforms) — not relevant for CLI
-- **Executive dashboards** (all enterprise platforms) — not relevant for CLI
-- **Approval workflows** (all enterprise platforms) — not relevant for CLI
-- **Model lifecycle management** (ValidMind, IBM) — different category
-- **Vendor AI risk management** (Trustible, Monitaur) — different category
-- **Web UI / dashboard for non-CLI users** — Regula is CLI-first by design
+### PR inline comments via GitHub Action
+- **Trade-off:** Requires a published, maintained GitHub Action with a token model and marketplace listing. The *posting logic* is small; the *delivery vehicle* is the work.
+- **Decision needed:** Are we shipping a GitHub Action as a first-class deliverable?
+
+### Triage ticket export (`--export jira|github|linear`)
+- **Trade-off:** Adds network calls and credential handling to a tool that brags about offline operation and zero deps.
+- **Decision needed:** Is `regula plan` allowed to talk to external APIs, or should this stay as file output that the user pipes into their own tooling?
+
+### Slack / Teams webhook notifications
+- **Trade-off:** Same as above — network call from a CLI that runs in CI.
+- **Decision needed:** Same as above.
+
+### CE Marking declaration generator
+- **Trade-off:** A Declaration of Conformity is a *legal document* with a prescribed format. Generating one from a static scan without legal review is a liability surface.
+- **Decision needed:** Do we want Regula to produce legally-shaped documents, or stop at the evidence pack and let the user's lawyer assemble the declaration?
+
+### Multi-jurisdiction frameworks (US states, APAC, Africa)
+- **Trade-off:** Adding California SB 1047, Colorado AI Act, Korea AI Act, China AI regulations, Japan APPI, Singapore PDPA each requires legal sourcing per jurisdiction. This is a research project, not a coding project, and getting it wrong is worse than not having it.
+- **Decision needed:** Are we partnering with legal counsel per region, or descoping until we have one?
+
+### JS/TS AST analysis via tree-sitter
+- **Trade-off:** `references/tree_sitter_implementation_guide.md` exists in the repo, suggesting prior thinking. tree-sitter grammars add complexity and a real (even if optional) dependency. Worth it only if the regex approach is genuinely producing false positives at scale.
+- **Decision needed:** Measure regex precision/recall on JS/TS first. Only adopt tree-sitter if there's evidence the regex floor is too low.
 
 ---
 
-## Honest comparison gaps
+## Blocked on prerequisites
 
-These are things we cannot answer until we measure:
+### Publish precision / recall benchmarks
+- **Status:** BLOCKED. The `regula benchmark` command exists, but there is no labelled ground-truth dataset to benchmark against. Building a credible labelled corpus is a multi-week effort and is the actual work.
+- **Next step:** Treat dataset construction as its own project. Until a labelled corpus exists and is committed (or pointed to), do not publish a precision/recall number — fabricated accuracy claims would violate Regula's own honesty rules.
 
-- **How does Regula compare to ValidMind's "60% documentation automation"?** — needs side-by-side test
-- **How does Regula compare to Modulos's "90% time reduction"?** — needs side-by-side test
-- **Is Regula more or less precise than Quethos Sentinel's claimed 99.8%?** — needs benchmark comparison
-- **Is Regula faster than Systima's 8-second scan?** — needs benchmark comparison
+---
+
+## Priority: Out of scope (different tool category)
+
+Documented for awareness only. Not planned. Regula is a static-analysis CLI; these are different products.
+
+- Runtime monitoring of deployed models
+- Behavioural / red-team testing of model outputs
+- Bias and fairness model testing (requires running models)
+- PII redaction at runtime
+- Content watermarking and deepfake labelling
+- LLM-assisted classification (Regula is pure static analysis by design)
+- SSO / RBAC / multi-user
+- Executive dashboards
+- Approval workflows
+- Model lifecycle management
+- Vendor AI risk management
+- Web UI for non-CLI users
 
 ---
 
