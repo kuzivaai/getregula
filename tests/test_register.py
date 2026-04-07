@@ -158,3 +158,51 @@ def test_register_not_applicable_for_private_sector_deployer():
     assert any("regula oversight" in r for r in redirects)
     assert not any("regula explain" in r for r in redirects), "must NOT reference non-existent explain command"
     print("✓ register: private deployer → not_applicable + correct redirects")
+
+
+def test_register_resolve_autofill_fills_provider_identity_from_policy(monkeypatch):
+    """resolve_autofill() pulls provider_identity from policy_config when source='policy_config'."""
+    from register import resolve_autofill, load_schema
+    import policy_config
+
+    fake_policy = {
+        "organisation": "Acme AI Ltd",
+        "governance_contacts": {"ai_officer": {"email": "officer@acme.example"}},
+    }
+    monkeypatch.setattr(policy_config, "_POLICY", fake_policy)
+    monkeypatch.setattr(policy_config, "get_policy", lambda path=None: fake_policy)
+
+    schema = load_schema()
+    section_a_fields = schema["sections"]["A"]["fields"]
+    discovery = {"project_name": "demo-system", "compliance_status": "in_progress",
+                 "ai_libraries": ["openai"], "model_files": []}
+
+    fields, gaps = resolve_autofill(section_a_fields, discovery=discovery, exclude_points=[])
+
+    assert fields["provider_identity"]["value"] is not None
+    assert "Acme AI Ltd" in fields["provider_identity"]["value"]
+    assert fields["provider_identity"]["source"] == "policy_config"
+    assert fields["provider_identity"]["verified"] is True
+    print("✓ register: autofill fills provider_identity from policy")
+
+
+def test_register_resolve_autofill_lists_undriveable_fields_in_gaps():
+    """Fields with autofill_source=null land in _gaps with the section_point and label."""
+    from register import resolve_autofill, load_schema
+
+    schema = load_schema()
+    section_a_fields = schema["sections"]["A"]["fields"]
+    discovery = {"project_name": "demo", "compliance_status": "not_started",
+                 "ai_libraries": [], "model_files": []}
+
+    fields, gaps = resolve_autofill(section_a_fields, discovery=discovery, exclude_points=[])
+
+    gap_keys = {g["field"] for g in gaps}
+    # intended_purpose, member_states are autofill_source=null in Section A
+    assert "intended_purpose" in gap_keys, f"gaps: {gap_keys}"
+    assert "member_states" in gap_keys, f"gaps: {gap_keys}"
+
+    # Each gap entry has section_point, label, why
+    for g in gaps:
+        assert "field" in g and "section_point" in g and "label" in g and "why" in g
+    print(f"✓ register: gap list contains {len(gaps)} undriveable fields")
