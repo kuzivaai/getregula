@@ -16,25 +16,20 @@ Status: Backlog → In Progress → Done.
 
 ## Priority: High
 
-### Jupyter notebook scanning (.ipynb)
-- **Why:** ML and data science work happens in notebooks. Regula currently ignores `.ipynb` files because they aren't in `CODE_EXTENSIONS`, so a large slice of AI code is invisible to it.
-- **What:** Add a notebook parser that extracts code cells from `.ipynb` JSON and feeds them through the existing classification pipeline. Preserve cell index in findings so output points back to the notebook cell.
-- **Feasibility:** Low–Medium. `.ipynb` is JSON; the existing pipeline handles raw source.
+### ~~Jupyter notebook scanning (.ipynb)~~ — DONE 2026-04-07
+- Implemented in `scripts/notebook.py` + wired into `report.py`. `.ipynb` is in `CODE_EXTENSIONS`. 3 tests cover extract/corrupt-file/end-to-end.
+- Limitation: line numbers refer to position in the joined extracted source, not the original notebook cell. Cell-aware mapping is a future enhancement.
 
 ### Publish scan time benchmarks
 - **Why:** Users (and prospects) ask "how fast is it on a real repo?" Regula has no published answer.
 - **What:** Time `regula check` against 3–5 named public repos (chosen for size and language mix). Publish the table in README with Regula version, repo commit SHA, and machine specs.
 - **Feasibility:** Low. `time` + a small script. Honest, reproducible, no fabrication risk.
 
-### Domain-based severity adjustment
-- **Why:** A credit-scoring pattern in a fintech repo is materially higher risk than the same pattern in a demo. Regula treats both identically, which produces noisy output for high-stakes users.
-- **What:** Add a `regula-policy.yaml` (or `--domain` flag) that declares the project's domain (e.g. `healthcare`, `finance`, `recruitment`, `education`, `law-enforcement`). Apply a confidence/severity multiplier in `classify`.
-- **Feasibility:** Low. Config file + multiplier hook in the existing classifier.
+### ~~Domain-based severity adjustment~~ — ALREADY IMPLEMENTED
+- `scripts/domain_scoring.py` reads `system.domain` from `regula-policy.yaml` and applies confidence boosts in `report.py:440`. 5 tests in `test_classification.py`. Roadmap item was stale.
 
-### Document the existing MCP server
-- **Why:** Regula already ships `regula mcp-server`, but the README and landing page do not explain how to wire it into Claude Code, Cursor, or Windsurf. Users cannot adopt a feature they don't know exists.
-- **What:** Add an MCP section to the README with tested config snippets for Claude Code, Cursor, and Windsurf. Add a short landing-page mention.
-- **Feasibility:** Low. Pure documentation. Verify each snippet locally before publishing.
+### ~~Document the existing MCP server~~ — DONE 2026-04-07 (README only)
+- README now has an MCP Server section with Claude Code, Cursor, and Windsurf config snippets and a security note. Landing-page mention still TODO.
 
 ---
 
