@@ -42,7 +42,18 @@ These findings need manual labelling as true positive (TP) or false positive (FP
 3. Mark as TP (true positive) or FP (false positive)
 4. Calculate precision = TP / (TP + FP) per tier
 
-## Precision (measured 2026-04-01)
+## Precision (measured 2026-04-01 — staleness warning below)
+
+> ⚠ **Staleness.** Labels in `labels.json` were generated against
+> pattern files as of 2026-04-01. Pattern files have been modified at
+> least six times since (commits `f02a8df`, `12528db`, `8b71732`,
+> `da6cad9`, `7cab5e0`, `9d73baf`, `1d7d6ff`). Commit `8b71732`'s
+> message claims "projected precision 15% → ~67%" after that change,
+> but a projection is not a measurement. Until a rescan + relabel is
+> performed, the table below is the only **measured** number that exists
+> and is the number `python3 benchmarks/label.py score` reproduces from
+> the committed labels — accept it as a 2026-04-01 snapshot, not a
+> current measurement.
 
 After hand-labelling 257 findings sampled across the five projects above
 (see `labels.json`), the measured precision is in `results/PRECISION.json`.
