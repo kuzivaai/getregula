@@ -5660,6 +5660,25 @@ def test_notebook_scan_end_to_end():
 
 
 # ---------------------------------------------------------------------------
+# Self-benchmark scan-time sanity (no network)
+# ---------------------------------------------------------------------------
+
+def test_self_scan_benchmark_runs():
+    """`scan_benchmarks.self_benchmark_dict()` must scan the repo cleanly
+    and return non-empty results. This pins the CI-runnable version of
+    the README scan-time table — if scan_files breaks on the repo's
+    own files, this test fails before the README claim does.
+    """
+    from scan_benchmarks import self_benchmark_dict
+    result = self_benchmark_dict()
+    assert result["files_scanned"] > 50, f"expected >50 files, got {result['files_scanned']}"
+    assert result["wall_seconds"] >= 0, f"expected non-negative time, got {result}"
+    assert result["files_per_second"] > 0, f"expected positive throughput, got {result}"
+    print(f"✓ self-benchmark: {result['files_scanned']} files in {result['wall_seconds']}s "
+          f"({result['files_per_second']} files/s, sha={result['commit']})")
+
+
+# ---------------------------------------------------------------------------
 # Synthetic prohibited / high-risk fixture — regression guard
 # ---------------------------------------------------------------------------
 
@@ -6329,6 +6348,8 @@ if __name__ == "__main__":
         test_published_precision_matches_labels,
         # Synthetic fixture regression guard (1 test)
         test_synthetic_fixture_perfect_precision_recall,
+        # Self-benchmark scan-time sanity (1 test)
+        test_self_scan_benchmark_runs,
     ]
 
     print(f"Running {len(tests)} tests...\n")
