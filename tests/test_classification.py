@@ -5660,6 +5660,73 @@ def test_notebook_scan_end_to_end():
 
 
 # ---------------------------------------------------------------------------
+# Domain boost surfaces in finding output
+# ---------------------------------------------------------------------------
+
+def test_domain_boost_surfaces_in_finding():
+    """Findings include domain_boost when domain keywords co-occur with AI on the high-risk path."""
+    import tempfile, shutil, os
+    from report import scan_files
+    tmpdir = tempfile.mkdtemp()
+    try:
+        # AI + finance domain keywords → high-risk classification + domain boost
+        with open(os.path.join(tmpdir, "credit.py"), "w") as f:
+            f.write(
+                "import sklearn\n"
+                "from sklearn.linear_model import LogisticRegression\n"
+                "def credit_score_model(applicant):\n"
+                "    model = LogisticRegression()\n"
+                "    model.fit(X_train, y_train)\n"
+                "    return model.predict([applicant.creditworthiness, applicant.loan_default_risk])\n"
+            )
+        findings = scan_files(tmpdir)
+        boosted = [f for f in findings if f.get("domain_boost")]
+        assert len(boosted) >= 1, f"expected at least one boosted finding, got: {[(f.get('category'), f.get('tier')) for f in findings]}"
+        b = boosted[0]["domain_boost"]
+        assert b["boost"] > 0, f"boost should be positive: {b}"
+        assert "finance" in b["domains_matched"], f"expected finance match: {b}"
+        print(f"✓ domain: boost surfaced in finding (+{b['boost']}, {b['domains_matched']})")
+    finally:
+        shutil.rmtree(tmpdir)
+
+
+# ---------------------------------------------------------------------------
+# MCP server protocol smoke test
+# ---------------------------------------------------------------------------
+
+def test_mcp_server_initialize_and_list_tools():
+    """MCP server responds to initialize and tools/list per the documented protocol."""
+    import subprocess, json, sys
+    from pathlib import Path as _P
+    server = _P(__file__).parent.parent / "scripts" / "mcp_server.py"
+
+    init_req = json.dumps({
+        "jsonrpc": "2.0", "id": 1, "method": "initialize",
+        "params": {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "test", "version": "1"}}
+    })
+    list_req = json.dumps({"jsonrpc": "2.0", "id": 2, "method": "tools/list"})
+    payload = init_req + "\n" + list_req + "\n"
+
+    proc = subprocess.run(
+        [sys.executable, str(server)],
+        input=payload, capture_output=True, text=True, timeout=15
+    )
+    lines = [ln for ln in proc.stdout.splitlines() if ln.strip().startswith("{")]
+    assert len(lines) >= 2, f"expected 2 JSON-RPC responses, got: {proc.stdout!r} stderr={proc.stderr!r}"
+
+    init_resp = json.loads(lines[0])
+    assert init_resp.get("id") == 1, f"init response id wrong: {init_resp}"
+    assert "result" in init_resp, f"init response missing result: {init_resp}"
+    assert init_resp["result"]["serverInfo"]["name"] == "regula", f"server name: {init_resp}"
+
+    list_resp = json.loads(lines[1])
+    tool_names = sorted(t["name"] for t in list_resp["result"]["tools"])
+    assert "regula_check" in tool_names and "regula_classify" in tool_names and "regula_gap" in tool_names, \
+        f"missing documented tools, got: {tool_names}"
+    print(f"✓ mcp: initialize + tools/list returned {tool_names}")
+
+
+# ---------------------------------------------------------------------------
 # Scan time benchmark script (self-mode, no network)
 # ---------------------------------------------------------------------------
 
@@ -6160,6 +6227,10 @@ if __name__ == "__main__":
         test_notebook_scan_end_to_end,
         # Scan time benchmark (1 test)
         test_scan_benchmarks_self_mode,
+        # Domain boost surfacing (1 test)
+        test_domain_boost_surfaces_in_finding,
+        # MCP server protocol smoke test (1 test)
+        test_mcp_server_initialize_and_list_tools,
     ]
 
     print(f"Running {len(tests)} tests...\n")
