@@ -2607,6 +2607,125 @@ def test_prompt_injection_remediation_mentions_guardrails():
     print("✓ Prompt injection: remediation mentions guardrails")
 
 
+# ── Article 6(3) Exemption Self-Assessment (regula exempt) ────────────
+
+def test_exempt_not_in_annex_iii():
+    """If the system is not in any Annex III area, return NOT_IN_ANNEX_III early."""
+    from exempt_check import evaluate, RESULT_NOT_IN_ANNEX_III
+    result = evaluate({"annex_iii": "no"})
+    assert_eq(result["result"], RESULT_NOT_IN_ANNEX_III, "early-exit when not Annex III")
+    assert_eq(len(result["conditions_met"]), 0, "no conditions evaluated")
+    print("✓ Exempt: early-exit when not in Annex III")
+
+
+def test_exempt_profiling_overrides_all():
+    """Profiling answer 'yes' must produce NOT_EXEMPT regardless of (a)-(d)."""
+    from exempt_check import evaluate, RESULT_NOT_EXEMPT
+    answers = {
+        "annex_iii": "yes", "profiling": "yes",
+        "narrow_procedural": "yes", "improve_human": "yes",
+        "detect_patterns": "yes", "preparatory": "yes",
+    }
+    result = evaluate(answers)
+    assert_eq(result["result"], RESULT_NOT_EXEMPT, "profiling overrides exemption conditions")
+    print("✓ Exempt: profiling overrides all conditions")
+
+
+def test_exempt_condition_a_only():
+    """Narrow procedural task alone is sufficient when no profiling."""
+    from exempt_check import evaluate, RESULT_EXEMPT
+    answers = {
+        "annex_iii": "yes", "profiling": "no",
+        "narrow_procedural": "yes", "improve_human": "no",
+        "detect_patterns": "no", "preparatory": "no",
+    }
+    result = evaluate(answers)
+    assert_eq(result["result"], RESULT_EXEMPT, "condition (a) alone sufficient")
+    assert_eq(result["conditions_met"], ["a"], "only condition (a) marked")
+    print("✓ Exempt: condition (a) narrow procedural")
+
+
+def test_exempt_all_four_conditions():
+    """All four conditions met -> exempt with full list."""
+    from exempt_check import evaluate, RESULT_EXEMPT
+    answers = {
+        "annex_iii": "yes", "profiling": "no",
+        "narrow_procedural": "yes", "improve_human": "yes",
+        "detect_patterns": "yes", "preparatory": "yes",
+    }
+    result = evaluate(answers)
+    assert_eq(result["result"], RESULT_EXEMPT, "all four conditions exempt")
+    assert_eq(result["conditions_met"], ["a", "b", "c", "d"], "all four marked")
+    print("✓ Exempt: all four conditions")
+
+
+def test_exempt_no_conditions_means_high_risk():
+    """Annex III, no profiling, but none of (a)-(d) -> NOT_EXEMPT."""
+    from exempt_check import evaluate, RESULT_NOT_EXEMPT
+    answers = {
+        "annex_iii": "yes", "profiling": "no",
+        "narrow_procedural": "no", "improve_human": "no",
+        "detect_patterns": "no", "preparatory": "no",
+    }
+    result = evaluate(answers)
+    assert_eq(result["result"], RESULT_NOT_EXEMPT, "none of (a)-(d) means not exempt")
+    print("✓ Exempt: none of (a)-(d) means not exempt")
+
+
+def test_exempt_parse_answers_csv_valid():
+    """parse_answers_csv accepts a six-element comma-separated list."""
+    from exempt_check import parse_answers_csv
+    out = parse_answers_csv("y,n,y,n,n,n")
+    assert_true(out is not None, "valid CSV parses")
+    assert_eq(out["annex_iii"], "yes", "first value is annex_iii=yes")
+    assert_eq(out["profiling"], "no", "second value is profiling=no")
+    assert_eq(out["narrow_procedural"], "yes", "third value is narrow_procedural=yes")
+    print("✓ Exempt: parse_answers_csv valid input")
+
+
+def test_exempt_parse_answers_csv_wrong_length():
+    """parse_answers_csv rejects wrong number of elements."""
+    from exempt_check import parse_answers_csv
+    assert_true(parse_answers_csv("y,n,y") is None, "3 values rejected")
+    assert_true(parse_answers_csv("y,n,y,n,n,n,n") is None, "7 values rejected")
+    print("✓ Exempt: parse_answers_csv wrong length rejected")
+
+
+def test_exempt_parse_answers_csv_invalid_token():
+    """parse_answers_csv rejects non-yes/no tokens."""
+    from exempt_check import parse_answers_csv
+    assert_true(parse_answers_csv("y,n,maybe,n,n,n") is None, "'maybe' rejected")
+    print("✓ Exempt: parse_answers_csv invalid token rejected")
+
+
+def test_exempt_format_result_exempt_includes_disclosure():
+    """Exempt result text includes the missed-deadline disclosure."""
+    from exempt_check import evaluate, format_result
+    result = evaluate({
+        "annex_iii": "yes", "profiling": "no",
+        "narrow_procedural": "yes", "improve_human": "no",
+        "detect_patterns": "no", "preparatory": "no",
+    })
+    text = format_result(result)
+    assert_true("Article 6" in text, "mentions Article 6")
+    assert_true("2 February 2026" in text, "mentions missed deadline")
+    assert_true("EXEMPT" in text, "shows EXEMPT result")
+    print("✓ Exempt: format_result includes guidelines disclosure")
+
+
+def test_gap_assessment_includes_article_6_disclosure():
+    """assess_compliance() result dict includes article_6_guidelines_status."""
+    import tempfile
+    from compliance_check import assess_compliance
+    with tempfile.TemporaryDirectory() as tmp:
+        result = assess_compliance(tmp)
+    assert_true("article_6_guidelines_status" in result, "key present in assessment dict")
+    status = result["article_6_guidelines_status"]
+    assert_eq(status["missed"], True, "deadline marked as missed")
+    assert_eq(status["deadline"], "2026-02-02", "correct deadline date")
+    print("✓ Gap: Article 6 guidelines status in assessment dict")
+
+
 # ── Error Handling Foundation Tests ───────────────────────────────
 
 def test_doctor_command():

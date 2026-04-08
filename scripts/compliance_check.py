@@ -949,6 +949,25 @@ def _score_to_status(score: int) -> str:
 # Core assessment function
 # ---------------------------------------------------------------------------
 
+# Article 6 guidance disclosure — embedded in every assessment dict.
+ARTICLE_6_GUIDELINES_STATUS = {
+    "deadline": "2026-02-02",
+    "deadline_source": "EU AI Act Article 6(5)",
+    "missed": True,
+    "draft_promised_by": "2026-02-28",
+    "current_status": "not_finalised",
+    "verified_on": "2026-04-08",
+    "implication": (
+        "Self-assessment under Article 6(3) is currently unguided. Providers "
+        "should err on the side of treating systems as high-risk and document "
+        "the rationale thoroughly. Re-evaluate when guidelines publish."
+    ),
+    "next_steps": [
+        "regula exempt - structured Article 6(3) decision tree",
+    ],
+}
+
+
 def assess_compliance(
     project_path: str,
     articles: Optional[list] = None,
@@ -1044,6 +1063,7 @@ def assess_compliance(
         "overall_score": overall_score,
         "summary": summary,
         "regulation_overlap": regulation_overlap,
+        "article_6_guidelines_status": ARTICLE_6_GUIDELINES_STATUS,
     }
 
 
@@ -1187,6 +1207,15 @@ def format_gap_text(assessment: dict) -> str:
             lines.append("")
 
     lines.append(f"Summary: {assessment['summary']}")
+    lines.append("")
+    lines.append("Article 6 guidance status (verified 2026-04-08):")
+    lines.append("  The European Commission MISSED its 2 February 2026 deadline")
+    lines.append("  for publishing guidelines on Article 6 high-risk classification")
+    lines.append("  (Article 6(5)). A draft was promised by end-February 2026 and")
+    lines.append("  has not been finalised. Self-assessment under Article 6(3) is")
+    lines.append("  currently UNGUIDED. If you are considering the exemption, run:")
+    lines.append("    regula exempt    - structured Article 6(3) decision tree")
+    lines.append("")
     return "\n".join(lines)
 
 
