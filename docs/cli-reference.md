@@ -145,6 +145,23 @@ regula oversight --project . --format json    # Machine-readable
 
 Reports per-path confidence (high/medium/low) and always discloses five limitations: dynamic imports not analysed, decorator-wrapped routes not resolved, third-party library internals not traced, cross-service calls not detected, and that detecting a code path does not verify oversight is meaningfully exercised (per ICO ADM guidance).
 
+### GPAI Code of Practice Check (Article 53 + Article 55)
+
+Maps a GPAI provider codebase to the three chapters of the EU AI Act GPAI Code of Practice (final 10 July 2025, endorsed 1 August 2025, obligations in force since 2 August 2025, enforcement actions from 2 August 2026):
+
+- **Chapter 1 — Transparency** (all GPAI providers, Art 53(1)(a)(b)(d)): model documentation, downstream-provider information, training-content summary
+- **Chapter 2 — Copyright** (all GPAI providers, Art 53(1)(c)): written copyright policy, text-and-data mining opt-out compliance (robots.txt / TDMRep)
+- **Chapter 3 — Safety & Security** (systemic-risk only, ≥10²⁵ training FLOPs, Art 55): model evaluation, serious-incident reporting, cybersecurity protection
+
+```bash
+regula gpai-check                                 # All GPAI providers (Chapters 1-2)
+regula gpai-check --systemic-risk                 # + Chapter 3 (Art 55, large frontier models)
+regula gpai-check --strict                        # Exit 1 on any FAIL
+regula gpai-check --format json                   # Machine-readable
+```
+
+Each obligation is reported as PASS / WARN / FAIL / N/A with the relevant article anchor and concrete file evidence. Adherence to the Code provides a rebuttable presumption of conformity with Articles 53 and 55 — this command produces evidence, not a legal determination. Pattern surface and reference metadata live in `references/gpai_code_of_practice.yaml`.
+
 ### AI Bill of Materials
 
 Extends the CycloneDX 1.6 SBOM with AI-specific metadata: model provenance extracted from code (which models are loaded, from which providers), GPAI tier annotations per EU AI Act Articles 51-55, and detected training dataset references.
