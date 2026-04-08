@@ -1,0 +1,148 @@
+# EU AI Act — General-Purpose AI Code of Practice (Chapter Mapping)
+#
+# STATUS AS OF 2026-04-08: The Code of Practice was published in its final form
+# on 10 July 2025 by the European AI Office, and endorsed by the Commission and
+# the AI Board on 1 August 2025 via adequacy decisions. GPAI rules took effect
+# on 2 August 2025. Commission enforcement actions begin 2 August 2026.
+#
+# This file is a plumbing stub. It breaks the three Code of Practice chapters
+# into concrete, code-detectable obligations that future Regula commands can
+# map findings against. It is deliberately conservative: every measure named
+# here is verifiable against the published Code text, not inferred.
+#
+# Consumed by (planned): scripts/gpai_check.py (command: regula gpai-check)
+# Related: references/gpai_signatories.yaml, scripts/sbom.py GPAI annotations.
+#
+# Sources:
+#   - https://code-of-practice.ai/
+#   - https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai
+#   - EU AI Act Articles 53, 55
+
+schema_version: "1.0"
+last_verified: "2026-04-08"
+code_status: "final"
+code_published_date: "2025-07-10"
+commission_endorsement_date: "2025-08-01"
+obligations_in_force_date: "2025-08-02"
+enforcement_actions_begin_date: "2026-08-02"
+
+# ---------------------------------------------------------------------------
+# Chapter 1 — Transparency
+# Applies to: ALL GPAI model providers (no FLOP threshold)
+# Article anchors: Art 53(1)(a), Art 53(1)(b), Art 53(1)(d), Annex XI, Annex XII
+# ---------------------------------------------------------------------------
+transparency:
+  applies_to: "all_gpai_providers"
+  article_anchors: ["53(1)(a)", "53(1)(b)", "53(1)(d)"]
+  annex_anchors: ["XI", "XII"]
+  description: >-
+    All GPAI providers must draw up and keep up to date technical documentation
+    of the model, make information and documentation available to downstream
+    providers, and publish a sufficiently detailed summary of the content used
+    for training the model using the Commission's template.
+  obligations:
+    - id: model-documentation
+      summary: "Maintain current technical documentation of the GPAI model"
+      article: "53(1)(a)"
+      code_detectable: true
+      detection_hints:
+        - "absence of a MODEL_CARD.md, model_card.yaml, or equivalent file alongside training or fine-tuning code"
+        - "absence of documented model architecture, parameter count, context length, training compute"
+    - id: downstream-provider-information
+      summary: "Make model information and documentation available to downstream providers"
+      article: "53(1)(b)"
+      code_detectable: true
+      detection_hints:
+        - "public-facing distribution code (HuggingFace push, serving endpoint) without accompanying downstream docs"
+    - id: training-content-summary
+      summary: "Publish a sufficiently detailed summary of content used for training, using the Commission template"
+      article: "53(1)(d)"
+      code_detectable: true
+      detection_hints:
+        - "training or fine-tuning code referencing datasets without a linked data card"
+        - "absence of TRAINING_DATA_SUMMARY.md or equivalent"
+      commission_template: "Published as part of the AI Office GPAI guidance, 2025"
+
+# ---------------------------------------------------------------------------
+# Chapter 2 — Copyright
+# Applies to: ALL GPAI model providers (no FLOP threshold)
+# Article anchor: Art 53(1)(c)
+# ---------------------------------------------------------------------------
+copyright:
+  applies_to: "all_gpai_providers"
+  article_anchors: ["53(1)(c)"]
+  description: >-
+    All GPAI providers must put in place a policy to comply with Union law on
+    copyright and related rights, including respecting opt-outs expressed under
+    the text-and-data mining exceptions of Directive (EU) 2019/790.
+  obligations:
+    - id: written-copyright-policy
+      summary: "Maintain a written copyright policy published by the provider"
+      article: "53(1)(c)"
+      code_detectable: true
+      detection_hints:
+        - "absence of COPYRIGHT_POLICY.md, policy section in README, or linked upstream policy"
+    - id: tdm-optout-compliance
+      summary: "Honour text-and-data mining opt-outs expressed in a machine-readable manner"
+      article: "53(1)(c) + Directive (EU) 2019/790 Art 4"
+      code_detectable: true
+      detection_hints:
+        - "web-crawling or dataset-ingestion code that does not respect robots.txt"
+        - "absence of TDMRep (Text and Data Mining Reservation Protocol) parsing"
+        - "ignore-robots or --ignore-robotstxt flags in crawler invocations"
+    - id: downstream-copyright-notice
+      summary: "Provide downstream recipients with the information needed to comply with their own copyright obligations"
+      article: "53(1)(c)"
+      code_detectable: false
+      detection_hints: []
+
+# ---------------------------------------------------------------------------
+# Chapter 3 — Safety and Security
+# Applies to: GPAI providers with SYSTEMIC RISK only
+# Systemic-risk trigger: cumulative training compute >= 10^25 FLOPs (Art 51)
+# Article anchors: Art 55, Annex XIII
+# ---------------------------------------------------------------------------
+safety_and_security:
+  applies_to: "systemic_risk_gpai_providers_only"
+  systemic_risk_threshold_flops: 1.0e+25
+  article_anchors: ["55"]
+  annex_anchors: ["XIII"]
+  description: >-
+    Providers of GPAI models with systemic risk must perform model evaluation,
+    including adversarial testing, assess and mitigate systemic risks, track,
+    document, and report serious incidents, and ensure an adequate level of
+    cybersecurity protection.
+  obligations:
+    - id: model-evaluation
+      summary: "Perform state-of-the-art model evaluation including standardised protocols and adversarial testing"
+      article: "55(1)(a)"
+      code_detectable: true
+      detection_hints:
+        - "training run metadata indicating >= 10^25 FLOPs with no linked evaluation report"
+        - "absence of adversarial or red-team test artefacts"
+    - id: systemic-risk-assessment
+      summary: "Assess and mitigate possible systemic risks at Union level"
+      article: "55(1)(b)"
+      code_detectable: false
+      detection_hints: []
+    - id: serious-incident-reporting
+      summary: "Keep track of, document, and report without undue delay serious incidents and possible corrective measures to the AI Office and national competent authorities"
+      article: "55(1)(c)"
+      code_detectable: true
+      detection_hints:
+        - "absence of incident-response or serious-incident logging path in the deployment pipeline"
+    - id: cybersecurity-protection
+      summary: "Ensure an adequate level of cybersecurity protection for the model and its physical infrastructure"
+      article: "55(1)(d)"
+      code_detectable: true
+      detection_hints:
+        - "weights distributed without access control, cryptographic signing, or integrity verification"
+        - "absence of SBOM for the serving stack (cross-reference regula sbom output)"
+
+# ---------------------------------------------------------------------------
+# Rebuttable presumption of conformity
+# ---------------------------------------------------------------------------
+presumption_of_conformity:
+  mechanism: "Adherence to the Code of Practice provides a rebuttable presumption of compliance with Art 53 and (for systemic-risk providers) Art 55."
+  signatory_registry: "references/gpai_signatories.yaml"
+  sbom_annotation: "scripts/sbom.py emits regula:gpai-code-signed + regula:gpai-legal-entity + regula:gpai-signed-date CycloneDX properties per detected provider"

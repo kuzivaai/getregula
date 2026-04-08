@@ -161,7 +161,7 @@ The EU AI Act (Regulation 2024/1689) is now in force:
 
 Penalties: up to EUR 35 million or 7% of global annual turnover.
 
-**Digital Omnibus:** The European Commission proposed in December 2025 to delay the Annex III high-risk obligations to December 2027 for certain providers. This is not yet law — it remains in trilogue as of April 2026. The August 2026 deadline remains in effect until and unless the Omnibus is formally adopted. Do not plan around the extension without monitoring its legislative progress.
+**Digital Omnibus:** The European Commission proposed in December 2025 to delay the Annex III high-risk obligations to 2 December 2027 (Annex I systems to 2 August 2028). The European Parliament adopted its joint position in plenary on 26 March 2026 (569–45), the Council agreed its negotiating mandate on 13 March 2026, the first trilogue completed in late March 2026, and the second (expected to be final) trilogue is scheduled for 28 April 2026. The Cypriot Presidency is targeting agreement in May 2026. Until the Omnibus is formally adopted and published in the OJEU, the **2 August 2026 Annex III deadline remains legally binding**. Do not plan around the extension without monitoring its legislative progress — `regula timeline` shows both the current statutory date and the proposed replacement.
 
 ## Regulatory Coverage
 
@@ -371,9 +371,9 @@ pytest tests/ -q
 
 ## Roadmap
 
-- **v1.2:** ~~Production readiness~~ — shipped 2026-03-28. Agent autonomy detection, `--skip-tests`, `--min-tier`, bias testing, 10-framework mapping, 525 tests.
-- **v1.3 (candidates):** JS/TS tree-sitter data flow, AVID vulnerability database integration, typosquatting detection, GitHub Action validated in real PR workflow.
-- **Not planned yet:** DPO dashboard, Slack/Teams alerting, model card generation, bias testing. These require validation that there are users who want them first.
+- **v1.2:** ~~Production readiness~~ — shipped 2026-03-28. Agent autonomy detection, `--skip-tests`, `--min-tier`, bias testing (`regula bias`, CrowS-Pairs), 8-framework mapping, 525 tests.
+- **v1.3 (candidates):** JS/TS tree-sitter data flow, AVID vulnerability database integration, typosquatting detection, GitHub Action validated in real PR workflow, GPAI Code of Practice chapter-level obligation mapping (Transparency / Copyright / Safety & Security), prompt-injection detector (OWASP LLM01), Colorado AI Act and South Korea AI Basic Act Tier-3 pages, harmonised-standards plumbing ready for Q4 2026 CEN-CENELEC publication.
+- **Not planned yet:** DPO dashboard, Slack/Teams alerting, model card generation. These require validation that there are users who want them first.
 
 ## Contributing
 

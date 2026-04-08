@@ -1,0 +1,154 @@
+# EU AI Act — Harmonised Standards Registry (CEN-CENELEC JTC 21)
+#
+# STATUS AS OF 2026-04-08: No harmonised standards under the AI Act have been
+# published in the Official Journal of the European Union yet. This file is a
+# pre-populated plumbing stub. When CEN-CENELEC JTC 21 publishes, flip each
+# entry's `status` from `in_progress` to `published` and fill `oj_reference`.
+#
+# Accelerated delivery measures adopted by CEN-CENELEC in October 2025 target
+# Q4 2026 for the first wave of AI Act harmonised standards. The `regula conform`
+# command consumes this file to populate the "Harmonised standards applied
+# (Article 40)" section of Annex IV technical documentation.
+#
+# A standard cited here, once published and listed in the OJEU under Article 40,
+# confers a legal presumption of conformity with the AI Act's essential
+# requirements for the clause it addresses.
+#
+# Sources:
+#   - https://www.cencenelec.eu/news-events/news/2025/brief-news/2025-10-23-ai-standardization/
+#   - https://digital-strategy.ec.europa.eu/en/policies/ai-act-standardisation
+#   - https://jtc21.eu/
+
+schema_version: "1.0"
+last_verified: "2026-04-08"
+publication_expected: "Q4 2026"
+oj_publication_confirmed: false
+
+# ----------------------------------------------------------------------------
+# Work items on CEN-CENELEC JTC 21's programme mapped to AI Act articles
+# ----------------------------------------------------------------------------
+# Each entry: stable internal id + target AI Act article(s) + short description.
+# `status` values: in_progress | published | withdrawn
+# When `status: published`:
+#   - Set `published_ref` to the EN number (e.g. "EN ISO/IEC 42001:2026")
+#   - Set `oj_reference` to the OJEU Implementing Decision URL
+#   - Set `confers_presumption: true`
+# Until then, leave them as-is. `regula conform` treats `in_progress` entries as
+# "targeting end of 2026" and does not claim presumption of conformity.
+# ----------------------------------------------------------------------------
+
+standards:
+  - id: qms-art17
+    title: "Quality Management System for AI"
+    target_articles: [17]
+    draft_reference: "prEN 18286"
+    description: >-
+      Quality management system requirements for providers of high-risk AI
+      systems. First harmonised standard under the AI Act. Public enquiry
+      (CEN Enquiry) ran 2025-10-30 to 2026-01-22. Publication expected Q4 2026.
+    status: in_progress
+    published_ref: null
+    oj_reference: null
+    confers_presumption: false
+
+  - id: risk-mgmt-art9
+    title: "AI Risk Management System"
+    target_articles: [9]
+    draft_reference: "prEN on AI risk management (JTC 21)"
+    description: >-
+      Risk management system for the entire AI lifecycle of high-risk systems.
+      Implements Article 9 obligations. Development ongoing under JTC 21 WG 4.
+    status: in_progress
+    published_ref: null
+    oj_reference: null
+    confers_presumption: false
+
+  - id: data-gov-art10
+    title: "Data Governance and Quality for AI"
+    target_articles: [10]
+    draft_reference: "prEN on data quality and data governance (JTC 21)"
+    description: >-
+      Data governance and quality requirements for training, validation and
+      testing datasets. Implements Article 10 obligations including bias
+      examination (Art. 10(5)).
+    status: in_progress
+    published_ref: null
+    oj_reference: null
+    confers_presumption: false
+
+  - id: transparency-art13
+    title: "Transparency and Information for AI Users"
+    target_articles: [13]
+    draft_reference: "prEN on transparency (JTC 21)"
+    description: >-
+      Transparency and provision of information to deployers of high-risk AI
+      systems. Implements Article 13 obligations including instructions for
+      use and information about the system's capabilities and limitations.
+    status: in_progress
+    published_ref: null
+    oj_reference: null
+    confers_presumption: false
+
+  - id: human-oversight-art14
+    title: "Human Oversight Measures for AI"
+    target_articles: [14]
+    draft_reference: "prEN on human oversight (JTC 21)"
+    description: >-
+      Human oversight measures for high-risk AI systems. Implements Article 14
+      obligations including the four competences (understand, remain aware,
+      correctly interpret output, disregard/override, stop the system).
+    status: in_progress
+    published_ref: null
+    oj_reference: null
+    confers_presumption: false
+
+  - id: accuracy-robustness-art15
+    title: "Accuracy, Robustness and Cybersecurity for AI"
+    target_articles: [15]
+    draft_reference: "prEN on accuracy and robustness (JTC 21)"
+    description: >-
+      Accuracy, robustness and cybersecurity requirements for high-risk AI
+      systems. Implements Article 15 obligations. Overlaps with CRA for
+      systems also in scope of the Cyber Resilience Act.
+    status: in_progress
+    published_ref: null
+    oj_reference: null
+    confers_presumption: false
+
+  - id: trustworthiness-framework
+    title: "AI Trustworthiness Framework"
+    target_articles: [9, 10, 13, 14, 15]
+    draft_reference: "CEN/CLC JTC 21 Trustworthiness Framework"
+    description: >-
+      Cross-cutting trustworthiness framework referenced by multiple AI Act
+      articles. Not itself a harmonised standard for any single article — used
+      as normative reference by the article-specific standards above.
+    status: in_progress
+    published_ref: null
+    oj_reference: null
+    confers_presumption: false
+
+# ----------------------------------------------------------------------------
+# Adjacent standards already published (NOT harmonised under the AI Act yet,
+# but normatively referenced by draft JTC 21 work)
+# ----------------------------------------------------------------------------
+related_published_standards:
+  - id: iso-42001
+    title: "ISO/IEC 42001:2023 — AI Management System"
+    published_ref: "ISO/IEC 42001:2023"
+    scope: "AI management system (analogous to ISO 27001 for information security)"
+    confers_presumption: false
+    note: >-
+      Published by ISO/IEC JTC 1/SC 42 in December 2023. Not a harmonised
+      standard under the AI Act; does not confer presumption of conformity
+      with Article 40. Regula maps to it under `framework_crosswalk.yaml`
+      for organisations running a parallel AI management system programme.
+
+  - id: iso-23894
+    title: "ISO/IEC 23894:2023 — AI Risk Management Guidance"
+    published_ref: "ISO/IEC 23894:2023"
+    scope: "Guidance on managing risks for organisations developing or using AI"
+    confers_presumption: false
+    note: >-
+      Published by ISO/IEC JTC 1/SC 42 in February 2023. Informative only;
+      not harmonised under the AI Act.
