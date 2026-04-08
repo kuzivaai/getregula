@@ -145,6 +145,25 @@ regula oversight --project . --format json    # Machine-readable
 
 Reports per-path confidence (high/medium/low) and always discloses five limitations: dynamic imports not analysed, decorator-wrapped routes not resolved, third-party library internals not traced, cross-service calls not detected, and that detecting a code path does not verify oversight is meaningfully exercised (per ICO ADM guidance).
 
+### Article 6(3) Exemption Self-Assessment
+
+Structured decision tree for Article 6(3) of the EU AI Act, which lets a provider self-assess an Annex III system as **not** high-risk on one of four grounds:
+
+- **(a)** narrow procedural task
+- **(b)** intended to improve the result of a previously completed human activity
+- **(c)** intended to detect decision-making patterns or deviations, with proper human review
+- **(d)** intended to perform a preparatory task to a human-led assessment
+
+A hard carve-out (Article 6(3) second subparagraph) makes any system that **performs profiling of natural persons** high-risk regardless of the four conditions.
+
+```bash
+regula exempt                                    # interactive (6 questions)
+regula exempt --answers y,n,y,n,n,n              # non-interactive
+regula exempt --format json                      # machine-readable record
+```
+
+The command produces a documented self-assessment with the conditions met, the rationale, and a regulatory-status disclosure that the **European Commission missed its 2 February 2026 deadline** for publishing Article 6 guidelines (Article 6(5)). The same disclosure is now embedded in `regula gap` output (key `article_6_guidelines_status` in JSON, footer block in text). If the self-assessment returns `exempt`, the command points the user at `regula register --art-6-3-exempted` for the Article 49(2) registration step required by Article 6(4).
+
 ### GPAI Code of Practice Check (Article 53 + Article 55)
 
 Maps a GPAI provider codebase to the three chapters of the EU AI Act GPAI Code of Practice (final 10 July 2025, endorsed 1 August 2025, obligations in force since 2 August 2025, enforcement actions from 2 August 2026):

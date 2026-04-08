@@ -997,6 +997,22 @@ def cmd_plan(args):
             print(output)
 
 
+def cmd_exempt(args):
+    """Article 6(3) self-assessment decision tree."""
+    from exempt_check import run_exempt, parse_answers_csv
+    answers = None
+    if getattr(args, "answers", None):
+        answers = parse_answers_csv(args.answers)
+        if answers is None:
+            print(
+                "Error: --answers must be six comma-separated yes/no values in order:\n"
+                "  annex_iii,profiling,narrow_procedural,improve_human,detect_patterns,preparatory",
+                file=sys.stderr,
+            )
+            sys.exit(2)
+    sys.exit(run_exempt(output_format=args.format, answers=answers))
+
+
 def cmd_gpai_check(args):
     """GPAI Code of Practice check (Chapters 1-3)."""
     if args.path != ".":
@@ -1852,6 +1868,19 @@ def _build_subparsers(subparsers):
     p_disclose.add_argument("--name", "-n", help="AI system name for templates")
     p_disclose.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_disclose.set_defaults(func=cmd_disclose)
+
+    # --- exempt ---
+    p_exempt = subparsers.add_parser(
+        "exempt",
+        help="Article 6(3) high-risk exemption decision tree (interactive or --answers)",
+    )
+    p_exempt.add_argument(
+        "--answers",
+        help=("Non-interactive mode: comma-separated yes/no values in order "
+              "annex_iii,profiling,narrow_procedural,improve_human,detect_patterns,preparatory"),
+    )
+    p_exempt.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_exempt.set_defaults(func=cmd_exempt)
 
     # --- gpai-check ---
     p_gpai = subparsers.add_parser(
