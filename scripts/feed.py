@@ -83,7 +83,10 @@ GOVERNANCE_KEYWORDS = [
     "eu ai act", "ai audit", "ai oversight", "ai policy", "high-risk ai",
     "prohibited ai", "conformity assessment", "iso 42001", "nist ai rmf",
     "artificial intelligence act", "digital omnibus", "harmonised standard",
-    "annex iii", "article 5", "article 6", "article 9",
+    "annex iii", "annex iv", "annex viii", "article 5", "article 6", "article 9",
+    "article 43", "article 49", "article 53", "article 55",
+    "gpai code of practice", "jtc 21", "cen-cenelec",
+    "colorado ai act", "south korea ai basic act", "korea ai act",
     # Governance concepts
     "ai safety", "ai ethics", "responsible ai", "ai transparency",
     "ai accountability", "model governance", "ai assurance", "trustworthy ai",

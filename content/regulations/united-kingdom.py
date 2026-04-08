@@ -1,3 +1,4 @@
+# regula-ignore
 """United Kingdom — AI regulation coverage page.
 
 Data file consumed by scripts/build_regulations.py to generate
