@@ -211,14 +211,57 @@ AI_SECURITY_PATTERNS = {
     },
     "prompt_injection_vulnerable": {
         "patterns": [
-            r"f['\"][^'\"]{0,500}\{[^}]{0,200}user[^}]{0,200}\}[^'\"]{0,500}['\"][^\n]{0,500}(?:messages|prompt|system)",  # f-string with user input in prompt
-            r"\.format\([^)]{0,500}user[^)]{0,500}\)[^\n]{0,500}(?:messages|prompt|content)",  # .format with user input in prompt
-            r"\+\s*(?:user_input|user_message|request\.body|req\.body)[^\n]{0,500}(?:messages|prompt)",  # string concat user input to prompt
+            # f-string with user-named variable interpolated near prompt context
+            r"f['\"][^'\"]{0,500}\{[^}]{0,200}user[^}]{0,200}\}[^'\"]{0,500}['\"][^\n]{0,500}(?:messages|prompt|system)",
+            # .format() with user input flowing into prompt context
+            r"\.format\([^)]{0,500}user[^)]{0,500}\)[^\n]{0,500}(?:messages|prompt|content)",
+            # string concat from common request-body sources into prompt
+            r"\+\s*(?:user_input|user_message|user_query|request\.body|req\.body|request\.json|req\.json)[^\n]{0,500}(?:messages|prompt)",
+            # Flask/FastAPI request handler concatenating request data into prompt directly
+            r"request\.(?:form|args|json|values)\[?['\"]?[a-z_]+['\"]?\]?[^\n]{0,300}(?:messages|prompt|completion|invoke)",
+            # Common pattern: passing the raw request body as the message content
+            r"messages\s*=\s*\[\s*\{[^}]*['\"]content['\"]\s*:\s*(?:request\.|req\.|user_input|user_message)",
         ],
         "owasp": "LLM01",
-        "description": "User input directly concatenated into LLM prompt — prompt injection risk",
+        "description": "User input directly concatenated into LLM prompt — prompt injection risk (direct)",
         "severity": "high",
-        "remediation": "Use structured prompt templates with input sanitisation. Never concatenate raw user input into system prompts.",
+        "remediation": "Use structured prompt templates with input sanitisation. Use a guardrails library (NeMo Guardrails, Lakera Guard, LLM Guard, Rebuff, Guardrails AI). Never concatenate raw user input into system prompts. OWASP LLM01:2025.",
+    },
+    "prompt_injection_indirect": {
+        "patterns": [
+            # One-liner: fetched web content passed straight to prompt content
+            r"['\"]content['\"]\s*:\s*(?:requests\.get|httpx\.get|urlopen)\([^)]*\)\.(?:text|content|json\(\))",
+            # One-liner: file content read inline into prompt content
+            r"['\"]content['\"]\s*:\s*(?:open\([^)]+\)\.read\(\)|Path\([^)]+\)\.read_text\(\))",
+            # LangChain RAG one-liner: retriever result passed straight to chain.invoke
+            r"(?:chain|llm|model|llm_chain|qa_chain)\.invoke\s*\(\s*\{[^}]*['\"]context['\"]\s*:\s*(?:retriever|vectorstore|loader)",
+            # messages.append with web/file fetched content
+            r"messages\.append\s*\(\s*\{[^}]*['\"]content['\"]\s*:\s*(?:requests\.get|httpx\.get|urlopen|open\(|Path\()",
+            # Direct invoke with raw fetched content
+            r"(?:llm|client|model)\.(?:invoke|chat\.completions\.create)\([^)]*(?:requests\.get|httpx\.get|urlopen)\([^)]*\)\.(?:text|content)",
+            # f-string template with retriever / loader / fetched variable
+            r"f['\"][^'\"]{0,500}\{(?:retrieved|context|page_content|doc_text|web_content|fetched|scraped)[^}]{0,200}\}[^'\"]{0,500}['\"][^\n]{0,300}(?:messages|prompt|invoke)",
+        ],
+        "owasp": "LLM01",
+        "description": "Untrusted external content flows into LLM prompt without sanitisation — indirect prompt injection risk (OWASP LLM01:2025 emphasises this vector)",
+        "severity": "high",
+        "remediation": "Treat all external content (web pages, documents, retrieval results, emails) as untrusted. Apply a guardrails layer (NeMo Guardrails, LLM Guard, Lakera Guard, Rebuff, Guardrails AI). Use spotlighting or context delimiters that the model is trained to respect. OWASP LLM01:2025.",
+    },
+    "prompt_injection_tool_output": {
+        "patterns": [
+            # Subprocess stdout in the same line as messages/prompt assignment
+            r"(?:messages\.append|messages\s*\+=|prompt\s*=)[^\n]{0,200}subprocess\.(?:run|check_output|Popen)",
+            # subprocess result piped straight into invoke
+            r"(?:llm|chain|client)\.invoke\s*\([^)]*subprocess\.(?:run|check_output|Popen)",
+            # tool_result / observation as messages content (one-liner)
+            r"messages\.append\s*\(\s*\{[^}]*['\"]content['\"]\s*:\s*(?:tool_result|tool_output|function_result|action_result|observation)",
+            # LangChain AgentExecutor.invoke with raw input + verbose=True is a soft signal — paired with tool_calls in same line
+            r"(?:AgentExecutor|create_react_agent|create_tool_calling_agent)\([^)]*verbose\s*=\s*True[^)]*\)[^\n]{0,300}invoke\(",
+        ],
+        "owasp": "LLM01",
+        "description": "Tool / agent / shell output passed to LLM without validation — agentic prompt injection risk",
+        "severity": "high",
+        "remediation": "Treat tool outputs as untrusted user input. Validate structure (JSON schema), strip control tokens, apply a guardrails layer. Maps to OWASP Agentic ASI04 (control-flow hijacking). OWASP LLM01:2025.",
     },
     "no_output_validation": {
         "patterns": [

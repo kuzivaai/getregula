@@ -2505,6 +2505,108 @@ def test_ai_security_no_false_positive_safe_torch():
     print("✓ AI security: torch.load pattern tested (may flag safe usage — known limitation)")
 
 
+# ── Prompt Injection (OWASP LLM01:2025) ───────────────────────────────
+
+def test_prompt_injection_direct_request_body():
+    """Direct injection: request body content placed straight into messages."""
+    from classify_risk import check_ai_security
+    code = (
+        "def handler(request):\n"
+        "    messages = [{'role': 'user', 'content': request.json['message']}]\n"
+        "    return client.chat.completions.create(messages=messages)\n"
+    )
+    findings = check_ai_security(code)
+    pi = [f for f in findings if f["pattern_name"] == "prompt_injection_vulnerable"]
+    assert_true(len(pi) > 0, "detects request body -> messages content as direct injection")
+    assert_eq(pi[0]["owasp"], "LLM01", "maps to OWASP LLM01")
+    assert_eq(pi[0]["severity"], "high", "direct prompt injection is high severity")
+    print("✓ Prompt injection (direct): request body in messages content")
+
+
+def test_prompt_injection_indirect_web_fetch():
+    """Indirect injection: web-fetched content one-liner into prompt content."""
+    from classify_risk import check_ai_security
+    code = (
+        "messages = [{'role': 'user', 'content': requests.get(url).text}]\n"
+        "client.chat.completions.create(messages=messages)\n"
+    )
+    findings = check_ai_security(code)
+    pi = [f for f in findings if f["pattern_name"] == "prompt_injection_indirect"]
+    assert_true(len(pi) > 0, "detects requests.get(...).text in messages content as indirect injection")
+    assert_eq(pi[0]["owasp"], "LLM01", "maps to OWASP LLM01")
+    print("✓ Prompt injection (indirect): web fetch one-liner")
+
+
+def test_prompt_injection_indirect_file_read():
+    """Indirect injection: file content read inline into prompt."""
+    from classify_risk import check_ai_security
+    code = "messages = [{'role': 'user', 'content': open(path).read()}]\n"
+    findings = check_ai_security(code)
+    pi = [f for f in findings if f["pattern_name"] == "prompt_injection_indirect"]
+    assert_true(len(pi) > 0, "detects open(...).read() in messages content as indirect injection")
+    print("✓ Prompt injection (indirect): file read one-liner")
+
+
+def test_prompt_injection_indirect_rag_chain():
+    """Indirect injection: LangChain RAG retriever output chained directly."""
+    from classify_risk import check_ai_security
+    code = "chain.invoke({'context': retriever.invoke(query), 'question': q})\n"
+    findings = check_ai_security(code)
+    pi = [f for f in findings if f["pattern_name"] == "prompt_injection_indirect"]
+    assert_true(len(pi) > 0, "detects retriever.invoke result chained into chain.invoke")
+    print("✓ Prompt injection (indirect): RAG chain pattern")
+
+
+def test_prompt_injection_tool_subprocess():
+    """Tool/agent injection: subprocess output appended to messages."""
+    from classify_risk import check_ai_security
+    code = "messages.append({'role':'user','content': subprocess.run(cmd).stdout})\n"
+    findings = check_ai_security(code)
+    pi = [f for f in findings if f["pattern_name"] == "prompt_injection_tool_output"]
+    assert_true(len(pi) > 0, "detects subprocess.run output in messages.append")
+    print("✓ Prompt injection (tool): subprocess output")
+
+
+def test_prompt_injection_tool_observation():
+    """Tool/agent injection: observation/tool_result variable into messages."""
+    from classify_risk import check_ai_security
+    code = "messages.append({'role':'user','content': tool_result})\n"
+    findings = check_ai_security(code)
+    pi = [f for f in findings if f["pattern_name"] == "prompt_injection_tool_output"]
+    assert_true(len(pi) > 0, "detects tool_result variable in messages.append")
+    print("✓ Prompt injection (tool): observation pattern")
+
+
+def test_prompt_injection_no_false_positive_proper_separation():
+    """Properly delimited system + sanitised user content is NOT flagged."""
+    from classify_risk import check_ai_security
+    code = (
+        "SYSTEM = 'You are a helpful assistant.'\n"
+        "def chat(user_text):\n"
+        "    return client.chat.completions.create(\n"
+        "        messages=[{'role':'system','content':SYSTEM},\n"
+        "                  {'role':'user','content':sanitize(user_text)}]\n"
+        "    )\n"
+    )
+    findings = check_ai_security(code)
+    pi = [f for f in findings if "prompt_injection" in f["pattern_name"]]
+    assert_eq(len(pi), 0, f"clean code with sanitisation should not flag, got: {[f['pattern_name'] for f in pi]}")
+    print("✓ Prompt injection: no false positive on proper separation + sanitiser")
+
+
+def test_prompt_injection_remediation_mentions_guardrails():
+    """Remediation text references guardrail libraries (LLM Guard, Lakera, etc)."""
+    from classify_risk import check_ai_security
+    code = "messages = [{'role': 'user', 'content': requests.get(url).text}]\n"
+    findings = check_ai_security(code)
+    pi = [f for f in findings if f["pattern_name"] == "prompt_injection_indirect"]
+    assert_true(len(pi) > 0, "indirect injection finding present")
+    rem = pi[0]["remediation"].lower()
+    has_guardrail = any(g in rem for g in ["nemo", "llm guard", "lakera", "rebuff", "guardrails ai"])
+    assert_true(has_guardrail, "remediation references at least one guardrails library")
+    print("✓ Prompt injection: remediation mentions guardrails")
+
+
 # ── Error Handling Foundation Tests ───────────────────────────────
 
 def test_doctor_command():
