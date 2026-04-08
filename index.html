@@ -822,6 +822,20 @@
         }
         .foot-links a { color: #8888aa; font-size: 13px; }
         .foot-links a:hover { color: #e2e2f0; }
+        .foot-middle { min-width: 220px; }
+        .foot-col-head {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #44445a;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .foot-col-links { display: flex; flex-direction: column; gap: 8px; }
+        .foot-col-links a { color: #8888aa; font-size: 13px; line-height: 1.4; }
+        .foot-col-links a:hover { color: #e2e2f0; }
+        .foot-col-links a .muted { color: #44445a; font-size: 11px; display: block; font-family: 'JetBrains Mono', monospace; }
         .foot-right { text-align: right; max-width: 400px; }
         .foot-legal {
             font-size: 12px;
@@ -866,6 +880,7 @@
             .tiers {}
             .tier-hint { display: none; }
             .foot-inner { flex-direction: column; }
+            .foot-middle { min-width: 0; }
             .foot-right { text-align: left; max-width: 100%; }
             .final { padding: 56px 16px; }
             .notify { flex-direction: column; }
@@ -1270,6 +1285,15 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contributing</a>
                 </div>
                 <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula</div>
+            </div>
+            <div class="foot-middle">
+                <div class="foot-col-head">Reading</div>
+                <div class="foot-col-links">
+                    <a href="south-africa-ai-policy.html">🇿🇦 South Africa draft AI policy <span class="muted">Cabinet approved 2 Apr 2026 · live tracker</span></a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/landscape.md">AICDI corporate AI governance gaps <span class="muted">How Regula maps to the 2026 UNESCO &middot; TRF report</span></a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/article-state-of-ai-compliance.md">State of AI compliance in OSS <span class="muted">What 5 popular Python AI libraries actually contain</span></a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/article-south-africa-ai-policy.md">South Africa policy &mdash; markdown version <span class="muted">Same content, markdown, GitHub-hosted</span></a>
+                </div>
             </div>
             <div class="foot-right">
                 <div class="foot-legal">
