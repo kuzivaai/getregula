@@ -145,6 +145,19 @@ regula oversight --project . --format json    # Machine-readable
 
 Reports per-path confidence (high/medium/low) and always discloses five limitations: dynamic imports not analysed, decorator-wrapped routes not resolved, third-party library internals not traced, cross-service calls not detected, and that detecting a code path does not verify oversight is meaningfully exercised (per ICO ADM guidance).
 
+### SME-Simplified Annex IV (Article 11(1) interim form)
+
+Article 11(1) second subparagraph of the EU AI Act allows providers that are SMEs (including start-ups) to provide the elements of Annex IV in a **simplified manner**. The Commission is required to establish an official simplified technical documentation form for SMEs but had not published it as of 2026-04-08. Regula's `--sme` flag generates an interim format that covers the minimum a notified body or enterprise customer typically asks for, sourced from the same scan data as the full pack:
+
+```bash
+regula conform --sme                              # generate interim SME Annex IV
+regula conform --sme --output ./compliance        # custom output directory
+regula conform --sme --format json                # machine-readable manifest
+regula conform                                    # full multi-folder evidence pack (Article 43)
+```
+
+The output is a **single Markdown file** rather than the full multi-folder pack, with a SHA-256 integrity hash and a manifest. Sections covered: intended purpose, AI components and dependencies, risk management summary, data governance summary, human oversight, accuracy/robustness/security, standards applied (with the JTC 21 pending status), Article 6(3) exemption pointer, and a provider declaration block. Replace with the official Commission template when published.
+
 ### Article 6(3) Exemption Self-Assessment
 
 Structured decision tree for Article 6(3) of the EU AI Act, which lets a provider self-assess an Annex III system as **not** high-risk on one of four grounds:
