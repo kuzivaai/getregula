@@ -2726,6 +2726,76 @@ def test_gap_assessment_includes_article_6_disclosure():
     print("✓ Gap: Article 6 guidelines status in assessment dict")
 
 
+# ── SME Simplified Annex IV (regula conform --sme) ────────────
+
+def test_sme_simplified_annex_iv_generates_markdown():
+    """generate_sme_simplified_annex_iv produces a non-empty Markdown doc."""
+    import tempfile
+    from generate_documentation import generate_sme_simplified_annex_iv, scan_project
+    with tempfile.TemporaryDirectory() as tmp:
+        findings = scan_project(tmp)
+        doc = generate_sme_simplified_annex_iv(findings, "test-system", tmp)
+    assert_true(len(doc) > 1000, f"doc should be substantive, got {len(doc)} chars")
+    assert_true(doc.startswith("# Annex IV (SME Simplified)"), "starts with SME header")
+    print("✓ SME Annex IV: generator produces non-empty markdown")
+
+
+def test_sme_simplified_annex_iv_includes_interim_disclosure():
+    """SME doc includes the Article 11(1) interim-format disclosure."""
+    import tempfile
+    from generate_documentation import generate_sme_simplified_annex_iv, scan_project
+    with tempfile.TemporaryDirectory() as tmp:
+        findings = scan_project(tmp)
+        doc = generate_sme_simplified_annex_iv(findings, "test-system", tmp)
+    assert_true("INTERIM FORMAT" in doc, "INTERIM FORMAT marker present")
+    assert_true("Article 11(1)" in doc, "Article 11(1) reference present")
+    assert_true("Commission" in doc, "References Commission template")
+    assert_true("2026-04-08" in doc, "carries the verified-on date")
+    print("✓ SME Annex IV: interim-format disclosure present")
+
+
+def test_sme_simplified_annex_iv_references_other_regula_commands():
+    """SME doc points the user at gpai-check, oversight, exempt, and sbom."""
+    import tempfile
+    from generate_documentation import generate_sme_simplified_annex_iv, scan_project
+    with tempfile.TemporaryDirectory() as tmp:
+        findings = scan_project(tmp)
+        doc = generate_sme_simplified_annex_iv(findings, "test-system", tmp)
+    for cmd in ["regula gpai-check", "regula oversight", "regula exempt", "regula sbom"]:
+        assert_true(cmd in doc, f"references {cmd}")
+    print("✓ SME Annex IV: references companion commands")
+
+
+def test_sme_simplified_pack_writes_single_file():
+    """generate_sme_simplified_pack writes one .md file and returns expected shape."""
+    import tempfile
+    from conform import generate_sme_simplified_pack
+    with tempfile.TemporaryDirectory() as tmp:
+        result = generate_sme_simplified_pack(tmp, output_dir=tmp, project_name="sme-test")
+        # Assertions must run inside the temp-dir context — the file is
+        # cleaned up when the context exits.
+        pack_path = Path(result["pack_path"])
+        assert_true(pack_path.is_file(), "single file produced")
+        assert_true(pack_path.name.startswith("simplified-annex-iv-sme-test-"), "uses simplified naming")
+        assert_true(pack_path.name.endswith(".md"), "is markdown file")
+        assert_eq(result["summary"]["form"], "sme_simplified_annex_iv", "form field correct")
+        assert_eq(len(result["manifest"]["files"]), 1, "manifest has exactly one file")
+        assert_true("sha256" in result["manifest"]["files"][0], "sha256 hash present")
+    print("✓ SME conform: single-file pack with correct shape")
+
+
+def test_sme_simplified_pack_disclosure_in_manifest():
+    """SME pack manifest carries the interim-format disclosure."""
+    import tempfile
+    from conform import generate_sme_simplified_pack
+    with tempfile.TemporaryDirectory() as tmp:
+        result = generate_sme_simplified_pack(tmp, output_dir=tmp, project_name="sme-test")
+    disclosure = result["manifest"].get("interim_format_disclosure", "")
+    assert_true("Article 11(1)" in disclosure, "manifest mentions Article 11(1)")
+    assert_true("Commission" in disclosure, "manifest mentions Commission template")
+    print("✓ SME conform: manifest carries interim-format disclosure")
+
+
 # ── Error Handling Foundation Tests ───────────────────────────────
 
 def test_doctor_command():

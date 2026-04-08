@@ -174,6 +174,80 @@ def _make_coverage(article_num: str, auto_detected: list, gap_data: dict) -> dic
     }
 
 
+def generate_sme_simplified_pack(
+    project_path: str,
+    output_dir: str = ".",
+    project_name: str = None,
+) -> dict:
+    """Generate the SME-simplified Annex IV technical documentation.
+
+    Article 11(1) second subparagraph allows SME providers to provide the
+    elements of Annex IV in a simplified manner. The Commission is
+    required to establish an official simplified form for SMEs but had
+    not published it as of 2026-04-08. This function produces the
+    interim simplified format as a single Markdown file (rather than the
+    full multi-folder pack produced by `generate_conformity_pack`).
+
+    Returns a dict matching the shape `cmd_conform` expects, with
+    summary["overall_readiness"] reflecting the simplified form's
+    readiness rather than the full Article 9-15 gap score.
+    """
+    from generate_documentation import scan_project, generate_sme_simplified_annex_iv
+
+    project = Path(project_path).resolve()
+    name = project_name or project.name
+    now = datetime.now(timezone.utc)
+    date_str = now.strftime("%Y-%m-%d")
+
+    out_dir = Path(output_dir).resolve()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / f"simplified-annex-iv-{name}-{date_str}.md"
+
+    doc_findings = scan_project(str(project))
+    doc = generate_sme_simplified_annex_iv(doc_findings, name, str(project))
+    out_path.write_text(doc, encoding="utf-8")
+
+    sha256 = hashlib.sha256(doc.encode("utf-8")).hexdigest()
+    file_record = {
+        "path": out_path.name,
+        "sha256": sha256,
+        "size_bytes": len(doc.encode("utf-8")),
+    }
+
+    manifest = {
+        "regula_version": VERSION,
+        "generated_at": now.isoformat(),
+        "project": name,
+        "project_directory": project.name,
+        "form": "sme_simplified_annex_iv",
+        "interim_format_disclosure": (
+            "Article 11(1) second subparagraph allows SMEs to provide the "
+            "elements of Annex IV in a simplified manner. The Commission is "
+            "required to establish an official simplified form for SMEs but "
+            "had not published it as of 2026-04-08. This document is an "
+            "interim format that should be replaced with the official "
+            "Commission template when published."
+        ),
+        "files": [file_record],
+    }
+
+    summary = {
+        "regula_version": VERSION,
+        "generated_at": now.isoformat(),
+        "project": name,
+        "form": "sme_simplified_annex_iv",
+        "overall_readiness": "interim — Commission template pending",
+        "output_file": str(out_path),
+    }
+
+    return {
+        "pack_dirname": out_path.name,
+        "pack_path": str(out_path),
+        "manifest": manifest,
+        "summary": summary,
+    }
+
+
 def generate_conformity_pack(
     project_path: str,
     output_dir: str = ".",
