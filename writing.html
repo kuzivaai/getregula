@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writing — Regula's research notes on AI governance and compliance</title>
+    <meta name="description" content="Long-form writing from the Regula project: primary-source verified analysis of AI regulation, static-analysis findings against open-source AI libraries, and how corporate AI governance maps to code-level risk indicators.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://getregula.com/writing.html">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://getregula.com/writing.html">
+    <meta property="og:title" content="Writing — Regula's research notes on AI governance">
+    <meta property="og:description" content="Primary-source verified analysis of AI regulation, static-analysis findings, and corporate AI governance mapping.">
+    <meta property="og:image" content="https://getregula.com/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Writing — Regula">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/site.css">
+    <style>
+        .hub-hero {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 80px 32px 48px;
+        }
+        .hub-hero h1 {
+            font-size: 52px;
+            font-weight: 700;
+            line-height: 1.08;
+            margin-bottom: 18px;
+        }
+        .hub-hero h1 .hl { color: var(--accent); }
+        .hub-hero .lede {
+            font-size: 18px;
+            color: var(--text-2);
+            line-height: 1.7;
+            margin-bottom: 16px;
+            max-width: 720px;
+        }
+        .art-list {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 0 32px 80px;
+        }
+        .art-item {
+            display: block;
+            padding: 28px 0;
+            border-bottom: 1px solid var(--border);
+            color: inherit;
+            transition: padding-left 0.2s;
+        }
+        .art-item:hover {
+            padding-left: 8px;
+        }
+        .art-item:hover h2 { color: var(--accent-hover); }
+        .art-meta {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .art-meta .tag {
+            padding: 2px 8px;
+            background: rgba(59,130,246,0.1);
+            color: var(--accent);
+            border-radius: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .art-meta .status-live {
+            background: rgba(16,185,129,0.1);
+            color: var(--success);
+        }
+        .art-item h2 {
+            font-family: var(--font-serif);
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 10px;
+            line-height: 1.2;
+            transition: color 0.15s;
+        }
+        .art-item p {
+            font-size: 15px;
+            color: var(--text-2);
+            line-height: 1.7;
+            max-width: 720px;
+        }
+        @media (max-width: 800px) {
+            .hub-hero h1 { font-size: 36px; }
+            .art-item h2 { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div id="progress-bar"></div>
+
+    <nav class="nav" id="nav" aria-label="Primary">
+        <a href="/" class="nav-brand">Regula</a>
+        <div class="nav-right">
+            <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+            <a href="regulations.html">Regulations</a>
+            <span class="active">Writing</span>
+            <a href="/">EN</a>
+            <a href="pt-br.html">BR</a>
+            <a href="de.html">DE</a>
+        </div>
+    </nav>
+
+    <header class="hub-hero">
+        <h1>Research <span class="hl">notes</span></h1>
+        <p class="lede">Long-form writing from the Regula project. Every piece is primary-source verified, every unverifiable claim is explicitly labelled, and every correction is visible in the git history. We publish in British English, in plain language, and we would rather be short and right than long and confident.</p>
+    </header>
+
+    <main id="main" class="art-list">
+
+        <a class="art-item" href="south-africa-ai-policy.html">
+            <div class="art-meta">
+                <span class="tag status-live">Live tracker</span>
+                <span>Last updated: 8 April 2026</span>
+                <span>Topic: South Africa</span>
+            </div>
+            <h2>South Africa's draft National AI Policy: what Cabinet approved, and what it means for code</h2>
+            <p>Cabinet approved the draft National Artificial Intelligence Policy for public comment on 2 April 2026. The gazette has not yet published the text, but the direction is clear: a sector-specific multi-regulator governance model, a 60-day comment window, and sector-specific regulations in 2027/2028. Live tracker plus POPIA and King V baseline plus five things South African organisations should do now.</p>
+        </a>
+
+        <a class="art-item" href="https://github.com/kuzivaai/getregula/blob/main/docs/landscape.md">
+            <div class="art-meta">
+                <span class="tag">Analysis</span>
+                <span>Last updated: 7 April 2026</span>
+                <span>Topic: Corporate AI governance</span>
+            </div>
+            <h2>How Regula maps to the AICDI corporate AI governance gaps</h2>
+            <p>The 2026 UNESCO and Thomson Reuters Foundation AI Company Data Initiative report measured 2,972 global companies and found large gaps between AI adoption and AI governance. This piece maps each AICDI gap to what Regula actually does — honest about what a static code scanner can address (model registry, human oversight verification, Article 9–15 gap assessment, conformity evidence) and what it cannot (board oversight, worker protection policies, training programmes, environmental impact assessments).</p>
+        </a>
+
+        <a class="art-item" href="https://github.com/kuzivaai/getregula/blob/main/docs/article-state-of-ai-compliance.md">
+            <div class="art-meta">
+                <span class="tag">Analysis</span>
+                <span>Topic: OSS ecosystem</span>
+            </div>
+            <h2>We scanned 5 popular AI libraries for EU AI Act compliance — here's what we found</h2>
+            <p>We ran Regula against LangChain, scikit-learn, pydantic-ai, openai-python and instructor. 4,116 findings across the five projects, 96.7% minimal risk, 1.2% agent autonomy without human oversight, 1.7% AI security. The numbers are interesting. The structural patterns are more interesting. What code-level patterns will matter once enforcement begins.</p>
+        </a>
+
+        <a class="art-item" href="https://github.com/kuzivaai/getregula/blob/main/docs/article-south-africa-ai-policy.md">
+            <div class="art-meta">
+                <span class="tag">Markdown mirror</span>
+                <span>Topic: South Africa</span>
+            </div>
+            <h2>South Africa draft National AI Policy — markdown version</h2>
+            <p>The same South Africa content as the live landing page, rendered as markdown on GitHub. Useful if you want to diff the page against the git history, or if you are reading in a context where the live site is not convenient.</p>
+        </a>
+
+    </main>
+
+    <footer>
+        <div class="foot-inner">
+            <div class="foot-left">
+                <div class="foot-brand">Regula</div>
+                <div class="foot-links">
+                    <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                    <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                    <a href="writing.html">Writing</a>
+                    <a href="regulations.html">Regulations</a>
+                </div>
+                <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula</div>
+            </div>
+            <div class="foot-right">
+                <div class="foot-legal">
+                    <strong>Not legal advice.</strong> Writing on this site is for developer education. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const progressBar = document.getElementById('progress-bar');
+        const nav = document.getElementById('nav');
+        function onScroll() {
+            const scrollTop = document.documentElement.scrollTop;
+            const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            progressBar.style.width = pct + '%';
+            nav.classList.toggle('scrolled', window.scrollY > 20);
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+    </script>
+</body>
+</html>
