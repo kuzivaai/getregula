@@ -1378,6 +1378,29 @@ def cmd_conform(args):
     project_path = str(Path(args.project).resolve())
     project_name = args.name or Path(project_path).name
 
+    if getattr(args, "sme", False):
+        from conform import generate_sme_simplified_pack
+        print(
+            f"Generating SME-simplified Annex IV (Article 11(1) interim form) for {project_path}...",
+            file=sys.stderr,
+        )
+        result = generate_sme_simplified_pack(
+            project_path,
+            output_dir=args.output,
+            project_name=project_name,
+        )
+        if args.format == "json":
+            json_output("conform", result)
+        else:
+            print(f"Simplified Annex IV written to: {result['pack_path']}")
+            print(f"Form: {result['summary']['form']}")
+            print(f"Status: {result['summary']['overall_readiness']}")
+            print(
+                "Note: this is an interim format under Article 11(1) second subparagraph. "
+                "Replace with the official Commission SME template when published."
+            )
+        return
+
     from conform import generate_conformity_pack
 
     print(f"Generating conformity assessment evidence pack for {project_path}...", file=sys.stderr)
@@ -1928,10 +1951,12 @@ def _build_subparsers(subparsers):
     p_evidence.set_defaults(func=cmd_evidence_pack)
 
     # --- conform ---
-    p_conform = subparsers.add_parser("conform", help="Generate conformity assessment evidence pack (Article 43)")
+    p_conform = subparsers.add_parser("conform", help="Generate conformity assessment evidence pack (Article 43) or SME simplified Annex IV (Article 11(1))")
     p_conform.add_argument("--project", "-p", default=".")
     p_conform.add_argument("--output", "-o", default=".", help="Output directory for the pack folder")
     p_conform.add_argument("--name", "-n", help="Project name")
+    p_conform.add_argument("--sme", action="store_true",
+                           help="Generate the SME-simplified Annex IV single-file form (Article 11(1) second subparagraph) instead of the full multi-folder evidence pack")
     p_conform.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_conform.set_defaults(func=cmd_conform)
 
