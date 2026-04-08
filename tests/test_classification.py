@@ -14,6 +14,7 @@ from classify_risk import classify, RiskTier, is_ai_related
 sys.path.insert(0, str(Path(__file__).parent))
 import test_register as _test_register  # noqa: F401
 import test_build_regulations as _test_build_regulations  # noqa: F401
+import test_gpai_check as _test_gpai_check  # noqa: F401
 
 passed = 0
 failed = 0
@@ -26,7 +27,7 @@ _PYTEST_MODE = "pytest" in sys.modules
 # with proper fixture injection.
 import inspect as _inspect
 _PYTEST_FIXTURES = {"monkeypatch", "tmp_path", "capsys", "tmpdir", "request"}
-for _mod in (_test_register, _test_build_regulations):
+for _mod in (_test_register, _test_build_regulations, _test_gpai_check):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
             continue
@@ -40,7 +41,7 @@ for _mod in (_test_register, _test_build_regulations):
         if _params & _PYTEST_FIXTURES:
             continue
         globals()[_name] = _fn
-del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations
+del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:

@@ -997,6 +997,21 @@ def cmd_plan(args):
             print(output)
 
 
+def cmd_gpai_check(args):
+    """GPAI Code of Practice check (Chapters 1-3)."""
+    if args.path != ".":
+        _validate_path(args.path)
+    from gpai_check import run_gpai_check, format_gpai_check_text
+    result = run_gpai_check(args.path, systemic_risk=getattr(args, "systemic_risk", False))
+    if args.format == "json":
+        json_output("gpai-check", result)
+    else:
+        print(format_gpai_check_text(result))
+    # Exit code: 1 only if --strict and there is at least one FAIL.
+    if getattr(args, "strict", False) and result["summary"].get("FAIL", 0) > 0:
+        sys.exit(1)
+
+
 def cmd_disclose(args):
     """Generate Article 50 transparency disclosures."""
     from transparency import generate_disclosure, format_disclosure_text
@@ -1837,6 +1852,19 @@ def _build_subparsers(subparsers):
     p_disclose.add_argument("--name", "-n", help="AI system name for templates")
     p_disclose.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_disclose.set_defaults(func=cmd_disclose)
+
+    # --- gpai-check ---
+    p_gpai = subparsers.add_parser(
+        "gpai-check",
+        help="Map GPAI provider code to the three Code of Practice chapters (Art 53 + Art 55)",
+    )
+    p_gpai.add_argument("path", nargs="?", default=".", help="Project path (default: current dir)")
+    p_gpai.add_argument("--systemic-risk", action="store_true",
+                        help="Evaluate Chapter 3 (Safety & Security) — applies only when training compute >= 10^25 FLOPs (Art 51)")
+    p_gpai.add_argument("--strict", action="store_true",
+                        help="Exit 1 if any obligation FAILs")
+    p_gpai.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_gpai.set_defaults(func=cmd_gpai_check)
 
     # --- register ---
     p_register = subparsers.add_parser("register", help="Generate Annex VIII registration packet (Article 49)")
