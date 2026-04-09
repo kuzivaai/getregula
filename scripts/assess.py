@@ -21,6 +21,7 @@ Regulatory basis:
 
 import sys
 from pathlib import Path
+from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -298,18 +299,94 @@ def run_interactive() -> dict:
     return {"tier": tier, "non_eu_provider": False, "answers": answers}
 
 
-def run_assess(output_format: str = "text") -> int:
-    """Main entry point. Returns exit code (1 if prohibited, else 0)."""
-    if not sys.stdin.isatty():
-        print("Error: `regula assess` requires an interactive terminal.", file=sys.stderr)
-        print("Use `regula questionnaire` for non-interactive use.", file=sys.stderr)
-        return 1
+def run_from_answers(answers_csv: str) -> dict:
+    """Run the assess flow from a comma-separated answers list.
 
-    try:
-        result = run_interactive()
-    except KeyboardInterrupt:
-        print("\n\n  Assessment cancelled.", file=sys.stderr)
-        return 1
+    Order (same as the interactive flow): uses_ai, eu_users, prohibited,
+    high_risk_domain, non_eu_provider, transparency_trigger.
+
+    Short-circuit rules match run_interactive():
+      - uses_ai=no        -> TIER_NOT_IN_SCOPE
+      - eu_users=no       -> TIER_NOT_IN_SCOPE_EU
+      - prohibited=yes    -> TIER_PROHIBITED
+      - high_risk=yes     -> TIER_HIGH (consumes non_eu_provider)
+      - otherwise         -> TIER_LIMITED / TIER_MINIMAL by transparency
+    """
+    def _norm(v: str) -> str:
+        v = (v or "").strip().lower()
+        if v in ("y", "yes", "true", "1"):
+            return "yes"
+        if v in ("n", "no", "false", "0"):
+            return "no"
+        raise ValueError(f"invalid answer {v!r} — expected yes/no")
+
+    raw = [a for a in (answers_csv or "").split(",") if a.strip()]
+    if not raw:
+        raise ValueError("--answers is empty")
+    answers: dict = {}
+    # uses_ai
+    answers["uses_ai"] = _norm(raw[0])
+    if answers["uses_ai"] == "no":
+        return {"tier": TIER_NOT_IN_SCOPE, "non_eu_provider": False, "answers": answers}
+    if len(raw) < 2:
+        raise ValueError("missing eu_users answer")
+    answers["eu_users"] = _norm(raw[1])
+    if answers["eu_users"] == "no":
+        return {"tier": TIER_NOT_IN_SCOPE_EU, "non_eu_provider": False, "answers": answers}
+    if len(raw) < 3:
+        raise ValueError("missing prohibited answer")
+    answers["prohibited"] = _norm(raw[2])
+    if answers["prohibited"] == "yes":
+        return {"tier": TIER_PROHIBITED, "non_eu_provider": False, "answers": answers}
+    if len(raw) < 4:
+        raise ValueError("missing high_risk_domain answer")
+    answers["high_risk_domain"] = _norm(raw[3])
+    if answers["high_risk_domain"] == "yes":
+        if len(raw) < 5:
+            raise ValueError("missing non_eu_provider answer (required when high_risk=yes)")
+        answers["non_eu_provider"] = _norm(raw[4])
+        return {"tier": TIER_HIGH, "non_eu_provider": answers["non_eu_provider"] == "yes", "answers": answers}
+    if len(raw) < 5:
+        raise ValueError("missing transparency_trigger answer")
+    # When high_risk=no, the 5th slot is transparency_trigger.
+    answers["transparency_trigger"] = _norm(raw[4])
+    tier = TIER_LIMITED if answers["transparency_trigger"] == "yes" else TIER_MINIMAL
+    return {"tier": tier, "non_eu_provider": False, "answers": answers}
+
+
+def run_assess(output_format: str = "text", answers: Optional[str] = None) -> int:
+    """Main entry point. Returns exit code (1 if prohibited, else 0)."""
+    if answers is not None:
+        try:
+            result = run_from_answers(answers)
+        except ValueError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            print(
+                "  --answers order: uses_ai,eu_users,prohibited,"
+                "high_risk_domain,non_eu_provider|transparency_trigger",
+                file=sys.stderr,
+            )
+            return 2
+    else:
+        if not sys.stdin.isatty():
+            print("Error: `regula assess` requires an interactive terminal,", file=sys.stderr)
+            print(
+                "or pass --answers as a comma-separated list of yes/no values in order:",
+                file=sys.stderr,
+            )
+            print(
+                "  uses_ai,eu_users,prohibited,high_risk_domain,"
+                "non_eu_provider|transparency_trigger",
+                file=sys.stderr,
+            )
+            print("Or use `regula questionnaire` for the richer non-interactive flow.", file=sys.stderr)
+            return 1
+
+        try:
+            result = run_interactive()
+        except KeyboardInterrupt:
+            print("\n\n  Assessment cancelled.", file=sys.stderr)
+            return 1
 
     tier = result["tier"]
     non_eu = result["non_eu_provider"]
