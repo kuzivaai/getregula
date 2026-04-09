@@ -390,6 +390,8 @@ Bug reports and pull requests are welcome. A few things to know:
 
 MIT License. See [LICENSE.txt](LICENSE.txt).
 
+**Releases & roadmap:** [CHANGELOG.md](CHANGELOG.md) groups commits by release. [TODO.md](TODO.md) is the prioritised gap backlog (P0/P1/P2/P3) — what is known to be wrong or missing right now.
+
 ## Author
 
 Built by [The Implementation Layer](https://theimplementationlayer.substack.com) — AI governance from the practitioner side.
