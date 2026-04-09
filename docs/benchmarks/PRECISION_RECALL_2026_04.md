@@ -92,7 +92,7 @@ The 257 labels are at `benchmarks/labels.json`. Every entry has:
 Every label was assigned by hand. The labelling protocol is documented
 at `benchmarks/README.md`.
 
-### Internal regression suite — 925 / 925
+### Internal regression suite — 926 / 926
 
 ```bash
 python3 tests/test_classification.py
@@ -101,10 +101,10 @@ python3 tests/test_classification.py
 Expected output:
 
 ```
-Results: 925 passed, 0 failed (476 test functions)
+Results: 926 passed, 0 failed (476 test functions)
 ```
 
-This is the 925-test custom runner that walks `globals()` of
+This is the 926-test custom runner that walks `globals()` of
 `test_classification.py` and runs every `test_*` function.
 
 ---

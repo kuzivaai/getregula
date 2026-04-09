@@ -377,6 +377,22 @@ pytest tests/ -q
 - **v1.3:** GPAI Code of Practice chapter-level obligation mapping (`regula gpai-check`, three chapters: Transparency / Copyright / Safety & Security) — **shipped**. Colorado AI Act + South Korea AI Basic Act Tier-3 pages — **shipped**. Harmonised-standards plumbing ready for Q4 2026 CEN-CENELEC publication — **shipped (stub)**. Prompt-injection detector (OWASP LLM01:2025 — direct, indirect, and tool-output vectors) — **shipped**. Article 6(3) self-assessment decision tree (`regula exempt`, with the missed-Commission-deadline disclosure surfaced in `regula gap`) — **shipped**. SME-simplified Annex IV under Article 11(1) (`regula conform --sme`) — **shipped (interim format pending Commission template)**. JS/TS tree-sitter data-flow tracing with destination classification (log / api_response / human_review / persisted / display / automated_action) — **shipped** in `scripts/ast_engine.py`. On the backlog for a future release: AVID vulnerability database mapping for finding metadata, typosquatting detection for AI-library dependencies.
 - **Not planned yet:** DPO dashboard, Slack/Teams alerting, model card generation. These require validation that there are users who want them first.
 
+## Trust, security, and how to verify
+
+If you are evaluating Regula for procurement, audit, or research use,
+the canonical entry point is the **[Trust Pack](docs/TRUST.md)** —
+every claim is paired with the exact shell command that verifies it.
+
+- **Reproducible benchmark:** [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](docs/benchmarks/PRECISION_RECALL_2026_04.md)
+  publishes precision/recall on both a synthetic and an OSS corpus,
+  with reproducible commands and an explicit limitations section.
+- **Security policy:** [`SECURITY.md`](SECURITY.md) covers supported
+  versions, disclosure flow, and target response times. Report
+  privately via GitHub Security Advisory or `support@getregula.com`.
+- **Code of conduct:** [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
+- **Citation file:** [`CITATION.cff`](CITATION.cff) — for academic or
+  vendor-evaluation references.
+
 ## Contributing
 
 Bug reports and pull requests are welcome. A few things to know:
@@ -385,6 +401,13 @@ Bug reports and pull requests are welcome. A few things to know:
 - Pattern additions go in `scripts/classify_risk.py`. Each pattern should have a test.
 - The tool is intentionally risk *indication*, not legal classification. New patterns should be conservative — false positives erode trust more than false negatives for a developer tool.
 - See [CHANGELOG.md](CHANGELOG.md) for what has changed between versions.
+- See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full contributor guide.
+
+## Contact
+
+- General questions, support, partnership, and procurement: **`support@getregula.com`**
+- Bugs and feature requests: [GitHub Issues](https://github.com/kuzivaai/getregula/issues)
+- Security disclosures: [GitHub Security Advisory](https://github.com/kuzivaai/getregula/security/advisories/new) or `support@getregula.com` with `[SECURITY]` prefix
 
 ## License
 

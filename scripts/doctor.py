@@ -127,11 +127,27 @@ def _check_config_validation():
 
 
 def _check_security():
-    """Check .gitignore includes audit patterns, files not world-readable."""
+    """Check .gitignore includes audit patterns, files not world-readable.
+
+    Only WARN about a missing .gitignore when the cwd is actually inside
+    a git repository — otherwise the recommendation is moot and shows
+    up as a false-positive warning on fresh non-git directories.
+    """
     issues = []
+    audit_patterns = [".regula/", ".regula/audit", "regula-audit"]
+
+    # Walk up looking for a .git/ directory; cap at filesystem root.
+    in_git_repo = False
+    cur = Path.cwd().resolve()
+    for _ in range(20):
+        if (cur / ".git").exists():
+            in_git_repo = True
+            break
+        if cur.parent == cur:
+            break
+        cur = cur.parent
 
     gitignore = Path.cwd() / ".gitignore"
-    audit_patterns = [".regula/", ".regula/audit", "regula-audit"]
     if gitignore.exists():
         try:
             content = gitignore.read_text(encoding="utf-8", errors="ignore")
@@ -140,12 +156,16 @@ def _check_security():
                 issues.append("audit patterns not in .gitignore")
         except OSError:
             issues.append("cannot read .gitignore")
-    else:
+    elif in_git_repo:
+        # Only complain if we're actually in a git repo.
         issues.append(".gitignore not found")
 
     if issues:
         return {"name": "Security", "status": "WARN",
                 "detail": "; ".join(issues)}
+    if not in_git_repo:
+        return {"name": "Security", "status": "INFO",
+                "detail": "Not inside a git repository — .gitignore check skipped"}
     return {"name": "Security", "status": "PASS",
             "detail": "Audit patterns in .gitignore, no world-readable policy files"}
 
