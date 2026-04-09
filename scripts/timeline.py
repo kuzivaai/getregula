@@ -77,7 +77,7 @@ TIMELINE = [
         "event": "AICDI corporate AI governance report published",
         "status": "effective",
         "source": "UNESCO + Thomson Reuters Foundation, Apr 2026",
-        "note": "Largest dataset on corporate AI adoption: 100,000+ data points across 2,972 companies, 11 sectors, 6 regions. Headline gaps: only 10% publicly committed to a governance framework, 12% have human oversight policies, 11% evaluate environmental impact, 7% evaluate human rights impact, 2.7% have a formal AI model registry, 2.3% have an AI complaints mechanism. URL: https://www.unesco.org/en/articles/pioneering-report-thomson-reuters-foundation-and-unesco-sheds-light-way-3000-companies-approach-ai",
+        "note": "UNESCO+Thomson Reuters Foundation dataset on corporate AI adoption across approximately 3,000 companies and 11 sectors (UNESCO press release wording). Headline gaps verified against the UNESCO press release: 10% publicly committed to a governance framework, 12% have human oversight policies, 11% evaluate environmental impact, 7% evaluate human rights impact. Finer-grained figures (e.g. 2.7% formal AI model registry, 2.3% complaints mechanism) are NOT disclosed in the UNESCO press release — they require the full AICDI PDF to verify and must not be cited as 'verified' until that is done. URL: https://www.unesco.org/en/articles/pioneering-report-thomson-reuters-foundation-and-unesco-sheds-light-way-3000-companies-approach-ai",
     },
     {
         "date": "2026-04-28",
