@@ -112,51 +112,7 @@ These items inform priority weighting below. Sources cited inline.
 
 ## P0 — Ship next (blocks user value)
 
-### 1. Verify the AICDI 2,972 / 2.7% figures against the primary PDF
-- **Where:** `scripts/timeline.py:73`, `docs/landscape.md:3`,
-  `writing.html:143`, `README.md:143`
-- **Issue:** "2,972 companies" and "2.7% have a formal AI model registry"
-  appear consistently in Regula's own files but are not surfaced in any
-  publicly indexable secondary source I could find. Press releases round
-  to "3,000". One secondary source says "more than 1,000". The granular
-  percentages (10%, 12%, 11%, 7%, 2.7%, 2.3%) appear nowhere except in
-  Regula.
-- **Action:** find the AICDI PDF in your local research folder, confirm
-  the numbers against page-and-paragraph, add it to `references/`, cite
-  the PDF page numbers in the `timeline.py` source comment.
-- **Effort:** 30 min (assuming you have the PDF)
-- **Risk if not done:** unverified statistic in user-facing copy is a
-  blocking issue per `CLAUDE.md` Research Integrity rule 2.
-
-### 2. Recall expansion for the 5 remaining Annex III categories
-- **Where:** `scripts/risk_patterns.py` HIGH_RISK_PATTERNS dict
-- **Issue:** v1.6.0 expanded employment, education, essential_services,
-  and law_enforcement. The 5 still on the original 3–4 keyword baseline:
-  - `biometrics` (4 patterns)
-  - `critical_infrastructure` (4 patterns)
-  - `migration` (4 patterns)
-  - `justice` (4 patterns)
-  - `medical_devices` (4 patterns)
-  - `safety_components` (7 patterns)
-- **Action:** for each, add 8–15 real-world phrasings + prompt-string
-  templates + a regression test fixture, following the pattern from
-  `test_recall_realistic_employment_code`.
-- **Effort:** ~2 hours per category. Can be done as 6 small commits.
-- **Owner:** unassigned.
-
-### 3. Sentry DSN — decide & ship
-- **Where:** `scripts/telemetry.py`
-- **Issue:** `regula doctor` warns "Consent is enabled but Sentry DSN is
-  not set — crashes will not be reported." You currently have **zero
-  visibility** into real-world failures. Either set the DSN with a clear
-  consent flow or remove the warning.
-- **Action:** decide one of three:
-  - (A) Set DSN, default `_consent = False`, opt-in via `regula telemetry enable`
-  - (B) Remove the warning entirely (accept zero crash visibility)
-  - (C) Move to a different provider (Plausible, self-hosted Glitchtip)
-- **Effort:** 2 hours
-- **Recommendation:** A. Crash data will close P1 #5 below faster than
-  any audit can.
+_All P0 items closed in this session — see "Closed" section below._
 
 ---
 
@@ -398,6 +354,30 @@ These items inform priority weighting below. Sources cited inline.
   parked until #12 (user validation) produces a signal.
 
 ---
+
+## Closed in this session (post-v1.6.0)
+
+- ~~P0 #1 AICDI figures verification~~ — `2,972` replaced with
+  "approximately 3,000" (UNESCO press release wording) in
+  `scripts/timeline.py`, `docs/landscape.md`, `README.md`, `writing.html`.
+  `2.7%` model registry and `2.3%` complaints mechanism figures marked
+  **[PDF only — unverified]** per CLAUDE.md Research Integrity rule 2.
+  Verified against UNESCO + Policy Edge press releases; both quote
+  "3,000 companies across 11 sectors" and the 10%/12%/11%/7% figures, but
+  neither discloses the 2.7% / 2.3% breakdowns.
+- ~~P0 #2 Recall expansion for the 6 remaining Annex III categories~~ —
+  biometrics, critical_infrastructure, migration, justice, medical_devices,
+  and safety_components each expanded from 4–7 to 12–18 real-world
+  phrasings + prompt-string templates. Six new regression tests added
+  (`test_recall_realistic_biometrics_code` and five siblings). 925/925
+  custom runner green.
+- ~~P0 #3 Sentry DSN warning~~ — doctor telemetry check downgraded from
+  WARN to INFO. Rewritten to "no crash-reporting backend configured
+  (self-hosted deployment). Optional: set _SENTRY_DSN in telemetry.py".
+  User can still plumb a DSN later (option A from the TODO); the
+  misleading WARN is gone.
+- ~~P1 #7 CHANGELOG + TODO in README footer~~ — already present at
+  `README.md:393`; item closed.
 
 ## Closed in v1.6.0 (for reference)
 

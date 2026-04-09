@@ -375,6 +375,172 @@ def test_recall_realistic_law_enforcement_code():
     print("✓ Recall: crime-analytics AI (parole, bail, threat) correctly flagged law enforcement")
 
 
+# regula-ignore — the next six tests construct fixtures that look like
+# Annex III high-risk AI for verification purposes; they are test data,
+# not real practice.
+
+def test_recall_realistic_biometrics_code():
+    """Regression (recall expansion Apr 2026): real-world biometric AI
+    (iris match, gait recognition, age-from-face inference) was missed by
+    the narrow original patterns. Annex III Cat 1 covers biometric
+    identification, categorisation, and verification (the lawful high-risk
+    uses; untargeted scraping and RBI are Article 5 prohibitions)."""
+    cases = [
+        ("import torch\n"
+         "def iris_match(probe, gallery):\n"
+         "    return iris_model.verify(probe, gallery)\n",
+         "iris match"),
+        ("import torch\n"
+         "def gait_recognition(video):\n"
+         "    return gait_model.identify(extract_silhouettes(video))\n",
+         "gait recognition"),
+        ("import openai\n"
+         "def detect_age_from_face(image_bytes):\n"
+         "    return openai.OpenAI().chat.completions.create(\n"
+         "        model='gpt-4',\n"
+         "        messages=[{'role':'user','content':f'Infer age from face image'}]).choices[0].message.content\n",
+         "age from face"),
+    ]
+    for code, label in cases:
+        r = classify(code)
+        assert_eq(r.tier, RiskTier.HIGH_RISK, f"{label} should be high-risk")
+        assert_eq(r.category, "Annex III, Category 1", f"{label} biometrics category")
+    print("✓ Recall: biometric AI (iris, gait, age-from-face) correctly flagged")
+
+
+def test_recall_realistic_critical_infrastructure_code():
+    """Regression (recall expansion Apr 2026): real-world grid / SCADA /
+    pipeline / railway AI was missed by the narrow 'energy_grid' / 'water_supply'
+    patterns. Annex III Cat 2 covers safety components in management of
+    critical digital infrastructure, traffic, and utilities."""
+    cases = [
+        ("import torch\n"
+         "def grid_load_forecast(features):\n"
+         "    return load_model.predict(features)\n",
+         "grid load forecast"),
+        ("import xgboost\n"
+         "def pipeline_pressure_monitor(telemetry):\n"
+         "    return scada_model.predict(telemetry)\n",
+         "pipeline SCADA"),
+        ("import sklearn\n"
+         "def railway_signal_control(track_state):\n"
+         "    return interlocking.decide(track_state)\n",
+         "railway signalling"),
+    ]
+    for code, label in cases:
+        r = classify(code)
+        assert_eq(r.tier, RiskTier.HIGH_RISK, f"{label} should be high-risk")
+        assert_eq(r.category, "Annex III, Category 2", f"{label} critical infrastructure category")
+    print("✓ Recall: critical-infrastructure AI (grid, SCADA, railway) correctly flagged")
+
+
+def test_recall_realistic_migration_code():
+    """Regression (recall expansion Apr 2026): real-world visa/asylum/border
+    AI was missed by the narrow 'border_control' / 'visa_application' patterns.
+    Annex III Cat 7 covers risk assessment of persons in a migration context."""
+    cases = [
+        ("import openai\n"
+         "def approve_visa(dossier):\n"
+         "    return openai.OpenAI().chat.completions.create(\n"
+         "        model='gpt-4',\n"
+         "        messages=[{'role':'user','content':f'Score visa risk for: {dossier}'}]).choices[0].message.content\n",
+         "visa approval"),
+        ("import torch\n"
+         "def asylum_credibility_score(case):\n"
+         "    return asylum_model.predict(case)\n",
+         "asylum credibility"),
+        ("import sklearn\n"
+         "def border_threat_score(traveller):\n"
+         "    return threat_model.predict_proba(traveller)\n",
+         "border threat scoring"),
+    ]
+    for code, label in cases:
+        r = classify(code)
+        assert_eq(r.tier, RiskTier.HIGH_RISK, f"{label} should be high-risk")
+        assert_eq(r.category, "Annex III, Category 7", f"{label} migration category")
+    print("✓ Recall: migration AI (visa, asylum, border) correctly flagged")
+
+
+def test_recall_realistic_justice_code():
+    """Regression (recall expansion Apr 2026): real-world judicial-assist and
+    election-influence AI was missed by the narrow original patterns. Annex III
+    Cat 8 covers AI used by judicial authorities and AI used to influence
+    elections or voting behaviour."""
+    cases = [
+        ("import openai\n"
+         "def predict_verdict(case_facts):\n"
+         "    return openai.OpenAI().chat.completions.create(\n"
+         "        model='gpt-4',\n"
+         "        messages=[{'role':'user','content':f'Predict verdict: {case_facts}'}]).choices[0].message.content\n",
+         "verdict prediction"),
+        ("import torch\n"
+         "def predict_case_outcome(facts):\n"
+         "    return court_outcome_model.predict(facts)\n",
+         "case outcome prediction"),
+        ("import sklearn\n"
+         "def voter_microtarget(profile):\n"
+         "    return persuasion_model.predict(profile)\n",
+         "voter microtargeting"),
+    ]
+    for code, label in cases:
+        r = classify(code)
+        assert_eq(r.tier, RiskTier.HIGH_RISK, f"{label} should be high-risk")
+        assert_eq(r.category, "Annex III, Category 8", f"{label} justice category")
+    print("✓ Recall: justice AI (verdict, case outcome, voter targeting) correctly flagged")
+
+
+def test_recall_realistic_medical_devices_code():
+    """Regression (recall expansion Apr 2026): real-world radiology, sepsis,
+    dosing and clinical-decision AI was missed by the narrow 'medical_diagnosis'
+    / 'patient_triage' patterns. Article 6(1) + Annex I Section A covers AI in
+    medical devices (MDR 2017/745) and IVDs (IVDR 2017/746)."""
+    cases = [
+        ("import torch\n"
+         "def detect_tumor(ct_scan):\n"
+         "    return radiology_model.segment(ct_scan)\n",
+         "tumour detection"),
+        ("import xgboost\n"
+         "def sepsis_early_warning(vitals):\n"
+         "    return sepsis_model.predict_proba(vitals)\n",
+         "sepsis early warning"),
+        ("import sklearn\n"
+         "def insulin_dose_recommend(patient):\n"
+         "    return dose_model.predict(patient)\n",
+         "insulin dosing"),
+    ]
+    for code, label in cases:
+        r = classify(code)
+        assert_eq(r.tier, RiskTier.HIGH_RISK, f"{label} should be high-risk")
+        assert_eq(r.category, "Medical Devices", f"{label} medical devices category")
+    print("✓ Recall: medical-device AI (radiology, sepsis, dosing) correctly flagged")
+
+
+def test_recall_realistic_safety_components_code():
+    """Regression (recall expansion Apr 2026): real-world ADAS, cobot, drone
+    and rail-safety AI was missed by the narrow 'autonomous_vehicle' /
+    'machinery_safety' patterns. Article 6(1) + Annex I Sections A and B cover
+    AI safety components of machinery, vehicles, aviation, rail, and marine."""
+    cases = [
+        ("import torch\n"
+         "def pedestrian_detection(frame):\n"
+         "    return yolo_model.predict(frame)\n",
+         "pedestrian detection ADAS"),
+        ("import sklearn\n"
+         "def cobot_collision_avoid(sensors):\n"
+         "    return safety_model.decide(sensors)\n",
+         "industrial cobot safety"),
+        ("import xgboost\n"
+         "def drone_obstacle_avoid(lidar):\n"
+         "    return flight_control.plan(lidar)\n",
+         "drone obstacle avoidance"),
+    ]
+    for code, label in cases:
+        r = classify(code)
+        assert_eq(r.tier, RiskTier.HIGH_RISK, f"{label} should be high-risk")
+        assert_eq(r.category, "Safety Components", f"{label} safety components category")
+    print("✓ Recall: safety-component AI (ADAS, cobot, drone) correctly flagged")
+
+
 def test_high_risk_credit_scoring():
     """Credit scoring → HIGH-RISK"""
     r = classify("import torch; credit scoring model")
