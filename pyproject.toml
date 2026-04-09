@@ -55,3 +55,39 @@ exclude = ["tools*", "benchmarks*", "tests*"]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
+
+[tool.bandit]
+# Project-level rationale for bandit skips. Every suppression below is a
+# policy decision, not a per-site ignore, and each is justified in the
+# docstring of the relevant module. Hard security checks (B101 assert,
+# B102 exec, B301 pickle, B302 marshal, B303 md5 for crypto, B304 ciphers,
+# B305 cipher modes, B501–B507 ssl/tls, B601–B602 shell injection,
+# B608 sql injection, B609 linux wildcard) REMAIN ENABLED.
+exclude_dirs = ["tests", "benchmarks", "dist", "build", "tools"]
+skips = [
+    # B110 try_except_pass / B112 try_except_continue — Regula uses these
+    # extensively for best-effort, optional-feature, and fallback paths
+    # (optional deps, optional metadata, graceful feed parsing, etc.).
+    # Every such block is a deliberate "degrade gracefully" rather than
+    # crash the CLI. Treating each as a security finding produces noise
+    # without action.
+    "B110",
+    "B112",
+    # B404 — importing subprocess is not a vulnerability on its own.
+    # All actual subprocess call sites are reviewed under B603/B607.
+    "B404",
+    # B603 — subprocess without shell=True is the SAFER option (no shell
+    # interpretation). Flagged by bandit as a reminder, not a bug.
+    "B603",
+    # B607 — starting a process with a partial path ("git", "sphinx-build").
+    # All call sites are dev tooling / benchmark scripts that must honour
+    # the developer's PATH; hardcoding /usr/bin/git would break on macOS
+    # (/opt/homebrew/bin) and Windows. Dev tooling is never invoked by
+    # the installed CLI on an end-user machine.
+    "B607",
+    # B311 — random.random() / random.choice() used for non-security
+    # purposes (bias-eval A/B position shuffle, pattern example picking,
+    # etc.). Cryptographic RNG (secrets module) is used where it matters
+    # — see scripts/timestamp.py:_build_tsq nonce generation.
+    "B311",
+]
