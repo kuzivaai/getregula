@@ -58,7 +58,7 @@ your lawyer's job, not Regula's.
 | Cross-file Article 14 human-oversight detection (Python) | `regula oversight` |
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 925 internal regression tests, 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
+| 926 internal regression tests, 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -75,13 +75,13 @@ your lawyer's job, not Regula's.
 > Every number Regula publishes can be reproduced by anyone with a checkout
 > of the repo. The commands below run in under 30 seconds total on a laptop.
 
-### 3.1 Internal test suite — 925 / 925 green
+### 3.1 Internal test suite — 926 / 926 green
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 tests/test_classification.py
-# Expected: Results: 925 passed, 0 failed (476 test functions)
+# Expected: Results: 926 passed, 0 failed (476 test functions)
 ```
 
 This runs the custom auto-discovery runner. It walks `globals()` of
@@ -103,12 +103,16 @@ detection, framework mapping, limited-risk classification.
 
 ```bash
 python3 -m scripts.cli doctor
-# Expected: 8 passed, 3 info, 0 warn (on a clean install)
+# Expected (inside a git repo): 8 passed, 3 info, 0 warn
+# Expected (outside a git repo): 8 passed, 3 info, 1 warn
+#   The 1 warn is ".gitignore not found" — Regula recommends
+#   .gitignore-ing audit artefacts. Add a .gitignore to silence it.
 ```
 
 Lists every optional dependency, hook installation status, audit
 directory writability, and policy file presence. INFO entries for
-optional features are not warnings.
+optional features are not warnings — they are reminders that
+`pip install regula-ai[yaml,ast]` would unlock more features.
 
 ### 3.4 Synthetic precision + recall — 100 / 100
 
@@ -143,14 +147,25 @@ real users do not see in CI.
 ### 3.6 Security posture — bandit, semgrep, pip-audit
 
 ```bash
-pip install bandit semgrep pip-audit
+# Bandit and pip-audit are lightweight:
+pip install bandit pip-audit
 bandit -c pyproject.toml -r scripts/ hooks/
 # Expected: 0 low / 0 medium / 0 high
-semgrep --config p/security-audit --config p/python scripts/ hooks/
-# Expected: 0 findings (200 rules, 129 files)
 pip-audit
 # Expected: 0 vulnerabilities (zero runtime deps)
+
+# Semgrep is heavier (~150 MB) and optional. Skip if you only have
+# capacity for the quick pass:
+pip install semgrep
+semgrep --config p/security-audit --config p/python scripts/ hooks/
+# Expected: 0 findings (200 rules, 129 files)
 ```
+
+Per the [comparative SAST research](https://semgrep.dev/blog/2021/python-static-analysis-comparison-bandit-semgrep/),
+running both bandit and semgrep is the standard hardened-Python audit.
+Regula passes both at the published version. Bandit's project config
+is in `pyproject.toml [tool.bandit]` with every project-level skip
+documented and rationalised.
 
 Bandit project config in `pyproject.toml [tool.bandit]` documents every
 project-level skip with rationale. Hard checks (B101 assert, B102 exec,
@@ -219,8 +234,10 @@ and decide for themselves whether it is too broad or too narrow.
 |---|---|
 | Source code | <https://github.com/kuzivaai/getregula> |
 | PyPI package | <https://pypi.org/project/regula-ai/> |
+| Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
-| Test suite | `tests/test_classification.py` (925 tests) |
+| Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
+| Test suite | `tests/test_classification.py` (926 tests) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit hook source | `hooks/pre_tool_use.py` |
@@ -275,7 +292,7 @@ currently is:
 |---|---|
 | Do you have a SOC 2 Type II report? | No. Regula is an open-source CLI tool, not a hosted service. There is no Regula infrastructure to audit. The equivalent is the open-source code itself plus the bandit/semgrep/pip-audit clean state. |
 | Have you had a third-party penetration test? | No. The attack surface is the user's local machine + opt-in network calls listed above. The code is open for review. |
-| Do you have a CVE program? | Issues at <https://github.com/kuzivaai/getregula/issues> are the current channel. A formal `SECURITY.md` with private disclosure is on the roadmap. |
+| Do you have a CVE program? | Yes — [`SECURITY.md`](../SECURITY.md) defines the disclosure flow, supported versions, and target response times. Private disclosure via GitHub Security Advisory or `support@getregula.com`. The next public CVE we receive will also be the moment we register as a CNA. |
 | Do you sign releases with Sigstore? | Not yet. Releases are reproducible from source via `python3 -m build`. |
 | Do you have an SBOM for your own releases? | Yes — Regula generates one of itself: `regula sbom --ai-bom` from a checkout. |
 
@@ -357,9 +374,10 @@ personal data leaves the user's environment. No DPA is required because
 no controller-processor relationship is established.
 
 **Q: What is the support model?**
-A: Best-effort via GitHub Issues. Response time is not contractually
-guaranteed. For enterprises that need a paid SLA, contact the
-maintainer to discuss a separate support agreement.
+A: Best-effort via `support@getregula.com` and GitHub Issues. Response
+time is not contractually guaranteed. For enterprises that need a
+paid SLA, email `support@getregula.com` to discuss a separate support
+agreement.
 
 **Q: How do we verify Regula's claims independently?**
 A: Run the commands in section 3 above. Read the patterns in
