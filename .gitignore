@@ -24,7 +24,16 @@ docs/site/
 references/*.pdf
 evidence-pack-*/
 .pytest_cache/
-.claude/
+# .claude/ — ignore local config (settings.local.json, handover.md, etc.)
+# but track agent and skill definitions, which are source of truth for
+# Claude Code subagents and slash commands in this repo.
+.claude/*
+!.claude/agents/
+!.claude/agents/**
+!.claude/skills/
+!.claude/skills/**
+# Scratch dir for ci-heal (fetched logs + per-run plan.json)
+.ci-heal/
 .playwright-cli/
 docs/superpowers/
 vscode-extension/node_modules/

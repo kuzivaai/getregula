@@ -1640,6 +1640,50 @@ def cmd_config(args):
         sys.exit(2)
 
 
+def cmd_handoff(args):
+    """Emit a red-team config file for Garak, Giskard, or Promptfoo,
+    scoped to the LLM entrypoints Regula detects in the project.
+
+    Regula does static analysis; runtime model behaviour testing is
+    complementary. This command positions Regula as a partner to those
+    tools, not a competitor.
+    """
+    from pathlib import Path as _Path
+    from handoff import run_handoff
+    result = run_handoff(args.tool, _Path(args.project),
+                         _Path(args.output) if args.output else None)
+    fmt = getattr(args, "format", "text")
+    if fmt == "json":
+        json_output("handoff", result)
+    else:
+        if "error" in result:
+            print(f"handoff: {result['error']}", file=sys.stderr)
+            sys.exit(2)
+        print(f"handoff ({result['tool']}): wrote {result['config_path']}")
+        print(f"  entrypoints detected: {result['entrypoint_count']}")
+        if result['entrypoint_count']:
+            print("  sample:")
+            for e in result['entrypoints'][:5]:
+                print(f"    {e['file']}:{e['line']} [{e['kind']}]")
+        print(f"\n{result['note']}")
+
+
+def cmd_regwatch(args):
+    """Warn when Regula's pattern ruleset is older than the most recent
+    regulatory change recorded in the delta log."""
+    from regwatch import run as _regwatch_run
+    result = _regwatch_run(getattr(args, "format", "text"))
+    fmt = getattr(args, "format", "text")
+    if fmt == "json":
+        json_output("regwatch", result)
+    else:
+        status = result.get("status", "unknown")
+        icon = {"up-to-date": "PASS", "stale": "WARN",
+                "warn": "INFO", "error": "FAIL"}.get(status, "?")
+        print(f"regwatch [{icon}]: {result.get('message', '')}")
+    sys.exit(int(result.get("exit_code", 0)))
+
+
 def cmd_oversight(args):
     """Article 14 human oversight analysis (cross-file)."""
     from cross_file_flow import analyse_project_oversight
@@ -2000,6 +2044,27 @@ def _build_subparsers(subparsers):
     p_metrics.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_metrics.add_argument("--reset", action="store_true", help="Clear all local metrics")
     p_metrics.set_defaults(func=cmd_metrics)
+
+    p_handoff = subparsers.add_parser(
+        "handoff",
+        help="Emit a red-team config for Garak, Giskard, or Promptfoo "
+             "scoped to the LLM entrypoints detected in this project",
+    )
+    p_handoff.add_argument("tool", choices=("garak", "giskard", "promptfoo"))
+    p_handoff.add_argument("project", nargs="?", default=".",
+                           help="Project directory to scan (default: .)")
+    p_handoff.add_argument("--output", "-o",
+                           help="Output file (default: <tool>.regula.yaml in project)")
+    p_handoff.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_handoff.set_defaults(func=cmd_handoff)
+
+    p_regwatch = subparsers.add_parser(
+        "regwatch",
+        help="Warn when Regula's pattern ruleset is older than the most "
+             "recent regulatory change recorded in the delta log",
+    )
+    p_regwatch.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_regwatch.set_defaults(func=cmd_regwatch)
 
     # --- security-self-check ---
     p_ssc = subparsers.add_parser("security-self-check", help="Verify regula's own source is clean")

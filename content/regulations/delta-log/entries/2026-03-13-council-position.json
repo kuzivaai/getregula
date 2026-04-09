@@ -1,0 +1,13 @@
+{
+  "id": "2026-03-13-council-position",
+  "date": "2026-03-13",
+  "type": "council-position",
+  "source_url": "https://www.consilium.europa.eu/en/press/press-releases/",
+  "source_title": "Council of the EU — general approach on the Digital Omnibus on AI",
+  "affected_articles": ["6", "13", "26", "43", "50", "113"],
+  "summary": "The Council of the European Union adopts its general approach on the Digital Omnibus on AI. Member State representatives agree on a negotiating position that broadly endorses the Commission proposal's deferral of high-risk AI system obligations, with targeted amendments on the scope of Article 6(3) and on Member State sandbox establishment timelines. The general approach opens the door to trilogue negotiations with the European Parliament.",
+  "mechanical_change": "Council general approach locked in. Negotiating mandate extends the Commission's deferral proposal and adds clarifications on regulatory sandbox timelines (Article 57) and on the classification of narrow procedural tasks (Article 6(3)). No direct amendments to Articles 9-15 obligations themselves.",
+  "confidence": "reported-unverified",
+  "verified_by": "Regula project — primary source URL is a Council press release aggregator; the specific press release for this file needs to be identified and linked before this entry is promoted to verified-primary",
+  "verified_on": "2026-04-09"
+}

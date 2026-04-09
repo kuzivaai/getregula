@@ -1,0 +1,13 @@
+{
+  "id": "2026-04-28-trilogue-target",
+  "date": "2026-04-28",
+  "type": "amendment-proposal",
+  "source_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+  "source_title": "Trilogue negotiations — Digital Omnibus on AI (target date)",
+  "affected_articles": ["6", "13", "26", "43", "50", "113"],
+  "summary": "Target date for the first trilogue meeting between Council, Parliament and Commission on the Digital Omnibus on AI. Not an adopted change — this entry tracks the calendar milestone so the Regula countdown and the FAQ copy can reflect the live state of negotiations. Once the trilogue outcome is known, this entry will be superseded by a `trilogue-outcome` entry with the specific compromise text.",
+  "mechanical_change": "No change yet — placeholder for the negotiation milestone.",
+  "confidence": "reported-unverified",
+  "verified_by": "Regula project — calendar milestone from legal-firm reporting; official confirmation pending",
+  "verified_on": "2026-04-09"
+}

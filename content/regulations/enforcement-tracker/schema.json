@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://getregula.com/content/regulations/enforcement-tracker/schema.json",
+  "title": "EU AI Act Enforcement Action",
+  "description": "A single enforcement action under Regulation (EU) 2024/1689. Parallel in structure to the CMS GDPR Enforcement Tracker. Entries cover fines, cease-and-desist orders, conformity assessment withdrawals, notified-body decisions, and court rulings.",
+  "type": "object",
+  "required": [
+    "id", "date", "authority", "respondent", "country",
+    "article_cited", "action_type", "source_url", "confidence"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}-[a-z0-9-]+$"
+    },
+    "date": { "type": "string", "format": "date" },
+    "authority": {
+      "type": "string",
+      "description": "National Competent Authority, Market Surveillance Authority, notified body, European AI Office, or court"
+    },
+    "respondent": {
+      "type": "string",
+      "description": "Entity subject to the action"
+    },
+    "country": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2"
+    },
+    "article_cited": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "administrative-fine",
+        "cease-and-desist",
+        "market-withdrawal",
+        "conformity-assessment-withdrawal",
+        "corrective-measure-order",
+        "court-ruling",
+        "warning-letter",
+        "investigation-opened"
+      ]
+    },
+    "fine_amount_eur": {
+      "type": ["number", "null"],
+      "description": "Fine amount in EUR if applicable"
+    },
+    "turnover_percentage": {
+      "type": ["number", "null"],
+      "description": "Fine expressed as percentage of global annual turnover"
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 1500
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "secondary_sources": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["verified-primary", "verified-secondary", "reported-unverified"]
+    },
+    "appeal_status": {
+      "type": "string",
+      "enum": ["not-appealed", "under-appeal", "appeal-rejected", "appeal-succeeded", "unknown"]
+    }
+  }
+}
