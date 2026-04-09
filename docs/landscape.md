@@ -1,6 +1,8 @@
 # Regula in the AI Governance Landscape
 
-This page maps Regula's actual capabilities against the gaps documented in the [UNESCO + Thomson Reuters Foundation AI Company Data Initiative (AICDI) 2025 Global Insights Report](https://www.unesco.org/en/articles/pioneering-report-thomson-reuters-foundation-and-unesco-sheds-light-way-3000-companies-approach-ai), published April 2026. The UNESCO press release describes the dataset as "almost 3,000 companies" / "approximately 3,000 companies". Data was collected between July and November 2025.
+This page maps Regula's actual capabilities against the gaps documented in the UNESCO + Thomson Reuters Foundation AI Company Data Initiative (AICDI) 2025 Global Insights Report — *Responsible AI in practice: 2025 global insights from the AI Company Data Initiative*, published 2026 (ISBN 978-92-3-100863-4, DOI [10.54678/YJWP8855](https://doi.org/10.54678/YJWP8855)). The initial AICDI target was 3,000 companies; the final analysed dataset is **2,972 companies across 11 GICS sectors and 7 regions** (p.24, p.26, p.27). Data was collected July–November 2025.
+
+All percentages below are quoted verbatim from the published PDF with page references. The PDF is available at <https://unesdoc.unesco.org/ark:/48223/pf0000397817_eng> — see `references/FETCH.md` for the file hash and local path.
 
 The point of this page is honesty. Regula is a static code scanner. It addresses some of the gaps the report measures. It does not address others — and we are explicit about which is which. The previous version of this section (in the README) listed competitor names without primary sources and was removed in commit `e013b9a`. This page replaces it with a per-gap mapping anchored to a published external study.
 
@@ -12,27 +14,28 @@ The point of this page is honesty. Regula is a static code scanner. It addresses
 
 ## Mapping
 
-Percentages below are quoted **only** where they appear verbatim in the UNESCO press release or the Policy Edge / Eco-Business / Digital Watch / Economy Middle East coverage. Figures not published in the press (e.g. model-registry %, complaints-mechanism %, board-oversight %) are shown as `—`.
-
-The full AICDI report PDF is referenced at [`unesdoc.unesco.org/ark:/48223/pf0000397817_eng`](https://unesdoc.unesco.org/ark:/48223/pf0000397817_eng) (title: *Responsible AI in practice: 2025 global insights from the AI Company Data Initiative*, powered by Thomson Reuters Foundation and grounded in the UNESCO Recommendation on the Ethics of AI). The `unesdoc.unesco.org` portal is gated behind Cloudflare Bot Protection and cannot be retrieved programmatically — it must be downloaded in a browser. When that is done, the `—` rows in the table below can be restored against page references.
-
-| AICDI gap | % of companies | Regula coverage | How |
-|---|---:|---|---|
-| Has an AI strategy | 44% | **No** | Regula is a code scanner, not a strategy framework. |
-| Publicly commits to a named governance framework | 10% | **Indirect** | Regula maps findings to 13 frameworks (EU AI Act, ISO 42001, NIST AI RMF, NIST AI 600-1 GenAI Profile, NIST CSF 2.0, SOC 2 TSC, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, CRA, ICO/DSIT, LGPD, Marco Legal IA). Adopting Regula doesn't make a company "publicly committed" — that's a board statement. But it operationalises adherence in code. See `references/framework_crosswalk.yaml`. |
-| Board / committee-level AI oversight | — | **No** | Governance structure, not a code property. |
-| Dedicated AI governance team | — | **No** | Org structure. |
-| Has policy ensuring human oversight of AI systems | 12% | **Partial** | `regula oversight` does cross-file Article 14 detection — traces AI model outputs through the codebase and flags whether a human-review function gates the output. This is *verification* of oversight in code. The *policy* itself is a written document. See `scripts/cross_file_flow.py`. |
-| Has a formal AI model registry | — | **Yes (narrow)** | `regula sbom --ai-bom` produces a CycloneDX 1.7 ML-BOM (`scripts/sbom.py`) with: detected ML model files, AI dependencies, GPAI tier annotations, and (since April 2026) GPAI Code of Practice signatory status for each detected vendor. This is a **technical** registry. Separately, `regula register` (added 2026-04-07, see `scripts/register.py`) generates Annex VIII Section A/B/C registration packets locally with auto-fill from existing scan artifacts and an explicit gap list — the EU database (Art. 71) is not user-writable, so a local artifact + dual-deadline annotation (2026-08-02 / 2027-12-02 Omnibus pending) is the credible CLI-side workflow. |
-| Has worker protection policies for AI | — | **No** | Organisational policy, not a code property. |
-| Offers AI training to employees | 30% offer any; 12% offer structured coverage | **No** | Training program, not a code scanner. |
-| Evaluates environmental impact | 11% | **No** | Regula has zero environmental scanning. Not in scope. The NIST AI 600-1 GenAI Profile flags this as a known cross-framework gap — see `references/framework_crosswalk.yaml`. |
-| Evaluates human rights impact | 7% | **Partial (narrow)** | `regula bias` checks for protected-class features in ML training data per Article 10(5) of the EU AI Act. That is one component of an HRIA. The wider HRIA (worker impact, downstream uses, vulnerable groups) is not in code. |
-| Conducts ethical impact assessments | — | **No** | Not in scope. |
-| Has a complaints mechanism for AI issues | — | **No** | Operational mechanism, not a code property. |
-| Conducts AI privacy / DPIA | fewer than 1 in 5 | **Partial** | `regula gap` scores DPIA-adjacent evidence under Article 10 data governance. |
-| Has policies on data-sharing with 3rd-party AI vendors | ~1 in 5 | **No** | Org policy. |
-| Has checked training data quality | ~25% have any evidence | **No** | Regula detects training data pipelines but does not audit their quality. |
+| AICDI gap | % of companies | Page | Regula coverage | How |
+|---|---:|---:|---|---|
+| Publicly communicates having an AI strategy | 43.7% | p.10 | **No** | Regula is a code scanner, not a strategy framework. |
+| Aligns strategy with a formal AI governance framework | 13% | p.10 | **Indirect** | Regula maps findings to 13 frameworks (EU AI Act, ISO 42001, NIST AI RMF, NIST AI 600-1 GenAI Profile, NIST CSF 2.0, SOC 2 TSC, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, CRA, ICO/DSIT, LGPD, Marco Legal IA). Of the 13% that align with a framework, 53% cite the EU AI Act — Regula's primary reference. See `references/framework_crosswalk.yaml`. |
+| Board- or committee-level AI oversight | 40% | p.10 | **No** | Governance structure, not a code property. |
+| Has an AI ethics committee | 3.8% | p.36 | **No** | Org structure. |
+| Has an AI safety and security taskforce | 2.5% | p.36 | **No** | Org structure. |
+| Has a policy ensuring human oversight of AI systems | 12.4% | p.10 | **Partial** | `regula oversight` does cross-file Article 14 detection — traces AI model outputs through the codebase and flags whether a human-review function gates the output. This is *verification* of oversight in code. The *policy* itself is a written document. See `scripts/cross_file_flow.py`. |
+| Publicly reports having a formal AI model registry | 2.7% | p.37 | **Yes (narrow)** | `regula sbom --ai-bom` produces a CycloneDX 1.7 ML-BOM (`scripts/sbom.py`) with detected ML model files, AI dependencies, GPAI tier annotations, and GPAI Code of Practice signatory status for each detected vendor. This is a **technical** registry. Separately, `regula register` generates Annex VIII Section A/B/C registration packets locally with auto-fill from existing scan artifacts and an explicit gap list. |
+| Can trace ethical impacts to a responsible person at each lifecycle stage | 15.4% | p.37 | **No** | Accountability mapping, not a code property. |
+| Has policies to mitigate negative impacts on workers | 14% | p.46 | **No** | Organisational policy, not a code property. |
+| Offers AI training programmes (any) | 31% | p.10 | **No** | Training programme, not a code scanner. |
+| Offers structured AI training with comprehensive coverage | 12% | p.10 | **No** | Training programme. |
+| Evaluates environmental impact | 11% | p.10 | **No** | Regula has zero environmental scanning. Not in scope. NIST AI 600-1 GenAI Profile flags this as a known cross-framework gap — see `references/framework_crosswalk.yaml`. |
+| Conducts Human Rights Impact Assessments | 7% | p.10 | **Partial (narrow)** | `regula bias` checks for protected-class features in ML training data per Article 10(5). That is one component of an HRIA. The wider HRIA (worker impact, downstream uses, vulnerable groups) is not in code. |
+| Conducts Ethical Impact Assessments | 5% | p.53 | **No** | Not in scope. |
+| Conducts Data Protection Impact Assessments (DPIA) | 18% | p.38 | **Partial** | `regula gap` scores DPIA-adjacent evidence under Article 10 data governance. |
+| Conducts Privacy Impact Assessments | 14% | p.38 | **Partial** | Same as DPIA row. |
+| Do not report conducting any impact assessment with regard to AI | 72% | p.10 | — | (headline gap) |
+| Has an internal complaints mechanism for AI-related employee concerns | 2.3% | p.47 | **No** | Operational mechanism, not a code property. (98% show no evidence.) |
+| Has policies governing data sharing with third-party AI providers (of those with AI strategies) | ~1 in 5 (≈20%) | p.59 | **No** | Org policy. |
+| Has evidence of policies to evaluate training-data quality | 24% (76% show no evidence) | p.10 | **No** | Regula detects training data pipelines but does not audit their quality. |
 
 ## What Regula adds beyond the AICDI gaps
 

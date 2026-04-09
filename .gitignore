@@ -18,6 +18,10 @@ venv/
 docs/*_annex_iv.md
 docs/tmp*_annex_iv.md
 docs/site/
+
+# Reference PDFs are fetched via references/FETCH.md (CC-licensed primary
+# sources kept out of git to keep the repo lean).
+references/*.pdf
 evidence-pack-*/
 .pytest_cache/
 .claude/
