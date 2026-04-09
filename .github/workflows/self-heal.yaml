@@ -1,0 +1,188 @@
+name: Self-heal CI
+# Triggered when the CI workflow fails. Spins up a Claude Code session with
+# the ci-healer subagent, which reads the failure plan, applies a minimal
+# fix, runs the verify sequence locally, and pushes a commit with a retry
+# trailer. Capped at 3 attempts per branch. Posts a PR summary comment.
+#
+# Requires:
+#   - secrets.ANTHROPIC_API_KEY       for the Claude Code action
+#   - secrets.GITHUB_TOKEN            (provided automatically) with
+#     contents:write + pull-requests:write permissions (set below)
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+
+jobs:
+  heal:
+    if: github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip if triggering commit is itself a self-heal
+        id: selfcheck
+        env:
+          HEAD_MSG: ${{ github.event.workflow_run.head_commit.message }}
+        run: |
+          if echo "$HEAD_MSG" | grep -q "Ci-Heal-Attempt:"; then
+            echo "is_self_heal=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::Triggering commit is already a self-heal commit — refusing to retry."
+          else
+            echo "is_self_heal=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout the failing commit's branch
+        if: steps.selfcheck.outputs.is_self_heal == 'false'
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 30
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Count prior heal attempts on this branch
+        if: steps.selfcheck.outputs.is_self_heal == 'false'
+        id: attempts
+        run: |
+          attempts=$(git log --max-count=20 --grep='^Ci-Heal-Attempt:' --format='%H' | wc -l | tr -d ' ')
+          echo "count=$attempts" >> "$GITHUB_OUTPUT"
+          next=$((attempts + 1))
+          echo "next=$next" >> "$GITHUB_OUTPUT"
+          echo "Prior attempts: $attempts / 3"
+          if [ "$attempts" -ge 3 ]; then
+            echo "capped=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "capped=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Cap reached — post comment and exit
+        if: steps.selfcheck.outputs.is_self_heal == 'false' && steps.attempts.outputs.capped == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pr=$(jq -r '.pull_requests[0].number // empty' <<< '${{ toJSON(github.event.workflow_run) }}')
+          if [ -n "$pr" ]; then
+            gh pr comment "$pr" --body "🚨 Self-heal cap reached (3/3 attempts). Human intervention required. See failing run: https://github.com/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}"
+          fi
+          echo "::warning::Self-heal cap reached on this branch"
+          exit 0
+
+      - name: Set up Python
+        if: steps.selfcheck.outputs.is_self_heal == 'false' && steps.attempts.outputs.capped == 'false'
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install verify deps
+        if: steps.selfcheck.outputs.is_self_heal == 'false' && steps.attempts.outputs.capped == 'false'
+        run: pip install pyyaml pytest
+
+      - name: Fetch failure logs and classify
+        if: steps.selfcheck.outputs.is_self_heal == 'false' && steps.attempts.outputs.capped == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p .ci-heal
+          python3 scripts/ci_heal.py fetch \
+            --run-id ${{ github.event.workflow_run.id }} \
+            --out .ci-heal/plan.json
+          cat .ci-heal/plan.json
+
+      - name: Abort early if plan is out of scope
+        if: steps.selfcheck.outputs.is_self_heal == 'false' && steps.attempts.outputs.capped == 'false'
+        id: scopecheck
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          out_of_scope=$(python3 -c "import json; print(json.load(open('.ci-heal/plan.json'))['out_of_scope'])")
+          echo "out_of_scope=$out_of_scope" >> "$GITHUB_OUTPUT"
+          if [ "$out_of_scope" = "True" ]; then
+            reason=$(python3 -c "import json; print(json.load(open('.ci-heal/plan.json'))['out_of_scope_reason'])")
+            pr=$(jq -r '.pull_requests[0].number // empty' <<< '${{ toJSON(github.event.workflow_run) }}')
+            if [ -n "$pr" ]; then
+              gh pr comment "$pr" --body "🚨 Self-heal **out of scope**: $reason. Attempt ${{ steps.attempts.outputs.next }}/3 not started. See: https://github.com/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}"
+            fi
+            echo "::warning::Plan is out of scope; skipping auto-fix"
+            exit 0
+          fi
+
+      - name: Run Claude Code — ci-healer subagent
+        if: steps.selfcheck.outputs.is_self_heal == 'false' && steps.attempts.outputs.capped == 'false' && steps.scopecheck.outputs.out_of_scope == 'False'
+        uses: anthropics/claude-code-base-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            You are running as the `ci-healer` subagent defined in
+            `.claude/agents/ci-healer.md`. Read that file first, then the
+            failure plan at `.ci-heal/plan.json`, and execute the playbook
+            for the failure type recorded there. This is attempt
+            ${{ steps.attempts.outputs.next }} of 3. Stay strictly within
+            the scope rules. If any hard rule would need to be broken,
+            abort by writing `.ci-heal/summary.md` with the abort template
+            and stopping — do not commit.
+          allowed_tools: "Read,Edit,Write,Grep,Glob,Bash"
+
+      - name: Verify fix locally
+        if: steps.selfcheck.outputs.is_self_heal == 'false' && steps.attempts.outputs.capped == 'false' && steps.scopecheck.outputs.out_of_scope == 'False'
+        id: verify
+        run: |
+          set +e
+          python3 tests/test_classification.py
+          t1=$?
+          python3 -m scripts.cli self-test
+          t2=$?
+          python3 -m scripts.cli doctor
+          t3=$?
+          python3 -m scripts.cli security-self-check
+          t4=$?
+          if [ $t1 -eq 0 ] && [ $t2 -eq 0 ] && [ $t3 -eq 0 ] && [ $t4 -eq 0 ]; then
+            echo "verify=pass" >> "$GITHUB_OUTPUT"
+          else
+            echo "verify=fail" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push fix
+        if: steps.selfcheck.outputs.is_self_heal == 'false' && steps.attempts.outputs.capped == 'false' && steps.scopecheck.outputs.out_of_scope == 'False' && steps.verify.outputs.verify == 'pass'
+        run: |
+          git config user.name "ci-healer[bot]"
+          git config user.email "ci-healer@users.noreply.github.com"
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No changes to commit — auto-fix produced nothing"
+            exit 0
+          fi
+          git add -A
+          git commit -m "fix(ci-heal): auto-fix CI failure (attempt ${{ steps.attempts.outputs.next }})
+
+          Triggered by: https://github.com/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}
+
+          Ci-Heal-Attempt: ${{ steps.attempts.outputs.next }}"
+          git push origin HEAD:${{ github.event.workflow_run.head_branch }}
+
+      - name: Post PR summary comment
+        if: always() && steps.selfcheck.outputs.is_self_heal == 'false' && steps.attempts.outputs.capped == 'false' && hashFiles('.ci-heal/summary.md') != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pr=$(jq -r '.pull_requests[0].number // empty' <<< '${{ toJSON(github.event.workflow_run) }}')
+          if [ -n "$pr" ]; then
+            gh pr comment "$pr" --body-file .ci-heal/summary.md
+          else
+            echo "::notice::Failing run is on a direct push, not a PR — summary written to .ci-heal/summary.md only"
+            cat .ci-heal/summary.md
+          fi
+
+      - name: Verify failed — abort with comment
+        if: steps.verify.outputs.verify == 'fail'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pr=$(jq -r '.pull_requests[0].number // empty' <<< '${{ toJSON(github.event.workflow_run) }}')
+          if [ -n "$pr" ]; then
+            gh pr comment "$pr" --body "🚨 Self-heal attempt ${{ steps.attempts.outputs.next }}/3 **could not verify locally**. No commit pushed. Human triage required. See failing run: https://github.com/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}"
+          fi
+          echo "::error::Local verify failed after auto-fix attempt; no commit pushed"
+          exit 1

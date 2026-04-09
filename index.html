@@ -97,7 +97,7 @@
                 "name": "Is Regula free?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes. Regula is open-source under the MIT licence. No account, no API key, no sales call. Install with pip install regula-ai and run it locally on your codebase. The full CLI, all 38 commands, all 330 risk patterns, and all 12 compliance framework mappings are free."
+                    "text": "Yes. Regula is open-source under the MIT licence. No account, no API key, no sales call. Install with pip install regula-ai and run it locally on your codebase. The full CLI, all 43 commands (including `regula handoff` for Garak/Giskard/Promptfoo scoping and `regula regwatch` for delta-log drift warnings), all 330 risk patterns, and all 12 compliance framework mappings are free."
                 }
             },
             {
@@ -1280,10 +1280,10 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
         <div class="cm"><code>regula evidence-pack .</code> <span>Bundle everything for an auditor</span></div>
         <div class="cm"><code>regula conform .</code> <span>Article 43 conformity assessment evidence &mdash; 26 files, article-mapped, SHA-256 hashed</span></div>
         <div class="cm"><code>regula oversight .</code> <span>Cross-file Article 14 analysis &mdash; traces AI output to user-facing endpoints, flags missing human review</span></div>
-        <div class="cm"><code>regula sbom --ai-bom .</code> <span>AI Bill of Materials &mdash; model provenance, GPAI tier annotations, dataset detection (CycloneDX 1.6)</span></div>
+        <div class="cm"><code>regula sbom --ai-bom .</code> <span>AI Bill of Materials &mdash; model provenance, GPAI tier annotations, dataset detection (CycloneDX 1.7)</span></div>
     </div>
     <p style="font-size:12px;color:#44445a;margin-top:14px;font-family:'JetBrains Mono',monospace;">
-        38 commands &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU Cyber Resilience Act, and 8 other frameworks.
+        43 commands &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU Cyber Resilience Act, and 8 other frameworks.
     </p>
 </div>
 
@@ -1302,7 +1302,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
         <div class="art-card">
             <div class="tag tag-purple">New</div>
             <h4>AI Bill of Materials</h4>
-            <p><code>regula sbom --ai-bom .</code> produces CycloneDX 1.6 AI-BOMs with model provenance extracted from your code, GPAI tier annotations per EU AI Act Art 51-55, and detected training datasets.</p>
+            <p><code>regula sbom --ai-bom .</code> produces CycloneDX 1.7 AI-BOMs with model provenance extracted from your code, GPAI tier annotations per EU AI Act Art 51-55, and detected training datasets.</p>
         </div>
         <div class="art-card">
             <div class="tag tag-purple">New</div>
@@ -1314,27 +1314,28 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 
 <div class="sep"></div>
 
-<!-- COST COMPARISON -->
+<!-- WHERE REGULA FITS -->
 <div class="sec reveal">
-    <div class="sec-head">Regula is free. Most alternatives are not.</div>
-    <p class="sec-sub">Open source, runs on your machine, no account required.</p>
+    <div class="sec-head">Where Regula fits in the market.</div>
+    <p class="sec-sub">A developer-side static scanner. One of several tools in the EU AI Act ecosystem — each solves a different part of the problem.</p>
     <div class="pricing-grid">
         <div class="price-card">
-            <div class="price-tier">Enterprise platforms</div>
-            <div class="price-amount">No published prices</div>
-            <p class="price-desc">Enterprise AI governance contracts. No published pricing — long sales cycles, dedicated implementation teams. Built for large compliance departments.</p>
+            <div class="price-tier">Governance SaaS</div>
+            <div class="price-amount">Contact sales</div>
+            <p class="price-desc">Credo AI, Saidot, Enzai, IBM watsonx.governance, Microsoft Purview. Evidence workflows, control libraries, continuous monitoring, legal-expert policy updates. Built for compliance departments, not developers. No published pricing.</p>
         </div>
         <div class="price-card">
-            <div class="price-tier">Mid-market tools</div>
-            <div class="price-amount">Typically &euro;10K+/year</div>
-            <p class="price-desc">Compliance platforms adding AI Act modules. Assumes you already have budget, a GRC workflow, and dedicated staff.</p>
+            <div class="price-tier">Runtime testing</div>
+            <div class="price-amount">Open source</div>
+            <p class="price-desc">Garak, Giskard, Promptfoo. Prompt-injection, jailbreak and bias red-teaming against running models. Complementary to Regula, not overlapping &mdash; they test behaviour, Regula reads code.</p>
         </div>
         <div class="price-card featured">
             <div class="price-tier price-featured-tier">Regula</div>
             <div class="price-amount price-featured-amount">Free &amp; open source</div>
-            <p class="price-desc">Runs on your laptop. No account, no API key, no sales call. <code>pip install regula-ai</code>, scan your project, get a clear answer. MIT licence.</p>
+            <p class="price-desc">Static code scanner. Runs on your laptop in one command. Stdlib-only Python core, zero production dependencies, fully offline. <code>pip install regula-ai</code>, scan your project, get a clear answer. MIT licence.</p>
         </div>
     </div>
+    <p class="sec-sub" style="margin-top:24px;font-size:13px;">Other open-source EU AI Act code scanners exist &mdash; notably <a href="https://airblackbox.ai/" rel="noopener">AIR Blackbox</a> (Python/pip, Apache 2.0, local, 39 checks across Articles 9/10/11/12/14/15), <a href="https://www.npmjs.com/package/@systima/comply" rel="noopener">Systima Comply</a> (TypeScript, AST-based), and <a href="https://github.com/ark-forge/mcp-eu-ai-act" rel="noopener">ark-forge mcp-eu-ai-act</a> (Python, hybrid). Pick the one whose language coverage and trade-offs fit your stack. Regula's niche is stdlib-only, zero production dependencies, and 8-language breadth.</p>
 </div>
 
 <!-- FINAL CTA -->

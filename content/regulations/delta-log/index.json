@@ -1,0 +1,93 @@
+{
+  "generated_at": "2026-04-09T20:34:27.717389+00:00",
+  "total_entries": 5,
+  "latest_date": "2026-04-28",
+  "types": [
+    "amendment-proposal",
+    "council-position",
+    "parliament-position",
+    "regulation-adoption"
+  ],
+  "entries": [
+    {
+      "id": "2026-04-28-trilogue-target",
+      "date": "2026-04-28",
+      "type": "amendment-proposal",
+      "affected_articles": [
+        "6",
+        "13",
+        "26",
+        "43",
+        "50",
+        "113"
+      ],
+      "summary": "Target date for the first trilogue meeting between Council, Parliament and Commission on the Digital Omnibus on AI. Not an adopted change \u2014 this entry tracks the calendar milestone so the Regula count",
+      "confidence": "reported-unverified",
+      "source_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+      "file": "entries/2026-04-28-trilogue-target.json"
+    },
+    {
+      "id": "2026-03-26-parliament-position",
+      "date": "2026-03-26",
+      "type": "parliament-position",
+      "affected_articles": [
+        "6",
+        "13",
+        "26",
+        "43",
+        "50",
+        "113"
+      ],
+      "summary": "The European Parliament adopts its first-reading position on the Digital Omnibus on AI. The vote establishes Parliament's negotiating mandate for trilogue. Parliament's position broadly supports the d",
+      "confidence": "reported-unverified",
+      "source_url": "https://www.europarl.europa.eu/news/en/press-room",
+      "file": "entries/2026-03-26-parliament-position.json"
+    },
+    {
+      "id": "2026-03-13-council-position",
+      "date": "2026-03-13",
+      "type": "council-position",
+      "affected_articles": [
+        "6",
+        "13",
+        "26",
+        "43",
+        "50",
+        "113"
+      ],
+      "summary": "The Council of the European Union adopts its general approach on the Digital Omnibus on AI. Member State representatives agree on a negotiating position that broadly endorses the Commission proposal's",
+      "confidence": "reported-unverified",
+      "source_url": "https://www.consilium.europa.eu/en/press/press-releases/",
+      "file": "entries/2026-03-13-council-position.json"
+    },
+    {
+      "id": "2025-11-19-digital-omnibus-proposal",
+      "date": "2025-11-19",
+      "type": "amendment-proposal",
+      "affected_articles": [
+        "6",
+        "13",
+        "26",
+        "43",
+        "50",
+        "113"
+      ],
+      "summary": "The European Commission publishes the Digital Omnibus on AI: a targeted simplification package proposing to defer the application dates for high-risk AI system obligations and to clarify transparency ",
+      "confidence": "verified-primary",
+      "source_url": "https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-simplification-package",
+      "file": "entries/2025-11-19-digital-omnibus-proposal.json"
+    },
+    {
+      "id": "2024-07-12-regulation-adopted",
+      "date": "2024-07-12",
+      "type": "regulation-adoption",
+      "affected_articles": [
+        "*"
+      ],
+      "summary": "The EU AI Act is published in the Official Journal of the European Union. Regulation (EU) 2024/1689 enters into force 20 days later (1 August 2024). Subsequent application dates are staggered: Article",
+      "confidence": "verified-primary",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+      "file": "entries/2024-07-12-regulation-adopted.json"
+    }
+  ]
+}

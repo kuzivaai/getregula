@@ -1,0 +1,34 @@
+# Regula is stdlib-only at runtime, so the surface area for Dependabot
+# is small by design. What it does watch:
+#
+#   - pyproject.toml dev dependencies (pytest, pyyaml — both dev-only)
+#   - GitHub Actions versions used in .github/workflows/
+#
+# The runtime package installs with zero production dependencies per
+# CLAUDE.md ("Zero production dependencies") and SECURITY.md. If a PR
+# ever introduces a runtime dependency, that is a deliberate policy
+# change and should be flagged explicitly.
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "dev-deps"
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 5
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "ci"
+    open-pull-requests-limit: 5

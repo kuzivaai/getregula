@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Regula — EU AI Act Regulatory Delta Log</title>
+    <link>https://getregula.com/content/regulations/delta-log/</link>
+    <description>Primary-source-linked changelog for the EU AI Act. Every entry is article-keyed and machine-readable.</description>
+    <language>en-GB</language>
+    <lastBuildDate>Thu, 09 Apr 2026 20:34:27 +0000</lastBuildDate>
+    <item>
+      <title>[amendment-proposal] Art. 6, Art. 13, Art. 26, Art. 43, Art. 50, Art. 113: Trilogue negotiations — Digital Omnibus on AI (target date)</title>
+      <link>https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai</link>
+      <guid isPermaLink="false">https://getregula.com/content/regulations/delta-log/entries/2026-04-28-trilogue-target.json</guid>
+      <pubDate>Tue, 28 Apr 2026 00:00:00 +0000</pubDate>
+      <description>Target date for the first trilogue meeting between Council, Parliament and Commission on the Digital Omnibus on AI. Not an adopted change — this entry tracks the calendar milestone so the Regula countdown and the FAQ copy can reflect the live state of negotiations. Once the trilogue outcome is known, this entry will be superseded by a `trilogue-outcome` entry with the specific compromise text. (confidence: reported-unverified)</description>
+    </item>
+    <item>
+      <title>[parliament-position] Art. 6, Art. 13, Art. 26, Art. 43, Art. 50, Art. 113: European Parliament — position on the Digital Omnibus on AI (first reading)</title>
+      <link>https://www.europarl.europa.eu/news/en/press-room</link>
+      <guid isPermaLink="false">https://getregula.com/content/regulations/delta-log/entries/2026-03-26-parliament-position.json</guid>
+      <pubDate>Thu, 26 Mar 2026 00:00:00 +0000</pubDate>
+      <description>The European Parliament adopts its first-reading position on the Digital Omnibus on AI. The vote establishes Parliament&apos;s negotiating mandate for trilogue. Parliament&apos;s position broadly supports the deferral but introduces amendments strengthening transparency requirements (Article 50) and narrowing the Article 6(3) narrow-procedural-task carve-out. (confidence: reported-unverified)</description>
+    </item>
+    <item>
+      <title>[council-position] Art. 6, Art. 13, Art. 26, Art. 43, Art. 50, Art. 113: Council of the EU — general approach on the Digital Omnibus on AI</title>
+      <link>https://www.consilium.europa.eu/en/press/press-releases/</link>
+      <guid isPermaLink="false">https://getregula.com/content/regulations/delta-log/entries/2026-03-13-council-position.json</guid>
+      <pubDate>Fri, 13 Mar 2026 00:00:00 +0000</pubDate>
+      <description>The Council of the European Union adopts its general approach on the Digital Omnibus on AI. Member State representatives agree on a negotiating position that broadly endorses the Commission proposal&apos;s deferral of high-risk AI system obligations, with targeted amendments on the scope of Article 6(3) and on Member State sandbox establishment timelines. The general approach opens the door to trilogue negotiations with the European Parliament. (confidence: reported-unverified)</description>
+    </item>
+    <item>
+      <title>[amendment-proposal] Art. 6, Art. 13, Art. 26, Art. 43, Art. 50, Art. 113: Digital Omnibus on AI — European Commission proposal for targeted amendments to </title>
+      <link>https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-simplification-package</link>
+      <guid isPermaLink="false">https://getregula.com/content/regulations/delta-log/entries/2025-11-19-digital-omnibus-proposal.json</guid>
+      <pubDate>Wed, 19 Nov 2025 00:00:00 +0000</pubDate>
+      <description>The European Commission publishes the Digital Omnibus on AI: a targeted simplification package proposing to defer the application dates for high-risk AI system obligations and to clarify transparency duties. The proposal shifts the Annex III high-risk deadline from 2 August 2026 to a later date (widely reported as 2 December 2027 in the proposal text), with further deferrals for systems placed on the market before the new application date. Procedural simplifications are proposed for SMEs and for conformity assessment steps. (confidence: verified-primary)</description>
+    </item>
+    <item>
+      <title>[regulation-adoption] all articles: Regulation (EU) 2024/1689 of the European Parliament and of the Council of 13 Ju</title>
+      <link>https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689</link>
+      <guid isPermaLink="false">https://getregula.com/content/regulations/delta-log/entries/2024-07-12-regulation-adopted.json</guid>
+      <pubDate>Fri, 12 Jul 2024 00:00:00 +0000</pubDate>
+      <description>The EU AI Act is published in the Official Journal of the European Union. Regulation (EU) 2024/1689 enters into force 20 days later (1 August 2024). Subsequent application dates are staggered: Article 5 prohibitions from 2 February 2025, General-Purpose AI rules from 2 August 2025, governance and penalty provisions from 2 August 2025, high-risk system obligations from 2 August 2026, and high-risk systems placed on the market before 2 August 2026 from 2 August 2027 (per Article 113). (confidence: verified-primary)</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,20 @@
+{
+  "id": "2025-11-19-digital-omnibus-proposal",
+  "date": "2025-11-19",
+  "type": "amendment-proposal",
+  "source_url": "https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-simplification-package",
+  "source_title": "Digital Omnibus on AI — European Commission proposal for targeted amendments to Regulation (EU) 2024/1689",
+  "affected_articles": ["6", "13", "26", "43", "50", "113"],
+  "summary": "The European Commission publishes the Digital Omnibus on AI: a targeted simplification package proposing to defer the application dates for high-risk AI system obligations and to clarify transparency duties. The proposal shifts the Annex III high-risk deadline from 2 August 2026 to a later date (widely reported as 2 December 2027 in the proposal text), with further deferrals for systems placed on the market before the new application date. Procedural simplifications are proposed for SMEs and for conformity assessment steps.",
+  "mechanical_change": "Proposed deferral: Annex III high-risk obligations from 2 August 2026 → 2 December 2027. Annex I high-risk systems: deferred into 2028. Proposed clarifications to Article 6(3) on narrow procedural tasks and to Article 50 transparency thresholds. Not yet adopted — requires Council + Parliament agreement through the ordinary legislative procedure.",
+  "impact_on_regula_patterns": [
+    {
+      "pattern_id": "high_risk_deadline",
+      "change": "reviewed-no-change",
+      "notes": "Regula's countdown continues to show both the original deadline and the proposed deferred deadline until the Omnibus is adopted."
+    }
+  ],
+  "confidence": "verified-primary",
+  "verified_by": "Regula project",
+  "verified_on": "2026-04-09"
+}
