@@ -79,7 +79,19 @@ When you write AI-related code, Regula:
 9. **Tracks** compliance status across registered AI systems
 10. **Produces** conformity assessment evidence packs (Article 43) with per-article readiness scoring
 11. **Traces** AI model outputs across files to detect human oversight gaps (Article 14)
-12. **Creates** AI Bills of Materials with model provenance and GPAI tier annotations (CycloneDX 1.6)
+12. **Creates** AI Bills of Materials with model provenance and GPAI tier annotations (CycloneDX 1.7)
+13. **Emits** scoped red-team configs for Garak, Giskard, and Promptfoo via `regula handoff` (complementary to runtime behaviour testing, not competitive)
+14. **Warns** when the installed ruleset is older than the most recent regulatory change via `regula regwatch`, reading the primary-source-linked [EU AI Act Delta Log](content/regulations/delta-log/)
+
+### Open data the project publishes
+
+Regula ships three open datasets so the compliance ecosystem can build on them rather than re-doing the work:
+
+- **[EU AI Act Regulatory Delta Log](content/regulations/delta-log/)** — primary-source-linked, article-keyed, machine-readable changelog of every EU AI Act change. RSS feed, JSON index. CC-BY-4.0.
+- **[Article 57 Sandbox Registry](content/regulations/sandbox-registry/)** — 27-Member-State tracker of national AI regulatory sandbox status. CC-BY-4.0.
+- **[Risk Pattern Corpus](data/patterns/)** — the 34 pattern groups that back Regula's detection engine, extracted as YAML with Article mappings. Citable. CC-BY-4.0.
+
+Plus the [EU AI Act Enforcement Tracker](content/regulations/enforcement-tracker/) skeleton, which will publish the first fine under Article 99 when one lands.
 
 ### Example: High-Risk Indicator
 
