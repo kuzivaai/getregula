@@ -19,6 +19,13 @@ Usage:
 import json
 import urllib.request
 import urllib.error
+
+
+def _require_http_url(url: str) -> None:
+    """Reject non-http(s) schemes before urlopen (bandit B310 / semgrep
+    dynamic-urllib guard)."""
+    if not isinstance(url, str) or not (url.startswith("http://") or url.startswith("https://")):
+        raise ValueError(f"Refusing non-http(s) URL: {url!r}")
 from pathlib import Path
 from typing import List, Dict
 
@@ -63,7 +70,8 @@ def load_crowspairs_sample(csv_path: str = None, max_pairs: int = 100) -> List[D
         "data/crows_pairs_anonymized.csv"
     )
     try:
-        with urllib.request.urlopen(url, timeout=10) as resp:
+        _require_http_url(url)
+        with urllib.request.urlopen(url, timeout=10) as resp:  # nosec B310  # nosemgrep: dynamic-urllib-use-detected — scheme validated by _require_http_url above
             content = resp.read().decode("utf-8")
         return _parse_csv_content(content, max_pairs)
     except (urllib.error.URLError, Exception):
@@ -158,13 +166,15 @@ def evaluate_with_ollama(
         }).encode("utf-8")
 
         try:
+            endpoint_url = f"{endpoint}/api/generate"
+            _require_http_url(endpoint_url)
             req = urllib.request.Request(
-                f"{endpoint}/api/generate",
+                endpoint_url,
                 data=payload,
                 headers={"Content-Type": "application/json"},
                 method="POST",
             )
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310  # nosemgrep: dynamic-urllib-use-detected — scheme validated by _require_http_url above
                 resp_data = json.loads(resp.read())
             answer = resp_data.get("response", "").strip().upper()
             preferred_a = answer.startswith("A")
