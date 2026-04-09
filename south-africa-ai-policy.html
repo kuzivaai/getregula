@@ -564,6 +564,8 @@
             .hero { padding: 56px 24px 32px; }
             .content { padding: 0 24px 60px; }
         }
+        .skip-link { position: absolute; left: -9999px; top: 0; background: #3b82f6; color: #fff; padding: 8px 16px; font-family: monospace; font-size: 12px; z-index: 1000; border-radius: 0 0 6px 0; text-decoration: none; }
+        .skip-link:focus { left: 0; }
     </style>
     <!-- Privacy-friendly analytics by Plausible -->
     <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
@@ -573,6 +575,7 @@
     </script>
 </head>
 <body>
+    <a href="#main" class="skip-link">Skip to content</a>
     <div id="progress-bar"></div>
 
     <nav class="nav">
@@ -636,7 +639,7 @@
         </div>
     </header>
 
-    <main class="content">
+    <main id="main" class="content">
 
         <section id="what-cabinet-approved">
             <h2>What Cabinet approved on 2 April 2026</h2>
