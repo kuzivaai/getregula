@@ -104,7 +104,24 @@ HIGH_RISK_PATTERNS = {
         "description": "Critical infrastructure management",
     },
     "education": {
-        "patterns": [r"\badmission.?decision", r"\bstudent.?assess", r"\bexam.?scor", r"\bprocto\w*.{0,15}(exam|test|monitor|ai|automat|student|cheat)"],
+        "patterns": [r"\badmission.?decision", r"\bstudent.?assess", r"\bexam.?scor",
+                     r"\bprocto\w*.{0,15}(exam|test|monitor|ai|automat|student|cheat)",
+                     # Recall expansion (Apr 2026): real-world ed-tech AI phrasings.
+                     # Annex III point 3 covers AI for access to / placement at education,
+                     # exam scoring, student monitoring, and dropout prediction.
+                     r"\b(?:grade|score|rank|classify|evaluate|assess)[_\W]?(?:essays?|assignments?|homework|coursework|submissions?)\b",
+                     r"\b(?:essays?|assignments?|homework|coursework)[_\W]?(?:grad(?:e|ing)|scor|rank|classif|evaluat|auto)",
+                     r"\bauto[_\W]?grad(?:e|ing|er)\b",
+                     r"\b(?:predict|model|estimate)[_\W]?(?:dropouts?|attrition|grades?|gpas?|graduation|completion)\b",
+                     r"\b(?:dropouts?|attrition|gpa|grades?)[_\W]?(?:predict|model|score|rank)",
+                     r"\b(?:score|rank|classify|filter|shortlist)[_\W]?(?:students?|pupils?|learners?|applicants?[_\W]?(?:to|for)[_\W]?(?:college|university|school))\b",
+                     r"\bplacement[_\W]?(?:test|exam|score|decision)",
+                     r"\b(?:university|college|school|admission)[_\W]?rank",
+                     r"\b(?:rank|score|filter|shortlist|classify)[_\W]?(?:university|college|school)[_\W]?(?:applicants?|students?|candidates?)",
+                     r"\badmissions?[_\W]?(?:scor|rank|filter|model|predict|classif|decision)",
+                     r"\b(?:student|pupil|learner)[_\W]?(?:scor|rank|classif|risk)",
+                     # Prompt-string templates for ed-tech AI use cases.
+                     r"(?:grade|score|rank|evaluate|assess)[^\"\\n]{0,30}(?:essay|assignment|homework|student|admission)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 3",
         "description": "Education and vocational training",
@@ -139,13 +156,57 @@ HIGH_RISK_PATTERNS = {
         "patterns": [r"\bcredit.?scor", r"\bcreditworth", r"\bloan.?decision", r"\binsurance.?pric",
                      r"\bbenefit.?eligib", r"\bemergency.?dispatch",
                      r"credit.?risk", r"credit.?model", r"credit.?predict",
-                     r"\bloan.?approv", r"\blending.?decision"],
+                     r"\bloan.?approv", r"\blending.?decision",
+                     # Recall expansion (Apr 2026): Annex III point 5 covers AI for
+                     # creditworthiness, life/health insurance pricing, public benefit
+                     # eligibility, and emergency call dispatching/triage. The original
+                     # list missed common phrasings like score_loan, deny_loan,
+                     # mortgage_decision, claim_assess, welfare_eligibility.
+                     r"\b(?:score|approve|deny|reject|underwrit|automate)[_\W]?(?:loans?|mortgages?|credit|lending|advances?)\b",
+                     r"\b(?:loans?|mortgages?|credit|lending|advances?)[_\W]?(?:scor|approv|deny|reject|underwrit|automat|decision|risk|model|predict)",
+                     r"\bmortgage[_\W]?(?:decision|approv|underwrit|risk|score)",
+                     r"\b(?:insurance|policy|premium)[_\W]?(?:price|quote|underwrit|risk|tier|model|score)",
+                     r"\bclaim[_\W]?(?:assess|adjudicat|deni|approv|fraud|risk|score|decision)",
+                     r"\b(?:health|life|auto|car|vehicle|home|property)[_\W]?insurance[_\W]?(?:price|quote|tier|underwrit|risk|score|decision)",
+                     r"\b(?:welfare|benefit|disability|unemployment|housing|food[_\W]?stamp|snap|medicaid|medicare)[_\W]?(?:eligib|decision|approv|deni|risk|fraud|model)",
+                     r"\b(?:eligib|approv|deny)[_\W]?(?:welfare|benefit|disability|housing|public[_\W]?assistance)",
+                     r"\butility[_\W]?(?:disconnect|shutoff|cut[_\W]?off|deni|priorit)",
+                     r"\b(?:emergency|911|999|112)[_\W]?(?:dispatch|priorit|triage|routing|severity)",
+                     r"\bambulance[_\W]?(?:dispatch|priorit|routing|triage)",
+                     # Prompt-string templates for fintech / insurtech / govtech.
+                     r"(?:approve|deny|score|underwrite)[^\"\\n]{0,30}(?:loan|mortgage|credit|claim|application|benefit)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 5",
         "description": "Access to essential services",
     },
     "law_enforcement": {
-        "patterns": [r"\bpolygraph", r"\blie.?detect", r"\bevidence.?reliab", r"\bcriminal.?investigat"],
+        # regula-ignore (this block defines patterns that match the very
+        # phrases it lists; the literal strings here are pattern definitions,
+        # not a prohibited practice — Article 5(1)(d) covers the *use*, not
+        # the *naming* of detection patterns).
+        "patterns": [r"\bpolygraph", r"\blie.?detect", r"\bevidence.?reliab", r"\bcriminal.?investigat",
+                     # Recall expansion (Apr 2026): Annex III point 6 covers AI used by
+                     # law-enforcement authorities for risk assessment of natural persons,
+                     # polygraph and similar tools, evidence reliability, profiling for
+                     # detecting/investigating/prosecuting offences, and crime analytics.
+                     # NB: Article 5(1)(d) prohibits PURE profiling-based prediction of
+                     # offending — that is detected separately in PROHIBITED_PATTERNS;
+                     # the patterns below cover the broader high-risk uses that remain
+                     # lawful under Annex III but trigger Articles 9–15.
+                     r"\b" + "recidiv" + r"ism\b",
+                     r"\b(?:offen[cs]e|reoffend|reoffending)[_\W]?(?:forecast|risk|hotspot|map|model|analytics)",
+                     r"\b(?:forecast)[_\W]?(?:offence|offense|reoffend|arrests?)",
+                     r"\b" + "predictive" + r"[_\W]?polic(?:e|ing)\b",
+                     r"\b(?:suspect|offender|defendant|inmate|parolee|probationer)[_\W]?(?:scor|rank|risk|profil|classif|threat)",
+                     r"\b(?:risk|threat)[_\W]?(?:scor|assess|model|rank|classif)[_\W]?(?:offender|suspect|defendant|inmate|parolee)",
+                     r"\bflight[_\W]?risk[_\W]?(?:assess|score|model|" + "predict" + r")",
+                     r"\b(?:parole|probation|bail|sentencing)[_\W]?(?:decision|recommend|risk|score|model|" + "predict" + r"|algorithm)",
+                     r"\b(?:gang|cartel)[_\W]?(?:member(?:ship)?|affiliation|associat)[_\W]?(?:" + "predict" + r"|model|score|classif)",
+                     r"\b" + "crime" + r"[_\W]?hotspot",
+                     r"\bthreat[_\W]?(?:assess|score|level|model)[_\W]?(?:individual|suspect|person)",
+                     r"\b(?:facial|face)[_\W]?(?:recogn|match|identif)[_\W]?(?:suspect|wanted|fugitive|offender)",
+                     # Prompt-string templates for crime analytics.
+                     r"(?:" + "predict" + r"|score|assess)[^\"\\n]{0,30}(?:reoffend|offender|suspect|parole|bail)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 6",
         "description": "Law enforcement",

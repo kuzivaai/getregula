@@ -281,6 +281,100 @@ def test_recall_realistic_employment_code():
     print("✓ Recall: realistic classify_resume code correctly flagged employment")
 
 
+# regula-ignore — the next three tests construct fixtures that look like
+# Annex III high-risk AI for verification purposes; they are test data,
+# not real practice.
+
+def test_recall_realistic_education_code():
+    """Regression (audit Apr 2026): realistic ed-tech AI code (essay grading,
+    dropout prediction, admissions ranking) was missed by the narrow
+    'admission_decision' / 'student_assess' / 'exam_score' / 'proctor' patterns.
+    Annex III point 3 covers AI used to determine access to education and
+    AI used to evaluate students."""
+    cases = [
+        ("import openai\n"
+         "def grade_essay(text):\n"
+         "    return openai.OpenAI().chat.completions.create(\n"
+         "        model='gpt-4',\n"
+         "        messages=[{'role':'user','content':f'Grade this essay: {text}'}]).choices[0].message.content\n",
+         "essay autograder"),
+        ("import sklearn.ensemble\n"
+         "def predict_dropout(student_features):\n"
+         "    return RandomForestClassifier().fit(X, y).predict_proba(student_features)\n",
+         "dropout predictor"),
+        ("import torch\n"
+         "def rank_university_applicants(applicant_pool):\n"
+         "    return sorted(applicant_pool, key=lambda a: model(a).item(), reverse=True)\n",
+         "admissions ranking"),
+    ]
+    for code, label in cases:
+        r = classify(code)
+        assert_eq(r.tier, RiskTier.HIGH_RISK, f"{label} should be high-risk")
+        assert_eq(r.category, "Annex III, Category 3", f"{label} education category")
+    print("✓ Recall: ed-tech AI (essay grading, dropout, admissions) correctly flagged")
+
+
+def test_recall_realistic_essential_services_code():
+    """Regression (audit Apr 2026): realistic fintech / insurtech / govtech AI
+    (loan approval, insurance pricing, welfare eligibility, claim assessment)
+    was missed by the narrow 'credit_score' / 'loan_decision' patterns.
+    Annex III point 5 covers creditworthiness, life/health insurance pricing,
+    access to public benefits, and emergency call dispatching."""
+    cases = [
+        ("import openai\n"
+         "def approve_loan(application):\n"
+         "    return openai.OpenAI().chat.completions.create(\n"
+         "        model='gpt-4',\n"
+         "        messages=[{'role':'user','content':f'Approve loan: {application}'}]).choices[0].message.content\n",
+         "loan approval"),
+        ("import sklearn\n"
+         "def health_insurance_pricing(profile):\n"
+         "    return premium_model.predict(profile)\n",
+         "health insurance pricing"),
+        ("import torch\n"
+         "def welfare_eligibility_score(applicant):\n"
+         "    return model(applicant)\n",
+         "welfare eligibility"),
+        ("import xgboost\n"
+         "def assess_claim(claim_data):\n"
+         "    return claim_assess_model.predict(claim_data)\n",
+         "claim assessment"),
+    ]
+    for code, label in cases:
+        r = classify(code)
+        assert_eq(r.tier, RiskTier.HIGH_RISK, f"{label} should be high-risk")
+        assert_eq(r.category, "Annex III, Category 5", f"{label} essential services category")
+    print("✓ Recall: fintech/insurtech/govtech AI correctly flagged essential services")
+
+
+def test_recall_realistic_law_enforcement_code():
+    """Regression (audit Apr 2026): realistic crime-analytics AI (parole risk,
+    bail risk, suspect threat scoring) was missed by the narrow 'polygraph'
+    / 'lie_detect' patterns. Annex III point 6 covers law-enforcement uses
+    that remain LAWFUL (with Articles 9-15 obligations) — distinct from the
+    Article 5(1)(d) prohibition handled by PROHIBITED_PATTERNS."""
+    cases = [
+        ("import torch\n"
+         "class ParoleModel:\n"
+         "    def parole_decision(self, inmate_data):\n"
+         "        return self.model.predict(inmate_data)\n",
+         "parole decision model"),
+        ("import sklearn\n"
+         "def bail_risk_assess(defendant):\n"
+         "    return rf.predict_proba(defendant)\n",
+         "bail risk assessment"),
+        ("import xgboost\n"
+         "def suspect_threat_score(person_features):\n"
+         "    return threat_model.predict(person_features)\n",
+         "suspect threat score"),
+    ]
+    for code, label in cases:
+        r = classify(code)
+        assert_eq(r.tier, RiskTier.HIGH_RISK, f"{label} should be high-risk")
+        assert_eq(r.category, "Annex III, Category 6", f"{label} law enforcement category")
+    print("✓ Recall: crime-analytics AI (parole, bail, threat) correctly flagged law enforcement")
+
+
 def test_high_risk_credit_scoring():
     """Credit scoring → HIGH-RISK"""
     r = classify("import torch; credit scoring model")
