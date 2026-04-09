@@ -205,11 +205,17 @@ def load_allowlist() -> list[re.Pattern[str]]:
 
 
 def strip_noise(text: str, suffix: str) -> str:
-    """Remove code fences, inline code, HTML script/style, HTML comments.
+    """Remove code fences, inline code, HTML script/style, HTML comments,
+    and historical CHANGELOG sections.
 
     Preserves newline counts so line numbers continue to map to the
     original file — each stripped region is replaced with the same number
     of newlines it originally contained.
+
+    Historical CHANGELOG sections under `## [X.Y.Z]` headings (but NOT
+    `[Unreleased]`) are skipped because they are release-note
+    self-descriptions verifiable via git history at the release commit
+    and should not be re-audited on every PR.
     """
     def _blank(m: re.Match[str]) -> str:
         return "\n" * m.group(0).count("\n")
@@ -222,6 +228,14 @@ def strip_noise(text: str, suffix: str) -> str:
     if suffix in (".md", ".markdown"):
         text = re.sub(r"```.*?```", _blank, text, flags=re.DOTALL)
         text = re.sub(r"`[^`]*`", lambda m: " " * len(m.group(0)), text)
+        # Skip historical release sections in Keep-a-Changelog files.
+        # Match from a `## [1.2.3]` heading (or any non-Unreleased
+        # bracketed version) up to the next `## ` heading at the same
+        # level or EOF. Preserves newlines.
+        text = re.sub(
+            r"(?ms)^##\s+\[(?!Unreleased\])[^\]]+\].*?(?=^##\s+\[|\Z)",
+            _blank, text,
+        )
     return text
 
 

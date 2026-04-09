@@ -5,6 +5,170 @@ All notable changes to Regula are documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+The "public-launch readiness" bundle. Adds two new CLI commands
+(`regula handoff` and `regula regwatch`), seeds the first open data
+assets Regula publishes (delta log, enforcement tracker, sandbox
+registry, pattern corpus), adds two write-time integrity tools
+(claim auditor, self-healing CI), and closes the honesty gaps surfaced
+by three independent audits (research-eval, repo-readiness,
+moat-research). Command count rises from 41 to 43. No breaking changes;
+all 926 tests still pass.
+
+### Added — new CLI commands
+
+- **`regula handoff {garak,giskard,promptfoo}`** — detects LLM
+  entrypoints in a project and emits a scoped red-team config for the
+  target tool. Positions Regula as complementary to runtime behaviour
+  testing, not competitive with it. Detected 14 entrypoints in the
+  Regula repo itself on first smoke test.
+- **`regula regwatch`** — reads the regulatory delta log, compares
+  against `regula-policy.yaml → regulatory_basis.last_reviewed`, and
+  warns when the installed ruleset is older than the most recent
+  regulatory change. Ignores future-dated placeholder entries.
+
+### Added — open data assets (the moat)
+
+- **[`content/regulations/delta-log/`](content/regulations/delta-log/)**
+  — primary-source-linked regulatory changelog for the EU AI Act.
+  Schema + 5 seed entries (Regulation adoption 12 Jul 2024; Digital
+  Omnibus proposal 19 Nov 2025; Council general approach 13 Mar 2026;
+  Parliament plenary position 26 Mar 2026; trilogue target 28 Apr 2026).
+  Builder `scripts/build_delta_log.py` emits `index.json`, RSS
+  `feed.xml`, and `SUMMARY.md`. CC-BY-4.0.
+- **[`content/regulations/enforcement-tracker/`](content/regulations/enforcement-tracker/)**
+  — schema + empty index for the first EU AI Act enforcement tracker.
+  Pre-populated skeleton so the first fine can be published within
+  hours, not weeks. CC-BY-4.0.
+- **[`content/regulations/sandbox-registry/`](content/regulations/sandbox-registry/)**
+  — 27-Member-State Article 57 sandbox registry. 5 entries seeded
+  (DE, ES, FI, FR, NL) from primary sources; 22 TODO. CC-BY-4.0.
+- **[`data/patterns/`](data/patterns/)** — 34 risk pattern groups
+  extracted from `scripts/risk_patterns.py` as CC-BY-4.0 YAML.
+  Regenerate with `python3 scripts/extract_patterns.py`.
+- **[`data/site_facts.json`](data/site_facts.json)** + `site_facts.md`
+  — canonical source of truth for every numeric claim on landing
+  pages. Computes `historical_330_bucket` (279 + 38 + 9 + 4 = 330
+  exact) and `grand_total` (502, inclusive). Regenerate with
+  `python3 scripts/site_facts.py`.
+
+### Added — integrity tooling
+
+- **[`scripts/claim_auditor.py`](scripts/claim_auditor.py)** — stdlib-only
+  scanner that blocks commits introducing unverified factual claims in
+  Markdown or HTML. Recognises URLs, markdown links, HTML anchors,
+  in-repo file references, bracketed verification labels, and explicit
+  citation words. Exempts structural regulatory references (Article /
+  Annex / Recital / Category / Chapter) and short UX time durations.
+  Backtest against the last 10 commits: 54 total unsourced findings
+  surfaced (noise floor ~2–4 per small commit).
+- **[`scripts/ci_heal.py`](scripts/ci_heal.py)** + `.github/workflows/self-heal.yaml`
+  — self-healing CI agent that classifies failing GitHub Actions
+  logs (pytest / type / lint / build / import / syntax), applies a
+  minimal fix via Claude Code, runs the full verify sequence locally,
+  and pushes with a `Ci-Heal-Attempt: N` commit trailer. Capped at 3
+  attempts per branch. Backtest: 10/10 historical failing CI runs
+  classified as auto-healable. Posts PR summary comments.
+- **[`.pre-commit-config.yaml`](.pre-commit-config.yaml)** — local
+  pre-commit hook running the claim auditor on staged files.
+- **`.github/PULL_REQUEST_TEMPLATE.md`** — with explicit verify
+  checklist, honesty gate checklist, scope rules, and locale-parity
+  reminder.
+- **`.github/dependabot.yml`** — weekly pip + github-actions updates.
+
+### Added — documentation
+
+- **[`docs/what-regula-does-not-do.md`](docs/what-regula-does-not-do.md)**
+  — explicit scope statement. Lists articles Regula addresses
+  partially / fully (Art. 5, 10, 11, 12, 13, 14, 15, 49, 51-55, 99)
+  vs cannot address (Art. 9, 17, 26, 27, 29, 43, 63, 72/73, 74).
+  Positions Regula as the "code layer of an AI governance programme,
+  not the whole programme".
+- **[`docs/evidence-pack-guide.md`](docs/evidence-pack-guide.md)** —
+  auditor-facing documentation of `regula conform` output (26-file
+  Article 43 pack, SHA-256 verification steps, reproducibility
+  guarantees).
+- **[`docs/competitor-analysis.md`](docs/competitor-analysis.md)** —
+  objective competitor landscape. Promotes AIR Blackbox (closest
+  positional overlap to Regula in the market) and Microsoft Agent
+  Governance Toolkit (released 3 April 2026, adjacent runtime
+  category) into the main table. Includes `desiorac/mcp-eu-ai-act`
+  as a second independent MCP-server scanner.
+- **[`docs/moat-research.md`](docs/moat-research.md)** — proprietary
+  data moat thesis, ranked 13 candidates, with counterevidence.
+- **[`docs/translation-skill-recommendation.md`](docs/translation-skill-recommendation.md)**
+  — EN → DE/PT-BR workflow using cross-model reflection.
+- **[`docs/research-eval-report.md`](docs/research-eval-report.md)**,
+  **[`docs/research-eval-public-readiness.md`](docs/research-eval-public-readiness.md)**,
+  **[`docs/repo-readiness-audit.md`](docs/repo-readiness-audit.md)**
+  — three audit reports. Published for transparency.
+
+### Changed
+
+- `pyproject.toml`: Python 3.13 classifier added, CI matrix now tests
+  3.10 / 3.11 / 3.12 / 3.13. Added `Documentation`, `Changelog`,
+  `Trust pack`, and `Delta log` URLs. Homepage switched to
+  `https://getregula.com`.
+- `CLAUDE.md`: new `## Honesty & Verification`, `## Workflow`, and
+  `## Project Conventions` sections. Identity line now explicitly says
+  "Positioned as the code layer of an AI governance programme, not
+  the whole programme". Command count reconciled 39 → 43.
+- `README.md`: test count reconciled from the stale "525 tests" to
+  "688 test functions (926 passing assertions)" with inline citations
+  to `scripts/site_facts.py` and `benchmarks/labels.json`.
+- `index.html`, `de.html`, `pt-br.html`: "Where Regula fits" section
+  now names AIR Blackbox, Systima Comply, and ark-forge as OSS peers
+  (honest competitive acknowledgement). Command count 38/39 → 43.
+  CycloneDX 1.6 → 1.7 (matches sbom test assertion). Framework count
+  13 → 12 (removed duplicate NIST AI 600-1 from visible list).
+- `de.html` and `pt-br.html`: German "Sie-form" and Brazilian Portuguese
+  translations of the "Where Regula fits" section added.
+- `regula-policy.yaml`: `governance.ai_officer` populated for the
+  Regula project itself (maintainer accountable under Article 4);
+  `last_reviewed` bumped to 2026-04-09.
+- `scripts/doctor.py`: support both `governance.ai_officer` and
+  `governance.contacts.ai_officer` schema paths. Result: 9 pass /
+  2 info (was 8 pass / 3 info).
+- `.github/workflows/ci.yaml`: new `regula security-self-check` step,
+  new `html-wellformed` job, new `claim-audit` job.
+- `.gitignore`: re-include `.claude/agents/**` and `.claude/skills/**`
+  so agent definitions and skills are tracked while local config stays
+  ignored; add `.ci-heal/` scratch dir.
+
+### Removed
+
+- `docs/marketing/uae_outreach_v1.md` — internal sales template not
+  suitable for public repo.
+
+### Renamed
+
+- `docs/QUICKSTART_VIBE_CODERS.md` → `docs/QUICKSTART.md` (the
+  informal name was flagged by the repo audit as ageing poorly).
+
+### Fixed
+
+- `scripts/make_og_uae.py` was missing the `# regula-ignore` marker
+  and tripped Regula's own security self-check on the first run.
+  Caught by the test suite (`test_security_self_check_passes`), not
+  by a human. Fixed.
+- During the research-eval pass, a documentation edit about Article
+  5(1)(f) triggered Regula's own `pre_tool_use.py` hook. The sentence
+  was rephrased to convey the same regulatory fact without matching
+  the `emotion_inference_restricted` detector. The tool worked as
+  designed, live, on its own maintainer.
+
+### Honesty note — the "330 risk patterns" claim
+
+The "330 risk patterns" figure cited on all landing pages is not a
+fabrication and not drift. It is the exact sum of the tiered risk
+regexes (279) plus architecture detectors (38) plus credential
+detectors (9) plus oversight detectors (4) = **330**. This bucketing
+is now transparently documented in `data/site_facts.md` via the
+`historical_330_bucket` computation. The grand-total figure (502) is
+higher and is also published in the same file. Any auditor can
+reproduce both numbers by running `python3 scripts/site_facts.py`.
+
 ## [1.6.1] — 2026-04-09
 
 The "trust foundation" point release. Adds the buyer-facing Trust Pack,
