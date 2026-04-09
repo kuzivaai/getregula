@@ -1,0 +1,41 @@
+$ pip install regula-ai
+Successfully installed regula-ai-1.6.0
+
+$ cat demo.py
+import openai
+def classify_resume(resume_text):
+    client = openai.OpenAI()
+    reply = client.chat.completions.create(
+        model='gpt-4',
+        messages=[{'role':'user','content':f'Score this resume: {resume_text}'}])
+    return reply.choices[0].message.content
+
+$ regula quickstart
+
+Regula Quickstart
+
+  Created: ./regula-policy.yaml
+
+  First scan complete (0.0s)
+  Files scanned:      1
+  BLOCK findings:     1
+  WARN findings:      0
+  INFO findings:      0
+
+  Top findings:
+    [BLOCK] [ 88] demo.py
+          Annex III, Category 4
+          Employment and workers management
+
+  Next steps:
+    1. Edit regula-policy.yaml — set your organisation name and AI officer
+    2. Run 'regula check .' to scan your project
+    3. Run 'regula doctor' to verify your setup
+    4. Review 1 BLOCK finding(s) — these would fail CI
+    5. Run 'regula install claude-code' to add pre-commit hooks
+    6. Run 'regula gap --project .' for compliance gap analysis
+
+$ regula classify --file demo.py
+HIGH-RISK: Employment and workers management - Articles 9, 10, 11, 12, 13, 14, 15
+
+# Done. pip install → categorised, article-cited finding in under 10 seconds.

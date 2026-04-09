@@ -1,0 +1,402 @@
+# Trust Pack — Regula
+
+> The 2026 B2B buyer's playbook is "Evidence Pack first, pitch deck never."
+> This document is Regula's Trust Pack: a single source of truth for the
+> questions a sceptical buyer, auditor, or compliance officer asks before
+> they will consider running it on their codebase.
+>
+> Every claim below is paired with the **exact shell command** anyone can
+> run to verify it independently. If a claim is not verifiable, it is not
+> in this document.
+
+---
+
+## Contents
+
+1. [Who built it and what is it](#1-who-built-it-and-what-is-it)
+2. [What Regula does (and does not) claim](#2-what-regula-does-and-does-not-claim)
+3. [Reproducibility — verify every published number](#3-reproducibility)
+4. [Tamper-evidence — verify the audit trail](#4-tamper-evidence)
+5. [Transparency — verify every finding](#5-transparency)
+6. [Independent verification — read the source](#6-independent-verification)
+7. [Security posture — what is hardened, what is not](#7-security-posture)
+8. [Privacy posture — what data Regula collects](#8-privacy-posture)
+9. [Vendor evaluation answers](#9-vendor-evaluation-answers)
+
+---
+
+## 1. Who built it and what is it
+
+Regula is an **open-source command-line tool** that scans source code for
+EU AI Act compliance signals at the point of creation. It is licensed
+under the MIT License. The full source is on GitHub at
+[github.com/kuzivaai/getregula](https://github.com/kuzivaai/getregula).
+PyPI package: [`regula-ai`](https://pypi.org/project/regula-ai/).
+
+It is **not a SaaS, not a hosted service, not an API**. It runs entirely
+on the developer's machine. No code, no findings, no telemetry leave the
+machine unless the user explicitly opts in to anonymous crash reporting.
+
+It is **not a legal opinion**, not a substitute for a Data Protection
+Impact Assessment, not a guarantee of Article 6(3) exemption, and not a
+vendor audit. Regula tells you what your code looks like under the EU
+AI Act's published rules. The legal interpretation of those signals is
+your lawyer's job, not Regula's.
+
+---
+
+## 2. What Regula does (and does not) claim
+
+| Claim | Evidence |
+|---|---|
+| Detects 8 prohibited AI practices (Article 5 of Regulation (EU) 2024/1689) | `regula classify --text "predictive policing system"` |
+| Detects 10 high-risk categories (Annex III + 2 Annex I categories cross-referenced by Article 6(1)) | `regula classify --text "classify_resume function"` |
+| Maps every finding to specific articles of the EU AI Act | `regula classify --text "credit scoring model" --format json` |
+| Maps every finding to ISO 42001, NIST AI RMF, NIST AI 600-1, NIST CSF 2.0, SOC 2 TSC, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, CRA, ICO/DSIT, LGPD, Marco Legal IA | `cat references/framework_crosswalk.yaml` |
+| Generates Annex IV conformity evidence packs | `regula conform .` |
+| Generates Annex VIII registration packets | `regula register` |
+| Cross-file Article 14 human-oversight detection (Python) | `regula oversight` |
+| CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
+| SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
+| 925 internal regression tests, 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
+
+| Claim Regula does **NOT** make | Why |
+|---|---|
+| "Compliant with the EU AI Act" | Compliance is a legal determination. Regula cannot make it. |
+| "100% precision" | Regula is intentionally tuned for recall on Annex III/Article 5. False positives at the INFO tier are documented and quantified — see [the precision/recall report](benchmarks/PRECISION_RECALL_2026_04.md). |
+| "Audits your AI vendor" | Regula sees your code, not the vendor's. It surfaces vendor names and their published GPAI Code of Practice signatory status, nothing more. |
+| "Replaces a DPIA / FRIA / HRIA" | These are organisational processes that involve people, policy, and stakeholder consultation. A static code scanner cannot perform them. |
+| "Works on every language" | Python and JS/TS have full AST + cross-file flow. Java/Go/Rust/C/C++ are regex-only. This is documented in [`docs/architecture.md`](architecture.md). |
+
+---
+
+## 3. Reproducibility
+
+> Every number Regula publishes can be reproduced by anyone with a checkout
+> of the repo. The commands below run in under 30 seconds total on a laptop.
+
+### 3.1 Internal test suite — 925 / 925 green
+
+```bash
+git clone https://github.com/kuzivaai/getregula.git
+cd getregula
+python3 tests/test_classification.py
+# Expected: Results: 925 passed, 0 failed (476 test functions)
+```
+
+This runs the custom auto-discovery runner. It walks `globals()` of
+`tests/test_classification.py`, finds every `test_*` function, and
+executes it. Outputs the precise pass/fail count.
+
+### 3.2 Self-tests — 6 / 6
+
+```bash
+python3 -m scripts.cli self-test
+# Expected: 6/6 passed
+```
+
+Six round-trip assertions covering: prohibited practice detection,
+high-risk classification, minimal-risk classification, credential
+detection, framework mapping, limited-risk classification.
+
+### 3.3 Doctor — environment health
+
+```bash
+python3 -m scripts.cli doctor
+# Expected: 8 passed, 3 info, 0 warn (on a clean install)
+```
+
+Lists every optional dependency, hook installation status, audit
+directory writability, and policy file presence. INFO entries for
+optional features are not warnings.
+
+### 3.4 Synthetic precision + recall — 100 / 100
+
+```bash
+python3 benchmarks/synthetic/run.py
+# Expected: precision 100% (5 TP, 0 FP), recall 100% (5 TP, 0 FN)
+```
+
+13 hand-crafted fixtures covering 5 Article 5 prohibited practices,
+5 Annex III high-risk categories, and 3 negative cases. The
+ground truth is the human-authored fixture set in
+`benchmarks/synthetic/fixtures/`.
+
+### 3.5 OSS precision benchmark — published, sliced, reproducible
+
+The full report is at
+[`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md).
+
+```bash
+python3 benchmarks/label.py score
+# Expected: precision 15.2% on 257 labelled findings across 5 OSS projects
+# Sliced by tier, project, and category in the report
+```
+
+The 15.2% headline is real and honest. The report breaks it down by
+display tier (BLOCK / WARN / INFO), by project, and by indicator
+category. **All 257 findings in the labelled corpus are at the INFO
+tier or below** — Regula's CI default tier is BLOCK, not INFO. The
+"Regula is noisy" claim from the headline applies to a tier that
+real users do not see in CI.
+
+### 3.6 Security posture — bandit, semgrep, pip-audit
+
+```bash
+pip install bandit semgrep pip-audit
+bandit -c pyproject.toml -r scripts/ hooks/
+# Expected: 0 low / 0 medium / 0 high
+semgrep --config p/security-audit --config p/python scripts/ hooks/
+# Expected: 0 findings (200 rules, 129 files)
+pip-audit
+# Expected: 0 vulnerabilities (zero runtime deps)
+```
+
+Bandit project config in `pyproject.toml [tool.bandit]` documents every
+project-level skip with rationale. Hard checks (B101 assert, B102 exec,
+B301 pickle, B501–B507 ssl/tls, B601–B602 shell injection, B608 sql
+injection) remain enabled.
+
+---
+
+## 4. Tamper-evidence
+
+Regula maintains a SHA-256 hash-chained audit log of every scan it runs
+on a developer's machine. This is the same construction used by
+RFC 6962 Certificate Transparency.
+
+```bash
+regula audit show           # human-readable view
+regula audit show --format json
+regula audit verify         # walks the chain, recomputes every hash
+# Expected: "Audit chain verified (N entries, no tampering detected)"
+```
+
+If a single byte of any past entry has been altered, `regula audit verify`
+will report the exact entry where the chain breaks. The user can verify
+this themselves by editing one character of `~/.regula/audit/*.jsonl` and
+re-running the verify command.
+
+### Optional: third-party RFC 3161 timestamping
+
+```bash
+regula audit anchor --tsa https://freetsa.org/tsr
+```
+
+This sends a SHA-256 of the current audit log head to a public RFC 3161
+Time Stamp Authority and stores the signed timestamp token. Anyone with
+the token can later prove the audit log existed in its current form at
+that time. Regula does not require trust in any specific TSA — the user
+sets `REGULA_TSA_URL` to the authority of their choice.
+
+---
+
+## 5. Transparency
+
+Every Regula finding is paired with:
+
+1. The article of the EU AI Act it maps to (e.g. Article 9, Article 14)
+2. The ISO 42001 control it relates to (e.g. A.6.3, A.6.6)
+3. The NIST AI RMF function (e.g. GOVERN, MAP, MEASURE, MANAGE)
+4. The exact pattern in `scripts/risk_patterns.py` that fired
+5. The exact `file:line` in the user's code
+
+```bash
+regula classify --text "classify_resume function" --format json
+# Returns the full structured envelope with all five fields above
+```
+
+There are no opaque ML scores. There are no "trust the model" outputs.
+Every finding is traceable to a specific regular expression in a
+specific file in the open-source repo. A reviewer can read the pattern
+and decide for themselves whether it is too broad or too narrow.
+
+---
+
+## 6. Independent verification
+
+| Resource | Where |
+|---|---|
+| Source code | <https://github.com/kuzivaai/getregula> |
+| PyPI package | <https://pypi.org/project/regula-ai/> |
+| Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
+| Test suite | `tests/test_classification.py` (925 tests) |
+| Pattern definitions | `scripts/risk_patterns.py` |
+| Framework mapping | `references/framework_crosswalk.yaml` |
+| Pre-commit hook source | `hooks/pre_tool_use.py` |
+| MCP server source | `scripts/mcp_server.py` |
+| Benchmark corpus | `benchmarks/labels.json` |
+| Primary research citations | `references/FETCH.md` |
+| Changelog | `CHANGELOG.md` |
+| Known gaps and limitations | `TODO.md` |
+
+The repository is intentionally legible. There are no compiled binaries,
+no obfuscated bytecode, no generated code committed without the
+generator. A reviewer can read every line of every file Regula will run
+on their machine.
+
+---
+
+## 7. Security posture
+
+### 7.1 What is hardened
+
+- **Zero runtime dependencies.** Regula's core only uses Python's
+  standard library. Optional features (YAML parsing, AST analysis, PDF
+  export) are explicit opt-ins via `pip install regula-ai[yaml,ast,pdf]`.
+  Verify with `pip show regula-ai`.
+- **Deterministic output.** Same input + same policy file produces
+  byte-identical JSON output. Verify by running `regula check --format
+  json` twice and `diff`-ing the results.
+- **Schema-versioned JSON envelope.** Every JSON command output includes
+  `format_version`, `regula_version`, `command`, `timestamp`, and
+  `exit_code` so machine consumers can detect schema drift.
+- **Hooks run in subprocess isolation.** The pre-commit hook is a
+  separate Python script and cannot affect the parent process state.
+- **No network calls in the core scanner.** `regula check` is fully
+  offline. Network calls are scoped to opt-in commands: `regula feed`
+  (governance news), `regula audit anchor` (RFC 3161 TSA), and
+  `regula bias --use-network` (Crows-Pairs dataset).
+- **All `urllib.urlopen` call sites enforce `http(s)` only.** The
+  `_require_http_url()` guard rejects `file://`, `ftp://`, `data://`
+  schemes before any network call. Verified by semgrep
+  `dynamic-urllib-use-detected` rule.
+- **XML feed parsing prefers `defusedxml`** when available, falls back
+  to `xml.etree` with a 10 MiB size cap to defuse XML-bomb vectors.
+- **Credential detection has tested heuristics.** See `tests/`
+  `test_classification.py::test_credentials_*` for the regression set.
+
+### 7.2 What is NOT hardened
+
+Honest list of things a buyer should ask about and what Regula's answer
+currently is:
+
+| Question | Answer |
+|---|---|
+| Do you have a SOC 2 Type II report? | No. Regula is an open-source CLI tool, not a hosted service. There is no Regula infrastructure to audit. The equivalent is the open-source code itself plus the bandit/semgrep/pip-audit clean state. |
+| Have you had a third-party penetration test? | No. The attack surface is the user's local machine + opt-in network calls listed above. The code is open for review. |
+| Do you have a CVE program? | Issues at <https://github.com/kuzivaai/getregula/issues> are the current channel. A formal `SECURITY.md` with private disclosure is on the roadmap. |
+| Do you sign releases with Sigstore? | Not yet. Releases are reproducible from source via `python3 -m build`. |
+| Do you have an SBOM for your own releases? | Yes — Regula generates one of itself: `regula sbom --ai-bom` from a checkout. |
+
+### 7.3 Reported vulnerabilities
+
+None as of the published version. Report security issues privately by
+opening a GitHub Security Advisory at
+<https://github.com/kuzivaai/getregula/security/advisories/new>.
+
+---
+
+## 8. Privacy posture
+
+### 8.1 What Regula collects from a user's machine
+
+**By default: nothing.** No telemetry, no usage stats, no error reports.
+
+`regula doctor` will report `Telemetry — disabled` on a fresh install.
+
+### 8.2 What Regula collects if telemetry is opted in
+
+If the user runs `regula telemetry enable`, AND the operator has set
+`_SENTRY_DSN` in `scripts/telemetry.py` to a Sentry endpoint of their
+choice, anonymous Python crash reports (stack trace + Regula version +
+OS string) will be sent to the configured DSN on uncaught exceptions.
+
+The published PyPI build has `_SENTRY_DSN = ""` (empty). This means
+**even if the user opts in, no data is sent unless they self-host a
+Sentry DSN.** This is by design: Regula is a tool for compliance teams,
+many of whom cannot legally exfiltrate any data to a third party.
+
+Verify with:
+
+```bash
+grep -n "_SENTRY_DSN" $(pip show regula-ai | grep Location | cut -d: -f2)/scripts/telemetry.py
+# Expected: _SENTRY_DSN = ""
+```
+
+### 8.3 What Regula sends over the network
+
+Only when the user explicitly invokes the relevant command:
+
+| Command | Endpoint | Data sent |
+|---|---|---|
+| `regula feed` | curated RSS/Atom feed URLs in `scripts/feed.py` (IAPP, EDPB, ICO, etc.) | HTTP GET only — no user data sent |
+| `regula audit anchor` | user-configured RFC 3161 TSA (default `freetsa.org`) | A SHA-256 hash of the local audit log head. The hash itself reveals nothing about the user's code. |
+| `regula bias --use-network` | `raw.githubusercontent.com/nyu-mll/crows-pairs/master/...` | HTTP GET only |
+
+`regula check`, `regula classify`, `regula gap`, `regula oversight`,
+`regula sbom`, `regula register`, `regula conform`, `regula doctor`, and
+the MCP server **make no network calls at all**. They run fully
+offline.
+
+---
+
+## 9. Vendor evaluation answers
+
+The questions a 2026 procurement team will ask, with copy-pasteable
+answers.
+
+**Q: What is the deployment model?**
+A: Local-only command-line tool. Installs via `pip install regula-ai`.
+No accounts, no servers, no SaaS tier exists.
+
+**Q: Where is data stored?**
+A: All scan output, audit logs, and conformity packs are written to
+the user's local filesystem under `~/.regula/` and the project
+directory. Nothing is uploaded.
+
+**Q: What is the licensing model?**
+A: MIT License. Commercial use, redistribution, and modification are
+permitted. There is no paid tier. The maintainer accepts sponsorships
+but does not gate features behind payment.
+
+**Q: How do you handle GDPR / DPA / SCCs?**
+A: Regula is a data processor only in the trivial sense that it
+processes the user's own source code on the user's own machine. No
+personal data leaves the user's environment. No DPA is required because
+no controller-processor relationship is established.
+
+**Q: What is the support model?**
+A: Best-effort via GitHub Issues. Response time is not contractually
+guaranteed. For enterprises that need a paid SLA, contact the
+maintainer to discuss a separate support agreement.
+
+**Q: How do we verify Regula's claims independently?**
+A: Run the commands in section 3 above. Read the patterns in
+`scripts/risk_patterns.py`. Read the framework mappings in
+`references/framework_crosswalk.yaml`. Read the test suite. Read the
+benchmark report. Cite the published methodology in your own internal
+audit.
+
+**Q: Who maintains the regulatory mapping?**
+A: A single maintainer at present. Every regulatory claim is paired
+with an article reference and a primary-source citation. The AICDI
+2025 figures cited in `docs/landscape.md` are page-cited against the
+published PDF (ISBN 978-92-3-100863-4, DOI 10.54678/YJWP8855); the
+`references/FETCH.md` file records the SHA-256 of the canonical PDF.
+
+**Q: What happens if you stop maintaining Regula?**
+A: The repository is open source under MIT. Anyone can fork it. The
+test suite is comprehensive enough that a competent maintainer can
+verify a fork. The pattern definitions are flat data files that
+anyone can update without touching the engine.
+
+---
+
+## Reading order for evaluators
+
+If you have **15 minutes**, run the commands in [§3](#3-reproducibility)
+and read [§2](#2-what-regula-does-and-does-not-claim).
+
+If you have **1 hour**, also read
+[`docs/landscape.md`](landscape.md) (the AICDI gap mapping) and
+[`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md)
+(the precision/recall report).
+
+If you have **half a day**, also read
+[`scripts/risk_patterns.py`](../scripts/risk_patterns.py),
+[`references/framework_crosswalk.yaml`](../references/framework_crosswalk.yaml),
+and [`docs/architecture.md`](architecture.md).
+
+If anything in this document is unclear, ambiguous, or unverifiable,
+that is a bug. Open an issue.

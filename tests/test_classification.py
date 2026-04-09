@@ -3141,28 +3141,56 @@ def test_cli_exit_codes():
 
 
 def test_graceful_degradation():
-    """Test check_optional utility for optional dependency messaging."""
+    """Test check_optional utility for optional dependency messaging.
+
+    As of v1.6.1 the nag is SILENT by default and only prints when
+    REGULA_VERBOSE=1 is set. This avoids spamming users with the same
+    optional-dependency note on every CLI invocation. Doctor still
+    surfaces the full status.
+    """
+    import os
     from degradation import check_optional, _warned
     _warned.clear()
     assert_true(check_optional("json", "JSON support", "pip install json") is True,
                 "check_optional returns True for available package")
+
+    # Default mode: SILENT on missing package.
     import io
     stderr_capture = io.StringIO()
     old_stderr = sys.stderr
+    old_verbose = os.environ.pop("REGULA_VERBOSE", None)
     sys.stderr = stderr_capture
     result = check_optional("nonexistent_package_xyz", "test feature", "pip install xyz")
     sys.stderr = old_stderr
     assert_true(result is False, "check_optional returns False for missing package")
-    assert_true("nonexistent_package_xyz" in stderr_capture.getvalue(),
-                "check_optional prints warning to stderr")
-    # Second call should not warn again
+    assert_true(stderr_capture.getvalue() == "",
+                "check_optional is silent by default (no REGULA_VERBOSE)")
+
+    # Verbose mode: prints once on first miss.
+    _warned.clear()
+    os.environ["REGULA_VERBOSE"] = "1"
     stderr_capture2 = io.StringIO()
     sys.stderr = stderr_capture2
-    check_optional("nonexistent_package_xyz", "test feature", "pip install xyz")
+    check_optional("nonexistent_package_xyz2", "test feature", "pip install xyz2")
     sys.stderr = old_stderr
-    assert_true(stderr_capture2.getvalue() == "", "Should not warn twice for same package")
+    assert_true("nonexistent_package_xyz2" in stderr_capture2.getvalue(),
+                "check_optional prints warning to stderr when REGULA_VERBOSE=1")
+
+    # Verbose mode: second call for the same package is silent.
+    stderr_capture3 = io.StringIO()
+    sys.stderr = stderr_capture3
+    check_optional("nonexistent_package_xyz2", "test feature", "pip install xyz2")
+    sys.stderr = old_stderr
+    assert_true(stderr_capture3.getvalue() == "",
+                "Should not warn twice for same package even in verbose mode")
+
+    # Restore env state.
+    if old_verbose is None:
+        os.environ.pop("REGULA_VERBOSE", None)
+    else:
+        os.environ["REGULA_VERBOSE"] = old_verbose
     _warned.clear()
-    print("✓ Graceful degradation: check_optional works correctly")
+    print("✓ Graceful degradation: silent default + REGULA_VERBOSE opt-in")
 
 
 def test_init_dry_run():
