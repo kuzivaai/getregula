@@ -357,24 +357,46 @@ _All P0 items closed in this session — see "Closed" section below._
 
 ## Closed in this session (post-v1.6.0)
 
-- ~~P0 #1 AICDI figures verification~~ — Cross-checked against 5 public
-  sources: UNESCO press release, Policy Edge, Digital Watch Observatory,
-  Eco-Business, and Economy Middle East. **Verified**: "approximately
-  3,000" / "almost 3,000" companies (all 5 sources agree); 44% AI
-  strategy; 10% publicly committed to a governance framework; 12% human
-  oversight policies; 11% environmental impact; 7% human rights impact;
-  30% offer any AI training, 12% offer structured coverage; fewer than
-  1 in 5 conduct AI-specific privacy/DPIA; ~1 in 5 have third-party
-  AI-vendor data-sharing policies; ~25% have training-data quality
-  evidence. **Not verifiable from public sources**: the precise
-  "2,972" headcount, "2.7%" formal model registry, "2.3%" complaints
-  mechanism, "40%" board oversight, "~33%" dedicated governance team,
-  "14%" worker protection, "5%" ethical impact assessment. The full
-  AICDI PDF is not published on `unesdoc.unesco.org`. All unverifiable
-  figures removed from `docs/landscape.md` and replaced with `—`. The
-  "2,972" headcount replaced with "approximately 3,000" in
-  `scripts/timeline.py`, `README.md`, `writing.html`. Closure follows
-  CLAUDE.md Research Integrity rules 2, 5, 6, 8.
+- ~~P0 #1 AICDI figures verification~~ — **FULLY CLOSED** against the
+  primary PDF. User downloaded the full AICDI report from unesdoc
+  (which is gated behind Cloudflare Bot Protection); Regula now cites
+  every figure with a page reference verified verbatim in the PDF.
+  All originally-quoted figures that had been softened in the earlier
+  two commits are now **restored to their precise values**:
+    - **2,972** companies (initial target 3,000; PDF p.24)
+    - **11** GICS sectors (p.27), **7** regions (p.26)
+    - **43.7%** publicly communicate an AI strategy (p.10)
+    - **13%** align with a formal governance framework, 53% of those
+      cite the EU AI Act (p.10)
+    - **40%** board/committee-level oversight (p.10)
+    - **12.4%** have a human-oversight policy (p.10)
+    - **2.7%** formal AI model registry (p.37)
+    - **15.4%** can trace ethical impacts to a responsible person (p.37)
+    - **3.8%** AI ethics committee; **2.5%** AI safety/security
+      taskforce (p.36)
+    - **31%** any AI training / **12%** structured (p.10)
+    - **14%** worker-protection policies (p.46)
+    - **11%** Environmental Impact Assessment (p.10)
+    - **7%** Human Rights Impact Assessment (p.10)
+    - **5%** Ethical Impact Assessment (p.53)
+    - **18%** Data Protection Impact Assessment (p.38)
+    - **14%** Privacy Impact Assessment (p.38)
+    - **72%** conduct NO impact assessment (p.10)
+    - **76%** no evidence of training-data quality policies (p.10)
+    - **2.3%** internal complaints mechanism (p.47)
+    - **~1 in 5** (of those with AI strategies) have third-party
+      data-sharing policies (p.59)
+  
+  PDF is at `references/aicdi_2025_global_insights.pdf` (gitignored,
+  7.8 MB, SHA-256 recorded in `references/FETCH.md`). ISBN
+  978-92-3-100863-4; DOI 10.54678/YJWP8855; CC-BY-SA 3.0 IGO.
+  
+  **Research-eval learning**: the earlier intermediate commit that
+  removed `2,972` and `2.7%` as "unverifiable" was an over-correction.
+  The figures were correct and in the primary source — they just were
+  not published in the press-release summary. The research-eval rule
+  to soften unverifiable claims was applied correctly; the deeper
+  verification against the PDF then restored them.
 - ~~P0 #2 Recall expansion for the 6 remaining Annex III categories~~ —
   biometrics, critical_infrastructure, migration, justice, medical_devices,
   and safety_components each expanded from 4–7 to 12–18 real-world
