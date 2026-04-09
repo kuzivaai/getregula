@@ -36,6 +36,81 @@
         "codeRepository": "https://github.com/kuzivaai/getregula"
     }
     </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": "https://getregula.com/og-image.png",
+        "description": "Open-source EU AI Act compliance CLI for developers.",
+        "sameAs": [
+            "https://github.com/kuzivaai/getregula",
+            "https://pypi.org/project/regula-ai/"
+        ],
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "support@getregula.com",
+            "contactType": "customer support"
+        }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Is my AI app prohibited under the EU AI Act?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Social scoring, subliminal manipulation, real-time facial recognition in public spaces, and emotion inference in workplaces are banned outright under Article 5. Regula scans your code for patterns that map to these prohibited uses."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Does the EU AI Act apply to my company if I'm outside the EU?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. Article 2(1)(c) applies extraterritorially. If your AI system's output is used in the EU, the regulation applies regardless of where your company is established. This covers UAE, UK, US, Brazil, and any non-EU provider or deployer."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What makes an AI system high-risk under the EU AI Act?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Annex III lists eight high-risk categories including credit scoring, hiring, medical diagnosis, education assessment, law enforcement, border control, essential services, and democratic process integrity. Regula identifies code patterns that match each category."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "When does the EU AI Act start being enforced?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Article 5 prohibitions took effect on 2 February 2025. GPAI obligations (Articles 53-55) took effect on 2 August 2025. High-risk obligations (Articles 9-15) take effect on 2 August 2026. A proposed Digital Omnibus may delay some Annex III deadlines to December 2027 but is not yet law."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is Regula free?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. Regula is open-source under the MIT licence. No account, no API key, no sales call. Install with pip install regula-ai and run it locally on your codebase. The full CLI, all 38 commands, all 330 risk patterns, and all 12 compliance framework mappings are free."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What are the fines under the EU AI Act?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Prohibited AI practices (Article 5) carry fines up to €35 million or 7% of global annual turnover, whichever is higher. High-risk violations carry fines up to €15 million or 3% of turnover. Non-compliance with information requirements carries fines up to €7.5 million or 1% of turnover."
+                }
+            }
+        ]
+    }
+    </script>
     <link rel="alternate" hreflang="en" href="https://getregula.com/">
     <link rel="alternate" hreflang="de" href="https://getregula.com/de.html">
     <link rel="alternate" hreflang="pt-BR" href="https://getregula.com/pt-br.html">
