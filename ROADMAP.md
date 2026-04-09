@@ -121,7 +121,7 @@ Documented for awareness only. Not planned. Regula is a static-analysis CLI; the
 - [x] Cross-file Article 14 human oversight analysis (`regula oversight`)
 - [x] Omnibus-aware deadline tagging per finding
 - [x] Timeline updated to April 2026 (trilogue, Transparency CoP)
-- [x] Text classification for all 10 Annex III categories
+- [x] Text classification for all 8 Annex III areas + 2 Annex I categories (medical devices, safety components)
 - [x] Security: YAML/JSON removed from doc bypass, MCP path validation, git ref validation
 - [x] SEO: JSON-LD structured data, og:image, sitemap update
 - [x] Landing page: removed 8 unverifiable claims, added new features
