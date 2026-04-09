@@ -556,7 +556,7 @@ def run_gpai_check(project_path: str | Path, systemic_risk: bool = False) -> dic
     obligations.extend(evaluate_copyright(pp, signals))
     obligations.extend(evaluate_safety_security(pp, signals, systemic_risk))
 
-    counts = {'PASS': 0, 'WARN': 0, 'FAIL': 0, 'N/A': 0}
+    counts = {'PASS': 0, 'WARN': 0, 'FAIL': 0, 'N/A': 0}  # nosec B105 — verdict counters, not credentials
     for o in obligations:
         counts[o['verdict']] = counts.get(o['verdict'], 0) + 1
 
@@ -594,7 +594,7 @@ def run_gpai_check(project_path: str | Path, systemic_risk: bool = False) -> dic
 # Text formatter
 # ---------------------------------------------------------------------------
 
-_VERDICT_TAG = {
+_VERDICT_TAG = {  # nosec B105 — display tags for console output, not credentials
     'PASS': '[PASS]',
     'WARN': '[WARN]',
     'FAIL': '[FAIL]',
