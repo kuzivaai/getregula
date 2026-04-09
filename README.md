@@ -140,12 +140,12 @@ Regula's design choices, stated on their own terms:
 
 ### How Regula maps to the AICDI corporate AI governance gaps
 
-The 2026 [UNESCO + Thomson Reuters Foundation AI Company Data Initiative (AICDI) report](https://www.unesco.org/en/articles/pioneering-report-thomson-reuters-foundation-and-unesco-sheds-light-way-3000-companies-approach-ai) measured 2,972 global companies across 11 sectors (the UNESCO press release rounds this to "3,000") and found large gaps between AI adoption and AI governance. Regula addresses some of those gaps directly, others partially, and many not at all.
+The 2026 [UNESCO + Thomson Reuters Foundation AI Company Data Initiative (AICDI) report](https://www.unesco.org/en/articles/pioneering-report-thomson-reuters-foundation-and-unesco-sheds-light-way-3000-companies-approach-ai) measured approximately 3,000 global companies across 11 sectors (UNESCO press release wording) and found large gaps between AI adoption and AI governance. Regula addresses some of those gaps directly, others partially, and many not at all.
 
-For an honest, gap-by-gap mapping with citations and explicit out-of-scope items, see [`docs/landscape.md`](docs/landscape.md). Headline:
+For an honest, gap-by-gap mapping with citations and explicit out-of-scope items, see [`docs/landscape.md`](docs/landscape.md). Headline (UNESCO press release figures only; finer-grained AICDI breakdowns require the full PDF and are not quoted here):
 
-- **Yes, addressed by Regula:** technical AI model registry (only 12% of surveyed companies had a formal AI model registry per the AICDI report — Regula's `discover` + `inventory` + audit registry give that capability to any team in one command), Article 14 human-oversight verification (only 12% of surveyed companies had human oversight policies — Regula's cross-file flow analysis surfaces oversight gaps automatically), Article 9–15 conformity evidence pack, GPAI Code of Practice signatory annotation on detected vendors.
-- **No, not addressed by Regula:** AI strategy adoption (44%), board oversight (40%), worker protection policies (14%), AI training programmes (31%), environmental impact assessments (11%), ethical impact assessments (5%), complaints mechanisms (2.3%). These are organisational and human-process gaps that no static code scanner can fix.
+- **Yes, addressed by Regula:** technical AI model registry (Regula's `discover` + `inventory` + audit registry give that capability to any team in one command), Article 14 human-oversight verification (only **12%** of surveyed companies had human oversight policies per the UNESCO press release — Regula's cross-file flow analysis surfaces oversight gaps automatically), Article 9–15 conformity evidence pack, GPAI Code of Practice signatory annotation on detected vendors.
+- **No, not addressed by Regula:** AI strategy adoption (44%), governance framework commitment (10%), environmental impact assessments (11%), human rights impact assessments (7%), board oversight, worker protection policies, training programmes, ethical impact assessments, complaints mechanisms. These are organisational and human-process gaps that no static code scanner can fix.
 
 ---
 

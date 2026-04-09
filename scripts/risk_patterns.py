@@ -92,13 +92,58 @@ PROHIBITED_PATTERNS = {
 
 HIGH_RISK_PATTERNS = {
     "biometrics": {
-        "patterns": [r"\bbiometric.?ident", r"\bfac(?:ial|e)\s*[\W_]?recogn", r"\bfingerprint\s*[\W_]?recogn", r"\bvoice\s*[\W_]?recogn"],
+        # regula-ignore (pattern definitions, not practice).
+        # Recall expansion (Apr 2026): Annex III point 1 covers biometric
+        # identification, categorisation of natural persons, and biometric
+        # verification. Article 5(1)(g) prohibits untargeted facial scraping
+        # and Article 5(1)(h) restricts real-time remote biometric identification
+        # in publicly accessible spaces — those are handled in PROHIBITED_PATTERNS.
+        # The high-risk patterns below cover the broader LAWFUL biometric uses
+        # that still require Articles 9–15 compliance.
+        "patterns": [r"\bbiometric.?ident", r"\bfac(?:ial|e)\s*[\W_]?recogn",
+                     r"\bfingerprint\s*[\W_]?recogn", r"\bvoice\s*[\W_]?recogn",
+                     r"\biris\s*[\W_]?(?:recogn|scan|match|identif)",
+                     r"\bretina\s*[\W_]?(?:scan|recogn)",
+                     r"\bpalm\s*[\W_]?(?:print|recogn|scan)",
+                     r"\bgait\s*[\W_]?(?:recogn|analysis|identif)",
+                     r"\b(?:face|voice|fingerprint|iris)[_\W]?(?:match|verif|compar|enrol|template)",
+                     r"\b(?:identify|recognise|recognize|verify|match|enrol)[_\W]?(?:face|faces|person|people|identity)\b",
+                     r"\bbiometric[_\W]?(?:categoris|categoriz|classif|template|verif|match|enrol)",
+                     r"\b(?:detect|infer|classify|predict)[_\W]?(?:age|gender|ethnicity|race)[_\W]?from[_\W]?(?:face|image|photo|voice)",
+                     r"\b(?:speaker|voice)[_\W]?(?:identif|verif|recogn|diariz)",
+                     r"\bface[_\W]?embed(?:ding)?",
+                     # Prompt-string templates.
+                     r"(?:identify|match|recognise|recognize|verify)[^\"\\n]{0,30}(?:face|person|identity|suspect)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 1",
         "description": "Biometric identification and categorisation",
     },
     "critical_infrastructure": {
-        "patterns": [r"\benergy.?grid", r"\bwater.?supply", r"\btraffic.?control", r"\belectricity.?manage"],
+        # Recall expansion (Apr 2026): Annex III point 2 covers safety
+        # components in the management and operation of critical digital
+        # infrastructure, road traffic, and the supply of water, gas,
+        # heating, or electricity. The original 4-pattern list missed
+        # common phrasings like grid_load_forecast, substation_control,
+        # scada, pipeline_pressure, railway_signalling, power_dispatch.
+        # Guarded to require infrastructure context so ordinary "traffic"
+        # (web traffic) and "grid" (CSS grid) do not false-positive.
+        "patterns": [r"\benergy.?grid", r"\bwater.?supply", r"\btraffic.?control",
+                     r"\belectricity.?manage",
+                     r"\b(?:power|electricity|energy|electric)[_\W]?(?:grid|dispatch|load|demand|forecast|balanc|outage|substation|transmission|distribution)",
+                     r"\b(?:grid|substation|transformer|feeder)[_\W]?(?:load|forecast|predict|balanc|fault|dispatch|stabil)",
+                     r"\b(?:gas|natural[_\W]?gas|pipeline)[_\W]?(?:pressure|flow|leak|monitor|dispatch|scada|control)",
+                     r"\b(?:water|wastewater|sewage)[_\W]?(?:treatment|supply|distribution|scada|leak|flow|quality|contamin)",
+                     r"\b(?:district[_\W]?)?heating[_\W]?(?:grid|supply|control|manage|dispatch)",
+                     r"\bscada\b", r"\bplc[_\W]?(?:control|automat)", r"\bics[_\W]?(?:control|automat|security)",
+                     r"\b(?:nuclear|reactor)[_\W]?(?:control|safety|monitor|scada)",
+                     r"\brailway[_\W]?(?:signal|control|dispatch|interlock|track|switching)",
+                     r"\b(?:metro|subway|tram)[_\W]?(?:signal|dispatch|control)",
+                     r"\b(?:air[_\W]?traffic|atc|atm)[_\W]?(?:control|manage|dispatch|safety|conflict)",
+                     r"\b(?:maritime|vessel|port)[_\W]?traffic[_\W]?(?:control|manage|dispatch)",
+                     r"\broad[_\W]?traffic[_\W]?(?:control|signal|light|management|flow|dispatch)",
+                     r"\btraffic[_\W]?(?:signal|light|flow|congestion)[_\W]?(?:control|manage|optim|predict|ai)",
+                     # Prompt-string templates.
+                     r"(?:control|manage|dispatch|forecast)[^\"\\n]{0,30}(?:grid|substation|pipeline|scada|reactor|railway|air[_\W]?traffic)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 2",
         "description": "Critical infrastructure management",
@@ -212,26 +257,110 @@ HIGH_RISK_PATTERNS = {
         "description": "Law enforcement",
     },
     "migration": {
-        "patterns": [r"\bborder.?control", r"\bvisa.?application", r"\basylum.?application", r"\bimmigration.?decision"],
+        # Recall expansion (Apr 2026): Annex III point 7 covers AI used by
+        # or on behalf of competent public authorities in migration, asylum
+        # and border control — risk assessment of persons entering, examining
+        # applications for asylum/visa/residence, detecting/recognising/
+        # identifying persons in a border context. CAUTION: "migration" on its
+        # own matches database migrations, so we require immigration/border/
+        # visa/asylum/refugee context on every pattern.
+        "patterns": [r"\bborder.?control", r"\bvisa.?application", r"\basylum.?application",
+                     r"\bimmigration.?decision",
+                     r"\b(?:visa|residence[_\W]?permit|work[_\W]?permit)[_\W]?(?:risk|scor|approv|deni|reject|decision|classif|predict|assess)",
+                     r"\b(?:approve|deny|reject|score|assess|decide)[_\W]?(?:visa|asylum|refugee|immigration|residence[_\W]?permit|work[_\W]?permit)",
+                     r"\basylum[_\W]?(?:risk|scor|decision|classif|triage|eligib|predict|credibility)",
+                     r"\brefugee[_\W]?(?:status|risk|scor|decision|classif|triage|eligib)",
+                     r"\b(?:migrant|asylum[_\W]?seeker|refugee|applicant)[_\W]?(?:risk|scor|classif|profil|threat|fraud)",
+                     r"\bimmigration[_\W]?(?:risk|scor|enforce|fraud|detect|classif)",
+                     r"\bborder[_\W]?(?:screen|risk|threat|profil|identif|surveillance|scor)",
+                     r"\b(?:frontex|e-?gate|iborder|smart[_\W]?border)",
+                     r"\bentry[_\W]?(?:risk|decision|classif|scor)[_\W]?(?:border|immigration|frontier)",
+                     r"\bpassport[_\W]?(?:verif|authent|fraud|match|recogn)",
+                     # Prompt-string templates.
+                     r"(?:approve|deny|score|assess)[^\"\\n]{0,30}(?:visa|asylum|refugee|immigration|border)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 7",
         "description": "Migration, asylum, and border control",
     },
     "justice": {
-        "patterns": [r"\bjudicial.?decision", r"\bcourt.?rul", r"\bsentenc(ing|e\.?)\W{0,5}(recommend|decision|guidelines|court|judge|judicial|legal|verdict|criminal|prison|convict|parole|probation)", r"\belection.?influence"],
+        # Recall expansion (Apr 2026): Annex III point 8 covers AI used by
+        # or on behalf of a judicial authority to assist in researching and
+        # interpreting facts/law and in applying the law to concrete facts,
+        # as well as AI used to influence the outcome of an election or
+        # referendum or the voting behaviour of natural persons (exclusive
+        # of tools organising/optimising political campaigns administratively).
+        "patterns": [r"\bjudicial.?decision", r"\bcourt.?rul",
+                     r"\bsentenc(ing|e\.?)\W{0,5}(recommend|decision|guidelines|court|judge|judicial|legal|verdict|criminal|prison|convict|parole|probation)",
+                     r"\belection.?influence",
+                     r"\b(?:judge|judicial|court)[_\W]?(?:ai|assistant|recommend|decision|predict|automat)",
+                     r"\b(?:verdict|ruling|judgement|judgment)[_\W]?(?:predict|recommend|draft|score|classif)",
+                     r"\b(?:case|claim|dispute|lawsuit)[_\W]?(?:outcome|predict|score|classif|triage|recommend)",
+                     r"\b(?:legal|statute|precedent)[_\W]?(?:search|retriev|interpret|classif|recommend)[_\W]?(?:ai|automat|model)",
+                     r"\b(?:predict|forecast|recommend)[_\W]?(?:sentence|verdict|ruling|judgment|judgement|settlement)",
+                     r"\b(?:voter|electorate|constituent)[_\W]?(?:target|profil|micro[_\W]?target|influenc|persuad|predict)",
+                     r"\belection[_\W]?(?:target|micro[_\W]?target|influenc|manipul|profil|predict)",
+                     r"\b(?:campaign|political)[_\W]?(?:micro[_\W]?target|profil|influenc|manipul)[_\W]?(?:voter|user|person)",
+                     r"\b(?:referendum|ballot|electoral)[_\W]?(?:influenc|manipul|target|profil)",
+                     # Prompt-string templates.
+                     r"(?:predict|recommend|draft|score)[^\"\\n]{0,30}(?:verdict|sentence|judgment|ruling|case[_\W]outcome)",
+                     r"(?:target|profile|influence)[^\"\\n]{0,30}(?:voter|election|electorate|referendum)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 8",
         "description": "Justice and democratic processes",
     },
     "medical_devices": {
-        "patterns": [r"\bmedical.?diagnos", r"\bclinical.?decision", r"\btreatment.?recommend", r"\bpatient.?triage"],
+        # Recall expansion (Apr 2026): EU AI Act Article 6(1) cross-references
+        # Annex I Section A (medical devices under Regulation (EU) 2017/745 MDR
+        # and in-vitro diagnostics under 2017/746 IVDR). AI used as or in a
+        # medical device is high-risk. Common phrasings missed by the original
+        # list: radiology/pathology AI, ECG/EEG classifiers, drug dosing,
+        # patient deterioration prediction, tumour/lesion detection, clinical
+        # risk scores, AI-driven prior-authorisation.
+        "patterns": [r"\bmedical.?diagnos", r"\bclinical.?decision", r"\btreatment.?recommend",
+                     r"\bpatient.?triage",
+                     r"\b(?:detect|classify|segment|diagnose|predict)[_\W]?(?:tumor|tumour|lesion|cancer|malignan|nodule|polyp|stroke|aneurysm|fracture)",
+                     r"\b(?:radiology|radiograph|ct[_\W]?scan|mri|x[_\W]?ray|ultrasound|mammogram|ecg|ekg|eeg|pathology|histolog|dermatology|retinal|fundus)[_\W]?(?:ai|classif|detect|diagnos|segment|scor|interpret|automat)",
+                     r"\b(?:ai|model|neural|deep)[_\W]?(?:radiology|pathology|dermatology|cardiology|ophthalmology)",
+                     r"\b(?:sepsis|deterioration|readmission|mortality|icu|length[_\W]?of[_\W]?stay)[_\W]?(?:predict|scor|risk|model|classif|early[_\W]?warning)",
+                     r"\b(?:patient|clinical)[_\W]?(?:risk|scor|deterior|outcome|mortality|readmission)[_\W]?(?:predict|model|classif|scor)",
+                     r"\b(?:drug|dose|dosage|insulin|anticoagulant|chemotherapy)[_\W]?(?:dos|titrat|recommend|adjust)[_\W]?(?:ai|model|automat|predict)",
+                     r"\b(?:clinical|diagnostic)[_\W]?(?:support|assist|recommend|decision)[_\W]?(?:system|ai|model|tool)",
+                     r"\bcdss\b",
+                     r"\b(?:prior[_\W]?authori[sz]ation|utilisation[_\W]?review|claim[_\W]?medical)[_\W]?(?:predict|automat|deny|approv)",
+                     r"\b(?:symptom|diagnosis|disease)[_\W]?(?:predict|classif|recommend|scor|check)[_\W]?(?:ai|model|chatbot)",
+                     r"\b(?:medical|health)[_\W]?(?:chatbot|triage[_\W]?bot|symptom[_\W]?checker)",
+                     # Prompt-string templates.
+                     r"(?:diagnose|detect|classify|predict)[^\"\\n]{0,30}(?:tumor|tumour|cancer|stroke|sepsis|patient|disease)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Medical Devices",
         "description": "AI components of medical devices",
     },
     "safety_components": {
-        "patterns": [r"\bautonomous.?vehicle", r"\bself.?driv", r"\bdriverless", r"\bautomat\w*\W{0,3}driv",
-                     r"\bvehicle.?control.?system", r"\baviation.?safety", r"\bmachinery.?safety"],
+        # Recall expansion (Apr 2026): EU AI Act Article 6(1) cross-references
+        # Annex I Sections A and B — safety components of machinery, toys,
+        # recreational craft, lifts, ATEX equipment, radio equipment,
+        # pressure equipment, cableways, PPE, gas appliances, civil aviation
+        # security, motor vehicles (and their trailers), agricultural vehicles,
+        # marine equipment, and railway systems. AI that acts as a safety
+        # component of any of these is high-risk regardless of domain.
+        "patterns": [r"\bautonomous.?vehicle", r"\bself.?driv", r"\bdriverless",
+                     r"\bautomat\w*\W{0,3}driv",
+                     r"\bvehicle.?control.?system", r"\baviation.?safety", r"\bmachinery.?safety",
+                     r"\badas\b", r"\b(?:level[_\W]?[2-5]|l[2-5])[_\W]?(?:autonomy|automat|driv)",
+                     r"\b(?:lane[_\W]?keep|lane[_\W]?assist|lane[_\W]?departure|automatic[_\W]?emergency[_\W]?brak|aeb|collision[_\W]?avoid|adaptive[_\W]?cruise|autopilot)",
+                     r"\b(?:pedestrian|cyclist)[_\W]?detect(?:ion|or)?\b",
+                     r"\b(?:obstacle|vehicle|object)[_\W]?detect(?:ion|or)?[_\W]?(?:ai|model|classif|lidar|radar|camera|adas|autonom)",
+                     r"\b(?:perception|planning|prediction|control)[_\W]?stack[_\W]?(?:av|autonomous|self[_\W]?driv)",
+                     r"\b(?:drone|uav|uas)[_\W]?(?:autonomous|obstacle|collision|flight[_\W]?control|safety)",
+                     r"\b(?:robot|cobot|industrial[_\W]?robot|manipulator)[_\W]?(?:safety|collision|safe[_\W]?stop|force[_\W]?limit)",
+                     r"\b(?:machine|machinery|equipment)[_\W]?(?:safety|interlock|safe[_\W]?stop|e[_\W]?stop|guard)[_\W]?(?:ai|predict|classif|monitor)",
+                     r"\b(?:aviation|aircraft|avionics|flight)[_\W]?(?:control|safety|autopilot|tcas|stall|collision|anti[_\W]?icing)[_\W]?(?:ai|automat|predict)",
+                     r"\b(?:train|rail|metro)[_\W]?(?:automat|ato|atp|autonomous|collision|brake|emergency)[_\W]?(?:ai|model|predict)",
+                     r"\b(?:marine|maritime|vessel|ship)[_\W]?(?:autonomous|collision|anti[_\W]?collision|autopilot|dynamic[_\W]?position)",
+                     r"\b(?:lift|elevator|escalator|cableway)[_\W]?(?:safety|emergency|brake|fault)[_\W]?(?:ai|predict|classif)",
+                     r"\b(?:tire|tyre|brake|airbag|esp|abs|stability[_\W]?control)[_\W]?(?:ai|predict|model|classif)",
+                     # Prompt-string templates.
+                     r"(?:detect|classify|predict|avoid)[^\"\\n]{0,30}(?:pedestrian|cyclist|obstacle|collision|lane)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Safety Components",
         "description": "Safety components under Union harmonisation legislation",
