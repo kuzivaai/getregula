@@ -87,6 +87,30 @@ def run_quickstart(project_dir: str = ".", org: str = "My Organisation",
     next_steps.append("Run 'regula install claude-code' to add pre-commit hooks")
     next_steps.append("Run 'regula gap --project .' for compliance gap analysis")
 
+    # Top findings preview — value-first onboarding (CLI UX best practice).
+    # Quickstart used to report only counts ("1 BLOCK finding") and force the
+    # user to run a second command to see what was found. Now it surfaces up
+    # to the top 3 actionable findings inline so the user gets the core
+    # benefit immediately.
+    preview = []
+    for f in (blocks + warns)[:3]:
+        score = f.get("confidence_score", 0)
+        # Derive the display tier directly — quickstart bypasses
+        # findings_view.partition_findings, so _finding_tier is unset.
+        if f.get("tier") == "prohibited" or score >= 80:
+            tier_label = "block"
+        elif score >= 50:
+            tier_label = "warn"
+        else:
+            tier_label = "info"
+        preview.append({
+            "file": f.get("file", "?"),
+            "tier": tier_label,
+            "category": f.get("category", "Unknown"),
+            "description": f.get("description", ""),
+            "score": score,
+        })
+
     result = {
         "policy_created": policy_created,
         "policy_path": existing,
@@ -97,6 +121,7 @@ def run_quickstart(project_dir: str = ".", org: str = "My Organisation",
             "info": len(infos),
             "files_scanned": len(set(f.get("file", "") for f in findings)),
         },
+        "top_findings": preview,
         "elapsed_seconds": round(elapsed, 1),
         "next_steps": next_steps,
     }
@@ -124,6 +149,24 @@ def _print_text(result: dict) -> None:
     print(f"  {'BLOCK findings:':<20}{s['block']}")
     print(f"  {'WARN findings:':<20}{s['warn']}")
     print(f"  {'INFO findings:':<20}{s['info']}")
+
+    # Show top 3 findings inline (value-first — user sees the actual issue
+    # rather than just a count). Anything beyond 3 stays hidden behind
+    # `regula check .` to avoid wall-of-text on a noisy first scan.
+    top = result.get("top_findings", [])
+    if top:
+        print(f"\n  Top findings:")
+        for f in top:
+            tier_label = f.get("tier", "info").upper()
+            score = f.get("score", 0)
+            file_label = f.get("file", "?")
+            cat = f.get("category", "")
+            desc = f.get("description", "")
+            print(f"    [{tier_label}] [{score:3d}] {file_label}")
+            if cat:
+                print(f"          {cat}")
+            if desc and desc != cat:
+                print(f"          {desc}")
 
     # Next steps
     print(f"\n  Next steps:")
