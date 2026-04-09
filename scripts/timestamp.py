@@ -22,6 +22,14 @@ import urllib.error
 from datetime import datetime, timezone
 from typing import Optional
 
+
+def _require_http_url(url: str) -> None:
+    """Reject non-http(s) schemes before urlopen (bandit B310 / semgrep
+    dynamic-urllib guard). TSA URLs come from environment — must be
+    validated because an operator could set REGULA_TSA_URL to file:// ."""
+    if not isinstance(url, str) or not (url.startswith("http://") or url.startswith("https://")):
+        raise ValueError(f"Refusing non-http(s) TSA URL: {url!r}")
+
 DEFAULT_TSA_URL = os.environ.get("REGULA_TSA_URL", "https://freetsa.org/tsr")
 
 # SHA-256 OID: 2.16.840.1.101.3.4.2.1 in DER encoding
@@ -184,6 +192,7 @@ def request_timestamp(hash_hex: str, tsa_url: str = DEFAULT_TSA_URL, timeout: in
     RuntimeError
         On network error or TSA rejection.
     """
+    _require_http_url(tsa_url)
     hash_bytes = bytes.fromhex(hash_hex)
     nonce = int.from_bytes(secrets.token_bytes(8), 'big')
     tsq = _build_tsq(hash_bytes, nonce=nonce)
@@ -196,7 +205,7 @@ def request_timestamp(hash_hex: str, tsa_url: str = DEFAULT_TSA_URL, timeout: in
     )
 
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310  # nosemgrep: dynamic-urllib-use-detected — scheme validated by _require_http_url above
             tsr_bytes = resp.read()
     except urllib.error.URLError as e:
         raise RuntimeError(f"TSA request failed: {e}") from e
