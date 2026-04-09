@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "regula-ai"
-version = "1.6.0"
+version = "1.6.1"
 description = "AI governance risk indication for code — EU AI Act compliance at the point of creation"
 readme = "README.md"
 license = {text = "MIT"}

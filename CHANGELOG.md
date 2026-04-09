@@ -5,6 +5,77 @@ All notable changes to Regula are documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/).
 
+## [1.6.1] — 2026-04-09
+
+The "trust foundation" point release. Adds the buyer-facing Trust Pack,
+publishes a reproducible precision/recall benchmark, kills the
+`yaml not installed` nag, sharpens the doctor `.gitignore` check, and
+adds standard OSS meta-files (SECURITY.md, CITATION.cff, CODE_OF_CONDUCT.md).
+No breaking changes; all 926 tests still pass.
+
+### Added
+
+- **[`docs/TRUST.md`](docs/TRUST.md)** — Trust Pack with 9 sections.
+  Every claim is paired with the exact shell command that verifies it.
+- **[`docs/benchmarks/PRECISION_RECALL_2026_04.md`](docs/benchmarks/PRECISION_RECALL_2026_04.md)**
+  — published precision/recall benchmark with reproducible methodology.
+  Headline: 100% on the synthetic Annex III/Article 5 corpus; **0
+  false positives at the BLOCK CI tier across 257 labelled findings on
+  5 mature OSS projects**. Sliced by tier, project, and indicator
+  category. CORE-Bench-style explicit limitations.
+- **[`SECURITY.md`](SECURITY.md)** — vulnerability disclosure policy
+  with supported versions, target response times, and a 90-day
+  coordinated disclosure default.
+- **[`CITATION.cff`](CITATION.cff)** — Citation File Format metadata.
+- **[`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md)** — short, technical, direct.
+- **[`uae.html`](uae.html)** — landing page for DIFC, ADGM, Hub71,
+  Dubai Internet City, and NEOM portfolio teams. Cites Article 2(1)(c)
+  extraterritoriality, Article 16 provider obligations, Article 99
+  fines (€35M / 7%), and Article 113 enforcement timing — all against
+  Regulation (EU) 2024/1689 primary text.
+- **[`docs/marketing/uae_outreach_v1.md`](docs/marketing/uae_outreach_v1.md)**
+  — 50-message distribution test templates with targeting checklist,
+  per-sector message bodies, and stop conditions.
+- **[`demos/regula-cli.cast`](demos/regula-cli.cast)** + `regula-cli.txt`
+  — asciinema v2 cast and plain-text fallback of the value-first
+  user journey. 11 seconds.
+- **`support@getregula.com`** — direct contact channel surfaced on
+  both landing pages, in `README.md`, in `SECURITY.md`, and in the
+  Trust Pack vendor evaluation answers.
+
+### Changed
+
+- **`regula doctor` `.gitignore` check is now context-aware.** It
+  only WARNs about a missing `.gitignore` when the cwd is actually
+  inside a git repository (walks up looking for `.git/`). Outside a
+  git repo it shows INFO instead of WARN.
+- **`yaml not installed` nag is silent by default.** The fallback
+  parser works; users were seeing the same notice on every CLI
+  invocation. The full optional-dependency picture is still in
+  `regula doctor`. Set `REGULA_VERBOSE=1` to opt back in.
+- **Landing page CTA reordered.** Primary button now installs
+  ("Try free in 30 seconds"); `regula assess` is the secondary
+  "no codebase needed" option.
+- **Landing page footer expanded** with Trust Pack, Benchmarks,
+  SECURITY.md, UAE page, and `support@getregula.com`.
+- **`README.md`** — new "Trust, security, and how to verify" and
+  "Contact" sections.
+- **Test count: 925 → 926.**
+- Removed 24 stale `docs/tmp*_annex_iv.md` files left over from
+  prior conformity-pack test runs.
+
+### Verified
+
+- 926/926 custom test runner
+- 6/6 self-test
+- doctor: 8 pass / 3 info / 0 warn (in a git repo)
+- bandit `-c pyproject.toml`: 0 / 0 / 0
+- semgrep `p/security-audit + p/python`: 0 findings on 200 rules / 129 files
+- pip-audit: 0 vulnerabilities
+- regula self-scan: 0 findings
+
+---
+
 ## [1.6.0] — 2026-04-09
 
 The "live-path reliability" release. Bundles the v1.6 feature work that
