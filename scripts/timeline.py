@@ -121,6 +121,13 @@ TIMELINE = [
         "source": "EU Parliament committees joint report, March 2026",
         "note": "NOT YET LAW. Would apply to AI systems under EU harmonisation legislation (machinery, medical devices, etc.).",
     },
+    {
+        "date": "2027-12-02",
+        "event": "Proposed: AI regulatory sandbox establishment deadline (Omnibus)",
+        "status": "proposed",
+        "source": "Council mandate 13 March 2026; Pearl Cohen analysis",
+        "note": "NOT YET LAW. Postpones the original August 2026 deadline for Member States to establish national AI regulatory sandboxes by 16 months. Aligns with the proposed Annex III high-risk delay.",
+    },
 ]
 
 
