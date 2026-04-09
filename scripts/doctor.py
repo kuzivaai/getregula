@@ -24,14 +24,22 @@ def _check_python_version():
 
 
 def _check_optional_dep(module_name, install_hint):
-    """Check if an optional dependency is importable."""
+    """Check if an optional dependency is importable.
+
+    Optional dependencies fall back to INFO when missing, not WARN.
+    Reason: a fresh `pip install regula-ai` does not pull in optional
+    extras. Showing those as WARN made first-run users see "5 warnings"
+    on a perfectly healthy install and assume something was broken.
+    INFO communicates "this feature is available if you want it" which
+    matches the actual state.
+    """
     try:
         __import__(module_name)
         return {"name": f"{module_name}", "status": "PASS",
                 "detail": f"{module_name} installed"}
     except ImportError:
-        return {"name": f"{module_name}", "status": "WARN",
-                "detail": f"{module_name} not installed ({install_hint})"}
+        return {"name": f"{module_name}", "status": "INFO",
+                "detail": f"{module_name} optional — install with: {install_hint}"}
 
 
 def _check_policy_file():
