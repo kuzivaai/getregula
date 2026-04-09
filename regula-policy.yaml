@@ -6,11 +6,11 @@ organisation: "Your Organisation"
 # defined roles and responsibilities for AI governance.
 governance:
   ai_officer:
-    name: ""              # Required: natural person accountable for AI governance
-    role: ""              # e.g., "DPO", "AI Officer", "Chief AI Ethics Officer"
-    email: ""             # Contact for regulatory correspondence
+    name: "Kuziva Muzondo"      # Natural person accountable for the Regula project itself
+    role: "Maintainer"
+    email: "support@getregula.com"
   dpo:
-    name: ""              # Data Protection Officer (if separate from AI Officer)
+    name: ""              # No separate DPO — solo-maintainer project
     email: ""
 
 # Regulatory basis — declares which version of the regulation the patterns
@@ -18,7 +18,7 @@ governance:
 regulatory_basis:
   eu_ai_act_version: "2024/1689"
   pattern_version: "1.1.0"
-  last_reviewed: "2026-03-25"
+  last_reviewed: "2026-04-09"
   notes: "Patterns aligned to original text. Digital Omnibus timeline changes tracked but not yet enacted."
 
 frameworks:

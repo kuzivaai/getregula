@@ -170,7 +170,7 @@
     <div class="sep"></div>
 
     <div class="sec">
-        <h2 class="sec-head"><span class="hl">39</span> comandos CLI</h2>
+        <h2 class="sec-head"><span class="hl">43</span> comandos CLI</h2>
         <p class="sec-sub">Tudo a partir de um único binário.</p>
         <div class="cmds">
             <div class="cm"><code>regula assess</code> <span>Algumas perguntas sim/não &mdash; descubra seu nível de risco</span></div>
@@ -193,11 +193,10 @@
     <div class="sep"></div>
 
     <div class="sec">
-        <h2 class="sec-head"><span class="hl">13</span> frameworks de conformidade</h2>
+        <h2 class="sec-head"><span class="hl">12</span> frameworks de conformidade</h2>
         <p class="sec-sub">Cada padrão de risco é mapeado para múltiplos frameworks &mdash; uma varredura cobre várias auditorias.</p>
         <div class="fw-list">
             <div class="fw pri"><div class="fw-d"></div>EU AI Act (2024/1689)</div>
-            <div class="fw"><div class="fw-d"></div>NIST AI 600-1</div>
             <div class="fw"><div class="fw-d"></div>NIST AI RMF 1.0</div>
             <div class="fw"><div class="fw-d"></div>NIST CSF 2.0</div>
             <div class="fw"><div class="fw-d"></div>ISO/IEC 42001:2023</div>
@@ -210,6 +209,31 @@
             <div class="fw pri"><div class="fw-d"></div>LGPD (Brasil)</div>
             <div class="fw pri"><div class="fw-d"></div>Marco Legal IA (Brasil)</div>
         </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="sec">
+        <h2 class="sec-head">Onde o Regula se encaixa no mercado.</h2>
+        <p class="sec-sub">Um scanner est&aacute;tico do lado do desenvolvedor. Uma de v&aacute;rias ferramentas no ecossistema da Lei de IA da UE &mdash; cada uma resolve uma parte diferente do problema.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:1080px;margin:32px auto 0;">
+            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:24px;">
+                <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#8888aa;margin-bottom:8px;">Governan&ccedil;a SaaS</div>
+                <div style="font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:600;margin-bottom:10px;">Contato comercial</div>
+                <p style="font-size:14px;color:#aaaac0;line-height:1.6;margin:0;">Credo AI, Saidot, Enzai, IBM watsonx.governance, Microsoft Purview. Fluxos de evid&ecirc;ncia, bibliotecas de controles, monitoramento cont&iacute;nuo, atualiza&ccedil;&otilde;es de pol&iacute;ticas por advogados especialistas. Feito para departamentos de conformidade, n&atilde;o para desenvolvedores. Sem pre&ccedil;os publicados.</p>
+            </div>
+            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:24px;">
+                <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#8888aa;margin-bottom:8px;">Testes em runtime</div>
+                <div style="font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:600;margin-bottom:10px;">Open source</div>
+                <p style="font-size:14px;color:#aaaac0;line-height:1.6;margin:0;">Garak, Giskard, Promptfoo. Red-teaming de prompt injection, jailbreak e vi&eacute;s contra modelos em execu&ccedil;&atilde;o. Complementares ao Regula, n&atilde;o sobrepostos &mdash; eles testam comportamento, Regula l&ecirc; o c&oacute;digo.</p>
+            </div>
+            <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.4);border-radius:14px;padding:24px;">
+                <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#7dd3fc;margin-bottom:8px;">Regula</div>
+                <div style="font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:600;margin-bottom:10px;color:#fff;">Gratuito e open source</div>
+                <p style="font-size:14px;color:#e2e2f0;line-height:1.6;margin:0;">Scanner est&aacute;tico de c&oacute;digo. Roda no seu laptop com um comando. N&uacute;cleo Python apenas da biblioteca padr&atilde;o, zero depend&ecirc;ncias de produ&ccedil;&atilde;o, totalmente offline. <code>pip install regula-ai</code>, escaneie seu projeto, obtenha uma resposta clara. Licen&ccedil;a MIT.</p>
+            </div>
+        </div>
+        <p class="sec-sub" style="margin-top:24px;font-size:13px;max-width:820px;margin-left:auto;margin-right:auto;">Existem outros scanners open source da Lei de IA da UE &mdash; notadamente <a href="https://airblackbox.ai/" rel="noopener">AIR Blackbox</a> (Python/pip, Apache 2.0, local, 39 verifica&ccedil;&otilde;es nos Artigos 9/10/11/12/14/15), <a href="https://www.npmjs.com/package/@systima/comply" rel="noopener">Systima Comply</a> (TypeScript, baseado em AST) e <a href="https://github.com/ark-forge/mcp-eu-ai-act" rel="noopener">ark-forge mcp-eu-ai-act</a> (Python, h&iacute;brido). Escolha aquele cuja cobertura de linguagens e compromissos se encaixem no seu stack. O nicho do Regula &eacute; stdlib-only, zero depend&ecirc;ncias de produ&ccedil;&atilde;o e amplitude de 8 linguagens.</p>
     </div>
 
     </main>

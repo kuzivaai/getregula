@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-04-09T21:34:53.140778+00:00",
+  "source_of_truth": {
+    "commands": "scripts/cli.py (grep '^def cmd_')",
+    "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
+    "frameworks": "references/framework_crosswalk.yaml (unique keys + EU AI Act)",
+    "languages": "scripts/ast_engine.py + README",
+    "tests": "tests/test_classification.py (grep '^def test_')"
+  },
+  "counts": {
+    "commands": 43,
+    "patterns": {
+      "tier_groups": 34,
+      "tier_regexes": 279,
+      "ai_indicators": 141,
+      "gpai_training": 17,
+      "architecture": 38,
+      "data_source": 10,
+      "logging": 4,
+      "oversight": 4,
+      "credential": 9,
+      "grand_total": 502,
+      "historical_330_bucket": 330
+    },
+    "frameworks": 12,
+    "languages": 8,
+    "tests": {
+      "total_functions": 688,
+      "per_file": {
+        "test_agent_governance.py": 28,
+        "test_build_regulations.py": 14,
+        "test_classification.py": 424,
+        "test_coverage_critical.py": 45,
+        "test_documentation.py": 16,
+        "test_gpai_check.py": 27,
+        "test_hooks_audit.py": 50,
+        "test_mcp_server.py": 6,
+        "test_register.py": 22,
+        "test_registry.py": 8,
+        "test_reliability.py": 12,
+        "test_scan_cache.py": 3,
+        "test_security_hardening.py": 12,
+        "test_session.py": 12,
+        "test_telemetry.py": 9
+      }
+    }
+  },
+  "notes": {
+    "pattern_count_methodology": "Regula's landing pages cite '330 risk patterns'. That figure corresponds to the `historical_330_bucket` computation here: tiered risk regexes + architecture patterns + credential patterns + oversight patterns. The `grand_total` includes AI_INDICATORS and GPAI_TRAINING_PATTERNS as well and is the inclusive upper bound. Both are honest bucketings; the landing page figure is the historical mid-range number.",
+    "frameworks_vs_claim": "Regula's landing pages cite '12 compliance frameworks'. The crosswalk YAML has 11 unique framework keys plus EU AI Act = 12."
+  }
+}

@@ -1,0 +1,210 @@
+#!/usr/bin/env python3
+# regula-ignore
+"""Extract Regula's risk patterns to data/patterns/*.yaml for citation.
+
+Reads scripts/risk_patterns.py (the single source of truth for patterns)
+and emits one YAML file per pattern in data/patterns/, plus a top-level
+index.yaml manifest. The emitted corpus is the proposed
+`regula-mappings` dataset: CC-BY-4.0, citable, diff-able, machine-readable.
+
+Schema per pattern (`data/patterns/<tier>_<key>.yaml`):
+  pattern_id:       unique identifier (tier_key)
+  tier:             prohibited | high_risk | limited_risk | ai_security | bias_risk
+  description:      human-readable description
+  article:          primary EU AI Act article reference
+  regexes:          list of regex strings used for detection
+  conditions:       when the pattern applies
+  exceptions:       when the pattern does NOT apply
+  source:           "Regula project v{version}, extracted {date}"
+
+Usage:
+  python3 scripts/extract_patterns.py            # write to data/patterns/
+  python3 scripts/extract_patterns.py --dry-run  # report counts only
+  python3 scripts/extract_patterns.py --check    # verify on-disk matches source
+"""
+from __future__ import annotations
+
+import argparse
+import importlib.util
+import json
+import sys
+from datetime import date
+from pathlib import Path
+from typing import Any
+
+REPO = Path(__file__).resolve().parent.parent
+RISK_PATTERNS_PATH = REPO / "scripts" / "risk_patterns.py"
+OUT_DIR = REPO / "data" / "patterns"
+INDEX_PATH = OUT_DIR / "index.yaml"
+
+
+def _load_risk_patterns() -> dict[str, Any]:
+    """Import scripts/risk_patterns.py and return its module globals."""
+    spec = importlib.util.spec_from_file_location(
+        "risk_patterns", RISK_PATTERNS_PATH
+    )
+    if spec is None or spec.loader is None:
+        raise RuntimeError("cannot load risk_patterns.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return vars(module)
+
+
+def _yaml_escape(s: str) -> str:
+    """Minimal YAML string escaping for stdlib-only output."""
+    if s is None:
+        return "null"
+    s = str(s)
+    needs_quoting = any(c in s for c in ":#{}[],&*!|>'\"%@`\n")
+    if not needs_quoting and not s.startswith(("-", "?", ":")):
+        return s
+    # Use double-quoted form with backslash escaping
+    return '"' + s.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n") + '"'
+
+
+def _emit_yaml(d: dict[str, Any], indent: int = 0) -> str:
+    lines: list[str] = []
+    pad = "  " * indent
+    for k, v in d.items():
+        if isinstance(v, list):
+            if not v:
+                lines.append(f"{pad}{k}: []")
+            else:
+                lines.append(f"{pad}{k}:")
+                for item in v:
+                    if isinstance(item, dict):
+                        lines.append(f"{pad}  -")
+                        lines.append(_emit_yaml(item, indent + 2))
+                    else:
+                        lines.append(f"{pad}  - {_yaml_escape(item)}")
+        elif isinstance(v, dict):
+            lines.append(f"{pad}{k}:")
+            lines.append(_emit_yaml(v, indent + 1))
+        else:
+            lines.append(f"{pad}{k}: {_yaml_escape(v)}")
+    return "\n".join(lines)
+
+
+TIER_VARS = [
+    ("prohibited", "PROHIBITED_PATTERNS"),
+    ("high_risk", "HIGH_RISK_PATTERNS"),
+    ("limited_risk", "LIMITED_RISK_PATTERNS"),
+    ("ai_security", "AI_SECURITY_PATTERNS"),
+    ("bias_risk", "BIAS_RISK_PATTERNS"),
+]
+
+
+def extract(mod_globals: dict[str, Any]) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    extracted_on = date.today().isoformat()
+    for tier, var_name in TIER_VARS:
+        patterns = mod_globals.get(var_name, {})
+        if not isinstance(patterns, dict):
+            continue
+        for key, info in patterns.items():
+            if not isinstance(info, dict):
+                continue
+            entry = {
+                "pattern_id": f"{tier}__{key}",
+                "tier": tier,
+                "key": key,
+                "description": info.get("description", ""),
+                "article": info.get("article", ""),
+                "regexes": list(info.get("patterns", [])),
+                "conditions": info.get("conditions", ""),
+                "exceptions": info.get("exceptions") or "",
+                "source": f"scripts/risk_patterns.py::{var_name}[{key!r}]",
+                "licence": "CC-BY-4.0",
+                "extracted_on": extracted_on,
+                "provenance": "Regula project — canonical source is scripts/risk_patterns.py in https://github.com/kuzivaai/getregula",
+            }
+            out.append(entry)
+    return out
+
+
+def write_outputs(entries: list[dict[str, Any]]) -> None:
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    # Clear stale files
+    for old in OUT_DIR.glob("*.yaml"):
+        if old.name != "index.yaml":
+            old.unlink()
+    for e in entries:
+        path = OUT_DIR / f"{e['pattern_id']}.yaml"
+        content = (
+            "# Regula risk pattern — auto-generated by scripts/extract_patterns.py\n"
+            "# Do not edit by hand; edit scripts/risk_patterns.py and re-run.\n"
+            "# Licence: CC-BY-4.0. Attribution: https://getregula.com\n\n"
+            + _emit_yaml(e)
+            + "\n"
+        )
+        path.write_text(content, encoding="utf-8")
+    # Index
+    index = {
+        "schema_version": "1.0",
+        "generated_on": date.today().isoformat(),
+        "total_patterns": len(entries),
+        "by_tier": {
+            tier: sum(1 for e in entries if e["tier"] == tier)
+            for tier, _ in TIER_VARS
+        },
+        "licence": "CC-BY-4.0",
+        "provenance": "Canonical source: scripts/risk_patterns.py in https://github.com/kuzivaai/getregula",
+        "citation": (
+            "Muzondo, K. (2026). Regula EU AI Act Risk Pattern Corpus "
+            "(data/patterns/). Regula project, getregula.com. CC-BY-4.0."
+        ),
+        "patterns": [
+            {
+                "pattern_id": e["pattern_id"],
+                "tier": e["tier"],
+                "article": e["article"],
+                "file": f"{e['pattern_id']}.yaml",
+            }
+            for e in entries
+        ],
+    }
+    INDEX_PATH.write_text(_emit_yaml(index) + "\n", encoding="utf-8")
+
+
+def main(argv: list[str] | None = None) -> int:
+    p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    p.add_argument("--dry-run", action="store_true")
+    p.add_argument("--check", action="store_true",
+                   help="verify on-disk files match current source")
+    args = p.parse_args(argv)
+
+    mod_globals = _load_risk_patterns()
+    entries = extract(mod_globals)
+
+    print(f"extract-patterns: {len(entries)} patterns across "
+          f"{len(TIER_VARS)} tiers")
+    for tier, _ in TIER_VARS:
+        n = sum(1 for e in entries if e["tier"] == tier)
+        print(f"  {tier}: {n}")
+
+    if args.dry_run:
+        return 0
+
+    if args.check:
+        # Compare each expected file against on-disk
+        stale: list[str] = []
+        for e in entries:
+            path = OUT_DIR / f"{e['pattern_id']}.yaml"
+            if not path.exists():
+                stale.append(e["pattern_id"] + " (missing)")
+        if stale:
+            print("extract-patterns: drift detected:", file=sys.stderr)
+            for s in stale[:20]:
+                print(f"  - {s}", file=sys.stderr)
+            return 1
+        print("extract-patterns: on-disk matches source")
+        return 0
+
+    write_outputs(entries)
+    print(f"extract-patterns: wrote {len(entries)} files to "
+          f"{OUT_DIR.relative_to(REPO)}/")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

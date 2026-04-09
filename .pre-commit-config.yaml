@@ -1,0 +1,19 @@
+# Pre-commit hooks for Regula
+#
+# Install once per clone:
+#   pip install pre-commit
+#   pre-commit install
+#
+# The claim-auditor blocks commits that introduce unverified factual claims.
+# Run manually: pre-commit run claim-auditor --all-files
+#
+repos:
+  - repo: local
+    hooks:
+      - id: claim-auditor
+        name: Claim auditor (block unverified claims in docs/landing pages)
+        entry: python3 scripts/claim_auditor.py --staged
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]

@@ -2,9 +2,17 @@
 
 ## Identity
 
-Regula v1.6.0 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only core. 39 CLI commands, 330 risk patterns, 38 architecture detections, 8 languages, 12 compliance frameworks. Zero production dependencies.
+Regula v1.6.1 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only core. 43 CLI commands, 330 risk patterns, 38 architecture detections, 8 languages, 12 compliance frameworks. Zero production dependencies. Positioned as the **code layer** of an AI governance programme, not the whole programme — see `docs/what-regula-does-not-do.md`.
 
 GitHub: kuzivaai/getregula | PyPI: regula-ai | CLI command: regula
+
+## Honesty & Verification
+
+Never fabricate statistics, GitHub stars, user counts, benchmarks, or marketing claims. Every numeric or factual claim in docs/landing pages/research must cite a verifiable source or be omitted.
+
+## Workflow
+
+Before claiming work is complete, verify it: run tests, check the actual file, or invoke the research-eval/verification-loop skill. Do not say 'done' or 'fixed' without evidence.
 
 ## Commands
 
@@ -77,6 +85,10 @@ test_key = ''.join(chr(c) for c in [65, 75, 73, 65, ...])
 ```
 
 If a hook blocks your command, do NOT bypass it. Construct test values the same way.
+
+## Project Conventions
+
+When updating landing pages or docs, apply changes to ALL locale versions (EN, PT-BR, DE, etc.) in the same pass.
 
 ## What NOT to Change
 

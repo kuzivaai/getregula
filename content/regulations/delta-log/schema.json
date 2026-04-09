@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://getregula.com/content/regulations/delta-log/schema.json",
+  "title": "EU AI Act Regulatory Delta Log Entry",
+  "description": "A single regulatory change to the EU AI Act or adjacent frameworks. Every entry is primary-source-linked, article-keyed, and machine-readable.",
+  "type": "object",
+  "required": [
+    "id", "date", "type", "source_url", "source_title",
+    "affected_articles", "summary", "confidence"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable identifier: YYYY-MM-DD-short-slug",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}-[a-z0-9-]+$"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the change was published or adopted"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "regulation-adoption",
+        "amendment-proposal",
+        "council-position",
+        "parliament-position",
+        "trilogue-outcome",
+        "commission-guidance",
+        "delegated-act",
+        "implementing-act",
+        "national-transposition",
+        "harmonised-standard",
+        "enforcement-action",
+        "court-ruling",
+        "notified-body-decision"
+      ]
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Primary source URL. Prefer EUR-Lex CELEX where applicable."
+    },
+    "source_title": {
+      "type": "string",
+      "description": "Title of the source document"
+    },
+    "celex_number": {
+      "type": "string",
+      "description": "EUR-Lex CELEX number if this is an EU legislative act",
+      "pattern": "^[0-9]{5}[A-Z]{1,2}[0-9]{4}$"
+    },
+    "affected_articles": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Article references (e.g. '6', '9', '99'). Use 'Annex III', 'Annex IV' for annexes."
+    },
+    "affected_recitals": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "member_state": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 code if this is a national transposition"
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "One-paragraph plain-language summary of what changed"
+    },
+    "mechanical_change": {
+      "type": "string",
+      "description": "What concretely changed in the regulation text or obligations (dates, thresholds, definitions)"
+    },
+    "impact_on_regula_patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["pattern_id", "change"],
+        "properties": {
+          "pattern_id": { "type": "string" },
+          "change": {
+            "type": "string",
+            "enum": ["reviewed-no-change", "updated", "added", "deprecated"]
+          },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["verified-primary", "verified-secondary", "reported-unverified", "speculative"],
+      "description": "How the entry was verified"
+    },
+    "verified_by": {
+      "type": "string",
+      "description": "Who confirmed the entry (name or 'automated-celex-crawl')"
+    },
+    "verified_on": {
+      "type": "string",
+      "format": "date"
+    }
+  }
+}

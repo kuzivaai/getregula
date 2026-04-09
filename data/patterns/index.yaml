@@ -1,0 +1,183 @@
+schema_version: 1.0
+generated_on: 2026-04-09
+total_patterns: 34
+by_tier:
+  prohibited: 8
+  high_risk: 10
+  limited_risk: 4
+  ai_security: 10
+  bias_risk: 2
+licence: CC-BY-4.0
+provenance: "Canonical source: scripts/risk_patterns.py in https://github.com/kuzivaai/getregula"
+citation: "Muzondo, K. (2026). Regula EU AI Act Risk Pattern Corpus (data/patterns/). Regula project, getregula.com. CC-BY-4.0."
+patterns:
+  -
+    pattern_id: prohibited__subliminal_manipulation
+    tier: prohibited
+    article: 5(1)(a)
+    file: prohibited__subliminal_manipulation.yaml
+  -
+    pattern_id: prohibited__exploitation_vulnerabilities
+    tier: prohibited
+    article: 5(1)(b)
+    file: prohibited__exploitation_vulnerabilities.yaml
+  -
+    pattern_id: prohibited__social_scoring
+    tier: prohibited
+    article: 5(1)(c)
+    file: prohibited__social_scoring.yaml
+  -
+    pattern_id: prohibited__criminal_prediction
+    tier: prohibited
+    article: 5(1)(d)
+    file: prohibited__criminal_prediction.yaml
+  -
+    pattern_id: prohibited__facial_recognition_scraping
+    tier: prohibited
+    article: 5(1)(e)
+    file: prohibited__facial_recognition_scraping.yaml
+  -
+    pattern_id: prohibited__emotion_inference_restricted
+    tier: prohibited
+    article: 5(1)(f)
+    file: prohibited__emotion_inference_restricted.yaml
+  -
+    pattern_id: prohibited__biometric_categorisation_sensitive
+    tier: prohibited
+    article: 5(1)(g)
+    file: prohibited__biometric_categorisation_sensitive.yaml
+  -
+    pattern_id: prohibited__realtime_biometric_public
+    tier: prohibited
+    article: 5(1)(h)
+    file: prohibited__realtime_biometric_public.yaml
+  -
+    pattern_id: high_risk__biometrics
+    tier: high_risk
+    article: 
+    file: high_risk__biometrics.yaml
+  -
+    pattern_id: high_risk__critical_infrastructure
+    tier: high_risk
+    article: 
+    file: high_risk__critical_infrastructure.yaml
+  -
+    pattern_id: high_risk__education
+    tier: high_risk
+    article: 
+    file: high_risk__education.yaml
+  -
+    pattern_id: high_risk__employment
+    tier: high_risk
+    article: 
+    file: high_risk__employment.yaml
+  -
+    pattern_id: high_risk__essential_services
+    tier: high_risk
+    article: 
+    file: high_risk__essential_services.yaml
+  -
+    pattern_id: high_risk__law_enforcement
+    tier: high_risk
+    article: 
+    file: high_risk__law_enforcement.yaml
+  -
+    pattern_id: high_risk__migration
+    tier: high_risk
+    article: 
+    file: high_risk__migration.yaml
+  -
+    pattern_id: high_risk__justice
+    tier: high_risk
+    article: 
+    file: high_risk__justice.yaml
+  -
+    pattern_id: high_risk__medical_devices
+    tier: high_risk
+    article: 
+    file: high_risk__medical_devices.yaml
+  -
+    pattern_id: high_risk__safety_components
+    tier: high_risk
+    article: 
+    file: high_risk__safety_components.yaml
+  -
+    pattern_id: limited_risk__chatbots
+    tier: limited_risk
+    article: 50
+    file: limited_risk__chatbots.yaml
+  -
+    pattern_id: limited_risk__emotion_recognition
+    tier: limited_risk
+    article: 50
+    file: limited_risk__emotion_recognition.yaml
+  -
+    pattern_id: limited_risk__biometric_categorisation
+    tier: limited_risk
+    article: 50
+    file: limited_risk__biometric_categorisation.yaml
+  -
+    pattern_id: limited_risk__synthetic_content
+    tier: limited_risk
+    article: 50
+    file: limited_risk__synthetic_content.yaml
+  -
+    pattern_id: ai_security__unsafe_deserialization
+    tier: ai_security
+    article: 
+    file: ai_security__unsafe_deserialization.yaml
+  -
+    pattern_id: ai_security__prompt_injection_vulnerable
+    tier: ai_security
+    article: 
+    file: ai_security__prompt_injection_vulnerable.yaml
+  -
+    pattern_id: ai_security__prompt_injection_indirect
+    tier: ai_security
+    article: 
+    file: ai_security__prompt_injection_indirect.yaml
+  -
+    pattern_id: ai_security__prompt_injection_tool_output
+    tier: ai_security
+    article: 
+    file: ai_security__prompt_injection_tool_output.yaml
+  -
+    pattern_id: ai_security__no_output_validation
+    tier: ai_security
+    article: 
+    file: ai_security__no_output_validation.yaml
+  -
+    pattern_id: ai_security__hardcoded_model_path
+    tier: ai_security
+    article: 
+    file: ai_security__hardcoded_model_path.yaml
+  -
+    pattern_id: ai_security__unbounded_token_generation
+    tier: ai_security
+    article: 
+    file: ai_security__unbounded_token_generation.yaml
+  -
+    pattern_id: ai_security__missing_temperature_control
+    tier: ai_security
+    article: 
+    file: ai_security__missing_temperature_control.yaml
+  -
+    pattern_id: ai_security__no_error_handling_ai_call
+    tier: ai_security
+    article: 
+    file: ai_security__no_error_handling_ai_call.yaml
+  -
+    pattern_id: ai_security__exposed_api_key_env
+    tier: ai_security
+    article: 
+    file: ai_security__exposed_api_key_env.yaml
+  -
+    pattern_id: bias_risk__protected_class_as_feature
+    tier: bias_risk
+    article: 10
+    file: bias_risk__protected_class_as_feature.yaml
+  -
+    pattern_id: bias_risk__missing_fairness_evaluation
+    tier: bias_risk
+    article: 10
+    file: bias_risk__missing_fairness_evaluation.yaml

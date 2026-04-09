@@ -25,6 +25,67 @@ jobs:
         run: python3 -m scripts.cli self-test
       - name: Doctor health checks
         run: python3 -m scripts.cli doctor
+      - name: Security self-check (blocks unexpected findings in Regula's own source)
+        run: python3 -m scripts.cli security-self-check
+
+  html-wellformed:
+    name: HTML well-formedness (landing pages)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Check all *.html parse with zero mismatched tags
+        run: |
+          python3 - <<'PY'
+          import html.parser, sys, glob
+          class P(html.parser.HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.stack = []
+                  self.errs = []
+              def handle_starttag(self, t, a):
+                  if t not in ('br','img','meta','link','input','hr','source'):
+                      self.stack.append(t)
+              def handle_endtag(self, t):
+                  if self.stack and self.stack[-1] == t:
+                      self.stack.pop()
+                  else:
+                      self.errs.append(f"mismatch {t} at line {self.getpos()[0]}")
+          fail = 0
+          for f in sorted(glob.glob("*.html")):
+              p = P()
+              try:
+                  p.feed(open(f, encoding='utf-8').read())
+                  if p.stack or p.errs:
+                      print(f"::error file={f}::unclosed={len(p.stack)} errs={len(p.errs)}")
+                      fail = 1
+                  else:
+                      print(f"{f}: OK")
+              except Exception as e:
+                  print(f"::error file={f}::{e}")
+                  fail = 1
+          sys.exit(fail)
+          PY
+
+  claim-audit:
+    name: Claim auditor (docs & landing pages)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Scan modified Markdown/HTML for unverified claims
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            python3 scripts/claim_auditor.py --diff-base origin/${{ github.base_ref }}
+          else
+            python3 scripts/claim_auditor.py --diff-base HEAD~1
+          fi
 
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'

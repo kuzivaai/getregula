@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://getregula.com/content/regulations/sandbox-registry/schema.json",
+  "title": "EU AI Regulatory Sandbox (Article 57)",
+  "type": "object",
+  "required": ["country", "status", "source_url", "confidence", "verified_on"],
+  "properties": {
+    "country": { "type": "string", "pattern": "^[A-Z]{2}$" },
+    "competent_authority": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["established", "announced", "planned", "none", "unknown"]
+    },
+    "established_date": { "type": ["string", "null"], "format": "date" },
+    "entry_criteria_url": { "type": ["string", "null"], "format": "uri" },
+    "enrolled_companies": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "sectors": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "summary": { "type": "string", "maxLength": 1000 },
+    "source_url": { "type": "string", "format": "uri" },
+    "verified_on": { "type": "string", "format": "date" },
+    "confidence": {
+      "type": "string",
+      "enum": ["verified-primary", "verified-secondary", "reported-unverified"]
+    }
+  }
+}

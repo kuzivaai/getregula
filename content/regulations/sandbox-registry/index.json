@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "generated_on": "2026-04-09",
+  "article": "EU AI Act Article 57 — AI regulatory sandboxes",
+  "deadline": "2026-08-02",
+  "total_member_states": 27,
+  "seeded": 5,
+  "todo": 22,
+  "licence": "CC-BY-4.0",
+  "note": "Seeded from publicly-reported announcements. All entries require manual verification against the Member State competent authority's official publication before promotion to verified-primary. The 22 TODO entries are placeholders — status: unknown until a primary source is located.",
+  "member_states": {
+    "AT": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "BE": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "BG": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "CY": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "CZ": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "DE": {
+      "status": "announced",
+      "competent_authority": "Bundesnetzagentur (BNetzA) — named as central market surveillance authority in the KI-MIG (Gesetz zur Durchführung der KI-Verordnung) government draft adopted 10 February 2026",
+      "summary": "Germany has designated BNetzA as its central AI Act market surveillance authority via the KI-MIG cabinet draft (10 February 2026), including a coordinating Kompetenzzentrum (KoKIVO) inside BNetzA. Joint operation with the BSI is directionally reported but not yet finalised in statute. Status is based on the government draft — the law must still pass the Bundestag and, where required, the Bundesrat before it becomes binding.",
+      "source_url": "https://www.bundesnetzagentur.de/DE/Fachthemen/Digitalisierung/KI-Verordnung/start.html",
+      "confidence": "reported-unverified",
+      "verified_on": "2026-04-09",
+      "todo": false
+    },
+    "DK": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "EE": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "ES": {
+      "status": "established",
+      "competent_authority": "Agencia Española de Supervisión de Inteligencia Artificial (AESIA) — established under Real Decreto 729/2023, operational since June 2024",
+      "summary": "Spain established AESIA under Real Decreto 729/2023 and launched a pre-AI-Act regulatory sandbox under Real Decreto 817/2023 (approved 8 November 2023, in force from 10 November 2023, maximum 36-month duration). Twelve projects were selected in April 2025 for the first operational cohort. Widely cited as the first EU AI Act-aligned sandbox in operation and the strongest reference implementation of Article 57 at the time of this entry.",
+      "source_url": "https://www.aesia.gob.es/",
+      "confidence": "verified-secondary",
+      "verified_on": "2026-04-09",
+      "todo": false
+    },
+    "FI": {
+      "status": "announced",
+      "competent_authority": "Traficom — designated as the Finnish AI Act competent authority per the Finnish government's AI Act implementation working group",
+      "summary": "Finland has named Traficom as the coordinating competent authority for the AI Act. Sandbox establishment is part of the national implementation roadmap; specific entry criteria pending publication.",
+      "source_url": "https://tem.fi/en/ai-act",
+      "confidence": "reported-unverified",
+      "verified_on": "2026-04-09",
+      "todo": false
+    },
+    "FR": {
+      "status": "announced",
+      "competent_authority": "Commission nationale de l'informatique et des libertés (CNIL) — designated French enforcement authority for specific Article 5 prohibited practices; runs its own public-service AI sandboxes since 2023. Formal designation of the Article 57 AI Act sandbox operator is pending the French national implementation law.",
+      "summary": "France operates a decentralised AI Act supervision model. CNIL is publicly confirmed as the enforcement authority for certain Article 5 use cases and has run its own public-service AI sandboxes since 2023 (public-services sandbox, silver-economy sandbox upcoming). The formal Article 57 sandbox operator has not been finally designated; CNIL is expected to play a lead role but the national implementation law has not passed.",
+      "source_url": "https://www.cnil.fr/en/artificial-intelligence",
+      "confidence": "reported-unverified",
+      "verified_on": "2026-04-09",
+      "todo": false
+    },
+    "GR": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "HR": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "HU": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "IE": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "IT": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "LT": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "LU": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "LV": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "MT": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "NL": {
+      "status": "announced",
+      "competent_authority": "Autoriteit Persoonsgegevens (AP) and Rijksinspectie Digitale Infrastructuur (RDI) — joint proposal published March 2025",
+      "summary": "Dutch AI regulatory sandbox proposal published March 2025 by the Autoriteit Persoonsgegevens and the Rijksinspectie Digitale Infrastructuur (RDI). The sandbox is a single multi-sectoral access point involving all AI Act market-surveillance authorities, expected to launch by August 2026 per Article 57 of Regulation (EU) 2024/1689. Not yet operational at the time of this entry.",
+      "source_url": "https://autoriteitpersoonsgegevens.nl/en",
+      "confidence": "reported-unverified",
+      "verified_on": "2026-04-09",
+      "todo": false
+    },
+    "PL": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "PT": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "RO": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "SE": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "SI": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true },
+    "SK": { "status": "unknown", "confidence": "reported-unverified", "source_url": "", "verified_on": "2026-04-09", "todo": true }
+  }
+}

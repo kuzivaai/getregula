@@ -1,0 +1,21 @@
+{
+  "id": "2024-07-12-regulation-adopted",
+  "date": "2024-07-12",
+  "type": "regulation-adoption",
+  "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+  "source_title": "Regulation (EU) 2024/1689 of the European Parliament and of the Council of 13 June 2024 laying down harmonised rules on artificial intelligence",
+  "celex_number": "32024R1689",
+  "affected_articles": ["*"],
+  "summary": "The EU AI Act is published in the Official Journal of the European Union. Regulation (EU) 2024/1689 enters into force 20 days later (1 August 2024). Subsequent application dates are staggered: Article 5 prohibitions from 2 February 2025, General-Purpose AI rules from 2 August 2025, governance and penalty provisions from 2 August 2025, high-risk system obligations from 2 August 2026, and high-risk systems placed on the market before 2 August 2026 from 2 August 2027 (per Article 113).",
+  "mechanical_change": "Adoption and publication of the full regulation text. Establishes risk-based categorisation (prohibited, high-risk, limited-risk, minimal-risk), obligations for providers and deployers, conformity assessment procedures, post-market monitoring, and penalties up to EUR 35 million or 7% of global annual turnover.",
+  "impact_on_regula_patterns": [
+    {
+      "pattern_id": "*",
+      "change": "reviewed-no-change",
+      "notes": "Baseline — all Regula patterns are calibrated against this version of the text."
+    }
+  ],
+  "confidence": "verified-primary",
+  "verified_by": "Regula project",
+  "verified_on": "2026-04-09"
+}

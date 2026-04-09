@@ -115,8 +115,20 @@ def _check_config_validation():
         if not policy:
             return {"name": "Config validation", "status": "INFO",
                     "detail": "No policy loaded (using defaults)"}
-        contacts = policy.get("governance", {}).get("contacts", {})
-        if contacts.get("ai_officer"):
+        governance = policy.get("governance", {}) or {}
+        # Support both the historical `contacts.ai_officer` nesting and
+        # the flat `governance.ai_officer` schema used by the current
+        # policy template.
+        ai_officer = (
+            governance.get("contacts", {}).get("ai_officer")
+            or governance.get("ai_officer")
+        )
+        # Treat a dict with at least a non-empty `name` as "defined"
+        if isinstance(ai_officer, dict):
+            defined = bool((ai_officer.get("name") or "").strip())
+        else:
+            defined = bool(ai_officer)
+        if defined:
             return {"name": "Config validation", "status": "PASS",
                     "detail": "ai_officer defined in policy"}
         return {"name": "Config validation", "status": "INFO",
