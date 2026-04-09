@@ -24,7 +24,14 @@ from pathlib import Path
 from typing import Optional
 from urllib.error import URLError
 from urllib.request import Request, urlopen
-from xml.etree import ElementTree
+# Prefer defusedxml when available (hardens against XXE, billion-laughs,
+# external entity resolution). Falls back to stdlib xml.etree if the
+# optional dependency is not installed — mitigated by _MAX_FEED_BYTES and
+# the curated-feed policy.
+try:
+    from defusedxml import ElementTree  # type: ignore[import-not-found]
+except ImportError:  # pragma: no cover — optional dep
+    from xml.etree import ElementTree  # nosec B405  # nosemgrep: use-defused-xml — defusedxml is preferred (see try block above); fallback is size-capped by _MAX_FEED_BYTES and guarded by curated feed sources
 
 
 # ---------------------------------------------------------------------------
@@ -139,16 +146,30 @@ def strip_html(html_text: str) -> str:
 # Feed fetching and parsing
 # ---------------------------------------------------------------------------
 
+_MAX_FEED_BYTES = 10 * 1024 * 1024  # 10 MiB — guards against XML bomb / runaway feeds.
+
+
+def _require_http_url(url: str) -> None:
+    """Reject non-http(s) schemes before passing to urlopen.
+
+    Blocks the file:// / ftp:// / data:// attack surface flagged by
+    bandit B310 / semgrep dynamic-urllib-use-detected.
+    """
+    if not isinstance(url, str) or not (url.startswith("http://") or url.startswith("https://")):
+        raise ValueError(f"Refusing non-http(s) URL: {url!r}")
+
+
 def _fetch_url(url: str, timeout: int = 15) -> Optional[bytes]:
-    """Fetch URL content with timeout and user-agent."""
+    """Fetch URL content with timeout, user-agent, and scheme + size guards."""
     try:
+        _require_http_url(url)
         req = Request(url, headers={
             "User-Agent": "Regula/1.0 (+https://github.com/kuzivaai/getregula)",
             "Accept": "application/rss+xml, application/atom+xml, application/xml, text/xml",
         })
-        with urlopen(req, timeout=timeout) as resp:
-            return resp.read()
-    except (URLError, OSError, TimeoutError):
+        with urlopen(req, timeout=timeout) as resp:  # nosec B310  # nosemgrep: dynamic-urllib-use-detected — scheme validated by _require_http_url above
+            return resp.read(_MAX_FEED_BYTES + 1)[:_MAX_FEED_BYTES]
+    except (URLError, OSError, TimeoutError, ValueError):
         return None
 
 
@@ -181,7 +202,7 @@ def _parse_feed(xml_bytes: bytes, source_name: str) -> list:
     """Parse RSS or Atom feed XML into article dicts."""
     articles = []
     try:
-        root = ElementTree.fromstring(xml_bytes)
+        root = ElementTree.fromstring(xml_bytes)  # nosec B314  # nosemgrep: use-defused-xml — defusedxml is imported above when available; feed bytes are size-capped by _MAX_FEED_BYTES in _fetch_url; feed sources are curated by policy
     except ElementTree.ParseError:
         return []
 
@@ -233,10 +254,11 @@ def _is_relevant(article: dict) -> bool:
 
 
 def _dedup_key(title: str) -> str:
-    """Generate dedup key from title."""
+    """Generate dedup key from title. MD5 here is a non-security content
+    hash (article de-duplication), not a cryptographic signature."""
     cleaned = re.sub(r"[^a-z0-9 ]", "", title.lower())
     cleaned = re.sub(r"\s+", " ", cleaned).strip()
-    return hashlib.md5(cleaned.encode()).hexdigest()
+    return hashlib.md5(cleaned.encode(), usedforsecurity=False).hexdigest()
 
 
 # ---------------------------------------------------------------------------

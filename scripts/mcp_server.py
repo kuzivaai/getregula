@@ -126,7 +126,7 @@ def _call_regula_check(arguments: dict) -> str:
     if not resolved.is_dir() and not resolved.is_file():
         return f"Error: path does not exist: {path}"
     # Block scanning root or system directories
-    blocked = {"/", "/etc", "/usr", "/var", "/bin", "/sbin", "/tmp", "/home", "/root"}
+    blocked = {"/", "/etc", "/usr", "/var", "/bin", "/sbin", "/tmp", "/home", "/root"}  # nosec B108 — this is a denylist of directories we refuse to scan, not a tmp path used for writing
     if str(resolved) in blocked:
         return f"Error: scanning {resolved} is not permitted — specify a project directory."
 
