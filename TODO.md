@@ -357,14 +357,24 @@ _All P0 items closed in this session — see "Closed" section below._
 
 ## Closed in this session (post-v1.6.0)
 
-- ~~P0 #1 AICDI figures verification~~ — `2,972` replaced with
-  "approximately 3,000" (UNESCO press release wording) in
-  `scripts/timeline.py`, `docs/landscape.md`, `README.md`, `writing.html`.
-  `2.7%` model registry and `2.3%` complaints mechanism figures marked
-  **[PDF only — unverified]** per CLAUDE.md Research Integrity rule 2.
-  Verified against UNESCO + Policy Edge press releases; both quote
-  "3,000 companies across 11 sectors" and the 10%/12%/11%/7% figures, but
-  neither discloses the 2.7% / 2.3% breakdowns.
+- ~~P0 #1 AICDI figures verification~~ — Cross-checked against 5 public
+  sources: UNESCO press release, Policy Edge, Digital Watch Observatory,
+  Eco-Business, and Economy Middle East. **Verified**: "approximately
+  3,000" / "almost 3,000" companies (all 5 sources agree); 44% AI
+  strategy; 10% publicly committed to a governance framework; 12% human
+  oversight policies; 11% environmental impact; 7% human rights impact;
+  30% offer any AI training, 12% offer structured coverage; fewer than
+  1 in 5 conduct AI-specific privacy/DPIA; ~1 in 5 have third-party
+  AI-vendor data-sharing policies; ~25% have training-data quality
+  evidence. **Not verifiable from public sources**: the precise
+  "2,972" headcount, "2.7%" formal model registry, "2.3%" complaints
+  mechanism, "40%" board oversight, "~33%" dedicated governance team,
+  "14%" worker protection, "5%" ethical impact assessment. The full
+  AICDI PDF is not published on `unesdoc.unesco.org`. All unverifiable
+  figures removed from `docs/landscape.md` and replaced with `—`. The
+  "2,972" headcount replaced with "approximately 3,000" in
+  `scripts/timeline.py`, `README.md`, `writing.html`. Closure follows
+  CLAUDE.md Research Integrity rules 2, 5, 6, 8.
 - ~~P0 #2 Recall expansion for the 6 remaining Annex III categories~~ —
   biometrics, critical_infrastructure, migration, justice, medical_devices,
   and safety_components each expanded from 4–7 to 12–18 real-world
