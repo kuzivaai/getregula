@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regula — EU AI Act compliance for UAE & GCC companies selling into Europe</title>
+    <meta name="description" content="If your DIFC or ADGM-licensed company ships AI features that touch EU users, the EU AI Act applies to you from 2 August 2026. Free open-source CLI that audits your codebase in one command.">
+    <meta property="og:title" content="Regula — EU AI Act compliance for UAE & GCC companies selling into Europe">
+    <meta property="og:description" content="The EU AI Act applies extraterritorially. UAE & GCC providers and deployers are liable. Regula audits your codebase locally — no SaaS, no consultants, free.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://getregula.com/uae.html">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="EU AI Act compliance for UAE companies">
+    <meta name="twitter:description" content="Free CLI that scans your code for EU AI Act risk in one command. Built for DIFC, ADGM and GCC AI teams selling into the EU.">
+    <link rel="canonical" href="https://getregula.com/uae.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/">
+    <link rel="alternate" hreflang="en-AE" href="https://getregula.com/uae.html">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'DM Sans', system-ui, sans-serif;
+            background: #070711;
+            color: #e2e2f0;
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+        }
+        code, .mono { font-family: 'JetBrains Mono', monospace; }
+        h1, h2 { font-family: 'Fraunces', Georgia, serif; }
+        a { color: #3b82f6; text-decoration: none; transition: color 0.15s; }
+        a:hover { color: #60a5fa; }
+
+        .nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(7, 7, 17, 0.85);
+            backdrop-filter: saturate(140%) blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 14px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-brand { font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 22px; color: #fff; }
+        .nav-brand .pill { font-family: 'DM Sans', sans-serif; font-size: 11px; padding: 2px 8px; background: rgba(59,130,246,0.15); color: #7dd3fc; border-radius: 999px; vertical-align: middle; margin-left: 6px; }
+        .nav-links a { color: #aaaac0; font-size: 14px; margin-left: 20px; }
+        .nav-links a:hover { color: #fff; }
+
+        .hero {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 80px 24px 56px;
+            text-align: left;
+        }
+        .badge {
+            display: inline-block;
+            font-size: 12px;
+            padding: 6px 12px;
+            background: rgba(59,130,246,0.12);
+            border: 1px solid rgba(59,130,246,0.3);
+            border-radius: 999px;
+            color: #93c5fd;
+            margin-bottom: 24px;
+        }
+        h1 {
+            font-size: 48px;
+            line-height: 1.1;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        h1 .hl { color: #3b82f6; }
+        .sub {
+            font-size: 19px;
+            color: #aaaac0;
+            max-width: 680px;
+            margin-bottom: 32px;
+        }
+        .sub strong { color: #e2e2f0; }
+        .cta-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #3b82f6, #7c3aed);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 999px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.1s, box-shadow 0.15s;
+        }
+        .cta-pill:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(59,130,246,0.35); }
+        .cta-pill.copied { background: linear-gradient(135deg, #059669, #047857); }
+        .cta-secondary {
+            margin-top: 14px;
+            font-size: 13px;
+            color: #888;
+        }
+        .cta-secondary a { color: #888; text-decoration: underline; text-underline-offset: 3px; }
+        .social-proof {
+            margin-top: 28px;
+            font-size: 13px;
+            color: #666;
+        }
+        .social-proof .sp-sep { margin: 0 8px; }
+
+        .sec {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 56px 24px;
+        }
+        h2 { font-size: 30px; color: #fff; margin-bottom: 8px; }
+        .sec-sub { font-size: 16px; color: #888; margin-bottom: 32px; }
+
+        .liab-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .liab-card {
+            background: #0f0f1f;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 22px;
+        }
+        .liab-card h3 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 19px;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .liab-card p { font-size: 14px; color: #aaaac0; }
+        .liab-card .ref { font-size: 11px; color: #555; margin-top: 10px; font-family: 'JetBrains Mono', monospace; }
+
+        .sectors {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .sector {
+            background: #0f0f1f;
+            border-left: 3px solid #3b82f6;
+            padding: 16px 18px;
+        }
+        .sector strong { color: #fff; display: block; margin-bottom: 4px; font-size: 14px; }
+        .sector span { font-size: 13px; color: #888; }
+
+        .terminal {
+            background: #050510;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #c4c4d8;
+            overflow-x: auto;
+            line-height: 1.7;
+        }
+        .terminal .prompt { color: #44445a; }
+        .terminal .cmd { color: #7dd3fc; }
+        .terminal .out-block { color: #fff; }
+        .terminal .out-warn { color: #facc15; }
+        .terminal .out-ok { color: #10b981; }
+
+        .install-block {
+            background: #0a0a18;
+            border: 1px solid rgba(59,130,246,0.3);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 28px;
+            display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+        }
+        .install-block .dollar { color: #44445a; }
+        .install-block .cmd { color: #7dd3fc; flex: 1; }
+        .install-block button {
+            background: #3b82f6; border: none; color: #fff;
+            padding: 8px 16px; border-radius: 6px; cursor: pointer;
+            font-family: inherit; font-size: 13px; font-weight: 600;
+        }
+
+        footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 36px 24px;
+            text-align: center;
+            color: #555;
+            font-size: 13px;
+        }
+        footer a { color: #888; }
+
+        @media (max-width: 720px) {
+            .hero { padding: 56px 16px 36px; }
+            h1 { font-size: 32px; }
+            .sub { font-size: 17px; }
+            .sec { padding: 40px 16px; }
+            h2 { font-size: 24px; }
+            .liab-grid { grid-template-columns: 1fr; }
+            .sectors { grid-template-columns: 1fr; }
+            .nav { padding: 12px 16px; }
+            .nav-links a { margin-left: 12px; font-size: 13px; }
+        }
+    </style>
+    <script defer data-domain="getregula.com" src="https://plausible.io/js/script.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+    <div class="nav-brand">Regula <span class="pill">UAE</span></div>
+    <div class="nav-links">
+        <a href="/">Global</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub &#8599;</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">Trust pack</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="badge">For DIFC, ADGM &amp; GCC AI teams selling into Europe</div>
+    <h1>If your AI features touch EU users, you&rsquo;re <span class="hl">already liable</span>.</h1>
+    <p class="sub">The EU AI Act applies <strong>extraterritorially</strong>. A UAE-licensed company that ships AI to EU customers is a &ldquo;provider&rdquo; or &ldquo;deployer&rdquo; under Article&nbsp;2(1)(c) — and on the hook for fines up to <strong>&euro;35M or 7% of global turnover</strong> from <strong>2 August 2026</strong>. Regula audits your codebase locally in one command. Free, open-source, no consultants.</p>
+
+    <button class="cta-pill" onclick="copyCmd(this, 'pip install regula-ai \u0026\u0026 regula quickstart')">
+        <span>&#9654;</span>
+        Try free in 30 seconds
+    </button>
+
+    <div class="cta-secondary">
+        no account &middot; no API key &middot; runs on your machine &middot;
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">read the trust pack</a>
+    </div>
+
+    <div class="social-proof">
+        <span>MIT licence</span>
+        <span class="sp-sep">&middot;</span>
+        <span>zero runtime dependencies</span>
+        <span class="sp-sep">&middot;</span>
+        <span>925 tests</span>
+        <span class="sp-sep">&middot;</span>
+        <span>0 known security findings</span>
+    </div>
+</section>
+
+<!-- LIABILITY -->
+<section class="sec">
+    <h2>Why this matters for UAE companies</h2>
+    <p class="sec-sub">Four facts about EU AI Act extraterritoriality that GCC general counsel are double-checking right now.</p>
+
+    <div class="liab-grid">
+        <div class="liab-card">
+            <h3>Extraterritorial by design</h3>
+            <p>Article 2(1)(c) of Regulation (EU) 2024/1689 explicitly applies to providers and deployers established outside the EU when the output of the AI system is used in the Union. Where you incorporate is irrelevant.</p>
+            <p class="ref">Source: Regulation (EU) 2024/1689 Article 2(1)(c)</p>
+        </div>
+        <div class="liab-card">
+            <h3>The provider carries the liability</h3>
+            <p>If your DIFC or ADGM company places an AI system on the EU market — directly, through a reseller, or via an EU-based customer using your API — you are the provider. Compliance liability sits with you, not your distributor.</p>
+            <p class="ref">Source: Regulation (EU) 2024/1689 Article 3(3) and Article 16</p>
+        </div>
+        <div class="liab-card">
+            <h3>Fines up to &euro;35M or 7% of global turnover</h3>
+            <p>Article 99 sets the maximum administrative fine at &euro;35 million or 7% of worldwide annual turnover, whichever is higher. For a DIFC fintech with EU exposure, this is materially worse than DFSA and DPDP enforcement combined.</p>
+            <p class="ref">Source: Regulation (EU) 2024/1689 Article 99</p>
+        </div>
+        <div class="liab-card">
+            <h3>Enforcement begins 2 August 2026</h3>
+            <p>Annex III high-risk obligations apply from 2 August 2026. The proposed Digital Omnibus delay to 2 December 2027 is not yet law and is currently in trilogue. Plan for August.</p>
+            <p class="ref">Source: Regulation (EU) 2024/1689 Article 113; Council 13 March 2026 mandate</p>
+        </div>
+    </div>
+</section>
+
+<!-- SECTORS -->
+<section class="sec">
+    <h2>Sectors with the highest exposure in the UAE</h2>
+    <p class="sec-sub">Where DIFC, ADGM, Dubai Internet City, and Abu Dhabi Hub71-licensed companies most often hit EU AI Act high-risk categories.</p>
+
+    <div class="sectors">
+        <div class="sector"><strong>Fintech &amp; lending</strong><span>Credit scoring, loan approval, KYC risk → Annex III Cat 5 (essential services)</span></div>
+        <div class="sector"><strong>Insurtech</strong><span>Health/life insurance pricing, claim assessment → Annex III Cat 5</span></div>
+        <div class="sector"><strong>HR &amp; recruitment SaaS</strong><span>CV screening, candidate ranking → Annex III Cat 4 (employment)</span></div>
+        <div class="sector"><strong>Health-tech</strong><span>Clinical decision support, diagnostic AI → Article 6(1) + MDR/IVDR</span></div>
+        <div class="sector"><strong>Proptech</strong><span>Tenant screening, rental decisions → Annex III Cat 5</span></div>
+        <div class="sector"><strong>Smart city / mobility</strong><span>ADAS, traffic management, biometrics → Annex III Cat 1, 2, safety components</span></div>
+    </div>
+</section>
+
+<!-- DEMO -->
+<section class="sec">
+    <h2>What it looks like</h2>
+    <p class="sec-sub">Real session against a one-file Python script that calls OpenAI to score a CV — the canonical Annex III Category 4 case.</p>
+
+    <pre class="terminal"><span class="prompt">$</span> <span class="cmd">pip install regula-ai</span>
+Successfully installed regula-ai-1.6.0
+
+<span class="prompt">$</span> <span class="cmd">cat demo.py</span>
+import openai
+def classify_resume(resume_text):
+    client = openai.OpenAI()
+    reply = client.chat.completions.create(
+        model='gpt-4',
+        messages=[{'role':'user','content':f'Score this resume: {resume_text}'}])
+    return reply.choices[0].message.content
+
+<span class="prompt">$</span> <span class="cmd">regula quickstart</span>
+
+Regula Quickstart
+
+  Created: ./regula-policy.yaml
+
+  First scan complete (0.0s)
+  Files scanned:      1
+  <span class="out-warn">BLOCK findings:     1</span>
+
+  Top findings:
+    <span class="out-warn">[BLOCK]</span> [ 88] demo.py
+          <span class="out-block">Annex III, Category 4</span>
+          Employment and workers management
+
+<span class="prompt">$</span> <span class="cmd">regula classify --file demo.py</span>
+<span class="out-warn">HIGH-RISK</span>: Employment and workers management - Articles 9, 10, 11, 12, 13, 14, 15
+
+<span class="prompt">$</span> <span class="out-ok"># From pip install to a categorised, article-cited finding in under 10 seconds.</span></pre>
+
+    <div class="install-block">
+        <span class="dollar">$</span>
+        <span class="cmd">pip install regula-ai &amp;&amp; regula quickstart</span>
+        <button onclick="copyCmd(this, 'pip install regula-ai \u0026\u0026 regula quickstart')">Copy</button>
+    </div>
+</section>
+
+<!-- TRUST -->
+<section class="sec">
+    <h2>How you verify Regula independently</h2>
+    <p class="sec-sub">Procurement teams in DIFC and ADGM ask the same questions. Here are the answers, all in one document.</p>
+
+    <ul style="list-style: none; padding: 0; font-size: 15px; color: #aaaac0;">
+        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Trust Pack</strong> — every claim is paired with the exact shell command anyone can run to verify it. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">docs/TRUST.md</a></li>
+        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Published precision &amp; recall</strong> — 100% on the synthetic Annex III/Article 5 corpus, 0 false positives at the BLOCK tier on five mature OSS projects. Reproducible methodology. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md">benchmark report</a></li>
+        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>SHA-256 tamper-evident audit log</strong> — verify the chain yourself with <code>regula audit verify</code>.</li>
+        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Zero runtime dependencies</strong> — Regula's core only uses Python's standard library. The Software Bill of Materials is empty by design.</li>
+        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Runs entirely on your machine</strong> — no SaaS, no API, no data leaves your environment. <code>regula check</code> is fully offline.</li>
+        <li style="padding: 10px 0;">&#10003; <strong>Open source under MIT</strong> — read every line at <a href="https://github.com/kuzivaai/getregula">github.com/kuzivaai/getregula</a>.</li>
+    </ul>
+</section>
+
+<footer>
+    <p>Regula is an open-source project. The maintainer is happy to take an introduction call from any DIFC, ADGM, Hub71, or NEOM-portfolio team that wants a structured walk-through. Reach out via <a href="https://github.com/kuzivaai/getregula/issues">GitHub</a>.</p>
+    <p style="margin-top: 12px;">Sources for the legal claims on this page: <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Regulation (EU) 2024/1689</a>, <a href="https://www.afriwise.com/blog/extraterritorial-application-of-the-eu-ai-act-what-non-eu-companies-should-know">Afriwise — Extraterritorial Application of the EU AI Act</a>.</p>
+</footer>
+
+<script>
+function copyCmd(btn, cmd) {
+    navigator.clipboard.writeText(cmd).then(() => {
+        const originalText = btn.innerHTML;
+        btn.classList.add('copied');
+        if (btn.classList.contains('cta-pill')) {
+            btn.innerHTML = '<span>&#10003;</span> Copied — paste in your terminal';
+        } else {
+            btn.textContent = 'Copied';
+        }
+        setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = originalText;
+        }, 2500);
+    });
+}
+</script>
+</body>
+</html>
