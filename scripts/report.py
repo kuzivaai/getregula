@@ -286,6 +286,9 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     """
     project = Path(project_path).resolve()
     findings = []
+    # Side-channel counters so cmd_check can show an honest "files scanned"
+    # number without refactoring every caller. Exposed on scan_files.last_stats.
+    _scanned_files = 0
 
     # Initialise scan cache (failures must never block a scan)
     cache = None
@@ -336,6 +339,8 @@ def scan_files(project_path: str, respect_ignores: bool = True,
 
             if filepath.suffix not in CODE_EXTENSIONS:
                 continue
+
+            _scanned_files += 1
 
             # Jupyter notebooks: extract code cells from the .ipynb JSON.
             # Line numbers in findings refer to the joined-source position,
@@ -542,6 +547,14 @@ def scan_files(project_path: str, respect_ignores: bool = True,
 
     # Enrich each finding with Omnibus-aware enforcement deadline
     _enrich_deadlines(findings)
+
+    # Publish scan stats on the function itself (side-channel).
+    # cmd_check reads this to show the real "files scanned" count
+    # instead of misreporting as len(unique files with findings).
+    scan_files.last_stats = {
+        "files_scanned": _scanned_files,
+        "skip_tests": skip_tests,
+    }
 
     return findings
 

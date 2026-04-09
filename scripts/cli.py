@@ -228,9 +228,17 @@ def cmd_check(args):
         from term_style import red, yellow, blue, magenta
         print(f"\n{t('scan_header', path=project)}")
         print(f"{'=' * 60}")
-        total_files = len(set(f["file"] for f in findings))
-        skip_tests_active = getattr(args, "skip_tests", True)
-        files_label = f"{total_files}" + (" (test files excluded — use --no-skip-tests to include)" if skip_tests_active and total_files == 0 else "")
+        # Use the scanner's real count, not "files with findings" —
+        # the old derivation made empty scans look like nothing ran.
+        stats = getattr(scan_files, "last_stats", {}) or {}
+        total_files = stats.get("files_scanned", len(set(f["file"] for f in findings)))
+        skip_tests_active = bool(stats.get("skip_tests", getattr(args, "skip_tests", False)))
+        suffix = ""
+        if total_files == 0 and skip_tests_active:
+            suffix = " (test files excluded — use --no-skip-tests to include)"
+        elif total_files == 0:
+            suffix = " (no code files matched; check path and extensions)"
+        files_label = f"{total_files}{suffix}"
         print(f"  {t('files_scanned'):<20}{files_label}")
         print(f"  {t('prohibited'):<20}{len(prohibited)}")
         print(f"  {t('credentials'):<20}{len(credentials)}")
@@ -1599,7 +1607,8 @@ def cmd_assess(args):
     """EU AI Act applicability check -- no code required."""
     from assess import run_assess
     output_format = getattr(args, "format", "text")
-    sys.exit(run_assess(output_format))
+    answers = getattr(args, "answers", None)
+    sys.exit(run_assess(output_format, answers=answers))
 
 
 def cmd_quickstart(args):
@@ -2032,6 +2041,16 @@ def _build_subparsers(subparsers):
         help="EU AI Act applicability check -- does this apply to your product? (no code required)",
     )
     p_assess.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_assess.add_argument(
+        "--answers",
+        help=(
+            "Non-interactive: comma-separated yes/no answers in order "
+            "uses_ai,eu_users,prohibited,high_risk_domain,"
+            "non_eu_provider|transparency_trigger "
+            "(the 5th slot is non_eu_provider when high_risk=yes, "
+            "else transparency_trigger)."
+        ),
+    )
     p_assess.set_defaults(func=cmd_assess)
 
     # --- quickstart ---

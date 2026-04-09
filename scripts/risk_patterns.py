@@ -115,7 +115,22 @@ HIGH_RISK_PATTERNS = {
                      r"\bpromotion.?decision",
                      r"\btermination.?decision", r"\bperformance.?review.{0,10}(ai|automat|model|predict)",
                      r"\bscreen.?candidate", r"\bjob.?candidate", r"\bcandidate.?screen", r"\bresume\s*[\W_]?screen",
-                     r"\bapplicant.?scor", r"\bapplicant.?rank", r"\bemployee.?assess"],
+                     r"\bapplicant.?scor", r"\bapplicant.?rank", r"\bemployee.?assess",
+                     # Common real-world phrasings missed by the original list.
+                     # Added after recall audit (Apr 2026): Regula was failing to
+                     # flag obvious employment AI like classify_resume()/score_resume().
+                     # NOTE: "applicant" on its own is ambiguous (job vs loan) —
+                     # require explicit job context to avoid conflating with
+                     # credit-applicant flows that belong in essential_services.
+                     r"\b(?:classify|score|rank|evaluate|assess|filter|shortlist)[_\W]?resumes?\b",
+                     r"\bresumes?[_\W]?(?:classif|scor|rank|evaluat|filter|shortlist|match)",
+                     r"\b(?:score|rank|evaluate|shortlist)[_\W]?(?:job[_\W]?)?candidates?\b",
+                     r"\bjob[_\W]?applicants?[_\W]?(?:scor|rank|filter|evaluat|shortlist)",
+                     r"\b(?:score|rank|shortlist)[_\W]?job[_\W]?applicants?\b",
+                     # Prompt-string templates that embed hiring instructions.
+                     r"(?:score|rank|classify|evaluate)[^\"\\n]{0,30}resumes?\b",
+                     r"\bresumes?[^\"\\n]{0,30}(?:score|rank|classif|evaluat|shortlist)",
+                     r"(?:score|rank|classify|evaluate)[^\"\\n]{0,30}(?:job[_\W]candidate|job[_\W]applicant)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 4",
         "description": "Employment and workers management",

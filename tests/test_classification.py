@@ -257,6 +257,30 @@ def test_high_risk_employment():
     print("✓ High-risk: employment")
 
 
+def test_recall_realistic_employment_code():
+    """Regression (audit Apr 2026): realistic OpenAI-driven hiring code
+    was being classified minimal_risk because the original employment
+    patterns required literal tokens like 'cv_screen' or 'candidate_rank'.
+    A function literally named classify_resume with hire/reject branching
+    must flag as high-risk."""
+    code = (
+        "import openai\n"
+        "client = openai.OpenAI()\n"
+        "def classify_resume(resume_text):\n"
+        "    reply = client.chat.completions.create(\n"
+        "        model='gpt-4',\n"
+        "        messages=[{'role':'user','content':f'Score this resume: {resume_text}'}])\n"
+        "    score = reply.choices[0].message.content\n"
+        "    if float(score) > 0.5:\n"
+        "        return 'hire'\n"
+        "    return 'reject'\n"
+    )
+    r = classify(code)
+    assert_eq(r.tier, RiskTier.HIGH_RISK, "classify_resume is high-risk")
+    assert_eq(r.category, "Annex III, Category 4", "employment category")
+    print("✓ Recall: realistic classify_resume code correctly flagged employment")
+
+
 def test_high_risk_credit_scoring():
     """Credit scoring → HIGH-RISK"""
     r = classify("import torch; credit scoring model")
@@ -5474,6 +5498,67 @@ def test_assess_format_result_prohibited():
     assert "35 million" in result
     assert "2 February 2025" in result
     print("✓ assess: prohibited result includes enforcement date and penalty")
+
+
+def test_assess_run_from_answers_non_interactive():
+    """run_from_answers lets assess work in CI / piped contexts.
+
+    Regression: `regula assess` used to error with 'requires an interactive
+    terminal' and offer no non-interactive path, making it unusable in CI
+    and leaving users stuck at the first step advertised on the landing page.
+    """
+    from assess import (
+        run_from_answers, TIER_NOT_IN_SCOPE, TIER_NOT_IN_SCOPE_EU,
+        TIER_PROHIBITED, TIER_HIGH, TIER_LIMITED, TIER_MINIMAL,
+    )
+
+    # Every short-circuit branch.
+    assert run_from_answers("no")["tier"] == TIER_NOT_IN_SCOPE
+    assert run_from_answers("yes,no")["tier"] == TIER_NOT_IN_SCOPE_EU
+    assert run_from_answers("yes,yes,yes")["tier"] == TIER_PROHIBITED
+    r_high = run_from_answers("yes,yes,no,yes,no")
+    assert r_high["tier"] == TIER_HIGH
+    assert r_high["non_eu_provider"] is False
+    assert run_from_answers("yes,yes,no,yes,yes")["non_eu_provider"] is True
+    assert run_from_answers("yes,yes,no,no,yes")["tier"] == TIER_LIMITED
+    assert run_from_answers("yes,yes,no,no,no")["tier"] == TIER_MINIMAL
+
+    # Garbage / short inputs raise ValueError instead of silently passing.
+    for bad in ("garbage", "yes,yes", "yes,yes,no,yes"):
+        try:
+            run_from_answers(bad)
+        except ValueError:
+            continue
+        else:
+            raise AssertionError(f"run_from_answers should reject {bad!r}")
+    print("✓ assess: run_from_answers covers all branches + rejects bad input")
+
+
+def test_scan_files_exposes_files_scanned_count():
+    """scan_files.last_stats reports the real files-scanned count.
+
+    Regression: cmd_check used to derive 'files scanned' from
+    len(unique files with findings), which made clean scans look
+    empty ('0 files scanned') even though the walk had run. That
+    was the first thing a user saw after `regula quickstart`.
+    """
+    from report import scan_files
+    import tempfile, os
+    with tempfile.TemporaryDirectory() as tmp:
+        for name, body in [
+            ("a.py", "x = 1\n"),                            # no AI, still counted
+            ("b.py", "import numpy as np\n"),               # AI, no risk
+            ("c.py", "# plain text\n"),                     # counted
+            ("readme.md", "hello\n"),                       # not a code extension
+        ]:
+            (Path(tmp) / name).write_text(body)
+        scan_files(tmp)
+        stats = getattr(scan_files, "last_stats", None)
+        assert stats is not None, "scan_files.last_stats must be set"
+        assert stats["files_scanned"] == 3, (
+            f"expected 3 .py files counted, got {stats['files_scanned']}"
+        )
+    print("✓ scan_files: exposes honest files_scanned count via last_stats")
 
 
 # ---------------------------------------------------------------------------
