@@ -888,6 +888,8 @@
             .notify { flex-direction: column; }
             .hero-glow { width: 400px; height: 400px; }
         }
+        .skip-link { position: absolute; left: -9999px; top: 0; background: #3b82f6; color: #fff; padding: 8px 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; z-index: 1000; border-radius: 0 0 6px 0; text-decoration: none; }
+        .skip-link:focus { left: 0; }
     </style>
     <!-- Privacy-friendly analytics by Plausible -->
     <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
@@ -898,6 +900,7 @@
 </head>
 <body>
 
+<a href="#main" class="skip-link">Skip to content</a>
 <div id="progress-bar"></div>
 
 <!-- NAV -->
@@ -915,6 +918,7 @@
 </nav>
 
 <!-- HERO -->
+<main id="main">
 <div class="hero-wrap">
     <div class="hero-glow"></div>
     <div class="hero">
@@ -1279,6 +1283,8 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
         <p class="notify-msg">No spam. Major releases and EU AI Act deadline reminders only.</p>
     </div>
 </div>
+
+</main>
 
 <!-- FOOTER -->
 <footer>
