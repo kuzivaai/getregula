@@ -5,6 +5,122 @@ All notable changes to Regula are documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/).
 
+## [1.6.0] — 2026-04-09
+
+The "live-path reliability" release. Bundles the v1.6 feature work that
+shipped over March–April 2026 with five P0/P1 fixes uncovered by the
+April 2026 reliability audit and a `/research-eval` pass against primary
+EU and UNESCO sources.
+
+### Added
+
+- **`regula conform --sme`** — SME-simplified Annex IV under Article 11(1)
+  second subparagraph (interim format pending Commission template).
+- **`regula exempt`** — Article 6(3) high-risk exemption decision tree
+  with the Commission's missed 2 February 2026 Article 6(5) guideline-deadline
+  disclosure baked in. Interactive or `--answers yes,no,...` for CI use.
+- **`regula register`** — Annex VIII Section A/B/C registration packet
+  generator (Article 49). Branches by provider/deployer role and Annex III
+  area, including Article 49(4) non-public routing for biometrics / law
+  enforcement / migration and Article 49(5) national-level routing for
+  critical infrastructure. Auto-fills from existing scan artefacts and
+  dual-annotates 2026-08-02 vs Omnibus-proposed 2027-12-02 deadlines.
+- **`regula gpai-check`** — maps GPAI provider code to the three chapters
+  of the GPAI Code of Practice (Transparency / Copyright / Safety &
+  Security) with Article 53 + Article 55 scope rules.
+- **OWASP LLM01:2025 prompt-injection detection (expanded)** — direct
+  user-input concatenation, indirect (RAG / web-fetch / file-read flowing
+  into prompt), and tool-output (plugin/function results passed back).
+- **Tier-3 regional landing pages** — Colorado AI Act (SB 24-205 +
+  SB 25B-004 delay to 30 June 2026), South Korea AI Basic Act, United
+  Kingdom (DSIT-led approach), South Africa April 2026 draft policy.
+- **Harmonised-standards plumbing** — `references/harmonised_standards.yaml`
+  ready to load CEN-CENELEC standards once published Q4 2026 (currently a
+  documented stub).
+- **`regula assess --answers`** — non-interactive `regula assess` for CI /
+  piped use. Previously errored "requires an interactive terminal" with
+  no escape hatch.
+- **JS/TS tree-sitter data-flow tracing** with destination classification
+  (log / api_response / human_review / persisted / display /
+  automated_action / return) — already shipped, README finally documents it
+  honestly.
+- **Recall expansion** for Annex III pattern lists in `risk_patterns.py`:
+  - `employment` — classify_resume / score_resume / hire-reject / job-applicant
+    phrasings + prompt-string templates.
+  - `education` — grade_essay / predict_dropout / admissions ranking /
+    placement scoring + prompt-string templates.
+  - `essential_services` — approve_loan / mortgage / health insurance pricing
+    / welfare eligibility / claim assessment.
+  - `law_enforcement` — parole / bail / threat-scoring (lawful Annex III
+    uses, distinct from the Article 5(1)(d) profiling prohibition handled
+    by `PROHIBITED_PATTERNS`).
+- **Regression tests** for every recall expansion and bug fix:
+  - `test_recall_realistic_employment_code`
+  - `test_recall_realistic_education_code`
+  - `test_recall_realistic_essential_services_code`
+  - `test_recall_realistic_law_enforcement_code`
+  - `test_assess_run_from_answers_non_interactive`
+  - `test_scan_files_exposes_files_scanned_count`
+
+### Fixed
+
+- **Scan cache silent staleness on upgrade.** `ScanCache` now keys
+  entries on `{path}:v2:{regula_version}:{patterns_fingerprint}:{sha256}`.
+  Previously only `{path}:{sha256}`, so users who upgraded Regula kept
+  seeing stale "no findings" results until they edited each file. The
+  most subtle reported bug.
+- **`Files scanned: 0` lying.** `scan_files` now exposes the real
+  scanned-file count via `scan_files.last_stats`, and `cmd_check` uses it
+  instead of misreporting `len(unique files with findings)`. Empty scans
+  now print an honest "no code files matched" message.
+- **`regula assess` non-TTY crash** — see Added.
+- **Recall gap on realistic AI code** — see Added (recall expansion).
+- **README v1.3 roadmap line** — corrected: JS/TS tree-sitter data-flow
+  already ships in `scripts/ast_engine.py`. AVID and typosquat moved to
+  explicit backlog.
+- **Five factual errors** identified by `/research-eval`:
+  1. Commission Omnibus proposal date — was "December 2025", actually
+     **COM(2025) 836 adopted 19 November 2025**
+     ([EP Legislative Train](https://www.europarl.europa.eu/legislative-train/package-digital-package/file-digital-omnibus-on-ai)).
+  2. "10 Annex III categories" — Annex III has **8 areas** (points 1–8).
+     Regula has 10 high-risk pattern categories because it includes 2
+     Annex I (Article 6(1) harmonised legislation) categories: medical
+     devices and machinery safety components. README, ROADMAP, and
+     `docs/landscape.md` now make the split honest. Detection logic was
+     correct; only the labelling was wrong.
+     ([Regulation (EU) 2024/1689 Annex III](https://eur-lex.europa.eu/eli/reg/2024/1689/oj))
+  3. Trilogue timing — was "first trilogue completed in late March 2026,
+     second scheduled for 28 April 2026". Parliament only adopted its
+     plenary mandate on **26 March 2026** (after the **Council's 13 March
+     mandate**), so trilogues began in April 2026. The 28 April date is
+     the **Cypriot Council Presidency's target for political agreement**,
+     not a scheduled meeting.
+     ([EP press release 26 March 2026](https://www.europarl.europa.eu/news/en/press-room/20260323IPR38829/),
+      [Council 13 March 2026](https://www.consilium.europa.eu/en/press/press-releases/2026/03/13/council-agrees-position-to-streamline-rules-on-artificial-intelligence/))
+  4. EP plenary vote — recorded as "569–45", actual was **569 in favour,
+     45 against, 23 abstentions**.
+     ([howtheyvote.eu/votes/189384](https://howtheyvote.eu/votes/189384))
+  5. AICDI gap framings — "closes the 2.7% gap" / "closes the 12% gap"
+     inverted the direction. The 2.7% / 12% are the share of companies
+     that **have** the safeguard, so the gap is 97.3% / 88%. Reworded.
+     ([dig.watch coverage of UNESCO/TRF report](https://dig.watch/updates/unesco-responsible-ai-practice-report))
+
+### Verified
+
+- 889/889 custom runner tests
+- 734/734 pytest tests
+- `regula self-test` 6/6
+- `regula doctor` 8 PASS / 2 INFO / 1 WARN (Sentry DSN unset, unrelated)
+- Clean-venv install of `dist/regula_ai-1.6.0-py3-none-any.whl` runs every
+  advertised v1.6 command end-to-end (`conform --sme`, `exempt --answers`,
+  `gpai-check`, `assess --answers`, `register`, `disclose`)
+- `twine check` PASSED on `dist/regula_ai-1.6.0-py3-none-any.whl` and
+  `dist/regula-ai-1.6.0.tar.gz`
+
+### Known issues
+
+See [TODO.md](TODO.md) for the prioritised gap backlog.
+
 ## [1.5.0] — 2026-04-03
 
 ### Added
