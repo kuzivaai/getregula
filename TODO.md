@@ -5,7 +5,108 @@ improvements. It complements `ROADMAP.md` (which tracks shipped features).
 Gaps are graded by user impact: **P0** blocks user value, **P1** is
 visible quality damage, **P2** is real but not visible, **P3** is backlog.
 
-Last consolidated: 2026-04-09 from the `/research-eval` + live-path audit.
+Last consolidated: 2026-04-09 from the `/research-eval` + live-path audit
++ `/last30days` market and best-practices research.
+
+---
+
+## /last30days market intelligence — verified Apr 2026
+
+These items inform priority weighting below. Sources cited inline.
+
+**EU AI Act state of play (March–April 2026):**
+- Commission published the **second draft of the Code of Practice on
+  Marking and Labelling of AI-generated content** on 3 March 2026.
+  Stakeholder feedback closed 30 March 2026. Finalisation expected
+  May–June 2026. Regula already tracks this in `scripts/timeline.py`;
+  no action required, but `regula gpai-check` should map watermarking
+  obligations to this Code once finalised.
+- Council mandate adds an **obligation for the Commission to provide
+  guidance to economic operators of high-risk AI systems covered by
+  sectoral harmonisation legislation** (Annex I) — explicitly to
+  minimise compliance burden. This is a tailwind for Regula's existing
+  Annex I detection (medical_devices, safety_components categories).
+- **AI regulatory sandbox deadline postponed to 2 December 2027** (was
+  August 2026). Regula's `regula timeline` should be updated to reflect
+  the sandbox postponement.
+- New prohibition on **non-consensual sexual content / CSAM AI** added
+  to Article 5 by both Council and Parliament mandates. Regula's
+  `PROHIBITED_PATTERNS` does not yet have a `non_consensual_sexual`
+  category. Add when the Omnibus is formally adopted.
+- **Support instruments for implementation under preparation,
+  publication Q2 2026.** Watch for the Annex IV template (would replace
+  Regula's interim SME format from `regula conform --sme`) and any
+  Article 6 high-risk classification guidelines (still overdue).
+
+  Sources:
+  - [Council 13 March 2026 press release](https://www.consilium.europa.eu/en/press/press-releases/2026/03/13/council-agrees-position-to-streamline-rules-on-artificial-intelligence/)
+  - [Pearl Cohen — New EU AI Act guidance ahead of next enforcement date](https://www.pearlcohen.com/new-guidance-under-the-eu-ai-act-ahead-of-its-next-enforcement-date/)
+  - [K&L Gates — EU and Luxembourg Update on Harmonised AI Rules, Jan 2026](https://www.klgates.com/EU-and-Luxembourg-Update-on-the-European-Harmonised-Rules-on-Artificial-IntelligenceRecent-Developments-1-20-2026)
+
+**CLI UX best practices for developer tools (2025–2026):**
+- 78% of professional developers spend >50% of their workday in a
+  terminal (Stack Overflow Developer Survey 2025) — up from 62% in 2023.
+  This validates Regula's CLI-first positioning vs SaaS dashboards.
+- "**Value-first onboarding**": get users to experience the core benefit
+  as quickly as possible (Vercel / Railway / Supabase model). Show a
+  tangible result before asking for any user investment.
+  **APPLIED**: `regula quickstart` now shows up to 3 top findings inline
+  (commit this session).
+- **Display progress for long-running operations.** Avoid blinking-cursor
+  silence. Regula's `regula check` is fast enough on small repos that
+  this isn't pressing, but on a 5,000-file monorepo it will be.
+  **TODO**: Item #14 (--workers + progress bar).
+- **Smart defaults beat clever flags.** Regula's flag set is large
+  (40+ commands × multiple flags each). Audit which flags users actually
+  need vs which can become defaults.
+  **TODO**: new item #21.
+- **Use the CLI itself to deliver onboarding** — not 10 pages of docs.
+  **APPLIED** for quickstart. Other commands could follow.
+
+  Sources:
+  - [Lucas F. Costa — UX patterns for CLI tools](https://www.lucasfcosta.com/blog/ux-patterns-cli-tools)
+  - [Evil Martians — CLI UX best practices: progress displays](https://evilmartians.com/chronicles/cli-ux-best-practices-3-patterns-for-improving-progress-displays)
+  - [DEV Community — Building Developer CLI Tools in 2026](https://dev.to/chengyixu/the-complete-guide-to-building-developer-cli-tools-in-2026-a96)
+
+**Documentation IA / Diátaxis (2026):**
+- Diátaxis = 4 distinct quadrants matching 4 user needs:
+  1. **Tutorials** (learning-oriented) — "I am new and want to be guided"
+  2. **How-to guides** (task-oriented) — "I have a task and want to do it"
+  3. **Reference** (information-oriented) — "I need exact details"
+  4. **Explanation** (understanding-oriented) — "I want to understand why"
+- Regula's docs/ folder currently mixes all four without separation.
+  Action: split docs/ into `docs/tutorials/`, `docs/how-to/`,
+  `docs/reference/`, `docs/explanation/`. README points to each.
+  **TODO**: new item #22.
+- "Documentation organised around what developers need to do, not how
+  your product is built internally."
+
+  Sources:
+  - [Diátaxis](https://diataxis.fr/)
+  - [GitBook — Documentation structure best practices](https://gitbook.com/docs/guides/docs-best-practices/documentation-structure-tips)
+  - [Fern — Info Architecture for Docs, Feb 2026](https://buildwithfern.com/post/information-architecture-best-practices-documentation)
+
+**AI governance market sizing (validates the wedge):**
+- Market: $0.2B (2025) → projected **$4.83B by 2034** at 35–45% CAGR.
+- **SME segment is the highest-growth share** — directly validates
+  Regula's positioning. "AI governance for SMEs needs to become a
+  practical operating discipline, not a heavyweight compliance
+  programme."
+- IBM Watson governance: ~13% market share, leader.
+- Microsoft / Google Cloud / AWS: rapidly expanding governance offerings
+  integrated with cloud platforms.
+- **MLOps tools segment growing fastest at 49% CAGR** — Regula could
+  position adjacent (governance for MLOps pipelines).
+- Notable competitors NOT yet in Regula's competitive landscape:
+  Credo AI, DataRobot governance, Holistic AI, Trustible, Fairly AI,
+  PwC and Deloitte governance services. **TODO**: P2 #11 (competitive
+  landscape audit).
+
+  Sources:
+  - [Future Market Insights — Enterprise AI Governance and Compliance Market 2026](https://www.futuremarketinsights.com/reports/enterprise-ai-governance-and-compliance-market)
+  - [AIMultiple — Best 30 AI Governance Tools in 2026](https://aimultiple.com/ai-governance-tools)
+  - [IAPP — AI Governance Vendor Report 2026](https://iapp.org/resources/article/ai-governance-vendor-report)
+  - [Tradify Services — AI Governance for SMEs, Apr 2026](https://tradifyservices.com/2026/04/04/ai-governance-for-smes-how-to-adopt-business-ai-without-losing-control-2/)
 
 ---
 
@@ -216,6 +317,67 @@ Last consolidated: 2026-04-09 from the `/research-eval` + live-path audit.
 ---
 
 ## P3 — Backlog (the original v1.3 candidates)
+
+### 21. Smart-defaults audit (CLI UX best practice)
+- **Where:** every `subparsers.add_parser` block in `scripts/cli.py`
+- **Issue:** Regula has 40+ commands × multiple flags. Users have to
+  read help text for every command. The 2026 CLI UX best practice is
+  "smart defaults beat clever flags" — most users should never have to
+  set a flag.
+- **Action:** for each command, identify the most common usage pattern
+  and make it the default. Examples:
+  - `regula check` should default to `--skip-tests` (real users don't
+    want test-file findings unless they ask)
+  - `regula docs` should default to `--qms` (most users want both)
+  - `regula register` should default to `--branch auto` (auto-detect)
+- **Acceptance:** the README's "common workflows" section lists the
+  exact 5 commands a user actually needs to run, with no flags.
+- **Effort:** 4 hours
+- **Source:** [Lucas Costa — UX patterns for CLI tools](https://www.lucasfcosta.com/blog/ux-patterns-cli-tools)
+
+### 22. Diátaxis-shape the docs/ folder
+- **Where:** `docs/` (current state: flat folder mixing tutorials, how-to,
+  reference, and explanation content)
+- **Issue:** Per the 2026 IA best-practice consensus, documentation
+  should be organised by user intent (Diátaxis: tutorials / how-to /
+  reference / explanation), not by internal structure. Regula's `docs/`
+  has architecture.md, landscape.md, sample_high_risk_annex_iv.md,
+  course/, user-validation/, and others all mixed together.
+- **Action:**
+  - Create `docs/tutorials/` (move QUICKSTART_VIBE_CODERS.md here)
+  - Create `docs/how-to/` (e.g. "how-to-disclose-an-article-50-chatbot.md",
+    "how-to-generate-an-annex-iv-pack.md")
+  - Create `docs/reference/` (move cli-reference.md, architecture.md
+    here)
+  - Create `docs/explanation/` (move article-state-of-ai-compliance.md,
+    landscape.md, article-south-africa-ai-policy.md here)
+  - Update README to link the four entrypoints
+- **Effort:** 2 hours (move + rewrite README links)
+- **Source:** [Diátaxis](https://diataxis.fr/),
+  [GitBook IA best practices](https://gitbook.com/docs/guides/docs-best-practices/documentation-structure-tips)
+
+### 23. Add `non_consensual_sexual_content` to PROHIBITED_PATTERNS
+- **Where:** `scripts/risk_patterns.py:PROHIBITED_PATTERNS`
+- **Issue:** Both Council (13 March 2026) and Parliament (26 March 2026)
+  Omnibus mandates add a new Article 5 prohibition on non-consensual
+  sexual / intimate content AI and CSAM AI. Once the Omnibus is formally
+  adopted, Regula needs to detect this category.
+- **Action:** add the category once the Omnibus is in OJEU. Until then,
+  it is a candidate detection.
+- **Effort:** 2 hours when triggered.
+- **Trigger:** OJEU publication of the Omnibus (likely H2 2026).
+- **Source:** [Council 13 March 2026 press release](https://www.consilium.europa.eu/en/press/press-releases/2026/03/13/council-agrees-position-to-streamline-rules-on-artificial-intelligence/)
+
+### 24. AI regulatory sandbox deadline update
+- **Where:** `scripts/timeline.py`
+- **Issue:** The Omnibus postpones the AI regulatory sandbox deadline
+  from August 2026 to **2 December 2027** (per the Council mandate).
+  Regula's timeline doesn't yet have this entry.
+- **Action:** add a `2027-12-02` proposed entry for "AI regulatory
+  sandbox establishment deadline (Omnibus, postponed from Aug 2026)".
+  Status: proposed.
+- **Effort:** 15 min.
+- **Source:** [Pearl Cohen](https://www.pearlcohen.com/new-guidance-under-the-eu-ai-act-ahead-of-its-next-enforcement-date/)
 
 ### 18. AVID vulnerability database mapping
 - **Issue:** Useful as metadata enrichment on findings (`avid_tag` field
