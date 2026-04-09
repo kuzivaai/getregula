@@ -140,11 +140,11 @@ Regula's design choices, stated on their own terms:
 
 ### How Regula maps to the AICDI corporate AI governance gaps
 
-The 2026 [UNESCO + Thomson Reuters Foundation AI Company Data Initiative report](https://www.unesco.org/en/articles/pioneering-report-thomson-reuters-foundation-and-unesco-sheds-light-way-3000-companies-approach-ai) measured 2,972 global companies and found large gaps between AI adoption and AI governance. Regula addresses some of those gaps directly, others partially, and many not at all.
+The 2026 [UNESCO + Thomson Reuters Foundation AI Company Data Initiative (AICDI) report](https://www.unesco.org/en/articles/pioneering-report-thomson-reuters-foundation-and-unesco-sheds-light-way-3000-companies-approach-ai) measured 2,972 global companies across 11 sectors (the UNESCO press release rounds this to "3,000") and found large gaps between AI adoption and AI governance. Regula addresses some of those gaps directly, others partially, and many not at all.
 
 For an honest, gap-by-gap mapping with citations and explicit out-of-scope items, see [`docs/landscape.md`](docs/landscape.md). Headline:
 
-- **Yes, addressed by Regula:** technical AI model registry (closes the 2.7% gap), Article 14 human-oversight verification (partial — closes part of the 12% gap), Article 9–15 conformity evidence pack, GPAI Code of Practice signatory annotation on detected vendors.
+- **Yes, addressed by Regula:** technical AI model registry (only 12% of surveyed companies had a formal AI model registry per the AICDI report — Regula's `discover` + `inventory` + audit registry give that capability to any team in one command), Article 14 human-oversight verification (only 12% of surveyed companies had human oversight policies — Regula's cross-file flow analysis surfaces oversight gaps automatically), Article 9–15 conformity evidence pack, GPAI Code of Practice signatory annotation on detected vendors.
 - **No, not addressed by Regula:** AI strategy adoption (44%), board oversight (40%), worker protection policies (14%), AI training programmes (31%), environmental impact assessments (11%), ethical impact assessments (5%), complaints mechanisms (2.3%). These are organisational and human-process gaps that no static code scanner can fix.
 
 ---
@@ -161,7 +161,7 @@ The EU AI Act (Regulation 2024/1689) is now in force:
 
 Penalties: up to EUR 35 million or 7% of global annual turnover.
 
-**Digital Omnibus:** The European Commission proposed in December 2025 to delay the Annex III high-risk obligations to 2 December 2027 (Annex I systems to 2 August 2028). The European Parliament adopted its joint position in plenary on 26 March 2026 (569–45), the Council agreed its negotiating mandate on 13 March 2026, the first trilogue completed in late March 2026, and the second (expected to be final) trilogue is scheduled for 28 April 2026. The Cypriot Presidency is targeting agreement in May 2026. Until the Omnibus is formally adopted and published in the OJEU, the **2 August 2026 Annex III deadline remains legally binding**. Do not plan around the extension without monitoring its legislative progress — `regula timeline` shows both the current statutory date and the proposed replacement.
+**Digital Omnibus:** The European Commission adopted [COM(2025) 836](https://www.europarl.europa.eu/legislative-train/package-digital-package/file-digital-omnibus-on-ai) on **19 November 2025**, proposing to delay the Annex III high-risk obligations to 2 December 2027 (Annex I systems to 2 August 2028). The [Council agreed its negotiating mandate on 13 March 2026](https://www.consilium.europa.eu/en/press/press-releases/2026/03/13/council-agrees-position-to-streamline-rules-on-artificial-intelligence/), and the [European Parliament adopted its plenary position on 26 March 2026](https://www.europarl.europa.eu/news/en/press-room/20260323IPR38829/artificial-intelligence-act-delayed-application-ban-on-nudifier-apps) (**569 in favour, 45 against, 23 abstentions** — [vote 189384 on howtheyvote.eu](https://howtheyvote.eu/votes/189384)). Trilogue negotiations between Parliament, Council, and Commission began in **April 2026**, and the **Cypriot Council Presidency** (H1 2026) is targeting political agreement by late April / May 2026. Until the Omnibus is formally adopted and published in the OJEU, the **2 August 2026 Annex III deadline remains legally binding**. Do not plan around the extension without monitoring its legislative progress — `regula timeline` shows both the current statutory date and the proposed replacement.
 
 ## Regulatory Coverage
 
@@ -180,7 +180,7 @@ All 8 Article 5 categories are detected. Each message includes the specific cond
 
 ### High-Risk Areas (Annex III)
 
-All 10 Annex III categories are detected. Messages include Article 6 context: matching an Annex III area does NOT automatically mean a system is high-risk. Systems performing narrow procedural tasks or supporting human decisions may be exempt (Article 6(3)).
+Regula's high-risk pattern library covers all **8 Annex III areas** ([Regulation (EU) 2024/1689 Annex III, points 1–8](https://eur-lex.europa.eu/eli/reg/2024/1689/oj): biometrics, critical infrastructure, education, employment, essential services, law enforcement, migration, justice + democratic processes) plus the **2 most common Annex I categories** referenced by Article 6(1) — medical devices and machinery safety components — for a total of 10 high-risk pattern categories. Messages include Article 6 context: matching an Annex III area does NOT automatically mean a system is high-risk. Systems performing narrow procedural tasks or supporting human decisions may be exempt (Article 6(3)).
 
 ## Supported Platforms
 
@@ -341,7 +341,7 @@ pytest tests/ -q
 525 tests covering:
 - AI detection (libraries, model files, API endpoints, ML patterns)
 - All 8 prohibited practices
-- All 10 high-risk categories (Annex III)
+- All 8 Annex III high-risk areas + 2 Annex I categories (medical devices, safety components)
 - Limited-risk and minimal-risk scenarios
 - Edge cases (empty input, case insensitivity, priority ordering)
 - Policy engine (force_high_risk, exempt, prohibited override safety)

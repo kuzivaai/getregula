@@ -6,12 +6,19 @@ Regula Timeline — EU AI Act Enforcement Dates
 Displays current enforcement dates with Digital Omnibus status.
 Updated with verified information as of 5 April 2026.
 
-Sources:
-- EU AI Act implementation timeline (artificialintelligenceact.eu)
-- Digital Omnibus: Parliament plenary confirmed 26 March 2026 (569-45)
-- Council agreed negotiating mandate 13 March 2026
-- First trilogue completed late March 2026; second trilogue 28 April 2026
-- IAPP coverage of Commission missed Article 6 deadline
+Sources (verified Apr 2026):
+- Regulation (EU) 2024/1689 (eur-lex.europa.eu/eli/reg/2024/1689/oj)
+- Commission Omnibus proposal COM(2025) 836, adopted 19 November 2025
+  (europarl.europa.eu/legislative-train/package-digital-package/file-digital-omnibus-on-ai)
+- Council general approach, 13 March 2026
+  (consilium.europa.eu/en/press/press-releases/2026/03/13/council-agrees-position-to-streamline-rules-on-artificial-intelligence/)
+- Parliament plenary 26 March 2026: 569 in favour, 45 against, 23 abstentions
+  (europarl.europa.eu/news/en/press-room/20260323IPR38829/ +
+   howtheyvote.eu/votes/189384)
+- IAPP: Commission missed Article 6(5) guidance deadline of 2 February 2026
+  (iapp.org/news/a/european-commission-misses-deadline-for-ai-act-guidance-on-high-risk-systems)
+- Trilogues began April 2026 (post-Parliament-plenary). Cypriot Council
+  Presidency H1 2026 targets political agreement by late April / May 2026.
 - Transparency Code of Practice second draft, 3 March 2026
 """
 
@@ -60,7 +67,7 @@ TIMELINE = [
     },
     {
         "date": "2026-03-26",
-        "event": "Parliament plenary confirms Omnibus position (569-45)",
+        "event": "Parliament plenary adopts Omnibus position (569 in favour, 45 against, 23 abstentions)",
         "status": "effective",
         "source": "European Parliament, 26 March 2026",
         "note": "Parliament confirmed committee position on Digital Omnibus. Key additions: reinstated registration for non-high-risk AI systems, November 2026 watermarking deadline, new prohibition on non-consensual intimate deepfakes.",
@@ -74,10 +81,10 @@ TIMELINE = [
     },
     {
         "date": "2026-04-28",
-        "event": "Second Omnibus trilogue (expected)",
+        "event": "Omnibus trilogue — Cypriot Presidency target for political agreement",
         "status": "proposed",
-        "source": "Table.Briefings, Lewis Silkin analysis, April 2026",
-        "note": "Final agreement possible at this session. First trilogue completed late March. Both co-legislators aligned on key elements: Annex III delay to Dec 2027, new deepfake prohibition.",
+        "source": "Cypriot Council Presidency (H1 2026); Lewis Silkin analysis, April 2026",
+        "note": "Trilogue negotiations between Parliament, Council and Commission began in April 2026 after Parliament's plenary vote on 26 March 2026. The Cypriot Council Presidency is targeting political agreement by late April / May 2026. Both co-legislators are aligned on key elements: Annex III delay to 2 December 2027, Annex I delay to 2 August 2028, new prohibition on non-consensual sexual deepfakes.",
     },
     {
         "date": "2026-08-02",
@@ -105,7 +112,7 @@ TIMELINE = [
         "event": "Proposed: High-risk Annex III systems deadline (Digital Omnibus)",
         "status": "proposed",
         "source": "EU Parliament plenary 569-45, 26 March 2026; Council mandate 13 March 2026",
-        "note": "NOT YET LAW — trilogue in progress. Both co-legislators aligned. Would replace August 2026 deadline for Annex III systems (employment, credit, education, biometrics, etc.). Second trilogue expected 28 April 2026.",
+        "note": "NOT YET LAW — trilogue in progress (began April 2026 after Parliament's 26 March plenary vote). Both co-legislators aligned. Would replace August 2026 deadline for Annex III systems (employment, credit, education, biometrics, etc.). Cypriot Council Presidency targets political agreement by late April / May 2026.",
     },
     {
         "date": "2028-08-02",
