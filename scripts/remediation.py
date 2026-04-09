@@ -227,14 +227,18 @@ _PROHIBITED_SUBSECTIONS = {
 # ---------------------------------------------------------------------------
 
 _ENV_VAR_MAP = {
-    "openai_api_key": "OPENAI_API_KEY",
-    "anthropic_api_key": "ANTHROPIC_API_KEY",
-    "aws_access_key": "AWS_ACCESS_KEY_ID",
-    "google_api_key": "GOOGLE_API_KEY",
-    "github_token": "GITHUB_TOKEN",
-    "azure_api_key": "AZURE_API_KEY",
-    "huggingface_token": "HUGGINGFACE_TOKEN",
-    "cohere_api_key": "COHERE_API_KEY",
+    # nosec B105 — these are env VAR NAMES (not secret values) that Regula
+    # recommends users switch TO when it detects hardcoded credentials.
+    # Bandit pattern-matches on "*_TOKEN" / "*_KEY" string literals and
+    # false-positives on this entire dict.
+    "openai_api_key": "OPENAI_API_KEY",         # nosec B105
+    "anthropic_api_key": "ANTHROPIC_API_KEY",    # nosec B105
+    "aws_access_key": "AWS_ACCESS_KEY_ID",       # nosec B105
+    "google_api_key": "GOOGLE_API_KEY",          # nosec B105
+    "github_token": "GITHUB_TOKEN",              # nosec B105
+    "azure_api_key": "AZURE_API_KEY",            # nosec B105
+    "huggingface_token": "HUGGINGFACE_TOKEN",    # nosec B105
+    "cohere_api_key": "COHERE_API_KEY",          # nosec B105
 }
 
 

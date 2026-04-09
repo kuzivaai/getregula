@@ -12,7 +12,9 @@ The point of this page is honesty. Regula is a static code scanner. It addresses
 
 ## Mapping
 
-Percentages below are quoted **only** where they appear verbatim in the UNESCO press release or the Policy Edge / Eco-Business / Digital Watch / Economy Middle East coverage. Figures not published in the press (e.g. model-registry %, complaints-mechanism %, board-oversight %, training-programme %) are shown as `—`. The full AICDI PDF is not available on `unesdoc.unesco.org` and the precise per-gap breakdowns cannot be cited here until it is.
+Percentages below are quoted **only** where they appear verbatim in the UNESCO press release or the Policy Edge / Eco-Business / Digital Watch / Economy Middle East coverage. Figures not published in the press (e.g. model-registry %, complaints-mechanism %, board-oversight %) are shown as `—`.
+
+The full AICDI report PDF is referenced at [`unesdoc.unesco.org/ark:/48223/pf0000397817_eng`](https://unesdoc.unesco.org/ark:/48223/pf0000397817_eng) (title: *Responsible AI in practice: 2025 global insights from the AI Company Data Initiative*, powered by Thomson Reuters Foundation and grounded in the UNESCO Recommendation on the Ethics of AI). The `unesdoc.unesco.org` portal is gated behind Cloudflare Bot Protection and cannot be retrieved programmatically — it must be downloaded in a browser. When that is done, the `—` rows in the table below can be restored against page references.
 
 | AICDI gap | % of companies | Regula coverage | How |
 |---|---:|---|---|
