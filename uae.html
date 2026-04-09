@@ -208,6 +208,8 @@
             .nav { padding: 12px 16px; }
             .nav-links a { margin-left: 12px; font-size: 13px; }
         }
+        .skip-link { position: absolute; left: -9999px; top: 0; background: #3b82f6; color: #fff; padding: 8px 16px; font-family: monospace; font-size: 12px; z-index: 1000; border-radius: 0 0 6px 0; text-decoration: none; }
+        .skip-link:focus { left: 0; }
     </style>
     <!-- Privacy-friendly analytics by Plausible -->
     <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
@@ -217,6 +219,8 @@
     </script>
 </head>
 <body>
+
+<a href="#main" class="skip-link">Skip to content</a>
 
 <nav class="nav">
     <div class="nav-brand">Regula <span class="pill">UAE</span></div>
@@ -228,6 +232,7 @@
 </nav>
 
 <!-- HERO -->
+<main id="main">
 <section class="hero">
     <div class="badge">For DIFC, ADGM &amp; GCC AI teams selling into Europe</div>
     <h1>If your AI features touch EU users, you&rsquo;re <span class="hl">already liable</span>.</h1>
@@ -356,6 +361,8 @@ Regula Quickstart
         <li style="padding: 10px 0;">&#10003; <strong>Open source under MIT</strong> — read every line at <a href="https://github.com/kuzivaai/getregula">github.com/kuzivaai/getregula</a>.</li>
     </ul>
 </section>
+
+</main>
 
 <footer>
     <p style="margin-bottom: 16px; padding: 12px; background: #fff8e7; border-left: 3px solid #d4a017; font-size: 13px; color: #44445a;"><strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions.</p>
