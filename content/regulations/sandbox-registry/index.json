@@ -76,9 +76,10 @@
       "status": "announced",
       "competent_authority": "Expected to involve TTJA (Consumer Protection and Technical Regulatory Authority) and MKM (Ministry of Economic Affairs and Communications). Formal designation not confirmed as of April 2026.",
       "summary": "Estonia's AI and Data Action Plan (Kratt) 2024–2026 and Data and AI White Paper 2024–2030 provide the implementation roadmap. The plan envisages an AI competence centre providing advisory services, testing infrastructure and piloting capacity. Formal competent authority designation under the AI Act not publicly confirmed; expected to involve TTJA and MKM.",
-      "source_url": "https://eimin.lrv.lt/en/sector-activities/digital-policy/artificial-intelligence/",
+      "source_url": "https://www.mkm.ee/en/objectives-activities/digital-economy",
       "confidence": "reported-unverified",
       "verified_on": "2026-04-10",
+      "note": "Original research pass inadvertently linked to Lithuania (eimin.lrv.lt). Corrected to Estonian Ministry of Economic Affairs and Communications. Formal AI Act competent authority designation not yet confirmed from primary Estonian sources.",
       "todo": false
     },
     "ES": {
