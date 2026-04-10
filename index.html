@@ -119,6 +119,7 @@
     <link rel="stylesheet" href="assets/fonts.css">
     <link rel="stylesheet" href="assets/site.css">
     <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <style>
         /* index.html overrides — values that intentionally differ from site.css */
         body { line-height: 1.6; }
@@ -175,9 +176,9 @@
 
 <a href="#main" class="skip-link">Skip to content</a>
 <!-- NAV -->
-<nav class="nav" id="nav">
+<nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
-    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');d.open?d.close():d.showModal()" aria-label="Menu">&#9776;</button>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
@@ -226,13 +227,13 @@
                 <div class="term-dot td-y"></div>
                 <div class="term-dot td-g"></div>
             </div>
-            <div class="term-tabs">
-                <div class="term-tab active" onclick="switchTab('check', this)">check</div>
-                <div class="term-tab" onclick="switchTab('plan', this)">plan</div>
-                <div class="term-tab" onclick="switchTab('gap', this)">gap</div>
+            <div class="term-tabs" role="tablist">
+                <div class="term-tab active" role="tab" tabindex="0" onclick="switchTab('check', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('check', this)}">check</div>
+                <div class="term-tab" role="tab" tabindex="0" onclick="switchTab('plan', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('plan', this)}">plan</div>
+                <div class="term-tab" role="tab" tabindex="0" onclick="switchTab('gap', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('gap', this)}">gap</div>
             </div>
             <div class="term-body">
-                <div class="term-panel active" id="tab-check">
+                <div class="term-panel active" id="tab-check" role="tabpanel">
                     <pre><span class="t-p">$</span> <span class="t-c">regula check . --explain</span>
 
 <span class="t-h">Classification: HIGH-RISK</span>
@@ -250,9 +251,10 @@
 <span class="t-y">OBLIGATIONS:</span>
   <span class="t-c">[HIGH]</span> Art. 9  Risk management   &mdash; 40-60h
   <span class="t-c">[HIGH]</span> Art. 14 Human oversight  &mdash; 16-24h
-  Total: 160-324h | Deadline: <span class="t-y">Aug 2026</span></pre>
+  Total: 160-324h | Deadline: <span class="t-y">Aug 2026</span>
+  <span class="t-m">&#9888; Omnibus may delay to Dec 2027 (not yet law)</span></pre>
                 </div>
-                <div class="term-panel" id="tab-plan">
+                <div class="term-panel" id="tab-plan" role="tabpanel">
                     <pre><span class="t-p">$</span> <span class="t-c">regula plan .</span>
 
 <span class="t-h">COMPLIANCE PLAN  &middot;  HIGH-RISK (Annex III, Category 5)</span>
@@ -273,7 +275,7 @@ Priority 3 &mdash; Technical Documentation (Art. 11)
 
 Total: 64&ndash;96h estimated effort</pre>
                 </div>
-                <div class="term-panel" id="tab-gap">
+                <div class="term-panel" id="tab-gap" role="tabpanel">
                     <pre><span class="t-p">$</span> <span class="t-c">regula gap .</span>
 
 <span class="t-h">COMPLIANCE GAP ASSESSMENT</span>
@@ -290,6 +292,13 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="urgency">
+    <div class="urgency-box" role="note">
+        <div class="date">2026&ndash;27</div>
+        <div class="body"><strong>High-risk obligations</strong> begin August 2026 &mdash; or December 2027 if the Digital Omnibus is adopted (Parliament voted 569&ndash;45 in favour, March 2026; trilogue from 28 April). Either way, the requirements do not change. <strong>You need to know where you stand.</strong></div>
     </div>
 </div>
 
@@ -317,7 +326,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 
 <!-- WHAT REGULA TELLS YOU -->
 <div class="sec reveal" id="tiers">
-    <div class="sec-head">What Regula tells you</div>
+    <h2 class="sec-head">What Regula tells you</h2>
     <p class="sec-sub">The EU AI Act sorts every AI system into a risk tier. Regula scans your code, tells you which tier applies, and gives you the fix list.</p>
     <div class="tiers">
         <div class="tier tier-r">
@@ -348,7 +357,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 
 <!-- WHO IS THIS FOR -->
 <div class="sec reveal">
-    <div class="sec-head">Who is this for?</div>
+    <h2 class="sec-head">Who is this for?</h2>
     <p class="sec-sub">Solo founders, small teams, and developers shipping AI products &mdash; and the businesses that use them.</p>
     <div class="audience-grid">
         <div class="audience-card audience-biz">
@@ -377,7 +386,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 </div>
 
 <div class="sec reveal">
-    <div class="sec-head">Beyond classification</div>
+    <h2 class="sec-head">Beyond classification</h2>
     <p class="sec-sub">Regula reads your code directly &mdash; not a questionnaire.</p>
     <div class="art-grid">
         <div class="card-base art-card">
@@ -408,7 +417,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 
 <!-- COMMANDS -->
 <div class="sec reveal" id="commands">
-    <div class="sec-head">Core commands</div>
+    <h2 class="sec-head">Core commands</h2>
     <p class="sec-sub"><code>pip install regula-ai</code>, then run any of these on your project.</p>
     <div class="cmds">
         <div class="cm"><code>regula assess</code> <span>A few yes/no questions &mdash; no code needed &mdash; get your tier</span></div>
@@ -421,7 +430,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
         <div class="cm"><code>regula oversight .</code> <span>Cross-file Article 14 analysis &mdash; traces AI output to user-facing endpoints, flags missing human review</span></div>
         <div class="cm"><code>regula sbom --ai-bom .</code> <span>AI Bill of Materials &mdash; model provenance, GPAI tier annotations, dataset detection (CycloneDX 1.7)</span></div>
     </div>
-    <p style="font-size:12px;color:#44445a;margin-top:14px;font-family:'JetBrains Mono',monospace;">
+    <p style="font-size:12px;color:#66668a;margin-top:14px;font-family:'JetBrains Mono',monospace;">
         43 commands &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU Cyber Resilience Act, and 8 other frameworks.
     </p>
 </div>
@@ -430,7 +439,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 
 <!-- BEYOND SCANNING -->
 <div class="sec reveal">
-    <div class="sec-head">Beyond scanning &mdash; evidence you can hand to an auditor</div>
+    <h2 class="sec-head">Beyond scanning &mdash; evidence you can hand to an auditor</h2>
     <p class="sec-sub">Regula generates structured compliance artefacts from your actual code, not from questionnaires.</p>
     <div class="art-grid">
         <div class="card-base art-card">
@@ -455,7 +464,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 
 <!-- WHERE REGULA FITS -->
 <div class="sec reveal">
-    <div class="sec-head">Where Regula fits in the market.</div>
+    <h2 class="sec-head">Where Regula fits in the market.</h2>
     <p class="sec-sub">A developer-side static scanner. One of several tools in the EU AI Act ecosystem — each solves a different part of the problem.</p>
     <div class="pricing-grid">
         <div class="price-card">
@@ -517,7 +526,7 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
                     <a href="/uae.html">🇦🇪 UAE &amp; GCC</a>
                     <a href="mailto:support@getregula.com">support@getregula.com</a>
                 </div>
-                <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula &middot; <a href="mailto:support@getregula.com" style="color:#44445a;">support@getregula.com</a></div>
+                <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula &middot; <a href="mailto:support@getregula.com" style="color:#66668a;">support@getregula.com</a></div>
             </div>
             <div class="foot-middle">
                 <div class="foot-col-head">Reading</div>

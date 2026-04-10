@@ -41,6 +41,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="stylesheet" href="assets/fonts.css">
     <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="assets/site.css">
     <style>
         /* Page-specific override: slightly shorter nav */
@@ -317,14 +318,15 @@
 
 <div id="progress-bar"></div>
 
-<nav class="nav" id="nav">
+<nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
-    <div class="nav-right">
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="regulations.html" title="Global AI regulation tracker">Regulations</a>
         <a href="writing.html" title="Research notes on AI governance">Writing</a>
-    </div>
+    </dialog>
 </nav>
 
 <main>
@@ -605,7 +607,7 @@ Regula Scan: recommender.py
                 <span class="cmd">pip install regula-ai &amp;&amp; regula check .</span>
                 <span class="cp">copy</span>
             </div>
-            <p style="margin-top:16px; font-size:13px; color:#44445a;">Runs locally. Nothing leaves your machine. <a href="https://github.com/kuzivaai/getregula">Source on GitHub</a>.</p>
+            <p style="margin-top:16px; font-size:13px; color:#66668a;">Runs locally. Nothing leaves your machine. <a href="https://github.com/kuzivaai/getregula">Source on GitHub</a>.</p>
         </div>
 
     </div><!-- /article-body -->
@@ -626,7 +628,7 @@ Regula Scan: recommender.py
                     <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contributing</a>
                     <a href="mailto:support@getregula.com">support@getregula.com</a>
                 </div>
-                <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula &middot; <a href="mailto:support@getregula.com" style="color:#44445a;">support@getregula.com</a></div>
+                <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula &middot; <a href="mailto:support@getregula.com" style="color:#66668a;">support@getregula.com</a></div>
             </div>
             <div class="foot-right">
                 <div class="foot-legal">

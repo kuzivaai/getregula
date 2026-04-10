@@ -17,6 +17,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="stylesheet" href="assets/fonts.css">
     <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="assets/site.css">
     <style>
         .hub-hero {
@@ -104,7 +105,8 @@
 
     <nav class="nav" id="nav" aria-label="Primary">
         <a href="/" class="nav-brand">Regula</a>
-        <div class="nav-right">
+        <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+        <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
             <a href="https://github.com/kuzivaai/getregula">GitHub</a>
             <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
             <a href="regulations.html">Regulations</a>
@@ -112,7 +114,7 @@
             <a href="/">EN</a>
             <a href="de.html">DE</a>
             <a href="pt-br.html">BR</a>
-        </div>
+        </dialog>
     </nav>
 
     <header class="hub-hero">
