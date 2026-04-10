@@ -12,7 +12,7 @@ Sources (verified Apr 2026):
   (europarl.europa.eu/legislative-train/package-digital-package/file-digital-omnibus-on-ai)
 - Council general approach, 13 March 2026
   (consilium.europa.eu/en/press/press-releases/2026/03/13/council-agrees-position-to-streamline-rules-on-artificial-intelligence/)
-- Parliament plenary 26 March 2026: 569 in favour, 45 against, 23 abstentions
+- Parliament plenary 23 March 2026: 569 in favour, 45 against, 23 abstentions
   (europarl.europa.eu/news/en/press-room/20260323IPR38829/ +
    howtheyvote.eu/votes/189384)
 - IAPP: Commission missed Article 6(5) guidance deadline of 2 February 2026
@@ -69,7 +69,7 @@ TIMELINE = [
         "date": "2026-03-26",
         "event": "Parliament plenary adopts Omnibus position (569 in favour, 45 against, 23 abstentions)",
         "status": "effective",
-        "source": "European Parliament, 26 March 2026",
+        "source": "European Parliament, 23 March 2026",
         "note": "Parliament confirmed committee position on Digital Omnibus. Key additions: reinstated registration for non-high-risk AI systems, November 2026 watermarking deadline, new prohibition on non-consensual intimate deepfakes.",
     },
     {
@@ -84,7 +84,7 @@ TIMELINE = [
         "event": "Omnibus trilogue — Cypriot Presidency target for political agreement",
         "status": "proposed",
         "source": "Cypriot Council Presidency (H1 2026); Lewis Silkin analysis, April 2026",
-        "note": "Trilogue negotiations between Parliament, Council and Commission began in April 2026 after Parliament's plenary vote on 26 March 2026. The Cypriot Council Presidency is targeting political agreement by late April / May 2026. Both co-legislators are aligned on key elements: Annex III delay to 2 December 2027, Annex I delay to 2 August 2028, new prohibition on non-consensual sexual deepfakes.",
+        "note": "Trilogue negotiations between Parliament, Council and Commission began in April 2026 after Parliament's plenary vote on 23 March 2026. The Cypriot Council Presidency is targeting political agreement by late April / May 2026. Both co-legislators are aligned on key elements: Annex III delay to 2 December 2027, Annex I delay to 2 August 2028, new prohibition on non-consensual sexual deepfakes.",
     },
     {
         "date": "2026-08-02",
@@ -111,7 +111,7 @@ TIMELINE = [
         "date": "2027-12-02",
         "event": "Proposed: High-risk Annex III systems deadline (Digital Omnibus)",
         "status": "proposed",
-        "source": "EU Parliament plenary 569-45, 26 March 2026; Council mandate 13 March 2026",
+        "source": "EU Parliament plenary 569-45, 23 March 2026; Council mandate 13 March 2026",
         "note": "NOT YET LAW — trilogue in progress (began April 2026 after Parliament's 26 March plenary vote). Both co-legislators aligned. Would replace August 2026 deadline for Annex III systems (employment, credit, education, biometrics, etc.). Cypriot Council Presidency targets political agreement by late April / May 2026.",
     },
     {
