@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EU AI Act Risk Tiers in Actual Code — What Each Classification Looks Like</title>
+    <meta name="description" content="Real code examples for every EU AI Act risk tier — prohibited, high-risk, limited-risk, and minimal. See exactly which patterns trigger each classification and what Regula outputs.">
+    <meta property="og:title" content="EU AI Act Risk Tiers in Actual Code — What Each Classification Looks Like">
+    <meta property="og:description" content="Real code examples for every EU AI Act risk tier. See which patterns trigger each classification and what a compliance scanner outputs.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/blog-risk-tiers-in-code.html">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:image" content="https://getregula.com/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EU AI Act Risk Tiers in Actual Code">
+    <meta name="twitter:description" content="Real code examples for every EU AI Act risk tier. See which patterns trigger each classification.">
+    <meta name="twitter:image" content="https://getregula.com/og-image.png">
+    <link rel="canonical" href="https://getregula.com/blog-risk-tiers-in-code.html">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "EU AI Act Risk Tiers in Actual Code — What Each Classification Looks Like",
+        "description": "Real code examples for every EU AI Act risk tier — prohibited, high-risk, limited-risk, and minimal. See exactly which patterns trigger each classification.",
+        "datePublished": "2026-04-10",
+        "dateModified": "2026-04-10",
+        "author": {
+            "@type": "Organization",
+            "name": "Regula",
+            "url": "https://getregula.com"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Regula",
+            "url": "https://getregula.com"
+        },
+        "mainEntityOfPage": "https://getregula.com/blog-risk-tiers-in-code.html",
+        "keywords": ["EU AI Act", "risk tiers", "code examples", "high-risk AI", "prohibited AI", "AI compliance", "developer", "classification"]
+    }
+    </script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'DM Sans', system-ui, sans-serif;
+            background: #070711;
+            color: #e2e2f0;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        code, .mono { font-family: 'JetBrains Mono', monospace; }
+        h1, h2, h3 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-style: normal;
+        }
+        a { color: #3b82f6; text-decoration: none; transition: color 0.15s; }
+        a:hover { color: #60a5fa; }
+
+        /* ===== SCROLL PROGRESS BAR ===== */
+        #progress-bar {
+            position: fixed;
+            top: 0; left: 0;
+            width: 0%;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #7c3aed);
+            z-index: 999;
+            transition: width 0.1s linear;
+        }
+
+        /* ===== NAV ===== */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: 52px;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid transparent;
+            transition: background 0.2s, border-color 0.2s, backdrop-filter 0.2s;
+        }
+        .nav.scrolled {
+            background: rgba(7, 7, 17, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-color: rgba(255,255,255,0.07);
+        }
+        .nav-brand {
+            font-weight: 700;
+            font-size: 16px;
+            color: #e2e2f0;
+            letter-spacing: -0.02em;
+        }
+        .nav-right {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            align-items: center;
+        }
+        .nav-right a { color: #8888aa; }
+        .nav-right a:hover { color: #e2e2f0; }
+
+        /* ===== ARTICLE ===== */
+        .article-wrap {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+        .article-hero {
+            padding: 72px 0 48px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 48px;
+        }
+        .article-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #44445a;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 16px;
+        }
+        .article-hero h1 {
+            font-size: 44px;
+            font-weight: 700;
+            color: #e2e2f0;
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            margin-bottom: 20px;
+        }
+        .article-hero .sub {
+            font-size: 17px;
+            color: #8888aa;
+            line-height: 1.7;
+        }
+        .article-body h2 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #e2e2f0;
+            margin: 56px 0 20px;
+            letter-spacing: -0.02em;
+        }
+        .article-body h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #e2e2f0;
+            margin: 36px 0 14px;
+        }
+        .article-body p {
+            font-size: 16px;
+            color: #b0b0c8;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .article-body ul, .article-body ol {
+            margin: 0 0 20px 24px;
+            color: #b0b0c8;
+            line-height: 1.8;
+        }
+        .article-body li { margin-bottom: 8px; }
+        .article-body strong { color: #e2e2f0; }
+        .article-body code {
+            background: rgba(255,255,255,0.06);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #7dd3fc;
+        }
+
+        /* ===== TIER LABEL ===== */
+        .tier-label {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 4px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .tier-prohibited { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+        .tier-high { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+        .tier-limited { background: rgba(59,130,246,0.12); color: #3b82f6; border: 1px solid rgba(59,130,246,0.25); }
+        .tier-minimal { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+
+        /* ===== CODE BLOCK (source code) ===== */
+        .code-block {
+            background: #0e0e1a;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0 28px;
+        }
+        .code-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #080813;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #44445a;
+        }
+        .code-block pre {
+            padding: 18px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            line-height: 1.75;
+            color: #b0b0c8;
+            overflow-x: auto;
+            margin: 0;
+            white-space: pre;
+        }
+
+        /* ===== TERMINAL OUTPUT ===== */
+        .term-wrap {
+            background: #0e0e1a;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+            margin: 20px 0 32px;
+        }
+        .term-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: #080813;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .term-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .td-r { background: #ef4444; } .td-y { background: #eab308; } .td-g { background: #22c55e; }
+        .term-wrap pre {
+            padding: 20px 22px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.75;
+            color: #8888aa;
+            overflow-x: auto;
+            margin: 0;
+            white-space: pre;
+        }
+        .t-p { color: #44445a; }
+        .t-c { color: #e2e2f0; }
+        .t-h { color: #38bdf8; font-weight: 500; }
+        .t-g { color: #10b981; }
+        .t-y { color: #eab308; }
+        .t-r { color: #ef4444; }
+        .t-m { color: #44445a; }
+        .t-b { color: #3b82f6; }
+
+        /* ===== ARTICLE REFERENCE ===== */
+        .art-ref {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #3b82f6;
+            background: rgba(59,130,246,0.08);
+            padding: 2px 7px;
+            border-radius: 3px;
+        }
+
+        /* ===== CALLOUT ===== */
+        .callout {
+            padding: 20px 24px;
+            border-radius: 8px;
+            margin: 24px 0 28px;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        .callout-warn {
+            background: rgba(245,158,11,0.07);
+            border: 1px solid rgba(245,158,11,0.2);
+            color: #d4a054;
+        }
+        .callout-info {
+            background: rgba(59,130,246,0.07);
+            border: 1px solid rgba(59,130,246,0.2);
+            color: #7eb8f0;
+        }
+        .callout strong { color: #e2e2f0; }
+
+        /* ===== INSTALL CTA ===== */
+        .install-cta {
+            margin: 48px 0;
+            padding: 36px;
+            background: #0e0e1a;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px;
+            text-align: center;
+        }
+        .install-cta h2 { margin: 0 0 12px; }
+        .install-cta p { color: #8888aa; margin-bottom: 20px; }
+        .install-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #070711;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 12px 18px;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .install-box:hover { border-color: rgba(255,255,255,0.2); background: #141428; }
+        .install-box .dollar { color: #44445a; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+        .install-box .cmd { color: #7dd3fc; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+        .install-box .cp {
+            color: #44445a;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            transition: color 0.2s;
+        }
+        .install-box.copied .cp { color: #10b981; }
+
+        /* ===== FOOTER ===== */
+        .foot {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 28px 32px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .foot-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+        }
+        .foot-left {}
+        .foot-brand {
+            font-weight: 700;
+            font-size: 14px;
+            color: #e2e2f0;
+            margin-bottom: 6px;
+        }
+        .foot-links {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .foot-links a { color: #8888aa; font-size: 13px; }
+        .foot-links a:hover { color: #e2e2f0; }
+        .foot-right { text-align: right; max-width: 400px; }
+        .foot-legal {
+            font-size: 12px;
+            color: #44445a;
+            line-height: 1.6;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 6px;
+        }
+        .foot-legal strong { color: #8888aa; }
+        .foot-copy { font-size: 12px; color: #44445a; margin-top: 8px; }
+
+        /* ===== MOBILE ===== */
+        @media (max-width: 640px) {
+            .nav { padding: 0 16px; }
+            .article-wrap { padding: 0 16px; }
+            .article-hero { padding: 48px 0 32px; }
+            .article-hero h1 { font-size: 28px; }
+            .article-body h2 { font-size: 22px; }
+            .install-cta { padding: 24px 16px; }
+            .foot-inner { flex-direction: column; }
+            .foot-right { text-align: left; max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<nav class="nav" id="nav">
+    <a href="/" class="nav-brand">Regula</a>
+    <div class="nav-right">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="writing.html" title="Research notes on AI governance">Writing</a>
+    </div>
+</nav>
+
+<main>
+<div class="article-wrap">
+
+    <!-- HERO -->
+    <div class="article-hero">
+        <div class="article-meta">
+            <span>10 April 2026</span>
+            <span>&middot;</span>
+            <span>8 min read</span>
+        </div>
+        <h1>EU AI Act risk tiers in actual code</h1>
+        <p class="sub">Every guide explains the four risk tiers in legal language. None show what they look like in a codebase. Here is what each tier looks like in Python, what triggers it, and what a scanner outputs when it finds it.</p>
+    </div>
+
+    <!-- BODY -->
+    <div class="article-body">
+
+        <!-- SECTION 1 -->
+        <h2>The four risk tiers in 30 seconds</h2>
+        <p>The EU AI Act classifies AI systems into four tiers based on the harm they can cause. The tiers determine what obligations you have as a provider or deployer:</p>
+        <ul>
+            <li><span class="tier-label tier-prohibited">Prohibited</span> &mdash; <strong>Banned outright.</strong> <span class="art-ref">Article 5</span> lists practices that cannot be placed on the EU market under any circumstances (with narrow exceptions for some). Fines: up to &euro;35 million or 7% of global turnover.</li>
+            <li><span class="tier-label tier-high">High-Risk</span> &mdash; <strong>Allowed, with obligations.</strong> <span class="art-ref">Annex III</span> lists eight categories. If your system falls within one and poses a significant risk of harm (<span class="art-ref">Article 6</span>), you must comply with <span class="art-ref">Articles 9&ndash;15</span>: risk management, data governance, technical documentation, transparency, human oversight, accuracy, and cybersecurity. Deadline: 2 August 2026.</li>
+            <li><span class="tier-label tier-limited">Limited-Risk</span> &mdash; <strong>Transparency obligations only.</strong> <span class="art-ref">Article 50</span> requires you to disclose that the user is interacting with an AI system, or that content is AI-generated.</li>
+            <li><span class="tier-label tier-minimal">Minimal-Risk</span> &mdash; <strong>No specific obligations.</strong> Most AI systems fall here. You can adopt voluntary codes of conduct (<span class="art-ref">Article 95</span>), but the Act does not impose requirements.</li>
+        </ul>
+
+        <div class="callout callout-info">
+            <strong>Note on the Digital Omnibus.</strong> A proposed EU Digital Omnibus regulation may delay some Annex III deadlines to December 2027, but it is not yet law. The examples below use the current enacted text.
+        </div>
+
+        <!-- SECTION 2: PROHIBITED -->
+        <h2>Prohibited &mdash; what triggers it</h2>
+        <p><span class="art-ref">Article 5</span> bans eight categories of AI practice. Two of the clearest in code are <strong>social scoring</strong> (<span class="art-ref">Article 5(1)(c)</span>) and <strong>emotion inference in the workplace</strong> (<span class="art-ref">Article 5(1)(f)</span>).</p>
+
+        <h3>Example: social scoring system</h3>
+        <p>This snippet builds a model that rates citizens based on behavioural data &mdash; a textbook <span class="art-ref">Article 5(1)(c)</span> violation. Regula matches the patterns <code>social_scoring</code> and <code>citizen_score</code>.</p>
+
+        <div class="code-block">
+            <div class="code-label">citizen_rating.py</div>
+<pre><span style="color:#44445a">import</span> tensorflow <span style="color:#44445a">as</span> tf
+
+<span style="color:#8888aa"># Evaluate citizens based on social behaviour</span>
+social_scoring_model = tf.keras.Sequential()
+
+<span style="color:#44445a">def</span> <span style="color:#e2e2f0">evaluate_citizen_score</span>(behaviour_data):
+    <span style="color:#8888aa">"""Rate citizens based on social credit scoring."""</span>
+    prediction = social_scoring_model.predict(behaviour_data)
+    <span style="color:#44445a">return</span> {<span style="color:#7dd3fc">"citizen_score"</span>: <span style="color:#e2e2f0">float</span>(prediction[<span style="color:#f59e0b">0</span>])}
+</pre>
+        </div>
+
+        <p>Running <code>regula check citizen_rating.py</code> produces:</p>
+
+        <div class="term-wrap">
+            <div class="term-bar">
+                <div class="term-dot td-r"></div>
+                <div class="term-dot td-y"></div>
+                <div class="term-dot td-g"></div>
+            </div>
+<pre><span class="t-p">$</span> <span class="t-c">regula check citizen_rating.py</span>
+
+Regula Scan: citizen_rating.py
+============================================================
+  Files scanned:      1
+  <span class="t-r">Prohibited:         1</span>
+  High-risk:          0
+  Limited-risk:       0
+
+  <span class="t-r">PROHIBITED PRACTICES:</span>
+    <span class="t-r">[BLOCK] [ 95]</span> citizen_rating.py &mdash; Social scoring by public authorities
+      <span class="t-r">Article 5(1)(c)</span> &mdash; Prohibited when evaluating or classifying
+      persons based on social behaviour, leading to detrimental
+      treatment disproportionate to context.
+============================================================</pre>
+        </div>
+
+        <p>The confidence score of 95 puts this firmly in the <strong>BLOCK</strong> tier (80+). Two distinct pattern matches &mdash; <code>social_scoring</code> in the variable name and <code>citizen_score</code> in the return dict &mdash; compound the confidence.</p>
+
+        <h3>Example: emotion inference in the workplace</h3>
+        <p><span class="art-ref">Article 5(1)(f)</span> prohibits emotion inference in workplace and educational settings, unless used for medical or safety purposes. This snippet analyses employee sentiment from meeting transcripts:</p>
+
+        <div class="code-block">
+            <div class="code-label">hr_analytics.py</div>
+<pre><span style="color:#44445a">from</span> transformers <span style="color:#44445a">import</span> pipeline
+
+emotion_classifier = pipeline(<span style="color:#7dd3fc">"text-classification"</span>, model=<span style="color:#7dd3fc">"emotion-bert"</span>)
+
+<span style="color:#44445a">def</span> <span style="color:#e2e2f0">analyse_employee_emotion</span>(transcript):
+    <span style="color:#8888aa">"""Detect sentiment of employee during 1:1 meeting."""</span>
+    result = emotion_classifier(transcript)
+    <span style="color:#44445a">return</span> {<span style="color:#7dd3fc">"employee_emotion"</span>: result[<span style="color:#f59e0b">0</span>][<span style="color:#7dd3fc">"label"</span>]}
+</pre>
+        </div>
+
+        <p>Regula matches the pattern <code>emotion.{0,20}workplace</code> (via the function name context) and <code>employee.{0,20}emotion</code>. Both point to <span class="art-ref">Article 5(1)(f)</span>. The medical/safety exception does not apply here &mdash; this is HR analytics, not driver fatigue detection.</p>
+
+        <!-- SECTION 3: HIGH-RISK -->
+        <h2>High-Risk &mdash; what triggers it</h2>
+        <p><span class="art-ref">Annex III</span> lists eight categories. The most common in codebases are <strong>employment</strong> (Category 4) and <strong>essential services</strong> (Category 5: credit scoring, insurance, benefits). If your system falls in a category <em>and</em> poses a significant risk of harm, <span class="art-ref">Articles 9&ndash;15</span> apply.</p>
+
+        <h3>Example: automated CV screening</h3>
+        <p>This is a textbook Annex III Category 4 match. The function screens candidates with no human review step:</p>
+
+        <div class="code-block">
+            <div class="code-label">hiring.py</div>
+<pre><span style="color:#44445a">from</span> sklearn.ensemble <span style="color:#44445a">import</span> RandomForestClassifier
+
+<span style="color:#44445a">def</span> <span style="color:#e2e2f0">screen_candidates</span>(resumes):
+    <span style="color:#8888aa">"""Automated CV screening for hiring decisions."""</span>
+    model = RandomForestClassifier()
+    model.fit(training_data, labels)
+    predictions = model.predict(resumes)
+    <span style="color:#8888aa"># No human review &mdash; directly filters candidates</span>
+    <span style="color:#44445a">return</span> [r <span style="color:#44445a">for</span> r, p <span style="color:#44445a">in</span> <span style="color:#e2e2f0">zip</span>(resumes, predictions) <span style="color:#44445a">if</span> p == <span style="color:#f59e0b">1</span>]
+</pre>
+        </div>
+
+        <p>Regula matches <code>screen_candidates</code> against the <code>\bscreen.?candidate</code> pattern, <code>cv_screening</code> in the docstring against <code>\bcv.?screen</code>, and <code>hiring_decisions</code> against <code>\bhiring.?decision</code>. All map to Annex III Category 4 (Employment).</p>
+
+        <div class="term-wrap">
+            <div class="term-bar">
+                <div class="term-dot td-r"></div>
+                <div class="term-dot td-y"></div>
+                <div class="term-dot td-g"></div>
+            </div>
+<pre><span class="t-p">$</span> <span class="t-c">regula check hiring.py</span>
+
+Regula Scan: hiring.py
+============================================================
+  Files scanned:      1
+  Prohibited:         0
+  High-risk:          1
+  Limited-risk:       0
+
+  <span class="t-y">HIGH-RISK INDICATORS:</span>
+    <span class="t-y">[WARN] [ 60]</span> hiring.py &mdash; Employment and workers management
+      Add human oversight before automated hiring/employment decisions
+============================================================
+  Confidence scores: 0-100 (higher = more indicators matched)
+  Tiers: BLOCK (&gt;=80 or prohibited), WARN (50-79), INFO (&lt;50)</pre>
+        </div>
+
+        <p>A confidence score of 60 places this in the <strong>WARN</strong> tier &mdash; enough pattern matches to warrant review, but not enough to block a build. The remediation text ("Add human oversight") maps directly to <span class="art-ref">Article 14</span>.</p>
+
+        <h3>Example: credit scoring</h3>
+        <p>Annex III Category 5 covers access to essential services. This snippet scores loan applicants:</p>
+
+        <div class="code-block">
+            <div class="code-label">lending.py</div>
+<pre><span style="color:#44445a">import</span> xgboost <span style="color:#44445a">as</span> xgb
+
+<span style="color:#44445a">def</span> <span style="color:#e2e2f0">score_loan_application</span>(applicant_data):
+    <span style="color:#8888aa">"""Predict creditworthiness for loan approval."""</span>
+    model = xgb.XGBClassifier()
+    model.load_model(<span style="color:#7dd3fc">"credit_risk_model.json"</span>)
+    credit_score = model.predict_proba(applicant_data)
+    <span style="color:#44445a">return</span> {<span style="color:#7dd3fc">"loan_decision"</span>: <span style="color:#7dd3fc">"approve"</span> <span style="color:#44445a">if</span> credit_score &gt; <span style="color:#f59e0b">0.7</span> <span style="color:#44445a">else</span> <span style="color:#7dd3fc">"deny"</span>}
+</pre>
+        </div>
+
+        <p>Regula matches <code>creditworthiness</code> against <code>\bcreditworth</code>, <code>credit_risk</code> against <code>credit.?risk</code>, and <code>loan_decision</code> against <code>\bloan.?decision</code>. All map to Annex III Category 5 (Essential services). The <code>loan_approval</code> phrasing in the docstring matches <code>\bloan.?approv</code> as well.</p>
+
+        <!-- SECTION 4: LIMITED-RISK -->
+        <h2>Limited-Risk &mdash; what triggers it</h2>
+        <p><span class="art-ref">Article 50</span> requires transparency disclosures for chatbots, emotion recognition systems, biometric categorisation, and synthetic content generators. The obligation is straightforward: tell the user they are interacting with AI, or that content is AI-generated.</p>
+
+        <h3>Example: customer support chatbot without disclosure</h3>
+        <p>This snippet deploys a conversational AI with no transparency notice to the user:</p>
+
+        <div class="code-block">
+            <div class="code-label">support_bot.py</div>
+<pre><span style="color:#44445a">import</span> openai
+
+<span style="color:#44445a">def</span> <span style="color:#e2e2f0">handle_chatbot_message</span>(user_input):
+    <span style="color:#8888aa">"""Process incoming message for virtual assistant."""</span>
+    client = openai.Client()
+    response = client.chat.completions.create(
+        model=<span style="color:#7dd3fc">"gpt-4"</span>,
+        messages=[{<span style="color:#7dd3fc">"role"</span>: <span style="color:#7dd3fc">"user"</span>, <span style="color:#7dd3fc">"content"</span>: user_input}]
+    )
+    <span style="color:#44445a">return</span> response.choices[<span style="color:#f59e0b">0</span>].message.content
+</pre>
+        </div>
+
+        <p>Regula matches <code>chatbot</code> against the <code>\bchatbot</code> pattern and <code>virtual_assistant</code> in the docstring against <code>virtual.?assist</code>. Both map to <span class="art-ref">Article 50</span> transparency obligations.</p>
+
+        <div class="term-wrap">
+            <div class="term-bar">
+                <div class="term-dot td-r"></div>
+                <div class="term-dot td-y"></div>
+                <div class="term-dot td-g"></div>
+            </div>
+<pre><span class="t-p">$</span> <span class="t-c">regula check support_bot.py</span>
+
+Regula Scan: support_bot.py
+============================================================
+  Files scanned:      1
+  Prohibited:         0
+  High-risk:          0
+  Limited-risk:       1
+
+  <span class="t-b">LIMITED-RISK INDICATORS:</span>
+    <span class="t-b">[INFO] [ 40]</span> support_bot.py &mdash; Chatbots and conversational AI
+      Article 50 &mdash; Ensure users are informed they are
+      interacting with an AI system
+============================================================</pre>
+        </div>
+
+        <p>Limited-risk findings default to the <strong>INFO</strong> tier. They will not block a build or fail CI. They are a nudge: add a disclosure notice before deploying to EU users.</p>
+
+        <!-- SECTION 5: MINIMAL-RISK -->
+        <h2>Minimal-Risk &mdash; what it looks like</h2>
+        <p>Most AI code falls here. A recommendation engine, a content summariser, a search ranking model &mdash; none of these touch the Annex III categories or Article 5 prohibitions. Here is a clean scan:</p>
+
+        <div class="code-block">
+            <div class="code-label">recommender.py</div>
+<pre><span style="color:#44445a">import</span> logging
+<span style="color:#44445a">import</span> openai
+
+logger = logging.getLogger(__name__)
+
+<span style="color:#44445a">def</span> <span style="color:#e2e2f0">get_recommendation</span>(data):
+    <span style="color:#8888aa">"""Get AI recommendation with human oversight."""</span>
+    client = openai.Client()
+    result = client.chat.completions.create(
+        model=<span style="color:#7dd3fc">"gpt-4"</span>,
+        messages=[{<span style="color:#7dd3fc">"role"</span>: <span style="color:#7dd3fc">"user"</span>, <span style="color:#7dd3fc">"content"</span>: <span style="color:#e2e2f0">str</span>(data)}]
+    )
+    <span style="color:#44445a">return</span> {<span style="color:#7dd3fc">"status"</span>: <span style="color:#7dd3fc">"pending_review"</span>, <span style="color:#7dd3fc">"recommendation"</span>: result}
+</pre>
+        </div>
+
+        <div class="term-wrap">
+            <div class="term-bar">
+                <div class="term-dot td-r"></div>
+                <div class="term-dot td-y"></div>
+                <div class="term-dot td-g"></div>
+            </div>
+<pre><span class="t-p">$</span> <span class="t-c">regula check recommender.py</span>
+
+Regula Scan: recommender.py
+============================================================
+  Files scanned:      1
+  Prohibited:         0
+  High-risk:          0
+  Limited-risk:       0
+  <span class="t-g">No risk indicators found.</span>
+============================================================</pre>
+        </div>
+
+        <p>Nothing triggered. No obligations under the EU AI Act beyond voluntary codes of conduct (<span class="art-ref">Article 95</span>).</p>
+
+        <!-- SECTION 6: GREY ZONES -->
+        <h2>The grey zones</h2>
+        <p>Pattern matching is useful but limited. It catches what is written in the code &mdash; variable names, function signatures, docstrings, string literals. It cannot catch:</p>
+        <ul>
+            <li><strong>Intent from architecture alone.</strong> A generic <code>classifier.predict()</code> call could be used for spam filtering (minimal-risk) or parole decisions (high-risk). The pattern matcher does not know which.</li>
+            <li><strong>Deployment context.</strong> Article 6 requires a two-step test: the system falls within an Annex III area <em>and</em> poses a significant risk. A training demo for Annex III Category 4 might not pose significant risk. Regula flags the pattern; you assess the context.</li>
+            <li><strong>Obfuscated naming.</strong> If your hiring function is called <code>process_data()</code> with no domain-specific language, no pattern matcher will find it. Regula depends on conventional naming.</li>
+            <li><strong>Prompt-only systems.</strong> If all your logic lives in prompt templates stored in a database rather than in code files, a static scanner has limited visibility.</li>
+        </ul>
+
+        <div class="callout callout-warn">
+            <strong>Precision on real-world code: 15.2%.</strong> On a benchmark of 257 labelled findings across 5 open-source projects, Regula's precision is 15.2%. That means roughly 5 out of 6 findings at the INFO tier are false positives. This is by design: Regula is tuned for recall (catching real issues) over precision (avoiding false alarms). The full breakdown is in the <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md">precision/recall benchmark report</a>.
+        </div>
+
+        <p>Regula is the <strong>code layer</strong> of an AI governance programme, not the whole programme. It tells you where to look. It does not replace legal review, risk assessment, or conformity assessment. For a full accounting of what Regula does not do, see <a href="https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md">what-regula-does-not-do.md</a>.</p>
+
+        <!-- SECTION 7: TRY IT -->
+        <div class="install-cta">
+            <h2>Try it on your code</h2>
+            <p>One command. No account, no API key, no dependencies.</p>
+            <div class="install-box" onclick="copyInstall(this)">
+                <span class="dollar">$</span>
+                <span class="cmd">pip install regula-ai &amp;&amp; regula check .</span>
+                <span class="cp">copy</span>
+            </div>
+            <p style="margin-top:16px; font-size:13px; color:#44445a;">Runs locally. Nothing leaves your machine. <a href="https://github.com/kuzivaai/getregula">Source on GitHub</a>.</p>
+        </div>
+
+    </div><!-- /article-body -->
+</div><!-- /article-wrap -->
+</main>
+
+<footer>
+    <div class="foot">
+        <div class="foot-inner">
+            <div class="foot-left">
+                <div class="foot-brand">Regula</div>
+                <div class="foot-links">
+                    <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                    <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">Trust pack</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md">Benchmarks</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/SECURITY.md">Security</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contributing</a>
+                    <a href="mailto:support@getregula.com">support@getregula.com</a>
+                </div>
+                <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula &middot; <a href="mailto:support@getregula.com" style="color:#44445a;">support@getregula.com</a></div>
+            </div>
+            <div class="foot-right">
+                <div class="foot-legal">
+                    <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions.
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Scroll progress bar
+    const progressBar = document.getElementById('progress-bar');
+    function updateProgress() {
+        const scrollTop = document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        progressBar.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+    }
+
+    // Nav scroll
+    function updateNav() {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    }
+
+    window.addEventListener('scroll', () => { updateProgress(); updateNav(); }, { passive: true });
+    updateProgress();
+    updateNav();
+
+    // Copy install command
+    function copyInstall(el) {
+        navigator.clipboard.writeText('pip install regula-ai && regula check .');
+        el.classList.add('copied');
+        el.querySelector('.cp').innerHTML = '&#10003; copied';
+        setTimeout(() => {
+            el.classList.remove('copied');
+            el.querySelector('.cp').textContent = 'copy';
+        }, 2000);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The EU AI Act Omnibus Delay: What Developers Actually Need to Know &mdash; Regula</title>
+    <meta name="description" content="The Digital Omnibus on AI proposes to delay EU AI Act high-risk deadlines from August 2026 to late 2027. Trilogue starts April 28, 2026. Here's what developers should do now.">
+    <meta property="og:title" content="The EU AI Act Omnibus Delay: What Developers Actually Need to Know">
+    <meta property="og:description" content="The Digital Omnibus on AI proposes to delay EU AI Act high-risk deadlines from August 2026 to late 2027. Trilogue starts April 28, 2026. Here's what developers should do now.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/blog-omnibus-delay.html">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:image" content="https://getregula.com/og-image.png">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-04-10">
+    <meta property="article:author" content="The Implementation Layer">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The EU AI Act Omnibus Delay: What Developers Actually Need to Know">
+    <meta name="twitter:description" content="The Digital Omnibus on AI proposes to delay EU AI Act high-risk deadlines from August 2026 to late 2027. Trilogue starts April 28, 2026. Here's what developers should do now.">
+    <meta name="twitter:image" content="https://getregula.com/og-image.png">
+    <link rel="canonical" href="https://getregula.com/blog-omnibus-delay.html">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "The EU AI Act Omnibus Delay: What Developers Actually Need to Know",
+        "description": "The Digital Omnibus on AI proposes to delay EU AI Act high-risk deadlines from August 2026 to late 2027. Trilogue starts April 28, 2026. Here's what developers should do now.",
+        "url": "https://getregula.com/blog-omnibus-delay.html",
+        "datePublished": "2026-04-10",
+        "dateModified": "2026-04-10",
+        "author": {
+            "@type": "Person",
+            "name": "The Implementation Layer"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Regula",
+            "url": "https://getregula.com",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://getregula.com/og-image.png"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://getregula.com/blog-omnibus-delay.html"
+        },
+        "keywords": ["EU AI Act", "Digital Omnibus", "AI regulation delay", "high-risk AI systems", "developer compliance"]
+    }
+    </script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/site.css">
+    <style>
+        /* ===== BLOG-SPECIFIC STYLES ===== */
+        .blog-hero {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 64px var(--s7) 40px;
+        }
+        .blog-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--s4);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-faint);
+            margin-bottom: var(--s6);
+            flex-wrap: wrap;
+        }
+        .blog-meta .dot { color: var(--text-faint); }
+        .blog-hero h1 {
+            font-family: var(--font-serif);
+            font-size: 44px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.12;
+            letter-spacing: -0.03em;
+            margin-bottom: var(--s5);
+        }
+        .blog-hero .standfirst {
+            font-size: 17px;
+            color: var(--text-2);
+            line-height: 1.7;
+        }
+
+        .blog-body {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 var(--s7) var(--s10);
+        }
+        .blog-body h2 {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text);
+            margin: var(--s10) 0 var(--s5);
+            letter-spacing: -0.02em;
+        }
+        .blog-body h3 {
+            font-family: var(--font-body);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            margin: var(--s7) 0 var(--s3);
+        }
+        .blog-body p {
+            font-size: 16px;
+            color: var(--text-2);
+            line-height: 1.75;
+            margin-bottom: var(--s5);
+        }
+        .blog-body p strong { color: var(--text); font-weight: 600; }
+        .blog-body a { color: var(--accent); }
+        .blog-body a:hover { color: var(--accent-hover); }
+        .blog-body ul, .blog-body ol {
+            margin: 0 0 var(--s5) var(--s6);
+            font-size: 16px;
+            color: var(--text-2);
+            line-height: 1.75;
+        }
+        .blog-body li { margin-bottom: var(--s2); }
+        .blog-body code {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            background: var(--accent-soft);
+            color: var(--cyan);
+            padding: 2px 7px;
+            border-radius: var(--r-sm);
+        }
+        .blog-body blockquote {
+            border-left: 3px solid var(--accent);
+            margin: var(--s6) 0;
+            padding: var(--s4) var(--s6);
+            background: var(--accent-soft);
+            border-radius: 0 var(--r-md) var(--r-md) 0;
+        }
+        .blog-body blockquote p {
+            color: var(--text-2);
+            margin-bottom: 0;
+            font-size: 15px;
+        }
+
+        /* Deadline table */
+        .deadline-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--s6) 0;
+            font-size: 14px;
+        }
+        .deadline-table th {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-faint);
+            text-align: left;
+            padding: var(--s3) var(--s4);
+            border-bottom: 1px solid var(--border-strong);
+            font-weight: 500;
+        }
+        .deadline-table td {
+            padding: var(--s3) var(--s4);
+            border-bottom: 1px solid var(--border);
+            color: var(--text-2);
+            line-height: 1.5;
+        }
+        .deadline-table tr:last-child td { border-bottom: none; }
+        .deadline-table .status-current {
+            color: var(--warn);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .deadline-table .status-proposed {
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .deadline-table .status-active {
+            color: var(--success);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Warning box */
+        .warn-box {
+            background: rgba(245,158,11,0.06);
+            border: 1px solid rgba(245,158,11,0.2);
+            border-radius: var(--r-md);
+            padding: var(--s5) var(--s6);
+            margin: var(--s6) 0;
+            font-size: 14px;
+            color: var(--text-2);
+            line-height: 1.65;
+        }
+        .warn-box strong { color: var(--warn); }
+
+        /* Steps list */
+        .action-steps {
+            list-style: none;
+            margin: var(--s6) 0;
+            padding: 0;
+            counter-reset: steps;
+        }
+        .action-steps li {
+            counter-increment: steps;
+            display: flex;
+            gap: var(--s4);
+            padding: var(--s5) 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 0;
+        }
+        .action-steps li:last-child { border-bottom: none; }
+        .action-steps li::before {
+            content: counter(steps);
+            font-family: var(--font-serif);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+            flex-shrink: 0;
+            width: 32px;
+            line-height: 1.3;
+        }
+        .action-steps li div { flex: 1; }
+        .action-steps li div strong { color: var(--text); display: block; margin-bottom: 4px; }
+        .action-steps li div p { font-size: 14px; margin-bottom: 0; }
+
+        /* Blog CTA */
+        .blog-cta {
+            margin: var(--s10) 0 var(--s8);
+            text-align: center;
+        }
+        .blog-cta .install-box {
+            display: inline-flex;
+            margin-bottom: var(--s4);
+        }
+        .blog-cta p {
+            font-size: 13px;
+            color: var(--text-faint);
+        }
+
+        /* Separator */
+        .blog-sep {
+            max-width: 760px;
+            margin: 0 auto;
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 600px) {
+            .blog-hero h1 { font-size: 32px; }
+            .blog-body h2 { font-size: 24px; }
+            .deadline-table { font-size: 12px; }
+            .deadline-table th, .deadline-table td { padding: var(--s2) var(--s3); }
+        }
+    </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<nav class="nav" id="nav">
+    <a href="/" class="nav-brand">Regula</a>
+    <div class="nav-right">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="writing.html" title="Research notes on AI governance">Writing</a>
+        <span class="active">EN</span>
+        <a href="de.html">DE</a>
+        <a href="pt-br.html">BR</a>
+    </div>
+</nav>
+
+<main>
+
+<article>
+
+<div class="blog-hero">
+    <div class="blog-meta">
+        <span>10 April 2026</span>
+        <span class="dot">&middot;</span>
+        <span>5 min read</span>
+        <span class="dot">&middot;</span>
+        <span>The Implementation Layer</span>
+    </div>
+    <h1>The EU AI Act Omnibus Delay: What Developers Actually Need to Know</h1>
+    <p class="standfirst">The Digital Omnibus on AI proposes to push the high-risk system deadline from August 2026 to late 2027 or mid-2028. The trilogue starts on 28 April. Here is what that means for your codebase, and what you should do about it today.</p>
+</div>
+
+<div class="blog-sep"></div>
+
+<div class="blog-body">
+
+    <h2>What's happening</h2>
+
+    <p>On 19 November 2025, the European Commission published the <a href="https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-simplification-package">Digital Omnibus on AI</a>: a targeted simplification package proposing amendments to Regulation (EU) 2024/1689 (the <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689">EU AI Act</a>). The headline change is a deferral of the application dates for high-risk AI system obligations.</p>
+
+    <p>Since then, two things have happened:</p>
+
+    <ul>
+        <li><strong>13 March 2026</strong> &mdash; the <a href="https://www.addleshawgoddard.com/en/insights/insights-briefings/2026/technology/eu-digital-omnibus-ai-update-council-parliament-agreed-positions/">Council of the EU adopted its general approach</a>, broadly endorsing the Commission's deferral proposal with targeted amendments on Article 6(3) scope and regulatory sandbox timelines.</li>
+        <li><strong>26 March 2026</strong> &mdash; the <a href="https://www.globalpolicywatch.com/2026/03/meps-adopt-joint-position-on-proposed-digital-omnibus-on-ai/">European Parliament adopted its first-reading position</a>, supporting the deferral but introducing amendments to strengthen Article 50 transparency requirements and to narrow the Article 6(3) procedural-task carve-out.</li>
+    </ul>
+
+    <p>Both institutions now have their negotiating mandates. <strong>Trilogue negotiations are targeted for 28 April 2026.</strong> This is when the Council, Parliament, and Commission sit down to hammer out a compromise text. Until the trilogue produces an agreed text that is formally adopted, <strong>the Omnibus is not law</strong>.</p>
+
+    <h2>What the deadlines look like now</h2>
+
+    <p>Here is the current state of play. The left column is the law as it stands today. The right column is what the Omnibus proposes. The proposed dates are <em>not yet in force</em>.</p>
+
+    <div class="warn-box">
+        <strong>Important:</strong> The Omnibus proposal has not been adopted. The dates in the "Proposed" column reflect the Commission's text as endorsed in principle by both Council and Parliament. The final trilogue text may differ.
+    </div>
+
+    <table class="deadline-table">
+        <thead>
+            <tr>
+                <th>Obligation</th>
+                <th>Current law</th>
+                <th>Omnibus proposal</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Article 5 prohibitions (social scoring, subliminal manipulation, etc.)</td>
+                <td>2 Feb 2025</td>
+                <td>No change</td>
+                <td><span class="status-active">In force</span></td>
+            </tr>
+            <tr>
+                <td>GPAI obligations (Articles 53&ndash;55)</td>
+                <td>2 Aug 2025</td>
+                <td>No change</td>
+                <td><span class="status-active">In force</span></td>
+            </tr>
+            <tr>
+                <td>High-risk: standalone AI systems (Annex III)</td>
+                <td>2 Aug 2026</td>
+                <td>2 Dec 2027</td>
+                <td><span class="status-proposed">Proposed</span></td>
+            </tr>
+            <tr>
+                <td>High-risk: product-embedded AI (Annex I &mdash; machinery, medical devices, etc.)</td>
+                <td>2 Aug 2026</td>
+                <td>2 Aug 2028</td>
+                <td><span class="status-proposed">Proposed</span></td>
+            </tr>
+            <tr>
+                <td>Legacy high-risk systems placed on market before new application date</td>
+                <td>2 Aug 2027</td>
+                <td>Deferred proportionally</td>
+                <td><span class="status-proposed">Proposed</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Sources: <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689">Regulation (EU) 2024/1689</a> (Article 113 application dates), <a href="https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-simplification-package">Commission Omnibus proposal</a>, <a href="https://www.mofo.com/resources/insights/251201-eu-digital-omnibus">Morrison Foerster analysis</a>, <a href="https://www.cooley.com/news/insight/2025/2025-11-24-eu-ai-act-proposed-digital-omnibus-on-ai-will-impact-businesses-ai-compliance-roadmaps">Cooley analysis</a>, <a href="https://www.sidley.com/en/insights/newsupdates/2025/12/eu-digital-omnibus-the-european-commission-proposes-important-changes-to-the-eus-digital-rulebook">Sidley analysis</a>.</p>
+
+    <h2>Should you wait or act now?</h2>
+
+    <p>The honest answer: it depends on your risk tier.</p>
+
+    <h3>If your system is prohibited (Article 5)</h3>
+    <p><strong>Nothing has changed.</strong> The prohibitions on social scoring, subliminal manipulation, real-time remote biometric identification in public spaces, and emotion inference in workplaces and education have been in force since 2 February 2025. The Omnibus does not touch these. If Regula flags your code as prohibited-tier, act now.</p>
+
+    <h3>If your system is high-risk (Annex III &mdash; standalone)</h3>
+    <p>The Omnibus proposes to move your compliance deadline from 2 August 2026 to 2 December 2027. Both Council and Parliament have endorsed this deferral in principle. It is very likely (though not certain) that the trilogue will agree to some version of this delay.</p>
+
+    <p>That said, "very likely" is not "law". The <a href="https://iapp.org/news/a/european-commission-misses-deadline-for-ai-act-guidance-on-high-risk-systems">Commission already missed its own 2 February deadline</a> for publishing Article 6 guidance on high-risk classification. Regulatory timelines in this space have a track record of slipping in both directions. Planning purely on the assumption of a delay is a gamble.</p>
+
+    <p>The practical advice: <strong>keep your compliance programme running, but deprioritise the sprint to August 2026.</strong> You almost certainly have more time than the current law says, but you do not have an excuse to do nothing.</p>
+
+    <h3>If your system is high-risk (Annex I &mdash; product-embedded)</h3>
+    <p>The proposed deadline is 2 August 2028. If you are building AI into medical devices, machinery, or other products covered by the Union harmonisation legislation listed in Annex I, you have more runway &mdash; but you also face the additional burden of aligning with sector-specific conformity assessment procedures that are <a href="https://www.cencenelec.eu/news-events/news/2025/brief-news/2025-10-23-ai-standardization/">still being drafted by CEN-CENELEC JTC 21</a>. The harmonised standards (including prEN 18286 on AI quality management systems) are not expected before Q4 2026 at the earliest.</p>
+
+    <h3>If your system is minimal or limited risk</h3>
+    <p>The Omnibus does not affect you materially. Limited-risk transparency obligations under Article 50 are already in effect or unaffected by the proposed deferrals. If anything, Parliament's position <em>strengthens</em> Article 50 requirements, so the trilogue could result in tighter transparency rules for chatbots, deepfakes, and emotion recognition.</p>
+
+    <h2>What Regula does about this</h2>
+
+    <p>Regula tracks every regulatory change in a <a href="https://github.com/kuzivaai/getregula/tree/main/content/regulations/delta-log">structured delta log</a>: a versioned, primary-sourced changelog for the EU AI Act. Each entry records the date, affected articles, source URL, and impact on Regula's detection patterns.</p>
+
+    <p>The delta log currently contains entries for:</p>
+    <ul>
+        <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689">Regulation adoption</a> (12 July 2024)</li>
+        <li><a href="https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-simplification-package">Commission Omnibus proposal</a> (19 November 2025)</li>
+        <li>Council general approach (13 March 2026)</li>
+        <li>Parliament first-reading position (26 March 2026)</li>
+        <li>Trilogue target date (28 April 2026)</li>
+    </ul>
+
+    <p>The <code>regula timeline</code> command shows you which deadlines apply to your codebase based on your current risk classification. When the trilogue concludes, the delta log will be updated with the compromise text, and the timeline output will reflect the new dates.</p>
+
+    <p>The <code>regula regwatch</code> command warns you when your installed ruleset is older than the latest delta-log entry, so you know when to update.</p>
+
+    <h2>What to do this week</h2>
+
+    <ol class="action-steps">
+        <li>
+            <div>
+                <strong>Find out your risk tier</strong>
+                <p>Run <code>regula check .</code> in your project root. This scans your codebase against 330 risk patterns and tells you which EU AI Act tier you are in &mdash; prohibited, high-risk, limited, or minimal. If you are not high-risk, the Omnibus delay does not change your obligations.</p>
+            </div>
+        </li>
+        <li>
+            <div>
+                <strong>Check whether the delay affects you</strong>
+                <p>If <code>regula check</code> classifies you as high-risk, run <code>regula timeline</code> to see your current deadline. Then check whether your system falls under Annex III (standalone, proposed delay to December 2027) or Annex I (product-embedded, proposed delay to August 2028). This determines how much additional runway you may get.</p>
+            </div>
+        </li>
+        <li>
+            <div>
+                <strong>Follow the delta log</strong>
+                <p>The <a href="https://github.com/kuzivaai/getregula/tree/main/content/regulations/delta-log">delta log</a> is updated as regulatory changes are confirmed. Once the trilogue produces an outcome (expected late April or May 2026), the log will reflect the agreed text. Keep your Regula installation current with <code>pip install --upgrade regula-ai</code>.</p>
+            </div>
+        </li>
+    </ol>
+
+    <div class="blog-cta">
+        <div class="install-box" onclick="copyInstall(this)">
+            <span class="dollar">$</span>
+            <span class="cmd">pip install regula-ai && regula timeline</span>
+            <span class="cp">copy</span>
+        </div>
+        <p>Shows your current EU AI Act deadlines based on your codebase.</p>
+    </div>
+
+    <div class="blog-sep" style="max-width:100%;"></div>
+
+    <div class="warn-box" style="margin-top: var(--s7);">
+        <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions. All regulatory dates cited in this article are sourced from primary EU institutions and named legal analyses; see inline links for each claim.
+    </div>
+
+</div>
+
+</article>
+
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">Trust pack</a>
+                <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md">Benchmarks</a>
+                <a href="https://github.com/kuzivaai/getregula/blob/main/SECURITY.md">Security</a>
+                <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contributing</a>
+                <a href="mailto:support@getregula.com">support@getregula.com</a>
+            </div>
+            <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula &middot; <a href="mailto:support@getregula.com" style="color:var(--text-faint);">support@getregula.com</a></div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Scroll progress bar
+    const progressBar = document.getElementById('progress-bar');
+    function updateProgress() {
+        const scrollTop = document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = pct + '%';
+    }
+
+    // Nav scroll
+    function updateNav() {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    }
+
+    window.addEventListener('scroll', () => {
+        updateProgress();
+        updateNav();
+    }, { passive: true });
+
+    // Copy install command
+    function copyInstall(el) {
+        navigator.clipboard.writeText('pip install regula-ai && regula timeline').then(() => {
+            el.classList.add('copied');
+            el.querySelector('.cp').textContent = 'copied';
+            setTimeout(() => {
+                el.classList.remove('copied');
+                el.querySelector('.cp').textContent = 'copy';
+            }, 2000);
+        });
+    }
+</script>
+
+</body>
+</html>
