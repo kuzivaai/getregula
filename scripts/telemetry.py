@@ -16,8 +16,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from constants import VERSION
 
-# Set this after creating a Sentry project at sentry.io → Settings → Client Keys
-_SENTRY_DSN = ""
+_SENTRY_DSN = "https://7ac96f66fc31c43edd6072c3a0d0c9b2@o4511163062353920.ingest.de.sentry.io/4511196620914768"
 
 
 def _config_dir() -> Path:
