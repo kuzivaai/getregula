@@ -1,0 +1,197 @@
+name: Weekly Metrics & Regulatory Monitor
+
+on:
+  schedule:
+    - cron: "0 10 * * 1"  # Every Monday 10:00 UTC (after triage digest)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Collect PyPI download stats
+        run: |
+          pip install -q pypistats
+          python3 - <<'PYEOF'
+          import json, subprocess, sys
+          from datetime import date, timedelta
+          from pathlib import Path
+
+          today = date.today()
+          metrics_dir = Path("data/metrics")
+          metrics_dir.mkdir(parents=True, exist_ok=True)
+
+          # Collect stats via pypistats CLI (JSON output)
+          def run_pypistats(subcmd, *args):
+              cmd = ["pypistats", subcmd, "regula-ai", "-j"] + list(args)
+              try:
+                  r = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+                  return json.loads(r.stdout) if r.returncode == 0 else None
+              except Exception:
+                  return None
+
+          overall = run_pypistats("overall")
+          by_system = run_pypistats("system")
+          by_python = run_pypistats("python_minor")
+
+          # Extract meaningful numbers
+          snapshot = {
+              "date": today.isoformat(),
+              "period": "last_7_days",
+              "downloads": {},
+              "by_system": {},
+              "by_python": {},
+          }
+
+          if overall and "data" in overall:
+              for row in overall["data"]:
+                  snapshot["downloads"][row["category"]] = row["downloads"]
+
+          if by_system and "data" in by_system:
+              for row in by_system["data"]:
+                  if row["category"] != "null":
+                      snapshot["by_system"][row["category"]] = row["downloads"]
+
+          if by_python and "data" in by_python:
+              for row in by_python["data"]:
+                  if row["category"] != "null":
+                      snapshot["by_python"][row["category"]] = row["downloads"]
+
+          # Append to rolling log
+          log_file = metrics_dir / "pypi_weekly.json"
+          history = json.loads(log_file.read_text()) if log_file.exists() else []
+          history.append(snapshot)
+          # Keep last 52 weeks
+          history = history[-52:]
+          log_file.write_text(json.dumps(history, indent=2) + "\n")
+
+          print(f"Snapshot: {json.dumps(snapshot, indent=2)}")
+          PYEOF
+
+      - name: Collect GitHub traffic stats
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 - <<'PYEOF'
+          import json, subprocess, sys
+          from datetime import date
+          from pathlib import Path
+
+          metrics_dir = Path("data/metrics")
+          metrics_dir.mkdir(parents=True, exist_ok=True)
+
+          def gh_api(endpoint):
+              r = subprocess.run(
+                  ["gh", "api", endpoint],
+                  capture_output=True, text=True, timeout=30,
+              )
+              return json.loads(r.stdout) if r.returncode == 0 else None
+
+          views = gh_api("repos/{owner}/{repo}/traffic/views")
+          clones = gh_api("repos/{owner}/{repo}/traffic/clones")
+          repo = gh_api("repos/{owner}/{repo}")
+
+          snapshot = {
+              "date": date.today().isoformat(),
+              "stars": repo.get("stargazers_count", 0) if repo else 0,
+              "forks": repo.get("forks_count", 0) if repo else 0,
+              "watchers": repo.get("subscribers_count", 0) if repo else 0,
+              "open_issues": repo.get("open_issues_count", 0) if repo else 0,
+              "views_14d": views.get("count", 0) if views else 0,
+              "unique_visitors_14d": views.get("uniques", 0) if views else 0,
+              "clones_14d": clones.get("count", 0) if clones else 0,
+              "unique_cloners_14d": clones.get("uniques", 0) if clones else 0,
+          }
+
+          log_file = metrics_dir / "github_weekly.json"
+          history = json.loads(log_file.read_text()) if log_file.exists() else []
+          history.append(snapshot)
+          history = history[-52:]
+          log_file.write_text(json.dumps(history, indent=2) + "\n")
+
+          print(f"GitHub: {json.dumps(snapshot, indent=2)}")
+          PYEOF
+
+      - name: Check EUR-Lex for AI Act updates
+        run: |
+          python3 - <<'PYEOF'
+          import json, urllib.request, sys
+          from datetime import date, timedelta
+          from pathlib import Path
+
+          # EUR-Lex SPARQL endpoint for the AI Act (CELEX 32024R1689)
+          # Check for any documents referencing/amending the AI Act in the last 14 days
+          today = date.today()
+          two_weeks_ago = (today - timedelta(days=14)).isoformat()
+
+          # EUR-Lex REST search for recent AI Act-related documents
+          search_url = (
+              "https://eur-lex.europa.eu/search.html?"
+              "scope=EURLEX&text=%22artificial+intelligence+act%22"
+              f"&DTS_SUBDOM=LEGISLATION&type=advanced&"
+              f"DD_FREE_DATE_FROM={two_weeks_ago}&DD_FREE_DATE_TO={today.isoformat()}"
+              "&page=1&sortOne=DD_FREE_DATE&sortOneOrder=desc"
+          )
+
+          # Also check the EU AI Office page for news
+          ai_office_url = "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+
+          alerts_file = Path("data/metrics/regulatory_alerts.json")
+          alerts = json.loads(alerts_file.read_text()) if alerts_file.exists() else []
+
+          alert = {
+              "date": today.isoformat(),
+              "check": "weekly-automated",
+              "eurlex_search_url": search_url,
+              "ai_office_url": ai_office_url,
+              "note": "Automated weekly check. Manual review required for new entries.",
+              "action_needed": False,
+          }
+
+          # Simple HTTP check — see if EUR-Lex returns results
+          try:
+              # Use the REST API for recent EU AI Act documents
+              api_url = (
+                  "https://eur-lex.europa.eu/EURLexWebService/api/v2/search?"
+                  "text=%22artificial+intelligence+act%22"
+                  "&type=legislation&sortBy=date&sortOrder=desc&pageSize=5"
+              )
+              req = urllib.request.Request(api_url, headers={"Accept": "application/json"})
+              with urllib.request.urlopen(req, timeout=15) as resp:
+                  data = json.loads(resp.read())
+                  result_count = data.get("totalResults", 0)
+                  alert["eurlex_results"] = result_count
+                  if result_count > 0:
+                      alert["action_needed"] = True
+                      alert["note"] = f"Found {result_count} recent document(s). Review needed."
+          except Exception as e:
+              # EUR-Lex API may not be publicly accessible or may have changed
+              alert["eurlex_error"] = str(e)
+              alert["note"] = (
+                  "EUR-Lex API check failed. Manual check recommended: "
+                  f"{search_url}"
+              )
+
+          alerts.append(alert)
+          alerts = alerts[-52:]
+          alerts_file.write_text(json.dumps(alerts, indent=2) + "\n")
+
+          print(f"Regulatory check: {json.dumps(alert, indent=2)}")
+          PYEOF
+
+      - name: Commit metrics
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/metrics/
+          git diff --cached --quiet || git commit -m "chore: weekly metrics $(date +%Y-%m-%d) [skip ci]"
+          git push
