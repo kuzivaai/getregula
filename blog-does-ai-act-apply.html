@@ -116,6 +116,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="stylesheet" href="assets/fonts.css">
     <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="assets/site.css">
 
     <style>
@@ -178,9 +179,10 @@
 <div id="progress-bar"></div>
 <a class="skip-link" href="#main">Skip to content</a>
 
-<nav class="nav">
+<nav class="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
-    <div class="nav-right">
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula" target="_blank" rel="noopener">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md" target="_blank" rel="noopener">Docs</a>
         <a href="/regulations.html">Regulations</a>
@@ -188,7 +190,7 @@
         <a href="/">EN</a>
         <a href="/de.html">DE</a>
         <a href="/pt-br.html">BR</a>
-    </div>
+    </dialog>
 </nav>
 
 <header class="post-hero">
@@ -452,7 +454,7 @@
                     <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contributing</a>
                     <a href="mailto:support@getregula.com">support@getregula.com</a>
                 </div>
-                <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula &middot; <a href="mailto:support@getregula.com" style="color:#44445a;">support@getregula.com</a></div>
+                <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula &middot; <a href="mailto:support@getregula.com" style="color:#66668a;">support@getregula.com</a></div>
             </div>
             <div class="foot-middle">
                 <div class="foot-col-head">Reading</div>

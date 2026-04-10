@@ -42,6 +42,7 @@
     <link rel="stylesheet" href="assets/fonts.css">
     <link rel="stylesheet" href="assets/site.css">
     <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <style>
         @view-transition {
             navigation: auto;
@@ -233,9 +234,10 @@
 
 <a href="#main" class="skip-link">Skip to content</a>
 
-<nav class="nav">
+<nav class="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
-    <div class="nav-links">
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -243,7 +245,7 @@
         <a href="/">EN</a>
         <a href="/de.html">DE</a>
         <a href="/pt-br.html">BR</a>
-    </div>
+    </dialog>
 </nav>
 
 <!-- HERO -->
@@ -394,10 +396,10 @@ Regula Quickstart
 </main>
 
 <footer>
-    <p style="margin-bottom: 16px; padding: 12px; background: #fff8e7; border-left: 3px solid #d4a017; font-size: 13px; color: #44445a;"><strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions.</p>
+    <p style="margin-bottom: 16px; padding: 12px; background: #fff8e7; border-left: 3px solid #d4a017; font-size: 13px; color: #66668a;"><strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions.</p>
     <p>Regula is an open-source project. The maintainer is happy to take an introduction call from any DIFC, ADGM, Hub71, or NEOM-portfolio team that wants a structured walk-through. Email <a href="mailto:support@getregula.com">support@getregula.com</a> or open a discussion on <a href="https://github.com/kuzivaai/getregula/issues">GitHub</a>.</p>
     <p style="margin-top: 12px;">Sources for the legal claims on this page: <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Regulation (EU) 2024/1689</a>, <a href="https://www.afriwise.com/blog/extraterritorial-application-of-the-eu-ai-act-what-non-eu-companies-should-know">Afriwise — Extraterritorial Application of the EU AI Act</a>, <a href="https://www.twobirds.com/en/insights/2025/united-arab-emirates/gcc-navigating-ai-regulations---the-current-landscape">Bird &amp; Bird — GCC AI Regulations Tracker</a>.</p>
-    <p style="margin-top: 16px; font-size: 12px; color: #44445a;">Open source &middot; MIT licence &middot; &copy; 2026 Regula &middot; <a href="/" style="color:#666;">Global page</a> &middot; <a href="https://github.com/kuzivaai/getregula" style="color:#666;">GitHub</a> &middot; <a href="https://github.com/kuzivaai/getregula/blob/main/SECURITY.md" style="color:#666;">Security</a></p>
+    <p style="margin-top: 16px; font-size: 12px; color: #66668a;">Open source &middot; MIT licence &middot; &copy; 2026 Regula &middot; <a href="/" style="color:#666;">Global page</a> &middot; <a href="https://github.com/kuzivaai/getregula" style="color:#666;">GitHub</a> &middot; <a href="https://github.com/kuzivaai/getregula/blob/main/SECURITY.md" style="color:#666;">Security</a></p>
 </footer>
 
 <script>

@@ -51,6 +51,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="stylesheet" href="assets/fonts.css">
     <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="assets/site.css">
     <style>
         /* ===== BLOG-SPECIFIC STYLES ===== */
@@ -262,9 +263,10 @@
 
 <div id="progress-bar"></div>
 
-<nav class="nav" id="nav">
+<nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
-    <div class="nav-right">
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -272,7 +274,7 @@
         <span class="active">EN</span>
         <a href="de.html">DE</a>
         <a href="pt-br.html">BR</a>
-    </div>
+    </dialog>
 </nav>
 
 <main>
@@ -303,7 +305,7 @@
 
     <ul>
         <li><strong>13 March 2026</strong> &mdash; the <a href="https://www.addleshawgoddard.com/en/insights/insights-briefings/2026/technology/eu-digital-omnibus-ai-update-council-parliament-agreed-positions/">Council of the EU adopted its general approach</a>, broadly endorsing the Commission's deferral proposal with targeted amendments on Article 6(3) scope and regulatory sandbox timelines.</li>
-        <li><strong>26 March 2026</strong> &mdash; the <a href="https://www.globalpolicywatch.com/2026/03/meps-adopt-joint-position-on-proposed-digital-omnibus-on-ai/">European Parliament adopted its first-reading position</a>, supporting the deferral but introducing amendments to strengthen Article 50 transparency requirements and to narrow the Article 6(3) procedural-task carve-out.</li>
+        <li><strong>23 March 2026</strong> &mdash; the <a href="https://www.globalpolicywatch.com/2026/03/meps-adopt-joint-position-on-proposed-digital-omnibus-on-ai/">European Parliament voted 569&ndash;45 in favour of its first-reading position</a>, supporting the deferral but introducing amendments to strengthen Article 50 transparency requirements and to narrow the Article 6(3) procedural-task carve-out.</li>
     </ul>
 
     <p>Both institutions now have their negotiating mandates. <strong>Trilogue negotiations are targeted for 28 April 2026.</strong> This is when the Council, Parliament, and Commission sit down to hammer out a compromise text. Until the trilogue produces an agreed text that is formally adopted, <strong>the Omnibus is not law</strong>.</p>
@@ -390,7 +392,7 @@
         <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689">Regulation adoption</a> (12 July 2024)</li>
         <li><a href="https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-simplification-package">Commission Omnibus proposal</a> (19 November 2025)</li>
         <li>Council general approach (13 March 2026)</li>
-        <li>Parliament first-reading position (26 March 2026)</li>
+        <li>Parliament first-reading position, 569&ndash;45 (23 March 2026)</li>
         <li>Trilogue target date (28 April 2026)</li>
     </ul>
 

@@ -20,6 +20,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="stylesheet" href="assets/fonts.css">
     <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="assets/site.css">
     <style>
         .hub-hero {
@@ -146,7 +147,8 @@
 
     <nav class="nav" id="nav" aria-label="Primary">
         <a href="/" class="nav-brand">Regula</a>
-        <div class="nav-right">
+        <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+        <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
             <a href="https://github.com/kuzivaai/getregula">GitHub</a>
             <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
             <span class="active">Regulations</span>
@@ -154,7 +156,7 @@
             <a href="/">EN</a>
             <a href="de.html">DE</a>
             <a href="pt-br.html">BR</a>
-        </div>
+        </dialog>
     </nav>
 
     <header class="hub-hero">
@@ -184,7 +186,7 @@
                 </div>
                 <h2>EU — Artificial Intelligence Act</h2>
                 <div class="reg-sub">Regulation (EU) 2024/1689 · Digital Omnibus trilogue</div>
-                <p class="reg-body">The EU AI Act is Regula's primary detection target. 330 risk patterns mapped to Articles 5, 6, 9–15 and Annex III. High-risk Annex III obligations apply from <strong>2 August 2026</strong> or <strong>2 December 2027</strong> depending on Digital Omnibus adoption (Parliament plenary vote 26 March 2026, 569–45 in favour). Use <code>regula check</code>, <code>regula gap</code>, <code>regula conform</code>, and <code>regula register</code> (Annex VIII) against any codebase today.</p>
+                <p class="reg-body">The EU AI Act is Regula's primary detection target. 330 risk patterns mapped to Articles 5, 6, 9–15 and Annex III. High-risk Annex III obligations apply from <strong>2 August 2026</strong> or <strong>2 December 2027</strong> depending on Digital Omnibus adoption (Parliament plenary vote 23 March 2026, 569–45 in favour). Use <code>regula check</code>, <code>regula gap</code>, <code>regula conform</code>, and <code>regula register</code> (Annex VIII) against any codebase today.</p>
                 <a class="reg-cta" href="/">See Regula CLI &rarr;</a>
             </div>
 
