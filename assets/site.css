@@ -155,7 +155,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     padding: 4px;
     line-height: 1;
 }
-@media (max-width: 700px) {
+@media (max-width: 768px) {
     .nav-toggle { display: block; }
     .nav-right {
         display: none;
