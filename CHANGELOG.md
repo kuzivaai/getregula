@@ -97,12 +97,12 @@ all 926 tests still pass.
   as a second independent MCP-server scanner.
 - **[`docs/moat-research.md`](docs/moat-research.md)** — proprietary
   data moat thesis, ranked 13 candidates, with counterevidence.
-- **[`docs/translation-skill-recommendation.md`](docs/translation-skill-recommendation.md)**
-  — EN → DE/PT-BR workflow using cross-model reflection.
-- **[`docs/research-eval-report.md`](docs/research-eval-report.md)**,
-  **[`docs/research-eval-public-readiness.md`](docs/research-eval-public-readiness.md)**,
-  **[`docs/repo-readiness-audit.md`](docs/repo-readiness-audit.md)**
-  — three audit reports. Published for transparency.
+- Translation skill recommendation (EN → DE/PT-BR workflow using
+  cross-model reflection) — internal document, removed from public tree.
+- Three audit reports (research-eval, public-readiness, repo-readiness)
+  were produced during this development cycle. They served their purpose
+  and were removed from the public tree — the fixes they recommended are
+  all applied. Available in git history if needed.
 
 ### Changed
 

@@ -46,3 +46,12 @@ docs/regula_gtm_plan.xlsx
 docs/article-state-of-ai-compliance.md
 docs/user-validation/
 build_competitor_matrix.py
+# Internal process documents (removed from public tree; stay in git
+# history if needed for reference). Legal assessments are sensitive
+# and must not be re-added to the public tree.
+docs/repo-readiness-audit.md
+docs/research-eval-report.md
+docs/research-eval-public-readiness.md
+docs/translation-skill-recommendation.md
+docs/legal-risk-assessment.md
+docs/uk-compliance-assessment.md
