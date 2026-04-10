@@ -51,10 +51,9 @@
 </head>
 <body>
     <a href="#main" class="skip-link">Zum Inhalt springen</a>
-    <div id="progress-bar"></div>
-
     <nav class="nav" id="nav" aria-label="Hauptnavigation">
         <a href="/" class="nav-brand">Regula</a>
+        <button class="nav-toggle" onclick="document.querySelector('.nav-right').classList.toggle('open')" aria-label="Menü">&#9776;</button>
         <div class="nav-right">
             <a href="https://github.com/kuzivaai/getregula">GitHub</a>
             <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
@@ -151,20 +150,57 @@
 
     <div class="sep"></div>
 
-    <div class="sec">
-        <h2 class="sec-head">Was Regula prüft</h2>
-        <p class="sec-sub">Code-Indikatoren, zugeordnet zu den EU-KI-Gesetz-Artikeln, die für Hochrisikosysteme relevant sind.</p>
-        <div class="art-grid">
-            <div class="art-card"><div class="tag tag-red">Artikel 5</div><h4>Verbotene Praktiken</h4><p>Social Scoring, unterschwellige Manipulation, biometrische Echtzeitüberwachung, Emotionserkennung am Arbeitsplatz</p></div>
-            <div class="art-card"><div class="tag tag-amber">Artikel 6</div><h4>Hochrisiko-Einstufung</h4><p>Kreditbewertung, Beschäftigung, biometrische ID, Medizin, Bildung, Strafverfolgung, Migration</p></div>
-            <div class="art-card"><div class="tag">Artikel 9</div><h4>Risikomanagement</h4><p>Lücken in der Risikobewertung, fehlende Dokumentation, ungetestete Grenzfälle in KI-Pipelines</p></div>
-            <div class="art-card"><div class="tag">Artikel 10</div><h4>Daten-Governance</h4><p>Trainingsdaten-Dokumentation, Bias-Erkennung, Datenqualitätsindikatoren</p></div>
-            <div class="art-card"><div class="tag">Artikel 12</div><h4>Aufzeichnungspflicht</h4><p>Protokollvollständigkeit, Integrität des Audit-Trails, Ereignisnachvollziehbarkeit</p></div>
-            <div class="art-card"><div class="tag">Artikel 13</div><h4>Transparenz</h4><p>Automatisierte Entscheidungsfunktionen, Nutzerbenachrichtigung, Erklärbarkeitslücken</p></div>
-            <div class="art-card"><div class="tag">Artikel 14</div><h4>Menschliche Aufsicht</h4><p>Übersteuerungsmechanismen, Genehmigungsstufen, Human-in-the-Loop-Muster</p></div>
-            <div class="art-card"><div class="tag">Artikel 15</div><h4>Genauigkeit &amp; Robustheit</h4><p>Testabdeckung, Fehlerbehandlung, Fallback-Mechanismen, Eingabevalidierung</p></div>
-            <div class="art-card"><div class="tag tag-purple">Anhang VIII</div><h4>Registrierung</h4><p><code>regula register</code> &mdash; Annex-VIII-Registrierungspaket (Artikel 49) mit Auto-Fill, Lückenliste und Doppel-Fristangabe.</p></div>
+    <div class="sec" id="tiers">
+        <h2 class="sec-head">Was Regula Ihnen sagt</h2>
+        <p class="sec-sub">Das EU-KI-Gesetz ordnet jedes KI-System in eine Risikostufe ein. Regula scannt Ihren Code, sagt Ihnen, welche Stufe gilt, und liefert die Maßnahmenliste.</p>
+        <div class="tiers">
+            <div class="tier tier-r">
+                <div class="tier-badge">Verboten</div>
+                <div class="tier-examples">Social Scoring &middot; Emotionserkennung &middot; Biometrie in Echtzeit &middot; Unterschwellige Manipulation</div>
+                <div class="tier-hint">Art. 5 &mdash; vollständig verboten &rarr;</div>
+            </div>
+            <div class="tier tier-a">
+                <div class="tier-badge">Hochrisiko</div>
+                <div class="tier-examples">Kreditbewertung &middot; Beschäftigung &middot; Medizinische Diagnose &middot; Bildung &middot; Strafverfolgung</div>
+                <div class="tier-hint">Art. 9&ndash;15 gelten &rarr;</div>
+            </div>
+            <div class="tier tier-y">
+                <div class="tier-badge">Begrenztes Risiko</div>
+                <div class="tier-examples">Chatbots &middot; Synthetische Inhalte &middot; Emotionserkennung &middot; Deep Fakes</div>
+                <div class="tier-hint">Transparenzregeln &rarr;</div>
+            </div>
+            <div class="tier tier-g">
+                <div class="tier-badge">Minimales Risiko</div>
+                <div class="tier-examples">Spamfilter &middot; KI-Spiele &middot; Einfache Empfehlungen &middot; Suchranking</div>
+                <div class="tier-hint">Keine Pflichten &rarr;</div>
+            </div>
         </div>
+        <p class="tier-cta">Regula sagt Ihnen, wo Ihr Code steht &mdash; und genau warum.</p>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="sec">
+        <h2 class="sec-head">Über die Klassifizierung hinaus</h2>
+        <p class="sec-sub">Regula liest Ihren Code direkt &mdash; keinen Fragebogen.</p>
+        <div class="art-grid">
+            <div class="art-card">
+                <div class="tag tag-blue">Konformitätslücken</div>
+                <h4>Was fehlt in Ihrer Codebasis?</h4>
+                <p>Risikomanagement, Daten-Governance, Protokollierung, Transparenz, menschliche Aufsicht, Genauigkeit &mdash; pro Artikel bewertet mit Aufwandsschätzungen.</p>
+            </div>
+            <div class="art-card">
+                <div class="tag tag-blue">Dokumentation</div>
+                <h4>Können Sie Konformität nachweisen?</h4>
+                <p>Generiert automatisch Anhang-IV-Dokumentation aus Ihrem tatsächlichen Code &mdash; Funktionen, Abhängigkeiten und Protokollabdeckung bereits ausgefüllt.</p>
+            </div>
+            <div class="art-card">
+                <div class="tag tag-purple">Sicherheit</div>
+                <h4>Ist Ihr KI-Code sicher?</h4>
+                <p>Prüft auf Prompt-Injection, unsicheres Laden von Modellen, unvalidierte KI-Ausgabe, hartcodierte Schlüssel und andere KI-spezifische Schwachstellen.</p>
+            </div>
+        </div>
+        <div style="text-align:center;margin-top:48px;"><button class="cta-pill" onclick="copyPill(this, 'pip install regula-ai &amp;&amp; regula quickstart')"><span>&#9654;</span> Kostenlos in 30 Sekunden testen</button></div>
     </div>
 
     <div class="sep"></div>
@@ -242,7 +278,7 @@
         <div class="final-glow"></div>
         <div class="final">
             <h2>Finden Sie heraus, wo Sie stehen</h2>
-            <p>Ein Befehl. Dauert 10 Sekunden. Kein Konto nötig.</p>
+            <p>Ein Befehl. Dauert 30 Sekunden. Kein Konto nötig.</p>
             <div class="install-box" onclick="navigator.clipboard.writeText('pip install regula-ai');this.querySelector('.cp').textContent='kopiert'" style="margin: 0 auto;">
                 <span class="dollar">$</span>
                 <span class="cmd">pip install regula-ai</span>
@@ -281,16 +317,22 @@
     </footer>
 
     <script>
-        const progressBar = document.getElementById('progress-bar');
         const nav = document.getElementById('nav');
-        function onScroll() {
-            const scrollTop = document.documentElement.scrollTop;
-            const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-            progressBar.style.width = pct + '%';
+        window.addEventListener('scroll', function() {
             nav.classList.toggle('scrolled', window.scrollY > 20);
+        }, { passive: true });
+
+        function copyPill(el, cmd) {
+            var original = el.innerHTML;
+            navigator.clipboard.writeText(cmd).then(function() {
+                el.classList.add('copied');
+                el.innerHTML = '<span>&#10003;</span> Kopiert &mdash; in Terminal einfügen';
+                setTimeout(function() {
+                    el.classList.remove('copied');
+                    el.innerHTML = original;
+                }, 2000);
+            });
         }
-        window.addEventListener('scroll', onScroll, { passive: true });
     </script>
 </body>
 </html>

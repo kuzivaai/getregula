@@ -145,6 +145,35 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .nav-right a { color: var(--text-dim); }
 .nav-right a:hover { color: var(--text); }
 .nav-right .active { color: var(--text); font-weight: 600; }
+.nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 22px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+}
+@media (max-width: 700px) {
+    .nav-toggle { display: block; }
+    .nav-right {
+        display: none;
+        position: absolute;
+        top: 56px;
+        right: 0;
+        left: 0;
+        flex-direction: column;
+        gap: 0;
+        background: rgba(7, 7, 17, 0.97);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+        padding: 12px var(--s7) 16px;
+    }
+    .nav-right.open { display: flex; }
+    .nav-right a, .nav-right .active { padding: 8px 0; font-size: 14px; }
+}
 
 /* ===== HERO ===== */
 .hero-wrap { position: relative; overflow: hidden; }
@@ -419,6 +448,83 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     font-size: 12px;
 }
 
+/* ===== RISK TIERS ===== */
+.tiers { display: flex; flex-direction: column; gap: 6px; }
+.tier {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 20px;
+    border-radius: var(--r-md);
+    border: 1px solid transparent;
+    cursor: default;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.tier:hover {
+    transform: translateX(4px) scaleY(1.02);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.tier-r  { background: rgba(239,68,68,0.08);   border-color: rgba(239,68,68,0.2); }
+.tier-a  { background: rgba(245,158,11,0.08);  border-color: rgba(245,158,11,0.2); }
+.tier-y  { background: rgba(234,179,8,0.08);   border-color: rgba(234,179,8,0.2); }
+.tier-g  { background: rgba(16,185,129,0.08);  border-color: rgba(16,185,129,0.2); }
+.tier-r:hover  { border-color: rgba(239,68,68,0.45); }
+.tier-a:hover  { border-color: rgba(245,158,11,0.45); }
+.tier-y:hover  { border-color: rgba(234,179,8,0.45); }
+.tier-g:hover  { border-color: rgba(16,185,129,0.45); }
+.tier-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    min-width: 100px;
+    text-align: center;
+}
+.tier-r .tier-badge { background: rgba(239,68,68,0.15); color: var(--danger); }
+.tier-a .tier-badge { background: rgba(245,158,11,0.15); color: var(--warn); }
+.tier-y .tier-badge { background: rgba(234,179,8,0.15); color: #eab308; }
+.tier-g .tier-badge { background: rgba(16,185,129,0.15); color: var(--success); }
+.tier-examples { font-size: 13px; color: var(--text-dim); flex: 1; }
+.tier-hint {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.tier:hover .tier-hint { opacity: 1; }
+.tier-cta { font-size: 13px; color: var(--text-dim); margin-top: 20px; }
+
+/* ===== CTA PILL ===== */
+.cta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 14px 28px;
+    border-radius: var(--r-pill);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 20px rgba(16,185,129,0.3);
+    letter-spacing: -0.01em;
+    font-family: var(--font-body);
+}
+.cta-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(16,185,129,0.4);
+}
+.cta-pill.copied { background: linear-gradient(135deg, #059669, #047857); }
+.tag-blue { background: rgba(59,130,246,0.12); color: var(--accent); }
+
 /* ===== ART GRID ===== */
 .art-grid {
     display: grid;
@@ -439,7 +545,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 }
 .art-card .tag {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -605,7 +711,7 @@ footer {
 .foot-middle { min-width: 220px; }
 .foot-col-head {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--text-faint);
@@ -667,4 +773,5 @@ footer {
     .art-grid { grid-template-columns: 1fr; }
     .fw-list { grid-template-columns: repeat(2, 1fr); }
     .urgency-box { grid-template-columns: 1fr; gap: var(--s3); }
+    .tier-hint { display: none; }
 }
