@@ -3,6 +3,10 @@
 
 Pure configuration — no functions, no logic. Contains all regex patterns
 used by the classification engine, organised by risk tier.
+
+Licensed under the Detection Rule License (DRL) 1.1.
+See LICENSE.Detection.Rules.md at the repository root.
+Author: The Implementation Layer (https://getregula.com)
 """
 
 # ---------------------------------------------------------------------------
