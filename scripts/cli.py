@@ -60,6 +60,18 @@ def _validate_path(path_str: str) -> Path:
     return p
 
 
+def _current_pattern_version() -> str:
+    """Read the pattern_version from regula-policy.yaml (best-effort)."""
+    try:
+        import yaml as _yaml
+        policy_path = Path(__file__).parent.parent / "regula-policy.yaml"
+        data = _yaml.safe_load(policy_path.read_text(encoding="utf-8"))
+        basis = (data or {}).get("regulatory_basis", {})
+        return f"{basis.get('pattern_version', 'unknown')}-{basis.get('last_reviewed', 'unknown')}"
+    except Exception:
+        return f"{VERSION}-patterns"
+
+
 _SAFE_GIT_REF = re.compile(r'^[a-zA-Z0-9_.~^@{}/:\-]+$')
 
 
@@ -915,6 +927,45 @@ def cmd_inventory(args):
     from model_inventory import scan_for_models, format_table
     import json as _json
 
+    # C4: --merge — combine multiple per-repo inventory fragments into
+    # a single org-level inventory without requiring a hosted registry.
+    merge_files = getattr(args, "merge", None)
+    if merge_files:
+        merged = {"models": [], "source_repos": [], "merged_at": None}
+        from datetime import datetime, timezone
+        merged["merged_at"] = datetime.now(timezone.utc).isoformat()
+        for mf in merge_files:
+            try:
+                data = _json.loads(Path(mf).read_text(encoding="utf-8"))
+            except (OSError, _json.JSONDecodeError) as e:
+                print(f"inventory --merge: skipping {mf}: {e}", file=sys.stderr)
+                continue
+            # Handle various inventory JSON shapes: dict with "models"
+            # key, dict with "data.models", or a raw list of model entries.
+            if isinstance(data, list):
+                models = data
+            elif isinstance(data, dict):
+                models = data.get("models") or data.get("data", {}).get("models", [])
+            else:
+                models = []
+            if isinstance(models, list):
+                for m in models:
+                    m["_source_file"] = mf
+                merged["models"].extend(models)
+            merged["source_repos"].append(mf)
+        merged["total_models"] = len(merged["models"])
+        fmt = getattr(args, "format", "table")
+        if fmt == "json":
+            json_output("inventory", merged)
+        else:
+            print(f"Merged inventory: {merged['total_models']} models from "
+                  f"{len(merged['source_repos'])} repos")
+            for m in merged["models"]:
+                name = m.get("name") or m.get("model_name") or "unnamed"
+                src = m.get("_source_file", "?")
+                print(f"  {name} ← {src}")
+        return
+
     path = getattr(args, "path", ".") or "."
     if path != ".":
         _validate_path(path)
@@ -952,10 +1003,19 @@ def cmd_gap(args):
     fw_arg = getattr(args, "framework", None)
     frameworks = [f.strip() for f in fw_arg.split(",")] if fw_arg else None
     assessment = assess_compliance(args.project, articles=articles, frameworks=frameworks)
+    # Stamp the pattern version so auditors can reproduce the assessment
+    # against the exact same ruleset later (C3: --pattern-version).
+    pv = getattr(args, "pattern_version", None)
+    if pv:
+        assessment["stamped_pattern_version"] = pv
+    else:
+        assessment["pattern_version"] = _current_pattern_version()
     if args.format == "json":
         json_output("gap", assessment)
     else:
         print(format_gap_text(assessment))
+        if pv:
+            print(f"\n[stamped against pattern version: {pv}]")
     # Exit 1 if overall score < 50 and --strict
     if args.strict and assessment.get("overall_score", 0) < 50:
         sys.exit(1)
@@ -1379,8 +1439,168 @@ def cmd_evidence_pack(args):
         print(f"Start with: {pack_path}/00-summary.md")
 
 
+_ORGANISATIONAL_QUESTIONS = {
+    "article_9_risk_management": {
+        "article": "Article 9",
+        "title": "Risk Management System",
+        "questions": [
+            ("rms_documented", "Is a documented risk management system in place for this AI system?"),
+            ("rms_operated", "Is the RMS actively operated (not just documented)?"),
+            ("rms_reviewed", "Has the RMS been reviewed in the last 12 months?"),
+            ("rms_owner", "Is there a named person accountable for the RMS?"),
+            ("rms_residual", "Have residual risks been identified and accepted by management?"),
+        ],
+    },
+    "article_17_qms": {
+        "article": "Article 17",
+        "title": "Quality Management System",
+        "questions": [
+            ("qms_documented", "Is a documented quality management system in place?"),
+            ("qms_design_verification", "Does the QMS cover design verification and validation?"),
+            ("qms_data_management", "Does the QMS include data management procedures?"),
+            ("qms_post_market", "Does the QMS include post-market monitoring procedures?"),
+            ("qms_complaint_handling", "Is there a complaint-handling process for AI system issues?"),
+            ("qms_audit_internal", "Have internal QMS audits been conducted?"),
+        ],
+    },
+    "article_29a_fria": {
+        "article": "Article 29a",
+        "title": "Fundamental Rights Impact Assessment",
+        "questions": [
+            ("fria_conducted", "Has a fundamental rights impact assessment been conducted?"),
+            ("fria_stakeholders", "Were affected persons or their representatives consulted?"),
+            ("fria_documented", "Is the FRIA documented and available for inspection?"),
+            ("fria_mitigations", "Have identified fundamental-rights risks been mitigated?"),
+        ],
+    },
+    "article_72_pmm": {
+        "article": "Article 72",
+        "title": "Post-Market Monitoring",
+        "questions": [
+            ("pmm_plan", "Is there a documented post-market monitoring plan?"),
+            ("pmm_active", "Is post-market monitoring actively collecting data?"),
+            ("pmm_incidents", "Is there a process for reporting serious incidents per Article 73?"),
+            ("pmm_corrective", "Is there a corrective-action process when monitoring detects issues?"),
+        ],
+    },
+}
+
+
+def _run_organisational_questionnaire(args):
+    """Interactive questionnaire for organisational AI Act obligations.
+
+    These are the articles Regula cannot verify from code — Art. 9 (RMS),
+    Art. 17 (QMS), Art. 29a (FRIA), Art. 72 (PMM). The output is a
+    structured evidence document, NOT a compliance certificate.
+    """
+    import json as _json
+    from datetime import datetime, timezone
+
+    fmt = getattr(args, "format", "text")
+    project_name = getattr(args, "name", None) or "unnamed-system"
+    output_dir = getattr(args, "output", None)
+
+    results: dict = {
+        "command": "conform --organisational",
+        "project_name": project_name,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "regula_version": VERSION,
+        "disclaimer": (
+            "This is a structured questionnaire, NOT a compliance certificate. "
+            "Regula cannot verify organisational processes from code. The answers "
+            "below are self-reported by the operator and must be independently "
+            "verified by an auditor, notified body, or internal governance function."
+        ),
+        "sections": {},
+    }
+
+    total_yes = 0
+    total_questions = 0
+
+    interactive = fmt != "json"
+
+    for section_key, section in _ORGANISATIONAL_QUESTIONS.items():
+        if interactive:
+            print(f"\n--- {section['article']}: {section['title']} ---")
+        section_result = {
+            "article": section["article"],
+            "title": section["title"],
+            "answers": {},
+        }
+        yes_count = 0
+        for q_id, question in section["questions"]:
+            total_questions += 1
+            if fmt == "json":
+                # Non-interactive mode: default to "not answered"
+                section_result["answers"][q_id] = {
+                    "question": question,
+                    "answer": "not_answered",
+                    "note": "",
+                }
+                continue
+            while True:
+                answer = input(f"  {question} [y/n/skip]: ").strip().lower()
+                if answer in ("y", "yes"):
+                    section_result["answers"][q_id] = {
+                        "question": question, "answer": "yes", "note": "",
+                    }
+                    yes_count += 1
+                    total_yes += 1
+                    break
+                elif answer in ("n", "no"):
+                    note = input("    Brief note (why not, or planned date): ").strip()
+                    section_result["answers"][q_id] = {
+                        "question": question, "answer": "no", "note": note,
+                    }
+                    break
+                elif answer in ("s", "skip"):
+                    section_result["answers"][q_id] = {
+                        "question": question, "answer": "skipped", "note": "",
+                    }
+                    break
+                else:
+                    print("    Please enter y, n, or skip.")
+
+        section_result["score"] = (
+            f"{yes_count}/{len(section['questions'])}"
+        )
+        results["sections"][section_key] = section_result
+
+    results["summary"] = {
+        "total_questions": total_questions,
+        "answered_yes": total_yes,
+        "overall_score": f"{total_yes}/{total_questions}",
+    }
+
+    if fmt == "json":
+        json_output("conform", results)
+    else:
+        print(f"\n{'='*60}")
+        print(f"Organisational compliance self-assessment: "
+              f"{total_yes}/{total_questions}")
+        for sk, sv in results["sections"].items():
+            print(f"  {sv['article']} {sv['title']}: {sv['score']}")
+        print(f"\nDisclaimer: {results['disclaimer']}")
+
+        if output_dir:
+            out_path = Path(output_dir) / "organisational-assessment.json"
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            out_path.write_text(
+                _json.dumps(results, indent=2) + "\n", encoding="utf-8"
+            )
+            print(f"\nWritten to {out_path}")
+
+
 def cmd_conform(args):
     """Generate conformity assessment evidence pack."""
+    # F1: --organisational — questionnaire mode for the articles Regula
+    # cannot verify from code (Art. 9 RMS, Art. 17 QMS, Art. 29a FRIA,
+    # Art. 72 PMM). This does NOT scan code — it asks structured yes/no
+    # questions and produces an evidence document from the answers.
+    if getattr(args, "organisational", False):
+        _run_organisational_questionnaire(args)
+        return
+
     if args.project != ".":
         _validate_path(args.project)
     project_path = str(Path(args.project).resolve())
@@ -1918,6 +2138,13 @@ def _build_subparsers(subparsers):
     p_gap.add_argument("--article", "-a", help="Check specific article only (e.g., 14)")
     p_gap.add_argument("--strict", action="store_true", help="Exit 1 if overall score < 50")
     p_gap.add_argument(
+        "--pattern-version",
+        metavar="VERSION",
+        help="Stamp the assessment against a specific pattern ruleset version "
+             "(e.g., '1.6.1-patterns-2026-04-09') for reproducible audits. "
+             "If omitted, the current pattern version from regula-policy.yaml is used.",
+    )
+    p_gap.add_argument(
         "--framework",
         metavar="FRAMEWORKS",
         help="Cross-reference findings to other frameworks (comma-separated): "
@@ -2004,12 +2231,22 @@ def _build_subparsers(subparsers):
     p_evidence.set_defaults(func=cmd_evidence_pack)
 
     # --- conform ---
-    p_conform = subparsers.add_parser("conform", help="Generate conformity assessment evidence pack (Article 43) or SME simplified Annex IV (Article 11(1))")
+    p_conform = subparsers.add_parser(
+        "conform",
+        help="Generate conformity assessment evidence pack (Article 43), "
+             "SME simplified Annex IV (Article 11(1)), or organisational "
+             "compliance questionnaire (Articles 9/17/29a/72)",
+    )
     p_conform.add_argument("--project", "-p", default=".")
     p_conform.add_argument("--output", "-o", default=".", help="Output directory for the pack folder")
     p_conform.add_argument("--name", "-n", help="Project name")
     p_conform.add_argument("--sme", action="store_true",
                            help="Generate the SME-simplified Annex IV single-file form (Article 11(1) second subparagraph) instead of the full multi-folder evidence pack")
+    p_conform.add_argument("--organisational", action="store_true",
+                           help="Interactive questionnaire for organisational AI Act obligations "
+                                "(Articles 9 RMS, 17 QMS, 29a FRIA, 72 PMM) that Regula cannot "
+                                "verify from code. Produces a self-assessment evidence document, "
+                                "NOT a compliance certificate.")
     p_conform.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_conform.set_defaults(func=cmd_conform)
 
@@ -2094,10 +2331,19 @@ def _build_subparsers(subparsers):
     p_agent.set_defaults(func=cmd_agent)
 
     # --- inventory ---
-    p_inventory = subparsers.add_parser("inventory", help="Scan codebase for AI model references (GPAI tier annotations)")
+    p_inventory = subparsers.add_parser(
+        "inventory",
+        help="Scan codebase for AI model references (GPAI tier annotations). "
+             "Use --merge to combine per-repo inventories into an org-level view.",
+    )
     p_inventory.add_argument("path", nargs="?", default=".", help="Path to scan")
     p_inventory.add_argument("--format", "-f", choices=["table", "json"], default="table")
     p_inventory.add_argument("--output", "-o", help="Output file (optional)")
+    p_inventory.add_argument(
+        "--merge", nargs="+", metavar="FILE",
+        help="Merge multiple per-repo inventory JSON files into an org-level "
+             "view (e.g., regula inventory --merge repo-a.json repo-b.json)",
+    )
     p_inventory.set_defaults(func=cmd_inventory)
 
     # --- assess ---
