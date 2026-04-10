@@ -41,73 +41,10 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="stylesheet" href="assets/fonts.css">
     <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="assets/site.css">
     <style>
-        @view-transition {
-            navigation: auto;
-        }
-
-        /* ===== RESET & BASE ===== */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'DM Sans', system-ui, sans-serif;
-            background: #070711;
-            color: #e2e2f0;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
-        code, .mono { font-family: 'JetBrains Mono', monospace; }
-        h1, h2, h3 {
-            font-family: 'Fraunces', Georgia, serif;
-            font-style: normal;
-        }
-        a { color: #3b82f6; text-decoration: none; transition: color 0.15s; }
-        a:hover { color: #60a5fa; }
-
-        /* ===== SCROLL PROGRESS BAR ===== */
-        #progress-bar {
-            position: fixed;
-            top: 0; left: 0;
-            width: 0%;
-            height: 2px;
-            background: linear-gradient(90deg, #3b82f6, #7c3aed);
-            z-index: 999;
-            transition: width 0.1s linear;
-        }
-
-        /* ===== NAV ===== */
-        .nav {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            height: 52px;
-            padding: 0 32px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid transparent;
-            transition: background 0.2s, border-color 0.2s, backdrop-filter 0.2s;
-        }
-        .nav.scrolled {
-            background: rgba(7, 7, 17, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-color: rgba(255,255,255,0.07);
-        }
-        .nav-brand {
-            font-weight: 700;
-            font-size: 16px;
-            color: #e2e2f0;
-            letter-spacing: -0.02em;
-        }
-        .nav-right {
-            display: flex;
-            gap: 20px;
-            font-size: 13px;
-            align-items: center;
-        }
-        .nav-right a { color: #8888aa; }
-        .nav-right a:hover { color: #e2e2f0; }
+        /* Page-specific override: slightly shorter nav */
+        .nav { height: 52px; }
 
         /* ===== ARTICLE ===== */
         .article-wrap {

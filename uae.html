@@ -40,6 +40,7 @@
     <link rel="alternate" hreflang="en-AE" href="https://getregula.com/uae.html">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="stylesheet" href="assets/fonts.css">
+    <link rel="stylesheet" href="assets/site.css">
     <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <style>
         @view-transition {
@@ -147,20 +148,7 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
         }
-        .liab-card {
-            background: #0f0f1f;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            padding: 22px;
-        }
-        .liab-card h3 {
-            font-family: 'Fraunces', Georgia, serif;
-            font-size: 19px;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-        .liab-card p { font-size: 14px; color: #aaaac0; }
-        .liab-card .ref { font-size: 11px; color: #555; margin-top: 10px; font-family: 'JetBrains Mono', monospace; }
+        /* liab-card base styles in site.css */
 
         .sectors {
             display: grid;
@@ -292,22 +280,22 @@
     <p class="sec-sub">Four facts about EU AI Act extraterritoriality that GCC general counsel are double-checking right now.</p>
 
     <div class="liab-grid">
-        <div class="liab-card">
+        <div class="card-base liab-card">
             <h3>Extraterritorial by design</h3>
             <p>Article 2(1)(c) of Regulation (EU) 2024/1689 explicitly applies to providers and deployers established outside the EU when the output of the AI system is used in the Union. Where you incorporate is irrelevant.</p>
             <p class="ref">Source: Regulation (EU) 2024/1689 Article 2(1)(c)</p>
         </div>
-        <div class="liab-card">
+        <div class="card-base liab-card">
             <h3>The provider carries the liability</h3>
             <p>If your DIFC or ADGM company places an AI system on the EU market — directly, through a reseller, or via an EU-based customer using your API — you are the provider. Compliance liability sits with you, not your distributor.</p>
             <p class="ref">Source: Regulation (EU) 2024/1689 Article 3(3) and Article 16</p>
         </div>
-        <div class="liab-card">
+        <div class="card-base liab-card">
             <h3>Fines up to &euro;35M or 7% of global turnover</h3>
             <p>Article 99 sets the maximum administrative fine at &euro;35 million or 7% of worldwide annual turnover, whichever is higher. For a DIFC fintech with EU exposure, this is materially worse than DFSA and DPDP enforcement combined.</p>
             <p class="ref">Source: Regulation (EU) 2024/1689 Article 99</p>
         </div>
-        <div class="liab-card">
+        <div class="card-base liab-card">
             <h3>Enforcement begins 2 August 2026</h3>
             <p>Annex III high-risk obligations apply from 2 August 2026. The proposed Digital Omnibus delay to 2 December 2027 is not yet law and is currently in trilogue. Plan for August.</p>
             <p class="ref">Source: Regulation (EU) 2024/1689 Article 113; Council 13 March 2026 mandate</p>
