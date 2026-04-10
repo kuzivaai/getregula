@@ -99,6 +99,27 @@ For a production compliance programme you will need all of:
 
 Regula is only the last item on that list.
 
+## Industry validation
+
+McKinsey's April 2026 [AI Transformation Manifesto](https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/the-ai-transformation-manifesto)
+(Singla, Sukharevsky, Lamarre, Smaje & Levin) independently validates
+this scope boundary:
+
+> "Adoption often fails because adjacent upstream and downstream
+> processes are left unchanged. An AI solution may predict equipment
+> failures days in advance, but if maintenance still follows
+> calendar-based scheduling, nothing happens." — Theme 9
+
+This is exactly why code scanning alone does not create compliance.
+Regula reads your code. Your organisation must still operate the risk
+management system, quality management system, post-market monitoring,
+and fundamental-rights impact assessment that the code scanning
+cannot verify.
+
+See [`docs/references/mckinsey-ai-manifesto-2026.md`](references/mckinsey-ai-manifesto-2026.md)
+for the full theme-by-theme mapping (including three themes that are
+honestly excluded because they don't apply to a CLI tool).
+
 ## Why this document exists
 
 Because the first rule of this project is honesty about capability.
