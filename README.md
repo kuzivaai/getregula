@@ -431,6 +431,10 @@ Bug reports and pull requests are welcome. A few things to know:
 
 **Releases & roadmap:** [CHANGELOG.md](CHANGELOG.md) groups commits by release. [TODO.md](TODO.md) is the prioritised gap backlog (P0/P1/P2/P3) — what is known to be wrong or missing right now.
 
+## Built with AI
+
+Regula is developed with substantial assistance from Claude (Anthropic). Claude generates code, detection patterns, compliance mappings, tests, and documentation. Every output is reviewed by the sole developer before merging. The developer is responsible for all AI-generated outputs. For full details on AI's role in development, human oversight processes, and risk assessment, see [AI_GOVERNANCE.md](AI_GOVERNANCE.md). For the detection engine's capabilities, limitations, and bias risks, see [MODEL_CARD.md](MODEL_CARD.md).
+
 ## Author
 
-Built by [The Implementation Layer](https://theimplementationlayer.substack.com) — AI governance from the practitioner side.
+Built by [Kuziva Muzondo](https://theimplementationlayer.substack.com) — AI governance from the practitioner side.
