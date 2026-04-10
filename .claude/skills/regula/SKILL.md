@@ -105,4 +105,4 @@ and git hooks. Same hook protocol, different config files.
 - Python: full AST. JS/TS: tree-sitter AST (moderate depth). Java, Go, Rust, C/C++: regex import detection — cannot assess intent or deployment context
 - False positives on code that discusses prohibited practices (documentation files are now bypassed by hooks)
 - Self-attesting audit trail — not externally witnessed
-- 10 frameworks mapped: EU AI Act, NIST AI RMF, ISO 42001, NIST CSF 2.0, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, LGPD, Marco Legal da IA
+- ten compliance frameworks mapped: EU AI Act, NIST AI RMF, ISO 42001, NIST CSF 2.0, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, LGPD, Marco Legal da IA
