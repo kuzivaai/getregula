@@ -105,6 +105,20 @@ PROCESS_EXIT = re.compile(
     r"##\[error\]Process completed with exit code (\d+)"
 )
 
+# Claim auditor
+CLAIM_AUDITOR_FAIL = re.compile(
+    r"claim-auditor:.*?(\d+)\s+unsourced"
+)
+CLAIM_AUDITOR_FILE = re.compile(
+    r"^\s+(?P<path>[\w/.\-]+\.md)\s+—\s+(?P<count>\d+)\s+unsourced",
+    re.MULTILINE,
+)
+
+# Deploy race condition
+DEPLOY_RACE = re.compile(
+    r"due to in progress deployment"
+)
+
 # Regula-specific
 REGULA_SELFTEST_FAIL = re.compile(
     r"Regula\s+Self[- ]Test.*?FAIL", re.DOTALL | re.IGNORECASE
@@ -125,7 +139,7 @@ class FailureEvidence:
 @dataclass
 class HealPlan:
     run_id: str | None
-    failure_type: str            # test | type | lint | build | import | unknown
+    failure_type: str            # test | type | lint | claim | build | import | deploy-race | unknown
     confidence: str              # high | medium | low
     affected_files: list[str]
     failing_tests: list[str] = field(default_factory=list)
@@ -239,6 +253,33 @@ def classify(log_text: str, run_id: str | None = None) -> HealPlan:
         plan.affected_files = _dedupe(m.group("path") for m in lint_hits)
         for m in lint_hits[:10]:
             plan.error_snippets.append(m.group(0)[:200])
+
+    # --- 4b. claim-auditor failures --------------------------------------
+    claim_hits = list(CLAIM_AUDITOR_FILE.finditer(log_text))
+    if claim_hits and plan.failure_type == "unknown":
+        plan.failure_type = "claim"
+        plan.confidence = "high"
+        plan.affected_files = _dedupe(m.group("path") for m in claim_hits)
+        for m in claim_hits:
+            plan.error_snippets.append(
+                f"{m.group('path')} — {m.group('count')} unsourced claim(s)"
+            )
+        plan.instructions_for_agent = (
+            "Fix unsourced claims by adding a URL, markdown link, or "
+            "reference to an existing file in the same paragraph. "
+            "Do NOT add claims to .claim-allowlist unless the claim is "
+            "contextual/comparative rather than factual."
+        )
+
+    # --- 4c. deploy race condition (not fixable by code change) ----------
+    if DEPLOY_RACE.search(log_text) and plan.failure_type == "unknown":
+        plan.failure_type = "deploy-race"
+        plan.confidence = "high"
+        plan.out_of_scope = True
+        plan.out_of_scope_reason = (
+            "GitHub Pages deployment race condition — transient, "
+            "resolves on next push. No code fix needed."
+        )
 
     # --- 5. build errors -------------------------------------------------
     if plan.failure_type == "unknown" and NPM_FAIL.search(log_text):
