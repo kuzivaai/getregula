@@ -52,7 +52,7 @@ def _load_obligations() -> dict:
             _OBLIGATIONS = data
             return _OBLIGATIONS
         except Exception:
-            pass
+            pass  # YAML parse failure — fall through to built-in defaults
 
     # Built-in fallback — minimal obligation data
     _OBLIGATIONS = {"articles": {

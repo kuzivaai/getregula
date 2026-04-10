@@ -127,9 +127,9 @@
         .badge { gap: 6px; padding: 4px 12px; }
         .badge-dot { width: 5px; height: 5px; }
         .hero h1 { font-size: 60px; line-height: 1.1; letter-spacing: -0.04em; }
-        .hero .sub { font-size: 16px; color: #8888aa; }
+        .hero .sub { font-size: 16px; color: var(--text-dim); }
         .term-bar { background: #080813; border-bottom-color: rgba(255,255,255,0.06); }
-        .td-r { background: #ef4444; } .td-y { background: #eab308; } .td-g { background: #22c55e; }
+        .td-r { background: var(--danger); } .td-y { background: #eab308; } .td-g { background: #22c55e; }
         .sec { padding: 80px 32px 0; }
         .sec-head { font-size: 28px; letter-spacing: -0.03em; line-height: 1.2; }
         .sec-sub { margin-bottom: 32px; max-width: none; }
@@ -363,11 +363,15 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
         <div class="audience-card audience-biz">
             <div class="audience-label">If you run the business</div>
             <h3>Your business uses AI. Do you know your legal exposure?</h3>
-            <p>Whether your team uses AI tools for research and writing, you're building products with AI, or AI makes decisions in your workflows &mdash; the EU AI Act may create obligations for your business. Fines for prohibited uses reach &euro;35M.</p>
+            <p>Whether your team uses AI tools for research and writing, you're building products with AI, or AI makes decisions in your workflows &mdash; the EU AI Act may create obligations for your business. Prohibited AI practices carry fines up to &euro;35M &mdash; but most AI tools fall under limited or minimal risk. Run Regula to find out where you stand.</p>
             <p>You don't need to understand the code. Send this page to your developer or technical lead. They run one command. You get a written report you can show your board, insurer, or legal team.</p>
             <div class="audience-fwd" onclick="copyPageUrl(this)">
                 <span class="fwd-icon">&#8599;</span>
                 <span class="fwd-txt">Copy link to send to your developer</span>
+            </div>
+            <div class="audience-fwd" onclick="copyPill(this, 'pip install regula-ai &amp;&amp; regula assess')">
+                <span class="fwd-icon">&#9654;</span>
+                <span class="fwd-txt">Run regula assess &mdash; no code needed</span>
             </div>
         </div>
         <div class="audience-card audience-dev">
@@ -411,6 +415,14 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
             Try free in 30 seconds
         </button>
     </div>
+</div>
+
+<div class="sec" style="text-align:center;padding-top:40px;">
+    <p style="font-size:14px;color:var(--text-dim);margin-bottom:12px;">Get EU AI Act deadline reminders and major release updates.</p>
+    <form class="notify" action="https://formspree.io/f/xjgppkkn" method="POST" style="max-width:400px;margin:0 auto;">
+        <input type="email" name="email" placeholder="your@email.com" aria-label="Email" required>
+        <button type="submit">Subscribe</button>
+    </form>
 </div>
 
 <div class="sep"></div>

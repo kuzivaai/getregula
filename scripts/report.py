@@ -295,7 +295,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     try:
         cache = ScanCache()
     except Exception:
-        pass
+        pass  # Cache init failure must never block scanning
 
     # Tier ordering for --min-tier filtering
     _TIER_ORDER = {
@@ -370,7 +370,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         findings.extend(cached)
                         continue
             except Exception:
-                pass
+                pass  # Cache read failure — scan file normally
 
             # Track per-file findings for caching
             file_findings_start = len(findings)
@@ -415,7 +415,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                             if cache is not None:
                                 cache.put(rel_path, content, findings[file_findings_start:])
                         except Exception:
-                            pass
+                            pass  # Cache write is best-effort
                         continue
 
             if not is_ai_related(content):
@@ -423,7 +423,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     if cache is not None:
                         cache.put(rel_path, content, findings[file_findings_start:])
                 except Exception:
-                    pass
+                    pass  # Cache write is best-effort
                 continue
 
             suppressed_rules = _parse_suppression_rules(lines, respect_ignores)
@@ -455,7 +455,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     if cache is not None:
                         cache.put(rel_path, content, findings[file_findings_start:])
                 except Exception:
-                    pass
+                    pass  # Cache write is best-effort
                 continue
 
             # Skip findings below min_tier threshold
@@ -465,7 +465,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     if cache is not None:
                         cache.put(rel_path, content, findings[file_findings_start:])
                 except Exception:
-                    pass
+                    pass  # Cache write is best-effort
                 continue
 
             is_suppressed = "*" in suppressed_rules
@@ -528,14 +528,14 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 if cache is not None:
                     cache.put(rel_path, content, findings[file_findings_start:])
             except Exception:
-                pass
+                pass  # Cache write is best-effort
 
     # Flush cache to disk
     try:
         if cache is not None:
             cache.flush()
     except Exception:
-        pass
+        pass  # Cache flush failure must not affect scan results
 
     # Config/env file scanning for AI service references
     try:
@@ -543,7 +543,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         if min_tier_level <= 1:  # only include if minimal_risk tier is in scope
             findings.extend(config_findings)
     except Exception:
-        pass
+        pass  # Config scanning is supplementary — failure must not block main scan
 
     # Enrich each finding with Omnibus-aware enforcement deadline
     _enrich_deadlines(findings)
@@ -935,7 +935,7 @@ Scanned {total_files} file(s) &middot; {prohibited_count} prohibited &middot; {h
             from framework_mapper import map_to_frameworks
             framework_mappings = map_to_frameworks(["9", "10", "11", "12", "13", "14", "15"])
         except Exception:
-            framework_mappings = None
+            framework_mappings = None  # Optional import — omit section if unavailable
 
     if framework_mappings is not None:
         html += """

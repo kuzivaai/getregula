@@ -722,7 +722,7 @@ def _check_article_14(project_path: str, files_index: list) -> tuple:
                 for ad in oversight.get("automated_decisions", []):
                     gaps.append(f"JS/TS automated decision without review: {rel_path}:{ad.get('line', '?')}")
             except Exception:
-                pass
+                pass  # AST analysis failure on one file must not block gap assessment
 
     if component_scores["oversight_mechanisms"] == 0:
         gaps.append("No human oversight mechanisms found (approval workflows, review gates, overrides)")
