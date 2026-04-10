@@ -261,3 +261,26 @@ audit report, the recommended format is:
 If anything in this document is unclear, ambiguous, or unverifiable —
 or if you can reproduce a different number with the same command — open
 an issue at <https://github.com/kuzivaai/getregula/issues>.
+
+---
+
+## Future: RegulaBench
+
+The existing OSS corpus (257 findings across 5 projects) is a starting
+point. The Regula project plans to publish **RegulaBench** — a larger,
+hand-labelled, citable dataset of real-world AI code snippets with
+TP/FP labels mapped to EU AI Act Articles. Design details are in
+[`docs/moat-research.md`](../moat-research.md) under "Candidate 2".
+
+There is no NIST-Juliet-equivalent for AI Act compliance at the code
+level today (see [`docs/moat-research.md`](../moat-research.md), which
+cites [NIST SARD](https://samate.nist.gov/SARD/test-suites),
+[Juliet 1.3](https://samate.nist.gov/SARD/test-suites/112), and
+[MLCommons AILuminate](https://ailuminate.mlcommons.org/) as the
+closest precedents in adjacent domains). RegulaBench aims to fill that
+gap.
+
+**Status:** design phase. Target v0.1: 100 hand-labelled cases,
+published on [HuggingFace Datasets](https://huggingface.co/datasets) +
+[Zenodo](https://zenodo.org/) with a DOI. If you have labelling
+expertise and want to contribute, open an issue.

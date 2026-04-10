@@ -62,7 +62,15 @@
 \b18\s+files
 \bThe only tool
 # ---- Benchmark self-claims verified by benchmarks/labels.json + labels.py
-\b257\s+findings?\s+\(see
+\b257\s+findings?\b
+\b0\s+findings?\b
+\b10\s+patterns\b
+\bbetter than\s+random
+# ---- Legal assessment quoting Regula's own disclaimers (self-reference)
+\breports?\s+(?:all\s+)?(?:contain|state)\s+(?:explicit\s+)?disclaimers?
+# ---- UK regulatory activity references (factual, not statistical claims)
+\bannounced investigation
+\b30\s+days?\b
 # ---- Test count claims that cite site_facts.py (inline code stripped
 #      by auditor so the file ref isn't visible in the paragraph text)
 \b688\s+test\s+functions
