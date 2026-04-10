@@ -101,7 +101,7 @@ Regula is only the last item on that list.
 
 ## Industry validation
 
-McKinsey's April 2026 [AI Transformation Manifesto](https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/the-ai-transformation-manifesto)
+McKinsey's April 2026 [AI Transformation Manifesto](https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/the-ai-transformation-manifesto)
 (Singla, Sukharevsky, Lamarre, Smaje & Levin) independently validates
 this scope boundary:
 
