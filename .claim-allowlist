@@ -79,6 +79,13 @@
 \bThe only way to
 \bNo other entrant
 \bannounced["]
+# ---- McKinsey reference doc (docs/references/mckinsey-ai-manifesto-2026.md)
+#      Internal strategic reference quoting McKinsey verbatim — the doc
+#      itself says which figures can and cannot be used for Regula.
+\bLeading Companies Win
+\$3 of incremental
+\$1 invested
+\bwrite .*McKinsey
 # ---- Regulatory/document meta-references (counting files in a report)
 \b5\s+files[\s)]
 # ---- Audit phrases — "the only load-bearing", "No other new entrant"
