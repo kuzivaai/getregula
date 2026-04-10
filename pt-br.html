@@ -38,9 +38,8 @@
     <link rel="alternate" hreflang="pt-BR" href="https://getregula.com/pt-br.html">
     <link rel="alternate" hreflang="x-default" href="https://getregula.com/">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/fonts.css">
+    <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="assets/site.css">
     <!-- Privacy-friendly analytics by Plausible -->
     <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
@@ -54,8 +53,8 @@
 
     <nav class="nav" id="nav" aria-label="Navegação principal">
         <a href="/" class="nav-brand">Regula</a>
-        <button class="nav-toggle" onclick="document.querySelector('.nav-right').classList.toggle('open')" aria-label="Menu">&#9776;</button>
-        <div class="nav-right">
+        <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');d.open?d.close():d.showModal()" aria-label="Menu">&#9776;</button>
+        <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
             <a href="https://github.com/kuzivaai/getregula">GitHub</a>
             <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
             <a href="regulations.html" title="Rastreador global de regulação de IA">Regulação</a>
@@ -63,7 +62,7 @@
             <a href="index.html">EN</a>
             <a href="de.html">DE</a>
             <span class="active">BR</span>
-        </div>
+        </dialog>
     </nav>
 
     <header class="hero-wrap">
@@ -105,9 +104,9 @@
     <main id="main">
 
     <div class="stats">
-        <div class="st"><div class="st-n">Gratuito</div><div class="st-l">open source</div></div>
         <div class="st"><div class="st-n">330</div><div class="st-l">padrões de risco</div></div>
         <div class="st"><div class="st-n">8</div><div class="st-l">linguagens</div></div>
+        <div class="st"><div class="st-n">12</div><div class="st-l">frameworks de conformidade</div></div>
         <div class="st"><div class="st-n">0</div><div class="st-l">dependências</div></div>
     </div>
 
