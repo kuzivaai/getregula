@@ -51,10 +51,10 @@
 </head>
 <body>
     <a href="#main" class="skip-link">Pular para o conteúdo</a>
-    <div id="progress-bar"></div>
 
     <nav class="nav" id="nav" aria-label="Navegação principal">
         <a href="/" class="nav-brand">Regula</a>
+        <button class="nav-toggle" onclick="document.querySelector('.nav-right').classList.toggle('open')" aria-label="Menu">&#9776;</button>
         <div class="nav-right">
             <a href="https://github.com/kuzivaai/getregula">GitHub</a>
             <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
@@ -151,20 +151,57 @@
 
     <div class="sep"></div>
 
-    <div class="sec">
-        <h2 class="sec-head">O que o Regula verifica</h2>
-        <p class="sec-sub">Indicadores a nível de código mapeados para os artigos da Lei de IA da UE relevantes para sistemas de alto risco.</p>
-        <div class="art-grid">
-            <div class="art-card"><div class="tag tag-red">Artigo 5</div><h4>Práticas proibidas</h4><p>Pontuação social, manipulação subliminar, biometria em tempo real, inferência de emoções no trabalho</p></div>
-            <div class="art-card"><div class="tag tag-amber">Artigo 6</div><h4>Classificação de alto risco</h4><p>Pontuação de crédito, emprego, identificação biométrica, saúde, educação, aplicação da lei, migração</p></div>
-            <div class="art-card"><div class="tag">Artigo 9</div><h4>Gestão de riscos</h4><p>Lacunas na avaliação de riscos, documentação ausente, casos extremos não testados em pipelines de IA</p></div>
-            <div class="art-card"><div class="tag">Artigo 10</div><h4>Governança de dados</h4><p>Documentação de dados de treinamento, detecção de viés, indicadores de qualidade de dados</p></div>
-            <div class="art-card"><div class="tag">Artigo 12</div><h4>Manutenção de registros</h4><p>Completude de logs, integridade de trilha de auditoria, rastreabilidade de eventos</p></div>
-            <div class="art-card"><div class="tag">Artigo 13</div><h4>Transparência</h4><p>Funções de decisão automatizada, notificação ao usuário, lacunas de explicabilidade</p></div>
-            <div class="art-card"><div class="tag">Artigo 14</div><h4>Supervisão humana</h4><p>Mecanismos de override, gates de aprovação, padrões de humano no loop</p></div>
-            <div class="art-card"><div class="tag">Artigo 15</div><h4>Precisão e robustez</h4><p>Cobertura de testes, tratamento de erros, mecanismos de fallback, validação de entrada</p></div>
-            <div class="art-card"><div class="tag tag-purple">Anexo VIII</div><h4>Registro</h4><p><code>regula register</code> &mdash; pacote de registro Anexo VIII (Artigo 49) com auto-preenchimento e lista de lacunas.</p></div>
+    <div class="sec" id="tiers">
+        <h2 class="sec-head">O que a Regula mostra</h2>
+        <p class="sec-sub">A Lei de IA da UE classifica cada sistema de IA em um nível de risco. O Regula escaneia seu código, mostra qual nível se aplica e dá a lista de correções.</p>
+        <div class="tiers">
+            <div class="tier tier-r">
+                <div class="tier-badge">Proibido</div>
+                <div class="tier-examples">Pontuação social &middot; Inferência de emoções &middot; Biometria em tempo real &middot; Manipulação subliminar</div>
+                <div class="tier-hint">Art. 5 &mdash; proibido &rarr;</div>
+            </div>
+            <div class="tier tier-a">
+                <div class="tier-badge">Alto risco</div>
+                <div class="tier-examples">Pontuação de crédito &middot; Emprego &middot; Diagnóstico médico &middot; Educação &middot; Aplicação da lei</div>
+                <div class="tier-hint">Art. 9&ndash;15 aplicáveis &rarr;</div>
+            </div>
+            <div class="tier tier-y">
+                <div class="tier-badge">Risco limitado</div>
+                <div class="tier-examples">Chatbots &middot; Conteúdo sintético &middot; Reconhecimento de emoções &middot; Deep fakes</div>
+                <div class="tier-hint">Regras de transparência &rarr;</div>
+            </div>
+            <div class="tier tier-g">
+                <div class="tier-badge">Risco mínimo</div>
+                <div class="tier-examples">Filtros de spam &middot; Jogos com IA &middot; Recomendações básicas &middot; Ranking de busca</div>
+                <div class="tier-hint">Sem requisitos obrigatórios &rarr;</div>
+            </div>
         </div>
+        <p class="tier-cta">O Regula mostra onde seu código se encaixa &mdash; e exatamente por quê.</p>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="sec">
+        <h2 class="sec-head">Além da classificação</h2>
+        <p class="sec-sub">O Regula lê seu código diretamente &mdash; não um questionário.</p>
+        <div class="art-grid">
+            <div class="art-card">
+                <div class="tag tag-blue">Lacunas de conformidade</div>
+                <h4>O que está faltando no seu código?</h4>
+                <p>Gestão de riscos, governança de dados, logging, transparência, supervisão humana, precisão &mdash; pontuação por artigo com estimativas de esforço.</p>
+            </div>
+            <div class="art-card">
+                <div class="tag tag-blue">Documentação</div>
+                <h4>Você consegue provar conformidade?</h4>
+                <p>Gera automaticamente documentação técnica Anexo IV a partir do seu código real &mdash; funções, dependências e cobertura de logging já preenchidos.</p>
+            </div>
+            <div class="art-card">
+                <div class="tag tag-purple">Segurança</div>
+                <h4>Seu código de IA é seguro?</h4>
+                <p>Verifica injeção de prompt, carregamento inseguro de modelo, saída de IA não validada, chaves hardcoded e outras vulnerabilidades específicas de IA.</p>
+            </div>
+        </div>
+        <div style="text-align:center;margin-top:48px;"><button class="cta-pill" onclick="copyPill(this, 'pip install regula-ai &amp;&amp; regula quickstart')"><span>&#9654;</span> Teste grátis em 30 segundos</button></div>
     </div>
 
     <div class="sep"></div>
@@ -242,7 +279,7 @@
         <div class="final-glow"></div>
         <div class="final">
             <h2>Descubra onde você está</h2>
-            <p>Um comando. Leva 10 segundos. Sem conta necessária.</p>
+            <p>Um comando. Leva 30 segundos. Sem conta necessária.</p>
             <div class="install-box" onclick="navigator.clipboard.writeText('pip install regula-ai');this.querySelector('.cp').textContent='copiado'" style="margin: 0 auto;">
                 <span class="dollar">$</span>
                 <span class="cmd">pip install regula-ai</span>
@@ -281,16 +318,18 @@
     </footer>
 
     <script>
-        const progressBar = document.getElementById('progress-bar');
         const nav = document.getElementById('nav');
         function onScroll() {
-            const scrollTop = document.documentElement.scrollTop;
-            const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-            progressBar.style.width = pct + '%';
             nav.classList.toggle('scrolled', window.scrollY > 20);
         }
         window.addEventListener('scroll', onScroll, { passive: true });
+        function copyPill(btn, cmd) {
+            navigator.clipboard.writeText(cmd);
+            btn.classList.add('copied');
+            var orig = btn.innerHTML;
+            btn.innerHTML = '<span>&#10003;</span> Copiado';
+            setTimeout(function() { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+        }
     </script>
 </body>
 </html>
