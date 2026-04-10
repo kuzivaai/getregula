@@ -4,6 +4,11 @@
    Loaded by: index.html, de.html, pt-br.html, south-africa-ai-policy.html
    ============================================================= */
 
+/* ===== VIEW TRANSITIONS ===== */
+@view-transition {
+    navigation: auto;
+}
+
 /* ===== RESET ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -136,11 +141,15 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     letter-spacing: -0.02em;
     text-decoration: none;
 }
-.nav-right {
+dialog.nav-right {
     display: flex;
     gap: var(--s5);
     font-size: 13px;
     align-items: center;
+    border: none;
+    background: none;
+    padding: 0;
+    color: inherit;
 }
 .nav-right a { color: var(--text-dim); }
 .nav-right a:hover { color: var(--text); }
@@ -157,21 +166,26 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 }
 @media (max-width: 768px) {
     .nav-toggle { display: block; }
-    .nav-right {
+    dialog.nav-right {
         display: none;
-        position: absolute;
-        top: 56px;
+        position: fixed;
+        top: 52px;
         right: 0;
         left: 0;
+        bottom: 0;
         flex-direction: column;
         gap: 0;
         background: rgba(7, 7, 17, 0.97);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border-bottom: 1px solid var(--border);
-        padding: 12px var(--s7) 16px;
+        border: none;
+        border-top: 1px solid rgba(255,255,255,0.07);
+        padding: 12px 32px 16px;
+        max-width: 100%;
+        max-height: 100%;
     }
-    .nav-right.open { display: flex; }
+    dialog.nav-right[open] { display: flex; }
+    dialog.nav-right::backdrop { background: transparent; }
     .nav-right a, .nav-right .active { padding: 8px 0; font-size: 14px; }
 }
 

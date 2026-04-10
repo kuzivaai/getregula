@@ -116,10 +116,13 @@
     <link rel="alternate" hreflang="pt-BR" href="https://getregula.com/pt-br.html">
     <link rel="alternate" hreflang="x-default" href="https://getregula.com/">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/fonts.css">
+    <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <style>
+        @view-transition {
+            navigation: auto;
+        }
+
         /* ===== RESET & BASE ===== */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
@@ -163,11 +166,15 @@
             color: #e2e2f0;
             letter-spacing: -0.02em;
         }
-        .nav-right {
+        dialog.nav-right {
             display: flex;
             gap: 20px;
             font-size: 13px;
             align-items: center;
+            border: none;
+            background: none;
+            padding: 0;
+            color: inherit;
         }
         .nav-right a { color: #8888aa; }
         .nav-right a:hover { color: #e2e2f0; }
@@ -818,21 +825,26 @@
         /* ===== MOBILE ===== */
         @media (max-width: 768px) {
             .nav-toggle { display: block; }
-            .nav-right {
+            dialog.nav-right {
                 display: none;
-                position: absolute;
+                position: fixed;
                 top: 52px;
                 right: 0;
                 left: 0;
+                bottom: 0;
                 flex-direction: column;
                 gap: 0;
                 background: rgba(7, 7, 17, 0.97);
                 backdrop-filter: blur(16px);
                 -webkit-backdrop-filter: blur(16px);
-                border-bottom: 1px solid rgba(255,255,255,0.07);
+                border: none;
+                border-top: 1px solid rgba(255,255,255,0.07);
                 padding: 12px 32px 16px;
+                max-width: 100%;
+                max-height: 100%;
             }
-            .nav-right.open { display: flex; }
+            dialog.nav-right[open] { display: flex; }
+            dialog.nav-right::backdrop { background: transparent; }
             .nav-right a, .nav-right .active { padding: 8px 0; font-size: 14px; }
         }
         @media (max-width: 900px) {
@@ -876,8 +888,8 @@
 <!-- NAV -->
 <nav class="nav" id="nav">
     <a href="/" class="nav-brand">Regula</a>
-    <button class="nav-toggle" onclick="document.querySelector('.nav-right').classList.toggle('open')" aria-label="Menu">&#9776;</button>
-    <div class="nav-right">
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');d.open?d.close():d.showModal()" aria-label="Menu">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -885,7 +897,7 @@
         <span class="active">EN</span>
         <a href="de.html">DE</a>
         <a href="pt-br.html">BR</a>
-    </div>
+    </dialog>
 </nav>
 
 <!-- HERO -->
