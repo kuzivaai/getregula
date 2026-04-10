@@ -38,7 +38,7 @@ jobs:
 
       - name: Checkout the failing commit's branch
         if: steps.selfcheck.outputs.is_self_heal == 'false'
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
           fetch-depth: 30
