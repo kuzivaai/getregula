@@ -7,7 +7,8 @@ name = "regula-ai"
 version = "1.6.1"
 description = "AI governance risk indication for code — EU AI Act compliance at the point of creation"
 readme = "README.md"
-license = {text = "MIT"}
+license = {text = "MIT AND LicenseRef-DRL-1.1"}
+license-files = ["LICENSE.txt", "LICENSE.Detection.Rules.md"]
 requires-python = ">=3.10"
 authors = [{name = "The Implementation Layer"}]
 keywords = ["ai-governance", "eu-ai-act", "compliance", "claude-code", "risk-indication"]

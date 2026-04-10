@@ -421,9 +421,11 @@ Bug reports and pull requests are welcome. A few things to know:
 - Bugs and feature requests: [GitHub Issues](https://github.com/kuzivaai/getregula/issues)
 - Security disclosures: [GitHub Security Advisory](https://github.com/kuzivaai/getregula/security/advisories/new) or `support@getregula.com` with `[SECURITY]` prefix
 
-## License
+## Licence
 
-MIT License. See [LICENSE.txt](LICENSE.txt).
+**Engine and CLI:** MIT License. See [LICENSE.txt](LICENSE.txt).
+
+**Risk patterns and regulatory data:** Detection Rule License (DRL) 1.1. See [LICENSE.Detection.Rules.md](LICENSE.Detection.Rules.md). You may use, modify, and redistribute the patterns freely. If you redistribute them or use them in a product, you must attribute the source. If your tool generates match output from these patterns, the output must credit the author.
 
 **Releases & roadmap:** [CHANGELOG.md](CHANGELOG.md) groups commits by release. [TODO.md](TODO.md) is the prioritised gap backlog (P0/P1/P2/P3) — what is known to be wrong or missing right now.
 
