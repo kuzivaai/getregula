@@ -4,24 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page not found — Regula</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%231d4ed8'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="preload" href="assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="assets/fonts.css">
+    <link rel="stylesheet" href="assets/site.css">
     <style>
         @view-transition {
             navigation: auto;
         }
-        body { font-family: 'Inter', system-ui, sans-serif; background: #faf9f7; color: #3d3d4e; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .box { text-align: center; max-width: 480px; padding: 40px; }
-        h1 { font-size: 48px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
-        p { font-size: 16px; color: #6b6b80; line-height: 1.6; margin-bottom: 24px; }
-        a { color: #1d4ed8; text-decoration: none; font-weight: 500; }
-        a:hover { color: #1e40af; }
+        .notfound {
+            text-align: center;
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 120px 32px 80px;
+        }
+        .notfound h1 {
+            font-family: var(--font-serif);
+            font-size: 52px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+        .notfound p {
+            font-size: 16px;
+            color: var(--text-2);
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+        .notfound-links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .notfound-links a {
+            color: var(--accent);
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .notfound-links a:hover {
+            color: var(--accent-hover);
+        }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h1>404</h1>
-        <p>This page doesn't exist. But your AI compliance obligations might.</p>
-        <a href="/">Check your risk tier &rarr;</a>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="regulations.html">Regulations</a>
+        <a href="writing.html">Writing</a>
+        <a href="/">EN</a>
+        <a href="de.html">DE</a>
+        <a href="pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main class="notfound">
+    <h1>Page not found</h1>
+    <p>This page doesn't exist. You might have followed an outdated link or mistyped the URL.</p>
+    <div class="notfound-links">
+        <a href="/">Homepage</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
     </div>
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="writing.html">Writing</a>
+                <a href="regulations.html">Regulations</a>
+            </div>
+            <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula is a developer tool, not a legal service. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
 </body>
 </html>

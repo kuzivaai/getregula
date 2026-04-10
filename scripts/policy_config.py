@@ -41,7 +41,7 @@ def _load_policy() -> dict:
             else:
                 return _parse_yaml_fallback(content)
         except Exception:
-            continue
+            continue  # Malformed config — try next candidate file
     return {}
 
 
@@ -142,7 +142,7 @@ def _load_policy_from(path: str) -> dict:
         else:
             return _parse_yaml_fallback(content)
     except Exception:
-        return {}
+        return {}  # Config parse failure — return empty policy
 
 
 def get_governance_contacts() -> dict:

@@ -69,7 +69,7 @@ def _current_pattern_version() -> str:
         basis = (data or {}).get("regulatory_basis", {})
         return f"{basis.get('pattern_version', 'unknown')}-{basis.get('last_reviewed', 'unknown')}"
     except Exception:
-        return f"{VERSION}-patterns"
+        return f"{VERSION}-patterns"  # Fallback when policy file unavailable
 
 
 _SAFE_GIT_REF = re.compile(r'^[a-zA-Z0-9_.~^@{}/:\-]+$')
@@ -2427,7 +2427,7 @@ def _build_subparsers(subparsers):
     p_oversight.set_defaults(func=cmd_oversight)
 
 
-def main():
+def main(args=None):
     parser = argparse.ArgumentParser(
         prog="regula",
         description="AI Governance Risk Indication for Code",
@@ -2445,7 +2445,7 @@ def main():
     subparsers = parser.add_subparsers(dest="command")
     _build_subparsers(subparsers)
 
-    args = parser.parse_args()
+    args = parser.parse_args(args)
 
     # Telemetry: prompt on first run, then init Sentry if consented.
     # Skip prompt when user is explicitly managing telemetry settings.

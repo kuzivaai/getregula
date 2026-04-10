@@ -7,6 +7,8 @@
 [![EU AI Act](https://img.shields.io/badge/EU%20AI%20Act-Risk%20Indication-blue.svg)](#regulatory-coverage)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
 
+**Website:** [getregula.com](https://getregula.com)
+
 If you ship an AI product to EU users, the EU AI Act applies to you — regardless of where you are based or how small your team is. Article 2 is extraterritorial: it covers any provider whose system is used in the EU.
 
 Regula scans your code for risk indicators, tells you which tier your system falls into, and flags what you need to do before the August 2026 deadline. Most solo founders building chatbots or productivity tools will land in the limited-risk tier — meaning lightweight transparency obligations under Article 50, not the full Annex III high-risk requirements. Regula tells you that clearly, rather than leaving you guessing.
@@ -259,7 +261,7 @@ Reproduce with `python3 benchmarks/label.py score` (OSS labels) and `python3 ben
 
 ## CLI Usage
 
-Regula has 39 CLI subcommands. The full reference (with examples for each) lives in [`docs/cli-reference.md`](docs/cli-reference.md). Top-level summary:
+Regula has 43 CLI commands. The full reference (with examples for each) lives in [`docs/cli-reference.md`](docs/cli-reference.md). Top-level summary:
 
 ```bash
 regula --help                              # list all subcommands
