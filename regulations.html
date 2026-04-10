@@ -55,31 +55,7 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
         }
-        .reg-card {
-            background: var(--bg-elev);
-            border: 1px solid var(--border);
-            border-radius: var(--r-lg);
-            padding: 28px 30px;
-            display: flex;
-            flex-direction: column;
-            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-            color: inherit;
-        }
-        .reg-card.live {
-            border-color: rgba(16,185,129,0.3);
-        }
-        .reg-card.live:hover {
-            border-color: var(--success);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(16,185,129,0.1);
-        }
-        .reg-card.upcoming {
-            opacity: 0.6;
-        }
-        .reg-card.upcoming:hover {
-            border-color: var(--border-strong);
-            opacity: 0.85;
-        }
+        /* reg-card base styles in site.css */
         .reg-head {
             display: flex;
             align-items: baseline;
@@ -115,15 +91,7 @@
             background: rgba(136,136,170,0.08);
             border: 1px solid rgba(136,136,170,0.2);
         }
-        .reg-card h2 {
-            font-family: var(--font-serif);
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 8px;
-            line-height: 1.15;
-        }
-        .reg-card h2 a { color: inherit; }
+        /* reg-card h2 styles in site.css */
         .reg-sub {
             font-size: 13px;
             color: var(--text-dim);
@@ -198,7 +166,7 @@
     <main id="main">
         <div class="hub-grid">
 
-            <a class="reg-card live" href="south-africa-ai-policy.html">
+            <a class="card-base reg-card live" href="south-africa-ai-policy.html">
                 <div class="reg-head">
                     <div class="reg-flag" aria-hidden="true">🇿🇦</div>
                     <div class="reg-status status-live">Live tracker</div>
@@ -209,7 +177,7 @@
                 <span class="reg-cta">Read the tracker &rarr;</span>
             </a>
 
-            <div class="reg-card live" style="cursor: default;">
+            <div class="card-base reg-card live" style="cursor: default;">
                 <div class="reg-head">
                     <div class="reg-flag" aria-hidden="true">🇪🇺</div>
                     <div class="reg-status status-live">Live in scanner</div>
@@ -220,7 +188,7 @@
                 <a class="reg-cta" href="/">See Regula CLI &rarr;</a>
             </div>
 
-            <a class="reg-card live" href="uae.html">
+            <a class="card-base reg-card live" href="uae.html">
                 <div class="reg-head">
                     <div class="reg-flag" aria-hidden="true">🇦🇪</div>
                     <div class="reg-status status-live">Live landing page</div>
@@ -231,7 +199,7 @@
                 <span class="reg-cta">Read the UAE brief &rarr;</span>
             </a>
 
-            <a class="reg-card live" href="uk-ai-regulation.html">
+            <a class="card-base reg-card live" href="uk-ai-regulation.html">
                 <div class="reg-head">
                     <div class="reg-flag" aria-hidden="true">🇬🇧</div>
                     <div class="reg-status status-live">Live tracker</div>
@@ -242,7 +210,7 @@
                 <span class="reg-cta">Read the tracker &rarr;</span>
             </a>
 
-            <div class="reg-card upcoming">
+            <div class="card-base reg-card upcoming">
                 <div class="reg-head">
                     <div class="reg-flag" aria-hidden="true">🇧🇷</div>
                     <div class="reg-status status-planned">Planned</div>
@@ -253,7 +221,7 @@
                 <span class="reg-cta disabled">Coming soon</span>
             </div>
 
-            <a class="reg-card live" href="colorado-ai-regulation.html">
+            <a class="card-base reg-card live" href="colorado-ai-regulation.html">
                 <div class="reg-head">
                     <div class="reg-flag" aria-hidden="true">🇺🇸</div>
                     <div class="reg-status status-live">Live tracker</div>
@@ -264,7 +232,7 @@
                 <span class="reg-cta">Read the tracker &rarr;</span>
             </a>
 
-            <a class="reg-card live" href="south-korea-ai-regulation.html">
+            <a class="card-base reg-card live" href="south-korea-ai-regulation.html">
                 <div class="reg-head">
                     <div class="reg-flag" aria-hidden="true">🇰🇷</div>
                     <div class="reg-status status-live">Live tracker</div>
@@ -275,7 +243,7 @@
                 <span class="reg-cta">Read the tracker &rarr;</span>
             </a>
 
-            <div class="reg-card upcoming">
+            <div class="card-base reg-card upcoming">
                 <div class="reg-head">
                     <div class="reg-flag" aria-hidden="true">🇺🇸</div>
                     <div class="reg-status status-planned">Planned</div>
@@ -286,7 +254,7 @@
                 <span class="reg-cta disabled">Coming soon</span>
             </div>
 
-            <div class="reg-card upcoming">
+            <div class="card-base reg-card upcoming">
                 <div class="reg-head">
                     <div class="reg-flag" aria-hidden="true">🌍</div>
                     <div class="reg-status status-planned">Planned</div>

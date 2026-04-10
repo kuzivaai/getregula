@@ -160,69 +160,6 @@
     <link rel="stylesheet" href="assets/fonts.css">
     <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="assets/site.css">
-    <style>
-        .hub-hero { max-width: 880px; margin: 0 auto; padding: 80px 32px 48px; }
-        .breadcrumb { font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin-bottom: 24px; }
-        .breadcrumb a { color: var(--text-dim); }
-        .breadcrumb a:hover { color: var(--text); }
-        .status-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            font-family: var(--font-mono); font-size: 11px;
-            color: var(--warn); background: rgba(245,158,11,0.08);
-            border: 1px solid rgba(245,158,11,0.25); border-radius: var(--r-pill);
-            padding: 5px 14px; margin-bottom: 20px;
-            text-transform: uppercase; letter-spacing: 0.06em;
-        }
-        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--warn); animation: pulse 2.4s infinite; }
-        .status-badge.live { color: var(--success); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.25); }
-        .status-badge.live .status-dot { background: var(--success); }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .hub-hero h1 { font-size: 52px; font-weight: 700; line-height: 1.08; margin-bottom: 18px; }
-        .hub-hero h1 .hl { color: var(--accent); }
-        .hub-hero .lede { font-size: 18px; color: var(--text-2); line-height: 1.7; margin-bottom: 28px; max-width: 720px; }
-        .last-updated { font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); margin-bottom: 36px; }
-        .last-updated strong { color: var(--text-dim); }
-        .tracker { background: linear-gradient(180deg, rgba(245,158,11,0.06), rgba(245,158,11,0.02)); border: 1px solid rgba(245,158,11,0.25); border-radius: var(--r-lg); padding: 24px 28px; margin-bottom: 56px; }
-        .tracker h2 { font-size: 14px; font-family: var(--font-mono); color: var(--warn); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; font-weight: 500; }
-        .tracker-row { display: flex; gap: 16px; padding: 10px 0; border-bottom: 1px solid rgba(245,158,11,0.08); font-size: 13px; }
-        .tracker-row:last-child { border-bottom: none; }
-        .tracker-row .lbl { color: var(--text-dim); min-width: 180px; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
-        .tracker-row .val { color: var(--text); }
-        .tracker-row .val .ok { color: var(--success); font-family: var(--font-mono); font-size: 11px; }
-        .tracker-row .val .pend { color: var(--warn); font-family: var(--font-mono); font-size: 11px; }
-        .content { max-width: 880px; margin: 0 auto; padding: 0 32px 80px; }
-        .content section { margin-bottom: 64px; }
-        .content h2 { font-size: 32px; font-weight: 600; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-        .content h3 { font-size: 22px; font-weight: 600; margin-top: 36px; margin-bottom: 14px; }
-        .content p { font-size: 16px; color: var(--text-2); margin-bottom: 18px; line-height: 1.75; }
-        .content p strong { color: var(--text); font-weight: 600; }
-        .content ul, .content ol { margin: 18px 0 24px 24px; color: var(--text-2); }
-        .content li { font-size: 15px; margin-bottom: 10px; line-height: 1.65; }
-        .content li strong { color: var(--text); }
-        .content blockquote { border-left: 3px solid var(--accent); padding: 12px 0 12px 20px; margin: 24px 0; font-size: 16px; color: var(--text-dim); font-style: italic; }
-        .content code { background: rgba(59,130,246,0.08); color: var(--cyan); padding: 2px 6px; border-radius: 3px; font-size: 13px; }
-        .faq details { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-md); padding: 16px 22px; margin-bottom: 10px; transition: border-color 0.2s; }
-        .faq details[open] { border-color: rgba(59,130,246,0.3); }
-        .faq summary { cursor: pointer; font-weight: 600; color: var(--text); font-size: 15px; list-style: none; position: relative; padding-right: 24px; }
-        .faq summary::-webkit-details-marker { display: none; }
-        .faq summary::after { content: '+'; position: absolute; right: 0; top: 0; color: var(--text-faint); font-size: 20px; font-weight: 400; transition: transform 0.2s; }
-        .faq details[open] summary::after { content: '−'; }
-        .faq details p { margin: 14px 0 0; font-size: 14px; color: var(--text-2); line-height: 1.7; }
-        .sources { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 24px 28px; }
-        .sources h3 { font-size: 18px; margin-top: 0; margin-bottom: 14px; }
-        .sources ul { list-style: none; margin-left: 0; }
-        .sources li { padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
-        .sources li:last-child { border-bottom: none; }
-        .sources li strong { color: var(--text); }
-        @media (max-width: 700px) {
-            .hub-hero h1 { font-size: 36px; }
-            .content h2 { font-size: 26px; }
-            .tracker-row { flex-direction: column; gap: 4px; }
-            .tracker-row .lbl { min-width: 0; }
-            .hub-hero { padding: 56px 24px 32px; }
-            .content { padding: 0 24px 60px; }
-        }
-    </style>
 </head>
 <body>
     <a href="#main" class="skip-link">Skip to content</a>
@@ -280,7 +217,7 @@
         </div>
     </header>
 
-    <main id="main" class="content">
+    <main id="main" class="tracker-content">
         <section id="what-is-in-force">
             <h2>What is already in force in the UK</h2>
 
