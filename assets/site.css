@@ -152,6 +152,13 @@ dialog.nav-right {
     border: none;
     background: none;
     padding: 0;
+    margin: 0;
+    position: static;
+    inset: unset;
+    max-width: none;
+    max-height: none;
+    width: auto;
+    height: auto;
     color: inherit;
 }
 .nav-right a { color: var(--text-dim); }
