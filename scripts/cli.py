@@ -49,17 +49,18 @@ def _info(msg):
         print(msg, file=sys.stderr)
 
 
-def json_output(command: str, data, exit_code: int = 0):
+def json_output(command: str, data, exit_code: int = 0, deterministic: bool = False):
     """Standard JSON envelope for all --format json output."""
     envelope = {
         "format_version": "1.0",
         "regula_version": VERSION,
         "command": command,
-        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "exit_code": exit_code,
         "data": data,
     }
-    print(json.dumps(envelope, indent=2, default=str))
+    if not deterministic:
+        envelope["timestamp"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    print(json.dumps(envelope, indent=2, sort_keys=True, default=str))
 
 
 def _validate_path(path_str: str) -> Path:
@@ -248,9 +249,15 @@ def cmd_check(args):
                     "obligation_roadmap": result["obligation_roadmap"],
                     "total_effort_hours": result["total_effort_hours"],
                 })
-            json_output("check", {"findings": findings, "explanations": explained})
+            # Sort findings for deterministic output
+            findings.sort(key=lambda f: (f.get('file', ''), f.get('line', 0), f.get('pattern', '')))
+            det = getattr(args, 'deterministic', False)
+            json_output("check", {"findings": findings, "explanations": explained}, deterministic=det)
         else:
-            json_output("check", findings)
+            # Sort findings for deterministic output
+            findings.sort(key=lambda f: (f.get('file', ''), f.get('line', 0), f.get('pattern', '')))
+            det = getattr(args, 'deterministic', False)
+            json_output("check", findings, deterministic=det)
     elif args.format == "sarif":
         from report import generate_sarif
         name = args.name or Path(project).name
@@ -2110,6 +2117,14 @@ Examples:
   regula timeline                         EU AI Act enforcement dates
   regula deps --project .                 AI dependency supply chain analysis
   regula audit verify                     Verify audit chain integrity
+
+Environment variables (override defaults when CLI flag not provided):
+  REGULA_FORMAT       Output format (text, json, sarif)
+  REGULA_STRICT       Enable CI mode when set to 1/true/yes
+  REGULA_MIN_TIER     Minimum risk tier to report
+  REGULA_LANG         Output language (en, pt-BR, de)
+  REGULA_SKIP_TESTS   Skip test files when set to 1/true/yes
+  REGULA_FRAMEWORK    Compliance framework
 """
 
 
@@ -2260,6 +2275,32 @@ def cmd_attest(args):
         print(output)
 
 
+def cmd_explain_article(args):
+    """Explain an EU AI Act article in plain language."""
+    from explain_articles import ARTICLES
+
+    article_num = args.article.lstrip("article").lstrip("art").lstrip(".").lstrip(" ")
+
+    if article_num not in ARTICLES:
+        available = ", ".join(sorted(ARTICLES.keys(), key=lambda x: int(x)))
+        print(f"Article {article_num} not found. Available: {available}")
+        return
+
+    a = ARTICLES[article_num]
+
+    if args.format == "json":
+        json_output("explain-article", {"article": article_num, **a})
+        return
+
+    print(f"\n  Article {article_num} \u2014 {a['title']}")
+    print(f"  {'=' * (len(a['title']) + len(article_num) + 14)}\n")
+    print(f"  {a['summary']}\n")
+    print(f"  Who:   {a['who']}")
+    print(f"  When:  {a['when']}\n")
+    print(f"  What Regula checks:")
+    print(f"  {a['what_regula_checks']}\n")
+
+
 def _build_subparsers(subparsers):
     """Define all CLI subcommands. Extracted from main() for readability."""
     p_init = subparsers.add_parser("init", help="Guided setup wizard")
@@ -2298,6 +2339,8 @@ def _build_subparsers(subparsers):
                          help="Show detailed classification reasoning, obligation roadmap, and effort estimates")
     p_check.add_argument("--lang", choices=["en", "pt-BR", "de"], default=None,
                          help="Output language (default: en)")
+    p_check.add_argument("--deterministic", action="store_true", default=False,
+                         help="Deterministic JSON output (omit timestamp) for CI baseline comparison")
     p_check.set_defaults(func=cmd_check)
 
     # --- classify ---
@@ -2774,6 +2817,51 @@ def _build_subparsers(subparsers):
     p_attest.add_argument("--format", "-f", choices=["json"], default="json")
     p_attest.set_defaults(func=cmd_attest)
 
+    # --- explain-article ---
+    p_explain = subparsers.add_parser("explain-article", help="Plain-language EU AI Act article explainer")
+    p_explain.add_argument("article", help="Article number (e.g. 5, 14, 50)")
+    p_explain.add_argument("--format", choices=["text", "json"], default="text")
+    p_explain.set_defaults(func=cmd_explain_article)
+
+
+def _apply_env_defaults(args):
+    """Apply environment variable defaults where CLI flags weren't set.
+
+    Precedence: CLI flags > environment variables > argparse defaults.
+    """
+    # REGULA_FORMAT — applies to any subcommand with a --format arg
+    env_format = os.environ.get('REGULA_FORMAT')
+    if env_format and hasattr(args, 'format') and args.format == 'text':
+        args.format = env_format
+
+    # REGULA_STRICT — enable CI mode
+    if not args.ci and os.environ.get('REGULA_STRICT', '').lower() in ('1', 'true', 'yes'):
+        args.ci = True
+
+    # REGULA_MIN_TIER
+    env_min_tier = os.environ.get('REGULA_MIN_TIER')
+    if env_min_tier and hasattr(args, 'min_tier') and not args.min_tier:
+        args.min_tier = env_min_tier
+
+    # REGULA_LANG — override only if user didn't pass --lang explicitly
+    env_lang = os.environ.get('REGULA_LANG')
+    if env_lang and args.lang == 'en':
+        args.lang = env_lang
+
+    # REGULA_SKIP_TESTS
+    env_skip = os.environ.get('REGULA_SKIP_TESTS', '').lower()
+    if env_skip in ('1', 'true', 'yes') and hasattr(args, 'skip_tests'):
+        args.skip_tests = True
+    elif env_skip in ('0', 'false', 'no') and hasattr(args, 'skip_tests'):
+        args.skip_tests = False
+
+    # REGULA_FRAMEWORK
+    env_framework = os.environ.get('REGULA_FRAMEWORK')
+    if env_framework and hasattr(args, 'framework') and not args.framework:
+        args.framework = env_framework
+
+    return args
+
 
 def main(args=None):
     parser = argparse.ArgumentParser(
@@ -2794,6 +2882,7 @@ def main(args=None):
     _build_subparsers(subparsers)
 
     args = parser.parse_args(args)
+    _apply_env_defaults(args)
 
     # Telemetry: prompt on first run, then init Sentry if consented.
     # Skip prompt when user is explicitly managing telemetry settings.
