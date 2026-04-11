@@ -342,6 +342,10 @@ def scan_files(project_path: str, respect_ignores: bool = True,
 
             _scanned_files += 1
 
+            # Progress indicator for large scans (TTY only, stderr)
+            if _scanned_files % 50 == 0 and hasattr(sys.stderr, 'isatty') and sys.stderr.isatty():
+                print(f"\r  Scanning... {_scanned_files} files", end="", file=sys.stderr)
+
             # Jupyter notebooks: extract code cells from the .ipynb JSON.
             # Line numbers in findings refer to the joined-source position,
             # not the original notebook cell — see scripts/notebook.py.
@@ -547,6 +551,10 @@ def scan_files(project_path: str, respect_ignores: bool = True,
 
     # Enrich each finding with Omnibus-aware enforcement deadline
     _enrich_deadlines(findings)
+
+    # Clear progress indicator if shown
+    if _scanned_files >= 50 and hasattr(sys.stderr, 'isatty') and sys.stderr.isatty():
+        print(f"\r  Scanned {_scanned_files} files    ", file=sys.stderr)
 
     # Publish scan stats on the function itself (side-channel).
     # cmd_check reads this to show the real "files scanned" count

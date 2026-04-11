@@ -20,6 +20,8 @@ KNOWN_ACCEPTABLE = [
     {"file_pattern": "tests/", "reason": "test fixtures — intentional"},
     # risk_patterns.py contains the pattern strings themselves
     {"file_pattern": "risk_patterns.py", "reason": "pattern definitions — intentional"},
+    # explain_articles.py describes prohibited practices in plain language
+    {"file_pattern": "explain_articles.py", "reason": "article explanations — describes prohibited practices by design"},
 ]
 
 
