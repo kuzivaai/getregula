@@ -28,6 +28,20 @@ sys.path.insert(0, str(Path(__file__).parent))
 from constants import VERSION
 from errors import RegulaError, PathError
 
+# Map jurisdiction short names to framework_mapper keys
+JURISDICTION_MAP = {
+    'eu': 'eu-ai-act',
+    'colorado': 'colorado-sb205',
+    'korea': 'south-korea-ai',
+    'canada': 'canada-aida',
+    'singapore': 'singapore-ai',
+    'oecd': 'oecd-ai',
+    'uk': 'ico-ai-guidance',
+    'brazil': 'lgpd',
+    'nist': 'nist-ai-rmf',
+    'iso': 'iso-42001',
+}
+
 
 def _is_tty():
     """Check if stdout is a terminal."""
@@ -146,6 +160,117 @@ def _print_remediation(finding):
         print(f"      {rem['summary']}")
 
 
+def _resolve_jurisdictions(jurisdictions_arg):
+    """Resolve a comma-separated jurisdictions string to framework keys.
+
+    Returns a list of (short_name, framework_key) tuples for valid jurisdictions.
+    Prints a warning to stderr for unknown jurisdiction names.
+    """
+    resolved = []
+    for j in jurisdictions_arg.split(","):
+        j = j.strip().lower()
+        if not j:
+            continue
+        fw_key = JURISDICTION_MAP.get(j)
+        if fw_key:
+            resolved.append((j, fw_key))
+        else:
+            print(f"  Warning: unknown jurisdiction '{j}' — "
+                  f"valid: {', '.join(sorted(JURISDICTION_MAP))}", file=sys.stderr)
+    return resolved
+
+
+def _enrich_findings_with_jurisdictions(findings, jurisdiction_pairs):
+    """Add jurisdiction mapping labels to each finding based on its articles.
+
+    Mutates findings in place, adding a 'jurisdictions' key with a dict of
+    {jurisdiction_short_name: [label_strings]}.
+    """
+    from framework_mapper import map_to_frameworks, _FRAMEWORK_KEYS, format_mapping_text
+
+    # Build the list of internal framework keys to query
+    fw_keys = [fw_key for _, fw_key in jurisdiction_pairs]
+
+    # Jurisdiction display names
+    _JURISDICTION_DISPLAY = {
+        'eu': 'EU AI Act',
+        'colorado': 'Colorado SB-205',
+        'korea': 'South Korea AI Basic Act',
+        'canada': 'Canada AIDA',
+        'singapore': 'Singapore AI Governance',
+        'oecd': 'OECD AI Principles',
+        'uk': 'UK ICO AI Guidance',
+        'brazil': 'LGPD (Brazil)',
+        'nist': 'NIST AI RMF',
+        'iso': 'ISO/IEC 42001',
+    }
+
+    for finding in findings:
+        articles = finding.get("articles") or []
+        if not articles:
+            continue
+
+        mapping = map_to_frameworks(articles=articles, frameworks=fw_keys)
+        jurisdiction_labels = {}
+
+        for short_name, fw_key in jurisdiction_pairs:
+            # Resolve to internal key (e.g. 'eu-ai-act' -> 'eu_ai_act')
+            internal_key = _FRAMEWORK_KEYS.get(fw_key, fw_key)
+            labels = []
+            for article, fw_data in mapping.items():
+                data = fw_data.get(internal_key, {})
+                if not data:
+                    continue
+                # Extract a human-readable label from the mapping data
+                label = _extract_jurisdiction_label(short_name, internal_key, data, finding)
+                if label:
+                    labels.append(label)
+            if labels:
+                jurisdiction_labels[short_name] = labels
+
+        if jurisdiction_labels:
+            finding["jurisdictions"] = jurisdiction_labels
+
+
+def _extract_jurisdiction_label(short_name, internal_key, data, finding):
+    """Extract a single human-readable label from framework mapping data."""
+    category = finding.get("category", "")
+    desc = finding.get("description", "")
+    context = category or desc
+
+    if internal_key == "eu_ai_act":
+        title = data.get("title", "")
+        return f"EU AI Act: {title}" if title else "EU AI Act"
+    elif internal_key == "colorado_sb205":
+        reqs = data.get("requirements", [])
+        return f"Colorado SB-205: {reqs[0]}" if reqs else "Colorado SB-205: Consequential decision"
+    elif internal_key == "south_korea_ai":
+        reqs = data.get("requirements", [])
+        return f"South Korea: {reqs[0]}" if reqs else "South Korea: High-impact AI"
+    elif internal_key == "canada_aida":
+        reqs = data.get("requirements", [])
+        return f"Canada AIDA: {reqs[0]}" if reqs else "Canada AIDA"
+    elif internal_key == "singapore_ai":
+        principles = data.get("principles", [])
+        return f"Singapore: {principles[0]}" if principles else "Singapore AI Governance"
+    elif internal_key == "oecd_ai":
+        principles = data.get("principles", [])
+        return f"OECD: {principles[0]}" if principles else "OECD AI Principles"
+    elif internal_key == "ico_ai":
+        principles = data.get("principles", [])
+        return f"UK ICO: {principles[0]}" if principles else "UK ICO AI Guidance"
+    elif internal_key == "lgpd":
+        articles = data.get("articles", [])
+        return f"LGPD: {articles[0]}" if articles else "LGPD (Brazil)"
+    elif internal_key == "nist_ai_rmf":
+        functions = data.get("functions", [])
+        return f"NIST AI RMF: {', '.join(functions)}" if functions else "NIST AI RMF"
+    elif internal_key == "iso_42001":
+        controls = data.get("controls", [])
+        return f"ISO 42001: {controls[0]}" if controls else "ISO/IEC 42001"
+    return short_name
+
+
 def cmd_check(args):
     """Scan files for risk indicators."""
     from report import scan_files
@@ -167,6 +292,13 @@ def cmd_check(args):
             print(f"  Diff mode: {len(changed)} files changed since {args.diff}", file=sys.stderr)
         else:
             print(f"  Diff mode: no changed files found since {args.diff} (showing all)", file=sys.stderr)
+
+    # Multi-jurisdiction mapping: enrich findings with cross-framework labels
+    jurisdiction_pairs = []
+    if getattr(args, "jurisdictions", None):
+        jurisdiction_pairs = _resolve_jurisdictions(args.jurisdictions)
+        if jurisdiction_pairs:
+            _enrich_findings_with_jurisdictions(findings, jurisdiction_pairs)
 
     # Partition findings via the pure function in findings_view.
     # This used to be 16 inlined lines mutating the input list; the
@@ -1372,25 +1504,27 @@ def cmd_fix(args):
     project_path = str(Path(args.project).resolve())
 
     from report import scan_files
-    from remediation import get_remediation
+    from remediation import get_remediation, remediate_observation
 
     print(f"Scanning {project_path}...", file=sys.stderr)
     findings = scan_files(project_path)
 
-    # Filter to actionable findings (high-risk and prohibited only)
+    # Filter to actionable findings across all significant tiers
+    actionable_tiers = {"high_risk", "prohibited", "ai_security", "credential_exposure"}
     actionable = [
         f for f in findings
-        if f.get("tier") in ("high_risk", "prohibited") and not f.get("suppressed")
+        if f.get("tier") in actionable_tiers and not f.get("suppressed")
     ]
 
     if not actionable:
         if args.format == "json":
             json_output("fix", {"fixes": [], "message": "No actionable findings."})
         else:
-            print("No high-risk or prohibited findings to fix.")
+            print("No actionable findings to fix.")
         return
 
     fixes = []
+    seen_obs_keys = set()  # deduplicate observation-based fixes per file
     for finding in actionable:
         rem = get_remediation(
             finding.get("tier", ""),
@@ -1410,6 +1544,33 @@ def cmd_fix(args):
             "fix_code": rem.get("fix_code", ""),
         }
         fixes.append(fix_entry)
+
+        # Process governance observations attached to high-risk findings
+        for obs in finding.get("observations", []):
+            obs_text = obs.get("observation", "")
+            obs_key = None
+            if "no logging" in obs_text.lower() or "article 12" in obs_text.lower():
+                obs_key = "no_logging"
+            elif "fairness evaluation" in obs_text.lower():
+                obs_key = "missing_fairness_evaluation"
+            elif "automated decision" in obs_text.lower() or "article 13" in obs_text.lower():
+                obs_key = "automated_decision"
+
+            dedup = (finding.get("file", "?"), obs_key)
+            if obs_key and dedup not in seen_obs_keys:
+                seen_obs_keys.add(dedup)
+                obs_rem = remediate_observation(obs_key)
+                if obs_rem:
+                    fixes.append({
+                        "file": finding.get("file", "?"),
+                        "line": finding.get("line", "?"),
+                        "tier": "governance_observation",
+                        "category": obs_key,
+                        "summary": obs_rem["summary"],
+                        "article": obs_rem["article"],
+                        "explanation": obs_rem["explanation"],
+                        "fix_code": obs_rem.get("fix_code", ""),
+                    })
 
     if args.format == "json":
         json_output("fix", {"fixes": fixes, "total": len(fixes)})
@@ -2341,6 +2502,10 @@ def _build_subparsers(subparsers):
                          help="Output language (default: en)")
     p_check.add_argument("--deterministic", action="store_true", default=False,
                          help="Deterministic JSON output (omit timestamp) for CI baseline comparison")
+    p_check.add_argument("--jurisdictions",
+                         help="Comma-separated jurisdictions (e.g. eu,colorado,korea). "
+                              "Applies all relevant framework mappings simultaneously. "
+                              "Valid: " + ", ".join(sorted(JURISDICTION_MAP)))
     p_check.set_defaults(func=cmd_check)
 
     # --- classify ---
