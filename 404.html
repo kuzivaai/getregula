@@ -49,6 +49,7 @@
 </head>
 <body>
 
+<a href="#main" class="skip-link">Skip to content</a>
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
@@ -63,7 +64,7 @@
     </dialog>
 </nav>
 
-<main class="notfound">
+<main id="main" class="notfound">
     <h1>Page not found</h1>
     <p>This page doesn't exist. You might have followed an outdated link or mistyped the URL.</p>
     <div class="notfound-links">

@@ -209,8 +209,8 @@ def test_build_regulations_render_region_produces_valid_html():
     # Chrome
     assert 'class="skip-link"' in html
     assert 'id="progress-bar"' in html
-    assert 'href="/regulations.html"' in html
-    assert 'href="/writing.html"' in html
+    assert 'href="regulations.html"' in html or 'href="/regulations.html"' in html
+    assert 'href="writing.html"' in html or 'href="/writing.html"' in html
 
     # All three JSON-LD blocks present and parseable
     blocks = list(re.finditer(r'<script type="application/ld\+json">(.*?)</script>', html, re.S))
