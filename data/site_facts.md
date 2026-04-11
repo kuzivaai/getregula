@@ -2,19 +2,19 @@
 
 *Canonical source of truth for every numeric claim on the landing pages. Regenerate by running `python3 scripts/site_facts.py`.*
 
-Generated: `2026-04-10T18:14:25.940406+00:00`
+Generated: `2026-04-11T05:16:31.913769+00:00`
 
 ## Top-line counts
 
 | Claim | Count | Source file |
 |---|---|---|
-| CLI commands | **43** | `scripts/cli.py` |
+| CLI commands | **45** | `scripts/cli.py` |
 | Detection patterns (historical 330 bucket) | **330** | see breakdown below |
 | Detection patterns (grand total, inclusive) | **502** | see breakdown below |
 | Tiered risk pattern groups | 34 | `scripts/risk_patterns.py` |
 | Compliance frameworks | **12** | `references/framework_crosswalk.yaml` + EU AI Act |
 | Programming languages | 8 | `scripts/ast_engine.py` |
-| Test functions (all files) | 688 | `tests/test_*.py` |
+| Test functions (all files) | 703 | `tests/test_*.py` |
 
 ## Detection pattern breakdown
 

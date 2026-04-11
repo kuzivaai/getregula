@@ -71,6 +71,43 @@ def test_inventory():
     assert rc == 0
 
 
+def test_governance(tmp_path):
+    out = tmp_path / "AI_GOVERNANCE.md"
+    rc, stdout, stderr = run_cli("governance", "--project", "tests/fixtures/sample_high_risk", "--output", str(out))
+    assert rc == 0
+    assert out.exists()
+    content = out.read_text()
+    assert "AI Governance" in content or "governance" in content.lower()
+    assert "scaffold" in content.lower() or "TO BE COMPLETED" in content
+
+
+def test_model_card(tmp_path):
+    out = tmp_path / "MODEL_CARD.md"
+    rc, stdout, stderr = run_cli("model-card", "--project", "tests/fixtures/sample_high_risk", "--output", str(out))
+    assert rc == 0
+    assert out.exists()
+    content = out.read_text()
+    assert "Model Card" in content or "model" in content.lower()
+
+
+def test_governance_empty_project(tmp_path):
+    out = tmp_path / "AI_GOVERNANCE.md"
+    empty = tmp_path / "empty_proj"
+    empty.mkdir()
+    rc, stdout, stderr = run_cli("governance", "--project", str(empty), "--output", str(out))
+    assert rc == 0
+    assert out.exists()  # should produce valid scaffold even for empty project
+
+
+def test_model_card_empty_project(tmp_path):
+    out = tmp_path / "MODEL_CARD.md"
+    empty = tmp_path / "empty_proj"
+    empty.mkdir()
+    rc, stdout, stderr = run_cli("model-card", "--project", str(empty), "--output", str(out))
+    assert rc == 0
+    assert out.exists()
+
+
 def test_empty_directory():
     with tempfile.TemporaryDirectory() as tmp:
         rc, out, err = run_cli("check", tmp)
