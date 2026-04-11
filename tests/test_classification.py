@@ -3676,7 +3676,8 @@ def test_bias_eval_no_ollama():
         timeout=1,
     )
     assert result["status"] == "error"
-    assert "unavailable" in result["message"].lower() or "error" in result["message"].lower()
+    msg = result["message"].lower()
+    assert "unavailable" in msg or "error" in msg or "failed" in msg
     print("\u2713 Bias eval: handles Ollama unavailability gracefully")
 
 

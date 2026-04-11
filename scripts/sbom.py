@@ -189,11 +189,137 @@ _DATASET_PATTERNS = [
 ]
 
 _DATASET_SCAN_EXTENSIONS = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"}
+_DATASET_FILE_EXTENSIONS = {".csv", ".jsonl", ".parquet", ".tfrecord", ".arrow", ".h5"}
 _DATASET_SKIP_DIRS = {
     "node_modules", ".git", "__pycache__", ".venv", "venv",
     "env", ".env", "dist", "build", ".next", ".nuxt",
     "coverage", ".tox", ".mypy_cache",
 }
+
+# ── GPAI provider detection ─────────────────────────────────────
+
+GPAI_PROVIDERS = {
+    "openai": {"provider": "OpenAI", "tier": "systemic", "models": ["gpt-4", "gpt-3.5", "dall-e", "whisper"]},
+    "anthropic": {"provider": "Anthropic", "tier": "systemic", "models": ["claude"]},
+    "google-generativeai": {"provider": "Google DeepMind", "tier": "systemic", "models": ["gemini", "palm"]},
+    "transformers": {"provider": "Hugging Face", "tier": "general", "models": []},
+    "torch": {"provider": "Meta/PyTorch", "tier": "general", "models": []},
+    "tensorflow": {"provider": "Google", "tier": "general", "models": []},
+    "cohere": {"provider": "Cohere", "tier": "general", "models": ["command"]},
+    "mistralai": {"provider": "Mistral AI", "tier": "systemic", "models": ["mistral", "mixtral"]},
+    "replicate": {"provider": "Replicate", "tier": "platform", "models": []},
+    "together": {"provider": "Together AI", "tier": "platform", "models": []},
+    "groq": {"provider": "Groq", "tier": "platform", "models": []},
+    "ollama": {"provider": "Ollama", "tier": "local", "models": []},
+    "llama-cpp-python": {"provider": "Local LLM", "tier": "local", "models": []},
+}
+
+# GPAI tier to EU AI Act obligations
+_GPAI_TIER_OBLIGATIONS = {
+    "systemic": "Art 53, Art 55",
+    "general": "Art 53",
+    "platform": "Art 53 (via value chain)",
+    "local": "None (local deployment)",
+}
+
+# Model card / metadata file patterns
+_MODEL_METADATA_FILES = {
+    "model_card.json", "model_card.md", "MODEL_CARD.md",
+    "config.json", "tokenizer_config.json", "generation_config.json",
+}
+_MODEL_BINARY_EXTENSIONS = {".safetensors", ".onnx", ".pt", ".pb", ".h5", ".gguf", ".ggml"}
+
+
+def _detect_gpai_tier(name: str, version: str = "") -> dict | None:
+    """Detect if dependency is from a GPAI provider.
+
+    Returns dict with provider, tier, obligations keys, or None if not a
+    known GPAI provider package.
+    """
+    norm = re.sub(r"[-_.]+", "-", name.strip().lower())
+    entry = GPAI_PROVIDERS.get(norm)
+    if entry is None:
+        return None
+    return {
+        "provider": entry["provider"],
+        "tier": entry["tier"],
+        "obligations": _GPAI_TIER_OBLIGATIONS.get(entry["tier"], ""),
+    }
+
+
+def _detect_dataset_files(project_path: str) -> list[dict]:
+    """Scan for training/evaluation dataset files on disk.
+
+    Returns list of dicts with path, format, size_bytes, purpose_hint.
+    """
+    root = Path(project_path)
+    results: list[dict] = []
+
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in _DATASET_SKIP_DIRS]
+        for fname in filenames:
+            ext = Path(fname).suffix.lower()
+            if ext not in _DATASET_FILE_EXTENSIONS:
+                continue
+            fpath = Path(dirpath, fname)
+            rel = str(fpath.relative_to(root))
+            try:
+                size = fpath.stat().st_size
+            except OSError:
+                size = 0
+
+            # Hint purpose from parent directory name
+            parent_name = Path(dirpath).name.lower()
+            purpose = "unknown"
+            for hint in ("train", "eval", "test", "validation", "val"):
+                if hint in parent_name:
+                    purpose = hint
+                    break
+
+            results.append({
+                "path": rel,
+                "format": ext.lstrip("."),
+                "size_bytes": size,
+                "purpose_hint": purpose,
+            })
+    return results
+
+
+def _extract_model_metadata(project_path: str) -> list[dict]:
+    """Extract model card and metadata files from the project.
+
+    Returns list of dicts with path, format, fields_found.
+    """
+    root = Path(project_path)
+    results: list[dict] = []
+
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in _DATASET_SKIP_DIRS]
+        for fname in filenames:
+            is_metadata = fname in _MODEL_METADATA_FILES
+            is_binary = Path(fname).suffix.lower() in _MODEL_BINARY_EXTENSIONS
+            if not (is_metadata or is_binary):
+                continue
+
+            fpath = Path(dirpath, fname)
+            rel = str(fpath.relative_to(root))
+            fmt = "binary" if is_binary else Path(fname).suffix.lstrip(".")
+
+            fields_found: list[str] = []
+            if is_metadata and fmt == "json":
+                try:
+                    data = json.loads(fpath.read_text(encoding="utf-8", errors="ignore"))
+                    if isinstance(data, dict):
+                        fields_found = list(data.keys())[:20]
+                except (json.JSONDecodeError, OSError):
+                    pass
+
+            results.append({
+                "path": rel,
+                "format": fmt,
+                "fields_found": fields_found,
+            })
+    return results
 
 
 def _scan_datasets(project_path: str) -> list[dict]:
@@ -409,6 +535,79 @@ def _enrich_ai_bom(project_path: str, components: list[dict],
     extra_meta.append({
         "name": "regula:ai-bom-datasets-detected",
         "value": str(len(datasets)),
+    })
+
+    # ── GPAI tier enrichment on dependency components ────────────
+    ai_dep_count = 0
+    gpai_providers_found: list[str] = []
+    for comp in components:
+        if comp.get("type") not in ("library", "framework"):
+            continue
+        comp_props = comp.get("properties", [])
+        is_ai = any(
+            p.get("name") == "regula:is-ai-library" and p.get("value") == "true"
+            for p in comp_props
+        )
+        if not is_ai:
+            continue
+        ai_dep_count += 1
+        gpai = _detect_gpai_tier(comp["name"], comp.get("version", ""))
+        if gpai:
+            gpai_providers_found.append(gpai["provider"])
+            comp_props.append({"name": "regula:gpai-provider", "value": gpai["provider"]})
+            comp_props.append({"name": "regula:gpai-tier", "value": gpai["tier"]})
+            comp_props.append({"name": "regula:gpai-obligations", "value": gpai["obligations"]})
+            # Determine license hint from tier
+            license_hint = "proprietary" if gpai["tier"] == "systemic" else "varies"
+            comp_props.append({"name": "regula:model-license", "value": license_hint})
+
+    # ── Dataset file detection ───────────────────────────────────
+    dataset_files = _detect_dataset_files(project_path)
+    if dataset_files:
+        formats_seen = sorted({df["format"] for df in dataset_files})
+        extra_meta.append({
+            "name": "regula:datasets-detected",
+            "value": str(len(dataset_files)),
+        })
+        extra_meta.append({
+            "name": "regula:dataset-formats",
+            "value": ", ".join(formats_seen),
+        })
+
+    # ── Model metadata extraction ────────────────────────────────
+    model_metadata = _extract_model_metadata(project_path)
+    if model_metadata:
+        extra_meta.append({
+            "name": "regula:model-metadata-files",
+            "value": str(len(model_metadata)),
+        })
+
+    # ── Supply chain properties ──────────────────────────────────
+    extra_meta.append({
+        "name": "regula:transitive-ai-deps",
+        "value": str(ai_dep_count),
+    })
+    extra_meta.append({
+        "name": "regula:has-upstream-sbom",
+        "value": "false",  # conservative default; future: check for sbom.json in deps
+    })
+
+    # ── Compliance readiness (Articles 9-11) ─────────────────────
+    # These flags indicate whether the project has characteristics that
+    # make specific EU AI Act articles applicable. True when AI
+    # dependencies or models are detected.
+    has_ai = ai_dep_count > 0 or len(models_found) > 0
+    extra_meta.append({
+        "name": "regula:article-9-applicable",
+        "value": str(has_ai).lower(),
+    })
+    extra_meta.append({
+        "name": "regula:article-10-applicable",
+        "value": str(len(datasets) > 0 or len(dataset_files) > 0).lower(),
+    })
+    extra_meta.append({
+        "name": "regula:article-11-applicable",
+        "value": str(has_ai).lower(),
     })
 
     return components, extra_meta
@@ -694,6 +893,59 @@ def format_sbom_summary(sbom: dict) -> str:
             pinning = p.get("value", "N/A")
             break
     lines.append(f"Pinning Score: {pinning}/100")
+
+    # AI-BOM summary section (when ai_bom=True)
+    is_ai_bom = any(
+        p.get("name") == "regula:ai-bom" and p.get("value") == "true"
+        for p in meta_props
+    )
+    if is_ai_bom:
+        lines.append("")
+        lines.append("AI Bill of Materials")
+        lines.append("-" * 40)
+
+        # Helper to extract meta property value
+        def _meta_val(key: str) -> str:
+            for p in meta_props:
+                if p.get("name") == key:
+                    return p.get("value", "N/A")
+            return "N/A"
+
+        models_detected = _meta_val("regula:ai-bom-models-detected")
+        datasets_code = _meta_val("regula:ai-bom-datasets-detected")
+        datasets_files = _meta_val("regula:datasets-detected")
+        dataset_formats = _meta_val("regula:dataset-formats")
+        transitive = _meta_val("regula:transitive-ai-deps")
+        upstream_sbom = _meta_val("regula:has-upstream-sbom")
+        art9 = _meta_val("regula:article-9-applicable")
+        art10 = _meta_val("regula:article-10-applicable")
+        art11 = _meta_val("regula:article-11-applicable")
+
+        lines.append(f"  Models detected: {models_detected}")
+        lines.append(f"  Datasets (code refs): {datasets_code}")
+        lines.append(f"  Datasets (files): {datasets_files}")
+        if dataset_formats != "N/A":
+            lines.append(f"  Dataset formats: {dataset_formats}")
+        lines.append(f"  Transitive AI deps: {transitive}")
+        lines.append(f"  Upstream SBOM: {upstream_sbom}")
+        lines.append("")
+        lines.append("  Compliance readiness:")
+        lines.append(f"    Article 9  (Risk Management):       {art9}")
+        lines.append(f"    Article 10 (Data Governance):        {art10}")
+        lines.append(f"    Article 11 (Technical Documentation):{art11}")
+
+        # Show GPAI providers found on components
+        gpai_components = []
+        for c in components:
+            for p in c.get("properties", []):
+                if p.get("name") == "regula:gpai-provider":
+                    gpai_components.append((c["name"], p["value"]))
+                    break
+        if gpai_components:
+            lines.append("")
+            lines.append("  GPAI providers:")
+            for dep_name, provider in gpai_components:
+                lines.append(f"    {dep_name} -> {provider}")
 
     return "\n".join(lines)
 

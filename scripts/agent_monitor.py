@@ -523,6 +523,343 @@ def format_agent_json(analysis: dict) -> str:
     return json.dumps(analysis, indent=2)
 
 
+# ---------------------------------------------------------------------------
+# OWASP Top 10 for Agentic Applications (Dec 2025)
+# https://owasp.org/www-project-top-10-for-agentic-applications/
+# ---------------------------------------------------------------------------
+
+OWASP_AGENTIC_RISKS = [
+    {"id": "ASI01", "name": "Agent Goal Hijack"},
+    {"id": "ASI02", "name": "Tool Misuse and Exploitation"},
+    {"id": "ASI03", "name": "Identity and Privilege Abuse"},
+    {"id": "ASI04", "name": "Agentic Supply Chain Vulnerabilities"},
+    {"id": "ASI05", "name": "Unexpected Code Execution (RCE)"},
+    {"id": "ASI06", "name": "Memory & Context Poisoning"},
+    {"id": "ASI07", "name": "Insecure Inter-Agent Communication"},
+    {"id": "ASI08", "name": "Cascading Failures"},
+    {"id": "ASI09", "name": "Human-Agent Trust Exploitation"},
+    {"id": "ASI10", "name": "Rogue Agents"},
+]
+
+# Vulnerability patterns (presence = risk) and control patterns (presence = mitigation)
+OWASP_AGENTIC_PATTERNS = {
+    "ASI01": {
+        "vuln": [
+            r"(?:system_prompt|instructions)\s*[=+]\s*.*(?:user_input|request\.)",
+            r"\.format\(.*(?:user_input|prompt|message)\)",
+            r"f['\"].*\{(?:user_input|prompt|query|message)\}",
+            r"messages\s*\.\s*append\(\s*\{[^}]*role.*user_input",
+        ],
+        "control": [
+            r"(?:sanitize|validate|filter)_(?:prompt|input|instruction)",
+            r"input_(?:sanitization|validation|filtering)",
+            r"prompt_(?:guard|shield|filter|validator)",
+            r"(?:ALLOWED_INSTRUCTIONS|INSTRUCTION_ALLOWLIST)",
+        ],
+    },
+    "ASI02": {
+        "vuln": [
+            r"tools\s*=\s*\[\s*['\"]?\*['\"]?\s*\]",
+            r"allow_all_tools|enabled_tools\s*=\s*None",
+            r"tool_choice\s*=\s*['\"](?:any|auto)['\"]",
+            r"@tool\s*\n\s*def\s+\w+.*(?:subprocess|os\.system|eval|exec)",
+        ],
+        "control": [
+            r"(?:ALLOWED_TOOLS|TOOL_ALLOWLIST|tool_whitelist)",
+            r"tool_(?:validator|guard|filter|permissions)",
+            r"if\s+.*tool.*not\s+in\s+.*allowed",
+            r"(?:restrict|limit)_tools",
+        ],
+    },
+    "ASI03": {
+        "vuln": [
+            r"(?:SHARED_API_KEY|GLOBAL_TOKEN|common_credentials)",
+            r"agent.*\.(?:token|key|credentials)\s*=\s*(?:os\.environ|config)\[",
+            r"run_as_(?:root|admin|superuser)",
+            r"(?:sudo|chmod\s+777|chmod\s+\+x)",
+        ],
+        "control": [
+            r"(?:per_agent_identity|agent_identity|agent_credentials)",
+            r"(?:RBAC|role_based|permission_check|authorize_agent)",
+            r"least_privilege|minimal_permissions",
+            r"scope\s*=\s*\[",
+        ],
+    },
+    "ASI04": {
+        "vuln": [
+            r"pip\s+install\s+(?!-r)(?!--requirement)\S+\s+--(?:no-verify|trusted-host)",
+            r"(?:curl|wget)\s+.*\|\s*(?:bash|sh|python)",
+            r"load_plugin\(.*(?:url|remote|http)",
+            r"importlib\.import_module\(.*(?:user|input|config)\[",
+        ],
+        "control": [
+            r"(?:verify_integrity|check_hash|checksum|signature_verify)",
+            r"(?:TRUSTED_PLUGINS|PLUGIN_ALLOWLIST|approved_tools)",
+            r"(?:pin|lock)_(?:dependencies|versions)",
+            r"(?:requirements\.txt|poetry\.lock|Pipfile\.lock)",
+        ],
+    },
+    "ASI05": {
+        "vuln": [
+            r"eval\s*\(",
+            r"exec\s*\(",
+            r"compile\s*\(.*['\"]exec['\"]",
+            r"subprocess\.(?:run|call|Popen).*shell\s*=\s*True",
+            r"os\.system\s*\(",
+            r"code_interpreter|execute_code|run_code",
+        ],
+        "control": [
+            r"(?:sandbox|jail|isolate|container)_(?:exec|run|code)",
+            r"(?:RestrictedPython|ast\.literal_eval)",
+            r"shell\s*=\s*False",
+            r"(?:seccomp|apparmor|no_new_privs)",
+            r"(?:timeout|resource_limit|max_execution)",
+        ],
+    },
+    "ASI06": {
+        "vuln": [
+            r"(?:conversation|history|memory|context)\s*\.\s*(?:append|extend|insert)\s*\(",
+            r"(?:load|restore)_(?:context|memory|history)\s*\(",
+            r"(?:pickle|marshal|shelve)\.(?:load|loads)\s*\(",
+            r"(?:deserializ|unpickl)",
+        ],
+        "control": [
+            r"(?:validate|verify|check)_(?:context|memory|history)",
+            r"(?:context|memory)_(?:integrity|hash|signature)",
+            r"(?:hmac|sign|digest)\s*\(",
+            r"(?:immutable|frozen|read_only)_(?:context|memory)",
+        ],
+    },
+    "ASI07": {
+        "vuln": [
+            r"(?:send|receive)_(?:message|task)\s*\(.*(?:json|str|dict)\s*\)",
+            r"agent_(?:call|invoke|send)\s*\(",
+            r"(?:inter_agent|agent_to_agent|a2a)_(?:message|comm)",
+            r"(?:grpc|rabbitmq|redis).*(?:publish|send)\s*\(",
+        ],
+        "control": [
+            r"(?:authenticate|verify|validate)_(?:agent|sender|message)",
+            r"(?:encrypt|tls|ssl|mtls|mTLS).*(?:agent|message|channel)",
+            r"(?:message|agent)_(?:auth|token|signature)",
+            r"(?:signed|encrypted)_(?:message|payload)",
+        ],
+    },
+    "ASI08": {
+        "vuln": [
+            r"while\s+True\s*:.*(?:retry|attempt|try)",
+            r"except\s*:.*(?:pass|continue)",
+            r"except\s+Exception\s*:.*(?:pass|continue)",
+            r"(?:max_retries|retry_count)\s*=\s*(?:None|float\(['\"]inf)",
+        ],
+        "control": [
+            r"(?:circuit_breaker|CircuitBreaker)",
+            r"(?:max_retries|retry_limit)\s*=\s*\d+",
+            r"(?:error_boundary|fault_tolerance|fallback)",
+            r"(?:timeout|deadline)\s*=\s*\d+",
+            r"(?:backoff|exponential_backoff)",
+        ],
+    },
+    "ASI09": {
+        "vuln": [
+            r"(?:pretend|act_as|impersonate|role_play)\s*.*(?:human|person|user)",
+            r"(?:name|identity|role)\s*=\s*['\"](?:.*(?:assistant|agent|bot).*)['\"]",
+            r"(?:hide|conceal|mask)_(?:identity|ai_status|bot_status)",
+        ],
+        "control": [
+            r"(?:human_in_the_loop|HITL|human_review|human_approval)",
+            r"(?:is_ai|is_bot|ai_disclosure|bot_disclosure)",
+            r"(?:require_human|await_human|pending_review)",
+            r"(?:transparency|disclose_ai|ai_label)",
+        ],
+    },
+    "ASI10": {
+        "vuln": [
+            r"(?:autonomous|self_directed|unrestricted)_(?:mode|agent|run)",
+            r"(?:no_limit|unlimited)_(?:actions|tools|scope)",
+            r"(?:bypass|skip|disable)_(?:governance|policy|guard|limit)",
+        ],
+        "control": [
+            r"(?:kill_switch|emergency_stop|shutdown|terminate_agent)",
+            r"(?:governance_policy|policy_check|compliance_check)",
+            r"(?:resource_limit|rate_limit|budget_limit|max_actions)",
+            r"(?:audit_log|agent_log|action_log)",
+        ],
+    },
+}
+
+
+def _scan_files_for_patterns(project_path: str) -> dict:
+    """Scan project files and collect pattern matches per OWASP risk."""
+    p = Path(project_path)
+    if not p.is_dir():
+        return {}
+
+    extensions = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"}
+    results = {}  # risk_id -> {"vuln": [(file, line, match)], "control": [(file, line, match)]}
+
+    for risk in OWASP_AGENTIC_RISKS:
+        results[risk["id"]] = {"vuln": [], "control": []}
+
+    files_scanned = 0
+    for f in p.rglob("*"):
+        if f.suffix not in extensions:
+            continue
+        if any(part.startswith(".") or part == "node_modules" for part in f.parts):
+            continue
+        try:
+            content = f.read_text(encoding="utf-8", errors="ignore")
+        except (PermissionError, OSError):
+            continue
+        files_scanned += 1
+        rel = str(f.relative_to(p))
+
+        for risk_id, patterns in OWASP_AGENTIC_PATTERNS.items():
+            for ptype in ("vuln", "control"):
+                for pat in patterns[ptype]:
+                    for i, line in enumerate(content.split("\n"), 1):
+                        if re.search(pat, line, re.IGNORECASE):
+                            results[risk_id][ptype].append((rel, i, line.strip()[:120]))
+
+    return results
+
+
+def assess_owasp_agentic(project_path: str) -> dict:
+    """Assess project against OWASP Top 10 for Agentic Applications.
+
+    Returns dict with:
+    - risks: list of {id, name, status, evidence, recommendations}
+    - coverage_score: 0-100 (% of risks with controls detected)
+    - summary: text summary
+    """
+    raw = _scan_files_for_patterns(project_path)
+    risks = []
+    mitigated_count = 0
+
+    for risk_info in OWASP_AGENTIC_RISKS:
+        rid = risk_info["id"]
+        rname = risk_info["name"]
+        matches = raw.get(rid, {"vuln": [], "control": []})
+
+        has_vuln = len(matches["vuln"]) > 0
+        has_control = len(matches["control"]) > 0
+
+        if has_vuln and has_control:
+            status = "mitigated"
+        elif has_vuln and not has_control:
+            status = "at_risk"
+        elif not has_vuln and has_control:
+            status = "mitigated"
+        else:
+            status = "not_assessed"
+
+        if status == "mitigated":
+            mitigated_count += 1
+
+        evidence_items = []
+        for (fpath, lineno, text) in matches["vuln"][:3]:
+            evidence_items.append(f"VULN {fpath}:{lineno} — {text}")
+        for (fpath, lineno, text) in matches["control"][:3]:
+            evidence_items.append(f"CTRL {fpath}:{lineno} — {text}")
+
+        rec = _recommendation_for(rid, status)
+
+        risks.append({
+            "id": rid,
+            "name": rname,
+            "status": status,
+            "evidence": evidence_items,
+            "vuln_count": len(matches["vuln"]),
+            "control_count": len(matches["control"]),
+            "recommendations": rec,
+        })
+
+    coverage = int((mitigated_count / len(OWASP_AGENTIC_RISKS)) * 100) if OWASP_AGENTIC_RISKS else 0
+    at_risk = sum(1 for r in risks if r["status"] == "at_risk")
+    not_assessed = sum(1 for r in risks if r["status"] == "not_assessed")
+
+    summary = (
+        f"OWASP Agentic Top 10: {mitigated_count}/10 mitigated, "
+        f"{at_risk} at risk, {not_assessed} not assessed. "
+        f"Coverage score: {coverage}%."
+    )
+
+    return {
+        "risks": risks,
+        "coverage_score": coverage,
+        "summary": summary,
+    }
+
+
+_RECOMMENDATIONS = {
+    "ASI01": "Add input sanitisation before injecting user content into agent instructions. Use an instruction allowlist.",
+    "ASI02": "Define an explicit tool allowlist. Reject tool calls not on the list.",
+    "ASI03": "Assign per-agent credentials with least-privilege scopes. Implement RBAC for agent actions.",
+    "ASI04": "Pin dependency versions, verify plugin integrity with checksums, maintain an approved-tools list.",
+    "ASI05": "Use sandboxed execution (RestrictedPython, containers). Never pass unsanitised input to eval/exec/subprocess.",
+    "ASI06": "Validate context integrity with HMAC or signatures. Use immutable conversation history.",
+    "ASI07": "Authenticate inter-agent messages. Use mTLS or signed payloads for agent-to-agent communication.",
+    "ASI08": "Add circuit breakers, bounded retries (max_retries=N), and timeouts to all agent chains.",
+    "ASI09": "Require AI disclosure in all agent outputs. Add human-in-the-loop gates for consequential actions.",
+    "ASI10": "Implement kill switches, resource limits, governance policy checks, and audit logging for all agents.",
+}
+
+
+def _recommendation_for(risk_id: str, status: str) -> str:
+    if status == "mitigated":
+        return "Controls detected. Verify they cover all code paths."
+    return _RECOMMENDATIONS.get(risk_id, "Review OWASP Agentic Top 10 guidance for this risk.")
+
+
+def format_owasp_agentic_text(result: dict) -> str:
+    """Format OWASP Agentic assessment for terminal output."""
+    lines = [
+        "",
+        "=" * 70,
+        "  OWASP Top 10 for Agentic Applications — Assessment",
+        "=" * 70,
+        "",
+        f"  Coverage Score: {result['coverage_score']}%",
+        f"  {result['summary']}",
+        "",
+    ]
+
+    # Group by status: at_risk first, then not_assessed, then mitigated
+    status_order = {"at_risk": 0, "not_assessed": 1, "mitigated": 2}
+    sorted_risks = sorted(result["risks"], key=lambda r: status_order.get(r["status"], 9))
+
+    status_icons = {
+        "at_risk": "\033[91m✗ AT RISK\033[0m",
+        "not_assessed": "\033[93m? NOT ASSESSED\033[0m",
+        "mitigated": "\033[92m✓ MITIGATED\033[0m",
+    }
+
+    current_status = None
+    for risk in sorted_risks:
+        s = risk["status"]
+        if s != current_status:
+            current_status = s
+            label = {"at_risk": "ACTION NEEDED", "not_assessed": "NOT ASSESSED", "mitigated": "MITIGATED"}
+            lines.append(f"  ── {label.get(s, s)} ──")
+
+        icon = status_icons.get(s, s)
+        lines.append(f"  {risk['id']} | {risk['name']:<42} | {icon}")
+
+        if risk["evidence"]:
+            lines.append(f"         Evidence: {risk['evidence'][0]}")
+        lines.append(f"         Rec: {risk['recommendations']}")
+        lines.append("")
+
+    lines.append("=" * 70)
+    at_risk_ids = [r["id"] for r in result["risks"] if r["status"] == "at_risk"]
+    if at_risk_ids:
+        lines.append(f"  Run 'regula agent --fix {at_risk_ids[0]}' for remediation guidance")
+    else:
+        lines.append("  No critical gaps detected.")
+    lines.append("")
+
+    return "\n".join(lines)
+
+
 def main():
     import argparse
 
