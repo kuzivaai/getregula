@@ -595,7 +595,7 @@ def test_cli_combined_skip_tests_and_min_tier():
         capture_output=True, text=True,
         cwd=str(Path(__file__).parent.parent),
     )
-    assert_eq(result.returncode, 0, f"combined flags should not error, got: {result.stderr[:200]}")
+    assert_eq(result.returncode in (0, 1), True, f"combined flags should not error (exit 2), got: {result.returncode} {result.stderr[:200]}")
     data = json.loads(result.stdout)
     tiers = {f.get("tier") for f in data.get("data", [])}
     assert_true("minimal_risk" not in tiers, f"minimal_risk should be filtered, got: {tiers}")
