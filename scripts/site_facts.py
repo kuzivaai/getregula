@@ -58,7 +58,7 @@ def count_commands() -> int:
 def count_patterns() -> dict:
     """Return a full breakdown of detection patterns across every module.
 
-    The landing page claim "391 risk patterns" is the total individual
+    The landing page claim "403 risk patterns" is the total individual
     regexes in risk_patterns.py. The honest view is that Regula ships multiple pattern categories
     across three files. This function exposes all of them.
     """
@@ -197,7 +197,7 @@ def compute() -> dict:
         },
         "notes": {
             "pattern_count_methodology": (
-                "Regula's landing pages cite '391 risk patterns'. That figure "
+                "Regula's landing pages cite '403 risk patterns'. That figure "
                 "is the total individual regexes in risk_patterns.py across "
                 "all tiered groups (prohibited, high-risk, limited-risk, "
                 "AI security, bias, governance, GPAI training). The "
@@ -233,7 +233,7 @@ def render_markdown(data: dict) -> str:
         f"| Test functions (all files) | {c['tests']['total_functions']} | `tests/test_*.py` |\n\n"
         "## Detection pattern breakdown\n\n"
         "Regula ships detection patterns across three source files. The "
-        "landing page claim of \"391 risk patterns\" corresponds to all "
+        "landing page claim of \"403 risk patterns\" corresponds to all "
         "individual regexes in risk_patterns.py. The `historical_330_bucket` "
         "adds architecture, credential, and oversight detectors from "
         "code_analysis.py. The `grand_total` also adds `AI_INDICATORS` and "
@@ -253,7 +253,7 @@ def render_markdown(data: dict) -> str:
         "## Honesty notes\n\n"
         "- If a landing page cites a different number, either the page is "
         "stale or this generator is stale. Fix whichever is wrong.\n"
-        "- The landing page claim of \"391 risk patterns\" is the total "
+        "- The landing page claim of \"403 risk patterns\" is the total "
         "individual regexes in risk_patterns.py. If the actual count drifts, "
         "update the landing page — do not update this generator to match.\n"
         "- The `historical_330_bucket` includes additional detectors from "
