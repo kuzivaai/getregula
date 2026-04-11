@@ -215,7 +215,7 @@
     <div class="sep"></div>
 
     <div class="sec">
-        <h2 class="sec-head"><span class="hl">43</span> comandos CLI</h2>
+        <h2 class="sec-head"><span class="hl">52</span> comandos CLI</h2>
         <p class="sec-sub">Tudo a partir de um único binário.</p>
         <div class="cmds">
             <div class="cm"><code>regula assess</code> <span>Algumas perguntas sim/não &mdash; descubra seu nível de risco</span></div>
@@ -255,6 +255,51 @@
             <div class="fw"><div class="fw-d"></div>ICO / DSIT</div>
             <div class="fw pri"><div class="fw-d"></div>LGPD (Brasil)</div>
             <div class="fw pri"><div class="fw-d"></div>Marco Legal IA (Brasil)</div>
+        </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- HONESTIDADE — O QUE O REGULA FAZ E NÃO FAZ -->
+    <div class="sec">
+        <h2 class="sec-head">O que o Regula n&atilde;o faz</h2>
+        <p class="sec-sub">Uma ferramenta de conformidade que exagera suas capacidades &eacute; pior do que nenhuma ferramenta. Aqui est&aacute; o que o Regula realmente &eacute; &mdash; e o que n&atilde;o &eacute;.</p>
+        <div class="art-grid">
+            <div class="card-base art-card">
+                <h4>N&atilde;o &eacute; consultoria jur&iacute;dica</h4>
+                <p>Regula identifica indicadores de risco no c&oacute;digo para revis&atilde;o do desenvolvedor. N&atilde;o determina conformidade. Um profissional jur&iacute;dico qualificado deve revisar qualquer classifica&ccedil;&atilde;o antes de voc&ecirc; agir.</p>
+            </div>
+            <div class="card-base art-card">
+                <h4>Correspond&ecirc;ncia de padr&otilde;es, n&atilde;o compreens&atilde;o</h4>
+                <p>15,2% de precis&atilde;o em codebases open source no n&iacute;vel INFO. 0 falsos positivos no n&iacute;vel BLOCK (o padr&atilde;o de CI). <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Benchmark publicado &rarr;</a></p>
+            </div>
+            <div class="card-base art-card">
+                <h4>Estruturas, n&atilde;o subst&acirc;ncia</h4>
+                <p>Documentos Anexo IV, pacotes de evid&ecirc;ncia e frameworks de governan&ccedil;a s&atilde;o estruturas pr&eacute;-preenchidas. Um humano deve complet&aacute;-las com conte&uacute;do substantivo. O Regula n&atilde;o pode verificar se um sistema de gest&atilde;o de riscos realmente opera.</p>
+            </div>
+        </div>
+        <p class="sec-sub" style="margin-top:24px;font-size:13px;"><a href="https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md" style="color:#8888aa;">Divulga&ccedil;&atilde;o completa de limita&ccedil;&otilde;es &rarr;</a></p>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- AUTO-VARREDURA -->
+    <div class="sec">
+        <h2 class="sec-head">N&oacute;s nos escaneamos</h2>
+        <p class="sec-sub">O pr&oacute;prio c&oacute;digo do Regula &eacute; escaneado a cada commit. Aqui est&aacute; o que acontece.</p>
+        <div class="art-grid">
+            <div class="card-base art-card">
+                <h4>74 de 75 arquivos fonte suprimidos</h4>
+                <p>98,7% dos pr&oacute;prios arquivos Python do Regula exigem coment&aacute;rios <code># regula-ignore</code>. Uma ferramenta de conformidade que discute pr&aacute;ticas proibidas deve conter o vocabul&aacute;rio de pr&aacute;ticas proibidas. Isso &eacute; estrutural, n&atilde;o um bug.</p>
+            </div>
+            <div class="card-base art-card">
+                <h4>1 achado PROIBIDO</h4>
+                <p><code>explain_articles.py</code> &mdash; o arquivo que explica as proibi&ccedil;&otilde;es do Artigo 5 &mdash; &eacute; sinalizado como proibido porque cont&eacute;m as palavras que descrevem pr&aacute;ticas proibidas. A ferramenta projetada para detectar IA proibida sinalizou sua pr&oacute;pria documenta&ccedil;&atilde;o.</p>
+            </div>
+            <div class="card-base art-card">
+                <h4>O que isso significa</h4>
+                <p>Ter uma ferramenta n&atilde;o &eacute; o mesmo que ter governan&ccedil;a. Cada supress&atilde;o &eacute; uma micro-decis&atilde;o de governan&ccedil;a que requer julgamento humano sobre contexto, inten&ccedil;&atilde;o e prop&oacute;sito &mdash; exatamente o que a Lei de IA da UE exige.</p>
+            </div>
         </div>
     </div>
 
