@@ -214,7 +214,7 @@
     <div class="sep"></div>
 
     <div class="sec">
-        <h2 class="sec-head"><span class="hl">43</span> CLI-Befehle</h2>
+        <h2 class="sec-head"><span class="hl">52</span> CLI-Befehle</h2>
         <p class="sec-sub">Alles aus einer einzigen Binärdatei.</p>
         <div class="cmds">
             <div class="cm"><code>regula assess</code> <span>Einige Ja/Nein-Fragen &mdash; Risikostufe ermitteln</span></div>
@@ -254,6 +254,56 @@
             <div class="fw"><div class="fw-d"></div>ICO / DSIT</div>
             <div class="fw"><div class="fw-d"></div>LGPD (Brasilien)</div>
             <div class="fw"><div class="fw-d"></div>Marco Legal IA (Brasilien)</div>
+            <div class="fw"><div class="fw-d"></div>Colorado SB-205</div>
+            <div class="fw"><div class="fw-d"></div>Canada AIDA</div>
+            <div class="fw"><div class="fw-d"></div>Singapore AI Governance</div>
+            <div class="fw"><div class="fw-d"></div>OECD AI Principles</div>
+            <div class="fw"><div class="fw-d"></div>South Korea AI Basic Act</div>
+        </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- EHRLICHKEIT — WAS REGULA TATSÄCHLICH TUT UND NICHT TUT -->
+    <div class="sec">
+        <h2 class="sec-head">Was Regula nicht tut</h2>
+        <p class="sec-sub">Ein Konformitätstool, das seine Fähigkeiten übertreibt, ist schlimmer als gar kein Tool. Hier ist, was Regula tatsächlich ist &mdash; und was nicht.</p>
+        <div class="art-grid">
+            <div class="card-base art-card">
+                <h4>Keine Rechtsberatung</h4>
+                <p>Regula identifiziert Risikoindikatoren im Code für die Überprüfung durch Entwickler. Es stellt keine Konformität fest. Ein qualifizierter Rechtsanwalt sollte jede Klassifizierung prüfen, bevor Sie darauf handeln.</p>
+            </div>
+            <div class="card-base art-card">
+                <h4>Mustererkennung, nicht Verständnis</h4>
+                <p>15,2% Präzision bei Open-Source-Codebasen auf INFO-Stufe. 0 Falsch-Positive auf BLOCK-Stufe (der CI-Standard). <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Veröffentlichter Benchmark &rarr;</a></p>
+            </div>
+            <div class="card-base art-card">
+                <h4>Gerüste, nicht Substanz</h4>
+                <p>Anhang-IV-Dokumente, Evidenzpakete und Governance-Gerüste sind vorausgefüllte Vorlagen. Ein Mensch muss sie mit inhaltlicher Substanz vervollständigen. Regula kann nicht verifizieren, dass ein Risikomanagementsystem tatsächlich funktioniert.</p>
+            </div>
+        </div>
+        <p class="sec-sub" style="margin-top:24px;font-size:13px;"><a href="https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md" style="color:#8888aa;">Vollständige Einschränkungen &rarr;</a></p>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- SELBST-SCAN -->
+    <div class="sec">
+        <h2 class="sec-head">Wir scannen uns selbst</h2>
+        <p class="sec-sub">Regulas eigene Codebasis wird bei jedem Commit gescannt. Hier ist, was passiert.</p>
+        <div class="art-grid">
+            <div class="card-base art-card">
+                <h4>74 von 75 Quelldateien unterdrückt</h4>
+                <p>98,7% von Regulas eigenen Python-Dateien erfordern <code># regula-ignore</code>-Kommentare. Ein Konformitätstool, das verbotene Praktiken bespricht, muss das Vokabular verbotener Praktiken enthalten. Das ist strukturell, kein Fehler.</p>
+            </div>
+            <div class="card-base art-card">
+                <h4>1 VERBOTEN-Befund</h4>
+                <p><code>explain_articles.py</code> &mdash; die Datei, die Artikel-5-Verbote erklärt &mdash; wird als verboten markiert, weil sie die Wörter enthält, die verbotene Praktiken beschreiben. Das Tool, das verbotene KI erkennen soll, hat seine eigene Dokumentation markiert.</p>
+            </div>
+            <div class="card-base art-card">
+                <h4>Was das bedeutet</h4>
+                <p>Ein Tool zu haben ist nicht dasselbe wie Governance zu haben. Jede Unterdrückung ist eine Mikro-Governance-Entscheidung, die menschliches Urteilsvermögen über Kontext, Absicht und Zweck erfordert &mdash; genau das, was das EU-KI-Gesetz verlangt.</p>
+            </div>
         </div>
     </div>
 
