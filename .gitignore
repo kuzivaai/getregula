@@ -55,3 +55,13 @@ docs/research-eval-public-readiness.md
 docs/translation-skill-recommendation.md
 docs/legal-risk-assessment.md
 docs/uk-compliance-assessment.md
+
+# Internal strategy/planning (keep locally, not public)
+output.txt
+TODO.md
+ROADMAP.md
+.claim-allowlist
+docs/competitor-analysis.md
+docs/moat-research.md
+docs/landscape.md
+data/metrics/
