@@ -99,7 +99,8 @@
       "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
-        { "@type": "ListItem", "position": 2, "name": "South Africa National AI Policy", "item": "https://getregula.com/south-africa-ai-policy.html" }
+        { "@type": "ListItem", "position": 2, "name": "Writing", "item": "https://getregula.com/writing.html" },
+        { "@type": "ListItem", "position": 3, "name": "South Africa National AI Policy", "item": "https://getregula.com/south-africa-ai-policy.html" }
       ]
     }
     </script>
@@ -180,65 +181,13 @@
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="stylesheet" href="assets/fonts.css">
+    <link rel="stylesheet" href="assets/site.css">
     <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <style>
-        @view-transition {
-            navigation: auto;
-        }
+        /* Page-specific overrides — base styles come from site.css */
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'DM Sans', system-ui, sans-serif;
-            background: #070711;
-            color: #e2e2f0;
-            line-height: 1.65;
-            -webkit-font-smoothing: antialiased;
-        }
-        code, .mono { font-family: 'JetBrains Mono', monospace; }
-        h1, h2, h3, .sec-head {
-            font-family: 'Fraunces', Georgia, serif;
-            font-style: normal;
-            color: #e2e2f0;
-            letter-spacing: -0.02em;
-        }
-        a { color: #3b82f6; text-decoration: none; transition: color 0.15s; }
-        a:hover { color: #60a5fa; text-decoration: underline; }
-
-        /* NAV */
-        .nav {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            height: 56px;
-            padding: 0 32px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(7,7,17,0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255,255,255,0.07);
-        }
-        .nav-brand { font-weight: 700; font-size: 16px; color: #e2e2f0; }
-        .nav-right { display: flex; gap: 24px; font-size: 13px; align-items: center; }
-        .nav-right a { color: #8888aa; }
-        .nav-right a:hover { color: #e2e2f0; }
-        .nav-right .active { color: #e2e2f0; font-weight: 600; }
-
-        /* PROGRESS BAR */
-        #progress-bar {
-            position: fixed;
-            top: 0; left: 0;
-            width: 0%;
-            height: 2px;
-            background: linear-gradient(90deg, #3b82f6, #7c3aed);
-            z-index: 999;
-            transition: width 0.1s linear;
-        }
-
-        /* HERO */
+        /* HERO — article layout (single-column, narrower than landing) */
         .hero-wrap { position: relative; overflow: hidden; }
         .hero-glow {
             position: absolute;
@@ -252,15 +201,9 @@
             margin: 0 auto;
             padding: 80px 32px 48px;
             position: relative;
+            display: block;
+            grid-template-columns: none;
         }
-        .breadcrumb {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            color: #44445a;
-            margin-bottom: 24px;
-        }
-        .breadcrumb a { color: #8888aa; }
-        .breadcrumb a:hover { color: #e2e2f0; }
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -430,7 +373,7 @@
             font-style: italic;
         }
 
-        /* CODE */
+        /* CODE — page-specific terminal styling */
         pre {
             background: #0e0e1a;
             border: 1px solid rgba(255,255,255,0.07);
@@ -547,17 +490,6 @@
         .faq details[open] summary::after { content: '−'; }
         .faq details p { margin: 14px 0 0; font-size: 14px; color: #b8b8c8; line-height: 1.7; }
 
-        /* FOOTER */
-        footer {
-            border-top: 1px solid rgba(255,255,255,0.07);
-            padding: 40px 32px;
-            text-align: center;
-            font-size: 12px;
-            color: #44445a;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        footer a { color: #8888aa; margin: 0 12px; }
-
         /* RESPONSIVE */
         @media (max-width: 700px) {
             h1 { font-size: 36px; }
@@ -568,8 +500,6 @@
             .hero { padding: 56px 24px 32px; }
             .content { padding: 0 24px 60px; }
         }
-        .skip-link { position: absolute; left: -9999px; top: 0; background: #3b82f6; color: #fff; padding: 8px 16px; font-family: monospace; font-size: 12px; z-index: 1000; border-radius: 0 0 6px 0; text-decoration: none; }
-        .skip-link:focus { left: 0; }
     </style>
     <!-- Privacy-friendly analytics by Plausible -->
     <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
@@ -582,12 +512,12 @@
     <a href="#main" class="skip-link">Skip to content</a>
     <div id="progress-bar"></div>
 
-    <nav class="nav" aria-label="Main navigation">
+    <nav class="nav" id="nav" aria-label="Primary">
         <a href="/" class="nav-brand">Regula</a>
         <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
         <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
-            <a href="https://github.com/kuzivaai/getregula" target="_blank" rel="noopener">GitHub</a>
-            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md" target="_blank" rel="noopener">Docs</a>
+            <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
             <a href="/regulations.html">Regulations</a>
             <a href="/writing.html">Writing</a>
             <a href="/">EN</a>
@@ -600,7 +530,7 @@
         <div class="hero-glow"></div>
         <div class="hero">
             <div class="breadcrumb">
-                <a href="/">Regula</a> / South Africa AI Policy
+                <a href="/">Regula</a> / <a href="/writing.html">Writing</a> / South Africa AI Policy
             </div>
             <span class="status-badge"><span class="status-dot"></span>Cabinet approved · Awaiting gazette</span>
             <h1>South Africa's <span class="hl">draft National AI Policy</span>: what Cabinet approved, and what it means for your code</h1>
@@ -808,17 +738,28 @@
     </main>
 
     <footer>
-        <p style="margin-bottom: 16px; padding: 12px; background: #fff8e7; border-left: 3px solid #d4a017; font-size: 13px; color: #66668a; max-width: 720px;"><strong>Not legal advice.</strong> This page summarises publicly available information about South Africa's draft National AI Policy. It does not constitute legal advice and should not be relied upon as a definitive statement of obligations under South African law. Consult a qualified legal professional for legal questions.</p>
-        <a href="/">Regula home</a> ·
-        <a href="https://github.com/kuzivaai/getregula" target="_blank" rel="noopener">GitHub</a> ·
-        <a href="/docs/article-south-africa-ai-policy.md">Article markdown</a> ·
-        <a href="https://github.com/kuzivaai/getregula/issues" target="_blank" rel="noopener">Report a correction</a>
-        <br><br>
-        Open source · MIT licensed · Updated 7 April 2026
+        <div class="foot-inner">
+            <div class="foot-left">
+                <div class="foot-brand">Regula</div>
+                <div class="foot-links">
+                    <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                    <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                    <a href="writing.html">Writing</a>
+                    <a href="regulations.html">Regulations</a>
+                </div>
+                <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula</div>
+            </div>
+            <div class="foot-right">
+                <div class="foot-legal">
+                    <strong>Not legal advice.</strong> This page summarises publicly available information about South Africa's draft National AI Policy. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+                </div>
+            </div>
+        </div>
     </footer>
 
     <script>
-        // Scroll progress bar
+        // Scroll progress bar + nav background
+        const nav = document.getElementById('nav');
         window.addEventListener('scroll', function() {
             const h = document.documentElement;
             const b = document.body;
@@ -826,6 +767,7 @@
             const sh = 'scrollHeight';
             const scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
             document.getElementById('progress-bar').style.width = scroll + '%';
+            nav.classList.toggle('scrolled', window.scrollY > 20);
         });
 
         // Progressive-enhancement tracker: fetch sa-tracker.json and replace
