@@ -44,79 +44,95 @@
     <link rel="preload" href="assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="assets/site.css">
     <style>
-        /* Page-specific override: slightly shorter nav */
-        .nav { height: 52px; }
-
-        /* ===== ARTICLE ===== */
-        .article-wrap {
+        /* ===== BLOG-SPECIFIC STYLES ===== */
+        .blog-hero {
             max-width: 760px;
             margin: 0 auto;
-            padding: 0 32px;
+            padding: 64px var(--s7) 40px;
         }
-        .article-hero {
-            padding: 72px 0 48px;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            margin-bottom: 48px;
-        }
-        .article-meta {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: #44445a;
-            margin-bottom: 16px;
+        .blog-meta {
             display: flex;
-            gap: 16px;
+            align-items: center;
+            gap: var(--s4);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-faint);
+            margin-bottom: var(--s6);
+            flex-wrap: wrap;
         }
-        .article-hero h1 {
+        .blog-meta .dot { color: var(--text-faint); }
+        .blog-hero h1 {
+            font-family: var(--font-serif);
             font-size: 44px;
             font-weight: 700;
-            color: #e2e2f0;
-            line-height: 1.15;
+            color: var(--text);
+            line-height: 1.12;
             letter-spacing: -0.03em;
-            margin-bottom: 20px;
+            margin-bottom: var(--s5);
         }
-        .article-hero .sub {
+        .blog-hero .standfirst {
             font-size: 17px;
-            color: #8888aa;
+            color: var(--text-2);
             line-height: 1.7;
         }
-        .article-body h2 {
+
+        .blog-body {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 var(--s7) var(--s10);
+        }
+        .blog-body h2 {
+            font-family: var(--font-serif);
             font-size: 28px;
             font-weight: 600;
-            color: #e2e2f0;
-            margin: 56px 0 20px;
+            color: var(--text);
+            margin: var(--s10) 0 var(--s5);
             letter-spacing: -0.02em;
         }
-        .article-body h3 {
-            font-size: 20px;
+        .blog-body h3 {
+            font-family: var(--font-body);
+            font-size: 18px;
             font-weight: 600;
-            color: #e2e2f0;
-            margin: 36px 0 14px;
+            color: var(--text);
+            margin: var(--s7) 0 var(--s3);
         }
-        .article-body p {
+        .blog-body p {
             font-size: 16px;
-            color: #b0b0c8;
-            line-height: 1.8;
-            margin-bottom: 20px;
+            color: var(--text-2);
+            line-height: 1.75;
+            margin-bottom: var(--s5);
         }
-        .article-body ul, .article-body ol {
-            margin: 0 0 20px 24px;
-            color: #b0b0c8;
-            line-height: 1.8;
+        .blog-body p strong { color: var(--text); font-weight: 600; }
+        .blog-body a { color: var(--accent); }
+        .blog-body a:hover { color: var(--accent-hover); }
+        .blog-body ul, .blog-body ol {
+            margin: 0 0 var(--s5) var(--s6);
+            font-size: 16px;
+            color: var(--text-2);
+            line-height: 1.75;
         }
-        .article-body li { margin-bottom: 8px; }
-        .article-body strong { color: #e2e2f0; }
-        .article-body code {
-            background: rgba(255,255,255,0.06);
-            padding: 2px 6px;
-            border-radius: 4px;
+        .blog-body li { margin-bottom: var(--s2); }
+        .blog-body strong { color: var(--text); }
+        .blog-body code {
+            font-family: var(--font-mono);
             font-size: 14px;
-            color: #7dd3fc;
+            background: var(--accent-soft);
+            color: var(--cyan);
+            padding: 2px 7px;
+            border-radius: var(--r-sm);
+        }
+
+        /* Separator */
+        .blog-sep {
+            max-width: 760px;
+            margin: 0 auto;
+            border-top: 1px solid var(--border);
         }
 
         /* ===== TIER LABEL ===== */
         .tier-label {
             display: inline-block;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--font-mono);
             font-size: 11px;
             font-weight: 600;
             padding: 3px 10px;
@@ -132,10 +148,10 @@
         /* ===== CODE BLOCK (source code) ===== */
         .code-block {
             background: #0e0e1a;
-            border: 1px solid rgba(255,255,255,0.07);
+            border: 1px solid var(--border);
             border-radius: 10px;
             overflow: hidden;
-            margin: 20px 0 28px;
+            margin: var(--s5) 0 var(--s6);
         }
         .code-label {
             display: flex;
@@ -143,17 +159,17 @@
             gap: 8px;
             padding: 8px 16px;
             background: #080813;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            font-family: 'JetBrains Mono', monospace;
+            border-bottom: 1px solid var(--border);
+            font-family: var(--font-mono);
             font-size: 11px;
-            color: #44445a;
+            color: var(--text-faint);
         }
         .code-block pre {
             padding: 18px 20px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--font-mono);
             font-size: 12.5px;
             line-height: 1.75;
-            color: #b0b0c8;
+            color: var(--text-2);
             overflow-x: auto;
             margin: 0;
             white-space: pre;
@@ -162,11 +178,11 @@
         /* ===== TERMINAL OUTPUT ===== */
         .term-wrap {
             background: #0e0e1a;
-            border: 1px solid rgba(255,255,255,0.07);
+            border: 1px solid var(--border);
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
-            margin: 20px 0 32px;
+            margin: var(--s5) 0 var(--s7);
         }
         .term-bar {
             display: flex;
@@ -174,16 +190,16 @@
             gap: 6px;
             padding: 10px 16px;
             background: #080813;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid var(--border);
         }
         .term-dot { width: 10px; height: 10px; border-radius: 50%; }
         .td-r { background: #ef4444; } .td-y { background: #eab308; } .td-g { background: #22c55e; }
         .term-wrap pre {
             padding: 20px 22px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--font-mono);
             font-size: 12px;
             line-height: 1.75;
-            color: #8888aa;
+            color: var(--text-dim);
             overflow-x: auto;
             margin: 0;
             white-space: pre;
@@ -199,10 +215,10 @@
 
         /* ===== ARTICLE REFERENCE ===== */
         .art-ref {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--font-mono);
             font-size: 12px;
-            color: #3b82f6;
-            background: rgba(59,130,246,0.08);
+            color: var(--accent);
+            background: var(--accent-soft);
             padding: 2px 7px;
             border-radius: 3px;
         }
@@ -225,19 +241,19 @@
             border: 1px solid rgba(59,130,246,0.2);
             color: #7eb8f0;
         }
-        .callout strong { color: #e2e2f0; }
+        .callout strong { color: var(--text); }
 
         /* ===== INSTALL CTA ===== */
         .install-cta {
             margin: 48px 0;
             padding: 36px;
             background: #0e0e1a;
-            border: 1px solid rgba(255,255,255,0.07);
+            border: 1px solid var(--border);
             border-radius: 12px;
             text-align: center;
         }
         .install-cta h2 { margin: 0 0 12px; }
-        .install-cta p { color: #8888aa; margin-bottom: 20px; }
+        .install-cta p { color: var(--text-dim); margin-bottom: var(--s5); }
         .install-box {
             display: inline-flex;
             align-items: center;
@@ -250,67 +266,20 @@
             transition: border-color 0.2s, background 0.2s;
         }
         .install-box:hover { border-color: rgba(255,255,255,0.2); background: #141428; }
-        .install-box .dollar { color: #44445a; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
-        .install-box .cmd { color: #7dd3fc; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+        .install-box .dollar { color: var(--text-faint); font-family: var(--font-mono); font-size: 14px; }
+        .install-box .cmd { color: var(--cyan); font-family: var(--font-mono); font-size: 14px; }
         .install-box .cp {
-            color: #44445a;
+            color: var(--text-faint);
             font-size: 11px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--font-mono);
             transition: color 0.2s;
         }
-        .install-box.copied .cp { color: #10b981; }
+        .install-box.copied .cp { color: var(--success); }
 
-        /* ===== FOOTER ===== */
-        .foot {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 28px 32px;
-            border-top: 1px solid rgba(255,255,255,0.06);
-        }
-        .foot-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 24px;
-        }
-        .foot-left {}
-        .foot-brand {
-            font-weight: 700;
-            font-size: 14px;
-            color: #e2e2f0;
-            margin-bottom: 6px;
-        }
-        .foot-links {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-bottom: 8px;
-        }
-        .foot-links a { color: #8888aa; font-size: 13px; }
-        .foot-links a:hover { color: #e2e2f0; }
-        .foot-right { text-align: right; max-width: 400px; }
-        .foot-legal {
-            font-size: 12px;
-            color: #44445a;
-            line-height: 1.6;
-            padding: 10px 14px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 6px;
-        }
-        .foot-legal strong { color: #8888aa; }
-        .foot-copy { font-size: 12px; color: #44445a; margin-top: 8px; }
-
-        /* ===== MOBILE ===== */
-        @media (max-width: 640px) {
-            .nav { padding: 0 16px; }
-            .article-wrap { padding: 0 16px; }
-            .article-hero { padding: 48px 0 32px; }
-            .article-hero h1 { font-size: 28px; }
-            .article-body h2 { font-size: 22px; }
+        @media (max-width: 600px) {
+            .blog-hero h1 { font-size: 32px; }
+            .blog-body h2 { font-size: 24px; }
             .install-cta { padding: 24px 16px; }
-            .foot-inner { flex-direction: column; }
-            .foot-right { text-align: left; max-width: 100%; }
         }
     </style>
 </head>
@@ -331,24 +300,25 @@
 </nav>
 
 <main id="main">
-<div class="article-wrap">
 
-    <!-- HERO -->
-    <div class="article-hero">
-        <div class="breadcrumb" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#44445a;margin-bottom:20px;">
-            <a href="/">Regula</a> / <a href="/writing.html">Blog</a> / Risk Tiers in Code
-        </div>
-        <div class="article-meta">
-            <span>10 April 2026</span>
-            <span>&middot;</span>
-            <span>8 min read</span>
-        </div>
-        <h1>EU AI Act risk tiers in actual code</h1>
-        <p class="sub">Every guide explains the four risk tiers in legal language. None show what they look like in a codebase. Here is what each tier looks like in Python, what triggers it, and what a scanner outputs when it finds it.</p>
+<article>
+
+<div class="blog-hero">
+    <div class="breadcrumb" style="font-family:var(--font-mono);font-size:11px;color:var(--text-faint);margin-bottom:20px;">
+        <a href="/">Regula</a> / <a href="/writing.html">Blog</a> / Risk Tiers in Code
     </div>
+    <div class="blog-meta">
+        <span>10 April 2026</span>
+        <span class="dot">&middot;</span>
+        <span>8 min read</span>
+    </div>
+    <h1>EU AI Act risk tiers in actual code</h1>
+    <p class="standfirst">Every guide explains the four risk tiers in legal language. None show what they look like in a codebase. Here is what each tier looks like in Python, what triggers it, and what a scanner outputs when it finds it.</p>
+</div>
 
-    <!-- BODY -->
-    <div class="article-body">
+<div class="blog-sep"></div>
+
+<div class="blog-body">
 
         <!-- SECTION 1 -->
         <h2>The four risk tiers in 30 seconds</h2>
@@ -614,27 +584,27 @@ Regula Scan: recommender.py
             <p style="margin-top:16px; font-size:13px; color:#66668a;">Runs locally. Nothing leaves your machine. <a href="https://github.com/kuzivaai/getregula">Source on GitHub</a>.</p>
         </div>
 
-    </div><!-- /article-body -->
-</div><!-- /article-wrap -->
+    </div><!-- /blog-body -->
+
+</article>
+
 </main>
 
 <footer>
-    <div class="foot">
-        <div class="foot-inner">
-            <div class="foot-left">
-                <div class="foot-brand">Regula</div>
-                <div class="foot-links">
-                    <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-                    <a href="https://pypi.org/project/regula-ai/">PyPI</a>
-                    <a href="writing.html">Blog</a>
-                    <a href="regulations.html">Regulations</a>
-                </div>
-                <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula</div>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="writing.html">Blog</a>
+                <a href="regulations.html">Regulations</a>
             </div>
-            <div class="foot-right">
-                <div class="foot-legal">
-                    <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions.
-                </div>
+            <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
             </div>
         </div>
     </div>
