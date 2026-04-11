@@ -522,6 +522,28 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 
 <div class="sep"></div>
 
+<!-- SELF-SCAN -->
+<div class="sec reveal">
+    <h2 class="sec-head">We scan ourselves</h2>
+    <p class="sec-sub">Regula's own codebase is scanned on every commit. Here is what happens.</p>
+    <div class="art-grid">
+        <div class="card-base art-card">
+            <h4>74 of 75 source files suppressed</h4>
+            <p>98.7% of Regula's own Python files require <code># regula-ignore</code> comments. A compliance tool that discusses prohibited practices must contain the vocabulary of prohibited practices. This is structural, not a bug.</p>
+        </div>
+        <div class="card-base art-card">
+            <h4>1 PROHIBITED finding</h4>
+            <p><code>explain_articles.py</code> &mdash; the file that explains Article 5 prohibitions &mdash; is flagged as prohibited because it contains the words describing prohibited practices. The tool designed to detect prohibited AI flagged its own documentation.</p>
+        </div>
+        <div class="card-base art-card">
+            <h4>What this means</h4>
+            <p>Having a tool is not the same as having governance. Each suppression is a micro-governance decision that requires human judgment about context, intent, and purpose &mdash; exactly what the EU AI Act requires.</p>
+        </div>
+    </div>
+</div>
+
+<div class="sep"></div>
+
 <!-- WHERE REGULA FITS -->
 <div class="sec reveal">
     <h2 class="sec-head">Where Regula fits in the market.</h2>
