@@ -339,6 +339,96 @@ HIGH_RISK_PATTERNS = {
         "category": "Medical Devices",
         "description": "AI components of medical devices",
     },
+    "high_risk__insurance": {
+        # Annex III point 5(d): AI systems used to assess risk and pricing
+        # for natural persons in the case of life and health insurance.
+        # Complements the broader essential_services category with patterns
+        # specific to insurance underwriting and claims AI.
+        "patterns": [r"\binsurance[_\W]?scor", r"\binsurance[_\W]?risk",
+                     r"\bunderwriting[_\W]?model", r"\bclaim[_\W]?predict",
+                     r"\bactuarial[_\W]?model", r"\binsurance[_\W]?pricing",
+                     r"\bpolicy[_\W]?risk[_\W]?scor",
+                     r"\b(?:life|health)[_\W]?insurance[_\W]?(?:scor|model|predict|assess|classif)",
+                     r"\b(?:actuarial|underwriting)[_\W]?(?:ai|automat|model|predict|classif|scor)",
+                     # Prompt-string templates.
+                     r"(?:score|assess|predict|price)[^\"\\n]{0,30}(?:insurance|underwriting|actuarial|policy[_\W]risk)"],
+        "articles": ["9", "10", "11", "12", "13", "14", "15"],
+        "category": "Annex III, Category 5(d)",
+        "description": "Insurance access and pricing",
+    },
+    "high_risk__credit_scoring": {
+        # Annex III point 5(b): AI systems used to evaluate the
+        # creditworthiness of natural persons (excluding fraud detection).
+        # Complements the broader essential_services category with patterns
+        # specific to credit-scoring and lending-decision AI.
+        "patterns": [r"\bcredit[_\W]?scor", r"\bcredit[_\W]?risk",
+                     r"\bcreditworth", r"\bloan[_\W]?decision",
+                     r"\blending[_\W]?model", r"\bcredit[_\W]?assess",
+                     r"\bfico\b", r"\bcredit[_\W]?rating",
+                     r"\b(?:credit|lending)[_\W]?(?:model|predict|classif|algorithm|automat)",
+                     r"\b(?:score|assess|evaluate|rate)[_\W]?(?:creditworth|borrower|applicant[_\W]?credit)",
+                     # Prompt-string templates.
+                     r"(?:score|assess|evaluate|predict)[^\"\\n]{0,30}(?:credit|creditworth|borrower|lending|fico)"],
+        "articles": ["9", "10", "11", "12", "13", "14", "15"],
+        "category": "Annex III, Category 5(b)",
+        "description": "Creditworthiness assessment",
+    },
+    "high_risk__worker_management": {
+        # Annex III point 4(b): AI systems intended to be used to make
+        # decisions affecting terms of work-related relationships, for
+        # monitoring and evaluating performance and behaviour of persons
+        # in such relationships, or for task allocation based on individual
+        # behaviour, personal traits, or characteristics.
+        "patterns": [r"\bemployee[_\W]?monitor", r"\bproductivity[_\W]?track",
+                     r"\bworker[_\W]?surveillance", r"\btask[_\W]?allocation",
+                     r"\bperformance[_\W]?scor", r"\bworkforce[_\W]?management",
+                     r"\bemployee[_\W]?ranking", r"\bworker[_\W]?efficiency",
+                     r"\b(?:employee|worker|staff)[_\W]?(?:monitor|surveil|track|rank|scor|evaluat|profil)",
+                     r"\b(?:task|shift|workload)[_\W]?(?:allocat|assign|distribut|optimis|optimiz)[_\W]?(?:ai|model|automat|algorithm)",
+                     r"\b(?:productivity|performance|efficiency)[_\W]?(?:monitor|track|scor|rank|model|predict|dashboard)",
+                     # Prompt-string templates.
+                     r"(?:monitor|track|score|rank|evaluate)[^\"\\n]{0,30}(?:employee|worker|staff|productivity|performance)"],
+        "articles": ["9", "10", "11", "12", "13", "14", "15"],
+        "category": "Annex III, Category 4(b)",
+        "description": "Worker monitoring and task allocation",
+    },
+    "high_risk__democratic_processes": {
+        # Annex III point 8 (second part): AI systems intended to be used
+        # to influence the outcome of an election or referendum or the
+        # voting behaviour of natural persons in the exercise of their
+        # vote in elections or referenda (excluding tools used for
+        # organising, optimising, and structuring political campaigns).
+        "patterns": [r"\bvoter[_\W]?target", r"\belection[_\W]?predict",
+                     r"\bpolitical[_\W]?ad", r"\bcampaign[_\W]?target",
+                     r"\bvoter[_\W]?profil", r"\bballot\b", r"\belectoral\b",
+                     r"\bvote[_\W]?predict",
+                     r"\b(?:voter|electorate)[_\W]?(?:micro[_\W]?target|segment|influenc|persuad|manipul)",
+                     r"\b(?:election|electoral|referendum|ballot)[_\W]?(?:predict|forecast|model|manipul|influenc|interfere)",
+                     r"\b(?:political|campaign)[_\W]?(?:ad|advertis|target|micro[_\W]?target|profil)[_\W]?(?:ai|model|automat|algorithm)",
+                     # Prompt-string templates.
+                     r"(?:target|profile|influence|predict)[^\"\\n]{0,30}(?:voter|election|electoral|referendum|ballot|campaign)"],
+        "articles": ["9", "10", "11", "12", "13", "14", "15"],
+        "category": "Annex III, Category 8",
+        "description": "Democratic processes and elections",
+    },
+    "high_risk__emergency_services": {
+        # Annex III point 3(c) / point 5(e): AI systems intended to be
+        # used for dispatching or establishing priority in the dispatching
+        # of emergency first response services, including by firefighters
+        # and medical aid.
+        "patterns": [r"\bemergency[_\W]?dispatch", r"\btriage[_\W]?model",
+                     r"\bfirst[_\W]?responder", r"\bemergency[_\W]?priority",
+                     r"\bincident[_\W]?priority", r"\bambulance[_\W]?dispatch",
+                     r"\bfire[_\W]?dispatch",
+                     r"\b(?:emergency|911|999|112)[_\W]?(?:call|dispatch|priorit|triage|routing|severity|queue)",
+                     r"\b(?:ambulance|fire|police|paramedic)[_\W]?(?:dispatch|routing|priorit|triage|allocat)",
+                     r"\b(?:incident|emergency)[_\W]?(?:triage|severity|priorit|classif|scor)[_\W]?(?:ai|model|automat|algorithm)",
+                     # Prompt-string templates.
+                     r"(?:dispatch|triage|prioritise|prioritize)[^\"\\n]{0,30}(?:emergency|ambulance|fire|incident|first[_\W]responder)"],
+        "articles": ["9", "10", "11", "12", "13", "14", "15"],
+        "category": "Annex III, Category 5(e)",
+        "description": "Emergency services dispatch and triage",
+    },
     "safety_components": {
         # Recall expansion (Apr 2026): EU AI Act Article 6(1) cross-references
         # Annex I Sections A and B — safety components of machinery, toys,
