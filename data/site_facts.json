@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-11T20:15:05.964253+00:00",
+  "generated_at": "2026-04-11T21:57:25.851750+00:00",
   "source_of_truth": {
     "commands": "scripts/cli.py (grep '^def cmd_')",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -8,7 +8,7 @@
     "tests": "tests/test_classification.py (grep '^def test_')"
   },
   "counts": {
-    "commands": 51,
+    "commands": 52,
     "patterns": {
       "tier_groups": 46,
       "tier_regexes": 358,

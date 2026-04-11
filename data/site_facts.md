@@ -2,13 +2,13 @@
 
 *Canonical source of truth for every numeric claim on the landing pages. Regenerate by running `python3 scripts/site_facts.py`.*
 
-Generated: `2026-04-11T20:15:05.964253+00:00`
+Generated: `2026-04-11T21:57:25.851750+00:00`
 
 ## Top-line counts
 
 | Claim | Count | Source file |
 |---|---|---|
-| CLI commands | **51** | `scripts/cli.py` |
+| CLI commands | **52** | `scripts/cli.py` |
 | Detection patterns (historical bucket) | **409** | see breakdown below |
 | Detection patterns (grand total, inclusive) | **622** | see breakdown below |
 | Tiered risk pattern groups | 46 | `scripts/risk_patterns.py` |
