@@ -13,6 +13,7 @@ _NO_COLOR = (
     not hasattr(sys.stdout, "isatty")
     or not sys.stdout.isatty()
     or os.environ.get("NO_COLOR", "") != ""
+    or os.environ.get("REGULA_NO_COLOR", "") != ""
     or os.environ.get("TERM", "") == "dumb"
 )
 
