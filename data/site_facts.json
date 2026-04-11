@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-11T21:57:25.851750+00:00",
+  "generated_at": "2026-04-11T22:04:56.095443+00:00",
   "source_of_truth": {
     "commands": "scripts/cli.py (grep '^def cmd_')",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -54,7 +54,7 @@
     }
   },
   "notes": {
-    "pattern_count_methodology": "Regula's landing pages cite '391 risk patterns'. That figure is the total individual regexes in risk_patterns.py across all tiered groups (prohibited, high-risk, limited-risk, AI security, bias, governance, GPAI training). The `historical_330_bucket` adds architecture, credential, and oversight patterns from code_analysis.py. The `grand_total` also includes AI_INDICATORS.",
+    "pattern_count_methodology": "Regula's landing pages cite '403 risk patterns'. That figure is the total individual regexes in risk_patterns.py across all tiered groups (prohibited, high-risk, limited-risk, AI security, bias, governance, GPAI training). The `historical_330_bucket` adds architecture, credential, and oversight patterns from code_analysis.py. The `grand_total` also includes AI_INDICATORS.",
     "frameworks_vs_claim": "Regula's landing pages cite '17 compliance frameworks'. Counted from framework_mapper._FRAMEWORK_KEYS unique values."
   }
 }
