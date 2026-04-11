@@ -16,6 +16,7 @@ Usage:
 
 import argparse
 import json
+import os
 import re
 import sys
 from datetime import datetime, timezone
@@ -26,6 +27,26 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from constants import VERSION
 from errors import RegulaError, PathError
+
+
+def _is_tty():
+    """Check if stdout is a terminal."""
+    return hasattr(sys.stdout, 'isatty') and sys.stdout.isatty()
+
+
+def _use_color():
+    """Check if color output should be used."""
+    if os.environ.get('NO_COLOR') or os.environ.get('REGULA_NO_COLOR'):
+        return False
+    if not _is_tty():
+        return False
+    return True
+
+
+def _info(msg):
+    """Print informational message to stderr."""
+    if _is_tty():
+        print(msg, file=sys.stderr)
 
 
 def json_output(command: str, data, exit_code: int = 0):
@@ -316,6 +337,15 @@ def cmd_check(args):
         print(f"  {t('tier_note')}")
         print(f"  {t('suppress_note')}")
         print()
+
+        # Next-step suggestions (TTY only, when there are findings)
+        if _is_tty() and active:
+            first_file = active[0].get("file", "<file>")
+            print("  Next steps:", file=sys.stderr)
+            print(f"    regula explain --file {first_file:<30s} Explain why this was flagged", file=sys.stderr)
+            print(f"    regula gap{'':<37s} Check Article 9-15 compliance gaps", file=sys.stderr)
+            print(f"    regula timeline{'':<32s} See your enforcement deadlines", file=sys.stderr)
+            print(file=sys.stderr)
 
     # Explain mode: show detailed reasoning for each file
     if getattr(args, "explain", False) and args.format == "text":
@@ -1759,6 +1789,62 @@ def cmd_sbom(args):
         print(content)
 
 
+def cmd_owasp_agentic(args):
+    """OWASP Top 10 for Agentic Applications assessment."""
+    from agent_monitor import assess_owasp_agentic, format_owasp_agentic_text
+
+    if args.project != ".":
+        _validate_path(args.project)
+    result = assess_owasp_agentic(args.project)
+    fmt = getattr(args, "format", "text")
+    if fmt == "json":
+        json_output("owasp-agentic", result)
+    else:
+        print(format_owasp_agentic_text(result))
+    # CI mode: exit 1 if any risk is at_risk
+    if getattr(args, "strict", False) or getattr(args, "ci", False):
+        at_risk = [r for r in result.get("risks", []) if r.get("status") == "at_risk"]
+        if at_risk:
+            sys.exit(1)
+
+
+def cmd_guardrails(args):
+    """Detect guardrail implementation coverage."""
+    from guardrail_scanner import scan_for_guardrails, format_guardrails_text
+
+    if args.project != ".":
+        _validate_path(args.project)
+    result = scan_for_guardrails(args.project)
+    fmt = getattr(args, "format", "text")
+    if fmt == "json":
+        json_output("guardrails", result)
+    else:
+        print(format_guardrails_text(result))
+    if getattr(args, "strict", False) or getattr(args, "ci", False):
+        if result.get("overall_score", 0) < 50:
+            sys.exit(1)
+
+
+def cmd_ai_codegen(args):
+    """AI-generated code governance scanner."""
+    from ai_code_governance import scan_ai_generated_code, format_ai_codegen_text
+
+    if args.project != ".":
+        _validate_path(args.project)
+    result = scan_ai_generated_code(
+        args.project,
+        include_git=not getattr(args, "no_git", False),
+    )
+    fmt = getattr(args, "format", "text")
+    if fmt == "json":
+        json_output("ai-codegen", result)
+    else:
+        print(format_ai_codegen_text(result))
+    if getattr(args, "strict", False) or getattr(args, "ci", False):
+        if not result.get("summary", {}).get("transparency_compliant", False):
+            sys.exit(1)
+
+
 def cmd_agent(args):
     """Agentic AI governance monitoring."""
     from agent_monitor import analyse_agent_session, check_mcp_config, format_agent_text
@@ -1931,7 +2017,14 @@ def cmd_handoff(args):
             print("  sample:")
             for e in result['entrypoints'][:5]:
                 print(f"    {e['file']}:{e['line']} [{e['kind']}]")
-        print(f"\n{result['note']}")
+        # Show red-team coverage score if available
+        coverage = result.get("coverage")
+        if coverage:
+            from handoff import format_coverage_text
+            print()
+            print(format_coverage_text(coverage))
+        else:
+            print(f"\n{result['note']}")
 
 
 def cmd_regwatch(args):
@@ -2018,6 +2111,153 @@ Examples:
   regula deps --project .                 AI dependency supply chain analysis
   regula audit verify                     Verify audit chain integrity
 """
+
+
+def cmd_badge(args):
+    """Generate compliance badge from scan results."""
+    from report import scan_files
+    from findings_view import partition_findings
+
+    _validate_path(args.path)
+    project = str(Path(args.path).resolve())
+    findings = scan_files(project)
+
+    view = partition_findings(findings)
+    prohibited = view["prohibited"]
+    high_risk = view["high_risk"]
+
+    if prohibited:
+        color = "red"
+        message = f"{len(prohibited)} prohibited"
+    elif high_risk:
+        color = "orange"
+        message = f"{len(high_risk)} high-risk"
+    else:
+        color = "brightgreen"
+        message = "compliant"
+
+    if args.format == "endpoint":
+        badge = {
+            "schemaVersion": 1,
+            "label": "EU AI Act",
+            "message": message,
+            "color": color,
+        }
+        print(json.dumps(badge, indent=2))
+    elif args.format == "svg":
+        label = "EU AI Act"
+        label_width = len(label) * 7 + 10
+        msg_width = len(message) * 7 + 10
+        total_width = label_width + msg_width
+        colors = {"brightgreen": "#4c1", "orange": "#fe7d37", "red": "#e05d44"}
+        fill = colors.get(color, "#9f9f9f")
+        svg = (
+            f'<svg xmlns="http://www.w3.org/2000/svg" width="{total_width}" height="20">\n'
+            f'  <linearGradient id="b" x2="0" y2="100%">'
+            f'<stop offset="0" stop-color="#bbb" stop-opacity=".1"/>'
+            f'<stop offset="1" stop-opacity=".1"/></linearGradient>\n'
+            f'  <mask id="a"><rect width="{total_width}" height="20" rx="3" fill="#fff"/></mask>\n'
+            f'  <g mask="url(#a)">'
+            f'<rect width="{label_width}" height="20" fill="#555"/>'
+            f'<rect x="{label_width}" width="{msg_width}" height="20" fill="{fill}"/>'
+            f'<rect width="{total_width}" height="20" fill="url(#b)"/></g>\n'
+            f'  <g fill="#fff" text-anchor="middle" '
+            f'font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">\n'
+            f'    <text x="{label_width / 2}" y="15" fill="#010101" fill-opacity=".3">{label}</text>\n'
+            f'    <text x="{label_width / 2}" y="14">{label}</text>\n'
+            f'    <text x="{label_width + msg_width / 2}" y="15" fill="#010101" fill-opacity=".3">'
+            f'{message}</text>\n'
+            f'    <text x="{label_width + msg_width / 2}" y="14">{message}</text>\n'
+            f'  </g>\n'
+            f'</svg>'
+        )
+        print(svg)
+    else:
+        # Markdown snippet
+        shield_url = (
+            f"https://img.shields.io/badge/EU%20AI%20Act-{message.replace(' ', '%20')}-{color}"
+        )
+        print(f"[![EU AI Act]({shield_url})](https://getregula.com)")
+
+
+def cmd_attest(args):
+    """Generate scan attestation (in-toto Statement v1)."""
+    import hashlib
+    import hmac
+    import subprocess
+
+    from report import scan_files
+    from findings_view import partition_findings
+
+    _validate_path(args.path)
+    project = str(Path(args.path).resolve())
+    findings = scan_files(project)
+
+    view = partition_findings(findings)
+
+    # Get git commit if available
+    try:
+        commit = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            stderr=subprocess.DEVNULL,
+            text=True,
+            cwd=project,
+        ).strip()
+    except Exception:
+        commit = "unknown"
+
+    # Create scan result digest
+    scan_json = json.dumps(findings, sort_keys=True, default=str)
+    digest = hashlib.sha256(scan_json.encode()).hexdigest()
+
+    statement = {
+        "_type": "https://in-toto.io/Statement/v1",
+        "subject": [{
+            "name": f"regula-scan-{args.path}",
+            "digest": {"sha256": digest},
+        }],
+        "predicateType": "https://regula.dev/attestation/scan/v1",
+        "predicate": {
+            "scanner": {
+                "name": "regula",
+                "version": VERSION,
+            },
+            "invocation": {
+                "parameters": ["check", args.path],
+                "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            },
+            "target": {
+                "repository": args.path,
+                "commit": commit,
+            },
+            "result": {
+                "findings_count": len(findings),
+                "prohibited_count": len(view["prohibited"]),
+                "high_risk_count": len(view["high_risk"]),
+                "digest": digest,
+            },
+        },
+    }
+
+    if args.sign_key:
+        key = args.sign_key.encode()
+        sig = hmac.new(
+            key, json.dumps(statement, sort_keys=True).encode(), hashlib.sha256
+        ).hexdigest()
+        statement["signatures"] = [{
+            "sig": sig,
+            "keyid": hashlib.sha256(key).hexdigest()[:16],
+        }]
+
+    output = json.dumps(statement, indent=2)
+
+    if args.output:
+        out_path = Path(args.output)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(output, encoding="utf-8")
+        print(f"Attestation written to {args.output}")
+    else:
+        print(output)
 
 
 def _build_subparsers(subparsers):
@@ -2487,6 +2727,52 @@ def _build_subparsers(subparsers):
     p_oversight.add_argument("--project", "-p", default=".", help="Project directory to analyse")
     p_oversight.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_oversight.set_defaults(func=cmd_oversight)
+
+    # --- owasp-agentic ---
+    p_owasp = subparsers.add_parser(
+        "owasp-agentic",
+        help="OWASP Top 10 for Agentic Applications assessment",
+    )
+    p_owasp.add_argument("--project", "-p", default=".", help="Project directory to assess")
+    p_owasp.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_owasp.add_argument("--strict", action="store_true", help="Exit 1 if any risk is at_risk")
+    p_owasp.set_defaults(func=cmd_owasp_agentic)
+
+    # --- guardrails ---
+    p_guardrails = subparsers.add_parser(
+        "guardrails",
+        help="Detect guardrail implementation coverage (Art 15)",
+    )
+    p_guardrails.add_argument("--project", "-p", default=".", help="Project directory to scan")
+    p_guardrails.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_guardrails.add_argument("--strict", action="store_true", help="Exit 1 if coverage < 50%%")
+    p_guardrails.set_defaults(func=cmd_guardrails)
+
+    # --- ai-codegen ---
+    p_codegen = subparsers.add_parser(
+        "ai-codegen",
+        help="AI-generated code governance scanner (Art 50/52)",
+    )
+    p_codegen.add_argument("--project", "-p", default=".", help="Project directory to scan")
+    p_codegen.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_codegen.add_argument("--no-git", action="store_true", help="Skip git log scanning")
+    p_codegen.add_argument("--strict", action="store_true",
+                           help="Exit 1 if transparency not compliant")
+    p_codegen.set_defaults(func=cmd_ai_codegen)
+
+    # --- badge ---
+    p_badge = subparsers.add_parser("badge", help="Generate compliance badge")
+    p_badge.add_argument("path", nargs="?", default=".", help="Path to scan")
+    p_badge.add_argument("--format", "-f", choices=["endpoint", "svg", "markdown"], default="endpoint")
+    p_badge.set_defaults(func=cmd_badge)
+
+    # --- attest ---
+    p_attest = subparsers.add_parser("attest", help="Generate scan attestation (in-toto v1)")
+    p_attest.add_argument("path", nargs="?", default=".", help="Path to scan")
+    p_attest.add_argument("--sign-key", help="HMAC-SHA256 signing key")
+    p_attest.add_argument("--output", "-o", help="Output file path")
+    p_attest.add_argument("--format", "-f", choices=["json"], default="json")
+    p_attest.set_defaults(func=cmd_attest)
 
 
 def main(args=None):
