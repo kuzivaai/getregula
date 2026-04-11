@@ -137,8 +137,7 @@ Each finding was manually classified as true positive or false positive by the d
 
 ### Continuous validation
 
-- 926 test assertions via custom runner
-- 740 pytest tests
+- 751 pytest tests
 - 11 CLI integration tests
 - 6 self-test assertions (`regula self-test`)
 - 10 health checks (`regula doctor`)
