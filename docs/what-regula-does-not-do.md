@@ -75,6 +75,61 @@ Specifically, Regula does not:
 5. **Replace legal advice.** The tool is developer education and
    evidence production. It is not a compliance certificate.
 
+## Where Regula's coverage is thin
+
+Three areas where Regula has commands but the coverage is honest-to-God
+shallow. We list them here so nobody overstates what these features do.
+
+### Bias evaluation (`regula bias`)
+
+The `bias` command runs CrowS-Pairs stereotype pairs against a local
+Ollama model. This is a single English-language benchmark that tests
+whether a model prefers stereotypical over anti-stereotypical sentence
+completions. It does not:
+
+- Test your actual model with your actual data
+- Measure fairness metrics (demographic parity, equalised odds, etc.)
+- Test for bias in languages other than English
+- Evaluate bias across protected characteristics specific to your jurisdiction
+- Replace the production bias testing that Article 10 data governance requires
+
+Enterprise tools (IBM watsonx.governance, Fiddler AI, Arthur AI) do
+production fairness measurement on deployed models with real data.
+Regula's bias command is a starting point, not a compliance artefact.
+
+### Documentation generation (`regula conform`, `regula docs`, `regula model-card`)
+
+These commands generate **scaffolds** — structured templates pre-filled
+with data from the scan. They are not completed documents. A scaffold
+with empty sections is not technical documentation under Annex IV.
+
+Specifically:
+- `regula conform` generates an evidence pack structure, not a conformity assessment
+- `regula docs --format model-card` generates a model card template, not a model card
+- `regula docs --format pdf` generates a formatted shell, not a legal document
+- `regula conform --organisational` generates a self-attestation questionnaire — you answer it yourself, nobody verifies your answers
+
+The human work of filling in these scaffolds with substantive content,
+reviewing them with legal counsel, and maintaining them across model
+versions is the actual compliance activity. The scaffold saves time; it
+does not replace the work.
+
+### Guardrail and oversight detection (`regula guardrails`, `regula oversight`)
+
+These commands detect the **presence** of guardrail implementations and
+human oversight patterns in code. Presence is not effectiveness.
+
+- `regula guardrails` checks whether input validation, output filtering,
+  and execution controls exist in the codebase. It does not test whether
+  they actually block adversarial inputs, filter harmful outputs, or
+  function under load.
+- `regula oversight` traces data flows to human review points. It does
+  not verify that the human review is meaningful, timely, or staffed.
+
+A codebase can pass both checks and still have ineffective guardrails
+and rubber-stamp oversight. Runtime testing (red teaming, penetration
+testing, user studies) is required to verify effectiveness.
+
 ## Positioning
 
 Regula is positioned explicitly as the **code layer of a broader AI
@@ -136,5 +191,5 @@ issue and tell us which sentence is wrong.
 
 ---
 
-*Last reviewed: 2026-04-09. Canonical version lives in the repository
+*Last reviewed: 2026-04-11. Canonical version lives in the repository
 at [docs/what-regula-does-not-do.md](https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md).*
