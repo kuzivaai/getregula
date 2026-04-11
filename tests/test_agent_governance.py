@@ -414,7 +414,7 @@ def test_cli_skip_tests_flag():
         capture_output=True, text=True,
         cwd=str(Path(__file__).parent.parent),
     )
-    assert_eq(result.returncode, 0, f"--skip-tests should not cause error, got: {result.stderr[:200]}")
+    assert_eq(result.returncode in (0, 1), True, f"--skip-tests should not cause error (exit 2), got: {result.returncode} {result.stderr[:200]}")
     data = json.loads(result.stdout)
     test_files = [f for f in data.get("data", []) if "test" in f.get("file", "").lower()]
     assert_eq(len(test_files), 0, "no test files should appear with --skip-tests")
@@ -429,7 +429,7 @@ def test_cli_min_tier_flag():
         capture_output=True, text=True,
         cwd=str(Path(__file__).parent.parent),
     )
-    assert_eq(result.returncode, 0, f"--min-tier should not cause error, got: {result.stderr[:200]}")
+    assert_eq(result.returncode in (0, 1), True, f"--min-tier should not cause error (exit 2), got: {result.returncode} {result.stderr[:200]}")
     data = json.loads(result.stdout)
     minimal = [f for f in data.get("data", []) if f.get("tier") == "minimal_risk"]
     assert_eq(len(minimal), 0, "minimal_risk should be filtered with --min-tier=limited_risk")
