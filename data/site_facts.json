@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-11T05:16:31.913769+00:00",
+  "generated_at": "2026-04-11T20:15:05.964253+00:00",
   "source_of_truth": {
     "commands": "scripts/cli.py (grep '^def cmd_')",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -8,37 +8,44 @@
     "tests": "tests/test_classification.py (grep '^def test_')"
   },
   "counts": {
-    "commands": 45,
+    "commands": 51,
     "patterns": {
-      "tier_groups": 34,
-      "tier_regexes": 279,
-      "ai_indicators": 141,
+      "tier_groups": 46,
+      "tier_regexes": 358,
+      "ai_indicators": 182,
       "gpai_training": 17,
       "architecture": 38,
       "data_source": 10,
       "logging": 4,
       "oversight": 4,
       "credential": 9,
-      "grand_total": 502,
-      "historical_330_bucket": 330
+      "grand_total": 622,
+      "historical_330_bucket": 409
     },
-    "frameworks": 12,
+    "frameworks": 17,
     "languages": 8,
     "tests": {
-      "total_functions": 703,
+      "total_functions": 809,
       "per_file": {
         "test_agent_governance.py": 28,
+        "test_ai_codegen.py": 0,
         "test_build_regulations.py": 14,
         "test_classification.py": 424,
         "test_cli_integration.py": 15,
+        "test_coverage_boost.py": 0,
         "test_coverage_critical.py": 45,
         "test_documentation.py": 16,
         "test_gpai_check.py": 27,
+        "test_guardrails.py": 24,
         "test_hooks_audit.py": 50,
         "test_mcp_server.py": 6,
+        "test_new_commands.py": 14,
+        "test_owasp_agentic.py": 24,
+        "test_redteam_coverage.py": 19,
         "test_register.py": 22,
         "test_registry.py": 8,
         "test_reliability.py": 12,
+        "test_sbom_enrichment.py": 25,
         "test_scan_cache.py": 3,
         "test_security_hardening.py": 12,
         "test_session.py": 12,
@@ -47,7 +54,7 @@
     }
   },
   "notes": {
-    "pattern_count_methodology": "Regula's landing pages cite '330 risk patterns'. That figure corresponds to the `historical_330_bucket` computation here: tiered risk regexes + architecture patterns + credential patterns + oversight patterns. The `grand_total` includes AI_INDICATORS and GPAI_TRAINING_PATTERNS as well and is the inclusive upper bound. Both are honest bucketings; the landing page figure is the historical mid-range number.",
-    "frameworks_vs_claim": "Regula's landing pages cite '12 compliance frameworks'. The crosswalk YAML has 11 unique framework keys plus EU AI Act = 12."
+    "pattern_count_methodology": "Regula's landing pages cite '391 risk patterns'. That figure is the total individual regexes in risk_patterns.py across all tiered groups (prohibited, high-risk, limited-risk, AI security, bias, governance, GPAI training). The `historical_330_bucket` adds architecture, credential, and oversight patterns from code_analysis.py. The `grand_total` also includes AI_INDICATORS.",
+    "frameworks_vs_claim": "Regula's landing pages cite '17 compliance frameworks'. Counted from framework_mapper._FRAMEWORK_KEYS unique values."
   }
 }

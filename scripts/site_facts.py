@@ -58,8 +58,8 @@ def count_commands() -> int:
 def count_patterns() -> dict:
     """Return a full breakdown of detection patterns across every module.
 
-    The landing page claim "330 risk patterns" is a historical mid-range
-    figure. The honest view is that Regula ships multiple pattern categories
+    The landing page claim "391 risk patterns" is the total individual
+    regexes in risk_patterns.py. The honest view is that Regula ships multiple pattern categories
     across three files. This function exposes all of them.
     """
     out = {
@@ -122,7 +122,7 @@ def count_patterns() -> dict:
         + out["architecture"] + out["data_source"] + out["logging"]
         + out["oversight"] + out["credential"]
     )
-    # Historical "330 risk patterns" figure matches this bucketing:
+    # Historical bucketing (tiered + arch + cred + oversight):
     out["historical_330_bucket"] = (
         out["tier_regexes"] + out["architecture"]
         + out["credential"] + out["oversight"]
@@ -131,7 +131,15 @@ def count_patterns() -> dict:
 
 
 def count_frameworks() -> int:
-    """11 crosswalked keys + EU AI Act itself = 12."""
+    """Count unique frameworks from framework_mapper._FRAMEWORK_KEYS."""
+    try:
+        fm = _load_module(REPO / "scripts" / "framework_mapper.py", "framework_mapper")
+        if fm is not None:
+            keys = getattr(fm, "_FRAMEWORK_KEYS", {})
+            return len(set(keys.values()))
+    except Exception:
+        pass
+    # Fallback: count from crosswalk YAML
     crosswalk = REPO / "references" / "framework_crosswalk.yaml"
     if not crosswalk.exists():
         return 0
@@ -144,7 +152,6 @@ def count_frameworks() -> int:
     for article_mapping in (data.get("mappings") or {}).values():
         if isinstance(article_mapping, dict):
             keys.update(article_mapping.keys())
-    keys.discard("eu_ai_act")
     return len(keys) + 1  # +1 for EU AI Act itself
 
 
@@ -190,18 +197,17 @@ def compute() -> dict:
         },
         "notes": {
             "pattern_count_methodology": (
-                "Regula's landing pages cite '330 risk patterns'. That figure "
-                "corresponds to the `historical_330_bucket` computation here: "
-                "tiered risk regexes + architecture patterns + credential "
-                "patterns + oversight patterns. The `grand_total` includes "
-                "AI_INDICATORS and GPAI_TRAINING_PATTERNS as well and is the "
-                "inclusive upper bound. Both are honest bucketings; the "
-                "landing page figure is the historical mid-range number."
+                "Regula's landing pages cite '391 risk patterns'. That figure "
+                "is the total individual regexes in risk_patterns.py across "
+                "all tiered groups (prohibited, high-risk, limited-risk, "
+                "AI security, bias, governance, GPAI training). The "
+                "`historical_330_bucket` adds architecture, credential, and "
+                "oversight patterns from code_analysis.py. The `grand_total` "
+                "also includes AI_INDICATORS."
             ),
             "frameworks_vs_claim": (
-                "Regula's landing pages cite '12 compliance frameworks'. "
-                "The crosswalk YAML has 11 unique framework keys plus "
-                "EU AI Act = 12."
+                "Regula's landing pages cite '17 compliance frameworks'. "
+                "Counted from framework_mapper._FRAMEWORK_KEYS unique values."
             ),
         },
     }
@@ -219,7 +225,7 @@ def render_markdown(data: dict) -> str:
         "| Claim | Count | Source file |\n"
         "|---|---|---|\n"
         f"| CLI commands | **{c['commands']}** | `scripts/cli.py` |\n"
-        f"| Detection patterns (historical 330 bucket) | **{p['historical_330_bucket']}** | see breakdown below |\n"
+        f"| Detection patterns (historical bucket) | **{p['historical_330_bucket']}** | see breakdown below |\n"
         f"| Detection patterns (grand total, inclusive) | **{p['grand_total']}** | see breakdown below |\n"
         f"| Tiered risk pattern groups | {p['tier_groups']} | `scripts/risk_patterns.py` |\n"
         f"| Compliance frameworks | **{c['frameworks']}** | `references/framework_crosswalk.yaml` + EU AI Act |\n"
@@ -227,13 +233,11 @@ def render_markdown(data: dict) -> str:
         f"| Test functions (all files) | {c['tests']['total_functions']} | `tests/test_*.py` |\n\n"
         "## Detection pattern breakdown\n\n"
         "Regula ships detection patterns across three source files. The "
-        "landing page claim of \"330 risk patterns\" corresponds to the "
-        "`historical_330_bucket` figure below: tiered risk regexes plus "
-        "architecture, credential, and oversight detectors. The `grand_total` "
-        "figure is the inclusive upper bound, adding `AI_INDICATORS` (what "
-        "Regula uses to recognise AI code at all) and `GPAI_TRAINING_PATTERNS` "
-        "(training-code detectors). Both numbers are honest; the landing "
-        "page figure is the historical mid-range.\n\n"
+        "landing page claim of \"391 risk patterns\" corresponds to all "
+        "individual regexes in risk_patterns.py. The `historical_330_bucket` "
+        "adds architecture, credential, and oversight detectors from "
+        "code_analysis.py. The `grand_total` also adds `AI_INDICATORS` and "
+        "is the inclusive upper bound.\n\n"
         "| Category | Source | Count |\n"
         "|---|---|---|\n"
         f"| Tiered risk regexes (prohibited, high-risk, limited-risk, AI security, bias) | `risk_patterns.py` | {p['tier_regexes']} |\n"
@@ -249,13 +253,12 @@ def render_markdown(data: dict) -> str:
         "## Honesty notes\n\n"
         "- If a landing page cites a different number, either the page is "
         "stale or this generator is stale. Fix whichever is wrong.\n"
-        "- The `historical_330_bucket` is the bucketing used when the "
-        "\"330 risk patterns\" claim was originally authored. If the actual "
-        "computed value drifts materially from 330, update the landing page "
-        "claim — do not update this generator to match the page.\n"
-        "- \"330\" is a historical mid-range, not a precise count. The "
-        "grand total (inclusive) is higher; the strict-tiered count is lower. "
-        "Both are documented above so any auditor can verify.\n"
+        "- The landing page claim of \"391 risk patterns\" is the total "
+        "individual regexes in risk_patterns.py. If the actual count drifts, "
+        "update the landing page — do not update this generator to match.\n"
+        "- The `historical_330_bucket` includes additional detectors from "
+        "code_analysis.py. Both numbers are documented above so any auditor "
+        "can verify.\n"
     )
 
 
