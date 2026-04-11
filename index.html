@@ -358,16 +358,40 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 
 <div class="sep"></div>
 
+<!-- HOW IT WORKS -->
+<div class="sec reveal" id="how">
+    <h2 class="sec-head">How it works</h2>
+    <p class="sec-sub">Three steps. No account, no API key, no data leaves your machine.</p>
+    <div class="audience-grid">
+        <div class="card-base art-card" style="text-align:center;">
+            <div class="tag tag-blue">Step 1</div>
+            <h4>Install</h4>
+            <p><code>pip install regula-ai</code><br>Stdlib-only Python. Nothing else required.</p>
+        </div>
+        <div class="card-base art-card" style="text-align:center;">
+            <div class="tag tag-blue">Step 2</div>
+            <h4>Scan</h4>
+            <p><code>regula check .</code><br>391 patterns across 8 languages. Takes seconds.</p>
+        </div>
+        <div class="card-base art-card" style="text-align:center;">
+            <div class="tag tag-blue">Step 3</div>
+            <h4>Act</h4>
+            <p><code>regula plan .</code><br>Prioritised fix list with effort estimates and article references.</p>
+        </div>
+    </div>
+</div>
+
+<div class="sep"></div>
+
 <!-- WHO IS THIS FOR -->
 <div class="sec reveal">
     <h2 class="sec-head">Who is this for?</h2>
-    <p class="sec-sub">Solo founders, small teams, and developers shipping AI products &mdash; and the businesses that use them.</p>
+    <p class="sec-sub">Developers shipping AI products &mdash; and the businesses that use them.</p>
     <div class="audience-grid">
         <div class="audience-card audience-biz">
             <div class="audience-label">If you run the business</div>
-            <h3>Your business uses AI. Do you know your legal exposure?</h3>
-            <p>Whether your team uses AI tools for research and writing, you're building products with AI, or AI makes decisions in your workflows &mdash; the EU AI Act may create obligations for your business. Prohibited AI practices carry fines up to &euro;35M &mdash; but most AI tools fall under limited or minimal risk. Run Regula to find out where you stand.</p>
-            <p>You don't need to understand the code. Send this page to your developer or technical lead. They run one command. You get a written report you can show your board, insurer, or legal team.</p>
+            <h3>Do you know your legal exposure?</h3>
+            <p>If your team builds or uses AI, the EU AI Act may apply &mdash; even outside the EU. Most tools fall under limited or minimal risk. Send this page to your developer. They run one command. You get a report for your board.</p>
             <div class="audience-fwd" onclick="copyPageUrl(this)">
                 <span class="fwd-icon">&#8599;</span>
                 <span class="fwd-txt">Copy link to send to your developer</span>
@@ -378,38 +402,58 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
             </div>
         </div>
         <div class="audience-card audience-dev">
-            <div class="audience-label">If you write the code &mdash; or ship without writing much of it</div>
-            <h3>Built something with AI and have EU users? Find out what applies.</h3>
-            <p>EU AI Act Article 2 is extraterritorial: if your app has users in the EU, the rules apply regardless of where you are based. Most chatbots and productivity tools are limited-risk &mdash; one transparency disclosure required, nothing more. Run Regula to confirm your tier and get the exact obligations.</p>
+            <div class="audience-label">If you write the code</div>
+            <h3>EU users? The AI Act applies to you.</h3>
+            <p>Article 2 is extraterritorial. Most chatbots and productivity tools are limited-risk &mdash; one transparency disclosure, nothing more. Scan to confirm.</p>
             <ul>
                 <li>Works on AI-generated code (Cursor, Lovable, Bolt, Claude Code)</li>
-                <li>Solo founders and small teams: start with <code>regula assess</code> &mdash; no code required</li>
                 <li>Generates Annex IV documentation from your actual code</li>
-                <li>CI/CD integration &middot; JSON output &middot; 17 compliance frameworks</li>
+                <li>CI/CD integration &middot; JSON &middot; SARIF &middot; 17 compliance frameworks</li>
             </ul>
-            <span class="step-cmd" style="margin-top:18px;">regula assess</span>
+            <span class="step-cmd" style="margin-top:18px;">regula check .</span>
         </div>
     </div>
 </div>
 
 <div class="sec reveal">
     <h2 class="sec-head">Beyond classification</h2>
-    <p class="sec-sub">Regula reads your code directly &mdash; not a questionnaire.</p>
+    <p class="sec-sub">Regula reads your code directly &mdash; not a questionnaire. It generates auditor-ready artefacts, not just findings.</p>
     <div class="art-grid">
         <div class="card-base art-card">
-            <div class="tag tag-blue">Compliance gaps</div>
-            <h4>What's missing from your codebase?</h4>
+            <div class="tag tag-blue">Gaps</div>
+            <h4>What's missing?</h4>
             <p>Risk management, data governance, logging, transparency, human oversight, accuracy &mdash; scored per article with effort estimates.</p>
+            <code style="font-size:11px;color:#66668a;">regula gap .</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-blue">Documentation</div>
             <h4>Can you prove compliance?</h4>
-            <p>Auto-generates Annex IV technical documentation from your actual code &mdash; functions, dependencies, and logging coverage already populated.</p>
+            <p>Annex IV technical documentation generated from your actual code. Functions, dependencies, and logging coverage pre-populated.</p>
+            <code style="font-size:11px;color:#66668a;">regula docs . &middot; regula conform .</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-purple">Security</div>
             <h4>Is your AI code secure?</h4>
-            <p>Checks for prompt injection, unsafe model loading, unvalidated AI output, hardcoded keys, and other AI-specific vulnerabilities.</p>
+            <p>Prompt injection, unsafe model loading, unvalidated AI output, hardcoded keys, and other AI-specific vulnerabilities.</p>
+            <code style="font-size:11px;color:#66668a;">regula check . &middot; regula guardrails .</code>
+        </div>
+        <div class="card-base art-card">
+            <div class="tag tag-purple">Evidence</div>
+            <h4>Conformity assessment pack</h4>
+            <p>Article 43 evidence &mdash; 26 files mapped to Articles 9&ndash;15, per-article readiness scores, SHA-256 integrity hashes.</p>
+            <code style="font-size:11px;color:#66668a;">regula conform . &middot; regula evidence-pack .</code>
+        </div>
+        <div class="card-base art-card">
+            <div class="tag tag-purple">AI BOM</div>
+            <h4>AI Bill of Materials</h4>
+            <p>CycloneDX 1.7 AI-BOMs with model provenance, GPAI tier annotations per Art 51&ndash;55, and detected training datasets.</p>
+            <code style="font-size:11px;color:#66668a;">regula sbom --ai-bom .</code>
+        </div>
+        <div class="card-base art-card">
+            <div class="tag tag-blue">Oversight</div>
+            <h4>Human review analysis</h4>
+            <p>Traces AI outputs across files. Checks whether each path to a user-facing endpoint passes through a human review gate.</p>
+            <code style="font-size:11px;color:#66668a;">regula oversight .</code>
         </div>
     </div>
     <div style="text-align:center;margin-top:48px;">
@@ -432,49 +476,47 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 
 <!-- COMMANDS -->
 <div class="sec reveal" id="commands">
-    <h2 class="sec-head">Core commands</h2>
+    <h2 class="sec-head">51 commands</h2>
     <p class="sec-sub"><code>pip install regula-ai</code>, then run any of these on your project.</p>
     <div class="cmds">
-        <div class="cm"><code>regula assess</code> <span>A few yes/no questions &mdash; no code needed &mdash; get your tier</span></div>
-        <div class="cm"><code>regula check .</code> <span>Scan your codebase and get your risk level</span></div>
-        <div class="cm"><code>regula plan .</code> <span>Get a prioritised to-do list</span></div>
-        <div class="cm"><code>regula gap .</code> <span>See what's missing per article</span></div>
-        <div class="cm"><code>regula docs .</code> <span>Generate required documentation</span></div>
+        <div class="cm"><code>regula assess</code> <span>Yes/no questions &mdash; no code needed &mdash; get your tier</span></div>
+        <div class="cm"><code>regula check .</code> <span>Scan your codebase against 391 risk patterns</span></div>
+        <div class="cm"><code>regula plan .</code> <span>Prioritised to-do list with effort estimates</span></div>
+        <div class="cm"><code>regula gap .</code> <span>Per-article compliance gap assessment</span></div>
+        <div class="cm"><code>regula docs .</code> <span>Generate Annex IV documentation</span></div>
         <div class="cm"><code>regula evidence-pack .</code> <span>Bundle everything for an auditor</span></div>
-        <div class="cm"><code>regula conform .</code> <span>Article 43 conformity assessment evidence &mdash; 26 files, article-mapped, SHA-256 hashed</span></div>
-        <div class="cm"><code>regula oversight .</code> <span>Cross-file Article 14 analysis &mdash; traces AI output to user-facing endpoints, flags missing human review</span></div>
-        <div class="cm"><code>regula sbom --ai-bom .</code> <span>AI Bill of Materials &mdash; model provenance, GPAI tier annotations, dataset detection (CycloneDX 1.7)</span></div>
-        <div class="cm"><code>regula governance</code> <span>AI governance scaffold &mdash; AI role, oversight, risk assessment, accountability</span></div>
-        <div class="cm"><code>regula model-card</code> <span>Model card scaffold &mdash; intended use, limitations, bias risks, evaluation</span></div>
+        <div class="cm"><code>regula conform .</code> <span>Article 43 conformity evidence &mdash; 26 files, SHA-256 hashed</span></div>
+        <div class="cm"><code>regula oversight .</code> <span>Article 14 human oversight analysis</span></div>
+        <div class="cm"><code>regula sbom --ai-bom .</code> <span>AI Bill of Materials (CycloneDX 1.7)</span></div>
+        <div class="cm"><code>regula owasp-agentic .</code> <span>OWASP Top 10 for Agentic Applications</span></div>
+        <div class="cm"><code>regula gpai-check .</code> <span>Map GPAI code to Code of Practice chapters</span></div>
     </div>
     <p style="font-size:12px;color:#66668a;margin-top:14px;font-family:'JetBrains Mono',monospace;">
-        51 commands &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU Cyber Resilience Act, and 12 other frameworks.
+        Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU CRA, and 12 other frameworks.
     </p>
 </div>
 
 <div class="sep"></div>
 
-<!-- BEYOND SCANNING -->
+<!-- HONESTY — WHAT REGULA DOES AND DOESN'T DO -->
 <div class="sec reveal">
-    <h2 class="sec-head">Beyond scanning &mdash; evidence you can hand to an auditor</h2>
-    <p class="sec-sub">Regula generates structured compliance artefacts from your actual code, not from questionnaires.</p>
+    <h2 class="sec-head">What Regula does not do</h2>
+    <p class="sec-sub">A compliance tool that overstates its capabilities is worse than no tool at all. Here is what Regula actually is &mdash; and isn't.</p>
     <div class="art-grid">
         <div class="card-base art-card">
-            <div class="tag tag-purple">New</div>
-            <h4>Conformity assessment evidence</h4>
-            <p><code>regula conform .</code> generates an Article 43 evidence pack &mdash; 26 files mapped to Articles 9-15, per-article readiness scores, SHA-256 integrity hashes. Clearly marks what's auto-generated vs what needs human input.</p>
+            <h4>Not legal advice</h4>
+            <p>Regula identifies risk indicators in code for developer review. It does not determine compliance. A qualified legal professional should review any classification before you act on it.</p>
         </div>
         <div class="card-base art-card">
-            <div class="tag tag-purple">New</div>
-            <h4>AI Bill of Materials</h4>
-            <p><code>regula sbom --ai-bom .</code> produces CycloneDX 1.7 AI-BOMs with model provenance extracted from your code, GPAI tier annotations per EU AI Act Art 51-55, and detected training datasets.</p>
+            <h4>Pattern matching, not understanding</h4>
+            <p>15.2% precision on open-source codebases at INFO tier. 0 false positives at BLOCK tier (the CI default). <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Published benchmark &rarr;</a></p>
         </div>
         <div class="card-base art-card">
-            <div class="tag tag-purple">New</div>
-            <h4>Human oversight analysis</h4>
-            <p><code>regula oversight .</code> traces AI model outputs across files and checks whether each path to a user-facing endpoint passes through a human review gate. Reports confidence per path and discloses what it cannot analyse.</p>
+            <h4>Scaffolds, not substance</h4>
+            <p>Annex IV docs, evidence packs, and governance frameworks are pre-filled scaffolds. A human must complete them with substantive content. Regula cannot verify that a risk management system actually operates.</p>
         </div>
     </div>
+    <p class="sec-sub" style="margin-top:24px;font-size:13px;"><a href="https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md" style="color:#8888aa;">Full limitations disclosure &rarr;</a></p>
 </div>
 
 <div class="sep"></div>
