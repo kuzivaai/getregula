@@ -2436,6 +2436,86 @@ def cmd_attest(args):
         print(output)
 
 
+def cmd_verify(args):
+    """Verify integrity of an evidence pack or conformity pack."""
+    import hashlib
+    pack_path = Path(args.pack_path).resolve()
+
+    # Accept either a directory or a manifest.json directly
+    if pack_path.is_file() and pack_path.name == "manifest.json":
+        manifest_path = pack_path
+        pack_dir = pack_path.parent
+    elif pack_path.is_dir():
+        # Look for manifest.json or 00-assessment-summary.json
+        manifest_path = pack_dir = pack_path
+        for candidate in ["manifest.json", "00-assessment-summary.json"]:
+            p = pack_path / candidate
+            if p.exists():
+                manifest_path = p
+                break
+        else:
+            print(f"No manifest.json or 00-assessment-summary.json found in {pack_path}")
+            sys.exit(1)
+    else:
+        print(f"Path not found: {pack_path}")
+        sys.exit(1)
+
+    manifest_data = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+    # Extract file list — evidence packs use "files", conform packs use "files"
+    files = manifest_data.get("files", [])
+    if not files:
+        print("No files listed in manifest.")
+        sys.exit(1)
+
+    passed = 0
+    failed = 0
+    results = []
+
+    for entry in files:
+        filename = entry.get("filename", entry.get("name", ""))
+        expected_hash = entry.get("sha256", "")
+        filepath = pack_dir / filename
+
+        if not filepath.exists():
+            results.append({"file": filename, "status": "MISSING", "expected": expected_hash})
+            failed += 1
+            continue
+
+        actual_hash = hashlib.sha256(filepath.read_bytes()).hexdigest()
+        if actual_hash == expected_hash:
+            results.append({"file": filename, "status": "OK"})
+            passed += 1
+        else:
+            results.append({
+                "file": filename, "status": "MODIFIED",
+                "expected": expected_hash, "actual": actual_hash,
+            })
+            failed += 1
+
+    if args.format == "json":
+        json_output("verify", {
+            "pack_path": str(pack_dir),
+            "total": len(files),
+            "passed": passed,
+            "failed": failed,
+            "results": results,
+        })
+    else:
+        print(f"\nVerifying: {pack_dir}")
+        print(f"{'=' * 60}")
+        for r in results:
+            icon = "\u2713" if r["status"] == "OK" else "\u2717"
+            print(f"  {icon} {r['file']} \u2014 {r['status']}")
+        print(f"{'=' * 60}")
+        print(f"  {passed}/{len(files)} files verified, {failed} issues")
+        if failed > 0:
+            print("  WARNING: Pack integrity compromised. Do not submit to auditor.")
+            sys.exit(1)
+        else:
+            print("  All files match manifest. Pack integrity confirmed.")
+
+
 def cmd_explain_article(args):
     """Explain an EU AI Act article in plain language."""
     from explain_articles import ARTICLES
@@ -2987,6 +3067,14 @@ def _build_subparsers(subparsers):
     p_explain.add_argument("article", help="Article number (e.g. 5, 14, 50)")
     p_explain.add_argument("--format", choices=["text", "json"], default="text")
     p_explain.set_defaults(func=cmd_explain_article)
+
+    p_verify = subparsers.add_parser(
+        "verify",
+        help="Verify integrity of an evidence pack or conformity pack (SHA-256 manifest check)",
+    )
+    p_verify.add_argument("pack_path", help="Path to evidence pack directory or manifest.json")
+    p_verify.add_argument("--format", choices=["text", "json"], default="text")
+    p_verify.set_defaults(func=cmd_verify)
 
 
 def _apply_env_defaults(args):
