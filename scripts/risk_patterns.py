@@ -879,6 +879,40 @@ GOVERNANCE_OBSERVATIONS = {
         "observation": None,  # Only flag ABSENCE — see check below
         "absence_observation": "No logging detected — Article 12 requires automatic recording of events for traceability.",
     },
+    "rag_pipeline": {
+        "patterns": [
+            # Vector store imports and usage
+            r"(?:chromadb|pinecone|weaviate|qdrant|pgvector|faiss|milvus)",
+            r"(?:VectorStore|vectorStore|vector_store|vector_db)",
+            r"(?:similaritySearch|similarity_search|from_documents|from_texts|addDocuments|add_documents)",
+            r"(?:asRetriever|as_retriever|getRelevantDocuments|get_relevant_documents)",
+            # Embedding calls
+            r"(?:createEmbedding|create_embedding|embedDocuments|embed_documents|embedQuery|embed_query)",
+            r"(?:text.embedding|embedding.model|embedding.dimension|OpenAIEmbeddings)",
+        ],
+        "article": "10",
+        "observation": (
+            "RAG (retrieval-augmented generation) pipeline detected — external data is injected at inference time. "
+            "Article 10 data governance requirements apply to retrieved data, not only training data. "
+            "Consider: data source provenance, freshness, access controls, and bias in the retrieval corpus."
+        ),
+    },
+    "local_inference": {
+        "patterns": [
+            r"localhost:11434",  # Ollama default
+            r"ollama\.generate\(|ollama\.chat\(",
+            r"(?:onnxruntime|onnx\.load|InferenceSession)",
+            r"llama\.cpp|llama_cpp|llamacpp",
+            r"ctransformers",
+            r"\.gguf\b|\.ggml\b",
+        ],
+        "article": "15",
+        "observation": (
+            "Local model inference detected (Ollama, ONNX, llama.cpp, or GGUF model files). "
+            "Article 15 accuracy and robustness obligations still apply to locally deployed models. "
+            "Local deployment does not exempt from conformity requirements — it changes the deployment context."
+        ),
+    },
 }
 
 # ---------------------------------------------------------------------------
