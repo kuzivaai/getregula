@@ -620,6 +620,109 @@ AI_SECURITY_PATTERNS = {
         "severity": "critical",
         "remediation": "Use environment variables or a secrets manager. Never commit API keys to source code. CRA Annex I (2)(c) requires access control.",
     },
+    # --- OWASP LLM Top 10 (2025) gap-fill patterns ---
+    "sensitive_info_disclosure": {
+        "patterns": [
+            # User PII variables flowing into LLM calls without redaction
+            r"(?:messages|prompt|content)\s*[:=][^\n]{0,300}(?:ssn|social_security|date_of_birth|passport|credit_card|phone_number|email_address)",
+            # Personal data sent to completion endpoints without a scrubbing step
+            r"(?:chat\.completions|messages\.create|llm\.invoke)\s*\([^\n]{0,500}(?:personal_data|pii|user_email|user_phone|patient_record|medical_record)",
+            # Model output returned to user without PII filtering
+            r"(?:return|response|send|render)[^\n]{0,200}(?:completion|ai_response|llm_output|model_output)[^\n]{0,200}(?!.*(?:redact|sanitiz|scrub|mask|filter_pii|pii_filter|anonymi[sz]e))",
+        ],
+        "owasp": "LLM02",
+        "description": "PII or sensitive data flows into or out of LLM without redaction — information disclosure risk",
+        "severity": "high",
+        "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    },
+    "supply_chain_model": {
+        "patterns": [
+            # trust_remote_code=True allows arbitrary code execution from Hub models
+            r"from_pretrained\s*\([^)]*trust_remote_code\s*=\s*True",
+            # Loading model from arbitrary user-supplied path
+            r"(?:from_pretrained|load_model|torch\.load)\s*\(\s*(?:user_input|request\.|args\.|sys\.argv)",
+            # pip install from untrusted URL in code
+            r"subprocess[^\n]{0,200}pip\s+install[^\n]{0,200}(?:--index-url|--extra-index-url|git\+https?://)",
+        ],
+        "owasp": "LLM03",
+        "description": "Model loaded from untrusted source or with unsafe deserialisation — supply chain attack risk",
+        "severity": "high",
+        "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+    },
+    "data_poisoning": {
+        "patterns": [
+            # Training/fine-tuning on user-submitted data without validation
+            r"(?:\.fit|\.train|fine_tune|fine_tuning)\s*\([^\n]{0,300}(?:user_input|request\.|upload|user_data|submitted)",
+            # Training data loaded from unvalidated external source
+            r"(?:training_data|train_dataset|dataset)\s*[:=][^\n]{0,200}(?:request\.|upload|user_submit|crowd_sourc)",
+            # RLHF/DPO with unvalidated human feedback
+            r"(?:rlhf|dpo|human_feedback|reward_model)\s*[:=][^\n]{0,200}(?:request\.|user_|crowd|unvalidat)",
+        ],
+        "owasp": "LLM04",
+        "description": "Model trained or fine-tuned on unvalidated user-submitted data — data poisoning risk",
+        "severity": "high",
+        "remediation": "Validate and sanitise all training data. Implement data provenance tracking, statistical anomaly detection, and human review for training corpora. OWASP LLM04:2025.",
+    },
+    "excessive_agency": {
+        "patterns": [
+            # Executing AI output as code/shell command
+            r"(?:exec|eval)\s*\(\s*(?:ai_response|llm_output|completion|model_output|agent_output|result\[?['\"]?(?:code|command|action))",
+            # subprocess/os.system running AI-generated commands
+            r"(?:subprocess\.(?:run|call|Popen)|os\.system|os\.popen)\s*\([^\n]{0,200}(?:ai_response|llm_output|completion|model_output|agent_output)",
+            # Auto-execute or auto-approve flags for agent tool use
+            r"(?:auto_execute|auto_approve|auto_confirm|allow_dangerous)\s*[:=]\s*True",
+            # Writing AI output directly to filesystem without review
+            r"(?:open\([^)]*,\s*['\"]w|write_file|save_file)\s*[^\n]{0,200}(?:ai_response|llm_output|completion|model_output|agent_output)",
+        ],
+        "owasp": "LLM06",
+        "description": "AI agent executes actions (code, shell, filesystem) without human confirmation — excessive agency risk",
+        "severity": "critical",
+        "remediation": "Require human-in-the-loop approval for all destructive or privileged actions. Implement least-privilege tool permissions and action allowlists. OWASP LLM06:2025.",
+    },
+    "system_prompt_leakage": {
+        "patterns": [
+            # System prompt in client-side JavaScript
+            r"(?:const|let|var)\s+(?:system_prompt|systemPrompt|SYSTEM_PROMPT|system_message|systemMessage)\s*=\s*['\"`]",
+            # System prompt returned in API response body
+            r"(?:response|res|jsonify|json\.dumps)\s*\([^\n]{0,200}(?:system_prompt|system_message|instructions)",
+            # System prompt stored in HTML/template
+            r"(?:data-prompt|data-system|data-instructions)\s*=\s*['\"]",
+            # System prompt logged to console/stdout
+            r"(?:print|console\.log|logger\.(?:info|debug))\s*\([^\n]{0,200}(?:system_prompt|system_message|system_instructions)",
+        ],
+        "owasp": "LLM07",
+        "description": "System prompt exposed in client code, API response, or logs — prompt leakage risk",
+        "severity": "medium",
+        "remediation": "Keep system prompts server-side only. Never return them in API responses or log them. Use prompt references/IDs instead of inline prompt text. OWASP LLM07:2025.",
+    },
+    "rag_poisoning": {
+        "patterns": [
+            # User-uploaded documents added to vector store without validation
+            r"(?:add_documents|add_texts|upsert|insert)\s*\([^\n]{0,300}(?:user_upload|request\.files|uploaded_file|user_document|request\.body)",
+            # Embedding user content without sanitisation
+            r"(?:embed|embed_documents|embed_query|get_embedding)\s*\([^\n]{0,200}(?:user_input|request\.|upload|untrusted)",
+            # Unauthenticated vector store write endpoint
+            r"@(?:app|router)\.(?:post|put)\s*\([^\n]{0,200}(?:embed|ingest|index|vector)[^\n]{0,500}(?!.*(?:auth|login_required|Depends|require_auth|verify_token|api_key))",
+        ],
+        "owasp": "LLM08",
+        "description": "Untrusted content ingested into vector store without validation — RAG poisoning risk",
+        "severity": "high",
+        "remediation": "Validate and sanitise all documents before embedding. Implement access controls on vector store write endpoints. Use content filtering and metadata provenance tracking. OWASP LLM08:2025.",
+    },
+    "no_grounding": {
+        "patterns": [
+            # LLM output used for factual claims without retrieval or verification
+            r"(?:fact|answer|knowledge|information)\s*[:=]\s*(?:completion|ai_response|llm_output|model_output|response\.choices)",
+            # Medical/legal/financial advice from LLM without grounding
+            r"(?:diagnosis|legal_advice|financial_advice|medical_recommendation|treatment_plan)\s*[:=][^\n]{0,200}(?:completion|ai_response|llm_output|chat\.completions|messages\.create)",
+            # No citation or source requirement in prompt for factual task
+            r"(?:messages|prompt)\s*[:=][^\n]{0,500}(?:provide facts|answer accurately|give information|tell me about)(?!.*(?:cite|source|reference|ground|retriev|verify|fact.?check))",
+        ],
+        "owasp": "LLM09",
+        "description": "LLM output used as factual information without grounding or verification — misinformation risk",
+        "severity": "medium",
+        "remediation": "Implement retrieval-augmented generation (RAG) for factual tasks. Require citations and source attribution. Add fact-checking or grounding verification before presenting LLM output as fact. OWASP LLM09:2025.",
+    },
 }
 
 AI_INDICATORS = {
@@ -642,12 +745,39 @@ AI_INDICATORS = {
                   r"@mastra",
                   r"cohere",
                   r"vllm",
-                  r"fireworks"],
+                  r"fireworks",
+                  # Agent frameworks
+                  r"autogpt", r"babygpt", r"baby.?agi", r"metagpt",
+                  r"memgpt", r"letta",
+                  r"guidance", r"import\s+guidance",
+                  r"marvin", r"import\s+marvin",
+                  r"semantic.?router",
+                  r"portkey.?ai", r"portkey",
+                  # Spring AI (Java)
+                  r"org\.springframework\.ai",
+                  # Edge / Mobile AI
+                  r"tflite", r"tf\.lite", r"tensorflow.?lite",
+                  r"coremltools", r"\.mlmodel",
+                  r"mediapipe",
+                  r"com\.google\.mlkit", r"mlkit",
+                  r"executorch",
+                  # MLOps / Data
+                  r"mlflow",
+                  r"wandb", r"weights.?and.?biases",
+                  r"dvc\.yaml",
+                  r"import\s+ray", r"ray\.serve",
+                  r"bentoml",
+                  # Generative / Media AI
+                  r"from\s+diffusers\s+import", r"diffusers",
+                  r"elevenlabs", r"ELEVEN_API_KEY",
+                  r"import\s+whisper", r"openai\.audio",
+                  r"from\s+bark\s+import", r"from\s+TTS\s+import", r"coqui"],
     "model_files": [r"\.onnx", r"\.pt\b", r"\.pth\b", r"\.pkl\b", r"\.joblib\b",
                     r"\.h5\b", r"\.hdf5\b", r"\.safetensors", r"\.gguf\b", r"\.ggml\b"],
     "api_endpoints": [r"api\.openai\.com", r"api\.anthropic\.com",
                       r"generativelanguage\.googleapis\.com",
-                      r"api\.cohere\.ai", r"api\.mistral\.ai"],
+                      r"api\.cohere\.ai", r"api\.mistral\.ai",
+                      r"openrouter\.ai", r"OPENROUTER_API_KEY"],
     "ml_patterns": [r"model\.fit", r"model\.train", r"model\.predict", r"embedding",
                     r"vectorstore", r"llm\.invoke", r"chat\.completions",
                     r"messages\.create", r"from_pretrained", r"fine.?tune",

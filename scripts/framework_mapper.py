@@ -64,6 +64,17 @@ _FRAMEWORK_KEYS = {
     "ico-ai-guidance": "ico_ai",
     "ico": "ico_ai",
     "uk-ico": "ico_ai",
+    "colorado-sb205": "colorado_sb205",
+    "colorado": "colorado_sb205",
+    "aida": "canada_aida",
+    "canada-aida": "canada_aida",
+    "singapore-ai": "singapore_ai",
+    "singapore": "singapore_ai",
+    "feat": "singapore_ai",
+    "oecd-ai": "oecd_ai",
+    "oecd": "oecd_ai",
+    "south-korea-ai": "south_korea_ai",
+    "korea-ai": "south_korea_ai",
 }
 
 
@@ -214,6 +225,50 @@ def format_mapping_text(mapping: dict) -> str:
                 lines.append(f"    • {principle}")
             if ico.get("notes"):
                 lines.append(f"    Note: {ico['notes']}")
+
+        colorado = frameworks.get("colorado_sb205", {})
+        if colorado:
+            status = colorado.get("status", "Effective 1 February 2026")
+            lines.append(f"  Colorado SB 205 — {status}")
+            for req in colorado.get("requirements", []):
+                lines.append(f"    • {req}")
+            if colorado.get("notes"):
+                lines.append(f"    Note: {colorado['notes']}")
+
+        aida = frameworks.get("canada_aida", {})
+        if aida:
+            status = aida.get("status", "Proposed")
+            lines.append(f"  Canada AIDA — {status}")
+            for req in aida.get("requirements", []):
+                lines.append(f"    • {req}")
+            if aida.get("notes"):
+                lines.append(f"    Note: {aida['notes']}")
+
+        sg = frameworks.get("singapore_ai", {})
+        if sg:
+            source = sg.get("source", "Singapore Model AI Governance Framework 2.0 + FEAT Principles")
+            lines.append(f"  {source}")
+            for principle in sg.get("principles", []):
+                lines.append(f"    • {principle}")
+            if sg.get("notes"):
+                lines.append(f"    Note: {sg['notes']}")
+
+        oecd = frameworks.get("oecd_ai", {})
+        if oecd:
+            lines.append("  OECD AI Principles (2024 update)")
+            for principle in oecd.get("principles", []):
+                lines.append(f"    • {principle}")
+            if oecd.get("notes"):
+                lines.append(f"    Note: {oecd['notes']}")
+
+        korea = frameworks.get("south_korea_ai", {})
+        if korea:
+            status = korea.get("status", "In force 22 January 2026")
+            lines.append(f"  South Korea AI Basic Act — {status}")
+            for req in korea.get("requirements", []):
+                lines.append(f"    • {req}")
+            if korea.get("notes"):
+                lines.append(f"    Note: {korea['notes']}")
 
         lines.append("")
 
