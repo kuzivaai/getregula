@@ -5,6 +5,12 @@ All notable changes to Regula are documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/).
 
+## v1.7.0 (unreleased)
+
+### Added
+- `regula governance` — generates AI governance scaffold from scan findings (Article 4, ISO 42001 Clause 5.2, NIST AI RMF GOVERN)
+- `regula model-card` — generates model card scaffold from scan findings (Annex IV, ISO 42001 Annex B)
+
 ## [Unreleased]
 
 The "public-launch readiness" bundle. Adds two new CLI commands

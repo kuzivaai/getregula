@@ -261,7 +261,7 @@ Reproduce with `python3 benchmarks/label.py score` (OSS labels) and `python3 ben
 
 ## CLI Usage
 
-Regula has 43 CLI commands. The full reference (with examples for each) lives in [`docs/cli-reference.md`](docs/cli-reference.md). Top-level summary:
+Regula has 45 CLI commands. The full reference (with examples for each) lives in [`docs/cli-reference.md`](docs/cli-reference.md). Top-level summary:
 
 ```bash
 regula --help                              # list all subcommands
@@ -275,6 +275,8 @@ regula conform                             # generate Annex IV evidence pack
 regula register                            # generate Annex VIII Section A/B/C packet (Article 49)
 regula sbom --ai-bom                       # AI Bill of Materials (CycloneDX)
 regula report --format html                # HTML report
+regula governance                          # AI governance scaffold
+regula model-card                          # model card scaffold
 regula doctor                              # health checks
 regula self-test                           # built-in correctness assertions
 regula timeline                            # EU AI Act enforcement dates
@@ -352,7 +354,7 @@ For full YAML support, install pyyaml: `pip install pyyaml`. Without it, a minim
 pytest tests/ -q
 ```
 
-699 test functions (751 collected by pytest, counted by `python3 scripts/site_facts.py`) covering:
+703 test functions (755 collected by pytest, counted by `python3 scripts/site_facts.py`) covering:
 - AI detection (libraries, model files, API endpoints, ML patterns)
 - All 8 prohibited practices
 - All 8 Annex III high-risk areas + 2 Annex I categories (medical devices, safety components)
@@ -389,7 +391,7 @@ pytest tests/ -q
 
 - **v1.2:** ~~Production readiness~~ — shipped 2026-03-28. Agent autonomy detection, `--skip-tests`, `--min-tier`, bias testing (`regula bias`, CrowS-Pairs), 8-framework mapping. (Test count at that release — see CHANGELOG.)
 - **v1.3:** GPAI Code of Practice chapter-level obligation mapping (`regula gpai-check`, three chapters: Transparency / Copyright / Safety & Security) — **shipped**. Colorado AI Act + South Korea AI Basic Act Tier-3 pages — **shipped**. Harmonised-standards plumbing ready for Q4 2026 CEN-CENELEC publication — **shipped (stub)**. Prompt-injection detector (OWASP LLM01:2025 — direct, indirect, and tool-output vectors) — **shipped**. Article 6(3) self-assessment decision tree (`regula exempt`, with the missed-Commission-deadline disclosure surfaced in `regula gap`) — **shipped**. SME-simplified Annex IV under Article 11(1) (`regula conform --sme`) — **shipped (interim format pending Commission template)**. JS/TS tree-sitter data-flow tracing with destination classification (log / api_response / human_review / persisted / display / automated_action) — **shipped** in `scripts/ast_engine.py`. On the backlog for a future release: AVID vulnerability database mapping for finding metadata, typosquatting detection for AI-library dependencies.
-- **Not planned yet:** DPO dashboard, Slack/Teams alerting, model card generation. These require validation that there are users who want them first.
+- **Not planned yet:** DPO dashboard, Slack/Teams alerting. These require validation that there are users who want them first.
 
 ## Trust, security, and how to verify
 

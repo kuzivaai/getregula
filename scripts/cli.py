@@ -1650,6 +1650,52 @@ def cmd_conform(args):
         print(f"Start with: {pack_path}/00-assessment-summary.json")
 
 
+def cmd_governance(args):
+    """Generate AI governance scaffold."""
+    from generate_documentation import scan_project, generate_ai_governance
+
+    if args.project != ".":
+        _validate_path(args.project)
+    project_path = str(Path(args.project).resolve())
+    project_name = args.name or Path(project_path).name
+
+    print(f"Scanning {project_path}...", file=sys.stderr)
+    findings = scan_project(project_path)
+
+    doc = generate_ai_governance(findings, project_name, project_path)
+
+    output = Path(args.output)
+    output.write_text(doc, encoding="utf-8")
+    print(f"AI governance scaffold written to: {output}")
+    print("IMPORTANT: This document requires human review and completion.")
+
+    if getattr(args, "format", "text") == "json":
+        json_output("governance", {"output_file": str(output), "project": project_name})
+
+
+def cmd_model_card(args):
+    """Generate model card scaffold."""
+    from generate_documentation import scan_project, generate_model_card
+
+    if args.project != ".":
+        _validate_path(args.project)
+    project_path = str(Path(args.project).resolve())
+    project_name = args.name or Path(project_path).name
+
+    print(f"Scanning {project_path}...", file=sys.stderr)
+    findings = scan_project(project_path)
+
+    doc = generate_model_card(findings, project_name, project_path)
+
+    output = Path(args.output)
+    output.write_text(doc, encoding="utf-8")
+    print(f"Model card scaffold written to: {output}")
+    print("IMPORTANT: This document requires human review before publication.")
+
+    if getattr(args, "format", "text") == "json":
+        json_output("model-card", {"output_file": str(output), "project": project_name})
+
+
 def cmd_benchmark(args):
     """Run real-world validation benchmark."""
     from benchmark import benchmark_project, benchmark_suite, calculate_metrics, load_labelled_results
@@ -2249,6 +2295,22 @@ def _build_subparsers(subparsers):
                                 "NOT a compliance certificate.")
     p_conform.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_conform.set_defaults(func=cmd_conform)
+
+    # --- governance ---
+    p_governance = subparsers.add_parser("governance", help="Generate AI governance scaffold (Article 4, ISO 42001)")
+    p_governance.add_argument("--project", "-p", default=".")
+    p_governance.add_argument("--output", "-o", default="AI_GOVERNANCE.md")
+    p_governance.add_argument("--name", "-n", help="Project name")
+    p_governance.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_governance.set_defaults(func=cmd_governance)
+
+    # --- model-card ---
+    p_model_card = subparsers.add_parser("model-card", help="Generate model card scaffold (Annex IV, ISO 42001 Annex B)")
+    p_model_card.add_argument("--project", "-p", default=".")
+    p_model_card.add_argument("--output", "-o", default="MODEL_CARD.md")
+    p_model_card.add_argument("--name", "-n", help="Project name")
+    p_model_card.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_model_card.set_defaults(func=cmd_model_card)
 
     # --- benchmark ---
     p_bench = subparsers.add_parser("benchmark", help="Real-world validation benchmark")

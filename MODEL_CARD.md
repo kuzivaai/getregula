@@ -1,6 +1,6 @@
 # Model Card — Regula Detection Engine
 
-Regula's detection engine is a static analysis system that classifies source code against EU AI Act risk tiers. This document treats it as an AI system and documents its capabilities, limitations, and biases.
+Regula's detection engine is a static analysis system that classifies source code against EU AI Act risk tiers. This document treats it as an AI system and documents its capabilities, limitations, and biases. To generate a model card scaffold for your own project, run `regula model-card --project /path/to/project`.
 
 ---
 

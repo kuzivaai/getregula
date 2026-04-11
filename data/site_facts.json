@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-10T18:14:25.940406+00:00",
+  "generated_at": "2026-04-11T05:16:31.913769+00:00",
   "source_of_truth": {
     "commands": "scripts/cli.py (grep '^def cmd_')",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -8,7 +8,7 @@
     "tests": "tests/test_classification.py (grep '^def test_')"
   },
   "counts": {
-    "commands": 43,
+    "commands": 45,
     "patterns": {
       "tier_groups": 34,
       "tier_regexes": 279,
@@ -25,11 +25,12 @@
     "frameworks": 12,
     "languages": 8,
     "tests": {
-      "total_functions": 688,
+      "total_functions": 703,
       "per_file": {
         "test_agent_governance.py": 28,
         "test_build_regulations.py": 14,
         "test_classification.py": 424,
+        "test_cli_integration.py": 15,
         "test_coverage_critical.py": 45,
         "test_documentation.py": 16,
         "test_gpai_check.py": 27,
