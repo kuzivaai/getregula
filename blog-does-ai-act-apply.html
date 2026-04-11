@@ -120,6 +120,107 @@
     <link rel="stylesheet" href="assets/site.css">
 
     <style>
+        /* ===== BLOG-SPECIFIC STYLES ===== */
+        .blog-hero {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 64px var(--s7) 40px;
+        }
+        .blog-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--s4);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-faint);
+            margin-bottom: var(--s6);
+            flex-wrap: wrap;
+        }
+        .blog-meta .dot { color: var(--text-faint); }
+        .blog-hero h1 {
+            font-family: var(--font-serif);
+            font-size: 44px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.12;
+            letter-spacing: -0.03em;
+            margin-bottom: var(--s5);
+        }
+        .blog-hero .standfirst {
+            font-size: 17px;
+            color: var(--text-2);
+            line-height: 1.7;
+        }
+
+        .blog-body {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 var(--s7) var(--s10);
+        }
+        .blog-body h2 {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text);
+            margin: var(--s10) 0 var(--s5);
+            letter-spacing: -0.02em;
+        }
+        .blog-body h3 {
+            font-family: var(--font-body);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            margin: var(--s7) 0 var(--s3);
+        }
+        .blog-body p {
+            font-size: 16px;
+            color: var(--text-2);
+            line-height: 1.75;
+            margin-bottom: var(--s5);
+        }
+        .blog-body p strong { color: var(--text); font-weight: 600; }
+        .blog-body a { color: var(--accent); }
+        .blog-body a:hover { color: var(--accent-hover); }
+        .blog-body ul, .blog-body ol {
+            margin: 0 0 var(--s5) var(--s6);
+            font-size: 16px;
+            color: var(--text-2);
+            line-height: 1.75;
+        }
+        .blog-body li { margin-bottom: var(--s2); }
+        .blog-body code {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            background: var(--accent-soft);
+            color: var(--cyan);
+            padding: 2px 7px;
+            border-radius: var(--r-sm);
+        }
+        .blog-body blockquote {
+            border-left: 3px solid var(--accent);
+            margin: var(--s6) 0;
+            padding: var(--s4) var(--s6);
+            background: var(--accent-soft);
+            border-radius: 0 var(--r-md) var(--r-md) 0;
+        }
+        .blog-body blockquote p {
+            color: var(--text-2);
+            margin-bottom: 0;
+            font-size: 15px;
+        }
+
+        /* Blog separator */
+        .blog-sep {
+            max-width: 760px;
+            margin: 0 auto;
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 600px) {
+            .blog-hero h1 { font-size: 32px; }
+            .blog-body h2 { font-size: 24px; }
+        }
+
         /* Page-specific: Decision tree */
         .decision-tree {
             background: var(--bg-elev);
@@ -186,27 +287,33 @@
         <a href="https://github.com/kuzivaai/getregula" target="_blank" rel="noopener">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md" target="_blank" rel="noopener">Docs</a>
         <a href="/regulations.html">Regulations</a>
-        <a href="/writing.html">Blog</a>
+        <span class="active">Blog</span>
         <a href="/">EN</a>
         <a href="/de.html">DE</a>
         <a href="/pt-br.html">BR</a>
     </dialog>
 </nav>
 
-<header class="post-hero">
-    <div class="breadcrumb">
+<main id="main">
+
+<article>
+
+<div class="blog-hero">
+    <div class="breadcrumb" style="font-family:var(--font-mono);font-size:11px;color:var(--text-faint);margin-bottom:20px;">
         <a href="/">Regula</a> / <a href="/writing.html">Blog</a> / EU AI Act Applicability
     </div>
-    <div class="post-meta">
+    <div class="blog-meta">
         <span>10 April 2026</span>
-        <span class="dot"></span>
+        <span class="dot">&middot;</span>
         <span>6 min read</span>
     </div>
     <h1>Does the EU AI Act <span class="hl">apply</span> to your AI app?</h1>
-    <p class="lede">The question every developer building with OpenAI, Anthropic, or any AI API is asking. The answer is almost certainly yes if you have EU users &mdash; and the regulation does not care where your company is incorporated. Here is how to work it out, with every claim traced to a specific Article.</p>
-</header>
+    <p class="standfirst">The question every developer building with OpenAI, Anthropic, or any AI API is asking. The answer is almost certainly yes if you have EU users &mdash; and the regulation does not care where your company is incorporated. Here is how to work it out, with every claim traced to a specific Article.</p>
+</div>
 
-<main id="main" class="content">
+<div class="blog-sep"></div>
+
+<div class="blog-body">
 
     <!-- Section 1: The short answer -->
     <section id="short-answer">
@@ -438,36 +545,27 @@
         <p><strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. The EU AI Act requires contextual assessment that no automated tool can fully provide. For high-risk systems, consult a qualified legal professional. All Article references are to Regulation (EU) 2024/1689 as published in the Official Journal of the European Union on 12 July 2024.</p>
     </div>
 
+</div>
+
+</article>
+
 </main>
 
 <footer>
-    <div class="foot">
-        <div class="foot-inner">
-            <div class="foot-left">
-                <div class="foot-brand">Regula</div>
-                <div class="foot-links">
-                    <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-                    <a href="https://pypi.org/project/regula-ai/">PyPI</a>
-                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">Trust pack</a>
-                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md">Benchmarks</a>
-                    <a href="https://github.com/kuzivaai/getregula/blob/main/SECURITY.md">Security</a>
-                    <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contributing</a>
-                    <a href="mailto:support@getregula.com">support@getregula.com</a>
-                </div>
-                <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula &middot; <a href="mailto:support@getregula.com" style="color:#66668a;">support@getregula.com</a></div>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="writing.html">Blog</a>
+                <a href="regulations.html">Regulations</a>
             </div>
-            <div class="foot-middle">
-                <div class="foot-col-head">Reading</div>
-                <div class="foot-col-links">
-                    <a href="south-africa-ai-policy.html">South Africa draft AI policy <span class="muted">Cabinet approved 2 Apr 2026</span></a>
-                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/landscape.md">AICDI corporate AI governance gaps <span class="muted">UNESCO &middot; TRF report mapping</span></a>
-                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/article-state-of-ai-compliance.md">State of AI compliance in OSS <span class="muted">5 Python AI libraries analysed</span></a>
-                </div>
-            </div>
-            <div class="foot-right">
-                <div class="foot-legal">
-                    <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions.
-                </div>
+            <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
             </div>
         </div>
     </div>
