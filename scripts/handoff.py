@@ -267,11 +267,15 @@ def run_handoff(tool: str, project_path: Path,
 
     target = Path(out_path) if out_path else default_out
     target.write_text(content, encoding="utf-8")
+
+    coverage = calculate_coverage_score(entrypoints, tool)
+
     return {
         "tool": tool,
         "config_path": str(target),
         "entrypoint_count": len(entrypoints),
         "entrypoints": entrypoints,
+        "coverage": coverage,
         "note": (
             f"Wrote {tool} config to {target}. Review it, replace "
             "REPLACE_ME placeholders, then run the target tool directly. "
@@ -282,9 +286,297 @@ def run_handoff(tool: str, project_path: Path,
     }
 
 
+# ---------------------------------------------------------------------------
+# OWASP LLM Top 10 (2025) coverage matrix
+# ---------------------------------------------------------------------------
+
+OWASP_LLM_TOP_10 = [
+    {"id": "LLM01", "name": "Prompt Injection"},
+    {"id": "LLM02", "name": "Insecure Output Handling"},
+    {"id": "LLM03", "name": "Training Data Poisoning"},
+    {"id": "LLM04", "name": "Model Denial of Service"},
+    {"id": "LLM05", "name": "Supply Chain Vulnerabilities"},
+    {"id": "LLM06", "name": "Sensitive Information Disclosure"},
+    {"id": "LLM07", "name": "Insecure Plugin Design"},
+    {"id": "LLM08", "name": "Excessive Agency"},
+    {"id": "LLM09", "name": "Overreliance"},
+    {"id": "LLM10", "name": "Model Theft"},
+]
+
+# Maps tool -> { risk_id -> list of probes/scans that cover it }
+COVERAGE_MATRIX: dict[str, dict[str, list[str]]] = {
+    "garak": {
+        "LLM01": ["promptinject", "dan", "encoding"],
+        "LLM02": ["malwaregen", "continuation"],
+        "LLM04": ["encoding"],
+        "LLM06": ["lmrc.Bullying", "realtoxicityprompts"],
+        "LLM08": ["malwaregen", "continuation"],
+        "LLM09": ["lmrc.Anthropomorphisation", "realtoxicityprompts"],
+    },
+    "giskard": {
+        "LLM01": ["robustness"],
+        "LLM02": ["harmful_content"],
+        "LLM03": ["robustness", "performance"],
+        "LLM06": ["information_disclosure"],
+        "LLM09": ["hallucination", "stereotypes"],
+    },
+    "promptfoo": {
+        "LLM01": ["llm-rubric:system-prompt-leak", "not-contains:DAN"],
+        "LLM02": ["llm-rubric:toxic-output"],
+        "LLM06": ["llm-rubric:system-prompt-leak"],
+        "LLM09": ["llm-rubric:toxic-output"],
+    },
+    "deepteam": {
+        "LLM01": ["prompt_injection", "jailbreak"],
+        "LLM02": ["toxicity", "bias"],
+        "LLM03": ["data_poisoning"],
+        "LLM06": ["pii_leakage"],
+        "LLM08": ["excessive_agency"],
+        "LLM09": ["hallucination", "faithfulness"],
+    },
+    "pyrit": {
+        "LLM01": ["prompt_injection_attack", "jailbreak_attack"],
+        "LLM02": ["harmful_content_generation"],
+        "LLM04": ["resource_exhaustion"],
+        "LLM06": ["information_extraction", "pii_extraction"],
+        "LLM07": ["plugin_exploitation"],
+        "LLM08": ["excessive_agency_test"],
+        "LLM10": ["model_exfiltration"],
+    },
+}
+
+# Recommendations for each uncovered risk, keyed by tool
+_RECOMMENDATIONS: dict[str, dict[str, str]] = {
+    "garak": {
+        "LLM03": "Add 'training_data_poisoning' probe via a custom Garak plugin",
+        "LLM05": "Add supply-chain checks with 'packagehallucination' probe",
+        "LLM07": "Add plugin-security probes via custom Garak detector",
+        "LLM10": "Add model-extraction probes (e.g., 'knowledgebase' probe family)",
+    },
+    "giskard": {
+        "LLM04": "Add resource-exhaustion scans with long-input stress tests",
+        "LLM05": "Supply-chain risks are outside Giskard's scope; use Garak or PyRIT",
+        "LLM07": "Plugin security is outside Giskard's scope; use PyRIT",
+        "LLM08": "Add agency-boundary tests with custom Giskard scan",
+        "LLM10": "Model theft is outside Giskard's scope; use PyRIT",
+    },
+    "promptfoo": {
+        "LLM03": "Add data-poisoning regression tests to your promptfoo suite",
+        "LLM04": "Add long-input DoS assertions (e.g., max-token-limit tests)",
+        "LLM05": "Supply-chain risks require static analysis; use Regula scan",
+        "LLM07": "Add plugin-input-validation assertions to promptfoo tests",
+        "LLM08": "Add agency-boundary assertions (e.g., 'does not execute code')",
+        "LLM10": "Model theft requires infra-level controls; outside promptfoo scope",
+    },
+    "deepteam": {
+        "LLM04": "Add resource-exhaustion tests with long-input payloads",
+        "LLM05": "Supply-chain risks require static analysis; use Regula scan",
+        "LLM07": "Add plugin-security test cases to your DeepTeam suite",
+        "LLM10": "Model theft requires infra-level controls; outside DeepTeam scope",
+    },
+    "pyrit": {
+        "LLM03": "Add data-poisoning scenarios to your PyRIT attack suite",
+        "LLM05": "Supply-chain risks require static analysis; use Regula scan",
+        "LLM09": "Add hallucination/faithfulness checks to your PyRIT suite",
+    },
+}
+
+# Fallback recommendation for any risk not in tool-specific recommendations
+_DEFAULT_RECOMMENDATIONS: dict[str, str] = {
+    "LLM01": "Add prompt-injection probes to your red-team config",
+    "LLM02": "Add output-validation probes to your red-team config",
+    "LLM03": "Add training-data-poisoning checks (e.g., data provenance audit)",
+    "LLM04": "Add denial-of-service probes (long inputs, resource exhaustion)",
+    "LLM05": "Add supply-chain verification (dependency scanning, model provenance)",
+    "LLM06": "Add information-disclosure probes (PII leakage, system prompt extraction)",
+    "LLM07": "Add plugin-security probes (input validation, scope boundaries)",
+    "LLM08": "Add excessive-agency probes (action boundaries, confirmation gates)",
+    "LLM09": "Add overreliance probes (hallucination, faithfulness checks)",
+    "LLM10": "Add model-theft probes (extraction attacks, API abuse detection)",
+}
+
+
+def calculate_coverage_score(
+    entrypoints: list[dict[str, Any]] | list[str],
+    tool: str,
+    probes: list[str] | None = None,
+) -> dict[str, Any]:
+    """Calculate red-team coverage against OWASP LLM Top 10.
+
+    Args:
+        entrypoints: List of detected LLM entrypoints (dicts or strings).
+        tool: Red-team tool name (garak, giskard, promptfoo, deepteam, pyrit).
+        probes: Optional list of specific probes/scans to evaluate.
+            If None, uses the full default probe set for the tool.
+
+    Returns:
+        Dictionary with coverage_score (0-100), risks_covered,
+        risks_uncovered, entrypoint_coverage, and recommendations.
+    """
+    tool_lower = tool.lower()
+    matrix = COVERAGE_MATRIX.get(tool_lower)
+
+    if matrix is None:
+        return {
+            "tool": tool,
+            "coverage_score": 0,
+            "risks_covered": [],
+            "risks_uncovered": [
+                {
+                    "id": r["id"],
+                    "name": r["name"],
+                    "recommendation": _DEFAULT_RECOMMENDATIONS.get(r["id"], ""),
+                }
+                for r in OWASP_LLM_TOP_10
+            ],
+            "entrypoint_coverage": {"covered": 0, "total": len(entrypoints)},
+            "recommendations": [
+                f"Unknown tool {tool!r}. Supported: garak, giskard, promptfoo, deepteam, pyrit.",
+            ],
+        }
+
+    # If specific probes given, filter the matrix to only matching probes
+    if probes is not None:
+        probe_set = set(probes)
+        filtered: dict[str, list[str]] = {}
+        for risk_id, risk_probes in matrix.items():
+            matching = [p for p in risk_probes if p in probe_set]
+            if matching:
+                filtered[risk_id] = matching
+        effective_matrix = filtered
+    else:
+        effective_matrix = matrix
+
+    risks_covered: list[dict[str, Any]] = []
+    risks_uncovered: list[dict[str, Any]] = []
+    tool_recs = _RECOMMENDATIONS.get(tool_lower, {})
+
+    for risk in OWASP_LLM_TOP_10:
+        rid = risk["id"]
+        if rid in effective_matrix:
+            risks_covered.append({
+                "id": rid,
+                "name": risk["name"],
+                "probes": effective_matrix[rid],
+            })
+        else:
+            rec = tool_recs.get(rid, _DEFAULT_RECOMMENDATIONS.get(rid, ""))
+            risks_uncovered.append({
+                "id": rid,
+                "name": risk["name"],
+                "recommendation": rec,
+            })
+
+    total_risks = len(OWASP_LLM_TOP_10)
+    covered_count = len(risks_covered)
+    score = round(covered_count * 100 / total_risks) if total_risks else 0
+
+    # Entrypoint coverage: how many entrypoints are scoped into the config
+    # For now, all detected entrypoints are scoped (the handoff config
+    # includes all of them). This could be refined if users exclude some.
+    ep_total = len(entrypoints)
+    ep_covered = ep_total  # handoff scopes all detected entrypoints
+
+    recommendations: list[str] = []
+    if risks_uncovered:
+        recommendations.append(
+            f"To improve coverage, address these {len(risks_uncovered)} "
+            f"uncovered OWASP LLM risks:"
+        )
+        for ru in risks_uncovered:
+            if ru["recommendation"]:
+                recommendations.append(f"  - {ru['id']} ({ru['name']}): {ru['recommendation']}")
+
+    return {
+        "tool": tool,
+        "coverage_score": score,
+        "risks_covered": risks_covered,
+        "risks_uncovered": risks_uncovered,
+        "entrypoint_coverage": {"covered": ep_covered, "total": ep_total},
+        "recommendations": recommendations,
+    }
+
+
+def format_coverage_text(result: dict[str, Any]) -> str:
+    """Format coverage result as coloured terminal output.
+
+    Uses ANSI codes for traffic-light colouring:
+      >=80% green, 50-79% yellow, <50% red.
+    """
+    score = result.get("coverage_score", 0)
+    tool = result.get("tool", "unknown")
+    covered = result.get("risks_covered", [])
+    uncovered = result.get("risks_uncovered", [])
+    ep = result.get("entrypoint_coverage", {})
+    recommendations = result.get("recommendations", [])
+
+    # ANSI colours
+    GREEN = "\033[32m"
+    YELLOW = "\033[33m"
+    RED = "\033[31m"
+    BOLD = "\033[1m"
+    RESET = "\033[0m"
+    CHECK = "\033[32m\u2714\033[0m"  # green checkmark
+    CROSS = "\033[31m\u2718\033[0m"  # red X
+
+    if score >= 80:
+        score_colour = GREEN
+    elif score >= 50:
+        score_colour = YELLOW
+    else:
+        score_colour = RED
+
+    lines: list[str] = []
+
+    # Header — the "aha moment"
+    total = len(covered) + len(uncovered)
+    lines.append("")
+    lines.append(
+        f"  {BOLD}{score_colour}Red-Team Coverage: {score}% "
+        f"({len(covered)}/{total} OWASP LLM risks){RESET}"
+    )
+    lines.append(f"  Tool: {tool}")
+    if ep.get("total", 0) > 0:
+        lines.append(
+            f"  Entrypoints scoped: {ep.get('covered', 0)}/{ep['total']}"
+        )
+    lines.append("")
+
+    # Covered risks
+    if covered:
+        lines.append(f"  {BOLD}Covered risks:{RESET}")
+        for r in covered:
+            probes_str = ", ".join(r.get("probes", []))
+            lines.append(f"    {CHECK} {r['id']} {r['name']}  [{probes_str}]")
+        lines.append("")
+
+    # Uncovered risks
+    if uncovered:
+        lines.append(f"  {BOLD}Uncovered risks:{RESET}")
+        for r in uncovered:
+            rec = r.get("recommendation", "")
+            lines.append(f"    {CROSS} {r['id']} {r['name']}")
+            if rec:
+                lines.append(f"        {rec}")
+        lines.append("")
+
+    # Actionable recommendations
+    if recommendations:
+        lines.append(f"  {BOLD}Recommendations:{RESET}")
+        for rec in recommendations:
+            lines.append(f"    {rec}")
+        lines.append("")
+
+    return "\n".join(lines)
+
+
 __all__ = [
     "run_handoff",
     "build_garak_config",
     "build_giskard_config",
     "build_promptfoo_config",
+    "calculate_coverage_score",
+    "format_coverage_text",
+    "COVERAGE_MATRIX",
+    "OWASP_LLM_TOP_10",
 ]

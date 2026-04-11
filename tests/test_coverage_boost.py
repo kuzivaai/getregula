@@ -1508,6 +1508,236 @@ class TestCLIMoreCoverage:
 
 
 # ===========================================================================
+# regwatch.py
+# ===========================================================================
+
+class TestRegwatch:
+    def test_parse_iso_date_valid(self):
+        from regwatch import _parse_iso_date
+        d = _parse_iso_date("2026-03-15")
+        assert d is not None
+        assert d.year == 2026
+
+    def test_parse_iso_date_invalid(self):
+        from regwatch import _parse_iso_date
+        assert _parse_iso_date("not-a-date") is None
+        assert _parse_iso_date(None) is None
+
+    def test_load_last_reviewed(self):
+        from regwatch import _load_last_reviewed
+        result = _load_last_reviewed()
+        # Should return a date or None
+        from datetime import date
+        assert result is None or isinstance(result, date)
+
+    def test_run(self):
+        from regwatch import run
+        result = run()
+        assert "status" in result
+        assert "exit_code" in result
+
+    def test_run_cli_text(self, capsys):
+        from regwatch import run_cli
+        rc = run_cli("text")
+        assert rc in (0, 1, 2)
+        out = capsys.readouterr().out
+        assert "regwatch" in out
+
+    def test_run_cli_json(self, capsys):
+        from regwatch import run_cli
+        rc = run_cli("json")
+        assert rc in (0, 1, 2)
+        out = capsys.readouterr().out
+        data = json.loads(out)
+        assert "status" in data
+
+
+# ===========================================================================
+# quickstart.py
+# ===========================================================================
+
+class TestQuickstart:
+    def test_quickstart(self, tmp_path, capsys):
+        (tmp_path / "app.py").write_text("import torch\nmodel = torch.load('m.pt')\n")
+        from quickstart import run_quickstart
+        result = run_quickstart(
+            project_dir=str(tmp_path),
+            org="Test Org",
+            format_type="json",
+        )
+        assert "policy_created" in result or "findings" in result
+
+
+# ===========================================================================
+# questionnaire.py
+# ===========================================================================
+
+class TestQuestionnaire:
+    def test_generate_questionnaire(self):
+        from questionnaire import generate_questionnaire
+        q = generate_questionnaire()
+        assert isinstance(q, (list, dict))
+
+    def test_format_questionnaire_cli(self):
+        from questionnaire import generate_questionnaire, format_questionnaire_cli
+        q = generate_questionnaire()
+        text = format_questionnaire_cli(q)
+        assert len(text) > 0
+
+
+# ===========================================================================
+# benchmark.py
+# ===========================================================================
+
+class TestBenchmark:
+    def test_extract_context(self, tmp_path):
+        f = tmp_path / "test.py"
+        f.write_text("line1\nline2\nline3\nline4\nline5\n")
+        from benchmark import _extract_context
+        ctx = _extract_context(f, 3)
+        assert "line3" in ctx
+        assert ">>>" in ctx
+
+    def test_extract_context_empty(self, tmp_path):
+        f = tmp_path / "empty.py"
+        f.write_text("")
+        from benchmark import _extract_context
+        ctx = _extract_context(f, 1)
+        assert ctx == ""
+
+    def test_extract_context_missing(self):
+        from benchmark import _extract_context
+        ctx = _extract_context(Path("/nonexistent_file.py"), 1)
+        assert ctx == ""
+
+    def test_find_first_indicator_line(self, tmp_path):
+        f = tmp_path / "test.py"
+        f.write_text("import os\nimport tensorflow\nprint('hello')\n")
+        from benchmark import _find_first_indicator_line
+        line = _find_first_indicator_line(f, ["tensorflow"])
+        assert line == 2
+
+    def test_find_first_indicator_no_match(self, tmp_path):
+        f = tmp_path / "test.py"
+        f.write_text("x = 1\n")
+        from benchmark import _find_first_indicator_line
+        line = _find_first_indicator_line(f, ["nonexistent"])
+        assert line == 1
+
+    def test_find_first_indicator_empty(self, tmp_path):
+        f = tmp_path / "test.py"
+        f.write_text("x = 1\n")
+        from benchmark import _find_first_indicator_line
+        assert _find_first_indicator_line(f, []) == 1
+
+    def test_benchmark_project(self, tmp_path):
+        (tmp_path / "app.py").write_text("import tensorflow as tf\nmodel = tf.keras.Model()\n")
+        from benchmark import benchmark_project
+        result = benchmark_project(str(tmp_path))
+        assert result["project"] == tmp_path.name
+        assert "findings" in result
+        assert "files_scanned" in result
+
+    def test_benchmark_project_nonexistent(self):
+        from benchmark import benchmark_project
+        with pytest.raises(ValueError):
+            benchmark_project("/nonexistent/path")
+
+    def test_benchmark_suite(self, tmp_path):
+        d1 = tmp_path / "proj1"
+        d1.mkdir()
+        (d1 / "app.py").write_text("import torch\n")
+        d2 = tmp_path / "proj2"
+        d2.mkdir()
+        (d2 / "main.py").write_text("x = 1\n")
+        from benchmark import benchmark_suite
+        result = benchmark_suite([
+            {"name": "proj1", "path": str(d1)},
+            {"name": "proj2", "path": str(d2)},
+        ])
+        assert result["projects_scanned"] == 2
+        assert "findings_by_tier" in result
+
+    def test_benchmark_suite_skip_bad(self, tmp_path):
+        from benchmark import benchmark_suite
+        result = benchmark_suite([
+            {"name": "bad", "path": "/nonexistent"},
+        ])
+        assert result["projects_scanned"] == 0
+
+    def test_collect_all_findings(self):
+        from benchmark import _collect_all_findings
+        # Suite
+        suite = {"projects": [{"findings": [{"label": "tp"}, {"label": "fp"}]}]}
+        assert len(_collect_all_findings(suite)) == 2
+        # Single project
+        proj = {"findings": [{"label": "tp"}]}
+        assert len(_collect_all_findings(proj)) == 1
+        # Empty
+        assert _collect_all_findings({}) == []
+
+    def test_calculate_metrics(self):
+        from benchmark import calculate_metrics
+        data = {"findings": [
+            {"label": "tp", "tier": "high_risk"},
+            {"label": "tp", "tier": "high_risk"},
+            {"label": "fp", "tier": "high_risk"},
+        ]}
+        metrics = calculate_metrics(data)
+        assert metrics["true_positives"] == 2
+        assert metrics["false_positives"] == 1
+        assert "precision" in metrics
+
+    def test_calculate_metrics_empty(self):
+        from benchmark import calculate_metrics
+        metrics = calculate_metrics({"findings": []})
+        assert metrics["total_findings"] == 0
+
+    def test_import_labelled_csv(self):
+        from benchmark import _import_labelled_csv
+        csv_content = (
+            "project,file,line,tier,category,indicators,confidence_score,context,label\n"
+            "test,app.py,10,high_risk,cat1,ind1;ind2,80,ctx,tp\n"
+            "test,b.py,1,limited_risk,cat2,,50,,fp\n"
+        )
+        result = _import_labelled_csv(csv_content)
+        assert len(result["findings"]) == 2
+        assert result["findings"][0]["label"] == "tp"
+        assert result["findings"][1]["label"] == "fp"
+
+    def test_load_labelled_json(self, tmp_path):
+        data = {"findings": [{"label": "tp", "file": "a.py"}]}
+        f = tmp_path / "labelled.json"
+        f.write_text(json.dumps(data))
+        from benchmark import load_labelled_results
+        result = load_labelled_results(str(f))
+        assert result["findings"][0]["label"] == "tp"
+
+    def test_load_labelled_csv(self, tmp_path):
+        csv_content = (
+            "project,file,line,tier,category,indicators,confidence_score,context,label\n"
+            "test,app.py,10,high_risk,cat1,,80,,tp\n"
+        )
+        f = tmp_path / "labelled.csv"
+        f.write_text(csv_content)
+        from benchmark import load_labelled_results
+        result = load_labelled_results(str(f))
+        assert len(result["findings"]) == 1
+
+    def test_load_labelled_unsupported(self, tmp_path):
+        f = tmp_path / "data.xml"
+        f.write_text("<data/>")
+        from benchmark import load_labelled_results
+        with pytest.raises(ValueError):
+            load_labelled_results(str(f))
+
+    def test_load_labelled_missing(self):
+        from benchmark import load_labelled_results
+        with pytest.raises(FileNotFoundError):
+            load_labelled_results("/nonexistent.json")
+
+
+# ===========================================================================
 # CLI commands via subprocess (covers cli.py cmd_ functions)
 # ===========================================================================
 

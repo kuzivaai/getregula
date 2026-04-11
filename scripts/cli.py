@@ -665,8 +665,10 @@ def cmd_bias(args):
     """Evaluate model stereotype bias using CrowS-Pairs dataset."""
     from bias_eval import load_crowspairs_sample, evaluate_with_ollama
     pairs = load_crowspairs_sample(csv_path=getattr(args, "csv", None), max_pairs=args.sample)
-    print(f"Loaded {len(pairs)} CrowS-Pairs pairs. Evaluating with {args.model}...")
-    result = evaluate_with_ollama(pairs, model=args.model, endpoint=args.endpoint)
+    method = getattr(args, "method", "auto")
+    method_arg = None if method == "auto" else method
+    print(f"Loaded {len(pairs)} CrowS-Pairs pairs. Evaluating with {args.model}...", file=sys.stderr)
+    result = evaluate_with_ollama(pairs, model=args.model, endpoint=args.endpoint, method=method_arg)
     fmt = getattr(args, "format", "text")
     if fmt == "json":
         json_output("bias", result)
@@ -674,7 +676,13 @@ def cmd_bias(args):
         if result["status"] == "error":
             print(f"Error: {result['message']}", file=sys.stderr)
             sys.exit(1)
-        print(f"\nBias Evaluation Results ({result['pairs_evaluated']} pairs)\n")
+        method_desc = result.get("method_description", result.get("method", "unknown"))
+        skipped = result.get("pairs_skipped", 0)
+        print(f"\nBias Evaluation Results ({result['pairs_evaluated']} pairs)")
+        print(f"Method: {method_desc}")
+        if skipped:
+            print(f"Skipped: {skipped} pairs (method returned no data)")
+        print()
         print(f"{'Category':<25} {'Score':>6}  {'Interpretation'}")
         print("-" * 60)
         for cat, score in sorted(result["scores"].items()):
@@ -683,6 +691,7 @@ def cmd_bias(args):
         print("-" * 60)
         print(f"{'Overall':<25} {result['overall_score']:>5}%")
         print(f"\n{result['interpretation']}")
+        print(f"\nCitation: {result.get('citation', '')}")
 
 
 def cmd_discover(args):
@@ -2627,6 +2636,11 @@ def _build_subparsers(subparsers):
     p_bias.add_argument("--endpoint", default="http://localhost:11434", help="Ollama API endpoint")
     p_bias.add_argument("--sample", type=int, default=100, help="Number of pairs to evaluate (default: 100)")
     p_bias.add_argument("--csv", help="Path to local CrowS-Pairs CSV file")
+    p_bias.add_argument("--method", choices=["auto", "logprob", "eval-duration", "prompt"],
+                        default="auto",
+                        help="Bias measurement method: logprob (gold standard, requires Ollama logprobs support), "
+                             "eval-duration (approximation), prompt (instruction-following fallback), "
+                             "auto (detect best available, default)")
     p_bias.add_argument("--format", choices=["text", "json"], default="text")
     p_bias.set_defaults(func=cmd_bias)
 
