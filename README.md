@@ -352,7 +352,7 @@ For full YAML support, install pyyaml: `pip install pyyaml`. Without it, a minim
 pytest tests/ -q
 ```
 
-688 test functions (926 passing assertions, counted by `python3 scripts/site_facts.py`) covering:
+699 test functions (751 collected by pytest, counted by `python3 scripts/site_facts.py`) covering:
 - AI detection (libraries, model files, API endpoints, ML patterns)
 - All 8 prohibited practices
 - All 8 Annex III high-risk areas + 2 Annex I categories (medical devices, safety components)

@@ -32,7 +32,7 @@ Regula is developed by a sole developer (Kuziva Muzondo) with substantial assist
 Every AI-generated output goes through the following before reaching `main`:
 
 1. **Code review** — The developer reads every diff before committing. AI-generated code is not auto-merged.
-2. **Test verification** — The project's test suite (926 assertions via custom runner, 740 pytest tests, 11 CLI integration tests, 6 self-test assertions, 10 doctor checks) runs before any claim of "done."
+2. **Test verification** — The project's test suite (751 pytest tests, 11 CLI integration tests, 6 self-test assertions, 10 doctor checks) runs before any claim of "done."
 3. **Claim auditor** — A CI pipeline (`scripts/claim_auditor.py`) scans all modified Markdown and HTML files for unverified numeric claims, superlatives, and competitive assertions. Unsourced claims fail the build.
 4. **Site facts verification** — `scripts/site_facts.py` computes every numeric claim on the landing pages from the actual codebase. If a page claim drifts from the computed value, the discrepancy is visible.
 5. **Benchmark validation** — Detection pattern changes are tested against a labelled corpus of 257 hand-labelled findings from 5 open-source projects plus a 13-file synthetic corpus. Results are published in `docs/benchmarks/PRECISION_RECALL_2026_04.md`.
