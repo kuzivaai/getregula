@@ -5,12 +5,12 @@
 Regula v1.6.1 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only core.
 
 **Verified counts (2026-04-11):**
-- **50 CLI commands** (verified via `regula --help`)
-- **67 risk pattern categories** containing ~330 individual regexes (8 prohibited, 15 high-risk, 4 limited-risk, 17 AI security, 2 bias, 4 governance observations, 17 GPAI training)
+- **51 CLI commands** (verified via `regula --help`)
+- **51 risk pattern categories** containing 391 individual regexes (8 prohibited, 15 high-risk, 4 limited-risk, 17 AI security, 2 bias, 4 governance observations, 17 GPAI training)
 - **182 AI framework detection indicators** (88 libraries, 10 model file types, 7 API endpoints, 13 ML patterns, 64 domain keywords)
 - **8 language families scanned** via regex (Python, JavaScript, TypeScript, Java, Go, Rust, C/C++, Jupyter notebooks — deep AST analysis for Python/JS/TS only)
 - **17 compliance frameworks mapped** (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO, Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI)
-- **1,140 tests** (all passing)
+- **1,167 tests** (all passing)
 - **9 credential patterns** detected
 - **1 GitHub Action** (composite, 12 inputs, 5 outputs, SARIF upload, PR comments)
 - **1 MCP server** (3 tools: check, classify, gap)
