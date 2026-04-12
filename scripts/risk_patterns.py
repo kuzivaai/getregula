@@ -24,6 +24,7 @@ PROHIBITED_PATTERNS = {
         "description": "AI deploying subliminal techniques beyond a person's consciousness",
         "conditions": "Prohibited when the technique materially distorts behaviour and causes or is likely to cause significant harm.",
         "exceptions": None,
+        "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "exploitation_vulnerabilities": {
         "patterns": [r"target.?elderly", r"exploit.?disabil", r"vulnerable.?group.?target"],
@@ -31,6 +32,7 @@ PROHIBITED_PATTERNS = {
         "description": "Exploiting vulnerabilities of specific groups (age, disability, economic situation)",
         "conditions": "Prohibited when exploiting vulnerabilities to materially distort behaviour causing significant harm.",
         "exceptions": None,
+        "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "social_scoring": {
         "patterns": [r"\bsocial.?scor(?:e|ing)\b", r"\bsocial.?credit.?(?:scor|system|rating)", r"\bsocial.?credit\b", r"\bcitizen.?score", r"\bbehaviour.?scor"],
@@ -38,6 +40,7 @@ PROHIBITED_PATTERNS = {
         "description": "Social scoring by public authorities or on their behalf",
         "conditions": "Prohibited when evaluating or classifying persons based on social behaviour or personal traits, leading to detrimental treatment disproportionate to context.",
         "exceptions": None,
+        "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "criminal_prediction": {
         "patterns": [r"crime.?predict", r"criminal.?risk.?assess", r"predictive.?policing", r"recidivism"],
@@ -45,6 +48,7 @@ PROHIBITED_PATTERNS = {
         "description": "Criminal risk prediction based solely on profiling or personality traits",
         "conditions": "Prohibited ONLY when based solely on profiling or personality traits. Systems using multiple evidence sources (case facts, prior convictions with human review) may be lawful.",
         "exceptions": "AI systems that support human assessment based on objective, verifiable facts directly linked to criminal activity are NOT prohibited.",
+        "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "facial_recognition_scraping": {
         "patterns": [r"\bface.?scrap", r"facial.?database.?untarget", r"mass.?facial.?collect"],
@@ -52,6 +56,7 @@ PROHIBITED_PATTERNS = {
         "description": "Creating facial recognition databases through untargeted scraping",
         "conditions": "Prohibited when scraping facial images from the internet or CCTV to build or expand recognition databases.",
         "exceptions": None,
+        "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "emotion_inference_restricted": {
         "patterns": [r"emotion.{0,20}workplace", r"emotion.{0,20}school", r"sentiment.{0,20}employee",
@@ -60,6 +65,7 @@ PROHIBITED_PATTERNS = {
         "description": "Emotion inference in workplace or educational settings",
         "conditions": "Prohibited in workplace and educational institutions.",
         "exceptions": "EXEMPT when used for medical or safety purposes (e.g., detecting driver fatigue, monitoring patient wellbeing in clinical settings).",
+        "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "biometric_categorisation_sensitive": {
         "patterns": [r"\brace.?detect(?!.*(?:condition|thread|concurrent))", r"ethnicity.?infer", r"political.?opinion.?biometric",
@@ -68,6 +74,7 @@ PROHIBITED_PATTERNS = {
         "description": "Biometric categorisation inferring sensitive attributes (race, politics, religion, sexuality)",
         "conditions": "Prohibited when using biometric data to categorise persons by race, political opinions, trade union membership, religious beliefs, sex life, or sexual orientation.",
         "exceptions": "Labelling or filtering of lawfully acquired biometric datasets (e.g., photo sorting) may be exempt where no categorisation of individuals occurs.",
+        "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "realtime_biometric_public": {
         "patterns": [r"real.?time.?facial.?recogn", r"live.?biometric.?public",
@@ -76,6 +83,7 @@ PROHIBITED_PATTERNS = {
         "description": "Real-time remote biometric identification in publicly accessible spaces for law enforcement",
         "conditions": "Prohibited for law enforcement in publicly accessible spaces in real-time.",
         "exceptions": "Narrow exceptions exist with PRIOR judicial authorisation for: (i) targeted search for victims of abduction/trafficking/sexual exploitation, (ii) prevention of specific imminent terrorist threat, (iii) identification of suspects of serious criminal offences (as defined in Annex II).",
+        "confidence": "high", "likelihood": "high", "impact": "high",
     },
 }
 
@@ -121,6 +129,7 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 1",
         "description": "Biometric identification and categorisation",
+        "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "critical_infrastructure": {
         # Recall expansion (Apr 2026): Annex III point 2 covers safety
@@ -151,6 +160,7 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 2",
         "description": "Critical infrastructure management",
+        "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "education": {
         "patterns": [r"\badmission.?decision", r"\bstudent.?assess", r"\bexam.?scor",
@@ -174,6 +184,7 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 3",
         "description": "Education and vocational training",
+        "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "employment": {
         "patterns": [r"\bcv.?screen", r"\bresume.?filt", r"\bhiring.?decision", r"\brecruit\w*\W{0,3}automat",
@@ -200,6 +211,7 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 4",
         "description": "Employment and workers management",
+        "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "essential_services": {
         "patterns": [r"\bcredit.?scor", r"\bcreditworth", r"\bloan.?decision", r"\binsurance.?pric",
@@ -227,6 +239,7 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 5",
         "description": "Access to essential services",
+        "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "law_enforcement": {
         # regula-ignore (this block defines patterns that match the very
@@ -259,6 +272,7 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 6",
         "description": "Law enforcement",
+        "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "migration": {
         # Recall expansion (Apr 2026): Annex III point 7 covers AI used by
@@ -285,6 +299,7 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 7",
         "description": "Migration, asylum, and border control",
+        "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "justice": {
         # Recall expansion (Apr 2026): Annex III point 8 covers AI used by
@@ -311,6 +326,7 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 8",
         "description": "Justice and democratic processes",
+        "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "medical_devices": {
         # Recall expansion (Apr 2026): EU AI Act Article 6(1) cross-references
@@ -338,6 +354,7 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Medical Devices",
         "description": "AI components of medical devices",
+        "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "high_risk__insurance": {
         # Annex III point 5(d): AI systems used to assess risk and pricing
@@ -355,6 +372,7 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 5(d)",
         "description": "Insurance access and pricing",
+        "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "high_risk__credit_scoring": {
         # Annex III point 5(b): AI systems used to evaluate the
@@ -372,6 +390,7 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 5(b)",
         "description": "Creditworthiness assessment",
+        "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "high_risk__worker_management": {
         # Annex III point 4(b): AI systems intended to be used to make
@@ -391,6 +410,7 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 4(b)",
         "description": "Worker monitoring and task allocation",
+        "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "high_risk__democratic_processes": {
         # Annex III point 8 (second part): AI systems intended to be used
@@ -410,6 +430,7 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 8",
         "description": "Democratic processes and elections",
+        "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "high_risk__emergency_services": {
         # Annex III point 3(c) / point 5(e): AI systems intended to be
@@ -428,6 +449,7 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 5(e)",
         "description": "Emergency services dispatch and triage",
+        "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "safety_components": {
         # Recall expansion (Apr 2026): EU AI Act Article 6(1) cross-references
@@ -458,6 +480,7 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Safety Components",
         "description": "Safety components under Union harmonisation legislation",
+        "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
 }
 
@@ -467,16 +490,19 @@ LIMITED_RISK_PATTERNS = {
                      r"dialogue.?system", r"support.?bot\b"],
         "article": "50",
         "description": "Chatbots and conversational AI",
+        "confidence": "high", "likelihood": "high", "impact": "medium",
     },
     "emotion_recognition": {
         "patterns": [r"emotion.?recogn", r"sentiment.?analy", r"affect.?detect", r"mood.?analy"],
         "article": "50",
         "description": "Emotion recognition systems",
+        "confidence": "medium", "likelihood": "medium", "impact": "medium",
     },
     "biometric_categorisation": {
         "patterns": [r"\bage.?estimat", r"\bgender.?detect", r"\bdemographic.?analy"],
         "article": "50",
         "description": "Biometric categorisation (non-sensitive)",
+        "confidence": "high", "likelihood": "high", "impact": "medium",
     },
     "synthetic_content": {
         "patterns": [r"deepfake", r"synthetic.?media", r"face.?swap", r"voice.?clon",
@@ -485,6 +511,7 @@ LIMITED_RISK_PATTERNS = {
                      r"\.Image\.create\b", r"generate.?image\b"],
         "article": "50",
         "description": "Synthetic content generation",
+        "confidence": "high", "likelihood": "high", "impact": "medium",
     },
 }
 
@@ -508,6 +535,7 @@ AI_SECURITY_PATTERNS = {
         "description": "Unsafe model deserialization — arbitrary code execution risk",
         "severity": "high",
         "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+        "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "prompt_injection_vulnerable": {
         "patterns": [
@@ -527,6 +555,7 @@ AI_SECURITY_PATTERNS = {
         "description": "User input directly concatenated into LLM prompt — prompt injection risk (direct)",
         "severity": "high",
         "remediation": "Use structured prompt templates with input sanitisation. Use a guardrails library (NeMo Guardrails, Lakera Guard, LLM Guard, Rebuff, Guardrails AI). Never concatenate raw user input into system prompts. OWASP LLM01:2025.",
+        "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "prompt_injection_indirect": {
         "patterns": [
@@ -548,6 +577,7 @@ AI_SECURITY_PATTERNS = {
         "description": "Untrusted external content flows into LLM prompt without sanitisation — indirect prompt injection risk (OWASP LLM01:2025 emphasises this vector)",
         "severity": "high",
         "remediation": "Treat all external content (web pages, documents, retrieval results, emails) as untrusted. Apply a guardrails layer (NeMo Guardrails, LLM Guard, Lakera Guard, Rebuff, Guardrails AI). Use spotlighting or context delimiters that the model is trained to respect. OWASP LLM01:2025.",
+        "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "prompt_injection_tool_output": {
         "patterns": [
@@ -565,6 +595,7 @@ AI_SECURITY_PATTERNS = {
         "description": "Tool / agent / shell output passed to LLM without validation — agentic prompt injection risk",
         "severity": "high",
         "remediation": "Treat tool outputs as untrusted user input. Validate structure (JSON schema), strip control tokens, apply a guardrails layer. Maps to OWASP Agentic ASI04 (control-flow hijacking). OWASP LLM01:2025.",
+        "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "no_output_validation": {
         "patterns": [
@@ -576,6 +607,7 @@ AI_SECURITY_PATTERNS = {
         "description": "AI output used without validation — code injection risk",
         "severity": "critical",
         "remediation": "Never eval/exec AI model output. Validate and sanitise all AI-generated content before use.",
+        "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "hardcoded_model_path": {
         "patterns": [
@@ -587,6 +619,7 @@ AI_SECURITY_PATTERNS = {
         "description": "Model loaded from untrusted or hardcoded path — supply chain risk",
         "severity": "medium",
         "remediation": "Use model registries (HuggingFace Hub, MLflow) with integrity verification. Pin model revisions.",
+        "confidence": "high", "likelihood": "medium", "impact": "medium",
     },
     "unbounded_token_generation": {
         "patterns": [
@@ -597,6 +630,7 @@ AI_SECURITY_PATTERNS = {
         "description": "Unbounded token generation — cost and resource exhaustion risk",
         "severity": "medium",
         "remediation": "Set explicit max_tokens limit. Add cost monitoring and rate limiting.",
+        "confidence": "high", "likelihood": "medium", "impact": "medium",
     },
     "missing_temperature_control": {
         "patterns": [
@@ -607,6 +641,7 @@ AI_SECURITY_PATTERNS = {
         "description": "High temperature setting — increased hallucination risk in production",
         "severity": "low",
         "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+        "confidence": "high", "likelihood": "low", "impact": "low",
     },
     # Vibe-coding architecture gaps — common in AI-generated code that skips
     # security review. These map to CRA secure-by-design and AI Act Art. 15.
@@ -619,6 +654,7 @@ AI_SECURITY_PATTERNS = {
         "description": "AI API call without error handling — service failures will crash the application",
         "severity": "medium",
         "remediation": "Wrap AI API calls in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+        "confidence": "medium", "likelihood": "medium", "impact": "medium",
     },
     "exposed_api_key_env": {
         "patterns": [
@@ -629,6 +665,7 @@ AI_SECURITY_PATTERNS = {
         "description": "AI API key appears hardcoded — credential exposure risk",
         "severity": "critical",
         "remediation": "Use environment variables or a secrets manager. Never commit API keys to source code. CRA Annex I (2)(c) requires access control.",
+        "confidence": "high", "likelihood": "high", "impact": "high",
     },
     # --- OWASP LLM Top 10 (2025) gap-fill patterns ---
     "sensitive_info_disclosure": {
@@ -645,6 +682,7 @@ AI_SECURITY_PATTERNS = {
         "description": "PII or sensitive data flows into or out of LLM without redaction — information disclosure risk",
         "severity": "high",
         "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+        "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "supply_chain_model": {
         "patterns": [
@@ -660,6 +698,7 @@ AI_SECURITY_PATTERNS = {
         "description": "Model loaded from untrusted source or with unsafe deserialisation — supply chain attack risk",
         "severity": "high",
         "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+        "confidence": "high", "likelihood": "medium", "impact": "high",
     },
     "data_poisoning": {
         "patterns": [
@@ -675,6 +714,7 @@ AI_SECURITY_PATTERNS = {
         "description": "Model trained or fine-tuned on unvalidated user-submitted data — data poisoning risk",
         "severity": "high",
         "remediation": "Validate and sanitise all training data. Implement data provenance tracking, statistical anomaly detection, and human review for training corpora. OWASP LLM04:2025.",
+        "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "excessive_agency": {
         "patterns": [
@@ -692,6 +732,7 @@ AI_SECURITY_PATTERNS = {
         "description": "AI agent executes actions (code, shell, filesystem) without human confirmation — excessive agency risk",
         "severity": "critical",
         "remediation": "Require human-in-the-loop approval for all destructive or privileged actions. Implement least-privilege tool permissions and action allowlists. OWASP LLM06:2025.",
+        "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "system_prompt_leakage": {
         "patterns": [
@@ -709,6 +750,7 @@ AI_SECURITY_PATTERNS = {
         "description": "System prompt exposed in client code, API response, or logs — prompt leakage risk",
         "severity": "medium",
         "remediation": "Keep system prompts server-side only. Never return them in API responses or log them. Use prompt references/IDs instead of inline prompt text. OWASP LLM07:2025.",
+        "confidence": "high", "likelihood": "medium", "impact": "medium",
     },
     "rag_poisoning": {
         "patterns": [
@@ -724,6 +766,7 @@ AI_SECURITY_PATTERNS = {
         "description": "Untrusted content ingested into vector store without validation — RAG poisoning risk",
         "severity": "high",
         "remediation": "Validate and sanitise all documents before embedding. Implement access controls on vector store write endpoints. Use content filtering and metadata provenance tracking. OWASP LLM08:2025.",
+        "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "no_grounding": {
         "patterns": [
@@ -739,6 +782,7 @@ AI_SECURITY_PATTERNS = {
         "description": "LLM output used as factual information without grounding or verification — misinformation risk",
         "severity": "medium",
         "remediation": "Implement retrieval-augmented generation (RAG) for factual tasks. Require citations and source attribution. Add fact-checking or grounding verification before presenting LLM output as fact. OWASP LLM09:2025.",
+        "confidence": "medium", "likelihood": "medium", "impact": "medium",
     },
 }
 

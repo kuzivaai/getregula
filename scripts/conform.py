@@ -389,12 +389,29 @@ def generate_conformity_pack(
                 total_paths = summary.get("total_paths", 0)
                 reviewed = summary.get("reviewed", 0)
                 unreviewed = summary.get("unreviewed", 0)
-                if total_paths > 0:
-                    auto_detected.append(f"Cross-file oversight analysis: {reviewed}/{total_paths} AI flow paths have human oversight gates")
+                if not oversight_result.get("analysed", True):
+                    reason = oversight_result.get(
+                        "reason", "Analysis could not be performed"
+                    )
+                    auto_detected.append(
+                        "Cross-file oversight analysis: NOT ANALYSED"
+                        f" — {reason}"
+                    )
+                elif total_paths > 0:
+                    auto_detected.append(
+                        f"Cross-file oversight analysis: {reviewed}/{total_paths}"
+                        " AI flow paths have human oversight gates"
+                    )
                     if unreviewed > 0:
-                        auto_detected.append(f"WARNING: {unreviewed} AI output path(s) reach user-facing output without human oversight")
+                        auto_detected.append(
+                            f"WARNING: {unreviewed} AI output path(s) reach"
+                            " user-facing output without human oversight"
+                        )
                 else:
-                    auto_detected.append("Cross-file oversight analysis: no AI output sources detected")
+                    auto_detected.append(
+                        "Cross-file oversight analysis:"
+                        " no AI output sources detected"
+                    )
             except (ImportError, Exception) as e:
                 print(f"Warning: oversight analysis failed: {e}", file=sys.stderr)
 

@@ -2259,6 +2259,20 @@ def cmd_oversight(args):
     summary = result["summary"]
     print("Article 14 Human Oversight Analysis")
     print("=" * 36)
+
+    # Handle not-analysed case (e.g. JS/TS-only project, no Python files)
+    if not result.get("analysed", True):
+        reason = result.get(
+            "reason", "Analysis could not be performed"
+        )
+        print(f"  {reason}")
+        note = summary.get("note", "")
+        if note:
+            print(f"  {note}")
+        print()
+        print("No oversight score computed — analysis did not run.")
+        return
+
     print("Scope: Static analysis of direct imports and explicit function calls.")
     print("NOT analysed: dynamic imports, decorator-wrapped routes, cross-service calls,")
     print("              third-party library internals.")
