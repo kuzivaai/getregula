@@ -6245,7 +6245,7 @@ def test_oversight_end_to_end():
         result = analyse_project_oversight(tmpdir)
         assert_eq(len(result["ai_sources"]) >= 1, True, "found AI sources")
         assert_eq(len(result["flow_paths"]) >= 1, True, "found flow paths")
-        assert_eq(len(result["limitations"]) == 5, True, "5 limitations disclosed")
+        assert_eq(len(result["limitations"]) == 7, True, "7 limitations disclosed")
         assert_eq("summary" in result, True, "has summary")
         print(f"✓ oversight: e2e — {result['summary']['total_paths']} paths, {result['summary']['reviewed']} reviewed")
     finally:
