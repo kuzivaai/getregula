@@ -436,7 +436,7 @@ def generate_conformity_pack(
                     auto_detected.append("Bias evaluation: Ollama not available — run 'regula bias' separately to generate bias evidence")
             except ImportError:
                 auto_detected.append("Bias evaluation: run 'regula bias' separately to generate bias evidence")
-            except Exception as e:
+            except (OSError, ConnectionRefusedError, TimeoutError, ValueError) as e:
                 print(f"Note: bias evaluation skipped: {e}", file=sys.stderr)
 
         if art_num == "15" and sbom_data:

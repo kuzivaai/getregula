@@ -3,7 +3,7 @@
 
 Provides:
 - Wilson score confidence interval for binomial proportions
-- Bootstrap confidence interval (BCa) for aggregate scores
+- Bootstrap confidence interval (percentile method) for aggregate scores
 - Sample size confidence labels
 
 All stdlib — zero external dependencies.
@@ -13,7 +13,7 @@ import math
 import random
 import sys
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -49,7 +49,7 @@ def bootstrap_ci(
     values: List[float],
     n_resamples: int = 1000,
     alpha: float = 0.05,
-    seed: int = None,
+    seed: Optional[int] = None,
 ) -> Tuple[float, float]:
     """Bootstrap confidence interval for the mean of a list of values.
 
@@ -106,3 +106,14 @@ def confidence_label(n: int) -> str:
         return "moderate"
     else:
         return "high"
+
+
+def require_http_url(url: str) -> None:
+    """Reject non-http(s) schemes before urlopen (bandit B310 / semgrep guard).
+
+    Shared by bias_eval.py and bias_bbq.py to avoid duplication.
+    """
+    from urllib.parse import urlparse
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https"):
+        raise ValueError(f"Endpoint scheme must be http or https, got: {parsed.scheme!r}")

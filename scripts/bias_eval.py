@@ -9,8 +9,8 @@ Measures stereotype bias in AI models using the CrowS-Pairs dataset
   Tier 1 — Log-probability (gold standard)
     Ollama logprobs API: mean per-token log-prob for each sentence.
     Length-normalised to avoid systematic bias toward shorter sentences.
-    Standard adaptation of CrowS-Pairs for autoregressive language models
-    (Salazar et al., 2020).
+    Standard autoregressive language model scoring with per-token
+    normalisation to prevent length bias.
 
   Tier 2 — Prompt-and-parse (fallback)
     Asks the model "which sounds more natural, A or B?" and parses
@@ -28,7 +28,6 @@ Known limitations (Blodgett et al., ACL 2021):
 
 Citations:
   Nangia, N. et al. (2020). CrowS-Pairs. EMNLP.
-  Salazar, J. et al. (2020). Masked Language Model Scoring. ACL.
   Blodgett, S. et al. (2021). Stereotyping Norwegian Salmon. ACL.
 
 Usage:
@@ -47,17 +46,12 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
-from bias_stats import bootstrap_ci, confidence_label, wilson_ci
+from bias_stats import bootstrap_ci, confidence_label, require_http_url, wilson_ci
 
 logger = logging.getLogger(__name__)
 
-
-def _require_http_url(url: str) -> None:
-    """Reject non-http(s) schemes (bandit B310 / semgrep guard)."""
-    from urllib.parse import urlparse
-    parsed = urlparse(url)
-    if parsed.scheme not in ("http", "https"):
-        raise ValueError(f"Endpoint scheme must be http or https, got: {parsed.scheme!r}")
+# Alias for internal use — shared implementation in bias_stats.py
+_require_http_url = require_http_url
 
 
 _BUILTIN_SAMPLE = [
@@ -178,7 +172,8 @@ def _detect_logprob_support(model: str, endpoint: str, timeout: int = 10) -> boo
         }, timeout=timeout)
         logprobs = resp.get("logprobs")
         return isinstance(logprobs, list) and len(logprobs) > 0
-    except Exception:
+    except Exception as exc:
+        logger.debug("logprob support probe failed: %s", exc)
         return False
 
 
@@ -211,7 +206,8 @@ def _get_sentence_logprob(sentence: str, model: str, endpoint: str, timeout: int
             "normalised": raw_sum / len(lp_values),
             "n_tokens": len(lp_values),
         }
-    except Exception:
+    except Exception as exc:
+        logger.warning("logprob fetch failed: %s", exc)
         return None
 
 
@@ -245,8 +241,10 @@ def _evaluate_logprob(pairs: List[Dict], model: str, endpoint: str, timeout: int
     return results
 
 
-def _evaluate_prompt_parse(pairs: List[Dict], model: str, endpoint: str, timeout: int) -> List[Dict]:
+def _evaluate_prompt_parse(pairs: List[Dict], model: str, endpoint: str, timeout: int, rng: random.Random = None) -> List[Dict]:
     """Evaluate bias by asking the model which sentence sounds more natural."""
+    if rng is None:
+        rng = random.Random()
     results = []
     errors = 0
 
@@ -254,7 +252,7 @@ def _evaluate_prompt_parse(pairs: List[Dict], model: str, endpoint: str, timeout
         sent_more = pair["sent_more"]
         sent_less = pair["sent_less"]
 
-        if random.random() < 0.5:
+        if rng.random() < 0.5:
             choice_a, choice_b = sent_more, sent_less
             a_is_stereotyped = True
         else:
@@ -297,14 +295,13 @@ def evaluate_with_ollama(
     endpoint: str = "http://localhost:11434",
     timeout: int = 30,
     method: Optional[str] = None,
-    seed: int = None,
+    seed: Optional[int] = None,
     bootstrap_resamples: int = 1000,
 ) -> Dict:
     """Evaluate CrowS-Pairs bias using the best available method."""
     _require_http_url(endpoint)
 
-    if seed is not None:
-        random.seed(seed)
+    rng = random.Random(seed)
 
     method_used = method or "auto"
     results = []
@@ -317,7 +314,7 @@ def evaluate_with_ollama(
 
     if not results and method_used in ("auto", "prompt"):
         logger.info("Log-probs unavailable — using prompt-and-parse (fallback)")
-        results = _evaluate_prompt_parse(pairs, model, endpoint, timeout)
+        results = _evaluate_prompt_parse(pairs, model, endpoint, timeout, rng=rng)
         method_used = "prompt"
 
     if not results:
@@ -340,7 +337,7 @@ def evaluate_with_ollama(
         overall_ci = (0.0, 1.0)
 
     method_descriptions = {
-        "logprob": "Log-probability, mean per-token normalised (Salazar et al. 2020)",
+        "logprob": "Log-probability, mean per-token normalised (length-corrected)",
         "prompt": "Prompt-and-parse (instruction-following fallback — less reliable)",
     }
 
@@ -365,5 +362,5 @@ def evaluate_with_ollama(
             "US-centric stereotypes — may not reflect biases in other cultural contexts",
             "Single benchmark insufficient for Article 10 compliance",
         ],
-        "citation": "Nangia et al. (2020) EMNLP; Salazar et al. (2020) ACL; Blodgett et al. (2021) ACL",
+        "citation": "Nangia et al. (2020) EMNLP; Blodgett et al. (2021) ACL",
     }
