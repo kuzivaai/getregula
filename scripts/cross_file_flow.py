@@ -7,14 +7,17 @@ Builds on ast_analysis.py's single-file analysis to trace AI model outputs
 across module boundaries and determine whether human oversight gates exist
 on each path from AI source to user-facing sink.
 
-Zero external dependencies — stdlib ast module only.
+Supports Python and JavaScript/TypeScript projects.
+
+Zero external dependencies — stdlib ast module only (JS/TS uses ast_engine).
 """
 
 import ast
 import os
+import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -25,7 +28,11 @@ from ast_analysis import (
     AI_LIBRARIES,
     HUMAN_OVERSIGHT_KEYWORDS,
 )
+from ast_engine import analyse_file as ast_engine_analyse_file
 from constants import SKIP_DIRS
+
+# JS/TS file extensions recognised for cross-file flow analysis
+_JS_TS_EXTENSIONS = frozenset((".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs"))
 
 # -------------------------------------------------------------------------
 # Mandatory limitations — always included in output
@@ -37,6 +44,8 @@ LIMITATIONS = [
     "Third-party library internals not traced",
     "Cross-service calls (HTTP/gRPC) not detected",
     "This detects code paths for oversight, not whether oversight is meaningfully exercised (ICO standard)",
+    "JS/TS: node_modules imports not resolved (project-internal only)",
+    "JS/TS: re-exports and barrel files partially supported",
 ]
 
 
@@ -57,7 +66,6 @@ def _collect_python_files(project_path: Path) -> List[Path]:
     files = []
     for root, dirs, filenames in os.walk(project_path):
         root_path = Path(root)
-        # Prune skip dirs in-place
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for fn in filenames:
             if fn.endswith(".py"):
@@ -67,10 +75,25 @@ def _collect_python_files(project_path: Path) -> List[Path]:
     return files
 
 
+def _collect_js_ts_files(project_path: Path) -> List[Path]:
+    """Walk project and return all JS/TS files, respecting SKIP_DIRS."""
+    files = []
+    for root, dirs, filenames in os.walk(project_path):
+        root_path = Path(root)
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        for fn in filenames:
+            ext = os.path.splitext(fn)[1]
+            if ext in _JS_TS_EXTENSIONS:
+                fp = root_path / fn
+                if not _should_skip(fp.relative_to(project_path)):
+                    files.append(fp)
+    return files
+
+
 def _build_symbol_table(
     project_path: Path, py_files: List[Path]
 ) -> Dict[str, Dict]:
-    """Build a project-wide symbol table.
+    """Build a project-wide symbol table from Python files.
 
     Returns: {relative_path: {"functions": {name: line}, "classes": {name: line}, "content": str}}
     """
@@ -79,11 +102,11 @@ def _build_symbol_table(
         try:
             content = fp.read_text(encoding="utf-8", errors="replace")
         except (OSError, PermissionError):
-            continue  # file unreadable; skip
+            continue
         try:
             tree = ast.parse(content, filename=str(fp))
         except SyntaxError:
-            continue  # unparseable Python; skip
+            continue
 
         rel = str(fp.relative_to(project_path))
         funcs: Dict[str, int] = {}
@@ -97,6 +120,48 @@ def _build_symbol_table(
             "functions": funcs,
             "classes": classes,
             "content": content,
+            "lang": "python",
+        }
+    return table
+
+
+def _build_js_ts_symbol_table(
+    project_path: Path, js_files: List[Path]
+) -> Dict[str, Dict]:
+    """Build a project-wide symbol table from JS/TS files using ast_engine.
+
+    Returns same shape as _build_symbol_table so both can be merged.
+    """
+    table: Dict[str, Dict] = {}
+    for fp in js_files:
+        try:
+            content = fp.read_text(encoding="utf-8", errors="replace")
+        except (OSError, PermissionError):
+            continue
+
+        rel = str(fp.relative_to(project_path))
+        analysis = ast_engine_analyse_file(content, fp.name)
+
+        funcs: Dict[str, int] = {}
+        for fdef in analysis.get("function_defs", []):
+            name = fdef.get("name", "")
+            if name:
+                # ast_engine doesn't always give line numbers for functions;
+                # use 0 as fallback
+                funcs[name] = fdef.get("line", 0)
+
+        classes: Dict[str, int] = {}
+        for cdef in analysis.get("class_defs", []):
+            name = cdef.get("name", "")
+            if name:
+                classes[name] = cdef.get("line", 0)
+
+        table[rel] = {
+            "functions": funcs,
+            "classes": classes,
+            "content": content,
+            "lang": "javascript",
+            "_analysis": analysis,  # cached ast_engine result
         }
     return table
 
@@ -112,6 +177,37 @@ def _module_to_candidates(module_name: str, project_path: Path) -> List[str]:
         parts + ".py",
         os.path.join(parts, "__init__.py"),
     ]
+
+
+def _js_import_to_candidates(import_path: str, importing_file_rel: str) -> List[str]:
+    """Convert a JS/TS relative import to candidate relative file paths.
+
+    Only handles project-internal imports (starting with './' or '../').
+    Returns empty list for bare specifiers (node_modules).
+    """
+    if not import_path.startswith("."):
+        return []
+
+    # Resolve relative to the importing file's directory
+    importing_dir = str(Path(importing_file_rel).parent)
+    resolved = os.path.normpath(os.path.join(importing_dir, import_path))
+
+    # Normalise path separators
+    resolved = resolved.replace("\\", "/")
+
+    # If it already has an extension that we recognise, just return it
+    ext = os.path.splitext(resolved)[1]
+    if ext in _JS_TS_EXTENSIONS:
+        return [resolved]
+
+    # Otherwise, try common extension resolutions
+    candidates = []
+    for e in (".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"):
+        candidates.append(resolved + e)
+    # index file in directory
+    for e in (".ts", ".tsx", ".js", ".jsx"):
+        candidates.append(os.path.join(resolved, "index" + e))
+    return candidates
 
 
 def _resolve_imports(
@@ -165,6 +261,110 @@ def _resolve_imports(
     return result
 
 
+# Regex patterns for extracting JS/TS import specifiers
+_RE_JS_IMPORT_FROM = re.compile(
+    r"""import\s+(?:"""
+    r"""(?:\{[^}]*\}|\*\s+as\s+\w+|\w+)"""
+    r"""(?:\s*,\s*(?:\{[^}]*\}|\*\s+as\s+\w+))?"""
+    r"""\s+from\s+)?"""
+    r"""['"]([^'"]+)['"]""",
+    re.MULTILINE,
+)
+_RE_JS_REQUIRE = re.compile(
+    r"""(?:const|let|var)\s+(?:(\w+)|\{([^}]+)\})\s*=\s*require\s*\(\s*['"]([^'"]+)['"]\s*\)""",
+    re.MULTILINE,
+)
+_RE_JS_IMPORT_NAMED = re.compile(
+    r"""import\s+\{([^}]+)\}\s+from\s+['"]([^'"]+)['"]""",
+    re.MULTILINE,
+)
+_RE_JS_IMPORT_DEFAULT = re.compile(
+    r"""import\s+(\w+)\s+from\s+['"]([^'"]+)['"]""",
+    re.MULTILINE,
+)
+
+
+def _resolve_js_ts_imports(
+    project_path: Path,
+    symbol_table: Dict[str, Dict],
+) -> Dict[str, Dict[str, Tuple[str, str]]]:
+    """For each JS/TS file, resolve project-internal imports.
+
+    Returns: {file_rel: {imported_name: (source_file_rel, original_name)}}
+    """
+    known_files = set(symbol_table.keys())
+    result: Dict[str, Dict[str, Tuple[str, str]]] = {}
+
+    for rel, info in symbol_table.items():
+        if info.get("lang") != "javascript":
+            continue
+
+        content = info["content"]
+        mapping: Dict[str, Tuple[str, str]] = {}
+
+        # Handle: import { X, Y as Z } from './module'
+        for match in _RE_JS_IMPORT_NAMED.finditer(content):
+            names_str = match.group(1)
+            module_path = match.group(2)
+            candidates = _js_import_to_candidates(module_path, rel)
+            target = None
+            for cand in candidates:
+                if cand in known_files:
+                    target = cand
+                    break
+            if target:
+                for part in names_str.split(","):
+                    part = part.strip()
+                    if not part:
+                        continue
+                    if " as " in part:
+                        original, _, local = part.partition(" as ")
+                        mapping[local.strip()] = (target, original.strip())
+                    else:
+                        mapping[part] = (target, part)
+
+        # Handle: import X from './module'
+        for match in _RE_JS_IMPORT_DEFAULT.finditer(content):
+            local_name = match.group(1)
+            module_path = match.group(2)
+            # Skip if already captured as named import
+            if local_name in mapping:
+                continue
+            candidates = _js_import_to_candidates(module_path, rel)
+            for cand in candidates:
+                if cand in known_files:
+                    mapping[local_name] = (cand, "default")
+                    break
+
+        # Handle: const X = require('./module')
+        for match in _RE_JS_REQUIRE.finditer(content):
+            default_name = match.group(1)
+            destructured = match.group(2)
+            module_path = match.group(3)
+            candidates = _js_import_to_candidates(module_path, rel)
+            target = None
+            for cand in candidates:
+                if cand in known_files:
+                    target = cand
+                    break
+            if target:
+                if default_name:
+                    mapping[default_name] = (target, "default")
+                elif destructured:
+                    for part in destructured.split(","):
+                        part = part.strip()
+                        if not part:
+                            continue
+                        if ":" in part:
+                            original, _, local = part.partition(":")
+                            mapping[local.strip()] = (target, original.strip())
+                        else:
+                            mapping[part] = (target, part)
+
+        result[rel] = mapping
+    return result
+
+
 # =========================================================================
 # Phase 3 — AI source identification
 # =========================================================================
@@ -172,17 +372,32 @@ def _resolve_imports(
 def _find_ai_sources(
     symbol_table: Dict[str, Dict],
 ) -> List[Dict]:
-    """Run trace_ai_data_flow on each file, collect AI output call sites."""
+    """Run trace_ai_data_flow on each file, collect AI output call sites.
+
+    For Python files, uses ast_analysis.trace_ai_data_flow.
+    For JS/TS files, uses cached ast_engine analysis data_flows.
+    """
     sources = []
     for rel, info in symbol_table.items():
-        flows = trace_ai_data_flow(info["content"])
-        for flow in flows:
-            sources.append({
-                "file": rel,
-                "source": flow["source"],
-                "source_line": flow["source_line"],
-                "destinations": flow["destinations"],
-            })
+        lang = info.get("lang", "python")
+        if lang == "python":
+            flows = trace_ai_data_flow(info["content"])
+            for flow in flows:
+                sources.append({
+                    "file": rel,
+                    "source": flow["source"],
+                    "source_line": flow["source_line"],
+                    "destinations": flow["destinations"],
+                })
+        elif lang == "javascript":
+            analysis = info.get("_analysis", {})
+            for flow in analysis.get("data_flows", []):
+                sources.append({
+                    "file": rel,
+                    "source": flow.get("source", ""),
+                    "source_line": flow.get("source_line", 0),
+                    "destinations": flow.get("destinations", []),
+                })
     return sources
 
 
@@ -193,18 +408,35 @@ def _find_ai_sources(
 def _find_oversight_gates(
     symbol_table: Dict[str, Dict],
 ) -> List[Dict]:
-    """Run detect_human_oversight on each file, collect oversight patterns."""
+    """Run detect_human_oversight on each file, collect oversight patterns.
+
+    For Python files, uses ast_analysis.detect_human_oversight.
+    For JS/TS files, uses cached ast_engine analysis oversight data.
+    """
     gates = []
     for rel, info in symbol_table.items():
-        result = detect_human_oversight(info["content"])
-        for pattern in result.get("oversight_patterns", []):
-            gates.append({
-                "file": rel,
-                "name": pattern.get("name", ""),
-                "line": pattern.get("line", 0),
-                "type": pattern.get("type", ""),
-                "detail": pattern.get("detail", ""),
-            })
+        lang = info.get("lang", "python")
+        if lang == "python":
+            result = detect_human_oversight(info["content"])
+            for pattern in result.get("oversight_patterns", []):
+                gates.append({
+                    "file": rel,
+                    "name": pattern.get("name", ""),
+                    "line": pattern.get("line", 0),
+                    "type": pattern.get("type", ""),
+                    "detail": pattern.get("detail", ""),
+                })
+        elif lang == "javascript":
+            analysis = info.get("_analysis", {})
+            oversight = analysis.get("oversight", {})
+            for pattern in oversight.get("oversight_patterns", []):
+                gates.append({
+                    "file": rel,
+                    "name": pattern.get("name", pattern.get("keyword", "")),
+                    "line": pattern.get("line", 0),
+                    "type": pattern.get("type", "keyword"),
+                    "detail": pattern.get("detail", pattern.get("keyword", "")),
+                })
     return gates
 
 
@@ -227,8 +459,13 @@ def _trace_cross_file_paths(
     # Build per-file oversight detection cache (boolean, not score)
     oversight_cache: Dict[str, bool] = {}
     for rel, info in symbol_table.items():
-        result = detect_human_oversight(info["content"])
-        oversight_cache[rel] = result.get("has_oversight", False)
+        lang = info.get("lang", "python")
+        if lang == "python":
+            result = detect_human_oversight(info["content"])
+            oversight_cache[rel] = result.get("has_oversight", False)
+        elif lang == "javascript":
+            analysis = info.get("_analysis", {})
+            oversight_cache[rel] = analysis.get("oversight", {}).get("has_oversight", False)
 
     # Build reverse import map: which files import each (file, function)?
     # {(source_file, func_name): [(importing_file, local_name), ...]}
@@ -412,17 +649,17 @@ def analyse_project_oversight(project_path: str) -> dict:
             },
         }
 
-    # Phase 1: collect Python files
+    # Phase 1: collect source files (Python + JS/TS)
     py_files = _collect_python_files(pp)
+    js_ts_files = _collect_js_ts_files(pp)
 
-    # If no Python files found, return honest "not analysed" result
-    # rather than a misleading oversight_score of 100.
-    if not py_files:
+    # If no supported files found, return honest "not analysed" result
+    if not py_files and not js_ts_files:
         return {
             "analysed": False,
             "reason": (
-                "No Python files found — cross-file flow analysis"
-                " currently supports Python only"
+                "No Python or JavaScript/TypeScript files found — "
+                "cross-file flow analysis supports Python and JS/TS"
             ),
             "ai_sources": [],
             "oversight_gates": [],
@@ -435,17 +672,23 @@ def analyse_project_oversight(project_path: str) -> dict:
                 "reviewed": 0,
                 "unreviewed": 0,
                 "oversight_score": -1,
-                "note": (
-                    "JS/TS cross-file flow analysis not yet supported"
-                ),
             },
         }
 
-    # Phase 1 (cont.): symbol table
+    # Phase 1 (cont.): build unified symbol table
     symbol_table = _build_symbol_table(pp, py_files)
+    js_ts_symbol_table = _build_js_ts_symbol_table(pp, js_ts_files)
+    symbol_table.update(js_ts_symbol_table)
 
-    # Phase 2: import resolution
+    # Phase 2: import resolution (Python + JS/TS)
     import_map = _resolve_imports(pp, symbol_table)
+    js_ts_import_map = _resolve_js_ts_imports(pp, symbol_table)
+    # Merge JS/TS imports into the unified import map
+    for rel, mapping in js_ts_import_map.items():
+        if rel in import_map:
+            import_map[rel].update(mapping)
+        else:
+            import_map[rel] = mapping
 
     # Phase 3: AI source identification
     ai_sources = _find_ai_sources(symbol_table)
