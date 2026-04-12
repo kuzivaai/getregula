@@ -390,7 +390,7 @@ pytest tests/ -q
 
 ## Roadmap
 
-- **v1.2:** ~~Production readiness~~ — shipped 2026-03-28. Agent autonomy detection, `--skip-tests`, `--min-tier`, bias testing (`regula bias`, CrowS-Pairs), 8-framework mapping. (Test count at that release — see CHANGELOG.)
+- **v1.2:** ~~Production readiness~~ — shipped 2026-03-28. Agent autonomy detection, `--skip-tests`, `--min-tier`, bias testing (`regula bias`, CrowS-Pairs + BBQ benchmarks with statistical confidence intervals), 8-framework mapping. (Test count at that release — see CHANGELOG.)
 - **v1.3:** GPAI Code of Practice chapter-level obligation mapping (`regula gpai-check`, three chapters: Transparency / Copyright / Safety & Security) — **shipped**. Colorado AI Act + South Korea AI Basic Act Tier-3 pages — **shipped**. Harmonised-standards plumbing ready for Q4 2026 CEN-CENELEC publication — **shipped (stub)**. Prompt-injection detector (OWASP LLM01:2025 — direct, indirect, and tool-output vectors) — **shipped**. Article 6(3) self-assessment decision tree (`regula exempt`, with the missed-Commission-deadline disclosure surfaced in `regula gap`) — **shipped**. SME-simplified Annex IV under Article 11(1) (`regula conform --sme`) — **shipped (interim format pending Commission template)**. JS/TS tree-sitter data-flow tracing with destination classification (log / api_response / human_review / persisted / display / automated_action) — **shipped** in `scripts/ast_engine.py`. On the backlog for a future release: AVID vulnerability database mapping for finding metadata, typosquatting detection for AI-library dependencies.
 - **Not planned yet:** DPO dashboard, Slack/Teams alerting. These require validation that there are users who want them first.
 

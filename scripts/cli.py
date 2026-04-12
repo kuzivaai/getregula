@@ -2654,7 +2654,7 @@ def _build_subparsers(subparsers):
     p_mcp.set_defaults(func=cmd_mcp_server)
 
     # --- bias ---
-    p_bias = subparsers.add_parser("bias", help="Evaluate model bias using CrowS-Pairs dataset")
+    p_bias = subparsers.add_parser("bias", help="Evaluate model bias using CrowS-Pairs + BBQ benchmarks")
     p_bias.add_argument("--model", default="llama3", help="Ollama model name (default: llama3)")
     p_bias.add_argument("--endpoint", default="http://localhost:11434", help="Ollama API endpoint")
     p_bias.add_argument("--sample", type=int, default=100, help="Max items per benchmark (default: 100)")
