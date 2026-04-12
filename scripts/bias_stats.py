@@ -95,8 +95,8 @@ def confidence_label(n: int) -> str:
     Thresholds based on binomial CI width at 50% base rate:
     - n < 5:  insufficient (CI width > 60%)
     - n < 10: low (CI width > 40%)
-    - n < 30: moderate (CI width > 20%)
-    - n >= 30: high (CI width < 20%)
+    - n <= 30: moderate (CI width > 20%)
+    - n > 30:  high (CI width < 20%)
     """
     if n < 5:
         return "insufficient"
