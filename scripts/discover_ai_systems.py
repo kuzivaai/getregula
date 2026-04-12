@@ -65,7 +65,7 @@ def load_registry() -> dict:
         try:
             return json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):
-            pass
+            pass  # corrupt or missing registry; return default
     return {"version": "1.0", "systems": {}}
 
 
@@ -87,7 +87,7 @@ def scan_dependencies(project_path: Path) -> dict:
         try:
             content = filepath.read_text(encoding="utf-8", errors="ignore").lower()
         except (PermissionError, OSError):
-            continue
+            continue  # dep file unreadable; skip
 
         for lib in AI_DEPENDENCY_PATTERNS.get(language, []):
             if lib.lower() in content:
@@ -133,7 +133,7 @@ def scan_code_files(project_path: Path) -> dict:
             try:
                 content = filepath.read_text(encoding="utf-8", errors="ignore")
             except (PermissionError, OSError):
-                continue
+                continue  # source file unreadable; skip
 
             # Respect file-level regula-ignore directive (first 10 lines)
             first_lines = "\n".join(content.split("\n")[:10])
@@ -273,7 +273,8 @@ def scan_organization(base_path: str, register: bool = True) -> dict:
                 results.append(discovery)
                 if register:
                     register_system(discovery)
-            except Exception:  # Intentional: multiple error sources
+            except Exception as e:
+                print(f"regula: failed to analyse {entry.name}: {e}", file=sys.stderr)
                 continue
 
     risk_dist = Counter()
@@ -472,7 +473,7 @@ def update_compliance_status(project_name: str, new_status: str, note: str = "")
             "note": note,
         })
     except (OSError,):
-        pass
+        pass  # audit log write failed; non-critical
 
     return systems[project_name]
 

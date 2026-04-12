@@ -409,6 +409,7 @@ def _agent_instructions(plan: HealPlan) -> str:
 def gh(*args: str) -> tuple[int, str]:
     if shutil.which("gh") is None:
         return 127, "gh CLI not found"
+    # args are hardcoded strings at each call site; no shell injection risk
     proc = subprocess.run(
         ["gh", *args], cwd=REPO_ROOT,
         capture_output=True, text=True, check=False,

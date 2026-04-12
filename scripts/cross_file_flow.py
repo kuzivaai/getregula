@@ -79,11 +79,11 @@ def _build_symbol_table(
         try:
             content = fp.read_text(encoding="utf-8", errors="replace")
         except (OSError, PermissionError):
-            continue
+            continue  # file unreadable; skip
         try:
             tree = ast.parse(content, filename=str(fp))
         except SyntaxError:
-            continue
+            continue  # unparseable Python; skip
 
         rel = str(fp.relative_to(project_path))
         funcs: Dict[str, int] = {}
@@ -130,7 +130,7 @@ def _resolve_imports(
         try:
             tree = ast.parse(content)
         except SyntaxError:
-            continue
+            continue  # unparseable; skip import analysis
 
         mapping: Dict[str, Tuple[str, str]] = {}
         for node in ast.walk(tree):
@@ -245,10 +245,15 @@ def _trace_cross_file_paths(
         file_rel = src["file"]
         # Find which function this AI call is in
         file_info = symbol_table.get(file_rel, {})
-        for fname, fline in file_info.get("functions", {}).items():
-            # If the AI source line is after the function def, it's likely in this function
-            if fline <= src["source_line"]:
+        funcs = file_info.get("functions", {})
+        # Build sorted list of (start_line, name) to determine function ranges
+        sorted_funcs = sorted(funcs.items(), key=lambda x: x[1])
+        for i, (fname, fline) in enumerate(sorted_funcs):
+            # Function range: from its start line to the next function's start line (exclusive), or EOF
+            next_fline = sorted_funcs[i + 1][1] if i + 1 < len(sorted_funcs) else float("inf")
+            if fline <= src["source_line"] < next_fline:
                 ai_producing_funcs.add((file_rel, fname))
+                break
 
     flow_paths = []
     unreviewed_paths = []

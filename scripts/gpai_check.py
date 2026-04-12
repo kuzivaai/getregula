@@ -124,7 +124,7 @@ def _iter_python_files(project_path: Path, max_files: int = 2000):
         try:
             content = p.read_text(encoding='utf-8', errors='ignore')
         except OSError:
-            continue
+            continue  # file unreadable; skip
         # Honour the project's `# regula-ignore` file-level suppression marker.
         head = content[:512]
         if 'regula-ignore' in head and 'regula-ignore:' not in head.split('regula-ignore', 1)[1][:1]:
@@ -134,7 +134,7 @@ def _iter_python_files(project_path: Path, max_files: int = 2000):
         try:
             rel = p.relative_to(project_path)
         except ValueError:
-            continue
+            continue  # path not relative to project; skip
         yield str(rel), content
         count += 1
         if count >= max_files:
@@ -219,7 +219,7 @@ def _find_doc_file(project_path: Path, candidates: list[str]) -> str | None:
                     if any(d.iterdir()):
                         return name
                 except OSError:
-                    continue
+                    continue  # dir unreadable; skip indicator
         else:
             for root in _DOC_SEARCH_ROOTS:
                 p = (project_path / root / name) if root else (project_path / name)
@@ -241,7 +241,7 @@ def _find_readme_section(project_path: Path, keywords: list[str]) -> str | None:
         try:
             content = p.read_text(encoding='utf-8', errors='ignore')
         except OSError:
-            continue
+            continue  # README unreadable; skip
         for line in content.splitlines():
             s = line.strip().lower()
             if s.startswith('#'):

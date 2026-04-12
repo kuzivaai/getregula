@@ -58,7 +58,7 @@ your lawyer's job, not Regula's.
 | Cross-file Article 14 human-oversight detection (Python) | `regula oversight` |
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 926 internal regression tests, 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
+| 925 internal regression tests, 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -75,13 +75,13 @@ your lawyer's job, not Regula's.
 > Every number Regula publishes can be reproduced by anyone with a checkout
 > of the repo. The commands below run in under 30 seconds total on a laptop.
 
-### 3.1 Internal test suite — 926 / 926 green
+### 3.1 Internal test suite — 925 / 925 green
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 tests/test_classification.py
-# Expected: Results: 926 passed, 0 failed (476 test functions)
+# Expected: Results: 925 passed, 0 failed (492 test functions)
 ```
 
 This runs the custom auto-discovery runner. It walks `globals()` of
@@ -237,7 +237,7 @@ and decide for themselves whether it is too broad or too narrow.
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/test_classification.py` (926 tests) |
+| Test suite | `tests/test_classification.py` (925 tests) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit hook source | `hooks/pre_tool_use.py` |

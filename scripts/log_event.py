@@ -55,7 +55,7 @@ if sys.platform == "win32":
             f.seek(0)
             msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
         except OSError:
-            pass
+            pass  # unlock failure is non-fatal on Windows
 else:
     import fcntl
 
@@ -165,8 +165,8 @@ def log_event(
                     event.data["tsa_url"] = tst["tsa_url"]
                     # Recompute hash with TST included in data
                     event.current_hash = compute_hash(event.to_dict(), previous_hash)
-                except Exception:
-                    pass  # Timestamping is best-effort
+                except Exception as e:
+                    print(f"regula: RFC 3161 timestamping failed: {e}", file=sys.stderr)
 
             f.write(event.to_json() + "\n")
             f.flush()
@@ -190,7 +190,7 @@ def query_events(
                     try:
                         event = json.loads(line.strip())
                     except json.JSONDecodeError:
-                        continue
+                        continue  # skip malformed log line
                     if event_type and event.get("event_type") != event_type:
                         continue
                     if after and event.get("timestamp", "") < after:
@@ -201,7 +201,7 @@ def query_events(
                     if len(events) >= limit:
                         return events
         except OSError:
-            continue
+            continue  # unreadable audit file; skip
     return events
 
 

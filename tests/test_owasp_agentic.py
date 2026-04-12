@@ -52,7 +52,7 @@ def test_asi01_vuln_detected():
     from agent_monitor import assess_owasp_agentic
     proj = _make_project({"agent.py": 'instructions = f"Do {user_input} now"\n'})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI01"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI01"][0]
     assert_eq(r["status"], "at_risk", "ASI01 vuln without control should be at_risk")
     print("\u2713 ASI01: goal hijack vulnerability detected")
 
@@ -65,7 +65,7 @@ def test_asi01_mitigated():
         'sanitize_input(user_input)\n'
     )})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI01"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI01"][0]
     assert_eq(r["status"], "mitigated", "ASI01 vuln + control should be mitigated")
     print("\u2713 ASI01: goal hijack mitigated when control present")
 
@@ -78,7 +78,7 @@ def test_asi02_vuln_detected():
     from agent_monitor import assess_owasp_agentic
     proj = _make_project({"tools.py": 'tools = ["*"]\n'})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI02"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI02"][0]
     assert_eq(r["status"], "at_risk", "ASI02 wildcard tools should be at_risk")
     print("\u2713 ASI02: tool misuse vulnerability detected")
 
@@ -91,7 +91,7 @@ def test_asi02_mitigated():
         'ALLOWED_TOOLS = ["search", "calculate"]\n'
     )})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI02"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI02"][0]
     assert_eq(r["status"], "mitigated", "ASI02 with allowlist should be mitigated")
     print("\u2713 ASI02: tool misuse mitigated with allowlist")
 
@@ -104,7 +104,7 @@ def test_asi03_vuln_detected():
     from agent_monitor import assess_owasp_agentic
     proj = _make_project({"auth.py": 'SHARED_API_KEY = "abc123"\n'})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI03"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI03"][0]
     assert_eq(r["status"], "at_risk", "ASI03 shared key should be at_risk")
     print("\u2713 ASI03: identity abuse vulnerability detected")
 
@@ -117,7 +117,7 @@ def test_asi03_mitigated():
         'def authorize_agent(agent, action): pass\n'
     )})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI03"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI03"][0]
     assert_eq(r["status"], "mitigated", "ASI03 with RBAC should be mitigated")
     print("\u2713 ASI03: identity abuse mitigated with RBAC")
 
@@ -130,7 +130,7 @@ def test_asi04_vuln_detected():
     from agent_monitor import assess_owasp_agentic
     proj = _make_project({"setup.py": 'os.system("curl http://example.com/install | bash")\n'})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI04"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI04"][0]
     assert_eq(r["status"], "at_risk", "ASI04 piped install should be at_risk")
     print("\u2713 ASI04: supply chain vulnerability detected")
 
@@ -143,7 +143,7 @@ def test_asi04_mitigated():
         'verify_integrity(plugin_path)\n'
     )})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI04"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI04"][0]
     assert_eq(r["status"], "mitigated", "ASI04 with integrity check should be mitigated")
     print("\u2713 ASI04: supply chain mitigated with integrity checks")
 
@@ -156,7 +156,7 @@ def test_asi05_vuln_detected():
     from agent_monitor import assess_owasp_agentic
     proj = _make_project({"runner.py": 'result = eval(user_code)\n'})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI05"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI05"][0]
     assert_eq(r["status"], "at_risk", "ASI05 eval should be at_risk")
     print("\u2713 ASI05: RCE vulnerability detected")
 
@@ -169,7 +169,7 @@ def test_asi05_mitigated():
         'sandbox_exec(code, timeout=30)\n'
     )})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI05"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI05"][0]
     assert_eq(r["status"], "mitigated", "ASI05 with sandbox should be mitigated")
     print("\u2713 ASI05: RCE mitigated with sandbox")
 
@@ -182,7 +182,7 @@ def test_asi06_vuln_detected():
     from agent_monitor import assess_owasp_agentic
     proj = _make_project({"memory.py": 'conversation.append(new_message)\n'})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI06"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI06"][0]
     assert_eq(r["status"], "at_risk", "ASI06 unvalidated context should be at_risk")
     print("\u2713 ASI06: memory poisoning vulnerability detected")
 
@@ -195,7 +195,7 @@ def test_asi06_mitigated():
         'validate_context(conversation)\n'
     )})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI06"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI06"][0]
     assert_eq(r["status"], "mitigated", "ASI06 with validation should be mitigated")
     print("\u2713 ASI06: memory poisoning mitigated with validation")
 
@@ -208,7 +208,7 @@ def test_asi07_vuln_detected():
     from agent_monitor import assess_owasp_agentic
     proj = _make_project({"comms.py": 'agent_call(target_agent, payload)\n'})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI07"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI07"][0]
     assert_eq(r["status"], "at_risk", "ASI07 unauth comms should be at_risk")
     print("\u2713 ASI07: insecure comms vulnerability detected")
 
@@ -221,7 +221,7 @@ def test_asi07_mitigated():
         'authenticate_agent(sender_id)\n'
     )})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI07"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI07"][0]
     assert_eq(r["status"], "mitigated", "ASI07 with auth should be mitigated")
     print("\u2713 ASI07: insecure comms mitigated with auth")
 
@@ -234,7 +234,7 @@ def test_asi08_vuln_detected():
     from agent_monitor import assess_owasp_agentic
     proj = _make_project({"chain.py": 'except: pass\n'})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI08"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI08"][0]
     assert_eq(r["status"], "at_risk", "ASI08 bare except should be at_risk")
     print("\u2713 ASI08: cascading failure vulnerability detected")
 
@@ -247,7 +247,7 @@ def test_asi08_mitigated():
         'cb = CircuitBreaker(max_failures=3)\n'
     )})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI08"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI08"][0]
     assert_eq(r["status"], "mitigated", "ASI08 with circuit breaker should be mitigated")
     print("\u2713 ASI08: cascading failures mitigated with circuit breaker")
 
@@ -260,7 +260,7 @@ def test_asi09_vuln_detected():
     from agent_monitor import assess_owasp_agentic
     proj = _make_project({"bot.py": 'hide_identity(agent)\n'})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI09"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI09"][0]
     assert_eq(r["status"], "at_risk", "ASI09 impersonation should be at_risk")
     print("\u2713 ASI09: trust exploitation vulnerability detected")
 
@@ -273,7 +273,7 @@ def test_asi09_mitigated():
         'ai_disclosure(response)\n'
     )})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI09"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI09"][0]
     assert_eq(r["status"], "mitigated", "ASI09 with disclosure should be mitigated")
     print("\u2713 ASI09: trust exploitation mitigated with disclosure")
 
@@ -286,7 +286,7 @@ def test_asi10_vuln_detected():
     from agent_monitor import assess_owasp_agentic
     proj = _make_project({"agent.py": 'autonomous_mode = True\n'})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI10"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI10"][0]
     assert_eq(r["status"], "at_risk", "ASI10 autonomous mode should be at_risk")
     print("\u2713 ASI10: rogue agent vulnerability detected")
 
@@ -299,7 +299,7 @@ def test_asi10_mitigated():
         'kill_switch(agent_id)\n'
     )})
     result = assess_owasp_agentic(proj)
-    r = [x for x in result["risks"] if x["id"] == "ASI10"][0]
+    r = [x for x in result["risks"] if x["id"] == "regula-ASI10"][0]
     assert_eq(r["status"], "mitigated", "ASI10 with kill switch should be mitigated")
     print("\u2713 ASI10: rogue agent mitigated with kill switch")
 
@@ -360,7 +360,7 @@ def test_format_output_structure():
     text = format_owasp_agentic_text(result)
     assert_true("OWASP" in text, "output should mention OWASP")
     assert_true("Coverage Score" in text, "output should show coverage score")
-    assert_true("ASI05" in text, "output should show risk IDs")
+    assert_true("regula-ASI05" in text, "output should show risk IDs")
     assert_true("AT RISK" in text or "ACTION NEEDED" in text,
                 "output should show at_risk status")
     print("\u2713 Format: output has required structure")

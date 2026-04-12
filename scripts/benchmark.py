@@ -90,7 +90,7 @@ def _find_first_indicator_line(filepath: Path, indicators: list) -> int:
                 if re.search(indicator, line_lower):
                     return i
             except re.error:
-                pass
+                pass  # invalid regex indicator; substring check suffices
 
     return 1
 

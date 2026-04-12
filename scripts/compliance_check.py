@@ -217,7 +217,12 @@ def _check_article_9(project_path: str, files_index: list) -> tuple:
             if ai_matched and matched:
                 references_ai = True
 
-    # Scoring rubric
+    # Scoring rubric for Article 9 — Risk Management System
+    # Components: (1) risk files exist, (2) they reference the AI system, (3) structured mitigations.
+    # 0 = no risk docs; 30 = generic risk docs not mentioning AI; 60 = risk docs reference
+    # the AI system; 100 = structured register with mitigations (owners/deadlines/statuses).
+    # Thresholds are heuristic, not empirically calibrated — chosen to penalise generic risk
+    # docs that don't address AI-specific risks per Article 9(2).
     if not risk_files_found and not risk_content_found:
         score = 0
         gaps.append("No risk assessment documentation found")
@@ -319,6 +324,9 @@ def _check_article_10(project_path: str, files_index: list) -> tuple:
     if component_scores["data_validation"] == 0:
         gaps.append("No data validation framework detected")
 
+    # Scoring: 3 components — data_docs, bias_checks, data_validation.
+    # 0 = nothing; 30 = 1 component (minimal awareness); 65 = 2 (partial governance);
+    # 100 = all 3 (docs + bias + validation). Heuristic, not empirically calibrated.
     total_components = sum(component_scores.values())
     score_map = {0: 0, 1: 30, 2: 65, 3: 100}
     score = score_map[total_components]
@@ -457,6 +465,10 @@ def _check_article_11(project_path: str, files_index: list) -> tuple:
     if component_scores["system_desc"] == 0 and component_scores["annex_iv"] == 0:
         gaps.append("No system architecture or design documentation found")
 
+    # Scoring: 4 components — annex_iv, model_card, system_desc, regula_docs.
+    # 0 = nothing; 25 = 1 (token effort); 55 = 2; 80 = 3 (near-complete); 100 = all 4.
+    # More granular than other articles because Annex IV documentation has more distinct
+    # deliverables. Heuristic, not empirically calibrated.
     total = sum(component_scores.values())
     score_map = {0: 0, 1: 25, 2: 55, 3: 80, 4: 100}
     score = score_map[total]
@@ -474,8 +486,9 @@ def _check_article_12(project_path: str, files_index: list) -> tuple:
         r"import\s+logging", r"from\s+logging\s+import", r"getLogger",
         r"logger\s*=", r"logger\.", r"log_event", r"audit_log",
         r"audit_trail", r"winston", r"pino", r"bunyan",
-        r"console\.log", r"console\.info", r"console\.warn",
     ]
+    # NOTE: console.log/info/warn deliberately excluded — they are not
+    # structured audit logging and should not give Article 12 credit.
     monitoring_patterns = [
         r"prometheus", r"datadog", r"sentry", r"new.?relic",
         r"grafana", r"elastic.?search", r"kibana", r"splunk",
@@ -544,8 +557,8 @@ def _check_article_12(project_path: str, files_index: list) -> tuple:
                     if ast_result.get("structured"):
                         evidence.append(f"AST: structured logging in: {rel_path}")
                         component_scores["structured_logging"] = 1
-            except (SyntaxError, ValueError, TypeError):
-                pass
+            except (SyntaxError, ValueError, TypeError) as e:
+                print(f"regula: AST analysis failed for {rel_path}: {e}", file=sys.stderr)
 
     if component_scores["logging_present"] == 0:
         gaps.append("No logging framework detected in code files")
@@ -554,6 +567,10 @@ def _check_article_12(project_path: str, files_index: list) -> tuple:
     if component_scores["structured_logging"] == 0:
         gaps.append("No structured or auditable logging format detected")
 
+    # Scoring: 3 components — logging_present, ai_ops_logged, structured_logging.
+    # 0 = no logging; 30 = basic logging exists; 65 = AI ops or structured logging;
+    # 100 = all 3 (structured audit trail of AI operations).
+    # Same 0/30/65/100 curve as Articles 10 and 13. Heuristic, not empirically calibrated.
     total = sum(component_scores.values())
     score_map = {0: 0, 1: 30, 2: 65, 3: 100}
     score = score_map[total]
@@ -630,6 +647,10 @@ def _check_article_13(project_path: str, files_index: list) -> tuple:
     if component_scores["user_disclosure"] == 0:
         gaps.append("No user-facing AI disclosure or transparency notice found in code")
 
+    # Scoring: 3 components — model_card, capabilities_docs, user_disclosure.
+    # 0 = nothing; 30 = 1 (e.g. model card only); 65 = 2 (docs + disclosure);
+    # 100 = all 3 (full transparency chain from docs to user-facing notice).
+    # Same curve as Articles 10/12. Heuristic, not empirically calibrated.
     total = sum(component_scores.values())
     score_map = {0: 0, 1: 30, 2: 65, 3: 100}
     score = score_map[total]
@@ -701,8 +722,8 @@ def _check_article_14(project_path: str, files_index: list) -> tuple:
                             f"AST: review-before-action flow detected in: {rel_path}"
                         )
                         component_scores["review_before_action"] = 1
-            except (SyntaxError, ValueError, TypeError):
-                pass
+            except (SyntaxError, ValueError, TypeError) as e:
+                print(f"regula: AST oversight analysis failed for {rel_path}: {e}", file=sys.stderr)
 
     # JS/TS files: use ast_engine for oversight detection
     if _HAS_AST_ENGINE:
@@ -721,14 +742,19 @@ def _check_article_14(project_path: str, files_index: list) -> tuple:
                     component_scores["oversight_mechanisms"] = 1
                 for ad in oversight.get("automated_decisions", []):
                     gaps.append(f"JS/TS automated decision without review: {rel_path}:{ad.get('line', '?')}")
-            except Exception:
-                pass  # AST analysis failure on one file must not block gap assessment
+            except Exception as e:
+                print(f"regula: JS/TS AST analysis failed for {rel_path}: {e}", file=sys.stderr)
 
     if component_scores["oversight_mechanisms"] == 0:
         gaps.append("No human oversight mechanisms found (approval workflows, review gates, overrides)")
     if component_scores["review_before_action"] == 0:
         gaps.append("No evidence that AI outputs are reviewed by humans before action is taken")
 
+    # Scoring: 2 components — oversight_mechanisms, review_before_action.
+    # 0 = nothing; 45 = oversight exists but no review-before-action gate;
+    # 100 = both present. The 45 midpoint (vs 30 for other articles) reflects that
+    # any human-in-the-loop mechanism is a significant step. Heuristic, not empirically
+    # calibrated.
     total = sum(component_scores.values())
     score_map = {0: 0, 1: 45, 2: 100}
     score = score_map[total]
@@ -845,8 +871,8 @@ def _check_article_15(project_path: str, files_index: list) -> tuple:
                         gaps.append(f"AI security issue in {Path(rel_path).name}: {sf['description']} (OWASP {sf['owasp']})")
                     else:
                         evidence.append(f"AI security check ran on {Path(rel_path).name}")
-            except (ImportError, ValueError, TypeError):
-                pass
+            except (ImportError, ValueError, TypeError) as e:
+                print(f"regula: security check failed for {Path(rel_path).name}: {e}", file=sys.stderr)
 
     if test_file_count > 1:
         evidence.append(f"Total test files found: {test_file_count}")
@@ -896,9 +922,15 @@ def _check_article_15(project_path: str, files_index: list) -> tuple:
 
             # Contribute to score: map pinning_score (0-100) → 0-1 component
             dep_pinning_score = 1 if pinning_score >= 50 else 0
-        except Exception:  # Intentional: multiple error sources
-            pass
+        except Exception as e:
+            print(f"regula: dependency pinning analysis failed: {e}", file=sys.stderr)
 
+    # Scoring: 6 components — tests, security, monitoring, performance, credentials,
+    # dep_pinning. Uses a piecewise linear formula rather than a lookup table because
+    # there are more components. 0 = nothing; 20/40 = 1-2 (basic hygiene); 45/60 = 3-4
+    # (moderate coverage); 90 = 5; 100 = all 6. The diminishing increments (20→15→30→10)
+    # reflect that early components (tests, security) matter most. Heuristic, not
+    # empirically calibrated.
     total = sum(component_scores.values()) + dep_pinning_score
     if total == 0:
         score = 0
@@ -950,6 +982,10 @@ def _score_to_status(score: int) -> str:
 # ---------------------------------------------------------------------------
 
 # Article 6 guidance disclosure — embedded in every assessment dict.
+# TODO: Update when the Commission publishes Article 6(5) guidelines. The Feb 2026
+# deadline was missed; publication is expected but not confirmed as of April 2026.
+# When published, set "missed" to False, update "current_status", and revise the
+# "implication" text to reflect the actual guidance content.
 ARTICLE_6_GUIDELINES_STATUS = {
     "deadline": "2026-02-02",
     "deadline_source": "EU AI Act Article 6(5)",

@@ -116,7 +116,7 @@ def count_patterns() -> dict:
             r'"[^"]+":\s*r[\'"]', text
         ))
     except OSError:
-        pass
+        pass  # source file unreadable; counts stay at zero
     out["grand_total"] = (
         out["tier_regexes"] + out["ai_indicators"] + out["gpai_training"]
         + out["architecture"] + out["data_source"] + out["logging"]
@@ -137,8 +137,8 @@ def count_frameworks() -> int:
         if fm is not None:
             keys = getattr(fm, "_FRAMEWORK_KEYS", {})
             return len(set(keys.values()))
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"regula: framework_mapper load failed: {e}", file=sys.stderr)
     # Fallback: count from crosswalk YAML
     crosswalk = REPO / "references" / "framework_crosswalk.yaml"
     if not crosswalk.exists():

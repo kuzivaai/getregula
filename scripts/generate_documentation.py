@@ -55,7 +55,8 @@ def extract_ai_dependencies(project_path: str) -> list:
                         "version": d.get("version"),
                         "source_file": dep_file,
                     })
-        except (OSError, ValueError, KeyError):
+        except (OSError, ValueError, KeyError) as e:
+            print(f"regula: skipping dep file {dep_file}: {e}", file=sys.stderr)
             continue
 
     return ai_deps
@@ -90,7 +91,7 @@ def scan_project(project_path: str) -> dict:
                 try:
                     content = filepath.read_text(encoding="utf-8", errors="ignore")
                 except (PermissionError, OSError):
-                    continue
+                    continue  # unreadable file; skip
 
                 if is_ai_related(content):
                     findings["ai_files"].append(str(rel_path))
@@ -139,7 +140,7 @@ def ast_analyse_project(project_path: str) -> dict:
         try:
             content = filepath.read_text(encoding="utf-8", errors="ignore")
         except OSError:
-            continue
+            continue  # unreadable file; skip
 
         rel = str(filepath.relative_to(project))
 
@@ -503,8 +504,8 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
             doc += "\n_Files importing AI modules inherit regulatory obligations from those modules._\n\n"
             if completion["3.3"] == "empty":
                 completion["3.3"] = "partial"
-    except Exception:
-        pass  # Cross-file resolution must never block doc generation
+    except Exception as e:
+        print(f"regula: cross-file resolution failed: {e}", file=sys.stderr)
 
     # --- Section 4: Performance Metrics Appropriateness (Annex IV, point 4) ---
     doc += "---\n\n## 4. Performance Metrics Appropriateness\n\n"
@@ -541,7 +542,7 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
                     f["file"] = c["file"]
                 security_findings.extend(sf)
             except OSError:
-                pass
+                pass  # unreadable file; skip security check
 
     completion["1"] = "auto"  # Section 1 is always auto-populated from scan
     if security_findings or findings["classifications"]:
@@ -576,7 +577,7 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
         if result.returncode == 0:
             git_log_lines = [l.strip() for l in result.stdout.strip().split("\n") if l.strip()]
     except (OSError, _sp.TimeoutExpired):
-        pass
+        pass  # git not available or slow; skip commit history
 
     if git_log_lines:
         doc += "**[AUTO-DETECTED]** Recent development history (last 20 commits):\n\n"
@@ -605,7 +606,7 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
                     doc += f"- `{tag}`\n"
                 doc += "\n"
     except (OSError, _sp.TimeoutExpired):
-        pass
+        pass  # git not available or slow; skip version tags
 
     doc += "**[COMPLETE THESE]**\n\n"
     doc += "Significant changes since initial deployment:\n"
@@ -638,7 +639,7 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
                     elif stripped and not stripped.startswith("#"):
                         in_frameworks = False
         except OSError:
-            pass
+            pass  # policy file unreadable; skip
 
     if policy_frameworks:
         doc += "**[AUTO-DETECTED]** Frameworks declared in `regula-policy.yaml`:\n\n"
@@ -670,7 +671,7 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
                         if _re.search(pattern, text, _re.IGNORECASE):
                             detected_standards.add(std_name)
                 except OSError:
-                    continue
+                    continue  # unreadable file; skip
 
     if detected_standards:
         doc += "**[AUTO-DETECTED]** Standards referenced in project files:\n\n"
@@ -744,7 +745,7 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
                             monitoring_indicators.append(f"{label}: `{rel_p}`")
                             break
                 except OSError:
-                    continue
+                    continue  # unreadable file; skip
 
     if monitoring_indicators:
         doc += "**[AUTO-DETECTED]** Monitoring infrastructure found:\n\n"
@@ -776,7 +777,7 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
                 readme_content = readme_path.read_text(encoding="utf-8", errors="ignore")
                 break
             except OSError:
-                continue
+                continue  # unreadable README; try next candidate
 
     if readme_content:
         lines_r = readme_content.split("\n")
@@ -1657,7 +1658,7 @@ def main():
             "types": ["annex_iv"] + (["qms"] if args.qms or getattr(args, "all", False) else []),
         })
     except (OSError,):
-        pass
+        pass  # audit logging is best-effort
 
 
 def generate_conformity_declaration(

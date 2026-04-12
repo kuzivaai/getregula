@@ -1000,7 +1000,7 @@ def resolve_cross_file_ai_flows(project_path: str) -> List[Dict]:
         try:
             content = py_file.read_text(encoding="utf-8", errors="ignore")
         except OSError:
-            continue
+            continue  # unreadable file; skip
 
         rel = str(py_file.relative_to(root))
         parsed = parse_python_file(content)
@@ -1020,7 +1020,7 @@ def resolve_cross_file_ai_flows(project_path: str) -> List[Dict]:
         try:
             content = py_file.read_text(encoding="utf-8", errors="ignore")
         except OSError:
-            continue
+            continue  # unreadable file; skip
 
         rel = str(py_file.relative_to(root))
         parsed = parse_python_file(content)

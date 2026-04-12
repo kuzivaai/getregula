@@ -51,8 +51,8 @@ def _load_obligations() -> dict:
             data = _parse_yaml_fallback(yaml_path.read_text(encoding="utf-8"))
             _OBLIGATIONS = data
             return _OBLIGATIONS
-        except Exception:
-            pass  # YAML parse failure — fall through to built-in defaults
+        except Exception as e:
+            print(f"regula: obligations YAML parse failed: {e}", file=sys.stderr)
 
     # Built-in fallback — minimal obligation data
     _OBLIGATIONS = {"articles": {

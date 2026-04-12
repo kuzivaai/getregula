@@ -273,7 +273,7 @@ def analyse_project_code(project_path: str) -> dict:
         try:
             text = filepath.read_text(encoding="utf-8", errors="ignore")
         except OSError:
-            continue
+            continue  # unreadable file; skip
 
         all_architectures.update(detect_architectures(text))
         all_data_sources.update(detect_data_sources(text))

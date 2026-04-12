@@ -327,7 +327,7 @@ def cmd_check(args):
         )
         _record_scan(display_tier_findings)
     except Exception:
-        pass
+        pass  # scan telemetry is best-effort; don't block output
 
     if args.format == "html":
         from pdf_export import generate_compliance_html_report
@@ -370,7 +370,7 @@ def cmd_check(args):
                 try:
                     content = full_path.read_text(encoding="utf-8", errors="ignore")
                 except (PermissionError, OSError):
-                    continue
+                    continue  # file unreadable; skip
                 lang = _detect_lang_json(full_path.name) or "python"
                 result = explain_classification(content, filepath=f["file"], language=lang)
                 explained.append({
@@ -509,7 +509,7 @@ def cmd_check(args):
                 try:
                     content = full_path.read_text(encoding="utf-8", errors="ignore")
                 except (PermissionError, OSError):
-                    continue
+                    continue  # file unreadable; skip
                 lang = _detect_lang(full_path.name) or "python"
                 result = explain_classification(content, filepath=rel_path, language=lang)
                 print(f"\n--- {rel_path} ---")
@@ -580,7 +580,7 @@ def cmd_report(args):
             audit_events = _qe(limit=10000)
             chain_valid, _ = _vc()
         except (OSError, ValueError, KeyError):
-            pass
+            pass  # audit trail unavailable; continue without it
 
     if args.format == "html":
         content = generate_html_report(findings, project_name, audit_events, chain_valid)
@@ -1061,7 +1061,7 @@ def cmd_docs(args):
             "types": ["annex_iv"] + (["qms"] if args.qms or getattr(args, "all", False) else []),
         })
     except (OSError,):
-        pass
+        pass  # audit log write failed; non-critical
 
 
 def cmd_compliance(args):
@@ -1438,7 +1438,7 @@ def _read_code_blob(project: Path) -> str:
         try:
             content = py.read_text(encoding="utf-8", errors="ignore")
         except OSError:
-            continue
+            continue  # file unreadable; skip
         chunks.append(content)
         total += len(content)
         if total > 200_000:
@@ -3217,7 +3217,7 @@ def main(args=None):
             import sentry_sdk
             sentry_sdk.capture_exception(e)
         except Exception:
-            pass
+            pass  # sentry unavailable; fall through to stderr
         print(f"Internal error: {e}", file=sys.stderr)
         print("This is a bug in Regula. Please report it at https://github.com/kuzivaai/getregula/issues", file=sys.stderr)
         print("Or run: regula feedback --bug \"<description>\"", file=sys.stderr)

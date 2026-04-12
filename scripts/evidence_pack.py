@@ -78,7 +78,7 @@ def generate_evidence_pack(
         dep_json = json.dumps(dep_report, indent=2, default=str)
         _write_and_record(pack_dir, "04-dependency-report.json", dep_json, file_records)
     except (ImportError, OSError, ValueError, KeyError):
-        pass
+        pass  # optional section; skip if module missing or data error
 
     # --- 05: Audit trail ---
     try:
@@ -94,7 +94,7 @@ def generate_evidence_pack(
         audit_json = json.dumps(audit_data, indent=2, default=str)
         _write_and_record(pack_dir, "05-audit-trail.json", audit_json, file_records)
     except (ImportError, OSError, ValueError):
-        pass
+        pass  # optional section; skip if module missing or data error
 
     # --- 06: Remediation plan ---
     plan = generate_plan(findings, gap, project_name=name)

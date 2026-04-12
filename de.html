@@ -12,6 +12,8 @@
     <meta property="og:locale" content="de_DE">
     <meta name="twitter:card" content="summary_large_image">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
     <meta name="twitter:title" content="Regula — EU-KI-Gesetz Risikoscanner">
     <meta name="twitter:description" content="Kostenlose CLI, die Ihren KI-Code gegen EU-KI-Gesetz-Risikostufen klassifiziert.">
@@ -31,6 +33,89 @@
         "programmingLanguage": "Python",
         "codeRepository": "https://github.com/kuzivaai/getregula",
         "inLanguage": "de"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": "https://getregula.com/assets/og-image.png",
+        "description": "Open-source EU AI Act compliance CLI for developers.",
+        "sameAs": [
+            "https://github.com/kuzivaai/getregula",
+            "https://pypi.org/project/regula-ai/"
+        ],
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "support@getregula.com",
+            "contactType": "customer support"
+        }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Ist meine KI-App nach dem EU-KI-Gesetz verboten?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Social Scoring, unterschwellige Manipulation, biometrische Echtzeit-Identifizierung im öffentlichen Raum und Emotionserkennung am Arbeitsplatz sind nach Artikel 5 vollständig verboten. Regula scannt Ihren Code auf Muster, die diesen verbotenen Verwendungen entsprechen."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Gilt das EU-KI-Gesetz für mein Unternehmen, wenn ich außerhalb der EU bin?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja. Artikel 2 Absatz 1 Buchstabe c gilt extraterritorial. Wenn die Ausgabe Ihres KI-Systems in der EU verwendet wird, gilt die Verordnung unabhängig davon, wo Ihr Unternehmen ansässig ist. Dies betrifft VAE, UK, USA, Brasilien und jeden Nicht-EU-Anbieter oder -Betreiber."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Was macht ein KI-System nach dem EU-KI-Gesetz hochriskant?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Anhang III listet acht Hochrisiko-Kategorien auf, darunter Kreditbewertung, Personaleinstellung, medizinische Diagnose, Bildungsbewertung, Strafverfolgung, Grenzkontrolle, wesentliche Dienstleistungen und Integrität demokratischer Prozesse. Regula erkennt Codemuster, die jeder Kategorie entsprechen."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Wann wird das EU-KI-Gesetz durchgesetzt?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Artikel-5-Verbote gelten seit dem 2. Februar 2025. GPAI-Pflichten (Artikel 53-55) gelten seit dem 2. August 2025. Hochrisiko-Pflichten (Artikel 9-15) gelten ab dem 2. August 2026. Ein vorgeschlagener Digital Omnibus könnte einige Anhang-III-Fristen auf Dezember 2027 verschieben, ist aber noch nicht Gesetz."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Ist Regula kostenlos?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja. Regula ist Open Source unter der MIT-Lizenz. Kein Konto, kein API-Schlüssel, kein Verkaufsgespräch. Installieren Sie mit pip install regula-ai und führen Sie es lokal auf Ihrer Codebasis aus. Die vollständige CLI, alle 53 Befehle, alle 403 Risikomuster und alle 17 Compliance-Framework-Zuordnungen sind kostenlos."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Welche Bußgelder drohen nach dem EU-KI-Gesetz?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Verbotene KI-Praktiken (Artikel 5) werden mit Bußgeldern bis zu 35 Millionen Euro oder 7% des weltweiten Jahresumsatzes bestraft, je nachdem, welcher Betrag höher ist. Hochrisiko-Verstöße werden mit bis zu 15 Millionen Euro oder 3% des Umsatzes bestraft. Verstöße gegen Informationspflichten werden mit bis zu 7,5 Millionen Euro oder 1% des Umsatzes bestraft."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kann Regula KI-Modelle auf Bias testen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Regula enthält einen optionalen Bias-Evaluierungsbefehl (regula bias), der CrowS-Pairs- und BBQ-Stereotyp-Benchmarks gegen ein lokales Ollama-Modell ausführt, mit statistischen Konfidenzintervallen. Es ist ein Entwicklungszeit-Ausgangspunkt für die Artikel-10-Bias-Dokumentation, kein Produktions-Fairness-Testing-Tool. Für produktionsreife Bias-Messung nutzen Sie dedizierte Plattformen wie IBM watsonx.governance oder Fiddler AI."
+                }
+            }
+        ]
     }
     </script>
     <link rel="alternate" hreflang="en" href="https://getregula.com/">
@@ -65,7 +150,8 @@
         </dialog>
     </nav>
 
-    <header class="hero-wrap">
+    <main id="main">
+    <div class="hero-wrap">
         <div class="hero-glow"></div>
         <div class="hero">
             <div class="hero-text">
@@ -89,19 +175,19 @@
                 <pre aria-label="Beispielausgabe von regula check"><span class="p">$</span> <span class="c">regula check . --lang de</span>
 
 <span class="h">Regula Scan: zahlungs-ml-service</span>
-<hr>  Geprüfte Dateien:    <span class="c">47</span>
+───────────────────────────────────────
+  Geprüfte Dateien:    <span class="c">47</span>
   Verboten:            <span class="g">0</span>
   Hochrisiko:          <span class="y">2</span>       <span class="m"># Art. 6 Kreditbewertung</span>
   Zugangsdaten:        <span class="g">0</span>
   Stufe BLOCKIEREN:    <span class="g">0</span>
   Stufe WARNUNG:       <span class="y">2</span>
-<hr>  <span class="g">&#10004; Keine verbotenen Praktiken (Art. 5)</span>
+───────────────────────────────────────
+  <span class="g">&#10004; Keine verbotenen Praktiken (Art. 5)</span>
   <span class="y">&#9888; 2 Hochrisiko: Art. 9 Risikomanagement prüfen</span></pre>
             </div>
         </div>
-    </header>
-
-    <main id="main">
+    </div>
 
     <div class="stats">
         <div class="st"><div class="st-n">403</div><div class="st-l">Risikomuster</div></div>
@@ -206,6 +292,7 @@
     <div class="sec" style="text-align:center;padding-top:40px;">
         <p style="font-size:14px;color:var(--text-dim);margin-bottom:12px;">EU-AI-Act-Fristen und wichtige Release-Updates erhalten.</p>
         <form class="notify" action="https://formspree.io/f/xjgppkkn" method="POST" style="max-width:400px;margin:0 auto;">
+            <input type="hidden" name="locale" value="de">
             <input type="email" name="email" placeholder="ihre@email.com" aria-label="E-Mail" required>
             <button type="submit">Abonnieren</button>
         </form>
@@ -214,7 +301,7 @@
     <div class="sep"></div>
 
     <div class="sec">
-        <h2 class="sec-head"><span class="hl">52</span> CLI-Befehle</h2>
+        <h2 class="sec-head"><span class="hl">53</span> CLI-Befehle</h2>
         <p class="sec-sub">Alles aus einer einzigen Binärdatei.</p>
         <div class="cmds">
             <div class="cm"><code>regula assess</code> <span>Einige Ja/Nein-Fragen &mdash; Risikostufe ermitteln</span></div>
@@ -367,9 +454,9 @@
                     <a href="south-africa-ai-policy.html">🇿🇦 Südafrikas KI-Politik-Entwurf <span class="muted">Kabinett genehmigte 2. April 2026 &middot; Live-Tracker</span></a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/docs/landscape.md">AICDI-Governance-Lücken <span class="muted">Wie Regula auf den UNESCO &middot; TRF Bericht 2026 abgebildet wird</span></a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/docs/article-state-of-ai-compliance.md">Stand der KI-Konformität in OSS <span class="muted">Was 5 populäre Python-KI-Bibliotheken enthalten</span></a>
-                    <a href="https://theimplementationlayer.substack.com/p/when-ai-systems-dont-see-you">When AI Systems Don't See You <span class="muted">Bias testing gaps · 35-year paper trail · peer-reviewed evidence</span></a>
-                    <a href="https://theimplementationlayer.substack.com/p/thinking-about-switching-from-chatgpt">Switching from ChatGPT to Claude <span class="muted">What you're actually moving · data governance · prompt translation</span></a>
-                    <a href="https://theimplementationlayer.substack.com/p/how-i-went-from-ai-hype-to-ai-governance">From AI hype to AI governance <span class="muted">The gap between governance theory and organisational reality</span></a>
+                    <a href="https://theimplementationlayer.substack.com/p/when-ai-systems-dont-see-you" lang="en">When AI Systems Don't See You <span class="muted">Bias testing gaps · 35-year paper trail · peer-reviewed evidence</span></a>
+                    <a href="https://theimplementationlayer.substack.com/p/thinking-about-switching-from-chatgpt" lang="en">Switching from ChatGPT to Claude <span class="muted">What you're actually moving · data governance · prompt translation</span></a>
+                    <a href="https://theimplementationlayer.substack.com/p/how-i-went-from-ai-hype-to-ai-governance" lang="en">From AI hype to AI governance <span class="muted">The gap between governance theory and organisational reality</span></a>
                 </div>
             </div>
             <div class="foot-right">

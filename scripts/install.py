@@ -90,8 +90,8 @@ def install_claude_code(regula_root: Path, project_dir: Path) -> None:
                             if not any("regula" in ec for ec in existing_cmds):
                                 existing["hooks"][event].append(hook)
                 config = existing
-        except (json.JSONDecodeError, KeyError):
-            pass
+        except (json.JSONDecodeError, KeyError) as e:
+            print(f"regula: existing config malformed, overwriting: {e}", file=sys.stderr)
 
     settings_file.write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
     print(f"Claude Code hooks written to {settings_file}")

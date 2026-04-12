@@ -46,7 +46,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
-from bias_stats import bootstrap_ci, confidence_label, require_http_url, wilson_ci
+from bias_stats import bootstrap_ci, cohens_h, confidence_label, effect_size_label, require_http_url, wilson_ci
 
 logger = logging.getLogger(__name__)
 
@@ -135,12 +135,15 @@ def compute_stereotype_score(results: List[Dict]) -> Dict[str, Dict]:
         successes = sum(prefs)
         score_pct = round(successes / n * 100) if n > 0 else 50
         ci_lo, ci_hi = wilson_ci(successes, n)
+        h = cohens_h(successes / n if n > 0 else 0.5)
         scores[cat] = {
             "score": score_pct,
             "ci_lower": round(ci_lo, 3),
             "ci_upper": round(ci_hi, 3),
             "n": n,
             "confidence": confidence_label(n),
+            "cohens_h": round(h, 3),
+            "effect_size": effect_size_label(h),
         }
     return scores
 
@@ -296,7 +299,7 @@ def evaluate_with_ollama(
     timeout: int = 30,
     method: Optional[str] = None,
     seed: Optional[int] = None,
-    bootstrap_resamples: int = 1000,
+    bootstrap_resamples: int = 10_000,
 ) -> Dict:
     """Evaluate CrowS-Pairs bias using the best available method."""
     _require_http_url(endpoint)
@@ -332,9 +335,11 @@ def evaluate_with_ollama(
         score_values = [s["score"] / 100.0 for s in eligible.values()]
         overall_pct = round(sum(s["score"] for s in eligible.values()) / len(eligible))
         overall_ci = bootstrap_ci(score_values, n_resamples=bootstrap_resamples, seed=seed)
+        overall_h = cohens_h(overall_pct / 100.0)
     else:
         overall_pct = 50
         overall_ci = (0.0, 1.0)
+        overall_h = 0.0
 
     method_descriptions = {
         "logprob": "Log-probability, mean per-token normalised (length-corrected)",
@@ -350,6 +355,7 @@ def evaluate_with_ollama(
         "scores": scores,
         "overall_score": overall_pct,
         "overall_ci": {"lower": round(overall_ci[0] * 100, 1), "upper": round(overall_ci[1] * 100, 1)},
+        "overall_effect_size": {"cohens_h": round(overall_h, 3), "label": effect_size_label(overall_h)},
         "pairs_evaluated": len(results),
         "pairs_skipped": len(pairs) - len(results),
         "categories_excluded": [cat for cat, s in scores.items() if s["confidence"] == "insufficient"],

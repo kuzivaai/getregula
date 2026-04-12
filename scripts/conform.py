@@ -292,7 +292,7 @@ def generate_conformity_pack(
         from sbom import generate_sbom
         sbom_data = generate_sbom(str(project), project_name=name, ai_bom=True)
     except ImportError:
-        pass
+        pass  # sbom module not available; optional feature
     except Exception as e:
         print(f"Warning: SBOM generation failed: {e}", file=sys.stderr)
 
@@ -309,7 +309,7 @@ def generate_conformity_pack(
             "events": events,
         }
     except ImportError:
-        pass
+        pass  # log_event module not available; optional feature
     except (OSError, ValueError) as e:
         print(f"Note: audit trail not available: {e}", file=sys.stderr)
 
@@ -319,7 +319,7 @@ def generate_conformity_pack(
         from dependency_scan import scan_dependencies
         dep_report = scan_dependencies(str(project))
     except ImportError:
-        pass
+        pass  # dependency_scan module not available; optional
     except (OSError, ValueError, KeyError) as e:
         print(f"Note: dependency scan not available: {e}", file=sys.stderr)
 
@@ -410,16 +410,16 @@ def generate_conformity_pack(
                 try:
                     pairs = load_crowspairs_sample(max_pairs=100)
                     cp_result = evaluate_with_ollama(pairs, timeout=10)
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"regula: CrowS-Pairs eval failed: {e}", file=sys.stderr)
 
                 # Try BBQ
                 bbq_result = None
                 try:
                     items = load_bbq_sample(max_items=100)
                     bbq_result = evaluate_bbq_full(items, timeout=10)
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"regula: BBQ eval failed: {e}", file=sys.stderr)
 
                 has_results = (
                     (cp_result and cp_result.get("status") == "ok")

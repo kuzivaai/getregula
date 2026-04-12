@@ -87,7 +87,7 @@ def _detect_llm_entrypoints(project_path: Path) -> list[dict[str, Any]]:
         try:
             text = py.read_text(encoding="utf-8", errors="replace")
         except OSError:
-            continue
+            continue  # unreadable file; skip
         for pat, kind in patterns:
             for m in _re.finditer(pat, text):
                 line = text[:m.start()].count("\n") + 1

@@ -182,7 +182,7 @@ def main():
             log_event("session_risk_profile", profile, session_id=args.session)
             print("  Profile logged to audit trail.", file=sys.stderr)
         except (OSError,):
-            pass
+            pass  # audit logging is best-effort
 
 
 if __name__ == "__main__":
