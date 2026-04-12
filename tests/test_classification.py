@@ -3641,11 +3641,18 @@ def test_bias_eval_score_range():
     scores = compute_stereotype_score(mock_results)
     assert "race" in scores
     assert "gender" in scores
-    assert 0 <= scores["race"] <= 100
-    assert 0 <= scores["gender"] <= 100
-    assert scores["race"] == 67, f"Expected 67, got {scores['race']}"
-    assert scores["gender"] == 100
-    print("\u2713 Bias eval: compute_stereotype_score returns correct per-category percentages")
+    race = scores["race"]
+    gender = scores["gender"]
+    assert 0 <= race["score"] <= 100
+    assert 0 <= gender["score"] <= 100
+    assert race["score"] == 67, f"Expected 67, got {race['score']}"
+    assert gender["score"] == 100
+    assert "ci_lower" in race
+    assert "ci_upper" in race
+    assert "n" in race
+    assert race["n"] == 3
+    assert "confidence" in race
+    print("\u2713 Bias eval: compute_stereotype_score returns correct per-category scores with CI")
 
 
 def test_bias_eval_dataset_sample():
@@ -4522,6 +4529,53 @@ def test_bias_eval_rejects_non_http_endpoint():
     except ValueError as e:
         assert "http" in str(e).lower()
     print("✓ Security: bias_eval rejects non-HTTP endpoints")
+
+
+def test_bias_logprob_normalised():
+    """Log-prob scoring normalises by token count (mean per-token, not sum)."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from bias_eval import _compare_logprobs
+
+    result = _compare_logprobs(
+        logprobs_more={"raw": -6.0, "normalised": -2.0, "n_tokens": 3},
+        logprobs_less={"raw": -8.0, "normalised": -1.6, "n_tokens": 5},
+    )
+    assert result["preferred_stereotyped"] is False
+    assert "normalised_more" in result
+    assert "normalised_less" in result
+    print("✓ Bias eval: log-prob scoring uses normalised (mean per-token) comparison")
+
+
+def test_bias_eval_no_tier2():
+    """Tier 2 (eval-duration) has been removed."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    import bias_eval
+    assert not hasattr(bias_eval, "_get_sentence_eval_score"), "Tier 2 eval-duration should be removed"
+    assert not hasattr(bias_eval, "_evaluate_eval_duration"), "Tier 2 eval-duration should be removed"
+    print("✓ Bias eval: Tier 2 (eval-duration proxy) removed")
+
+
+def test_bias_crowspairs_result_has_confidence():
+    """CrowS-Pairs results include per-category confidence intervals and labels."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    from bias_eval import compute_stereotype_score
+
+    mock = [{"category": "race", "preferred_stereotyped": i < 15} for i in range(20)]
+    result = compute_stereotype_score(mock)
+    race = result["race"]
+    assert "score" in race
+    assert race["score"] == 75
+    assert "ci_lower" in race
+    assert "ci_upper" in race
+    assert race["ci_lower"] < 0.75 < race["ci_upper"]
+    assert "n" in race
+    assert race["n"] == 20
+    assert "confidence" in race
+    assert race["confidence"] == "moderate"
+    print("✓ Bias eval: compute_stereotype_score returns CI and confidence per category")
 
 
 def test_custom_rule_redos_protection():
