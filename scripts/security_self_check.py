@@ -22,6 +22,8 @@ KNOWN_ACCEPTABLE = [
     {"file_pattern": "risk_patterns.py", "reason": "pattern definitions — intentional"},
     # explain_articles.py describes prohibited practices in plain language
     {"file_pattern": "explain_articles.py", "reason": "article explanations — describes prohibited practices by design"},
+    # bias_*.py modules are bias evaluation tools — expected to contain AI-related code
+    {"file_pattern": "bias_", "reason": "bias evaluation modules — AI-related code by design"},
 ]
 
 
