@@ -662,36 +662,59 @@ def cmd_mcp_server(args):
 
 
 def cmd_bias(args):
-    """Evaluate model stereotype bias using CrowS-Pairs dataset."""
+    """Evaluate model stereotype bias using multiple benchmarks."""
     from bias_eval import load_crowspairs_sample, evaluate_with_ollama
-    pairs = load_crowspairs_sample(csv_path=getattr(args, "csv", None), max_pairs=args.sample)
+    from bias_bbq import load_bbq_sample, evaluate_bbq_full
+    from bias_report import format_text_report, format_json_report, format_annex_iv
+
+    benchmark = getattr(args, "benchmark", "all")
     method = getattr(args, "method", "auto")
     method_arg = None if method == "auto" else method
-    print(f"Loaded {len(pairs)} CrowS-Pairs pairs. Evaluating with {args.model}...", file=sys.stderr)
-    result = evaluate_with_ollama(pairs, model=args.model, endpoint=args.endpoint, method=method_arg)
+    seed = getattr(args, "seed", None)
+    confidence_n = getattr(args, "confidence", 1000)
     fmt = getattr(args, "format", "text")
+
+    crowspairs_result = None
+    bbq_result = None
+
+    if benchmark in ("all", "crowspairs"):
+        pairs = load_crowspairs_sample(csv_path=getattr(args, "csv", None), max_pairs=args.sample)
+        print(f"CrowS-Pairs: loaded {len(pairs)} pairs. Evaluating with {args.model}...", file=sys.stderr)
+        crowspairs_result = evaluate_with_ollama(
+            pairs, model=args.model, endpoint=args.endpoint,
+            method=method_arg, seed=seed, bootstrap_resamples=confidence_n,
+        )
+
+    if benchmark in ("all", "bbq"):
+        items = load_bbq_sample(max_items=args.sample)
+        print(f"BBQ: loaded {len(items)} items. Evaluating with {args.model}...", file=sys.stderr)
+        bbq_result = evaluate_bbq_full(items, model=args.model, endpoint=args.endpoint)
+
+    all_error = True
+    if crowspairs_result and crowspairs_result.get("status") == "ok":
+        all_error = False
+    if bbq_result and bbq_result.get("status") == "ok":
+        all_error = False
+
+    if all_error:
+        msg = "All benchmarks failed"
+        if crowspairs_result:
+            msg += f" — CrowS-Pairs: {crowspairs_result.get('message', 'unknown error')}"
+        if bbq_result:
+            msg += f" — BBQ: {bbq_result.get('message', 'unknown error')}"
+        if fmt == "json":
+            json_output("bias", {"status": "error", "message": msg}, exit_code=1)
+        else:
+            print(f"Error: {msg}", file=sys.stderr)
+        sys.exit(1)
+
     if fmt == "json":
-        json_output("bias", result)
+        report = format_json_report(crowspairs_result, bbq_result, args.model, args.endpoint, seed)
+        json_output("bias", report)
+    elif fmt == "annex-iv":
+        print(format_annex_iv(crowspairs_result, bbq_result, args.model, args.endpoint))
     else:
-        if result["status"] == "error":
-            print(f"Error: {result['message']}", file=sys.stderr)
-            sys.exit(1)
-        method_desc = result.get("method_description", result.get("method", "unknown"))
-        skipped = result.get("pairs_skipped", 0)
-        print(f"\nBias Evaluation Results ({result['pairs_evaluated']} pairs)")
-        print(f"Method: {method_desc}")
-        if skipped:
-            print(f"Skipped: {skipped} pairs (method returned no data)")
-        print()
-        print(f"{'Category':<25} {'Score':>6}  {'Interpretation'}")
-        print("-" * 60)
-        for cat, score in sorted(result["scores"].items()):
-            interp = "neutral" if 45 <= score <= 55 else ("stereotyped" if score > 55 else "anti-stereotype")
-            print(f"{cat:<25} {score:>5}%  {interp}")
-        print("-" * 60)
-        print(f"{'Overall':<25} {result['overall_score']:>5}%")
-        print(f"\n{result['interpretation']}")
-        print(f"\nCitation: {result.get('citation', '')}")
+        print(format_text_report(crowspairs_result, bbq_result, args.model, args.endpoint))
 
 
 def cmd_discover(args):
@@ -2634,14 +2657,19 @@ def _build_subparsers(subparsers):
     p_bias = subparsers.add_parser("bias", help="Evaluate model bias using CrowS-Pairs dataset")
     p_bias.add_argument("--model", default="llama3", help="Ollama model name (default: llama3)")
     p_bias.add_argument("--endpoint", default="http://localhost:11434", help="Ollama API endpoint")
-    p_bias.add_argument("--sample", type=int, default=100, help="Number of pairs to evaluate (default: 100)")
+    p_bias.add_argument("--sample", type=int, default=100, help="Max items per benchmark (default: 100)")
     p_bias.add_argument("--csv", help="Path to local CrowS-Pairs CSV file")
-    p_bias.add_argument("--method", choices=["auto", "logprob", "eval-duration", "prompt"],
+    p_bias.add_argument("--method", choices=["auto", "logprob", "prompt"],
                         default="auto",
-                        help="Bias measurement method: logprob (gold standard, requires Ollama logprobs support), "
-                             "eval-duration (approximation), prompt (instruction-following fallback), "
-                             "auto (detect best available, default)")
-    p_bias.add_argument("--format", choices=["text", "json"], default="text")
+                        help="CrowS-Pairs method: logprob (gold standard), prompt (fallback), auto (default)")
+    p_bias.add_argument("--benchmark", choices=["all", "crowspairs", "bbq"],
+                        default="all",
+                        help="Which benchmarks to run (default: all)")
+    p_bias.add_argument("--format", choices=["text", "json", "annex-iv"], default="text",
+                        help="Output format: text, json, or annex-iv (Annex IV documentation)")
+    p_bias.add_argument("--confidence", type=int, default=1000,
+                        help="Bootstrap resamples for confidence intervals (default: 1000)")
+    p_bias.add_argument("--seed", type=int, help="Random seed for reproducibility")
     p_bias.set_defaults(func=cmd_bias)
 
     # --- discover ---
