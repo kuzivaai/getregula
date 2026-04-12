@@ -40,8 +40,9 @@ def _load_policy() -> dict:
                 return yaml.safe_load(content) or {}
             else:
                 return _parse_yaml_fallback(content)
-        except Exception:
-            continue  # Malformed config — try next candidate file
+        except Exception as e:
+            print(f"regula: config parse failed for {path}: {e}", file=sys.stderr)
+            continue
     return {}
 
 

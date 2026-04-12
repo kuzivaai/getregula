@@ -210,7 +210,7 @@ def load_plan_status(project_path: str) -> dict:
     try:
         return json.loads(status_path.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError):
-        return {}
+        return {}  # corrupt status file; treat as empty
 
 
 def save_plan_status(project_path: str, status: dict) -> None:

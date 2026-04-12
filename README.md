@@ -262,7 +262,7 @@ Reproduce with `python3 benchmarks/label.py score` (OSS labels) and `python3 ben
 
 ## CLI Usage
 
-Regula has 45 CLI commands. The full reference (with examples for each) lives in [`docs/cli-reference.md`](docs/cli-reference.md). Top-level summary:
+Regula has 53 CLI commands. The full reference (with examples for each) lives in [`docs/cli-reference.md`](docs/cli-reference.md). Top-level summary:
 
 ```bash
 regula --help                              # list all subcommands
@@ -355,7 +355,7 @@ For full YAML support, install pyyaml: `pip install pyyaml`. Without it, a minim
 pytest tests/ -q
 ```
 
-703 test functions (755 collected by pytest, see `scripts/site_facts.py`) covering:
+492 test functions (925 assertions) covering:
 - AI detection (libraries, model files, API endpoints, ML patterns)
 - All 8 prohibited practices
 - All 8 Annex III high-risk areas + 2 Annex I categories (medical devices, safety components)

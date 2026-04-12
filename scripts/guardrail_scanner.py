@@ -375,8 +375,10 @@ def scan_for_guardrails(project_path: str) -> dict:
             "description": cat_def["description"],
         }
 
-    # Overall score
-    overall_score = sum(c["score"] for c in categories.values())
+    # Overall score — normalise from 0-80 raw to 0-100 percentage
+    max_raw = len(GUARDRAIL_CATEGORIES) * 20  # 4 categories * 20 max each
+    raw_score = sum(c["score"] for c in categories.values())
+    overall_score = round(raw_score * 100 / max_raw)
 
     # Recommendations
     recommendations = _generate_recommendations(categories, library_names_found)
@@ -430,7 +432,7 @@ def _generate_recommendations(categories: dict, libraries_found: set) -> list:
             "action": "Add PII detection/redaction. Install: pip install presidio-analyzer presidio-anonymizer",
             "article": "Art 15.4",
         })
-    if not any(lib["name"] for lib in [] if lib.get("name") == "WhyLabs") and \
+    if "WhyLabs" not in libraries_found and \
        categories["monitoring_audit"]["score"] < 15:
         drift_found = any(
             d["pattern"] == "drift_detection"

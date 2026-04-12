@@ -148,7 +148,7 @@ def scan_for_models(project_path: str) -> dict:
         try:
             content = filepath.read_text(encoding="utf-8", errors="ignore")
         except OSError:
-            continue
+            continue  # unreadable file; skip
         rel = str(filepath.relative_to(project))
         lines = content.splitlines()
         for i, line in enumerate(lines, 1):

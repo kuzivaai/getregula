@@ -116,6 +116,82 @@ SECRET_PATTERNS = {
         "remediation": "Use AWS credential provider chain or environment variables.",
         "source": "secrets-patterns-db",
     },
+
+    # --- HIGH confidence: AI/ML service keys (prefixed, block-worthy) ---
+    "pinecone_api_key": {
+        "pattern": r"pcsk_[a-zA-Z0-9]{40,}",
+        "confidence": "high",
+        "confidence_score": 95,
+        "description": "Pinecone API key detected",
+        "remediation": "Use environment variable PINECONE_API_KEY instead of hardcoding.",
+        "source": "Pinecone documentation",
+    },
+    "langsmith_api_key": {
+        "pattern": r"ls__[a-zA-Z0-9]{32,}",
+        "confidence": "high",
+        "confidence_score": 95,
+        "description": "LangSmith/LangChain API key detected",
+        "remediation": "Use environment variable LANGCHAIN_API_KEY instead of hardcoding.",
+        "source": "LangSmith documentation",
+    },
+    "replicate_api_token": {
+        "pattern": r"r8_[a-zA-Z0-9]{36,}",
+        "confidence": "high",
+        "confidence_score": 95,
+        "description": "Replicate API token detected",
+        "remediation": "Use environment variable REPLICATE_API_TOKEN instead of hardcoding.",
+        "source": "Replicate documentation",
+    },
+    "fireworks_ai_key": {
+        "pattern": r"fw_[a-zA-Z0-9]{32,}",
+        "confidence": "high",
+        "confidence_score": 90,
+        "description": "Fireworks AI API key detected",
+        "remediation": "Use environment variable FIREWORKS_API_KEY instead of hardcoding.",
+        "source": "Fireworks AI documentation",
+    },
+
+    # --- MEDIUM confidence: AI/ML service keys (contextual) ---
+    "qdrant_api_key": {
+        "pattern": r"(?i)qdrant.*api[_\-]?key\s*[:=]\s*[\"'][^\"']{10,}",
+        "confidence": "medium",
+        "confidence_score": 70,
+        "description": "Possible Qdrant API key in assignment",
+        "remediation": "Use environment variable QDRANT_API_KEY instead of hardcoding.",
+        "source": "Qdrant documentation",
+    },
+    "cohere_api_key": {
+        "pattern": r"(?i)cohere.*api[_\-]?key\s*[:=]\s*[\"'][a-zA-Z0-9]{40,}",
+        "confidence": "medium",
+        "confidence_score": 70,
+        "description": "Possible Cohere API key in assignment",
+        "remediation": "Use environment variable CO_API_KEY instead of hardcoding.",
+        "source": "Cohere documentation",
+    },
+    "wandb_api_key": {
+        "pattern": r"(?i)wandb.*api[_\-]?key\s*[:=]\s*[\"'][a-f0-9]{40}",
+        "confidence": "medium",
+        "confidence_score": 70,
+        "description": "Weights & Biases API key detected",
+        "remediation": "Use environment variable WANDB_API_KEY instead of hardcoding.",
+        "source": "Weights & Biases documentation",
+    },
+    "mlflow_tracking_token": {
+        "pattern": r"(?i)mlflow.*token\s*[:=]\s*[\"'][^\"']{10,}",
+        "confidence": "medium",
+        "confidence_score": 65,
+        "description": "Possible MLflow tracking token in assignment",
+        "remediation": "Use environment variable MLFLOW_TRACKING_TOKEN instead of hardcoding.",
+        "source": "MLflow documentation",
+    },
+    "weaviate_api_key": {
+        "pattern": r"(?i)weaviate.*(?:api[_\-]?key|auth[_\-]?token)\s*[:=]\s*[\"'][^\"']{10,}",
+        "confidence": "medium",
+        "confidence_score": 65,
+        "description": "Possible Weaviate API key in assignment",
+        "remediation": "Use environment variable WEAVIATE_API_KEY instead of hardcoding.",
+        "source": "Weaviate documentation",
+    },
 }
 
 

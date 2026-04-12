@@ -396,6 +396,7 @@ def scan_file(path: Path, allowlist: list[re.Pattern[str]]) -> FileReport:
 # ---------------------------------------------------------------------------
 
 def git(*args: str) -> str:
+    # Safe: args are a hardcoded list, no shell injection risk
     result = subprocess.run(
         ["git", *args], cwd=REPO_ROOT,
         capture_output=True, text=True, check=False,

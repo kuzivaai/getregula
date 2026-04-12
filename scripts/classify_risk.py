@@ -90,12 +90,25 @@ _GPAI_TRAINING_COMPILED = [re.compile(p, re.IGNORECASE) for p in GPAI_TRAINING_P
 # ---------------------------------------------------------------------------
 # Confidence score constants
 #
-# Base scores reflect tier-level certainty without context. Calibrated
-# against the pattern library: prohibited patterns are tightly scoped
-# (high base), high-risk patterns match broad categories (lower base).
+# CALIBRATION METHOD: Heuristic, tuned against Regula's synthetic benchmark
+# suite (tests/test_classification.py). NOT probabilistically calibrated —
+# a score of 70 does NOT mean "correct 70% of the time".  Published
+# precision at default thresholds: 15.2% (see tests, precision test).
+#
+# Base scores reflect tier-level certainty without context:
+# - prohibited (75): tightly scoped Article 5 patterns, few FPs expected
+# - high_risk (55): broad Annex III categories, context-dependent
+# - limited_risk (40): transparency markers, often in docs
+# - minimal_risk (15): lowest-signal tier
+#
 # Match bonus: +8 per corroborating indicator, capped at 15 (diminishing
 # returns after 2 matches). AI context bonus: +10 when code imports
 # AI libraries, disambiguating mentions in docs or comments.
+#
+# LIMITATIONS: These scores are heuristic confidence indicators for
+# prioritising human review, not calibrated probabilities. Users should
+# set policy thresholds based on their risk tolerance, not treat scores
+# as ground-truth likelihood. See pyproject.toml [tool.regula.thresholds].
 # ---------------------------------------------------------------------------
 _CONFIDENCE_BASE = {
     "prohibited": 75,       # Article 5 — tightly scoped prohibited practices

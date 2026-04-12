@@ -42,14 +42,14 @@ def _parse_config(path: Path) -> tuple[dict | None, str | None]:
         data = yaml.safe_load(content)
         return (data or {}), None
     except ImportError:
-        pass
+        pass  # PyYAML not installed; try JSON fallback
     except Exception as e:
         return None, f"YAML parse error: {e}"
     # Fallback: try json anyway (handles .yaml files that are valid JSON)
     try:
         return json.loads(content), None
     except Exception:
-        pass
+        pass  # JSON fallback failed; try minimal parser
     # Last resort: minimal YAML-subset parser (same approach as policy_config.py)
     try:
         import sys

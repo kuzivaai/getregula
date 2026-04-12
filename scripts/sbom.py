@@ -164,7 +164,7 @@ def _detect_project_version(project_path: str) -> str:
         if result.returncode == 0 and result.stdout.strip():
             return result.stdout.strip()
     except (subprocess.SubprocessError, OSError):
-        pass
+        pass  # git not available; fall back to default version
     return "0.0.0"
 
 
@@ -312,7 +312,7 @@ def _extract_model_metadata(project_path: str) -> list[dict]:
                     if isinstance(data, dict):
                         fields_found = list(data.keys())[:20]
                 except (json.JSONDecodeError, OSError):
-                    pass
+                    pass  # metadata file unreadable; skip field extraction
 
             results.append({
                 "path": rel,
@@ -338,7 +338,7 @@ def _scan_datasets(project_path: str) -> list[dict]:
             try:
                 content = fpath.read_text(encoding="utf-8", errors="ignore")
             except OSError:
-                continue
+                continue  # file unreadable; skip to next
             rel = str(fpath.relative_to(root))
             for lineno, line in enumerate(content.splitlines(), 1):
                 for pattern, source_label in _DATASET_PATTERNS:
@@ -456,7 +456,7 @@ def _enrich_ai_bom(project_path: str, components: list[dict],
                 if "regula-ignore" in first_lines and "regula-ignore:" not in first_lines:
                     continue  # This occurrence is in a catalogue/config file
             except (OSError, PermissionError):
-                pass
+                pass  # can't read file; keep occurrence as-is
             real_occurrences.append(occ)
 
         if not real_occurrences:
@@ -705,8 +705,8 @@ def generate_sbom(project_path: str, project_name: str | None = None,
                         "name": "regula:risk-tier",
                         "value": risk_result.tier.value,
                     })
-                except (ValueError, TypeError):
-                    pass
+                except (ValueError, TypeError) as e:
+                    print(f"regula: classifier error for {component.get('name', '?')}: {e}", file=sys.stderr)
             component["properties"] = props
 
         components.append(component)

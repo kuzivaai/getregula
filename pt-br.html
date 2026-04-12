@@ -12,6 +12,8 @@
     <meta property="og:locale" content="pt_BR">
     <meta name="twitter:card" content="summary_large_image">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
     <meta name="twitter:title" content="Regula — Scanner de risco da Lei de IA da UE">
     <meta name="twitter:description" content="CLI gratuita que classifica seu código de IA nos níveis de risco da Lei de IA da UE.">
@@ -31,6 +33,89 @@
         "programmingLanguage": "Python",
         "codeRepository": "https://github.com/kuzivaai/getregula",
         "inLanguage": "pt-BR"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": "https://getregula.com/assets/og-image.png",
+        "description": "Open-source EU AI Act compliance CLI for developers.",
+        "sameAs": [
+            "https://github.com/kuzivaai/getregula",
+            "https://pypi.org/project/regula-ai/"
+        ],
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "support@getregula.com",
+            "contactType": "customer support"
+        }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Meu aplicativo de IA é proibido pela Lei de IA da UE?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Pontuação social, manipulação subliminar, reconhecimento facial em tempo real em espaços públicos e inferência de emoções no ambiente de trabalho são proibidos pelo Artigo 5. O Regula escaneia seu código em busca de padrões que correspondam a esses usos proibidos."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "A Lei de IA da UE se aplica à minha empresa se estou fora da UE?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Sim. O Artigo 2(1)(c) se aplica extraterritorialmente. Se a saída do seu sistema de IA é utilizada na UE, a regulamentação se aplica independentemente de onde sua empresa está estabelecida. Isso abrange EAU, Reino Unido, EUA, Brasil e qualquer fornecedor ou implantador fora da UE."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "O que torna um sistema de IA de alto risco segundo a Lei de IA da UE?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "O Anexo III lista oito categorias de alto risco, incluindo pontuação de crédito, contratação, diagnóstico médico, avaliação educacional, aplicação da lei, controle de fronteiras, serviços essenciais e integridade do processo democrático. O Regula identifica padrões de código que correspondem a cada categoria."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Quando a Lei de IA da UE começa a ser aplicada?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "As proibições do Artigo 5 entraram em vigor em 2 de fevereiro de 2025. As obrigações de GPAI (Artigos 53-55) entraram em vigor em 2 de agosto de 2025. As obrigações de alto risco (Artigos 9-15) entram em vigor em 2 de agosto de 2026. Um Digital Omnibus proposto pode adiar alguns prazos do Anexo III para dezembro de 2027, mas ainda não é lei."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "O Regula é gratuito?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Sim. O Regula é open source sob a licença MIT. Sem conta, sem chave de API, sem ligação comercial. Instale com pip install regula-ai e execute localmente no seu código. A CLI completa, todos os 53 comandos, todos os 403 padrões de risco e todos os 17 mapeamentos de frameworks de conformidade são gratuitos."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Quais são as multas da Lei de IA da UE?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Práticas de IA proibidas (Artigo 5) acarretam multas de até 35 milhões de euros ou 7% do faturamento anual global, o que for maior. Violações de alto risco acarretam multas de até 15 milhões de euros ou 3% do faturamento. Não conformidade com requisitos de informação acarreta multas de até 7,5 milhões de euros ou 1% do faturamento."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "O Regula pode testar modelos de IA para viés?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "O Regula inclui um comando opcional de avaliação de viés (regula bias) que executa benchmarks de estereótipos CrowS-Pairs e BBQ contra um modelo Ollama local, com intervalos de confiança estatísticos. É um ponto de partida em tempo de desenvolvimento para documentação de viés do Artigo 10, não uma ferramenta de teste de fairness em produção. Para medição de viés em produção, use plataformas dedicadas como IBM watsonx.governance ou Fiddler AI."
+                }
+            }
+        ]
     }
     </script>
     <link rel="alternate" hreflang="en" href="https://getregula.com/">
@@ -66,7 +151,8 @@
         </dialog>
     </nav>
 
-    <header class="hero-wrap">
+    <main id="main">
+    <div class="hero-wrap">
         <div class="hero-glow"></div>
         <div class="hero">
             <div class="hero-text">
@@ -90,19 +176,19 @@
                 <pre aria-label="Saída exemplo de regula check"><span class="p">$</span> <span class="c">regula check .</span>
 
 <span class="h">Regula Scan: servico-ml-pagamento</span>
-<hr>  Arquivos verificados: <span class="c">47</span>
+───────────────────────────────────────
+  Arquivos verificados: <span class="c">47</span>
   Proibido:             <span class="g">0</span>
   Alto risco:           <span class="y">2</span>       <span class="m"># Art. 6 pontuação de crédito</span>
   Credenciais:          <span class="g">0</span>
   Nível BLOQUEAR:       <span class="g">0</span>
   Nível ALERTA:         <span class="y">2</span>
-<hr>  <span class="g">&#10004; Nenhuma prática proibida (Art. 5)</span>
+───────────────────────────────────────
+  <span class="g">&#10004; Nenhuma prática proibida (Art. 5)</span>
   <span class="y">&#9888; 2 alto risco: revisar gestão de risco Art. 9</span></pre>
             </div>
         </div>
-    </header>
-
-    <main id="main">
+    </div>
 
     <div class="stats">
         <div class="st"><div class="st-n">403</div><div class="st-l">padrões de risco</div></div>
@@ -207,6 +293,7 @@
     <div class="sec" style="text-align:center;padding-top:40px;">
         <p style="font-size:14px;color:var(--text-dim);margin-bottom:12px;">Receba lembretes de prazos da Lei de IA da UE e atualizações de releases importantes.</p>
         <form class="notify" action="https://formspree.io/f/xjgppkkn" method="POST" style="max-width:400px;margin:0 auto;">
+            <input type="hidden" name="locale" value="pt-br">
             <input type="email" name="email" placeholder="seu@email.com" aria-label="E-mail" required>
             <button type="submit">Inscrever-se</button>
         </form>
@@ -215,7 +302,7 @@
     <div class="sep"></div>
 
     <div class="sec">
-        <h2 class="sec-head"><span class="hl">52</span> comandos CLI</h2>
+        <h2 class="sec-head"><span class="hl">53</span> comandos CLI</h2>
         <p class="sec-sub">Tudo a partir de um único binário.</p>
         <div class="cmds">
             <div class="cm"><code>regula assess</code> <span>Algumas perguntas sim/não &mdash; descubra seu nível de risco</span></div>
@@ -256,6 +343,11 @@
             <div class="fw"><div class="fw-d"></div>ICO / DSIT</div>
             <div class="fw pri"><div class="fw-d"></div>LGPD (Brasil)</div>
             <div class="fw pri"><div class="fw-d"></div>Marco Legal IA (Brasil)</div>
+            <div class="fw"><div class="fw-d"></div>Colorado SB-205</div>
+            <div class="fw"><div class="fw-d"></div>Canada AIDA</div>
+            <div class="fw"><div class="fw-d"></div>Singapore AI Governance</div>
+            <div class="fw"><div class="fw-d"></div>OECD AI Principles</div>
+            <div class="fw"><div class="fw-d"></div>South Korea AI Basic Act</div>
         </div>
     </div>
 
@@ -363,9 +455,9 @@
                     <a href="south-africa-ai-policy.html">🇿🇦 Política de IA da África do Sul <span class="muted">Gabinete aprovou em 2 de abril de 2026 &middot; rastreador ao vivo</span></a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/docs/landscape.md">Lacunas de governança AICDI <span class="muted">Como Regula mapeia para o relatório UNESCO &middot; TRF 2026</span></a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/docs/article-state-of-ai-compliance.md">Estado da conformidade de IA em OSS <span class="muted">O que 5 bibliotecas Python populares realmente contêm</span></a>
-                    <a href="https://theimplementationlayer.substack.com/p/when-ai-systems-dont-see-you">When AI Systems Don't See You <span class="muted">Bias testing gaps · 35-year paper trail · peer-reviewed evidence</span></a>
-                    <a href="https://theimplementationlayer.substack.com/p/thinking-about-switching-from-chatgpt">Switching from ChatGPT to Claude <span class="muted">What you're actually moving · data governance · prompt translation</span></a>
-                    <a href="https://theimplementationlayer.substack.com/p/how-i-went-from-ai-hype-to-ai-governance">From AI hype to AI governance <span class="muted">The gap between governance theory and organisational reality</span></a>
+                    <a href="https://theimplementationlayer.substack.com/p/when-ai-systems-dont-see-you" lang="en">When AI Systems Don't See You <span class="muted">Bias testing gaps · 35-year paper trail · peer-reviewed evidence</span></a>
+                    <a href="https://theimplementationlayer.substack.com/p/thinking-about-switching-from-chatgpt" lang="en">Switching from ChatGPT to Claude <span class="muted">What you're actually moving · data governance · prompt translation</span></a>
+                    <a href="https://theimplementationlayer.substack.com/p/how-i-went-from-ai-hype-to-ai-governance" lang="en">From AI hype to AI governance <span class="muted">The gap between governance theory and organisational reality</span></a>
                 </div>
             </div>
             <div class="foot-right">

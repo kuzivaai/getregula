@@ -66,7 +66,7 @@ def scan_config_files(project_path: str) -> list:
             try:
                 content = filepath.read_text(encoding="utf-8", errors="ignore")
             except (PermissionError, OSError):
-                continue
+                continue  # unreadable file; skip
 
             rel_path = str(filepath.relative_to(project))
             for rx, description in _AI_CONFIG_PATTERNS:
@@ -200,8 +200,8 @@ def _scan_agent_autonomy(content, lines, rel_path, is_test, respect_ignores):
                 "confidence_score": confidence,
                 "suppressed": suppressed,
             })
-    except (ValueError, KeyError, AttributeError):
-        pass
+    except (ValueError, KeyError, AttributeError) as e:
+        print(f"regula: action data error in {rel_path}: {e}", file=sys.stderr)
     return results
 
 
@@ -231,8 +231,8 @@ def _scan_credentials(content, lines, rel_path, is_test, suppressed):
                 "confidence_score": max(sf.confidence_score - 40, 10) if is_test else sf.confidence_score,
                 "suppressed": suppressed,
             })
-    except (ValueError, KeyError, AttributeError):
-        pass
+    except (ValueError, KeyError, AttributeError) as e:
+        print(f"regula: credential scan error in {rel_path}: {e}", file=sys.stderr)
     return results
 
 
@@ -253,8 +253,8 @@ def _scan_ai_security(content, rel_path, is_test, suppressed):
                 "suppressed": suppressed,
                 "remediation": sf["remediation"],
             })
-    except (ValueError, KeyError, AttributeError):
-        pass
+    except (ValueError, KeyError, AttributeError) as e:
+        print(f"regula: security scan error in {rel_path}: {e}", file=sys.stderr)
     return results
 
 
@@ -294,8 +294,8 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     cache = None
     try:
         cache = ScanCache()
-    except Exception:
-        pass  # Cache init failure must never block scanning
+    except Exception as e:
+        print(f"regula: cache init failed, scanning without cache: {e}", file=sys.stderr)
 
     # Tier ordering for --min-tier filtering
     _TIER_ORDER = {
@@ -359,7 +359,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 try:
                     lines = filepath.read_text(encoding="utf-8", errors="ignore").split("\n")
                 except (PermissionError, OSError):
-                    continue
+                    continue  # unreadable file; skip
                 content = "\n".join(lines)
             rel_path = str(filepath.relative_to(project))
 
@@ -505,8 +505,8 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             if result.tier == RiskTier.HIGH_RISK:
                 try:
                     observations = generate_observations(content)
-                except (ValueError, KeyError, TypeError):
-                    pass
+                except (ValueError, KeyError, TypeError) as e:
+                    print(f"regula: observation generation failed for {rel_path}: {e}", file=sys.stderr)
 
             findings.append({
                 "file": rel_path,
@@ -546,8 +546,8 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         config_findings = scan_config_files(project_path)
         if min_tier_level <= 1:  # only include if minimal_risk tier is in scope
             findings.extend(config_findings)
-    except Exception:
-        pass  # Config scanning is supplementary — failure must not block main scan
+    except Exception as e:
+        print(f"regula: config scanning failed: {e}", file=sys.stderr)
 
     # Enrich each finding with Omnibus-aware enforcement deadline
     _enrich_deadlines(findings)
@@ -1359,7 +1359,7 @@ def main():
             audit_events = query_events(limit=10000)
             chain_valid, _ = verify_chain()
         except (OSError, ValueError, KeyError):
-            pass
+            pass  # audit trail is optional; continue without it
 
     if args.format == "html":
         content = generate_html_report(findings, project_name, audit_events, chain_valid)

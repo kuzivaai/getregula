@@ -1746,7 +1746,7 @@ def analyse_project(project_path: str) -> List[dict]:
             try:
                 content = filepath.read_text(encoding="utf-8", errors="replace")
             except (OSError, PermissionError):
-                continue
+                continue  # unreadable file; skip
 
             result = analyse_file(content, fname, language=lang)
             result["file"] = str(filepath.relative_to(root))

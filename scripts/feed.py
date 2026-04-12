@@ -194,7 +194,7 @@ def _parse_date(date_str: str) -> Optional[datetime]:
                 dt = dt.replace(tzinfo=timezone.utc)
             return dt
         except ValueError:
-            continue
+            continue  # try next date format
     return None
 
 
@@ -274,7 +274,7 @@ def _load_cache() -> dict:
             if age < timedelta(hours=CACHE_MAX_AGE_HOURS):
                 return data
         except (json.JSONDecodeError, ValueError, KeyError):
-            pass
+            pass  # corrupt cache is non-fatal; refetch instead
     return {}
 
 

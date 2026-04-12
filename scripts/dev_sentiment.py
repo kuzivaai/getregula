@@ -151,7 +151,7 @@ def rebuild_index() -> None:
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
-            continue
+            continue  # malformed monthly data; skip
         index["months"].append({
             "month": data.get("month"),
             "total": data.get("total", 0),

@@ -114,26 +114,28 @@ def analyse_agent_session(session_id: str = None, hours: int = 8) -> dict:
     human_checkpoints = len(blocked)  # Each block requires human decision
 
     # Calculate autonomy score
-    # High tool calls + low checkpoints + sensitive access = high autonomy
-    autonomy = 50  # Base
+    # 0 = no agent activity, 1-30 low, 31-60 moderate, 61-80 high, 81-100 very high
+    autonomy = 0  # No evidence → no autonomy
+    if total > 0:
+        autonomy += 15  # Some tool activity detected
     if total > 50:
-        autonomy += 15
+        autonomy += 20
     if total > 200:
         autonomy += 15
     if human_checkpoints == 0 and total > 10:
-        autonomy += 20
+        autonomy += 25
     elif human_checkpoints > 0:
         autonomy -= min(human_checkpoints * 10, 30)
     if sensitive_list:
-        autonomy += min(len(sensitive_list) * 10, 20)
+        autonomy += min(len(sensitive_list) * 10, 25)
     autonomy = max(0, min(100, autonomy))
 
     # Determine risk level
-    if autonomy >= 80 or any(s["type"] in ("credential_access", "system_command") for s in sensitive_list):
+    if autonomy >= 81 or any(s["type"] in ("credential_access", "system_command") for s in sensitive_list):
         risk_level = "critical"
-    elif autonomy >= 60 or sensitive_list:
+    elif autonomy >= 61 or sensitive_list:
         risk_level = "high"
-    elif autonomy >= 40:
+    elif autonomy >= 31:
         risk_level = "moderate"
     else:
         risk_level = "low"
@@ -206,7 +208,7 @@ def check_mcp_config(config_path: str = None) -> list:
                     "remediation": f"Move to environment variable. {secret.remediation}",
                 })
         except (PermissionError, OSError):
-            continue
+            continue  # unreadable config file; skip
 
     return findings
 
@@ -524,26 +526,30 @@ def format_agent_json(analysis: dict) -> str:
 
 
 # ---------------------------------------------------------------------------
-# OWASP Top 10 for Agentic Applications (Dec 2025)
+# Regula mapping to OWASP Top 10 for Agentic Applications (Dec 2025)
 # https://owasp.org/www-project-top-10-for-agentic-applications/
+#
+# NOTE: The IDs below (regula-ASI01 etc.) are Regula's own identifiers for
+# mapping purposes.  They are NOT official OWASP identifiers.  The official
+# OWASP project uses different naming conventions.
 # ---------------------------------------------------------------------------
 
 OWASP_AGENTIC_RISKS = [
-    {"id": "ASI01", "name": "Agent Goal Hijack"},
-    {"id": "ASI02", "name": "Tool Misuse and Exploitation"},
-    {"id": "ASI03", "name": "Identity and Privilege Abuse"},
-    {"id": "ASI04", "name": "Agentic Supply Chain Vulnerabilities"},
-    {"id": "ASI05", "name": "Unexpected Code Execution (RCE)"},
-    {"id": "ASI06", "name": "Memory & Context Poisoning"},
-    {"id": "ASI07", "name": "Insecure Inter-Agent Communication"},
-    {"id": "ASI08", "name": "Cascading Failures"},
-    {"id": "ASI09", "name": "Human-Agent Trust Exploitation"},
-    {"id": "ASI10", "name": "Rogue Agents"},
+    {"id": "regula-ASI01", "name": "Agent Goal Hijack", "source": "regula-mapping"},
+    {"id": "regula-ASI02", "name": "Tool Misuse and Exploitation", "source": "regula-mapping"},
+    {"id": "regula-ASI03", "name": "Identity and Privilege Abuse", "source": "regula-mapping"},
+    {"id": "regula-ASI04", "name": "Agentic Supply Chain Vulnerabilities", "source": "regula-mapping"},
+    {"id": "regula-ASI05", "name": "Unexpected Code Execution (RCE)", "source": "regula-mapping"},
+    {"id": "regula-ASI06", "name": "Memory & Context Poisoning", "source": "regula-mapping"},
+    {"id": "regula-ASI07", "name": "Insecure Inter-Agent Communication", "source": "regula-mapping"},
+    {"id": "regula-ASI08", "name": "Cascading Failures", "source": "regula-mapping"},
+    {"id": "regula-ASI09", "name": "Human-Agent Trust Exploitation", "source": "regula-mapping"},
+    {"id": "regula-ASI10", "name": "Rogue Agents", "source": "regula-mapping"},
 ]
 
 # Vulnerability patterns (presence = risk) and control patterns (presence = mitigation)
 OWASP_AGENTIC_PATTERNS = {
-    "ASI01": {
+    "regula-ASI01": {
         "vuln": [
             r"(?:system_prompt|instructions)\s*[=+]\s*.*(?:user_input|request\.)",
             r"\.format\(.*(?:user_input|prompt|message)\)",
@@ -557,7 +563,7 @@ OWASP_AGENTIC_PATTERNS = {
             r"(?:ALLOWED_INSTRUCTIONS|INSTRUCTION_ALLOWLIST)",
         ],
     },
-    "ASI02": {
+    "regula-ASI02": {
         "vuln": [
             r"tools\s*=\s*\[\s*['\"]?\*['\"]?\s*\]",
             r"allow_all_tools|enabled_tools\s*=\s*None",
@@ -571,7 +577,7 @@ OWASP_AGENTIC_PATTERNS = {
             r"(?:restrict|limit)_tools",
         ],
     },
-    "ASI03": {
+    "regula-ASI03": {
         "vuln": [
             r"(?:SHARED_API_KEY|GLOBAL_TOKEN|common_credentials)",
             r"agent.*\.(?:token|key|credentials)\s*=\s*(?:os\.environ|config)\[",
@@ -585,7 +591,7 @@ OWASP_AGENTIC_PATTERNS = {
             r"scope\s*=\s*\[",
         ],
     },
-    "ASI04": {
+    "regula-ASI04": {
         "vuln": [
             r"pip\s+install\s+(?!-r)(?!--requirement)\S+\s+--(?:no-verify|trusted-host)",
             r"(?:curl|wget)\s+.*\|\s*(?:bash|sh|python)",
@@ -599,7 +605,7 @@ OWASP_AGENTIC_PATTERNS = {
             r"(?:requirements\.txt|poetry\.lock|Pipfile\.lock)",
         ],
     },
-    "ASI05": {
+    "regula-ASI05": {
         "vuln": [
             r"eval\s*\(",
             r"exec\s*\(",
@@ -616,7 +622,7 @@ OWASP_AGENTIC_PATTERNS = {
             r"(?:timeout|resource_limit|max_execution)",
         ],
     },
-    "ASI06": {
+    "regula-ASI06": {
         "vuln": [
             r"(?:conversation|history|memory|context)\s*\.\s*(?:append|extend|insert)\s*\(",
             r"(?:load|restore)_(?:context|memory|history)\s*\(",
@@ -630,7 +636,7 @@ OWASP_AGENTIC_PATTERNS = {
             r"(?:immutable|frozen|read_only)_(?:context|memory)",
         ],
     },
-    "ASI07": {
+    "regula-ASI07": {
         "vuln": [
             r"(?:send|receive)_(?:message|task)\s*\(.*(?:json|str|dict)\s*\)",
             r"agent_(?:call|invoke|send)\s*\(",
@@ -644,7 +650,7 @@ OWASP_AGENTIC_PATTERNS = {
             r"(?:signed|encrypted)_(?:message|payload)",
         ],
     },
-    "ASI08": {
+    "regula-ASI08": {
         "vuln": [
             r"while\s+True\s*:.*(?:retry|attempt|try)",
             r"except\s*:.*(?:pass|continue)",
@@ -659,7 +665,7 @@ OWASP_AGENTIC_PATTERNS = {
             r"(?:backoff|exponential_backoff)",
         ],
     },
-    "ASI09": {
+    "regula-ASI09": {
         "vuln": [
             r"(?:pretend|act_as|impersonate|role_play)\s*.*(?:human|person|user)",
             r"(?:name|identity|role)\s*=\s*['\"](?:.*(?:assistant|agent|bot).*)['\"]",
@@ -672,7 +678,7 @@ OWASP_AGENTIC_PATTERNS = {
             r"(?:transparency|disclose_ai|ai_label)",
         ],
     },
-    "ASI10": {
+    "regula-ASI10": {
         "vuln": [
             r"(?:autonomous|self_directed|unrestricted)_(?:mode|agent|run)",
             r"(?:no_limit|unlimited)_(?:actions|tools|scope)",
@@ -709,7 +715,7 @@ def _scan_files_for_patterns(project_path: str) -> dict:
         try:
             content = f.read_text(encoding="utf-8", errors="ignore")
         except (PermissionError, OSError):
-            continue
+            continue  # unreadable file; skip
         files_scanned += 1
         rel = str(f.relative_to(p))
 
@@ -791,16 +797,16 @@ def assess_owasp_agentic(project_path: str) -> dict:
 
 
 _RECOMMENDATIONS = {
-    "ASI01": "Add input sanitisation before injecting user content into agent instructions. Use an instruction allowlist.",
-    "ASI02": "Define an explicit tool allowlist. Reject tool calls not on the list.",
-    "ASI03": "Assign per-agent credentials with least-privilege scopes. Implement RBAC for agent actions.",
-    "ASI04": "Pin dependency versions, verify plugin integrity with checksums, maintain an approved-tools list.",
-    "ASI05": "Use sandboxed execution (RestrictedPython, containers). Never pass unsanitised input to eval/exec/subprocess.",
-    "ASI06": "Validate context integrity with HMAC or signatures. Use immutable conversation history.",
-    "ASI07": "Authenticate inter-agent messages. Use mTLS or signed payloads for agent-to-agent communication.",
-    "ASI08": "Add circuit breakers, bounded retries (max_retries=N), and timeouts to all agent chains.",
-    "ASI09": "Require AI disclosure in all agent outputs. Add human-in-the-loop gates for consequential actions.",
-    "ASI10": "Implement kill switches, resource limits, governance policy checks, and audit logging for all agents.",
+    "regula-ASI01": "Add input sanitisation before injecting user content into agent instructions. Use an instruction allowlist.",
+    "regula-ASI02": "Define an explicit tool allowlist. Reject tool calls not on the list.",
+    "regula-ASI03": "Assign per-agent credentials with least-privilege scopes. Implement RBAC for agent actions.",
+    "regula-ASI04": "Pin dependency versions, verify plugin integrity with checksums, maintain an approved-tools list.",
+    "regula-ASI05": "Use sandboxed execution (RestrictedPython, containers). Never pass unsanitised input to eval/exec/subprocess.",
+    "regula-ASI06": "Validate context integrity with HMAC or signatures. Use immutable conversation history.",
+    "regula-ASI07": "Authenticate inter-agent messages. Use mTLS or signed payloads for agent-to-agent communication.",
+    "regula-ASI08": "Add circuit breakers, bounded retries (max_retries=N), and timeouts to all agent chains.",
+    "regula-ASI09": "Require AI disclosure in all agent outputs. Add human-in-the-loop gates for consequential actions.",
+    "regula-ASI10": "Implement kill switches, resource limits, governance policy checks, and audit logging for all agents.",
 }
 
 

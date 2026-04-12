@@ -908,7 +908,8 @@ def _load_advisories() -> list[dict]:
             data = yaml_load(text)
             if isinstance(data, dict):
                 advisories.append(data)
-        except Exception:  # Intentional: multiple error sources
+        except Exception as e:
+            print(f"regula: skipping advisory {yaml_file.name}: {e}", file=sys.stderr)
             continue
     return advisories
 
