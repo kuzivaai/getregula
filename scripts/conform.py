@@ -52,7 +52,7 @@ ARTICLES = {
         "requires_human": [
             "Training data provenance documentation",
             "Data quality metrics and validation reports",
-            "Bias examination methodology and results",
+            "Bias examination on your deployment data (regula bias covers benchmarks only)",
             "Data governance policy document",
             "Dataset labelling procedures",
         ],
@@ -397,6 +397,47 @@ def generate_conformity_pack(
                     auto_detected.append("Cross-file oversight analysis: no AI output sources detected")
             except (ImportError, Exception) as e:
                 print(f"Warning: oversight analysis failed: {e}", file=sys.stderr)
+
+        if art_num == "10":
+            # Bias evaluation (optional — requires Ollama)
+            try:
+                from bias_eval import load_crowspairs_sample, evaluate_with_ollama
+                from bias_bbq import load_bbq_sample, evaluate_bbq_full
+                from bias_report import format_annex_iv, format_json_report
+
+                # Try CrowS-Pairs
+                cp_result = None
+                try:
+                    pairs = load_crowspairs_sample(max_pairs=100)
+                    cp_result = evaluate_with_ollama(pairs, timeout=10)
+                except Exception:
+                    pass
+
+                # Try BBQ
+                bbq_result = None
+                try:
+                    items = load_bbq_sample(max_items=100)
+                    bbq_result = evaluate_bbq_full(items, timeout=10)
+                except Exception:
+                    pass
+
+                has_results = (
+                    (cp_result and cp_result.get("status") == "ok")
+                    or (bbq_result and bbq_result.get("status") == "ok")
+                )
+
+                if has_results:
+                    annex_iv_bias = format_annex_iv(cp_result, bbq_result, "llama3", "http://localhost:11434")
+                    _write_and_record(art_dir / "bias-evaluation.md", annex_iv_bias, file_records, pack_dir)
+                    bias_json = format_json_report(cp_result, bbq_result, "llama3", "http://localhost:11434")
+                    _write_and_record(art_dir / "bias-evaluation.json", json.dumps(bias_json, indent=2, default=str), file_records, pack_dir)
+                    auto_detected.append("Bias evaluation: CrowS-Pairs + BBQ benchmark results with confidence intervals")
+                else:
+                    auto_detected.append("Bias evaluation: Ollama not available — run 'regula bias' separately to generate bias evidence")
+            except ImportError:
+                auto_detected.append("Bias evaluation: run 'regula bias' separately to generate bias evidence")
+            except Exception as e:
+                print(f"Note: bias evaluation skipped: {e}", file=sys.stderr)
 
         if art_num == "15" and sbom_data:
             _write_and_record(art_dir / "sbom.json", json.dumps(sbom_data, indent=2, default=str), file_records, pack_dir)

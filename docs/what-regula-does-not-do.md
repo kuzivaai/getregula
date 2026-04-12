@@ -82,16 +82,32 @@ shallow. We list them here so nobody overstates what these features do.
 
 ### Bias evaluation (`regula bias`)
 
-The `bias` command runs CrowS-Pairs stereotype pairs against a local
-Ollama model. This is a single English-language benchmark that tests
-whether a model prefers stereotypical over anti-stereotypical sentence
-completions. It does not:
+The `bias` command evaluates stereotype bias in a local Ollama model
+using two complementary benchmarks:
+
+- **CrowS-Pairs** (Nangia et al., 2020) — 1,508 sentence pairs measuring
+  whether the model assigns higher probability to stereotyped sentences.
+  Uses mean per-token log-probability scoring (length-normalised).
+- **BBQ** (Parrish et al., 2022) — question-answering items testing whether
+  the model relies on stereotypes when answering ambiguous questions.
+
+Results include Wilson score confidence intervals per category, bootstrap
+confidence intervals on overall scores, and sample size confidence labels.
+Use `--format annex-iv` to generate a structured section for Annex IV
+technical documentation.
+
+It does not:
 
 - Test your actual model with your actual data
 - Measure fairness metrics (demographic parity, equalised odds, etc.)
 - Test for bias in languages other than English
 - Evaluate bias across protected characteristics specific to your jurisdiction
 - Replace the production bias testing that Article 10 data governance requires
+
+Known limitations are disclosed in every output: CrowS-Pairs has
+documented reliability issues (Blodgett et al., ACL 2021), both
+benchmarks are US-centric and English-only, and bundled samples are
+curated subsets of the full datasets.
 
 Enterprise tools (IBM watsonx.governance, Fiddler AI, Arthur AI) do
 production fairness measurement on deployed models with real data.

@@ -86,6 +86,7 @@ def run_quickstart(project_dir: str = ".", org: str = "My Organisation",
         next_steps.append(f"Review {len(blocks)} BLOCK finding(s) — these would fail CI")
     next_steps.append("Run 'regula install claude-code' to add pre-commit hooks")
     next_steps.append("Run 'regula gap --project .' for compliance gap analysis")
+    next_steps.append("Run 'regula bias' to evaluate model stereotype bias (requires Ollama)")
 
     # Top findings preview — value-first onboarding (CLI UX best practice).
     # Quickstart used to report only counts ("1 BLOCK finding") and force the

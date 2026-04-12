@@ -273,7 +273,7 @@ on their machine.
 - **No network calls in the core scanner.** `regula check` is fully
   offline. Network calls are scoped to opt-in commands: `regula feed`
   (governance news), `regula audit anchor` (RFC 3161 TSA), and
-  `regula bias --use-network` (Crows-Pairs dataset).
+  `regula bias` (CrowS-Pairs dataset download, when network is available).
 - **All `urllib.urlopen` call sites enforce `http(s)` only.** The
   `_require_http_url()` guard rejects `file://`, `ftp://`, `data://`
   schemes before any network call. Verified by semgrep
@@ -339,7 +339,7 @@ Only when the user explicitly invokes the relevant command:
 |---|---|---|
 | `regula feed` | curated RSS/Atom feed URLs in `scripts/feed.py` (IAPP, EDPB, ICO, etc.) | HTTP GET only — no user data sent |
 | `regula audit anchor` | user-configured RFC 3161 TSA (default `freetsa.org`) | A SHA-256 hash of the local audit log head. The hash itself reveals nothing about the user's code. |
-| `regula bias --use-network` | `raw.githubusercontent.com/nyu-mll/crows-pairs/master/...` | HTTP GET only |
+| `regula bias` | `raw.githubusercontent.com/nyu-mll/crows-pairs/master/...` | HTTP GET only. Falls back to bundled 20-pair sample if network unavailable. |
 
 `regula check`, `regula classify`, `regula gap`, `regula oversight`,
 `regula sbom`, `regula register`, `regula conform`, `regula doctor`, and
