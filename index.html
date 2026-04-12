@@ -107,6 +107,14 @@
                     "@type": "Answer",
                     "text": "Prohibited AI practices (Article 5) carry fines up to €35 million or 7% of global annual turnover, whichever is higher. High-risk violations carry fines up to €15 million or 3% of turnover. Non-compliance with information requirements carries fines up to €7.5 million or 1% of turnover."
                 }
+            },
+            {
+                "@type": "Question",
+                "name": "Can Regula test AI models for bias?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Regula includes an optional bias evaluation command (regula bias) that runs CrowS-Pairs and BBQ stereotype benchmarks against a local Ollama model, with statistical confidence intervals. It is a development-time starting point for Article 10 bias documentation, not a production fairness testing tool. For production bias measurement, use dedicated platforms like IBM watsonx.governance or Fiddler AI."
+                }
             }
         ]
     }

@@ -31,7 +31,7 @@ Regula scans your code for risk indicators, tells you which tier your system fal
 - A runtime monitoring system (it analyses source code, not running systems)
 - A legal compliance certificate (findings are indicators, not legal determinations)
 - A replacement for enterprise GRC platforms like Credo AI or Holistic AI (it complements them)
-- A bias or fairness testing tool (it detects code patterns, not model behaviour)
+- A production fairness testing platform (`regula bias` runs benchmark probes against a local Ollama model as a starting point, but does not replace runtime fairness monitoring)
 - Legal advice (consult qualified legal counsel for compliance decisions)
 
 Regula helps development teams understand their EU AI Act exposure early. It does not replace the organisational, procedural, and legal work required for full compliance.

@@ -29,7 +29,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
-from bias_stats import confidence_label, wilson_ci
+from bias_stats import confidence_label, require_http_url, wilson_ci
 
 logger = logging.getLogger(__name__)
 
@@ -83,12 +83,8 @@ def _parse_bbq_answer(response: str) -> Optional[int]:
     return None
 
 
-def _require_http_url(url: str) -> None:
-    """Reject non-http(s) schemes."""
-    from urllib.parse import urlparse
-    parsed = urlparse(url)
-    if parsed.scheme not in ("http", "https"):
-        raise ValueError(f"Endpoint scheme must be http or https, got: {parsed.scheme!r}")
+# Alias for internal use — shared implementation in bias_stats.py
+_require_http_url = require_http_url
 
 
 def _ollama_generate(endpoint: str, payload: dict, timeout: int = 30) -> dict:
