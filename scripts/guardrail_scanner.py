@@ -383,12 +383,149 @@ def scan_for_guardrails(project_path: str) -> dict:
     # Recommendations
     recommendations = _generate_recommendations(categories, library_names_found)
 
+    # Detect guardrail gaps at AI call sites
+    call_site_gaps = detect_guardrail_gaps(project_path)
+
     return {
         "categories": categories,
         "libraries_detected": libraries_detected,
         "overall_score": overall_score,
         "recommendations": recommendations,
+        "gaps": call_site_gaps,
     }
+
+
+# ---------------------------------------------------------------------------
+# Guardrail absence detection — AI call-site gap analysis
+# ---------------------------------------------------------------------------
+
+# Patterns that identify AI API call sites
+AI_CALL_PATTERNS = [
+    # OpenAI
+    (r"(?:openai\.)?ChatCompletion\.create", "openai.ChatCompletion.create"),
+    (r"client\.chat\.completions\.create", "client.chat.completions.create"),
+    (r"openai\.Completion\.create", "openai.Completion.create"),
+    (r"openai\.Image\.create", "openai.Image.create"),
+    # Anthropic
+    (r"anthropic\.messages\.create", "anthropic.messages.create"),
+    (r"client\.messages\.create", "client.messages.create"),
+    # Ollama
+    (r"ollama\.generate", "ollama.generate"),
+    (r"ollama\.chat", "ollama.chat"),
+    # HuggingFace / generic ML
+    (r"model\.generate\s*\(", "model.generate"),
+    (r"pipeline\s*\(", "pipeline("),
+    # LangChain
+    (r"chain\.invoke\s*\(", "chain.invoke"),
+    (r"chain\.run\s*\(", "chain.run"),
+    (r"\.ainvoke\s*\(", ".ainvoke"),
+    # LiteLLM
+    (r"litellm\.completion", "litellm.completion"),
+    (r"litellm\.acompletion", "litellm.acompletion"),
+    # Google
+    (r"genai\.GenerativeModel", "genai.GenerativeModel"),
+    (r"model\.generate_content", "model.generate_content"),
+    # Cohere
+    (r"cohere\.generate", "cohere.generate"),
+    (r"co\.chat\s*\(", "co.chat"),
+]
+
+# Guardrail presence patterns checked within ±20 lines of each call site
+_NEARBY_GUARDRAIL_PATTERNS = {
+    "input_validation": [
+        r"len\s*\(", r"max_length", r"max_tokens", r"truncat",
+        r"pii", r"redact", r"anonymi[sz]", r"scrub",
+        r"sanitiz", r"sanitise", r"escape", r"filter", r"validate",
+        r"moderate", r"content_filter", r"safety_check",
+        r"injection", r"input.?guard", r"allowlist", r"blocklist",
+    ],
+    "output_validation": [
+        r"filter", r"moderate", r"toxicity", r"safety",
+        r"json\.loads", r"parse", r"validate", r"schema",
+        r"ground", r"verify", r"fact_check", r"hallucination",
+        r"structured.?output", r"pydantic", r"BaseModel",
+    ],
+    "human_oversight": [
+        r"review", r"approve", r"human.?in.?the.?loop", r"escalate",
+        r"if\s+confidence", r"if\s+score", r"threshold",
+        r"log", r"audit", r"record",
+        r"pending.?approval", r"manual.?review",
+    ],
+}
+
+# Map guardrail types to EU AI Act articles
+_GAP_ARTICLE_MAP = {
+    "input_validation": "Article 9",
+    "output_validation": "Article 9",
+    "human_oversight": "Article 14",
+}
+
+
+def detect_guardrail_gaps(project_path: str) -> list:
+    """Detect AI API call sites missing nearby guardrail patterns.
+
+    Methodology: For each file, find lines matching known AI API call
+    patterns. For each call site, extract a +-20-line window and check
+    for the presence of input validation, output validation, and human
+    oversight patterns. Any guardrail type not found in the window is
+    reported as a gap, mapped to the relevant EU AI Act article.
+
+    Returns a list of dicts, each with keys: file, line, call_pattern,
+    missing, present, article.
+    """
+    project_path = str(Path(project_path).resolve())
+    files_index = list(_walk_project(project_path))
+    gaps = []
+
+    for rel_path, abs_path in files_index:
+        content = _read_file(abs_path)
+        if not content:
+            continue
+
+        lines = content.split("\n")
+
+        for call_regex, call_label in AI_CALL_PATTERNS:
+            for line_idx, line_text in enumerate(lines):
+                if not re.search(call_regex, line_text, re.IGNORECASE):
+                    continue
+
+                # Extract +-20 line window
+                start = max(0, line_idx - 20)
+                end = min(len(lines), line_idx + 21)
+                window = "\n".join(lines[start:end])
+
+                present = []
+                missing = []
+
+                for guard_type, patterns in _NEARBY_GUARDRAIL_PATTERNS.items():
+                    found = False
+                    for pat in patterns:
+                        if re.search(pat, window, re.IGNORECASE):
+                            found = True
+                            break
+                    if found:
+                        present.append(guard_type)
+                    else:
+                        missing.append(guard_type)
+
+                if missing:
+                    # Determine article from most severe missing type
+                    articles = set()
+                    for m in missing:
+                        articles.add(_GAP_ARTICLE_MAP.get(m, "Article 9"))
+                    # Prefer Article 14 if human oversight is missing
+                    article = "Article 14" if "Article 14" in articles else "Article 9"
+
+                    gaps.append({
+                        "file": rel_path,
+                        "line": line_idx + 1,
+                        "call_pattern": call_label,
+                        "missing": missing,
+                        "present": present,
+                        "article": article,
+                    })
+
+    return gaps
 
 
 def _generate_recommendations(categories: dict, libraries_found: set) -> list:

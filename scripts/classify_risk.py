@@ -174,6 +174,9 @@ def check_ai_security(text: str) -> list:
                         "description": config["description"],
                         "severity": config["severity"],
                         "remediation": config["remediation"],
+                        "confidence": config.get("confidence"),
+                        "likelihood": config.get("likelihood"),
+                        "impact": config.get("impact"),
                         "line": i,
                         "matched_line": stripped[:100],
                     })
@@ -436,6 +439,9 @@ def check_prohibited(text: str, stripped_text: str = None) -> Optional[Classific
             message=f"PROHIBITED: {primary['description']}",
             exceptions=primary.get("exceptions"),
             confidence_score=_compute_confidence_score("prohibited", len(matches), has_ai),
+            pattern_confidence=primary.get("confidence"),
+            pattern_likelihood=primary.get("likelihood"),
+            pattern_impact=primary.get("impact"),
         )
     return None
 
@@ -492,6 +498,9 @@ def check_high_risk(text: str, stripped_text: str = None) -> Optional[Classifica
             action="allow_with_requirements",
             message=f"HIGH-RISK: {primary['description']} - Articles {', '.join(sorted(all_articles, key=int))}",
             confidence_score=_compute_confidence_score("high_risk", len(matches), True),
+            pattern_confidence=primary.get("confidence"),
+            pattern_likelihood=primary.get("likelihood"),
+            pattern_impact=primary.get("impact"),
         )
     return None
 
@@ -543,6 +552,9 @@ def check_limited_risk(text: str, stripped_text: str = None) -> Optional[Classif
             action="allow_with_transparency",
             message=f"LIMITED-RISK: {primary['description']}",
             confidence_score=_compute_confidence_score("limited_risk", len(matches), True),
+            pattern_confidence=primary.get("confidence"),
+            pattern_likelihood=primary.get("likelihood"),
+            pattern_impact=primary.get("impact"),
         )
     return None
 

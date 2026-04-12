@@ -59,6 +59,10 @@ class Classification:
     message: Optional[str] = None
     exceptions: Optional[str] = None
     confidence_score: int = 0  # 0-100 numeric confidence
+    # Per-pattern metadata (complements the numeric score above)
+    pattern_confidence: Optional[str] = None   # high/medium/low - how likely the pattern correctly identifies the risk
+    pattern_likelihood: Optional[str] = None   # high/medium/low - how likely this risk manifests in practice
+    pattern_impact: Optional[str] = None       # high/medium/low - severity if the risk materialises
 
     def get_finding_tier(self) -> str:
         """Return finding tier based on confidence score and policy thresholds.

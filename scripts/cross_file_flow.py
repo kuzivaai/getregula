@@ -412,8 +412,36 @@ def analyse_project_oversight(project_path: str) -> dict:
             },
         }
 
-    # Phase 1: symbol table
+    # Phase 1: collect Python files
     py_files = _collect_python_files(pp)
+
+    # If no Python files found, return honest "not analysed" result
+    # rather than a misleading oversight_score of 100.
+    if not py_files:
+        return {
+            "analysed": False,
+            "reason": (
+                "No Python files found — cross-file flow analysis"
+                " currently supports Python only"
+            ),
+            "ai_sources": [],
+            "oversight_gates": [],
+            "flow_paths": [],
+            "unreviewed_paths": [],
+            "confidence": "none",
+            "limitations": list(LIMITATIONS),
+            "summary": {
+                "total_paths": 0,
+                "reviewed": 0,
+                "unreviewed": 0,
+                "oversight_score": -1,
+                "note": (
+                    "JS/TS cross-file flow analysis not yet supported"
+                ),
+            },
+        }
+
+    # Phase 1 (cont.): symbol table
     symbol_table = _build_symbol_table(pp, py_files)
 
     # Phase 2: import resolution
@@ -434,13 +462,15 @@ def analyse_project_oversight(project_path: str) -> dict:
     reviewed_count = total - unreviewed_count
 
     if total == 0:
-        score = 100  # No AI flow paths means no oversight concern
+        # Python files analysed, no AI flow paths — no oversight concern
+        score = 100
     else:
         score = round((reviewed_count / total) * 100)
 
     confidence = _compute_overall_confidence(flow_paths)
 
     return {
+        "analysed": True,
         "ai_sources": [
             {
                 "file": s["file"],
