@@ -1866,6 +1866,8 @@ def cmd_conform(args):
         project_path,
         output_dir=args.output,
         project_name=project_name,
+        model=args.model,
+        endpoint=args.endpoint,
     )
 
     if args.format == "json":
@@ -2877,6 +2879,8 @@ def _build_subparsers(subparsers):
                                 "(Articles 9 RMS, 17 QMS, 29a FRIA, 72 PMM) that Regula cannot "
                                 "verify from code. Produces a self-assessment evidence document, "
                                 "NOT a compliance certificate.")
+    p_conform.add_argument("--model", default="llama3", help="Ollama model name for bias evaluation (default: llama3)")
+    p_conform.add_argument("--endpoint", default="http://localhost:11434", help="Ollama endpoint URL (default: http://localhost:11434)")
     p_conform.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_conform.set_defaults(func=cmd_conform)
 

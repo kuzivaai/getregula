@@ -59,8 +59,8 @@ PROHIBITED_PATTERNS = {
         "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "emotion_inference_restricted": {
-        "patterns": [r"emotion.{0,20}workplace", r"emotion.{0,20}school", r"sentiment.{0,20}employee",
-                     r"workplace.{0,20}emotion", r"employee.{0,20}emotion"],
+        "patterns": [r"emotion.{0,40}workplace", r"emotion.{0,40}school", r"sentiment.{0,40}employee",
+                     r"workplace.{0,40}emotion", r"employee.{0,40}emotion"],
         "article": "5(1)(f)",
         "description": "Emotion inference in workplace or educational settings",
         "conditions": "Prohibited in workplace and educational institutions.",
@@ -190,7 +190,7 @@ HIGH_RISK_PATTERNS = {
         "patterns": [r"\bcv.?screen", r"\bresume.?filt", r"\bhiring.?decision", r"\brecruit\w*\W{0,3}automat",
                      r"\bautomat\w*\W{0,3}recruit", r"\bcandidate[_\W]?rank", r"rank[_\W]?candidate",
                      r"\bpromotion.?decision",
-                     r"\btermination.?decision", r"\bperformance.?review.{0,10}(ai|automat|model|predict)",
+                     r"\btermination.?decision", r"\bperformance.?review.{0,30}(ai|automat|model|predict)",
                      r"\bscreen.?candidate", r"\bjob.?candidate", r"\bcandidate.?screen", r"\bresume\s*[\W_]?screen",
                      r"\bapplicant.?scor", r"\bapplicant.?rank", r"\bemployee.?assess",
                      # Common real-world phrasings missed by the original list.
@@ -647,7 +647,7 @@ AI_SECURITY_PATTERNS = {
     # security review. These map to CRA secure-by-design and AI Act Art. 15.
     "no_error_handling_ai_call": {
         "patterns": [
-            r"(?:chat\.completions|messages\.create|llm\.invoke|model\.predict)\s*\([^)]*\)\s*$",  # bare AI call with no try/except on same or next line
+            r"(?:chat\.completions\.create|messages\.create|llm\.invoke)\s*\(",  # bare AI call with no try/except on same or next line
         ],
         "owasp": "LLM06",
         "articles": ["15"],
