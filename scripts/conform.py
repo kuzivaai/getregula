@@ -252,6 +252,8 @@ def generate_conformity_pack(
     project_path: str,
     output_dir: str = ".",
     project_name: str = None,
+    model: str = "llama3",
+    endpoint: str = "http://localhost:11434",
 ) -> dict:
     """Generate a conformity assessment evidence pack mapped by article.
 
@@ -444,9 +446,9 @@ def generate_conformity_pack(
                 )
 
                 if has_results:
-                    annex_iv_bias = format_annex_iv(cp_result, bbq_result, "llama3", "http://localhost:11434")
+                    annex_iv_bias = format_annex_iv(cp_result, bbq_result, model, endpoint)
                     _write_and_record(art_dir / "bias-evaluation.md", annex_iv_bias, file_records, pack_dir)
-                    bias_json = format_json_report(cp_result, bbq_result, "llama3", "http://localhost:11434")
+                    bias_json = format_json_report(cp_result, bbq_result, model, endpoint)
                     _write_and_record(art_dir / "bias-evaluation.json", json.dumps(bias_json, indent=2, default=str), file_records, pack_dir)
                     auto_detected.append("Bias evaluation: CrowS-Pairs + BBQ benchmark results with confidence intervals")
                 else:
