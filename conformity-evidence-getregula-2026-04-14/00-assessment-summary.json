@@ -1,0 +1,98 @@
+{
+  "regula_version": "1.6.1",
+  "generated_at": "2026-04-14T16:12:22.427361+00:00",
+  "project": "getregula",
+  "conformity_type": "internal (Annex VI, Module A)",
+  "overall_readiness": "94%",
+  "articles": {
+    "9": {
+      "title": "Risk Management",
+      "status": "moderate",
+      "auto_coverage": "60%",
+      "evidence_files": [
+        "02-risk-management-art9/evidence.json",
+        "02-risk-management-art9/coverage.json"
+      ]
+    },
+    "10": {
+      "title": "Data Governance",
+      "status": "strong",
+      "auto_coverage": "100%",
+      "evidence_files": [
+        "03-data-governance-art10/evidence.json",
+        "03-data-governance-art10/coverage.json"
+      ]
+    },
+    "11": {
+      "title": "Technical Documentation",
+      "status": "strong",
+      "auto_coverage": "100%",
+      "evidence_files": [
+        "04-technical-documentation-art11/evidence.json",
+        "04-technical-documentation-art11/coverage.json"
+      ]
+    },
+    "12": {
+      "title": "Record-Keeping",
+      "status": "strong",
+      "auto_coverage": "100%",
+      "evidence_files": [
+        "05-record-keeping-art12/evidence.json",
+        "05-record-keeping-art12/coverage.json"
+      ]
+    },
+    "13": {
+      "title": "Transparency",
+      "status": "strong",
+      "auto_coverage": "100%",
+      "evidence_files": [
+        "06-transparency-art13/evidence.json",
+        "06-transparency-art13/coverage.json"
+      ]
+    },
+    "14": {
+      "title": "Human Oversight",
+      "status": "strong",
+      "auto_coverage": "100%",
+      "evidence_files": [
+        "07-human-oversight-art14/evidence.json",
+        "07-human-oversight-art14/coverage.json"
+      ]
+    },
+    "15": {
+      "title": "Accuracy, Robustness, Cybersecurity",
+      "status": "strong",
+      "auto_coverage": "100%",
+      "evidence_files": [
+        "08-accuracy-robustness-art15/evidence.json",
+        "08-accuracy-robustness-art15/coverage.json"
+      ]
+    }
+  },
+  "deadline": {
+    "earliest_enforceable": "2025-02-02",
+    "omnibus_proposed_range": [
+      "2026-11-02",
+      "2027-12-02"
+    ],
+    "note": "Per-finding deadlines available in 01-risk-classification/findings.json"
+  },
+  "human_required": [
+    "Intended purpose description",
+    "Fundamental Rights Impact Assessment (FRIA)",
+    "Post-market monitoring plan",
+    "Training data provenance documentation",
+    "Instructions for use",
+    "Human oversight measures documentation",
+    "Accuracy metrics and benchmarks",
+    "Robustness testing results"
+  ],
+  "auto_generated": [
+    "Risk classification",
+    "Technical documentation draft (Annex IV)",
+    "Supply chain analysis (SBOM)",
+    "Audit trail",
+    "Remediation plan",
+    "Per-article gap assessment"
+  ]
+}

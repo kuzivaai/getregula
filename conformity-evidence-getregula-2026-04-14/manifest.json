@@ -1,0 +1,138 @@
+{
+  "regula_version": "1.6.1",
+  "generated_at": "2026-04-14T16:12:22.427361+00:00",
+  "project": "getregula",
+  "project_directory": "getregula",
+  "files": [
+    {
+      "filename": "01-risk-classification/findings.json",
+      "sha256": "2e9bedc03e5f52ba8e9a09739aa1fc778a82872bca548f06a44f145bc162e1e4",
+      "size_bytes": 144136
+    },
+    {
+      "filename": "01-risk-classification/coverage.json",
+      "sha256": "ccfb9bfef6db1f0aeadb824c3da52f856ec6c3204a36ccd5710f054969fa4731",
+      "size_bytes": 361
+    },
+    {
+      "filename": "02-risk-management-art9/evidence.json",
+      "sha256": "2d681162151247056764661bbaaf7d3b0d741b9b0fa77122d8b8b40bba77a74c",
+      "size_bytes": 15712
+    },
+    {
+      "filename": "02-risk-management-art9/coverage.json",
+      "sha256": "4ef4b31208429e4e6ca38b4d601618e7c6010cc7021c0932b02f3e708f233e81",
+      "size_bytes": 15828
+    },
+    {
+      "filename": "03-data-governance-art10/evidence.json",
+      "sha256": "ad3695bc25287a7e441f09b43370af71d2279218647c60897b577df528895653",
+      "size_bytes": 1671
+    },
+    {
+      "filename": "03-data-governance-art10/coverage.json",
+      "sha256": "3d4eaf5da9d6f80819e0cefc040a6823c121c50eaea45e63809d54d7015073aa",
+      "size_bytes": 2056
+    },
+    {
+      "filename": "04-technical-documentation-art11/annex-iv-draft.md",
+      "sha256": "04f314846c2ca0f63343a7821150f6dc71b290e913b82da489fe8796816a0d56",
+      "size_bytes": 37697
+    },
+    {
+      "filename": "04-technical-documentation-art11/evidence.json",
+      "sha256": "3a1415107f725199366f4fa3a5d158e699dad5c262714fb8ef8a86118be1cf75",
+      "size_bytes": 12132
+    },
+    {
+      "filename": "04-technical-documentation-art11/coverage.json",
+      "sha256": "cd60ce7d5dd7a1bd0634516242e8e6fec2c069512da798b7c565ecc06024f14c",
+      "size_bytes": 12440
+    },
+    {
+      "filename": "05-record-keeping-art12/audit-trail.json",
+      "sha256": "6d1a268fea633e9ea020a9f6488411634accf8def57093f4941b84c6127a7e06",
+      "size_bytes": 10958490
+    },
+    {
+      "filename": "05-record-keeping-art12/evidence.json",
+      "sha256": "dd8b8d7c90f58b0728a78586d8d2100a360ffab153874c7bb27f044d2d05ab45",
+      "size_bytes": 3929
+    },
+    {
+      "filename": "05-record-keeping-art12/coverage.json",
+      "sha256": "2b148762b71cedc8e40cae4879f23970784f3d8b8efe6eaccfa0f32525d8f31b",
+      "size_bytes": 4161
+    },
+    {
+      "filename": "06-transparency-art13/evidence.json",
+      "sha256": "42406f041bbc93e81b31fa30151828471b80101d36f5f254fa75db9e2efedb48",
+      "size_bytes": 636
+    },
+    {
+      "filename": "06-transparency-art13/coverage.json",
+      "sha256": "5d6a4f7f2d7bdfc664ef54dfa08467cff6f5e0e15d5fca6ad9426394a9c764f4",
+      "size_bytes": 859
+    },
+    {
+      "filename": "07-human-oversight-art14/oversight-analysis.json",
+      "sha256": "93232feec3289f26cfc11ab387b213c392142da91217627cc0f585497fab4449",
+      "size_bytes": 18485
+    },
+    {
+      "filename": "07-human-oversight-art14/evidence.json",
+      "sha256": "7aa7dcfe9089ae62e0bd29603114b7308af2cee5d12d0c2cb724705318d0111d",
+      "size_bytes": 4464
+    },
+    {
+      "filename": "07-human-oversight-art14/coverage.json",
+      "sha256": "8ec9c4a490a6c96d03e18eaf00f5e0749b71f18755198277b33b0a31ee8c006e",
+      "size_bytes": 4829
+    },
+    {
+      "filename": "08-accuracy-robustness-art15/sbom.json",
+      "sha256": "819621ea258bedbb02f23175b8c073bf8f7f2957eb0444d68333883ba14e0999",
+      "size_bytes": 4018
+    },
+    {
+      "filename": "08-accuracy-robustness-art15/evidence.json",
+      "sha256": "c60bb89df10f3481548e2df0ae184ea7f6e803b37b7337e906998dec56a3bdd4",
+      "size_bytes": 5575
+    },
+    {
+      "filename": "08-accuracy-robustness-art15/coverage.json",
+      "sha256": "1b35ff2055e6767ffc4ee8cf1df0ca5a88dda4ec673a94a502c3f9d93369365c",
+      "size_bytes": 896
+    },
+    {
+      "filename": "09-supply-chain/dependency-report.json",
+      "sha256": "1055351a037778a08b565b0be817f551a1b85d9f9dd28c5bcd1ab52cdbae6912",
+      "size_bytes": 1588
+    },
+    {
+      "filename": "09-supply-chain/sbom.json",
+      "sha256": "819621ea258bedbb02f23175b8c073bf8f7f2957eb0444d68333883ba14e0999",
+      "size_bytes": 4018
+    },
+    {
+      "filename": "10-declaration-of-conformity/declaration-template.md",
+      "sha256": "c1499dc52e58eecf9b46a35d120a96ce2715a00e0c726ae4e66d27a740a7ad4d",
+      "size_bytes": 1773
+    },
+    {
+      "filename": "11-remediation/remediation-plan.md",
+      "sha256": "8f0d851b85ca88832a099bc9da8c5fa6780bb477ca5f45d9f95b4c33605fb5fe",
+      "size_bytes": 2394
+    },
+    {
+      "filename": "00-assessment-summary.json",
+      "sha256": "b88d21dc8cad9b89a8ca0f263acf2ddf57aaf5088c4bb47bb8af3238ba155285",
+      "size_bytes": 2736
+    },
+    {
+      "filename": "README.md",
+      "sha256": "540b49569e4920d3203910b5b44a75b43ed177414f66f7d21e6513d03fa729f0",
+      "size_bytes": 1633
+    }
+  ]
+}

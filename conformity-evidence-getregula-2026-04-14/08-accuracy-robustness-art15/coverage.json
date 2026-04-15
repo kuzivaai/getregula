@@ -1,0 +1,26 @@
+{
+  "article": 15,
+  "title": "Accuracy, Robustness, Cybersecurity",
+  "auto_detected": [
+    "Compliance gap score: 100%",
+    "Security configuration: SECURITY.md",
+    "Performance evaluation in: hooks/pre_tool_use.py",
+    "Environment-based credential management in: scripts/sbom.py",
+    "Monitoring/alerting in: scripts/bias_report.py",
+    "Test file: scripts/self_test.py",
+    "AI security check ran on test_coverage_critical.py",
+    "AI security check ran on app.py",
+    "AI security check ran on social_scoring.py",
+    "AI security check ran on mixed_system.py",
+    "Total test files found: 66",
+    "Lockfile present: uv.lock",
+    "CycloneDX 1.6 SBOM generated"
+  ],
+  "requires_human_input": [
+    "Accuracy metrics and benchmarks",
+    "Robustness testing results",
+    "Cybersecurity risk assessment",
+    "Redundancy and fail-safe documentation"
+  ],
+  "readiness": "100%"
+}

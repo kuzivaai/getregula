@@ -1,0 +1,29 @@
+{
+  "article": 10,
+  "title": "Data Governance",
+  "gap_score": 100,
+  "status": "strong",
+  "evidence_found": [
+    "Data governance content in: output.txt",
+    "Data validation (pydantic) detected in output.txt",
+    "Bias checking library (fairness metric) detected in scripts/bias_report.py",
+    "Bias checking library (bias detect) detected in scripts/generate_documentation.py",
+    "Bias checking library (bias detect) detected in scripts/feed.py",
+    "Data validation (pydantic) detected in scripts/guardrail_scanner.py",
+    "Bias checking library (fairlearn) detected in scripts/risk_patterns.py",
+    "Data validation (pydantic) detected in scripts/risk_patterns.py",
+    "Bias checking library (fairlearn) detected in scripts/explain.py",
+    "Bias checking library (fairlearn) detected in scripts/remediation.py",
+    "Data validation (pydantic) detected in scripts/code_analysis.py",
+    "Data validation (jsonschema) detected in scripts/build_delta_log.py",
+    "Bias checking library (fairlearn) detected in scripts/compliance_check.py",
+    "Data validation (great_expectations) detected in scripts/compliance_check.py",
+    "Data validation (jsonschema) detected in tests/test_guardrails.py",
+    "Bias checking library (fairlearn) detected in tests/test_classification.py",
+    "Data validation (schema valid) detected in tests/test_classification.py",
+    "Data validation (schema valid) detected in tests/test_build_regulations.py",
+    "Bias checking library (ai.fairness) detected in content/regulations/united-kingdom.py",
+    "Bias checking library (disparate impact) detected in content/regulations/colorado.py"
+  ],
+  "gaps_identified": []
+}
