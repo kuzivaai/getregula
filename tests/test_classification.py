@@ -2213,8 +2213,11 @@ def test_policy_thresholds():
     policy = get_policy()
     thresholds = policy.get("thresholds", {})
     assert_true(thresholds is not None, "thresholds key exists or defaults")
-    assert_true(not thresholds or isinstance(list(thresholds.values())[0], (int, float)),
-                "threshold values are numeric if present")
+    assert_true(isinstance(thresholds, dict), "thresholds is a dict")
+    if thresholds:
+        # Verify at least one key has a meaningful name
+        assert_true(any(k.startswith("block_") or k.startswith("min_") for k in thresholds),
+                    "thresholds contain expected policy keys")
     print("✓ Policy: thresholds readable from policy")
 
 
