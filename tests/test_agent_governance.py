@@ -18,24 +18,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
-passed = 0
-failed = 0
-_PYTEST_MODE = "pytest" in sys.modules
-
-
-def assert_eq(actual, expected, msg=""):
-    global passed, failed
-    if actual == expected:
-        passed += 1
-    else:
-        failed += 1
-        if _PYTEST_MODE:
-            raise AssertionError(f"{msg} — expected {expected!r}, got {actual!r}")
-        print(f"  FAIL: {msg} — expected {expected!r}, got {actual!r}")
-
-
-def assert_true(val, msg=""):
-    assert_eq(val, True, msg)
+import helpers
+from helpers import assert_eq, assert_true
 
 
 # ── MCP Config Parsing ──────────────────────────────────────────────
@@ -155,7 +139,8 @@ if user_approved(suggestion):
     # Should have fewer or no findings compared to ungated version
     ungated_findings = [f for f in findings if "no human" in f.get("description", "").lower()
                         or "autonomous" in f.get("description", "").lower()]
-    # This is heuristic — the test checks the gate reduces risk flags
+    assert_true(len(ungated_findings) == 0 or len(findings) > len(ungated_findings),
+                "human gate should reduce autonomous action flags")
     print("\u2713 Agent: human gate detection (heuristic)")
 
 
@@ -397,6 +382,8 @@ def test_scan_files_agent_autonomy_test_deprioritisation():
         prod_findings = [f for f in findings if f["tier"] == "agent_autonomy" and "tests/" not in f["file"]]
         test_findings = [f for f in findings if f["tier"] == "agent_autonomy" and "tests/" in f["file"]]
 
+        assert_true(len(prod_findings) > 0, "should have prod autonomy findings")
+        assert_true(len(test_findings) > 0, "should have test autonomy findings")
         if prod_findings and test_findings:
             assert_true(prod_findings[0]["confidence_score"] > test_findings[0]["confidence_score"],
                         "test file agent autonomy should have lower confidence than production")
@@ -689,12 +676,12 @@ if __name__ == "__main__":
         try:
             test()
         except Exception as e:
-            failed += 1
+            helpers.failed += 1
             print(f"  EXCEPTION in {test.__name__}: {e}")
 
     print(f"\n{'=' * 50}")
-    print(f"Results: {passed} passed, {failed} failed ({len(tests)} test functions)")
-    if failed:
+    print(f"Results: {helpers.passed} passed, {helpers.failed} failed ({len(tests)} test functions)")
+    if helpers.failed:
         print("SOME TESTS FAILED")
         sys.exit(1)
     else:

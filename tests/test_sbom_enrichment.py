@@ -8,25 +8,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 
-passed = 0
-failed = 0
-
-
-def assert_eq(actual, expected, msg=""):
-    global passed, failed
-    if actual == expected:
-        passed += 1
-    else:
-        failed += 1
-        print(f"  FAIL: {msg} — expected {expected!r}, got {actual!r}")
-
-
-def assert_true(val, msg=""):
-    assert_eq(val, True, msg)
-
-
-def assert_none(val, msg=""):
-    assert_eq(val, None, msg)
+import helpers
+from helpers import assert_eq, assert_true, assert_none
 
 
 # ── GPAI tier detection tests ───────────────────────────────────
@@ -272,6 +255,6 @@ if __name__ == "__main__":
     test_funcs = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     for fn in test_funcs:
         fn()
-    total = passed + failed
-    print(f"\n{passed}/{total} passed, {failed} failed")
-    sys.exit(1 if failed else 0)
+    total = helpers.passed + helpers.failed
+    print(f"\n{helpers.passed}/{total} passed, {helpers.failed} failed")
+    sys.exit(1 if helpers.failed else 0)

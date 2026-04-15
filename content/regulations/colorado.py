@@ -193,7 +193,7 @@ regula gap --project .         # Gap assessment (reuses Art 9-15 structure)
 regula oversight .              # Cross-file human-review gate detection
 regula docs .                  # Technical documentation scaffold
 regula conform .               # Evidence pack — maps to deployer impact assessment
-regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.6)
+regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.7)
 </code></pre>
 <p>The NIST AI RMF mapping that gets you the Colorado rebuttable presumption is already shipped in Regula's <code>references/framework_crosswalk.yaml</code>. A single <code>regula check</code> run reports findings against the EU AI Act, NIST AI RMF, ISO/IEC 42001, OWASP LLM Top 10, and the other frameworks Regula supports.</p>
 <p>What Regula does <em>not</em> do for Colorado: issue your consumer notices, track your deployer impact assessment history, or act as a compliance certificate. The statute is enforced by the Colorado AG against real organisations — Regula helps you produce the evidence, not the legal conclusion.</p>

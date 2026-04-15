@@ -370,8 +370,9 @@ def test_register_cli_force_overwrites_existing(tmp_path, monkeypatch):
 
     # Second run — must raise SystemExit because the file already exists
     import pytest as _pt
-    with _pt.raises(SystemExit):
+    with _pt.raises(SystemExit) as exc_info:
         cmd_register(argparse.Namespace(**base_kwargs, force=False))
+    assert exc_info.value.code == 2, f"expected exit code 2, got {exc_info.value.code}"
 
     # Third run with --force — succeeds
     cmd_register(argparse.Namespace(**base_kwargs, force=True))

@@ -195,7 +195,7 @@ All 8 Article 5 categories are detected. Each message includes the specific cond
 
 ### High-Risk Areas (Annex III)
 
-Regula's high-risk pattern library covers all **8 Annex III areas** ([Regulation (EU) 2024/1689 Annex III, points 1–8](https://eur-lex.europa.eu/eli/reg/2024/1689/oj): biometrics, critical infrastructure, education, employment, essential services, law enforcement, migration, justice + democratic processes) plus the **2 most common Annex I categories** referenced by Article 6(1) — medical devices and machinery safety components — for a total of 10 high-risk pattern categories. Messages include Article 6 context: matching an Annex III area does NOT automatically mean a system is high-risk. Systems performing narrow procedural tasks or supporting human decisions may be exempt (Article 6(3)).
+Regula's high-risk pattern library covers all **8 Annex III areas** ([Regulation (EU) 2024/1689 Annex III, points 1–8](https://eur-lex.europa.eu/eli/reg/2024/1689/oj): biometrics, critical infrastructure, education, employment, essential services, law enforcement, migration, justice + democratic processes) plus the **2 most common Annex I categories** referenced by Article 6(1) — medical devices and machinery safety components — plus **5 additional high-risk categories**: insurance, credit scoring, worker management, democratic processes, and emergency services — for a total of 15 high-risk pattern categories. Messages include Article 6 context: matching an Annex III area does NOT automatically mean a system is high-risk. Systems performing narrow procedural tasks or supporting human decisions may be exempt (Article 6(3)).
 
 ## Supported Platforms
 
@@ -262,7 +262,7 @@ Reproduce with `python3 benchmarks/label.py score` (OSS labels) and `python3 ben
 
 ## CLI Usage
 
-Regula has 53 CLI commands. The full reference (with examples for each) lives in [`docs/cli-reference.md`](docs/cli-reference.md). Top-level summary:
+Regula has 52 CLI commands. The full reference (with examples for each) lives in [`docs/cli-reference.md`](docs/cli-reference.md). Top-level summary:
 
 ```bash
 regula --help                              # list all subcommands

@@ -60,7 +60,7 @@ python3 scripts/cli.py conform --project . --format json
 # Cross-file Article 14 human oversight analysis
 python3 scripts/cli.py oversight --project .
 
-# AI Bill of Materials (CycloneDX 1.6 with GPAI tier annotations)
+# AI Bill of Materials (CycloneDX 1.7 with GPAI tier annotations)
 python3 scripts/cli.py sbom --project .
 python3 scripts/cli.py sbom --project . --ai-bom    # Include model provenance + datasets
 
@@ -196,7 +196,7 @@ Each obligation is reported as PASS / WARN / FAIL / N/A with the relevant articl
 
 ### AI Bill of Materials
 
-Extends the CycloneDX 1.6 SBOM with AI-specific metadata: model provenance extracted from code (which models are loaded, from which providers), GPAI tier annotations per EU AI Act Articles 51-55, and detected training dataset references.
+Extends the CycloneDX 1.7 SBOM with AI-specific metadata: model provenance extracted from code (which models are loaded, from which providers), GPAI tier annotations per EU AI Act Articles 51-55, and detected training dataset references.
 
 ```bash
 regula sbom --project .                       # Standard SBOM

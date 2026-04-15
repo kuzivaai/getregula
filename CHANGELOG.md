@@ -20,7 +20,7 @@ registry, pattern corpus), adds two write-time integrity tools
 (claim auditor, self-healing CI), and closes the honesty gaps surfaced
 by three independent audits (research-eval, repo-readiness,
 moat-research). Command count rises from 41 to 43. No breaking changes;
-all 926 tests still pass.
+all 935 tests still pass.
 
 ### Added — new CLI commands
 
@@ -181,7 +181,7 @@ The "trust foundation" point release. Adds the buyer-facing Trust Pack,
 publishes a reproducible precision/recall benchmark, kills the
 `yaml not installed` nag, sharpens the doctor `.gitignore` check, and
 adds standard OSS meta-files (SECURITY.md, CITATION.cff, CODE_OF_CONDUCT.md).
-No breaking changes; all 926 tests still pass.
+No breaking changes; all 935 tests still pass.
 
 ### Added
 

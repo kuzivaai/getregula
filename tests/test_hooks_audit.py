@@ -20,28 +20,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
-passed = 0
-failed = 0
-_PYTEST_MODE = "pytest" in sys.modules
-
-
-def assert_eq(actual, expected, msg=""):
-    global passed, failed
-    if actual == expected:
-        passed += 1
-    else:
-        failed += 1
-        if _PYTEST_MODE:
-            raise AssertionError(f"{msg} — expected {expected!r}, got {actual!r}")
-        print(f"  FAIL: {msg} — expected {expected!r}, got {actual!r}")
-
-
-def assert_true(val, msg=""):
-    assert_eq(val, True, msg)
-
-
-def assert_false(val, msg=""):
-    assert_eq(val, False, msg)
+import helpers
+from helpers import assert_eq, assert_true, assert_false
 
 
 # ── Helper: run hook as subprocess ─────────────────────────────────
@@ -101,11 +81,10 @@ def test_pre_hook_prohibited_pattern_blocks():
     })
     assert_eq(rc, 2, "prohibited pattern exits 2")
     assert_true(out is not None, "produces JSON output")
-    if out:
-        decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
-        assert_eq(decision, "deny", "permission denied")
-        reason = out.get("hookSpecificOutput", {}).get("permissionDecisionReason", "")
-        assert_true("PROHIBITED" in reason, "reason mentions PROHIBITED")
+    decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
+    assert_eq(decision, "deny", "permission denied")
+    reason = out.get("hookSpecificOutput", {}).get("permissionDecisionReason", "")
+    assert_true("PROHIBITED" in reason, "reason mentions PROHIBITED")
     print("✓ PreHook: prohibited pattern -> exit 2, blocked")
 
 
@@ -118,12 +97,12 @@ def test_pre_hook_high_risk_allows_with_warning():
         "content": "import sklearn; cv_screening = automate(hiring)"
     })
     assert_eq(rc, 0, "high-risk pattern exits 0")
-    if out:
-        decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
-        assert_eq(decision, "allow", "permission allowed")
-        context = out.get("hookSpecificOutput", {}).get("additionalContext", "")
-        assert_true("HIGH-RISK" in context, "context mentions HIGH-RISK")
-        assert_true("Article" in context or "Art" in context, "mentions articles")
+    assert_true(out is not None, "hook should produce parseable JSON output")
+    decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
+    assert_eq(decision, "allow", "permission allowed")
+    context = out.get("hookSpecificOutput", {}).get("additionalContext", "")
+    assert_true("HIGH-RISK" in context, "context mentions HIGH-RISK")
+    assert_true("Article" in context or "Art" in context, "mentions articles")
     print("✓ PreHook: high-risk pattern -> exit 0, advisory context")
 
 
@@ -135,11 +114,11 @@ def test_pre_hook_limited_risk_allows_with_info():
         "content": "import tensorflow; chatbot = build_conversational_ai()"
     })
     assert_eq(rc, 0, "limited-risk exits 0")
-    if out:
-        decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
-        assert_eq(decision, "allow", "permission allowed")
-        context = out.get("hookSpecificOutput", {}).get("additionalContext", "")
-        assert_true("Limited-Risk" in context or "limited" in context.lower(), "mentions limited risk")
+    assert_true(out is not None, "hook should produce parseable JSON output")
+    decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
+    assert_eq(decision, "allow", "permission allowed")
+    context = out.get("hookSpecificOutput", {}).get("additionalContext", "")
+    assert_true("Limited-Risk" in context or "limited" in context.lower(), "mentions limited risk")
     print("✓ PreHook: limited-risk pattern -> exit 0, transparency info")
 
 
@@ -152,11 +131,11 @@ def test_pre_hook_credential_blocks():
         "content": f"api_client = OpenAI(api_key='{fake_key}')"
     })
     assert_eq(rc, 2, "credential exits 2")
-    if out:
-        decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
-        assert_eq(decision, "deny", "permission denied for credential")
-        reason = out.get("hookSpecificOutput", {}).get("permissionDecisionReason", "")
-        assert_true("CREDENTIAL" in reason, "reason mentions CREDENTIAL")
+    assert_true(out is not None, "hook should produce parseable JSON output")
+    decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
+    assert_eq(decision, "deny", "permission denied for credential")
+    reason = out.get("hookSpecificOutput", {}).get("permissionDecisionReason", "")
+    assert_true("CREDENTIAL" in reason, "reason mentions CREDENTIAL")
     print("✓ PreHook: high-confidence credential -> exit 2, blocked")
 
 
@@ -168,9 +147,9 @@ def test_pre_hook_medium_credential_warns():
     })
     # Medium confidence should NOT block (exit 0) but add warning context
     assert_eq(rc, 0, "medium credential exits 0")
-    if out:
-        decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
-        assert_true(decision in ("allow", None), "not denied for medium credential")
+    assert_true(out is not None, "hook should produce parseable JSON output")
+    decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
+    assert_true(decision in ("allow", None), "not denied for medium credential")
     print("✓ PreHook: medium credential -> exit 0, warning")
 
 
@@ -181,9 +160,9 @@ def test_pre_hook_doc_bypass_md():
         "content": "# Social Scoring\nThis is prohibited under Article 5."
     })
     assert_eq(rc, 0, ".md file bypasses classification")
-    if out:
-        decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
-        assert_eq(decision, "allow", "doc file allowed")
+    assert_true(out is not None, "hook should produce parseable JSON output")
+    decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
+    assert_eq(decision, "allow", "doc file allowed")
     print("✓ PreHook: .md file -> bypass")
 
 
@@ -194,9 +173,9 @@ def test_pre_hook_doc_bypass_directory():
         "content": "Prohibited AI practices include social scoring."
     })
     assert_eq(rc, 0, "docs/ directory bypasses classification")
-    if out:
-        decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
-        assert_eq(decision, "allow", "doc directory allowed")
+    assert_true(out is not None, "hook should produce parseable JSON output")
+    decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
+    assert_eq(decision, "allow", "doc directory allowed")
     print("✓ PreHook: docs/ directory -> bypass")
 
 
@@ -217,9 +196,9 @@ def test_pre_hook_regula_ignore_bypass():
         "content": "# regula-ignore\nimport tensorflow\nsocial credit scoring system"
     })
     assert_eq(rc, 0, "regula-ignore bypasses classification")
-    if out:
-        decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
-        assert_eq(decision, "allow", "regula-ignore content allowed")
+    assert_true(out is not None, "hook should produce parseable JSON output")
+    decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
+    assert_eq(decision, "allow", "regula-ignore content allowed")
     print("✓ PreHook: regula-ignore -> bypass")
 
 
@@ -261,9 +240,9 @@ def test_pre_hook_clean_pass():
         "content": "print('hello world')\ndef add(a, b): return a + b"
     })
     assert_eq(rc, 0, "clean content exits 0")
-    if out:
-        decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
-        assert_eq(decision, "allow", "clean content allowed")
+    assert_true(out is not None, "hook should produce parseable JSON output")
+    decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
+    assert_eq(decision, "allow", "clean content allowed")
     print("✓ PreHook: clean content -> exit 0, allowed")
 
 
@@ -334,11 +313,11 @@ def test_pre_hook_gpai_training_note():
         "content": "import torch\nmodel.fit(X_train, y_train)\nfine_tuning = True"
     })
     # This is minimal-risk AI with training, so should get GPAI note
-    if out:
-        context = out.get("hookSpecificOutput", {}).get("additionalContext", "")
-        if "GPAI" in context:
-            assert_true("fine-tuning" in context.lower() or "training" in context.lower(),
-                        "GPAI note mentions training")
+    assert_true(out is not None, "hook should produce parseable JSON output")
+    context = out.get("hookSpecificOutput", {}).get("additionalContext", "")
+    if "GPAI" in context:
+        assert_true("fine-tuning" in context.lower() or "training" in context.lower(),
+                    "GPAI note mentions training")
     print("✓ PreHook: training activity -> GPAI note (if applicable)")
 
 
@@ -349,9 +328,9 @@ def test_pre_hook_high_risk_with_observations():
         "command": "python3 -c 'import sklearn; cv_screening(); model.predict(candidates)'"
     })
     assert_eq(rc, 0, "high-risk exits 0")
-    if out:
-        context = out.get("hookSpecificOutput", {}).get("additionalContext", "")
-        assert_true("HIGH-RISK" in context, "mentions high-risk")
+    assert_true(out is not None, "hook should produce parseable JSON output")
+    context = out.get("hookSpecificOutput", {}).get("additionalContext", "")
+    assert_true("HIGH-RISK" in context, "mentions high-risk")
     print("✓ PreHook: high-risk with patterns -> observations included")
 
 
@@ -368,12 +347,12 @@ def test_post_hook_logs_tool_use():
     assert_eq(rc, 0, "post hook exits 0")
     # Check that an audit event was written
     audit_files = list(Path(tmpdir).glob("audit_*.jsonl"))
-    if audit_files:
-        content = audit_files[0].read_text()
-        assert_true(len(content.strip()) > 0, "audit event written")
-        event = json.loads(content.strip().split("\n")[-1])
-        assert_eq(event.get("event_type"), "tool_use", "event type is tool_use")
-        assert_true("tier" in event.get("data", {}), "data includes tier")
+    assert_true(len(audit_files) > 0, "audit file should be created")
+    content = audit_files[0].read_text()
+    assert_true(len(content.strip()) > 0, "audit event written")
+    event = json.loads(content.strip().split("\n")[-1])
+    assert_eq(event.get("event_type"), "tool_use", "event type is tool_use")
+    assert_true("tier" in event.get("data", {}), "data includes tier")
     print("✓ PostHook: logs tool execution to audit trail")
 
 
@@ -384,13 +363,13 @@ def test_post_hook_includes_ai_indicators():
         "content": "import sklearn\ncv_screening = pipeline('classifier')"
     })
     audit_files = list(Path(tmpdir).glob("audit_*.jsonl"))
-    if audit_files:
-        content = audit_files[0].read_text()
-        event = json.loads(content.strip().split("\n")[-1])
-        data = event.get("data", {})
-        if data.get("tier") != "not_ai":
-            assert_true("indicators" in data, "includes indicators")
-            assert_true("articles" in data, "includes articles")
+    assert_true(len(audit_files) > 0, "audit file should be created")
+    content = audit_files[0].read_text()
+    event = json.loads(content.strip().split("\n")[-1])
+    data = event.get("data", {})
+    if data.get("tier") != "not_ai":
+        assert_true("indicators" in data, "includes indicators")
+        assert_true("articles" in data, "includes articles")
     print("✓ PostHook: includes AI indicators when present")
 
 
@@ -401,11 +380,11 @@ def test_post_hook_includes_tool_response():
         "content": "print('hello')"
     }, extra_fields={"tool_response": {"status": "success"}})
     audit_files = list(Path(tmpdir).glob("audit_*.jsonl"))
-    if audit_files:
-        content = audit_files[0].read_text()
-        event = json.loads(content.strip().split("\n")[-1])
-        data = event.get("data", {})
-        assert_true("tool_response" in data, "includes tool_response")
+    assert_true(len(audit_files) > 0, "audit file should be created")
+    content = audit_files[0].read_text()
+    event = json.loads(content.strip().split("\n")[-1])
+    data = event.get("data", {})
+    assert_true("tool_response" in data, "includes tool_response")
     print("✓ PostHook: includes tool response")
 
 
@@ -1161,12 +1140,12 @@ if __name__ == "__main__":
         try:
             test()
         except Exception as e:
-            failed += 1
+            helpers.failed += 1
             print(f"  EXCEPTION in {test.__name__}: {e}")
 
     print(f"\n{'=' * 50}")
-    print(f"Results: {passed} passed, {failed} failed ({len(tests)} test functions)")
-    if failed:
+    print(f"Results: {helpers.passed} passed, {helpers.failed} failed ({len(tests)} test functions)")
+    if helpers.failed:
         print("SOME TESTS FAILED")
         sys.exit(1)
     else:

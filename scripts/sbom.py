@@ -1,8 +1,8 @@
 # regula-ignore
 #!/usr/bin/env python3
-"""CycloneDX 1.6 AI Software Bill of Materials (SBOM) generator.
+"""CycloneDX 1.7 AI Software Bill of Materials (SBOM) generator.
 
-Generates CycloneDX 1.6 JSON BOMs with AI-specific components, model file
+Generates CycloneDX 1.7 JSON BOMs with AI-specific components, model file
 detection, and vulnerability tracking for compromised packages.
 
 No external dependencies required — stdlib only.
@@ -617,7 +617,7 @@ def _enrich_ai_bom(project_path: str, components: list[dict],
 
 def generate_sbom(project_path: str, project_name: str | None = None,
                    ai_bom: bool = False) -> dict:
-    """Generate a CycloneDX 1.6 AI SBOM for a project.
+    """Generate a CycloneDX 1.7 AI SBOM for a project.
 
     Parameters
     ----------
@@ -632,7 +632,7 @@ def generate_sbom(project_path: str, project_name: str | None = None,
     Returns
     -------
     dict
-        A CycloneDX 1.6 compliant BOM dictionary.
+        A CycloneDX 1.7 compliant BOM dictionary.
     """
     root = Path(project_path).resolve()
     if project_name is None:
@@ -954,7 +954,7 @@ def format_sbom_summary(sbom: dict) -> str:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate CycloneDX 1.6 AI SBOM for a project"
+        description="Generate CycloneDX 1.7 AI SBOM for a project"
     )
     parser.add_argument(
         "--project", "-p",

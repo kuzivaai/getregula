@@ -28,11 +28,6 @@ from classify_risk import strip_comments
 _OBLIGATIONS = None
 
 
-def _reset_obligations_cache():
-    """Clear the obligations cache (used by tests)."""
-    global _OBLIGATIONS
-    _OBLIGATIONS = None
-
 
 def _load_obligations() -> dict:
     """Load article obligations from YAML reference file.
