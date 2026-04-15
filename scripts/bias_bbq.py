@@ -141,7 +141,7 @@ def evaluate_bbq(
 
             results.append(result)
 
-        except Exception:
+        except (OSError, ValueError, KeyError, TypeError, TimeoutError):
             errors += 1
             if errors > 5:
                 break

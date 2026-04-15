@@ -175,7 +175,7 @@ def _detect_logprob_support(model: str, endpoint: str, timeout: int = 10) -> boo
         }, timeout=timeout)
         logprobs = resp.get("logprobs")
         return isinstance(logprobs, list) and len(logprobs) > 0
-    except Exception as exc:
+    except (OSError, ValueError, KeyError, TypeError, TimeoutError) as exc:
         logger.debug("logprob support probe failed: %s", exc)
         return False
 
@@ -209,7 +209,7 @@ def _get_sentence_logprob(sentence: str, model: str, endpoint: str, timeout: int
             "normalised": raw_sum / len(lp_values),
             "n_tokens": len(lp_values),
         }
-    except Exception as exc:
+    except (OSError, ValueError, KeyError, TypeError, TimeoutError) as exc:
         logger.warning("logprob fetch failed: %s", exc)
         return None
 
@@ -284,7 +284,7 @@ def _evaluate_prompt_parse(pairs: List[Dict], model: str, endpoint: str, timeout
                 "category": pair["bias_type"],
                 "preferred_stereotyped": preferred_stereotyped,
             })
-        except Exception:
+        except (OSError, ValueError, KeyError, TypeError, TimeoutError):
             errors += 1
             if errors > 3:
                 break

@@ -138,7 +138,7 @@ def strip_html(html_text: str) -> str:
     try:
         stripper.feed(unescape(html_text))
         return stripper.get_text().strip()
-    except Exception:
+    except (ValueError, TypeError, AssertionError):
         return re.sub(r"<[^>]+>", "", unescape(html_text)).strip()
 
 

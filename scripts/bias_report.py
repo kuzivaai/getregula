@@ -22,7 +22,7 @@ def build_reproducibility_metadata(
 ) -> Dict:
     """Build reproducibility metadata for a bias evaluation run."""
     try:
-        from cli import VERSION
+        from constants import VERSION
     except ImportError:
         VERSION = "unknown"
 
