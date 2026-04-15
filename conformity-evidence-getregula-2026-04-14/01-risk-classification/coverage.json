@@ -1,0 +1,13 @@
+{
+  "article": "classification",
+  "title": "Risk Classification",
+  "auto_detected": [
+    "Scanned project: 209 findings (12 prohibited, 18 high-risk, 3 limited)"
+  ],
+  "requires_human_input": [
+    "Confirmation of intended purpose",
+    "Verification of risk tier assignment",
+    "Determination of Annex III applicability"
+  ],
+  "readiness": "complete"
+}

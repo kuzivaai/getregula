@@ -1,0 +1,20 @@
+{
+  "article": 13,
+  "title": "Transparency",
+  "auto_detected": [
+    "Compliance gap score: 100%",
+    "Capability/limitation documentation (4 topics) in: output.txt",
+    "Transparency model card 100% complete: intended_use, limitations, training_data, performance, ethical",
+    "AI disclosure/transparency notice in: hooks/pre_tool_use.py",
+    "Transparency documentation: scripts/transparency.py",
+    "Transparency model card 100% complete: intended_use, limitations, training_data, performance, ethical",
+    "Transparency model card 60% complete: intended_use, limitations, performance"
+  ],
+  "requires_human_input": [
+    "Instructions for use document",
+    "Intended purpose statement for deployers",
+    "Human-readable explanation of system capabilities and limitations",
+    "Contact information for the provider"
+  ],
+  "readiness": "100%"
+}
