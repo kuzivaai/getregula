@@ -211,7 +211,7 @@ regula inventory .             # Model references with GPAI tier (use alongside 
 regula gap --project .         # Gap assessment \u2014 maps onto high-impact AI obligations
 regula oversight .             # Cross-file human-oversight detection
 regula docs .                  # Technical documentation scaffold
-regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.6)
+regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.7)
 </code></pre>
 <p>What Regula does <em>not</em> yet do for Korea specifically: generate watermarking hook code, validate a Korean-standard watermark payload, or produce a Korean-language disclosure template. The first two will land once MSIT publishes the watermarking specification. The third is a straightforward localisation task \u2014 <a href="https://github.com/kuzivaai/getregula/issues">open an issue</a> if you need it.</p>
 """,

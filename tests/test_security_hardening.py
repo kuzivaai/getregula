@@ -19,31 +19,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
-passed = 0
-failed = 0
-_PYTEST_MODE = "pytest" in sys.modules
-
-
-def assert_true(val, msg=""):
-    global passed, failed
-    if val:
-        passed += 1
-    else:
-        failed += 1
-        if _PYTEST_MODE:
-            raise AssertionError(msg)
-        print(f"  FAIL: {msg}")
-
-
-def assert_eq(actual, expected, msg=""):
-    global passed, failed
-    if actual == expected:
-        passed += 1
-    else:
-        failed += 1
-        if _PYTEST_MODE:
-            raise AssertionError(f"{msg} — expected {expected!r}, got {actual!r}")
-        print(f"  FAIL: {msg} — expected {expected!r}, got {actual!r}")
+import helpers
+from helpers import assert_eq, assert_true
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -421,12 +398,12 @@ if __name__ == "__main__":
         try:
             test()
         except Exception as e:
-            failed += 1
+            helpers.failed += 1
             print(f"  EXCEPTION in {test.__name__}: {e}")
 
     print(f"\n{'=' * 50}")
-    print(f"Results: {passed} passed, {failed} failed ({len(tests)} test functions)")
-    if failed:
+    print(f"Results: {helpers.passed} passed, {helpers.failed} failed ({len(tests)} test functions)")
+    if helpers.failed:
         print("SOME TESTS FAILED")
         sys.exit(1)
     else:

@@ -28,7 +28,7 @@ regula/
 │   ├── framework_mapper.py        # Cross-framework compliance mapping (11 frameworks)
 │   ├── remediation.py             # Inline fix suggestions per Annex III category
 │   ├── agent_monitor.py           # Agentic AI governance (autonomy scoring, MCP config)
-│   ├── sbom.py                    # CycloneDX 1.6 AI SBOM generation
+│   ├── sbom.py                    # CycloneDX 1.7 AI SBOM generation
 │   └── benchmark.py               # Real-world precision/recall validation
 ├── hooks/
 │   ├── pre_tool_use.py            # PreToolUse hook (CC/Copilot/Windsurf)

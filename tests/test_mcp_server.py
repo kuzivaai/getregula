@@ -9,35 +9,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 from mcp_server import handle_request, TOOLS, SERVER_INFO, PROTOCOL_VERSION
 
-passed = 0
-failed = 0
-_PYTEST_MODE = "pytest" in sys.modules
-
-
-def assert_eq(actual, expected, msg=""):
-    global passed, failed
-    if actual == expected:
-        passed += 1
-    else:
-        failed += 1
-        if _PYTEST_MODE:
-            raise AssertionError(f"{msg} — expected {expected!r}, got {actual!r}")
-        print(f"  FAIL: {msg} — expected {expected!r}, got {actual!r}")
-
-
-def assert_true(val, msg=""):
-    assert_eq(val, True, msg)
-
-
-def assert_in(needle, haystack, msg=""):
-    global passed, failed
-    if needle in haystack:
-        passed += 1
-    else:
-        failed += 1
-        if _PYTEST_MODE:
-            raise AssertionError(f"{msg} — {needle!r} not found in {haystack!r}")
-        print(f"  FAIL: {msg} — {needle!r} not found in {haystack!r}")
+import helpers
+from helpers import assert_eq, assert_true, assert_in
 
 
 # ── Initialize ─────────────────────────────────────────────────────
@@ -154,8 +127,8 @@ if __name__ == "__main__":
             t()
             print(f"  PASS: {name}")
         except Exception as e:
-            failed += 1
+            helpers.failed += 1
             print(f"  ERROR: {name} — {e}")
     print("=" * 40)
-    print(f"Results: {passed} passed, {failed} failed")
-    sys.exit(1 if failed else 0)
+    print(f"Results: {helpers.passed} passed, {helpers.failed} failed")
+    sys.exit(1 if helpers.failed else 0)

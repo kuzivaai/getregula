@@ -10,30 +10,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 from session import aggregate_session, format_session_text
 
-passed = 0
-failed = 0
-
-
-def assert_eq(actual, expected, msg=""):
-    global passed, failed
-    if actual == expected:
-        passed += 1
-    else:
-        failed += 1
-        print(f"  FAIL: {msg} — expected {expected!r}, got {actual!r}")
-
-
-def assert_true(val, msg=""):
-    assert_eq(val, True, msg)
-
-
-def assert_in(needle, haystack, msg=""):
-    global passed, failed
-    if needle in haystack:
-        passed += 1
-    else:
-        failed += 1
-        print(f"  FAIL: {msg} — {needle!r} not found in {haystack!r}")
+import helpers
+from helpers import assert_eq, assert_true, assert_in
 
 
 # ── Empty / nonexistent session ────────────────────────────────────────
@@ -332,12 +310,12 @@ if __name__ == "__main__":
         try:
             test()
         except Exception as e:
-            failed += 1
+            helpers.failed += 1
             print(f"  EXCEPTION in {test.__name__}: {e}")
 
     print(f"\n{'=' * 50}")
-    print(f"Results: {passed} passed, {failed} failed ({len(tests)} test functions)")
-    if failed:
+    print(f"Results: {helpers.passed} passed, {helpers.failed} failed ({len(tests)} test functions)")
+    if helpers.failed:
         print("SOME TESTS FAILED")
         sys.exit(1)
     else:

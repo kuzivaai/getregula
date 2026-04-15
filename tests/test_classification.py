@@ -17,9 +17,8 @@ import test_build_regulations as _test_build_regulations  # noqa: F401
 import test_gpai_check as _test_gpai_check  # noqa: F401
 import test_new_commands as _test_new_commands  # noqa: F401
 
-passed = 0
-failed = 0
-_PYTEST_MODE = "pytest" in sys.modules
+import helpers
+from helpers import assert_eq, assert_true, assert_false
 
 # Bring register tests into this module's globals so the custom runner picks
 # them up via globals() walk. Skip tests that require pytest fixtures
@@ -50,25 +49,6 @@ try:
     _HAS_PYYAML = True
 except ImportError:
     _HAS_PYYAML = False
-
-
-def assert_eq(actual, expected, msg=""):
-    global passed, failed
-    if actual == expected:
-        passed += 1
-    else:
-        failed += 1
-        if _PYTEST_MODE:
-            raise AssertionError(f"{msg} — expected {expected!r}, got {actual!r}")
-        print(f"  FAIL: {msg} — expected {expected}, got {actual}")
-
-
-def assert_true(val, msg=""):
-    assert_eq(val, True, msg)
-
-
-def assert_false(val, msg=""):
-    assert_eq(val, False, msg)
 
 
 # ── AI Detection Tests ──────────────────────────────────────────────
@@ -1429,6 +1409,8 @@ def test_governance_contacts():
     # Should return dict (may be empty if no policy configured)
     contacts = get_governance_contacts()
     assert_true(isinstance(contacts, dict), "returns dict")
+    assert_true("contacts" not in contacts or isinstance(contacts.get("contacts"), (list, dict)),
+                "contacts field, if present, has valid structure")
     print("✓ Governance: contacts readable from policy")
 
 
@@ -1663,14 +1645,25 @@ def test_regulatory_basis():
     from classify_risk import get_regulatory_basis
     basis = get_regulatory_basis()
     assert_true(isinstance(basis, dict), "returns dict")
+    assert_true(len(basis) == 0 or "regulation" in str(basis).lower() or "eu" in str(basis).lower(),
+                "regulatory basis is empty or contains regulation data")
     print("✓ Regulatory: basis readable from policy")
 
 
 def test_cross_platform_locking():
     """File locking functions exist and are callable"""
+    import tempfile, os
     from log_event import _lock_file, _unlock_file
-    assert_true(callable(_lock_file), "_lock_file is callable")
-    assert_true(callable(_unlock_file), "_unlock_file is callable")
+    with tempfile.NamedTemporaryFile(delete=False) as tf:
+        path = tf.name
+    try:
+        f = open(path, "r+b")
+        _lock_file(f)
+        _unlock_file(f)
+        f.close()
+        assert_true(True, "lock/unlock cycle completed without error")
+    finally:
+        os.unlink(path)
     print("✓ Cross-platform: file locking functions available")
 
 
@@ -2219,7 +2212,9 @@ def test_policy_thresholds():
     from classify_risk import get_policy
     policy = get_policy()
     thresholds = policy.get("thresholds", {})
-    assert_true(isinstance(thresholds, dict), "thresholds is dict or empty dict")
+    assert_true(thresholds is not None, "thresholds key exists or defaults")
+    assert_true(not thresholds or isinstance(list(thresholds.values())[0], (int, float)),
+                "threshold values are numeric if present")
     print("✓ Policy: thresholds readable from policy")
 
 
@@ -2228,7 +2223,9 @@ def test_policy_exclusions():
     from classify_risk import get_policy
     policy = get_policy()
     exclusions = policy.get("exclusions", {})
-    assert_true(isinstance(exclusions, dict), "exclusions is dict or empty dict")
+    assert_true(exclusions is not None, "exclusions key exists or defaults")
+    assert_true(not exclusions or isinstance(list(exclusions.values())[0], (list, str, bool)),
+                "exclusion values have valid types if present")
     print("✓ Policy: exclusions readable from policy")
 
 
@@ -2370,6 +2367,8 @@ def test_confidence_tier_info():
     r = classify("import torch; some_generic_ai_thing()")
     if r.confidence_score < 50:
         assert_eq(r.get_finding_tier(), "info", "low confidence = info")
+    else:
+        assert_true(r.get_finding_tier() in ("low", "medium", "high", "info"), "valid tier for any confidence")
     print("✓ Confidence tiers: low confidence = info")
 
 
@@ -2784,10 +2783,13 @@ def test_ai_security_no_false_positive_safe_torch():
     from classify_risk import check_ai_security
     code = "model = torch.load('model.pt', weights_only=True)\n"
     findings = check_ai_security(code)
-    # The pattern matches torch.load broadly — this tests whether the pattern
-    # is specific enough. If it catches safe usage, the pattern needs refinement.
-    # For now, document this as a known limitation.
-    print("✓ AI security: torch.load pattern tested (may flag safe usage — known limitation)")
+    # The pattern matches torch.load broadly — safe usage with weights_only=True
+    # is still flagged. This is a known limitation: the regex cannot distinguish
+    # safe vs unsafe torch.load calls. Documenting expected behaviour here.
+    # Expected: findings >= 1 because the regex flags all torch.load calls
+    # regardless of weights_only parameter (known limitation).
+    assert_true(len(findings) >= 1, "torch.load flagged even with weights_only=True (known regex limitation)")
+    print("✓ AI security: torch.load pattern tested (flags safe usage — known limitation)")
 
 
 # ── Prompt Injection (OWASP LLM01:2025) ───────────────────────────────
@@ -6799,12 +6801,12 @@ if __name__ == "__main__":
         try:
             test()
         except Exception as e:
-            failed += 1
+            helpers.failed += 1
             print(f"  EXCEPTION in {test.__name__}: {e}")
 
     print(f"\n{'=' * 50}")
-    print(f"Results: {passed} passed, {failed} failed ({len(tests)} test functions)")
-    if failed:
+    print(f"Results: {helpers.passed} passed, {helpers.failed} failed ({len(tests)} test functions)")
+    if helpers.failed:
         print("❌ SOME TESTS FAILED")
         sys.exit(1)
     else:

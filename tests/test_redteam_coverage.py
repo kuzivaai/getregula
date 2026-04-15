@@ -12,21 +12,8 @@ from handoff import (
     format_coverage_text,
 )
 
-passed = 0
-failed = 0
-
-
-def assert_eq(actual, expected, msg=""):
-    global passed, failed
-    if actual == expected:
-        passed += 1
-    else:
-        failed += 1
-        print(f"  FAIL: {msg} -- expected {expected!r}, got {actual!r}")
-
-
-def assert_true(val, msg=""):
-    assert_eq(val, True, msg)
+import helpers
+from helpers import assert_eq, assert_true
 
 
 # --- Coverage score per tool ---
@@ -70,13 +57,21 @@ def test_pyrit_coverage_score():
 
 def test_full_coverage_all_risks():
     """Synthetic scenario: probes covering all 10 risks."""
-    # PyRIT covers 7; add missing risks manually to matrix for test
-    # Instead, test that a tool with all 10 mapped gets 100%
-    result = calculate_coverage_score([], "pyrit")
-    # PyRIT covers 7, not 10 — so test a synthetic scenario
-    # by checking that if we had all 10 we'd get 100
-    score_if_all = round(10 * 100 / 10)
-    assert_eq(score_if_all, 100, "100% when all risks covered")
+    # Temporarily patch the coverage matrix to cover all 10 OWASP risks,
+    # then call calculate_coverage_score and verify it returns 100%.
+    import handoff
+    original_matrix = handoff.COVERAGE_MATRIX.get("pyrit", {}).copy()
+    try:
+        # Add probes for the 3 risks PyRIT doesn't normally cover
+        handoff.COVERAGE_MATRIX["pyrit"]["LLM03"] = ["data_poisoning_test"]
+        handoff.COVERAGE_MATRIX["pyrit"]["LLM05"] = ["supply_chain_test"]
+        handoff.COVERAGE_MATRIX["pyrit"]["LLM09"] = ["hallucination_test"]
+        result = calculate_coverage_score([], "pyrit")
+        assert_eq(result["coverage_score"], 100, "100% when all 10 risks covered")
+        assert_eq(len(result["risks_covered"]), 10, "all 10 risks covered")
+        assert_eq(len(result["risks_uncovered"]), 0, "no risks uncovered")
+    finally:
+        handoff.COVERAGE_MATRIX["pyrit"] = original_matrix
     print("  pass: full coverage scenario")
 
 
@@ -216,7 +211,7 @@ if __name__ == "__main__":
         try:
             fn()
         except Exception as e:
-            failed += 1
+            helpers.failed += 1
             print(f"  FAIL: {fn.__name__} raised {e}")
-    print(f"\n{passed} passed, {failed} failed")
-    raise SystemExit(1 if failed else 0)
+    print(f"\n{helpers.passed} passed, {helpers.failed} failed")
+    raise SystemExit(1 if helpers.failed else 0)

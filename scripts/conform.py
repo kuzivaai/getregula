@@ -460,7 +460,7 @@ def generate_conformity_pack(
 
         if art_num == "15" and sbom_data:
             _write_and_record(art_dir / "sbom.json", json.dumps(sbom_data, indent=2, default=str), file_records, pack_dir)
-            auto_detected.append("CycloneDX 1.6 SBOM generated")
+            auto_detected.append("CycloneDX 1.7 SBOM generated")
 
         # Evidence file (gap data)
         evidence = {

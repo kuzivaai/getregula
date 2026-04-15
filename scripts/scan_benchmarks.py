@@ -104,7 +104,7 @@ def benchmark_repo(url: str, workdir: Path) -> dict:
     name = url.rstrip("/").split("/")[-1]
     target = workdir / name
     subprocess.check_call(
-        ["git", "clone", "--depth", "1", "--quiet", url, str(target)],
+        ["git", "clone", "--depth", "1", "--quiet", "--", url, str(target)],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )

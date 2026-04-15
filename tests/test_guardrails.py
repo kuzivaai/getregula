@@ -13,48 +13,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 from guardrail_scanner import scan_for_guardrails, format_guardrails_text
 from constants import CODE_EXTENSIONS
 
-passed = 0
-failed = 0
-
-
-def assert_eq(actual, expected, msg=""):
-    global passed, failed
-    if actual == expected:
-        passed += 1
-    else:
-        failed += 1
-        print(f"  FAIL: {msg} — expected {expected!r}, got {actual!r}")
-
-
-def assert_true(val, msg=""):
-    assert_eq(val, True, msg)
-
-
-def assert_in(item, collection, msg=""):
-    global passed, failed
-    if item in collection:
-        passed += 1
-    else:
-        failed += 1
-        print(f"  FAIL: {msg} — {item!r} not in {collection!r}")
-
-
-def assert_gte(actual, minimum, msg=""):
-    global passed, failed
-    if actual >= minimum:
-        passed += 1
-    else:
-        failed += 1
-        print(f"  FAIL: {msg} — {actual} < {minimum}")
-
-
-def assert_lte(actual, maximum, msg=""):
-    global passed, failed
-    if actual <= maximum:
-        passed += 1
-    else:
-        failed += 1
-        print(f"  FAIL: {msg} — {actual} > {maximum}")
+import helpers
+from helpers import assert_eq, assert_true, assert_in, assert_gte, assert_lte
 
 
 # ---------------------------------------------------------------------------
@@ -499,7 +459,7 @@ if __name__ == "__main__":
             func()
             print("ok")
         except Exception as e:
-            failed += 1
+            helpers.failed += 1
             print(f"ERROR: {e}")
-    print(f"\n{passed} passed, {failed} failed")
-    sys.exit(1 if failed else 0)
+    print(f"\n{helpers.passed} passed, {helpers.failed} failed")
+    sys.exit(1 if helpers.failed else 0)

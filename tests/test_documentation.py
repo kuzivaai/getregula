@@ -17,24 +17,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
-passed = 0
-failed = 0
-_PYTEST_MODE = "pytest" in sys.modules
-
-
-def assert_eq(actual, expected, msg=""):
-    global passed, failed
-    if actual == expected:
-        passed += 1
-    else:
-        failed += 1
-        if _PYTEST_MODE:
-            raise AssertionError(f"{msg} — expected {expected!r}, got {actual!r}")
-        print(f"  FAIL: {msg} — expected {expected!r}, got {actual!r}")
-
-
-def assert_true(val, msg=""):
-    assert_eq(val, True, msg)
+import helpers
+from helpers import assert_eq, assert_true
 
 
 def _make_fixture(tmp_dir, filename, content):
@@ -159,8 +143,8 @@ def test_docs_detects_human_oversight():
         r = _run_docs(tmp, "--output", out_dir)
         assert_eq(r.returncode, 0, f"docs should exit 0: {r.stderr[:200]}")
         content = _read_annex_output(tmp)
-        assert_true("oversight" in content.lower() or "human" in content.lower(),
-                    "should detect human oversight pattern")
+        assert_true("oversight" in content.lower(),
+                    "doc should mention oversight")
     print("\u2713 Docs: detects human oversight")
 
 
@@ -192,8 +176,8 @@ def test_docs_risk_register_owasp():
     r = _run_docs("tests/fixtures/sample_high_risk/")
     assert_eq(r.returncode, 0, f"docs should exit 0: {r.stderr[:200]}")
     # Should contain some risk register or findings section
-    assert_true("risk" in r.stdout.lower(),
-                "should contain risk information")
+    assert_true("high-risk" in r.stdout.lower() or "risk tier" in r.stdout.lower(),
+                "should contain risk tier information")
     print("\u2713 Docs: risk register present for high-risk project")
 
 
@@ -334,8 +318,8 @@ def test_docs_ast_ai_operations_listed():
         # AI operations (model calls, predict calls) should be mentioned
         assert_true(
             "ai operation" in content.lower() or "model(" in content.lower()
-            or "predict" in content.lower() or "function" in content.lower(),
-            "Generated doc should list AI operations or functions from AST",
+            or "predict" in content.lower() or "torch" in content.lower(),
+            "Generated doc should list AI operations from AST",
         )
     print("\u2713 Docs AST: AI operations from data flow analysis are listed")
 
@@ -432,12 +416,12 @@ if __name__ == "__main__":
         try:
             test()
         except Exception as e:
-            failed += 1
+            helpers.failed += 1
             print(f"  EXCEPTION in {test.__name__}: {e}")
 
     print(f"\n{'=' * 50}")
-    print(f"Results: {passed} passed, {failed} failed ({len(tests)} test functions)")
-    if failed:
+    print(f"Results: {helpers.passed} passed, {helpers.failed} failed ({len(tests)} test functions)")
+    if helpers.failed:
         print("SOME TESTS FAILED")
         sys.exit(1)
     else:

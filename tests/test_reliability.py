@@ -18,24 +18,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
-passed = 0
-failed = 0
-_PYTEST_MODE = "pytest" in sys.modules
-
-
-def assert_eq(actual, expected, msg=""):
-    global passed, failed
-    if actual == expected:
-        passed += 1
-    else:
-        failed += 1
-        if _PYTEST_MODE:
-            raise AssertionError(f"{msg} — expected {expected!r}, got {actual!r}")
-        print(f"  FAIL: {msg} — expected {expected!r}, got {actual!r}")
-
-
-def assert_true(val, msg=""):
-    assert_eq(val, True, msg)
+import helpers
+from helpers import assert_eq, assert_true
 
 
 # ── File Size Limits ────────────────────────────────────────────────
@@ -53,6 +37,8 @@ def test_large_file_skipped_gracefully():
         findings = scan_files(tmp)
         assert_true(isinstance(findings, list),
                     f"scan_files should return list, got {type(findings)}")
+        assert_true(len(findings) <= 1,
+                    f"large file should produce at most 1 finding, got {len(findings)}")
     print("\u2713 Reliability: large file handled gracefully")
 
 
@@ -67,6 +53,7 @@ def test_binary_file_skipped():
         findings = scan_files(tmp)
         assert_true(isinstance(findings, list),
                     "binary .py file should not crash scanner")
+        assert_eq(len(findings), 0, "binary .py file should produce no findings")
     print("\u2713 Reliability: binary file skipped gracefully")
 
 
@@ -91,6 +78,8 @@ def test_unicode_rtl_in_classification():
     code = 'import openai\n# \u0627\u0644\u0639\u0631\u0628\u064a\u0629 Arabic text\ndef process(): pass\n'
     result = classify(code)
     assert_true(result is not None, "classification should handle RTL text")
+    assert_true(hasattr(result, "tier"), "classification result has tier")
+    assert_true(result.tier is not None, "tier is not None")
     print("\u2713 Reliability: RTL unicode handled")
 
 
@@ -102,6 +91,8 @@ def test_unicode_zero_width_in_classification():
     code = 'import\u200b torch\n# Zero width in import\ndef train(): model.fit(X, y)\n'
     result = classify(code)
     assert_true(result is not None, "classification should handle zero-width chars")
+    assert_true(hasattr(result, "tier"), "classification result has tier")
+    assert_true(result.tier is not None, "tier is not None")
     print("\u2713 Reliability: zero-width unicode handled")
 
 
@@ -112,6 +103,8 @@ def test_null_bytes_in_classification():
     code = 'import openai\x00\ndef predict():\x00 pass\n'
     result = classify(code)
     assert_true(result is not None, "classification should handle null bytes")
+    assert_true(hasattr(result, "tier"), "classification result has tier")
+    assert_true(result.tier is not None, "tier is not None")
     print("\u2713 Reliability: null bytes handled")
 
 
@@ -266,12 +259,12 @@ if __name__ == "__main__":
         try:
             test()
         except Exception as e:
-            failed += 1
+            helpers.failed += 1
             print(f"  EXCEPTION in {test.__name__}: {e}")
 
     print(f"\n{'=' * 50}")
-    print(f"Results: {passed} passed, {failed} failed ({len(tests)} test functions)")
-    if failed:
+    print(f"Results: {helpers.passed} passed, {helpers.failed} failed ({len(tests)} test functions)")
+    if helpers.failed:
         print("SOME TESTS FAILED")
         sys.exit(1)
     else:
