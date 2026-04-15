@@ -65,3 +65,20 @@ docs/competitor-analysis.md
 docs/moat-research.md
 docs/landscape.md
 data/metrics/
+
+# Generated output (per-project, date-stamped)
+conformity-evidence-*/
+AUDIT_REPORT.md
+
+# Internal drafts
+downloads/
+
+# Environment files
+.env
+.env.*
+
+# Linter caches
+.ruff_cache/
+
+# Node (global)
+node_modules/
