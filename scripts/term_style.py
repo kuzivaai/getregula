@@ -51,13 +51,7 @@ def blue(s: str) -> str:
     return f"{BLUE}{s}{RESET}"
 
 
-def bold(s: str) -> str:
-    return f"{BOLD}{s}{RESET}"
-
-
 def magenta(s: str) -> str:
     return f"{MAGENTA}{s}{RESET}"
 
 
-def dim(s: str) -> str:
-    return f"{DIM}{s}{RESET}"

@@ -34,7 +34,7 @@ try:
     sys.path.insert(0, str(Path(__file__).parent))
     from timestamp import request_timestamp  # noqa: F401
 except ImportError:
-    request_timestamp = None  # type: ignore
+    request_timestamp = None  # type: Optional[Any]
 
 # Cross-platform file locking
 if sys.platform == "win32":

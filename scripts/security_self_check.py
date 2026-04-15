@@ -24,6 +24,8 @@ KNOWN_ACCEPTABLE = [
     {"file_pattern": "explain_articles.py", "reason": "article explanations — describes prohibited practices by design"},
     # bias_*.py modules are bias evaluation tools — expected to contain AI-related code
     {"file_pattern": "bias_", "reason": "bias evaluation modules — AI-related code by design"},
+    # cli_*.py domain modules contain CLI command implementations extracted from cli.py
+    {"file_pattern": "cli_", "reason": "CLI command modules — imports AI-related scanners by design"},
 ]
 
 

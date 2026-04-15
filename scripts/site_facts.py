@@ -137,7 +137,7 @@ def count_frameworks() -> int:
         if fm is not None:
             keys = getattr(fm, "_FRAMEWORK_KEYS", {})
             return len(set(keys.values()))
-    except Exception as e:
+    except (ImportError, OSError, AttributeError, TypeError) as e:
         print(f"regula: framework_mapper load failed: {e}", file=sys.stderr)
     # Fallback: count from crosswalk YAML
     crosswalk = REPO / "references" / "framework_crosswalk.yaml"
@@ -146,7 +146,7 @@ def count_frameworks() -> int:
     try:
         import yaml
         data = yaml.safe_load(crosswalk.read_text(encoding="utf-8")) or {}
-    except Exception:
+    except (ImportError, OSError, ValueError):
         return 0
     keys: set[str] = set()
     for article_mapping in (data.get("mappings") or {}).values():
