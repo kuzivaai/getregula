@@ -7,21 +7,30 @@
 # Format: a regex that must match SOMEWHERE on the claim line or in the
 # claim snippet. Prefer narrow patterns over broad ones.
 #
-# ---- Regula project self-claims (verified against CLAUDE.md + scripts/cli.py)
-\b330\s+(risk|)patterns?
-\b12\s+compliance\s+frameworks?
-\b12\s+Konformit
+# ---- Regula project self-claims
+#      Each claim below is verified against scripts/site_facts.py canonical
+#      counts (commands, pattern categories, tier regexes, frameworks) OR
+#      against test output (`pytest --collect-only`). Regenerate canonical
+#      counts by running `python3 scripts/site_facts.py` before editing.
+\b403\s+(risk|)patterns?
+\b403\s+individual\s+regexes
+\b403\s+Risikomuster
+\b403\s+padr
+\b52\s+risk\s+pattern\s+categor
+\b17\s+compliance\s+frameworks?
+\b17\s+Konformit
 \b8\s+(programming\s+)?languages?
 \b8\s+Sprachen
 \b8\s+linguagens
-\b3[89]\s+CLI\s+commands?
-\b3[89]\s+commands?
+\b53\s+CLI\s+commands?
+\b53\s+commands?
 \bregula[- ]ai\b
 \bv1\.6
-\b926\s+tests?
-\b935\s+tests?
-\b4[,.]?116\s+findings?
-\b4[,.]?116\s+findings?
+# tests: pytest --collect-only reports 1000; site_facts.py reports 893
+# functions (the legacy `def test_*` grep).
+\b1[,.]?000\s+tests?
+\b941\s+tests?
+\b893\s+test\s+functions?
 # ---- Common EU AI Act numeric references (verified from regulation text)
 \b€35M?\b
 \b7%\s+of\s+global
@@ -67,6 +76,9 @@
 \b0\s+findings?\b
 \b10\s+patterns\b
 \bbetter than\s+random
+# Revalidation snapshot (date-stamped — reproducible via benchmarks/label.py score)
+\brescan on 20\d\d-\d\d-\d\d
+\bfound that\s+\*\*\d+\s+of\s+\d+\s+labels
 # Self-referential comparative: operational precision vs. same-document unfiltered corpus
 \bbetter than the \d+[\.,]?\d*%\s+reported
 # ---- Legal assessment quoting Regula's own disclaimers (self-reference)

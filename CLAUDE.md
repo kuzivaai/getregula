@@ -10,7 +10,7 @@ Regula v1.6.2 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only co
 - **182 AI framework detection indicators** (88 libraries, 10 model file types, 7 API endpoints, 13 ML patterns, 64 domain keywords)
 - **8 language families scanned** via regex (Python, JavaScript, TypeScript, Java, Go, Rust, C/C++, Jupyter notebooks — deep AST analysis for Python/JS/TS only)
 - **17 compliance frameworks mapped** (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO, Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI)
-- **960 tests** (all passing — verified via `python3 -m pytest tests/ --co -q` on 2026-04-16)
+- **1000 tests** (all passing — verified via `python3 -m pytest tests/ --collect-only -q` on 2026-04-16; raw `def test_*` functions: 893 per `scripts/site_facts.py`)
 - **2 bias benchmarks** (CrowS-Pairs likelihood scoring + BBQ question-answering, with Wilson CI and bootstrap confidence intervals)
 - **18 credential patterns** detected
 - **1 GitHub Action** (composite, 12 inputs, 5 outputs, SARIF upload, PR comments)
@@ -19,7 +19,7 @@ Regula v1.6.2 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only co
 
 Positioned as the **code layer** of an AI governance programme, not the whole programme — see `docs/what-regula-does-not-do.md`.
 
-**Omnibus status (as of April 2026):** The EU Digital Omnibus on AI proposes delaying Annex III high-risk deadlines from 2 Aug 2026 to 2 Dec 2027. EP voted 569-45 in favour on 23 March 2026. Trilogue starts 28 April 2026. **Not yet law.** Do not remove Aug 2026 references — it remains the legal baseline — but every mention must have a nearby Omnibus caveat.
+**Omnibus status (as of April 2026):** The EU Digital Omnibus on AI proposes delaying Annex III high-risk deadlines from 2 Aug 2026 to 2 Dec 2027. EP adopted its negotiating position 569-45-23 on **26 March 2026** (vote held Thursday; press release dated 26 Mar). Trilogue negotiations launched the same day; Cypriot Council Presidency target for political agreement is 28 April 2026 (may slip into May). **Not yet law.** Do not remove Aug 2026 references — it remains the legal baseline — but every mention must have a nearby Omnibus caveat.
 
 GitHub: kuzivaai/getregula | PyPI: regula-ai | CLI command: regula
 
@@ -42,7 +42,7 @@ python3 -m pytest tests/ -q
 
 # Verification
 python3 -m scripts.cli self-test    # 6 built-in assertions
-python3 -m scripts.cli doctor       # 11 health checks (10 pass + 1 info)
+python3 -m scripts.cli doctor       # 11 health checks (9 pass + 2 info)
 
 # Run all three sequentially before claiming anything is "done"
 python3 tests/test_classification.py && python3 -m scripts.cli self-test && python3 -m scripts.cli doctor

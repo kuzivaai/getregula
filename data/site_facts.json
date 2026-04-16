@@ -1,47 +1,48 @@
 {
-  "generated_at": "2026-04-15T10:00:00.000000+00:00",
+  "generated_at": "2026-04-16T18:43:54.433644+00:00",
   "source_of_truth": {
-    "commands": "scripts/cli.py (grep '^def cmd_')",
-    "patterns": "scripts/classify_risk.py (PROHIBITED_PATTERNS + HIGH_RISK_PATTERNS + LIMITED_RISK_PATTERNS + AI_SECURITY_PATTERNS + BIAS_RISK_PATTERNS + GOVERNANCE_OBSERVATIONS + GPAI_TRAINING_PATTERNS)",
-    "frameworks": "scripts/framework_mapper._FRAMEWORK_KEYS unique values",
-    "languages": "scripts/classify_risk.py CODE_EXTENSIONS",
-    "tests": "python3 -m pytest tests/ --collect-only -q"
+    "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
+    "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
+    "frameworks": "references/framework_crosswalk.yaml (unique keys + EU AI Act)",
+    "languages": "scripts/ast_engine.py + README",
+    "tests": "tests/test_classification.py (grep '^def test_')"
   },
   "counts": {
-    "commands": 52,
+    "commands": 53,
     "patterns": {
       "tier_groups": 52,
-      "tier_regexes": 403,
-      "breakdown": {
-        "prohibited": {"groups": 8, "regexes": 32},
-        "high_risk": {"groups": 15, "regexes": 240},
-        "limited_risk": {"groups": 4, "regexes": 23},
-        "ai_security": {"groups": 17, "regexes": 51},
-        "bias": {"groups": 2, "regexes": 12},
-        "governance": {"groups": 6, "regexes": 28},
-        "gpai_training": {"groups": 1, "regexes": 17}
-      },
+      "tier_regexes": 386,
       "ai_indicators": 182,
-      "credential_patterns": 18
+      "gpai_training": 17,
+      "architecture": 38,
+      "data_source": 10,
+      "logging": 4,
+      "oversight": 4,
+      "credential": 18,
+      "grand_total": 659,
+      "historical_330_bucket": 446
     },
     "frameworks": 17,
     "languages": 8,
     "tests": {
-      "total_functions": 935,
+      "total_functions": 893,
       "per_file": {
         "test_agent_governance.py": 28,
-        "test_ai_codegen.py": 32,
+        "test_ai_codegen.py": 0,
         "test_bias_bbq.py": 7,
         "test_bias_report.py": 4,
         "test_bias_stats.py": 8,
         "test_build_regulations.py": 14,
-        "test_classification.py": 492,
-        "test_cli_integration.py": 15,
+        "test_classification.py": 427,
+        "test_cli_integration.py": 21,
         "test_coverage_critical.py": 45,
+        "test_dependency_pinning.py": 14,
         "test_documentation.py": 16,
+        "test_evidence_format_v1.py": 13,
         "test_gpai_check.py": 27,
         "test_guardrails.py": 24,
         "test_hooks_audit.py": 50,
+        "test_manifest_timestamp.py": 12,
         "test_mcp_server.py": 6,
         "test_new_commands.py": 14,
         "test_owasp_agentic.py": 24,
@@ -49,18 +50,19 @@
         "test_register.py": 22,
         "test_registry.py": 8,
         "test_reliability.py": 12,
-        "test_report.py": 7,
+        "test_report.py": 0,
         "test_sbom_enrichment.py": 25,
         "test_scan_cache.py": 3,
         "test_security_hardening.py": 12,
         "test_session.py": 12,
+        "test_signing.py": 14,
+        "test_site_critical_css.py": 3,
         "test_telemetry.py": 9
       }
     }
   },
   "notes": {
-    "pattern_count_methodology": "The '403 risk patterns' figure is the total individual regexes across all 7 pattern sets in classify_risk.py. The 52 tier_groups count excludes GPAI (which is 1 flat list of 17 regexes, not a dict of categories).",
-    "frameworks_vs_claim": "The '17 compliance frameworks' count comes from framework_mapper._FRAMEWORK_KEYS unique values (26 aliases map to 17 unique frameworks).",
-    "test_count": "935 tests collected by pytest. test_classification.py contains 492 due to being the wiring harness that imports test_register, test_build_regulations, test_gpai_check, and test_new_commands."
+    "pattern_count_methodology": "Regula's landing pages cite '403 risk patterns'. That figure is the total individual regexes in risk_patterns.py across all tiered groups (prohibited, high-risk, limited-risk, AI security, bias, governance, GPAI training). The `historical_330_bucket` adds architecture, credential, and oversight patterns from code_analysis.py. The `grand_total` also includes AI_INDICATORS.",
+    "frameworks_vs_claim": "Regula's landing pages cite '17 compliance frameworks'. Counted from framework_mapper._FRAMEWORK_KEYS unique values."
   }
 }
