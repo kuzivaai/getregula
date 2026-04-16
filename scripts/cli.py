@@ -702,7 +702,17 @@ from cli_util import (
 
 def _build_subparsers(subparsers):
     """Define all CLI subcommands. Extracted from main() for readability."""
-    p_init = subparsers.add_parser("init", help="Guided setup wizard")
+    p_init = subparsers.add_parser(
+        "init",
+        help="Guided setup wizard",
+        description=(
+            "Set Regula up for a project: detect the AI coding platform "
+            "(Claude Code, Copilot, Windsurf, or plain Git), create a "
+            "default policy file, install the matching pre-commit / hook "
+            "integration, and run a first scan. For a minimal no-install "
+            "first run, use `regula quickstart` instead."
+        ),
+    )
     p_init.add_argument("--project", "-p", default=".", help="Project directory")
     p_init.add_argument("--interactive", "-i", action="store_true", help="Interactive mode")
     p_init.add_argument("--dry-run", action="store_true", help="Show analysis without creating files")
@@ -1287,16 +1297,37 @@ def _build_subparsers(subparsers):
     p_verify = subparsers.add_parser(
         "verify",
         help="Verify integrity of a Regula Evidence Pack (spec: docs/spec/regula-evidence-format-v1.md)",
+        description=(
+            "Verify a Regula Evidence Pack against the Regula Evidence "
+            "Format v1 spec. Checks every file's SHA-256 against the "
+            "manifest, validates the Ed25519 signature if a v1.1 signing "
+            "block is present, and validates the RFC 3161 timestamp if a "
+            "v1.1 timestamp block is present. Accepts a pack directory, "
+            "a manifest.json file, or a .regula.zip bundle. Exit codes: "
+            "0 = integrity confirmed, 1 = file missing/modified or "
+            "signature invalid, 2 = manifest unreadable or strict "
+            "verification failed."
+        ),
     )
     p_verify.add_argument(
         "pack_path",
         help="Path to a pack directory, a manifest.json file, or a .regula.zip bundle",
     )
-    p_verify.add_argument("--format", choices=["text", "json"], default="text")
+    p_verify.add_argument(
+        "--format",
+        choices=["text", "json"],
+        default="text",
+        help="Output format for the verify report (default: text). "
+             "JSON emits a regula.verify.v1 envelope.",
+    )
     p_verify.add_argument(
         "--strict",
         action="store_true",
-        help="Fail if the pack does not declare format=regula.evidence.v1",
+        help="Fail (exit 2) if the pack does not declare "
+             "format=regula.evidence.v1, if a signed manifest's signature "
+             "cannot be verified (missing cryptography library), or if a "
+             "timestamped manifest's token cannot be parsed. Under "
+             "non-strict, these cases warn but exit 0.",
     )
     p_verify.add_argument(
         "--report",

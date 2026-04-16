@@ -80,7 +80,7 @@ def run_quickstart(project_dir: str = ".", org: str = "My Organisation",
     next_steps = []
     if policy_created:
         next_steps.append("Edit regula-policy.yaml — set your organisation name and AI officer")
-    next_steps.append("Run 'regula check .' to scan your project")
+    next_steps.append("Run 'regula check .' for the full detailed scan (every finding, not just the top 3)")
     next_steps.append("Run 'regula doctor' to verify your setup")
     if blocks:
         next_steps.append(f"Review {len(blocks)} BLOCK finding(s) — these would fail CI")
