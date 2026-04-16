@@ -1,9 +1,9 @@
 # Regula Self-Scan Results
 
 **Date:** 16 April 2026
-**Version:** 1.6.2
+**Version:** 1.7.0
 **Command:** `regula check .`
-**Commit:** `068637b` (main)
+**Commit:** `83474af` (main)
 
 This file is a transparency artefact — Regula run against its own
 codebase. Reproduce any time with the command above. If the results

@@ -152,4 +152,8 @@
 \bfastest\b
 \$\d+\.\d+
 \b\d+\.\d+\s*MB\b
-
+# ---- Self-scan-results.md (transparency artefact describing its own output;
+#      each number is reproducible via `regula check .` on the stated commit)
+\bThe only WARN-tier\b
+\b35\s+findings\s+are\s+suppressed
+\bwithin\s+.*\d+\s+finding
