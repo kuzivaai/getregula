@@ -43,7 +43,7 @@ The recommended install is **pipx** — it works on every platform (Linux, macOS
 
 ```bash
 pipx install regula-ai
-regula --version   # confirms the install: should print "regula 1.6.2" or newer
+regula --version   # confirms the install: should print "regula 1.7.0" or newer
 ```
 
 If you don't have pipx yet, install it first (one-time):

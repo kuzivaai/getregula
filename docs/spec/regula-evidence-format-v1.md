@@ -103,7 +103,7 @@ any file in the pack that is not listed in the manifest.
 | `format` | string | MUST equal `"regula.evidence.v1"` for this spec version |
 | `format_version` | string | MUST be `"1.0"` for manifests that use only the v1.0-defined fields, or `"1.1"` for manifests that use any v1.1 optional block (`signing`, `timestamp_authority`). See §4.3 for the block-to-version mapping. |
 | `schema_uri` | string | URL to the JSON Schema for this format version |
-| `regula_version` | string | The Regula version that generated the pack (semver, e.g. `"1.6.2"`) |
+| `regula_version` | string | The Regula version that generated the pack (semver, e.g. `"1.7.0"`) |
 | `generated_at` | string | RFC 3339 timestamp with timezone |
 | `project` | string | Project / system name |
 | `project_directory` | string | Directory name scanned |
@@ -141,7 +141,7 @@ signing block.
   "format": "regula.evidence.v1",
   "format_version": "1.0",
   "schema_uri": "https://getregula.com/spec/regula.manifest.v1.schema.json",
-  "regula_version": "1.6.2",
+  "regula_version": "1.7.0",
   "generated_at": "2026-04-16T14:43:31.035789+00:00",
   "project": "cv-screening-app",
   "project_directory": "cv-screening-app",
@@ -425,7 +425,7 @@ A verifier MAY emit a `regula.verify.v1.json` report alongside the pack:
   "verified_at": "2026-04-16T14:50:00+00:00",
   "verifier_version": "1.6.3",
   "pack_format": "regula.evidence.v1",
-  "pack_regula_version": "1.6.2",
+  "pack_regula_version": "1.7.0",
   "total": 26,
   "passed": 26,
   "failed": 0,

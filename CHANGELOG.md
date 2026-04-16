@@ -5,11 +5,111 @@ All notable changes to Regula are documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/).
 
-## v1.7.0 (unreleased)
+## [1.7.0] — 2026-04-16
 
-### Added
-- `regula governance` — generates AI governance scaffold from scan findings (Article 4, ISO 42001 Clause 5.2, NIST AI RMF GOVERN)
-- `regula model-card` — generates model card scaffold from scan findings (Annex IV, ISO 42001 Annex B)
+Evidence Format **v1.1** — tamper-evident conformity packs. Optional
+`regula[signing]` extra adds Ed25519 manifest signing and RFC 3161
+trusted timestamping; `regula verify` validates both. Plus regulatory
+accuracy fixes (EP Omnibus vote date corrected), packaging fixes
+(`regula[all]` now actually bundles signing support — 1.6.2 silently
+dropped it), supply-chain-security improvements (dependency pinning
+score raised), and the CLI UX polish and doc rewrite that makes pipx
+install the first-class path.
+
+### Added — Evidence Format v1.1
+
+- **Ed25519 manifest signing.** `regula conform --sign` produces an
+  `evidence.json.sig` alongside the canonical manifest, using
+  PKCS8-serialised private keys at `~/.regula/signing.key` (chmod 600
+  on POSIX). Canonical form documented in
+  `docs/spec/regula-evidence-format-v1.md` §4.5. Key export via
+  `regula verify --export-public-key`.
+- **RFC 3161 trusted timestamping.** `regula conform --timestamp`
+  requests a TSA token (default: FreeTSA.org) over the canonical
+  manifest digest and embeds the token in the pack. `regula verify`
+  validates the token's `messageImprint` against the pack's canonical
+  digest.
+- **`regula verify` extended.** Produces a signer-verified and
+  timestamp-verified exit status. Signer-chain validation for the TSA
+  is deliberately out of scope in v1.1 — documented in spec §4.6.4.
+  Consumers with higher trust bars can run the raw token through
+  `openssl ts -verify`.
+- **Optional `[signing]` extra**: `pipx install "regula-ai[signing]"`
+  adds `cryptography` and `asn1crypto`. Zero-dep core unchanged.
+- **Specification bundled** at `docs/spec/regula-evidence-format-v1.md`
+  + JSON schema at `docs/spec/regula.manifest.v1.schema.json`.
+- **Tests**: round-trip and tamper-detection suites in
+  `tests/test_signing.py` and `tests/test_manifest_timestamp.py`.
+
+### Added — other
+
+- **EUPL-1.2 dual-licence** alongside MIT. The EUPL route is aimed at
+  European public-sector procurement, where EUPL-1.2 is the preferred
+  open-source licence for Commission, national-government, and EU-agency
+  procurement.
+- **CSP-readiness comments** on inline `onload` handlers in
+  `site/index.html` and locales, documenting inline-script dependencies
+  for future Content Security Policy hardening.
+
+### Changed
+
+- **`regula[all]` now bundles `[signing]`.** In 1.6.2, the `[all]`
+  extra silently omitted Ed25519 / RFC 3161 support. Users running
+  `pipx install "regula-ai[all]"` did not actually get the signing
+  features. Fixed in `pyproject.toml`.
+- **User-facing docs use `regula` (not `python3 scripts/cli.py`).**
+  Pipx users don't have a `scripts/` directory, so doc instructions
+  showing `python3 scripts/cli.py …` literally failed on copy-paste.
+  README, examples, CLI help, first-run wizard, quickstart, and
+  `docs/cli-reference.md` now use the installed `regula` command.
+  Maintainer-only docs (`.claude/skills/regula/SKILL.md`) retain the
+  dev-time invocation.
+- **Dependency-scan classifier** distinguishes bounded-range from
+  unbounded-range pins. Optional-dependency pinning score raised from
+  61/100 to 79/100. See `scripts/dependency_scan.py`.
+- **CLI help, error messages, and first-run onboarding** polished.
+  Copy tested against pipx + uvx + plain-pip install flows.
+- **`examples/cv-screening-app/`** expanded into a 10-minute evaluation
+  walkthrough that covers v1.1 signing + timestamping end-to-end.
+
+### Fixed
+
+- **Claim-auditor false positive on markdown section-number headings.**
+  `### 4.2 File record schema` was misread as a "4.2 files" numeric
+  claim, blocking CI on clean commits. Section-number prefixes now
+  exempted via the existing structural-reference mechanism.
+- **EP plenary vote date** on the EU Digital Omnibus: **23 March →
+  26 March 2026**. Tally added: **569-45-23** (missing the 23
+  abstentions). Trilogue launched 26 March; Cypriot Presidency
+  political-agreement target 28 April 2026 (may slip).
+- **Competitor facts**: AIR Blackbox **39 → 48 checks**; Microsoft
+  Agent Governance Toolkit release date corrected.
+- **Numeric-claim reconciliation**. Every numeric claim in user-facing
+  docs and landing pages reconciled to `scripts/site_facts.py` output.
+  Test counts to canonical 1,000 (`pytest --collect-only`); framework
+  counts to canonical 17 (`references/framework_crosswalk.yaml`).
+- **Exception handling**: narrower `except` clauses, removed unreachable
+  branches, removed unused imports. Addresses code-review items
+  H1-H6, M2, M3, L2, N2.
+- **South Africa AI tracker 404** on `sa-tracker.json`.
+- **Landing-page cold-load FOUC** (white flash) fix applied site-wide.
+- **`test_env_regula_strict`** no longer relies on a self-scan false
+  positive.
+
+### Accessibility
+
+- **WCAG 2.2 AA.** 14 pages (English, German, Portuguese, region
+  trackers, blog posts, spec pages) pass axe-core automated audit.
+  Screen-reader audit pending manual NVDA / VoiceOver / TalkBack
+  testing.
+
+### Security
+
+- Signing keys written with `chmod 600` on POSIX
+  (`~/.regula/signing.key`). Key rotation is not yet supported in v1.1.
+  Documentation warns users to back up and not commit the key — see
+  `docs/spec/regula-evidence-format-v1.md` §4.5.4 and
+  `examples/cv-screening-app/README.md` step 5.
 
 ## [1.6.2] — 2026-04-16
 
