@@ -25,7 +25,7 @@ Python 3.10/3.11 f-string compatibility, and the landing-page cold-load
 FOUC fix. Command count is now **53** (verified via `regula --help-all`;
 `regula -h` shows 6 primary commands via progressive disclosure). No
 breaking changes for existing `regula check` / `regula plan` / `regula gap`
-users. All 935 tests still pass.
+users. All 941 tests still pass.
 
 ### Added — runnable examples and CI plumbing
 
@@ -83,13 +83,18 @@ users. All 935 tests still pass.
   page — the browser had no stylesheet to paint against until
   `/assets/site.css` arrived. The hero terminal sits at the top of the
   fold so the white→dark snap read as "the demo flashing". Fix: inline
-  critical CSS in `<head>` establishes the brand background immediately;
-  `/assets/fonts.css` and `/assets/site.css` now load via
-  `media="print" onload` so they don't block first paint. `<noscript>`
-  fallback preserves styling for JS-disabled clients. Measured
-  first-paint on simulated 3G: 624ms → 288ms. A previous attempt
-  (commit 27cfba4) targeted panel opacity and font preload but
-  misdiagnosed the cause.
+  critical CSS in `<head>` (including `color-scheme: dark`) establishes
+  the brand background immediately; `/assets/fonts.css` and
+  `/assets/site.css` now load via `media="print" onload` so they don't
+  block first paint. `<noscript>` fallback preserves styling for
+  JS-disabled clients. Measured live first-paint on simulated 3G:
+  **624ms → 472ms (~24% faster)**. Qualitative result depends on OS
+  preference: for users on dark-mode OS the pre-paint canvas is also
+  dark (via `color-scheme`) and the flash is **eliminated**; for
+  light-mode OS users the pre-paint canvas is still white but the
+  flash duration shortens to ~300ms and the paint itself is dark.
+  A previous attempt (commit 27cfba4) targeted panel opacity and
+  font preload but misdiagnosed the cause.
 - **`regula docs` and `regula handoff garak` no longer pollute the
   working tree**: generator commands previously wrote artefacts into
   the Regula repo checkout rather than the user's current directory,
