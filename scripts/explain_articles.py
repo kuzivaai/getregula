@@ -1,4 +1,14 @@
-"""EU AI Act article explanations - verified against Regulation (EU) 2024/1689."""
+# regula-ignore
+"""EU AI Act article explanations - verified against Regulation (EU) 2024/1689.
+
+This file documents Article 5's prohibited-practice vocabulary (e.g.
+"subliminal manipulation", "social scoring") for user-facing output.
+Regula's own scanner matches those strings as prohibited-tier signals
+when they appear in code, which would flag this file as BLOCK when
+`regula check .` runs on the Regula repo itself. The `# regula-ignore`
+marker on the first line opts this file out of the scan — same pattern
+used by scripts/risk_patterns.py and the test fixtures.
+"""
 
 import sys
 import json
