@@ -6,10 +6,72 @@ All imports from cli must stay inside function bodies.
 """
 
 import json
+import os
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+
+
+# Mapping from Regula's display tier to GitHub Actions workflow command level.
+# ::error     — surfaces as a red annotation on the file/line in PR diffs
+# ::warning   — yellow annotation
+# ::notice    — blue/informational annotation
+_GHA_LEVEL = {"block": "error", "warn": "warning", "info": "notice"}
+
+
+def _gha_escape(value: str) -> str:
+    """Percent-encode characters that break GitHub workflow-command parsing.
+
+    Workflow commands are terminated by a newline, so CR/LF must be escaped.
+    Colons and commas inside parameter *values* (file path) are escaped too —
+    the message itself only needs CR/LF escaping.
+    See: https://docs.github.com/actions/reference/workflow-commands-for-github-actions
+    """
+    return (
+        value.replace("%", "%25")
+        .replace("\r", "%0D")
+        .replace("\n", "%0A")
+    )
+
+
+def _emit_github_annotations(args, display_view) -> None:
+    """Emit one workflow command per finding when running in GitHub Actions.
+
+    Activates only when GITHUB_ACTIONS=true AND --ci (or REGULA_STRICT) is set,
+    so local runs and non-CI environments stay quiet. SARIF output remains
+    available via --format sarif for repos that want CodeQL integration.
+    """
+    if os.environ.get("GITHUB_ACTIONS", "").lower() != "true":
+        return
+    if not getattr(args, "ci", False):
+        return
+
+    scan_root = Path(getattr(args, "path", ".") or ".")
+
+    def _as_repo_path(rel: str) -> str:
+        # Finding paths are relative to the scan root. Prepend scan root so
+        # GitHub can resolve the file in the repo checkout.
+        if not rel:
+            return ""
+        if rel.startswith(str(scan_root)) or Path(rel).is_absolute():
+            return rel
+        joined = scan_root / rel if str(scan_root) not in ("", ".") else Path(rel)
+        return str(joined).replace("\\", "/")
+
+    for display_tier in ("block", "warn", "info"):
+        level = _GHA_LEVEL[display_tier]
+        for finding in display_view.get(display_tier, []):
+            file_path = _gha_escape(_as_repo_path(finding.get("file", "")))
+            line = finding.get("line") or 1
+            msg = finding.get("description") or finding.get("message") or ""
+            score = finding.get("confidence_score")
+            if score is not None:
+                msg = f"{msg} (confidence: {score})"
+            msg = _gha_escape(msg)
+            # stdout, not stderr — GitHub Actions parses workflow commands
+            # from either stream, but stdout is the documented default.
+            print(f"::{level} file={file_path},line={line}::{msg}")
 
 
 def cmd_check(args) -> None:
@@ -302,6 +364,14 @@ def cmd_check(args) -> None:
                 print(f"\n--- {rel_path} ---")
                 print(format_explanation(result, filepath=rel_path))
                 print()
+
+    # GitHub Actions workflow-command annotations. Emits inline PR comments
+    # without SARIF/CodeQL setup. Gated on GITHUB_ACTIONS=true + --ci so
+    # local runs stay quiet. No-op in any other context.
+    _emit_github_annotations(
+        args,
+        {"block": block_findings, "warn": warn_findings, "info": info_findings},
+    )
 
     # Exit codes: 1 if any BLOCK-tier findings, 1 if WARN-tier and (--strict or --ci), 0 otherwise
     strict = args.strict or getattr(args, "ci", False)
