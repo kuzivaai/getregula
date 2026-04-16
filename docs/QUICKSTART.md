@@ -2,7 +2,7 @@
 
 You built an AI-powered app. Maybe with Claude, ChatGPT, Cursor, Lovable, or Bolt. It works. Now what?
 
-If your app is used by anyone in the EU — or you plan to sell it there — the **EU AI Act** applies to you. Violations carry fines up to **EUR 35 million or 7% of global turnover**. The rules for high-risk AI systems take effect **2 August 2026**.
+If your app is used by anyone in the EU — or you plan to sell it there — the **EU AI Act** applies to you. Violations carry fines up to **EUR 35 million or 7% of global turnover**. The rules for high-risk AI systems take effect **2 August 2026** (the pending EU Digital Omnibus on AI may defer this to **2 December 2027**; EP adopted its position 26 March 2026, trilogue in progress, not yet law — treat Aug 2026 as the legal baseline).
 
 Regula tells you where you stand in 10 seconds.
 

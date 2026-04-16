@@ -186,7 +186,7 @@ users. All 941 tests still pass.
 - **[`docs/competitor-analysis.md`](docs/competitor-analysis.md)** —
   objective competitor landscape. Promotes AIR Blackbox (closest
   positional overlap to Regula in the market) and Microsoft Agent
-  Governance Toolkit (released 3 April 2026, adjacent runtime
+  Governance Toolkit (released 2 April 2026, adjacent runtime
   category) into the main table. Includes `desiorac/mcp-eu-ai-act`
   as a second independent MCP-server scanner.
 - **[`docs/moat-research.md`](docs/moat-research.md)** — proprietary
@@ -423,15 +423,17 @@ EU and UNESCO sources.
      correct; only the labelling was wrong.
      ([Regulation (EU) 2024/1689 Annex III](https://eur-lex.europa.eu/eli/reg/2024/1689/oj))
   3. Trilogue timing — was "first trilogue completed in late March 2026,
-     second scheduled for 28 April 2026". Parliament only adopted its
-     plenary mandate on **23 March 2026** (after the **Council's 13 March
-     mandate**), so trilogues began in April 2026. The 28 April date is
-     the **Cypriot Council Presidency's target for political agreement**,
-     not a scheduled meeting.
-     ([EP press release 23 March 2026](https://www.europarl.europa.eu/news/en/press-room/20260323IPR38829/),
+     second scheduled for 28 April 2026". Parliament adopted its
+     plenary mandate on **26 March 2026** (after the **Council's 13 March
+     mandate**); trilogue negotiations launched the same day. The 28 April
+     date is the **Cypriot Council Presidency's target for political
+     agreement**, not a scheduled meeting.
+     ([EP press release dated 26 March 2026](https://www.europarl.europa.eu/news/en/press-room/20260323IPR38829/),
       [Council 13 March 2026](https://www.consilium.europa.eu/en/press/press-releases/2026/03/13/council-agrees-position-to-streamline-rules-on-artificial-intelligence/))
-  4. EP plenary vote — recorded as "569–45", actual was **569 in favour,
-     45 against, 23 abstentions**.
+  4. EP plenary vote — recorded as "569–45" on "23 March". Corrected to
+     **569 in favour, 45 against, 23 abstentions on 26 March 2026**
+     (the EP press release URL slug `20260323IPR38829` led to the date
+     error — the press release is dated 26 March 2026 per its own header).
      ([howtheyvote.eu/votes/189384](https://howtheyvote.eu/votes/189384))
   5. AICDI gap framings — "closes the 2.7% gap" / "closes the 12% gap"
      inverted the direction. The 2.7% / 12% are the share of companies
