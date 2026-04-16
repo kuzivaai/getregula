@@ -212,10 +212,16 @@ def cmd_check(args) -> None:
         # the old derivation made empty scans look like nothing ran.
         stats = getattr(scan_files, "last_stats", {}) or {}
         total_files = stats.get("files_scanned", len(set(f["file"] for f in findings)))
-        skip_tests_active = bool(stats.get("skip_tests", getattr(args, "skip_tests", False)))
+        tests_skipped = int(stats.get("tests_skipped", 0))
         suffix = ""
-        if total_files == 0 and skip_tests_active:
-            suffix = " (test files excluded — use --no-skip-tests to include)"
+        # Only blame the test-file exclusion when tests were ACTUALLY
+        # skipped. Without this check, an empty directory or one with
+        # only non-code files would misleadingly claim tests were excluded.
+        if total_files == 0 and tests_skipped > 0:
+            suffix = (
+                f" ({tests_skipped} test file(s) excluded — "
+                f"use --no-skip-tests to include)"
+            )
         elif total_files == 0:
             suffix = " (no code files matched; check path and extensions)"
         files_label = f"{total_files}{suffix}"

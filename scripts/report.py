@@ -289,6 +289,11 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     # Side-channel counters so cmd_check can show an honest "files scanned"
     # number without refactoring every caller. Exposed on scan_files.last_stats.
     _scanned_files = 0
+    # Count test files that were skipped because skip_tests=True. Used by
+    # cmd_check to decide whether the "test files excluded" suffix is
+    # actually truthful — without this, a directory containing no code
+    # files at all would wrongly claim tests were excluded.
+    _tests_skipped = 0
 
     # Initialise scan cache (failures must never block a scan)
     cache = None
@@ -320,6 +325,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
 
             # Skip test files entirely if requested
             if skip_tests and is_test:
+                _tests_skipped += 1
                 continue
 
             # Model files
@@ -562,6 +568,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     scan_files.last_stats = {
         "files_scanned": _scanned_files,
         "skip_tests": skip_tests,
+        "tests_skipped": _tests_skipped,
     }
 
     return findings
