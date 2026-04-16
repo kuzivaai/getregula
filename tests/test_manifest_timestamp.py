@@ -313,8 +313,59 @@ def _run_regula(*argv, env=None):
     return proc.returncode, proc.stdout, proc.stderr
 
 
-def test_cli_conform_sign_timestamp_verify_round_trip(tmp_path, mock_tsa):
-    """`conform --sign --timestamp --tsa-url=<mock>` then `verify` succeeds."""
+def test_cli_conform_sign_timestamp_verify_round_trip_json(tmp_path, mock_tsa):
+    """`conform --sign --timestamp --format json` then `verify --format json` succeeds.
+
+    Asserts on JSON envelope fields (stable contract) instead of stdout
+    text substrings. This is the primary timestamp round-trip test.
+    """
+    key_path = tmp_path / "signing.key"
+    out_dir = tmp_path / "pack-out"
+    env = {"REGULA_SIGNING_KEY": str(key_path)}
+
+    rc, out, err = _run_regula(
+        "conform",
+        "--project", "examples/code-completion-tool",
+        "--output", str(out_dir),
+        "--sign",
+        "--timestamp",
+        "--tsa-url", mock_tsa["url"],
+        "--format", "json",
+        env=env,
+    )
+    assert rc == 0, f"conform failed: rc={rc}\nstdout={out}\nstderr={err}"
+    conform_data = json.loads(out)
+    assert conform_data["command"] == "conform"
+    assert conform_data["exit_code"] == 0
+    manifest = conform_data["data"]["manifest"]
+    assert manifest["format_version"] == "1.1"
+    assert "signing" in manifest
+    assert manifest["signing"]["algorithm"] == "ed25519"
+    assert "timestamp_authority" in manifest
+    assert manifest["timestamp_authority"]["format"] == "rfc3161"
+    assert manifest["timestamp_authority"]["hash_algorithm"] == "sha256"
+    pack_path = conform_data["data"]["pack_path"]
+
+    # Verify via JSON mode
+    rc2, out2, err2 = _run_regula(
+        "verify", pack_path, "--format", "json", env=env,
+    )
+    assert rc2 == 0, f"verify failed: rc={rc2}\nstdout={out2}\nstderr={err2}"
+    verify_data = json.loads(out2)
+    assert verify_data["command"] == "verify"
+    report = verify_data["data"]
+    assert report["signature_status"] == "VERIFIED"
+    assert report["timestamp_status"] == "VERIFIED"
+    assert report["failed"] == 0
+    assert report["passed"] == report["total"]
+
+
+def test_cli_conform_sign_timestamp_verify_text_smoke(tmp_path, mock_tsa):
+    """Smoke test: text output mentions signing and timestamping.
+
+    Kept as a single text-mode sanity check; the JSON test above is the
+    authoritative round-trip assertion.
+    """
     key_path = tmp_path / "signing.key"
     out_dir = tmp_path / "pack-out"
     env = {"REGULA_SIGNING_KEY": str(key_path)}
@@ -329,40 +380,42 @@ def test_cli_conform_sign_timestamp_verify_round_trip(tmp_path, mock_tsa):
         env=env,
     )
     assert rc == 0, f"conform failed: rc={rc}\nstdout={out}\nstderr={err}"
-    assert "Timestamped: RFC 3161" in out, f"expected timestamp confirmation: {out!r}"
-    assert "Signed: Ed25519" in out
+    out_lower = out.lower()
+    assert "sign" in out_lower or "ed25519" in out_lower, (
+        f"expected signing mention in text output: {out!r}"
+    )
+    assert "timestamp" in out_lower or "rfc 3161" in out_lower or "rfc3161" in out_lower, (
+        f"expected timestamp mention in text output: {out!r}"
+    )
 
     pack_dir = next(p for p in out_dir.iterdir() if p.is_dir())
-    manifest = json.loads((pack_dir / "manifest.json").read_text())
-    assert manifest["format_version"] == "1.1"
-    assert "signing" in manifest
-    assert "timestamp_authority" in manifest
-    assert manifest["timestamp_authority"]["format"] == "rfc3161"
-    assert manifest["timestamp_authority"]["hash_algorithm"] == "sha256"
-
     rc2, out2, err2 = _run_regula("verify", str(pack_dir), env=env)
     assert rc2 == 0, f"verify failed: rc={rc2}\nstdout={out2}\nstderr={err2}"
-    assert "Signature: VERIFIED" in out2
-    assert "Timestamp: VERIFIED" in out2
+    out2_lower = out2.lower()
+    assert "verified" in out2_lower, (
+        f"expected 'verified' in text output: {out2!r}"
+    )
 
 
-def test_cli_verify_detects_post_timestamp_tampering(tmp_path, mock_tsa):
-    """Editing a signed+timestamped manifest after the fact fails verification."""
+def test_cli_verify_detects_post_timestamp_tampering_json(tmp_path, mock_tsa):
+    """Editing a signed+timestamped manifest after the fact fails verification (JSON mode)."""
     key_path = tmp_path / "signing.key"
     out_dir = tmp_path / "pack-out"
     env = {"REGULA_SIGNING_KEY": str(key_path)}
 
-    rc, _, err = _run_regula(
+    rc, out, err = _run_regula(
         "conform",
         "--project", "examples/code-completion-tool",
         "--output", str(out_dir),
         "--sign", "--timestamp", "--tsa-url", mock_tsa["url"],
+        "--format", "json",
         env=env,
     )
     assert rc == 0, err
+    conform_data = json.loads(out)
+    pack_path = conform_data["data"]["pack_path"]
 
-    pack_dir = next(p for p in out_dir.iterdir() if p.is_dir())
-    manifest_path = pack_dir / "manifest.json"
+    manifest_path = Path(pack_path) / "manifest.json"
     manifest = json.loads(manifest_path.read_text())
 
     # Tamper: change first file's hash
@@ -370,39 +423,48 @@ def test_cli_verify_detects_post_timestamp_tampering(tmp_path, mock_tsa):
     first["sha256"] = ("1" if first["sha256"][0] == "0" else "0") + first["sha256"][1:]
     manifest_path.write_text(json.dumps(manifest, indent=2))
 
-    rc2, out2, err2 = _run_regula("verify", str(pack_dir), env=env)
+    rc2, out2, err2 = _run_regula(
+        "verify", str(pack_path), "--format", "json", env=env,
+    )
     assert rc2 != 0
+    # The CLI may sys.exit(1) before emitting JSON, so check combined text
     combined = (out2 + err2).lower()
-    # Either the signature or the timestamp or the file-level hash catches it.
     assert "signature" in combined or "timestamp" in combined or "modified" in combined
 
 
-def test_cli_verify_untimestamped_pack_passes_non_strict(tmp_path):
-    """A signed-but-not-timestamped pack verifies cleanly without --strict."""
+def test_cli_verify_untimestamped_pack_passes_non_strict_json(tmp_path):
+    """A signed-but-not-timestamped pack verifies cleanly without --strict (JSON mode)."""
     key_path = tmp_path / "signing.key"
     out_dir = tmp_path / "pack-out"
     env = {"REGULA_SIGNING_KEY": str(key_path)}
 
-    rc, _, err = _run_regula(
+    rc, out, err = _run_regula(
         "conform",
         "--project", "examples/code-completion-tool",
         "--output", str(out_dir),
         "--sign",
+        "--format", "json",
         env=env,
     )
     assert rc == 0, err
-
-    pack_dir = next(p for p in out_dir.iterdir() if p.is_dir())
-    manifest = json.loads((pack_dir / "manifest.json").read_text())
+    conform_data = json.loads(out)
+    manifest = conform_data["data"]["manifest"]
     assert "timestamp_authority" not in manifest
+    pack_path = conform_data["data"]["pack_path"]
 
-    rc2, out2, err2 = _run_regula("verify", str(pack_dir), env=env)
+    rc2, out2, err2 = _run_regula(
+        "verify", pack_path, "--format", "json", env=env,
+    )
     assert rc2 == 0
-    assert "Timestamp:" not in out2  # no timestamp line when none present
+    verify_data = json.loads(out2)
+    report = verify_data["data"]
+    assert report["failed"] == 0
+    # No timestamp_status key when no timestamp block present and non-strict
+    assert "timestamp_status" not in report
 
 
-def test_cli_verify_untimestamped_pack_warns_under_strict(tmp_path):
-    """Under --strict, an un-timestamped manifest warns but still exits 0."""
+def test_cli_verify_untimestamped_pack_warns_under_strict_json(tmp_path):
+    """Under --strict, an un-timestamped manifest warns but still exits 0 (JSON mode)."""
     key_path = tmp_path / "signing.key"
     out_dir = tmp_path / "pack-out"
     env = {"REGULA_SIGNING_KEY": str(key_path)}
@@ -417,10 +479,15 @@ def test_cli_verify_untimestamped_pack_warns_under_strict(tmp_path):
     assert rc == 0, err
 
     pack_dir = next(p for p in out_dir.iterdir() if p.is_dir())
-    rc2, out2, err2 = _run_regula("verify", str(pack_dir), "--strict", env=env)
-    assert rc2 == 0, f"strict verify of unsigned-timestamp pack should exit 0: {err2}"
-    combined = (out2 + err2).lower()
-    assert "timestamp" in combined and ("not timestamped" in combined or "un-timestamped" in combined or "no external" in combined)
+    rc2, out2, err2 = _run_regula(
+        "verify", str(pack_dir), "--strict", "--format", "json", env=env,
+    )
+    assert rc2 == 0, f"strict verify of un-timestamped pack should exit 0: {err2}"
+    verify_data = json.loads(out2)
+    report = verify_data["data"]
+    assert "warnings" in report
+    warning_text = " ".join(report["warnings"]).lower()
+    assert "timestamp" in warning_text
 
 
 def test_cli_rejects_timestamp_without_sign(tmp_path):
