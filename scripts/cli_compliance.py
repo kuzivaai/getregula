@@ -398,13 +398,35 @@ def cmd_conform(args) -> None:
     from conform import generate_conformity_pack
 
     print(f"Generating conformity assessment evidence pack for {project_path}...", file=sys.stderr)
-    result = generate_conformity_pack(
-        project_path,
-        output_dir=args.output,
-        project_name=project_name,
-        model=args.model,
-        endpoint=args.endpoint,
-    )
+
+    # --sign and --signing-key both enable signing; --signing-key also
+    # overrides the key location. If the cryptography extra is missing,
+    # surface the SigningUnavailable error with an actionable install
+    # hint rather than a raw ImportError stack trace.
+    sign_requested = bool(getattr(args, "sign", False) or getattr(args, "signing_key", None))
+    signing_key_path = None
+    if getattr(args, "signing_key", None):
+        from pathlib import Path as _P
+        signing_key_path = _P(args.signing_key).expanduser().resolve()
+
+    try:
+        result = generate_conformity_pack(
+            project_path,
+            output_dir=args.output,
+            project_name=project_name,
+            model=args.model,
+            endpoint=args.endpoint,
+            sign=sign_requested,
+            signing_key_path=signing_key_path,
+        )
+    except Exception as exc:
+        # SigningUnavailable or SigningError — show the message and exit 2.
+        # Avoid importing signing at module scope so the core CLI stays
+        # stdlib-only when the optional extra is not installed.
+        if exc.__class__.__name__ in ("SigningUnavailable", "SigningError"):
+            print(f"Signing failed: {exc}", file=sys.stderr)
+            sys.exit(2)
+        raise
 
     # Optional: emit a .regula.zip bundle alongside the pack directory
     # (Regula Evidence Format v1 §3.2). Bundles are portable across machines
@@ -432,9 +454,15 @@ def cmd_conform(args) -> None:
         pack_path = result["pack_path"]
         file_count = len(result["manifest"]["files"])
         readiness = result["summary"]["overall_readiness"]
+        manifest = result["manifest"]
+        fmt_version = manifest.get("format_version", "1.0")
         print(f"Conformity evidence pack written to: {pack_path}")
+        print(f"Format: regula.evidence.v1 (format_version {fmt_version})")
         print(f"Contains {file_count} files with SHA-256 integrity hashes.")
         print(f"Overall readiness: {readiness}")
+        if "signing" in manifest:
+            print(f"Signed: Ed25519 signature embedded (verify with "
+                  f"`regula verify {pack_path}`).")
         if bundle_path is not None:
             print(f"Bundle written to:      {bundle_path}")
             print(f"Verify bundle with:     regula verify {bundle_path}")

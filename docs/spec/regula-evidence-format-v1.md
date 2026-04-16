@@ -1,7 +1,7 @@
 # Regula Evidence Format v1
 
 **Status:** Stable. Frozen for 1.x minor series.
-**Version:** 1.0
+**Version:** 1.1
 **Specification ID:** `regula.evidence.v1`
 **Last updated:** 2026-04-16
 
@@ -120,15 +120,19 @@ Each entry in `files`:
 | `sha256` | string | Lowercase hex SHA-256 digest of file contents |
 | `size_bytes` | integer | File size in bytes |
 
-### 4.3 Optional fields (reserved for v1.x)
+### 4.3 Optional fields
 
 Consumers MUST accept the following optional fields and MUST NOT reject the
 manifest if they are absent or unrecognised:
 
 - `form` (string) — e.g. `"sme_simplified_annex_iv"`, `"full_annex_iv"`
 - `interim_format_disclosure` (string) — free text disclosure
-- `signing` (object) — reserved for future Ed25519 / cosign signatures
-- `timestamp_authority` (object) — reserved for RFC 3161 timestamp tokens
+- `signing` (object) — Ed25519 signature over the canonical manifest (§4.5, added in v1.1)
+- `timestamp_authority` (object) — RFC 3161 timestamp token (reserved; lands in v1.1 alongside signing)
+
+A manifest that uses any of the v1.1 fields MUST set `format_version` to
+`"1.1"`. v1.0 manifests carry only the v1.0-defined fields and omit the
+signing block.
 
 ### 4.4 Example
 
@@ -151,6 +155,86 @@ manifest if they are absent or unrecognised:
   ]
 }
 ```
+
+### 4.5 Signing block (v1.1)
+
+A v1.1 pack MAY embed an Ed25519 signature over the canonical manifest JSON.
+
+#### 4.5.1 Canonical form
+
+The bytes that a signature covers are produced by:
+
+1. Take the manifest object.
+2. Remove the `signing` key entirely (not just empty it).
+3. Serialise with:
+
+   ```python
+   json.dumps(manifest_no_signing, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+   ```
+
+   i.e. sorted keys, no whitespace, UTF-8. This canonical form is stable
+   across producers and languages: the same manifest always produces the
+   same bytes, regardless of key order in the source object.
+
+Producers MUST NOT modify any other field after signing. Verifiers MUST
+reproduce this canonical form exactly before calling the signature
+verification routine.
+
+#### 4.5.2 Signing block structure
+
+```json
+{
+  "signing": {
+    "algorithm": "ed25519",
+    "canonical_serialization": "json-sort-keys-no-whitespace-utf8",
+    "signature": "<base64(ed25519_signature)>",
+    "public_key": "<base64(SubjectPublicKeyInfo PEM)>"
+  }
+}
+```
+
+- `algorithm` MUST be `"ed25519"` in v1.1.
+- `canonical_serialization` MUST be `"json-sort-keys-no-whitespace-utf8"` in v1.1.
+- `signature` is the raw 64-byte Ed25519 signature, base64-encoded.
+- `public_key` is the signer's public key, serialised as a PEM-encoded
+  `SubjectPublicKeyInfo` object, then base64-encoded again for clean
+  JSON embedding. Consumers decode the outer base64 first, then load
+  the PEM with any standard crypto library.
+
+#### 4.5.3 Verification behaviour
+
+A conforming verifier MUST:
+
+1. If no `signing` block is present, proceed without signature verification.
+   Under `--strict`, SHOULD emit a warning (unsigned provenance) but
+   MUST NOT fail solely on absence.
+2. If a `signing` block is present:
+   - Check `algorithm == "ed25519"` and
+     `canonical_serialization == "json-sort-keys-no-whitespace-utf8"`.
+     Unknown values → fail.
+   - Reconstruct the canonical form (§4.5.1).
+   - Call the Ed25519 verify primitive on (signature, public_key, canonical).
+   - Invalid signature → FAIL regardless of `--strict`.
+   - Valid signature → record `signature_status: "VERIFIED"` in the
+     verify report.
+3. If the verifier cannot perform Ed25519 verification (no crypto
+   library installed), it MUST warn with
+   `signature_status: "UNVERIFIABLE"` and MUST NOT claim the pack
+   is signed or unsigned. Under `--strict`, treat as failure.
+
+#### 4.5.4 Key management (informative)
+
+The reference implementation stores a user's Ed25519 private key at
+`~/.regula/signing.key` (PEM, PKCS8, no passphrase) and the matching
+public key at `~/.regula/signing.key.pub`. The location can be overridden
+via `--signing-key <path>` or the `REGULA_SIGNING_KEY` environment
+variable. Keys are generated on first `--sign` use.
+
+Users who rely on a signed pack as provenance SHOULD back up the
+private key separately and consider rotating it on a defined cadence
+(e.g. per product release). Public-key distribution is out of scope for
+this spec; organisations can publish signing keys via repo README, a
+`.well-known/regula-signing-keys.pem` endpoint, or any existing PKI.
 
 ## 5. Assessment summary schema (normative)
 
@@ -262,17 +346,19 @@ ending conversion, re-serialisation) and **inattentive** modification
 (editing a file after generation without updating the manifest). It does
 NOT protect against a motivated attacker who can regenerate the whole pack.
 
-For attacker-resistant tamper detection in v1.x, pair a v1 pack with one of:
+For attacker-resistant tamper detection, pair a v1 pack with one of:
 
-- **Detached signature** — Ed25519 signature over the manifest's canonical
-  JSON, published separately (reserved for v1.1).
-- **External timestamp** — RFC 3161 timestamp token of the manifest's hash,
-  from a trusted TSA (reserved for v1.1).
+- **Embedded Ed25519 signature** — `--sign` in the reference implementation
+  produces a v1.1 manifest that carries an Ed25519 signature over the
+  canonical manifest JSON (§4.5). Tampering after signing is detectable
+  with the signer's public key.
+- **RFC 3161 timestamp** — an external TSA token asserting that the
+  manifest hash existed at a given time. Lands alongside signing in v1.1.
 - **Public commit** — commit the pack to a public Git repository at a known
   ref; the external git history provides ordering evidence.
 
-The v1 spec treats signing + timestamp as out-of-band additions that may
-arrive in v1.1 without a breaking change (per §4.3 optional fields).
+In v1.1, `signing` and `timestamp_authority` are optional blocks per §4.3
+and MAY be combined (sign, then timestamp the signed canonical form).
 
 ## 8. Compatibility with other formats
 
@@ -333,6 +419,16 @@ LicenseRef-DRL-1.1` — see the repository root `LICENSE.*` files.
 ---
 
 ## Changelog
+
+### v1.1 (2026-04-16)
+- Adds the optional signing block (§4.5) — Ed25519 signature over the
+  canonical manifest JSON, with a stable canonical-serialisation tag
+  so third-party implementations can reproduce the signed bytes.
+- Defines verifier behaviour for signed, unsigned, and unverifiable
+  manifests (§4.5.3).
+- Manifests that use the signing block MUST set `format_version` to
+  `"1.1"`. v1.0 manifests remain valid as-is.
+- No breaking changes to §3, §4.1, §4.2, §5, §6, §7.1.
 
 ### v1.0 (2026-04-16)
 - Initial stable release.
