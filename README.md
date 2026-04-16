@@ -35,11 +35,33 @@ If you ship an AI product to EU users, the EU AI Act applies to you -- regardles
 
 ## Quick start
 
+### Install
+
+The recommended install is **pipx** — it works on every platform (Linux, macOS, Windows), isolates Regula from your system Python, and does not trip the `externally-managed-environment` error that Ubuntu 22.04+, Debian 12+, Fedora, Arch, and Homebrew Python raise against plain `pip`.
+
 ```bash
-pip install regula-ai
+pipx install regula-ai
 ```
 
-Then, from your project directory:
+If you don't have pipx yet, install it first (one-time):
+
+| Platform | Install pipx |
+|---|---|
+| macOS | `brew install pipx && pipx ensurepath` |
+| Debian / Ubuntu | `sudo apt install pipx && pipx ensurepath` |
+| Fedora | `sudo dnf install pipx && pipx ensurepath` |
+| Arch | `sudo pacman -S python-pipx && pipx ensurepath` |
+| Windows | `python -m pip install --user pipx && python -m pipx ensurepath` |
+
+**Already using uv?** `uvx --from regula-ai regula` runs it with no install step (the `--from` flag is required because the PyPI package name `regula-ai` differs from the CLI name `regula`). Or install it permanently with `uv tool install regula-ai`.
+
+**Running inside a venv or conda env?** `pip install regula-ai` works fine there — the PEP 668 restriction only applies to system Python.
+
+See [`docs/installation.md`](docs/installation.md) for troubleshooting (`externally-managed-environment`, `command not found: regula` after install, PATH setup per shell).
+
+### Scan
+
+From your project directory:
 
 ```bash
 regula
