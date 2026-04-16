@@ -186,6 +186,49 @@ def test_github_annotations_suppressed_without_ci_flag():
     ), f"expected zero workflow commands, got stdout={stdout}"
 
 
+def test_examples_code_completion_tool_scans_one_file():
+    """examples/code-completion-tool must scan exactly 1 file and produce
+    a genuinely clean result (zero findings of any tier).
+
+    Regression for the bug where `regula check examples/code-completion-tool`
+    reported `Files scanned: 0 (test files excluded — use --no-skip-tests
+    to include)`. Two compounding causes:
+
+      * an older release missing the scan_files.last_stats telemetry
+        attribute, so the CLI fell back to len(unique files with findings)
+        which is 0 for a genuinely clean scan;
+      * the "test files excluded" suffix fired on any total_files==0 +
+        skip_tests_active combination, regardless of whether test files
+        were actually skipped — misleadingly blaming the heuristic when
+        the real cause was the missing telemetry.
+
+    After the fix, last_stats carries files_scanned + tests_skipped, and
+    the suffix only appears when tests_skipped > 0.
+    """
+    import re
+    rc, stdout, stderr = run_cli("check", "examples/code-completion-tool")
+    assert rc == 0, f"expected rc=0, got {rc}\nstderr={stderr}"
+    m = re.search(r"Files scanned:\s+(\d+)", stdout)
+    assert m, f"no Files scanned line in output:\n{stdout}"
+    assert m.group(1) == "1", (
+        f"expected 1 file scanned, got {m.group(1)}\n{stdout}"
+    )
+    # Must NOT claim test files were excluded.
+    assert "test files excluded" not in stdout and "test file(s) excluded" not in stdout, (
+        f"unexpected 'test files excluded' claim on a fixture with no test files:\n{stdout}"
+    )
+    # Genuinely clean: zero findings across every tier.
+    for tier_label in (
+        "Prohibited", "High-risk", "Limited-risk",
+        "BLOCK tier", "WARN tier", "INFO tier",
+    ):
+        mt = re.search(rf"{tier_label}:\s+(\d+)", stdout)
+        assert mt, f"missing '{tier_label}' line in:\n{stdout}"
+        assert mt.group(1) == "0", (
+            f"{tier_label} expected 0, got {mt.group(1)}\n{stdout}"
+        )
+
+
 def test_generator_commands_do_not_mutate_tracked_files(tmp_path):
     """Running the two generator commands that historically polluted the
     repo tree (`regula docs` and `regula handoff`) must not leave any
