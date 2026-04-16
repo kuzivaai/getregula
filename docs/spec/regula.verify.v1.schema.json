@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://getregula.com/spec/regula.verify.v1.schema.json",
+  "title": "Regula Evidence Format — Verify Report (v1.0)",
+  "description": "Schema for the optional regula.verify.v1.json report emitted by `regula verify --format json --report`. See docs/spec/regula-evidence-format-v1.md §7.2.",
+  "type": "object",
+  "required": [
+    "format",
+    "format_version",
+    "pack_path",
+    "verified_at",
+    "verifier_version",
+    "pack_format",
+    "total",
+    "passed",
+    "failed",
+    "results"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "regula.verify.v1"
+    },
+    "format_version": {
+      "type": "string",
+      "pattern": "^1\\.\\d+$"
+    },
+    "pack_path": {
+      "type": "string",
+      "description": "Filesystem path (or archive URL) of the pack verified."
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "verifier_version": {
+      "type": "string",
+      "description": "Version of the verifier that produced this report."
+    },
+    "pack_format": {
+      "type": "string",
+      "description": "The `format` field read from the pack's manifest, or `unknown` if absent."
+    },
+    "pack_regula_version": {
+      "type": "string",
+      "description": "The `regula_version` field from the pack's manifest (if present)."
+    },
+    "total": { "type": "integer", "minimum": 0 },
+    "passed": { "type": "integer", "minimum": 0 },
+    "failed": { "type": "integer", "minimum": 0 },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["filename", "status"],
+        "additionalProperties": true,
+        "properties": {
+          "filename": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["OK", "MISSING", "MODIFIED"]
+          },
+          "expected": { "type": "string" },
+          "actual": { "type": "string" }
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Non-fatal issues such as missing format declaration."
+    }
+  }
+}
