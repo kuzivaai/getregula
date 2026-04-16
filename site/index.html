@@ -3,6 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheet loading.
+         Why: /assets/site.css is render-blocking, so Chrome shows a WHITE canvas
+         (the browser default) for the entire duration of the CSS fetch on cold
+         loads — measured at ~600ms on simulated 3G, worse on real slow networks.
+         That white→dark snap is what users reported as "the demo flashing": the
+         hero terminal sits at the top of the fold and takes the full brunt of it.
+         The earlier attempt (27cfba4) targeted panel opacity and font preload,
+         neither of which is the actual cause — the cause is that the browser
+         cannot paint at all until the external stylesheet arrives.
+
+         Fix: establish the brand background + basic tokens inline so first paint
+         is already dark, then load site.css asynchronously via the media="print"
+         + onload swap trick (well-documented pattern). A <noscript> fallback
+         preserves styling for JS-disabled clients. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+      /* Pre-external-CSS state for the hero terminal panels so the initial paint
+         shows the active panel at opacity 1 and hides the rest, matching the
+         post-CSS visual. Prevents a vertical stack of all four panels flashing
+         briefly before site.css loads. */
+      .term-panel { opacity: 0; position: absolute; top: 0; left: 0; right: 0 }
+      .term-panel.active { opacity: 1; position: relative }
+      .term-body { position: relative; min-height: 340px }
+    </style>
+    <meta name="theme-color" content="#070711">
     <title>Regula — EU AI Act compliance tool for code | Open-source CLI</title>
     <meta name="description" content="Open-source EU AI Act compliance CLI. Scans your code, classifies AI risk tier, and tells you what to fix. 403 patterns, 8 languages. Free.">
     <meta name="robots" content="index, follow, max-image-preview:large">
@@ -127,8 +160,16 @@
     <link rel="alternate" hreflang="pt-BR" href="https://getregula.com/locales/pt-br.html">
     <link rel="alternate" hreflang="x-default" href="https://getregula.com/">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
-    <link rel="stylesheet" href="/assets/fonts.css">
-    <link rel="stylesheet" href="/assets/site.css">
+    <!-- Stylesheets loaded via media="print" + onload swap so they don't block
+         first paint. The inline critical CSS above already establishes the dark
+         theme; these sheets layer on the full design system once they arrive.
+         <noscript> fallback ensures JS-disabled clients still get full styling. -->
+    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.css">
+        <link rel="stylesheet" href="/assets/site.css">
+    </noscript>
     <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <!-- JetBrains Mono is used only inside the hero terminal demo. Preload
