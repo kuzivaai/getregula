@@ -209,8 +209,18 @@ def test_build_regulations_render_region_produces_valid_html():
     # Chrome
     assert 'class="skip-link"' in html
     assert 'id="progress-bar"' in html
-    assert 'href="regulations.html"' in html or 'href="/regulations.html"' in html
-    assert 'href="writing.html"' in html or 'href="/writing.html"' in html
+    # After the IA restructure, regulations lives at /regions/regulations.html
+    # and blog content lives at /blog/writing.html. Accept either the old
+    # root-level paths or the new subdir paths so this test stays compatible
+    # if the structure ever changes again.
+    assert any(v in html for v in (
+        'href="regulations.html"', 'href="/regulations.html"',
+        'href="/regions/regulations.html"',
+    ))
+    assert any(v in html for v in (
+        'href="writing.html"', 'href="/writing.html"',
+        'href="/blog/writing.html"',
+    ))
 
     # All three JSON-LD blocks present and parseable
     blocks = list(re.finditer(r'<script type="application/ld\+json">(.*?)</script>', html, re.S))
