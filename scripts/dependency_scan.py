@@ -209,7 +209,18 @@ _REQ_SPEC_RE = re.compile(
 
 
 def _classify_pinning_req(spec: str | None) -> tuple[str, str | None]:
-    """Return (pinning_level, version_or_None) for a requirement specifier."""
+    """Return (pinning_level, version_or_None) for a requirement specifier.
+
+    Pinning levels (highest to lowest):
+    - hash:          --hash=sha256:... (immutable artefact pin)
+    - exact:         ==X.Y.Z
+    - compatible:    ~=X.Y (PEP 440 compatible-release)
+    - bounded-range: has BOTH a lower bound (>= or >) AND upper bound (< or <=)
+                     — e.g. >=1.0,<3 — explicit major/minor window
+    - range:         single-sided bound (e.g. >=1.0) — no upper bound, risk
+                     of breaking on future major releases
+    - unpinned:      no specifier at all
+    """
     if not spec:
         return "unpinned", None
     spec = spec.strip()
@@ -219,10 +230,13 @@ def _classify_pinning_req(spec: str | None) -> tuple[str, str | None]:
         return "exact", spec[2:].strip()
     if spec.startswith("~="):
         return "compatible", spec[2:].strip()
-    # Any other specifier is a range
+    has_lower = any(op in spec for op in (">=", ">"))
+    has_upper = any(op in spec for op in ("<=", "<"))
     for op in (">=", "<=", "!=", ">", "<"):
         if op in spec:
             ver = spec.split(op, 1)[1].split(",")[0].strip()
+            if has_lower and has_upper:
+                return "bounded-range", ver
             return "range", ver
     return "unpinned", None
 
@@ -301,44 +315,39 @@ def parse_pyproject_toml(content: str) -> list[dict]:
     # and [project.optional-dependencies.*] sections
     all_dep_strings: list[tuple[str, int]] = []
 
-    # Match dependencies = [ ... ]  (multiline)
+    def _extract_quoted_items(block: str, start_line: int) -> list[tuple[str, int]]:
+        """Extract every quoted dependency string from a TOML array body.
+
+        Handles both multi-line (one dep per line) and single-line
+        (`[\"a\", \"b\", \"c\"]`) formats. Tracks line numbers relative
+        to `start_line` so findings retain accurate locations.
+        """
+        out: list[tuple[str, int]] = []
+        for im in re.finditer(r'"([^"]+)"', block):
+            dep_str = im.group(1).strip()
+            if not dep_str:
+                continue
+            line_offset = block[: im.start()].count('\n')
+            out.append((dep_str, start_line + line_offset))
+        return out
+
+    # Match dependencies = [ ... ]  (multiline or single-line)
     for m in re.finditer(r'dependencies\s*=\s*\[([^\]]*)\]', content, re.DOTALL):
         block = m.group(1)
         start_line = content[:m.start()].count('\n') + 1
-        for i, raw in enumerate(block.splitlines()):
-            line = raw.strip().strip(',').strip()
-            if not line or line.startswith('#'):
-                continue
-            # Remove quotes
-            line = line.strip('"').strip("'")
-            if line:
-                all_dep_strings.append((line, start_line + i))
+        all_dep_strings.extend(_extract_quoted_items(block, start_line))
 
-    # Match optional-dependencies sections
-    for m in re.finditer(
-        r'\[project\.optional-dependencies\.(\w+)\]\s*\n(.*?)(?=\n\[|\Z)',
-        content, re.DOTALL
-    ):
-        # This format isn't standard TOML for arrays, try the = [...] form
-        pass
-
+    # Match optional-dependencies (table-style: [project.optional-dependencies])
     for m in re.finditer(
         r'\[project\.optional-dependencies\]\s*\n(.*?)(?=\n\[|\Z)',
         content, re.DOTALL
     ):
         block = m.group(1)
         start_line = content[:m.start()].count('\n') + 1
-        # Parse key = [...] entries
         for km in re.finditer(r'\w+\s*=\s*\[([^\]]*)\]', block, re.DOTALL):
             sub = km.group(1)
             sub_start = start_line + block[:km.start()].count('\n')
-            for i, raw in enumerate(sub.splitlines()):
-                line = raw.strip().strip(',').strip()
-                if not line or line.startswith('#'):
-                    continue
-                line = line.strip('"').strip("'")
-                if line:
-                    all_dep_strings.append((line, sub_start + i))
+            all_dep_strings.extend(_extract_quoted_items(sub, sub_start))
 
     # Parse each dependency string like "openai>=1.0" or "torch"
     for dep_str, ln in all_dep_strings:
@@ -698,6 +707,7 @@ _PINNING_WEIGHTS: dict[str, int] = {
     "hash": 100,
     "exact": 80,
     "compatible": 60,
+    "bounded-range": 50,
     "range": 30,
     "unpinned": 0,
 }
