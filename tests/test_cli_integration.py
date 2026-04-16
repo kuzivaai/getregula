@@ -186,6 +186,35 @@ def test_github_annotations_suppressed_without_ci_flag():
     ), f"expected zero workflow commands, got stdout={stdout}"
 
 
+def test_examples_customer_chatbot_prints_limited_risk_row():
+    """The LIMITED-RISK section must show the finding row, not just the header.
+
+    Regression for the bug where `regula check examples/customer-chatbot`
+    printed the `LIMITED-RISK:` header with no row beneath — the renderer
+    was silently skipping INFO-tier limited-risk findings unless --verbose
+    was set, while still emitting the section header. Every other per-tier
+    section (prohibited, credentials, high_risk, autonomy) prints its
+    rows unconditionally; limited-risk was the odd one out.
+
+    After the fix, the section header is followed by a row in the same
+    format used for credential/autonomy findings:
+        [tier] [score] file:line — message
+    """
+    import re
+    rc, stdout, stderr = run_cli("check", "examples/customer-chatbot")
+    assert rc == 0, f"expected rc=0, got {rc}\nstderr={stderr}"
+    assert "LIMITED-RISK" in stdout, f"missing LIMITED-RISK header:\n{stdout}"
+    row_pattern = re.compile(
+        r"^\s+\[(INFO|WARN|BLOCK)\]\s+\[\s*\d+\]\s+\S+:\d+\s+—\s+.+$",
+        re.MULTILINE,
+    )
+    after_header = stdout.split("LIMITED-RISK", 1)[1]
+    rows = row_pattern.findall(after_header)
+    assert rows, (
+        f"LIMITED-RISK header printed with no finding row underneath:\n{stdout}"
+    )
+
+
 def test_examples_code_completion_tool_scans_one_file():
     """examples/code-completion-tool must scan exactly 1 file and produce
     a genuinely clean result (zero findings of any tier).

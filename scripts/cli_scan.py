@@ -269,13 +269,16 @@ def cmd_check(args) -> None:
                 _print_remediation(f)
 
         if limited:
-            print(f"\n  {blue('LIMITED-RISK')}:")
+            # Limited-risk findings (Article 50 transparency) are surfaced
+            # the same way high-risk and credential findings are: one row
+            # per finding, no verbose-only suppression. The previous
+            # behaviour skipped every INFO-tier row while still printing
+            # the section header, producing a header with no rows beneath.
+            print(f"\n  {blue('LIMITED-RISK')} (Article 50):")
             for f in limited:
                 score = f.get("confidence_score", 0)
                 tier_label = f.get("_finding_tier", "info").upper()
-                if tier_label == "INFO" and not getattr(args, "verbose", False):
-                    continue
-                print(f"    [{tier_label}] [{score:3d}] {f['file']} — {f.get('description', '')}")
+                print(f"    [{tier_label}] [{score:3d}] {f['file']}:{f.get('line', '?')} — {f.get('description', '')}")
 
         if getattr(args, "verbose", False) and info_findings:
             info_non_limited = [f for f in info_findings if f["tier"] not in ("limited_risk",)]
