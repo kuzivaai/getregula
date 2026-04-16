@@ -60,11 +60,9 @@ docs/uk-compliance-assessment.md
 output.txt
 TODO.md
 ROADMAP.md
-.claim-allowlist
 docs/competitor-analysis.md
 docs/moat-research.md
 docs/landscape.md
-data/metrics/
 
 # Generated output (per-project, date-stamped)
 conformity-evidence-*/
