@@ -903,7 +903,7 @@ def _build_subparsers(subparsers):
         "--pattern-version",
         metavar="VERSION",
         help="Stamp the assessment against a specific pattern ruleset version "
-             "(e.g., '1.6.1-patterns-2026-04-09') for reproducible audits. "
+             "(e.g., '1.7.0-patterns-2026-04-16') for reproducible audits. "
              "If omitted, the current pattern version from regula-policy.yaml is used.",
     )
     p_gap.add_argument(

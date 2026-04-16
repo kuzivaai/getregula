@@ -147,7 +147,7 @@ Each finding was manually classified as true positive or false positive by the d
 
 ## Versioning
 
-This model card describes Regula v1.6.1. If the detection patterns, classification logic, or evaluation methodology change, this document should be updated in the same commit.
+This model card describes Regula v1.7.0. If the detection patterns, classification logic, or evaluation methodology change, this document should be updated in the same commit.
 
 ---
 

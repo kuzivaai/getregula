@@ -109,13 +109,13 @@ Honest list, also recorded in `docs/TRUST.md`:
 # Verify the wheel matches the published commit
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
-git checkout v1.6.1
+git checkout v1.7.0
 python3 -m build
-sha256sum dist/regula_ai-1.6.1-py3-none-any.whl
+sha256sum dist/regula_ai-1.7.0-py3-none-any.whl
 
 # Compare against the wheel served by PyPI
-pip download --no-deps -d /tmp/verify regula-ai==1.6.1
-sha256sum /tmp/verify/regula_ai-1.6.1-py3-none-any.whl
+pip download --no-deps -d /tmp/verify regula-ai==1.7.0
+sha256sum /tmp/verify/regula_ai-1.7.0-py3-none-any.whl
 ```
 
 The two SHA-256 hashes should match. If they do not, **stop and report
