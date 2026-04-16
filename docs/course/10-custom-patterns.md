@@ -74,7 +74,7 @@ Edit `AI_SECURITY_PATTERNS` in `scripts/classify_risk.py`:
 
 ## Verification
 
-Run `python3 tests/test_classification.py` — if all 152 tests pass plus your new test, you've successfully extended Regula.
+Run `python3 tests/test_classification.py` — if all tests pass plus your new test, you've successfully extended Regula.
 
 ---
 
@@ -88,7 +88,7 @@ You've learned to:
 - Detect AI-specific security vulnerabilities
 - Integrate into CI/CD pipelines
 - Generate compliance documentation
-- Map findings across 10 frameworks
+- Map findings across 17 frameworks (see `references/framework_crosswalk.yaml`)
 - Build custom detection patterns
 
 **What's next:**
