@@ -3943,8 +3943,14 @@ def test_config_validate_valid_file():
     import sys
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from config_validator import validate_config
-    # Use the repo's own regula-policy.yaml
-    policy_path = str(Path(__file__).parent.parent / "regula-policy.yaml")
+    # Use the repo's own regula-policy.yaml — moved to configs/ in the
+    # IA restructure, fall back to root for compatibility with older checkouts.
+    repo_root = Path(__file__).parent.parent
+    candidates = [
+        repo_root / "configs" / "regula-policy.yaml",
+        repo_root / "regula-policy.yaml",
+    ]
+    policy_path = next((str(p) for p in candidates if p.exists()), str(candidates[0]))
     result = validate_config(path=policy_path, format_type="silent")
     assert isinstance(result, dict)
     assert result["valid"] is True

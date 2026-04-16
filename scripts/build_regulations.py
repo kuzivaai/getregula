@@ -200,9 +200,9 @@ def _render_jsonld_breadcrumb(region: dict) -> str:
         "@type": "BreadcrumbList",
         "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/"},
-            {"@type": "ListItem", "position": 2, "name": "Regulations", "item": "https://getregula.com/regulations.html"},
+            {"@type": "ListItem", "position": 2, "name": "Regulations", "item": "https://getregula.com/regions/regulations.html"},
             {"@type": "ListItem", "position": 3, "name": region["geo_placename"],
-             "item": f"https://getregula.com/{region['slug']}.html"},
+             "item": f"https://getregula.com/regions/{region['slug']}.html"},
         ],
     }
     return json.dumps(data, indent=4)
