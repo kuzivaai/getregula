@@ -51,7 +51,7 @@ web = ["flask~=3.0"]
 # TimeStampToken parser at verify time; the stdlib-only DER encoder still
 # handles the request path.
 signing = ["cryptography>=41,<47", "asn1crypto>=1.5,<2"]
-all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint>=62,<69", "sentry-sdk~=2.8"]
+all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint>=62,<69", "sentry-sdk~=2.8", "cryptography>=41,<47", "asn1crypto>=1.5,<2"]
 
 [project.urls]
 Homepage = "https://getregula.com"

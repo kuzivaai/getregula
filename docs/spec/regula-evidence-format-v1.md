@@ -101,7 +101,7 @@ any file in the pack that is not listed in the manifest.
 | Field | Type | Description |
 |---|---|---|
 | `format` | string | MUST equal `"regula.evidence.v1"` for this spec version |
-| `format_version` | string | MUST equal `"1.0"` for the initial v1 release |
+| `format_version` | string | MUST be `"1.0"` for manifests that use only the v1.0-defined fields, or `"1.1"` for manifests that use any v1.1 optional block (`signing`, `timestamp_authority`). See §4.3 for the block-to-version mapping. |
 | `schema_uri` | string | URL to the JSON Schema for this format version |
 | `regula_version` | string | The Regula version that generated the pack (semver, e.g. `"1.6.2"`) |
 | `generated_at` | string | RFC 3339 timestamp with timezone |
