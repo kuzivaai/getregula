@@ -1024,6 +1024,21 @@ def _build_subparsers(subparsers):
              "default ~/.regula/signing.key and the REGULA_SIGNING_KEY env "
              "variable. Implies --sign.",
     )
+    p_conform.add_argument(
+        "--timestamp",
+        action="store_true",
+        help="Request an RFC 3161 timestamp from a TSA over the signed "
+             "canonical manifest form and embed it as timestamp_authority "
+             "(Regula Evidence Format v1.1, §4.6). Implies --sign and "
+             "requires network access to the TSA.",
+    )
+    p_conform.add_argument(
+        "--tsa-url",
+        dest="tsa_url",
+        metavar="URL",
+        help="TSA endpoint URL (default: https://freetsa.org/tsr). Any "
+             "RFC 3161-compliant TSA works.",
+    )
     p_conform.set_defaults(func=cmd_conform)
 
     # --- governance ---

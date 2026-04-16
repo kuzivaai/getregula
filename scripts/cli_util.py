@@ -591,6 +591,57 @@ def cmd_verify(args) -> None:
                 "block is optional; no authenticated provenance claim)"
             )
 
+    # --- Timestamp verification (spec §4.6 / §7.1 v1.1 addition) ---
+    # A v1.1 manifest may embed an RFC 3161 TimeStampToken over the
+    # canonical signed form. Behaviour per §4.6.3:
+    #   - Block absent: proceed (warn under --strict, don't fail).
+    #   - Block present, TSA hash matches canonical form: record VERIFIED.
+    #   - Block present, TSA hash mismatches: fail regardless of strict.
+    #   - Block present, asn1crypto unavailable: warn; under --strict fail.
+    # Signer-chain (TSA PKCS#7 cert chain) is intentionally NOT validated
+    # in v1.1; consumers requiring chain trust can run the raw token
+    # through a dedicated tool.
+    timestamp_status = None
+    timestamp_detail = ""
+    timestamp_block_present = bool(manifest_data.get("timestamp_authority"))
+
+    if timestamp_block_present:
+        try:
+            from signing import canonicalize_manifest_for_signing
+            from timestamp import verify_manifest_timestamp, TimestampUnavailable
+            try:
+                canonical = canonicalize_manifest_for_signing(manifest_data)
+                ok, detail = verify_manifest_timestamp(manifest_data, canonical)
+                if ok:
+                    timestamp_status = "VERIFIED"
+                    timestamp_detail = detail
+                else:
+                    timestamp_status = "INVALID"
+                    timestamp_detail = detail
+                    print(f"ERROR: manifest timestamp did not verify: {detail}")
+                    sys.exit(1)
+            except Exception as exc:
+                timestamp_status = "INVALID"
+                timestamp_detail = f"{exc.__class__.__name__}: {exc}"
+                print(f"ERROR: timestamp verification raised: {timestamp_detail}")
+                sys.exit(1)
+        except ImportError:
+            timestamp_status = "UNVERIFIABLE"
+            timestamp_detail = (
+                "manifest carries a timestamp but the asn1crypto package "
+                "is not installed (`pip install regula-ai[signing]`)"
+            )
+            if strict:
+                print(f"ERROR (strict mode): {timestamp_detail}")
+                sys.exit(2)
+            warnings.append(timestamp_detail)
+    else:
+        if strict:
+            warnings.append(
+                "manifest is not timestamped (Regula Evidence Format v1.1 "
+                "timestamp block is optional; no external provenance claim)"
+            )
+
     files = manifest_data.get("files", [])
     if not files:
         print("No files listed in manifest.")
@@ -641,6 +692,9 @@ def cmd_verify(args) -> None:
     if signature_status is not None:
         verify_report["signature_status"] = signature_status
         verify_report["signature_detail"] = signature_detail
+    if timestamp_status is not None:
+        verify_report["timestamp_status"] = timestamp_status
+        verify_report["timestamp_detail"] = timestamp_detail
     if warnings:
         verify_report["warnings"] = warnings
 
@@ -660,6 +714,10 @@ def cmd_verify(args) -> None:
             print(f"  Signature: VERIFIED ({signature_detail})")
         elif signature_status == "UNVERIFIABLE":
             print(f"  Signature: UNVERIFIABLE ({signature_detail})")
+        if timestamp_status == "VERIFIED":
+            print(f"  Timestamp: VERIFIED ({timestamp_detail})")
+        elif timestamp_status == "UNVERIFIABLE":
+            print(f"  Timestamp: UNVERIFIABLE ({timestamp_detail})")
         for w in warnings:
             print(f"  ⚠️  {w}")
         print(f"{'=' * 60}")

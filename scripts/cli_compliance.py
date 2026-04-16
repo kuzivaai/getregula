@@ -400,14 +400,21 @@ def cmd_conform(args) -> None:
     print(f"Generating conformity assessment evidence pack for {project_path}...", file=sys.stderr)
 
     # --sign and --signing-key both enable signing; --signing-key also
-    # overrides the key location. If the cryptography extra is missing,
-    # surface the SigningUnavailable error with an actionable install
-    # hint rather than a raw ImportError stack trace.
-    sign_requested = bool(getattr(args, "sign", False) or getattr(args, "signing_key", None))
+    # overrides the key location. --timestamp implies --sign (the
+    # timestamp covers the signed canonical form per spec §4.6).
+    # If an optional extra is missing, surface the Unavailable error
+    # with an actionable install hint rather than a raw ImportError stack.
+    timestamp_requested = bool(getattr(args, "timestamp", False))
+    sign_requested = bool(
+        getattr(args, "sign", False)
+        or getattr(args, "signing_key", None)
+        or timestamp_requested
+    )
     signing_key_path = None
     if getattr(args, "signing_key", None):
         from pathlib import Path as _P
         signing_key_path = _P(args.signing_key).expanduser().resolve()
+    tsa_url = getattr(args, "tsa_url", None)
 
     try:
         result = generate_conformity_pack(
@@ -418,13 +425,21 @@ def cmd_conform(args) -> None:
             endpoint=args.endpoint,
             sign=sign_requested,
             signing_key_path=signing_key_path,
+            timestamp=timestamp_requested,
+            tsa_url=tsa_url,
         )
     except Exception as exc:
-        # SigningUnavailable or SigningError — show the message and exit 2.
-        # Avoid importing signing at module scope so the core CLI stays
-        # stdlib-only when the optional extra is not installed.
-        if exc.__class__.__name__ in ("SigningUnavailable", "SigningError"):
-            print(f"Signing failed: {exc}", file=sys.stderr)
+        # SigningUnavailable, SigningError, TimestampUnavailable, or
+        # TimestampError — show the message and exit 2. Avoid importing
+        # signing/timestamp at module scope so the core CLI stays stdlib-
+        # only when the optional extras are not installed.
+        name = exc.__class__.__name__
+        if name in (
+            "SigningUnavailable", "SigningError",
+            "TimestampUnavailable", "TimestampError",
+        ):
+            kind = "Timestamping" if name.startswith("Timestamp") else "Signing"
+            print(f"{kind} failed: {exc}", file=sys.stderr)
             sys.exit(2)
         raise
 
@@ -463,6 +478,10 @@ def cmd_conform(args) -> None:
         if "signing" in manifest:
             print(f"Signed: Ed25519 signature embedded (verify with "
                   f"`regula verify {pack_path}`).")
+        if "timestamp_authority" in manifest:
+            ts = manifest["timestamp_authority"]
+            print(f"Timestamped: RFC 3161 token from {ts.get('tsa_url', '?')} "
+                  f"at {ts.get('gen_time', 'unknown')}.")
         if bundle_path is not None:
             print(f"Bundle written to:      {bundle_path}")
             print(f"Verify bundle with:     regula verify {bundle_path}")
