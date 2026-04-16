@@ -15,6 +15,10 @@ venv/
 .regula-baseline.json
 .venv/
 .coverage
+# User-created policy at repo root. Running `regula quickstart` or
+# `regula init` from a checkout creates this; the canonical committed
+# policy lives at configs/regula-policy.yaml.
+/regula-policy.yaml
 docs/*_annex_iv.md
 docs/tmp*_annex_iv.md
 docs/sample_high_risk_*.md
