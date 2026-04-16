@@ -100,7 +100,7 @@
                 "name": "Is Regula free?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes. Regula is open-source under the MIT licence. No account, no API key, no sales call. Install with pip install regula-ai and run it locally on your codebase. The full CLI, all 53 commands (including `regula handoff` for Garak/Giskard/Promptfoo scoping and `regula regwatch` for delta-log drift warnings), all 403 risk patterns, and all 17 compliance framework mappings are free."
+                    "text": "Yes. Regula is open-source under the MIT licence. No account, no API key, no sales call. Install with pipx install regula-ai (see docs/installation.md for uv and pip alternatives) and run it locally on your codebase. The full CLI, all 53 commands (including `regula handoff` for Garak/Giskard/Promptfoo scoping and `regula regwatch` for delta-log drift warnings), all 403 risk patterns, and all 17 compliance framework mappings are free."
                 }
             },
             {
@@ -216,7 +216,7 @@
             <h1>Is your AI app <span class="hl">legal</span> in Europe?</h1>
             <p class="sub">One command tells you which EU AI Act risk tier your code is in, why, and what to fix &mdash; <strong>in 30 seconds, free, no account.</strong></p>
 
-            <button class="cta-pill" id="install-pill" onclick="copyPill(this, 'pip install regula-ai \u0026\u0026 regula')">
+            <button class="cta-pill" id="install-pill" onclick="copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
                 Try free in 30 seconds
             </button>
@@ -413,7 +413,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Step 1</div>
             <h4>Install</h4>
-            <p><code>pip install regula-ai</code><br>Stdlib-only Python. No config needed.</p>
+            <p><code>pipx install regula-ai</code><br>Works on every OS. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md" style="color:#8888aa;">Other methods &#8599;</a></p>
         </div>
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Step 2</div>
@@ -443,7 +443,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
                 <span class="fwd-icon">&#8599;</span>
                 <span class="fwd-txt">Copy link to send to your developer</span>
             </div>
-            <div class="audience-fwd" onclick="copyPill(this, 'pip install regula-ai &amp;&amp; regula assess')">
+            <div class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
                 <span class="fwd-icon">&#9654;</span>
                 <span class="fwd-txt">Run regula assess &mdash; no code needed</span>
             </div>
@@ -504,7 +504,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
     </div>
     <div style="text-align:center;margin-top:48px;">
-        <button class="cta-pill" onclick="copyPill(this, 'pip install regula-ai &amp;&amp; regula')">
+        <button class="cta-pill" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula')">
             <span>&#9654;</span>
             Try free in 30 seconds
         </button>
@@ -516,7 +516,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 <!-- COMMANDS -->
 <div class="sec reveal" id="commands">
     <h2 class="sec-head">53 commands</h2>
-    <p class="sec-sub"><code>pip install regula-ai</code>, then run any of these on your project.</p>
+    <p class="sec-sub"><code>pipx install regula-ai</code>, then run any of these on your project.</p>
     <div class="cmds">
         <div class="cm"><code>regula assess</code> <span>Yes/no questions &mdash; no code needed &mdash; get your tier</span></div>
         <div class="cm"><code>regula check .</code> <span>Scan your codebase against 403 risk patterns</span></div>
@@ -603,7 +603,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="price-card featured">
             <div class="price-tier price-featured-tier">Regula</div>
             <div class="price-amount price-featured-amount">Free &amp; open source</div>
-            <p class="price-desc">Static code scanner. Runs on your laptop in one command. Stdlib-only Python core, zero production dependencies, fully offline. <code>pip install regula-ai</code>, scan your project, get a clear answer. MIT licence.</p>
+            <p class="price-desc">Static code scanner. Runs on your laptop in one command. Stdlib-only Python core, zero production dependencies, fully offline. <code>pipx install regula-ai</code>, scan your project, get a clear answer. MIT licence.</p>
         </div>
     </div>
     <p class="competitor-note">Other open-source EU AI Act code scanners exist &mdash; notably <a href="https://airblackbox.ai/" rel="noopener">AIR Blackbox</a> (Python/pip, Apache 2.0, local, 39 checks across Articles 9/10/11/12/14/15), <a href="https://www.npmjs.com/package/@systima/comply" rel="noopener">Systima Comply</a> (TypeScript, AST-based), and <a href="https://github.com/ark-forge/mcp-eu-ai-act" rel="noopener">ark-forge mcp-eu-ai-act</a> (Python, hybrid). Pick the one whose language coverage and trade-offs fit your stack. Regula's niche is stdlib-only, zero production dependencies, and 8-language breadth.</p>
@@ -642,7 +642,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <p>One command. Takes 30 seconds. No account needed.</p>
         <div class="install-box" id="install-btn-2" onclick="copyInstall(this)" style="display:inline-flex;">
             <span class="dollar">$</span>
-            <span class="cmd">pip install regula-ai</span>
+            <span class="cmd">pipx install regula-ai</span>
             <span class="cp">copy</span>
         </div>
         <div data-fs-success style="display:none;font-size:13px;color:#10b981;margin-bottom:8px;">You're on the list. Major releases only.</div>
@@ -730,7 +730,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     // ===== COPY BUTTON =====
     function copyInstall(el) {
         const cp = el.querySelector('.cp');
-        navigator.clipboard.writeText('pip install regula-ai').then(() => {
+        navigator.clipboard.writeText('pipx install regula-ai').then(() => {
             el.classList.add('copied');
             cp.innerHTML = '&#10003;&nbsp;copied';
             setTimeout(() => {
@@ -778,7 +778,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     // ===== INLINE INSTALL COPY =====
     function copyInstallInline(el) {
         const original = el.textContent;
-        navigator.clipboard.writeText('pip install regula-ai').then(() => {
+        navigator.clipboard.writeText('pipx install regula-ai').then(() => {
             el.textContent = '✓ copied';
             setTimeout(() => { el.textContent = original; }, 2000);
         }).catch(() => {
