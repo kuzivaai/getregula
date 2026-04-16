@@ -284,7 +284,9 @@ regula conform \
 
 First `--sign` generates an Ed25519 keypair at `~/.regula/signing.key`
 (override with `--signing-key <path>` or the `REGULA_SIGNING_KEY` env
-var). `--timestamp` contacts `https://freetsa.org/tsr` by default;
+var). **Back up this key separately — it cannot be regenerated, and
+key rotation is not supported in v1.1.** Do not commit it to git.
+`--timestamp` contacts `https://freetsa.org/tsr` by default;
 override with `--tsa-url <url>` for a different TSA.
 
 Expected output additions:

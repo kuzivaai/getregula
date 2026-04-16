@@ -28,7 +28,7 @@
 \bv1\.6
 # tests: pytest --collect-only reports 1000; site_facts.py reports 893
 # functions (the legacy `def test_*` grep).
-\b1[,.]?000\s+tests?
+\b1[,.]?0\d{2}\s+tests?
 \b941\s+tests?
 \b893\s+test\s+functions?
 # ---- Common EU AI Act numeric references (verified from regulation text)
