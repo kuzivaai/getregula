@@ -506,7 +506,7 @@ Regula Scan: recommender.py
             <p>One command. No account, no API key, no dependencies.</p>
             <div class="install-box" onclick="copyInstall(this)">
                 <span class="dollar">$</span>
-                <span class="cmd">pip install regula-ai &amp;&amp; regula check .</span>
+                <span class="cmd">pipx install regula-ai &amp;&amp; regula check .</span>
                 <span class="cp">copy</span>
             </div>
             <p style="margin-top:16px; font-size:13px; color:#66668a;">Runs locally. Nothing leaves your machine. <a href="https://github.com/kuzivaai/getregula">Source on GitHub</a>.</p>
@@ -567,7 +567,7 @@ Regula Scan: recommender.py
 
     // Copy install command
     function copyInstall(el) {
-        navigator.clipboard.writeText('pip install regula-ai && regula check .');
+        navigator.clipboard.writeText('pipx install regula-ai && regula check .');
         el.classList.add('copied');
         el.querySelector('.cp').innerHTML = '&#10003; copied';
         setTimeout(() => {

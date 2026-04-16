@@ -341,7 +341,7 @@
     <div class="blog-cta">
         <div class="install-box" onclick="copyInstall(this)">
             <span class="dollar">$</span>
-            <span class="cmd">pip install regula-ai && regula timeline</span>
+            <span class="cmd">pipx install regula-ai && regula timeline</span>
             <span class="cp">copy</span>
         </div>
         <p>Shows your current EU AI Act deadlines based on your codebase.</p>
@@ -410,7 +410,7 @@
 
     // Copy install command
     function copyInstall(el) {
-        navigator.clipboard.writeText('pip install regula-ai && regula timeline').then(() => {
+        navigator.clipboard.writeText('pipx install regula-ai && regula timeline').then(() => {
             el.classList.add('copied');
             el.querySelector('.cp').textContent = 'copied';
             setTimeout(() => {
