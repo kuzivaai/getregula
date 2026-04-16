@@ -9,7 +9,7 @@ classification (Article 50 transparency obligation) when scanned with Regula.
 regula check examples/customer-chatbot
 ```
 
-Expected output (captured against Regula v1.6.1 on 2026-04-16):
+Expected output (captured against Regula v1.6.2 on 2026-04-16):
 
 ```
 Regula Scan: /home/mkuziva/getregula/examples/customer-chatbot
