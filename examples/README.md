@@ -23,6 +23,17 @@ regula check examples/customer-chatbot       # limited-risk → 1 INFO (use --ve
 regula check examples/code-completion-tool   # minimal-risk → clean
 ```
 
+## Try Regula end-to-end in 10 minutes
+
+[`cv-screening-app/README.md`](cv-screening-app/README.md) is a **complete
+evaluation journey**: every Regula command (`check`, `plan`, `gap`,
+`conform --zip`, `verify`, `handoff`, `bias`) against one realistic
+high-risk fixture, with expected output for each step. End result is the
+full 26-file Annex IV evidence pack + a portable `.regula.zip` bundle +
+a verification report.
+
+Use it when evaluating Regula before running against your own codebase.
+
 ## Why three fixtures
 
 The EU AI Act sorts AI systems into four risk tiers (prohibited, high-risk,
