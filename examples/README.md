@@ -14,7 +14,7 @@ release.
 ## Quick start
 
 ```
-pip install regula-ai
+pipx install regula-ai
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 

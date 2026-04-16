@@ -16,7 +16,7 @@ landing page and in the Trust Pack.
 The shortest possible path from "I just installed this tool" to "I have
 a categorised, article-cited finding I can act on":
 
-1. `pip install regula-ai`
+1. `pipx install regula-ai`
 2. `regula quickstart` — runs the first scan automatically and prints
    the top findings inline (the value-first UX added in v1.6.0)
 3. `regula classify --file demo.py` — confirms the file is HIGH-RISK
@@ -57,7 +57,7 @@ Or, for a JS-free fallback, embed the plain-text transcript directly:
 
 ```html
 <pre class="terminal">
-$ pip install regula-ai
+$ pipx install regula-ai
 ... (paste contents of regula-cli.txt here)
 </pre>
 ```

@@ -112,7 +112,7 @@ python3 -m scripts.cli doctor
 Lists every optional dependency, hook installation status, audit
 directory writability, and policy file presence. INFO entries for
 optional features are not warnings — they are reminders that
-`pip install regula-ai[yaml,ast]` would unlock more features.
+`pipx install "regula-ai[yaml,ast]"` would unlock more features.
 
 ### 3.4 Synthetic precision + recall — 100 / 100
 
@@ -260,7 +260,7 @@ on their machine.
 
 - **Zero runtime dependencies.** Regula's core only uses Python's
   standard library. Optional features (YAML parsing, AST analysis, PDF
-  export) are explicit opt-ins via `pip install regula-ai[yaml,ast,pdf]`.
+  export) are explicit opt-ins via `pipx install "regula-ai[yaml,ast,pdf]"`.
   Verify with `pip show regula-ai`.
 - **Deterministic output.** Same input + same policy file produces
   byte-identical JSON output. Verify by running `regula check --format
@@ -354,7 +354,7 @@ The questions a 2026 procurement team will ask, with copy-pasteable
 answers.
 
 **Q: What is the deployment model?**
-A: Local-only command-line tool. Installs via `pip install regula-ai`.
+A: Local-only command-line tool. Installs via `pipx install regula-ai`.
 No accounts, no servers, no SaaS tier exists.
 
 **Q: Where is data stored?**

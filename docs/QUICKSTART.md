@@ -11,7 +11,7 @@ Regula tells you where you stand in 10 seconds.
 ## Step 1: Find Out Your Risk Tier
 
 ```bash
-pip install regula-ai
+pipx install regula-ai
 regula check .
 ```
 
@@ -139,7 +139,7 @@ Findings are indicators for human review, not legal determinations.
 ## Install
 
 ```bash
-pip install regula-ai    # PyPI
+pipx install regula-ai    # PyPI
 regula check .           # scan current directory
 regula self-test         # verify installation
 regula doctor            # check dependencies
