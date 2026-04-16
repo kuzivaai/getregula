@@ -61,9 +61,17 @@ def test_sbom():
     assert rc == 0
 
 
-def test_handoff_garak():
-    rc, out, err = run_cli("handoff", "garak", "tests/fixtures/sample_high_risk")
+def test_handoff_garak(tmp_path):
+    """regula handoff garak — write to tmp --output so we do not mutate
+    the committed fixture directory. `regula handoff` defaults to
+    writing inside the project dir; tests must override."""
+    out = tmp_path / "garak.regula.yaml"
+    rc, stdout, stderr = run_cli(
+        "handoff", "garak", "tests/fixtures/sample_high_risk",
+        "--output", str(out),
+    )
     assert rc == 0
+    assert out.exists()
 
 
 def test_regwatch():
@@ -176,3 +184,50 @@ def test_github_annotations_suppressed_without_ci_flag():
         ln.startswith("::warning") or ln.startswith("::error") or ln.startswith("::notice")
         for ln in stdout.splitlines()
     ), f"expected zero workflow commands, got stdout={stdout}"
+
+
+def test_generator_commands_do_not_mutate_tracked_files(tmp_path):
+    """Running the two generator commands that historically polluted the
+    repo tree (`regula docs` and `regula handoff`) must not leave any
+    modified files behind when given an explicit --output tmpdir.
+
+    Regression for the bug where both commands defaulted to writing
+    inside the current working directory / project directory, so test
+    runs repeatedly mutated committed artifacts (timestamp diffs on
+    docs/sample_high_risk_annex_iv.md and tests/fixtures/.../garak.regula.yaml).
+    """
+    import pathlib
+    repo = pathlib.Path(__file__).resolve().parents[1]
+
+    # Snapshot tracked-file state.
+    def porcelain():
+        r = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=str(repo), capture_output=True, text=True, timeout=15,
+        )
+        return r.stdout
+
+    before = porcelain()
+
+    # regula docs — explicit tmp output.
+    docs_out = tmp_path / "docs_out"
+    rc1, _, err1 = run_cli(
+        "docs", "--project", "tests/fixtures/sample_high_risk",
+        "--output", str(docs_out),
+    )
+    assert rc1 == 0, f"docs failed: {err1[:200]}"
+
+    # regula handoff garak — explicit tmp output.
+    handoff_out = tmp_path / "garak.regula.yaml"
+    rc2, _, err2 = run_cli(
+        "handoff", "garak", "tests/fixtures/sample_high_risk",
+        "--output", str(handoff_out),
+    )
+    assert rc2 == 0, f"handoff failed: {err2[:200]}"
+
+    after = porcelain()
+    assert after == before, (
+        f"generator commands mutated tracked files in the repo tree.\n"
+        f"before:\n{before}\n"
+        f"after:\n{after}"
+    )
