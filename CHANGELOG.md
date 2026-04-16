@@ -16,7 +16,7 @@ This project uses [Semantic Versioning](https://semver.org/).
 First PyPI release since 1.6.0 (9 April 2026). 1.6.1 was tagged locally
 but never published to PyPI, so users installing via `pipx install
 regula-ai` were stuck on 1.6.0 through 122 subsequent commits. This
-release bundles everything merged since: the "public-launch readiness"
+release bundles everything merged since: the distribution-readiness
 work (two new CLI commands — `handoff` and `regwatch`, open regulatory
 data assets, integrity tooling), plus the subsequent fixes — repo IA
 restructure (`site/`, `docs/`, `configs/`), runnable examples directory,
