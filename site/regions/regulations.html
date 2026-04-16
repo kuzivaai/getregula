@@ -154,7 +154,9 @@
             gap: 6px;
             margin-top: auto;
         }
-        .reg-cta.disabled { color: var(--text-faint); pointer-events: none; }
+        /* var(--text-faint) on .upcoming card bg fell under WCAG AA 4.5:1.
+           Using var(--text-dim) clears 5:1 on the card's #0c0c1a bg. */
+        .reg-cta.disabled { color: var(--text-dim); pointer-events: none; }
         .hub-note {
             max-width: 880px;
             margin: 0 auto;

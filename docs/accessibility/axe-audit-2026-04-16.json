@@ -1,0 +1,100 @@
+[
+  {
+    "page": "/",
+    "violations": 0,
+    "violationRules": [],
+    "passes": 30,
+    "incomplete": 1
+  },
+  {
+    "page": "/locales/de.html",
+    "violations": 0,
+    "violationRules": [],
+    "passes": 26,
+    "incomplete": 2
+  },
+  {
+    "page": "/locales/pt-br.html",
+    "violations": 0,
+    "violationRules": [],
+    "passes": 26,
+    "incomplete": 2
+  },
+  {
+    "page": "/regions/uae.html",
+    "violations": 0,
+    "violationRules": [],
+    "passes": 22,
+    "incomplete": 1
+  },
+  {
+    "page": "/regions/regulations.html",
+    "violations": 0,
+    "violationRules": [],
+    "passes": 18,
+    "incomplete": 0
+  },
+  {
+    "page": "/regions/colorado-ai-regulation.html",
+    "violations": 0,
+    "violationRules": [],
+    "passes": 21,
+    "incomplete": 2
+  },
+  {
+    "page": "/regions/south-africa-ai-policy.html",
+    "violations": 0,
+    "violationRules": [],
+    "passes": 21,
+    "incomplete": 2
+  },
+  {
+    "page": "/regions/south-korea-ai-regulation.html",
+    "violations": 0,
+    "violationRules": [],
+    "passes": 21,
+    "incomplete": 2
+  },
+  {
+    "page": "/regions/uk-ai-regulation.html",
+    "violations": 0,
+    "violationRules": [],
+    "passes": 21,
+    "incomplete": 2
+  },
+  {
+    "page": "/blog/writing.html",
+    "violations": 0,
+    "violationRules": [],
+    "passes": 16,
+    "incomplete": 0
+  },
+  {
+    "page": "/blog/blog-does-ai-act-apply.html",
+    "violations": 0,
+    "violationRules": [],
+    "passes": 20,
+    "incomplete": 1
+  },
+  {
+    "page": "/blog/blog-omnibus-delay.html",
+    "violations": 0,
+    "violationRules": [],
+    "passes": 21,
+    "incomplete": 0
+  },
+  {
+    "page": "/blog/blog-risk-tiers-in-code.html",
+    "violations": 0,
+    "violationRules": [],
+    "passes": 19,
+    "incomplete": 0
+  },
+  {
+    "page": "/404.html",
+    "violations": 0,
+    "violationRules": [],
+    "passes": 14,
+    "incomplete": 0
+  }
+]
