@@ -18,6 +18,7 @@
 - [Key commands](#key-commands)
 - [Who is this for?](#who-is-this-for)
 - [What Regula is (and isn't)](#what-regula-is-and-isnt)
+- [Bias evaluation — methodology and ethics](#bias-evaluation--methodology-and-ethics)
 - [Important limitations](#important-limitations)
 - [Verified numbers](#verified-numbers)
 - [Contributing](#contributing)
@@ -172,6 +173,35 @@ Regula has 53 commands in total. Run `regula --help-all` for the full list, or s
 - Legal advice (consult qualified legal counsel for compliance decisions)
 
 Regula helps development teams understand their EU AI Act exposure early. It does not replace the organisational, procedural, and legal work required for full compliance. For a detailed account of what falls outside Regula's scope, see [`docs/what-regula-does-not-do.md`](docs/what-regula-does-not-do.md).
+
+## Bias evaluation — methodology and ethics
+
+`regula bias` runs two social-bias benchmarks against a locally-hosted
+language model (Ollama, `llama3.2`/`mistral`/`qwen` variants supported)
+as evidence for EU AI Act Article 10 data-governance documentation.
+
+| Benchmark | Paper | Method | What it measures |
+|---|---|---|---|
+| CrowS-Pairs | Nangia et al., 2020 | Log-probability difference between stereotypical and anti-stereotypical sentence pairs | Intrinsic bias in masked/causal LM output |
+| BBQ | Parrish et al., 2022 | Question-answering on ambiguous-context prompts | Bias surfacing in downstream QA behaviour |
+
+Both include Wilson confidence intervals for small-sample reliability and
+bootstrap CIs for distribution estimates. Full methodology lives in
+[`scripts/bias_eval.py`](scripts/bias_eval.py) and
+[`docs/benchmarks/PRECISION_RECALL_2026_04.md`](docs/benchmarks/PRECISION_RECALL_2026_04.md).
+
+**Ethics statement.** CrowS-Pairs and BBQ stereotype pairs are used
+**solely for scientific evaluation** of model behaviour under controlled
+conditions. Regula does **not display individual stereotype pairs** in
+terminal output or reports — only aggregated scores, confidence
+intervals, and benchmark-level verdicts. The pairs are distributed under
+the dataset's own licence (CC BY-SA 4.0 for CrowS-Pairs) and are not
+redistributed or modified by Regula. Opinions encoded in the stereotype
+pairs do not reflect the views of the maintainer, Regula contributors,
+or any user running the tool; their presence is instrumental, not
+endorsing. `regula bias` is a development-time starting point for bias
+documentation, not a production fairness monitor — see "What Regula is
+(and isn't)" above.
 
 ## Important limitations
 
