@@ -71,6 +71,14 @@ For a more detailed scan:
 regula check .
 ```
 
+Try it against a known high-risk fixture:
+
+```bash
+regula check examples/cv-screening-app
+```
+
+See [`examples/`](examples/) for runnable reference projects covering each EU AI Act risk tier.
+
 ### CI/CD
 
 ```yaml
