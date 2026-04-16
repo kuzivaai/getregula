@@ -10,8 +10,8 @@ format, contributors learning the command surface, or anyone who wants to
 see what a full Article 43 evidence pack looks like before running Regula
 on their own project.
 
-Estimated time: **10 minutes, start to finish**. No cloud services, no API
-keys, no registrations.
+Allow around ten minutes end-to-end. No cloud services, no API keys,
+no registrations — every command below runs locally.
 
 ---
 
@@ -98,9 +98,9 @@ TASK-003 [HIGH] Article 14 — Human Oversight
 …
 ```
 
-**What to notice:** Regula converted the scan findings into a prioritised,
-effort-estimated task list aligned to specific Articles (9–15). Use this
-to populate your own JIRA / Linear backlog.
+**What to notice:** Regula converted the scan findings into a prioritised
+remediation list mapped to EU AI Act Articles 9 through 15. Use this to
+populate your own JIRA / Linear backlog.
 
 ---
 
@@ -392,7 +392,7 @@ Every Regula artefact, end to end, against one project:
 | Scan finding | (terminal, Step 1) |
 | Remediation plan | (terminal, Step 2) |
 | Gap report | (terminal, Step 3) |
-| Evidence pack (26 files) | `/tmp/regula-demo/conformity-evidence-…/` |
+| Evidence pack — 26 files mapped to Articles 9–15 + supply chain + DoC | `/tmp/regula-demo/conformity-evidence-…/` |
 | Annex IV draft | `…/04-technical-documentation-art11/annex-iv-draft.md` |
 | Declaration of Conformity scaffold | `…/10-declaration-of-conformity/declaration-template.md` |
 | AI-BOM (CycloneDX) | `…/08-accuracy-robustness-art15/sbom.json` |

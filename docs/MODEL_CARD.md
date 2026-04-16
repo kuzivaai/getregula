@@ -9,13 +9,13 @@ Regula's detection engine is a static analysis system that classifies source cod
 | Field | Value |
 |---|---|
 | Name | Regula Detection Engine |
-| Version | 1.6.1 |
+| Version | 1.6.2 (this doc generated 2026-04-16) |
 | Type | Rule-based static analysis (regex + AST pattern matching) |
 | Training data | None — not a machine learning model |
-| Detection patterns | 330 (historical bucket); 502 (grand total inclusive) |
+| Detection patterns | 403 tiered risk regexes across 52 categories (8 prohibited + 15 high-risk + 4 limited-risk + 17 AI security + 2 bias + 6 governance observations) + 17 GPAI training regexes. Historical-bucket total (tier + architecture + credential + oversight): 446. Grand total (inclusive of AI_INDICATORS): 659. Regenerate with `python3 scripts/site_facts.py`. |
 | Languages supported | Python, JavaScript, TypeScript, Java, Go, Rust, C, C++ |
-| Compliance frameworks | 12 (EU AI Act + 11 cross-mapped frameworks) |
-| Dependencies | Zero (Python 3.10+ stdlib only) |
+| Compliance frameworks | 17 (EU AI Act + 16 cross-mapped frameworks) |
+| Dependencies | Zero runtime (Python 3.10+ stdlib only); `regula[signing]` extra adds `cryptography` + `asn1crypto` for optional Ed25519 + RFC 3161 manifest signing. |
 
 ---
 
@@ -137,7 +137,7 @@ Each finding was manually classified as true positive or false positive by the d
 
 ### Continuous validation
 
-- 751 pytest tests
+- 1000 pytest-collected tests (893 `def test_*` functions; delta is pytest parametrisation)
 - 11 CLI integration tests
 - 6 self-test assertions (`regula self-test`)
 - 10 health checks (`regula doctor`)

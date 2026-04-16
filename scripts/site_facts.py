@@ -49,10 +49,20 @@ def _load_module(path: Path, name: str):
 
 
 def count_commands() -> int:
-    cli_path = REPO / "scripts" / "cli.py"
-    text = cli_path.read_text(encoding="utf-8")
-    # Source of truth: cmd_ function definitions
-    return len(re.findall(r"^def cmd_\w+", text, re.MULTILINE))
+    """Count `cmd_*` function definitions across every `scripts/cli*.py` module.
+
+    Commands were refactored out of `scripts/cli.py` in the 1.6 series into
+    topic modules (`cli_scan.py`, `cli_compliance.py`, `cli_governance.py`,
+    `cli_report.py`, `cli_util.py`). Counting only `cli.py` returns 0 — this
+    used to silently produce a wrong number on the canonical landing-page
+    facts file. Sum across all `cli*.py`.
+    """
+    scripts_dir = REPO / "scripts"
+    total = 0
+    for path in sorted(scripts_dir.glob("cli*.py")):
+        text = path.read_text(encoding="utf-8")
+        total += len(re.findall(r"^def cmd_\w+", text, re.MULTILINE))
+    return total
 
 
 def count_patterns() -> dict:
@@ -78,7 +88,7 @@ def count_patterns() -> dict:
     if rp is not None:
         tier_vars = [
             "PROHIBITED_PATTERNS", "HIGH_RISK_PATTERNS", "LIMITED_RISK_PATTERNS",
-            "AI_SECURITY_PATTERNS", "BIAS_RISK_PATTERNS",
+            "AI_SECURITY_PATTERNS", "BIAS_RISK_PATTERNS", "GOVERNANCE_OBSERVATIONS",
         ]
         for v in tier_vars:
             d = getattr(rp, v, None)
@@ -182,7 +192,7 @@ def compute() -> dict:
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "source_of_truth": {
-            "commands": "scripts/cli.py (grep '^def cmd_')",
+            "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
             "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
             "frameworks": "references/framework_crosswalk.yaml (unique keys + EU AI Act)",
             "languages": "scripts/ast_engine.py + README",

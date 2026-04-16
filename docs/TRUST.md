@@ -58,7 +58,7 @@ your lawyer's job, not Regula's.
 | Cross-file Article 14 human-oversight detection (Python) | `regula oversight` |
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 960 internal tests under pytest, 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
+| 1000 internal tests under pytest, 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -75,13 +75,13 @@ your lawyer's job, not Regula's.
 > Every number Regula publishes can be reproduced by anyone with a checkout
 > of the repo. The commands below run in under 30 seconds total on a laptop.
 
-### 3.1 Internal test suite — 960 / 960 green
+### 3.1 Internal test suite — 1000 / 1000 green
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ -q
-# Expected: 960 passed (~12 minutes on a laptop)
+# Expected: 1000 passed (~12 minutes on a laptop — verified 2026-04-16)
 ```
 
 Regula also ships a legacy auto-discovery runner for the classification
@@ -107,8 +107,8 @@ detection, framework mapping, limited-risk classification.
 
 ```bash
 python3 -m scripts.cli doctor
-# Expected (inside a git repo): 8 passed, 3 info, 0 warn
-# Expected (outside a git repo): 8 passed, 3 info, 1 warn
+# Expected (inside a git repo): 9 passed, 2 info, 0 warn
+# Expected (outside a git repo): 9 passed, 2 info, 1 warn
 #   The 1 warn is ".gitignore not found" — Regula recommends
 #   .gitignore-ing audit artefacts. Add a .gitignore to silence it.
 ```

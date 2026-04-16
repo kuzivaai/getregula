@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-960%20passing-brightgreen.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-1000%20passing-brightgreen.svg)](#verified-numbers)
 [![WCAG 2.2 AA](https://img.shields.io/badge/WCAG%202.2-AA-success.svg)](docs/accessibility/README.md)
 
 ---
@@ -212,7 +212,7 @@ documentation, not a production fairness monitor — see "What Regula is
 Regula performs **pattern-based risk indication**, not legal risk classification.
 
 - The EU AI Act classifies risk based on intended purpose and deployment context (Article 6), not code patterns. Regula's findings are indicators that warrant human review.
-- **False positives will occur.** The self-benchmark on five labelled open-source projects (257 hand-labelled findings) measured **15.2% overall precision**. The minimal-risk tier accounts for 94% of findings on general-purpose libraries and is the noisiest. Full methodology and reproduction steps: [`benchmarks/README.md`](benchmarks/README.md).
+- **False positives will occur.** The self-benchmark on five labelled open-source projects (257 hand-labelled findings, all at INFO tier or below) measured **15.2% overall precision at INFO**. **0 BLOCK-tier findings fired** across all 257 labelled findings, so BLOCK/WARN-tier precision on production-relevant code cannot yet be estimated from this benchmark. The minimal-risk tier accounts for 94% of findings on general-purpose libraries and is the noisiest. Full methodology, reproduction steps, and limitations: [`benchmarks/README.md`](benchmarks/README.md).
 - **False negatives will occur.** Novel risk patterns not in the database will be missed.
 - Article 5 prohibitions have conditions and exceptions that require human judgment.
 - The audit trail is self-attesting (locally verifiable, not externally witnessed).
@@ -226,7 +226,7 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | Risk detection patterns (regexes) | 403 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Compliance frameworks mapped | 17 |
-| Tests (all passing) | 960 |
+| Tests (pytest --collect-only, all passing) | 1000 |
 | Required production dependencies | 0 |
 
 For buyer-facing trust evidence (every number above paired with a reproducible command, plus precision/recall benchmark, security posture, and audit trail), see [`docs/TRUST.md`](docs/TRUST.md).
