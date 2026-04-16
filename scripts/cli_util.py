@@ -310,6 +310,21 @@ def cmd_feed(args) -> None:
 
 def cmd_bias(args) -> None:
     """Evaluate model stereotype bias using multiple benchmarks."""
+    # Pre-flight: check Ollama is available
+    import urllib.request
+    try:
+        urllib.request.urlopen(f"{args.endpoint}/api/tags", timeout=5)
+    except Exception:
+        print("Error: Cannot connect to Ollama at " + args.endpoint, file=sys.stderr)
+        print("", file=sys.stderr)
+        print("The bias command requires a local Ollama instance with a model loaded.", file=sys.stderr)
+        print("Setup steps:", file=sys.stderr)
+        print("  1. Install Ollama: https://ollama.ai/download", file=sys.stderr)
+        print("  2. Pull a model: ollama pull llama3", file=sys.stderr)
+        print("  3. Start Ollama: ollama serve", file=sys.stderr)
+        print("  4. Run: regula bias --model llama3", file=sys.stderr)
+        sys.exit(2)
+
     from cli import json_output
     from bias_eval import load_crowspairs_sample, evaluate_with_ollama
     from bias_bbq import load_bbq_sample, evaluate_bbq_full

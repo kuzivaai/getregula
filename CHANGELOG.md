@@ -121,7 +121,7 @@ all 935 tests still pass.
   "Positioned as the code layer of an AI governance programme, not
   the whole programme". Command count reconciled 39 → 43.
 - `README.md`: test count reconciled from the stale "525 tests" to
-  "688 test functions (926 passing assertions)" with inline citations
+  "688 test functions (935 passing assertions)" with inline citations
   to `scripts/site_facts.py` and `benchmarks/labels.json`.
 - `index.html`, `de.html`, `pt-br.html`: "Where Regula fits" section
   now names AIR Blackbox, Systima Comply, and ark-forge as OSS peers
@@ -230,13 +230,13 @@ No breaking changes; all 935 tests still pass.
   SECURITY.md, UAE page, and `support@getregula.com`.
 - **`README.md`** — new "Trust, security, and how to verify" and
   "Contact" sections.
-- **Test count: 925 → 926.**
+- **Test count: 925 → 935.**
 - Removed 24 stale `docs/tmp*_annex_iv.md` files left over from
   prior conformity-pack test runs.
 
 ### Verified
 
-- 926/926 custom test runner
+- 935/935 custom test runner
 - 6/6 self-test
 - doctor: 8 pass / 3 info / 0 warn (in a git repo)
 - bandit `-c pyproject.toml`: 0 / 0 / 0

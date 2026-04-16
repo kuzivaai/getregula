@@ -82,3 +82,13 @@ downloads/
 
 # Node (global)
 node_modules/
+credentials.json
+token.json
+
+# Generated reports (not committed)
+AUDIT_REPORT.md
+simplified-annex-iv-*.md
+docs/getregula_annex_iv.md
+docs/getregula_model_card.md
+docs/getregula_qms.md
+scripts/gsc_fetch.py

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Regula — EU-KI-Gesetz Konformitätsprüfung für Code</title>
     <meta name="description" content="Open-Source-Analyse, die Ihren KI-Code gegen 403 EU-KI-Gesetz-Risikomuster in 8 Sprachen prüft. Null Abhängigkeiten. Null Konto.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
     <meta property="og:title" content="Regula — EU-KI-Gesetz Konformitätsprüfung für Code">
     <meta property="og:description" content="Kostenloser Open-Source-Scanner, der Ihnen zeigt, in welche EU-KI-Gesetz-Risikostufe Sie fallen, warum, und was zu tun ist.">
     <meta property="og:type" content="website">
@@ -96,7 +97,7 @@
                 "name": "Ist Regula kostenlos?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Ja. Regula ist Open Source unter der MIT-Lizenz. Kein Konto, kein API-Schlüssel, kein Verkaufsgespräch. Installieren Sie mit pip install regula-ai und führen Sie es lokal auf Ihrer Codebasis aus. Die vollständige CLI, alle 52 Befehle, alle 403 Risikomuster und alle 17 Compliance-Framework-Zuordnungen sind kostenlos."
+                    "text": "Ja. Regula ist Open Source unter der MIT-Lizenz. Kein Konto, kein API-Schlüssel, kein Verkaufsgespräch. Installieren Sie mit pip install regula-ai und führen Sie es lokal auf Ihrer Codebasis aus. Die vollständige CLI, alle 53 Befehle, alle 403 Risikomuster und alle 17 Compliance-Framework-Zuordnungen sind kostenlos."
                 }
             },
             {
@@ -216,8 +217,8 @@
             <div class="step">
                 <div class="step-n">02 &mdash; Prüfen</div>
                 <h3>Auf Ihren Code richten</h3>
-                <p>Erkennt KI-Bibliotheksimporte, Modelldateien, API-Muster. Klassifiziert nach EU-KI-Gesetz-Risikostufen mit Konfidenzwertung.</p>
-                <code>regula check .</code>
+                <p>Erkennt KI-Bibliotheksimporte, Modelldateien, API-Muster. Klassifiziert nach EU-KI-Gesetz-Risikostufen mit Konfidenzwertung. <code>regula</code> scannt automatisch und zeigt Konformitätsbewertung + nächste Schritte.</p>
+                <code>regula</code>
             </div>
             <div class="step">
                 <div class="step-n">03 &mdash; Überprüfen</div>
@@ -286,7 +287,7 @@
                 <p>Prüft auf Prompt-Injection, unsicheres Laden von Modellen, unvalidierte KI-Ausgabe, hartcodierte Schlüssel und andere KI-spezifische Schwachstellen.</p>
             </div>
         </div>
-        <div style="text-align:center;margin-top:48px;"><button class="cta-pill" onclick="copyPill(this, 'pip install regula-ai &amp;&amp; regula quickstart')"><span>&#9654;</span> Kostenlos in 30 Sekunden testen</button></div>
+        <div style="text-align:center;margin-top:48px;"><button class="cta-pill" onclick="copyPill(this, 'pip install regula-ai &amp;&amp; regula')"><span>&#9654;</span> Kostenlos in 30 Sekunden testen</button></div>
     </div>
 
     <div class="sec" style="text-align:center;padding-top:40px;">
@@ -301,11 +302,12 @@
     <div class="sep"></div>
 
     <div class="sec">
-        <h2 class="sec-head"><span class="hl">52</span> CLI-Befehle</h2>
+        <h2 class="sec-head"><span class="hl">53</span> CLI-Befehle</h2>
         <p class="sec-sub">Alles aus einer einzigen Binärdatei.</p>
         <div class="cmds">
             <div class="cm"><code>regula assess</code> <span>Einige Ja/Nein-Fragen &mdash; Risikostufe ermitteln</span></div>
             <div class="cm"><code>regula check .</code> <span>Risikoindikatoren scannen</span></div>
+            <div class="cm"><code>regula comply</code> <span>EU-KI-Gesetz-Pflichtencheckliste mit Status pro Artikel</span></div>
             <div class="cm"><code>regula gap --project .</code> <span>Konformitätslückenanalyse für Artikel 9&ndash;15</span></div>
             <div class="cm"><code>regula register .</code> <span>Annex-VIII-Registrierungspaket (Art. 49) &mdash; neu in v1.6.0</span></div>
             <div class="cm"><code>regula conform .</code> <span>Artikel-43-Konformitätsbewertung &mdash; 26 Dateien, artikelweise zugeordnet</span></div>
@@ -381,8 +383,8 @@
         <p class="sec-sub">Regulas eigene Codebasis wird bei jedem Commit gescannt. Hier ist, was passiert.</p>
         <div class="art-grid">
             <div class="card-base art-card">
-                <h4>74 von 75 Quelldateien unterdrückt</h4>
-                <p>98,7% von Regulas eigenen Python-Dateien erfordern <code># regula-ignore</code>-Kommentare. Ein Konformitätstool, das verbotene Praktiken bespricht, muss das Vokabular verbotener Praktiken enthalten. Das ist strukturell, kein Fehler.</p>
+                <h4>75 von 84 Quelldateien unterdrückt</h4>
+                <p>89,3% von Regulas eigenen Python-Dateien erfordern <code># regula-ignore</code>-Kommentare. Ein Konformitätstool, das verbotene Praktiken bespricht, muss das Vokabular verbotener Praktiken enthalten. Das ist strukturell, kein Fehler.</p>
             </div>
             <div class="card-base art-card">
                 <h4>1 VERBOTEN-Befund</h4>
@@ -418,6 +420,31 @@
             </div>
         </div>
         <p class="sec-sub" style="margin-top:24px;font-size:13px;max-width:820px;margin-left:auto;margin-right:auto;">Es gibt weitere Open-Source-Scanner f&uuml;r das EU-KI-Gesetz &mdash; insbesondere <a href="https://airblackbox.ai/" rel="noopener">AIR Blackbox</a> (Python/pip, Apache 2.0, lokal, 39 Pr&uuml;fungen &uuml;ber Artikel 9/10/11/12/14/15), <a href="https://www.npmjs.com/package/@systima/comply" rel="noopener">Systima Comply</a> (TypeScript, AST-basiert) und <a href="https://github.com/ark-forge/mcp-eu-ai-act" rel="noopener">ark-forge mcp-eu-ai-act</a> (Python, hybrid). W&auml;hlen Sie das Tool, dessen Sprachabdeckung und Kompromisse zu Ihrem Stack passen. Regulas Nische ist stdlib-only, null Produktionsabh&auml;ngigkeiten und 8-Sprachen-Breite.</p>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- BLOG -->
+    <div class="sec reveal">
+        <h2 class="sec-head">Aktuelles aus dem Blog</h2>
+        <p class="sec-sub">Analysen zu KI-Regulierung, Compliance-Mustern und Governance-Umsetzung.</p>
+        <div class="art-grid" >
+            <a href="blog-omnibus-delay.html" class="card-base art-card">
+                <div class="tag tag-blue">Regulation</div>
+                <h4>The EU AI Act Omnibus Delay</h4>
+                <p>Current deadline status and what developers should do while trilogue continues.</p>
+            </a>
+            <a href="blog-does-ai-act-apply.html" class="card-base art-card">
+                <div class="tag tag-blue">Applicability</div>
+                <h4>Does the EU AI Act Apply to Your AI App?</h4>
+                <p>Five questions to check whether your product falls under EU AI Act scope.</p>
+            </a>
+            <a href="blog-risk-tiers-in-code.html" class="card-base art-card">
+                <div class="tag tag-purple">Code</div>
+                <h4>EU AI Act Risk Tiers in Actual Code</h4>
+                <p>What prohibited, high-risk, and limited-risk indicators look like in real code.</p>
+            </a>
+        </div>
     </div>
 
     </main>

@@ -495,10 +495,10 @@ _AI_SECURITY_REMEDIATIONS = {
         ),
     },
     "no_error_handling_ai_call": {
-        "summary": "Add error handling around AI API calls",
+        "summary": "Verify error handling around AI API calls",
         "article": "Article 15 (Cybersecurity) + OWASP LLM06",
         "fix_code": (
-            "# Suggested fix: Wrap AI API calls in error handling\n"
+            "# Suggested pattern: Wrap AI API calls in error handling\n"
             "import logging\n"
             "\n"
             "logger = logging.getLogger(__name__)\n"
@@ -519,8 +519,9 @@ _AI_SECURITY_REMEDIATIONS = {
         ),
         "fix_command": "",
         "explanation": (
-            "Unhandled AI API errors can cause cascading failures and expose "
-            "internal state. Add try/except with logging. OWASP LLM06:2025."
+            "Regula detects AI API calls but cannot verify surrounding error handling "
+            "via regex alone. Check that this call is wrapped in try/except with "
+            "handling for rate limits, timeouts, and malformed responses. OWASP LLM06:2025."
         ),
     },
     "exposed_api_key_env": {

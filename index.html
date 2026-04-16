@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Regula — EU AI Act compliance tool for code | Open-source CLI</title>
-    <meta name="description" content="Open-source EU AI Act compliance CLI. Scans your code, classifies your AI risk tier, and tells you what to fix. 403 patterns, 8 languages, zero dependencies. Free.">
+    <meta name="description" content="Open-source EU AI Act compliance CLI. Scans your code, classifies AI risk tier, and tells you what to fix. 403 patterns, 8 languages. Free.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
     <meta property="og:title" content="Regula — EU AI Act compliance tool for code | Open-source CLI">
     <meta property="og:description" content="Free, open-source scanner that tells you which EU AI Act tier you're in, why, and what to do about it. 403 risk patterns, 8 languages, 17 compliance frameworks, zero dependencies.">
     <meta property="og:type" content="website">
@@ -99,7 +100,7 @@
                 "name": "Is Regula free?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes. Regula is open-source under the MIT licence. No account, no API key, no sales call. Install with pip install regula-ai and run it locally on your codebase. The full CLI, all 52 commands (including `regula handoff` for Garak/Giskard/Promptfoo scoping and `regula regwatch` for delta-log drift warnings), all 403 risk patterns, and all 17 compliance framework mappings are free."
+                    "text": "Yes. Regula is open-source under the MIT licence. No account, no API key, no sales call. Install with pip install regula-ai and run it locally on your codebase. The full CLI, all 53 commands (including `regula handoff` for Garak/Giskard/Promptfoo scoping and `regula regwatch` for delta-log drift warnings), all 403 risk patterns, and all 17 compliance framework mappings are free."
                 }
             },
             {
@@ -181,6 +182,7 @@
       window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
       plausible.init()
     </script>
+    <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 </head>
 <body>
 
@@ -210,7 +212,7 @@
             <h1>Is your AI app <span class="hl">legal</span> in Europe?</h1>
             <p class="sub">One command tells you which EU AI Act risk tier your code is in, why, and what to fix &mdash; <strong>in 30 seconds, free, no account.</strong></p>
 
-            <button class="cta-pill" id="install-pill" onclick="copyPill(this, 'pip install regula-ai \u0026\u0026 regula quickstart')">
+            <button class="cta-pill" id="install-pill" onclick="copyPill(this, 'pip install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
                 Try free in 30 seconds
             </button>
@@ -225,7 +227,7 @@
             <div class="social-proof">
                 <span class="sp-sep">MIT licence</span>
                 <span class="sp-sep">&middot;</span> zero dependencies
-                <span class="sp-sep">&middot;</span> 925 tests &middot; 0 security findings
+                <span class="sp-sep">&middot;</span> <strong style="color:var(--text);">935</strong> tests &middot; <strong style="color:var(--text);">0</strong> security findings
                 <span class="sp-sep">&middot;</span> <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md" style="color:#8888aa;">trust pack</a>
             </div>
             <div class="social-proof" style="margin-top:10px;">
@@ -244,6 +246,7 @@
                 <div class="term-tab active" role="tab" tabindex="0" onclick="switchTab('check', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('check', this)}">check</div>
                 <div class="term-tab" role="tab" tabindex="0" onclick="switchTab('plan', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('plan', this)}">plan</div>
                 <div class="term-tab" role="tab" tabindex="0" onclick="switchTab('gap', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('gap', this)}">gap</div>
+                <div class="term-tab" role="tab" tabindex="0" onclick="switchTab('comply', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('comply', this)}">comply</div>
             </div>
             <div class="term-body">
                 <div class="term-panel active" id="tab-check" role="tabpanel">
@@ -302,6 +305,24 @@ Art. 14 Human oversight    <span class="t-r">&#9608;&#9608;&#9608;</span><span c
 Art. 15 Accuracy           <span class="t-y">&#9608;&#9608;&#9608;&#9608;&#9608;</span><span class="t-m">&#9617;&#9617;&#9617;&#9617;&#9617;</span>  50%  <span class="t-y">WARN</span>
 
 Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
+                </div>
+                <div class="term-panel" id="tab-comply" role="tabpanel">
+                    <pre><span class="t-p">$</span> <span class="t-c">regula comply</span>
+
+<span class="t-h">EU AI Act Compliance Checklist</span>
+  Overall compliance score: 42/100
+
+  <span class="t-r">&times;</span> Article 9   Risk Management              20%  <span class="t-r">NEEDS WORK</span>
+  <span class="t-y">~</span> Article 10  Data Governance              40%  <span class="t-y">PARTIAL</span>
+  <span class="t-y">~</span> Article 11  Technical Documentation      60%  <span class="t-y">PARTIAL</span>
+  <span class="t-g">&#10003;</span> Article 12  Record-Keeping              80%  <span class="t-g">PASS</span>
+  <span class="t-r">&times;</span> Article 13  Transparency                 0%  <span class="t-r">NOT FOUND</span>
+  <span class="t-r">&times;</span> Article 14  Human Oversight             30%  <span class="t-r">NEEDS WORK</span>
+  <span class="t-y">~</span> Article 15  Accuracy &amp; Robustness       50%  <span class="t-y">PARTIAL</span>
+
+  1/7 obligations have strong evidence
+
+Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
                 </div>
             </div>
         </div>
@@ -372,21 +393,21 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
 <div class="sec reveal" id="how">
     <h2 class="sec-head">How it works</h2>
     <p class="sec-sub">Three steps. No account, no API key, no data leaves your machine.</p>
-    <div class="audience-grid">
+    <div class="art-grid">
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Step 1</div>
             <h4>Install</h4>
-            <p><code>pip install regula-ai</code><br>Stdlib-only Python. Nothing else required.</p>
+            <p><code>pip install regula-ai</code><br>Stdlib-only Python. No config needed.</p>
         </div>
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Step 2</div>
             <h4>Scan</h4>
-            <p><code>regula check .</code><br>403 patterns across 8 languages. Takes seconds.</p>
+            <p><code>regula</code><br>Compliance score, findings, and next steps.</p>
         </div>
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Step 3</div>
             <h4>Act</h4>
-            <p><code>regula plan .</code><br>Prioritised fix list with effort estimates and article references.</p>
+            <p><code>regula comply</code><br>Obligation checklist with pass/fail per article.</p>
         </div>
     </div>
 </div>
@@ -467,30 +488,23 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
         </div>
     </div>
     <div style="text-align:center;margin-top:48px;">
-        <button class="cta-pill" onclick="copyPill(this, 'pip install regula-ai &amp;&amp; regula quickstart')">
+        <button class="cta-pill" onclick="copyPill(this, 'pip install regula-ai &amp;&amp; regula')">
             <span>&#9654;</span>
             Try free in 30 seconds
         </button>
     </div>
 </div>
 
-<div class="sec" style="text-align:center;padding-top:40px;">
-    <p style="font-size:14px;color:var(--text-dim);margin-bottom:12px;">Get EU AI Act deadline reminders and major release updates.</p>
-    <form class="notify" action="https://formspree.io/f/xjgppkkn" method="POST" style="max-width:400px;margin:0 auto;">
-        <input type="email" name="email" placeholder="your@email.com" aria-label="Email" required>
-        <button type="submit">Subscribe</button>
-    </form>
-</div>
-
 <div class="sep"></div>
 
 <!-- COMMANDS -->
 <div class="sec reveal" id="commands">
-    <h2 class="sec-head">52 commands</h2>
+    <h2 class="sec-head">53 commands</h2>
     <p class="sec-sub"><code>pip install regula-ai</code>, then run any of these on your project.</p>
     <div class="cmds">
         <div class="cm"><code>regula assess</code> <span>Yes/no questions &mdash; no code needed &mdash; get your tier</span></div>
         <div class="cm"><code>regula check .</code> <span>Scan your codebase against 403 risk patterns</span></div>
+        <div class="cm"><code>regula comply</code> <span>EU AI Act obligation checklist with pass/fail status per article</span></div>
         <div class="cm"><code>regula plan .</code> <span>Prioritised to-do list with effort estimates</span></div>
         <div class="cm"><code>regula gap .</code> <span>Per-article compliance gap assessment</span></div>
         <div class="cm"><code>regula docs .</code> <span>Generate Annex IV documentation</span></div>
@@ -539,8 +553,8 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
     <p class="sec-sub">Regula's own codebase is scanned on every commit. Here is what happens.</p>
     <div class="art-grid">
         <div class="card-base art-card">
-            <h4>74 of 75 source files suppressed</h4>
-            <p>98.7% of Regula's own Python files require <code># regula-ignore</code> comments. A compliance tool that discusses prohibited practices must contain the vocabulary of prohibited practices. This is structural, not a bug.</p>
+            <h4>75 of 84 source files suppressed</h4>
+            <p>89.3% of Regula's own Python files require <code># regula-ignore</code> comments. A compliance tool that discusses prohibited practices must contain the vocabulary of prohibited practices. This is structural, not a bug.</p>
         </div>
         <div class="card-base art-card">
             <h4>1 PROHIBITED finding</h4>
@@ -576,7 +590,32 @@ Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
             <p class="price-desc">Static code scanner. Runs on your laptop in one command. Stdlib-only Python core, zero production dependencies, fully offline. <code>pip install regula-ai</code>, scan your project, get a clear answer. MIT licence.</p>
         </div>
     </div>
-    <p class="sec-sub" style="margin-top:24px;font-size:13px;">Other open-source EU AI Act code scanners exist &mdash; notably <a href="https://airblackbox.ai/" rel="noopener">AIR Blackbox</a> (Python/pip, Apache 2.0, local, 39 checks across Articles 9/10/11/12/14/15), <a href="https://www.npmjs.com/package/@systima/comply" rel="noopener">Systima Comply</a> (TypeScript, AST-based), and <a href="https://github.com/ark-forge/mcp-eu-ai-act" rel="noopener">ark-forge mcp-eu-ai-act</a> (Python, hybrid). Pick the one whose language coverage and trade-offs fit your stack. Regula's niche is stdlib-only, zero production dependencies, and 8-language breadth.</p>
+    <p class="competitor-note">Other open-source EU AI Act code scanners exist &mdash; notably <a href="https://airblackbox.ai/" rel="noopener">AIR Blackbox</a> (Python/pip, Apache 2.0, local, 39 checks across Articles 9/10/11/12/14/15), <a href="https://www.npmjs.com/package/@systima/comply" rel="noopener">Systima Comply</a> (TypeScript, AST-based), and <a href="https://github.com/ark-forge/mcp-eu-ai-act" rel="noopener">ark-forge mcp-eu-ai-act</a> (Python, hybrid). Pick the one whose language coverage and trade-offs fit your stack. Regula's niche is stdlib-only, zero production dependencies, and 8-language breadth.</p>
+</div>
+
+<div class="sep"></div>
+
+<!-- BLOG -->
+<div class="sec reveal">
+    <h2 class="sec-head">Latest from the blog</h2>
+    <p class="sec-sub">Analysis of AI regulation, compliance patterns, and governance implementation.</p>
+    <div class="art-grid">
+        <a href="blog-omnibus-delay.html" class="card-base art-card">
+            <div class="tag tag-blue">Regulation</div>
+            <h4>The EU AI Act Omnibus Delay</h4>
+            <p>Current deadline status and what developers should do while trilogue continues.</p>
+        </a>
+        <a href="blog-does-ai-act-apply.html" class="card-base art-card">
+            <div class="tag tag-blue">Applicability</div>
+            <h4>Does the EU AI Act Apply to Your AI App?</h4>
+            <p>Five questions to check whether your product falls under EU AI Act scope.</p>
+        </a>
+        <a href="blog-risk-tiers-in-code.html" class="card-base art-card">
+            <div class="tag tag-purple">Code</div>
+            <h4>EU AI Act Risk Tiers in Actual Code</h4>
+            <p>What prohibited, high-risk, and limited-risk indicators look like in real code.</p>
+        </a>
+    </div>
 </div>
 
 <!-- FINAL CTA -->

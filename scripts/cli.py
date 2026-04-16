@@ -100,6 +100,118 @@ def _current_pattern_version() -> str:
         return f"{VERSION}-patterns"  # Fallback when policy file unavailable
 
 
+# Primary commands shown in default --help (progressive disclosure).
+# All 52 commands remain functional — use --help-all to see them.
+_PRIMARY_COMMANDS = {
+    "check", "comply", "gap", "plan", "init", "quickstart",
+}
+
+
+def _run_bare_scan() -> None:
+    """Run when the user types bare `regula` with no subcommand.
+
+    Performs a quick scan of the current directory and shows:
+    1. Risk findings summary
+    2. Compliance gap score
+    3. Contextual next steps based on what was found
+
+    Designed to deliver value in under 30 seconds (per clig.dev:
+    "suggest the next best step users should take").
+    """
+    import time
+    from report import scan_files
+    from findings_view import partition_findings
+
+    project = str(Path(".").resolve())
+    project_name = Path(project).name
+    start = time.time()
+
+    # Scan
+    findings = scan_files(project)
+    view = partition_findings(findings)
+    active = view["active"]
+    blocks = view["block"]
+    warns = view["warn"]
+    infos = view["info"]
+    prohibited = view["prohibited"]
+
+    # Quick gap score (best-effort, don't fail the whole command)
+    gap_score = None
+    highest_risk = None
+    try:
+        from compliance_check import assess_compliance
+        assessment = assess_compliance(project)
+        gap_score = assessment.get("overall_score", 0)
+        highest_risk = assessment.get("highest_risk", "unknown")
+    except Exception:
+        pass  # gap assessment is best-effort
+
+    elapsed = time.time() - start
+
+    # Stats from scanner
+    stats = getattr(scan_files, "last_stats", {}) or {}
+    total_files = stats.get("files_scanned", len(set(f.get("file", "") for f in findings)))
+
+    # Output
+    print(f"\nRegula — {project_name}")
+    print(f"{'=' * 60}")
+    print(f"  {'Files scanned:':<24}{total_files}")
+    print(f"  {'BLOCK findings:':<24}{len(blocks)}")
+    print(f"  {'WARN findings:':<24}{len(warns)}")
+    print(f"  {'INFO findings:':<24}{len(infos)}")
+    if gap_score is not None:
+        print(f"  {'Compliance score:':<24}{gap_score}/100")
+    if highest_risk and highest_risk != "unknown":
+        print(f"  {'Highest risk tier:':<24}{highest_risk}")
+    print(f"  {'Scan time:':<24}{elapsed:.1f}s")
+
+    # Top findings (up to 3)
+    # Deduplicate by file+description for concise output
+    seen = set()
+    top = []
+    for f in (prohibited + list(blocks) + list(warns)):
+        key = (f.get("file", ""), f.get("description", ""))
+        if key not in seen:
+            seen.add(key)
+            top.append(f)
+        if len(top) >= 3:
+            break
+    if top:
+        print(f"\n  Top findings:")
+        for f in top:
+            score = f.get("confidence_score", 0)
+            tier = f.get("_finding_tier", "info").upper()
+            print(f"    [{tier}] [{score:3d}] {f.get('file', '?')}")
+            desc = f.get("description", "")
+            if desc:
+                print(f"          {desc}")
+
+    print(f"{'=' * 60}")
+
+    # Contextual next steps based on findings
+    steps = []
+    if blocks:
+        steps.append(f"regula check .{'':<30s}Review {len(blocks)} BLOCK finding(s) in detail")
+    if gap_score is not None and gap_score < 50:
+        steps.append(f"regula comply{'':<31s}See your EU AI Act obligation checklist")
+    elif gap_score is not None:
+        steps.append(f"regula comply{'':<31s}Check obligations you still need to address")
+    if warns:
+        steps.append(f"regula plan --project .{'':<22s}Get a prioritised remediation plan")
+    if not blocks and not warns:
+        steps.append(f"regula check --verbose .{'':<20s}Show all findings including INFO tier")
+    steps.append(f"regula gap --project .{'':<22s}Detailed compliance gap assessment")
+    if not any("evidence" in s for s in steps):
+        steps.append(f"regula evidence-pack --project .{'':<13s}Generate auditor-ready evidence")
+
+    print(f"\n  Next steps:")
+    for i, step in enumerate(steps[:5], 1):
+        print(f"    {i}. {step}")
+    print()
+
+    sys.exit(1 if blocks else 0)
+
+
 _SAFE_GIT_REF = re.compile(r'^[a-zA-Z0-9_.~^@{}/:\-]+$')
 
 
@@ -536,18 +648,19 @@ def _print_metrics_text(stats: dict) -> None:
 # ---------------------------------------------------------------------------
 
 _MAIN_EPILOG = """
+Quick start:
+  regula                                  Scan current directory + compliance score
+  regula check .                          Detailed risk scan
+  regula comply                           EU AI Act obligation checklist
+  regula check --ci .                     CI/CD mode (exit codes + SARIF)
+
 Examples:
-  regula check .                          Scan current directory
-  regula check --format sarif .           Output SARIF for CI/CD
+  regula gap --project .                  Compliance gap assessment (Articles 9-15)
   regula plan --project .                 Prioritised remediation plan
   regula evidence-pack --project .        Auditor-ready evidence package
-  regula fix --project .                  Compliance code scaffolds
-  regula disclose --type chatbot          Article 50 transparency notices
   regula docs --project . --qms          Generate Annex IV + QMS scaffolds
-  regula gap --project .                  Compliance gap assessment (Articles 9-15)
-  regula timeline                         EU AI Act enforcement dates
-  regula deps --project .                 AI dependency supply chain analysis
-  regula audit verify                     Verify audit chain integrity
+
+Run 'regula --help-all' to see all commands.
 
 Environment variables (override defaults when CLI flag not provided):
   REGULA_FORMAT       Output format (text, json, sarif)
@@ -569,7 +682,7 @@ from cli_report import (
     cmd_inventory, cmd_badge,
 )
 from cli_compliance import (
-    cmd_compliance, cmd_conform, cmd_gap, cmd_exempt,
+    cmd_comply, cmd_compliance, cmd_conform, cmd_gap, cmd_exempt,
     cmd_gpai_check, cmd_plan, cmd_assess, cmd_baseline,
 )
 from cli_governance import (
@@ -633,6 +746,16 @@ def _build_subparsers(subparsers):
                               "Valid: " + ", ".join(sorted(JURISDICTION_MAP)))
     p_check.set_defaults(func=cmd_check)
 
+    # --- comply ---
+    p_comply = subparsers.add_parser("comply",
+                                     help="EU AI Act obligation checklist with status")
+    p_comply.add_argument("--project", "-p", default=".", help="Project directory")
+    p_comply.add_argument("--article", "-a", help="Deep-dive into a specific article (e.g. 9, 14)")
+    p_comply.add_argument("--all", action="store_true",
+                          help="Show full Articles 9-15 assessment regardless of detected risk tier")
+    p_comply.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_comply.set_defaults(func=cmd_comply)
+
     # --- classify ---
     p_classify = subparsers.add_parser("classify", help="Classify a text input")
     p_classify.add_argument("--input", "-i", help="Text to classify")
@@ -667,7 +790,7 @@ def _build_subparsers(subparsers):
     p_mcp.set_defaults(func=cmd_mcp_server)
 
     # --- bias ---
-    p_bias = subparsers.add_parser("bias", help="Evaluate model bias using CrowS-Pairs + BBQ benchmarks")
+    p_bias = subparsers.add_parser("bias", help="Evaluate model bias using CrowS-Pairs + BBQ benchmarks (requires Ollama)")
     p_bias.add_argument("--model", default="llama3", help="Ollama model name (default: llama3)")
     p_bias.add_argument("--endpoint", default="http://localhost:11434", help="Ollama API endpoint")
     p_bias.add_argument("--sample", type=int, default=100, help="Max items per benchmark (default: 100)")
@@ -709,7 +832,7 @@ def _build_subparsers(subparsers):
     p_status.set_defaults(func=cmd_status)
 
     # --- feed ---
-    p_feed = subparsers.add_parser("feed", help="AI governance news from curated sources")
+    p_feed = subparsers.add_parser("feed", help="[experimental] AI governance news feed from curated regulatory sources")
     p_feed.add_argument("--days", "-d", type=int, default=7, help="Articles from last N days")
     p_feed.add_argument("--format", "-f", choices=["text", "json", "html"], default="text")
     p_feed.add_argument("--output", "-o", help="Output file")
@@ -724,7 +847,7 @@ def _build_subparsers(subparsers):
     p_quest.set_defaults(func=cmd_questionnaire)
 
     # --- session ---
-    p_session = subparsers.add_parser("session", help="Session-level risk aggregation")
+    p_session = subparsers.add_parser("session", help="Aggregate risk findings across a Claude Code session — shows cumulative risk from all tool calls")
     p_session.add_argument("--session", "-s", help="Session ID")
     p_session.add_argument("--hours", type=int, default=8, help="Look back N hours")
     p_session.add_argument("--format", "-f", choices=["text", "json"], default="text")
@@ -969,7 +1092,7 @@ def _build_subparsers(subparsers):
     p_sbom.set_defaults(func=cmd_sbom)
 
     # --- agent ---
-    p_agent = subparsers.add_parser("agent", help="Agentic AI governance monitoring")
+    p_agent = subparsers.add_parser("agent", help="Monitor agentic AI sessions for risk patterns — analyses Claude Code audit logs or MCP config files")
     p_agent.add_argument("--session", "-s", help="Session ID")
     p_agent.add_argument("--hours", type=int, default=8)
     p_agent.add_argument("--format", "-f", choices=["text", "json"], default="text")
@@ -1172,6 +1295,59 @@ def _apply_env_defaults(args):
     return args
 
 
+def _make_progressive_help(parser, subparsers):
+    """Override default help to show only primary commands.
+
+    Progressive disclosure (per clig.dev, Atlassian): show the 6 commands
+    most users need. The full set is available via --help-all.
+    """
+    original_format_usage = parser.format_help
+
+    def progressive_help():
+        # Build a condensed help showing only primary commands
+        lines = []
+        lines.append(f"usage: regula [command] [options]\n")
+        lines.append("AI Governance Risk Indication for Code\n")
+        lines.append("")
+        lines.append("  Running 'regula' with no command scans the current directory.\n")
+        lines.append("")
+        lines.append("Primary commands:")
+        # Primary commands with descriptions
+        primary_descs = [
+            ("check", "Scan files for risk indicators"),
+            ("comply", "EU AI Act obligation checklist with status"),
+            ("gap", "Compliance gap assessment (Articles 9-15)"),
+            ("plan", "Prioritised remediation plan"),
+            ("init", "Guided setup wizard"),
+            ("quickstart", "60-second onboarding (create policy + first scan)"),
+        ]
+        for name, desc in primary_descs:
+            lines.append(f"  {name:<16}{desc}")
+        lines.append("")
+        total = len(subparsers.choices)
+        lines.append(f"  Run 'regula --help-all' to see all {total} commands.")
+        lines.append(f"  Run 'regula <command> --help' for command-specific help.\n")
+        lines.append("")
+        lines.append("Options:")
+        lines.append("  --ci              CI mode: exit 1 on any WARN or BLOCK finding")
+        lines.append("  --lang {en,pt-BR,de}")
+        lines.append("                    Output language (default: en)")
+        lines.append("  --version         Show version and exit")
+        lines.append("  --help-all        Show all commands")
+        lines.append("  -h, --help        Show this help message")
+        lines.append("")
+        # Epilog
+        lines.append("Quick start:")
+        lines.append("  regula                                  Scan + compliance score")
+        lines.append("  regula check .                          Detailed risk scan")
+        lines.append("  regula comply                           Obligation checklist")
+        lines.append("  regula check --ci .                     CI/CD mode")
+        lines.append("")
+        return "\n".join(lines)
+
+    return progressive_help
+
+
 def main(args=None):
     parser = argparse.ArgumentParser(
         prog="regula",
@@ -1186,11 +1362,28 @@ def main(args=None):
     parser.add_argument("--lang", choices=["en", "pt-BR", "de"], default="en",
                         help="Output language (default: en)")
     parser.add_argument("--version", action="version", version=f"regula {VERSION}")
+    parser.add_argument("--help-all", action="store_true",
+                        help="Show all commands (default --help shows primary commands only)")
 
     subparsers = parser.add_subparsers(dest="command")
     _build_subparsers(subparsers)
 
+    # Override default help with progressive version
+    _progressive = _make_progressive_help(parser, subparsers)
+    original_print_help = parser.print_help
+
+    def _print_progressive_help(file=None):
+        print(_progressive(), file=file or sys.stdout)
+
+    parser.print_help = _print_progressive_help
+
     args = parser.parse_args(args)
+
+    # --help-all: show the original argparse help with all 52 commands
+    if getattr(args, 'help_all', False):
+        original_print_help()
+        sys.exit(0)
+
     _apply_env_defaults(args)
 
     # Telemetry: prompt on first run, then init Sentry if consented.
@@ -1214,8 +1407,9 @@ def main(args=None):
         classify_risk._CUSTOM_RULES = load_custom_rules(args.rules)
 
     if not args.command:
-        parser.print_help()
-        sys.exit(2)
+        # Bare `regula`: auto-scan current directory with next steps
+        _run_bare_scan()
+        return
 
     try:
         args.func(args)

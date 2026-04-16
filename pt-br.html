@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Regula — Conformidade com a Lei de IA da UE para Código</title>
     <meta name="description" content="Análise estática open-source que verifica seu código de IA contra 403 padrões de risco da Lei de IA da UE em 8 linguagens. Zero dependências. Sem conta.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
     <meta property="og:title" content="Regula — Verificação de Conformidade com a Lei de IA da UE para Código">
     <meta property="og:description" content="Scanner gratuito e open-source que mostra em qual nível de risco da Lei de IA da UE você está, por quê, e o que fazer.">
     <meta property="og:type" content="website">
@@ -96,7 +97,7 @@
                 "name": "O Regula é gratuito?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Sim. O Regula é open source sob a licença MIT. Sem conta, sem chave de API, sem ligação comercial. Instale com pip install regula-ai e execute localmente no seu código. A CLI completa, todos os 52 comandos, todos os 403 padrões de risco e todos os 17 mapeamentos de frameworks de conformidade são gratuitos."
+                    "text": "Sim. O Regula é open source sob a licença MIT. Sem conta, sem chave de API, sem ligação comercial. Instale com pip install regula-ai e execute localmente no seu código. A CLI completa, todos os 53 comandos, todos os 403 padrões de risco e todos os 17 mapeamentos de frameworks de conformidade são gratuitos."
                 }
             },
             {
@@ -217,8 +218,8 @@
             <div class="step">
                 <div class="step-n">02 &mdash; Verificar</div>
                 <h3>Aponte para seu código</h3>
-                <p>Detecta imports de bibliotecas de IA, arquivos de modelo, padrões de API. Classifica nos níveis de risco da Lei de IA da UE com pontuação de confiança.</p>
-                <code>regula check .</code>
+                <p>Detecta imports de bibliotecas de IA, arquivos de modelo, padrões de API. Classifica nos níveis de risco da Lei de IA da UE com pontuação de confiança. <code>regula</code> escaneia automaticamente e mostra pontuação de conformidade + próximos passos.</p>
+                <code>regula</code>
             </div>
             <div class="step">
                 <div class="step-n">03 &mdash; Revisar</div>
@@ -287,7 +288,7 @@
                 <p>Verifica injeção de prompt, carregamento inseguro de modelo, saída de IA não validada, chaves hardcoded e outras vulnerabilidades específicas de IA.</p>
             </div>
         </div>
-        <div style="text-align:center;margin-top:48px;"><button class="cta-pill" onclick="copyPill(this, 'pip install regula-ai &amp;&amp; regula quickstart')"><span>&#9654;</span> Teste grátis em 30 segundos</button></div>
+        <div style="text-align:center;margin-top:48px;"><button class="cta-pill" onclick="copyPill(this, 'pip install regula-ai &amp;&amp; regula')"><span>&#9654;</span> Teste grátis em 30 segundos</button></div>
     </div>
 
     <div class="sec" style="text-align:center;padding-top:40px;">
@@ -302,11 +303,12 @@
     <div class="sep"></div>
 
     <div class="sec">
-        <h2 class="sec-head"><span class="hl">52</span> comandos CLI</h2>
+        <h2 class="sec-head"><span class="hl">53</span> comandos CLI</h2>
         <p class="sec-sub">Tudo a partir de um único binário.</p>
         <div class="cmds">
             <div class="cm"><code>regula assess</code> <span>Algumas perguntas sim/não &mdash; descubra seu nível de risco</span></div>
             <div class="cm"><code>regula check .</code> <span>Verificar indicadores de risco</span></div>
+            <div class="cm"><code>regula comply</code> <span>Checklist de obrigações da Lei de IA da UE com status por artigo</span></div>
             <div class="cm"><code>regula gap --project .</code> <span>Análise de lacunas de conformidade para Artigos 9&ndash;15</span></div>
             <div class="cm"><code>regula register .</code> <span>Pacote de registro Anexo VIII (Art. 49) &mdash; novo em v1.6.0</span></div>
             <div class="cm"><code>regula conform .</code> <span>Avaliação de conformidade Art. 43 &mdash; 26 arquivos mapeados por artigo</span></div>
@@ -382,8 +384,8 @@
         <p class="sec-sub">O pr&oacute;prio c&oacute;digo do Regula &eacute; escaneado a cada commit. Aqui est&aacute; o que acontece.</p>
         <div class="art-grid">
             <div class="card-base art-card">
-                <h4>74 de 75 arquivos fonte suprimidos</h4>
-                <p>98,7% dos pr&oacute;prios arquivos Python do Regula exigem coment&aacute;rios <code># regula-ignore</code>. Uma ferramenta de conformidade que discute pr&aacute;ticas proibidas deve conter o vocabul&aacute;rio de pr&aacute;ticas proibidas. Isso &eacute; estrutural, n&atilde;o um bug.</p>
+                <h4>75 de 84 arquivos fonte suprimidos</h4>
+                <p>89,3% dos pr&oacute;prios arquivos Python do Regula exigem coment&aacute;rios <code># regula-ignore</code>. Uma ferramenta de conformidade que discute pr&aacute;ticas proibidas deve conter o vocabul&aacute;rio de pr&aacute;ticas proibidas. Isso &eacute; estrutural, n&atilde;o um bug.</p>
             </div>
             <div class="card-base art-card">
                 <h4>1 achado PROIBIDO</h4>
@@ -419,6 +421,31 @@
             </div>
         </div>
         <p class="sec-sub" style="margin-top:24px;font-size:13px;max-width:820px;margin-left:auto;margin-right:auto;">Existem outros scanners open source da Lei de IA da UE &mdash; notadamente <a href="https://airblackbox.ai/" rel="noopener">AIR Blackbox</a> (Python/pip, Apache 2.0, local, 39 verifica&ccedil;&otilde;es nos Artigos 9/10/11/12/14/15), <a href="https://www.npmjs.com/package/@systima/comply" rel="noopener">Systima Comply</a> (TypeScript, baseado em AST) e <a href="https://github.com/ark-forge/mcp-eu-ai-act" rel="noopener">ark-forge mcp-eu-ai-act</a> (Python, h&iacute;brido). Escolha aquele cuja cobertura de linguagens e compromissos se encaixem no seu stack. O nicho do Regula &eacute; stdlib-only, zero depend&ecirc;ncias de produ&ccedil;&atilde;o e amplitude de 8 linguagens.</p>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- BLOG -->
+    <div class="sec reveal">
+        <h2 class="sec-head">Últimas do blog</h2>
+        <p class="sec-sub">Análise de regulamentação de IA, padrões de conformidade e implementação de governança.</p>
+        <div class="art-grid" >
+            <a href="blog-omnibus-delay.html" class="card-base art-card">
+                <div class="tag tag-blue">Regulation</div>
+                <h4>The EU AI Act Omnibus Delay</h4>
+                <p>Current deadline status and what developers should do while trilogue continues.</p>
+            </a>
+            <a href="blog-does-ai-act-apply.html" class="card-base art-card">
+                <div class="tag tag-blue">Applicability</div>
+                <h4>Does the EU AI Act Apply to Your AI App?</h4>
+                <p>Five questions to check whether your product falls under EU AI Act scope.</p>
+            </a>
+            <a href="blog-risk-tiers-in-code.html" class="card-base art-card">
+                <div class="tag tag-purple">Code</div>
+                <h4>EU AI Act Risk Tiers in Actual Code</h4>
+                <p>What prohibited, high-risk, and limited-risk indicators look like in real code.</p>
+            </a>
+        </div>
     </div>
 
     </main>

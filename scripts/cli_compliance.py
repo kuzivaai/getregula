@@ -1,3 +1,4 @@
+# regula-ignore
 """Compliance commands for Regula CLI.
 
 NOTE: Do NOT add 'from cli import ...' at module level.
@@ -10,6 +11,286 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+
+
+def _check_article_50(project_path: str) -> list:
+    """Check Article 50 transparency obligations for limited-risk systems.
+
+    Returns a list of dicts with check name, status, and detail.
+    Based on EU AI Act Article 50(1)-(5), verified against the
+    EC AI Act Service Desk (ai-act-service-desk.ec.europa.eu).
+    """
+    import os
+    import re
+
+    project = Path(project_path).resolve()
+    checks = []
+
+    # Gather all code content
+    code_content = ""
+    doc_content = ""
+    for root, dirs, files in os.walk(project):
+        dirs[:] = [d for d in dirs if d not in {
+            ".git", "__pycache__", "node_modules", ".venv", "venv",
+            ".tox", ".mypy_cache", "dist", "build", ".egg-info",
+        }]
+        for fn in files:
+            fp = Path(root) / fn
+            if fp.suffix.lower() in (".py", ".js", ".ts", ".java", ".go", ".rs"):
+                try:
+                    code_content += fp.read_text(encoding="utf-8", errors="ignore")
+                except (PermissionError, OSError):
+                    pass
+            elif fp.suffix.lower() in (".md", ".txt", ".html", ".yaml", ".yml"):
+                try:
+                    doc_content += fp.read_text(encoding="utf-8", errors="ignore")
+                except (PermissionError, OSError):
+                    pass
+
+    all_content = (code_content + doc_content).lower()
+
+    # Art 50(1): AI interaction disclosure
+    ai_disclosure_patterns = [
+        r"ai.?disclos", r"ai.?system.?notice", r"interacting.?with.?ai",
+        r"powered.?by.?ai", r"ai.?generated", r"this.?is.?an?.?ai",
+        r"automated.?system", r"bot.?disclosure", r"ai.?transparency",
+    ]
+    has_disclosure = any(re.search(p, all_content) for p in ai_disclosure_patterns)
+    checks.append({
+        "article": "50(1)",
+        "title": "AI interaction disclosure",
+        "obligation": "Users must be informed they are interacting with an AI system",
+        "status": "found" if has_disclosure else "not_found",
+    })
+
+    # Art 50(2): Synthetic content marking
+    marking_patterns = [
+        r"content.?mark", r"watermark", r"c2pa", r"content.?credentials",
+        r"synthetic.?label", r"ai.?generated.?mark", r"provenance",
+        r"content.?authenticity", r"machine.?readable.?mark",
+    ]
+    has_marking = any(re.search(p, all_content) for p in marking_patterns)
+    checks.append({
+        "article": "50(2)",
+        "title": "Synthetic content marking",
+        "obligation": "AI-generated content must be marked in machine-readable format",
+        "status": "found" if has_marking else "not_found",
+    })
+
+    # Art 50(3): Emotion recognition / biometric notice
+    emotion_patterns = [
+        r"emotion.?recogn", r"sentiment.?analy", r"affect.?detect",
+        r"biometric.?categori", r"age.?estimat", r"gender.?detect",
+    ]
+    has_emotion_system = any(re.search(p, code_content.lower()) for p in emotion_patterns)
+    if has_emotion_system:
+        inform_patterns = [
+            r"inform.{0,30}(emotion|biometric|categori)",
+            r"(emotion|biometric).{0,30}(notice|disclos|consent|inform)",
+        ]
+        has_inform = any(re.search(p, all_content) for p in inform_patterns)
+        checks.append({
+            "article": "50(3)",
+            "title": "Emotion/biometric system notice",
+            "obligation": "Persons exposed must be informed of system operation",
+            "status": "found" if has_inform else "not_found",
+        })
+
+    # Art 50(4): Deep fake / synthetic media disclosure
+    deepfake_patterns = [
+        r"deepfake", r"face.?swap", r"voice.?clon",
+        r"synthetic.?media", r"image.?generat",
+    ]
+    has_deepfake = any(re.search(p, code_content.lower()) for p in deepfake_patterns)
+    if has_deepfake:
+        disclosure_patterns = [
+            r"(deepfake|synthetic|generated).{0,30}(disclos|label|notice|warn)",
+            r"(disclos|label|notice).{0,30}(deepfake|synthetic|generated)",
+        ]
+        has_df_disclosure = any(re.search(p, all_content) for p in disclosure_patterns)
+        checks.append({
+            "article": "50(4)",
+            "title": "Deep fake / synthetic media disclosure",
+            "obligation": "Content must be disclosed as artificially generated or manipulated",
+            "status": "found" if has_df_disclosure else "not_found",
+        })
+
+    return checks
+
+
+def cmd_comply(args) -> None:
+    """EU AI Act obligation checklist with status.
+
+    Scopes obligations to the detected risk tier:
+    - High-risk/prohibited: Articles 9-15 + Article 50 (where applicable)
+    - Limited-risk: Article 50 transparency obligations only
+    - Minimal-risk: No mandatory requirements
+    Use --all to show the full Articles 9-15 assessment regardless of tier.
+    """
+    from cli import json_output, _is_tty
+    from compliance_check import assess_compliance, ARTICLE_TITLES
+
+    project = str(Path(getattr(args, "project", ".")).resolve())
+    project_name = Path(project).name
+    show_all = getattr(args, "all", False)
+
+    # If --article specified, show deep-dive for that article
+    article_filter = getattr(args, "article", None)
+    articles = [article_filter] if article_filter else None
+
+    assessment = assess_compliance(project, articles=articles)
+    highest_risk = assessment.get("highest_risk", "unknown")
+
+    if getattr(args, "format", "text") == "json":
+        # Enrich JSON with Article 50 checks and tier scoping
+        assessment["article_50_checks"] = _check_article_50(project)
+        assessment["scoped_to_tier"] = highest_risk
+        json_output("comply", assessment)
+        return
+
+    # Status symbols and labels
+    _STATUS = {
+        "strong": ("\u2713", "PASS"),
+        "moderate": ("~", "PARTIAL"),
+        "partial": ("\u2717", "NEEDS WORK"),
+        "not_found": ("\u2717", "NOT FOUND"),
+    }
+
+    print(f"\nEU AI Act Compliance Checklist: {project_name}")
+    print(f"{'=' * 60}")
+
+    # --- MINIMAL RISK ---
+    if highest_risk in ("minimal_risk", "not_ai") and not show_all:
+        print(f"  Highest risk tier: {highest_risk}")
+        print(f"\n  No mandatory EU AI Act requirements apply to minimal-risk")
+        print(f"  or non-AI systems. Voluntary codes of conduct may apply")
+        print(f"  (Article 95).")
+        print(f"\n{'=' * 60}")
+        print(f"\n  Next steps:")
+        print(f"    1. regula assess{'':<25s}Verify this classification with guided questions")
+        print(f"    2. regula comply --all{'':<19s}Show full Articles 9-15 assessment anyway")
+        print()
+        return
+
+    # --- LIMITED RISK ---
+    if highest_risk == "limited_risk" and not show_all:
+        print(f"  Highest risk tier: limited_risk")
+        print(f"  Applicable:        Article 50 (Transparency)")
+        print()
+
+        art50_checks = _check_article_50(project)
+        pass_count = sum(1 for c in art50_checks if c["status"] == "found")
+        total = len(art50_checks)
+
+        for c in art50_checks:
+            symbol = "\u2713" if c["status"] == "found" else "\u2717"
+            label = "FOUND" if c["status"] == "found" else "NOT FOUND"
+            print(f"  [{symbol}] Art. {c['article']:<6s} {c['title']:<35s} {label}")
+            print(f"          {c['obligation']}")
+
+        print(f"\n{'=' * 60}")
+        print(f"  {pass_count}/{total} transparency obligations have evidence")
+        if pass_count < total:
+            print(f"  {total - pass_count} obligation(s) need attention")
+
+        print(f"\n  Note: Articles 9-15 do NOT apply to limited-risk systems.")
+        print(f"  They apply only to high-risk systems (Annex III / Article 6).")
+
+        if _is_tty():
+            print(f"\n  Next steps:")
+            print(f"    1. regula check .{'':<24s}See detailed scan findings")
+            print(f"    2. regula comply --all{'':<19s}Show Articles 9-15 assessment (informational)")
+            print(f"    3. regula assess{'':<25s}Verify risk tier with guided questions")
+        print()
+        return
+
+    # --- HIGH RISK / PROHIBITED (or --all) ---
+    tier_label = highest_risk
+    if show_all and highest_risk in ("limited_risk", "minimal_risk", "not_ai"):
+        tier_label = f"{highest_risk} (showing all articles per --all flag)"
+
+    print(f"  Overall compliance score: {assessment['overall_score']}/100")
+    print(f"  Highest risk tier:        {tier_label}")
+    print()
+
+    # Articles 9-15 checklist
+    pass_count = 0
+    needs_work = []
+    for article_num in sorted(assessment["articles"].keys(), key=int):
+        result = assessment["articles"][article_num]
+        status = result["status"]
+        symbol, label = _STATUS.get(status, ("?", status.upper()))
+        score = result["score"]
+
+        if status == "strong":
+            pass_count += 1
+        else:
+            needs_work.append(article_num)
+
+        print(f"  [{symbol}] Article {article_num:<3s} {result['title']:<35s} {score:>3d}% {label}")
+
+        # Deep-dive mode: show evidence and gaps for requested article
+        if article_filter:
+            if result["evidence"]:
+                print(f"      Evidence found:")
+                for ev in result["evidence"]:
+                    print(f"        \u2713 {ev}")
+            if result["gaps"]:
+                print(f"      Gaps to address:")
+                for gap in result["gaps"]:
+                    print(f"        \u2717 {gap}")
+            print()
+
+    # Also show Article 50 checks for high-risk (they apply alongside Art 9-15)
+    art50_checks = _check_article_50(project)
+    if art50_checks:
+        print()
+        for c in art50_checks:
+            symbol = "\u2713" if c["status"] == "found" else "\u2717"
+            label = "FOUND" if c["status"] == "found" else "NOT FOUND"
+            print(f"  [{symbol}] Art. {c['article']:<6s} {c['title']:<35s} {label}")
+
+    total = len(assessment["articles"])
+    print(f"\n{'=' * 60}")
+    print(f"  {pass_count}/{total} high-risk obligations have strong evidence")
+
+    if needs_work and not article_filter:
+        print(f"  {len(needs_work)} obligation(s) need attention: Articles {', '.join(needs_work)}")
+
+    if show_all and highest_risk not in ("high_risk", "prohibited"):
+        print(f"\n  Note: This project is classified as {highest_risk}.")
+        print(f"  Articles 9-15 are shown for informational purposes (--all flag).")
+        print(f"  They are legally required only for high-risk systems.")
+
+    # Contextual next steps
+    if _is_tty():
+        steps = []
+        if needs_work and not article_filter:
+            weakest = min(needs_work, key=lambda a: assessment["articles"][a]["score"])
+            steps.append(
+                f"regula comply --article {weakest}{'':<20s}Deep-dive into Article {weakest} ({ARTICLE_TITLES.get(weakest, '')})"
+            )
+        if assessment["overall_score"] < 80:
+            steps.append(
+                f"regula plan --project .{'':<22s}Prioritised remediation plan"
+            )
+        if assessment["overall_score"] >= 50:
+            steps.append(
+                f"regula evidence-pack --project .{'':<13s}Generate auditor-ready evidence"
+            )
+        if highest_risk in ("high_risk", "prohibited"):
+            steps.append(
+                f"regula conform --project .{'':<19s}Generate conformity assessment evidence"
+            )
+        if not steps:
+            steps.append(
+                f"regula evidence-pack --project .{'':<13s}Generate auditor-ready evidence"
+            )
+
+        print(f"\n  Next steps:")
+        for i, step in enumerate(steps[:4], 1):
+            print(f"    {i}. {step}")
+    print()
 
 
 def cmd_compliance(args) -> None:
@@ -249,6 +530,18 @@ def cmd_assess(args) -> None:
     from assess import run_assess
     output_format = getattr(args, "format", "text")
     answers = getattr(args, "answers", None)
+
+    # Interactive mode requires a TTY
+    if not answers and not (hasattr(sys.stdin, 'isatty') and sys.stdin.isatty()):
+        print(
+            "Error: `regula assess` requires an interactive terminal,\n"
+            "or pass --answers as a comma-separated list of yes/no values in order:\n"
+            "  uses_ai,eu_users,prohibited,high_risk_domain,non_eu_provider|transparency_trigger\n"
+            "Or use `regula questionnaire` for the richer non-interactive flow.",
+            file=sys.stderr,
+        )
+        sys.exit(2)
+
     sys.exit(run_assess(output_format, answers=answers))
 
 

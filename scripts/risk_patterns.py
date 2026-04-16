@@ -634,11 +634,11 @@ AI_SECURITY_PATTERNS = {
     },
     "missing_temperature_control": {
         "patterns": [
-            r"temperature\s*[:=]\s*(?:1\.0|2\.0|1\.5)",  # very high temperature for production
+            r"temperature\s*[:=]\s*(?:1\.0|2\.0|1\.5)",  # high temperature values that increase hallucination risk
         ],
         "owasp": "LLM09",
         "articles": ["15"],
-        "description": "High temperature setting — increased hallucination risk in production",
+        "description": "High temperature setting (>=1.0) — review whether hallucination risk is acceptable for this use case",
         "severity": "low",
         "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
         "confidence": "high", "likelihood": "low", "impact": "low",
@@ -647,14 +647,14 @@ AI_SECURITY_PATTERNS = {
     # security review. These map to CRA secure-by-design and AI Act Art. 15.
     "no_error_handling_ai_call": {
         "patterns": [
-            r"(?:chat\.completions\.create|messages\.create|llm\.invoke)\s*\(",  # bare AI call with no try/except on same or next line
+            r"(?:chat\.completions\.create|messages\.create|llm\.invoke)\s*\(",  # detects AI API call; cannot verify surrounding try/except via regex
         ],
         "owasp": "LLM06",
         "articles": ["15"],
-        "description": "AI API call without error handling — service failures will crash the application",
-        "severity": "medium",
-        "remediation": "Wrap AI API calls in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-        "confidence": "medium", "likelihood": "medium", "impact": "medium",
+        "description": "AI API call detected — verify error handling is in place",
+        "severity": "low",
+        "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+        "confidence": "low", "likelihood": "low", "impact": "medium",
     },
     "exposed_api_key_env": {
         "patterns": [

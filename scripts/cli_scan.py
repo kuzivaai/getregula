@@ -223,14 +223,55 @@ def cmd_check(args) -> None:
         print(f"  {t('suppress_note')}")
         print()
 
-        # Next-step suggestions (TTY only, when there are findings)
-        if _is_tty() and active:
-            first_file = active[0].get("file", "<file>")
-            print("  Next steps:", file=sys.stderr)
-            print(f"    regula explain --file {first_file:<30s} Explain why this was flagged", file=sys.stderr)
-            print(f"    regula gap{'':<37s} Check Article 9-15 compliance gaps", file=sys.stderr)
-            print(f"    regula timeline{'':<32s} See your enforcement deadlines", file=sys.stderr)
-            print(file=sys.stderr)
+        # Contextual next-step suggestions (TTY only)
+        if _is_tty():
+            steps = []
+            if block_findings:
+                first_block = block_findings[0].get("file", "<file>")
+                steps.append(
+                    f"regula fix --project .{'':<22s}Generate fix scaffolds for {len(block_findings)} BLOCK finding(s)"
+                )
+                steps.append(
+                    f"regula check --explain .{'':<20s}Detailed reasoning for each flagged file"
+                )
+            if active and not block_findings:
+                first_file = active[0].get("file", "<file>")
+                steps.append(
+                    f"regula check --explain .{'':<20s}Detailed reasoning for each flagged file"
+                )
+            if prohibited:
+                steps.append(
+                    f"regula comply{'':<31s}Check all EU AI Act obligations"
+                )
+            if warn_findings and not block_findings:
+                steps.append(
+                    f"regula plan --project .{'':<22s}Prioritised remediation plan"
+                )
+            if high_risk:
+                steps.append(
+                    f"regula gap --project .{'':<22s}Compliance gap assessment (Articles 9-15)"
+                )
+            if not active:
+                steps.append(
+                    f"regula check --verbose .{'':<20s}Show all findings including INFO tier"
+                )
+                steps.append(
+                    f"regula comply{'':<31s}Verify EU AI Act obligation status"
+                )
+            if not any("evidence" in s for s in steps):
+                steps.append(
+                    f"regula evidence-pack --project .{'':<13s}Generate auditor-ready evidence"
+                )
+            if not any("timeline" in s for s in steps):
+                steps.append(
+                    f"regula timeline{'':<29s}See enforcement deadlines"
+                )
+
+            if steps:
+                print("  Next steps:", file=sys.stderr)
+                for i, step in enumerate(steps[:4], 1):
+                    print(f"    {i}. {step}", file=sys.stderr)
+                print(file=sys.stderr)
 
     # Explain mode: show detailed reasoning for each file
     if getattr(args, "explain", False) and args.format == "text":
