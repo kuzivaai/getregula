@@ -1,0 +1,51 @@
+{
+  "$schema": "https://getregula.com/sa-tracker.schema.json",
+  "version": "1.0",
+  "last_updated": "2026-04-07",
+  "gazette_status": "pending",
+  "next_review": "Within 7 days of gazette publication",
+  "rows": [
+    {
+      "label": "Cabinet approval",
+      "value": "2 April 2026 — draft approved for public comment by Minister in the Presidency Khumbudzo Ntshavheni at a post-Cabinet briefing",
+      "state": "verified",
+      "source": "https://www.sowetan.co.za/news/2026-04-02-watch-live-minister-in-the-presidency-khumbudzo-ntshavheni-holds-a-post-cabinet-briefing/"
+    },
+    {
+      "label": "Gazette publication",
+      "value": "Pending as of 7 April 2026 — we will update the moment it drops",
+      "state": "pending",
+      "source": null
+    },
+    {
+      "label": "Public comment window",
+      "value": "60 days from gazette date (expected April–June 2026)",
+      "state": "estimated",
+      "source": null
+    },
+    {
+      "label": "Regulatory model",
+      "value": "Sector-specific, multi-regulator (financial services, health, education, telecoms) — per Michalsons reporting; confirm on gazette",
+      "state": "secondary",
+      "source": "https://www.michalsons.com"
+    },
+    {
+      "label": "Final policy",
+      "value": "2026/2027 financial year (target)",
+      "state": "estimated",
+      "source": null
+    },
+    {
+      "label": "Sector regulations",
+      "value": "2027/2028 financial year (target)",
+      "state": "estimated",
+      "source": null
+    },
+    {
+      "label": "Background",
+      "value": "October 2024 DCDT Policy Framework published as the precursor document",
+      "state": null,
+      "source": "https://www.dcdt.gov.za"
+    }
+  ]
+}
