@@ -857,14 +857,21 @@ footer {
     position: absolute;
     top: 0; left: 0; right: 0;
     opacity: 0;
-    transition: opacity 0.2s ease;
     pointer-events: none;
+    /* No transition by default — prevents the 0→1 fade on first paint
+       (Chromium & Firefox can both replay the transition from the
+       base `opacity: 0` style before JS or CSS sets .active). */
 }
 .term-panel.active {
     opacity: 1;
     position: relative;
     pointer-events: auto;
 }
+/* Only animate the opacity swap AFTER the page has loaded. The
+   .term-panels-ready class is added to <body> via a small inline
+   script below so the very first paint sees the final opacity state
+   without any animation. */
+.term-panels-ready .term-panel { transition: opacity 0.12s ease-in-out; }
 .term-panel pre {
     padding: 20px 22px;
     font-family: var(--font-mono);

@@ -131,6 +131,10 @@
     <link rel="stylesheet" href="assets/site.css">
     <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- JetBrains Mono is used only inside the hero terminal demo. Preload
+         eliminates the font-swap reflow that otherwise reads as a flash
+         when the woff2 arrives late. -->
+    <link rel="preload" href="assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
     <style>
         /* index.html overrides — values that intentionally differ from site.css */
         body { line-height: 1.6; }
@@ -236,17 +240,17 @@
         </div>
 
         <!-- TERMINAL -->
-        <div class="term-wrap">
-            <div class="term-bar">
+        <div class="term-wrap" role="region" aria-label="Interactive Regula CLI demo — switch tabs to see example output of regula check, plan, gap, and comply commands">
+            <div class="term-bar" aria-hidden="true">
                 <div class="term-dot td-r"></div>
                 <div class="term-dot td-y"></div>
                 <div class="term-dot td-g"></div>
             </div>
-            <div class="term-tabs" role="tablist">
-                <div class="term-tab active" role="tab" tabindex="0" onclick="switchTab('check', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('check', this)}">check</div>
-                <div class="term-tab" role="tab" tabindex="0" onclick="switchTab('plan', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('plan', this)}">plan</div>
-                <div class="term-tab" role="tab" tabindex="0" onclick="switchTab('gap', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('gap', this)}">gap</div>
-                <div class="term-tab" role="tab" tabindex="0" onclick="switchTab('comply', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('comply', this)}">comply</div>
+            <div class="term-tabs" role="tablist" aria-label="Regula command examples">
+                <div class="term-tab active" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-check" onclick="switchTab('check', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('check', this)}">check</div>
+                <div class="term-tab" role="tab" tabindex="0" aria-selected="false" aria-controls="tab-plan" onclick="switchTab('plan', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('plan', this)}">plan</div>
+                <div class="term-tab" role="tab" tabindex="0" aria-selected="false" aria-controls="tab-gap" onclick="switchTab('gap', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('gap', this)}">gap</div>
+                <div class="term-tab" role="tab" tabindex="0" aria-selected="false" aria-controls="tab-comply" onclick="switchTab('comply', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('comply', this)}">comply</div>
             </div>
             <div class="term-body">
                 <div class="term-panel active" id="tab-check" role="tabpanel">
@@ -328,6 +332,18 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
     </div>
 </div>
+
+<script>
+  // Flip panel transitions on AFTER the first paint so the terminal does
+  // not play its 0→1 opacity fade on page load. Uses requestAnimationFrame
+  // rather than DOMContentLoaded so the class lands just after the browser
+  // has committed initial styles — guaranteed no flash.
+  requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+          document.body.classList.add('term-panels-ready');
+      });
+  });
+</script>
 
 <div class="urgency">
     <div class="urgency-box" role="note">
@@ -692,16 +708,23 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     }, { passive: true });
 
     // ===== TERMINAL TABS =====
+    // Swap the currently-active tab and panel directly, rather than first
+    // deactivating ALL of them. The old approach briefly left zero panels
+    // with `.active`, so the outgoing panel started its opacity-fade to 0
+    // *before* the incoming one started fading in — visible as a flash.
     function switchTab(name, el) {
-        // Deactivate all tabs and panels
-        document.querySelectorAll('.term-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.term-panel').forEach(p => {
-            p.classList.remove('active');
-        });
-        // Activate selected
+        const currentTab = document.querySelector('.term-tab.active');
+        const currentPanel = document.querySelector('.term-panel.active');
+        const nextPanel = document.getElementById('tab-' + name);
+        if (!nextPanel || currentPanel === nextPanel) return;
+        if (currentTab && currentTab !== el) {
+            currentTab.classList.remove('active');
+            currentTab.setAttribute('aria-selected', 'false');
+        }
+        if (currentPanel) currentPanel.classList.remove('active');
         el.classList.add('active');
-        const panel = document.getElementById('tab-' + name);
-        if (panel) panel.classList.add('active');
+        el.setAttribute('aria-selected', 'true');
+        nextPanel.classList.add('active');
     }
 
     // ===== COPY BUTTON =====
