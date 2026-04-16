@@ -1,5 +1,9 @@
 name: Regula AI Governance Check
-description: Scan your AI project for EU AI Act compliance issues, dependency risks, and governance gaps.
+description: >-
+  Scan your AI project for EU AI Act compliance issues, dependency risks, and
+  governance gaps. Findings surface inline on PR diffs via GitHub workflow
+  command annotations (::error / ::warning / ::notice) — no SARIF/CodeQL setup
+  required. SARIF upload stays available as an opt-in for repos that want it.
 author: Regula
 
 branding:
@@ -53,6 +57,13 @@ inputs:
     default: 'false'
   upload-sarif:
     description: Upload SARIF results to GitHub Code Scanning
+    required: false
+    default: "true"
+  annotations:
+    description: >-
+      Emit GitHub workflow command annotations (::error, ::warning, ::notice)
+      for each finding so they appear inline on the PR "Files changed" tab.
+      Works without SARIF/CodeQL. Set to "false" to disable.
     required: false
     default: "true"
 
@@ -116,6 +127,26 @@ runs:
             ${DIFF_FLAG} \
             > "${SARIF_FILE}" 2>/dev/null || echo '{"runs":[{"results":[]}]}' > "${SARIF_FILE}"
         fi
+
+    - name: Emit GitHub workflow-command annotations
+      if: ${{ inputs.annotations == 'true' }}
+      shell: bash
+      # Runs regula check in --ci mode so findings emit as ::error / ::warning /
+      # ::notice on stdout. GitHub parses these and renders inline annotations
+      # on the PR "Files changed" tab. Exit code is ignored here — the
+      # fail-on-prohibited / fail-on-high-risk gates live in the count step below.
+      run: |
+        # Build diff flag identical to the main scan
+        DIFF_FLAG=""
+        if [ "${{ inputs.diff-mode }}" = "true" ]; then
+          BASE_REF="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
+          DIFF_FLAG="--diff ${BASE_REF}"
+        fi
+        python3 "${{ github.action_path }}/scripts/cli.py" check "${{ inputs.path }}" \
+          --ci \
+          --framework "${{ inputs.framework }}" \
+          ${DIFF_FLAG} \
+          || true
 
     - name: Count findings from SARIF
       id: count-findings
