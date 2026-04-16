@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-947%20passing-brightgreen.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-960%20passing-brightgreen.svg)](#verified-numbers)
 [![WCAG 2.2 AA](https://img.shields.io/badge/WCAG%202.2-AA-success.svg)](docs/accessibility/README.md)
 
 ---
@@ -27,7 +27,7 @@
 
 ---
 
-![Regula check demo](assets/demo/regula-check.svg)
+![Regula check demo](site/assets/demo/regula-check.svg)
 
 ---
 
@@ -43,6 +43,7 @@ The recommended install is **pipx** — it works on every platform (Linux, macOS
 
 ```bash
 pipx install regula-ai
+regula --version   # confirms the install: should print "regula 1.6.2" or newer
 ```
 
 If you don't have pipx yet, install it first (one-time):
@@ -101,7 +102,9 @@ Try it against a known high-risk fixture:
 regula check examples/cv-screening-app
 ```
 
-See [`examples/`](examples/) for runnable reference projects covering each EU AI Act risk tier.
+See [`examples/`](examples/) for runnable reference projects covering each EU AI Act risk tier, or walk through the full 10-minute evaluation journey in [`examples/cv-screening-app/`](examples/cv-screening-app/) — install, scan, plan, gap, conform, verify, handoff to red-team tooling.
+
+For a deeper first-time-user walk-through (policy tuning, CI integration, baselining) see [`docs/QUICKSTART.md`](docs/QUICKSTART.md).
 
 ### CI/CD
 
@@ -173,7 +176,7 @@ Regula has 53 commands in total. Run `regula --help-all` for the full list, or s
 - A production fairness testing platform (`regula bias` runs benchmark probes against a local model as a starting point, but does not replace runtime fairness monitoring)
 - Legal advice (consult qualified legal counsel for compliance decisions)
 
-Regula helps development teams understand their EU AI Act exposure early. It does not replace the organisational, procedural, and legal work required for full compliance. For a detailed account of what falls outside Regula's scope, see [`docs/what-regula-does-not-do.md`](docs/what-regula-does-not-do.md).
+Regula helps development teams understand their EU AI Act exposure early. It does not replace the organisational, procedural, and legal work required for full compliance. For a detailed account of what falls outside Regula's scope, see [`docs/what-regula-does-not-do.md`](docs/what-regula-does-not-do.md), and for Regula's own model card (intended use, training data, evaluation, known failure modes) see [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md).
 
 ## Bias evaluation — methodology and ethics
 
@@ -223,8 +226,10 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | Risk detection patterns (regexes) | 403 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Compliance frameworks mapped | 17 |
-| Tests (all passing) | 947 |
+| Tests (all passing) | 960 |
 | Required production dependencies | 0 |
+
+For buyer-facing trust evidence (every number above paired with a reproducible command, plus precision/recall benchmark, security posture, and audit trail), see [`docs/TRUST.md`](docs/TRUST.md).
 
 ## Contributing
 
