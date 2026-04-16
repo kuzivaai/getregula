@@ -688,7 +688,7 @@ def cmd_verify(args) -> None:
             failed += 1
 
     # --- Emit report (spec §7.2) ---
-    from datetime import datetime, timezone
+    # (datetime + timezone imported at module top)
     verify_report = {
         "format": "regula.verify.v1",
         "format_version": "1.0",

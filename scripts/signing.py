@@ -229,11 +229,20 @@ def verify_manifest_signature(manifest: dict) -> tuple[bool, str]:
 
     canonical = canonicalize_manifest_for_signing(manifest)
 
-    # cryptography's verify() raises InvalidSignature on mismatch
+    # cryptography's verify() raises InvalidSignature on mismatch.
+    # Narrow the catch so a genuine library-level bug (e.g. algorithm
+    # backend failure) does not get mis-attributed as "signature invalid"
+    # — the operator needs to distinguish tampering from infrastructure
+    # failure. InvalidSignature is the one we expect and convert to a
+    # clear verdict; anything else propagates.
+    try:
+        from cryptography.exceptions import InvalidSignature
+    except ImportError as exc:  # should not happen if we got this far
+        return False, f"cryptography import failed: {exc}"
     try:
         public_key.verify(signature, canonical)
-    except Exception as exc:  # InvalidSignature or any crypto error
-        return False, f"signature invalid: {exc.__class__.__name__}"
+    except InvalidSignature:
+        return False, "signature invalid: manifest does not match signed canonical form"
 
     return True, "ed25519 signature verified"
 
