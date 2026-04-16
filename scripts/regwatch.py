@@ -21,7 +21,13 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DELTA_INDEX = REPO_ROOT / "content" / "regulations" / "delta-log" / "index.json"
-POLICY_PATH = REPO_ROOT / "regula-policy.yaml"
+# After the IA restructure the policy lives under configs/; fall back to
+# the root for older checkouts so this keeps working in both layouts.
+_POLICY_CANDIDATES = [
+    REPO_ROOT / "configs" / "regula-policy.yaml",
+    REPO_ROOT / "regula-policy.yaml",
+]
+POLICY_PATH = next((p for p in _POLICY_CANDIDATES if p.exists()), _POLICY_CANDIDATES[0])
 
 
 def _parse_iso_date(s: str) -> date | None:
