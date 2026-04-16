@@ -23,7 +23,7 @@
     "format_version": {
       "type": "string",
       "pattern": "^1\\.\\d+$",
-      "description": "Format revision within v1. '1.0' is the initial release; '1.1', '1.2' may add optional fields."
+      "description": "Format revision within v1. '1.0' is the initial release; '1.1' adds the optional signing + timestamp blocks; further minor versions may add optional fields."
     },
     "schema_uri": {
       "type": "string",
@@ -92,8 +92,30 @@
     },
     "signing": {
       "type": "object",
-      "description": "Reserved for v1.1. MAY contain Ed25519 / cosign signatures over the canonical manifest JSON.",
-      "additionalProperties": true
+      "description": "Optional in v1.1+. Ed25519 signature over the canonical manifest JSON (with the `signing` field stripped). A consumer that cannot verify the signature SHOULD warn but MUST NOT reject the pack unless strict mode is requested.",
+      "required": ["algorithm", "canonical_serialization", "signature", "public_key"],
+      "additionalProperties": true,
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "const": "ed25519",
+          "description": "Signature algorithm. v1.1 fixes this to Ed25519."
+        },
+        "canonical_serialization": {
+          "type": "string",
+          "const": "json-sort-keys-no-whitespace-utf8",
+          "description": "How the signed bytes are produced from the manifest. v1.1 fixes this to sorted-key, no-whitespace JSON encoded as UTF-8, with the `signing` field removed before serialisation."
+        },
+        "signature": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9+/=]+$",
+          "description": "Base64-encoded Ed25519 signature (64 raw bytes → 88 base64 chars)."
+        },
+        "public_key": {
+          "type": "string",
+          "description": "Base64-encoded SubjectPublicKeyInfo PEM of the Ed25519 public key. Consumers decode the base64, then load the PEM."
+        }
+      }
     },
     "timestamp_authority": {
       "type": "object",

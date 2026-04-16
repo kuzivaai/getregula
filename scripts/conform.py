@@ -188,6 +188,10 @@ def generate_sme_simplified_pack(
     interim simplified format as a single Markdown file (rather than the
     full multi-folder pack produced by `generate_conformity_pack`).
 
+    Note: signing (`--sign`) is only supported for the full multi-folder
+    pack (see `generate_conformity_pack`), because the SME pack does not
+    persist a manifest.json that a signature could cover.
+
     Returns a dict matching the shape `cmd_conform` expects, with
     summary["overall_readiness"] reflecting the simplified form's
     readiness rather than the full Article 9-15 gap score.
@@ -258,6 +262,8 @@ def generate_conformity_pack(
     project_name: str = None,
     model: str = "llama3",
     endpoint: str = "http://localhost:11434",
+    sign: bool = False,
+    signing_key_path=None,
 ) -> dict:
     """Generate a conformity assessment evidence pack mapped by article.
 
@@ -265,6 +271,14 @@ def generate_conformity_pack(
         project_path: Path to the project to scan.
         output_dir: Parent directory for the pack folder.
         project_name: Human-readable name (defaults to directory name).
+        model, endpoint: Ollama settings for optional bias evaluation.
+        sign: If True, sign the manifest with an Ed25519 key per
+            Regula Evidence Format v1.1 (§4.3 / §4.5). The manifest's
+            `format_version` bumps from "1.0" to "1.1" when signing is
+            active. Requires the `regula[signing]` optional extra.
+        signing_key_path: Optional override for the signing key location
+            (default: ~/.regula/signing.key, or the REGULA_SIGNING_KEY
+            environment variable).
 
     Returns:
         Dict with pack_dirname, pack_path, and manifest.
@@ -561,10 +575,14 @@ def generate_conformity_pack(
     # validate the pack against docs/spec/regula.manifest.v1.schema.json and
     # expect the fields below to be present. New fields may be added in v1.x;
     # breaking changes bump to v2. See docs/spec/regula-evidence-format-v1.md.
+    #
+    # When sign=True, format_version bumps to "1.1" and a `signing` block
+    # is appended AFTER the rest of the manifest is finalised. The signing
+    # block covers every other field via the canonical form in §4.5.
 
     manifest = {
         "format": "regula.evidence.v1",
-        "format_version": "1.0",
+        "format_version": "1.1" if sign else "1.0",
         "schema_uri": "https://getregula.com/spec/regula.manifest.v1.schema.json",
         "regula_version": VERSION,
         "generated_at": now.isoformat(),
@@ -573,6 +591,13 @@ def generate_conformity_pack(
         "hash_algorithm": "sha256",
         "files": file_records,
     }
+
+    if sign:
+        # Import lazily so the core CLI remains importable even when the
+        # optional `cryptography` extra is not installed.
+        from signing import sign_manifest
+        manifest["signing"] = sign_manifest(manifest, key_path=signing_key_path)
+
     manifest_json = json.dumps(manifest, indent=2)
     (pack_dir / "manifest.json").write_text(manifest_json, encoding="utf-8")
 
