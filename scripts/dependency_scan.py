@@ -1096,6 +1096,18 @@ def format_dep_text(results: dict) -> str:
         lines.append("")
         lines.append(f"COMPROMISED PACKAGES ({results['compromised_count']}):")
         for c in results["compromised"]:
-            lines.append(f"  {c.get('name', 'unknown')}: {c.get('detail', '')}")
+            # check_compromised() returns dicts keyed by package/version/
+            # advisory_id/description/severity. The old code referenced
+            # `name` + `detail` which never exist → every compromised
+            # row used to print "unknown: " in text format.
+            pkg = c.get("package", "unknown")
+            ver = c.get("version", "")
+            severity = c.get("severity", "?")
+            desc = c.get("description", "")
+            header = f"  {pkg}@{ver}" if ver else f"  {pkg}"
+            lines.append(f"{header} [{severity}]: {desc}")
+            advisory = c.get("advisory_id")
+            if advisory:
+                lines.append(f"    advisory: {advisory}")
 
     return "\n".join(lines)

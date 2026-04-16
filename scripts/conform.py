@@ -21,10 +21,6 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from constants import VERSION
 
-# Default TSA for v1.1 manifest timestamps. Keeps the reference-implementation
-# behaviour explicit here rather than hidden in the timestamp module.
-DEFAULT_TSA_URL_FOR_CONFORM = "https://freetsa.org/tsr"
-
 
 # ---------------------------------------------------------------------------
 # Article definitions with human-required items
@@ -294,6 +290,14 @@ def generate_conformity_pack(
     Returns:
         Dict with pack_dirname, pack_path, and manifest.
     """
+    # Validate invariants BEFORE doing any work — rejecting late (after
+    # writing 26 files to disk) leaves a half-built pack behind.
+    if timestamp and not sign:
+        raise ValueError(
+            "--timestamp requires --sign (timestamp covers the signed "
+            "canonical manifest form per spec §4.6)."
+        )
+
     from report import scan_files
     from compliance_check import assess_compliance
     from generate_documentation import scan_project, generate_annex_iv
@@ -443,8 +447,17 @@ def generate_conformity_pack(
                         "Cross-file oversight analysis:"
                         " no AI output sources detected"
                     )
-            except (ImportError, Exception) as e:
-                print(f"Warning: oversight analysis failed: {e}", file=sys.stderr)
+            except ImportError as e:
+                print(f"Warning: oversight analysis unavailable (missing module): {e}", file=sys.stderr)
+            except (OSError, ValueError, KeyError, AttributeError, TypeError) as e:
+                # Narrow-catch: filesystem / malformed-input / internal-shape
+                # failures in cross_file_flow. Bare Exception here used to
+                # swallow real bugs (TypeError in flow analysis, JSON parse
+                # errors) as a one-line warning. Now the known failure modes
+                # degrade gracefully and any other exception propagates so
+                # pack generation stops rather than producing a silently-
+                # incomplete auditor artefact.
+                print(f"Warning: oversight analysis failed ({type(e).__name__}): {e}", file=sys.stderr)
 
         if art_num == "10":
             # Bias evaluation (optional — requires Ollama)
@@ -613,16 +626,9 @@ def generate_conformity_pack(
         manifest["signing"] = sign_manifest(manifest, key_path=signing_key_path)
 
     if timestamp:
-        if not sign:
-            # Timestamp implies sign — we timestamp the signed canonical form
-            # so a valid timestamp also certifies the signature existed at
-            # that moment. Raise so the caller surfaces the expectation.
-            raise ValueError(
-                "--timestamp requires --sign (timestamp covers the signed "
-                "canonical manifest form per spec §4.6)."
-            )
+        # Invariant (sign required) already checked at function entry.
         from signing import canonicalize_manifest_for_signing
-        from timestamp import request_manifest_timestamp
+        from timestamp import request_manifest_timestamp, DEFAULT_TSA_URL
         canonical = canonicalize_manifest_for_signing(manifest)
         # The signing block is excluded from the canonical form, so the
         # timestamp witnesses the *unsigned* canonical state. Re-verify
@@ -631,7 +637,7 @@ def generate_conformity_pack(
         # was signed by K".
         ts_block = request_manifest_timestamp(
             canonical,
-            tsa_url=tsa_url or DEFAULT_TSA_URL_FOR_CONFORM,
+            tsa_url=tsa_url or DEFAULT_TSA_URL,
         )
         manifest["timestamp_authority"] = ts_block
 

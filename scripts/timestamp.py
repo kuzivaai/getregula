@@ -1,5 +1,5 @@
-# regula-ignore
 #!/usr/bin/env python3
+# regula-ignore
 """
 Regula RFC 3161 Timestamping
 
@@ -171,7 +171,7 @@ def parse_tsr(tsr_bytes: bytes) -> dict:
     }
 
 
-def request_timestamp(hash_hex: str, tsa_url: str = DEFAULT_TSA_URL, timeout: int = 10) -> dict:
+def request_timestamp(hash_hex: str, tsa_url: str = DEFAULT_TSA_URL, timeout: int = 30) -> dict:
     """Send a hash to a RFC 3161 TSA and return the timestamp token.
 
     Parameters
@@ -333,16 +333,17 @@ def request_manifest_timestamp(
             "(possible replay or TSA misbehaviour)."
         )
 
-    # asn1crypto fields use [] access and return VOID for absent optional
-    # fields. Use a defensive try/except in case the TSA omitted the tsa
-    # field altogether.
+    # asn1crypto fields use [] access and may return a VOID sentinel for
+    # absent optional fields. Narrow the catch so a real bug inside
+    # asn1crypto (e.g. a version bump changing VOID semantics) surfaces
+    # instead of being masked as "no TSA name".
     tsa_name = None
     try:
         tsa_field = tst_info["tsa"]
         tsa_native = tsa_field.native
         if tsa_native is not None:
             tsa_name = str(tsa_native)
-    except (KeyError, Exception):
+    except (KeyError, ValueError, AttributeError, TypeError):
         tsa_name = None
 
     return {
