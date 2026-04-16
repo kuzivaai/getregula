@@ -50,6 +50,9 @@ def _check_policy_file():
         candidates.append(Path(env_path))
     candidates.append(Path.cwd() / "regula-policy.yaml")
     candidates.append(Path.cwd() / "regula-policy.json")
+    # After the IA restructure, Regula's own policy lives under configs/.
+    candidates.append(Path.cwd() / "configs" / "regula-policy.yaml")
+    candidates.append(Path.cwd() / "configs" / "regula-policy.json")
     candidates.append(Path.home() / ".regula" / "regula-policy.yaml")
     candidates.append(Path.home() / ".regula" / "regula-policy.json")
 

@@ -24,6 +24,10 @@ def _load_policy() -> dict:
         candidates.append(Path(env_path))
     candidates.append(Path.cwd() / "regula-policy.yaml")
     candidates.append(Path.cwd() / "regula-policy.json")
+    # After the IA restructure, Regula's own policy lives under configs/.
+    # User projects keep their policy at project root — this is additive.
+    candidates.append(Path.cwd() / "configs" / "regula-policy.yaml")
+    candidates.append(Path.cwd() / "configs" / "regula-policy.json")
     candidates.append(Path.home() / ".regula" / "regula-policy.yaml")
     candidates.append(Path.home() / ".regula" / "regula-policy.json")
 
