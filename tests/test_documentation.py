@@ -172,12 +172,17 @@ def test_docs_detects_logging():
 
 
 def test_docs_risk_register_owasp():
-    """High-risk file -> OWASP mapping in risk register."""
-    r = _run_docs("tests/fixtures/sample_high_risk/")
-    assert_eq(r.returncode, 0, f"docs should exit 0: {r.stderr[:200]}")
-    # Should contain some risk register or findings section
-    assert_true("high-risk" in r.stdout.lower() or "risk tier" in r.stdout.lower(),
-                "should contain risk tier information")
+    """High-risk file -> OWASP mapping in risk register.
+
+    Pass an explicit --output tmpdir so the generated artifact never lands
+    inside the repo's own docs/ directory (which would dirty git state).
+    """
+    with tempfile.TemporaryDirectory() as tmp:
+        r = _run_docs("tests/fixtures/sample_high_risk/", "--output", tmp)
+        assert_eq(r.returncode, 0, f"docs should exit 0: {r.stderr[:200]}")
+        # Should contain some risk register or findings section
+        assert_true("high-risk" in r.stdout.lower() or "risk tier" in r.stdout.lower(),
+                    "should contain risk tier information")
     print("\u2713 Docs: risk register present for high-risk project")
 
 
