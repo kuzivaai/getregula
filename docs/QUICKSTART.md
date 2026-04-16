@@ -33,7 +33,7 @@ If you built a chatbot â€” that's limited-risk. If it screens job applications â
 ## Step 2: Understand Why
 
 ```bash
-regula explain .
+regula check --explain .
 ```
 
 This tells you in plain English:

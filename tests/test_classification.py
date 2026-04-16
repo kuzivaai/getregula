@@ -3131,8 +3131,11 @@ def test_regula_error_hierarchy():
 def test_cli_exit_codes():
     """Test CLI exit code convention: 0=success, 1=findings, 2=tool error."""
     import subprocess
+    # Bare `regula` runs an auto-scan of the current directory.
+    # Exit code: 0 if no BLOCK findings, 1 if BLOCK findings present.
     r = subprocess.run(["python3", "scripts/cli.py"], capture_output=True, text=True)
-    assert_eq(r.returncode, 2, "No-args should exit 2")
+    assert_true(r.returncode in (0, 1), "No-args should run auto-scan (exit 0 or 1)")
+    assert_true("Regula" in r.stdout, "No-args should produce scan output")
     r = subprocess.run(["python3", "scripts/cli.py", "check", "/nonexistent/path"],
                        capture_output=True, text=True)
     assert_eq(r.returncode, 2, "Bad path should exit 2")

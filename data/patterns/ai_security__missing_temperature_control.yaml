@@ -5,7 +5,7 @@
 pattern_id: ai_security__missing_temperature_control
 tier: ai_security
 key: missing_temperature_control
-description: High temperature setting — increased hallucination risk in production
+description: High temperature setting (>=1.0) — review whether hallucination risk is acceptable for this use case
 article: 
 regexes:
   - "temperature\\s*[:=]\\s*(?:1\\.0|2\\.0|1\\.5)"

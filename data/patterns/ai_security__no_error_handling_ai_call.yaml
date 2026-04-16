@@ -5,7 +5,7 @@
 pattern_id: ai_security__no_error_handling_ai_call
 tier: ai_security
 key: no_error_handling_ai_call
-description: AI API call without error handling — service failures will crash the application
+description: AI API call detected — verify error handling is in place
 article: 
 regexes:
   - "(?:chat\\.completions|messages\\.create|llm\\.invoke|model\\.predict)\\s*\\([^)]*\\)\\s*$"
