@@ -18,7 +18,7 @@ git clone --depth 1 https://github.com/anthropics/anthropic-cookbook.git
 
 ```bash
 cd /path/to/getregula
-python3 scripts/cli.py check /tmp/anthropic-cookbook
+regula check /tmp/anthropic-cookbook
 ```
 
 ## What You Should See
@@ -32,7 +32,7 @@ The 3 BLOCK findings are **true positives**: the vectordb.py files use `pickle.l
 ## JSON Output for Analysis
 
 ```bash
-python3 scripts/cli.py check /tmp/anthropic-cookbook --format json | python3 -c "
+regula check /tmp/anthropic-cookbook --format json | python3 -c "
 import json, sys
 findings = json.load(sys.stdin)
 active = [f for f in findings if not f.get('suppressed')]

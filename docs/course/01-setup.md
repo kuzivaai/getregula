@@ -23,7 +23,7 @@ pip install pyyaml  # optional but recommended
 ## Verify Installation
 
 ```bash
-python3 scripts/cli.py --help
+regula --help
 ```
 
 You should see 20 commands listed:
@@ -39,7 +39,7 @@ report, sbom, session, status, timeline
 Scan Regula's own codebase:
 
 ```bash
-python3 scripts/cli.py check .
+regula check .
 ```
 
 You should see output showing files scanned, findings by tier, and any high-risk indicators detected. The test fixture file (`tests/fixtures/sample_high_risk/app.py`) contains a deliberately created employment screening example and will appear as a high-risk finding. This is expected behaviour.
@@ -66,9 +66,9 @@ Findings in test files are automatically deprioritised (-40 confidence) to reduc
 
 ## Exercise
 
-1. Run `python3 scripts/cli.py check . --verbose` — how many INFO-tier findings appear?
-2. Run `python3 scripts/cli.py check . --format json | python3 -m json.tool | head -30` — examine the JSON structure
-3. Run `python3 scripts/cli.py classify --input "import openai; credit_risk_model(data)"` — what tier does it return?
+1. Run `regula check . --verbose` — how many INFO-tier findings appear?
+2. Run `regula check . --format json | python3 -m json.tool | head -30` — examine the JSON structure
+3. Run `regula classify --input "import openai; credit_risk_model(data)"` — what tier does it return?
 
 ## Verification
 

@@ -42,7 +42,7 @@ with open('model.pkl', 'rb') as f:
 
 Scan it:
 ```bash
-python3 scripts/cli.py check . --format json | python3 -c "
+regula check . --format json | python3 -c "
 import json, sys
 for f in json.load(sys.stdin):
     if f['tier'] == 'ai_security':
@@ -54,7 +54,7 @@ for f in json.load(sys.stdin):
 Every AI security finding includes a specific fix. The inline remediation engine provides code snippets:
 
 ```bash
-python3 scripts/cli.py check .
+regula check .
 # Output includes:
 #   Fix: Use safetensors format or torch.load(path, weights_only=True)
 ```

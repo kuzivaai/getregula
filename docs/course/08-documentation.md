@@ -12,7 +12,7 @@
 Article 11 requires technical documentation before placing a high-risk AI system on the market. Regula generates a starting scaffold:
 
 ```bash
-python3 scripts/cli.py docs --project . --output compliance-docs
+regula docs --project . --output compliance-docs
 ```
 
 This creates an Annex IV scaffold with:
@@ -27,7 +27,7 @@ This creates an Annex IV scaffold with:
 Article 17 requires a Quality Management System. Generate it:
 
 ```bash
-python3 scripts/cli.py docs --project . --qms --output compliance-docs
+regula docs --project . --qms --output compliance-docs
 ```
 
 The QMS scaffold covers all Article 17(1) requirements:
@@ -48,8 +48,8 @@ The QMS scaffold covers all Article 17(1) requirements:
 Generate a Software Bill of Materials:
 
 ```bash
-python3 scripts/cli.py sbom --project . --format json --output sbom.json
-python3 scripts/cli.py sbom --project . --format text
+regula sbom --project . --format json --output sbom.json
+regula sbom --project . --format text
 ```
 
 The SBOM lists all AI components with:

@@ -34,7 +34,7 @@ jobs:
 For any CI system, generate SARIF directly:
 
 ```bash
-python3 scripts/cli.py check . --format sarif > results.sarif.json
+regula check . --format sarif > results.sarif.json
 ```
 
 The output is valid SARIF 2.1.0, compatible with GitHub Code Scanning, GitLab SAST, and Azure DevOps.
@@ -44,7 +44,7 @@ The output is valid SARIF 2.1.0, compatible with GitHub Code Scanning, GitLab SA
 Only scan files changed since a git ref:
 
 ```bash
-python3 scripts/cli.py check . --diff HEAD~1
+regula check . --diff HEAD~1
 ```
 
 This is useful for PR checks — only report NEW findings from the PR's changes, not the entire project's backlog.
@@ -59,8 +59,8 @@ This is useful for PR checks — only report NEW findings from the PR's changes,
 
 ## Exercise
 
-1. Generate SARIF: `python3 scripts/cli.py check . --format sarif | python3 -m json.tool | head -20`
-2. Try diff mode: make a change to a file, then run `python3 scripts/cli.py check . --diff HEAD`
+1. Generate SARIF: `regula check . --format sarif | python3 -m json.tool | head -20`
+2. Try diff mode: make a change to a file, then run `regula check . --diff HEAD`
 
 ---
 
