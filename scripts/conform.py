@@ -215,10 +215,14 @@ def generate_sme_simplified_pack(
     }
 
     manifest = {
+        "format": "regula.evidence.v1",
+        "format_version": "1.0",
+        "schema_uri": "https://getregula.com/spec/regula.manifest.v1.schema.json",
         "regula_version": VERSION,
         "generated_at": now.isoformat(),
         "project": name,
         "project_directory": project.name,
+        "hash_algorithm": "sha256",
         "form": "sme_simplified_annex_iv",
         "interim_format_disclosure": (
             "Article 11(1) second subparagraph allows SMEs to provide the "
@@ -552,12 +556,21 @@ def generate_conformity_pack(
     _write_and_record(pack_dir / "README.md", readme, file_records, pack_dir)
 
     # --- Manifest (written last — file_records already contain relative paths) ---
+    #
+    # The manifest declares the Regula Evidence Format version. Consumers can
+    # validate the pack against docs/spec/regula.manifest.v1.schema.json and
+    # expect the fields below to be present. New fields may be added in v1.x;
+    # breaking changes bump to v2. See docs/spec/regula-evidence-format-v1.md.
 
     manifest = {
+        "format": "regula.evidence.v1",
+        "format_version": "1.0",
+        "schema_uri": "https://getregula.com/spec/regula.manifest.v1.schema.json",
         "regula_version": VERSION,
         "generated_at": now.isoformat(),
         "project": name,
         "project_directory": project.name,
+        "hash_algorithm": "sha256",
         "files": file_records,
     }
     manifest_json = json.dumps(manifest, indent=2)

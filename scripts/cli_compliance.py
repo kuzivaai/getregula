@@ -406,6 +406,26 @@ def cmd_conform(args) -> None:
         endpoint=args.endpoint,
     )
 
+    # Optional: emit a .regula.zip bundle alongside the pack directory
+    # (Regula Evidence Format v1 §3.2). Bundles are portable across machines
+    # and verifiable directly via `regula verify <bundle>.regula.zip`.
+    bundle_path = None
+    if getattr(args, "zip_bundle", False):
+        import zipfile
+        pack_dir = Path(result["pack_path"])
+        bundle_path = pack_dir.parent / f"{pack_dir.name}.regula.zip"
+        with zipfile.ZipFile(bundle_path, "w", zipfile.ZIP_DEFLATED) as zf:
+            for file_record in result["manifest"]["files"]:
+                fname = file_record.get("filename") or file_record.get("path")
+                if not fname:
+                    continue
+                src = pack_dir / fname
+                if src.exists():
+                    zf.write(src, arcname=f"{pack_dir.name}/{fname}")
+            # include the manifest itself at the root of the pack dir
+            zf.write(pack_dir / "manifest.json", arcname=f"{pack_dir.name}/manifest.json")
+        result["bundle_path"] = str(bundle_path)
+
     if args.format == "json":
         json_output("conform", result)
     else:
@@ -415,6 +435,9 @@ def cmd_conform(args) -> None:
         print(f"Conformity evidence pack written to: {pack_path}")
         print(f"Contains {file_count} files with SHA-256 integrity hashes.")
         print(f"Overall readiness: {readiness}")
+        if bundle_path is not None:
+            print(f"Bundle written to:      {bundle_path}")
+            print(f"Verify bundle with:     regula verify {bundle_path}")
         print(f"Start with: {pack_path}/00-assessment-summary.json")
 
 

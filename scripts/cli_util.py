@@ -461,17 +461,46 @@ def cmd_attest(args) -> None:
 
 
 def cmd_verify(args) -> None:
-    """Verify integrity of an evidence pack or conformity pack."""
+    """Verify the integrity of a Regula Evidence Pack.
+
+    Implements the verification algorithm in `docs/spec/regula-evidence-format-v1.md`
+    §7.1. Accepts a pack directory, a manifest.json file, or a .regula.zip archive.
+
+    Exit codes:
+      0 — all files verified, pack integrity confirmed
+      1 — one or more files MISSING or MODIFIED; do not submit
+      2 — manifest unreadable, pack path not found, or format strictly rejected
+    """
     from cli import json_output
 
     pack_path = Path(args.pack_path).resolve()
+    warnings: list[str] = []
+    extracted_tmpdir = None  # keep reference so it isn't GC'd mid-function
 
-    # Accept either a directory or a manifest.json directly
-    if pack_path.is_file() and pack_path.name == "manifest.json":
+    # --- Resolve input: directory, manifest file, or .zip bundle ---
+    if pack_path.is_file() and pack_path.suffix == ".zip":
+        # Bundle format per spec §3.2
+        import tempfile
+        import zipfile
+        extracted_tmpdir = tempfile.TemporaryDirectory(prefix="regula-verify-")
+        try:
+            with zipfile.ZipFile(pack_path) as zf:
+                zf.extractall(extracted_tmpdir.name)
+        except zipfile.BadZipFile as exc:
+            print(f"Cannot read zip bundle {pack_path}: {exc}")
+            sys.exit(2)
+        # Find the single top-level pack directory inside the zip
+        entries = [p for p in Path(extracted_tmpdir.name).iterdir() if p.is_dir()]
+        if len(entries) == 1 and (entries[0] / "manifest.json").exists():
+            pack_dir = entries[0]
+        else:
+            # Zip may contain the pack at root (no wrapping dir)
+            pack_dir = Path(extracted_tmpdir.name)
+        manifest_path = pack_dir / "manifest.json"
+    elif pack_path.is_file() and pack_path.name == "manifest.json":
         manifest_path = pack_path
         pack_dir = pack_path.parent
     elif pack_path.is_dir():
-        # Look for manifest.json or 00-assessment-summary.json
         manifest_path = pack_dir = pack_path
         for candidate in ["manifest.json", "00-assessment-summary.json"]:
             p = pack_path / candidate
@@ -480,58 +509,106 @@ def cmd_verify(args) -> None:
                 break
         else:
             print(f"No manifest.json or 00-assessment-summary.json found in {pack_path}")
-            sys.exit(1)
+            sys.exit(2)
     else:
         print(f"Path not found: {pack_path}")
-        sys.exit(1)
+        sys.exit(2)
 
-    manifest_data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    try:
+        manifest_data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as exc:
+        print(f"Cannot parse manifest {manifest_path}: {exc}")
+        sys.exit(2)
 
-    # Extract file list — evidence packs use "files", conform packs use "files"
+    # --- Format declaration check (spec §7.1 step 2) ---
+    pack_format = manifest_data.get("format", "unknown")
+    pack_format_version = manifest_data.get("format_version", "unknown")
+    pack_regula_version = manifest_data.get("regula_version", "unknown")
+
+    strict = getattr(args, "strict", False)
+    if pack_format != "regula.evidence.v1":
+        msg = (
+            f"Pack does not declare format=regula.evidence.v1 "
+            f"(got {pack_format!r}). Proceeding under v0 best-effort semantics."
+        )
+        if strict:
+            print(f"ERROR (strict mode): {msg}")
+            sys.exit(2)
+        warnings.append(msg)
+
+    hash_algo = manifest_data.get("hash_algorithm", "sha256")
+    if hash_algo != "sha256":
+        print(f"Unsupported hash_algorithm: {hash_algo}. v1 requires sha256.")
+        sys.exit(2)
+
     files = manifest_data.get("files", [])
     if not files:
         print("No files listed in manifest.")
-        sys.exit(1)
+        sys.exit(2)
 
+    # --- File-by-file verification (spec §7.1 step 3) ---
     passed = 0
     failed = 0
     results = []
 
     for entry in files:
-        filename = entry.get("filename", entry.get("name", ""))
+        filename = entry.get("filename", entry.get("name", entry.get("path", "")))
         expected_hash = entry.get("sha256", "")
         filepath = pack_dir / filename
 
         if not filepath.exists():
-            results.append({"file": filename, "status": "MISSING", "expected": expected_hash})
+            results.append({"filename": filename, "status": "MISSING", "expected": expected_hash})
             failed += 1
             continue
 
         actual_hash = hashlib.sha256(filepath.read_bytes()).hexdigest()
         if actual_hash == expected_hash:
-            results.append({"file": filename, "status": "OK"})
+            results.append({"filename": filename, "status": "OK"})
             passed += 1
         else:
             results.append({
-                "file": filename, "status": "MODIFIED",
+                "filename": filename, "status": "MODIFIED",
                 "expected": expected_hash, "actual": actual_hash,
             })
             failed += 1
 
+    # --- Emit report (spec §7.2) ---
+    from datetime import datetime, timezone
+    verify_report = {
+        "format": "regula.verify.v1",
+        "format_version": "1.0",
+        "pack_path": str(pack_path),
+        "verified_at": datetime.now(timezone.utc).isoformat(),
+        "verifier_version": _regula_version(),
+        "pack_format": pack_format,
+        "pack_format_version": pack_format_version,
+        "pack_regula_version": pack_regula_version,
+        "total": len(files),
+        "passed": passed,
+        "failed": failed,
+        "results": results,
+    }
+    if warnings:
+        verify_report["warnings"] = warnings
+
+    if getattr(args, "report", None):
+        report_path = Path(args.report)
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+        report_path.write_text(json.dumps(verify_report, indent=2), encoding="utf-8")
+
     if args.format == "json":
-        json_output("verify", {
-            "pack_path": str(pack_dir),
-            "total": len(files),
-            "passed": passed,
-            "failed": failed,
-            "results": results,
-        })
+        json_output("verify", verify_report)
     else:
         print(f"\nVerifying: {pack_dir}")
+        if pack_format != "unknown":
+            print(f"  Format: {pack_format} v{pack_format_version} "
+                  f"(generated by Regula {pack_regula_version})")
+        for w in warnings:
+            print(f"  ⚠️  {w}")
         print(f"{'=' * 60}")
         for r in results:
             icon = "\u2713" if r["status"] == "OK" else "\u2717"
-            print(f"  {icon} {r['file']} \u2014 {r['status']}")
+            print(f"  {icon} {r['filename']} \u2014 {r['status']}")
         print(f"{'=' * 60}")
         print(f"  {passed}/{len(files)} files verified, {failed} issues")
         if failed > 0:
@@ -539,6 +616,15 @@ def cmd_verify(args) -> None:
             sys.exit(1)
         else:
             print("  All files match manifest. Pack integrity confirmed.")
+
+
+def _regula_version() -> str:
+    """Return the current Regula version string (for verifier_version field)."""
+    try:
+        from constants import VERSION
+        return VERSION
+    except ImportError:
+        return "unknown"
 
 
 def cmd_status(args) -> None:

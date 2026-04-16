@@ -1002,6 +1002,13 @@ def _build_subparsers(subparsers):
     p_conform.add_argument("--model", default="llama3", help="Ollama model name for bias evaluation (default: llama3)")
     p_conform.add_argument("--endpoint", default="http://localhost:11434", help="Ollama endpoint URL (default: http://localhost:11434)")
     p_conform.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_conform.add_argument(
+        "--zip",
+        dest="zip_bundle",
+        action="store_true",
+        help="Also emit a .regula.zip bundle of the pack for portable exchange "
+             "(Regula Evidence Format v1, §3.2)",
+    )
     p_conform.set_defaults(func=cmd_conform)
 
     # --- governance ---
@@ -1249,10 +1256,23 @@ def _build_subparsers(subparsers):
 
     p_verify = subparsers.add_parser(
         "verify",
-        help="Verify integrity of an evidence pack or conformity pack (SHA-256 manifest check)",
+        help="Verify integrity of a Regula Evidence Pack (spec: docs/spec/regula-evidence-format-v1.md)",
     )
-    p_verify.add_argument("pack_path", help="Path to evidence pack directory or manifest.json")
+    p_verify.add_argument(
+        "pack_path",
+        help="Path to a pack directory, a manifest.json file, or a .regula.zip bundle",
+    )
     p_verify.add_argument("--format", choices=["text", "json"], default="text")
+    p_verify.add_argument(
+        "--strict",
+        action="store_true",
+        help="Fail if the pack does not declare format=regula.evidence.v1",
+    )
+    p_verify.add_argument(
+        "--report",
+        metavar="PATH",
+        help="Write a regula.verify.v1.json report to PATH",
+    )
     p_verify.set_defaults(func=cmd_verify)
 
 

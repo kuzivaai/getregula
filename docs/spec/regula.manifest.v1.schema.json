@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://getregula.com/spec/regula.manifest.v1.schema.json",
+  "title": "Regula Evidence Format — Manifest (v1.0)",
+  "description": "Schema for manifest.json at the root of a regula.evidence.v1 pack. See docs/spec/regula-evidence-format-v1.md for normative text.",
+  "type": "object",
+  "required": [
+    "format",
+    "format_version",
+    "regula_version",
+    "generated_at",
+    "project",
+    "hash_algorithm",
+    "files"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "regula.evidence.v1",
+      "description": "Format identifier. MUST equal 'regula.evidence.v1' for v1.x packs."
+    },
+    "format_version": {
+      "type": "string",
+      "pattern": "^1\\.\\d+$",
+      "description": "Format revision within v1. '1.0' is the initial release; '1.1', '1.2' may add optional fields."
+    },
+    "schema_uri": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to this JSON Schema document."
+    },
+    "regula_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[a-zA-Z0-9\\.]+)?$",
+      "description": "Semver of the Regula build that produced the pack."
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3339 timestamp with timezone offset."
+    },
+    "project": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable project / system name."
+    },
+    "project_directory": {
+      "type": "string",
+      "description": "Directory name that was scanned, for disambiguation."
+    },
+    "hash_algorithm": {
+      "type": "string",
+      "const": "sha256",
+      "description": "Digest algorithm used for file-level integrity. v1 fixes this to SHA-256."
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Ordered list of every file in the pack (excluding the manifest itself).",
+      "items": {
+        "type": "object",
+        "required": ["filename", "sha256", "size_bytes"],
+        "additionalProperties": true,
+        "properties": {
+          "filename": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_\\-./]+$",
+            "description": "POSIX relative path from pack root."
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "Lowercase hex SHA-256 digest of file contents."
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "File size in bytes, uncompressed."
+          }
+        }
+      }
+    },
+    "form": {
+      "type": "string",
+      "enum": ["full_annex_iv", "sme_simplified_annex_iv"],
+      "description": "Which pack variant this is. 'full_annex_iv' is the default multi-section layout; 'sme_simplified_annex_iv' is a single-file pack per Article 11(1) second subparagraph."
+    },
+    "interim_format_disclosure": {
+      "type": "string",
+      "description": "Free-text disclosure explaining a pack variant whose official format the Commission has not yet published."
+    },
+    "signing": {
+      "type": "object",
+      "description": "Reserved for v1.1. MAY contain Ed25519 / cosign signatures over the canonical manifest JSON.",
+      "additionalProperties": true
+    },
+    "timestamp_authority": {
+      "type": "object",
+      "description": "Reserved for v1.1. MAY contain an RFC 3161 timestamp token of the manifest's hash.",
+      "additionalProperties": true
+    }
+  }
+}
