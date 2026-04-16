@@ -25,12 +25,12 @@
 
 ```bash
 # All frameworks
-python3 scripts/cli.py check . --framework all
+regula check . --framework all
 
 # Specific framework
-python3 scripts/cli.py check . --framework nist-ai-rmf
-python3 scripts/cli.py check . --framework owasp-llm-top10
-python3 scripts/cli.py check . --framework mitre-atlas
+regula check . --framework nist-ai-rmf
+regula check . --framework owasp-llm-top10
+regula check . --framework mitre-atlas
 ```
 
 ## How the Crosswalk Works

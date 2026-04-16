@@ -39,9 +39,9 @@ Thresholds are configurable in regula-policy.yaml.
 ## Exercise
 
 ```bash
-python3 scripts/cli.py classify --input "import sklearn; hiring_decision = model.predict(candidates)"
-python3 scripts/cli.py classify --input "import openai; summary = generate_text(prompt)"
-python3 scripts/cli.py classify --input "def add(a, b): return a + b"
+regula classify --input "import sklearn; hiring_decision = model.predict(candidates)"
+regula classify --input "import openai; summary = generate_text(prompt)"
+regula classify --input "def add(a, b): return a + b"
 ```
 
 Expected: HIGH-RISK, MINIMAL-RISK, NOT_AI.

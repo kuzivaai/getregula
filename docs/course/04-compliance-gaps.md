@@ -10,7 +10,7 @@
 ## Run a Gap Assessment
 
 ```bash
-python3 scripts/cli.py gap --project /tmp/anthropic-cookbook
+regula gap --project /tmp/anthropic-cookbook
 ```
 
 ## What Each Article Checks
@@ -38,7 +38,7 @@ If a model card exists (model_card.md, MODEL_CARD.md), Regula checks it for 5 re
 
 ## Exercise
 
-1. Run `python3 scripts/cli.py gap --project /tmp/anthropic-cookbook --article 14` — what's the Article 14 (Human Oversight) score?
+1. Run `regula gap --project /tmp/anthropic-cookbook --article 14` — what's the Article 14 (Human Oversight) score?
 2. Create a simple project with NO documentation and scan it — what's the overall score?
 3. Add a model_card.md with just "# Model Card" and rescan — does the score change?
 
@@ -47,7 +47,7 @@ If a model card exists (model_card.md, MODEL_CARD.md), Regula checks it for 5 re
 If you believe your system qualifies for an exemption:
 
 ```bash
-python3 scripts/cli.py questionnaire --exemption
+regula questionnaire --exemption
 ```
 
 This generates the 4 exemption questions from Article 6(3)(a)-(d) and produces documentation that can support an exemption claim.

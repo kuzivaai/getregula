@@ -8,66 +8,66 @@ Verify command syntax against your installed version with `regula --help` and `r
 
 ```bash
 # Find out if the EU AI Act applies to your product (a few yes/no questions, no code required)
-python3 scripts/cli.py assess
+regula assess
 
 # Scan a project for risk indicators
-python3 scripts/cli.py check .
-python3 scripts/cli.py check . --format json
-python3 scripts/cli.py check . --format sarif    # For CI/CD integration
-python3 scripts/cli.py check . --ci              # Exit 1 on any WARN or BLOCK finding
-python3 scripts/cli.py check . --strict          # Exit 1 on WARN-tier findings
-python3 scripts/cli.py check . --skip-tests      # Exclude test files from results
-python3 scripts/cli.py check . --min-tier limited_risk  # Filter out minimal_risk noise
+regula check .
+regula check . --format json
+regula check . --format sarif    # For CI/CD integration
+regula check . --ci              # Exit 1 on any WARN or BLOCK finding
+regula check . --strict          # Exit 1 on WARN-tier findings
+regula check . --skip-tests      # Exclude test files from results
+regula check . --min-tier limited_risk  # Filter out minimal_risk noise
 
 # Classify a text input
-python3 scripts/cli.py classify --input "import tensorflow; cv screening model"
+regula classify --input "import tensorflow; cv screening model"
 
 # Generate reports
-python3 scripts/cli.py report --format html -o report.html --include-audit
-python3 scripts/cli.py report --format sarif -o results.sarif.json
+regula report --format html -o report.html --include-audit
+regula report --format sarif -o results.sarif.json
 
 # Generate documentation scaffolds
-python3 scripts/cli.py docs --project .                     # Annex IV only
-python3 scripts/cli.py docs --project . --qms               # Annex IV + QMS
-python3 scripts/cli.py docs --project . --all -o compliance  # All types
+regula docs --project .                     # Annex IV only
+regula docs --project . --qms               # Annex IV + QMS
+regula docs --project . --all -o compliance  # All types
 
 # Discover AI systems and register them
-python3 scripts/cli.py discover --project . --register
-python3 scripts/cli.py status
+regula discover --project . --register
+regula status
 
 # Compliance status tracking
-python3 scripts/cli.py compliance                           # View all systems
-python3 scripts/cli.py compliance workflow                  # Show workflow
-python3 scripts/cli.py compliance update -s MyApp --status assessment --note "Starting review"
-python3 scripts/cli.py compliance history -s MyApp          # View history
+regula compliance                           # View all systems
+regula compliance workflow                  # Show workflow
+regula compliance update -s MyApp --status assessment --note "Starting review"
+regula compliance history -s MyApp          # View history
 
 # Audit trail management
-python3 scripts/cli.py audit verify
-python3 scripts/cli.py audit export --format csv -o audit.csv
+regula audit verify
+regula audit export --format csv -o audit.csv
 
 # Compliance gap assessment (Articles 9-15)
-python3 scripts/cli.py gap --project .
-python3 scripts/cli.py gap --project . --article 14   # Article 14 only
+regula gap --project .
+regula gap --project . --article 14   # Article 14 only
 
 # Real-world validation benchmark
-python3 scripts/cli.py benchmark --project .
-python3 scripts/cli.py benchmark --project . -f csv -o findings.csv
+regula benchmark --project .
+regula benchmark --project . -f csv -o findings.csv
 
 # Conformity assessment evidence pack (Article 43)
-python3 scripts/cli.py conform --project .
-python3 scripts/cli.py conform --project . --format json
+regula conform --project .
+regula conform --project . --format json
 
 # Cross-file Article 14 human oversight analysis
-python3 scripts/cli.py oversight --project .
+regula oversight --project .
 
 # AI Bill of Materials (CycloneDX 1.7 with GPAI tier annotations)
-python3 scripts/cli.py sbom --project .
-python3 scripts/cli.py sbom --project . --ai-bom    # Include model provenance + datasets
+regula sbom --project .
+regula sbom --project . --ai-bom    # Include model provenance + datasets
 
 # Install hooks for a platform
-python3 scripts/cli.py install claude-code
-python3 scripts/cli.py install copilot-cli
-python3 scripts/cli.py install list
+regula install claude-code
+regula install copilot-cli
+regula install list
 ```
 
 ### Compliance Gap Assessment
@@ -258,7 +258,7 @@ Hand-labelled 257 findings sampled across five OSS AI projects (`instructor`, `p
 
 This is the honest current state. The minimal_risk tier dominates the sample on general-purpose libraries and is noisy — that's the next pattern-tuning target. None of the five repos triggered `prohibited` or `high_risk` findings, so precision for the tiers that actually block merges cannot be estimated from this benchmark and is a separate piece of work.
 
-Recall is not estimable from labelled findings alone and is reported as `null`. **No "99%" claim is being made and none should be.** Full methodology, per-project breakdown, and limitations: [`benchmarks/README.md`](benchmarks/README.md). Reproduce with `python3 benchmarks/label.py score`.
+Recall is not estimable from labelled findings alone and is reported as `null`. **No "99%" claim is being made and none should be.** Full methodology, per-project breakdown, and limitations: [`../benchmarks/README.md`](../benchmarks/README.md). Reproduce with `python3 benchmarks/label.py score`.
 
 ### Scan Time Benchmark
 

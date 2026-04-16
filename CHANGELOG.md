@@ -233,7 +233,8 @@ users. All 941 tests still pass.
 ### Removed
 
 - `docs/marketing/uae_outreach_v1.md` — internal sales template not
-  suitable for public repo.
+  suitable for public repo. (Was referenced in the 1.6.1 Added section;
+  that reference is now plain-text, not a markdown link.)
 
 ### Renamed
 
@@ -286,14 +287,17 @@ No breaking changes; all 935 tests still pass.
   coordinated disclosure default.
 - **[`CITATION.cff`](CITATION.cff)** — Citation File Format metadata.
 - **[`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md)** — short, technical, direct.
-- **[`uae.html`](uae.html)** — landing page for DIFC, ADGM, Hub71,
-  Dubai Internet City, and NEOM portfolio teams. Cites Article 2(1)(c)
-  extraterritoriality, Article 16 provider obligations, Article 99
-  fines (€35M / 7%), and Article 113 enforcement timing — all against
-  Regulation (EU) 2024/1689 primary text.
-- **[`docs/marketing/uae_outreach_v1.md`](docs/marketing/uae_outreach_v1.md)**
-  — 50-message distribution test templates with targeting checklist,
-  per-sector message bodies, and stop conditions.
+- **[`site/regions/uae.html`](site/regions/uae.html)** — landing page
+  for DIFC, ADGM, Hub71, Dubai Internet City, and NEOM portfolio teams.
+  Cites Article 2(1)(c) extraterritoriality, Article 16 provider
+  obligations, Article 99 fines (€35M / 7%), and Article 113 enforcement
+  timing — all against Regulation (EU) 2024/1689 primary text.
+  (The file lived at `uae.html` at the repo root in 1.6.1; moved to
+  `site/regions/` in the 1.6.2 IA restructure.)
+- `docs/marketing/uae_outreach_v1.md` — 50-message distribution test
+  templates with targeting checklist, per-sector message bodies, and
+  stop conditions. (Removed in 1.6.2 as an internal sales template
+  not suitable for public repo; see the 1.6.2 "Removed" section below.)
 - **[`demos/regula-cli.cast`](demos/regula-cli.cast)** + `regula-cli.txt`
   — asciinema v2 cast and plain-text fallback of the value-first
   user journey. 11 seconds.

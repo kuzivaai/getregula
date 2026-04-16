@@ -14,7 +14,7 @@ In March 2026, the LiteLLM Python package was compromised via a CI/CD pipeline a
 ## Run a Dependency Scan
 
 ```bash
-python3 scripts/cli.py deps --project /tmp/anthropic-cookbook
+regula deps --project /tmp/anthropic-cookbook
 ```
 
 ## Pinning Quality Levels
@@ -53,7 +53,7 @@ pip-audit -r requirements.txt
 ## Exercise
 
 1. Create a `requirements.txt` with: `openai` (unpinned), `torch==2.4.1` (exact), `langchain>=0.1` (range)
-2. Run `python3 scripts/cli.py deps --project .` on it
+2. Run `regula deps --project .` on it
 3. What's the pinning score? Why?
 
 ---
