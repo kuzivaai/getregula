@@ -186,4 +186,4 @@ Bug reports and pull requests are welcome.
 
 **Engine and CLI:** [MIT License](LICENSE.txt).
 
-**Risk patterns and regulatory data:** [Detection Rule License (DRL) 1.1](LICENSE.Detection.Rules.md). You may use, modify, and redistribute the patterns freely. Attribution is required if you redistribute the patterns or use them in a product. If your tool generates match output from these patterns, the output must credit the source.
+**Risk patterns and regulatory data:** [Detection Rule License (DRL) 1.1](docs/LICENSE.Detection.Rules.md). You may use, modify, and redistribute the patterns freely. Attribution is required if you redistribute the patterns or use them in a product. If your tool generates match output from these patterns, the output must credit the source.
