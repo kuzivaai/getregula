@@ -127,9 +127,12 @@ CATEGORY_REF = re.compile(r"\bCategory\s+\d+", re.IGNORECASE)
 CHAPTER_REF = re.compile(r"\bChapter\s+\d+", re.IGNORECASE)
 # Markdown heading section-number prefix, e.g. `### 4.2 File record schema`.
 # Without this, the `4.2 File` fragment matches NUMERIC_CLAIM (files? unit).
-# Section numbers in headings are structural, never factual claims.
+# Section numbers are structural when they include a decimal subsegment
+# (4.2, 1.2.3) — those are always a hierarchy. Bare integer headings like
+# `## 17 frameworks supported` are NOT exempted: those are claims dressed
+# as headings, and the auditor should surface them.
 SECTION_HEADING = re.compile(
-    r"^\s*#{1,6}\s+\d+(?:\.\d+)*\b", re.MULTILINE,
+    r"^\s*#{1,6}\s+\d+(?:\.\d+)+\b", re.MULTILINE,
 )
 # Ranges that should suppress numeric claim matches entirely
 STRUCTURAL_REFS = [ARTICLE_REF, ANNEX_REF, RECITAL_REF, CATEGORY_REF, CHAPTER_REF,
