@@ -241,7 +241,7 @@ and decide for themselves whether it is too broad or too narrow.
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (960 tests under pytest; 495 functions in the legacy `tests/test_classification.py` custom runner) |
+| Test suite | `tests/` (1,000 tests under pytest; 495 functions in the legacy `tests/test_classification.py` custom runner) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit hook source | `hooks/pre_tool_use.py` |

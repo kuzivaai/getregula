@@ -125,10 +125,15 @@ ANNEX_REF = re.compile(r"\bAnnex\s+[IVX]+(?:,?\s+Category\s+\d+)?", re.IGNORECAS
 RECITAL_REF = re.compile(r"\bRecital\s+\d+", re.IGNORECASE)
 CATEGORY_REF = re.compile(r"\bCategory\s+\d+", re.IGNORECASE)
 CHAPTER_REF = re.compile(r"\bChapter\s+\d+", re.IGNORECASE)
+# Markdown heading section-number prefix, e.g. `### 4.2 File record schema`.
+# Without this, the `4.2 File` fragment matches NUMERIC_CLAIM (files? unit).
+# Section numbers in headings are structural, never factual claims.
+SECTION_HEADING = re.compile(
+    r"^\s*#{1,6}\s+\d+(?:\.\d+)*\b", re.MULTILINE,
+)
 # Ranges that should suppress numeric claim matches entirely
-STRUCTURAL_REFS = [ARTICLE_REF, ANNEX_REF, RECITAL_REF, CATEGORY_REF, CHAPTER_REF]
-LINE_REF = re.compile(r":\d+(?::\d+)?\b")
-SECTION_REF = re.compile(r"^\s*#{1,6}\s")
+STRUCTURAL_REFS = [ARTICLE_REF, ANNEX_REF, RECITAL_REF, CATEGORY_REF, CHAPTER_REF,
+                   SECTION_HEADING]
 
 # Source indicators — presence of any of these within the same paragraph
 # exempts the paragraph's claims.
