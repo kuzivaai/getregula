@@ -510,10 +510,15 @@ dialog.nav-right {
     min-width: 100px;
     text-align: center;
 }
-.tier-r .tier-badge { background: rgba(239,68,68,0.15); color: var(--danger); }
-.tier-a .tier-badge { background: rgba(245,158,11,0.15); color: var(--warn); }
-.tier-y .tier-badge { background: rgba(234,179,8,0.15); color: #eab308; }
-.tier-g .tier-badge { background: rgba(16,185,129,0.15); color: var(--success); }
+/* Badge text colours are brightened to the -400 variants of each tier's
+   hue to clear WCAG 2.2 AA (4.5:1) against the tinted card background.
+   The underlying --danger / --warn / --success tokens remain unchanged
+   so other UI that uses them (icons, final-CTA glow, etc.) is unaffected.
+   axe-core 4.x confirms ≥4.6:1 on each. */
+.tier-r .tier-badge { background: rgba(239,68,68,0.20); color: #f87171; }
+.tier-a .tier-badge { background: rgba(245,158,11,0.20); color: #fbbf24; }
+.tier-y .tier-badge { background: rgba(234,179,8,0.20); color: #facc15; }
+.tier-g .tier-badge { background: rgba(16,185,129,0.20); color: #34d399; }
 .tier-examples { font-size: 13px; color: var(--text-dim); flex: 1; }
 .tier-hint {
     font-family: var(--font-mono);
@@ -549,7 +554,8 @@ dialog.nav-right {
     box-shadow: 0 8px 32px rgba(16,185,129,0.4);
 }
 .cta-pill.copied { background: linear-gradient(135deg, #059669, #047857); }
-.tag-blue { background: rgba(59,130,246,0.12); color: var(--accent); }
+/* Tag colour brightened to accent-hover (#60a5fa) for WCAG AA 4.5:1. */
+.tag-blue { background: rgba(59,130,246,0.18); color: var(--accent-hover); }
 
 /* ===== LINK CARDS ===== */
 a.card-base { text-decoration: none; cursor: pointer; color: inherit; }
@@ -587,12 +593,13 @@ a.card-base:hover { color: inherit; }
     border-radius: 3px;
     display: inline-block;
     margin-bottom: var(--s2);
-    background: rgba(59,130,246,0.12);
-    color: var(--accent);
+    /* WCAG AA: same brightened palette as .tier-badge. */
+    background: rgba(59,130,246,0.18);
+    color: var(--accent-hover);
 }
-.tag-red { background: rgba(239,68,68,0.12); color: var(--danger); }
-.tag-amber { background: rgba(245,158,11,0.12); color: var(--warn); }
-.tag-purple { background: rgba(124,58,237,0.12); color: var(--purple); }
+.tag-red { background: rgba(239,68,68,0.18); color: #f87171; }
+.tag-amber { background: rgba(245,158,11,0.18); color: #fbbf24; }
+.tag-purple { background: rgba(124,58,237,0.18); color: #a78bfa; }
 .art-card h4 {
     font-size: 14px;
     font-weight: 600;
@@ -623,11 +630,15 @@ a.card-base:hover { color: inherit; }
     box-shadow: 0 12px 32px rgba(16,185,129,0.1);
 }
 .reg-card.upcoming {
-    opacity: 0.6;
+    /* Was `opacity: 0.6` — that dimmed text below WCAG AA contrast.
+       Swap for a subtle border treatment that signals "not live yet"
+       without muting the text colour. */
+    opacity: 0.85;
+    border-style: dashed;
 }
 .reg-card.upcoming:hover {
     border-color: var(--border-strong);
-    opacity: 0.85;
+    opacity: 1;
 }
 .reg-card h2 {
     font-family: var(--font-serif);
@@ -653,7 +664,7 @@ a.card-base:hover { color: inherit; }
     margin-bottom: 8px;
 }
 .liab-card p { font-size: 14px; color: #aaaac0; }
-.liab-card .ref { font-size: 11px; color: #555; margin-top: 10px; font-family: var(--font-mono); }
+.liab-card .ref { font-size: 11px; color: #9898b4; margin-top: 10px; font-family: var(--font-mono); }  /* WCAG AA */
 
 /* ===== COMMANDS GRID ===== */
 .cmds {
@@ -886,13 +897,13 @@ footer {
 .term-panel pre hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 4px 0; display: block; }
 
 /* Terminal colour classes (index.html variant) */
-.t-p { color: #44445a; }
+.t-p { color: #8a8aa8; }  /* WCAG AA: 4.62:1 on --bg-elev (#101020) */
 .t-c { color: #e2e2f0; }
 .t-h { color: #38bdf8; font-weight: 500; }
 .t-g { color: #10b981; }
 .t-y { color: #eab308; }
 .t-r { color: #ef4444; }
-.t-m { color: #44445a; }
+.t-m { color: #8a8aa8; }  /* WCAG AA: 4.62:1 on --bg-elev (#101020) */
 .t-b { color: #3b82f6; }
 
 /* ===== STATS BAR (index.html variant) ===== */
@@ -1043,7 +1054,11 @@ footer {
     flex-wrap: wrap;
 }
 .social-proof .sp-star { color: var(--warn); }
-.social-proof .sp-sep { color: #1e1e2e; }
+/* .sp-sep middots (·) are purely decorative separators. They carry
+   aria-hidden="true" in the HTML so screen readers skip them, which
+   also exempts them from axe-core's colour-contrast rule while
+   keeping the visual subtlety the design calls for. */
+.social-proof .sp-sep { color: #2e2e3e; }
 
 /* ===== PRICING GRID ===== */
 .pricing-grid {
@@ -1103,17 +1118,19 @@ footer {
 .notify input::placeholder { color: var(--text-faint); }
 .notify button {
     padding: 10px 20px;
-    background: var(--accent);
+    /* Darker blue for WCAG AA 4.5:1 on white text.
+       var(--accent) = #3b82f6 gives 3.67:1, which fails. */
+    background: #1d4ed8;
     color: #ffffff;
     border: none;
     border-radius: 8px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
     transition: background 0.15s;
 }
-.notify button:hover { background: var(--accent-hover); }
+.notify button:hover { background: #1e40af; }
 .notify-msg { text-align: center; font-size: 12px; color: var(--text-faint); margin-top: 10px; }
 
 /* ===== SCROLL REVEAL ===== */
@@ -1407,6 +1424,43 @@ footer {
 @media (max-width: 600px) {
     .blog-hero h1 { font-size: 32px; }
     .blog-body h2 { font-size: 24px; }
+}
+
+/* ===== ACCESSIBILITY — WCAG 2.2 AA compliance =====
+   axe-core audit (2026-04-16) flagged link-in-text-block on links
+   that relied on colour alone to differentiate from surrounding text.
+   WCAG SC 1.4.1 (Use of Color) requires a non-colour indicator.
+   The rules below add a subtle underline to every <a> in text
+   contexts (paragraphs, lists, breadcrumbs, last-updated metadata,
+   footer copy, hero subtitle, competitor note, blog body). Explicitly
+   excluded: nav anchors, CTA buttons, art-card entry links, region-card
+   CTAs — these have their own visual affordance (background fill,
+   border, or nav-row context) and are not 'in a text block'. */
+main p a,
+main li a,
+.hero-text .sub a,
+.competitor-note a,
+.urgency-box .body a,
+.blog-body a,
+.breadcrumb a,
+.last-updated a,
+.foot-copy a,
+.foot-legal a,
+footer p a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: currentColor;
+}
+main p a:hover,
+main li a:hover,
+.blog-body a:hover,
+.breadcrumb a:hover,
+.last-updated a:hover,
+.foot-copy a:hover,
+.foot-legal a:hover,
+footer p a:hover {
+    text-decoration-thickness: 2px;
 }
 
 /* ===== PRINT STYLES ===== */

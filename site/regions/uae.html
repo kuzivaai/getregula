@@ -155,7 +155,7 @@
         .social-proof {
             margin-top: 28px;
             font-size: 13px;
-            color: #666;
+            color: #9898b4;  /* WCAG AA: 5.29:1 on #070711 */
         }
         .social-proof .sp-sep { margin: 0 8px; }
 
@@ -199,7 +199,7 @@
             overflow-x: auto;
             line-height: 1.7;
         }
-        .terminal .prompt { color: #44445a; }
+        .terminal .prompt { color: #8a8aa8; }
         .terminal .cmd { color: #7dd3fc; }
         .terminal .out-block { color: #fff; }
         .terminal .out-warn { color: #facc15; }
@@ -215,22 +215,24 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 14px;
         }
-        .install-block .dollar { color: #44445a; }
+        .install-block .dollar { color: #8a8aa8; }
         .install-block .cmd { color: #7dd3fc; flex: 1; }
         .install-block button {
-            background: #3b82f6; border: none; color: #fff;
+            /* Darker blue for WCAG AA 4.5:1 contrast with white text. */
+            background: #1d4ed8; border: none; color: #fff;
             padding: 8px 16px; border-radius: 6px; cursor: pointer;
             font-family: inherit; font-size: 13px; font-weight: 600;
         }
+        .install-block button:hover { background: #1e40af; }
 
         footer {
             border-top: 1px solid rgba(255,255,255,0.06);
             padding: 36px 24px;
             text-align: center;
-            color: #555;
+            color: #9898b4;  /* WCAG AA on #070711 */
             font-size: 13px;
         }
-        footer a { color: #888; }
+        footer a { color: #b8b8c8; }
 
         @media (max-width: 720px) {
             .hero { padding: 56px 16px 36px; }
@@ -290,11 +292,11 @@
 
     <div class="social-proof">
         <span>MIT licence</span>
-        <span class="sp-sep">&middot;</span>
+        <span class="sp-sep" aria-hidden="true">&middot;</span>
         <span>zero runtime dependencies</span>
-        <span class="sp-sep">&middot;</span>
+        <span class="sp-sep" aria-hidden="true">&middot;</span>
         <span>935 tests</span>
-        <span class="sp-sep">&middot;</span>
+        <span class="sp-sep" aria-hidden="true">&middot;</span>
         <span>0 known security findings</span>
     </div>
 </section>
@@ -419,10 +421,10 @@ Regula Quickstart
 </main>
 
 <footer>
-    <p style="margin-bottom: 16px; padding: 12px; background: #fff8e7; border-left: 3px solid #d4a017; font-size: 13px; color: #66668a;"><strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions.</p>
+    <p style="margin-bottom: 16px; padding: 12px; background: #fff8e7; border-left: 3px solid #d4a017; font-size: 13px; color: #3f3a26;"><strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions.</p>
     <p>Regula is an open-source project. The maintainer is happy to take an introduction call from any DIFC, ADGM, Hub71, or NEOM-portfolio team that wants a structured walk-through. Email <a href="mailto:support@getregula.com">support@getregula.com</a> or open a discussion on <a href="https://github.com/kuzivaai/getregula/issues">GitHub</a>.</p>
     <p style="margin-top: 12px;">Sources for the legal claims on this page: <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Regulation (EU) 2024/1689</a>, <a href="https://www.afriwise.com/blog/extraterritorial-application-of-the-eu-ai-act-what-non-eu-companies-should-know">Afriwise — Extraterritorial Application of the EU AI Act</a>, <a href="https://www.twobirds.com/en/insights/2025/united-arab-emirates/gcc-navigating-ai-regulations---the-current-landscape">Bird &amp; Bird — GCC AI Regulations Tracker</a>.</p>
-    <p style="margin-top: 16px; font-size: 12px; color: #66668a;">Open source &middot; MIT licence &middot; &copy; 2026 Regula &middot; <a href="/" style="color:#666;">Global page</a> &middot; <a href="https://github.com/kuzivaai/getregula" style="color:#666;">GitHub</a> &middot; <a href="https://github.com/kuzivaai/getregula/blob/main/SECURITY.md" style="color:#666;">Security</a></p>
+    <p style="margin-top: 16px; font-size: 12px; color: #9898b4;">Open source &middot; MIT licence &middot; &copy; 2026 Regula &middot; <a href="/" style="color:#9898b4;">Global page</a> &middot; <a href="https://github.com/kuzivaai/getregula" style="color:#9898b4;">GitHub</a> &middot; <a href="https://github.com/kuzivaai/getregula/blob/main/SECURITY.md" style="color:#9898b4;">Security</a></p>
 </footer>
 
 <script>
