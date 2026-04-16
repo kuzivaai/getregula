@@ -508,10 +508,24 @@ def cmd_verify(args) -> None:
                 manifest_path = p
                 break
         else:
-            print(f"No manifest.json or 00-assessment-summary.json found in {pack_path}")
+            print(
+                f"Error: No manifest.json or 00-assessment-summary.json "
+                f"found in {pack_path}",
+                file=sys.stderr,
+            )
+            print(
+                "  This does not look like a Regula evidence pack. Pass the "
+                "pack directory, its manifest.json, or a .regula.zip bundle.",
+                file=sys.stderr,
+            )
             sys.exit(2)
     else:
-        print(f"Path not found: {pack_path}")
+        print(f"Error: Path does not exist: {pack_path}", file=sys.stderr)
+        print(
+            "  Check the path is correct. `regula verify` accepts a pack "
+            "directory, a manifest.json file, or a .regula.zip bundle.",
+            file=sys.stderr,
+        )
         sys.exit(2)
 
     try:
