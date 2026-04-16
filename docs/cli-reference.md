@@ -179,7 +179,7 @@ The command produces a documented self-assessment with the conditions met, the r
 
 ### GPAI Code of Practice Check (Article 53 + Article 55)
 
-Maps a GPAI provider codebase to the three chapters of the EU AI Act GPAI Code of Practice (final 10 July 2025, endorsed 1 August 2025, obligations in force since 2 August 2025, enforcement actions from 2 August 2026):
+Maps a GPAI provider codebase to the three chapters of the EU AI Act GPAI Code of Practice (final 10 July 2025, endorsed 1 August 2025, obligations in force since 2 August 2025, enforcement actions from 2 August 2026 — note the pending EU Digital Omnibus on AI may defer Annex III high-risk enforcement; GPAI enforcement is a separate clock, confirm current scope against the final Omnibus text when adopted):
 
 - **Chapter 1 — Transparency** (all GPAI providers, Art 53(1)(a)(b)(d)): model documentation, downstream-provider information, training-content summary
 - **Chapter 2 — Copyright** (all GPAI providers, Art 53(1)(c)): written copyright policy, text-and-data mining opt-out compliance (robots.txt / TDMRep)
