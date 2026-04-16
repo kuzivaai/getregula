@@ -9,7 +9,7 @@ classification (Article 50 transparency obligation) when scanned with Regula.
 regula check examples/customer-chatbot
 ```
 
-Expected output (verified against Regula v1.6.1 on 2026-04-16):
+Expected output (captured against Regula v1.6.1 on 2026-04-16):
 
 ```
 Regula Scan: /home/mkuziva/getregula/examples/customer-chatbot
@@ -25,14 +25,9 @@ Regula Scan: /home/mkuziva/getregula/examples/customer-chatbot
   WARN tier:          0
   INFO tier:          1
 
-  LIMITED-RISK:
+  LIMITED-RISK (Article 50):
+    [INFO] [ 45] app.py:1 — Chatbots and conversational AI
 ============================================================
-```
-
-To see the file and line for the INFO finding, add `--verbose`:
-
-```
-regula check examples/customer-chatbot --verbose
 ```
 
 ## Why Regula flags this
