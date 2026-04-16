@@ -322,7 +322,8 @@ def cmd_compliance(args) -> None:
                 print("  No history recorded.")
             else:
                 for h in history:
-                    print(f"    {h['date'][:10]}: {h['from']} \u2192 {h['to']}{' \u2014 ' + h['note'] if h.get('note') else ''}")
+                    note_suffix = f" — {h['note']}" if h.get("note") else ""
+                    print(f"    {h['date'][:10]}: {h['from']} \u2192 {h['to']}{note_suffix}")
             print()
 
     elif args.subcommand == "workflow":

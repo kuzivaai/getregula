@@ -189,10 +189,10 @@ def cmd_fix(args) -> None:
             print(f"   {fix['explanation']}")
             if fix["fix_code"]:
                 print(f"\n   Suggested code scaffold:")
-                print(f"   {'\u2500' * 40}")
+                print(f"   {'─' * 40}")
                 for code_line in fix["fix_code"].replace("\\n", "\n").split("\n"):
                     print(f"   {code_line}")
-                print(f"   {'\u2500' * 40}")
+                print(f"   {'─' * 40}")
             print()
 
         if args.output:
