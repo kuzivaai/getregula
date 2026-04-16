@@ -2,7 +2,7 @@
 
 ## Identity
 
-Regula v1.6.2 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only core.
+Regula v1.7.0 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only core.
 
 **Verified counts (2026-04-16):**
 - **53 CLI commands** (verified via `regula --help-all`; `regula -h` shows 6 primary commands via progressive disclosure)

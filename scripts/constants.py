@@ -12,7 +12,7 @@ Regula to claim "8 languages" while actually scanning fewer.
 
 __all__ = ["VERSION", "CODE_EXTENSIONS", "SKIP_DIRS", "MODEL_EXTENSIONS"]
 
-VERSION = "1.6.2"
+VERSION = "1.7.0"
 
 # File extensions scanned for AI patterns and risk classification.
 # Covers: Python, JavaScript, TypeScript, Java, Go, Rust, C, C++, Jupyter notebooks
