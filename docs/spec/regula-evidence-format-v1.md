@@ -165,20 +165,27 @@ A v1.1 pack MAY embed an Ed25519 signature over the canonical manifest JSON.
 The bytes that a signature covers are produced by:
 
 1. Take the manifest object.
-2. Remove the `signing` key entirely (not just empty it).
+2. Remove the following keys entirely (not just empty them):
+   - `signing`
+   - `timestamp_authority`
+
+   These are "post-canonical" blocks — they are added after the canonical
+   bytes are fixed, so they must be excluded at serialisation time or a
+   subsequent timestamp would invalidate the signature.
+
 3. Serialise with:
 
    ```python
-   json.dumps(manifest_no_signing, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+   json.dumps(manifest_stripped, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
    ```
 
    i.e. sorted keys, no whitespace, UTF-8. This canonical form is stable
    across producers and languages: the same manifest always produces the
    same bytes, regardless of key order in the source object.
 
-Producers MUST NOT modify any other field after signing. Verifiers MUST
-reproduce this canonical form exactly before calling the signature
-verification routine.
+Producers MUST NOT modify any field other than the post-canonical set
+after signing. Verifiers MUST reproduce this canonical form exactly
+before calling the signature verification routine.
 
 #### 4.5.2 Signing block structure
 
@@ -235,6 +242,95 @@ private key separately and consider rotating it on a defined cadence
 (e.g. per product release). Public-key distribution is out of scope for
 this spec; organisations can publish signing keys via repo README, a
 `.well-known/regula-signing-keys.pem` endpoint, or any existing PKI.
+
+### 4.6 Timestamp block (v1.1)
+
+A v1.1 pack MAY carry an RFC 3161 `timestamp_authority` block proving
+that the signed canonical manifest existed at a given moment. The
+timestamp complements the signature: signing binds `who`, timestamping
+binds `when`.
+
+#### 4.6.1 What is timestamped
+
+The TSA request is built over the **canonical form defined in §4.5.1**
+— i.e. the manifest with the `signing` block stripped, serialised with
+sorted keys and no whitespace. A timestamp is therefore valid for the
+unsigned canonical state; a valid signature over the same canonical
+form, combined with a valid timestamp, gives "this content existed at
+time T and was signed by key K".
+
+Producers SHOULD add the timestamp AFTER signing (so the canonical form
+is identical to what the signature covers).
+
+#### 4.6.2 Block structure
+
+```json
+{
+  "timestamp_authority": {
+    "format": "rfc3161",
+    "hash_algorithm": "sha256",
+    "message_imprint": "<hex sha256 of canonical manifest>",
+    "tsa_url": "https://freetsa.org/tsr",
+    "requested_at": "2026-04-16T16:00:00+00:00",
+    "token": "<base64-encoded TimeStampToken (CMS ContentInfo)>",
+    "gen_time": "2026-04-16T15:59:58+00:00",
+    "tsa_name": "FreeTSA",
+    "chain_verified": false
+  }
+}
+```
+
+- `format` MUST be `"rfc3161"` in v1.1.
+- `hash_algorithm` MUST be `"sha256"` in v1.1.
+- `message_imprint` is the lowercase hex SHA-256 of the canonical
+  manifest form (§4.5.1).
+- `token` is a base64-encoded RFC 3161 TimeStampToken — a CMS
+  ContentInfo wrapping SignedData wrapping TSTInfo. Consumers decode
+  the base64 and parse with any RFC 3161-aware library.
+- `gen_time` is the TSA's own timestamp from inside the token, copied
+  out of the TSTInfo for quick reading without an ASN.1 decode.
+- `chain_verified` indicates whether the TSA signer-cert chain was
+  validated against a trust store. v1.1 verifiers set this to `false`
+  and warn — full PKI validation is out of scope for the reference
+  implementation.
+
+#### 4.6.3 Verifier behaviour
+
+A conforming verifier MUST:
+
+1. If no `timestamp_authority` block is present, proceed without
+   timestamp verification. Under `--strict`, SHOULD emit a warning but
+   MUST NOT fail solely on absence.
+2. If the block is present:
+   - Check `format == "rfc3161"` and `hash_algorithm == "sha256"`. Unknown
+     values → fail.
+   - Reconstruct the canonical form (§4.5.1) from the manifest.
+   - Base64-decode `token`, parse as RFC 3161 TimeStampToken, extract
+     the `messageImprint.hashedMessage`.
+   - If the extracted imprint ≠ SHA-256(canonical form) → FAIL regardless
+     of `--strict`.
+   - Otherwise, record `timestamp_status: "VERIFIED"` in the verify
+     report. The verifier SHOULD note that the TSA signer-cert chain was
+     NOT independently verified.
+3. If the verifier cannot parse the token (no ASN.1 library installed),
+   it MUST warn with `timestamp_status: "UNVERIFIABLE"` and MUST NOT
+   claim the pack is or is not timestamped. Under `--strict`, treat as
+   failure.
+
+#### 4.6.4 Trust boundaries (informative)
+
+The v1.1 verifier checks that the TSA's embedded hash matches what we
+claim to have submitted. It does NOT check:
+
+- Whether the TSA signer certificate is trusted.
+- Whether the certificate was valid at the time in `gen_time`.
+- Whether the token's own signature cryptographically verifies against
+  the TSA public key.
+
+Consumers with a higher trust bar (e.g. notified-body audit submission)
+SHOULD run the raw `token` bytes through a dedicated RFC 3161 verifier
+such as `openssl ts -verify` or the signer's own CLI. The base64
+token in the block is the exact byte sequence such a tool expects.
 
 ## 5. Assessment summary schema (normative)
 
@@ -426,8 +522,15 @@ LicenseRef-DRL-1.1` — see the repository root `LICENSE.*` files.
   so third-party implementations can reproduce the signed bytes.
 - Defines verifier behaviour for signed, unsigned, and unverifiable
   manifests (§4.5.3).
-- Manifests that use the signing block MUST set `format_version` to
-  `"1.1"`. v1.0 manifests remain valid as-is.
+- Adds the optional timestamp block (§4.6) — RFC 3161 TimeStampToken
+  over the canonical manifest form. Reference verifier checks that the
+  TSA's embedded hash matches what the manifest claims; it does NOT
+  validate the TSA signer-cert chain (out of scope in v1.1 — consumers
+  with a higher trust bar can run the raw token through `openssl ts`).
+- Defines verifier behaviour for timestamped, un-timestamped, and
+  unverifiable cases (§4.6.3).
+- Manifests that use either optional block MUST set `format_version`
+  to `"1.1"`. v1.0 manifests remain valid as-is.
 - No breaking changes to §3, §4.1, §4.2, §5, §6, §7.1.
 
 ### v1.0 (2026-04-16)

@@ -123,14 +123,21 @@ def load_or_create_keypair(
     return private_key, public_key
 
 
+# Keys that are layered onto the manifest AFTER the canonical bytes are
+# fixed. All must be stripped before serialisation so a sign-then-timestamp
+# producer and a verifier both compute the same canonical form.
+_POST_CANONICAL_KEYS = frozenset({"signing", "timestamp_authority"})
+
+
 def canonicalize_manifest_for_signing(manifest: dict) -> bytes:
     """Produce the canonical byte sequence that a signature covers.
 
-    The `signing` block is stripped before serialisation so a freshly
-    signed manifest produces the same canonical bytes as the one later
-    verified. The serialisation is sorted-key, no-whitespace JSON.
+    The `signing` AND `timestamp_authority` blocks are stripped before
+    serialisation so a freshly signed manifest produces the same canonical
+    bytes as the one later verified, even if a timestamp was layered in
+    after signing. The serialisation is sorted-key, no-whitespace JSON.
     """
-    payload = {k: v for k, v in manifest.items() if k != "signing"}
+    payload = {k: v for k, v in manifest.items() if k not in _POST_CANONICAL_KEYS}
     return json.dumps(
         payload,
         sort_keys=True,

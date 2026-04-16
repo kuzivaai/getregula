@@ -21,6 +21,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from constants import VERSION
 
+# Default TSA for v1.1 manifest timestamps. Keeps the reference-implementation
+# behaviour explicit here rather than hidden in the timestamp module.
+DEFAULT_TSA_URL_FOR_CONFORM = "https://freetsa.org/tsr"
+
 
 # ---------------------------------------------------------------------------
 # Article definitions with human-required items
@@ -264,6 +268,8 @@ def generate_conformity_pack(
     endpoint: str = "http://localhost:11434",
     sign: bool = False,
     signing_key_path=None,
+    timestamp: bool = False,
+    tsa_url: str = None,
 ) -> dict:
     """Generate a conformity assessment evidence pack mapped by article.
 
@@ -279,6 +285,11 @@ def generate_conformity_pack(
         signing_key_path: Optional override for the signing key location
             (default: ~/.regula/signing.key, or the REGULA_SIGNING_KEY
             environment variable).
+        timestamp: If True, request an RFC 3161 timestamp from a TSA over
+            the signed canonical manifest form and embed it as the
+            manifest's `timestamp_authority` block (v1.1 §4.6). Implies
+            `sign=True`. Requires network access to the TSA.
+        tsa_url: TSA endpoint URL. Defaults to FreeTSA (https://freetsa.org/tsr).
 
     Returns:
         Dict with pack_dirname, pack_path, and manifest.
@@ -580,9 +591,12 @@ def generate_conformity_pack(
     # is appended AFTER the rest of the manifest is finalised. The signing
     # block covers every other field via the canonical form in §4.5.
 
+    # Any v1.1 optional block bumps the version declaration.
+    uses_v11 = sign or timestamp
+
     manifest = {
         "format": "regula.evidence.v1",
-        "format_version": "1.1" if sign else "1.0",
+        "format_version": "1.1" if uses_v11 else "1.0",
         "schema_uri": "https://getregula.com/spec/regula.manifest.v1.schema.json",
         "regula_version": VERSION,
         "generated_at": now.isoformat(),
@@ -597,6 +611,29 @@ def generate_conformity_pack(
         # optional `cryptography` extra is not installed.
         from signing import sign_manifest
         manifest["signing"] = sign_manifest(manifest, key_path=signing_key_path)
+
+    if timestamp:
+        if not sign:
+            # Timestamp implies sign — we timestamp the signed canonical form
+            # so a valid timestamp also certifies the signature existed at
+            # that moment. Raise so the caller surfaces the expectation.
+            raise ValueError(
+                "--timestamp requires --sign (timestamp covers the signed "
+                "canonical manifest form per spec §4.6)."
+            )
+        from signing import canonicalize_manifest_for_signing
+        from timestamp import request_manifest_timestamp
+        canonical = canonicalize_manifest_for_signing(manifest)
+        # The signing block is excluded from the canonical form, so the
+        # timestamp witnesses the *unsigned* canonical state. Re-verify
+        # order (sign → timestamp) at consumer time: a valid signature
+        # plus a matching timestamp gives "this content existed at T and
+        # was signed by K".
+        ts_block = request_manifest_timestamp(
+            canonical,
+            tsa_url=tsa_url or DEFAULT_TSA_URL_FOR_CONFORM,
+        )
+        manifest["timestamp_authority"] = ts_block
 
     manifest_json = json.dumps(manifest, indent=2)
     (pack_dir / "manifest.json").write_text(manifest_json, encoding="utf-8")

@@ -119,8 +119,53 @@
     },
     "timestamp_authority": {
       "type": "object",
-      "description": "Reserved for v1.1. MAY contain an RFC 3161 timestamp token of the manifest's hash.",
-      "additionalProperties": true
+      "description": "Optional in v1.1+. Carries an RFC 3161 TimeStampToken witnessing that the canonical manifest form existed at a given time. The TSA signer-cert chain is NOT verified by the reference verifier; consumers requiring chain trust can extract the token and run it through a dedicated tool.",
+      "required": ["format", "hash_algorithm", "message_imprint", "token"],
+      "additionalProperties": true,
+      "properties": {
+        "format": {
+          "type": "string",
+          "const": "rfc3161",
+          "description": "Timestamp token format. v1.1 fixes this to RFC 3161."
+        },
+        "hash_algorithm": {
+          "type": "string",
+          "const": "sha256",
+          "description": "Hash used for the TimeStampReq messageImprint. v1.1 fixes this to sha256."
+        },
+        "message_imprint": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Lowercase hex SHA-256 of the canonical manifest form that was submitted to the TSA. Consumers recompute this from the manifest and compare with the imprint embedded inside the token."
+        },
+        "tsa_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the TSA that issued the token."
+        },
+        "requested_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "RFC 3339 timestamp when Regula sent the request. Not authoritative — use `gen_time` for the TSA's claim."
+        },
+        "token": {
+          "type": "string",
+          "description": "Base64-encoded DER bytes of the TimeStampToken (CMS ContentInfo). Decode with base64, then parse with any RFC 3161-aware library."
+        },
+        "gen_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The TSA's genTime from the embedded TSTInfo. This is the authoritative witness moment."
+        },
+        "tsa_name": {
+          "type": ["string", "null"],
+          "description": "TSA name as declared inside the token's TSTInfo, if the TSA included one."
+        },
+        "chain_verified": {
+          "type": "boolean",
+          "description": "Whether the TSA signer-cert chain was verified against a trust store. v1.1 verifiers set this to false and warn."
+        }
+      }
     }
   }
 }

@@ -228,3 +228,213 @@ def request_timestamp(hash_hex: str, tsa_url: str = DEFAULT_TSA_URL, timeout: in
         "hash_hex": hash_hex,
         "status": parsed["status"],
     }
+
+
+# =====================================================================
+# Regula Evidence Format v1.1 helpers (spec §4.6)
+# =====================================================================
+#
+# Signing (v1.1) covers manifest integrity via Ed25519; timestamping
+# (v1.1) adds *external* provenance — a TSA witness that the signed
+# manifest existed at a given moment. The code above handles audit-
+# trail timestamps with pure stdlib. Manifest timestamps go a step
+# deeper: we need to extract messageImprint from the TimeStampToken
+# at verification time, which requires proper ASN.1 decoding. That
+# is gated behind the optional `asn1crypto` dependency (part of
+# `regula[signing]`). Network requests remain stdlib-only.
+
+
+class TimestampUnavailable(RuntimeError):
+    """Raised when the `asn1crypto` dependency is not installed."""
+
+
+class TimestampError(RuntimeError):
+    """Raised when a timestamp operation fails (network, TSA, parse)."""
+
+
+def _require_asn1crypto():
+    """Return (tsp, algos, core) or raise TimestampUnavailable."""
+    try:
+        from asn1crypto import tsp, algos, core
+    except ImportError as exc:
+        raise TimestampUnavailable(
+            "RFC 3161 manifest timestamping requires the `asn1crypto` "
+            "package. Install it with: pip install regula-ai[signing]"
+        ) from exc
+    return tsp, algos, core
+
+
+def request_manifest_timestamp(
+    message: bytes,
+    tsa_url: str = DEFAULT_TSA_URL,
+    timeout: int = 30,
+) -> dict:
+    """Request an RFC 3161 timestamp over `message` for embedding in a manifest.
+
+    Reuses the stdlib request path above (pure-DER TimeStampReq, urllib
+    POST). Extracts the embedded TimeStampToken from the TSR so consumers
+    don't need to carry the PKIStatusInfo wrapper.
+
+    Returns a dict suitable for direct embedding as the manifest's
+    `timestamp_authority` block:
+        {
+          "format": "rfc3161",
+          "hash_algorithm": "sha256",
+          "message_imprint": "<hex of sha256(message)>",
+          "tsa_url": <url>,
+          "requested_at": <iso8601>,
+          "token": "<base64-encoded TimeStampToken bytes>",
+          "gen_time": <iso8601 from TSTInfo>,
+          "tsa_name": <str or None>,
+          "chain_verified": false
+        }
+
+    Requires `regula[signing]` (uses asn1crypto to extract the token
+    from the TSR envelope).
+    """
+    tsp, _, _ = _require_asn1crypto()
+    _require_http_url(tsa_url)
+
+    digest = hashlib.sha256(message).digest()
+    digest_hex = digest.hex()
+
+    # Use the existing stdlib request_timestamp — it returns the TSR hex
+    result = request_timestamp(digest_hex, tsa_url=tsa_url, timeout=timeout)
+    tsr_bytes = bytes.fromhex(result["tst_hex"])
+
+    try:
+        response = tsp.TimeStampResp.load(tsr_bytes)
+        token = response["time_stamp_token"]
+        token_bytes = token.dump()
+        encap = token["content"]["encap_content_info"]
+        encap_content = encap["content"]
+        # asn1crypto auto-parses the TSTInfo if content_type == tst_info;
+        # fall back to explicit load from raw DER bytes if not.
+        if hasattr(encap_content, "parsed") and isinstance(encap_content.parsed, tsp.TSTInfo):
+            tst_info = encap_content.parsed
+        else:
+            tst_info = tsp.TSTInfo.load(encap_content.contents)
+        gen_time = tst_info["gen_time"].native.isoformat()
+        imprint_hash_algo = tst_info["message_imprint"]["hash_algorithm"]["algorithm"].native
+        imprint_hash = tst_info["message_imprint"]["hashed_message"].native
+    except Exception as exc:
+        raise TimestampError(
+            f"Cannot parse TSR from {tsa_url}: {exc.__class__.__name__}: {exc}"
+        ) from exc
+
+    if imprint_hash_algo != "sha256":
+        raise TimestampError(
+            f"TSA response used {imprint_hash_algo!r} for message imprint, "
+            f"but v1.1 requires sha256."
+        )
+    if imprint_hash != digest:
+        raise TimestampError(
+            "TSA response messageImprint does not match our request "
+            "(possible replay or TSA misbehaviour)."
+        )
+
+    # asn1crypto fields use [] access and return VOID for absent optional
+    # fields. Use a defensive try/except in case the TSA omitted the tsa
+    # field altogether.
+    tsa_name = None
+    try:
+        tsa_field = tst_info["tsa"]
+        tsa_native = tsa_field.native
+        if tsa_native is not None:
+            tsa_name = str(tsa_native)
+    except (KeyError, Exception):
+        tsa_name = None
+
+    return {
+        "format": "rfc3161",
+        "hash_algorithm": "sha256",
+        "message_imprint": digest_hex,
+        "tsa_url": tsa_url,
+        "requested_at": result["timestamp"],
+        "token": _base64_encode(token_bytes),
+        "gen_time": gen_time,
+        "tsa_name": tsa_name,
+        "chain_verified": False,
+    }
+
+
+def _base64_encode(data: bytes) -> str:
+    import base64
+    return base64.b64encode(data).decode("ascii")
+
+
+def verify_manifest_timestamp(
+    manifest: dict,
+    expected_message: bytes,
+) -> tuple[bool, str]:
+    """Verify a manifest's `timestamp_authority` block.
+
+    Returns (ok, message). ok=True iff the block is present, parses as
+    an RFC 3161 TimeStampToken, the messageImprint uses SHA-256, and
+    its hash matches SHA-256(expected_message).
+
+    The TSA's PKCS#7 signer-cert chain is NOT independently verified in
+    v1.1. A consumer that needs strong TSA trust can extract the token
+    and run it through a dedicated tool. We warn; we do not fail.
+
+    If no timestamp block is present, returns (False, "no timestamp block").
+    """
+    block = manifest.get("timestamp_authority")
+    if not block:
+        return False, "no timestamp block"
+
+    token_b64 = block.get("token")
+    if not token_b64:
+        return False, "timestamp block missing `token` field"
+
+    import base64
+    try:
+        token_bytes = base64.b64decode(token_b64)
+    except (ValueError, TypeError) as exc:
+        return False, f"timestamp token is not valid base64: {exc}"
+
+    try:
+        tsp, _, _ = _require_asn1crypto()
+        token = tsp.ContentInfo.load(token_bytes)
+        encap = token["content"]["encap_content_info"]
+        encap_content = encap["content"]
+        # asn1crypto auto-parses the TSTInfo if content_type == tst_info;
+        # fall back to explicit load from raw DER bytes if not.
+        if hasattr(encap_content, "parsed") and isinstance(encap_content.parsed, tsp.TSTInfo):
+            tst_info = encap_content.parsed
+        else:
+            tst_info = tsp.TSTInfo.load(encap_content.contents)
+        imprint = tst_info["message_imprint"]
+        digest = imprint["hashed_message"].native
+        hash_algo = imprint["hash_algorithm"]["algorithm"].native
+    except TimestampUnavailable as exc:
+        return False, f"cannot verify — asn1crypto not installed: {exc}"
+    except Exception as exc:
+        return False, f"cannot parse timestamp token: {exc.__class__.__name__}: {exc}"
+
+    if hash_algo != "sha256":
+        return False, (
+            f"timestamp hash_algorithm {hash_algo!r} is not sha256"
+        )
+
+    expected = hashlib.sha256(expected_message).digest()
+    if digest != expected:
+        return False, (
+            f"timestamp messageImprint does not match manifest digest "
+            f"(expected {expected.hex()[:16]}…, got {digest.hex()[:16]}…)"
+        )
+
+    return True, (
+        f"timestamp hash matches manifest; gen_time="
+        f"{tst_info['gen_time'].native.isoformat()} "
+        f"(signer-chain NOT independently verified)"
+    )
+
+
+def is_manifest_timestamp_available() -> bool:
+    """Return True iff asn1crypto is importable."""
+    try:
+        _require_asn1crypto()
+        return True
+    except TimestampUnavailable:
+        return False
