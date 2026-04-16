@@ -117,7 +117,13 @@ def load_or_create_keypair(
     try:
         os.chmod(path, stat.S_IRUSR | stat.S_IWUSR)
     except OSError:
-        pass  # Windows or restricted FS — best-effort
+        import warnings
+        warnings.warn(
+            f"Could not restrict permissions on {path} — the private key "
+            f"may be readable by other users on this system. Consider "
+            f"moving it to a secure location with restricted permissions.",
+            stacklevel=2,
+        )
 
     pub_path.write_bytes(public_pem)
     return private_key, public_key

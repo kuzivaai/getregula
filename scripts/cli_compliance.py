@@ -428,6 +428,16 @@ def cmd_conform(args) -> None:
             timestamp=timestamp_requested,
             tsa_url=tsa_url,
         )
+    except ImportError as exc:
+        # Malformed install where signing.py or timestamp.py is absent.
+        print(
+            f"Signing/timestamping unavailable: {exc}\n\n"
+            f"Install the signing extra:\n"
+            f"  pipx install \"regula-ai[signing]\"\n"
+            f"  # or: pip install \"regula-ai[signing]\"",
+            file=sys.stderr,
+        )
+        sys.exit(2)
     except Exception as exc:
         # SigningUnavailable, SigningError, TimestampUnavailable, or
         # TimestampError — show the message and exit 2. Avoid importing
