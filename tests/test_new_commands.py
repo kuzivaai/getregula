@@ -120,16 +120,25 @@ def test_env_regula_format():
 
 
 def test_env_regula_strict():
-    """REGULA_STRICT=1 enables CI mode — exit 1 when findings exist."""
+    """REGULA_STRICT=1 enables CI mode — exit 1 when findings exist.
+
+    Runs against examples/cv-screening-app/ which contains an intentional
+    high-risk employment finding (see examples/README.md). Previously this
+    test pointed at scripts/ and relied on a self-scan false positive in
+    scripts/explain_articles.py; that was correctly suppressed in commit
+    0c0a762 so the target had to move to a directory with genuine findings.
+    """
     env = os.environ.copy()
     env["REGULA_STRICT"] = "1"
-    # Use scripts/ which has real findings (not test fixtures which are skipped)
     result = subprocess.run(
-        [sys.executable, "-m", "scripts.cli", "check", "scripts/"],
+        [sys.executable, "-m", "scripts.cli", "check", "examples/cv-screening-app/"],
         capture_output=True, text=True, timeout=30, env=env,
         cwd=os.path.join(os.path.dirname(__file__), ".."),
     )
-    assert result.returncode != 0
+    assert result.returncode != 0, (
+        f"expected non-zero exit under REGULA_STRICT=1; got {result.returncode}\n"
+        f"stdout: {result.stdout[:400]}"
+    )
 
 
 # --- deterministic JSON ---
