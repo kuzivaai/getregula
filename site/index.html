@@ -164,6 +164,8 @@
          first paint. The inline critical CSS above already establishes the dark
          theme; these sheets layer on the full design system once they arrive.
          <noscript> fallback ensures JS-disabled clients still get full styling. -->
+    <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
+         If adding a Content Security Policy, migrate to a hashed <script> block. -->
     <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
     <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
     <noscript>
