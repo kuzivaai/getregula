@@ -11,16 +11,99 @@ This project uses [Semantic Versioning](https://semver.org/).
 - `regula governance` — generates AI governance scaffold from scan findings (Article 4, ISO 42001 Clause 5.2, NIST AI RMF GOVERN)
 - `regula model-card` — generates model card scaffold from scan findings (Annex IV, ISO 42001 Annex B)
 
-## [Unreleased]
+## [1.6.2] — 2026-04-16
 
-The "public-launch readiness" bundle. Adds two new CLI commands
-(`regula handoff` and `regula regwatch`), seeds the first open data
-assets Regula publishes (delta log, enforcement tracker, sandbox
-registry, pattern corpus), adds two write-time integrity tools
-(claim auditor, self-healing CI), and closes the honesty gaps surfaced
-by three independent audits (research-eval, repo-readiness,
-moat-research). Command count rises from 41 to 43. No breaking changes;
-all 935 tests still pass.
+First PyPI release since 1.6.0 (9 April 2026). 1.6.1 was tagged locally
+but never published to PyPI, so users installing via `pipx install
+regula-ai` were stuck on 1.6.0 through 122 subsequent commits. This
+release bundles everything merged since: the "public-launch readiness"
+work (two new CLI commands — `handoff` and `regwatch`, open regulatory
+data assets, integrity tooling), plus the subsequent fixes — repo IA
+restructure (`site/`, `docs/`, `configs/`), runnable examples directory,
+installation path rewrite to pipx-primary, LIMITED-RISK rendering fix,
+Python 3.10/3.11 f-string compatibility, and the landing-page cold-load
+FOUC fix. Command count is now **53** (verified via `regula --help-all`;
+`regula -h` shows 6 primary commands via progressive disclosure). No
+breaking changes for existing `regula check` / `regula plan` / `regula gap`
+users. All 935 tests still pass.
+
+### Added — runnable examples and CI plumbing
+
+- **`examples/`** — three runnable fixtures, one per EU AI Act risk tier,
+  each with a README documenting verified `regula check` output:
+  - `examples/cv-screening-app/` — high-risk employment pattern (Annex III
+    Category 5); expect one WARN finding flagging automated hiring.
+  - `examples/customer-chatbot/` — Article 50 limited-risk AI chatbot
+    interaction; expect one LIMITED-RISK finding after the rendering fix.
+  - `examples/code-completion-tool/` — minimal-risk code completion;
+    expect zero findings.
+- **GitHub workflow-command annotations in `--ci` mode**: `regula check
+  --ci` now emits `::error` / `::warning` / `::notice` lines when
+  `GITHUB_ACTIONS=true`, so findings surface inline on the PR "Files
+  changed" tab without SARIF setup.
+- **Installation guide** at `docs/installation.md` — per-error
+  troubleshooting table keyed to the literal error strings users paste
+  into search engines. Covers pipx, uv/uvx, plain pip fallbacks, Windows
+  PATH recovery, `externally-managed-environment`, `command not found`,
+  and `ModuleNotFoundError` for optional extras.
+
+### Changed — information architecture and install path
+
+- **Repository IA restructured** (`site/`, `docs/`, `configs/`): all
+  landing-page HTML + assets moved under `site/`, long-form governance
+  docs under `docs/`, tool configs under `configs/`. 12 redirect stubs
+  preserve every previous root-level URL for SEO continuity. Root is now
+  limited to build metadata and repo hygiene files. GitHub Pages
+  workflow updated to deploy `./site` as the artifact root.
+- **`regula check` LIMITED-RISK section now prints finding rows**: an
+  Article 50 chatbot scan previously printed only a bare `LIMITED-RISK:`
+  header with no row underneath, so the finding wasn't visible without
+  `--verbose`. Section header relabelled `LIMITED-RISK (Article 50)`
+  for clarity. Matches how HIGH-RISK / PROHIBITED / credentials render.
+- **Honest "test files excluded" suffix**: the trailing
+  `(test files excluded)` annotation on a clean scan now only appears
+  when test files were actually skipped, and the skipped count is
+  surfaced in the telemetry payload. Previously appeared even when zero
+  tests were skipped, which was misleading on directories with no tests.
+- **Install documentation leads with pipx**: primary install command is
+  now `pipx install regula-ai`, with `uvx --from regula-ai regula` as
+  the faster alternative for uv users. Plain `pip install` is now the
+  fallback section with explicit venv / conda / `--break-system-packages`
+  guidance. Reason: plain `pip install regula-ai` fails with PEP 668
+  `externally-managed-environment` on Ubuntu 22.04+, Debian 12+, Fedora,
+  macOS Homebrew Python, and Arch. Affected files: `README.md`,
+  `site/index.html` (pills and CTAs), `site/locales/de.html`,
+  `site/locales/pt-br.html`, `action.yml`, `examples/*/README.md`.
+
+### Fixed — landing page, CLI output, Python compatibility
+
+- **Landing-page white flash on cold load**: `site/index.html` rendered
+  a solid white viewport for ~600ms on slow connections before snapping
+  to the dark theme. Root cause was render-blocking CSS on a dark-theme
+  page — the browser had no stylesheet to paint against until
+  `/assets/site.css` arrived. The hero terminal sits at the top of the
+  fold so the white→dark snap read as "the demo flashing". Fix: inline
+  critical CSS in `<head>` establishes the brand background immediately;
+  `/assets/fonts.css` and `/assets/site.css` now load via
+  `media="print" onload` so they don't block first paint. `<noscript>`
+  fallback preserves styling for JS-disabled clients. Measured
+  first-paint on simulated 3G: 624ms → 288ms. A previous attempt
+  (commit 27cfba4) targeted panel opacity and font preload but
+  misdiagnosed the cause.
+- **`regula docs` and `regula handoff garak` no longer pollute the
+  working tree**: generator commands previously wrote artefacts into
+  the Regula repo checkout rather than the user's current directory,
+  dirtying version control. Output now lands in `cwd` as intended.
+- **Python 3.10 / 3.11 f-string syntax compatibility**: the compliance
+  CLI used f-string features only available in Python 3.12+ and raised
+  `SyntaxError` on 3.10 / 3.11 despite both being listed as supported
+  in `requires-python`. All nested f-strings now parse cleanly across
+  3.10 / 3.11 / 3.12 / 3.13.
+- **Terminal demo accessibility scaffolding** (`site/index.html`): hero
+  terminal now carries `role="region"`, `aria-label`, per-tab
+  `aria-selected` / `aria-controls`, `role="tablist"` and `role="tab"` /
+  `role="tabpanel"`. JS swap keeps `aria-selected` in sync with the
+  active tab. Decorative traffic-light bar marked `aria-hidden`.
 
 ### Added — new CLI commands
 
