@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install pyyaml pytest
+      - run: pip install pyyaml pytest "cryptography>=41,<47" "asn1crypto>=1.5,<2"
       - name: Custom test runner (manual list — asserts every test is registered)
         run: python3 tests/test_classification.py
       - name: pytest discovery (catches anything not in the manual list)
