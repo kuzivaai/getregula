@@ -37,14 +37,33 @@ If you ship an AI product to EU users, the EU AI Act applies to you -- regardles
 
 ## Quick start
 
-### Install
-
-The recommended install is **pipx** — it works on every platform (Linux, macOS, Windows), isolates Regula from your system Python, and does not trip the `externally-managed-environment` error that Ubuntu 22.04+, Debian 12+, Fedora, Arch, and Homebrew Python raise against plain `pip`.
-
 ```bash
-pipx install regula-ai
-regula --version   # confirms the install: should print "regula 1.7.0" or newer
+pipx install regula-ai      # or: pip install regula-ai / uv pip install regula-ai
 ```
+
+**Not sure if the AI Act applies?** No code needed:
+```bash
+regula assess               # 5 yes/no questions → your risk tier
+```
+
+**Want to scan your code?**
+```bash
+regula check .              # 404 patterns, 8 languages, 30 seconds
+```
+
+**Need documentation for auditors?**
+```bash
+regula evidence-pack --sign .   # signed, timestamped, SHA-256 verified
+```
+
+**Just want to see it work?**
+```bash
+regula demo                 # scan a bundled example project
+```
+
+### Install details
+
+The recommended install is **pipx** — it isolates Regula from your system Python and avoids the `externally-managed-environment` error on Ubuntu 22.04+, Debian 12+, Fedora, Arch, and Homebrew Python.
 
 If you don't have pipx yet, install it first (one-time):
 
@@ -62,41 +81,7 @@ If you don't have pipx yet, install it first (one-time):
 
 See [`docs/installation.md`](docs/installation.md) for troubleshooting (`externally-managed-environment`, `command not found: regula` after install, PATH setup per shell).
 
-### Scan
-
-From your project directory:
-
-```bash
-regula
-```
-
-That single command scans your code and produces a summary:
-
-```
-Regula -- yourproject
-============================================================
-  Files scanned:          42
-  BLOCK findings:         0
-  WARN findings:          1
-  INFO findings:          8
-  Compliance score:       97/100
-  Highest risk tier:      high_risk
-  Scan time:              1.4s
-============================================================
-
-  Next steps:
-    1. regula check .                  Review findings in detail
-    2. regula comply                   Check your obligations
-    3. regula plan --project .         Prioritised remediation plan
-```
-
-For a more detailed scan:
-
-```bash
-regula check .
-```
-
-Try it against a known high-risk fixture:
+### Try it against a known high-risk fixture:
 
 ```bash
 regula check examples/cv-screening-app
@@ -151,6 +136,7 @@ Every finding includes the relevant Article reference and explains when exceptio
 | `regula conform --project .` | Article 43 conformity assessment evidence pack |
 | `regula check --ci .` | CI mode -- exit code 1 on any WARN or BLOCK finding, SARIF output |
 | `regula assess` | Interactive applicability check -- does the EU AI Act apply to you? |
+| `regula demo` | Scan a bundled example project -- zero-commitment trial |
 
 Regula has 53 commands in total. Run `regula --help-all` for the full list, or see [`docs/cli-reference.md`](docs/cli-reference.md).
 
@@ -225,7 +211,7 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | CLI commands | 53 |
 | Risk detection patterns (regexes) | 404 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
-| Compliance frameworks mapped | 17 |
+| Compliance frameworks mapped | 12 |
 | Tests (pytest --collect-only, all passing) | 1038 |
 | Required production dependencies | 0 |
 
