@@ -137,15 +137,11 @@ def cmd_check(args) -> None:
                   )]
         sys.exit(1 if issues else 0)
 
-    # Record scan metrics (best-effort, never blocks a scan)
+    # Record scan metrics with per-pattern breakdown (best-effort)
     try:
         from metrics import record_scan as _record_scan
-        display_tier_findings = (
-            [{"tier": "BLOCK"}] * len(block_findings)
-            + [{"tier": "WARN"}] * len(warn_findings)
-            + [{"tier": "INFO"}] * len(info_findings)
-        )
-        _record_scan(display_tier_findings)
+        # Pass full findings so metrics can track per-pattern stats
+        _record_scan(findings)
     except Exception:
         pass  # scan telemetry is best-effort; don't block output
 
