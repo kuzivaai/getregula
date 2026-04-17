@@ -23,7 +23,7 @@
     </style>
     <meta name="theme-color" content="#070711">
     <title>Regula — EU-KI-Gesetz Konformitätsprüfung für Code</title>
-    <meta name="description" content="Open-Source-Analyse, die Ihren KI-Code gegen 403 EU-KI-Gesetz-Risikomuster in 8 Sprachen prüft. Null Abhängigkeiten. Null Konto.">
+    <meta name="description" content="Open-Source-Analyse, die Ihren KI-Code gegen 404 EU-KI-Gesetz-Risikomuster in 8 Sprachen prüft. Null Abhängigkeiten. Null Konto.">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta property="og:title" content="Regula — EU-KI-Gesetz Konformitätsprüfung für Code">
     <meta property="og:description" content="Kostenloser Open-Source-Scanner, der Ihnen zeigt, in welche EU-KI-Gesetz-Risikostufe Sie fallen, warum, und was zu tun ist.">
@@ -43,7 +43,7 @@
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
         "name": "Regula",
-        "description": "Open-Source-CLI, die Code gegen EU-KI-Gesetz-Konformitätsrisikomuster prüft. 403 Risikomuster, 8 Programmiersprachen, 17 Konformitätsframeworks.",
+        "description": "Open-Source-CLI, die Code gegen EU-KI-Gesetz-Konformitätsrisikomuster prüft. 404 Risikomuster, 8 Programmiersprachen, 12 Konformitätsframeworks.",
         "url": "https://getregula.com/locales/de.html",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Linux, macOS, Windows",
@@ -116,7 +116,7 @@
                 "name": "Ist Regula kostenlos?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Ja. Regula ist Open Source unter der MIT-Lizenz. Kein Konto, kein API-Schlüssel, kein Verkaufsgespräch. Installieren Sie mit pipx install regula-ai und führen Sie es lokal auf Ihrer Codebasis aus. Die vollständige CLI, alle 53 Befehle, alle 403 Risikomuster und alle 17 Compliance-Framework-Zuordnungen sind kostenlos."
+                    "text": "Ja. Regula ist Open Source unter der MIT-Lizenz. Kein Konto, kein API-Schlüssel, kein Verkaufsgespräch. Installieren Sie mit pipx install regula-ai und führen Sie es lokal auf Ihrer Codebasis aus. Die vollständige CLI, alle 53 Befehle, alle 404 Risikomuster und alle 12 Compliance-Framework-Zuordnungen sind kostenlos."
                 }
             },
             {
@@ -216,9 +216,9 @@
     </div>
 
     <div class="stats">
-        <div class="st"><div class="st-n">403</div><div class="st-l">Risikomuster</div></div>
+        <div class="st"><div class="st-n">404</div><div class="st-l">Risikomuster</div></div>
         <div class="st"><div class="st-n">8</div><div class="st-l">Sprachen</div></div>
-        <div class="st"><div class="st-n">17</div><div class="st-l">Compliance-Frameworks</div></div>
+        <div class="st"><div class="st-n">12</div><div class="st-l">Compliance-Frameworks</div></div>
         <div class="st"><div class="st-n">0</div><div class="st-l">Abhängigkeiten</div></div>
     </div>
 
@@ -315,6 +315,51 @@
         <div style="text-align:center;margin-top:48px;"><button class="cta-pill" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula')"><span>&#9654;</span> Kostenlos in 30 Sekunden testen</button></div>
     </div>
 
+    <div class="sep"></div>
+
+    <div class="sec">
+        <h2 class="sec-head">Für Audits gebaut, nicht nur für Scans</h2>
+        <p class="sec-sub">Die meisten Compliance-Tools hören bei der Erkennung auf. Regula generiert Nachweise, die ein Auditor unabhängig verifizieren kann.</p>
+        <div class="art-grid">
+            <div class="card-base art-card">
+                <div class="tag tag-purple">Integrität</div>
+                <h4>Manipulationssichere Nachweise</h4>
+                <p>Jedes Nachweispaket enthält ein SHA-256-Manifest. Dateien werden bei der Erstellung inhaltsgehasht. Jede Änderung bricht die Kette.</p>
+                <code style="font-size:11px;color:#9898b4;">regula evidence-pack . &middot; regula verify pack/</code>
+            </div>
+            <div class="card-base art-card">
+                <div class="tag tag-purple">Signierung</div>
+                <h4>Kryptografische Nichtabstreitbarkeit</h4>
+                <p>Signieren Sie Nachweispakete mit Ed25519-Schlüsseln und RFC-3161-Zeitstempeln. Beweisen Sie, wann die Bewertung erstellt wurde und dass sie nicht verändert wurde.</p>
+                <code style="font-size:11px;color:#9898b4;">regula evidence-pack --sign --timestamp .</code>
+            </div>
+            <div class="card-base art-card">
+                <div class="tag tag-blue">Regulierungsübergreifend</div>
+                <h4>DSGVO + DORA + NIS2 Überschneidung</h4>
+                <p>Jeder KI-Gesetz-Artikel ist den entsprechenden DSGVO-, DORA- und NIS2-Pflichten zugeordnet. Ein Scan deckt Anforderungen über alle vier Verordnungen ab.</p>
+                <code style="font-size:11px;color:#9898b4;">regula gap .</code>
+            </div>
+            <div class="card-base art-card">
+                <div class="tag tag-blue">Aktualität</div>
+                <h4>Regulatorische Veralterungswarnungen</h4>
+                <p>regula regwatch vergleicht Ihren letzten Scan mit dem aktuellen Regulierungsstand und warnt, wenn Ihre Compliance-Position veraltet sein könnte.</p>
+                <code style="font-size:11px;color:#9898b4;">regula regwatch</code>
+            </div>
+            <div class="card-base art-card">
+                <div class="tag tag-purple">Audit-Trail</div>
+                <h4>Hash-verkettetes Ereignisprotokoll</h4>
+                <p>Append-only, hash-verkettetes Audit-Protokoll. Jeder Scan, jedes Ergebnis und jede Unterdrückung wird mit einer verifizierbaren Integritätskette aufgezeichnet.</p>
+                <code style="font-size:11px;color:#9898b4;">regula audit log &middot; regula audit verify</code>
+            </div>
+            <div class="card-base art-card">
+                <div class="tag tag-blue">Kostenloser Anhang IV</div>
+                <h4>Dokumentation, nicht nur Erkennung</h4>
+                <p>Generieren Sie Anhang-IV-Dokumentation, Model Cards, QMS-Gerüste und KMU-vereinfachte Konformitätspakete &mdash; kostenlos, aus Ihrem tatsächlichen Code.</p>
+                <code style="font-size:11px;color:#9898b4;">regula docs . &middot; regula conform --sme .</code>
+            </div>
+        </div>
+    </div>
+
     <div class="sec" style="text-align:center;padding-top:40px;">
         <p style="font-size:14px;color:var(--text-dim);margin-bottom:12px;">EU-AI-Act-Fristen und wichtige Release-Updates erhalten.</p>
         <form class="notify" action="https://formspree.io/f/xjgppkkn" method="POST" style="max-width:400px;margin:0 auto;">
@@ -354,7 +399,7 @@
     <div class="sep"></div>
 
     <div class="sec">
-        <h2 class="sec-head"><span class="hl">17</span> Konformitätsrahmenwerke</h2>
+        <h2 class="sec-head"><span class="hl">12</span> Konformitätsrahmenwerke</h2>
         <p class="sec-sub">Jedes Risikomuster ist mehreren Rahmen zugeordnet, damit ein Scan mehrere Audits abdeckt.</p>
         <div class="fw-list">
             <div class="fw pri"><div class="fw-d"></div>EU AI Act (2024/1689)</div>
@@ -408,12 +453,12 @@
         <p class="sec-sub">Regulas eigene Codebasis wird bei jedem Commit gescannt. Hier ist, was passiert.</p>
         <div class="art-grid">
             <div class="card-base art-card">
-                <h4>75 von 84 Quelldateien unterdrückt</h4>
-                <p>89,3% von Regulas eigenen Python-Dateien erfordern <code># regula-ignore</code>-Kommentare. Ein Konformitätstool, das verbotene Praktiken bespricht, muss das Vokabular verbotener Praktiken enthalten. Das ist strukturell, kein Fehler.</p>
+                <h4>71 von 85 Quelldateien unterdrückt</h4>
+                <p>83,5% von Regulas eigenen Python-Dateien erfordern <code># regula-ignore</code>-Kommentare. Ein Konformitätstool, das verbotene Praktiken bespricht, muss das Vokabular verbotener Praktiken enthalten. Das ist strukturell, kein Fehler.</p>
             </div>
             <div class="card-base art-card">
-                <h4>1 VERBOTEN-Befund</h4>
-                <p><code>explain_articles.py</code> &mdash; die Datei, die Artikel-5-Verbote erklärt &mdash; wird als verboten markiert, weil sie die Wörter enthält, die verbotene Praktiken beschreiben. Das Tool, das verbotene KI erkennen soll, hat seine eigene Dokumentation markiert.</p>
+                <h4>0 aktive Befunde, 31 unterdrückt</h4>
+                <p>Fünf Dateien enthalten Vokabular verbotener Praktiken (sie erklären, dokumentieren oder erkennen diese Praktiken). Alle fünf werden über <code># regula-ignore</code> unterdrückt. Der Scan meldet null aktive verbotene Befunde &mdash; die Unterdrückung funktioniert, und jede Unterdrückung ist eine dokumentierte Governance-Entscheidung.</p>
             </div>
             <div class="card-base art-card">
                 <h4>Was das bedeutet</h4>
@@ -444,7 +489,7 @@
                 <p style="font-size:14px;color:#e2e2f0;line-height:1.6;margin:0;">Static-Code-Scanner. L&auml;uft auf Ihrem Laptop mit einem Befehl. Python-Kern nur aus der Standardbibliothek, null Produktionsabh&auml;ngigkeiten, vollst&auml;ndig offline. <code>pipx install regula-ai</code>, Projekt scannen, klare Antwort erhalten. MIT-Lizenz.</p>
             </div>
         </div>
-        <p class="sec-sub" style="margin-top:24px;font-size:13px;max-width:820px;margin-left:auto;margin-right:auto;">Es gibt weitere Open-Source-Scanner f&uuml;r das EU-KI-Gesetz &mdash; insbesondere <a href="https://airblackbox.ai/" rel="noopener">AIR Blackbox</a> (Python/pip, Apache 2.0, lokal, 48 Pr&uuml;fungen (41 statisch + 7 zur Laufzeit) &uuml;ber Artikel 9/10/11/12/14/15), <a href="https://www.npmjs.com/package/@systima/comply" rel="noopener">Systima Comply</a> (TypeScript, AST-basiert), <a href="https://github.com/ark-forge/mcp-eu-ai-act" rel="noopener">ark-forge mcp-eu-ai-act</a> (Python, 6 Sprachen, MCP-nativ, Freemium) und <a href="https://github.com/saasvista/aibom-scanner" rel="noopener">AIBOM Scanner</a> (Python, 61 Erkennungsmuster f&uuml;r 30+ KI-Anbieter, Mapping auf NIST AI RMF + ISO 42001 + EU-KI-Gesetz). W&auml;hlen Sie das Tool, dessen Sprachabdeckung und Kompromisse zu Ihrem Stack passen. Regulas Nische ist stdlib-only, null Produktionsabh&auml;ngigkeiten, 8-Sprachen-Breite und 17 Compliance-Framework-Crosswalk. F&uuml;r <em>Runtime</em>-Agent-Governance (eine andere Ebene als Pre-Commit-Scanning) siehe <a href="https://github.com/microsoft/agent-governance-toolkit" rel="noopener">Microsofts Agent Governance Toolkit</a> (April 2026, Policy-Durchsetzung zur Laufzeit der Agenten).</p>
+        <p class="sec-sub" style="margin-top:24px;font-size:13px;max-width:820px;margin-left:auto;margin-right:auto;">Es gibt weitere Open-Source-Scanner f&uuml;r das EU-KI-Gesetz &mdash; insbesondere <a href="https://airblackbox.ai/" rel="noopener">AIR Blackbox</a> (Python/pip, Apache 2.0, lokal, 48 Pr&uuml;fungen (41 statisch + 7 zur Laufzeit) &uuml;ber Artikel 9/10/11/12/14/15), <a href="https://www.npmjs.com/package/@systima/comply" rel="noopener">Systima Comply</a> (TypeScript, AST-basiert), <a href="https://github.com/ark-forge/mcp-eu-ai-act" rel="noopener">ark-forge mcp-eu-ai-act</a> (Python, 6 Sprachen, MCP-nativ, Freemium) und <a href="https://github.com/saasvista/aibom-scanner" rel="noopener">AIBOM Scanner</a> (Python, 61 Erkennungsmuster f&uuml;r 30+ KI-Anbieter, Mapping auf NIST AI RMF + ISO 42001 + EU-KI-Gesetz). W&auml;hlen Sie das Tool, dessen Sprachabdeckung und Kompromisse zu Ihrem Stack passen. Regulas Nische ist stdlib-only, null Produktionsabh&auml;ngigkeiten, 8-Sprachen-Breite und 12 Compliance-Framework-Crosswalk. F&uuml;r <em>Runtime</em>-Agent-Governance (eine andere Ebene als Pre-Commit-Scanning) siehe <a href="https://github.com/microsoft/agent-governance-toolkit" rel="noopener">Microsofts Agent Governance Toolkit</a> (April 2026, Policy-Durchsetzung zur Laufzeit der Agenten).</p>
     </div>
 
     <div class="sep"></div>
