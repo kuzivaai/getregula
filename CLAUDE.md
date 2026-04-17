@@ -9,8 +9,8 @@ Regula v1.7.0 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only co
 - **52 risk pattern categories** containing 404 individual regexes (8 prohibited, 15 high-risk, 4 limited-risk, 17 AI security, 2 bias, 6 governance observations) plus 1 GPAI training group (17 regexes)
 - **182 AI framework detection indicators** (88 libraries, 10 model file types, 7 API endpoints, 13 ML patterns, 64 domain keywords)
 - **8 language families scanned** via regex (Python, JavaScript, TypeScript, Java, Go, Rust, C/C++, Jupyter notebooks — deep AST analysis for Python/JS/TS only)
-- **12 compliance frameworks with full crosswalk data** (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO). 5 additional frameworks accepted as filter keys (Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI) with partial coverage.
-- **1,038 tests** (all passing — verified via `python3 -m pytest tests/ --collect-only -q` on 2026-04-17; raw `def test_*` functions: 931 per `scripts/site_facts.py`)
+- **12 compliance frameworks with crosswalk data** (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO). Note: OWASP and MITRE have data for 4/7 articles. 5 additional frameworks (Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI) have display handlers but no crosswalk data — filter keys removed until populated.
+- **1,055 tests** (all passing — verified via `python3 -m pytest tests/ --collect-only -q` on 2026-04-17)
 - **2 bias benchmarks** (CrowS-Pairs likelihood scoring + BBQ question-answering, with Wilson CI and bootstrap confidence intervals)
 - **18 credential patterns** detected
 - **1 GitHub Action** (composite, 13 inputs, 5 outputs, SARIF upload, PR comments)
