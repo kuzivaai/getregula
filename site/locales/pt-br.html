@@ -533,7 +533,33 @@
                 <p style="font-size:14px;color:#e2e2f0;line-height:1.6;margin:0;">Scanner est&aacute;tico de c&oacute;digo. Roda no seu laptop com um comando. N&uacute;cleo Python apenas da biblioteca padr&atilde;o, zero depend&ecirc;ncias de produ&ccedil;&atilde;o, totalmente offline. <code>pipx install regula-ai</code>, escaneie seu projeto, obtenha uma resposta clara. Licen&ccedil;a MIT.</p>
             </div>
         </div>
-        <p class="sec-sub" style="margin-top:24px;font-size:13px;max-width:820px;margin-left:auto;margin-right:auto;">Existem outros scanners open source da Lei de IA da UE &mdash; notadamente <a href="https://airblackbox.ai/" rel="noopener">AIR Blackbox</a> (Python/pip, Apache 2.0, local, 48 verifica&ccedil;&otilde;es (41 est&aacute;ticas + 7 em tempo de execu&ccedil;&atilde;o) nos Artigos 9/10/11/12/14/15), <a href="https://www.npmjs.com/package/@systima/comply" rel="noopener">Systima Comply</a> (TypeScript, baseado em AST), <a href="https://github.com/ark-forge/mcp-eu-ai-act" rel="noopener">ark-forge mcp-eu-ai-act</a> (Python, 6 linguagens, MCP-nativo, freemium) e <a href="https://github.com/saasvista/aibom-scanner" rel="noopener">AIBOM Scanner</a> (Python, 61 padr&otilde;es de detec&ccedil;&atilde;o em 30+ provedores de IA, mapeamento para NIST AI RMF + ISO 42001 + Lei de IA da UE). Escolha aquele cuja cobertura de linguagens e compromissos se encaixem no seu stack. O nicho do Regula &eacute; stdlib-only, zero depend&ecirc;ncias de produ&ccedil;&atilde;o, amplitude de 8 linguagens e crosswalk de 12 frameworks de conformidade. Para governan&ccedil;a de agentes em <em>runtime</em> (uma camada diferente do scanning em pre-commit), veja o <a href="https://github.com/microsoft/agent-governance-toolkit" rel="noopener">Agent Governance Toolkit da Microsoft</a> (abril de 2026, aplica&ccedil;&atilde;o de pol&iacute;ticas no momento da a&ccedil;&atilde;o do agente).</p>
+        <div style="overflow-x:auto;margin-top:32px;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;color:#b0b0cc;">
+            <thead>
+                <tr style="border-bottom:1px solid #23234a;text-align:left;">
+                    <th style="padding:8px 12px;"></th>
+                    <th style="padding:8px 12px;">Regula</th>
+                    <th style="padding:8px 12px;">AIR Blackbox</th>
+                    <th style="padding:8px 12px;">Systima Comply</th>
+                    <th style="padding:8px 12px;">EuConform</th>
+                    <th style="padding:8px 12px;">Enterprise SaaS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td style="padding:6px 12px;color:#e0e0f0;">Abordagem</td><td>Static code scan</td><td>Scan + runtime trust layers</td><td>AST-based scan</td><td>Questionnaire + bias eval</td><td>Platform / dashboard</td></tr>
+                <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Linguagens</td><td>8 families</td><td>Python</td><td>JS/TS</td><td>N/A</td><td>N/A</td></tr>
+                <tr><td style="padding:6px 12px;color:#e0e0f0;">Padr&otilde;es de detec&ccedil;&atilde;o</td><td>404</td><td>48 checks</td><td>37+ frameworks</td><td>Questionnaire</td><td>Varies</td></tr>
+                <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Depend&ecirc;ncias</td><td>Zero (stdlib)</td><td>Multiple</td><td>npm</td><td>Next.js + Ollama</td><td>SaaS</td></tr>
+                <tr><td style="padding:6px 12px;color:#e0e0f0;">Offline</td><td>Fully offline</td><td>Local</td><td>Local</td><td>Local + Ollama</td><td>Cloud</td></tr>
+                <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Assinatura de evid&ecirc;ncias</td><td>Ed25519 + RFC 3161</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>Varies</td></tr>
+                <tr><td style="padding:6px 12px;color:#e0e0f0;">Mapeamentos de frameworks</td><td>12</td><td>3</td><td>EU AI Act</td><td>EU AI Act</td><td>Multiple</td></tr>
+                <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Integra&ccedil;&atilde;o CI/CD</td><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>&mdash;</td><td>Native</td></tr>
+                <tr><td style="padding:6px 12px;color:#e0e0f0;">Documenta&ccedil;&atilde;o Anexo IV</td><td>Free</td><td>&mdash;</td><td>&mdash;</td><td>PDF reports</td><td>Built-in</td></tr>
+                <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Pre&ccedil;o</td><td>Free (MIT)</td><td>Free (Apache 2.0)</td><td>Free (OSS)</td><td>Free (MIT + EUPL)</td><td>$30K&ndash;$200K/yr</td></tr>
+            </tbody>
+        </table>
+        </div>
+        <p style="font-size:12px;color:#707090;margin-top:12px;">Escolha a ferramenta cuja cobertura de linguagens e compromissos se encaixem no seu stack. O Regula &eacute; mais forte para codebases multi-linguagem que precisam de evid&ecirc;ncias com qualidade de auditoria e mapeamento entre frameworks. Para governan&ccedil;a de agentes em <em>runtime</em>, veja o <a href="https://github.com/microsoft/agent-governance-toolkit" rel="noopener" style="color:#707090;">Agent Governance Toolkit da Microsoft</a>.</p>
     </div>
 
     <div class="sep"></div>
