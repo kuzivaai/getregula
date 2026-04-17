@@ -207,7 +207,7 @@ def compute() -> dict:
         },
         "notes": {
             "pattern_count_methodology": (
-                "Regula's landing pages cite '403 risk patterns'. That figure "
+                "Regula's landing pages cite '404 risk patterns'. That figure "
                 "is the total individual regexes in risk_patterns.py across "
                 "all tiered groups (prohibited, high-risk, limited-risk, "
                 "AI security, bias, governance, GPAI training). The "
@@ -245,7 +245,7 @@ def render_markdown(data: dict) -> str:
         f"| Test functions (all files) | {c['tests']['total_functions']} | `tests/test_*.py` |\n\n"
         "## Detection pattern breakdown\n\n"
         "Regula ships detection patterns across three source files. The "
-        "landing page claim of \"403 risk patterns\" corresponds to all "
+        "landing page claim of \"404 risk patterns\" corresponds to all "
         "individual regexes in risk_patterns.py. The `historical_330_bucket` "
         "adds architecture, credential, and oversight detectors from "
         "code_analysis.py. The `grand_total` also adds `AI_INDICATORS` and "
