@@ -265,7 +265,7 @@ def render_markdown(data: dict) -> str:
         "## Honesty notes\n\n"
         "- If a landing page cites a different number, either the page is "
         "stale or this generator is stale. Fix whichever is wrong.\n"
-        "- The landing page claim of \"403 risk patterns\" is the total "
+        "- The landing page claim of \"404 risk patterns\" is the total "
         "individual regexes in risk_patterns.py. If the actual count drifts, "
         "update the landing page — do not update this generator to match.\n"
         "- The `historical_330_bucket` includes additional detectors from "
