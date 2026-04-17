@@ -103,7 +103,7 @@ def _current_pattern_version() -> str:
 # Primary commands shown in default --help (progressive disclosure).
 # All 52 commands remain functional — use --help-all to see them.
 _PRIMARY_COMMANDS = {
-    "check", "comply", "gap", "plan", "init", "quickstart",
+    "check", "comply", "gap", "plan", "init", "quickstart", "demo",
 }
 
 
@@ -700,6 +700,57 @@ from cli_util import (
 )
 
 
+def cmd_demo(args):
+    """Run Regula against the bundled example project to show real output."""
+    import os
+    example_dir = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "examples", "cv-screening-app",
+    )
+    if not os.path.isdir(example_dir):
+        print("Demo requires the examples/ directory (available in the git repo).")
+        print("Try: git clone https://github.com/kuzivaai/getregula && cd getregula")
+        print("     regula demo")
+        print()
+        print("Or scan your own project: regula check .")
+        return
+    print("=" * 60)
+    print("  Regula Demo \u2014 scanning examples/cv-screening-app")
+    print("  (a hiring system that triggers Annex III high-risk)")
+    print("=" * 60)
+    print()
+    # Reuse the existing check logic
+    args.path = example_dir
+    args.format = getattr(args, "format", "text")
+    args.no_ignore = False
+    args.skip_tests = True
+    args.min_tier = None
+    args.diff = None
+    args.jurisdictions = None
+    args.explain = False
+    args.name = None
+    args.framework = None
+    args.output = None
+    args.deterministic = False
+    args.verbose = False
+    args.strict = False
+    args.ci = False
+    args.lang = None
+    args.rules = None
+    try:
+        cmd_check(args)
+    except SystemExit:
+        pass
+    print()
+    print("=" * 60)
+    print("  Next steps:")
+    print("    regula check .          Scan YOUR project")
+    print("    regula assess           Am I even in scope? (no code needed)")
+    print("    regula gap .            Per-article compliance score")
+    print("    regula evidence-pack .  Generate auditor-ready evidence")
+    print("=" * 60)
+
+
 def _build_subparsers(subparsers):
     """Define all CLI subcommands. Extracted from main() for readability."""
     p_init = subparsers.add_parser(
@@ -1188,6 +1239,11 @@ def _build_subparsers(subparsers):
     p_qs.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_qs.set_defaults(func=cmd_quickstart)
 
+    # --- demo ---
+    p_demo = subparsers.add_parser("demo", help="Run Regula on a bundled example project (see it in action)")
+    p_demo.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_demo.set_defaults(func=cmd_demo)
+
     # --- feedback ---
     p_feedback = subparsers.add_parser(
         "feedback",
@@ -1401,6 +1457,7 @@ def _make_progressive_help(parser, subparsers):
             ("plan", "Prioritised remediation plan"),
             ("init", "Guided setup wizard"),
             ("quickstart", "60-second onboarding (create policy + first scan)"),
+            ("demo", "Run Regula on a bundled example project"),
         ]
         for name, desc in primary_descs:
             lines.append(f"  {name:<16}{desc}")

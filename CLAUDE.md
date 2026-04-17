@@ -5,15 +5,15 @@
 Regula v1.7.0 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only core.
 
 **Verified counts (2026-04-16):**
-- **53 CLI commands** (verified via `regula --help-all`; `regula -h` shows 6 primary commands via progressive disclosure)
-- **52 risk pattern categories** containing 403 individual regexes (8 prohibited, 15 high-risk, 4 limited-risk, 17 AI security, 2 bias, 6 governance observations) plus 1 GPAI training group (17 regexes)
+- **54 CLI commands** (verified via `regula --help-all`; `regula -h` shows 7 primary commands via progressive disclosure)
+- **52 risk pattern categories** containing 404 individual regexes (8 prohibited, 15 high-risk, 4 limited-risk, 17 AI security, 2 bias, 6 governance observations) plus 1 GPAI training group (17 regexes)
 - **182 AI framework detection indicators** (88 libraries, 10 model file types, 7 API endpoints, 13 ML patterns, 64 domain keywords)
 - **8 language families scanned** via regex (Python, JavaScript, TypeScript, Java, Go, Rust, C/C++, Jupyter notebooks — deep AST analysis for Python/JS/TS only)
-- **17 compliance frameworks mapped** (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO, Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI)
-- **1,037 tests** (all passing — verified via `python3 -m pytest tests/ --collect-only -q` on 2026-04-16; raw `def test_*` functions: 893 per `scripts/site_facts.py`)
+- **12 compliance frameworks with full crosswalk data** (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO). 5 additional frameworks accepted as filter keys (Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI) with partial coverage.
+- **1,038 tests** (all passing — verified via `python3 -m pytest tests/ --collect-only -q` on 2026-04-17; raw `def test_*` functions: 931 per `scripts/site_facts.py`)
 - **2 bias benchmarks** (CrowS-Pairs likelihood scoring + BBQ question-answering, with Wilson CI and bootstrap confidence intervals)
 - **18 credential patterns** detected
-- **1 GitHub Action** (composite, 12 inputs, 5 outputs, SARIF upload, PR comments)
+- **1 GitHub Action** (composite, 13 inputs, 5 outputs, SARIF upload, PR comments)
 - **1 MCP server** (3 tools: check, classify, gap)
 - **Zero production dependencies** (stdlib-only core)
 
