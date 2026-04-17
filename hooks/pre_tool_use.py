@@ -76,22 +76,22 @@ def _is_documentation_write(tool_name: str, tool_input: dict) -> bool:
 
 
 def _content_has_regula_ignore(tool_input: dict) -> bool:
-    """Check if the content being written contains '# regula-ignore'.
-    
-    This is the standard suppression mechanism — if the developer
-    explicitly marks content as ignored, respect it in hooks too.
+    """Check if the TARGET FILE already contains '# regula-ignore'.
+
+    Only honours regula-ignore that exists in the file BEFORE this
+    write/edit — not directives embedded in the new content itself.
+    An adversarial agent could inject regula-ignore into content it
+    writes to bypass prohibited-practice detection. Checking the
+    existing file prevents this.
     """
-    # Check Write tool content
-    content = tool_input.get("content", "")
-    if content and "regula-ignore" in content:
-        return True
-    
-    # Check Edit tool new_string
-    new_string = tool_input.get("new_string", "")
-    if new_string and "regula-ignore" in new_string:
-        return True
-    
-    return False
+    file_path = tool_input.get("file_path", "")
+    if not file_path:
+        return False
+    try:
+        existing = Path(file_path).read_text(encoding="utf-8", errors="ignore")
+        return "regula-ignore" in existing
+    except (OSError, PermissionError):
+        return False
 
 
 def _build_prohibited_message(result) -> str:

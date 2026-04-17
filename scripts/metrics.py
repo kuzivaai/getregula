@@ -78,10 +78,26 @@ def record_scan(findings: list) -> None:
     path = _metrics_path()
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    records = _load_records()
-    records.append(record)
-
-    path.write_text(json.dumps(records, indent=2), encoding="utf-8")
+    # File-locked write to prevent race conditions with concurrent scans
+    import fcntl
+    try:
+        with open(path, "a+") as fh:
+            fcntl.flock(fh, fcntl.LOCK_EX)
+            fh.seek(0)
+            raw = fh.read()
+            records = json.loads(raw) if raw.strip() else []
+            if not isinstance(records, list):
+                records = []
+            records.append(record)
+            fh.seek(0)
+            fh.truncate()
+            fh.write(json.dumps(records, indent=2))
+            fcntl.flock(fh, fcntl.LOCK_UN)
+    except (ImportError, OSError):
+        # fcntl not available (Windows) or write failure — fall back to unlocked
+        records = _load_records()
+        records.append(record)
+        path.write_text(json.dumps(records, indent=2), encoding="utf-8")
 
 
 def get_stats() -> dict:
