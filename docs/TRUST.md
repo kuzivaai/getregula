@@ -58,7 +58,7 @@ your lawyer's job, not Regula's.
 | Cross-file Article 14 human-oversight detection (Python) | `regula oversight` |
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 1000 internal tests under pytest, 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
+| 1,038 internal tests under pytest, 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -75,13 +75,13 @@ your lawyer's job, not Regula's.
 > Every number Regula publishes can be reproduced by anyone with a checkout
 > of the repo. The commands below run in under 30 seconds total on a laptop.
 
-### 3.1 Internal test suite — 1000 / 1000 green
+### 3.1 Internal test suite — 1,038 / 1,038 green
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ -q
-# Expected: 1000 passed (~12 minutes on a laptop — verified 2026-04-16)
+# Expected: 1038 passed (~12 minutes on a laptop — verified 2026-04-17)
 ```
 
 Regula also ships a legacy auto-discovery runner for the classification
@@ -241,7 +241,7 @@ and decide for themselves whether it is too broad or too narrow.
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (1,000 tests under pytest; 495 functions in the legacy `tests/test_classification.py` custom runner) |
+| Test suite | `tests/` (1,038 tests under pytest; 495 functions in the legacy `tests/test_classification.py` custom runner) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit hook source | `hooks/pre_tool_use.py` |
