@@ -64,7 +64,7 @@
     }
   },
   "notes": {
-    "pattern_count_methodology": "Regula's landing pages cite '403 risk patterns'. That figure is the total individual regexes in risk_patterns.py across all tiered groups (prohibited, high-risk, limited-risk, AI security, bias, governance, GPAI training). The `historical_330_bucket` adds architecture, credential, and oversight patterns from code_analysis.py. The `grand_total` also includes AI_INDICATORS.",
+    "pattern_count_methodology": "Regula's landing pages cite '404 risk patterns'. That figure is the total individual regexes in risk_patterns.py across all tiered groups (prohibited, high-risk, limited-risk, AI security, bias, governance, GPAI training). The `historical_330_bucket` adds architecture, credential, and oversight patterns from code_analysis.py. The `grand_total` also includes AI_INDICATORS.",
     "frameworks_vs_claim": "Regula's landing pages cite '12 compliance frameworks'. 12 have full crosswalk data; 5 additional frameworks (Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI) accepted as filter keys with partial coverage."
   }
 }

@@ -18,7 +18,7 @@ Generated: `2026-04-17T08:13:08.318754+00:00`
 
 ## Detection pattern breakdown
 
-Regula ships detection patterns across three source files. The landing page claim of "403 risk patterns" corresponds to all individual regexes in risk_patterns.py. The `historical_330_bucket` adds architecture, credential, and oversight detectors from code_analysis.py. The `grand_total` also adds `AI_INDICATORS` and is the inclusive upper bound.
+Regula ships detection patterns across three source files. The landing page claim of "404 risk patterns" corresponds to all individual regexes in risk_patterns.py. The `historical_330_bucket` adds architecture, credential, and oversight detectors from code_analysis.py. The `grand_total` also adds `AI_INDICATORS` and is the inclusive upper bound.
 
 | Category | Source | Count |
 |---|---|---|
@@ -36,5 +36,5 @@ Regula ships detection patterns across three source files. The landing page clai
 ## Honesty notes
 
 - If a landing page cites a different number, either the page is stale or this generator is stale. Fix whichever is wrong.
-- The landing page claim of "403 risk patterns" is the total individual regexes in risk_patterns.py. If the actual count drifts, update the landing page — do not update this generator to match.
+- The landing page claim of "404 risk patterns" is the total individual regexes in risk_patterns.py. If the actual count drifts, update the landing page — do not update this generator to match.
 - The `historical_330_bucket` includes additional detectors from code_analysis.py. Both numbers are documented above so any auditor can verify.
