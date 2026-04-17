@@ -751,6 +751,47 @@ def cmd_demo(args):
     print("=" * 60)
 
 
+def cmd_risks(args):
+    """Risk register summary view (ISO 42001 6.1.2, AI Act 9(2)(a))."""
+    from report import scan_files
+    from findings_view import partition_findings
+
+    project = getattr(args, "project", ".")
+    findings = scan_files(project)
+    view = partition_findings(findings)
+
+    active = view["active"]
+    accepted_list = view.get("accepted", [])
+    suppressed = view["suppressed"]
+    no_rationale = [f for f in suppressed
+                    if f.get("risk_decision") and not f["risk_decision"].get("rationale")]
+    overdue = [f for f in accepted_list
+               if f.get("risk_decision", {}).get("overdue")]
+
+    data = {
+        "active_findings": len(active),
+        "accepted_risks": len(accepted_list),
+        "accepted_overdue": len(overdue),
+        "suppressed_fp": len(suppressed),
+        "suppressed_no_rationale": len(no_rationale),
+    }
+
+    fmt = getattr(args, "format", "text")
+    if fmt == "json":
+        json_output("risks", data)
+        return
+
+    name = Path(project).resolve().name
+    print(f"\nRisk Register \u2014 {name}")
+    print("=" * 60)
+    print(f"  Active findings:        {len(active):>3}  (require assessment)")
+    print(f"  Accepted risks:         {len(accepted_list):>3}  (documented, {len(overdue)} overdue)")
+    print(f"  Suppressed (FP):        {len(suppressed):>3}  (documented)")
+    if no_rationale:
+        print(f"  Suppressed (no reason): {len(no_rationale):>3}  \u26a0")
+    print("=" * 60)
+
+
 def _build_subparsers(subparsers):
     """Define all CLI subcommands. Extracted from main() for readability."""
     p_init = subparsers.add_parser(
@@ -1245,6 +1286,15 @@ def _build_subparsers(subparsers):
     p_demo = subparsers.add_parser("demo", help="Run Regula on a bundled example project (see it in action)")
     p_demo.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_demo.set_defaults(func=cmd_demo)
+
+    # --- risks ---
+    p_risks = subparsers.add_parser(
+        "risks",
+        help="Risk register summary \u2014 active findings, accepted risks, suppressed FPs (ISO 42001 6.1.2)",
+    )
+    p_risks.add_argument("--project", "-p", default=".", help="Project directory")
+    p_risks.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_risks.set_defaults(func=cmd_risks)
 
     # --- feedback ---
     p_feedback = subparsers.add_parser(
