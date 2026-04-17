@@ -14,10 +14,11 @@ Standards alignment:
 """
 from __future__ import annotations
 
+import json
 import re
 import sys
 from dataclasses import dataclass, field, asdict
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -195,3 +196,63 @@ def build_suppression_set(decisions: list[RiskDecision]) -> set[str]:
         elif d.dtype == "accept" and d.is_valid_accept():
             suppressed.add(d.pattern.lower())
     return suppressed
+
+
+# ── Feedback recording (local-only) ──────────────────────────────
+
+_FEEDBACK_FILE = ".regula/feedback.json"
+
+
+def record_feedback(
+    kind: str,
+    pattern: str,
+    file: str,
+    line: int,
+    confidence: int = 0,
+    tier: str = "",
+    rationale: str = "",
+) -> None:
+    """Record a feedback event to ~/.regula/feedback.json.
+
+    This is the local-only feedback loop. Users own their data.
+    No network calls. Data stays on disk.
+    """
+    try:
+        fb_path = Path.home() / _FEEDBACK_FILE
+        fb_path.parent.mkdir(parents=True, exist_ok=True)
+
+        records: list[dict] = []
+        if fb_path.exists():
+            try:
+                records = json.loads(fb_path.read_text(encoding="utf-8"))
+            except (json.JSONDecodeError, ValueError):
+                records = []
+
+        records.append({
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "kind": kind,
+            "pattern": pattern,
+            "file": file,
+            "line": line,
+            "confidence": confidence,
+            "tier": tier,
+            "rationale": rationale,
+        })
+
+        fb_path.write_text(json.dumps(records, indent=2), encoding="utf-8")
+    except Exception:
+        pass  # feedback recording is best-effort
+
+
+def load_feedback() -> list[dict]:
+    """Load all feedback records from ~/.regula/feedback.json.
+
+    Returns an empty list if the file does not exist or is unreadable.
+    """
+    try:
+        fb_path = Path.home() / _FEEDBACK_FILE
+        if not fb_path.exists():
+            return []
+        return json.loads(fb_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, ValueError, OSError):
+        return []

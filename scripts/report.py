@@ -487,6 +487,22 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     matched_decision = dec
                     break
 
+            # Record suppression for feedback loop (best-effort, local-only)
+            if is_suppressed and matched_decision is not None:
+                try:
+                    from risk_decisions import record_feedback
+                    record_feedback(
+                        kind="suppress" if matched_decision.dtype == "ignore" else "accept",
+                        pattern=matched_decision.pattern,
+                        file=rel_path,
+                        line=matched_decision.line,
+                        confidence=0,
+                        tier=result.tier.value if result.tier else "",
+                        rationale=matched_decision.rationale or "",
+                    )
+                except Exception:
+                    pass  # feedback recording is best-effort
+
             # Calculate confidence score
             base_score = {
                 "prohibited": 85, "high_risk": 65,

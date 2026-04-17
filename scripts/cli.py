@@ -687,7 +687,8 @@ from cli_compliance import (
 )
 from cli_governance import (
     cmd_governance, cmd_agent, cmd_oversight, cmd_model_card,
-    cmd_register, cmd_disclose, cmd_feedback, cmd_handoff,
+    cmd_register, cmd_disclose, cmd_feedback, cmd_feedback_summary,
+    cmd_handoff,
 )
 from cli_util import (
     cmd_doctor, cmd_self_test, cmd_config, cmd_install,
@@ -1321,6 +1322,10 @@ def _build_subparsers(subparsers):
     p_bug.add_argument("--description", "-d", help="One-line description of what happened")
     p_bug.add_argument("--no-browser", action="store_true", help="Print URL instead of opening browser")
     p_bug.set_defaults(func=cmd_feedback, feedback_kind="bug")
+
+    p_fb_summary = feedback_sub.add_parser("summary", help="Show summary of local feedback events")
+    p_fb_summary.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_fb_summary.set_defaults(func=cmd_feedback_summary)
 
     p_feedback.set_defaults(func=cmd_feedback, feedback_kind="false-positive")
 

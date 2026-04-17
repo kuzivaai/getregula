@@ -10,7 +10,7 @@ from datetime import date, timedelta
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from risk_decisions import parse_annotations, build_suppression_set, RiskDecision
+from risk_decisions import parse_annotations, build_suppression_set, RiskDecision, record_feedback, load_feedback
 
 
 # ── 1. Bare ignore ─────────────────────────────────────────────────
@@ -245,3 +245,90 @@ def test_evidence_pack_includes_risk_decisions():
         manifest = json.loads((pack_path / "manifest.json").read_text())
         filenames = [f["filename"] for f in manifest["files"]]
         assert "07-risk-decisions.json" in filenames
+
+
+# ── 14. record_feedback creates file ─────────────────────────────
+
+def test_record_feedback_creates_file():
+    """record_feedback writes to ~/.regula/feedback.json."""
+    import tempfile
+    from unittest.mock import patch
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        mock_home = Path(tmpdir)
+        with patch("risk_decisions.Path.home", return_value=mock_home):
+            record_feedback(
+                kind="false-positive",
+                pattern="employment",
+                file="app.py",
+                line=42,
+                confidence=72,
+                tier="WARN",
+                rationale="test fixture",
+            )
+            fb_path = mock_home / ".regula" / "feedback.json"
+            assert fb_path.exists(), "feedback.json was not created"
+            import json
+            records = json.loads(fb_path.read_text())
+            assert len(records) == 1
+            assert records[0]["kind"] == "false-positive"
+            assert records[0]["pattern"] == "employment"
+            assert records[0]["file"] == "app.py"
+            assert records[0]["line"] == 42
+            assert records[0]["confidence"] == 72
+            assert records[0]["tier"] == "WARN"
+            assert records[0]["rationale"] == "test fixture"
+            assert "timestamp" in records[0]
+
+
+# ── 15. record_feedback appends to existing ──────────────────────
+
+def test_record_feedback_appends():
+    """Subsequent calls append to the same file."""
+    import tempfile
+    from unittest.mock import patch
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        mock_home = Path(tmpdir)
+        with patch("risk_decisions.Path.home", return_value=mock_home):
+            record_feedback(kind="suppress", pattern="employment",
+                            file="a.py", line=1)
+            record_feedback(kind="accept", pattern="biometrics",
+                            file="b.py", line=10)
+            fb_path = mock_home / ".regula" / "feedback.json"
+            import json
+            records = json.loads(fb_path.read_text())
+            assert len(records) == 2
+            assert records[0]["pattern"] == "employment"
+            assert records[1]["pattern"] == "biometrics"
+
+
+# ── 16. load_feedback reads records ──────────────────────────────
+
+def test_load_feedback_reads_records():
+    """load_feedback returns stored records."""
+    import tempfile
+    from unittest.mock import patch
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        mock_home = Path(tmpdir)
+        with patch("risk_decisions.Path.home", return_value=mock_home):
+            record_feedback(kind="false-positive", pattern="credit_scoring",
+                            file="c.py", line=5)
+            records = load_feedback()
+            assert len(records) == 1
+            assert records[0]["kind"] == "false-positive"
+
+
+# ── 17. load_feedback returns empty when no file ─────────────────
+
+def test_load_feedback_empty_when_no_file():
+    """load_feedback returns [] when ~/.regula/feedback.json does not exist."""
+    import tempfile
+    from unittest.mock import patch
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        mock_home = Path(tmpdir)
+        with patch("risk_decisions.Path.home", return_value=mock_home):
+            records = load_feedback()
+            assert records == []
