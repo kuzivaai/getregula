@@ -27,10 +27,9 @@ abstract: >-
   EU AI Act compliance signals at the point of creation. It detects
   Article 5 prohibited practices, Annex III high-risk categories, and
   Annex I cross-references; maps every finding to specific articles of
-  Regulation (EU) 2024/1689 and 17 compliance frameworks (ISO 42001,
+  Regulation (EU) 2024/1689 and 12 compliance frameworks (ISO 42001,
   NIST AI RMF, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10,
-  MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO, Colorado SB-205,
-  Canada AIDA, Singapore AI, OECD AI, South Korea AI);
+  MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO);
   generates Annex IV conformity evidence packs and Annex VIII
   registration packets; and maintains a SHA-256 hash-chained tamper-
   evident audit log. It runs entirely on the user's local machine with
