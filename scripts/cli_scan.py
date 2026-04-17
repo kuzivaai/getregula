@@ -116,6 +116,7 @@ def cmd_check(args) -> None:
     _view = partition_findings(findings)
     active = _view["active"]
     suppressed = _view["suppressed"]
+    accepted = _view.get("accepted", [])
     prohibited = _view["prohibited"]
     credentials = _view["credentials"]
     high_risk = _view["high_risk"]
@@ -232,6 +233,20 @@ def cmd_check(args) -> None:
         print(f"  {t('agent_autonomy'):<20}{len(autonomy)}")
         print(f"  {t('limited_risk'):<20}{len(limited)}")
         print(f"  {t('suppressed'):<20}{len(suppressed)}")
+        if accepted:
+            overdue = [f for f in accepted if f.get("risk_decision", {}).get("overdue")]
+            print(f"  {'Accepted risks:':<20}{len(accepted)}  ({len(overdue)} overdue)")
+        # Warn on undocumented suppressions
+        no_rationale = [f for f in suppressed
+                        if f.get("risk_decision") and not f["risk_decision"].get("rationale")]
+        if no_rationale:
+            print(f"\n  \u26a0 {len(no_rationale)} suppression(s) without rationale"
+                  " \u2014 run regula check --audit-suppressions for details")
+        if accepted:
+            overdue_list = [f for f in accepted if f.get("risk_decision", {}).get("overdue")]
+            if overdue_list:
+                print(f"  \u26a0 {len(overdue_list)} accepted risk(s) overdue for review"
+                      " \u2014 run regula check --audit-suppressions for details")
         print(f"  {t('block_tier'):<20}{len(block_findings)}")
         print(f"  {t('warn_tier'):<20}{len(warn_findings)}")
         print(f"  {t('info_tier'):<20}{len(info_findings)}")
