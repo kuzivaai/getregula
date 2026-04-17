@@ -1,0 +1,45 @@
+name: "Pattern Request"
+description: "Suggest a new risk detection pattern"
+title: "Pattern: [description]"
+labels: ["pattern-request", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Suggest a new pattern for Regula to detect.
+
+  - type: dropdown
+    id: risk_tier
+    attributes:
+      label: "Risk tier"
+      options:
+        - "Prohibited (Article 5)"
+        - "High-risk (Annex III)"
+        - "Limited-risk (Article 50)"
+        - "AI Security"
+        - "Not sure"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "What should Regula detect?"
+      description: "Describe the code pattern and why it's a compliance risk."
+    validations:
+      required: true
+
+  - type: textarea
+    id: example
+    attributes:
+      label: "Code example"
+      description: "Example code that should trigger this pattern"
+      render: python
+    validations:
+      required: true
+
+  - type: input
+    id: article
+    attributes:
+      label: "EU AI Act article (if known)"
+      placeholder: "Article 9, Annex III Category 4"

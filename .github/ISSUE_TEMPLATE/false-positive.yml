@@ -1,0 +1,85 @@
+name: "False Positive Report"
+description: "Regula flagged code that is not actually a risk"
+title: "FP: [pattern name]"
+labels: ["false-positive", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a false positive. This helps improve Regula's pattern library.
+
+  - type: input
+    id: pattern
+    attributes:
+      label: "Pattern name"
+      description: "Which pattern was incorrectly flagged? (e.g., employment, biometrics, credit_scoring)"
+      placeholder: "employment"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tier
+    attributes:
+      label: "Finding tier"
+      options:
+        - BLOCK (confidence >= 80)
+        - WARN (confidence 50-79)
+        - INFO (confidence < 50)
+    validations:
+      required: true
+
+  - type: input
+    id: confidence
+    attributes:
+      label: "Confidence score"
+      description: "The number shown in brackets, e.g. [68]"
+      placeholder: "68"
+
+  - type: input
+    id: file
+    attributes:
+      label: "File path"
+      placeholder: "src/scoring.py"
+    validations:
+      required: true
+
+  - type: input
+    id: line
+    attributes:
+      label: "Line number"
+      placeholder: "42"
+
+  - type: textarea
+    id: why
+    attributes:
+      label: "Why is this a false positive?"
+      description: "Explain why this code is not actually a risk. Be specific."
+      placeholder: "This function ranks blog posts by popularity, not job candidates. The word 'rank' triggered the employment pattern."
+    validations:
+      required: true
+
+  - type: textarea
+    id: snippet
+    attributes:
+      label: "Code snippet (optional)"
+      description: "The relevant code around the flagged line"
+      render: python
+
+  - type: input
+    id: version
+    attributes:
+      label: "Regula version"
+      description: "Output of: regula --version"
+      placeholder: "1.7.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: suppressed
+    attributes:
+      label: "Did you suppress this finding?"
+      options:
+        - "No — left it active"
+        - "Yes — with # regula-ignore and rationale"
+        - "Yes — with # regula-ignore (no rationale)"
+        - "Yes — with # regula-accept"
