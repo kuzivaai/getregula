@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets — see commit
+         7ed6e47 on site/index.html for the full diagnosis. TL;DR: external
+         CSS is render-blocking, so the browser's default white canvas shows
+         for hundreds of ms on cold loads. Inline critical CSS establishes the
+         dark theme immediately; `color-scheme: dark` hints the canvas colour
+         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         so they don't block first paint. <noscript> fallback for JS off. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+
+    <!-- Primary SEO -->
+    <title>Most startups are ignoring the EU AI Act | Regula</title>
+    <meta name="description" content="Most startups are ignoring the EU AI Act. For now, that's rational. Here are the three triggers that change the calculus, and what preparing actually costs.">
+    <meta name="keywords" content="EU AI Act startups, EU AI Act compliance, EU AI Act enforcement, EU AI Act ignore, EU AI Act GDPR, AI Act startup obligations, AI Act when to comply">
+    <meta name="author" content="Regula">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/blog/blog-startups-ignoring-ai-act.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/blog/blog-startups-ignoring-ai-act.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/blog/blog-startups-ignoring-ai-act.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/blog/blog-startups-ignoring-ai-act.html">
+    <meta property="og:title" content="Most startups are ignoring the EU AI Act. Here's when that stops being rational.">
+    <meta property="og:description" content="Most startups are ignoring the EU AI Act. For now, that's rational. Three triggers change the calculus, and preparing costs less than you think.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-04-17">
+    <meta property="article:modified_time" content="2026-04-17">
+    <meta property="article:author" content="The Implementation Layer">
+    <meta property="article:section" content="AI Governance">
+    <meta property="article:tag" content="EU AI Act">
+    <meta property="article:tag" content="Startups">
+    <meta property="article:tag" content="Compliance">
+    <meta property="article:tag" content="Enforcement">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Most startups are ignoring the EU AI Act. Here's when that stops being rational.">
+    <meta name="twitter:description" content="Most startups are ignoring the EU AI Act. For now, that's rational. Three triggers change the calculus.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <!-- Structured data: Article -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Most startups are ignoring the EU AI Act. Here's when that stops being rational.",
+      "description": "Most startups are ignoring the EU AI Act. For now, that's rational. Here are the three triggers that change the calculus, and what preparing actually costs.",
+      "image": "https://getregula.com/assets/og-image.png",
+      "datePublished": "2026-04-17T00:00:00+00:00",
+      "dateModified": "2026-04-17T00:00:00+00:00",
+      "author": {
+        "@type": "Person",
+        "name": "The Implementation Layer"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://getregula.com/assets/og-image.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/blog/blog-startups-ignoring-ai-act.html"
+      },
+      "keywords": ["EU AI Act", "startups", "compliance", "enforcement", "GDPR"]
+    }
+    </script>
+
+    <!-- Structured data: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getregula.com/blog/writing.html" },
+        { "@type": "ListItem", "position": 3, "name": "Most startups are ignoring the EU AI Act", "item": "https://getregula.com/blog/blog-startups-ignoring-ai-act.html" }
+      ]
+    }
+    </script>
+
+    <!-- Structured data: FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is the EU AI Act actually being enforced yet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Partially. Article 5 prohibitions (social scoring, subliminal manipulation) have been in force since 2 February 2025. GPAI obligations took effect 2 August 2025. High-risk system obligations are currently due 2 August 2026, though the proposed Digital Omnibus may defer this to 2 December 2027. As of April 2026, only Finland has designated a national competent authority. Enforcement infrastructure is still being built."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should startups wait for the EU AI Act Omnibus delay before preparing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Omnibus proposes delaying high-risk deadlines from August 2026 to December 2027, but it is not yet law. Trilogue negotiations started 26 March 2026. Even if the delay passes, enterprise procurement questionnaires and competitive pressure do not wait for enforcement dates. Starting with a basic risk assessment costs minutes, not months."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much does EU AI Act compliance cost for a startup?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It depends on your risk tier. Most startups building with AI APIs are minimal-risk or limited-risk, meaning obligations are light or non-existent. The first step is finding out your tier, which takes 30 seconds with a tool like regula assess. If you are minimal-risk, you are done. If you are high-risk, early preparation (documentation scaffolding, gap assessment) costs hours. Retrofitting later costs weeks."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- Favicon + Fonts -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
+         If adding a Content Security Policy, migrate to a hashed <script> block. -->
+    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.css">
+        <link rel="stylesheet" href="/assets/site.css">
+    </noscript>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="progress-bar"></div>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <span class="active">Blog</span>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+
+<article>
+
+<div class="blog-hero">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / <a href="/blog/writing.html">Blog</a> / Startups and the EU AI Act
+    </div>
+    <div class="blog-meta">
+        <span>17 April 2026</span>
+        <span class="dot">&middot;</span>
+        <span>6 min read</span>
+        <span class="dot">&middot;</span>
+        <span>The Implementation Layer</span>
+    </div>
+    <h1>Most startups are ignoring the EU AI Act. Here&rsquo;s when that <span class="hl">stops being rational.</span></h1>
+    <p class="standfirst">The dominant sentiment on Reddit and Hacker News is that startups should ignore the EU AI Act until fines start landing. For now, they are mostly right. But there are three specific triggers that change the calculus &mdash; and two of them have nothing to do with enforcement.</p>
+</div>
+
+<div class="blog-sep"></div>
+
+<div class="blog-body">
+
+    <!-- Section 1: The reality -->
+    <section id="the-reality">
+        <h2>The reality</h2>
+
+        <p>If you spend any time in developer forums, you already know the vibe.</p>
+
+        <blockquote>
+            <p>&ldquo;Most EU startups just ignore this lol&rdquo;</p>
+        </blockquote>
+
+        <blockquote>
+            <p>&ldquo;Feels like GDPR again... everyone will care later when fines actually start hitting.&rdquo;</p>
+        </blockquote>
+
+        <blockquote>
+            <p>&ldquo;A lot of fear mongering comes from people selling related services.&rdquo;</p>
+        </blockquote>
+
+        <p>These are real comments from Reddit and HN threads about EU AI Act compliance. And the people posting them are not wrong &mdash; at least not yet.</p>
+
+        <p>Most startups are ignoring the EU AI Act. This post is not going to tell you they are stupid for doing so. Instead, it is going to lay out the specific conditions under which that calculation flips.</p>
+    </section>
+
+    <!-- Section 2: Why ignoring it is rational today -->
+    <section id="rational-today">
+        <h2>Why ignoring it is rational today</h2>
+
+        <p>There are real reasons why most founders are not losing sleep over this.</p>
+
+        <p><strong>Enforcement has barely started.</strong> Article 5 prohibitions (social scoring, subliminal manipulation) took effect on 2 February 2025. GPAI obligations followed on 2 August 2025. But the high-risk system obligations &mdash; the ones that affect most startups &mdash; are not due until 2 August 2026. And even that date is likely to slip.</p>
+
+        <p><strong>The Omnibus proposes a delay.</strong> The <a href="https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-simplification-package">Digital Omnibus on AI</a> proposes pushing the Annex III (high-risk) deadline from 2 August 2026 to 2 December 2027. The European Parliament voted 569&ndash;45&ndash;23 in favour on 26 March 2026. Trilogue negotiations have started. It is not yet law, but both Council and Parliament have endorsed the deferral in principle.</p>
+
+        <p><strong>Only one country has an enforcement body.</strong> As of April 2026, Finland is the only Member State that has designated a national competent authority under Article 70. The AI Office is operational but still setting up. Most Member States have not even decided which agency will handle enforcement.</p>
+
+        <p><strong>GDPR enforcement took years.</strong> The GDPR became enforceable on 25 May 2018. The first significant fine &mdash; Google's &euro;50 million from the CNIL &mdash; landed in January 2019. But meaningful enforcement across sectors took until 2020&ndash;2021. The EU AI Act will follow a similar ramp.</p>
+
+        <p>If you are a seed-stage startup with 50 users and no enterprise customers, ignoring the EU AI Act today is a defensible position. You have more immediate problems.</p>
+    </section>
+
+    <!-- Section 3: When it stops being rational -->
+    <section id="three-triggers">
+        <h2>When it stops being rational</h2>
+
+        <p>The shift will not come from a single enforcement action. It will come from three triggers, and two of them are already happening.</p>
+
+        <h3>1. Enterprise customers start asking</h3>
+
+        <p>Security questionnaires are already expanding to include AI governance sections. If you sell to companies with EU operations &mdash; or companies that sell to companies with EU operations &mdash; you will eventually see questions like:</p>
+
+        <ul>
+            <li>What risk tier does your AI system fall under?</li>
+            <li>Do you maintain an AI risk management system per Article 9?</li>
+            <li>Can you provide technical documentation per Annex IV?</li>
+            <li>What human oversight mechanisms are in place?</li>
+        </ul>
+
+        <p>You do not need to be fully compliant to answer these. But you do need to know your tier and have a documented position. &ldquo;We haven&rsquo;t looked into it&rdquo; is not an answer that closes deals.</p>
+
+        <h3>2. Your competitor gets certified and you don&rsquo;t</h3>
+
+        <p>Compliance is becoming a procurement advantage. When two products are functionally equivalent and one can demonstrate EU AI Act readiness, procurement teams will choose the one with less regulatory risk. This is what happened with GDPR &mdash; &ldquo;GDPR compliant&rdquo; badges started appearing on landing pages well before enforcement became routine. The same pattern is starting for the AI Act.</p>
+
+        <p>This is not about being first to comply. It is about not being the last.</p>
+
+        <h3>3. The first enforcement action lands</h3>
+
+        <p>This has not happened yet for high-risk systems. When it does, it will change behaviour overnight, just as the first GDPR fines did. The regulation provides for fines of up to &euro;35 million or 7% of global annual turnover for prohibited practices, and up to &euro;15 million or 3% for other infringements (Article 99).</p>
+
+        <p>The first case will probably target a large, visible violator &mdash; not a 10-person startup. But the ripple effect will reach everyone. Investors will ask about it. Customers will ask about it. Your board (if you have one) will ask about it.</p>
+    </section>
+
+    <!-- Section 4: Retrofitting vs building in -->
+    <section id="retrofitting">
+        <h2>The cost of retrofitting vs building in</h2>
+
+        <p>One comment from a Reddit thread about AI Act compliance stuck with me:</p>
+
+        <blockquote>
+            <p>&ldquo;Had to rewrite a big part of my chatbot for transparency/explainability.&rdquo;</p>
+        </blockquote>
+
+        <p>This is the hidden cost. If you build without any awareness of what the regulation requires, you make architectural decisions that are expensive to reverse. A chatbot deployed without any disclosure mechanism needs UI changes, backend changes, and a re-deployment. A hiring tool that filters candidates with no human-in-the-loop needs a fundamentally different workflow.</p>
+
+        <p>Building compliance awareness in from the start does not mean buying a &euro;200K governance platform. It means knowing whether your product falls in a high-risk category before you ship it. That takes minutes. Discovering it 18 months later, when a customer asks and you have 50,000 users, costs weeks of engineering time.</p>
+    </section>
+
+    <!-- Section 5: What "preparing" actually means -->
+    <section id="what-preparing-means">
+        <h2>What &ldquo;preparing&rdquo; actually means</h2>
+
+        <p>Not hiring a compliance team. Not buying a platform. Three concrete steps.</p>
+
+        <h3>Know your tier</h3>
+
+        <p><code>regula assess</code> walks you through the same decision tree as Article 6 and Annex III. Five questions. Thirty seconds. It tells you whether you are prohibited, high-risk, limited-risk, or minimal-risk.</p>
+
+        <div class="term">
+            <div class="term-bar">
+                <span class="term-dot td-r"></span>
+                <span class="term-dot td-y"></span>
+                <span class="term-dot td-g"></span>
+            </div>
+            <pre>
+<span class="p">$</span> <span class="c">regula assess</span>
+
+<span class="h">EU AI Act &mdash; Applicability Check</span>
+
+  Result: <span class="g">LIMITED-RISK</span> (Article 50 transparency obligation)
+
+  Your product is in scope. The obligation is lightweight:
+  inform users they are interacting with AI or consuming
+  AI-generated content.
+</pre>
+        </div>
+
+        <p>If you are minimal-risk, you are done. No obligations. You can stop here.</p>
+
+        <h3>Know your gaps</h3>
+
+        <p>If you are high-risk, <code>regula gap .</code> scans your codebase and tells you which Articles 9&ndash;15 requirements you have evidence for and which you do not.</p>
+
+        <div class="term">
+            <div class="term-bar">
+                <span class="term-dot td-r"></span>
+                <span class="term-dot td-y"></span>
+                <span class="term-dot td-g"></span>
+            </div>
+            <pre>
+<span class="p">$</span> <span class="c">regula gap .</span>
+
+<span class="h">Gap Assessment: Articles 9&ndash;15</span>
+
+  Art.  9  Risk management system      <span class="y">PARTIAL</span>
+  Art. 10  Data governance              <span class="y">PARTIAL</span>
+  Art. 11  Technical documentation      <span class="m">MISSING</span>
+  Art. 12  Record-keeping               <span class="g">PRESENT</span>
+  Art. 13  Transparency                 <span class="m">MISSING</span>
+  Art. 14  Human oversight              <span class="y">PARTIAL</span>
+  Art. 15  Accuracy and robustness      <span class="g">PRESENT</span>
+</pre>
+        </div>
+
+        <h3>Generate your documentation</h3>
+
+        <p><code>regula docs .</code> scaffolds an Annex IV technical documentation template populated with what it finds in your codebase. It is not a finished document. It is a starting point that saves you from staring at a blank page.</p>
+
+        <div class="term">
+            <div class="term-bar">
+                <span class="term-dot td-r"></span>
+                <span class="term-dot td-y"></span>
+                <span class="term-dot td-g"></span>
+            </div>
+            <pre>
+<span class="p">$</span> <span class="c">pipx install regula-ai</span>
+<span class="p">$</span> <span class="c">regula assess</span>      <span class="m"># know your tier (30 seconds)</span>
+<span class="p">$</span> <span class="c">regula gap .</span>       <span class="m"># know your gaps</span>
+<span class="p">$</span> <span class="c">regula docs .</span>      <span class="m"># scaffold Annex IV documentation</span>
+</pre>
+        </div>
+
+        <p>Total time: under five minutes. Total cost: zero.</p>
+    </section>
+
+    <!-- Section 6: Closing -->
+    <section id="closing">
+        <h2>The rational move</h2>
+
+        <p>The rational move is not panic. It is not hiring a compliance consultant. It is not buying a governance platform you cannot afford.</p>
+
+        <p>It is a 30-second scan that tells you whether you need to care.</p>
+
+        <p>If you do not, you have lost nothing. If you do, you have gained months.</p>
+
+        <div class="callout">
+            <p><strong>Omnibus status.</strong> The proposed EU Digital Omnibus may extend some Annex III (high-risk) deadlines from 2 August 2026 to 2 December 2027. As of April 2026, this is under active trilogue negotiation and is <strong>not yet law</strong>. Article 5 prohibitions and Article 50 transparency obligations are not proposed for delay.</p>
+        </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        <p><strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. The EU AI Act requires contextual assessment that no automated tool can fully provide. For high-risk systems, consult a qualified legal professional. All Article references are to Regulation (EU) 2024/1689 as published in the Official Journal of the European Union on 12 July 2024.</p>
+    </div>
+
+</div>
+
+<div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
+<div class="blog-body" style="margin-top:var(--s5);">
+    <h3>Keep reading</h3>
+    <ul>
+        <li><a href="/blog/blog-omnibus-delay.html">The EU AI Act Omnibus Delay</a> &mdash; Current deadline status and what developers should do now</li>
+        <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act Apply to Your AI App?</a> &mdash; Quick applicability check for your product</li>
+        <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act Risk Tiers in Actual Code</a> &mdash; What prohibited, high-risk, and limited-risk look like in real code</li>
+    </ul>
+    <p style="margin-top:48px;font-size:13px;color:#707090;">
+        <a href="https://news.ycombinator.com/submitlink?u=https://getregula.com/blog/blog-startups-ignoring-ai-act.html&t=Most%20startups%20are%20ignoring%20the%20EU%20AI%20Act.%20Here%E2%80%99s%20when%20that%20stops%20being%20rational." rel="noopener" target="_blank" style="color:#707090;">Discuss on Hacker News</a>
+    </p>
+</div>
+
+</article>
+
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+            </div>
+            <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Scroll progress bar
+    const progressBar = document.getElementById('progress-bar');
+    function updateProgress() {
+        const scrollTop = document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        progressBar.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+    }
+
+    // Nav scroll
+    function updateNav() {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    }
+
+    window.addEventListener('scroll', () => { updateProgress(); updateNav(); }, { passive: true });
+    updateProgress();
+    updateNav();
+</script>
+
+</body>
+</html>
