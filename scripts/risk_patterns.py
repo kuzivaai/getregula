@@ -35,7 +35,7 @@ PROHIBITED_PATTERNS = {
         "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "social_scoring": {
-        "patterns": [r"\bsocial.?scor(?:e|ing)\b", r"\bsocial.?credit.?(?:scor|system|rating)", r"\bsocial.?credit\b", r"\bcitizen.?score", r"\bbehaviour.?scor"],
+        "patterns": [r"\bsocial.?scor(?:e|ing)\b", r"\bsocial.?credit.?(?:scor|system|rating)", r"\bsocial.?credit\b", r"\bcitizen.?score", r"\bscore.{0,5}citizen", r"\bbehaviour.{0,10}scor"],
         "article": "5(1)(c)",
         "description": "Social scoring by public authorities or on their behalf",
         "conditions": "Prohibited when evaluating or classifying persons based on social behaviour or personal traits, leading to detrimental treatment disproportionate to context.",

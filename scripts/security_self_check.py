@@ -26,6 +26,14 @@ KNOWN_ACCEPTABLE = [
     {"file_pattern": "bias_", "reason": "bias evaluation modules — AI-related code by design"},
     # cli_*.py domain modules contain CLI command implementations extracted from cli.py
     {"file_pattern": "cli_", "reason": "CLI command modules — imports AI-related scanners by design"},
+    # cli.py is the main CLI entry point — references AI-related patterns in help text and commands
+    {"file_pattern": "cli.py", "reason": "main CLI module — references risk patterns by design"},
+    # report.py generates compliance reports — mentions prohibited practices in executive summary text
+    {"file_pattern": "report.py", "reason": "report generator — describes prohibited practices in HTML output"},
+    # security_self_check.py, i18n.py, install.py are core tooling — detected as AI-related
+    {"file_pattern": "security_self_check.py", "reason": "self-check module — scans AI code by design"},
+    {"file_pattern": "i18n.py", "reason": "internationalisation module — references AI scanner strings"},
+    {"file_pattern": "install.py", "reason": "installer module — references AI tool configuration"},
 ]
 
 
