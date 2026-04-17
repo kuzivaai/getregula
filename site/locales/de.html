@@ -292,6 +292,49 @@
 
     <div class="sep"></div>
 
+    <!-- WER IST DIE ZIELGRUPPE -->
+    <div class="sec">
+        <h2 class="sec-head">Für wen ist das?</h2>
+        <p class="sec-sub">Entwickler, die KI-Produkte ausliefern &mdash; und die Unternehmen, die sie nutzen.</p>
+        <div class="audience-grid">
+            <div class="audience-card audience-biz">
+                <div class="audience-label">Wenn Sie das Unternehmen leiten</div>
+                <h3>Kennen Sie Ihr rechtliches Risiko?</h3>
+                <p>Wenn Ihr Team KI baut oder nutzt, kann das EU-KI-Gesetz gelten &mdash; auch außerhalb der EU. Die meisten Tools fallen unter begrenztes oder minimales Risiko. Senden Sie diese Seite an Ihren Entwickler. Ein Befehl. Sie erhalten einen Bericht für Ihren Vorstand.</p>
+                <div class="audience-fwd" onclick="copyPageUrl(this)">
+                    <span class="fwd-icon">&#8599;</span>
+                    <span class="fwd-txt">Link kopieren und an Ihren Entwickler senden</span>
+                </div>
+                <div class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
+                    <span class="fwd-icon">&#9654;</span>
+                    <span class="fwd-txt">regula assess ausführen &mdash; kein Code nötig</span>
+                </div>
+            </div>
+            <div class="audience-card audience-dev">
+                <div class="audience-label">Wenn Sie den Code schreiben</div>
+                <h3>EU-Nutzer? Das KI-Gesetz gilt für Sie.</h3>
+                <p>Artikel 2 gilt extraterritorial. Die meisten Chatbots und Produktivitätstools sind begrenztes Risiko &mdash; eine Transparenzoffenlegung, mehr nicht. Scannen Sie zur Bestätigung.</p>
+                <ul>
+                    <li>Funktioniert mit KI-generiertem Code (Cursor, Lovable, Bolt, Claude Code)</li>
+                    <li>Generiert Anhang-IV-Dokumentation aus Ihrem tatsächlichen Code</li>
+                    <li>CI/CD-Integration &middot; JSON &middot; SARIF &middot; 12 Compliance-Frameworks</li>
+                </ul>
+                <span class="step-cmd" style="margin-top:18px;">regula check .</span>
+            </div>
+            <div class="audience-card audience-audit">
+                <div class="audience-label">Wenn Sie Compliance prüfen</div>
+                <h3>Überprüfbare Nachweise, keine Selbstbescheinigung.</h3>
+                <p>Regula generiert signierte, zeitgestempelte Nachweispakete mit SHA-256-Integritätsmanifesten. Jedes Ergebnis ist auf eine Datei und Zeile rückverfolgbar. Überprüfen Sie die Kette selbst.</p>
+                <div class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula evidence-pack --sign .')">
+                    <span class="fwd-icon">&#9654;</span>
+                    <span class="fwd-txt">regula evidence-pack --sign .</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sep"></div>
+
     <div class="sec">
         <h2 class="sec-head">Über die Klassifizierung hinaus</h2>
         <p class="sec-sub">Regula liest Ihren Code direkt &mdash; keinen Fragebogen.</p>
@@ -579,6 +622,14 @@
                     el.classList.remove('copied');
                     el.innerHTML = original;
                 }, 2000);
+            });
+        }
+
+        function copyPageUrl(el) {
+            navigator.clipboard.writeText('https://getregula.com/locales/de.html').then(function() {
+                var txt = el.querySelector('.fwd-txt');
+                txt.textContent = '\u2713 Link kopiert \u2014 an Ihren Entwickler senden';
+                setTimeout(function() { txt.textContent = 'Link kopieren und an Ihren Entwickler senden'; }, 3000);
             });
         }
     </script>

@@ -293,6 +293,49 @@
 
     <div class="sep"></div>
 
+    <!-- PARA QUEM É ISTO -->
+    <div class="sec">
+        <h2 class="sec-head">Para quem é isto?</h2>
+        <p class="sec-sub">Desenvolvedores que enviam produtos de IA &mdash; e as empresas que os utilizam.</p>
+        <div class="audience-grid">
+            <div class="audience-card audience-biz">
+                <div class="audience-label">Se você dirige o negócio</div>
+                <h3>Você conhece sua exposição legal?</h3>
+                <p>Se sua equipe constrói ou usa IA, a Lei de IA da UE pode se aplicar &mdash; mesmo fora da UE. A maioria das ferramentas se enquadra em risco limitado ou mínimo. Envie esta página para seu desenvolvedor. Um comando. Você recebe um relatório para sua diretoria.</p>
+                <div class="audience-fwd" onclick="copyPageUrl(this)">
+                    <span class="fwd-icon">&#8599;</span>
+                    <span class="fwd-txt">Copiar link para enviar ao seu desenvolvedor</span>
+                </div>
+                <div class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
+                    <span class="fwd-icon">&#9654;</span>
+                    <span class="fwd-txt">Executar regula assess &mdash; sem código necessário</span>
+                </div>
+            </div>
+            <div class="audience-card audience-dev">
+                <div class="audience-label">Se você escreve o código</div>
+                <h3>Usuários na UE? A Lei de IA se aplica a você.</h3>
+                <p>O Artigo 2 é extraterritorial. A maioria dos chatbots e ferramentas de produtividade são risco limitado &mdash; uma divulgação de transparência, nada mais. Escaneie para confirmar.</p>
+                <ul>
+                    <li>Funciona com código gerado por IA (Cursor, Lovable, Bolt, Claude Code)</li>
+                    <li>Gera documentação Anexo IV a partir do seu código real</li>
+                    <li>Integração CI/CD &middot; JSON &middot; SARIF &middot; 12 frameworks de conformidade</li>
+                </ul>
+                <span class="step-cmd" style="margin-top:18px;">regula check .</span>
+            </div>
+            <div class="audience-card audience-audit">
+                <div class="audience-label">Se você audita conformidade</div>
+                <h3>Evidência verificável, não autoatestação.</h3>
+                <p>O Regula gera pacotes de evidências assinados e com marca temporal, com manifestos de integridade SHA-256. Cada descoberta é rastreável até um arquivo e linha. Verifique a cadeia você mesmo.</p>
+                <div class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula evidence-pack --sign .')">
+                    <span class="fwd-icon">&#9654;</span>
+                    <span class="fwd-txt">regula evidence-pack --sign .</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sep"></div>
+
     <div class="sec">
         <h2 class="sec-head">Além da classificação</h2>
         <p class="sec-sub">O Regula lê seu código diretamente &mdash; não um questionário.</p>
@@ -577,6 +620,14 @@
             var orig = btn.innerHTML;
             btn.innerHTML = '<span>&#10003;</span> Copiado';
             setTimeout(function() { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+        }
+
+        function copyPageUrl(el) {
+            navigator.clipboard.writeText('https://getregula.com/locales/pt-br.html').then(function() {
+                var txt = el.querySelector('.fwd-txt');
+                txt.textContent = '\u2713 Link copiado \u2014 envie ao seu desenvolvedor';
+                setTimeout(function() { txt.textContent = 'Copiar link para enviar ao seu desenvolvedor'; }, 3000);
+            });
         }
     </script>
 </body>
