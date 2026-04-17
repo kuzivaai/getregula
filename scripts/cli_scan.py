@@ -404,6 +404,20 @@ def cmd_check(args) -> None:
         {"block": block_findings, "warn": warn_findings, "info": info_findings},
     )
 
+    # Overdue risk acceptance warnings in CI (ISO 42001 Clause 8.2, AI Act 9(2))
+    if os.environ.get("GITHUB_ACTIONS") and getattr(args, "ci", False):
+        for f in accepted:
+            rd = f.get("risk_decision", {})
+            if rd.get("overdue"):
+                fpath = f.get("file", "unknown")
+                fline = f.get("line", 1)
+                pat = rd.get("pattern", "unknown")
+                rev = rd.get("review_date", "unknown")
+                own = rd.get("owner", "unknown")
+                print(f"::warning file={fpath},line={fline}"
+                      f"::Accepted risk '{pat}' is overdue for review"
+                      f" (was due {rev}, owner {own})")
+
     # Exit codes: 1 if any BLOCK-tier findings, 1 if WARN-tier and (--strict or --ci), 0 otherwise
     strict = args.strict or getattr(args, "ci", False)
     if block_findings:
