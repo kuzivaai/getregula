@@ -782,6 +782,8 @@ def _build_subparsers(subparsers):
     )
     p_check.add_argument("--name", "-n", help="Project name for SARIF output")
     p_check.add_argument("--no-ignore", action="store_true", help="Don't respect regula-ignore comments")
+    p_check.add_argument("--audit-suppressions", action="store_true",
+                         help="List all regula-ignore and regula-accept annotations with status (ISO 42001 9.1)")
     p_check.add_argument("--strict", action="store_true", help="Exit 1 on WARN-tier findings")
     p_check.add_argument("--ci", action="store_true", default=False,
                          help="CI mode: exit 1 on any WARN or BLOCK finding (implies --strict)")
