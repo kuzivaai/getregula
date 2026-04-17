@@ -5,7 +5,7 @@
 Regula v1.7.0 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only core.
 
 **Verified counts (2026-04-17):**
-- **54 CLI commands** (verified via `regula --help-all`; `regula -h` shows 7 primary commands via progressive disclosure)
+- **55 CLI commands** (verified via `regula --help-all`; `regula -h` shows 7 primary commands via progressive disclosure)
 - **52 risk pattern categories** containing 404 individual regexes (8 prohibited, 15 high-risk, 4 limited-risk, 17 AI security, 2 bias, 6 governance observations) plus 1 GPAI training group (17 regexes)
 - **182 AI framework detection indicators** (88 libraries, 10 model file types, 7 API endpoints, 13 ML patterns, 64 domain keywords)
 - **8 language families scanned** via regex (Python, JavaScript, TypeScript, Java, Go, Rust, C/C++, Jupyter notebooks — deep AST analysis for Python/JS/TS only)

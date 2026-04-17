@@ -138,7 +138,7 @@ Every finding includes the relevant Article reference and explains when exceptio
 | `regula assess` | Interactive applicability check -- does the EU AI Act apply to you? |
 | `regula demo` | Scan a bundled example project -- zero-commitment trial |
 
-Regula has 53 commands in total. Run `regula --help-all` for the full list, or see [`docs/cli-reference.md`](docs/cli-reference.md).
+Regula has 55 commands in total. Run `regula --help-all` for the full list, or see [`docs/cli-reference.md`](docs/cli-reference.md).
 
 ## Who is this for?
 
