@@ -8,7 +8,7 @@ Generated: `2026-04-17T08:13:08.318754+00:00`
 
 | Claim | Count | Source file |
 |---|---|---|
-| CLI commands | **53** | `scripts/cli.py` |
+| CLI commands | **55** | `scripts/cli.py` |
 | Detection patterns (historical bucket) | **447** | see breakdown below |
 | Detection patterns (grand total, inclusive) | **660** | see breakdown below |
 | Tiered risk pattern groups | 52 | `scripts/risk_patterns.py` |

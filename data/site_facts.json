@@ -8,7 +8,7 @@
     "tests": "tests/test_classification.py (grep '^def test_')"
   },
   "counts": {
-    "commands": 53,
+    "commands": 55,
     "patterns": {
       "tier_groups": 52,
       "tier_regexes": 387,
