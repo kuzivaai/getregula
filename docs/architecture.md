@@ -46,7 +46,7 @@ regula/
 │   ├── test_registry.py           # AI system registry
 │   ├── test_reliability.py        # Edge cases and resilience
 │   └── test_security_hardening.py # Security hardening checks
-│   # 1,000 tests (pytest --collect-only)
+│   # 1,055 tests (pytest --collect-only)
 ├── docs/
 │   └── course/                    # Interactive 10-module governance course
 ├── regula-policy.yaml             # Policy configuration template

@@ -12,13 +12,13 @@
 #      counts (commands, pattern categories, tier regexes, frameworks) OR
 #      against test output (`pytest --collect-only`). Regenerate canonical
 #      counts by running `python3 scripts/site_facts.py` before editing.
-\b403\s+(risk|)patterns?
-\b403\s+individual\s+regexes
-\b403\s+Risikomuster
-\b403\s+padr
+\b404\s+(risk|)patterns?
+\b404\s+individual\s+regexes
+\b404\s+Risikomuster
+\b404\s+padr
 \b52\s+risk\s+pattern\s+categor
-\b17\s+compliance\s+frameworks?
-\b17\s+Konformit
+\b12\s+compliance\s+frameworks?
+\b12\s+Konformit
 \b8\s+(programming\s+)?languages?
 \b8\s+Sprachen
 \b8\s+linguagens
