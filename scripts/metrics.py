@@ -51,15 +51,29 @@ def record_scan(findings: list) -> None:
     """
     # Count by tier — normalise raw classification tiers to display tiers (BLOCK/WARN/INFO)
     tier_counts: dict = {}
+    pattern_stats: dict = {}
     for f in findings:
         raw = str(f.get("tier", "UNKNOWN")).upper()
         tier = _TIER_NORMALISE.get(raw, "INFO")
         tier_counts[tier] = tier_counts.get(tier, 0) + 1
 
+        # Per-pattern breakdown (ISO 42001 Clause 10, continual improvement)
+        rd = f.get("risk_decision")
+        status = "active"
+        if rd:
+            dtype = rd.get("dtype", rd.get("type", ""))
+            status = "ignored" if dtype == "ignore" else "accepted" if dtype == "accept" else "active"
+        for indicator in f.get("indicators", []):
+            if indicator not in pattern_stats:
+                pattern_stats[indicator] = {"active": 0, "ignored": 0, "accepted": 0}
+            pattern_stats[indicator][status] += 1
+
     record = {
         "ts": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "findings": tier_counts,
     }
+    if pattern_stats:
+        record["patterns"] = pattern_stats
 
     path = _metrics_path()
     path.parent.mkdir(parents=True, exist_ok=True)
