@@ -92,20 +92,20 @@ The 257 labels are at `benchmarks/labels.json`. Every entry has:
 Every label was assigned by hand. The labelling protocol is documented
 at `benchmarks/README.md`.
 
-### Internal regression suite — 926 / 926
+### Internal regression suite
 
 ```bash
 python3 tests/test_classification.py
 ```
 
-Expected output:
+The custom runner walks `globals()` of `test_classification.py` and
+runs every `test_*` function (including those imported from 5 sub-modules).
+The count grows with each release — verify with:
 
+```bash
+python3 tests/test_classification.py 2>&1 | tail -3
+python3 -m pytest tests/ --collect-only -q 2>&1 | tail -1  # Full pytest count
 ```
-Results: 926 passed, 0 failed (476 test functions)
-```
-
-This is the 926-test custom runner that walks `globals()` of
-`test_classification.py` and runs every `test_*` function.
 
 ---
 
@@ -192,8 +192,31 @@ Counting keywords in the notes field across all 218 OSS FPs:
 **71 of 218 FPs (33%) come from test files.** The default
 `--skip-tests` flag suppresses these, which means **the operational
 precision a user sees is materially better than the 15.2% reported on
-the unfiltered corpus**. A future version of this report will rerun
-the labelling with `--skip-tests` ON to publish that operational number.
+the unfiltered corpus**.
+
+### Addendum: April 2026 precision improvements (post-benchmark)
+
+Three changes shipped on 17 April 2026 that improve operational
+precision on this same corpus. These have NOT been re-measured via a
+formal re-labelling — the numbers below are simulated from the
+existing 257 labels by filtering out findings that the new code would
+skip or deprioritise:
+
+| Configuration | TP | FP | Precision |
+|---|---:|---:|---:|
+| Raw (no filters) | 39 | 218 | 15.2% |
+| + `--skip-tests` (default since v1.5) | 39 | 142 | 21.5% |
+| + new SKIP_DIRS (examples/, demo/) | 36 | 100 | 26.5% |
+| + AI library self-scan penalty (-50 conf) | 36 | 64 | **36.0%** |
+
+**Caveats:**
+- The 36.0% is a simulation, not a re-measured benchmark. 3 TP in
+  example directories are lost (acceptable — examples are not production).
+- The AI library penalty causes openai-python findings to drop below
+  WARN threshold (confidence 65 → 15), effectively hiding them. This
+  is correct behaviour: openai-python IS an AI library, not an AI
+  application.
+- A formal re-labelling with the new code is tracked as future work.
 
 ---
 
