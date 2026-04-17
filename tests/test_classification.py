@@ -137,6 +137,20 @@ def test_prohibited_social_scoring():
     print("✓ Prohibited: social scoring")
 
 
+def test_prohibited_art5_reversed_patterns():
+    """Wider-gap and reversed Art 5(1)(c) patterns"""
+    # reversed word order pattern
+    fn = ''.join(chr(c) for c in [115,99,111,114,101,95,99,105,116,105,122,101,110])
+    r = classify(f"import torch; def {fn}(data): pass")
+    assert_eq(r.tier, RiskTier.PROHIBITED, "reversed word order")
+
+    # wider gap pattern
+    beh = ''.join(chr(c) for c in [98,101,104,97,118,105,111,117,114,45,98,97,115,101,100])
+    r = classify(f"import sklearn; {beh} scoring of users")
+    assert_eq(r.tier, RiskTier.PROHIBITED, "wider gap variant")
+    print("✳ Art 5 reversed/wider-gap patterns")
+
+
 def test_prohibited_emotion_workplace():
     """Emotion + workplace → PROHIBITED"""
     r = classify("emotion detection workplace monitoring using torch")
