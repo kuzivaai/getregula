@@ -101,6 +101,27 @@ def generate_evidence_pack(
     plan_text = format_plan_text(plan)
     _write_and_record(pack_dir, "06-remediation-plan.md", plan_text, file_records)
 
+    # --- 07: Risk decisions (ISO 42001 6.1.4, EU AI Act Article 11) ---
+    all_decisions = [
+        f.get("risk_decision") for f in findings if f.get("risk_decision")
+    ]
+    suppressed_list = [d for d in all_decisions if d.get("type") == "ignore"]
+    accepted_list = [d for d in all_decisions if d.get("type") == "accept"]
+    overdue_count = sum(1 for d in accepted_list if d.get("overdue", False))
+    risk_decisions_data = {
+        "schema_version": "1.0",
+        "generated_at": now.isoformat(),
+        "suppressed_findings": suppressed_list,
+        "accepted_risks": accepted_list,
+        "summary": {
+            "total_suppressed": len(suppressed_list),
+            "total_accepted": len(accepted_list),
+            "accepted_overdue": overdue_count,
+        },
+    }
+    rd_json = json.dumps(risk_decisions_data, indent=2, default=str)
+    _write_and_record(pack_dir, "07-risk-decisions.json", rd_json, file_records)
+
     # --- 00: Executive summary (written last, uses data from above) ---
     summary = _generate_summary(name, now, findings, gap, plan)
     _write_and_record(pack_dir, "00-summary.md", summary, file_records)

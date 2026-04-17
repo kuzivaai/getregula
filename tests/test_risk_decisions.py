@@ -213,3 +213,35 @@ def test_findings_view_partitions_accepted():
     assert len(view["active"]) == 1
     assert len(view["suppressed"]) == 1  # ignore only
     assert len(view["accepted"]) == 1    # accept only
+
+
+# ── 13. evidence pack includes risk-decisions.json ───────────────
+
+def test_evidence_pack_includes_risk_decisions():
+    """Evidence pack must contain 07-risk-decisions.json (Article 11 + Annex IV)."""
+    import json
+    import tempfile
+    from evidence_pack import generate_evidence_pack
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        example = str(ROOT / "examples" / "cv-screening-app")
+        result = generate_evidence_pack(example, output_dir=tmpdir)
+        pack_path = Path(result["pack_path"])
+
+        rd_path = pack_path / "07-risk-decisions.json"
+        assert rd_path.exists(), "07-risk-decisions.json missing from evidence pack"
+
+        rd = json.loads(rd_path.read_text())
+        assert rd["schema_version"] == "1.0"
+        assert "generated_at" in rd
+        assert "suppressed_findings" in rd
+        assert "accepted_risks" in rd
+        assert "summary" in rd
+        assert "total_suppressed" in rd["summary"]
+        assert "total_accepted" in rd["summary"]
+        assert "accepted_overdue" in rd["summary"]
+
+        # Check it's in the manifest
+        manifest = json.loads((pack_path / "manifest.json").read_text())
+        filenames = [f["filename"] for f in manifest["files"]]
+        assert "07-risk-decisions.json" in filenames
