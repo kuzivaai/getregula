@@ -319,3 +319,85 @@ def cmd_handoff(args) -> None:
             print(format_coverage_text(coverage))
         else:
             print(f"\n{result['note']}")
+
+
+def cmd_feedback_summary(args) -> None:
+    """Show a summary of local feedback events from ~/.regula/feedback.json."""
+    from cli import json_output
+    from risk_decisions import load_feedback
+
+    records = load_feedback()
+    fmt = getattr(args, "format", "text")
+
+    # Aggregate
+    by_kind: dict[str, int] = {}
+    by_pattern: dict[str, int] = {}
+    pattern_detail: dict[str, dict[str, int]] = {}  # pattern -> {ignore: N, accept: N}
+
+    for r in records:
+        kind = r.get("kind", "unknown")
+        by_kind[kind] = by_kind.get(kind, 0) + 1
+
+        pattern = r.get("pattern", "*")
+        if kind in ("suppress", "accept"):
+            by_pattern[pattern] = by_pattern.get(pattern, 0) + 1
+            if pattern not in pattern_detail:
+                pattern_detail[pattern] = {"ignore": 0, "accept": 0}
+            if kind == "suppress":
+                pattern_detail[pattern]["ignore"] += 1
+            elif kind == "accept":
+                pattern_detail[pattern]["accept"] += 1
+
+    total = len(records)
+    false_positives = by_kind.get("false-positive", 0)
+    suppressions = by_kind.get("suppress", 0) + by_kind.get("accept", 0)
+
+    # Sort patterns by count descending
+    most_suppressed = sorted(by_pattern.items(), key=lambda x: -x[1])
+
+    if fmt == "json":
+        json_output("feedback-summary", {
+            "total_events": total,
+            "by_kind": by_kind,
+            "by_pattern": by_pattern,
+            "most_suppressed": most_suppressed,
+        })
+        return
+
+    # Text output
+    print()
+    print("Feedback Summary")
+    print("=" * 60)
+    print(f"  {'Total feedback events:':<28}{total}")
+    print(f"  {'False positives reported:':<28}{false_positives}")
+    print(f"  {'Suppressions recorded:':<28}{suppressions}")
+
+    if most_suppressed:
+        print()
+        print("  Most suppressed patterns:")
+        for pattern, count in most_suppressed[:10]:
+            detail = pattern_detail.get(pattern, {})
+            ignore_n = detail.get("ignore", 0)
+            accept_n = detail.get("accept", 0)
+            parts = []
+            if ignore_n:
+                parts.append(f"{ignore_n} ignore")
+            if accept_n:
+                parts.append(f"{accept_n} accept")
+            detail_str = f" ({', '.join(parts)})" if parts else ""
+            print(f"    {pattern:<24}{count} times{detail_str}")
+
+    # Patterns with 0 suppressions (from all known feedback patterns)
+    all_suppressed_patterns = set(by_pattern.keys())
+    all_feedback_patterns = set()
+    for r in records:
+        p = r.get("pattern", "")
+        if p and p != "*":
+            all_feedback_patterns.add(p)
+    unsuppressed = all_feedback_patterns - all_suppressed_patterns
+    if unsuppressed:
+        print()
+        print("  Patterns with 0 suppressions (high signal):")
+        print(f"    {', '.join(sorted(unsuppressed))}")
+
+    print("=" * 60)
