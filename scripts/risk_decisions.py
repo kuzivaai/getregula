@@ -221,14 +221,7 @@ def record_feedback(
         fb_path = Path.home() / _FEEDBACK_FILE
         fb_path.parent.mkdir(parents=True, exist_ok=True)
 
-        records: list[dict] = []
-        if fb_path.exists():
-            try:
-                records = json.loads(fb_path.read_text(encoding="utf-8"))
-            except (json.JSONDecodeError, ValueError):
-                records = []
-
-        records.append({
+        new_record = {
             "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "kind": kind,
             "pattern": pattern,
@@ -237,9 +230,33 @@ def record_feedback(
             "confidence": confidence,
             "tier": tier,
             "rationale": rationale,
-        })
+        }
 
-        fb_path.write_text(json.dumps(records, indent=2), encoding="utf-8")
+        # File-locked write to prevent race conditions with concurrent scans
+        try:
+            import fcntl
+            with open(fb_path, "a+") as fh:
+                fcntl.flock(fh, fcntl.LOCK_EX)
+                fh.seek(0)
+                raw = fh.read()
+                records = json.loads(raw) if raw.strip() else []
+                if not isinstance(records, list):
+                    records = []
+                records.append(new_record)
+                fh.seek(0)
+                fh.truncate()
+                fh.write(json.dumps(records, indent=2))
+                fcntl.flock(fh, fcntl.LOCK_UN)
+        except ImportError:
+            # fcntl not available (Windows) — fall back to unlocked write
+            records = []
+            if fb_path.exists():
+                try:
+                    records = json.loads(fb_path.read_text(encoding="utf-8"))
+                except (json.JSONDecodeError, ValueError):
+                    records = []
+            records.append(new_record)
+            fb_path.write_text(json.dumps(records, indent=2), encoding="utf-8")
     except Exception:
         pass  # feedback recording is best-effort
 
