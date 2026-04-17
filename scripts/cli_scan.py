@@ -126,6 +126,17 @@ def cmd_check(args) -> None:
     warn_findings = _view["warn"]
     info_findings = _view["info"]
 
+    # --audit-suppressions: list all annotations with status (ISO 42001 9.1)
+    if getattr(args, "audit_suppressions", False):
+        _print_suppression_audit(findings)
+        issues = [f for f in findings
+                  if f.get("risk_decision") and (
+                      f["risk_decision"].get("warning")
+                      or f["risk_decision"].get("error")
+                      or f["risk_decision"].get("overdue")
+                  )]
+        sys.exit(1 if issues else 0)
+
     # Record scan metrics (best-effort, never blocks a scan)
     try:
         from metrics import record_scan as _record_scan
@@ -524,3 +535,35 @@ def cmd_guardrails(args) -> None:
     if getattr(args, "strict", False) or getattr(args, "ci", False):
         if result.get("overall_score", 0) < 50:
             sys.exit(1)
+
+
+def _print_suppression_audit(findings: list) -> None:
+    """Print a table of all regula-ignore and regula-accept annotations."""
+    decisions = [f for f in findings if f.get("risk_decision")]
+    if not decisions:
+        print("\nNo regula-ignore or regula-accept annotations found.")
+        return
+
+    print(f"\n{'Type':<8} {'File':<30} {'Line':>5}  {'Pattern':<20} {'Rationale':<35} {'Owner':<10} {'Review':<12} {'Status'}")
+    print("-" * 135)
+    for f in decisions:
+        rd = f["risk_decision"]
+        dtype = rd.get("dtype", rd.get("type", "?"))
+        fpath = f.get("file", "?")
+        if len(fpath) > 28:
+            fpath = "..." + fpath[-25:]
+        line = f.get("line", 0)
+        pattern = rd.get("pattern", "?")[:18]
+        rationale = (rd.get("rationale") or "\u2014")[:33]
+        owner = rd.get("owner", "\u2014") if dtype == "accept" else "\u2014"
+        review = rd.get("review_date", "\u2014") if dtype == "accept" else "\u2014"
+
+        status = "OK"
+        if rd.get("error"):
+            status = "\u26a0 ERROR"
+        elif rd.get("warning"):
+            status = "\u26a0 NO RATIONALE"
+        elif rd.get("overdue"):
+            status = "\u26a0 OVERDUE"
+
+        print(f"{dtype:<8} {fpath:<30} {line:>5}  {pattern:<20} {rationale:<35} {owner:<10} {review:<12} {status}")
