@@ -68,7 +68,7 @@ def count_commands() -> int:
 def count_patterns() -> dict:
     """Return a full breakdown of detection patterns across every module.
 
-    The landing page claim "403 risk patterns" is the total individual
+    The landing page claim "404 risk patterns" is the total individual
     regexes in risk_patterns.py. The honest view is that Regula ships multiple pattern categories
     across three files. This function exposes all of them.
     """
