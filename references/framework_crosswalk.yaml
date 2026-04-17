@@ -1,10 +1,10 @@
-# Framework Crosswalk: EU AI Act 2024/1689 mapped to 14 frameworks
+# Framework Crosswalk: EU AI Act 2024/1689 mapped to 11 frameworks
 # Sources: EU AI Act text, NIST AI 100-1, ISO/IEC 42001:2023, NIST CSF 2.0,
 #          SOC 2 TSC (AICPA 2017), ISO 27001:2022, OWASP LLM Top 10 (2025),
 #          MITRE ATLAS, EU Cyber Resilience Act (2024/2847),
 #          ICO AI Guidance (ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/artificial-intelligence),
 #          DSIT AI Principles (gov.uk/government/publications/ai-regulation-a-pro-innovation-approach, updated 2024),
-#          Colorado SB 205 (C.R.S. 6-1-1701 et seq., effective 1 Feb 2026),
+#          Colorado SB 205 (C.R.S. 6-1-1701 et seq., effective 30 Jun 2026),
 #          Canada AIDA (Bill C-27, Part 3 — proposed),
 #          Singapore Model AI Governance Framework 2.0 + FEAT Principles (MAS/PDPC, 2024),
 #          OECD AI Principles (OECD/LEGAL/0449, 2024 update),

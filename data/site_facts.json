@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-16T21:04:44.660940+00:00",
+  "generated_at": "2026-04-17T08:13:08.318754+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -11,7 +11,7 @@
     "commands": 53,
     "patterns": {
       "tier_groups": 52,
-      "tier_regexes": 386,
+      "tier_regexes": 387,
       "ai_indicators": 182,
       "gpai_training": 17,
       "architecture": 38,
@@ -19,13 +19,13 @@
       "logging": 4,
       "oversight": 4,
       "credential": 18,
-      "grand_total": 659,
-      "historical_330_bucket": 446
+      "grand_total": 660,
+      "historical_330_bucket": 447
     },
-    "frameworks": 17,
+    "frameworks": 12,
     "languages": 8,
     "tests": {
-      "total_functions": 893,
+      "total_functions": 931,
       "per_file": {
         "test_agent_governance.py": 28,
         "test_ai_codegen.py": 0,
@@ -33,16 +33,18 @@
         "test_bias_report.py": 4,
         "test_bias_stats.py": 8,
         "test_build_regulations.py": 14,
-        "test_classification.py": 427,
+        "test_claim_auditor.py": 24,
+        "test_classification.py": 428,
         "test_cli_integration.py": 21,
         "test_coverage_critical.py": 45,
+        "test_dependency_compromised_text.py": 9,
         "test_dependency_pinning.py": 14,
         "test_documentation.py": 16,
         "test_evidence_format_v1.py": 13,
         "test_gpai_check.py": 27,
         "test_guardrails.py": 24,
         "test_hooks_audit.py": 50,
-        "test_manifest_timestamp.py": 12,
+        "test_manifest_timestamp.py": 13,
         "test_mcp_server.py": 6,
         "test_new_commands.py": 14,
         "test_owasp_agentic.py": 24,
@@ -55,7 +57,7 @@
         "test_scan_cache.py": 3,
         "test_security_hardening.py": 12,
         "test_session.py": 12,
-        "test_signing.py": 14,
+        "test_signing.py": 17,
         "test_site_critical_css.py": 3,
         "test_telemetry.py": 9
       }
@@ -63,6 +65,6 @@
   },
   "notes": {
     "pattern_count_methodology": "Regula's landing pages cite '403 risk patterns'. That figure is the total individual regexes in risk_patterns.py across all tiered groups (prohibited, high-risk, limited-risk, AI security, bias, governance, GPAI training). The `historical_330_bucket` adds architecture, credential, and oversight patterns from code_analysis.py. The `grand_total` also includes AI_INDICATORS.",
-    "frameworks_vs_claim": "Regula's landing pages cite '17 compliance frameworks'. Counted from framework_mapper._FRAMEWORK_KEYS unique values."
+    "frameworks_vs_claim": "Regula's landing pages cite '12 compliance frameworks'. 12 have full crosswalk data; 5 additional frameworks (Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI) accepted as filter keys with partial coverage."
   }
 }

@@ -88,7 +88,7 @@ You've learned to:
 - Detect AI-specific security vulnerabilities
 - Integrate into CI/CD pipelines
 - Generate compliance documentation
-- Map findings across 17 frameworks (see `references/framework_crosswalk.yaml`)
+- Map findings across 12 frameworks (see `references/framework_crosswalk.yaml`)
 - Build custom detection patterns
 
 **What's next:**
