@@ -117,6 +117,8 @@ def build_feedback_url(
     line_number: "int | None",
     regula_version: str,
     description: "str | None",
+    confidence_score: "int | None" = None,
+    tier: "str | None" = None,
 ) -> str:
     """
     Build a pre-filled GitHub Issue URL.
@@ -127,10 +129,13 @@ def build_feedback_url(
         title = f"False positive: {pattern_id or 'unknown'}"
         label = "false-positive"
         line_info = f"Line: {line_number}" if line_number else "Line: unknown"
+        conf_line = f"**Confidence score:** `{confidence_score}`\n" if confidence_score is not None else ""
+        tier_line = f"**Finding tier:** `{tier}`\n" if tier else ""
         body = (
             f"**Pattern flagged:** `{pattern_id or 'unknown'}`\n"
             f"**File:** `{file_path or 'unknown'}`\n"
             f"**{line_info}**\n"
+            f"{conf_line}{tier_line}"
             f"**Regula version:** `{regula_version}`\n\n"
             "**Why this is a false positive:**\n"
             "<!-- Describe why this code is not actually a risk -->\n\n"
