@@ -703,7 +703,33 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <p class="price-desc">Static code scanner. Runs on your laptop in one command. Stdlib-only Python core, zero production dependencies, fully offline. <code>pipx install regula-ai</code>, scan your project, get a clear answer. MIT licence.</p>
         </div>
     </div>
-    <p class="competitor-note">Other open-source EU AI Act code scanners exist &mdash; notably <a href="https://airblackbox.ai/" rel="noopener">AIR Blackbox</a> (Python/pip, Apache 2.0, local, 48 checks — 41 static + 7 runtime — across Articles 9/10/11/12/14/15), <a href="https://www.npmjs.com/package/@systima/comply" rel="noopener">Systima Comply</a> (TypeScript, AST-based), <a href="https://github.com/ark-forge/mcp-eu-ai-act" rel="noopener">ark-forge mcp-eu-ai-act</a> (Python, 6 languages, MCP-native, freemium), and <a href="https://github.com/saasvista/aibom-scanner" rel="noopener">AIBOM Scanner</a> (Python, 61 detection patterns across 30+ AI providers, NIST AI RMF + ISO 42001 + EU AI Act mapping). Pick the one whose language coverage and trade-offs fit your stack. Regula's niche is stdlib-only, zero production dependencies, 8-language breadth, and 12 compliance-framework crosswalk. For <em>runtime</em> agent governance (a different layer to pre-commit scanning), see <a href="https://github.com/microsoft/agent-governance-toolkit" rel="noopener">Microsoft's Agent Governance Toolkit</a> (released 2 April 2026, policy enforcement at agent action time).</p>
+    <div style="overflow-x:auto;margin-top:32px;">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;color:#b0b0cc;">
+        <thead>
+            <tr style="border-bottom:1px solid #23234a;text-align:left;">
+                <th style="padding:8px 12px;"></th>
+                <th style="padding:8px 12px;">Regula</th>
+                <th style="padding:8px 12px;">AIR Blackbox</th>
+                <th style="padding:8px 12px;">Systima Comply</th>
+                <th style="padding:8px 12px;">EuConform</th>
+                <th style="padding:8px 12px;">Enterprise SaaS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td style="padding:6px 12px;color:#e0e0f0;">Approach</td><td>Static code scan</td><td>Scan + runtime trust layers</td><td>AST-based scan</td><td>Questionnaire + bias eval</td><td>Platform / dashboard</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Languages</td><td>8 families</td><td>Python</td><td>JS/TS</td><td>N/A</td><td>N/A</td></tr>
+            <tr><td style="padding:6px 12px;color:#e0e0f0;">Detection patterns</td><td>404</td><td>48 checks</td><td>37+ frameworks</td><td>Questionnaire</td><td>Varies</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Dependencies</td><td>Zero (stdlib)</td><td>Multiple</td><td>npm</td><td>Next.js + Ollama</td><td>SaaS</td></tr>
+            <tr><td style="padding:6px 12px;color:#e0e0f0;">Offline</td><td>Fully offline</td><td>Local</td><td>Local</td><td>Local + Ollama</td><td>Cloud</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Evidence signing</td><td>Ed25519 + RFC 3161</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>Varies</td></tr>
+            <tr><td style="padding:6px 12px;color:#e0e0f0;">Framework mappings</td><td>12</td><td>3</td><td>EU AI Act</td><td>EU AI Act</td><td>Multiple</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">CI/CD integration</td><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>&mdash;</td><td>Native</td></tr>
+            <tr><td style="padding:6px 12px;color:#e0e0f0;">Annex IV docs</td><td>Free</td><td>&mdash;</td><td>&mdash;</td><td>PDF reports</td><td>Built-in</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Price</td><td>Free (MIT)</td><td>Free (Apache 2.0)</td><td>Free (OSS)</td><td>Free (MIT + EUPL)</td><td>$30K&ndash;$200K/yr</td></tr>
+        </tbody>
+    </table>
+    </div>
+    <p style="font-size:12px;color:#707090;margin-top:12px;">Pick the tool whose language coverage and trade-offs fit your stack. Regula is strongest for multi-language codebases that need audit-grade evidence and cross-framework mapping. For <em>runtime</em> agent governance, see <a href="https://github.com/microsoft/agent-governance-toolkit" rel="noopener" style="color:#707090;">Microsoft&rsquo;s Agent Governance Toolkit</a>.</p>
 </div>
 
 <div class="sep"></div>
