@@ -47,7 +47,8 @@ def partition_findings(findings: list[dict]) -> FindingsView:
 
     Returns a dict with these keys:
         active        — findings where suppressed is falsy
-        suppressed    — findings where suppressed is truthy
+        suppressed    — findings where suppressed is truthy and not risk-accepted
+        accepted      — findings where suppressed is truthy and risk_decision.dtype == "accept"
         prohibited    — active findings with tier == "prohibited"
         credentials   — active findings with tier == "credential_exposure"
         high_risk     — active findings with tier == "high_risk"
@@ -63,7 +64,13 @@ def partition_findings(findings: list[dict]) -> FindingsView:
     The function is pure: same input → same output, no side effects.
     """
     active_raw = [f for f in findings if not f.get("suppressed")]
-    suppressed = [f for f in findings if f.get("suppressed")]
+    suppressed_all = [f for f in findings if f.get("suppressed")]
+
+    # Separate ignore (false positive) from accept (risk acceptance)
+    suppressed = [f for f in suppressed_all
+                  if not f.get("risk_decision") or f["risk_decision"].get("dtype") != "accept"]
+    accepted = [f for f in suppressed_all
+                if f.get("risk_decision") and f["risk_decision"].get("dtype") == "accept"]
 
     # Shallow-copy each active finding so we can annotate without
     # mutating the caller's data.
@@ -90,6 +97,7 @@ def partition_findings(findings: list[dict]) -> FindingsView:
     return {
         "active":     active,
         "suppressed": suppressed,
+        "accepted":   accepted,
         **by_tier,
         **by_display,
     }

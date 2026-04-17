@@ -258,19 +258,14 @@ def _scan_ai_security(content, rel_path, is_test, suppressed):
     return results
 
 
-def _parse_suppression_rules(lines, respect_ignores):
-    """Extract suppression rules from regula-ignore comments."""
-    suppressed_rules = set()
-    if respect_ignores:
-        for line in lines:
-            stripped = line.strip()
-            if "regula-ignore" in stripped:
-                if ":" in stripped and "regula-ignore:" in stripped:
-                    rule_part = stripped.split("regula-ignore:")[-1].strip()
-                    suppressed_rules.add(rule_part.lower())
-                else:
-                    suppressed_rules.add("*")
-    return suppressed_rules
+def _parse_suppression_rules(lines, respect_ignores, filepath="unknown"):
+    """Extract suppression rules from regula-ignore/regula-accept comments."""
+    if not respect_ignores:
+        return set(), []
+    from risk_decisions import parse_annotations, build_suppression_set
+    decisions = parse_annotations(lines, filepath)
+    suppression_set = build_suppression_set(decisions)
+    return suppression_set, decisions
 
 
 def scan_files(project_path: str, respect_ignores: bool = True,
@@ -400,7 +395,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # definitions or docstrings discussing the patterns.
             if min_tier_level <= _TIER_ORDER.get("prohibited", 4):
                 from classify_risk import check_prohibited, strip_comments as _strip
-                _early_suppress = _parse_suppression_rules(lines, respect_ignores)
+                _early_suppress, _early_decisions = _parse_suppression_rules(lines, respect_ignores, rel_path)
                 _early_silenced = "*" in _early_suppress or "prohibited" in _early_suppress
                 if not _early_silenced:
                     _early_lang = detect_language(filename) or "python"
@@ -436,7 +431,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     pass  # Cache write is best-effort
                 continue
 
-            suppressed_rules = _parse_suppression_rules(lines, respect_ignores)
+            suppressed_rules, file_decisions = _parse_suppression_rules(lines, respect_ignores, rel_path)
 
             # Credential governance (AI-related files only)
             secret_suppressed = "*" in suppressed_rules or "secrets" in suppressed_rules
@@ -483,6 +478,15 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 if indicator.lower() in suppressed_rules:
                     is_suppressed = True
 
+            # Find matching risk decision for this finding
+            matched_decision = None
+            for dec in file_decisions:
+                if dec.pattern == "*" or any(
+                    ind.lower() == dec.pattern for ind in result.indicators_matched
+                ):
+                    matched_decision = dec
+                    break
+
             # Calculate confidence score
             base_score = {
                 "prohibited": 85, "high_risk": 65,
@@ -525,6 +529,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 "exceptions": result.exceptions,
                 "confidence_score": confidence_score,
                 "suppressed": is_suppressed,
+                "risk_decision": matched_decision.to_dict() if matched_decision else None,
                 "observations": observations,
                 "domain_boost": {
                     "boost": domain_boost,

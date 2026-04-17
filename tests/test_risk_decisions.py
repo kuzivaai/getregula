@@ -192,3 +192,24 @@ def test_build_suppression_set():
     assert "employment" in suppressed, "ignore should suppress"
     assert "social_scoring" in suppressed, "valid accept should suppress"
     assert "biometric_categorisation" not in suppressed, "invalid accept must NOT suppress"
+
+
+# ── 12. findings_view partitions accepted ─────────────────────────
+
+def test_findings_view_partitions_accepted():
+    """findings_view.py separates active, suppressed (ignore), and accepted."""
+    from findings_view import partition_findings
+
+    findings = [
+        {"tier": "high_risk", "suppressed": False, "confidence_score": 70,
+         "risk_decision": None},
+        {"tier": "high_risk", "suppressed": True, "confidence_score": 65,
+         "risk_decision": {"dtype": "ignore", "rationale": "test fixture"}},
+        {"tier": "high_risk", "suppressed": True, "confidence_score": 72,
+         "risk_decision": {"dtype": "accept", "owner": "@kuziva",
+                           "review_date": "2099-12-31", "overdue": False}},
+    ]
+    view = partition_findings(findings)
+    assert len(view["active"]) == 1
+    assert len(view["suppressed"]) == 1  # ignore only
+    assert len(view["accepted"]) == 1    # accept only
