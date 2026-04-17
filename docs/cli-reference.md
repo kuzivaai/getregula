@@ -22,6 +22,12 @@ regula check . --min-tier limited_risk  # Filter out minimal_risk noise
 # Classify a text input
 regula classify --input "import tensorflow; cv screening model"
 
+# Try it on a bundled example (zero-commitment trial)
+regula demo
+
+# Risk register summary (active findings, accepted risks, suppressed FPs)
+regula risks --project .
+
 # Generate reports
 regula report --format html -o report.html --include-audit
 regula report --format sarif -o results.sarif.json
