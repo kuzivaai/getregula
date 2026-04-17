@@ -64,17 +64,11 @@ _FRAMEWORK_KEYS = {
     "ico-ai-guidance": "ico_ai",
     "ico": "ico_ai",
     "uk-ico": "ico_ai",
-    "colorado-sb205": "colorado_sb205",
-    "colorado": "colorado_sb205",
-    "aida": "canada_aida",
-    "canada-aida": "canada_aida",
-    "singapore-ai": "singapore_ai",
-    "singapore": "singapore_ai",
-    "feat": "singapore_ai",
-    "oecd-ai": "oecd_ai",
-    "oecd": "oecd_ai",
-    "south-korea-ai": "south_korea_ai",
-    "korea-ai": "south_korea_ai",
+    # NOTE: Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, and
+    # South Korea AI Basic Act have display handlers (lines 229-271)
+    # but NO per-article crosswalk data in framework_crosswalk.yaml.
+    # Filter keys removed to avoid silent empty results. Re-add when
+    # crosswalk data is populated.
 }
 
 
@@ -137,7 +131,7 @@ def map_to_frameworks(
 
     # Determine which framework keys to include
     if frameworks is None or frameworks == ["all"] or "all" in (frameworks or []):
-        include = list(_FRAMEWORK_KEYS.values())  # all three
+        include = list(_FRAMEWORK_KEYS.values())
     else:
         include = []
         for f in frameworks:
@@ -145,7 +139,6 @@ def map_to_frameworks(
             if key:
                 include.append(key)
             else:
-                # Accept internal keys directly (e.g. "nist_ai_rmf")
                 if f in _FRAMEWORK_KEYS.values():
                     include.append(f)
 
