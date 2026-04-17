@@ -2,19 +2,19 @@
 
 *Canonical source of truth for every numeric claim on the landing pages. Regenerate by running `python3 scripts/site_facts.py`.*
 
-Generated: `2026-04-16T21:04:44.660940+00:00`
+Generated: `2026-04-17T08:13:08.318754+00:00`
 
 ## Top-line counts
 
 | Claim | Count | Source file |
 |---|---|---|
 | CLI commands | **53** | `scripts/cli.py` |
-| Detection patterns (historical bucket) | **446** | see breakdown below |
-| Detection patterns (grand total, inclusive) | **659** | see breakdown below |
+| Detection patterns (historical bucket) | **447** | see breakdown below |
+| Detection patterns (grand total, inclusive) | **660** | see breakdown below |
 | Tiered risk pattern groups | 52 | `scripts/risk_patterns.py` |
-| Compliance frameworks | **17** | `references/framework_crosswalk.yaml` + EU AI Act |
+| Compliance frameworks (full crosswalk) | **12** | `references/framework_crosswalk.yaml` + EU AI Act |
 | Programming languages | 8 | `scripts/ast_engine.py` |
-| Test functions (all files) | 893 | `tests/test_*.py` |
+| Test functions (all files) | 931 | `tests/test_*.py` |
 
 ## Detection pattern breakdown
 
@@ -22,7 +22,7 @@ Regula ships detection patterns across three source files. The landing page clai
 
 | Category | Source | Count |
 |---|---|---|
-| Tiered risk regexes (prohibited, high-risk, limited-risk, AI security, bias) | `risk_patterns.py` | 386 |
+| Tiered risk regexes (prohibited, high-risk, limited-risk, AI security, bias) | `risk_patterns.py` | 387 |
 | AI_INDICATORS (libraries, model files, API endpoints, ML patterns, domain keywords) | `risk_patterns.py` | 182 |
 | GPAI training code detectors | `risk_patterns.py` | 17 |
 | Architecture detectors | `code_analysis.py` | 38 |
@@ -30,8 +30,8 @@ Regula ships detection patterns across three source files. The landing page clai
 | Logging detectors | `code_analysis.py` | 4 |
 | Oversight detectors | `code_analysis.py` | 4 |
 | Credential detectors | `credential_check.py` | 18 |
-| **Grand total (inclusive)** | across 3 files | **659** |
-| **Historical 330 bucket** | tiered + arch + cred + oversight | **446** |
+| **Grand total (inclusive)** | across 3 files | **660** |
+| **Historical 330 bucket** | tiered + arch + cred + oversight | **447** |
 
 ## Honesty notes
 
