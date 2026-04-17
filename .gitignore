@@ -47,6 +47,7 @@ evidence-pack-*/
 .ci-heal/
 .playwright-cli/
 docs/superpowers/
+AUDIT_REPORT.md
 vscode-extension/node_modules/
 regula-course.html
 docs/FULL_INSPECTION.md
