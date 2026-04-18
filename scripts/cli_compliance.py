@@ -644,3 +644,31 @@ def cmd_baseline(args) -> None:
             sys.exit(1)
     else:
         print("Usage: regula baseline [save|compare]")
+
+
+def cmd_roadmap(args) -> None:
+    """Generate compliance roadmap with week-by-week plan."""
+    from cli import json_output, _validate_path
+    from report import scan_files
+    from compliance_check import assess_compliance
+    from roadmap import generate_roadmap, format_roadmap_text
+
+    if args.project != ".":
+        _validate_path(args.project)
+    project_path = str(Path(args.project).resolve())
+
+    print("Scanning project...", file=sys.stderr)
+    findings = scan_files(project_path)
+    gap = assess_compliance(project_path)
+    target = getattr(args, "target_date", "2 August 2026")
+
+    roadmap = generate_roadmap(
+        findings, gap,
+        target_date=target,
+        project_name=Path(project_path).name,
+    )
+
+    if args.format == "json":
+        json_output("roadmap", roadmap)
+    else:
+        print(format_roadmap_text(roadmap))
