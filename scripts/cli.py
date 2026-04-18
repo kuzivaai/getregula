@@ -683,7 +683,7 @@ from cli_report import (
 )
 from cli_compliance import (
     cmd_comply, cmd_compliance, cmd_conform, cmd_gap, cmd_exempt,
-    cmd_gpai_check, cmd_plan, cmd_assess, cmd_baseline,
+    cmd_gpai_check, cmd_plan, cmd_assess, cmd_baseline, cmd_roadmap,
 )
 from cli_governance import (
     cmd_governance, cmd_agent, cmd_oversight, cmd_model_card,
@@ -1020,6 +1020,15 @@ def _build_subparsers(subparsers):
     p_plan.add_argument("--status", action="store_true", help="Show completion progress")
     p_plan.add_argument("--done", metavar="TASK-ID", help="Mark a task as completed")
     p_plan.set_defaults(func=cmd_plan)
+
+    # --- roadmap ---
+    p_roadmap = subparsers.add_parser("roadmap",
+                                       help="Generate week-by-week compliance roadmap")
+    p_roadmap.add_argument("--project", "-p", default=".")
+    p_roadmap.add_argument("--target-date", "-t", default="2 August 2026",
+                           help="Compliance deadline (default: 2 August 2026)")
+    p_roadmap.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_roadmap.set_defaults(func=cmd_roadmap)
 
     # --- disclose ---
     p_disclose = subparsers.add_parser("disclose", help="Generate Article 50 transparency disclosures")
