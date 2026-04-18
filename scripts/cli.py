@@ -679,7 +679,7 @@ Environment variables (override defaults when CLI flag not provided):
 from cli_scan import cmd_check, cmd_classify, cmd_discover, cmd_guardrails
 from cli_report import (
     cmd_report, cmd_evidence_pack, cmd_sbom, cmd_benchmark,
-    cmd_inventory, cmd_badge,
+    cmd_inventory, cmd_badge, cmd_doc_audit,
 )
 from cli_compliance import (
     cmd_comply, cmd_compliance, cmd_conform, cmd_gap, cmd_exempt,
@@ -1090,6 +1090,13 @@ def _build_subparsers(subparsers):
     p_evidence.add_argument("--bundle", action="store_true",
                             help="Package output as a self-verifying .regula-evidence.zip")
     p_evidence.set_defaults(func=cmd_evidence_pack)
+
+    # --- doc-audit ---
+    p_doc_audit = subparsers.add_parser("doc-audit",
+                                         help="Score compliance document quality (0-100 per article)")
+    p_doc_audit.add_argument("--project", "-p", default=".")
+    p_doc_audit.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_doc_audit.set_defaults(func=cmd_doc_audit)
 
     # --- conform ---
     p_conform = subparsers.add_parser(
