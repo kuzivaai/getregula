@@ -20,6 +20,47 @@ sys.path.insert(0, str(Path(__file__).parent))
 from remediation_plan import ARTICLE_EFFORT, DEADLINE_HIGH_RISK
 
 
+# ---------------------------------------------------------------------------
+# Per-article fix guidance — maps each article to the regula command that
+# generates the relevant remediation scaffold.
+# ---------------------------------------------------------------------------
+
+ARTICLE_FIX_GUIDANCE = {
+    "5": {
+        "command": "regula fix --project .",
+        "description": "Remove prohibited AI functionality identified in scan",
+    },
+    "9": {
+        "command": "regula docs --project . --qms",
+        "description": "Generate risk management system scaffold (QMS template)",
+    },
+    "10": {
+        "command": "regula docs --project .",
+        "description": "Generate data governance documentation scaffold",
+    },
+    "11": {
+        "command": "regula docs --project .",
+        "description": "Generate Annex IV technical documentation draft",
+    },
+    "12": {
+        "command": "regula fix --project .",
+        "description": "Generate logging and audit trail implementation scaffold",
+    },
+    "13": {
+        "command": "regula disclose --project .",
+        "description": "Generate Article 50 transparency disclosure",
+    },
+    "14": {
+        "command": "regula oversight --project .",
+        "description": "Analyse human oversight patterns and generate recommendations",
+    },
+    "15": {
+        "command": "regula fix --project .",
+        "description": "Generate robustness and cybersecurity fix scaffolds",
+    },
+}
+
+
 # Phase definitions (validated against ISO 42001 implementation methodology)
 ROADMAP_PHASES = [
     {"name": "Quick Wins", "description": "Transparency disclosures, AI disclosure in README, low-effort documentation"},
@@ -123,7 +164,8 @@ def generate_roadmap(
 
         for i, task in enumerate(phase_tasks):
             week = min(start_week + i, end_week)
-            weekly_plan.append({
+            guidance = ARTICLE_FIX_GUIDANCE.get(task["article"], {})
+            item = {
                 "week": week,
                 "phase": phase["name"],
                 "article": task["article"],
@@ -132,7 +174,10 @@ def generate_roadmap(
                 "effort_days": task["effort_days"],
                 "priority": "critical" if task["criticality"] >= 8 else "high" if task["criticality"] >= 5 else "medium",
                 "current_score": task["current_score"],
-            })
+                "next_command": guidance.get("command", f"regula check --project ."),
+                "fix_description": guidance.get("description", f"Run regula check to review Article {task['article']} findings"),
+            }
+            weekly_plan.append(item)
 
     weekly_plan.sort(key=lambda w: w["week"])
 
@@ -180,8 +225,13 @@ def _distribute_weeks(total_weeks: int, num_phases: int) -> list:
     return ranges
 
 
-def format_roadmap_text(roadmap: dict) -> str:
-    """Format roadmap as human-readable text."""
+def format_roadmap_text(roadmap: dict, actionable: bool = True) -> str:
+    """Format roadmap as human-readable text.
+
+    Args:
+        roadmap: Roadmap dict from generate_roadmap().
+        actionable: If True (default), show next_command after each task.
+    """
     lines = []
     lines.append(f"\n  Compliance Roadmap — {roadmap['project']}")
     lines.append(f"  Target: {roadmap['target_date']} ({roadmap['weeks_remaining']} weeks remaining)")
@@ -205,6 +255,8 @@ def format_roadmap_text(roadmap: dict) -> str:
             lines.append(f"\n  -- {current_phase} --")
         effort = f"~{item['effort_days'][0]}-{item['effort_days'][1]}d"
         lines.append(f"    Week {item['week']:>2d}  [{item['priority']:>8s}]  Art. {item['article']:>2s}  {effort:>8s}  {item['action']}")
+        if actionable and item.get("next_command"):
+            lines.append(f"              \u2192 {item['next_command']}")
     lines.append("")
 
     # Omnibus caveat
