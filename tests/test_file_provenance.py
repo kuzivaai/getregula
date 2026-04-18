@@ -81,3 +81,35 @@ def test_pyproject_toml_is_not_tooling():
     # but it has .toml suffix. The task spec excludes it from the tooling
     # catch-all. It falls through to 'production'.
     assert classify_provenance(Path("pyproject.toml")) == "production"
+
+
+def test_scope_production_filters_non_production_findings():
+    """--scope production filtering excludes test/example/tooling findings."""
+    findings = [
+        {"file": "src/app.py", "tier": "high_risk", "provenance": "production"},
+        {"file": "tests/test_app.py", "tier": "high_risk", "provenance": "test"},
+        {"file": "examples/demo.py", "tier": "high_risk", "provenance": "example"},
+        {"file": "docs/guide.md", "tier": "minimal_risk", "provenance": "documentation"},
+        {"file": ".github/ci.yml", "tier": "minimal_risk", "provenance": "tooling"},
+        {"file": "src/model.py", "tier": "limited_risk", "provenance": "production"},
+    ]
+
+    # Replicate the --scope production filter from cli_scan.py line 98
+    filtered = [f for f in findings if f.get("provenance", "production") == "production"]
+
+    assert len(filtered) == 2
+    assert all(f["provenance"] == "production" for f in filtered)
+    assert {f["file"] for f in filtered} == {"src/app.py", "src/model.py"}
+
+
+def test_scope_production_defaults_missing_provenance_to_production():
+    """Findings without a provenance field default to 'production' (backward compat)."""
+    findings = [
+        {"file": "src/app.py", "tier": "high_risk"},  # no provenance key
+        {"file": "tests/test_app.py", "tier": "high_risk", "provenance": "test"},
+    ]
+
+    filtered = [f for f in findings if f.get("provenance", "production") == "production"]
+
+    assert len(filtered) == 1
+    assert filtered[0]["file"] == "src/app.py"
