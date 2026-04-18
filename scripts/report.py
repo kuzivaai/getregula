@@ -10,6 +10,7 @@ stakeholders (DPOs, compliance officers, auditors).
 
 __all__ = [
     "scan_files", "scan_config_files", "classify_provenance",
+    "_is_open_question",
     "generate_html_report", "generate_sarif", "generate_sales_report",
 ]
 
@@ -79,7 +80,7 @@ def scan_config_files(project_path: str) -> list:
                         if rx.search(line):
                             line_num = i
                             break
-                    findings.append({
+                    finding = {
                         "file": rel_path,
                         "line": line_num,
                         "tier": "minimal_risk",
@@ -89,7 +90,9 @@ def scan_config_files(project_path: str) -> list:
                         "confidence_score": 30,
                         "suppressed": False,
                         "provenance": classify_provenance(filepath),
-                    })
+                    }
+                    finding["open_question"] = _is_open_question(finding)
+                    findings.append(finding)
                     break  # One finding per config file
 
     return findings
@@ -155,6 +158,20 @@ def classify_provenance(filepath: Path) -> str:
     if suffix in (".yml", ".yaml", ".toml", ".cfg", ".ini") and name not in ("pyproject.toml",):
         return "tooling"
     return "production"
+
+
+def _is_open_question(finding: dict) -> bool:
+    """Determine if a finding should be flagged as an open question.
+
+    Open questions are findings with confidence < 60 that are not prohibited
+    and not suppressed. They represent ambiguous detections that need human
+    judgment rather than automated action.
+    """
+    if finding.get("tier") == "prohibited":
+        return False
+    if finding.get("suppressed", False):
+        return False
+    return finding.get("confidence_score", 0) < 60
 
 
 def _has_mock_patterns(content: str) -> bool:
@@ -265,7 +282,7 @@ def _scan_agent_autonomy(content, lines, rel_path, is_test, respect_ignores, pro
                         elif "agent-autonomy" in stripped:
                             suppressed = True
 
-            results.append({
+            finding = {
                 "file": rel_path,
                 "line": af["line"],
                 "tier": "agent_autonomy",
@@ -275,7 +292,9 @@ def _scan_agent_autonomy(content, lines, rel_path, is_test, respect_ignores, pro
                 "confidence_score": confidence,
                 "suppressed": suppressed,
                 "provenance": provenance,
-            })
+            }
+            finding["open_question"] = _is_open_question(finding)
+            results.append(finding)
     except (ValueError, KeyError, AttributeError) as e:
         print(f"regula: action data error in {rel_path}: {e}", file=sys.stderr)
     return results
@@ -293,7 +312,7 @@ def _scan_credentials(content, lines, rel_path, is_test, suppressed, provenance=
                     secret_line = i
                     break
 
-            results.append({
+            finding = {
                 "file": rel_path,
                 "line": secret_line,
                 "tier": "credential_exposure",
@@ -307,7 +326,9 @@ def _scan_credentials(content, lines, rel_path, is_test, suppressed, provenance=
                 "confidence_score": max(sf.confidence_score - 40, 10) if is_test else sf.confidence_score,
                 "suppressed": suppressed,
                 "provenance": provenance,
-            })
+            }
+            finding["open_question"] = _is_open_question(finding)
+            results.append(finding)
     except (ValueError, KeyError, AttributeError) as e:
         print(f"regula: credential scan error in {rel_path}: {e}", file=sys.stderr)
     return results
@@ -319,7 +340,7 @@ def _scan_ai_security(content, rel_path, is_test, suppressed, provenance="produc
     try:
         security_findings = check_ai_security(content)
         for sf in security_findings:
-            results.append({
+            finding = {
                 "file": rel_path,
                 "line": sf["line"],
                 "tier": "ai_security",
@@ -330,7 +351,9 @@ def _scan_ai_security(content, rel_path, is_test, suppressed, provenance="produc
                 "suppressed": suppressed,
                 "provenance": provenance,
                 "remediation": sf["remediation"],
-            })
+            }
+            finding["open_question"] = _is_open_question(finding)
+            results.append(finding)
     except (ValueError, KeyError, AttributeError) as e:
         print(f"regula: security scan error in {rel_path}: {e}", file=sys.stderr)
     return results
@@ -411,7 +434,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # Model files
             if filepath.suffix.lower() in MODEL_EXTENSIONS:
                 if min_tier_level <= 1:
-                    findings.append({
+                    finding = {
                         "file": str(filepath.relative_to(project)),
                         "line": 1,
                         "tier": "minimal_risk",
@@ -421,7 +444,9 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         "confidence_score": 30,
                         "suppressed": False,
                         "provenance": provenance,
-                    })
+                    }
+                    finding["open_question"] = _is_open_question(finding)
+                    findings.append(finding)
                 continue
 
             if filepath.suffix not in CODE_EXTENSIONS:
@@ -488,7 +513,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     _early_stripped = _strip(content, _early_lang)
                     prohibited_early = check_prohibited(content, stripped_text=_early_stripped)
                     if prohibited_early is not None:
-                        findings.append({
+                        finding = {
                             "file": rel_path,
                             "line": 1,
                             "tier": "prohibited",
@@ -502,7 +527,9 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                             "provenance": provenance,
                             "observations": [],
                             "domain_boost": None,
-                        })
+                        }
+                        finding["open_question"] = _is_open_question(finding)
+                        findings.append(finding)
                         try:
                             if cache is not None:
                                 cache.put(rel_path, content, findings[file_findings_start:])
@@ -533,7 +560,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             result = classify(content, language=lang)
             if result.tier in (RiskTier.NOT_AI, RiskTier.MINIMAL_RISK) and not result.indicators_matched:
                 if min_tier_level <= 1:
-                    findings.append({
+                    finding = {
                         "file": rel_path,
                         "line": 1,
                         "tier": "minimal_risk",
@@ -543,7 +570,9 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         "confidence_score": 20,
                         "suppressed": "*" in suppressed_rules,
                         "provenance": provenance,
-                    })
+                    }
+                    finding["open_question"] = _is_open_question(finding)
+                    findings.append(finding)
                 try:
                     if cache is not None:
                         cache.put(rel_path, content, findings[file_findings_start:])
@@ -626,7 +655,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 except (ValueError, KeyError, TypeError) as e:
                     print(f"regula: observation generation failed for {rel_path}: {e}", file=sys.stderr)
 
-            findings.append({
+            finding = {
                 "file": rel_path,
                 "line": 1,
                 "tier": result.tier.value,
@@ -645,7 +674,9 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     "domains_matched": domain_result.get("domains_matched", []),
                     "detail": domain_result.get("detail", ""),
                 } if domain_boost > 0 else None,
-            })
+            }
+            finding["open_question"] = _is_open_question(finding)
+            findings.append(finding)
 
             # Cache findings collected for this file
             try:
@@ -1289,9 +1320,14 @@ def generate_sarif(findings: list, project_name: str) -> dict:
         else:
             continue  # Don't include minimal-risk in SARIF
 
+        # Open questions get downgraded to "note" level in SARIF
+        sarif_level = SARIF_SEVERITY_MAP.get(tier, "none")
+        if f.get("open_question"):
+            sarif_level = "note"
+
         result = {
             "ruleId": rule_id,
-            "level": SARIF_SEVERITY_MAP.get(tier, "none"),
+            "level": sarif_level,
             "message": {
                 "text": f.get("description", "Risk indicator detected"),
             },
@@ -1303,6 +1339,7 @@ def generate_sarif(findings: list, project_name: str) -> dict:
             }],
             "properties": {
                 "confidence_score": f.get("confidence_score", 0),
+                "open_question": f.get("open_question", False),
                 "deadline": f.get("deadline"),
                 "deadline_status": f.get("deadline_status"),
                 "omnibus_deadline": f.get("omnibus_deadline"),
