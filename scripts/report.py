@@ -88,6 +88,7 @@ def scan_config_files(project_path: str) -> list:
                         "indicators": ["ai_config"],
                         "confidence_score": 30,
                         "suppressed": False,
+                        "provenance": classify_provenance(filepath),
                     })
                     break  # One finding per config file
 
@@ -239,7 +240,7 @@ def _detect_ai_library_project(project: Path) -> bool:
     return False
 
 
-def _scan_agent_autonomy(content, lines, rel_path, is_test, respect_ignores):
+def _scan_agent_autonomy(content, lines, rel_path, is_test, respect_ignores, provenance="production"):
     """Detect agent autonomy risks in a single file.
 
     Runs on ALL code files (not just AI-related) because agent tool
@@ -273,13 +274,14 @@ def _scan_agent_autonomy(content, lines, rel_path, is_test, respect_ignores):
                 "indicators": [af["action_pattern"]],
                 "confidence_score": confidence,
                 "suppressed": suppressed,
+                "provenance": provenance,
             })
     except (ValueError, KeyError, AttributeError) as e:
         print(f"regula: action data error in {rel_path}: {e}", file=sys.stderr)
     return results
 
 
-def _scan_credentials(content, lines, rel_path, is_test, suppressed):
+def _scan_credentials(content, lines, rel_path, is_test, suppressed, provenance="production"):
     """Detect credential exposure in a single file."""
     results = []
     try:
@@ -304,13 +306,14 @@ def _scan_credentials(content, lines, rel_path, is_test, suppressed):
                 "indicators": [sf.pattern_name],
                 "confidence_score": max(sf.confidence_score - 40, 10) if is_test else sf.confidence_score,
                 "suppressed": suppressed,
+                "provenance": provenance,
             })
     except (ValueError, KeyError, AttributeError) as e:
         print(f"regula: credential scan error in {rel_path}: {e}", file=sys.stderr)
     return results
 
 
-def _scan_ai_security(content, rel_path, is_test, suppressed):
+def _scan_ai_security(content, rel_path, is_test, suppressed, provenance="production"):
     """Detect AI security antipatterns in a single file."""
     results = []
     try:
@@ -325,6 +328,7 @@ def _scan_ai_security(content, rel_path, is_test, suppressed):
                 "indicators": [sf["pattern_name"]],
                 "confidence_score": max({"critical": 90, "high": 80, "medium": 60, "low": 40}.get(sf["severity"], 50) - (40 if is_test else 0), 10),
                 "suppressed": suppressed,
+                "provenance": provenance,
                 "remediation": sf["remediation"],
             })
     except (ValueError, KeyError, AttributeError) as e:
@@ -464,7 +468,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
 
             # Agent autonomy detection (runs on ALL code files)
             if min_tier_level <= _TIER_ORDER.get("agent_autonomy", 3):
-                findings.extend(_scan_agent_autonomy(content, lines, rel_path, is_test, respect_ignores))
+                findings.extend(_scan_agent_autonomy(content, lines, rel_path, is_test, respect_ignores, provenance))
 
             # Article 5 prohibited practices must be detected REGARDLESS of
             # whether the file imports an AI library — the prohibition is on
@@ -519,11 +523,11 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # Credential governance (AI-related files only)
             secret_suppressed = "*" in suppressed_rules or "secrets" in suppressed_rules
             if min_tier_level <= _TIER_ORDER.get("credential_exposure", 3):
-                findings.extend(_scan_credentials(content, lines, rel_path, is_test, secret_suppressed))
+                findings.extend(_scan_credentials(content, lines, rel_path, is_test, secret_suppressed, provenance))
 
             # AI security antipatterns
             if min_tier_level <= _TIER_ORDER.get("ai_security", 3):
-                findings.extend(_scan_ai_security(content, rel_path, is_test, secret_suppressed or "*" in suppressed_rules))
+                findings.extend(_scan_ai_security(content, rel_path, is_test, secret_suppressed or "*" in suppressed_rules, provenance))
 
             lang = detect_language(filename) or "python"
             result = classify(content, language=lang)

@@ -17,6 +17,7 @@ import test_build_regulations as _test_build_regulations  # noqa: F401
 import test_gpai_check as _test_gpai_check  # noqa: F401
 import test_new_commands as _test_new_commands  # noqa: F401
 import test_site_critical_css as _test_site_critical_css  # noqa: F401
+import test_file_provenance as _test_file_provenance  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
@@ -28,7 +29,7 @@ from helpers import assert_eq, assert_true, assert_false
 # with proper fixture injection.
 import inspect as _inspect
 _PYTEST_FIXTURES = {"monkeypatch", "tmp_path", "capsys", "tmpdir", "request"}
-for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css):
+for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
             continue
@@ -42,7 +43,7 @@ for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_ne
         if _params & _PYTEST_FIXTURES:
             continue
         globals()[_name] = _fn
-del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css
+del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:
