@@ -269,6 +269,50 @@ def cmd_check(args) -> None:
         print(f"  {t('warn_tier'):<20}{len(warn_findings)}")
         print(f"  {t('info_tier'):<20}{len(info_findings)}")
 
+        # === First-run verdict: answer "Am I affected?" ===
+        if prohibited:
+            verdict_tier = "PROHIBITED"
+            verdict_desc = "Your project contains AI practices prohibited under EU AI Act Article 5."
+            verdict_action = "These must be removed before deployment in the EU."
+            verdict_color = red
+        elif high_risk or credentials:
+            verdict_tier = "HIGH-RISK"
+            verdict_desc = "Your project is classified as high-risk under EU AI Act Annex III."
+            verdict_action = "You must comply with Articles 9-15 before the enforcement deadline."
+            verdict_color = yellow
+        elif limited:
+            verdict_tier = "LIMITED-RISK"
+            verdict_desc = "Your project has limited-risk AI components (Article 50 transparency)."
+            verdict_action = "You must disclose AI usage to users."
+            verdict_color = blue
+        elif active:
+            verdict_tier = "MINIMAL-RISK"
+            verdict_desc = "Your project uses AI but with minimal regulatory obligations."
+            verdict_action = "No mandatory requirements, but good governance is recommended."
+            verdict_color = lambda x: x
+        else:
+            verdict_tier = "NO AI DETECTED"
+            verdict_desc = "No AI components or risk indicators found in your project."
+            verdict_action = "The EU AI Act likely does not apply to this project."
+            verdict_color = lambda x: x
+
+        print(f"\n  {verdict_color('Verdict')}: {verdict_color(verdict_tier)}")
+        print(f"  {verdict_desc}")
+        print(f"  {verdict_action}")
+
+        # Top findings driving the verdict
+        top = sorted(
+            [f for f in active if not f.get("open_question")],
+            key=lambda f: -f.get("confidence_score", 0),
+        )[:3]
+        if top:
+            print(f"\n  Why:")
+            for i, f in enumerate(top, 1):
+                arts = ", ".join(f.get("articles", [])[:2]) if f.get("articles") else f.get("tier", "")
+                print(f"    {i}. {f['file']}:{f.get('line', '?')} — {f.get('description', '')[:80]}")
+                if arts:
+                    print(f"       ({arts})")
+
         if prohibited:
             print(f"\n  {red('PROHIBITED INDICATORS')}:")
             for f in prohibited:
@@ -338,55 +382,25 @@ def cmd_check(args) -> None:
         print(f"  {t('suppress_note')}")
         print()
 
-        # Contextual next-step suggestions (TTY only)
-        if _is_tty():
-            steps = []
-            if block_findings:
-                first_block = block_findings[0].get("file", "<file>")
-                steps.append(
-                    f"regula fix --project .{'':<22s}Generate fix scaffolds for {len(block_findings)} BLOCK finding(s)"
-                )
-                steps.append(
-                    f"regula check --explain .{'':<20s}Detailed reasoning for each flagged file"
-                )
-            if active and not block_findings:
-                first_file = active[0].get("file", "<file>")
-                steps.append(
-                    f"regula check --explain .{'':<20s}Detailed reasoning for each flagged file"
-                )
-            if prohibited:
-                steps.append(
-                    f"regula comply{'':<31s}Check all EU AI Act obligations"
-                )
-            if warn_findings and not block_findings:
-                steps.append(
-                    f"regula plan --project .{'':<22s}Prioritised remediation plan"
-                )
-            if high_risk:
-                steps.append(
-                    f"regula gap --project .{'':<22s}Compliance gap assessment (Articles 9-15)"
-                )
-            if not active:
-                steps.append(
-                    f"regula check --verbose .{'':<20s}Show all findings including INFO tier"
-                )
-                steps.append(
-                    f"regula comply{'':<31s}Verify EU AI Act obligation status"
-                )
-            if not any("evidence" in s for s in steps):
-                steps.append(
-                    f"regula evidence-pack --project .{'':<13s}Generate auditor-ready evidence"
-                )
-            if not any("timeline" in s for s in steps):
-                steps.append(
-                    f"regula timeline{'':<29s}See enforcement deadlines"
-                )
-
-            if steps:
-                print("  Next steps:", file=sys.stderr)
-                for i, step in enumerate(steps[:4], 1):
-                    print(f"    {i}. {step}", file=sys.stderr)
-                print(file=sys.stderr)
+        # === Next steps for the user ===
+        print(f"\n  {'─' * 56}")
+        print(f"  Next steps:")
+        step_num = 1
+        if prohibited:
+            print(f"    {step_num}. regula fix --project .         Remove prohibited practices")
+            step_num += 1
+        if high_risk or limited:
+            print(f"    {step_num}. regula gap --project .         See which articles you need to address")
+            step_num += 1
+            print(f"    {step_num}. regula roadmap --project .     Get a week-by-week compliance plan")
+            step_num += 1
+        if active:
+            print(f"    {step_num}. regula evidence-pack --project . --bundle   Generate auditor-ready evidence")
+            step_num += 1
+        if not active:
+            print(f"    {step_num}. regula gap --project .         Verify compliance documentation exists")
+            step_num += 1
+        print()
 
     # Explain mode: show detailed reasoning for each file
     if getattr(args, "explain", False) and args.format == "text":
