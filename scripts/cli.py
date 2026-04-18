@@ -676,10 +676,10 @@ Environment variables (override defaults when CLI flag not provided):
 # Import command functions from domain modules
 # ---------------------------------------------------------------------------
 
-from cli_scan import cmd_check, cmd_classify, cmd_discover, cmd_guardrails
+from cli_scan import cmd_check, cmd_classify, cmd_discover, cmd_guardrails, cmd_gdpr
 from cli_report import (
     cmd_report, cmd_evidence_pack, cmd_sbom, cmd_benchmark,
-    cmd_inventory, cmd_badge, cmd_doc_audit,
+    cmd_inventory, cmd_badge, cmd_doc_audit, cmd_aibom,
 )
 from cli_compliance import (
     cmd_comply, cmd_compliance, cmd_conform, cmd_gap, cmd_exempt,
@@ -851,6 +851,8 @@ def _build_subparsers(subparsers):
                          help="Comma-separated jurisdictions (e.g. eu,colorado,korea). "
                               "Applies all relevant framework mappings simultaneously. "
                               "Valid: " + ", ".join(sorted(JURISDICTION_MAP)))
+    p_check.add_argument("--include-gdpr", action="store_true",
+                         help="Include GDPR pattern findings in scan results")
     p_check.set_defaults(func=cmd_check)
 
     # --- comply ---
@@ -869,6 +871,14 @@ def _build_subparsers(subparsers):
     p_classify.add_argument("--file", "-f", help="File to classify")
     p_classify.add_argument("--format", choices=["text", "json"], default="text")
     p_classify.set_defaults(func=cmd_classify)
+
+    # --- gdpr ---
+    p_gdpr = subparsers.add_parser("gdpr",
+                                    help="Scan for GDPR code patterns with dual-compliance hotspot detection")
+    p_gdpr.add_argument("--project", "-p", default=".")
+    p_gdpr.add_argument("--scope", choices=["all", "production"], default="all")
+    p_gdpr.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_gdpr.set_defaults(func=cmd_gdpr)
 
     # --- report ---
     p_report = subparsers.add_parser("report", help="Generate reports (HTML, SARIF, JSON)")
@@ -1252,6 +1262,13 @@ def _build_subparsers(subparsers):
     p_sbom.add_argument("--name", "-n", help="Project name")
     p_sbom.add_argument("--ai-bom", action="store_true", help="Include AI-specific BOM fields (model provenance, GPAI tiers, datasets)")
     p_sbom.set_defaults(func=cmd_sbom)
+
+    # --- aibom ---
+    p_aibom = subparsers.add_parser("aibom",
+                                     help="Generate AI Bill of Materials (component inventory)")
+    p_aibom.add_argument("--project", "-p", default=".")
+    p_aibom.add_argument("--format", "-f", choices=["text", "json", "cyclonedx", "markdown"], default="text")
+    p_aibom.set_defaults(func=cmd_aibom)
 
     # --- agent ---
     p_agent = subparsers.add_parser("agent", help="Monitor agentic AI sessions for risk patterns — analyses Claude Code audit logs or MCP config files")
