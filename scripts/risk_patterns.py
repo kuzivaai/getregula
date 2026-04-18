@@ -985,6 +985,76 @@ GOVERNANCE_OBSERVATIONS = {
 # Limitation: can detect absence of attempt, not actual model bias.
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Lifecycle Phase Mapping
+#
+# Maps each pattern category key to the AI system lifecycle phases where
+# the finding is most actionable. Aligned with ISO 22989 / ISO 5338 /
+# Algoritmekader lifecycle phases:
+#   plan    — risk classification, applicability assessment
+#   design  — architecture decisions, privacy-by-design patterns
+#   develop — code patterns, bias testing, documentation gaps
+#   deploy  — credential exposure, dependency pinning, conformity readiness
+#   operate — logging, audit trails, human oversight, post-market readiness
+#   retire  — data retention, model decommissioning
+#
+# Some categories span multiple phases.
+# ---------------------------------------------------------------------------
+
+CATEGORY_LIFECYCLE_PHASES = {
+    # Prohibited (Article 5) — detected at plan/assess phase
+    "subliminal_manipulation": ["plan"],
+    "exploitation_vulnerabilities": ["plan"],
+    "social_scoring": ["plan"],
+    "criminal_prediction": ["plan"],
+    "facial_recognition_scraping": ["plan"],
+    "emotion_inference_restricted": ["plan"],
+    "biometric_categorisation_sensitive": ["plan"],
+    "realtime_biometric_public": ["plan"],
+    # High-risk (Annex III) — primarily plan + develop
+    "biometrics": ["plan", "develop"],
+    "critical_infrastructure": ["plan", "develop"],
+    "education": ["plan", "develop"],
+    "employment": ["plan", "develop"],
+    "essential_services": ["plan", "develop"],
+    "law_enforcement": ["plan", "develop"],
+    "migration": ["plan", "develop"],
+    "justice": ["plan", "develop"],
+    "medical_devices": ["plan", "develop"],
+    "high_risk__insurance": ["plan", "develop"],
+    "high_risk__credit_scoring": ["plan", "develop"],
+    "high_risk__worker_management": ["plan", "develop"],
+    "high_risk__democratic_processes": ["plan", "develop"],
+    "high_risk__emergency_services": ["plan", "develop"],
+    "safety_components": ["plan", "develop"],
+    # Limited risk (Article 50) — develop + deploy
+    "chatbots": ["develop", "deploy"],
+    "emotion_recognition": ["develop", "deploy"],
+    "biometric_categorisation": ["develop", "deploy"],
+    "synthetic_content": ["develop", "deploy"],
+    # AI Security — develop + deploy
+    "unsafe_deserialization": ["develop"],
+    "prompt_injection_vulnerable": ["develop"],
+    "prompt_injection_indirect": ["develop"],
+    "prompt_injection_tool_output": ["develop"],
+    "no_output_validation": ["develop"],
+    "hardcoded_model_path": ["develop", "deploy"],
+    "unbounded_token_generation": ["develop"],
+    "missing_temperature_control": ["develop"],
+    "no_error_handling_ai_call": ["develop"],
+    "exposed_api_key_env": ["develop", "deploy"],
+    "sensitive_info_disclosure": ["develop", "operate"],
+    "supply_chain_model": ["deploy"],
+    "data_poisoning": ["develop"],
+    "excessive_agency": ["develop", "operate"],
+    "system_prompt_leakage": ["develop", "deploy"],
+    "rag_poisoning": ["develop"],
+    "no_grounding": ["develop"],
+    # Bias — develop + operate
+    "protected_class_as_feature": ["develop"],
+    "missing_fairness_evaluation": ["develop", "operate"],
+}
+
 BIAS_RISK_PATTERNS = {
     "protected_class_as_feature": {
         "patterns": [
