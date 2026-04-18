@@ -105,10 +105,15 @@ def test_pattern_special_category_data():
     regex = pat[0]
     assert_true(bool(regex.search("ethnicity")), "Should match ethnicity")
     assert_true(bool(regex.search("religion")), "Should match religion")
-    assert_true(bool(regex.search("political")), "Should match political")
+    assert_true(bool(regex.search("political_affiliation")), "Should match political_affiliation")
+    assert_true(bool(regex.search("political_belief")), "Should match political_belief")
     assert_true(bool(regex.search("biometric")), "Should match biometric")
     assert_true(bool(regex.search("health_status")), "Should match health_status")
     assert_true(bool(regex.search("disability")), "Should match disability")
+    assert_true(bool(regex.search("genetic_data")), "Should match genetic_data")
+    # Should NOT match common false positives
+    assert_false(bool(regex.search("RaceCondition")), "Should NOT match RaceCondition")
+    assert_false(bool(regex.search("genetic_algorithm")), "Should NOT match genetic_algorithm")
 
 
 def test_pattern_automated_processing():
@@ -347,7 +352,8 @@ def test_scan_summary_structure():
         result = scan_gdpr(proj)
         summary = result["summary"]
         expected_keys = [
-            "total_findings", "dual_compliance_hotspots", "hotspot_files",
+            "total_findings", "dual_compliance_hotspot_files",
+            "dual_compliance_findings", "hotspot_files",
             "articles_triggered", "high_confidence", "medium_confidence",
             "low_confidence",
         ]

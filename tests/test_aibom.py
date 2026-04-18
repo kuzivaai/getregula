@@ -264,8 +264,9 @@ def test_cyclonedx_structure():
     }
     cdx = format_cyclonedx(aibom)
     assert cdx["bomFormat"] == "CycloneDX"
-    assert cdx["specVersion"] == "1.6"
+    assert cdx["specVersion"] == "1.7"
     assert cdx["version"] == 1
+    assert cdx["serialNumber"].startswith("urn:uuid:")
     assert "metadata" in cdx
     assert "components" in cdx
     assert cdx["metadata"]["timestamp"] == "2026-04-18T00:00:00Z"
@@ -315,7 +316,7 @@ def test_cyclonedx_custom_properties():
 
 
 def test_cyclonedx_tools_metadata():
-    """CycloneDX metadata should include Regula tool info."""
+    """CycloneDX metadata should include Regula tool info in v1.5+ format."""
     aibom = {
         "project": "/tmp/test",
         "regula_version": "1.7.0",
@@ -325,9 +326,11 @@ def test_cyclonedx_tools_metadata():
     }
     cdx = format_cyclonedx(aibom)
     tools = cdx["metadata"]["tools"]
-    assert len(tools) == 1
-    assert tools[0]["vendor"] == "Regula"
-    assert tools[0]["name"] == "regula-ai"
+    assert isinstance(tools, dict), "tools must be a dict (v1.5+ format)"
+    assert "components" in tools
+    assert len(tools["components"]) == 1
+    assert tools["components"][0]["type"] == "application"
+    assert tools["components"][0]["name"] == "regula"
 
 
 # ── format_aibom_markdown ────────────────────────────────────────

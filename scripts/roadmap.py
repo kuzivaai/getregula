@@ -10,15 +10,14 @@ Effort estimates are heuristic ranges for a typical SME project.
 No authoritative per-article effort benchmarks exist.
 """
 
-import json
 import math
 import sys
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from remediation_plan import ARTICLE_EFFORT, TIER_PRIORITY, DEADLINE_HIGH_RISK, DEADLINE_OMNIBUS
+from remediation_plan import ARTICLE_EFFORT, DEADLINE_HIGH_RISK
 
 
 # Phase definitions (validated against ISO 42001 implementation methodology)
@@ -43,7 +42,6 @@ ARTICLE_CRITICALITY = {
 
 
 def generate_roadmap(
-    findings: list,
     gap_assessment: dict,
     target_date: str = DEADLINE_HIGH_RISK,
     project_name: str = "project",
@@ -51,7 +49,6 @@ def generate_roadmap(
     """Generate a week-by-week compliance roadmap.
 
     Args:
-        findings: List of finding dicts from report.scan_files().
         gap_assessment: Dict from compliance_check.assess_compliance().
         target_date: Deadline string (default: "2 August 2026").
         project_name: Human-readable project name.
