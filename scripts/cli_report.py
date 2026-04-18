@@ -320,4 +320,4 @@ def cmd_doc_audit(args) -> None:
                 print(f"    ↳ {gap}")
     avg = sum(r["total"] for r in results) / len(results) if results else 0
     print(f"\n  Average score: {avg:.0f}/100 across {len(results)} document(s)")
-    print(f"  Note: scores reflect structural completeness, not semantic adequacy.\n")
+    print("  Note: scores reflect structural completeness, not semantic adequacy.\n")

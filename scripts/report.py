@@ -144,8 +144,6 @@ def classify_provenance(filepath: Path) -> str:
         return "example"
     name = filepath.name.lower()
     suffix = filepath.suffix.lower()
-    if suffix in (".md", ".rst", ".txt", ".adoc"):
-        return "documentation"
     if _is_init_file(filepath):
         return "tooling"
     parts = [p.lower() for p in filepath.parts]
@@ -157,6 +155,8 @@ def classify_provenance(filepath: Path) -> str:
         return "tooling"
     if suffix in (".yml", ".yaml", ".toml", ".cfg", ".ini") and name not in ("pyproject.toml",):
         return "tooling"
+    if suffix in (".md", ".rst", ".txt", ".adoc"):
+        return "documentation"
     return "production"
 
 
