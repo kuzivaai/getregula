@@ -26,6 +26,7 @@ from typing import Optional
 sys.path.insert(0, str(Path(__file__).parent))
 
 from classify_risk import classify, RiskTier, is_ai_related, PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS, AI_SECURITY_PATTERNS, generate_observations, check_ai_security
+from risk_patterns import CATEGORY_LIFECYCLE_PHASES
 from domain_scoring import compute_domain_boost
 from ast_engine import detect_language
 from log_event import query_events, verify_chain
@@ -90,6 +91,7 @@ def scan_config_files(project_path: str) -> list:
                         "confidence_score": 30,
                         "suppressed": False,
                         "provenance": classify_provenance(filepath),
+                        "lifecycle_phases": ["deploy"],
                     }
                     finding["open_question"] = _is_open_question(finding)
                     findings.append(finding)
@@ -292,6 +294,7 @@ def _scan_agent_autonomy(content, lines, rel_path, is_test, respect_ignores, pro
                 "confidence_score": confidence,
                 "suppressed": suppressed,
                 "provenance": provenance,
+                "lifecycle_phases": ["operate"],
             }
             finding["open_question"] = _is_open_question(finding)
             results.append(finding)
@@ -326,6 +329,7 @@ def _scan_credentials(content, lines, rel_path, is_test, suppressed, provenance=
                 "confidence_score": max(sf.confidence_score - 40, 10) if is_test else sf.confidence_score,
                 "suppressed": suppressed,
                 "provenance": provenance,
+                "lifecycle_phases": ["develop", "deploy"],
             }
             finding["open_question"] = _is_open_question(finding)
             results.append(finding)
@@ -351,6 +355,7 @@ def _scan_ai_security(content, rel_path, is_test, suppressed, provenance="produc
                 "suppressed": suppressed,
                 "provenance": provenance,
                 "remediation": sf["remediation"],
+                "lifecycle_phases": CATEGORY_LIFECYCLE_PHASES.get(sf["pattern_name"], ["develop"]),
             }
             finding["open_question"] = _is_open_question(finding)
             results.append(finding)
@@ -444,6 +449,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         "confidence_score": 30,
                         "suppressed": False,
                         "provenance": provenance,
+                        "lifecycle_phases": ["develop"],
                     }
                     finding["open_question"] = _is_open_question(finding)
                     findings.append(finding)
@@ -513,6 +519,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     _early_stripped = _strip(content, _early_lang)
                     prohibited_early = check_prohibited(content, stripped_text=_early_stripped)
                     if prohibited_early is not None:
+                        _early_indicator = prohibited_early.indicators_matched[0] if prohibited_early.indicators_matched else ""
                         finding = {
                             "file": rel_path,
                             "line": 1,
@@ -527,6 +534,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                             "provenance": provenance,
                             "observations": [],
                             "domain_boost": None,
+                            "lifecycle_phases": CATEGORY_LIFECYCLE_PHASES.get(_early_indicator, ["plan"]),
                         }
                         finding["open_question"] = _is_open_question(finding)
                         findings.append(finding)
@@ -570,6 +578,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         "confidence_score": 20,
                         "suppressed": "*" in suppressed_rules,
                         "provenance": provenance,
+                        "lifecycle_phases": ["develop"],
                     }
                     finding["open_question"] = _is_open_question(finding)
                     findings.append(finding)
@@ -655,6 +664,8 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 except (ValueError, KeyError, TypeError) as e:
                     print(f"regula: observation generation failed for {rel_path}: {e}", file=sys.stderr)
 
+            # Look up lifecycle phases from the primary indicator
+            _primary_indicator = result.indicators_matched[0] if result.indicators_matched else ""
             finding = {
                 "file": rel_path,
                 "line": 1,
@@ -674,6 +685,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     "domains_matched": domain_result.get("domains_matched", []),
                     "detail": domain_result.get("detail", ""),
                 } if domain_boost > 0 else None,
+                "lifecycle_phases": CATEGORY_LIFECYCLE_PHASES.get(_primary_indicator, ["develop"]),
             }
             finding["open_question"] = _is_open_question(finding)
             findings.append(finding)
