@@ -288,3 +288,36 @@ def cmd_badge(args) -> None:
             f"https://img.shields.io/badge/EU%20AI%20Act-{message.replace(' ', '%20')}-{color}"
         )
         print(f"[![EU AI Act]({shield_url})](https://getregula.com)")
+
+
+def cmd_doc_audit(args) -> None:
+    """Score compliance document quality."""
+    from cli import json_output, _validate_path
+    from doc_audit import audit_project
+
+    if args.project != ".":
+        _validate_path(args.project)
+    project_path = str(Path(args.project).resolve())
+    results = audit_project(project_path)
+
+    if args.format == "json":
+        json_output("doc-audit", {"documents": results, "project": project_path})
+        return
+
+    if not results:
+        print(f"No compliance documents found in {project_path}")
+        print("Expected files like: RISK_MANAGEMENT.md, TRANSPARENCY.md, etc.")
+        print("Run 'regula docs --project .' to generate templates.")
+        return
+
+    print(f"\n  Document Quality Audit — {project_path}\n")
+    print(f"  {'Document':<35s} {'Article':<35s} {'Score':>5s}  {'Cov':>4s}  {'Dep':>4s}  {'Str':>4s}")
+    print(f"  {'─' * 35} {'─' * 35} {'─' * 5}  {'─' * 4}  {'─' * 4}  {'─' * 4}")
+    for r in results:
+        print(f"  {r['filename']:<35s} {r.get('article_name', ''):<35s} {r['total']:>5d}  {r['coverage']:>4d}  {r['depth']:>4d}  {r['structure']:>4d}")
+        if r["gaps"]:
+            for gap in r["gaps"][:3]:
+                print(f"    ↳ {gap}")
+    avg = sum(r["total"] for r in results) / len(results) if results else 0
+    print(f"\n  Average score: {avg:.0f}/100 across {len(results)} document(s)")
+    print(f"  Note: scores reflect structural completeness, not semantic adequacy.\n")
