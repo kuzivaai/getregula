@@ -92,6 +92,11 @@ def cmd_check(args) -> None:
         min_tier=getattr(args, "min_tier", "") or "",
     )
 
+    # Scope filtering: exclude non-production files when --scope production
+    scope = getattr(args, "scope", "all")
+    if scope == "production":
+        findings = [f for f in findings if f.get("provenance", "production") == "production"]
+
     # Diff mode: filter findings to only changed files
     if args.diff:
         changed = _get_changed_files(project, args.diff)
