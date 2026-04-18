@@ -669,4 +669,5 @@ def cmd_roadmap(args) -> None:
     if args.format == "json":
         json_output("roadmap", roadmap)
     else:
-        print(format_roadmap_text(roadmap))
+        actionable = getattr(args, "actionable", True)
+        print(format_roadmap_text(roadmap, actionable=actionable))
