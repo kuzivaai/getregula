@@ -628,8 +628,9 @@ def cmd_gdpr(args) -> None:
     print(f"  {summary['total_findings']} finding(s): {summary['high_confidence']} high, "
           f"{summary['medium_confidence']} medium, {summary['low_confidence']} low confidence")
 
-    if summary["dual_compliance_hotspots"] > 0:
-        print(f"  {summary['dual_compliance_hotspots']} dual-compliance hotspot(s) (GDPR + EU AI Act)")
+    if summary["dual_compliance_hotspot_files"] > 0:
+        print(f"  {summary['dual_compliance_hotspot_files']} file(s) with dual-compliance hotspots "
+              f"({summary['dual_compliance_findings']} finding(s), GDPR + EU AI Act)")
 
     print()
     for f in findings[:20]:

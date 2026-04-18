@@ -2,6 +2,7 @@
 # regula-ignore
 """GDPR code pattern scanner with dual-compliance hotspot detection."""
 
+import os
 import sys
 from pathlib import Path
 
@@ -10,7 +11,6 @@ sys.path.insert(0, str(Path(__file__).parent))
 from gdpr_patterns import GDPR_PATTERNS, DUAL_COMPLIANCE_HOTSPOTS, GDPR_LIFECYCLE_PHASES
 from constants import CODE_EXTENSIONS, SKIP_DIRS
 from report import classify_provenance, _is_open_question
-import os
 
 
 def scan_gdpr(project_path: str, scope: str = "all") -> dict:
@@ -87,7 +87,8 @@ def scan_gdpr(project_path: str, scope: str = "all") -> dict:
         "findings": findings,
         "summary": {
             "total_findings": len(findings),
-            "dual_compliance_hotspots": hotspot_count,
+            "dual_compliance_hotspot_files": hotspot_count,
+            "dual_compliance_findings": len([f for f in findings if f.get("dual_compliance")]),
             "hotspot_files": list(hotspot_files.keys()),
             "articles_triggered": article_counts,
             "high_confidence": len([f for f in findings if f["confidence_label"] == "high"]),

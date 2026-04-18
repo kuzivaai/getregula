@@ -13,6 +13,7 @@ Supports Annex IV/XI documentation but is not a regulatory requirement.
 
 import os
 import sys
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -57,7 +58,6 @@ COMPONENT_KIND_MAP: dict[str, str] = {
     "milvus": "vector-store",
     "faiss": "vector-store",
     # embedding
-    "sentence-transformers": "embedding",
     "sentence-transformers": "embedding",
     # orchestration
     "langchain": "orchestration",
@@ -269,7 +269,8 @@ def generate_aibom(project_path: str) -> dict:
             "name": name,
             "version": dep.get("version") or "unknown",
             "kind": kind,
-            "files": [f"line {dep.get('line', 0)}"],
+            "files": [dep.get("file", "manifest")],
+            "source_line": dep.get("line", 0),
             "pinning": dep.get("pinning", "unknown"),
         }
         components.append(component)
@@ -316,7 +317,7 @@ def generate_aibom(project_path: str) -> dict:
 
 
 def format_cyclonedx(aibom: dict) -> dict:
-    """Format AI BOM as CycloneDX v1.6 JSON.
+    """Format AI BOM as CycloneDX v1.7 JSON.
 
     Uses the regula:ai:kind custom property to tag each component
     with its AI taxonomy classification.
@@ -339,15 +340,18 @@ def format_cyclonedx(aibom: dict) -> dict:
 
     return {
         "bomFormat": "CycloneDX",
-        "specVersion": "1.6",
+        "specVersion": "1.7",
+        "serialNumber": f"urn:uuid:{uuid.uuid4()}",
         "version": 1,
         "metadata": {
             "timestamp": aibom["generated_at"],
-            "tools": [{
-                "vendor": "Regula",
-                "name": "regula-ai",
-                "version": aibom["regula_version"],
-            }],
+            "tools": {
+                "components": [{
+                    "type": "application",
+                    "name": "regula",
+                    "version": aibom["regula_version"],
+                }],
+            },
         },
         "components": components,
     }
@@ -356,7 +360,7 @@ def format_cyclonedx(aibom: dict) -> dict:
 def format_aibom_markdown(aibom: dict) -> str:
     """Format AI BOM as a Markdown table."""
     lines: list[str] = []
-    lines.append(f"# AI Bill of Materials")
+    lines.append("# AI Bill of Materials")
     lines.append("")
     lines.append(f"**Project:** {aibom['project']}")
     lines.append(f"**Generated:** {aibom['generated_at']}")

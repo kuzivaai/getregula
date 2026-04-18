@@ -25,7 +25,7 @@ GDPR_PATTERNS = [
     # Art. 5(1)(f) — Integrity and confidentiality
     (re.compile(r"(?:password|secret|token|ssn|social_security|national_id|passport)\s*=\s*['\"]", re.IGNORECASE),
      "plaintext_sensitive_data", ["5(1)(f)", "32"], "Sensitive data in plaintext — encryption required", "high"),
-    (re.compile(r"(?:log|print|logger|console\.log|puts|fmt\.Print)\s*\(.*(?:email|phone|name|address|ssn|password)", re.IGNORECASE),
+    (re.compile(r"(?:log|print|logger|logging|console\.log|puts|fmt\.Print)(?:\.\w+)?\s*\(.*(?:email|phone|name|address|ssn|password)", re.IGNORECASE),
      "pii_in_logs", ["5(1)(f)", "32"], "Personal data in log output — potential integrity/confidentiality breach", "high"),
 
     # Art. 7 — Consent
@@ -33,7 +33,7 @@ GDPR_PATTERNS = [
      "training_without_consent_gate", ["7"], "User data used in training — verify consent basis", "medium"),
 
     # Art. 9 — Special category data
-    (re.compile(r"(?:race|ethnicity|ethnic|religion|religious|political|sexual_orientation|gender_identity|disability|health_status|biometric|genetic)", re.IGNORECASE),
+    (re.compile(r"\b(?:race|ethnicity|ethnic|religion|religious|political_(?:affiliation|belief|opinion)|sexual_orientation|gender_identity|disability|health_status|biometric|genetic_data)\b", re.IGNORECASE),
      "special_category_data", ["9"], "Special category data processing — requires explicit consent or Art. 9(2) exception", "high"),
 
     # Art. 13/14 — Transparency
