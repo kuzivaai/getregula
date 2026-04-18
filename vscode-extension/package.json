@@ -1,0 +1,88 @@
+{
+  "name": "regula-ai-act",
+  "displayName": "Regula — EU AI Act Compliance",
+  "description": "EU AI Act compliance scanning for code. Detects risk patterns, classifies AI systems, and generates compliance evidence.",
+  "version": "0.1.0",
+  "publisher": "kuzivaai",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Linters"
+  ],
+  "keywords": [
+    "eu-ai-act",
+    "compliance",
+    "ai-governance",
+    "regulatory",
+    "gdpr"
+  ],
+  "activationEvents": [
+    "onLanguage:python",
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:java",
+    "onLanguage:go",
+    "onLanguage:rust",
+    "onLanguage:c",
+    "onLanguage:cpp"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Regula",
+      "properties": {
+        "regula.scanOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Scan files on save"
+        },
+        "regula.minTier": {
+          "type": "string",
+          "default": "limited_risk",
+          "enum": [
+            "prohibited",
+            "high_risk",
+            "limited_risk",
+            "minimal_risk"
+          ],
+          "description": "Minimum risk tier to display"
+        },
+        "regula.scope": {
+          "type": "string",
+          "default": "all",
+          "enum": [
+            "all",
+            "production"
+          ],
+          "description": "Scan scope (production excludes test/example files)"
+        },
+        "regula.executablePath": {
+          "type": "string",
+          "default": "regula",
+          "description": "Path to the regula executable"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "regula.scanFile",
+        "title": "Regula: Scan Current File"
+      },
+      {
+        "command": "regula.scanWorkspace",
+        "title": "Regula: Scan Workspace"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}
