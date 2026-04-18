@@ -112,6 +112,11 @@ def cmd_check(args) -> None:
         else:
             print(f"  Diff mode: no changed files found since {args.diff} (showing all)", file=sys.stderr)
 
+    # Lifecycle phase filter: keep only findings matching the requested phase
+    lifecycle_filter = getattr(args, "lifecycle", None)
+    if lifecycle_filter:
+        findings = [f for f in findings if lifecycle_filter in f.get("lifecycle_phases", [])]
+
     # Multi-jurisdiction mapping: enrich findings with cross-framework labels
     jurisdiction_pairs = []
     if getattr(args, "jurisdictions", None):
@@ -269,6 +274,15 @@ def cmd_check(args) -> None:
         print(f"  {t('warn_tier'):<20}{len(warn_findings)}")
         print(f"  {t('info_tier'):<20}{len(info_findings)}")
 
+        # Lifecycle phase breakdown
+        phase_counts = {}
+        for f in active:
+            for phase in f.get("lifecycle_phases", ["develop"]):
+                phase_counts[phase] = phase_counts.get(phase, 0) + 1
+        if phase_counts:
+            phase_str = ", ".join(f"{p}: {c}" for p, c in sorted(phase_counts.items()))
+            print(f"  {'Lifecycle:':<20}{phase_str}")
+
         # === First-run verdict: answer "Am I affected?" ===
         if prohibited:
             verdict_tier = "PROHIBITED"
@@ -318,7 +332,8 @@ def cmd_check(args) -> None:
             for f in prohibited:
                 score = f.get("confidence_score", 0)
                 tier_label = f.get("_finding_tier", "block").upper()
-                print(f"    [{tier_label}] [{score:3d}] {f['file']} — {f.get('description', '')}")
+                lp = f" [{f.get('lifecycle_phases', ['develop'])[0]}]" if f.get("lifecycle_phases") else ""
+                print(f"    [{tier_label}] [{score:3d}] {f['file']} — {f.get('description', '')}{lp}")
                 _print_remediation(f)
 
         if credentials:
@@ -326,7 +341,8 @@ def cmd_check(args) -> None:
             for f in credentials:
                 score = f.get("confidence_score", 0)
                 tier_label = f.get("_finding_tier", "warn").upper()
-                print(f"    [{tier_label}] [{score:3d}] {f['file']}:{f.get('line', '?')} — {f.get('description', '')}")
+                lp = f" [{f.get('lifecycle_phases', ['develop'])[0]}]" if f.get("lifecycle_phases") else ""
+                print(f"    [{tier_label}] [{score:3d}] {f['file']}:{f.get('line', '?')} — {f.get('description', '')}{lp}")
                 _print_remediation(f)
 
         if high_risk:
@@ -334,7 +350,8 @@ def cmd_check(args) -> None:
             for f in high_risk:
                 score = f.get("confidence_score", 0)
                 tier_label = f.get("_finding_tier", "warn").upper()
-                print(f"    [{tier_label}] [{score:3d}] {f['file']} — {f.get('description', '')}")
+                lp = f" [{f.get('lifecycle_phases', ['develop'])[0]}]" if f.get("lifecycle_phases") else ""
+                print(f"    [{tier_label}] [{score:3d}] {f['file']} — {f.get('description', '')}{lp}")
                 _print_remediation(f)
 
         if autonomy:
@@ -342,7 +359,8 @@ def cmd_check(args) -> None:
             for f in autonomy:
                 score = f.get("confidence_score", 0)
                 tier_label = f.get("_finding_tier", "warn").upper()
-                print(f"    [{tier_label}] [{score:3d}] {f['file']}:{f.get('line', '?')} — {f.get('description', '')}")
+                lp = f" [{f.get('lifecycle_phases', ['develop'])[0]}]" if f.get("lifecycle_phases") else ""
+                print(f"    [{tier_label}] [{score:3d}] {f['file']}:{f.get('line', '?')} — {f.get('description', '')}{lp}")
                 _print_remediation(f)
 
         if limited:
@@ -355,7 +373,8 @@ def cmd_check(args) -> None:
             for f in limited:
                 score = f.get("confidence_score", 0)
                 tier_label = f.get("_finding_tier", "info").upper()
-                print(f"    [{tier_label}] [{score:3d}] {f['file']}:{f.get('line', '?')} — {f.get('description', '')}")
+                lp = f" [{f.get('lifecycle_phases', ['develop'])[0]}]" if f.get("lifecycle_phases") else ""
+                print(f"    [{tier_label}] [{score:3d}] {f['file']}:{f.get('line', '?')} — {f.get('description', '')}{lp}")
 
         if getattr(args, "verbose", False) and info_findings:
             info_non_limited = [f for f in info_findings if f["tier"] not in ("limited_risk",)]
@@ -363,7 +382,8 @@ def cmd_check(args) -> None:
                 print(f"\n  INFO (verbose):")
                 for f in info_non_limited:
                     score = f.get("confidence_score", 0)
-                    print(f"    [INFO] [{score:3d}] {f['file']} — {f.get('description', '')}")
+                    lp = f" [{f.get('lifecycle_phases', ['develop'])[0]}]" if f.get("lifecycle_phases") else ""
+                    print(f"    [INFO] [{score:3d}] {f['file']} — {f.get('description', '')}{lp}")
 
         # Open questions: low-confidence findings that need human judgment
         # suppressed findings already excluded by _is_open_question

@@ -853,6 +853,8 @@ def _build_subparsers(subparsers):
                               "Valid: " + ", ".join(sorted(JURISDICTION_MAP)))
     p_check.add_argument("--include-gdpr", action="store_true",
                          help="Include GDPR pattern findings in scan results")
+    p_check.add_argument("--lifecycle", choices=["plan", "design", "develop", "deploy", "operate", "retire"],
+                         help="Filter findings to a specific lifecycle phase")
     p_check.set_defaults(func=cmd_check)
 
     # --- comply ---
