@@ -290,6 +290,40 @@ def cmd_badge(args) -> None:
         print(f"[![EU AI Act]({shield_url})](https://getregula.com)")
 
 
+def cmd_aibom(args) -> None:
+    """Generate AI Bill of Materials."""
+    from cli import json_output, _validate_path
+    from aibom import generate_aibom, format_cyclonedx, format_aibom_markdown
+
+    if args.project != ".":
+        _validate_path(args.project)
+    project_path = str(Path(args.project).resolve())
+
+    result = generate_aibom(project_path)
+
+    if args.format == "json":
+        json_output("aibom", result)
+    elif args.format == "cyclonedx":
+        import json as _json
+        print(_json.dumps(format_cyclonedx(result), indent=2))
+    elif args.format == "markdown":
+        print(format_aibom_markdown(result))
+    else:
+        # Default text output
+        components = result["components"]
+        if not components:
+            print(f"No AI components found in {project_path}")
+            return
+        print(f"\n  AI Bill of Materials — {Path(project_path).name}\n")
+        print(f"  {'Component':<30s} {'Kind':<20s} {'Version':<12s} {'Files':>5s}")
+        print(f"  {'─' * 30} {'─' * 20} {'─' * 12} {'─' * 5}")
+        for c in components:
+            print(f"  {c['name']:<30s} {c['kind']:<20s} {c.get('version', '?'):<12s} {len(c['files']):>5d}")
+        summary = result["summary"]
+        print(f"\n  {summary['total_components']} AI component(s) across {len(summary['kinds'])} kind(s)")
+        print(f"  Note: AI BOM supports Annex IV/XI documentation — it is not a regulatory requirement.\n")
+
+
 def cmd_doc_audit(args) -> None:
     """Score compliance document quality."""
     from cli import json_output, _validate_path
