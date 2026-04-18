@@ -315,6 +315,16 @@ def cmd_check(args) -> None:
                     score = f.get("confidence_score", 0)
                     print(f"    [INFO] [{score:3d}] {f['file']} — {f.get('description', '')}")
 
+        # Open questions: low-confidence findings that need human judgment
+        open_qs = [f for f in findings if f.get("open_question") and not f.get("suppressed")]
+        if open_qs:
+            print(f"\n  Questions for human review ({len(open_qs)}):")
+            for f in open_qs[:10]:
+                print(f"    ? {f['file']}:{f.get('line', '?')} — {f.get('category', 'Unknown')}")
+                print(f"      {f.get('description', '')} (confidence: {f.get('confidence_score', 0)}%)")
+            if len(open_qs) > 10:
+                print(f"    ... and {len(open_qs) - 10} more (use --format json to see all)")
+
         print(f"{'=' * 60}")
         print(f"  {t('confidence_note')}")
         print(f"  {t('tier_note')}")
