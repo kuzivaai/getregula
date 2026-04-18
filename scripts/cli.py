@@ -1087,6 +1087,8 @@ def _build_subparsers(subparsers):
     p_evidence.add_argument("--output", "-o", default=".", help="Output directory for the pack folder")
     p_evidence.add_argument("--name", "-n", help="Project name")
     p_evidence.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_evidence.add_argument("--bundle", action="store_true",
+                            help="Package output as a self-verifying .regula-evidence.zip")
     p_evidence.set_defaults(func=cmd_evidence_pack)
 
     # --- conform ---

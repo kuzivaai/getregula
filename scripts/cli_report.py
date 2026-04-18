@@ -75,6 +75,17 @@ def cmd_evidence_pack(args) -> None:
         project_name=project_name,
     )
 
+    if getattr(args, "bundle", False):
+        from evidence_pack import generate_bundle
+        bundle_path = generate_bundle(result["pack_path"])
+        if args.format == "json":
+            result["bundle_path"] = bundle_path
+            json_output("evidence-pack", result)
+        else:
+            print(f"Evidence bundle written to: {bundle_path}")
+            print(f"Verify with: unzip {Path(bundle_path).name} -d verify && cd verify && python3 verify.py")
+        return
+
     if args.format == "json":
         json_output("evidence-pack", result)
     else:
