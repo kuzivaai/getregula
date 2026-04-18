@@ -127,10 +127,11 @@ ARTICLE_CHECKLISTS = {
 # Filename-to-article mapping
 # ---------------------------------------------------------------------------
 
-_DOC_ARTICLE_MAP = {}
-for _art_num, _checklist in ARTICLE_CHECKLISTS.items():
-    for _pat in _checklist["doc_patterns"]:
-        _DOC_ARTICLE_MAP[_pat] = _art_num
+_DOC_ARTICLE_MAP = {
+    pat: art_num
+    for art_num, checklist in ARTICLE_CHECKLISTS.items()
+    for pat in checklist["doc_patterns"]
+}
 
 
 def _match_article(filename):
@@ -148,7 +149,7 @@ def _match_article(filename):
 # Scoring
 # ---------------------------------------------------------------------------
 
-def score_document(content, article):
+def score_document(content: str, article: str) -> dict:
     """Score a document against an article checklist.
 
     Returns dict with coverage, depth, structure, total, article,
@@ -224,7 +225,7 @@ def score_document(content, article):
 # Project auditor
 # ---------------------------------------------------------------------------
 
-def audit_project(project_path):
+def audit_project(project_path: str) -> list:
     """Scan project root and docs/ for compliance documents.
 
     Returns list of scored results, one per matched document.

@@ -13,6 +13,7 @@ via SHA-256 content hashes.
 import hashlib
 import json
 import sys
+import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -314,6 +315,10 @@ def main():
     for entry in files:
         filename = entry["filename"]
         expected_sha = entry["sha256"]
+        if ".." in Path(filename).parts:
+            print(f"  SKIP (invalid path): {filename}")
+            errors += 1
+            continue
         fpath = Path(filename)
         if not fpath.exists():
             print(f"  MISSING: {filename}")
@@ -341,8 +346,6 @@ if __name__ == "__main__":
 
 def generate_bundle(pack_dir: str) -> str:
     """Package an evidence pack directory into a self-verifying ZIP bundle."""
-    import zipfile
-
     pack = Path(pack_dir)
     if not (pack / "manifest.json").exists():
         raise FileNotFoundError(f"No manifest.json in {pack_dir}")

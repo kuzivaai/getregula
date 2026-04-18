@@ -316,7 +316,8 @@ def cmd_check(args) -> None:
                     print(f"    [INFO] [{score:3d}] {f['file']} — {f.get('description', '')}")
 
         # Open questions: low-confidence findings that need human judgment
-        open_qs = [f for f in findings if f.get("open_question") and not f.get("suppressed")]
+        # suppressed findings already excluded by _is_open_question
+        open_qs = [f for f in findings if f.get("open_question")]
         if open_qs:
             print(f"\n  Questions for human review ({len(open_qs)}):")
             for f in open_qs[:10]:
