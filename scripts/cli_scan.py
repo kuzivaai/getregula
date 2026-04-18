@@ -232,6 +232,54 @@ def cmd_check(args) -> None:
         from term_style import red, yellow, blue, magenta
         print(f"\n{t('scan_header', path=project)}")
         print(f"{'=' * 60}")
+
+        # === First-run verdict: answer "Am I affected?" ===
+        # Placed at the TOP so it's the first thing users see.
+        if prohibited:
+            verdict_tier = "PROHIBITED"
+            verdict_desc = "Your project contains AI practices prohibited under EU AI Act Article 5."
+            verdict_action = "These must be removed before deployment in the EU."
+            verdict_color = red
+        elif high_risk or credentials:
+            verdict_tier = "HIGH-RISK"
+            verdict_desc = "Your project is classified as high-risk under EU AI Act Annex III."
+            verdict_action = "You must comply with Articles 9-15 before the enforcement deadline."
+            verdict_color = yellow
+        elif limited:
+            verdict_tier = "LIMITED-RISK"
+            verdict_desc = "Your project has limited-risk AI components (Article 50 transparency)."
+            verdict_action = "You must disclose AI usage to users."
+            verdict_color = blue
+        elif active:
+            verdict_tier = "MINIMAL-RISK"
+            verdict_desc = "Your project uses AI but with minimal regulatory obligations."
+            verdict_action = "No mandatory requirements, but good governance is recommended."
+            verdict_color = lambda x: x
+        else:
+            verdict_tier = "NO AI DETECTED"
+            verdict_desc = "No AI components or risk indicators found in your project."
+            verdict_action = "The EU AI Act likely does not apply to this project."
+            verdict_color = lambda x: x
+
+        print(f"\n  {verdict_color('Verdict')}: {verdict_color(verdict_tier)}")
+        print(f"  {verdict_desc}")
+        print(f"  {verdict_action}")
+
+        # Top findings driving the verdict
+        top = sorted(
+            [f for f in active if not f.get("open_question")],
+            key=lambda f: -f.get("confidence_score", 0),
+        )[:3]
+        if top:
+            print(f"\n  Why:")
+            for i, f in enumerate(top, 1):
+                arts_raw = f.get("articles", [])[:2]
+                arts = ", ".join(f"Art. {a}" for a in arts_raw) if arts_raw else ""
+                desc = f.get("description", "")[:100]
+                print(f"    {i}. {f['file']}:{f.get('line', '?')} — {desc}")
+                if arts:
+                    print(f"       ({arts})")
+
         # Use the scanner's real count, not "files with findings" —
         # the old derivation made empty scans look like nothing ran.
         stats = getattr(scan_files, "last_stats", {}) or {}
@@ -282,50 +330,6 @@ def cmd_check(args) -> None:
         if phase_counts:
             phase_str = ", ".join(f"{p}: {c}" for p, c in sorted(phase_counts.items()))
             print(f"  {'Lifecycle:':<20}{phase_str}")
-
-        # === First-run verdict: answer "Am I affected?" ===
-        if prohibited:
-            verdict_tier = "PROHIBITED"
-            verdict_desc = "Your project contains AI practices prohibited under EU AI Act Article 5."
-            verdict_action = "These must be removed before deployment in the EU."
-            verdict_color = red
-        elif high_risk or credentials:
-            verdict_tier = "HIGH-RISK"
-            verdict_desc = "Your project is classified as high-risk under EU AI Act Annex III."
-            verdict_action = "You must comply with Articles 9-15 before the enforcement deadline."
-            verdict_color = yellow
-        elif limited:
-            verdict_tier = "LIMITED-RISK"
-            verdict_desc = "Your project has limited-risk AI components (Article 50 transparency)."
-            verdict_action = "You must disclose AI usage to users."
-            verdict_color = blue
-        elif active:
-            verdict_tier = "MINIMAL-RISK"
-            verdict_desc = "Your project uses AI but with minimal regulatory obligations."
-            verdict_action = "No mandatory requirements, but good governance is recommended."
-            verdict_color = lambda x: x
-        else:
-            verdict_tier = "NO AI DETECTED"
-            verdict_desc = "No AI components or risk indicators found in your project."
-            verdict_action = "The EU AI Act likely does not apply to this project."
-            verdict_color = lambda x: x
-
-        print(f"\n  {verdict_color('Verdict')}: {verdict_color(verdict_tier)}")
-        print(f"  {verdict_desc}")
-        print(f"  {verdict_action}")
-
-        # Top findings driving the verdict
-        top = sorted(
-            [f for f in active if not f.get("open_question")],
-            key=lambda f: -f.get("confidence_score", 0),
-        )[:3]
-        if top:
-            print(f"\n  Why:")
-            for i, f in enumerate(top, 1):
-                arts = ", ".join(f.get("articles", [])[:2]) if f.get("articles") else f.get("tier", "")
-                print(f"    {i}. {f['file']}:{f.get('line', '?')} — {f.get('description', '')[:80]}")
-                if arts:
-                    print(f"       ({arts})")
 
         if prohibited:
             print(f"\n  {red('PROHIBITED INDICATORS')}:")
