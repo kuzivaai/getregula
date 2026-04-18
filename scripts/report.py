@@ -9,7 +9,7 @@ stakeholders (DPOs, compliance officers, auditors).
 """
 
 __all__ = [
-    "scan_files", "scan_config_files",
+    "scan_files", "scan_config_files", "classify_provenance",
     "generate_html_report", "generate_sarif", "generate_sales_report",
 ]
 
@@ -127,6 +127,33 @@ def _is_example_file(filepath: Path) -> bool:
 def _is_init_file(filepath: Path) -> bool:
     """Detect __init__.py files (usually re-exports, not real logic)."""
     return filepath.name == "__init__.py"
+
+
+def classify_provenance(filepath: Path) -> str:
+    """Classify a file's provenance for confidence weighting.
+
+    Returns one of: production, test, example, documentation, tooling.
+    """
+    if _is_test_file(filepath):
+        return "test"
+    if _is_example_file(filepath):
+        return "example"
+    name = filepath.name.lower()
+    suffix = filepath.suffix.lower()
+    if suffix in (".md", ".rst", ".txt", ".adoc"):
+        return "documentation"
+    if _is_init_file(filepath):
+        return "tooling"
+    parts = [p.lower() for p in filepath.parts]
+    if any(p in (".github", ".gitlab-ci", ".circleci", ".jenkins") for p in parts):
+        return "tooling"
+    if name in ("dockerfile", "makefile", "cmakelists.txt", "justfile",
+                "docker-compose.yml", "docker-compose.yaml",
+                ".dockerignore", ".gitignore", ".editorconfig"):
+        return "tooling"
+    if suffix in (".yml", ".yaml", ".toml", ".cfg", ".ini") and name not in ("pyproject.toml",):
+        return "tooling"
+    return "production"
 
 
 def _has_mock_patterns(content: str) -> bool:
@@ -370,6 +397,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         for filename in files:
             filepath = Path(root) / filename
             is_test = _is_test_file(filepath)
+            provenance = classify_provenance(filepath)
 
             # Skip test files entirely if requested
             if skip_tests and is_test:
@@ -388,6 +416,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         "indicators": [filepath.suffix],
                         "confidence_score": 30,
                         "suppressed": False,
+                        "provenance": provenance,
                     })
                 continue
 
@@ -466,6 +495,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                             "exceptions": prohibited_early.exceptions,
                             "confidence_score": 90,
                             "suppressed": False,
+                            "provenance": provenance,
                             "observations": [],
                             "domain_boost": None,
                         })
@@ -508,6 +538,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         "indicators": [],
                         "confidence_score": 20,
                         "suppressed": "*" in suppressed_rules,
+                        "provenance": provenance,
                     })
                 try:
                     if cache is not None:
@@ -602,6 +633,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 "exceptions": result.exceptions,
                 "confidence_score": confidence_score,
                 "suppressed": is_suppressed,
+                "provenance": provenance,
                 "risk_decision": matched_decision.to_dict() if matched_decision else None,
                 "observations": observations,
                 "domain_boost": {
