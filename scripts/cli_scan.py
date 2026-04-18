@@ -97,6 +97,12 @@ def cmd_check(args) -> None:
     if scope == "production":
         findings = [f for f in findings if f.get("provenance", "production") == "production"]
 
+    # GDPR dual-compliance patterns: merge into findings when requested
+    if getattr(args, "include_gdpr", False):
+        from gdpr_scan import scan_gdpr
+        gdpr_result = scan_gdpr(project, scope=scope)
+        findings.extend(gdpr_result["findings"])
+
     # Diff mode: filter findings to only changed files
     if args.diff:
         changed = _get_changed_files(project, args.diff)
@@ -593,3 +599,48 @@ def _print_suppression_audit(findings: list) -> None:
             status = "\u26a0 OVERDUE"
 
         print(f"{dtype:<8} {fpath:<30} {line:>5}  {pattern:<20} {rationale:<35} {owner:<10} {review:<12} {status}")
+
+
+def cmd_gdpr(args) -> None:
+    """Scan for GDPR code patterns with dual-compliance hotspot detection."""
+    from cli import json_output, _validate_path
+    from gdpr_scan import scan_gdpr
+
+    if args.project != ".":
+        _validate_path(args.project)
+    project_path = str(Path(args.project).resolve())
+    scope = getattr(args, "scope", "all")
+
+    result = scan_gdpr(project_path, scope=scope)
+
+    if args.format == "json":
+        json_output("gdpr", result)
+        return
+
+    findings = result["findings"]
+    summary = result["summary"]
+
+    if not findings:
+        print(f"No GDPR-relevant patterns found in {project_path}")
+        return
+
+    print(f"\n  GDPR Code Pattern Scan — {project_path}\n")
+    print(f"  {summary['total_findings']} finding(s): {summary['high_confidence']} high, "
+          f"{summary['medium_confidence']} medium, {summary['low_confidence']} low confidence")
+
+    if summary["dual_compliance_hotspots"] > 0:
+        print(f"  {summary['dual_compliance_hotspots']} dual-compliance hotspot(s) (GDPR + EU AI Act)")
+
+    print()
+    for f in findings[:20]:
+        prefix = "!" if f.get("dual_compliance") else " "
+        arts = ", ".join(f"Art. {a}" for a in f["gdpr_articles"])
+        print(f"  {prefix} {f['file']}:{f['line']} [{arts}] {f['description']}")
+        if f.get("dual_compliance"):
+            print(f"      Hotspot: {f.get('hotspot_description', '')}")
+
+    if len(findings) > 20:
+        print(f"\n  ... and {len(findings) - 20} more (use --format json to see all)")
+
+    print(f"\n  All findings are indicators that GDPR obligations may apply — not violations.")
+    print(f"  Consult a data protection specialist for compliance determination.\n")
