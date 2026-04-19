@@ -2,10 +2,10 @@
 # regula-ignore
 """Tests for GDPR pattern definitions and dual-compliance scanning."""
 
+import contextlib
 import os
 import sys
 import tempfile
-import shutil
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
@@ -20,18 +20,15 @@ from helpers import assert_eq, assert_true, assert_false, assert_in, assert_gte
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _make_project(files: dict) -> str:
-    """Create a temp project directory with given files. Returns path."""
-    tmpdir = tempfile.mkdtemp(prefix="regula_test_gdpr_")
-    for name, content in files.items():
-        filepath = Path(tmpdir) / name
-        filepath.parent.mkdir(parents=True, exist_ok=True)
-        filepath.write_text(content)
-    return tmpdir
-
-
-def _cleanup(path: str):
-    shutil.rmtree(path, ignore_errors=True)
+@contextlib.contextmanager
+def _make_project(files: dict):
+    """Create a temp project directory with given files. Yields path."""
+    with tempfile.TemporaryDirectory(prefix="regula_test_gdpr_") as tmpdir:
+        for name, content in files.items():
+            filepath = Path(tmpdir) / name
+            filepath.parent.mkdir(parents=True, exist_ok=True)
+            filepath.write_text(content)
+        yield tmpdir
 
 
 # ---------------------------------------------------------------------------
@@ -246,48 +243,38 @@ def test_lifecycle_phases_valid():
 
 def test_scan_empty_project():
     """Scanning an empty project should return no findings."""
-    proj = _make_project({})
-    try:
+    with _make_project({}) as proj:
         result = scan_gdpr(proj)
         assert_eq(result["summary"]["total_findings"], 0, "Empty project should have 0 findings")
         assert_eq(result["findings"], [], "Empty project should have empty findings list")
-    finally:
-        _cleanup(proj)
 
 
 def test_scan_finds_pii_in_logs():
     """Scanner should detect PII logged to output."""
-    proj = _make_project({
+    with _make_project({
         "app.py": 'print(f"User email: {email}")\n',
-    })
-    try:
+    }) as proj:
         result = scan_gdpr(proj)
         assert_gte(result["summary"]["total_findings"], 1, "Should find at least 1 GDPR pattern")
         categories = [f["category"] for f in result["findings"]]
         assert_in("pii_in_logs", categories, "Should detect pii_in_logs")
-    finally:
-        _cleanup(proj)
 
 
 def test_scan_finds_special_category():
     """Scanner should detect special category data."""
-    proj = _make_project({
+    with _make_project({
         "model.py": 'user_ethnicity = get_field("ethnicity")\n',
-    })
-    try:
+    }) as proj:
         result = scan_gdpr(proj)
         categories = [f["category"] for f in result["findings"]]
         assert_in("special_category_data", categories, "Should detect special_category_data")
-    finally:
-        _cleanup(proj)
 
 
 def test_scan_dual_compliance_hotspot():
     """Scanner should flag dual-compliance hotspots."""
-    proj = _make_project({
+    with _make_project({
         "classify.py": 'user_ethnicity = get_field("ethnicity")\n',
-    })
-    try:
+    }) as proj:
         result = scan_gdpr(proj)
         hotspot_findings = [f for f in result["findings"] if f.get("dual_compliance")]
         assert_gte(len(hotspot_findings), 1, "Should find at least 1 dual-compliance hotspot")
@@ -300,32 +287,26 @@ def test_scan_dual_compliance_hotspot():
             if f["category"] == "special_category_data":
                 assert_in("10", f.get("ai_act_articles", []),
                           "special_category_data hotspot should reference AI Act Art. 10")
-    finally:
-        _cleanup(proj)
 
 
 def test_scan_scope_production():
     """Scope=production should exclude test files."""
-    proj = _make_project({
+    with _make_project({
         "app.py": 'print(f"User email: {email}")\n',
         "tests/test_app.py": 'print(f"User email: {test_email}")\n',
-    })
-    try:
+    }) as proj:
         result_all = scan_gdpr(proj, scope="all")
         result_prod = scan_gdpr(proj, scope="production")
         assert_gte(result_all["summary"]["total_findings"],
                    result_prod["summary"]["total_findings"],
                    "production scope should have fewer or equal findings")
-    finally:
-        _cleanup(proj)
 
 
 def test_scan_finding_fields():
     """Each finding should have all required fields."""
-    proj = _make_project({
+    with _make_project({
         "app.py": 'print(f"User email: {email}")\n',
-    })
-    try:
+    }) as proj:
         result = scan_gdpr(proj)
         assert_gte(len(result["findings"]), 1, "Should have at least 1 finding")
         f = result["findings"][0]
@@ -338,16 +319,13 @@ def test_scan_finding_fields():
         for field in required_fields:
             assert_in(field, f, f"Finding should have '{field}' field")
         assert_eq(f["regulation"], "gdpr", "Regulation should be 'gdpr'")
-    finally:
-        _cleanup(proj)
 
 
 def test_scan_summary_structure():
     """Summary should have all expected keys."""
-    proj = _make_project({
+    with _make_project({
         "app.py": 'x = 1\n',
-    })
-    try:
+    }) as proj:
         result = scan_gdpr(proj)
         summary = result["summary"]
         expected_keys = [
@@ -358,16 +336,13 @@ def test_scan_summary_structure():
         ]
         for key in expected_keys:
             assert_in(key, summary, f"Summary should have '{key}' key")
-    finally:
-        _cleanup(proj)
 
 
 def test_open_question_for_low_confidence():
     """Low confidence findings should be flagged as open questions."""
-    proj = _make_project({
+    with _make_project({
         "app.py": 'url = "http://example.com/api/data"\n',
-    })
-    try:
+    }) as proj:
         result = scan_gdpr(proj)
         # unencrypted_transport has high confidence, not low
         # Let's check any finding's open_question logic
@@ -378,58 +353,47 @@ def test_open_question_for_low_confidence():
             else:
                 assert_false(f["open_question"],
                              f"Finding with score {f['confidence_score']} should NOT be open question")
-    finally:
-        _cleanup(proj)
 
 
 def test_confidence_scores():
     """Confidence labels should map to correct scores."""
     label_to_score = {"high": 75, "medium": 55, "low": 35}
-    proj = _make_project({
+    with _make_project({
         "app.py": (
             'url = "http://example.com/api/data"\n'
             'user_data = {}\n'
         ),
-    })
-    try:
+    }) as proj:
         result = scan_gdpr(proj)
         for f in result["findings"]:
             expected = label_to_score.get(f["confidence_label"])
             if expected is not None:
                 assert_eq(f["confidence_score"], expected,
                           f"Confidence score for {f['confidence_label']} should be {expected}")
-    finally:
-        _cleanup(proj)
 
 
 def test_skips_non_code_files():
     """Scanner should skip non-code files (e.g. .md, .txt)."""
-    proj = _make_project({
+    with _make_project({
         "README.md": 'print(f"User email: {email}")\n',
         "notes.txt": 'print(f"User email: {email}")\n',
-    })
-    try:
+    }) as proj:
         result = scan_gdpr(proj)
         assert_eq(result["summary"]["total_findings"], 0,
                   "Should not scan non-code files")
-    finally:
-        _cleanup(proj)
 
 
 def test_unencrypted_transport_allows_localhost():
     """Art. 32 pattern should allow localhost URLs."""
-    proj = _make_project({
+    with _make_project({
         "app.py": (
             'url = "http://localhost:8080/api"\n'
             'url2 = "http://127.0.0.1:3000/data"\n'
             'url3 = "http://0.0.0.0:5000/health"\n'
         ),
-    })
-    try:
+    }) as proj:
         result = scan_gdpr(proj)
         transport_findings = [f for f in result["findings"]
                               if f["category"] == "unencrypted_transport"]
         assert_eq(len(transport_findings), 0,
                   "Localhost URLs should not trigger unencrypted_transport")
-    finally:
-        _cleanup(proj)

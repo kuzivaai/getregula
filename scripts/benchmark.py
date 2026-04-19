@@ -454,7 +454,7 @@ def format_benchmark_text(results: dict) -> str:
 
     lines.append("=" * 70)
     if is_suite:
-        lines.append(f"  Regula Benchmark Suite")
+        lines.append("  Regula Benchmark Suite")
         lines.append(f"  Date: {results.get('suite_date', 'N/A')}")
         lines.append(f"  Projects: {results.get('projects_scanned', len(projects))}")
     else:

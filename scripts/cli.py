@@ -177,7 +177,7 @@ def _run_bare_scan() -> None:
         if len(top) >= 3:
             break
     if top:
-        print(f"\n  Top findings:")
+        print("\n  Top findings:")
         for f in top:
             score = f.get("confidence_score", 0)
             tier = f.get("_finding_tier", "info").upper()
@@ -204,7 +204,7 @@ def _run_bare_scan() -> None:
     if not any("evidence" in s for s in steps):
         steps.append(f"regula evidence-pack --project .{'':<13s}Generate auditor-ready evidence")
 
-    print(f"\n  Next steps:")
+    print("\n  Next steps:")
     for i, step in enumerate(steps[:5], 1):
         print(f"    {i}. {step}")
     print()
@@ -431,7 +431,7 @@ def _read_code_blob(project: Path) -> str:
 
 def _print_register_text(packet: dict, out_path) -> None:
     """Human-readable summary."""
-    print(f"\n=== Annex VIII Registration Packet ===")
+    print("\n=== Annex VIII Registration Packet ===")
     print(f"  System:           {packet.get('system_name', '?')}")
     print(f"  System ID:        {packet.get('system_id', '?')}")
     kind = packet.get("kind", "?")
@@ -447,7 +447,7 @@ def _print_register_text(packet: dict, out_path) -> None:
             print(f"  Gaps to fill:     {len(gaps)} field(s) — see {out_path.with_suffix('.gaps.yaml').name}")
     else:
         print(f"  Reason:           {packet.get('reason', '')}")
-        print(f"  Next steps:")
+        print("  Next steps:")
         for r in packet.get("redirects", []):
             print(f"    - {r}")
     d = packet.get("deadlines", {})
@@ -1541,7 +1541,7 @@ def _make_progressive_help(parser, subparsers):
     def progressive_help():
         # Build a condensed help showing only primary commands
         lines = []
-        lines.append(f"usage: regula [command] [options]\n")
+        lines.append("usage: regula [command] [options]\n")
         lines.append("AI Governance Risk Indication for Code\n")
         lines.append("")
         lines.append("  Running 'regula' with no command scans the current directory.\n")
@@ -1562,7 +1562,7 @@ def _make_progressive_help(parser, subparsers):
         lines.append("")
         total = len(subparsers.choices)
         lines.append(f"  Run 'regula --help-all' to see all {total} commands.")
-        lines.append(f"  Run 'regula <command> --help' for command-specific help.\n")
+        lines.append("  Run 'regula <command> --help' for command-specific help.\n")
         lines.append("")
         lines.append("Options:")
         lines.append("  --ci              CI mode: exit 1 on any WARN or BLOCK finding")

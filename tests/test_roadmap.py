@@ -90,7 +90,7 @@ def test_roadmap_tasks_have_next_command():
     result = generate_roadmap(gap)
     for item in result["weekly_plan"]:
         assert "next_command" in item, f"Task for Art. {item['article']} missing next_command"
-        assert item["next_command"].startswith("regula "), f"next_command should start with 'regula'"
+        assert item["next_command"].startswith("regula "), "next_command should start with 'regula'"
 
 
 def test_roadmap_tasks_have_fix_description():

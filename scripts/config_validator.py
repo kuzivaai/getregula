@@ -244,7 +244,7 @@ def _print_result(result: dict) -> None:
         elif block_above is not None:
             print(f"  PASS  thresholds: block_above={block_above}")
         elif warn_above is not None:
-            print(f"  WARN  thresholds.block_above missing (will use default: 80)")
+            print("  WARN  thresholds.block_above missing (will use default: 80)")
 
     # Errors (non-threshold ones)
     for e in result["errors"]:

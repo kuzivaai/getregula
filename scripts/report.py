@@ -1250,7 +1250,7 @@ def generate_sarif(findings: list, project_name: str) -> dict:
             "shortDescription": {"text": config["description"]},
             "fullDescription": {"text": f"EU AI Act Article {config['article']}: {config['description']}"},
             "defaultConfiguration": {"level": "error"},
-            "helpUri": f"https://artificialintelligenceact.eu/article/5/",
+            "helpUri": "https://artificialintelligenceact.eu/article/5/",
         }
 
     for rule_id, config in HIGH_RISK_PATTERNS.items():

@@ -156,7 +156,7 @@ def _print_text(result: dict) -> None:
     # `regula check .` to avoid wall-of-text on a noisy first scan.
     top = result.get("top_findings", [])
     if top:
-        print(f"\n  Top findings:")
+        print("\n  Top findings:")
         for f in top:
             tier_label = f.get("tier", "info").upper()
             score = f.get("score", 0)
@@ -170,7 +170,7 @@ def _print_text(result: dict) -> None:
                 print(f"          {desc}")
 
     # Next steps
-    print(f"\n  Next steps:")
+    print("\n  Next steps:")
     for i, step in enumerate(result["next_steps"], 1):
         print(f"    {i}. {step}")
     print()

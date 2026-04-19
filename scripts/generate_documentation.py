@@ -451,9 +451,9 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
 
         if ast_data["total_unlogged"] > 0:
             doc += (
-                f"**To comply with Article 12:**\n"
-                f"Add logging that captures input hashes (not raw data), timestamps,\n"
-                f"model versions, and output summaries for each AI operation.\n\n"
+                "**To comply with Article 12:**\n"
+                "Add logging that captures input hashes (not raw data), timestamps,\n"
+                "model versions, and output summaries for each AI operation.\n\n"
             )
         else:
             doc += "_All detected AI operations have logging coverage._\n\n"

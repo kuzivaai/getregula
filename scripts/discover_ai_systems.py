@@ -407,7 +407,7 @@ def print_discovery(discovery: dict) -> None:
         print(f"\n  Libraries: {', '.join(discovery['ai_libraries'])}")
 
     if discovery["model_files"]:
-        print(f"\n  Model Files:")
+        print("\n  Model Files:")
         for mf in discovery["model_files"]:
             print(f"    - {mf['path']} ({mf['size_mb']} MB)")
 
@@ -415,7 +415,7 @@ def print_discovery(discovery: dict) -> None:
         print(f"\n  API Endpoints: {', '.join(discovery['api_endpoints'])}")
 
     if discovery["risk_classifications"]:
-        print(f"\n  Risk Classifications:")
+        print("\n  Risk Classifications:")
         for rc in discovery["risk_classifications"]:
             tier = rc['tier'].upper().replace('_', '-')
             print(f"    - {rc['file']}: {tier} ({rc['description']})")
@@ -528,10 +528,10 @@ def main():
             print(f"\n  System: {name}")
             print(f"  Current status: {current}")
             print(f"  Allowed transitions: {', '.join(allowed)}")
-            print(f"\n  Workflow: not_started → assessment → implementing → compliant → review_due")
+            print("\n  Workflow: not_started → assessment → implementing → compliant → review_due")
             history = system.get("compliance_history", [])
             if history:
-                print(f"\n  History:")
+                print("\n  History:")
                 for h in history[-5:]:
                     print(f"    {h['date'][:10]}: {h['from']} → {h['to']}{' — ' + h['note'] if h.get('note') else ''}")
             print()

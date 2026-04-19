@@ -1071,7 +1071,7 @@ def scan_dependencies(project_path: str) -> dict:
 def format_dep_text(results: dict) -> str:
     """Format scan results as human-readable text."""
     lines: list[str] = []
-    lines.append(f"Dependency Supply Chain Scan")
+    lines.append("Dependency Supply Chain Scan")
     lines.append(f"Project: {results['project']}")
     lines.append(f"Scanned: {results['scan_date']}")
     lines.append(f"Pinning Score: {results['pinning_score']}/100")

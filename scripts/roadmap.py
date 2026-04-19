@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # regula-ignore
 """Compliance roadmap generator — deadline-aware, week-by-week action plan.
 
@@ -125,7 +124,8 @@ def generate_roadmap(
         # Action Priority Matrix: criticality × (1 / effort)
         priority_score = criticality * (1.0 / max(avg_effort, 1))
 
-        # Determine phase bucket
+        # Phase assignment. Only Articles 5, 9-15 are expected from
+        # assess_compliance(). Any other article defaults to Validation.
         if avg_effort <= 16:
             phase_idx = 0  # Quick wins
         elif art_num in ("9", "10", "11"):
@@ -174,7 +174,7 @@ def generate_roadmap(
                 "effort_days": task["effort_days"],
                 "priority": "critical" if task["criticality"] >= 8 else "high" if task["criticality"] >= 5 else "medium",
                 "current_score": task["current_score"],
-                "next_command": guidance.get("command", f"regula check --project ."),
+                "next_command": guidance.get("command", "regula check --project ."),
                 "fix_description": guidance.get("description", f"Run regula check to review Article {task['article']} findings"),
             }
             weekly_plan.append(item)

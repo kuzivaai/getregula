@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # regula-ignore
 """GDPR code pattern scanner with dual-compliance hotspot detection."""
 

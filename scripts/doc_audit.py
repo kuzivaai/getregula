@@ -40,7 +40,7 @@ ARTICLE_CHECKLISTS = {
             ("training data", 10),
             ("data quality", 10),
             ("bias", 10),
-            ("representat", 10),
+            ("representat", 10),  # catches both "representative" and "representation" via substring
         ],
         "depth_terms": [
             "dataset", "annotation", "labelling", "validation set",
