@@ -254,12 +254,12 @@ def cmd_check(args) -> None:
             verdict_tier = "MINIMAL-RISK"
             verdict_desc = "Your project uses AI but with minimal regulatory obligations."
             verdict_action = "No mandatory requirements, but good governance is recommended."
-            verdict_color = lambda x: x
+            verdict_color = lambda x: x  # identity function — no color applied
         else:
             verdict_tier = "NO AI DETECTED"
             verdict_desc = "No AI components or risk indicators found in your project."
             verdict_action = "The EU AI Act likely does not apply to this project."
-            verdict_color = lambda x: x
+            verdict_color = lambda x: x  # identity function — no color applied
 
         print(f"\n  {verdict_color('Verdict')}: {verdict_color(verdict_tier)}")
         print(f"  {verdict_desc}")

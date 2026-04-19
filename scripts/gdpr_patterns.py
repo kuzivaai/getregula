@@ -55,7 +55,7 @@ GDPR_PATTERNS = [
      "pii_without_validation", ["25"], "Personal data from user input without validation/sanitisation", "medium"),
 
     # Art. 32 — Security of processing
-    (re.compile(r"http://(?!localhost|127\.0\.0\.1|0\.0\.0\.0)", re.IGNORECASE),
+    (re.compile(r"http://(?!localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])", re.IGNORECASE),
      "unencrypted_transport", ["32"], "Unencrypted HTTP transport for data transfer — HTTPS required", "high"),
 
     # Art. 35 — DPIA triggers

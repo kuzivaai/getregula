@@ -140,6 +140,7 @@ def classify_provenance(filepath: Path) -> str:
 
     Returns one of: production, test, example, documentation, tooling.
     """
+    filepath = Path(filepath)
     if _is_test_file(filepath):
         return "test"
     if _is_example_file(filepath):

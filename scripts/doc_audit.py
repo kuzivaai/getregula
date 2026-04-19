@@ -229,47 +229,58 @@ def audit_project(project_path: str) -> list:
     """Scan project root and docs/ for compliance documents.
 
     Returns list of scored results, one per matched document.
+    Recurses into docs/ subdirectories (e.g. docs/compliance/).
     """
+    project = Path(project_path)
     results = []
-    search_dirs = [project_path]
-
-    docs_dir = os.path.join(project_path, "docs")
-    if os.path.isdir(docs_dir):
-        search_dirs.append(docs_dir)
-
     seen = set()
-    for search_dir in search_dirs:
-        try:
-            entries = os.listdir(search_dir)
-        except OSError:
-            continue
 
-        for entry in sorted(entries):
-            filepath = os.path.join(search_dir, entry)
-            if not os.path.isfile(filepath):
+    # Scan project root (flat — only top-level files)
+    try:
+        for fpath in sorted(project.iterdir()):
+            if not fpath.is_file():
                 continue
-            if not entry.lower().endswith(".md"):
+            if fpath.suffix.lower() not in (".md", ".txt", ".rst"):
                 continue
-
-            article = _match_article(entry)
+            article = _match_article(fpath.name)
             if article is None:
                 continue
-
-            # Avoid scoring the same file twice (e.g. if docs/ is a
-            # symlink back to root)
-            real = os.path.realpath(filepath)
+            real = os.path.realpath(str(fpath))
             if real in seen:
                 continue
             seen.add(real)
-
             try:
-                content = Path(filepath).read_text(encoding="utf-8")
+                content = fpath.read_text(encoding="utf-8")
             except OSError:
                 continue
-
             result = score_document(content, article)
-            result["filename"] = entry
-            result["path"] = filepath
+            result["filename"] = fpath.name
+            result["path"] = str(fpath)
+            results.append(result)
+    except OSError:
+        pass
+
+    # Scan docs/ recursively
+    docs_dir = project / "docs"
+    if docs_dir.is_dir():
+        for fpath in sorted(docs_dir.rglob("*")):
+            if not fpath.is_file():
+                continue
+            if fpath.suffix.lower() not in (".md", ".txt", ".rst"):
+                continue
+            article = _match_article(fpath.name)
+            if article is None:
+                continue
+            if fpath.name in seen:
+                continue
+            seen.add(fpath.name)
+            try:
+                content = fpath.read_text(encoding="utf-8", errors="ignore")
+            except OSError:
+                continue
+            result = score_document(content, article)
+            result["filename"] = fpath.name
+            result["path"] = str(fpath.relative_to(project))
             results.append(result)
 
     return results

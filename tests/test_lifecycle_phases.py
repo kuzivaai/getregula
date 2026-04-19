@@ -4,12 +4,9 @@ Validates that CATEGORY_LIFECYCLE_PHASES covers all pattern categories
 and that scan results include the lifecycle_phases field.
 """
 
-import os
 import sys
 import tempfile
 from pathlib import Path
-
-import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 

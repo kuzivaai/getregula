@@ -1040,10 +1040,8 @@ def _build_subparsers(subparsers):
     p_roadmap.add_argument("--target-date", "-t", default="2 August 2026",
                            help="Compliance deadline (default: 2 August 2026)")
     p_roadmap.add_argument("--format", "-f", choices=["text", "json"], default="text")
-    p_roadmap.add_argument("--actionable", action="store_true", default=True,
-                           help="Show fix commands after each task (default: on)")
     p_roadmap.add_argument("--no-actionable", dest="actionable", action="store_false",
-                           help="Hide fix commands (useful for clean JSON output)")
+                           default=True, help="Hide remediation commands from output")
     p_roadmap.set_defaults(func=cmd_roadmap)
 
     # --- disclose ---

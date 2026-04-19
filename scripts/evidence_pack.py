@@ -353,7 +353,7 @@ def generate_bundle(pack_dir: str) -> str:
     bundle_path = str(pack) + ".regula-evidence.zip"
     with zipfile.ZipFile(bundle_path, "w", zipfile.ZIP_DEFLATED) as zf:
         for fpath in sorted(pack.iterdir()):
-            if fpath.is_file():
+            if fpath.is_file():  # Pack dirs are flat by design; subdirs skipped
                 zf.write(fpath, fpath.name)
         zf.writestr("verify.py", _VERIFY_SCRIPT)
     return bundle_path

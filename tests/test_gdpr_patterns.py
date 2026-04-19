@@ -13,7 +13,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 from gdpr_patterns import GDPR_PATTERNS, DUAL_COMPLIANCE_HOTSPOTS, GDPR_LIFECYCLE_PHASES
 from gdpr_scan import scan_gdpr
 
-import helpers
 from helpers import assert_eq, assert_true, assert_false, assert_in, assert_gte
 
 
