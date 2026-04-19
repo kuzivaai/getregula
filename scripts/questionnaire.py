@@ -415,7 +415,7 @@ def main():
             ]
             for i, q in enumerate(EXEMPTION_QUESTIONS, 1):
                 lines.append(f"  {i}. {q['text']}")
-                lines.append(f"     [yes, no, unsure]")
+                lines.append("     [yes, no, unsure]")
                 lines.append(f"     Help: {q['help']}")
                 lines.append(f"     Relevant article: Art. {q['article']}")
                 lines.append("")

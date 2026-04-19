@@ -321,7 +321,7 @@ def cmd_aibom(args) -> None:
             print(f"  {c['name']:<30s} {c['kind']:<20s} {c.get('version', '?'):<12s} {len(c['files']):>5d}")
         summary = result["summary"]
         print(f"\n  {summary['total_components']} AI component(s) across {len(summary['kinds'])} kind(s)")
-        print(f"  Note: AI BOM supports Annex IV/XI documentation — it is not a regulatory requirement.\n")
+        print("  Note: AI BOM supports Annex IV/XI documentation — it is not a regulatory requirement.\n")
 
 
 def cmd_doc_audit(args) -> None:

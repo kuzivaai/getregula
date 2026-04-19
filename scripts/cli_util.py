@@ -188,7 +188,7 @@ def cmd_fix(args) -> None:
             print(f"   {fix['summary']}")
             print(f"   {fix['explanation']}")
             if fix["fix_code"]:
-                print(f"\n   Suggested code scaffold:")
+                print("\n   Suggested code scaffold:")
                 print(f"   {'─' * 40}")
                 for code_line in fix["fix_code"].replace("\\n", "\n").split("\n"):
                     print(f"   {code_line}")
@@ -233,7 +233,7 @@ def cmd_explain_article(args) -> None:
     print(f"  {a['summary']}\n")
     print(f"  Who:   {a['who']}")
     print(f"  When:  {a['when']}\n")
-    print(f"  What Regula checks:")
+    print("  What Regula checks:")
     print(f"  {a['what_regula_checks']}\n")
 
 
@@ -794,7 +794,7 @@ def cmd_status(args) -> None:
             print(f"  AI files:   {len(code_files)}")
             risks = info.get("risk_classifications", [])
             if risks:
-                print(f"  Findings:")
+                print("  Findings:")
                 for rc in risks:
                     print(f"    [{rc.get('tier', '?').upper().replace('_', '-')}] "
                           f"{rc.get('file', '?')} \u2014 {rc.get('description', '')}")

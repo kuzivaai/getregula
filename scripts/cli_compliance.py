@@ -162,11 +162,11 @@ def cmd_comply(args) -> None:
     # --- MINIMAL RISK ---
     if highest_risk in ("minimal_risk", "not_ai") and not show_all:
         print(f"  Highest risk tier: {highest_risk}")
-        print(f"\n  No mandatory EU AI Act requirements apply to minimal-risk")
-        print(f"  or non-AI systems. Voluntary codes of conduct may apply")
-        print(f"  (Article 95).")
+        print("\n  No mandatory EU AI Act requirements apply to minimal-risk")
+        print("  or non-AI systems. Voluntary codes of conduct may apply")
+        print("  (Article 95).")
         print(f"\n{'=' * 60}")
-        print(f"\n  Next steps:")
+        print("\n  Next steps:")
         print(f"    1. regula assess{'':<25s}Verify this classification with guided questions")
         print(f"    2. regula comply --all{'':<19s}Show full Articles 9-15 assessment anyway")
         print()
@@ -174,8 +174,8 @@ def cmd_comply(args) -> None:
 
     # --- LIMITED RISK ---
     if highest_risk == "limited_risk" and not show_all:
-        print(f"  Highest risk tier: limited_risk")
-        print(f"  Applicable:        Article 50 (Transparency)")
+        print("  Highest risk tier: limited_risk")
+        print("  Applicable:        Article 50 (Transparency)")
         print()
 
         art50_checks = _check_article_50(project)
@@ -193,11 +193,11 @@ def cmd_comply(args) -> None:
         if pass_count < total:
             print(f"  {total - pass_count} obligation(s) need attention")
 
-        print(f"\n  Note: Articles 9-15 do NOT apply to limited-risk systems.")
-        print(f"  They apply only to high-risk systems (Annex III / Article 6).")
+        print("\n  Note: Articles 9-15 do NOT apply to limited-risk systems.")
+        print("  They apply only to high-risk systems (Annex III / Article 6).")
 
         if _is_tty():
-            print(f"\n  Next steps:")
+            print("\n  Next steps:")
             print(f"    1. regula check .{'':<24s}See detailed scan findings")
             print(f"    2. regula comply --all{'':<19s}Show Articles 9-15 assessment (informational)")
             print(f"    3. regula assess{'':<25s}Verify risk tier with guided questions")
@@ -232,11 +232,11 @@ def cmd_comply(args) -> None:
         # Deep-dive mode: show evidence and gaps for requested article
         if article_filter:
             if result["evidence"]:
-                print(f"      Evidence found:")
+                print("      Evidence found:")
                 for ev in result["evidence"]:
                     print(f"        \u2713 {ev}")
             if result["gaps"]:
-                print(f"      Gaps to address:")
+                print("      Gaps to address:")
                 for gap in result["gaps"]:
                     print(f"        \u2717 {gap}")
             print()
@@ -259,8 +259,8 @@ def cmd_comply(args) -> None:
 
     if show_all and highest_risk not in ("high_risk", "prohibited"):
         print(f"\n  Note: This project is classified as {highest_risk}.")
-        print(f"  Articles 9-15 are shown for informational purposes (--all flag).")
-        print(f"  They are legally required only for high-risk systems.")
+        print("  Articles 9-15 are shown for informational purposes (--all flag).")
+        print("  They are legally required only for high-risk systems.")
 
     # Contextual next steps
     if _is_tty():
@@ -287,7 +287,7 @@ def cmd_comply(args) -> None:
                 f"regula evidence-pack --project .{'':<13s}Generate auditor-ready evidence"
             )
 
-        print(f"\n  Next steps:")
+        print("\n  Next steps:")
         for i, step in enumerate(steps[:4], 1):
             print(f"    {i}. {step}")
     print()

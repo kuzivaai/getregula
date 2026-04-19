@@ -284,7 +284,7 @@ def cmd_feedback(args) -> None:
         return
 
     import webbrowser
-    print(f"Opening GitHub Issue in browser...")
+    print("Opening GitHub Issue in browser...")
     print(f"URL: {url}")
     print(note)
     webbrowser.open(url)

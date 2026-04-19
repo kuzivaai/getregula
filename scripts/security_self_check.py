@@ -101,13 +101,13 @@ def run_security_self_check(format_type: str = "text") -> dict:
 
     # Text output
     print("\nRegula Security Self-Check\n")
-    print(f"  Scanned: scripts/")
+    print("  Scanned: scripts/")
     print(f"  Total findings: {len(findings)}")
     print(f"  Known acceptable: {len(acceptable)} (test fixtures, pattern definitions)")
     print(f"  Unexpected findings: {len(unexpected)}\n")
 
     if passed:
-        print(f"  PASS  No unexpected findings in regula's own source.")
+        print("  PASS  No unexpected findings in regula's own source.")
     else:
         print(f"  FAIL  {len(unexpected)} unexpected finding(s) in regula's own source:")
         for f in unexpected:

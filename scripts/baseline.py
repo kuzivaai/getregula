@@ -61,7 +61,7 @@ def compare_to_baseline(project_path: str, baseline_path: str = None) -> dict:
     baseline = load_baseline(project_path, baseline_path)
     if not baseline:
         return {
-            "error": f"No baseline found. Run 'regula baseline save' first.",
+            "error": "No baseline found. Run 'regula baseline save' first.",
             "new_findings": [],
             "resolved_findings": [],
             "unchanged_findings": [],

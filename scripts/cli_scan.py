@@ -271,7 +271,7 @@ def cmd_check(args) -> None:
             key=lambda f: -f.get("confidence_score", 0),
         )[:3]
         if top:
-            print(f"\n  Why:")
+            print("\n  Why:")
             for i, f in enumerate(top, 1):
                 arts_raw = f.get("articles", [])[:2]
                 arts = ", ".join(f"Art. {a}" for a in arts_raw) if arts_raw else ""
@@ -383,7 +383,7 @@ def cmd_check(args) -> None:
         if getattr(args, "verbose", False) and info_findings:
             info_non_limited = [f for f in info_findings if f["tier"] not in ("limited_risk",)]
             if info_non_limited:
-                print(f"\n  INFO (verbose):")
+                print("\n  INFO (verbose):")
                 for f in info_non_limited:
                     score = f.get("confidence_score", 0)
                     lp = f" [{f.get('lifecycle_phases', ['develop'])[0]}]" if f.get("lifecycle_phases") else ""
@@ -408,7 +408,7 @@ def cmd_check(args) -> None:
 
         # === Next steps for the user ===
         print(f"\n  {'─' * 56}")
-        print(f"  Next steps:")
+        print("  Next steps:")
         step_num = 1
         if prohibited:
             print(f"    {step_num}. regula fix --project .         Remove prohibited practices")
@@ -439,7 +439,7 @@ def cmd_check(args) -> None:
 
         if explain_files:
             print(f"\n{'=' * 60}")
-            print(f"  DETAILED EXPLANATION")
+            print("  DETAILED EXPLANATION")
             print(f"{'=' * 60}")
             project_root = Path(args.path).resolve()
             for rel_path in sorted(explain_files):
@@ -681,5 +681,5 @@ def cmd_gdpr(args) -> None:
     if len(findings) > 20:
         print(f"\n  ... and {len(findings) - 20} more (use --format json to see all)")
 
-    print(f"\n  All findings are indicators that GDPR obligations may apply — not violations.")
-    print(f"  Consult a data protection specialist for compliance determination.\n")
+    print("\n  All findings are indicators that GDPR obligations may apply — not violations.")
+    print("  Consult a data protection specialist for compliance determination.\n")

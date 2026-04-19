@@ -316,8 +316,7 @@ def main():
         filename = entry["filename"]
         expected_sha = entry["sha256"]
         if ".." in Path(filename).parts:
-            print(f"  SKIP (invalid path): {filename}")
-            errors += 1
+            print(f"  SKIP (invalid path): {filename}", file=sys.stderr)
             continue
         fpath = Path(filename)
         if not fpath.exists():

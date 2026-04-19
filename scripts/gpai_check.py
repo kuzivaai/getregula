@@ -304,9 +304,9 @@ def evaluate_transparency(project_path: Path, signals: dict) -> list[dict]:
         verdict, evidence = 'PASS', f'Found {model_card}'
     elif readme_hit:
         verdict = 'WARN'
-        evidence = (f'README contains a model-card section but no dedicated '
-                    f'MODEL_CARD.md. Extract into a separate file to strengthen the '
-                    f'Article 53(1)(a) evidence trail.')
+        evidence = ('README contains a model-card section but no dedicated '
+                    'MODEL_CARD.md. Extract into a separate file to strengthen the '
+                    'Article 53(1)(a) evidence trail.')
     else:
         verdict = 'FAIL'
         evidence = ('No MODEL_CARD.md or equivalent found at project root or '

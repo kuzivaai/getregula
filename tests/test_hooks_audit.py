@@ -872,7 +872,7 @@ for i in range(5):
         for line in f.read_text().strip().split("\n"):
             if line.strip():
                 total_events += 1
-    assert_eq(total_events, 20, f"all 20 events written (4 workers x 5 each)")
+    assert_eq(total_events, 20, "all 20 events written (4 workers x 5 each)")
 
     # Verify chain integrity
     orig = os.environ.get("REGULA_AUDIT_DIR")

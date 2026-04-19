@@ -1,5 +1,4 @@
 # regula-ignore
-#!/usr/bin/env python3
 """AI Bill of Materials generator.
 
 Generates a structured inventory of AI components in a project,
@@ -12,6 +11,7 @@ Supports Annex IV/XI documentation but is not a regulatory requirement.
 """
 
 import os
+import re
 import sys
 import uuid
 from datetime import datetime, timezone
@@ -180,7 +180,6 @@ def _normalize_name(name: str) -> str:
     Lowercases and replaces underscores with hyphens to match
     COMPONENT_KIND_MAP keys.
     """
-    import re
     return re.sub(r"[-_.]+", "-", name.strip().lower())
 
 

@@ -4136,7 +4136,7 @@ def test_all_articles_have_lgpd_mapping():
         lgpd = result.get(art, {}).get("lgpd", {})
         assert lgpd, f"Article {art} must have LGPD mapping"
         assert lgpd.get("articles"), f"Article {art} LGPD mapping must have at least one article reference"
-    print(f"✓ All 7 EU AI Act articles (9-15) have LGPD mappings")
+    print("✓ All 7 EU AI Act articles (9-15) have LGPD mappings")
 
 
 # Bug fix: regula check accepts single file paths
@@ -6623,7 +6623,7 @@ def test_nist_ai_600_1_mapping_present():
     # Each risk must map to at least one EU AI Act article
     for r in risks:
         assert r.get("maps_to_eu_ai_act_articles"), f"risk {r['id']} has no article mapping"
-    print(f"✓ nist_ai_600_1: 12 risks loaded, all mapped to EU AI Act articles")
+    print("✓ nist_ai_600_1: 12 risks loaded, all mapped to EU AI Act articles")
 
 
 # ---------------------------------------------------------------------------
