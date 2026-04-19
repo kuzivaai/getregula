@@ -42,7 +42,11 @@ def scan_gdpr(project_path: str, scope: str = "all") -> dict:
 
             for pattern, category, articles, description, confidence_label in GDPR_PATTERNS:
                 matches = pattern.finditer(content)
+                match_count = 0
                 for match in matches:
+                    if match_count >= 5:
+                        break
+                    match_count += 1
                     line_num = content[:match.start()].count("\n") + 1
                     conf_score = {"high": 75, "medium": 55, "low": 35}.get(confidence_label, 50)
 
@@ -74,7 +78,6 @@ def scan_gdpr(project_path: str, scope: str = "all") -> dict:
 
                     finding["open_question"] = _is_open_question(finding)
                     findings.append(finding)
-                    break  # One finding per pattern per file
 
     # Build summary
     hotspot_count = len(hotspot_files)

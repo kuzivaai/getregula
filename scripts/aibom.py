@@ -161,8 +161,9 @@ COMPONENT_KIND_MAP: dict[str, str] = {
     "outlines": "orchestration",
     # Unstructured
     "unstructured": "dataset-reference",
-    # Vercel AI SDK
-    "ai": "inference-provider",
+    # Vercel AI SDK (bare "ai" removed — false-positives on ai-* packages)
+    "ai-sdk": "inference-provider",
+    "@vercel/ai": "inference-provider",
 }
 
 # All valid kind values
@@ -278,11 +279,11 @@ def generate_aibom(project_path: str) -> dict:
     # Scan for model files
     model_files = _scan_model_files(project_path_str)
     for mf in model_files:
-        mf_name = mf["name"]
-        if mf_name not in seen_names:
-            seen_names.add(mf_name)
+        mf_key = mf.get("path", mf["name"])
+        if mf_key not in seen_names:
+            seen_names.add(mf_key)
             components.append({
-                "name": mf_name,
+                "name": mf["name"],
                 "version": "n/a",
                 "kind": "model-file",
                 "files": [mf["path"]],

@@ -220,7 +220,10 @@ def _distribute_weeks(total_weeks: int, num_phases: int) -> list:
         end = start + max(1, int(total_weeks * w)) - 1
         if i == num_phases - 1:
             end = total_weeks  # Last phase gets remaining weeks
-        ranges.append((start, min(end, total_weeks)))
+        end = min(end, total_weeks)
+        start = min(start, total_weeks)
+        end = max(start, end)  # Never let start > end
+        ranges.append((start, end))
         start = end + 1
     return ranges
 
