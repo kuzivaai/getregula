@@ -1,0 +1,11 @@
+[
+  {
+    "date": "2026-04-20",
+    "check": "weekly-automated",
+    "eurlex_search_url": "https://eur-lex.europa.eu/search.html?scope=EURLEX&text=%22artificial+intelligence+act%22&DTS_SUBDOM=LEGISLATION&type=advanced&DD_FREE_DATE_FROM=2026-04-06&DD_FREE_DATE_TO=2026-04-20&page=1&sortOne=DD_FREE_DATE&sortOneOrder=desc",
+    "ai_office_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+    "note": "EUR-Lex API check failed. Manual check recommended: https://eur-lex.europa.eu/search.html?scope=EURLEX&text=%22artificial+intelligence+act%22&DTS_SUBDOM=LEGISLATION&type=advanced&DD_FREE_DATE_FROM=2026-04-06&DD_FREE_DATE_TO=2026-04-20&page=1&sortOne=DD_FREE_DATE&sortOneOrder=desc",
+    "action_needed": false,
+    "eurlex_error": "HTTP Error 404: Not Found"
+  }
+]

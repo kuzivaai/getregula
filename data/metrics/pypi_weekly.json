@@ -1,0 +1,19 @@
+[
+  {
+    "date": "2026-04-20",
+    "period": "last_7_days",
+    "downloads": {
+      "with_mirrors": 1295,
+      "without_mirrors": 479
+    },
+    "by_system": {
+      "Linux": 61
+    },
+    "by_python": {
+      "3.10": 24,
+      "3.11": 5,
+      "3.12": 28,
+      "3.13": 4
+    }
+  }
+]
