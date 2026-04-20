@@ -28,9 +28,18 @@ regula demo
 # Risk register summary (active findings, accepted risks, suppressed FPs)
 regula risks --project .
 
+# Week-by-week compliance roadmap
+regula roadmap --project .
+regula roadmap --project . --target-date 2026-08-02
+regula roadmap --project . --format json
+
 # Generate reports
 regula report --format html -o report.html --include-audit
 regula report --format sarif -o results.sarif.json
+
+# Score compliance document quality (0-100)
+regula doc-audit --project .
+regula doc-audit --project . --format json
 
 # Generate documentation scaffolds
 regula docs --project .                     # Annex IV only
@@ -51,6 +60,10 @@ regula compliance history -s MyApp          # View history
 regula audit verify
 regula audit export --format csv -o audit.csv
 
+# GDPR dual-compliance scanning
+regula gdpr --project .
+regula gdpr --project . --format json
+
 # Compliance gap assessment (Articles 9-15)
 regula gap --project .
 regula gap --project . --article 14   # Article 14 only
@@ -69,6 +82,11 @@ regula oversight --project .
 # AI Bill of Materials (CycloneDX 1.7 with GPAI tier annotations)
 regula sbom --project .
 regula sbom --project . --ai-bom    # Include model provenance + datasets
+
+# AI Bill of Materials — component inventory (CycloneDX 1.7)
+regula aibom --project .
+regula aibom --project . --format cyclonedx   # CycloneDX output
+regula aibom --project . --format markdown     # Markdown table
 
 # Install hooks for a platform
 regula install claude-code
@@ -200,6 +218,15 @@ regula gpai-check --format json                   # Machine-readable
 
 Each obligation is reported as PASS / WARN / FAIL / N/A with the relevant article anchor and concrete file evidence. Adherence to the Code provides a rebuttable presumption of conformity with Articles 53 and 55 — this command produces evidence, not a legal determination. Pattern surface and reference metadata live in `references/gpai_code_of_practice.yaml`.
 
+### GDPR Dual-Compliance Scanning
+
+Scans a project for 14 GDPR-relevant code patterns and identifies dual-compliance hotspots where GDPR obligations and EU AI Act requirements overlap. Also available via `regula check --include-gdpr` for a combined scan.
+
+```bash
+regula gdpr --project .                        # Text report
+regula gdpr --project . --format json          # Machine-readable output
+```
+
 ### AI Bill of Materials
 
 Extends the CycloneDX 1.7 SBOM with AI-specific metadata: model provenance extracted from code (which models are loaded, from which providers), GPAI tier annotations per EU AI Act Articles 51-55, and detected training dataset references.
@@ -207,6 +234,17 @@ Extends the CycloneDX 1.7 SBOM with AI-specific metadata: model provenance extra
 ```bash
 regula sbom --project .                       # Standard SBOM
 regula sbom --project . --ai-bom              # With AI-specific metadata
+```
+
+### AI Bill of Materials — Component Inventory
+
+Scans project dependencies for AI components and classifies them by kind (inference-provider, ai-framework, vector-store, etc.). Finds model files on disk and outputs a component inventory. Complements `regula sbom` with a dependency-centric view in multiple output formats including CycloneDX 1.7.
+
+```bash
+regula aibom --project .                       # Text component inventory
+regula aibom --project . --format json         # Machine-readable output
+regula aibom --project . --format cyclonedx    # CycloneDX 1.7 BOM
+regula aibom --project . --format markdown     # Markdown table
 ```
 
 ### AI Dependency Pinning Analysis
@@ -316,6 +354,16 @@ regula questionnaire                     # Show questions
 regula questionnaire --evaluate '{...}'  # Evaluate answers (JSON)
 ```
 
+### Week-by-Week Compliance Roadmap
+
+Generates a deadline-aware, week-by-week action plan from a gap assessment. Organises remediation into four phases: quick wins, documentation, technical implementation, and validation. Defaults to the 2 August 2026 enforcement deadline (note: the pending EU Digital Omnibus on AI may defer Annex III high-risk deadlines to 2 December 2027 — not yet law).
+
+```bash
+regula roadmap --project .                     # Text roadmap
+regula roadmap --project . --format json       # Machine-readable output
+regula roadmap --project . --target-date 2026-08-02  # Explicit deadline
+```
+
 ### Session Risk Aggregation
 
 Aggregate individual tool classifications into a session-level risk profile for agentic AI governance.
@@ -397,6 +445,15 @@ regula docs --project . --all           # All documentation types
 ```
 
 QMS scaffolds cover all Article 17 requirements: governance accountability, development procedures, testing/validation, data management, risk management, post-market monitoring, human oversight, and transparency.
+
+### Compliance Document Audit
+
+Scores the quality of compliance documents found in a project's root and `docs/` directory on a 0–100 scale. Evaluates three dimensions: coverage (0–40), depth (0–40), and structure (0–20). Reports per-article scores and identifies gaps where documentation is missing or thin.
+
+```bash
+regula doc-audit --project .                   # Text score report
+regula doc-audit --project . --format json     # Machine-readable output
+```
 
 ### EU AI Act Timeline
 
