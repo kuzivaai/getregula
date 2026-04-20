@@ -12,7 +12,7 @@ regula check examples/customer-chatbot
 Expected output (captured against Regula v1.7.0 on 2026-04-16):
 
 ```
-Regula Scan: /home/mkuziva/getregula/examples/customer-chatbot
+Regula Scan: examples/customer-chatbot
 ============================================================
   Files scanned:      1
   Prohibited:         0

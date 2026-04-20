@@ -13,7 +13,7 @@ regula check examples/code-completion-tool
 Expected output (verified against Regula v1.7.0 on 2026-04-16):
 
 ```
-Regula Scan: /home/mkuziva/getregula/examples/code-completion-tool
+Regula Scan: examples/code-completion-tool
 ============================================================
   Files scanned:      1
   Prohibited:         0
