@@ -10,7 +10,7 @@ git clone https://github.com/<your-username>/getregula.git
 cd getregula
 
 # No install needed for core — it's pure Python 3.10+
-python3 -m scripts --help
+regula --help
 
 # Optional dependencies (for YAML config and AST analysis)
 pip install pyyaml tree-sitter
@@ -35,14 +35,8 @@ scripts/
 ├── remediation.py         # Fix suggestions
 └── ...                    # See scripts/ for full list
 tests/
-├── test_classification.py     # Core classification tests
-├── test_agent_governance.py   # Agent autonomy detection
-├── test_coverage_critical.py  # Critical path coverage
-├── test_documentation.py      # Documentation generation
-├── test_hooks_audit.py        # Hook and audit trail
-├── test_registry.py           # AI system registry
-├── test_reliability.py        # Edge cases and resilience
-└── test_security_hardening.py # Security hardening checks
+├── test_classification.py     # Core classification tests (main test file)
+└── ...                        # 44 test files total — see tests/ for full list
 ```
 
 ## How to Add a Risk Pattern
@@ -81,7 +75,7 @@ Regula scans source code for AI-related patterns. To add support for a new progr
 
 ## Testing
 
-Tests are spread across 8 files in `tests/`. The main classification tests live in `tests/test_classification.py`; other test files cover agent governance, documentation, hooks, registry, reliability, security hardening, and critical path coverage. Run all tests with `pytest tests/ -q`.
+Tests are spread across 44 files in `tests/`. The main classification tests live in `tests/test_classification.py`; other test files cover agent governance, documentation, hooks, registry, reliability, security hardening, and critical path coverage. Run all tests with `pytest tests/ -q`.
 
 The test pattern is:
 
@@ -155,7 +149,7 @@ Types: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`
 ## Reporting Issues
 
 - **Bugs**: Use the bug report template.
-- **Feature requests**: Use the feature request template.
+- **Pattern requests**: Use the pattern request form.
 - **False positives**: Use the false positive template — these are particularly valuable for improving accuracy.
 
 ## Code of Conduct

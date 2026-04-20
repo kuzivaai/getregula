@@ -6,7 +6,7 @@ Internal layout of the `scripts/` package, design principles, and language suppo
 
 ```
 regula/
-├── SKILL.md                       # Core skill file (Claude Code)
+├── .claude/skills/regula/SKILL.md  # Core skill file (Claude Code)
 ├── scripts/
 │   ├── cli.py                     # Unified CLI entry point
 │   ├── classify_risk.py           # Risk indication engine (confidence scoring)
@@ -20,16 +20,27 @@ regula/
 │   ├── timeline.py                # EU AI Act enforcement dates
 │   ├── generate_documentation.py  # Annex IV + QMS scaffold generator
 │   ├── discover_ai_systems.py     # AI system discovery, registry, compliance tracking
-│   ├── credential_check.py        # Secret detection (9 patterns: 6 high + 3 medium confidence)
+│   ├── credential_check.py        # Secret detection (18 patterns: 10 high + 8 medium confidence)
 │   ├── ast_analysis.py            # AST-based Python analysis (data flow, oversight, logging)
 │   ├── ast_engine.py              # Multi-language AST engine (Python + JS/TS tree-sitter + Java/Go/Rust/C/C++ regex)
 │   ├── compliance_check.py        # Compliance gap assessment (Articles 9-15)
 │   ├── dependency_scan.py         # AI dependency supply chain security
-│   ├── framework_mapper.py        # Cross-framework compliance mapping (11 frameworks)
+│   ├── framework_mapper.py        # Cross-framework compliance mapping (12 frameworks)
 │   ├── remediation.py             # Inline fix suggestions per Annex III category
 │   ├── agent_monitor.py           # Agentic AI governance (autonomy scoring, MCP config)
 │   ├── sbom.py                    # CycloneDX 1.7 AI SBOM generation
-│   └── benchmark.py               # Real-world precision/recall validation
+│   ├── benchmark.py               # Real-world precision/recall validation
+│   ├── aibom.py                   # AI Bill of Materials generator (CycloneDX 1.7)
+│   ├── gdpr_patterns.py           # GDPR pattern definitions (14 patterns, 4 hotspots)
+│   ├── gdpr_scan.py               # GDPR code pattern scanner
+│   ├── roadmap.py                 # Compliance roadmap generator
+│   ├── doc_audit.py               # Document quality scoring engine
+│   ├── evidence_pack.py           # Self-verifying evidence bundle
+│   ├── risk_decisions.py          # Annotation parser (regula-ignore / regula-accept)
+│   ├── findings_view.py           # Finding view separation (active/suppressed/accepted)
+│   ├── signing.py                 # Ed25519 manifest signing
+│   ├── timestamp.py               # RFC 3161 timestamping
+│   └── adoption_pulse.py          # Passive PyPI + GitHub signal tracker
 ├── hooks/
 │   ├── pre_tool_use.py            # PreToolUse hook (CC/Copilot/Windsurf)
 │   ├── post_tool_use.py           # PostToolUse logging hook
@@ -37,16 +48,9 @@ regula/
 ├── references/                    # Regulatory reference documents
 │   ├── owasp_llm_top10.yaml       # OWASP Top 10 for LLMs → EU AI Act mapping
 │   └── mitre_atlas.yaml           # MITRE ATLAS → EU AI Act mapping
-├── tests/
-│   ├── test_classification.py     # Core classification tests
-│   ├── test_agent_governance.py   # Agent autonomy detection
-│   ├── test_coverage_critical.py  # Critical path coverage
-│   ├── test_documentation.py      # Documentation generation
-│   ├── test_hooks_audit.py        # Hook and audit trail
-│   ├── test_registry.py           # AI system registry
-│   ├── test_reliability.py        # Edge cases and resilience
-│   └── test_security_hardening.py # Security hardening checks
-│   # 1,055 tests (pytest --collect-only)
+├── tests/                         # 44 test files, 1,199 tests (pytest --collect-only)
+│   ├── test_classification.py     # Core classification tests (main test file)
+│   └── ...                        # See tests/ for full list
 ├── docs/
 │   └── course/                    # Interactive 10-module governance course
 ├── regula-policy.yaml             # Policy configuration template
@@ -79,5 +83,5 @@ regula/
 - **Compliance gap assessment, not just risk flagging.** Checks whether Articles 9-15 compliance infrastructure actually exists in the codebase.
 - **AI-specific supply chain security.** Dependency pinning checks focus on AI libraries, not general packages.
 - **Cross-platform.** Unix/macOS (`fcntl`) and Windows (`msvcrt`) file locking. No platform restrictions.
-- **Multi-framework mapping.** 12 frameworks with full crosswalk data (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO) mapped via [references/framework_crosswalk.yaml](../references/framework_crosswalk.yaml). 5 additional frameworks accepted as filter keys with partial coverage (Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI).
+- **Multi-framework mapping.** 12 frameworks with full crosswalk data (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO) mapped via [references/framework_crosswalk.yaml](../references/framework_crosswalk.yaml). 5 additional frameworks have display handlers but no crosswalk data and no filter keys (Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI) — filter keys removed in commit 7d93fed to prevent silent empty results.
 

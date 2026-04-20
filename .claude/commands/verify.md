@@ -12,10 +12,10 @@ pytest tests/ -q
 # Step 3: Built-in self-test (6 assertions)
 python3 -m scripts.cli self-test
 
-# Step 4: Doctor health checks (10 checks)
+# Step 4: Doctor health checks (11 checks: 9 pass + 2 info)
 python3 -m scripts.cli doctor
 ```
 
 After all four pass, report the counts. If any fail, show the specific failure and diagnose the root cause.
 
-This sequence mirrors the CI workflow in `.github/workflows/ci.yaml` exactly. If /verify is green locally, CI should be green too. If you skip step 2, you risk shipping changes that pass the custom runner but fail in CI — that exact gap shipped commit 06bf29a in this session.
+This sequence mirrors the CI workflow in `.github/workflows/ci.yaml` exactly. If /verify is green locally, CI should be green too. If you skip step 2, you risk shipping changes that pass the custom runner but fail in CI.

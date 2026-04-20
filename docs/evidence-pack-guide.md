@@ -121,3 +121,41 @@ the same `regula_version` and `pattern_version` will get byte-identical
 packs. This is the "evidence workflow" gap competitor SaaS platforms
 usually close with a hosted control library — Regula closes it with
 reproducibility plus the delta log.
+
+## Evidence integrity features (v1.7.0)
+
+### `--bundle` — self-verifying ZIP
+
+Packages the evidence pack into a `.regula-evidence.zip` containing all
+evidence files, `manifest.json`, and a standalone `verify.py` script.
+Auditors extract the ZIP and run `python3 verify.py` to check SHA-256
+hashes without needing Regula installed.
+
+```bash
+regula evidence-pack . --bundle
+```
+
+### `--sign` — Ed25519 manifest signing
+
+Signs the conform pack manifest with an Ed25519 key pair. On first use,
+generates a keypair at `~/.regula/signing.key`. The public key and
+signature are embedded in the manifest for independent verification.
+You can supply your own key with `--signing-key PATH` or the
+`REGULA_SIGNING_KEY` environment variable. Requires the
+`regula[signing]` optional extra.
+
+```bash
+regula conform . --sign
+```
+
+### `--timestamp` — RFC 3161 external timestamping
+
+Requests an RFC 3161 timestamp token from a Time Stamping Authority over
+the signed canonical manifest form, proving the evidence pack existed at
+a specific point in time. Implies `--sign`. The default TSA is
+`https://freetsa.org/tsr`; override with `--tsa-url URL` for any
+RFC 3161-compliant TSA.
+
+```bash
+regula conform . --sign --timestamp
+```

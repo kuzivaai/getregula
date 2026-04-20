@@ -72,15 +72,15 @@ flags for human review. False positives and negatives will occur.
 ## CLI
 
 ```bash
-python3 scripts/cli.py check .                    # Scan project
-python3 scripts/cli.py report --format html -o r.html  # HTML report
-python3 scripts/cli.py feed                        # Governance news
-python3 scripts/cli.py init                        # Guided setup
-python3 scripts/cli.py install claude-code         # Install hooks
-python3 scripts/cli.py timeline                    # Enforcement dates
-python3 scripts/cli.py baseline save               # Save baseline
-python3 scripts/cli.py baseline compare --fail-on-new  # CI/CD gate
-python3 scripts/cli.py deps --project .            # Dependency supply chain analysis
+regula check .                    # Scan project
+regula report --format html -o r.html  # HTML report
+regula feed                        # Governance news
+regula init                        # Guided setup
+regula install claude-code         # Install hooks
+regula timeline                    # Enforcement dates
+regula baseline save               # Save baseline
+regula baseline compare --fail-on-new  # CI/CD gate
+regula deps --project .            # Dependency supply chain analysis
 regula check . --framework owasp-llm-top10         # OWASP LLM Top 10 mapping
 regula check . --framework mitre-atlas             # MITRE ATLAS mapping
 ```
@@ -105,4 +105,4 @@ and git hooks. Same hook protocol, different config files.
 - Python: full AST. JS/TS: tree-sitter AST (moderate depth). Java, Go, Rust, C/C++: regex import detection — cannot assess intent or deployment context
 - False positives on code that discusses prohibited practices (documentation files are now bypassed by hooks)
 - Self-attesting audit trail — not externally witnessed
-- ten compliance frameworks mapped: EU AI Act, NIST AI RMF, ISO 42001, NIST CSF 2.0, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, LGPD, Marco Legal da IA
+- twelve compliance frameworks mapped: EU AI Act, NIST AI RMF, ISO 42001, NIST CSF 2.0, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, EU CRA, LGPD, Marco Legal da IA, UK ICO
