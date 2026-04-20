@@ -5,7 +5,7 @@ All notable changes to Regula are documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/).
 
-## [1.7.1] — 2026-04-20
+## [Unreleased]
 
 Precision engineering release. Regex bug fixes, AST context gating,
 and smarter filtering reduce false positives on application code.
