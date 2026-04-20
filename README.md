@@ -1,6 +1,6 @@
 # Regula
 
-**EU AI Act compliance tool for code.**
+**EU AI Act risk scanner for code.**
 
 [![PyPI](https://img.shields.io/pypi/v/regula-ai)](https://pypi.org/project/regula-ai/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
