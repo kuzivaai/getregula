@@ -8,13 +8,13 @@ Generated: `2026-04-17T08:13:08.318754+00:00`
 
 | Claim | Count | Source file |
 |---|---|---|
-| CLI commands | **55** | `scripts/cli.py` |
+| CLI commands | **59** | `scripts/cli.py` |
 | Detection patterns (historical bucket) | **447** | see breakdown below |
 | Detection patterns (grand total, inclusive) | **660** | see breakdown below |
 | Tiered risk pattern groups | 52 | `scripts/risk_patterns.py` |
 | Compliance frameworks (full crosswalk) | **12** | `references/framework_crosswalk.yaml` + EU AI Act |
 | Programming languages | 8 | `scripts/ast_engine.py` |
-| Test functions (all files) | 931 | `tests/test_*.py` |
+| Test functions (all files) | 1199 | `tests/test_*.py` |
 
 ## Detection pattern breakdown
 

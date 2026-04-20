@@ -5,6 +5,58 @@ All notable changes to Regula are documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/).
 
+## [1.7.1] — 2026-04-20
+
+Precision engineering release. Application-code precision raised from
+15.2% to **85.9%** (99.7% with default `--skip-tests`) through regex
+bug fixes, AST context gating, and smarter filtering. Documentation
+audit brings all counts and claims up to date.
+
+### Added
+
+- **AST context gating** (`scripts/ast_context.py`). Builds a
+  line-level context map (try/except, docstrings, test assertions) to
+  suppress findings in non-production code paths.
+- **Application-code benchmark** (`benchmarks/results/app_*.json`).
+  13-project benchmark measuring precision on real AI applications
+  (not library source code).
+- **Import-based AIBOM fallback.** When no manifest (requirements.txt)
+  is found, scans source imports to build the AI bill of materials.
+
+### Fixed
+
+- **9 regex precision bugs**: broken lookahead, pickle word boundary,
+  torch exclusion, temperature range overmatch, path indicator
+  conflation, AI term conflation with non-AI usage, `performance_scor`
+  partial match, `rag_poisoning` overreach, `no_grounding` false
+  positives.
+- **`resume` → `resumes?`** in employment patterns: requires plural or
+  compound form (`classify_resume`, `score_resumes`) to avoid collision
+  with ML "resume training".
+- **`response.content`** no longer triggers AI output detection (too
+  generic — matches HTTP responses). Now requires LLM-specific
+  structures.
+- **`send_message`** removed from agent communication pattern (collides
+  with LLM client methods).
+- **Multi-segment SDK chains** (`client.chat.completions.create`) now
+  detected correctly.
+- **CI directories** (`.github`, `.gitlab`, `.circleci`) added to
+  SKIP_DIRS.
+- **`docs/conf.py`** classified as documentation, not production code.
+- **Generic minimal_risk findings** suppressed (reduces noise without
+  losing signal).
+- **Library infrastructure penalty** reduces score for patterns found
+  in library internals.
+
+### Changed
+
+- Landing page precision claim updated (15.2% → 85.9% on application
+  code).
+- README, site_facts counts updated (55→59 commands, 1055→1199 tests).
+- Documentation audit: architecture.md, cli-reference.md,
+  evidence-pack-guide.md, CONTRIBUTING.md all reconciled with current
+  codebase state.
+
 ## [1.7.0] — 2026-04-16
 
 Evidence Format **v1.1** — tamper-evident conformity packs. Optional
