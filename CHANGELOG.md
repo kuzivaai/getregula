@@ -7,10 +7,9 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [1.7.1] — 2026-04-20
 
-Precision engineering release. Application-code precision raised from
-15.2% to **85.9%** (99.7% with default `--skip-tests`) through regex
-bug fixes, AST context gating, and smarter filtering. Documentation
-audit brings all counts and claims up to date.
+Precision engineering release. Regex bug fixes, AST context gating,
+and smarter filtering reduce false positives on application code.
+Documentation audit brings all counts and claims up to date.
 
 ### Added
 
@@ -50,8 +49,9 @@ audit brings all counts and claims up to date.
 
 ### Changed
 
-- Landing page precision claim updated (15.2% → 85.9% on application
-  code).
+- Landing page precision disclosure rewritten: leads with "0 false
+  positives at BLOCK tier", contextualises INFO-tier 15.2% as measured
+  on AI library source code (hardest corpus).
 - README, site_facts counts updated (55→59 commands, 1055→1199 tests).
 - Documentation audit: architecture.md, cli-reference.md,
   evidence-pack-guide.md, CONTRIBUTING.md all reconciled with current
