@@ -400,11 +400,11 @@ HIGH_RISK_PATTERNS = {
         # behaviour, personal traits, or characteristics.
         "patterns": [r"\bemployee[_\W]?monitor", r"\bproductivity[_\W]?track",
                      r"\bworker[_\W]?surveillance", r"\btask[_\W]?allocation",
-                     r"\bperformance[_\W]?scor", r"\bworkforce[_\W]?management",
+                     r"\b(?:employee|worker|staff)[_\W]?performance[_\W]?scor", r"\bworkforce[_\W]?management",
                      r"\bemployee[_\W]?ranking", r"\bworker[_\W]?efficiency",
                      r"\b(?:employee|worker|staff)[_\W]?(?:monitor|surveil|track|rank|scor|evaluat|profil)",
                      r"\b(?:task|shift|workload)[_\W]?(?:allocat|assign|distribut|optimis|optimiz)[_\W]?(?:ai|model|automat|algorithm)",
-                     r"\b(?:productivity|performance|efficiency)[_\W]?(?:monitor|track|scor|rank|model|predict|dashboard)",
+                     r"\b(?:productivity|efficiency)[_\W]?(?:monitor|track|scor|rank|dashboard)",
                      # Prompt-string templates.
                      r"(?:monitor|track|score|rank|evaluate)[^\"\\n]{0,30}(?:employee|worker|staff|productivity|performance)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
@@ -524,9 +524,9 @@ LIMITED_RISK_PATTERNS = {
 AI_SECURITY_PATTERNS = {
     "unsafe_deserialization": {
         "patterns": [
-            r"pickle\.load",
+            r"pickle\.load\b(?!s)",
             r"pickle\.loads",
-            r"torch\.load\s*\([^)]*\)",  # torch.load without weights_only=True
+            r"torch\.load\s*\((?![^)]*weights_only\s*=\s*True)[^)]*\)",  # torch.load without weights_only=True
             r"joblib\.load",
             r"dill\.load",
         ],
@@ -634,7 +634,7 @@ AI_SECURITY_PATTERNS = {
     },
     "missing_temperature_control": {
         "patterns": [
-            r"temperature\s*[:=]\s*(?:1\.0|2\.0|1\.5)",  # high temperature values that increase hallucination risk
+            r"temperature\s*[:=]\s*(?:[1-9]\.\d|[2-9]\.0|[1-9]\d+\.)",  # any float >= 1.0 (hallucination risk)
         ],
         "owasp": "LLM09",
         "articles": ["15"],
@@ -674,8 +674,10 @@ AI_SECURITY_PATTERNS = {
             r"(?:messages|prompt|content)\s*[:=][^\n]{0,300}(?:ssn|social_security|date_of_birth|passport|credit_card|phone_number|email_address)",
             # Personal data sent to completion endpoints without a scrubbing step
             r"(?:chat\.completions|messages\.create|llm\.invoke)\s*\([^\n]{0,500}(?:personal_data|pii|user_email|user_phone|patient_record|medical_record)",
-            # Model output returned to user without PII filtering
-            r"(?:return|response|send|render)[^\n]{0,200}(?:completion|ai_response|llm_output|model_output)[^\n]{0,200}(?!.*(?:redact|sanitiz|scrub|mask|filter_pii|pii_filter|anonymi[sz]e))",
+            # Model output returned to user without PII filtering (proximity match only;
+            # file-level redaction check is in classify_risk.py).
+            # Excludes CamelCase class names (e.g., OpenAICompletion) via (?<![A-Z])
+            r"(?:return|response|send|render)\s[^\n]{0,80}(?<![A-Z])(?:completion|ai_response|llm_output|model_output)",
         ],
         "owasp": "LLM02",
         "articles": ["15"],
@@ -759,7 +761,7 @@ AI_SECURITY_PATTERNS = {
             # Embedding user content without sanitisation
             r"(?:embed|embed_documents|embed_query|get_embedding)\s*\([^\n]{0,200}(?:user_input|request\.|upload|untrusted)",
             # Unauthenticated vector store write endpoint
-            r"@(?:app|router)\.(?:post|put)\s*\([^\n]{0,200}(?:embed|ingest|index|vector)[^\n]{0,500}(?!.*(?:auth|login_required|Depends|require_auth|verify_token|api_key))",
+            r"@(?:app|router)\.(?:post|put)\s*\((?:(?!auth|login_required|Depends|require_auth|verify_token|api_key)[^\n]){0,200}(?:embed|ingest|index|vector)(?:(?!auth|login_required|Depends|require_auth|verify_token|api_key)[^\n]){10,300}$",
         ],
         "owasp": "LLM08",
         "articles": ["15"],
@@ -775,7 +777,7 @@ AI_SECURITY_PATTERNS = {
             # Medical/legal/financial advice from LLM without grounding
             r"(?:diagnosis|legal_advice|financial_advice|medical_recommendation|treatment_plan)\s*[:=][^\n]{0,200}(?:completion|ai_response|llm_output|chat\.completions|messages\.create)",
             # No citation or source requirement in prompt for factual task
-            r"(?:messages|prompt)\s*[:=][^\n]{0,500}(?:provide facts|answer accurately|give information|tell me about)(?!.*(?:cite|source|reference|ground|retriev|verify|fact.?check))",
+            r"(?:messages|prompt)\s*[:=](?:(?!cite|source|reference|ground|retriev|verify|fact.?check)[^\n]){0,500}(?:provide facts|answer accurately|give information|tell me about)",
         ],
         "owasp": "LLM09",
         "articles": ["15"],

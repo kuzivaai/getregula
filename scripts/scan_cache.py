@@ -25,15 +25,17 @@ finally:
 
 
 def _patterns_fingerprint() -> str:
-    """SHA-256 of risk_patterns.py — invalidates cache on any rule change."""
+    """SHA-256 of risk_patterns.py + report.py — invalidates cache on any rule change."""
     try:
         rp = Path(__file__).parent / "risk_patterns.py"
-        return hashlib.sha256(rp.read_bytes()).hexdigest()[:12]
+        rep = Path(__file__).parent / "report.py"
+        combined = rp.read_bytes() + rep.read_bytes()
+        return hashlib.sha256(combined).hexdigest()[:12]
     except OSError:
         return "unknown"
 
 
-_CACHE_SCHEMA = f"v2:{_REGULA_VERSION}:{_patterns_fingerprint()}"
+_CACHE_SCHEMA = f"v3:{_REGULA_VERSION}:{_patterns_fingerprint()}"
 
 
 class ScanCache:

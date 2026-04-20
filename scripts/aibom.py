@@ -19,8 +19,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from constants import VERSION, MODEL_EXTENSIONS, SKIP_DIRS
-from dependency_scan import scan_dependencies
+from constants import VERSION, MODEL_EXTENSIONS, SKIP_DIRS, CODE_EXTENSIONS
+from dependency_scan import scan_dependencies, AI_LIBRARIES
 
 # ── Component Kind Taxonomy ──────────────────────────────────────
 
@@ -274,6 +274,38 @@ def generate_aibom(project_path: str) -> dict:
             "pinning": dep.get("pinning", "unknown"),
         }
         components.append(component)
+
+    # Fallback: scan source code imports when no manifest deps found
+    if not components:
+        _AI_IMPORT_RE = re.compile(
+            r"^\s*(?:from|import)\s+([\w.]+)", re.MULTILINE
+        )
+        _normalised_ai = {lib.replace("-", "_").lower() for lib in AI_LIBRARIES}
+        for dirpath, dirs, files in os.walk(root):
+            dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+            for filename in files:
+                filepath = Path(dirpath) / filename
+                if filepath.suffix.lower() not in CODE_EXTENSIONS:
+                    continue
+                try:
+                    content = filepath.read_text(encoding="utf-8", errors="ignore")
+                except OSError:
+                    continue
+                for match in _AI_IMPORT_RE.finditer(content):
+                    module = match.group(1).split(".")[0].lower().replace("-", "_")
+                    if module in _normalised_ai and module not in seen_names:
+                        seen_names.add(module)
+                        # Map back to canonical name for kind lookup
+                        canonical = module.replace("_", "-")
+                        kind = _classify_kind(canonical)
+                        components.append({
+                            "name": canonical,
+                            "version": "unknown (from import)",
+                            "kind": kind,
+                            "files": [str(filepath.relative_to(root))],
+                            "source_line": 0,
+                            "pinning": "n/a",
+                        })
 
     # Scan for model files
     model_files = _scan_model_files(project_path_str)

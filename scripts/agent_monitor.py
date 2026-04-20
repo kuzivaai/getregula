@@ -384,8 +384,12 @@ def format_mcp_risk_text(risks: list) -> str:
 
 # Patterns where AI output flows to external actions
 _AI_OUTPUT_PATTERNS = [
-    r"(?:response|result|completion|output|message)\.(?:choices|content|text|data)",
-    r"(?:client|openai|anthropic)\.\w+\.(?:create|generate|invoke|run)",
+    # LLM completion structures (specific to AI SDKs, not generic HTTP responses)
+    r"(?:completion|chat_response|ai_response|llm_response|llm_output)\.(?:choices|content|text|data)",
+    r"(?:response|result|output|message)\.choices",
+    r"\.message\.content",
+    # AI SDK client calls (allow multi-segment chains: client.chat.completions.create)
+    r"(?:client|openai|anthropic)(?:\.\w+)+\.(?:create|generate|invoke|run)",
     r"model\.\w*(?:predict|generate|forward|infer)\(",
 ]
 
@@ -397,7 +401,7 @@ _EXTERNAL_ACTION_PATTERNS = [
     (r"httpx\.(?:post|put|patch|delete)\(", "HTTP mutation request"),
     (r"(?:cursor|conn|connection|session|db|engine)\.execute\(", "Database query execution"),
     (r"(?:smtp|email|mail|sendgrid|ses|postmark|mailgun|twilio|slack).*\.send\(", "Message/email sending"),
-    (r"send_(?:email|message|notification|sms)\(", "Message/email sending"),
+    (r"send_(?:email|notification|sms|alert)\(", "Message/email sending"),
     (r"shutil\.(?:rmtree|move|copy)", "File system modification"),
     (r"os\.(?:remove|unlink|rename)\(", "File system modification"),
 ]
@@ -437,11 +441,19 @@ def detect_autonomous_actions(code: str, filepath: str = "") -> list:
     # These files provide tool capabilities to agents even if AI output
     # is consumed in a separate orchestration module
     _AGENT_PATH_INDICATORS = (
-        "agent", "tool", "middleware", "plugin", "executor",
-        "action", "capability", "sandbox",
+        "agent", "middleware", "plugin", "executor",
+        "capability", "sandbox",
+    )
+    # "tool" and "action" are too broad as substrings — require path segment boundaries
+    _AGENT_PATH_SEGMENTS = (
+        "/tools/", "/tool/", "_tools/", "agent_tool",
+        "/actions/", "_actions/",
     )
     fp_lower = filepath.lower()
-    is_agent_infra = any(ind in fp_lower for ind in _AGENT_PATH_INDICATORS)
+    is_agent_infra = (
+        any(ind in fp_lower for ind in _AGENT_PATH_INDICATORS)
+        or any(seg in fp_lower or fp_lower.endswith(seg.rstrip("/")) for seg in _AGENT_PATH_SEGMENTS)
+    )
 
     if not has_ai and not is_agent_infra:
         return findings
@@ -457,6 +469,24 @@ def detect_autonomous_actions(code: str, filepath: str = "") -> list:
 
         for pattern, desc in _EXTERNAL_ACTION_PATTERNS:
             if re.search(pattern, line):
+                if has_ai and desc in ("HTTP mutation request",):
+                    # Check if the HTTP call IS the AI call (same line or nearby)
+                    # e.g. requests.post("https://api.openai.com/...", ...) with
+                    # an AI SDK pattern on the same line means the HTTP POST is
+                    # the transport for the LLM call, not a downstream action.
+                    nearby_ai = False
+                    for ai_p in _AI_OUTPUT_PATTERNS:
+                        for nearby_line in lines[max(0, i-4):i+3]:
+                            if re.search(ai_p, nearby_line, re.IGNORECASE):
+                                # Only conflate if AI pattern is on the SAME line
+                                # as the HTTP call (the HTTP call IS the AI call)
+                                if nearby_line == lines[i - 1]:
+                                    nearby_ai = True
+                                break
+                        if nearby_ai:
+                            break
+                    if nearby_ai:
+                        continue  # HTTP call is part of the AI call, not a downstream action
                 if has_ai:
                     detail = f"AI output may flow to {desc}"
                 else:

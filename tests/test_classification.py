@@ -2803,13 +2803,11 @@ def test_ai_security_no_false_positive_safe_torch():
     from classify_risk import check_ai_security
     code = "model = torch.load('model.pt', weights_only=True)\n"
     findings = check_ai_security(code)
-    # The pattern matches torch.load broadly — safe usage with weights_only=True
-    # is still flagged. This is a known limitation: the regex cannot distinguish
-    # safe vs unsafe torch.load calls. Documenting expected behaviour here.
-    # Expected: findings >= 1 because the regex flags all torch.load calls
-    # regardless of weights_only parameter (known limitation).
-    assert_true(len(findings) >= 1, "torch.load flagged even with weights_only=True (known regex limitation)")
-    print("✓ AI security: torch.load pattern tested (flags safe usage — known limitation)")
+    deser_findings = [f for f in findings if f["pattern_name"] == "unsafe_deserialization"]
+    # The negative lookahead in the torch.load regex now correctly excludes
+    # safe usage with weights_only=True (fixed in v1.7.1).
+    assert_eq(len(deser_findings), 0, "torch.load with weights_only=True should not be flagged")
+    print("✓ AI security: torch.load with weights_only=True correctly excluded")
 
 
 # ── Prompt Injection (OWASP LLM01:2025) ───────────────────────────────
