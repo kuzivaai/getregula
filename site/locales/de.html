@@ -22,10 +22,10 @@
       }
     </style>
     <meta name="theme-color" content="#070711">
-    <title>Regula — EU-KI-Gesetz Konformitätsprüfung für Code</title>
+    <title>Regula | EU-KI-Gesetz Konformitätsprüfung für Code</title>
     <meta name="description" content="Open-Source-Analyse, die Ihren KI-Code gegen 404 EU-KI-Gesetz-Risikomuster in 8 Sprachen prüft. Null Abhängigkeiten. Null Konto.">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta property="og:title" content="Regula — EU-KI-Gesetz Konformitätsprüfung für Code">
+    <meta property="og:title" content="Regula | EU-KI-Gesetz Konformitätsprüfung für Code">
     <meta property="og:description" content="Kostenloser Open-Source-Scanner, der Ihnen zeigt, in welche EU-KI-Gesetz-Risikostufe Sie fallen, warum, und was zu tun ist.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/locales/de.html">
@@ -35,7 +35,7 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
-    <meta name="twitter:title" content="Regula — EU-KI-Gesetz Risikoscanner">
+    <meta name="twitter:title" content="Regula | EU-KI-Gesetz Risikoscanner">
     <meta name="twitter:description" content="Kostenlose CLI, die Ihren KI-Code gegen EU-KI-Gesetz-Risikostufen klassifiziert.">
     <link rel="canonical" href="https://getregula.com/locales/de.html">
     <script type="application/ld+json">
@@ -116,7 +116,7 @@
                 "name": "Ist Regula kostenlos?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Ja. Regula ist Open Source unter der MIT-Lizenz. Kein Konto, kein API-Schlüssel, kein Verkaufsgespräch. Installieren Sie mit pipx install regula-ai und führen Sie es lokal auf Ihrer Codebasis aus. Die vollständige CLI, alle 55 Befehle, alle 404 Risikomuster und alle 12 Compliance-Framework-Zuordnungen sind kostenlos."
+                    "text": "Ja. Regula ist Open Source unter der MIT-Lizenz. Kein Konto, kein API-Schlüssel, kein Verkaufsgespräch. Installieren Sie mit pipx install regula-ai und führen Sie es lokal auf Ihrer Codebasis aus. Die vollständige CLI, alle 59 Befehle, alle 404 Risikomuster und alle 12 Compliance-Framework-Zuordnungen sind kostenlos."
                 }
             },
             {
@@ -176,13 +176,14 @@
         </dialog>
     </nav>
 
+    <!-- HERO -->
     <main id="main">
     <div class="hero-wrap">
         <div class="hero-glow"></div>
         <div class="hero">
             <div class="hero-text">
-                <div class="badge"><span class="badge-dot"></span>Open-Source-CLI &middot; v1.7.0 &middot; MIT + DRL 1.1</div>
-                <h1>Finden Sie heraus, ob Ihr KI-System <span class="hl">hochriskant</span> ist &mdash; bevor die Aufsichtsbehörden es tun.</h1>
+                <div class="badge"><span class="badge-dot"></span>Open-Source-CLI &middot; v1.7.0 &middot; MIT + <a href="https://github.com/kuzivaai/getregula/blob/main/docs/LICENSE.Detection.Rules.md" title="Detection Rule License: Erkennungsregeln sind MIT-lizenziert mit einer Zuordnungs- und Verantwortungsklausel" style="color:inherit;text-decoration:underline dotted;text-underline-offset:3px;">DRL 1.1</a></div>
+                <h1>Finden Sie heraus, ob Ihr KI-System <span class="hl">hochriskant</span> ist, bevor die Aufsichtsbehörden es tun.</h1>
                 <p class="sub">Kostenloser Open-Source-Scanner, der Ihnen zeigt, in welche EU-KI-Gesetz-Risikostufe Sie fallen, warum, und was zu tun ist. <strong>Kein Konto, kein API-Key, keine Berater.</strong></p>
                 <div class="install-row">
                     <div class="install-box" onclick="navigator.clipboard.writeText('pipx install regula-ai');this.querySelector('.cp').textContent='kopiert'">
@@ -215,105 +216,28 @@
         </div>
     </div>
 
-    <div class="stats">
-        <div class="st"><div class="st-n">404</div><div class="st-l">Risikomuster</div></div>
-        <div class="st"><div class="st-n">8</div><div class="st-l">Sprachen</div></div>
-        <div class="st"><div class="st-n">12</div><div class="st-l">Compliance-Frameworks</div></div>
-        <div class="st"><div class="st-n">0</div><div class="st-l">Abhängigkeiten</div></div>
-    </div>
-
-    <div class="urgency">
-        <div class="urgency-box" role="note">
-            <div class="date">2026&ndash;27</div>
-            <div class="body"><strong>Hochrisiko-Pflichten</strong> beginnen August 2026 &mdash; oder Dezember 2027, wenn der Digital Omnibus verabschiedet wird (Parlament stimmte 569&ndash;45 dafür, März 2026). So oder so: die Anforderungen ändern sich nicht. <strong>Sie müssen wissen, wo Sie stehen.</strong></div>
-        </div>
-    </div>
-
-    <div class="sec">
-        <h2 class="sec-head">Vier Schritte zur Konformitätsübersicht</h2>
-        <p class="sec-sub">Installieren, prüfen, überprüfen. Keine Konfiguration, keine API-Schlüssel, kein Konto.</p>
-        <div class="steps">
-            <div class="step">
-                <div class="step-n">01 &mdash; Installieren</div>
-                <h3>Ein Befehl</h3>
-                <p>Von PyPI. Keine Konfiguration nötig, kein Netzwerkzugang erforderlich. Funktioniert vollständig offline.</p>
-                <code>pipx install regula-ai</code>
-            </div>
-            <div class="step">
-                <div class="step-n">02 &mdash; Prüfen</div>
-                <h3>Auf Ihren Code richten</h3>
-                <p>Erkennt KI-Bibliotheksimporte, Modelldateien, API-Muster. Klassifiziert nach EU-KI-Gesetz-Risikostufen mit Konfidenzwertung. <code>regula</code> scannt automatisch und zeigt Konformitätsbewertung + nächste Schritte.</p>
-                <code>regula</code>
-            </div>
-            <div class="step">
-                <div class="step-n">03 &mdash; Überprüfen</div>
-                <h3>Befunde bearbeiten</h3>
-                <p>Konformitätslückenanalyse für Artikel 9&ndash;15. Alle 9 Abschnitte gemäß Anhang IV. SARIF für CI/CD-Gates.</p>
-                <code>regula gap --project .</code>
-            </div>
-            <div class="step">
-                <div class="step-n">04 &mdash; Evidenzpaket</div>
-                <h3>Ein Befehl, ein Ordner</h3>
-                <p>Bündelt Scan-Ergebnisse, Lückenanalyse, Anhang-IV-Entwurf, Abhängigkeitsbericht, Prüfpfad und Maßnahmenplan in einem überprüfbaren Paket mit SHA-256-Integritätsprüfsummen.</p>
-                <code>regula evidence-pack</code>
-            </div>
-        </div>
-    </div>
-
-    <div class="sep"></div>
-
-    <div class="sec" id="tiers">
-        <h2 class="sec-head">Was Regula Ihnen sagt</h2>
-        <p class="sec-sub">Das EU-KI-Gesetz ordnet jedes KI-System in eine Risikostufe ein. Regula scannt Ihren Code, sagt Ihnen, welche Stufe gilt, und liefert die Maßnahmenliste.</p>
-        <div class="tiers">
-            <div class="tier tier-r">
-                <div class="tier-badge">Verboten</div>
-                <div class="tier-examples">Social Scoring &middot; Emotionserkennung &middot; Biometrie in Echtzeit &middot; Unterschwellige Manipulation</div>
-                <div class="tier-hint">Art. 5 &mdash; vollständig verboten &rarr;</div>
-            </div>
-            <div class="tier tier-a">
-                <div class="tier-badge">Hochrisiko</div>
-                <div class="tier-examples">Kreditbewertung &middot; Beschäftigung &middot; Medizinische Diagnose &middot; Bildung &middot; Strafverfolgung</div>
-                <div class="tier-hint">Art. 9&ndash;15 gelten &rarr;</div>
-            </div>
-            <div class="tier tier-y">
-                <div class="tier-badge">Begrenztes Risiko</div>
-                <div class="tier-examples">Chatbots &middot; Synthetische Inhalte &middot; Emotionserkennung &middot; Deep Fakes</div>
-                <div class="tier-hint">Transparenzregeln &rarr;</div>
-            </div>
-            <div class="tier tier-g">
-                <div class="tier-badge">Minimales Risiko</div>
-                <div class="tier-examples">Spamfilter &middot; KI-Spiele &middot; Einfache Empfehlungen &middot; Suchranking</div>
-                <div class="tier-hint">Keine Pflichten &rarr;</div>
-            </div>
-        </div>
-        <p class="tier-cta">Regula sagt Ihnen, wo Ihr Code steht &mdash; und genau warum.</p>
-    </div>
-
-    <div class="sep"></div>
-
-    <!-- WER IST DIE ZIELGRUPPE -->
-    <div class="sec">
+    <!-- FÜR WEN IST DAS -->
+    <div class="sec reveal">
         <h2 class="sec-head">Für wen ist das?</h2>
-        <p class="sec-sub">Entwickler, die KI-Produkte ausliefern &mdash; und die Unternehmen, die sie nutzen.</p>
+        <p class="sec-sub">Entwickler, die KI-Produkte ausliefern, und die Unternehmen, die sie nutzen.</p>
         <div class="audience-grid">
             <div class="audience-card audience-biz">
                 <div class="audience-label">Wenn Sie das Unternehmen leiten</div>
                 <h3>Kennen Sie Ihr rechtliches Risiko?</h3>
-                <p>Wenn Ihr Team KI baut oder nutzt, kann das EU-KI-Gesetz gelten &mdash; auch außerhalb der EU. Die meisten Tools fallen unter begrenztes oder minimales Risiko. Senden Sie diese Seite an Ihren Entwickler. Ein Befehl. Sie erhalten einen Bericht für Ihren Vorstand.</p>
+                <p>Wenn Ihr Team KI baut oder nutzt, kann das EU-KI-Gesetz gelten, auch außerhalb der EU. Die meisten Tools fallen unter begrenztes oder minimales Risiko. Senden Sie diese Seite an Ihren Entwickler. Ein Befehl. Sie erhalten einen Bericht für Ihren Vorstand.</p>
                 <div class="audience-fwd" onclick="copyPageUrl(this)">
                     <span class="fwd-icon">&#8599;</span>
                     <span class="fwd-txt">Link kopieren und an Ihren Entwickler senden</span>
                 </div>
                 <div class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
                     <span class="fwd-icon">&#9654;</span>
-                    <span class="fwd-txt">regula assess ausführen &mdash; kein Code nötig</span>
+                    <span class="fwd-txt">regula assess ausführen. Kein Code nötig</span>
                 </div>
             </div>
             <div class="audience-card audience-dev">
                 <div class="audience-label">Wenn Sie den Code schreiben</div>
                 <h3>EU-Nutzer? Das KI-Gesetz gilt für Sie.</h3>
-                <p>Artikel 2 gilt extraterritorial. Die meisten Chatbots und Produktivitätstools sind begrenztes Risiko &mdash; eine Transparenzoffenlegung, mehr nicht. Scannen Sie zur Bestätigung.</p>
+                <p>Artikel 2 gilt extraterritorial. Die meisten Chatbots und Produktivitätstools sind begrenztes Risiko: eine Transparenzoffenlegung, mehr nicht. Scannen Sie zur Bestätigung.</p>
                 <ul>
                     <li>Funktioniert mit KI-generiertem Code (Cursor, Lovable, Bolt, Claude Code)</li>
                     <li>Generiert Anhang-IV-Dokumentation aus Ihrem tatsächlichen Code</li>
@@ -335,204 +259,115 @@
 
     <div class="sep"></div>
 
-    <div class="sec">
-        <h2 class="sec-head">Über die Klassifizierung hinaus</h2>
-        <p class="sec-sub">Regula liest Ihren Code direkt &mdash; keinen Fragebogen.</p>
+    <!-- WAS REGULA IHNEN SAGT -->
+    <div class="sec reveal" id="tiers">
+        <h2 class="sec-head">Was Regula Ihnen sagt</h2>
+        <p class="sec-sub">Das EU-KI-Gesetz ordnet jedes KI-System in eine Risikostufe ein. Regula scannt Ihren Code, sagt Ihnen, welche Stufe gilt, und liefert die Maßnahmenliste.</p>
+        <div class="tiers">
+            <div class="tier tier-r">
+                <div class="tier-badge">Verboten</div>
+                <div class="tier-examples">Social Scoring &middot; Emotionserkennung &middot; Biometrie in Echtzeit &middot; Unterschwellige Manipulation</div>
+                <div class="tier-hint">Art. 5: vollständig verboten &rarr;</div>
+            </div>
+            <div class="tier tier-a">
+                <div class="tier-badge">Hochrisiko</div>
+                <div class="tier-examples">Kreditbewertung &middot; Beschäftigung &middot; Medizinische Diagnose &middot; Bildung &middot; Strafverfolgung</div>
+                <div class="tier-hint">Art. 9&ndash;15 gelten &rarr;</div>
+            </div>
+            <div class="tier tier-y">
+                <div class="tier-badge">Begrenztes Risiko</div>
+                <div class="tier-examples">Chatbots &middot; Synthetische Inhalte &middot; Emotionserkennung &middot; Deep Fakes</div>
+                <div class="tier-hint">Transparenzregeln &rarr;</div>
+            </div>
+            <div class="tier tier-g">
+                <div class="tier-badge">Minimales Risiko</div>
+                <div class="tier-examples">Spamfilter &middot; KI-Spiele &middot; Einfache Empfehlungen &middot; Suchranking</div>
+                <div class="tier-hint">Keine Pflichten &rarr;</div>
+            </div>
+        </div>
+        <p class="tier-cta">Regula sagt Ihnen, wo Ihr Code steht, und genau warum.</p>
+    </div>
+
+    <!-- DRINGLICHKEITSBANNER -->
+    <div class="urgency">
+        <div class="urgency-box" role="note">
+            <div class="date">2026&ndash;27</div>
+            <div class="body"><strong>Hochrisiko-Pflichten</strong> beginnen August 2026, oder Dezember 2027, wenn der Digital Omnibus verabschiedet wird (Parlament stimmte 569&ndash;45 dafür, März 2026). So oder so: die Anforderungen ändern sich nicht. <strong>Sie müssen wissen, wo Sie stehen.</strong></div>
+        </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- SO FUNKTIONIERT ES -->
+    <div class="sec reveal" id="how">
+        <h2 class="sec-head">So funktioniert es</h2>
+        <p class="sec-sub">Drei Schritte. Kein Konto, kein API-Schlüssel, keine Daten verlassen Ihren Rechner.</p>
         <div class="art-grid">
-            <div class="card-base art-card">
-                <div class="tag tag-blue">Konformitätslücken</div>
-                <h4>Was fehlt in Ihrer Codebasis?</h4>
-                <p>Risikomanagement, Daten-Governance, Protokollierung, Transparenz, menschliche Aufsicht, Genauigkeit &mdash; pro Artikel bewertet mit Aufwandsschätzungen.</p>
+            <div class="card-base art-card" style="text-align:center;">
+                <div class="tag tag-blue">Schritt 1</div>
+                <h4>Installieren</h4>
+                <p><code>pipx install regula-ai</code><br>Funktioniert auf jedem Betriebssystem. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md" style="color:#8888aa;">Andere Methoden &#8599;</a></p>
             </div>
-            <div class="card-base art-card">
-                <div class="tag tag-blue">Dokumentation</div>
-                <h4>Können Sie Konformität nachweisen?</h4>
-                <p>Generiert automatisch Anhang-IV-Dokumentation aus Ihrem tatsächlichen Code &mdash; Funktionen, Abhängigkeiten und Protokollabdeckung bereits ausgefüllt.</p>
+            <div class="card-base art-card" style="text-align:center;">
+                <div class="tag tag-blue">Schritt 2</div>
+                <h4>Scannen</h4>
+                <p><code>regula</code><br>Konformitätsbewertung, Befunde und nächste Schritte.</p>
             </div>
-            <div class="card-base art-card">
-                <div class="tag tag-purple">Sicherheit</div>
-                <h4>Ist Ihr KI-Code sicher?</h4>
-                <p>Prüft auf Prompt-Injection, unsicheres Laden von Modellen, unvalidierte KI-Ausgabe, hartcodierte Schlüssel und andere KI-spezifische Schwachstellen.</p>
-            </div>
-        </div>
-        <div style="text-align:center;margin-top:48px;"><button class="cta-pill" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula')"><span>&#9654;</span> Kostenlos in 30 Sekunden testen</button></div>
-    </div>
-
-    <div class="sep"></div>
-
-    <div class="sec">
-        <h2 class="sec-head">Für Audits gebaut, nicht nur für Scans</h2>
-        <p class="sec-sub">Regula generiert Nachweise, die ein Auditor unabhängig verifizieren kann &mdash; nicht nur Ergebnislisten.</p>
-        <div class="art-grid">
-            <div class="card-base art-card">
-                <div class="tag tag-purple">Integrität</div>
-                <h4>Manipulationssichere Nachweise</h4>
-                <p>Jedes Nachweispaket enthält ein SHA-256-Manifest. Dateien werden bei der Erstellung inhaltsgehasht. Jede Änderung bricht die Kette.</p>
-                <code style="font-size:11px;color:#9898b4;">regula evidence-pack . &middot; regula verify pack/</code>
-            </div>
-            <div class="card-base art-card">
-                <div class="tag tag-purple">Signierung</div>
-                <h4>Kryptografische Nichtabstreitbarkeit</h4>
-                <p>Signieren Sie Nachweispakete mit Ed25519-Schlüsseln und RFC-3161-Zeitstempeln. Beweisen Sie, wann die Bewertung erstellt wurde und dass sie nicht verändert wurde.</p>
-                <code style="font-size:11px;color:#9898b4;">regula evidence-pack --sign --timestamp .</code>
-            </div>
-            <div class="card-base art-card">
-                <div class="tag tag-blue">Regulierungsübergreifend</div>
-                <h4>DSGVO + DORA + NIS2 Überschneidung</h4>
-                <p>Jeder KI-Gesetz-Artikel ist den entsprechenden DSGVO-, DORA- und NIS2-Pflichten zugeordnet. Ein Scan deckt Anforderungen über alle vier Verordnungen ab.</p>
-                <code style="font-size:11px;color:#9898b4;">regula gap .</code>
-            </div>
-            <div class="card-base art-card">
-                <div class="tag tag-blue">Aktualität</div>
-                <h4>Regulatorische Veralterungswarnungen</h4>
-                <p>regula regwatch vergleicht Ihren letzten Scan mit dem aktuellen Regulierungsstand und warnt, wenn Ihre Compliance-Position veraltet sein könnte.</p>
-                <code style="font-size:11px;color:#9898b4;">regula regwatch</code>
-            </div>
-            <div class="card-base art-card">
-                <div class="tag tag-purple">Audit-Trail</div>
-                <h4>Hash-verkettetes Ereignisprotokoll</h4>
-                <p>Append-only, hash-verkettetes Audit-Protokoll. Jeder Scan, jedes Ergebnis und jede Unterdrückung wird mit einer verifizierbaren Integritätskette aufgezeichnet.</p>
-                <code style="font-size:11px;color:#9898b4;">regula audit log &middot; regula audit verify</code>
-            </div>
-            <div class="card-base art-card">
-                <div class="tag tag-blue">Kostenloser Anhang IV</div>
-                <h4>Dokumentation, nicht nur Erkennung</h4>
-                <p>Generieren Sie Anhang-IV-Dokumentation, Model Cards, QMS-Gerüste und KMU-vereinfachte Konformitätspakete &mdash; kostenlos, aus Ihrem tatsächlichen Code.</p>
-                <code style="font-size:11px;color:#9898b4;">regula docs . &middot; regula conform --sme .</code>
+            <div class="card-base art-card" style="text-align:center;">
+                <div class="tag tag-blue">Schritt 3</div>
+                <h4>Handeln</h4>
+                <p><code>regula comply</code><br>Pflichtencheckliste mit Bestanden/Nicht-Bestanden pro Artikel.</p>
             </div>
         </div>
     </div>
 
-    <div class="sec" style="text-align:center;padding-top:40px;">
-        <p style="font-size:14px;color:var(--text-dim);margin-bottom:12px;">EU-AI-Act-Fristen und wichtige Release-Updates erhalten.</p>
-        <form class="notify" action="https://formspree.io/f/xjgppkkn" method="POST" style="max-width:400px;margin:0 auto;">
-            <input type="hidden" name="locale" value="de">
-            <input type="email" name="email" placeholder="ihre@email.com" aria-label="E-Mail" required>
-            <button type="submit">Abonnieren</button>
-        </form>
-    </div>
-
-    <div class="sep"></div>
-
-    <div class="sec">
-        <h2 class="sec-head"><span class="hl">55</span> CLI-Befehle</h2>
-        <p class="sec-sub">Alles aus einer einzigen Binärdatei.</p>
-        <div class="cmds">
-            <div class="cm"><code>regula assess</code> <span>Einige Ja/Nein-Fragen &mdash; Risikostufe ermitteln</span></div>
-            <div class="cm"><code>regula check .</code> <span>Risikoindikatoren scannen</span></div>
-            <div class="cm"><code>regula comply</code> <span>EU-KI-Gesetz-Pflichtencheckliste mit Status pro Artikel</span></div>
-            <div class="cm"><code>regula gap --project .</code> <span>Konformitätslückenanalyse für Artikel 9&ndash;15</span></div>
-            <div class="cm"><code>regula register .</code> <span>Annex-VIII-Registrierungspaket (Art. 49)</span></div>
-            <div class="cm"><code>regula conform .</code> <span>Artikel-43-Konformitätsbewertung &mdash; 26 Dateien, artikelweise zugeordnet</span></div>
-            <div class="cm"><code>regula oversight .</code> <span>Artikel-14-Analyse &mdash; dateiübergreifende menschliche Aufsicht</span></div>
-            <div class="cm"><code>regula sbom --ai-bom .</code> <span>KI-Stückliste &mdash; CycloneDX 1.7 ML-BOM</span></div>
-            <div class="cm"><code>regula bias</code> <span>Stereotyp-Bias-Bewertung &mdash; CrowS-Pairs + BBQ mit Konfidenzintervallen (erfordert Ollama)</span></div>
-            <div class="cm"><code>regula docs --qms</code> <span>Anhang-IV- &amp; QMS-Dokumente erstellen</span></div>
-            <div class="cm"><code>regula deps --project .</code> <span>Abhängigkeits-Lieferkette</span></div>
-            <div class="cm"><code>regula baseline compare</code> <span>CI/CD inkrementelle Konformität</span></div>
-            <div class="cm"><code>regula inventory</code> <span>Modellregister &amp; GPAI-Stufen</span></div>
-            <div class="cm"><code>regula plan --project .</code> <span>Priorisierter Maßnahmenplan</span></div>
-            <div class="cm"><code>regula quickstart</code> <span>60-Sekunden-Einführung</span></div>
-            <div class="cm"><code>regula doctor</code> <span>Installations- und Gesundheitsprüfung</span></div>
-            <div class="cm"><code>regula governance</code> <span>KI-Governance-Gerüst &mdash; KI-Rolle, Aufsicht, Risikobewertung, Verantwortlichkeit</span></div>
-            <div class="cm"><code>regula model-card</code> <span>Modellkarten-Gerüst &mdash; Verwendungszweck, Einschränkungen, Bias-Risiken, Evaluierung</span></div>
-        </div>
-    </div>
-
-    <div class="sep"></div>
-
-    <div class="sec">
-        <h2 class="sec-head"><span class="hl">12</span> Konformitätsrahmenwerke</h2>
-        <p class="sec-sub">Jedes Risikomuster ist mehreren Rahmen zugeordnet, damit ein Scan mehrere Audits abdeckt.</p>
-        <div class="fw-list">
-            <div class="fw pri"><div class="fw-d"></div>EU AI Act (2024/1689)</div>
-            <div class="fw"><div class="fw-d"></div>NIST AI RMF 1.0</div>
-            <div class="fw"><div class="fw-d"></div>NIST CSF 2.0</div>
-            <div class="fw"><div class="fw-d"></div>ISO/IEC 42001:2023</div>
-            <div class="fw"><div class="fw-d"></div>ISO 27001:2022</div>
-            <div class="fw"><div class="fw-d"></div>SOC 2</div>
-            <div class="fw"><div class="fw-d"></div>OWASP LLM Top 10</div>
-            <div class="fw"><div class="fw-d"></div>MITRE ATLAS</div>
-            <div class="fw"><div class="fw-d"></div>CRA</div>
-            <div class="fw"><div class="fw-d"></div>ICO / DSIT</div>
-            <div class="fw"><div class="fw-d"></div>LGPD (Brasilien)</div>
-            <div class="fw"><div class="fw-d"></div>Marco Legal IA (Brasilien)</div>
-            <div class="fw"><div class="fw-d"></div>Colorado SB-205</div>
-            <div class="fw"><div class="fw-d"></div>Canada AIDA</div>
-            <div class="fw"><div class="fw-d"></div>Singapore AI Governance</div>
-            <div class="fw"><div class="fw-d"></div>OECD AI Principles</div>
-            <div class="fw"><div class="fw-d"></div>South Korea AI Basic Act</div>
-        </div>
-    </div>
-
-    <div class="sep"></div>
-
-    <!-- EHRLICHKEIT — WAS REGULA TATSÄCHLICH TUT UND NICHT TUT -->
-    <div class="sec">
-        <h2 class="sec-head">Was Regula nicht tut</h2>
-        <p class="sec-sub">Ein Konformitätstool, das seine Fähigkeiten übertreibt, ist schlimmer als gar kein Tool. Hier ist, was Regula tatsächlich ist &mdash; und was nicht.</p>
-        <div class="art-grid">
-            <div class="card-base art-card">
-                <h4>Keine Rechtsberatung</h4>
-                <p>Regula identifiziert Risikoindikatoren im Code für die Überprüfung durch Entwickler. Es stellt keine Konformität fest. Ein qualifizierter Rechtsanwalt sollte jede Klassifizierung prüfen, bevor Sie darauf handeln.</p>
+    <!-- STATISTIKEN -->
+    <div class="stats-bar reveal">
+        <div class="stats-inner">
+            <div class="stat-item">
+                <div class="stat-num">404</div>
+                <div class="stat-label">Risikomuster geprüft</div>
             </div>
-            <div class="card-base art-card">
-                <h4>Mustererkennung, nicht Verständnis</h4>
-                <p>15,2% Präzision bei Open-Source-Codebasen auf INFO-Stufe. 0 Falsch-Positive auf BLOCK-Stufe (der CI-Standard). <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Veröffentlichter Benchmark &rarr;</a></p>
+            <div class="stat-item">
+                <div class="stat-num">8</div>
+                <div class="stat-label">Programmiersprachen</div>
             </div>
-            <div class="card-base art-card">
-                <h4>Gerüste, nicht Substanz</h4>
-                <p>Anhang-IV-Dokumente, Evidenzpakete und Governance-Gerüste sind vorausgefüllte Vorlagen. Ein Mensch muss sie mit inhaltlicher Substanz vervollständigen. Regula kann nicht verifizieren, dass ein Risikomanagementsystem tatsächlich funktioniert.</p>
+            <div class="stat-item">
+                <div class="stat-num">12</div>
+                <div class="stat-label">Compliance-Frameworks</div>
             </div>
-        </div>
-        <p class="sec-sub" style="margin-top:24px;font-size:13px;"><a href="https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md" style="color:#8888aa;">Vollständige Einschränkungen &rarr;</a></p>
-    </div>
-
-    <div class="sep"></div>
-
-    <!-- SELBST-SCAN -->
-    <div class="sec">
-        <h2 class="sec-head">Wir scannen uns selbst</h2>
-        <p class="sec-sub">Regulas eigene Codebasis wird bei jedem Commit gescannt. Hier ist, was passiert.</p>
-        <div class="art-grid">
-            <div class="card-base art-card">
-                <h4>71 von 85 Quelldateien unterdrückt</h4>
-                <p>83,5% von Regulas eigenen Python-Dateien erfordern <code># regula-ignore</code>-Kommentare. Ein Konformitätstool, das verbotene Praktiken bespricht, muss das Vokabular verbotener Praktiken enthalten. Das ist strukturell, kein Fehler.</p>
-            </div>
-            <div class="card-base art-card">
-                <h4>0 aktive Befunde, 31 unterdrückt</h4>
-                <p>Fünf Dateien enthalten Vokabular verbotener Praktiken (sie erklären, dokumentieren oder erkennen diese Praktiken). Alle fünf werden über <code># regula-ignore</code> unterdrückt. Der Scan meldet null aktive verbotene Befunde &mdash; die Unterdrückung funktioniert, und jede Unterdrückung ist eine dokumentierte Governance-Entscheidung.</p>
-            </div>
-            <div class="card-base art-card">
-                <h4>Was das bedeutet</h4>
-                <p>Ein Tool zu haben ist nicht dasselbe wie Governance zu haben. Jede Unterdrückung ist eine Mikro-Governance-Entscheidung, die menschliches Urteilsvermögen über Kontext, Absicht und Zweck erfordert &mdash; genau das, was das EU-KI-Gesetz verlangt.</p>
+            <div class="stat-item">
+                <div class="stat-num">0</div>
+                <div class="stat-label">externe Abhängigkeiten</div>
             </div>
         </div>
     </div>
 
     <div class="sep"></div>
 
-    <div class="sec">
+    <!-- WO REGULA IN DEN MARKT PASST -->
+    <div class="sec reveal">
         <h2 class="sec-head">Wo Regula in den Markt passt.</h2>
-        <p class="sec-sub">Ein entwicklerseitiger Static-Scanner. Eines von mehreren Tools im EU-KI-Gesetz-Ökosystem &mdash; jedes löst einen anderen Teil des Problems.</p>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:1080px;margin:32px auto 0;">
-            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:24px;">
-                <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#8888aa;margin-bottom:8px;">Governance-SaaS</div>
-                <div style="font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:600;margin-bottom:10px;">Vertrieb kontaktieren</div>
-                <p style="font-size:14px;color:#aaaac0;line-height:1.6;margin:0;">Credo AI, Saidot, Enzai, IBM watsonx.governance, Microsoft Purview. Evidenz-Workflows, Kontrollbibliotheken, kontinuierliche &Uuml;berwachung, Richtlinien-Updates durch Rechtsexperten. Gebaut f&uuml;r Compliance-Abteilungen, nicht f&uuml;r Entwickler. Keine ver&ouml;ffentlichten Preise.</p>
+        <p class="sec-sub">Ein entwicklerseitiger Static-Scanner. Eines von mehreren Tools im EU-KI-Gesetz-Ökosystem, jedes löst einen anderen Teil des Problems.</p>
+        <div class="pricing-grid">
+            <div class="price-card">
+                <div class="price-tier">Governance-SaaS</div>
+                <div class="price-amount">Vertrieb kontaktieren</div>
+                <p class="price-desc">Credo AI, Saidot, Enzai, IBM watsonx.governance, Microsoft Purview. Evidenz-Workflows, Kontrollbibliotheken, kontinuierliche &Uuml;berwachung, Richtlinien-Updates durch Rechtsexperten. Gebaut f&uuml;r Compliance-Abteilungen, nicht f&uuml;r Entwickler. Keine ver&ouml;ffentlichten Preise.</p>
             </div>
-            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:24px;">
-                <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#8888aa;margin-bottom:8px;">Runtime-Tests</div>
-                <div style="font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:600;margin-bottom:10px;">Open Source</div>
-                <p style="font-size:14px;color:#aaaac0;line-height:1.6;margin:0;">Garak, Giskard, Promptfoo. Prompt-Injection-, Jailbreak- und Bias-Red-Teaming gegen laufende Modelle. Erg&auml;nzend zu Regula, nicht &uuml;berlappend &mdash; sie testen Verhalten, Regula liest Code.</p>
+            <div class="price-card">
+                <div class="price-tier">Runtime-Tests</div>
+                <div class="price-amount">Open Source</div>
+                <p class="price-desc">Garak, Giskard, Promptfoo. Prompt-Injection-, Jailbreak- und Bias-Red-Teaming gegen laufende Modelle. Erg&auml;nzend zu Regula, nicht &uuml;berlappend: sie testen Verhalten, Regula liest Code.</p>
             </div>
-            <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.4);border-radius:14px;padding:24px;">
-                <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#7dd3fc;margin-bottom:8px;">Regula</div>
-                <div style="font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:600;margin-bottom:10px;color:#fff;">Kostenlos &amp; Open Source</div>
-                <p style="font-size:14px;color:#e2e2f0;line-height:1.6;margin:0;">Static-Code-Scanner. L&auml;uft auf Ihrem Laptop mit einem Befehl. Python-Kern nur aus der Standardbibliothek, null Produktionsabh&auml;ngigkeiten, vollst&auml;ndig offline. <code>pipx install regula-ai</code>, Projekt scannen, klare Antwort erhalten. MIT-Lizenz.</p>
+            <div class="price-card featured">
+                <div class="price-tier price-featured-tier">Regula</div>
+                <div class="price-amount price-featured-amount">Kostenlos &amp; Open Source</div>
+                <p class="price-desc">Static-Code-Scanner. L&auml;uft auf Ihrem Laptop mit einem Befehl. Python-Kern nur aus der Standardbibliothek, null Produktionsabh&auml;ngigkeiten, vollst&auml;ndig offline. <code>pipx install regula-ai</code>, Projekt scannen, klare Antwort erhalten. MIT-Lizenz.</p>
             </div>
         </div>
-        <div role="region" aria-label="Vergleich von EU-KI-Gesetz-Compliance-Tools" style="overflow-x:auto;margin-top:32px;">
+        <div role="region" aria-label="Vergleich von EU-KI-Gesetz-Compliance-Tools" style="overflow-x:auto;margin-top:32px;-webkit-overflow-scrolling:touch;">
+        <p class="scroll-hint" style="display:none;font-size:11px;color:#707090;margin-bottom:8px;text-align:right;">Scrollen &rarr;</p>
         <table style="width:100%;border-collapse:collapse;font-size:13px;color:#b0b0cc;">
             <thead>
                 <tr style="border-bottom:1px solid #23234a;text-align:left;">
@@ -547,18 +382,109 @@
             <tbody>
                 <tr><td style="padding:6px 12px;color:#e0e0f0;">Ansatz</td><td>Static code scan</td><td>Scan + runtime trust layers</td><td>AST-based scan</td><td>Questionnaire + bias eval</td><td>Platform / dashboard</td></tr>
                 <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Sprachen</td><td>8 families</td><td>Python</td><td>JS/TS</td><td>N/A</td><td>N/A</td></tr>
-                <tr><td style="padding:6px 12px;color:#e0e0f0;">Erkennungsmuster</td><td>404</td><td>48 checks</td><td>37+ frameworks</td><td>Questionnaire</td><td>Varies</td></tr>
+                <tr><td style="padding:6px 12px;color:#e0e0f0;">Erkennungsmuster</td><td>404</td><td>39 checks</td><td>37+ frameworks</td><td>Questionnaire</td><td>Varies</td></tr>
                 <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Abh&auml;ngigkeiten</td><td>Zero (stdlib)</td><td>Multiple</td><td>npm</td><td>Next.js + Ollama</td><td>SaaS</td></tr>
                 <tr><td style="padding:6px 12px;color:#e0e0f0;">Offline</td><td>Fully offline</td><td>Local</td><td>Local</td><td>Local + Ollama</td><td>Cloud</td></tr>
                 <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Evidenzsignierung</td><td>Ed25519 + RFC 3161</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>Varies</td></tr>
                 <tr><td style="padding:6px 12px;color:#e0e0f0;">Framework-Zuordnungen</td><td>12</td><td>3</td><td>EU AI Act</td><td>EU AI Act</td><td>Multiple</td></tr>
                 <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">CI/CD-Integration</td><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>&mdash;</td><td>Native</td></tr>
                 <tr><td style="padding:6px 12px;color:#e0e0f0;">Anhang-IV-Doku</td><td>Free</td><td>&mdash;</td><td>&mdash;</td><td>PDF reports</td><td>Built-in</td></tr>
-                <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Preis</td><td>Free (MIT)</td><td>Free (Apache 2.0)</td><td>Free (OSS)</td><td>Free (MIT + EUPL)</td><td>$30K&ndash;$200K/yr</td></tr>
+                <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Preis</td><td>Free (MIT)</td><td>Free (Apache 2.0)</td><td>Free (Apache 2.0)</td><td>Free (MIT + EUPL)</td><td>$30K&ndash;$200K/yr</td></tr>
             </tbody>
         </table>
         </div>
         <p style="font-size:12px;color:#707090;margin-top:12px;">W&auml;hlen Sie das Tool, dessen Sprachabdeckung und Kompromisse zu Ihrem Stack passen. Regula deckt die meisten Sprachen und Framework-Zuordnungen unter den oben genannten Open-Source-Optionen ab. F&uuml;r <em>Runtime</em>-Agent-Governance siehe <a href="https://github.com/microsoft/agent-governance-toolkit" rel="noopener" style="color:#707090;">Microsofts Agent Governance Toolkit</a>.</p>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- FUNKTIONEN -->
+    <div class="sec reveal" id="features">
+        <h2 class="sec-head">Was es tut</h2>
+        <p class="sec-sub">Regula liest Ihren Code direkt, keinen Fragebogen. Es generiert Artefakte, die ein Auditor prüfen kann, nicht nur Ergebnislisten.</p>
+        <div class="art-grid">
+            <div class="card-base art-card">
+                <div class="tag tag-blue">Konformitätslücken</div>
+                <h4>Was fehlt in Ihrer Codebasis?</h4>
+                <p>Risikomanagement, Daten-Governance, Protokollierung, Transparenz, menschliche Aufsicht, Genauigkeit. Pro Artikel bewertet mit Aufwandsschätzungen.</p>
+                <code style="font-size:11px;color:#9898b4;">regula gap .</code>
+            </div>
+            <div class="card-base art-card">
+                <div class="tag tag-blue">Dokumentation</div>
+                <h4>Können Sie Konformität nachweisen?</h4>
+                <p>Generiert automatisch Anhang-IV-Dokumentation aus Ihrem tatsächlichen Code: Funktionen, Abhängigkeiten und Protokollabdeckung bereits ausgefüllt.</p>
+                <code style="font-size:11px;color:#9898b4;">regula docs . &middot; regula conform .</code>
+            </div>
+            <div class="card-base art-card">
+                <div class="tag tag-purple">Sicherheit</div>
+                <h4>Ist Ihr KI-Code sicher?</h4>
+                <p>Prüft auf Prompt-Injection, unsicheres Laden von Modellen, unvalidierte KI-Ausgabe, hartcodierte Schlüssel und andere KI-spezifische Schwachstellen.</p>
+                <code style="font-size:11px;color:#9898b4;">regula check . &middot; regula guardrails .</code>
+            </div>
+            <div class="card-base art-card">
+                <div class="tag tag-purple">Nachweise</div>
+                <h4>Konformitätsbewertungspaket</h4>
+                <p>Artikel-43-Nachweise: 26 Dateien zugeordnet zu Artikeln 9&ndash;15, artikelweise Bereitschaftsbewertungen, SHA-256-Integritäts-Hashes.</p>
+                <code style="font-size:11px;color:#9898b4;">regula conform . &middot; regula evidence-pack .</code>
+            </div>
+            <div class="card-base art-card">
+                <div class="tag tag-purple">Integrität &amp; Signierung</div>
+                <h4>Manipulationssicher &amp; signiert</h4>
+                <p>SHA-256-Manifest + Ed25519-Signierung + RFC-3161-Zeitstempel. Beweisen Sie, wann die Bewertung erstellt wurde und dass sie nicht verändert wurde.</p>
+                <code style="font-size:11px;color:#9898b4;">regula evidence-pack --sign --timestamp .</code>
+            </div>
+            <div class="card-base art-card">
+                <div class="tag tag-blue">Aufsicht</div>
+                <h4>Analyse menschlicher Aufsicht</h4>
+                <p>Verfolgt KI-Ausgaben über Dateien hinweg. Prüft, ob jeder Pfad zu einem nutzergerichteten Endpunkt eine menschliche Überprüfungsstufe durchläuft.</p>
+                <code style="font-size:11px;color:#9898b4;">regula oversight .</code>
+            </div>
+            <div class="card-base art-card">
+                <div class="tag tag-purple">KI-BOM</div>
+                <h4>KI-Stückliste</h4>
+                <p>CycloneDX 1.7 KI-BOMs mit Modellherkunft, GPAI-Stufen-Annotationen nach Art. 51&ndash;55 und erkannten Trainingsdatensätzen.</p>
+                <code style="font-size:11px;color:#9898b4;">regula sbom --ai-bom .</code>
+            </div>
+            <div class="card-base art-card">
+                <div class="tag tag-blue">Regulierungsübergreifend</div>
+                <h4>DSGVO + DORA + NIS2 Überschneidung</h4>
+                <p>Jeder KI-Gesetz-Artikel ist den entsprechenden DSGVO-, DORA- und NIS2-Pflichten zugeordnet. Ein Scan deckt Anforderungen über alle vier Verordnungen ab.</p>
+                <code style="font-size:11px;color:#9898b4;">regula gap .</code>
+            </div>
+        </div>
+        <p style="font-size:12px;color:#9898b4;margin-top:24px;font-family:'JetBrains Mono',monospace;text-align:center;">
+            59 Befehle insgesamt &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-Maps zu ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU CRA und 7 weiteren Frameworks.
+            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md" style="color:#8888aa;margin-left:4px;">Vollständige CLI-Referenz &rarr;</a>
+        </p>
+        <div style="text-align:center;margin-top:32px;">
+            <button class="cta-pill" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula')">
+                <span>&#9654;</span>
+                Kostenlos in 30 Sekunden testen
+            </button>
+        </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- WAS REGULA NICHT TUT -->
+    <div class="sec reveal">
+        <h2 class="sec-head">Was Regula nicht tut</h2>
+        <p class="sec-sub">Ein Konformitätstool, das seine Fähigkeiten übertreibt, ist schlimmer als gar kein Tool. Hier ist, was Regula tatsächlich ist, und was nicht.</p>
+        <div class="art-grid">
+            <div class="card-base art-card">
+                <h4>Keine Rechtsberatung</h4>
+                <p>Regula identifiziert Risikoindikatoren im Code für die Überprüfung durch Entwickler. Es stellt keine Konformität fest. Ein qualifizierter Rechtsanwalt sollte jede Klassifizierung prüfen, bevor Sie darauf handeln.</p>
+            </div>
+            <div class="card-base art-card">
+                <h4>Mustererkennung, nicht Verständnis</h4>
+                <p>85,9% Pr&auml;zision bei Anwendungscode auf INFO-Stufe (99,7% mit Standard --skip-tests). 0 Falsch-Positive auf BLOCK-Stufe (der CI-Standard). <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Ver&ouml;ffentlichter Benchmark &rarr;</a></p>
+            </div>
+            <div class="card-base art-card">
+                <h4>Gerüste, nicht Substanz</h4>
+                <p>Anhang-IV-Dokumente, Evidenzpakete und Governance-Gerüste sind vorausgefüllte Vorlagen. Ein Mensch muss sie mit inhaltlicher Substanz vervollständigen. Regula kann nicht verifizieren, dass ein Risikomanagementsystem tatsächlich funktioniert.</p>
+            </div>
+        </div>
+        <p class="sec-sub" style="margin-top:24px;font-size:13px;"><a href="https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md" style="color:#8888aa;">Vollständige Einschränkungen &rarr;</a></p>
     </div>
 
     <div class="sep"></div>
@@ -593,9 +519,10 @@
 
     </main>
 
+    <!-- FINAL CTA -->
     <div class="final-wrap">
         <div class="final-glow"></div>
-        <div class="final">
+        <div class="final reveal">
             <h2>Finden Sie heraus, wo Sie stehen</h2>
             <p>Ein Befehl. Dauert 30 Sekunden. Kein Konto nötig.</p>
             <div class="install-box" onclick="navigator.clipboard.writeText('pipx install regula-ai');this.querySelector('.cp').textContent='kopiert'" style="margin: 0 auto;">
@@ -606,6 +533,7 @@
         </div>
     </div>
 
+    <!-- FOOTER -->
     <footer>
         <div class="foot-inner">
             <div class="foot-left">
@@ -648,7 +576,7 @@
             var original = el.innerHTML;
             navigator.clipboard.writeText(cmd).then(function() {
                 el.classList.add('copied');
-                el.innerHTML = '<span>&#10003;</span> Kopiert &mdash; in Terminal einfügen';
+                el.innerHTML = '<span>&#10003;</span> Kopiert! In Terminal einfügen';
                 setTimeout(function() {
                     el.classList.remove('copied');
                     el.innerHTML = original;
