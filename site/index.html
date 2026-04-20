@@ -36,16 +36,16 @@
       .term-body { position: relative; min-height: 340px }
     </style>
     <meta name="theme-color" content="#070711">
-    <title>Regula — EU AI Act compliance tool for code | Open-source CLI</title>
+    <title>Regula | EU AI Act compliance tool for code | Open-source CLI</title>
     <meta name="description" content="Open-source EU AI Act compliance CLI. Scans your code, classifies AI risk tier, and tells you what to fix. 404 patterns, 8 languages. Free.">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta property="og:title" content="Regula — EU AI Act compliance tool for code | Open-source CLI">
+    <meta property="og:title" content="Regula | EU AI Act compliance tool for code | Open-source CLI">
     <meta property="og:description" content="Free, open-source scanner that tells you which EU AI Act tier you're in, why, and what to do about it. 404 risk patterns, 8 languages, 12 compliance frameworks, zero dependencies.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com">
     <meta name="twitter:card" content="summary_large_image">
     <meta property="og:locale" content="en_GB">
-    <meta name="twitter:title" content="Regula — EU AI Act Risk Scanner">
+    <meta name="twitter:title" content="Regula | EU AI Act Risk Scanner">
     <meta name="twitter:description" content="Free CLI that classifies your AI code against EU AI Act risk tiers. Shows why, what to do, and how long it takes.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
@@ -133,7 +133,7 @@
                 "name": "Is Regula free?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes. Regula is open-source under the MIT licence. No account, no API key, no sales call. Install with pipx install regula-ai (see docs/installation.md for uv and pip alternatives) and run it locally on your codebase. The full CLI, all 55 commands (including `regula handoff` for Garak/Giskard/Promptfoo scoping and `regula regwatch` for delta-log drift warnings), all 404 risk patterns, and all 12 compliance framework mappings are free."
+                    "text": "Yes. Regula is open-source under the MIT licence. No account, no API key, no sales call. Install with pipx install regula-ai (see docs/installation.md for uv and pip alternatives) and run it locally on your codebase. The full CLI, all 59 commands (including `regula handoff` for Garak/Giskard/Promptfoo scoping and `regula regwatch` for delta-log drift warnings), all 404 risk patterns, and all 12 compliance framework mappings are free."
                 }
             },
             {
@@ -214,6 +214,7 @@
             .hero { gap: 36px; padding: 48px 20px 32px; }
             .hero h1 { font-size: 36px; }
             .art-grid { grid-template-columns: 1fr; }
+            .scroll-hint { display: block !important; }
         }
         @media (max-width: 640px) {
             .nav { padding: 0 16px; }
@@ -255,9 +256,9 @@
     <div class="hero-glow"></div>
     <div class="hero">
         <div class="hero-text">
-            <div class="badge"><span class="badge-dot"></span> Open-source CLI &middot; v1.7.0 &middot; MIT + DRL 1.1</div>
+            <div class="badge"><span class="badge-dot"></span> Open-source CLI &middot; v1.7.0 &middot; MIT + <a href="https://github.com/kuzivaai/getregula/blob/main/docs/LICENSE.Detection.Rules.md" title="Detection Rule License: detection rules are MIT-licensed with an attribution and responsible-use clause" style="color:inherit;text-decoration:underline dotted;text-underline-offset:3px;">DRL 1.1</a></div>
             <h1>Is your AI app <span class="hl">legal</span> in Europe?</h1>
-            <p class="sub">One command tells you which EU AI Act risk tier your code is in, why, and what to fix &mdash; <strong>in 30 seconds, free, no account.</strong></p>
+            <p class="sub">One command tells you which EU AI Act risk tier your code is in, why, and what to fix. <strong>30 seconds, free, no account.</strong></p>
 
             <button class="cta-pill" id="install-pill" onclick="copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
@@ -278,16 +279,13 @@
             <div class="social-proof">
                 <span>MIT licence</span>
                 <span class="sp-sep" aria-hidden="true">&middot;</span> zero dependencies
-                <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">1,055</strong> tests &middot; <strong style="color:var(--text);">0</strong> security findings
+                <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">1,199</strong> tests &middot; <strong style="color:var(--text);">0</strong> security findings
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md" style="color:#8888aa;">trust pack</a>
-            </div>
-            <div class="social-proof" style="margin-top:10px;">
-                Built by <a href="https://www.linkedin.com/in/kuzivam/" style="color:var(--text-dim);">Kuziva Muzondo</a> <span class="sp-sep" aria-hidden="true">&middot;</span> Oxford AI Governance <span class="sp-sep" aria-hidden="true">&middot;</span> Alan Turing Institute <span class="sp-sep" aria-hidden="true">&middot;</span> programme manager shipping AI tools across European markets
             </div>
         </div>
 
         <!-- TERMINAL -->
-        <div class="term-wrap" role="region" aria-label="Interactive Regula CLI demo — switch tabs to see example output of regula check, plan, gap, and comply commands">
+        <div class="term-wrap" role="region" aria-label="Interactive Regula CLI demo. Switch tabs to see example output of regula check, plan, gap, and comply commands">
             <div class="term-bar" aria-hidden="true">
                 <div class="term-dot td-r"></div>
                 <div class="term-dot td-y"></div>
@@ -392,34 +390,48 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
   });
 </script>
 
-<div class="urgency">
-    <div class="urgency-box" role="note">
-        <div class="date">2026&ndash;27</div>
-        <div class="body"><strong>High-risk obligations</strong> begin August 2026 &mdash; or December 2027 if the Digital Omnibus is adopted (Parliament voted 569&ndash;45 in favour, March 2026; trilogue from 28 April). Either way, the requirements do not change. <strong>You need to know where you stand.</strong></div>
+<!-- WHO IS THIS FOR -->
+<div class="sec reveal">
+    <h2 class="sec-head">Who is this for?</h2>
+    <p class="sec-sub">Developers shipping AI products, and the businesses that use them.</p>
+    <div class="audience-grid">
+        <div class="audience-card audience-biz">
+            <div class="audience-label">If you run the business</div>
+            <h3>Do you know your legal exposure?</h3>
+            <p>If your team builds or uses AI, the EU AI Act may apply, even outside the EU. Most tools fall under limited or minimal risk. Building with Claude Code or Cursor? Paste <code>regula assess</code> in your chat. Have a developer? Send them this page.</p>
+            <div class="audience-fwd" onclick="copyPageUrl(this)">
+                <span class="fwd-icon">&#8599;</span>
+                <span class="fwd-txt">Copy link to send to your developer</span>
+            </div>
+            <div class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
+                <span class="fwd-icon">&#9654;</span>
+                <span class="fwd-txt">Run regula assess (no code needed)</span>
+            </div>
+        </div>
+        <div class="audience-card audience-dev">
+            <div class="audience-label">If you write the code</div>
+            <h3>EU users? The AI Act applies to you.</h3>
+            <p>Article 2 is extraterritorial. Most chatbots and productivity tools are limited-risk: one transparency disclosure, nothing more. Scan to confirm.</p>
+            <ul>
+                <li>Works on AI-generated code (Cursor, Lovable, Bolt, Claude Code)</li>
+                <li>Generates Annex IV documentation from your actual code</li>
+                <li>CI/CD integration &middot; JSON &middot; SARIF &middot; 12 compliance frameworks</li>
+            </ul>
+            <span class="step-cmd" style="margin-top:18px;">regula check .</span>
+        </div>
+        <div class="audience-card audience-audit">
+            <div class="audience-label">If you audit compliance</div>
+            <h3>Verifiable evidence, not self-attestation.</h3>
+            <p>Regula generates signed, timestamped evidence packs with SHA-256 integrity manifests. Every finding is traceable to a file and line. Verify the chain yourself.</p>
+            <div class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula evidence-pack --sign .')">
+                <span class="fwd-icon">&#9654;</span>
+                <span class="fwd-txt">regula evidence-pack --sign .</span>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- STATS BAR -->
-<div class="stats-bar reveal">
-    <div class="stats-inner">
-        <div class="stat-item">
-            <div class="stat-num">404</div>
-            <div class="stat-label">risk patterns checked</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num">8</div>
-            <div class="stat-label">programming languages</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num">12</div>
-            <div class="stat-label">compliance frameworks</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num">0</div>
-            <div class="stat-label">external dependencies</div>
-        </div>
-    </div>
-</div>
+<div class="sep"></div>
 
 <!-- WHAT REGULA TELLS YOU -->
 <div class="sec reveal" id="tiers">
@@ -429,7 +441,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="tier tier-r">
             <div class="tier-badge">Prohibited</div>
             <div class="tier-examples">Social scoring &middot; Emotion inference &middot; Real-time biometrics &middot; Subliminal manipulation</div>
-            <div class="tier-hint">Art. 5 &mdash; banned outright &rarr;</div>
+            <div class="tier-hint">Art. 5, banned outright &rarr;</div>
         </div>
         <div class="tier tier-a">
             <div class="tier-badge">High-Risk</div>
@@ -447,7 +459,14 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <div class="tier-hint">No mandatory requirements &rarr;</div>
         </div>
     </div>
-    <p class="tier-cta">Regula tells you where your code lands &mdash; and exactly why.</p>
+    <p class="tier-cta">Regula tells you where your code lands, and exactly why.</p>
+</div>
+
+<div class="urgency">
+    <div class="urgency-box" role="note">
+        <div class="date">2026&ndash;27</div>
+        <div class="body"><strong>High-risk obligations</strong> begin August 2026, or December 2027 if the Digital Omnibus is adopted (Parliament voted 569&ndash;45 in favour, March 2026; trilogue from 28 April). Either way, the requirements do not change. <strong>You need to know where you stand.</strong></div>
+    </div>
 </div>
 
 <div class="sep"></div>
@@ -475,57 +494,92 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     </div>
 </div>
 
-<div class="sep"></div>
-
-<!-- WHO IS THIS FOR -->
-<div class="sec reveal">
-    <h2 class="sec-head">Who is this for?</h2>
-    <p class="sec-sub">Developers shipping AI products &mdash; and the businesses that use them.</p>
-    <div class="audience-grid">
-        <div class="audience-card audience-biz">
-            <div class="audience-label">If you run the business</div>
-            <h3>Do you know your legal exposure?</h3>
-            <p>If your team builds or uses AI, the EU AI Act may apply &mdash; even outside the EU. Most tools fall under limited or minimal risk. Building with Claude Code or Cursor? Paste <code>regula assess</code> in your chat. Have a developer? Send them this page.</p>
-            <div class="audience-fwd" onclick="copyPageUrl(this)">
-                <span class="fwd-icon">&#8599;</span>
-                <span class="fwd-txt">Copy link to send to your developer</span>
-            </div>
-            <div class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
-                <span class="fwd-icon">&#9654;</span>
-                <span class="fwd-txt">Run regula assess &mdash; no code needed</span>
-            </div>
+<!-- STATS BAR -->
+<div class="stats-bar reveal">
+    <div class="stats-inner">
+        <div class="stat-item">
+            <div class="stat-num">404</div>
+            <div class="stat-label">risk patterns checked</div>
         </div>
-        <div class="audience-card audience-dev">
-            <div class="audience-label">If you write the code</div>
-            <h3>EU users? The AI Act applies to you.</h3>
-            <p>Article 2 is extraterritorial. Most chatbots and productivity tools are limited-risk &mdash; one transparency disclosure, nothing more. Scan to confirm.</p>
-            <ul>
-                <li>Works on AI-generated code (Cursor, Lovable, Bolt, Claude Code)</li>
-                <li>Generates Annex IV documentation from your actual code</li>
-                <li>CI/CD integration &middot; JSON &middot; SARIF &middot; 12 compliance frameworks</li>
-            </ul>
-            <span class="step-cmd" style="margin-top:18px;">regula check .</span>
+        <div class="stat-item">
+            <div class="stat-num">8</div>
+            <div class="stat-label">programming languages</div>
         </div>
-        <div class="audience-card audience-audit">
-            <div class="audience-label">If you audit compliance</div>
-            <h3>Verifiable evidence, not self-attestation.</h3>
-            <p>Regula generates signed, timestamped evidence packs with SHA-256 integrity manifests. Every finding is traceable to a file and line. Verify the chain yourself.</p>
-            <div class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula evidence-pack --sign .')">
-                <span class="fwd-icon">&#9654;</span>
-                <span class="fwd-txt">regula evidence-pack --sign .</span>
-            </div>
+        <div class="stat-item">
+            <div class="stat-num">12</div>
+            <div class="stat-label">compliance frameworks</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">0</div>
+            <div class="stat-label">external dependencies</div>
         </div>
     </div>
 </div>
 
+<div class="sep"></div>
+
+<!-- WHERE REGULA FITS -->
 <div class="sec reveal">
-    <h2 class="sec-head">Beyond classification</h2>
-    <p class="sec-sub">Regula reads your code directly &mdash; not a questionnaire. It generates artefacts an auditor can review, not just findings.</p>
+    <h2 class="sec-head">Where Regula fits in the market.</h2>
+    <p class="sec-sub">A developer-side static scanner. One of several tools in the EU AI Act ecosystem. Each solves a different part of the problem.</p>
+    <div class="pricing-grid">
+        <div class="price-card">
+            <div class="price-tier">Governance SaaS</div>
+            <div class="price-amount">Contact sales</div>
+            <p class="price-desc">Credo AI, Saidot, Enzai, IBM watsonx.governance, Microsoft Purview. Evidence workflows, control libraries, continuous monitoring, legal-expert policy updates. Built for compliance departments, not developers. No published pricing.</p>
+        </div>
+        <div class="price-card">
+            <div class="price-tier">Runtime testing</div>
+            <div class="price-amount">Open source</div>
+            <p class="price-desc">Garak, Giskard, Promptfoo. Prompt-injection, jailbreak and bias red-teaming against running models. Complementary to Regula, not overlapping. They test behaviour; Regula reads code.</p>
+        </div>
+        <div class="price-card featured">
+            <div class="price-tier price-featured-tier">Regula</div>
+            <div class="price-amount price-featured-amount">Free &amp; open source</div>
+            <p class="price-desc">Static code scanner. Runs on your laptop in one command. Stdlib-only Python core, zero production dependencies, fully offline. <code>pipx install regula-ai</code>, scan your project, get a clear answer. MIT licence.</p>
+        </div>
+    </div>
+    <div role="region" aria-label="Competitive comparison of EU AI Act compliance tools" style="overflow-x:auto;margin-top:32px;-webkit-overflow-scrolling:touch;">
+    <p class="scroll-hint" style="display:none;font-size:11px;color:#707090;margin-bottom:8px;text-align:right;">Scroll &rarr;</p>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;color:#b0b0cc;">
+        <thead>
+            <tr style="border-bottom:1px solid #23234a;text-align:left;">
+                <th scope="col" style="padding:8px 12px;"></th>
+                <th scope="col" style="padding:8px 12px;">Regula</th>
+                <th scope="col" style="padding:8px 12px;">AIR Blackbox</th>
+                <th scope="col" style="padding:8px 12px;">Systima Comply</th>
+                <th scope="col" style="padding:8px 12px;">EuConform</th>
+                <th scope="col" style="padding:8px 12px;">Enterprise SaaS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td style="padding:6px 12px;color:#e0e0f0;">Approach</td><td>Static code scan</td><td>Scan + runtime trust layers</td><td>AST-based scan</td><td>Questionnaire + bias eval</td><td>Platform / dashboard</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Languages</td><td>8 families</td><td>Python</td><td>JS/TS</td><td>N/A</td><td>N/A</td></tr>
+            <tr><td style="padding:6px 12px;color:#e0e0f0;">Detection patterns</td><td>404</td><td>39 checks</td><td>37+ frameworks</td><td>Questionnaire</td><td>Varies</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Dependencies</td><td>Zero (stdlib)</td><td>Multiple</td><td>npm</td><td>Next.js + Ollama</td><td>SaaS</td></tr>
+            <tr><td style="padding:6px 12px;color:#e0e0f0;">Offline</td><td>Fully offline</td><td>Local</td><td>Local</td><td>Local + Ollama</td><td>Cloud</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Evidence signing</td><td>Ed25519 + RFC 3161</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>Varies</td></tr>
+            <tr><td style="padding:6px 12px;color:#e0e0f0;">Framework mappings</td><td>12</td><td>3</td><td>EU AI Act</td><td>EU AI Act</td><td>Multiple</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">CI/CD integration</td><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>&mdash;</td><td>Native</td></tr>
+            <tr><td style="padding:6px 12px;color:#e0e0f0;">Annex IV docs</td><td>Free</td><td>&mdash;</td><td>&mdash;</td><td>PDF reports</td><td>Built-in</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Price</td><td>Free (MIT)</td><td>Free (Apache 2.0)</td><td>Free (Apache 2.0)</td><td>Free (MIT + EUPL)</td><td>$30K&ndash;$200K/yr</td></tr>
+        </tbody>
+    </table>
+    </div>
+    <p style="font-size:12px;color:#707090;margin-top:12px;">Pick the tool whose language coverage and trade-offs fit your stack. Regula covers the most languages and framework mappings among the open-source options listed above. For <em>runtime</em> agent governance, see <a href="https://github.com/microsoft/agent-governance-toolkit" rel="noopener" style="color:#707090;">Microsoft&rsquo;s Agent Governance Toolkit</a>.</p>
+</div>
+
+<div class="sep"></div>
+
+<!-- FEATURES -->
+<div class="sec reveal" id="features">
+    <h2 class="sec-head">What it does</h2>
+    <p class="sec-sub">Regula reads your code directly, not a questionnaire. It generates artefacts an auditor can review, not just findings.</p>
     <div class="art-grid">
         <div class="card-base art-card">
             <div class="tag tag-blue">Gaps</div>
             <h4>What's missing?</h4>
-            <p>Risk management, data governance, logging, transparency, human oversight, accuracy &mdash; scored per article with effort estimates.</p>
+            <p>Risk management, data governance, logging, transparency, human oversight, accuracy. Scored per article with effort estimates.</p>
             <code style="font-size:11px;color:#9898b4;">regula gap .</code>
         </div>
         <div class="card-base art-card">
@@ -543,8 +597,20 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="card-base art-card">
             <div class="tag tag-purple">Evidence</div>
             <h4>Conformity assessment pack</h4>
-            <p>Article 43 evidence &mdash; 26 files mapped to Articles 9&ndash;15, per-article readiness scores, SHA-256 integrity hashes.</p>
+            <p>Article 43 evidence: 26 files mapped to Articles 9&ndash;15, per-article readiness scores, SHA-256 integrity hashes.</p>
             <code style="font-size:11px;color:#9898b4;">regula conform . &middot; regula evidence-pack .</code>
+        </div>
+        <div class="card-base art-card">
+            <div class="tag tag-purple">Integrity</div>
+            <h4>Tamper-evident &amp; signed</h4>
+            <p>SHA-256 manifest + Ed25519 signing + RFC 3161 timestamps. Prove when the assessment was produced and that it has not been altered.</p>
+            <code style="font-size:11px;color:#9898b4;">regula evidence-pack --sign --timestamp .</code>
+        </div>
+        <div class="card-base art-card">
+            <div class="tag tag-blue">Oversight</div>
+            <h4>Human review analysis</h4>
+            <p>Traces AI outputs across files. Checks whether each path to a user-facing endpoint passes through a human review gate.</p>
+            <code style="font-size:11px;color:#9898b4;">regula oversight .</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-purple">AI BOM</div>
@@ -553,13 +619,17 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <code style="font-size:11px;color:#9898b4;">regula sbom --ai-bom .</code>
         </div>
         <div class="card-base art-card">
-            <div class="tag tag-blue">Oversight</div>
-            <h4>Human review analysis</h4>
-            <p>Traces AI outputs across files. Checks whether each path to a user-facing endpoint passes through a human review gate.</p>
-            <code style="font-size:11px;color:#9898b4;">regula oversight .</code>
+            <div class="tag tag-blue">Cross-regulation</div>
+            <h4>GDPR + DORA + NIS2 overlap</h4>
+            <p>Each AI Act article is mapped to corresponding GDPR, DORA, and NIS2 obligations. One scan surfaces requirements across all four regulations.</p>
+            <code style="font-size:11px;color:#9898b4;">regula gap .</code>
         </div>
     </div>
-    <div style="text-align:center;margin-top:48px;">
+    <p style="font-size:12px;color:#9898b4;margin-top:24px;font-family:'JetBrains Mono',monospace;text-align:center;">
+        59 commands total &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU CRA, and 7 other frameworks.
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md" style="color:#8888aa;margin-left:4px;">Full CLI reference &rarr;</a>
+    </p>
+    <div style="text-align:center;margin-top:32px;">
         <button class="cta-pill" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula')">
             <span>&#9654;</span>
             Try free in 30 seconds
@@ -569,82 +639,10 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 
 <div class="sep"></div>
 
-<div class="sec reveal">
-    <h2 class="sec-head">Built for audit, not just scanning</h2>
-    <p class="sec-sub">Regula generates evidence an auditor can independently verify &mdash; not just a list of findings.</p>
-    <div class="art-grid">
-        <div class="card-base art-card">
-            <div class="tag tag-purple">Integrity</div>
-            <h4>Tamper-evident evidence</h4>
-            <p>Every evidence pack includes a SHA-256 manifest. Files are content-hashed at generation time. Any modification breaks the chain.</p>
-            <code style="font-size:11px;color:#9898b4;">regula evidence-pack . &middot; regula verify pack/</code>
-        </div>
-        <div class="card-base art-card">
-            <div class="tag tag-purple">Signing</div>
-            <h4>Cryptographic non-repudiation</h4>
-            <p>Sign evidence packs with Ed25519 keys and RFC 3161 timestamps. Prove when the assessment was produced and that it has not been altered.</p>
-            <code style="font-size:11px;color:#9898b4;">regula evidence-pack --sign --timestamp .</code>
-        </div>
-        <div class="card-base art-card">
-            <div class="tag tag-blue">Cross-regulation</div>
-            <h4>GDPR + DORA + NIS2 overlap</h4>
-            <p>Each AI Act article is mapped to corresponding GDPR, DORA, and NIS2 obligations. One scan surfaces requirements across all four regulations.</p>
-            <code style="font-size:11px;color:#9898b4;">regula gap .</code>
-        </div>
-        <div class="card-base art-card">
-            <div class="tag tag-blue">Freshness</div>
-            <h4>Regulatory staleness warnings</h4>
-            <p>regula regwatch compares your last scan against the current regulatory state and warns if your compliance posture may have drifted.</p>
-            <code style="font-size:11px;color:#9898b4;">regula regwatch</code>
-        </div>
-        <div class="card-base art-card">
-            <div class="tag tag-purple">Audit trail</div>
-            <h4>Hash-chained event log</h4>
-            <p>Append-only, hash-chained audit log. Every scan, finding, and suppression is recorded with a verifiable chain of integrity.</p>
-            <code style="font-size:11px;color:#9898b4;">regula audit log &middot; regula audit verify</code>
-        </div>
-        <div class="card-base art-card">
-            <div class="tag tag-blue">Free Annex IV</div>
-            <h4>Documentation, not just detection</h4>
-            <p>Generate Annex IV technical documentation, model cards, QMS scaffolds, and SME-simplified conformity packs &mdash; free, from your actual code.</p>
-            <code style="font-size:11px;color:#9898b4;">regula docs . &middot; regula conform --sme .</code>
-        </div>
-    </div>
-</div>
-
-<div class="sep"></div>
-
-<!-- COMMANDS -->
-<div class="sec reveal" id="commands">
-    <h2 class="sec-head">55 commands</h2>
-    <p class="sec-sub"><code>pipx install regula-ai</code>, then run any of these on your project.</p>
-    <div class="cmds">
-        <div class="cm"><code>regula assess</code> <span>Yes/no questions &mdash; no code needed &mdash; get your tier</span></div>
-        <div class="cm"><code>regula check .</code> <span>Scan your codebase against 404 risk patterns</span></div>
-        <div class="cm"><code>regula comply</code> <span>EU AI Act obligation checklist with pass/fail status per article</span></div>
-        <div class="cm"><code>regula plan .</code> <span>Prioritised to-do list with effort estimates</span></div>
-        <div class="cm"><code>regula gap .</code> <span>Per-article compliance gap assessment</span></div>
-        <div class="cm"><code>regula docs .</code> <span>Generate Annex IV documentation</span></div>
-        <div class="cm"><code>regula evidence-pack .</code> <span>Bundle everything for an auditor</span></div>
-        <div class="cm"><code>regula conform .</code> <span>Article 43 conformity evidence &mdash; 26 files, SHA-256 hashed</span></div>
-        <div class="cm"><code>regula oversight .</code> <span>Article 14 human oversight analysis</span></div>
-        <div class="cm"><code>regula sbom --ai-bom .</code> <span>AI Bill of Materials (CycloneDX 1.7)</span></div>
-        <div class="cm"><code>regula owasp-agentic .</code> <span>OWASP Top 10 for Agentic Applications</span></div>
-        <div class="cm"><code>regula gpai-check .</code> <span>Map GPAI code to Code of Practice chapters</span></div>
-        <div class="cm"><code>regula bias</code> <span>Stereotype bias evaluation &mdash; CrowS-Pairs + BBQ benchmarks with confidence intervals (requires Ollama)</span></div>
-        <div class="cm"><code>regula verify pack/</code> <span>SHA-256 integrity check for evidence packs</span></div>
-    </div>
-    <p style="font-size:12px;color:#9898b4;margin-top:14px;font-family:'JetBrains Mono',monospace;">
-        Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU CRA, and 7 other frameworks.
-    </p>
-</div>
-
-<div class="sep"></div>
-
 <!-- HONESTY — WHAT REGULA DOES AND DOESN'T DO -->
 <div class="sec reveal">
     <h2 class="sec-head">What Regula does not do</h2>
-    <p class="sec-sub">A compliance tool that overstates its capabilities is worse than no tool at all. Here is what Regula actually is &mdash; and isn't.</p>
+    <p class="sec-sub">A compliance tool that overstates its capabilities is worse than no tool at all. Here is what Regula actually is, and what it isn't.</p>
     <div class="art-grid">
         <div class="card-base art-card">
             <h4>Not legal advice</h4>
@@ -652,7 +650,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
         <div class="card-base art-card">
             <h4>Pattern matching, not understanding</h4>
-            <p>15.2% precision on open-source codebases at INFO tier. 0 false positives at BLOCK tier (the CI default). <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Published benchmark &rarr;</a></p>
+            <p>85.9% precision on application code at INFO tier (99.7% with default --skip-tests). 0 false positives at BLOCK tier (the CI default). <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Published benchmark &rarr;</a></p>
         </div>
         <div class="card-base art-card">
             <h4>Scaffolds, not substance</h4>
@@ -660,80 +658,6 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
     </div>
     <p class="sec-sub" style="margin-top:24px;font-size:13px;"><a href="https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md" style="color:#8888aa;">Full limitations disclosure &rarr;</a></p>
-</div>
-
-<div class="sep"></div>
-
-<!-- SELF-SCAN -->
-<div class="sec reveal">
-    <h2 class="sec-head">We scan ourselves</h2>
-    <p class="sec-sub">Regula's own codebase is scanned on every commit. Here is what happens.</p>
-    <div class="art-grid">
-        <div class="card-base art-card">
-            <h4>71 of 85 source files suppressed</h4>
-            <p>83.5% of Regula's own Python files require <code># regula-ignore</code> comments. A compliance tool that discusses prohibited practices must contain the vocabulary of prohibited practices. This is structural, not a bug.</p>
-        </div>
-        <div class="card-base art-card">
-            <h4>0 active findings, 31 suppressed</h4>
-            <p>Five files contain prohibited-practice vocabulary (they explain, document, or detect those practices). All five are suppressed via <code># regula-ignore</code>. The scan reports zero active prohibited findings &mdash; suppression works, and every suppression is a documented governance decision.</p>
-        </div>
-        <div class="card-base art-card">
-            <h4>What this means</h4>
-            <p>Having a tool is not the same as having governance. Each suppression is a micro-governance decision that requires human judgment about context, intent, and purpose &mdash; exactly what the EU AI Act requires.</p>
-        </div>
-    </div>
-</div>
-
-<div class="sep"></div>
-
-<!-- WHERE REGULA FITS -->
-<div class="sec reveal">
-    <h2 class="sec-head">Where Regula fits in the market.</h2>
-    <p class="sec-sub">A developer-side static scanner. One of several tools in the EU AI Act ecosystem — each solves a different part of the problem.</p>
-    <div class="pricing-grid">
-        <div class="price-card">
-            <div class="price-tier">Governance SaaS</div>
-            <div class="price-amount">Contact sales</div>
-            <p class="price-desc">Credo AI, Saidot, Enzai, IBM watsonx.governance, Microsoft Purview. Evidence workflows, control libraries, continuous monitoring, legal-expert policy updates. Built for compliance departments, not developers. No published pricing.</p>
-        </div>
-        <div class="price-card">
-            <div class="price-tier">Runtime testing</div>
-            <div class="price-amount">Open source</div>
-            <p class="price-desc">Garak, Giskard, Promptfoo. Prompt-injection, jailbreak and bias red-teaming against running models. Complementary to Regula, not overlapping &mdash; they test behaviour, Regula reads code.</p>
-        </div>
-        <div class="price-card featured">
-            <div class="price-tier price-featured-tier">Regula</div>
-            <div class="price-amount price-featured-amount">Free &amp; open source</div>
-            <p class="price-desc">Static code scanner. Runs on your laptop in one command. Stdlib-only Python core, zero production dependencies, fully offline. <code>pipx install regula-ai</code>, scan your project, get a clear answer. MIT licence.</p>
-        </div>
-    </div>
-    <div role="region" aria-label="Competitive comparison of EU AI Act compliance tools" style="overflow-x:auto;margin-top:32px;">
-    <table style="width:100%;border-collapse:collapse;font-size:13px;color:#b0b0cc;">
-        <thead>
-            <tr style="border-bottom:1px solid #23234a;text-align:left;">
-                <th scope="col" style="padding:8px 12px;"></th>
-                <th scope="col" style="padding:8px 12px;">Regula</th>
-                <th scope="col" style="padding:8px 12px;">AIR Blackbox</th>
-                <th scope="col" style="padding:8px 12px;">Systima Comply</th>
-                <th scope="col" style="padding:8px 12px;">EuConform</th>
-                <th scope="col" style="padding:8px 12px;">Enterprise SaaS</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td style="padding:6px 12px;color:#e0e0f0;">Approach</td><td>Static code scan</td><td>Scan + runtime trust layers</td><td>AST-based scan</td><td>Questionnaire + bias eval</td><td>Platform / dashboard</td></tr>
-            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Languages</td><td>8 families</td><td>Python</td><td>JS/TS</td><td>N/A</td><td>N/A</td></tr>
-            <tr><td style="padding:6px 12px;color:#e0e0f0;">Detection patterns</td><td>404</td><td>48 checks</td><td>37+ frameworks</td><td>Questionnaire</td><td>Varies</td></tr>
-            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Dependencies</td><td>Zero (stdlib)</td><td>Multiple</td><td>npm</td><td>Next.js + Ollama</td><td>SaaS</td></tr>
-            <tr><td style="padding:6px 12px;color:#e0e0f0;">Offline</td><td>Fully offline</td><td>Local</td><td>Local</td><td>Local + Ollama</td><td>Cloud</td></tr>
-            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Evidence signing</td><td>Ed25519 + RFC 3161</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>Varies</td></tr>
-            <tr><td style="padding:6px 12px;color:#e0e0f0;">Framework mappings</td><td>12</td><td>3</td><td>EU AI Act</td><td>EU AI Act</td><td>Multiple</td></tr>
-            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">CI/CD integration</td><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>&mdash;</td><td>Native</td></tr>
-            <tr><td style="padding:6px 12px;color:#e0e0f0;">Annex IV docs</td><td>Free</td><td>&mdash;</td><td>&mdash;</td><td>PDF reports</td><td>Built-in</td></tr>
-            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Price</td><td>Free (MIT)</td><td>Free (Apache 2.0)</td><td>Free (OSS)</td><td>Free (MIT + EUPL)</td><td>$30K&ndash;$200K/yr</td></tr>
-        </tbody>
-    </table>
-    </div>
-    <p style="font-size:12px;color:#707090;margin-top:12px;">Pick the tool whose language coverage and trade-offs fit your stack. Regula covers the most languages and framework mappings among the open-source options listed above. For <em>runtime</em> agent governance, see <a href="https://github.com/microsoft/agent-governance-toolkit" rel="noopener" style="color:#707090;">Microsoft&rsquo;s Agent Governance Toolkit</a>.</p>
 </div>
 
 <div class="sep"></div>
@@ -812,9 +736,9 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
                 <div class="foot-col-head">Reading</div>
                 <div class="foot-col-links">
                     <a href="/regions/south-africa-ai-policy.html">🇿🇦 South Africa draft AI policy <span class="muted">Cabinet approved 2 Apr 2026 · live tracker</span></a>
-                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/landscape.md">AICDI corporate AI governance gaps <span class="muted">How Regula maps to the 2026 UNESCO &middot; TRF report</span></a>
+                    <a href="/blog/blog-aicdi-governance-gaps.html">AICDI corporate AI governance gaps <span class="muted">How Regula maps to the 2026 UNESCO &middot; TRF report</span></a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/docs/article-state-of-ai-compliance.md">State of AI compliance in OSS <span class="muted">What 5 popular Python AI libraries actually contain</span></a>
-                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/article-south-africa-ai-policy.md">South Africa policy &mdash; markdown version <span class="muted">Same content, markdown, GitHub-hosted</span></a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/article-south-africa-ai-policy.md">South Africa policy (markdown version) <span class="muted">Same content, markdown, GitHub-hosted</span></a>
                     <a href="https://theimplementationlayer.substack.com/p/when-ai-systems-dont-see-you">When AI Systems Don't See You <span class="muted">Bias testing gaps · 35-year paper trail · peer-reviewed evidence</span></a>
                     <a href="https://theimplementationlayer.substack.com/p/thinking-about-switching-from-chatgpt">Switching from ChatGPT to Claude <span class="muted">What you're actually moving · data governance · prompt translation</span></a>
                     <a href="https://theimplementationlayer.substack.com/p/how-i-went-from-ai-hype-to-ai-governance">From AI hype to AI governance <span class="muted">The gap between governance theory and organisational reality</span></a>
@@ -896,13 +820,13 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         const original = el.innerHTML;
         navigator.clipboard.writeText(cmd).then(() => {
             el.classList.add('copied');
-            el.innerHTML = '<span>&#10003;</span> Copied &mdash; paste it in your terminal';
+            el.innerHTML = '<span>&#10003;</span> Copied! Paste it in your terminal';
             setTimeout(() => {
                 el.classList.remove('copied');
                 el.innerHTML = original;
             }, 2500);
         }).catch(() => {
-            el.innerHTML = '<span>&#9888;</span> Copy failed &mdash; type: ' + cmd;
+            el.innerHTML = '<span>&#9888;</span> Copy failed. Type:' + cmd;
             setTimeout(() => { el.innerHTML = original; }, 2500);
         });
     }
@@ -923,7 +847,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     function copyPageUrl(el) {
         navigator.clipboard.writeText('https://getregula.com').then(() => {
             const txt = el.querySelector('.fwd-txt');
-            txt.textContent = '✓ Link copied — paste it to your developer';
+            txt.textContent = '✓ Link copied! Send it to your developer';
             setTimeout(() => { txt.textContent = 'Copy link to send to your developer'; }, 3000);
         });
     }
