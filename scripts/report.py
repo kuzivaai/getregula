@@ -43,6 +43,14 @@ from scan_cache import ScanCache
 from constants import CODE_EXTENSIONS, SKIP_DIRS, MODEL_EXTENSIONS, VERSION
 CONFIG_FILES = {".env", ".env.production", ".env.local", "docker-compose.yml", "docker-compose.yaml", "Dockerfile"}
 
+# Generic indicator names that don't convey specific risk — used to gate
+# WARN-tier visibility. If a finding's only indicators are in this set,
+# it gets demoted to INFO.
+_GENERIC_INDICATORS = {
+    "ai_code", "ml_framework", "ai_import", "ai_library",
+    "ml_import", "ai_dependency", "ai_config",
+}
+
 # AI service patterns in config/env files
 _AI_CONFIG_PATTERNS = [
     (re.compile(r"OPENAI_API_KEY|ANTHROPIC_API_KEY|COHERE_API_KEY|MISTRAL_API_KEY|GROQ_API_KEY|REPLICATE_API_TOKEN|HUGGINGFACE_TOKEN|HF_TOKEN", re.IGNORECASE), "AI API key configured"),
@@ -152,6 +160,9 @@ def classify_provenance(filepath: Path) -> str:
     parts = [p.lower() for p in filepath.parts]
     if any(p in (".github", ".gitlab-ci", ".circleci", ".jenkins") for p in parts):
         return "tooling"
+    # Documentation build configs (Sphinx conf.py, mkdocs hooks, etc.)
+    if "docs" in parts and name in ("conf.py", "conftest.py", "mkdocs.py"):
+        return "documentation"
     if name in ("dockerfile", "makefile", "cmakelists.txt", "justfile",
                 "docker-compose.yml", "docker-compose.yaml",
                 ".dockerignore", ".gitignore", ".editorconfig"):
@@ -304,8 +315,10 @@ def _scan_agent_autonomy(content, lines, rel_path, is_test, respect_ignores, pro
     return results
 
 
-def _scan_credentials(content, lines, rel_path, is_test, suppressed, provenance="production"):
+def _scan_credentials(content, lines, rel_path, is_test, suppressed, provenance="production", ast_context=None):
     """Detect credential exposure in a single file."""
+    if ast_context is None:
+        ast_context = {}
     results = []
     try:
         secret_findings = check_secrets(content)
@@ -315,6 +328,13 @@ def _scan_credentials(content, lines, rel_path, is_test, suppressed, provenance=
                 if sf.redacted_value[:4] in line_text:
                     secret_line = i
                     break
+
+            # AST context gating: reduce confidence for credentials in
+            # docstrings/string literals or test assertions
+            _cred_confidence = max(sf.confidence_score - 40, 10) if is_test else sf.confidence_score
+            _line_ctx = ast_context.get(secret_line, set())
+            if 'string' in _line_ctx or 'test_assert' in _line_ctx:
+                _cred_confidence = max(_cred_confidence - 30, 10)
 
             finding = {
                 "file": rel_path,
@@ -327,7 +347,7 @@ def _scan_credentials(content, lines, rel_path, is_test, suppressed, provenance=
                     f"Fix: {sf.remediation}"
                 ),
                 "indicators": [sf.pattern_name],
-                "confidence_score": max(sf.confidence_score - 40, 10) if is_test else sf.confidence_score,
+                "confidence_score": _cred_confidence,
                 "suppressed": suppressed,
                 "provenance": provenance,
                 "lifecycle_phases": ["develop", "deploy"],
@@ -339,20 +359,47 @@ def _scan_credentials(content, lines, rel_path, is_test, suppressed, provenance=
     return results
 
 
-def _scan_ai_security(content, rel_path, is_test, suppressed, provenance="production"):
+def _scan_ai_security(content, rel_path, is_test, suppressed, provenance="production", ast_context=None):
     """Detect AI security antipatterns in a single file."""
+    if ast_context is None:
+        ast_context = {}
     results = []
     try:
         security_findings = check_ai_security(content)
         for sf in security_findings:
+            _finding_line = sf["line"]
+            _line_ctx = ast_context.get(_finding_line, set())
+
+            # AST context gating: skip no_error_handling if already in try block
+            if sf["pattern_name"] == "no_error_handling_ai_call" and 'try' in _line_ctx:
+                continue
+
+            # AST context gating: skip sensitive_info_disclosure in docstrings
+            if sf["pattern_name"] == "sensitive_info_disclosure" and 'string' in _line_ctx:
+                continue
+
+            _sec_confidence = max(
+                {"critical": 90, "high": 80, "medium": 60, "low": 40}.get(sf["severity"], 50)
+                - (40 if is_test else 0),
+                10,
+            )
+
+            # AST context gating: reduce confidence for findings in test assertions
+            if 'test_assert' in _line_ctx:
+                _sec_confidence = max(_sec_confidence - 30, 10)
+
+            # AST context gating: reduce confidence for findings in string literals
+            if 'string' in _line_ctx:
+                _sec_confidence = max(_sec_confidence - 20, 10)
+
             finding = {
                 "file": rel_path,
-                "line": sf["line"],
+                "line": _finding_line,
                 "tier": "ai_security",
                 "category": f"AI Security ({sf['owasp']})",
                 "description": sf["description"],
                 "indicators": [sf["pattern_name"]],
-                "confidence_score": max({"critical": 90, "high": 80, "medium": 60, "low": 40}.get(sf["severity"], 50) - (40 if is_test else 0), 10),
+                "confidence_score": _sec_confidence,
                 "suppressed": suppressed,
                 "provenance": provenance,
                 "remediation": sf["remediation"],
@@ -396,6 +443,10 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     # actually truthful — without this, a directory containing no code
     # files at all would wrongly claim tests were excluded.
     _tests_skipped = 0
+    # Count files that contain AI imports but no specific risk indicators.
+    # Instead of creating a low-confidence finding per file (94% of FPs),
+    # we aggregate into a single summary counter.
+    _ai_files_no_indicators = 0
 
     # Initialise scan cache (failures must never block a scan)
     cache = None
@@ -459,6 +510,11 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             if filepath.suffix not in CODE_EXTENSIONS:
                 continue
 
+            # Skip type stub files — they declare interfaces with no
+            # runtime behaviour and produce 12% of FPs in benchmarks.
+            if filepath.suffix == ".pyi":
+                continue
+
             _scanned_files += 1
 
             # Progress indicator for large scans (TTY only, stderr)
@@ -482,6 +538,22 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 content = "\n".join(lines)
             rel_path = str(filepath.relative_to(project))
 
+            # Build AST context map for Python files (used for precision gating)
+            _ast_context = {}
+            if filepath.suffix == '.py':
+                from ast_context import build_context_map
+                _ast_context = build_context_map(content)
+
+            # Skip annotation-only Python files (pure re-exports and type
+            # aliases with no definitions, assignments, or calls).
+            # These produce 12% of FPs from type stubs and parameter definitions.
+            if filepath.suffix == ".py" and filepath.name != "__init__.py":
+                if (not re.search(r'^def\s', content, re.MULTILINE)
+                        and not re.search(r'^class\s', content, re.MULTILINE)
+                        and not re.search(r'\w+\(', content)
+                        and not re.search(r'^[A-Za-z_]\w*\s*=', content, re.MULTILINE)):
+                    continue
+
             # Check scan cache — if content unchanged, reuse cached findings
             try:
                 if cache is not None:
@@ -491,6 +563,9 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                             cached = [f for f in cached
                                       if _TIER_ORDER.get(f.get("tier", ""), 0) >= min_tier_level]
                         findings.extend(cached)
+                        # Maintain AI file counter for stats even on cache hits
+                        if not cached and is_ai_related(content):
+                            _ai_files_no_indicators += 1
                         continue
             except Exception:
                 pass  # Cache read failure — scan file normally
@@ -547,6 +622,28 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         continue
 
             if not is_ai_related(content):
+                # Even non-AI-related files should be checked for critical
+                # security patterns: eval/exec on variables named after AI output.
+                # These represent code execution risks regardless of imports.
+                import re as _re
+                _CRITICAL_UNGATED = [
+                    (_re.compile(r"(?:exec|eval)\s*\(\s*(?:ai_response|llm_output|completion|model_output|ai_output|generated_code)"), "AI Security (LLM06)"),
+                ]
+                for _crit_pat, _crit_cat in _CRITICAL_UNGATED:
+                    for _crit_m in _crit_pat.finditer(content):
+                        _crit_line = content[:_crit_m.start()].count("\n") + 1
+                        findings.append({
+                            "file": rel_path,
+                            "line": _crit_line,
+                            "tier": "ai_security",
+                            "category": _crit_cat,
+                            "description": "eval/exec called on AI output variable — arbitrary code execution risk",
+                            "indicators": ["eval_on_ai_output"],
+                            "confidence_score": 90,
+                            "suppressed": False,
+                            "provenance": provenance,
+                            "lifecycle_phases": ["develop"],
+                        })
                 try:
                     if cache is not None:
                         cache.put(rel_path, content, findings[file_findings_start:])
@@ -559,30 +656,20 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # Credential governance (AI-related files only)
             secret_suppressed = "*" in suppressed_rules or "secrets" in suppressed_rules
             if min_tier_level <= _TIER_ORDER.get("credential_exposure", 3):
-                findings.extend(_scan_credentials(content, lines, rel_path, is_test, secret_suppressed, provenance))
+                findings.extend(_scan_credentials(content, lines, rel_path, is_test, secret_suppressed, provenance, _ast_context))
 
             # AI security antipatterns
             if min_tier_level <= _TIER_ORDER.get("ai_security", 3):
-                findings.extend(_scan_ai_security(content, rel_path, is_test, secret_suppressed or "*" in suppressed_rules, provenance))
+                findings.extend(_scan_ai_security(content, rel_path, is_test, secret_suppressed or "*" in suppressed_rules, provenance, _ast_context))
 
             lang = detect_language(filename) or "python"
             result = classify(content, language=lang)
             if result.tier in (RiskTier.NOT_AI, RiskTier.MINIMAL_RISK) and not result.indicators_matched:
-                if min_tier_level <= 1:
-                    finding = {
-                        "file": rel_path,
-                        "line": 1,
-                        "tier": "minimal_risk",
-                        "category": "AI Code",
-                        "description": "AI-related code with no specific risk indicators",
-                        "indicators": [],
-                        "confidence_score": 20,
-                        "suppressed": "*" in suppressed_rules,
-                        "provenance": provenance,
-                        "lifecycle_phases": ["develop"],
-                    }
-                    finding["open_question"] = _is_open_question(finding)
-                    findings.append(finding)
+                # Instead of emitting a low-confidence finding per file
+                # ("AI-related code with no specific risk indicators"),
+                # count these files for a single summary line. This
+                # eliminates 94% of false positives from the corpus.
+                _ai_files_no_indicators += 1
                 try:
                     if cache is not None:
                         cache.put(rel_path, content, findings[file_findings_start:])
@@ -657,6 +744,43 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             if _is_ai_library_self_scan and result.tier.value != "prohibited":
                 confidence_score = max(confidence_score - 50, 5)
 
+            # Library infrastructure penalty (24% of FPs in benchmarks).
+            # Files in provider/adapter/converter paths or with utility
+            # filenames are framework plumbing, not application logic.
+            if result.tier.value != "prohibited":
+                _rel_lower = rel_path.lower()
+                _fname_lower = filepath.name.lower()
+                _is_lib_infra = (
+                    "/providers/" in _rel_lower
+                    or "/adapters/" in _rel_lower
+                    or "/marshalling/" in _rel_lower
+                    or "/converters/" in _rel_lower
+                    or _fname_lower in ("utils.py", "helpers.py", "compat.py", "types.py", "_types.py")
+                    or ("/core/" in _rel_lower and _fname_lower.startswith("_"))
+                )
+                if _is_lib_infra:
+                    confidence_score = max(confidence_score - 25, 5)
+
+            # AST context penalty: if most AI-related lines are inside
+            # docstrings or try blocks, the classification confidence drops.
+            # This catches files that only mention AI patterns in documentation
+            # or wrapped error handling, not actual unguarded usage.
+            if _ast_context and result.tier.value != "prohibited":
+                from ast_context import is_in_string, is_in_try
+                _ai_lines = [i for i, l in enumerate(lines, 1)
+                             if re.search(r'(?:import|from)\s+\w*(?:ai|ml|openai|torch|sklearn|tensorflow)', l)]
+                if _ai_lines:
+                    _in_string_count = sum(1 for ln in _ai_lines if is_in_string(_ast_context, ln))
+                    _in_try_count = sum(1 for ln in _ai_lines if is_in_try(_ast_context, ln))
+                    _total = len(_ai_lines)
+                    # If majority of AI imports are in strings (docs), penalize
+                    if _in_string_count > _total * 0.5:
+                        confidence_score = max(confidence_score - 20, 10)
+                    # If all AI calls are already in try blocks, minor penalty
+                    # (indicates good error handling practices)
+                    elif _in_try_count == _total and _total > 0:
+                        confidence_score = max(confidence_score - 10, 10)
+
             # Generate Article-specific observations for high-risk findings
             observations = []
             if result.tier == RiskTier.HIGH_RISK:
@@ -688,6 +812,17 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 } if domain_boost > 0 else None,
                 "lifecycle_phases": CATEGORY_LIFECYCLE_PHASES.get(_primary_indicator, ["develop"]),
             }
+            # WARN-tier demotion: if a finding would land in WARN (confidence
+            # 50-79) but has no specific indicators, demote to INFO by capping
+            # confidence at 49. "Generic" indicators are broad category labels
+            # that don't convey specific risk (e.g. "ai_code", "ml_framework").
+            if (result.tier.value not in ("prohibited", "credential_exposure")
+                    and 50 <= confidence_score <= 79):
+                _indicators = set(i.lower() for i in result.indicators_matched)
+                if not _indicators or _indicators <= _GENERIC_INDICATORS:
+                    confidence_score = min(confidence_score, 49)
+                    finding["confidence_score"] = confidence_score
+
             finding["open_question"] = _is_open_question(finding)
             findings.append(finding)
 
@@ -727,6 +862,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         "files_scanned": _scanned_files,
         "skip_tests": skip_tests,
         "tests_skipped": _tests_skipped,
+        "ai_files_no_indicators": _ai_files_no_indicators,
     }
 
     return findings

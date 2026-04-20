@@ -44,6 +44,9 @@ SKIP_DIRS = {
     # Example/demo directories are not production code — scanning them
     # inflates false positives by 23% (benchmarked on 5 OSS projects).
     "examples", "example", "demos", "demo",
+    # CI/CD infrastructure is not application code. Same rationale as
+    # Semgrep's default .semgrepignore which excludes .github/.
+    ".github", ".gitlab", ".circleci",
 }
 
 # Model file extensions (binary ML model files).
