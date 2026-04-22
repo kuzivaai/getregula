@@ -1,0 +1,38 @@
+# Regula
+
+> Open-source CLI tool for EU AI Act compliance. Scans codebases for risk indicators, classifies AI systems into the Act's four risk tiers (prohibited, high-risk, limited-risk, minimal-risk), and reports which obligations apply. Runs locally with zero external dependencies -- no API calls, no data leaves the machine. Install: `pipx install regula-ai`.
+
+Regula is the code layer of an AI governance programme. It handles what can be detected from source code -- risk patterns, dependency security, credential exposure, bias indicators -- and explicitly documents what it cannot do (organisational obligations like risk management systems, quality management, and fundamental rights impact assessments).
+
+## Documentation
+
+- [README](https://github.com/kuzivaai/getregula/blob/main/README.md): Installation, quick start, key commands, verified numbers
+- [CLI reference](https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md): All CLI commands and options
+- [Architecture](https://github.com/kuzivaai/getregula/blob/main/docs/architecture.md): How Regula works internally
+- [What Regula does not do](https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md): Explicit scope boundaries and limitations
+- [Installation guide](https://github.com/kuzivaai/getregula/blob/main/docs/installation.md): pipx, pip, uv, and platform-specific instructions
+- [Quick start](https://github.com/kuzivaai/getregula/blob/main/docs/QUICKSTART.md): First scan in under a minute
+- [Evidence pack guide](https://github.com/kuzivaai/getregula/blob/main/docs/evidence-pack-guide.md): Generating compliance documentation for auditors
+- [Precision and recall benchmarks](https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md): Published accuracy data
+
+## Blog
+
+- [Does the EU AI Act apply to my app?](https://getregula.com/blog/blog-does-ai-act-apply.html): Decision guide for teams unsure about scope
+- [Risk tiers explained in code](https://getregula.com/blog/blog-risk-tiers-in-code.html): How EU AI Act risk classification maps to code patterns
+- [The Omnibus delay](https://getregula.com/blog/blog-omnibus-delay.html): Current status of EU AI Act implementation timeline
+- [Why startups are ignoring the AI Act](https://getregula.com/blog/blog-startups-ignoring-ai-act.html): Common misconceptions about scope and deadlines
+- [Scanning 10 real AI apps](https://getregula.com/blog/blog-scanning-10-ai-apps.html): What Regula finds when pointed at production code
+
+## Regional coverage
+
+- [UK AI regulation](https://getregula.com/regions/uk-ai-regulation.html)
+- [UAE AI governance](https://getregula.com/regions/uae.html)
+- [Colorado SB-205](https://getregula.com/regions/colorado-ai-regulation.html)
+- [South Korea AI regulation](https://getregula.com/regions/south-korea-ai-regulation.html)
+- [South Africa AI policy](https://getregula.com/regions/south-africa-ai-policy.html)
+
+## Package
+
+- PyPI: https://pypi.org/project/regula-ai/
+- GitHub: https://github.com/kuzivaai/getregula
+- License: MIT OR EUPL-1.2

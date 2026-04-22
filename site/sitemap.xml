@@ -2,79 +2,94 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://getregula.com/</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-04-22</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://getregula.com/llms.txt</loc>
+    <lastmod>2026-04-22</lastmod>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://getregula.com/locales/de.html</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-04-22</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://getregula.com/locales/pt-br.html</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-04-22</lastmod>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://getregula.com/regions/uae.html</loc>
-    <lastmod>2026-04-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://getregula.com/regions/south-africa-ai-policy.html</loc>
-    <lastmod>2026-04-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/regions/regulations.html</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-04-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://getregula.com/blog/writing.html</loc>
-    <lastmod>2026-04-17</lastmod>
+    <loc>https://getregula.com/regions/uae.html</loc>
+    <lastmod>2026-04-22</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/regions/uk-ai-regulation.html</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-04-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/regions/colorado-ai-regulation.html</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-04-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/regions/south-korea-ai-regulation.html</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-04-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://getregula.com/blog/blog-risk-tiers-in-code.html</loc>
-    <lastmod>2026-04-17</lastmod>
+    <loc>https://getregula.com/regions/south-africa-ai-policy.html</loc>
+    <lastmod>2026-04-22</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://getregula.com/blog/writing.html</loc>
+    <lastmod>2026-04-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://getregula.com/blog/blog-does-ai-act-apply.html</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-04-22</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://getregula.com/blog/blog-risk-tiers-in-code.html</loc>
+    <lastmod>2026-04-22</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-omnibus-delay.html</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-04-22</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-startups-ignoring-ai-act.html</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-04-22</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://getregula.com/blog/blog-scanning-10-ai-apps.html</loc>
+    <lastmod>2026-04-22</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://getregula.com/blog/blog-aicdi-governance-gaps.html</loc>
+    <lastmod>2026-04-22</lastmod>
     <priority>0.9</priority>
   </url>
 </urlset>
