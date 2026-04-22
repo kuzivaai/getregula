@@ -69,7 +69,7 @@ regula = "scripts.cli:main"
 # Explicitly include only packages that are part of the public CLI surface.
 # Internal go-to-market tooling and ad-hoc scripts must NOT be added here —
 # put them under tools/ (not packaged) instead.
-include = ["scripts*", "hooks*", "references*"]
+include = ["scripts*", "references*"]
 exclude = ["tools*", "benchmarks*", "tests*"]
 
 [tool.setuptools.package-data]
