@@ -1,0 +1,118 @@
+{
+  "command": "check",
+  "data": [
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 45,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "AI output may flow to System command execution \u2014 human gate pattern detected nearby",
+      "file": "Claude-Eng-v2/main.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 91,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 45,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "AI output may flow to File system modification \u2014 human gate pattern detected nearby",
+      "file": "Claude-Eng-v2/main.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 1037,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 45,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "AI output may flow to System command execution \u2014 human gate pattern detected nearby",
+      "file": "Claude-Eng-v2/main.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 1107,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "ce3.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 394,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "static/js/chat.js",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 283,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    }
+  ],
+  "exit_code": 0,
+  "format_version": "1.0",
+  "regula_version": "1.7.0",
+  "timestamp": "2026-04-23T21:38:33.399386Z"
+}

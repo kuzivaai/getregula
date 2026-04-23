@@ -1,0 +1,593 @@
+{
+  "command": "check",
+  "data": [
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Move credentials to environment variables or a secrets manager.",
+      "file": "documentation/docusaurus.config.js",
+      "indicators": [
+        "generic_api_key"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 215,
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 53,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/interface/desktop/chatutils.js",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 65,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/interface/obsidian/src/chat_view.ts",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/interface/obsidian/src/chat_view.ts",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 878,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/khoj/configure.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 376,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/khoj/database/adapters/__init__.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "tooling",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/khoj/processor/conversation/anthropic/anthropic_chat.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 33,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "src/khoj/processor/conversation/anthropic/utils.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 109,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/khoj/processor/conversation/google/gemini_chat.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 44,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "src/khoj/processor/conversation/google/utils.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 182,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/khoj/processor/conversation/openai/gpt.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 73,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "src/khoj/processor/conversation/openai/utils.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 371,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM07)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "System prompt exposed in client code, API response, or logs \u2014 prompt leakage risk",
+      "file": "src/khoj/processor/conversation/utils.py",
+      "indicators": [
+        "system_prompt_leakage"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1101,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Keep system prompts server-side only. Never return them in API responses or log them. Use prompt references/IDs instead of inline prompt text. OWASP LLM07:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 70,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+      "file": "src/khoj/processor/embeddings.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 73,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 70,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+      "file": "src/khoj/processor/embeddings.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 140,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 53,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/khoj/processor/image/generate.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 70,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+      "file": "src/khoj/processor/image/generate.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 268,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 53,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/khoj/routers/api_chat.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 28,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/khoj/routers/helpers.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/khoj/routers/helpers.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 2608,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/khoj/search_type/text_search.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 53,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 43,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 15,
+        "detail": "Domain keywords detected: education, law_enforcement",
+        "domains_matched": [
+          "education",
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/khoj/utils/helpers.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 53,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/khoj/utils/initialization.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    }
+  ],
+  "exit_code": 0,
+  "format_version": "1.0",
+  "regula_version": "1.7.0",
+  "timestamp": "2026-04-23T21:38:55.343199Z"
+}
