@@ -13,6 +13,7 @@ Regula is the code layer of an AI governance programme. It handles what can be d
 - [Installation guide](https://github.com/kuzivaai/getregula/blob/main/docs/installation.md): pipx, pip, uv, and platform-specific instructions
 - [Quick start](https://github.com/kuzivaai/getregula/blob/main/docs/QUICKSTART.md): First scan in under a minute
 - [Evidence pack guide](https://github.com/kuzivaai/getregula/blob/main/docs/evidence-pack-guide.md): Generating compliance documentation for auditors
+- [Runtime monitoring](https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md#runtime-monitoring-article-12): Article 12 runtime logging SDK and CLI (`regula monitor`) for recording LLM calls in production
 - [Precision and recall benchmarks](https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md): Published accuracy data
 
 ## Blog

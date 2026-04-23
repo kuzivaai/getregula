@@ -135,6 +135,18 @@ hashes without needing Regula installed.
 regula evidence-pack . --bundle
 ```
 
+### `--runtime <system_id>` — include runtime monitoring data
+
+Includes runtime monitoring logs for a registered system in the evidence
+pack as `08-runtime-monitor.json`. The logs come from `monitor.py`'s
+hash-chained JSONL storage and contain inference counts, error rates,
+human oversight rates, and safety events — Article 12 record-keeping
+evidence collected at runtime rather than at scan time.
+
+```bash
+regula evidence-pack . --runtime my-system
+```
+
 ### `--sign` — Ed25519 manifest signing
 
 Signs the conform pack manifest with an Ed25519 key pair. On first use,

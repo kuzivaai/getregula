@@ -40,7 +40,9 @@ regula/
 │   ├── findings_view.py           # Finding view separation (active/suppressed/accepted)
 │   ├── signing.py                 # Ed25519 manifest signing
 │   ├── timestamp.py               # RFC 3161 timestamping
-│   └── adoption_pulse.py          # Passive PyPI + GitHub signal tracker
+│   ├── adoption_pulse.py          # Passive PyPI + GitHub signal tracker
+│   ├── monitor.py                 # Article 12 runtime monitoring SDK (MonitorSession, Trace)
+│   └── cli_monitor.py             # CLI: regula monitor status|report|verify|prune|export
 ├── hooks/
 │   ├── pre_tool_use.py            # PreToolUse hook (CC/Copilot/Windsurf)
 │   ├── post_tool_use.py           # PostToolUse logging hook
@@ -48,7 +50,7 @@ regula/
 ├── references/                    # Regulatory reference documents
 │   ├── owasp_llm_top10.yaml       # OWASP Top 10 for LLMs → EU AI Act mapping
 │   └── mitre_atlas.yaml           # MITRE ATLAS → EU AI Act mapping
-├── tests/                         # 44 test files, 1,199 tests (pytest --collect-only)
+├── tests/                         # 45 test files, 1,223 tests (pytest --collect-only)
 │   ├── test_classification.py     # Core classification tests (main test file)
 │   └── ...                        # See tests/ for full list
 ├── docs/
