@@ -258,6 +258,172 @@ def test_human_oversight_all_actions():
         session.close()
 
 
+import json
+import threading
+from datetime import datetime, timezone
+
+
+def test_hash_chain_integrity():
+    """Write 10 events, verify chain, tamper one, verify fails."""
+    from monitor import MonitorSession, _get_monitor_file
+    from log_event import compute_hash
+
+    class FakeResponse:
+        __module__ = "openai.types.chat"
+        model = "gpt-4"
+        class usage:
+            prompt_tokens = 10
+            completion_tokens = 5
+            input_tokens = None
+            output_tokens = None
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        session = MonitorSession(system_id="chain-test", monitor_dir=tmpdir)
+        for _ in range(10):
+            with session.trace() as t:
+                t.record(FakeResponse())
+
+        log_file = _get_monitor_file("chain-test", tmpdir)
+        lines = log_file.read_text().strip().splitlines()
+        assert len(lines) == 10
+
+        prev = "0" * 64
+        for line in lines:
+            event = json.loads(line)
+            assert event["previous_hash"] == prev
+            expected = compute_hash(event, prev)
+            assert event["current_hash"] == expected
+            prev = event["current_hash"]
+
+        # Tamper with event 5
+        events = [json.loads(l) for l in lines]
+        events[4]["model"] = "TAMPERED"
+        log_file.write_text(
+            "\n".join(json.dumps(e, sort_keys=True) for e in events) + "\n"
+        )
+
+        tampered_lines = log_file.read_text().strip().splitlines()
+        prev = "0" * 64
+        broken_at = None
+        for i, line in enumerate(tampered_lines):
+            event = json.loads(line)
+            if event["previous_hash"] != prev:
+                broken_at = i
+                break
+            expected = compute_hash(event, prev)
+            if event["current_hash"] != expected:
+                broken_at = i
+                break
+            prev = event["current_hash"]
+        assert broken_at == 4, f"Expected chain break at 4, got {broken_at}"
+        session.close()
+
+
+def test_log_rotation():
+    """Events go to the correct monthly file."""
+    from monitor import MonitorSession, _get_monitor_dir
+
+    class FakeResponse:
+        __module__ = "openai.types.chat"
+        model = "gpt-4"
+        class usage:
+            prompt_tokens = 10
+            completion_tokens = 5
+            input_tokens = None
+            output_tokens = None
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        session = MonitorSession(system_id="rotation-test", monitor_dir=tmpdir)
+        with session.trace() as t:
+            t.record(FakeResponse())
+
+        log_dir = _get_monitor_dir("rotation-test", tmpdir)
+        files = list(log_dir.glob("monitor_*.jsonl"))
+        assert len(files) == 1
+        expected_name = f"monitor_{datetime.now(timezone.utc).strftime('%Y-%m')}.jsonl"
+        assert files[0].name == expected_name
+        session.close()
+
+
+def test_session_summary():
+    """close() writes correct aggregate stats."""
+    from monitor import MonitorSession
+
+    class FakeResponse:
+        __module__ = "openai.types.chat"
+        model = "gpt-4"
+        class usage:
+            prompt_tokens = 10
+            completion_tokens = 5
+            input_tokens = None
+            output_tokens = None
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        session = MonitorSession(system_id="summary-test", monitor_dir=tmpdir)
+        for _ in range(3):
+            with session.trace() as t:
+                t.record(FakeResponse())
+        with session.trace() as t:
+            t.record_error(ValueError("test error"))
+        with session.trace() as t:
+            t.record(FakeResponse(),
+                     human_oversight={"performed": True, "action": "rejected"})
+
+        summary = session.close()
+        assert summary["event_type"] == "session_summary"
+        assert summary["total_inferences"] == 4
+        assert summary["total_errors"] == 1
+        assert summary["human_overrides"] == 1
+        assert summary["models_used"] == ["gpt-4"]
+
+
+def test_thread_safety():
+    """Concurrent traces in same session don't corrupt chain."""
+    from monitor import MonitorSession, _get_monitor_file
+    from log_event import compute_hash
+
+    class FakeResponse:
+        __module__ = "openai.types.chat"
+        model = "gpt-4"
+        class usage:
+            prompt_tokens = 10
+            completion_tokens = 5
+            input_tokens = None
+            output_tokens = None
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        session = MonitorSession(system_id="thread-test", monitor_dir=tmpdir)
+        errors = []
+
+        def do_trace():
+            try:
+                with session.trace() as t:
+                    t.record(FakeResponse())
+            except Exception as e:
+                errors.append(e)
+
+        threads = [threading.Thread(target=do_trace) for _ in range(20)]
+        for th in threads:
+            th.start()
+        for th in threads:
+            th.join()
+
+        assert not errors, f"Thread errors: {errors}"
+
+        log_file = _get_monitor_file("thread-test", tmpdir)
+        lines = log_file.read_text().strip().splitlines()
+        assert len(lines) == 20
+
+        prev = "0" * 64
+        for i, line in enumerate(lines):
+            event = json.loads(line)
+            assert event["previous_hash"] == prev, f"Chain broken at event {i}"
+            expected = compute_hash(event, prev)
+            assert event["current_hash"] == expected, f"Hash mismatch at event {i}"
+            prev = event["current_hash"]
+        session.close()
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_") and callable(fn):
