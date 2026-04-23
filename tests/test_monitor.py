@@ -424,6 +424,74 @@ def test_thread_safety():
         session.close()
 
 
+def test_cli_monitor_verify():
+    """regula monitor verify checks chain integrity."""
+    from monitor import MonitorSession
+
+    class FakeResponse:
+        __module__ = "openai.types.chat"
+        model = "gpt-4"
+        class usage:
+            prompt_tokens = 10
+            completion_tokens = 5
+            input_tokens = None
+            output_tokens = None
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        session = MonitorSession(system_id="verify-cli", monitor_dir=tmpdir)
+        for _ in range(5):
+            with session.trace() as t:
+                t.record(FakeResponse())
+        session.close()
+
+        from cli_monitor import cmd_monitor_verify
+
+        class Args:
+            system_id = "verify-cli"
+            monitor_dir = tmpdir
+            format = "json"
+
+        result = cmd_monitor_verify(Args())
+        assert result["chain_valid"] is True
+        assert result["event_count"] == 6  # 5 inferences + 1 summary
+
+
+def test_cli_monitor_report():
+    """regula monitor report generates stats from logs."""
+    from monitor import MonitorSession
+
+    class FakeResponse:
+        __module__ = "openai.types.chat"
+        model = "gpt-4"
+        class usage:
+            prompt_tokens = 10
+            completion_tokens = 5
+            input_tokens = None
+            output_tokens = None
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        session = MonitorSession(system_id="report-cli", monitor_dir=tmpdir)
+        for _ in range(3):
+            with session.trace() as t:
+                t.record(FakeResponse())
+        with session.trace() as t:
+            t.record_error(RuntimeError("fail"))
+        session.close()
+
+        from cli_monitor import cmd_monitor_report
+
+        class Args:
+            system_id = "report-cli"
+            monitor_dir = tmpdir
+            format = "json"
+
+        result = cmd_monitor_report(Args())
+        assert result["total_events"] == 5  # 3 inference + 1 error + 1 summary
+        assert result["total_inferences"] == 3
+        assert result["total_errors"] == 1
+        assert 0 < result["error_rate"] < 1
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_") and callable(fn):
