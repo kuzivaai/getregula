@@ -25,7 +25,7 @@
 
     <!-- Primary SEO -->
     <title>I scanned 10 open-source AI apps for EU AI Act compliance | Regula</title>
-    <meta name="description" content="553 findings across 218,000-star projects. What EU AI Act compliance actually looks like in real codebases — agent autonomy, limited risk, AI security patterns.">
+    <meta name="description" content="553 findings across 219,000-star projects. What EU AI Act compliance actually looks like in real codebases — agent autonomy, limited risk, AI security patterns.">
     <meta name="keywords" content="EU AI Act compliance, open source AI, AI Act scanning, regula, AI governance, agent autonomy, OWASP LLM">
     <meta name="author" content="Regula">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
@@ -37,7 +37,7 @@
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://getregula.com/blog/blog-scanning-10-ai-apps.html">
     <meta property="og:title" content="I scanned 10 open-source AI apps for EU AI Act compliance. Here's what I found.">
-    <meta property="og:description" content="553 findings across 218,000-star projects. What EU AI Act compliance actually looks like in real codebases.">
+    <meta property="og:description" content="553 findings across 219,000-star projects. What EU AI Act compliance actually looks like in real codebases.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:locale" content="en_GB">
     <meta property="og:site_name" content="Regula">
@@ -53,7 +53,7 @@
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="I scanned 10 open-source AI apps for EU AI Act compliance. Here's what I found.">
-    <meta name="twitter:description" content="553 findings across 218,000-star projects. What EU AI Act compliance actually looks like in real codebases.">
+    <meta name="twitter:description" content="553 findings across 219,000-star projects. What EU AI Act compliance actually looks like in real codebases.">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
 
     <!-- Structured data: Article -->
@@ -62,7 +62,7 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "I scanned 10 open-source AI apps for EU AI Act compliance. Here's what I found.",
-      "description": "553 findings across 218,000-star projects. What EU AI Act compliance actually looks like in real codebases — agent autonomy, limited risk, AI security patterns.",
+      "description": "553 findings across 219,000-star projects. What EU AI Act compliance actually looks like in real codebases — agent autonomy, limited risk, AI security patterns.",
       "image": "https://getregula.com/assets/og-image.png",
       "datePublished": "2026-04-10T00:00:00+00:00",
       "dateModified": "2026-04-10T00:00:00+00:00",
@@ -164,7 +164,7 @@
     <section id="intro">
         <p>I wanted to know: what does compliance actually look like in real codebases? Not in theory documents. Not in consultancy slide decks. In the code that developers are shipping right now.</p>
 
-        <p>So I ran <a href="https://github.com/kuzivaai/getregula">Regula</a>, an open-source static analysis tool for AI Act compliance, against 10 popular open-source AI projects. Combined, these projects have over 218,000 GitHub stars and represent the kinds of tools developers are building with today &mdash; coding agents, research assistants, chatbot platforms, LLM gateways.</p>
+        <p>So I ran <a href="https://github.com/kuzivaai/getregula">Regula</a>, an open-source static analysis tool for AI Act compliance, against 10 popular open-source AI projects. Combined, these projects have over 219,000 GitHub stars and represent the kinds of tools developers are building with today &mdash; coding agents, research assistants, chatbot platforms, LLM gateways.</p>
     </section>
 
     <section id="the-projects">
@@ -253,7 +253,7 @@
                 </tr>
                 <tr>
                     <td><strong>Total</strong></td>
-                    <td><strong>218,009</strong></td>
+                    <td><strong>219,009</strong></td>
                     <td></td>
                     <td><strong>8,659</strong></td>
                     <td><strong>553</strong></td>
@@ -358,7 +358,7 @@
     <section id="what-this-means">
         <h2>What this means for developers building with AI</h2>
 
-        <p><strong>Most AI code carries no specific regulatory risk.</strong> 553 findings across 8,659 files means 93.6% of source files had no compliance-relevant patterns. The EU AI Act&rsquo;s minimal-risk category &mdash; which carries zero mandatory obligations &mdash; covers the vast majority of AI code.</p>
+        <p><strong>Most AI code carries no specific regulatory risk.</strong> 553 findings across 8,659 source files, concentrated in a small number of files. The majority of source files in these projects had no compliance-relevant patterns at all. The EU AI Act&rsquo;s minimal-risk category &mdash; which carries zero mandatory obligations &mdash; covers the vast majority of AI code.</p>
 
         <p><strong>Agent autonomy is the pattern to watch.</strong> If you&rsquo;re building agents that execute actions based on LLM output, you should be thinking about human oversight mechanisms now. Not because of regulatory panic &mdash; because it&rsquo;s good engineering. An agent that can execute arbitrary system commands based on LLM output is a security risk regardless of what the EU AI Act says.</p>
 
@@ -375,7 +375,7 @@ regula check /path/to/your/project</code></pre>
 
         <p>Regula is open-source, has zero dependencies, and runs entirely locally. No data leaves your machine. It takes under a second for most projects.</p>
 
-        <p>The 330 risk patterns it checks against are documented in the repository. If you disagree with a classification, you can suppress individual findings with inline comments or contribute pattern improvements upstream.</p>
+        <p>The risk patterns it checks against (404 as of v1.7.0; 330 at the time this scan was run with v1.6.1) are documented in the repository. If you disagree with a classification, you can suppress individual findings with inline comments or contribute pattern improvements upstream.</p>
     </section>
 
     <!-- Disclaimer -->
