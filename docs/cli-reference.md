@@ -464,6 +464,61 @@ regula timeline                          # Display timeline
 regula timeline --format json            # Machine-readable
 ```
 
+### Runtime Monitoring (Article 12)
+
+Runtime monitoring for AI applications, supporting Article 12 record-keeping
+obligations.
+
+#### monitor status
+
+Show monitored systems, log file sizes, and event counts.
+
+```bash
+regula monitor status
+```
+
+#### monitor report <system_id>
+
+Generate compliance report from runtime logs: inference counts, error rates,
+human oversight rates, safety events, latency distribution.
+
+```bash
+regula monitor report my-system
+regula monitor report my-system --format json
+```
+
+Options: `--format text|json`
+
+#### monitor verify <system_id>
+
+Verify SHA-256 hash chain integrity for a system's monitor logs.
+
+```bash
+regula monitor verify my-system
+```
+
+#### monitor prune <system_id>
+
+Delete monitor logs older than retention period.
+
+```bash
+regula monitor prune my-system
+regula monitor prune my-system --months 12
+```
+
+Options: `--months N` (default: 6)
+
+#### monitor export <system_id>
+
+Export monitor logs as CSV.
+
+```bash
+regula monitor export my-system
+regula monitor export my-system --output events.csv
+```
+
+Options: `--output FILE`
+
 ### MCP Server (use Regula from Claude Code, Cursor, Windsurf)
 
 Regula ships an MCP (Model Context Protocol) server that exposes

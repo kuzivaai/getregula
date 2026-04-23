@@ -13,6 +13,15 @@ Documentation audit brings all counts and claims up to date.
 
 ### Added
 
+- **Runtime monitoring SDK** (`scripts/monitor.py`): `MonitorSession`
+  and `Trace` for Article 12 runtime logging of LLM calls.
+  Hash-chained JSONL storage, tiered schema (auto/session/per-event),
+  duck-typed response extraction for OpenAI, Anthropic, and raw dicts.
+- **CLI: `regula monitor status|report|verify|prune|export`**
+  subcommands (`scripts/cli_monitor.py`).
+- **Evidence pack: `--runtime <system_id>`** flag includes runtime
+  logs in section 08 (`08-runtime-monitor.json`).
+- **24 new tests** for monitor module (`tests/test_monitor.py`).
 - **AST context gating** (`scripts/ast_context.py`). Builds a
   line-level context map (try/except, docstrings, test assertions) to
   suppress findings in non-production code paths.
@@ -52,7 +61,7 @@ Documentation audit brings all counts and claims up to date.
 - Landing page precision disclosure rewritten: leads with "0 false
   positives at BLOCK tier", contextualises INFO-tier 15.2% as measured
   on AI library source code (hardest corpus).
-- README, site_facts counts updated (55→59 commands, 1055→1199 tests).
+- README, site_facts counts updated (55→60 commands, 1055→1223 tests).
 - Documentation audit: architecture.md, cli-reference.md,
   evidence-pack-guide.md, CONTRIBUTING.md all reconciled with current
   codebase state.
