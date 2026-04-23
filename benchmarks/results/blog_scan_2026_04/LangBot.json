@@ -1,0 +1,403 @@
+{
+  "command": "check",
+  "data": [
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 65,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/langbot/libs/dingtalk_api/api.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 53,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/langbot/libs/dingtalk_api/dingtalkevent.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 2",
+      "confidence_score": 73,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Critical infrastructure management",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/langbot/pkg/core/app.py",
+      "indicators": [
+        "critical_infrastructure"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "10",
+          "observation": "RAG (retrieval-augmented generation) pipeline detected \u2014 external data is injected at inference time. Article 10 data governance requirements apply to retrieved data, not only training data. Consider: data source provenance, freshness, access controls, and bias in the retrieval corpus."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/langbot/pkg/core/migrations/m018_xai_config.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 12,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 2",
+      "confidence_score": 73,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Critical infrastructure management",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/langbot/pkg/core/stages/build_app.py",
+      "indicators": [
+        "critical_infrastructure"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "12",
+          "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+        },
+        {
+          "article": "10",
+          "observation": "RAG (retrieval-augmented generation) pipeline detected \u2014 external data is injected at inference time. Article 10 data governance requirements apply to retrieved data, not only training data. Consider: data source provenance, freshness, access controls, and bias in the retrieval corpus."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 2",
+      "confidence_score": 73,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Critical infrastructure management",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/langbot/pkg/persistence/migrations/dbm001_migrate_v3_config.py",
+      "indicators": [
+        "critical_infrastructure"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "12",
+          "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 53,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/langbot/pkg/platform/sources/dingtalk.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 70,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "AI output may flow to File system modification \u2014 no human gate detected",
+      "file": "src/langbot/pkg/platform/sources/lark.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 138,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 70,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "AI output may flow to File system modification \u2014 no human gate detected",
+      "file": "src/langbot/pkg/platform/sources/lark.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 188,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "src/langbot/pkg/provider/modelmgr/requesters/chatcmpl.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 225,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/langbot/pkg/provider/modelmgr/requesters/chatcmpl.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 225,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "src/langbot/pkg/provider/modelmgr/requesters/modelscopechatcmpl.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 218,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "src/langbot/pkg/provider/modelmgr/requesters/shengsuanyun.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 25,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/langbot/pkg/provider/modelmgr/requesters/shengsuanyun.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 25,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    }
+  ],
+  "exit_code": 0,
+  "format_version": "1.0",
+  "regula_version": "1.7.0",
+  "timestamp": "2026-04-23T21:44:09.158843Z"
+}

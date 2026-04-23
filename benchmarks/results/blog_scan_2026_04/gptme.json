@@ -1,0 +1,1928 @@
+{
+  "command": "check",
+  "data": [
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/agent/doctor.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 190,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/agent/doctor.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 277,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/agent/doctor.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 303,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/agent/service.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 125,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/agent/service.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 303,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/agent/service.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 430,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/agent/service.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 583,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/agent/workspace.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 100,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/agent/workspace.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 108,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/agent/workspace.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 134,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: File system modification \u2014 no human gate detected",
+      "file": "gptme/agent/workspace.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 148,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: File system modification \u2014 no human gate detected",
+      "file": "gptme/agent/workspace.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 164,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: File system modification \u2014 no human gate detected",
+      "file": "gptme/agent/workspace.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 169,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/agent/workspace.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 377,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: File system modification \u2014 no human gate detected",
+      "file": "gptme/agent/workspace.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 437,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/agent/workspace.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 450,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/agent/workspace.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 458,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/agent/workspace.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 466,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 90,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API key appears hardcoded \u2014 credential exposure risk",
+      "file": "gptme/cli/onboard.py",
+      "indicators": [
+        "exposed_api_key_env"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 251,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use environment variables or a secrets manager. Never commit API keys to source code. CRA Annex I (2)(c) requires access control.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "gptme/commands/llm.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 58,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 8",
+      "confidence_score": 88,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Justice and democratic processes",
+      "domain_boost": {
+        "boost": 15,
+        "detail": "Domain keywords detected: medical, education, law_enforcement",
+        "domains_matched": [
+          "medical",
+          "education",
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "gptme/context/adaptive_compressor.py",
+      "indicators": [
+        "justice"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "13",
+          "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/eval/agents/claude_code.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 138,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 8",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Justice and democratic processes",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "gptme/eval/dspy/metrics.py",
+      "indicators": [
+        "justice",
+        "high_risk__worker_management"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "13",
+          "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 4(b)",
+      "confidence_score": 85,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Worker monitoring and task allocation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "gptme/eval/dspy/signatures.py",
+      "indicators": [
+        "high_risk__worker_management"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "12",
+          "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 90,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API key appears hardcoded \u2014 credential exposure risk",
+      "file": "gptme/init.py",
+      "indicators": [
+        "exposed_api_key_env"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 131,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use environment variables or a secrets manager. Never commit API keys to source code. CRA Annex I (2)(c) requires access control.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "gptme/llm/llm_anthropic.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 614,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "gptme/llm/llm_openai.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 596,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "gptme/llm/llm_openai.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 596,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: File system modification \u2014 no human gate detected",
+      "file": "gptme/tools/_browser_lynx.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 49,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/_browser_lynx.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 55,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: File system modification \u2014 no human gate detected",
+      "file": "gptme/tools/_browser_lynx.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 68,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "gptme/tools/_browser_perplexity.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 68,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/_browser_playwright.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 720,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/autocommit.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 44,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/autocommit.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 56,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/autocommit.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 61,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 8",
+      "confidence_score": 88,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Justice and democratic processes",
+      "domain_boost": {
+        "boost": 15,
+        "detail": "Domain keywords detected: law_enforcement",
+        "domains_matched": [
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "gptme/tools/autocompact/scoring.py",
+      "indicators": [
+        "justice"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "13",
+          "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+        },
+        {
+          "article": "12",
+          "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: File system modification \u2014 no human gate detected",
+      "file": "gptme/tools/browser.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 191,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/browser.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 245,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/browser.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 275,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/browser.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 311,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/browser.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 741,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/browser.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 785,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/computer.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 217,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/computer.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 242,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/computer.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 323,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/computer.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 341,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/computer.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 439,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/computer.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 453,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/computer.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 468,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/computer.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 479,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/computer.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 592,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/computer.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 600,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/computer.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 642,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/computer.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 659,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/gh.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 64,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/gh.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 78,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/gh.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 151,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/gh.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 400,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/gh.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 521,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/precommit.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 112,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/precommit.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 123,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/precommit.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 171,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/precommit.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 268,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/precommit.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 287,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/rag.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 119,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/screenshot.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 91,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/screenshot.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 102,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/screenshot.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 111,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/shell.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 218,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/shell.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 242,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/shell.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 348,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/shell_background.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 43,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/shell_background.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 186,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/shell_validation.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 441,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: File system modification \u2014 no human gate detected",
+      "file": "gptme/tools/shell_validation.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 480,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/subagent/execution.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 241,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/subagent/execution.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 262,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/subagent/execution.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 337,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/subagent/types.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 89,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/tmux.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 104,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/tmux.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 117,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/tmux.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 130,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/tmux.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 151,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/tmux.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 248,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "gptme/tools/tmux.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 306,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    }
+  ],
+  "exit_code": 0,
+  "format_version": "1.0",
+  "regula_version": "1.7.0",
+  "timestamp": "2026-04-23T21:38:40.245737Z"
+}
