@@ -73,6 +73,7 @@ def cmd_evidence_pack(args) -> None:
         project_path,
         output_dir=args.output,
         project_name=project_name,
+        runtime_system_id=getattr(args, "runtime", None),
     )
 
     if getattr(args, "bundle", False):
