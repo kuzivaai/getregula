@@ -699,6 +699,10 @@ from cli_util import (
     cmd_metrics, cmd_security_self_check, cmd_owasp_agentic,
     cmd_ai_codegen,
 )
+from cli_monitor import (
+    cmd_monitor_status, cmd_monitor_report, cmd_monitor_verify,
+    cmd_monitor_prune, cmd_monitor_export,
+)
 
 
 def cmd_demo(args):
@@ -1489,6 +1493,40 @@ def _build_subparsers(subparsers):
         help="Write a regula.verify.v1.json report to PATH",
     )
     p_verify.set_defaults(func=cmd_verify)
+
+    # --- monitor ---
+    p_monitor = subparsers.add_parser(
+        "monitor",
+        help="Runtime monitoring for AI applications (Article 12)",
+        description="View, verify, and report on runtime monitoring logs.",
+    )
+    monitor_sub = p_monitor.add_subparsers(dest="monitor_cmd")
+
+    p_mon_status = monitor_sub.add_parser("status", help="Show monitored systems")
+    p_mon_status.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_mon_status.set_defaults(func=cmd_monitor_status)
+
+    p_mon_report = monitor_sub.add_parser("report", help="Compliance report from runtime logs")
+    p_mon_report.add_argument("system_id", help="System ID to report on")
+    p_mon_report.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_mon_report.set_defaults(func=cmd_monitor_report)
+
+    p_mon_verify = monitor_sub.add_parser("verify", help="Verify hash chain integrity")
+    p_mon_verify.add_argument("system_id", help="System ID to verify")
+    p_mon_verify.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_mon_verify.set_defaults(func=cmd_monitor_verify)
+
+    p_mon_prune = monitor_sub.add_parser("prune", help="Delete old monitor logs")
+    p_mon_prune.add_argument("system_id", help="System ID to prune")
+    p_mon_prune.add_argument("--months", type=int, default=6, help="Retention period in months (default: 6)")
+    p_mon_prune.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_mon_prune.set_defaults(func=cmd_monitor_prune)
+
+    p_mon_export = monitor_sub.add_parser("export", help="Export monitor logs as CSV")
+    p_mon_export.add_argument("system_id", help="System ID to export")
+    p_mon_export.add_argument("--output", "-o", help="Output file path")
+    p_mon_export.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    p_mon_export.set_defaults(func=cmd_monitor_export)
 
 
 def _apply_env_defaults(args):
