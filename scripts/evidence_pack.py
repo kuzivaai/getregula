@@ -31,6 +31,7 @@ def generate_evidence_pack(
     project_path: str,
     output_dir: str = ".",
     project_name: str = None,
+    **kwargs,
 ) -> dict:
     """Generate a complete evidence pack for a project.
 
@@ -122,6 +123,31 @@ def generate_evidence_pack(
     }
     rd_json = json.dumps(risk_decisions_data, indent=2, default=str)
     _write_and_record(pack_dir, "07-risk-decisions.json", rd_json, file_records)
+
+    # --- 08: Runtime monitor (optional) ---
+    runtime_system = kwargs.get("runtime_system_id")
+    if runtime_system:
+        try:
+            from cli_monitor import _read_all_events, _verify_chain
+            rt_events = _read_all_events(runtime_system)
+            rt_valid, rt_msg = _verify_chain(rt_events)
+            inferences = [e for e in rt_events if e.get("event_type") == "inference"]
+            errors = [e for e in rt_events if e.get("status") == "error"]
+            summaries = [e for e in rt_events if e.get("event_type") == "session_summary"]
+            rt_data = {
+                "system_id": runtime_system,
+                "chain_valid": rt_valid,
+                "chain_message": rt_msg,
+                "total_events": len(rt_events),
+                "total_inferences": len(inferences),
+                "total_errors": len(errors),
+                "sessions": len(summaries),
+                "session_summaries": summaries,
+            }
+            rt_json = json.dumps(rt_data, indent=2, default=str)
+            _write_and_record(pack_dir, "08-runtime-monitor.json", rt_json, file_records)
+        except (ImportError, OSError, ValueError):
+            pass
 
     # --- 00: Executive summary (written last, uses data from above) ---
     summary = _generate_summary(name, now, findings, gap, plan)

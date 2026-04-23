@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Tests for regula.monitor — runtime monitoring SDK."""
 
+import os
 import sys
 from pathlib import Path
 
@@ -490,6 +491,35 @@ def test_cli_monitor_report():
         assert result["total_inferences"] == 3
         assert result["total_errors"] == 1
         assert 0 < result["error_rate"] < 1
+
+
+def test_evidence_pack_runtime_section():
+    """--runtime flag includes section 08-runtime-monitor.json."""
+    from monitor import MonitorSession
+
+    class FakeResponse:
+        __module__ = "openai.types.chat"
+        model = "gpt-4"
+        class usage:
+            prompt_tokens = 10
+            completion_tokens = 5
+            input_tokens = None
+            output_tokens = None
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        monitor_dir = os.path.join(tmpdir, "monitor")
+        session = MonitorSession(system_id="evpack-test", monitor_dir=monitor_dir)
+        for _ in range(3):
+            with session.trace() as t:
+                t.record(FakeResponse())
+        session.close()
+
+        from cli_monitor import _read_all_events, _verify_chain
+        events = _read_all_events("evpack-test", monitor_dir)
+        valid, msg = _verify_chain(events)
+
+        assert valid is True
+        assert len(events) == 4  # 3 inferences + 1 summary
 
 
 if __name__ == "__main__":
