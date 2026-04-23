@@ -522,6 +522,21 @@ def test_evidence_pack_runtime_section():
         assert len(events) == 4  # 3 inferences + 1 summary
 
 
+import importlib
+
+
+def test_monitor_no_external_imports():
+    """monitor.py only imports from stdlib + regula's own modules."""
+    if "monitor" in sys.modules:
+        del sys.modules["monitor"]
+    import monitor
+
+    source = Path(monitor.__file__).read_text()
+    for lib in ["openai", "anthropic", "langchain", "google.generativeai"]:
+        assert f"import {lib}" not in source, f"monitor.py imports {lib}"
+        assert f"from {lib}" not in source, f"monitor.py imports from {lib}"
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_") and callable(fn):
