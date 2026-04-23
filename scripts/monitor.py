@@ -12,7 +12,6 @@ the application controls the logs. Supplement with RFC 3161 external
 timestamps for audit-grade independence.
 """
 
-import hashlib
 import json
 import os
 import sys
@@ -40,12 +39,10 @@ def _extract_response(response) -> dict:
     if isinstance(response, dict):
         data["model"] = response.get("model")
         usage = response.get("usage", {})
-        data["input_tokens"] = (
-            usage.get("input_tokens") or usage.get("prompt_tokens")
-        )
-        data["output_tokens"] = (
-            usage.get("output_tokens") or usage.get("completion_tokens")
-        )
+        inp = usage.get("input_tokens")
+        data["input_tokens"] = inp if inp is not None else usage.get("prompt_tokens")
+        out = usage.get("output_tokens")
+        data["output_tokens"] = out if out is not None else usage.get("completion_tokens")
         data["provider"] = response.get("provider", "unknown")
         return data
 
@@ -53,14 +50,10 @@ def _extract_response(response) -> dict:
 
     usage = getattr(response, "usage", None)
     if usage:
-        data["input_tokens"] = (
-            getattr(usage, "input_tokens", None)
-            or getattr(usage, "prompt_tokens", None)
-        )
-        data["output_tokens"] = (
-            getattr(usage, "output_tokens", None)
-            or getattr(usage, "completion_tokens", None)
-        )
+        inp = getattr(usage, "input_tokens", None)
+        data["input_tokens"] = inp if inp is not None else getattr(usage, "prompt_tokens", None)
+        out = getattr(usage, "output_tokens", None)
+        data["output_tokens"] = out if out is not None else getattr(usage, "completion_tokens", None)
 
     module = type(response).__module__ or ""
     if "openai" in module:

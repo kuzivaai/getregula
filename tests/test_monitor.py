@@ -537,6 +537,103 @@ def test_monitor_no_external_imports():
         assert f"from {lib}" not in source, f"monitor.py imports from {lib}"
 
 
+def test_zero_token_count():
+    """Token count of 0 is a valid value (cached prompts), not missing."""
+    from monitor import _extract_response
+
+    resp = {
+        "model": "gpt-4",
+        "usage": {"input_tokens": 0, "output_tokens": 15},
+        "provider": "openai",
+    }
+    result = _extract_response(resp)
+    assert result["input_tokens"] == 0, f"Expected 0, got {result['input_tokens']}"
+    assert result["output_tokens"] == 15
+
+    # Also test object path
+    class Usage:
+        input_tokens = 0
+        output_tokens = 20
+        prompt_tokens = 999  # should NOT fall through to this
+
+    class FakeResponse:
+        __module__ = "openai.types.chat"
+        model = "gpt-4"
+        usage = Usage()
+
+    result2 = _extract_response(FakeResponse())
+    assert result2["input_tokens"] == 0, f"Expected 0, got {result2['input_tokens']}"
+    assert result2["output_tokens"] == 20
+
+
+def test_start_trace_no_context_manager():
+    """start_trace() works without with-block."""
+    from monitor import MonitorSession
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        session = MonitorSession(system_id="no-ctx-test", monitor_dir=tmpdir)
+        t = session.start_trace()
+        t.record({"model": "gpt-4", "usage": {"input_tokens": 10, "output_tokens": 5}})
+        t.end()
+
+        assert len(session._events) == 1
+        assert session._events[0]["status"] == "success"
+        assert session._events[0]["latency_ms"] >= 0
+        session.close()
+
+
+def test_cli_monitor_export():
+    """regula monitor export produces CSV."""
+    from monitor import MonitorSession
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        session = MonitorSession(system_id="export-test", monitor_dir=tmpdir)
+        with session.trace() as t:
+            t.record({"model": "gpt-4", "usage": {"input_tokens": 10, "output_tokens": 5}, "provider": "openai"})
+        session.close()
+
+        from cli_monitor import cmd_monitor_export
+
+        class Args:
+            system_id = "export-test"
+            monitor_dir = tmpdir
+            output = os.path.join(tmpdir, "export.csv")
+            format = "text"
+
+        result = cmd_monitor_export(Args())
+        assert result["exported"] == 2  # 1 inference + 1 summary
+        csv_content = Path(os.path.join(tmpdir, "export.csv")).read_text()
+        assert "event_id" in csv_content  # header row
+        assert "gpt-4" in csv_content
+
+
+def test_cli_monitor_prune():
+    """regula monitor prune deletes old log files."""
+    from monitor import _get_monitor_dir
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        log_dir = _get_monitor_dir("prune-test", tmpdir)
+        # Create a fake old log file (12 months ago)
+        old_file = log_dir / "monitor_2025-01.jsonl"
+        old_file.write_text('{"event_type":"test"}\n')
+        # Create a current log file
+        current = log_dir / f"monitor_{datetime.now(timezone.utc).strftime('%Y-%m')}.jsonl"
+        current.write_text('{"event_type":"test"}\n')
+
+        from cli_monitor import cmd_monitor_prune
+
+        class Args:
+            system_id = "prune-test"
+            monitor_dir = tmpdir
+            months = 6
+            format = "json"
+
+        result = cmd_monitor_prune(Args())
+        assert "monitor_2025-01.jsonl" in result["deleted"]
+        assert not old_file.exists()
+        assert current.exists()
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_") and callable(fn):
