@@ -8,8 +8,8 @@
     "tests": "tests/test_classification.py (grep '^def test_')"
   },
   "counts": {
-    "commands": 60,
-    "commands_note": "60 top-level CLI commands via --help-all. site_facts.py reports 65 because it counts monitor subcommands separately.",
+    "commands": 61,
+    "commands_note": "61 top-level CLI commands via --help-all. site_facts.py reports 66 because it counts monitor subcommands separately.",
     "patterns": {
       "tier_groups": 53,
       "tier_regexes": 404,

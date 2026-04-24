@@ -8,7 +8,7 @@ Generated: `2026-04-24T18:58:07.706740+00:00`
 
 | Claim | Count | Source file |
 |---|---|---|
-| CLI commands | **60** | `regula --help-all` (site_facts.py reports 65 counting monitor subcommands) |
+| CLI commands | **61** | `regula --help-all` (site_facts.py reports 66 counting monitor subcommands) |
 | Detection patterns (tiered regexes) | **404** | `scripts/risk_patterns.py` (all tiers including GPAI) |
 | Detection patterns (grand total, inclusive) | **707** | see breakdown below |
 | Tiered risk pattern groups | **53** | `scripts/risk_patterns.py` (8+15+4+17+2+6+1) |
