@@ -1,0 +1,4782 @@
+{
+  "command": "check",
+  "data": [
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 4(b)",
+      "confidence_score": 23,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Worker monitoring and task allocation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "benchmark_v2/framework/hardware_metrics.py",
+      "indicators": [
+        "high_risk__worker_management"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/cli/serving/server.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 97,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/generation/streamers.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "src/transformers/integrations/executorch.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 169,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Safety Components",
+      "confidence_score": 23,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Aug 2028 (Annex I / sectoral). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Safety components under Union harmonisation legislation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/loss/loss_d_fine.py",
+      "indicators": [
+        "safety_components"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "12",
+          "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+        }
+      ],
+      "omnibus_deadline": "2028-08-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/modeling_utils.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 366,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 70,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "AI output may flow to File system modification \u2014 no human gate detected",
+      "file": "src/transformers/modeling_utils.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 3446,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "src/transformers/models/aimv2/modeling_aimv2.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 133,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "src/transformers/models/aimv2/modular_aimv2.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 169,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 8",
+      "confidence_score": 38,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Justice and democratic processes",
+      "domain_boost": {
+        "boost": 15,
+        "detail": "Domain keywords detected: education, law_enforcement",
+        "domains_matched": [
+          "education",
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/albert/modeling_albert.py",
+      "indicators": [
+        "justice"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/bark/convert_suno_to_hf.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 261,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "src/transformers/models/bark/generation_configuration_bark.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 37,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/blip/convert_blip_original_pytorch_to_hf.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/bloom/convert_bloom_original_checkpoint_to_pytorch.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 106,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/bridgetower/modeling_bridgetower.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "LLM output used as factual information without grounding or verification \u2014 misinformation risk",
+      "file": "src/transformers/models/chameleon/convert_chameleon_weights_to_hf.py",
+      "indicators": [
+        "no_grounding"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 407,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Implement retrieval-augmented generation (RAG) for factual tasks. Require citations and source attribution. Add fact-checking or grounding verification before presenting LLM output as fact. OWASP LLM09:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/chameleon/modeling_chameleon.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 18,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": {
+        "boost": 15,
+        "detail": "Domain keywords detected: education, law_enforcement",
+        "domains_matched": [
+          "education",
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/cohere/tokenization_cohere.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 3",
+      "confidence_score": 35,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Education and vocational training",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/cpmant/modeling_cpmant.py",
+      "indicators": [
+        "education"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/csm/convert_csm.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 158,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/cvt/convert_cvt_original_pytorch_checkpoint_to_pytorch.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 309,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/d_fine/convert_d_fine_original_pytorch_checkpoint_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 159,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/dab_detr/convert_dab_detr_original_pytorch_checkpoint_to_pytorch.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 145,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/data2vec/convert_data2vec_vision_original_pytorch_checkpoint_to_pytorch.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 221,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 1",
+      "confidence_score": 23,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Biometric identification and categorisation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/data2vec/modeling_data2vec_audio.py",
+      "indicators": [
+        "biometrics"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "12",
+          "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/deepseek_vl/modular_deepseek_vl.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "src/transformers/models/dia/convert_dia_to_hf.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 70,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "src/transformers/models/dia/generation_dia.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 120,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/dia/processing_dia.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/dinov3_convnext/convert_dinov3_convnext_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 145,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/dinov3_vit/convert_dinov3_vit_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 233,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/edgetam/convert_edgetam_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 195,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/edgetam_video/convert_edgetam_video_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 238,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/emu3/convert_emu3_weights_to_hf.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/emu3/convert_emu3_weights_to_hf.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 258,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/emu3/modeling_emu3.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/emu3/modular_emu3.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 18,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 15,
+        "detail": "Domain keywords detected: medical",
+        "domains_matched": [
+          "medical"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/emu3/processing_emu3.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/eomt/convert_eomt_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 174,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/eomt_dinov3/convert_eomt_dinov3_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 328,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted or hardcoded path \u2014 supply chain risk",
+      "file": "src/transformers/models/ernie4_5/convert_ernie4_5_tokenizer.py",
+      "indicators": [
+        "hardcoded_model_path"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 71,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use model registries (HuggingFace Hub, MLflow) with integrity verification. Pin model revisions.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/falcon_h1/convert_mamba_ssm_checkpoint.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 43,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/models/fastspeech2_conformer/modeling_fastspeech2_conformer.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 1602,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 18,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 15,
+        "detail": "Domain keywords detected: education, law_enforcement",
+        "domains_matched": [
+          "education",
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/flava/modeling_flava.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/florence2/convert_florence2_original_pytorch_to_hf.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 337,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/gemma2/convert_gemma2_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 90,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "src/transformers/models/gemma3/convert_gemma3_weights.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 688,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "src/transformers/models/gemma3n/convert_gemma3n_weights.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 791,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "src/transformers/models/gemma4/convert_gemma4_weights.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 1231,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/glm4/convert_glm4_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 61,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/glm4v/convert_glm4v_mgt_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 322,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/glm4v_moe/convert_glm4v_moe_mgt_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 275,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/glm_image/modeling_glm_image.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/glm_image/modular_glm_image.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/glm_image/processing_glm_image.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/glmasr/convert_glmasr_weights_to_hf.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 167,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/glpn/convert_glpn_to_pytorch.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 143,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "src/transformers/models/gpt_oss/convert_gpt_oss_weights_to_hf.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 291,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 3",
+      "confidence_score": 35,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Education and vocational training",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/gpt_oss/modeling_gpt_oss.py",
+      "indicators": [
+        "education"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "12",
+          "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 3",
+      "confidence_score": 23,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Education and vocational training",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/gpt_oss/modular_gpt_oss.py",
+      "indicators": [
+        "education"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 18,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 15,
+        "detail": "Domain keywords detected: employment, education, law_enforcement",
+        "domains_matched": [
+          "employment",
+          "education",
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/grounding_dino/modeling_grounding_dino.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/higgs_audio_v2_tokenizer/convert_higgs_audio_v2_tokenizer_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 101,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/idefics/configuration_idefics.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/idefics2/convert_idefics2_weights_to_hf.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 130,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/internvl/convert_internvl_weights_to_hf.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 131,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/janus/convert_janus_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 225,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/janus/modeling_janus.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/janus/modular_janus.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/models/kosmos2_5/modeling_kosmos2_5.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 326,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 3",
+      "confidence_score": 35,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Education and vocational training",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/lightglue/modeling_lightglue.py",
+      "indicators": [
+        "education"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "13",
+          "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+        },
+        {
+          "article": "12",
+          "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 3",
+      "confidence_score": 35,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Education and vocational training",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/lightglue/modular_lightglue.py",
+      "indicators": [
+        "education"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "13",
+          "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/llama/convert_llama_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 237,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 4(b)",
+      "confidence_score": 23,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Worker monitoring and task allocation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/llava_next/convert_llava_next_weights_to_hf.py",
+      "indicators": [
+        "high_risk__worker_management"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "12",
+          "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/longformer/convert_longformer_original_pytorch_lightning_to_pytorch.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 44,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/lw_detr/convert_lw_detr_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 438,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/mamba2/convert_mamba2_ssm_checkpoint_to_pytorch.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 39,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 3",
+      "confidence_score": 23,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Education and vocational training",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/mask2former/convert_mask2former_original_pytorch_checkpoint_to_pytorch.py",
+      "indicators": [
+        "education"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/maskformer/convert_maskformer_resnet_to_pytorch.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 275,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/maskformer/convert_maskformer_swin_to_pytorch.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 244,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/megatron_bert/convert_megatron_bert_checkpoint.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 299,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/megatron_gpt2/checkpoint_reshaping_and_interoperability.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 642,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/megatron_gpt2/checkpoint_reshaping_and_interoperability.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 647,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/megatron_gpt2/convert_megatron_gpt2_checkpoint.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 340,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/megatron_gpt2/convert_megatron_gpt2_checkpoint.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 340,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/mistral/convert_mistral_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 212,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/mixtral/convert_mixtral_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 97,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/mlcd/convert_mlcd_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 250,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 18,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 15,
+        "detail": "Domain keywords detected: employment, education, law_enforcement",
+        "domains_matched": [
+          "employment",
+          "education",
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/mm_grounding_dino/modeling_mm_grounding_dino.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/moshi/convert_moshi_transformers.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 297,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/nanochat/convert_nanochat_checkpoints.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 149,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/nanochat/convert_nanochat_checkpoints.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 237,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Safety Components",
+      "confidence_score": 38,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Aug 2028 (Annex I / sectoral). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Safety components under Union harmonisation legislation",
+      "domain_boost": {
+        "boost": 15,
+        "detail": "Domain keywords detected: education, law_enforcement",
+        "domains_matched": [
+          "education",
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/nllb/tokenization_nllb.py",
+      "indicators": [
+        "safety_components"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2028-08-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/nllb_moe/convert_nllb_moe_sharded_original_checkpoint_to_pytorch.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 159,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/olmo/convert_olmo_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 94,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/olmo2/convert_olmo2_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 109,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/olmo3/convert_olmo3_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 186,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/olmo3/convert_olmo3_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 205,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/olmo_hybrid/convert_olmo_hybrid_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 204,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/olmo_hybrid/convert_olmo_hybrid_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 223,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/olmoe/convert_olmoe_weights_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 122,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 70,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "AI output may flow to File system modification \u2014 no human gate detected",
+      "file": "src/transformers/models/olmoe/convert_olmoe_weights_to_hf.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 215,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "src/transformers/models/omdet_turbo/modeling_omdet_turbo.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 706,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 3",
+      "confidence_score": 23,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Education and vocational training",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/oneformer/convert_to_hf_oneformer.py",
+      "indicators": [
+        "education"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 3",
+      "confidence_score": 23,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Education and vocational training",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/openai_privacy_filter/modeling_openai_privacy_filter.py",
+      "indicators": [
+        "education"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "12",
+          "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 3",
+      "confidence_score": 23,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Education and vocational training",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/openai_privacy_filter/modular_openai_privacy_filter.py",
+      "indicators": [
+        "education"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/ovis2/convert_ovis2_weights_to_hf.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 373,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/owlv2/processing_owlv2.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/owlvit/processing_owlvit.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/models/pe_audio_video/modeling_pe_audio_video.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 673,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/models/pe_audio_video/modular_pe_audio_video.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 465,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/perceiver/convert_perceiver_haiku_to_pytorch.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 273,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/perceiver/convert_perceiver_haiku_to_pytorch.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 281,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/phi4_multimodal/convert_phi4_multimodal_weights_to_hf.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 171,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/pixio/convert_pixio_to_pytorch.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 148,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/poolformer/convert_poolformer_original_to_pytorch.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 154,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 1",
+      "confidence_score": 35,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Biometric identification and categorisation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/qwen2_5_omni/modeling_qwen2_5_omni.py",
+      "indicators": [
+        "biometrics"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "13",
+          "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+        },
+        {
+          "article": "10",
+          "observation": "RAG (retrieval-augmented generation) pipeline detected \u2014 external data is injected at inference time. Article 10 data governance requirements apply to retrieved data, not only training data. Consider: data source provenance, freshness, access controls, and bias in the retrieval corpus."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 1",
+      "confidence_score": 35,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Biometric identification and categorisation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/qwen2_5_omni/modular_qwen2_5_omni.py",
+      "indicators": [
+        "biometrics"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "13",
+          "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+        },
+        {
+          "article": "10",
+          "observation": "RAG (retrieval-augmented generation) pipeline detected \u2014 external data is injected at inference time. Article 10 data governance requirements apply to retrieved data, not only training data. Consider: data source provenance, freshness, access controls, and bias in the retrieval corpus."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/rag/retrieval_rag.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 136,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/reformer/convert_reformer_trax_checkpoint_to_pytorch.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 195,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/rwkv/convert_rwkv_checkpoint_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 149,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/sam2/convert_sam2_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 221,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/sam2_video/convert_sam2_video_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 230,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/sam3/convert_sam3_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 253,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/sam3_lite_text/convert_sam3_lite_text_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 236,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/sam3_video/convert_sam3_video_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 525,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Safety Components",
+      "confidence_score": 23,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Aug 2028 (Annex I / sectoral). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Safety components under Union harmonisation legislation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/seamless_m4t/convert_fairseq2_to_hf.py",
+      "indicators": [
+        "safety_components"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "13",
+          "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+        }
+      ],
+      "omnibus_deadline": "2028-08-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/seamless_m4t/convert_fairseq2_to_hf.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 395,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/seamless_m4t_v2/convert_fairseq2_to_hf.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 403,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/segformer/convert_segformer_original_to_pytorch.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 194,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 7",
+      "confidence_score": 35,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Migration, asylum, and border control",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/superpoint/modeling_superpoint.py",
+      "indicators": [
+        "migration"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "13",
+          "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 70,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "AI output may flow to File system modification \u2014 no human gate detected",
+      "file": "src/transformers/models/switch_transformers/convert_big_switch.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 136,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/models/timesfm2_5/modeling_timesfm2_5.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 918,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/models/timesfm2_5/modular_timesfm2_5.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 529,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 1",
+      "confidence_score": 35,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Biometric identification and categorisation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/unispeech_sat/modeling_unispeech_sat.py",
+      "indicators": [
+        "biometrics"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/videomt/convert_videomt_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 380,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/vilt/modeling_vilt.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 8",
+      "confidence_score": 18,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Justice and democratic processes",
+      "domain_boost": {
+        "boost": 15,
+        "detail": "Domain keywords detected: education, law_enforcement",
+        "domains_matched": [
+          "education",
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/visual_bert/modeling_visual_bert.py",
+      "indicators": [
+        "justice"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "10",
+          "observation": "RAG (retrieval-augmented generation) pipeline detected \u2014 external data is injected at inference time. Article 10 data governance requirements apply to retrieved data, not only training data. Consider: data source provenance, freshness, access controls, and bias in the retrieval corpus."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/vits/convert_original_checkpoint.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 348,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 1",
+      "confidence_score": 35,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Biometric identification and categorisation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/wav2vec2/modeling_wav2vec2.py",
+      "indicators": [
+        "biometrics"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "10",
+          "observation": "Training data detected \u2014 Article 10 requires data to be relevant, representative, and examined for biases."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 1",
+      "confidence_score": 23,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Biometric identification and categorisation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/wav2vec2_bert/modeling_wav2vec2_bert.py",
+      "indicators": [
+        "biometrics"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 1",
+      "confidence_score": 35,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Biometric identification and categorisation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/models/wav2vec2_conformer/modeling_wav2vec2_conformer.py",
+      "indicators": [
+        "biometrics"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "10",
+          "observation": "Training data detected \u2014 Article 10 requires data to be relevant, representative, and examined for biases."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 1",
+      "confidence_score": 23,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Biometric identification and categorisation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "src/transformers/models/wavlm/modeling_wavlm.py",
+      "indicators": [
+        "biometrics"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/models/whisper/convert_openai_to_hf.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 160,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "src/transformers/models/whisper/convert_openai_to_hf.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 366,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/models/whisper/generation_whisper.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 1116,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "src/transformers/models/zoedepth/modeling_zoedepth.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 399,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Emotion recognition systems",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/pipelines/__init__.py",
+      "indicators": [
+        "emotion_recognition"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "tooling",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/pipelines/any_to_any.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/audio_classification.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 244,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Emotion recognition systems",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/pipelines/base.py",
+      "indicators": [
+        "emotion_recognition"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 1165,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 2",
+      "confidence_score": 35,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Critical infrastructure management",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/pipelines/depth_estimation.py",
+      "indicators": [
+        "critical_infrastructure"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/depth_estimation.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 127,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/document_question_answering.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 581,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/feature_extraction.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 70,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/fill_mask.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 123,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/image_classification.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 191,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/image_feature_extraction.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 75,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/image_segmentation.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 177,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/pipelines/image_text_to_text.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/object_detection.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 133,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/table_question_answering.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 340,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Emotion recognition systems",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/pipelines/text_classification.py",
+      "indicators": [
+        "emotion_recognition"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/pipelines/text_generation.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/text_generation.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 430,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/video_classification.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 154,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/zero_shot_audio_classification.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 147,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/zero_shot_classification.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 233,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/zero_shot_image_classification.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 175,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/transformers/pipelines/zero_shot_object_detection.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 201,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 45,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "AI output may flow to File system modification \u2014 human gate pattern detected nearby",
+      "file": "src/transformers/trainer.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 1855,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "src/transformers/trainer.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 3577,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 45,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "AI output may flow to File system modification \u2014 human gate pattern detected nearby",
+      "file": "src/transformers/trainer.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 4106,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 1",
+      "confidence_score": 38,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Biometric identification and categorisation",
+      "domain_boost": {
+        "boost": 15,
+        "detail": "Domain keywords detected: education, law_enforcement",
+        "domains_matched": [
+          "education",
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/transformers/utils/auto_docstring.py",
+      "indicators": [
+        "biometrics"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "12",
+          "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+        },
+        {
+          "article": "10",
+          "observation": "RAG (retrieval-augmented generation) pipeline detected \u2014 external data is injected at inference time. Article 10 data governance requirements apply to retrieved data, not only training data. Consider: data source provenance, freshness, access controls, and bias in the retrieval corpus."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Safety Components",
+      "confidence_score": 35,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Aug 2028 (Annex I / sectoral). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Safety components under Union harmonisation legislation",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "utils/modular_model_converter.py",
+      "indicators": [
+        "safety_components"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2028-08-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    }
+  ],
+  "exit_code": 0,
+  "format_version": "1.0",
+  "regula_version": "1.7.0",
+  "timestamp": "2026-04-24T15:15:48.908850Z"
+}

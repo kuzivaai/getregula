@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+
+    <!-- Primary SEO -->
+    <title>We scanned 5 AI frameworks for EU AI Act compliance. Here's what 404 patterns found. | Regula</title>
+    <meta name="description" content="562 findings across PyTorch, HuggingFace Transformers, LangChain, LlamaIndex, and CrewAI. The framework you pick shapes your compliance surface before you write a line of code.">
+    <meta name="keywords" content="EU AI Act compliance, AI framework, PyTorch compliance, LangChain compliance, HuggingFace compliance, AI governance, regula">
+    <meta name="author" content="Regula">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/blog/blog-scanning-5-frameworks.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/blog/blog-scanning-5-frameworks.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/blog/blog-scanning-5-frameworks.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/blog/blog-scanning-5-frameworks.html">
+    <meta property="og:title" content="We scanned 5 AI frameworks for EU AI Act compliance. Here's what 404 patterns found.">
+    <meta property="og:description" content="562 findings across PyTorch, HuggingFace Transformers, LangChain, LlamaIndex, and CrewAI. The framework you pick shapes your compliance surface.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-04-25">
+    <meta property="article:modified_time" content="2026-04-25">
+    <meta property="article:author" content="The Implementation Layer">
+    <meta property="article:section" content="AI Governance">
+    <meta property="article:tag" content="EU AI Act">
+    <meta property="article:tag" content="AI Frameworks">
+    <meta property="article:tag" content="Compliance">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="We scanned 5 AI frameworks for EU AI Act compliance. Here's what 404 patterns found.">
+    <meta name="twitter:description" content="562 findings across 5 AI frameworks. The framework you pick shapes your compliance surface.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <!-- Structured data: Article -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "We scanned 5 AI frameworks for EU AI Act compliance. Here's what 404 patterns found.",
+      "description": "562 findings across PyTorch, HuggingFace Transformers, LangChain, LlamaIndex, and CrewAI. The framework you pick shapes your compliance surface before you write a line of code.",
+      "image": "https://getregula.com/assets/og-image.png",
+      "datePublished": "2026-04-25T00:00:00+00:00",
+      "dateModified": "2026-04-25T00:00:00+00:00",
+      "author": {
+        "@type": "Person",
+        "name": "The Implementation Layer"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://getregula.com/assets/og-image.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/blog/blog-scanning-5-frameworks.html"
+      },
+      "keywords": ["EU AI Act", "AI frameworks", "PyTorch", "HuggingFace", "LangChain", "compliance", "AI security"]
+    }
+    </script>
+
+    <!-- Structured data: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getregula.com/blog/writing.html" },
+        { "@type": "ListItem", "position": 3, "name": "Scanning 5 AI frameworks", "item": "https://getregula.com/blog/blog-scanning-5-frameworks.html" }
+      ]
+    }
+    </script>
+
+    <!-- Favicon + Fonts -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.css">
+        <link rel="stylesheet" href="/assets/site.css">
+    </noscript>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="progress-bar"></div>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <span class="active">Blog</span>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+
+<article>
+
+<div class="blog-hero">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / <a href="/blog/writing.html">Blog</a> / Scanning 5 AI frameworks
+    </div>
+    <div class="blog-meta">
+        <span>25 April 2026</span>
+        <span class="dot">&middot;</span>
+        <span>9 min read</span>
+        <span class="dot">&middot;</span>
+        <span>The Implementation Layer</span>
+    </div>
+    <h1>We scanned 5 AI frameworks for EU AI Act compliance. Here&rsquo;s what 404 patterns <span class="hl">found.</span></h1>
+    <p class="standfirst">Your compliance surface doesn&rsquo;t start with the code you write. It starts with the framework you import. We ran <a href="https://github.com/kuzivaai/getregula">Regula</a> against the source code of PyTorch, HuggingFace Transformers, LangChain, LlamaIndex, and CrewAI &mdash; five frameworks that collectively power most of what gets called &ldquo;AI&rdquo; in production today.</p>
+</div>
+
+<div class="blog-sep"></div>
+
+<div class="blog-body">
+
+    <section id="why-frameworks">
+        <h2>Why scan frameworks, not apps?</h2>
+
+        <p>Our <a href="/blog/blog-scanning-10-ai-apps.html">previous post</a> scanned 10 open-source AI applications and found 553 findings. That told us what developers are building. This post asks a different question: what does the foundation layer look like?</p>
+
+        <p>Frameworks don&rsquo;t make deployment decisions. They don&rsquo;t decide whether a chatbot runs in a hospital or a toy shop. But they establish patterns that propagate into every application built on top of them. A model-loading library that uses <code>pickle</code> deserialization carries a cybersecurity surface (Article 15) into every project that imports it. An agent framework that pipes LLM output to <code>subprocess.run</code> carries a human oversight surface (Article 14) into every agent built with it.</p>
+
+        <p>So we scanned them.</p>
+    </section>
+
+    <section id="the-frameworks">
+        <h2>The frameworks</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Framework</th>
+                    <th>Stars</th>
+                    <th>What it does</th>
+                    <th>Source files</th>
+                    <th>Findings</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="https://github.com/huggingface/transformers">HuggingFace Transformers</a></td>
+                    <td>159,867</td>
+                    <td>Pre-trained model library (NLP, vision, audio)</td>
+                    <td>4,255</td>
+                    <td>175</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/run-llama/llama_index">LlamaIndex</a></td>
+                    <td>48,882</td>
+                    <td>Data framework for LLM applications</td>
+                    <td>4,594</td>
+                    <td>163</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/pytorch/pytorch">PyTorch</a></td>
+                    <td>99,411</td>
+                    <td>Deep learning framework</td>
+                    <td>7,010</td>
+                    <td>93</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/crewAIInc/crewAI">CrewAI</a></td>
+                    <td>49,778</td>
+                    <td>Multi-agent orchestration framework</td>
+                    <td>1,104</td>
+                    <td>78</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/langchain-ai/langchain">LangChain</a></td>
+                    <td>134,779</td>
+                    <td>LLM application framework</td>
+                    <td>2,463</td>
+                    <td>53</td>
+                </tr>
+                <tr>
+                    <td><strong>Total</strong></td>
+                    <td><strong>492,717</strong></td>
+                    <td></td>
+                    <td><strong>19,426</strong></td>
+                    <td><strong>562</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>Scanned with <a href="https://github.com/kuzivaai/getregula">Regula v1.7.0</a> (404 risk patterns across EU AI Act, OWASP LLM Top 10, and OWASP Agentic Security). Under 4 seconds per framework except PyTorch (7,010 files, ~30 minutes).</p>
+    </section>
+
+    <section id="what-we-found">
+        <h2>What we found</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Findings</th>
+                    <th>%</th>
+                    <th>What it means</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>AI security</td>
+                    <td>304</td>
+                    <td>54.1%</td>
+                    <td>Unsafe deserialization, sensitive data in prompts, unbounded generation &mdash; maps to OWASP LLM Top 10 and Article 15</td>
+                </tr>
+                <tr>
+                    <td>Agent autonomy</td>
+                    <td>104</td>
+                    <td>18.5%</td>
+                    <td>LLM output flowing to system commands, file writes, HTTP calls without human oversight gates</td>
+                </tr>
+                <tr>
+                    <td>Limited risk</td>
+                    <td>57</td>
+                    <td>10.1%</td>
+                    <td>Chatbot interfaces, synthetic content generation &mdash; Article 50 transparency obligations</td>
+                </tr>
+                <tr>
+                    <td>High risk</td>
+                    <td>80</td>
+                    <td>14.2%</td>
+                    <td>Patterns associated with employment, biometric, education, or safety-critical contexts</td>
+                </tr>
+                <tr>
+                    <td>Credential exposure</td>
+                    <td>17</td>
+                    <td>3.0%</td>
+                    <td>API keys or tokens detected in source &mdash; Article 15 cybersecurity relevance</td>
+                </tr>
+                <tr>
+                    <td>Prohibited</td>
+                    <td>0</td>
+                    <td>0%</td>
+                    <td>No prohibited practice patterns found in any framework</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>Compare this to the <a href="/blog/blog-scanning-10-ai-apps.html">application-level scan</a>: when we scanned 10 AI apps, agent autonomy was the top category at 56.6%. In frameworks, AI security dominates at 54.1%. That makes sense. Frameworks handle the plumbing (model loading, data serialization, API wiring). Applications make the deployment decisions.</p>
+
+        <p>Zero prohibited findings. Frameworks don&rsquo;t implement social scoring or subliminal manipulation. If you&rsquo;re worried about Article 5, look at what you&rsquo;re building with the framework, not the framework itself.</p>
+    </section>
+
+    <section id="framework-profiles">
+        <h2>Each framework carries a different compliance profile</h2>
+
+        <p>We didn&rsquo;t expect the differences to be this stark.</p>
+
+        <h3>HuggingFace Transformers: cybersecurity surface (65% AI security)</h3>
+
+        <p>113 of <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/framework_scan_2026_04">175 findings</a> are AI security patterns. Transformers loads, saves, and converts models across dozens of formats. That means deserialization code paths and model weight handling, which trigger Article 15&rsquo;s cybersecurity requirements if the system qualifies as high-risk.</p>
+
+        <p>It also had 28 high-risk findings, the highest count of any framework. Transformers is used in computer vision, speech recognition, and NLP classification, all of which can land in Annex III high-risk categories depending on how they&rsquo;re deployed.</p>
+
+        <p>If you&rsquo;re building on Transformers, your main compliance concern is cybersecurity: verifying model integrity, securing the deserialization pipeline, documenting provenance.</p>
+
+        <h3>CrewAI: human oversight surface (72% agent autonomy)</h3>
+
+        <p>56 of <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/framework_scan_2026_04">78 findings</a> are agent autonomy patterns. CrewAI&rsquo;s entire purpose is to let AI agents take actions, and the scan reflects that: LLM output flowing to tool execution, task delegation between agents, autonomous decision loops.</p>
+
+        <p>If you deploy a CrewAI-based system in a high-risk context, Article 14 requires that humans can effectively oversee it. Confirmation gates, audit trails, the ability to interrupt agent decisions.</p>
+
+        <p>CrewAI provides some of these primitives (human input steps, callbacks). The scan can&rsquo;t tell whether your specific pipeline actually uses them. That&rsquo;s on you.</p>
+
+        <h3>PyTorch: high-risk surface (41% high-risk, 57% AI security)</h3>
+
+        <p><a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/framework_scan_2026_04">93 findings</a>, split between AI security (53) and high-risk (38). PyTorch&rsquo;s 38 high-risk findings are the highest of any framework, which makes sense: it&rsquo;s the infrastructure behind computer vision, speech processing, and classification systems that regularly land in Annex III high-risk categories.</p>
+
+        <p>The AI security findings come from model serialization (<code>torch.save</code>/<code>torch.load</code> using pickle), CUDA memory handling, and distributed training patterns. The high-risk findings come from PyTorch&rsquo;s use in biometric processing, safety-critical systems, and education assessment contexts.</p>
+
+        <p>Notably, only 2 agent autonomy findings. PyTorch doesn&rsquo;t orchestrate agents; it trains and serves models. The compliance surface is cybersecurity and deployment context, not oversight.</p>
+
+        <h3>LlamaIndex: mixed surface with credential exposure</h3>
+
+        <p><a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/framework_scan_2026_04">163 findings</a>, the highest count. 98 are AI security, mostly from its data connectors and document processing pipelines. LlamaIndex connects to dozens of external data sources (databases, APIs, file systems, cloud storage), and each connection point is an attack surface.</p>
+
+        <p>The 16 credential exposure findings are the interesting ones. LlamaIndex&rsquo;s integration layer handles API keys for vector databases, LLM providers, and data sources. Some of these appear in example code and test fixtures. Developers copy-paste examples. If the example has something that looks like a real API key, it ends up in production.</p>
+
+        <p>28 agent autonomy findings come from its query engine and agent capabilities, which route user queries to retrieval and generation pipelines.</p>
+
+        <h3>LangChain: relatively clean for its size</h3>
+
+        <p>53 findings across 2,463 source files. Surprisingly low for a project with 134K stars. LangChain&rsquo;s monorepo splits functionality into small packages (<code>langchain-core</code>, <code>langchain-community</code>, etc.), so patterns don&rsquo;t concentrate in one place.</p>
+
+        <p>Top indicators: sensitive information disclosure (18) and system command execution (9). The agent patterns exist (LangChain has tool-calling and agent execution) but they&rsquo;re spread across packages rather than concentrated in a single orchestration layer.</p>
+    </section>
+
+    <section id="what-this-means">
+        <h2>What this means for teams choosing frameworks</h2>
+
+        <p>Your compliance surface is partly inherited. Choosing CrewAI for your agent pipeline means inheriting a human oversight obligation. Choosing Transformers for model serving means inheriting a cybersecurity obligation. These aren&rsquo;t bad things. They&rsquo;re the baseline engineering requirements for that type of work. But you should know about them before you start building.</p>
+
+        <p>The framework-level story is AI security, not agent autonomy. When we scanned applications, agent autonomy dominated. When we scanned frameworks, AI security dominated. Frameworks create the security surface. Applications create the oversight surface. Different conversations, different teams.</p>
+
+        <p>Article 5 is an application-layer concern. No framework ships social scoring or subliminal manipulation. If you&rsquo;re evaluating prohibited-practice risk, you&rsquo;re evaluating what you build, not what you build with.</p>
+
+        <p>One thing we didn&rsquo;t expect: credential exposure in example code. LlamaIndex&rsquo;s 16 credential findings are mostly in examples and templates. Developers copy-paste examples. Framework maintainers should treat example code with the same security discipline as library code.</p>
+    </section>
+
+    <section id="depth">
+        <h2>Why 404 patterns matters</h2>
+
+        <p>Some scanning tools run 39 checks. Regula runs 404 patterns across 53 risk categories, covering the EU AI Act (Articles 5, 9-15, 50, 51-55), OWASP LLM Top 10, OWASP Agentic Security, and 18 credential patterns. The difference shows up most in the AI security category, where deserialization risks and prompt injection surfaces need specific regex matchers to avoid false positives.</p>
+
+        <p>At 39 checks, a model-loading framework looks clean. At 404, you can see the cybersecurity surface that Article 15 actually cares about.</p>
+    </section>
+
+    <section id="how-to-run">
+        <h2>Run this yourself</h2>
+
+<pre><code>pip install regula-ai
+git clone --depth 1 https://github.com/langchain-ai/langchain.git
+regula check langchain</code></pre>
+
+        <p>Regula is open-source, zero-dependency, and runs locally. No data leaves your machine. The full scan JSON for each framework in this post is available in the <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/framework_scan_2026_04">repository</a> for independent verification.</p>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        <p><em>Scans were run using Regula v1.7.0 against shallow clones of each framework&rsquo;s default branch on 25 April 2026. Star counts are as of the same date. Source file counts include Python, JavaScript, TypeScript, C/C++, and Jupyter notebooks. Findings reflect code-level patterns, not deployed system risk classifications &mdash; the EU AI Act regulates systems as deployed, not code in isolation.</em></p>
+        <p><em>The EU AI Act enforcement timeline is subject to change. The <a href="https://digital-strategy.ec.europa.eu/en/library/proposal-regulation-amending-ai-act">Omnibus simplification proposal</a> (February 2026) may push certain Annex III deadlines from August 2026 to December 2027 if adopted. It has not been enacted. All deadline references in this article reflect current law unless otherwise noted.</em></p>
+    </div>
+
+</div>
+
+<div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
+<div class="blog-body" style="margin-top:var(--s5);">
+    <h3>Keep reading</h3>
+    <ul>
+        <li><a href="/blog/blog-scanning-10-ai-apps.html">I scanned 10 open-source AI apps for EU AI Act compliance</a> &mdash; 553 findings across 219,000-star projects: what compliance looks like in real codebases</li>
+        <li><a href="/blog/blog-article-5-prohibited-practices.html">EU AI Act Article 5 is already live</a> &mdash; Scanning your code for prohibited AI practices</li>
+        <li><a href="/blog/blog-omnibus-decision-framework.html">August 2026 or December 2027?</a> &mdash; A developer&rsquo;s guide to the Omnibus uncertainty</li>
+    </ul>
+    <p style="margin-top:48px;font-size:13px;color:#707090;">
+        <a href="https://news.ycombinator.com/submitlink?u=https://getregula.com/blog/blog-scanning-5-frameworks.html&t=We%20scanned%205%20AI%20frameworks%20for%20EU%20AI%20Act%20compliance.%20Here%E2%80%99s%20what%20404%20patterns%20found." rel="noopener" target="_blank" style="color:#707090;">Discuss on Hacker News</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://github.com/kuzivaai/getregula" rel="noopener" target="_blank" style="color:#707090;">View on GitHub</a>
+    </p>
+</div>
+
+</article>
+</main>
+
+<footer style="text-align:center;padding:48px 24px;font-size:13px;color:#707090;">
+    &copy; 2026 Regula &mdash; Open-source EU AI Act compliance for code.
+    <br>
+    <a href="/" style="color:#707090;">Home</a> &middot;
+    <a href="https://github.com/kuzivaai/getregula" style="color:#707090;">GitHub</a> &middot;
+    <a href="/blog/writing.html" style="color:#707090;">Blog</a>
+</footer>
+
+</body>
+</html>
