@@ -1224,9 +1224,31 @@ def test_gpai_inference_not_training():
 
 # ── Hook Integration Tests ──────────────────────────────────────────
 
+class _HookNotAvailable(Exception):
+    """Raised when hooks/pre_tool_use.py is not present (not tracked in git)."""
+
+
+def _skip_if_no_hooks():
+    """Skip test if hooks/ directory is not present (not tracked in git).
+
+    Uses pytest.skip when running under pytest, _HookNotAvailable when
+    running under the custom test runner (which catches it as a skip).
+    """
+    hook_path = Path(__file__).parent.parent / "hooks" / "pre_tool_use.py"
+    if not hook_path.exists():
+        # Under pytest, use pytest.skip so it shows as SKIPPED not FAILED
+        try:
+            import pytest as _pt
+            _pt.skip("hooks/pre_tool_use.py not present (local dev file)")
+        except ImportError:
+            pass
+        raise _HookNotAvailable("hooks/pre_tool_use.py not present")
+
+
 def _run_hook(tool_name: str, tool_input: dict) -> tuple:
     """Run the pre_tool_use hook with given input, return (json_output, exit_code)."""
     import subprocess
+    _skip_if_no_hooks()
     hook_path = str(Path(__file__).parent.parent / "hooks" / "pre_tool_use.py")
     input_json = json.dumps({"tool_name": tool_name, "tool_input": tool_input})
     result = subprocess.run(
@@ -1241,7 +1263,8 @@ def _run_hook(tool_name: str, tool_input: dict) -> tuple:
 
 
 def test_hook_prohibited_block():
-    """Hook blocks prohibited patterns with exit code 2"""
+    """Hook blocks prohibited patterns with exit code 2 (requires local hooks/)"""
+    _skip_if_no_hooks()
     output, code = _run_hook("Bash", {"command": "python3 social_credit_scoring.py"})
     assert_eq(code, 2, "prohibited exits with code 2")
     decision = output.get("hookSpecificOutput", {}).get("permissionDecision")
@@ -1252,7 +1275,8 @@ def test_hook_prohibited_block():
 
 
 def test_hook_high_risk_allow_with_iso():
-    """Hook allows high-risk with ISO 42001 controls in context"""
+    """Hook allows high-risk with ISO 42001 controls in context (requires local hooks/)"""
+    _skip_if_no_hooks()
     output, code = _run_hook("Bash", {"command": "python3 -c 'import sklearn; cv_screening()'"})
     assert_eq(code, 0, "high-risk exits with code 0")
     decision = output.get("hookSpecificOutput", {}).get("permissionDecision")
@@ -1263,7 +1287,8 @@ def test_hook_high_risk_allow_with_iso():
 
 
 def test_hook_secret_block():
-    """Hook blocks high-confidence secrets with exit code 2"""
+    """Hook blocks high-confidence secrets with exit code 2 (requires local hooks/)"""
+    _skip_if_no_hooks()
     output, code = _run_hook("Bash", {"command": "curl -H 'Authorization: Bearer sk-abcdefghijklmnopqrstuvwxyz12345' api.openai.com"})
     assert_eq(code, 2, "secret exits with code 2")
     decision = output.get("hookSpecificOutput", {}).get("permissionDecision")
@@ -1274,7 +1299,8 @@ def test_hook_secret_block():
 
 
 def test_hook_clean_pass():
-    """Hook allows clean operations with exit 0"""
+    """Hook allows clean operations with exit 0 (requires local hooks/)"""
+    _skip_if_no_hooks()
     output, code = _run_hook("Bash", {"command": "git status"})
     assert_eq(code, 0, "clean command exits with code 0")
     decision = output.get("hookSpecificOutput", {}).get("permissionDecision")
@@ -6824,12 +6850,20 @@ if __name__ == "__main__":
 
     print(f"Running {len(tests)} tests...\n")
 
+    skipped = 0
     for test in tests:
         try:
             test()
+        except _HookNotAvailable:
+            skipped += 1
+            print(f"  SKIP  {test.__name__} (hooks not available)")
         except Exception as e:
-            helpers.failed += 1
-            print(f"  EXCEPTION in {test.__name__}: {e}")
+            if "Skipped" in type(e).__name__:
+                skipped += 1
+                print(f"  SKIP  {test.__name__} ({e})")
+            else:
+                helpers.failed += 1
+                print(f"  EXCEPTION in {test.__name__}: {e}")
 
     print(f"\n{'=' * 50}")
     print(f"Results: {helpers.passed} passed, {helpers.failed} failed ({len(tests)} test functions)")

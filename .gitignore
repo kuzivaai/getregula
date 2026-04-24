@@ -34,7 +34,6 @@ token.json
 CLAUDE.md
 .claude/
 .claudeignore
-.claim-allowlist
 hooks/
 .ci-heal/
 .playwright-cli/
