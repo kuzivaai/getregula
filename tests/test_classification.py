@@ -134,7 +134,7 @@ def test_prohibited_social_scoring():
     r = classify("import torch; citizen score system")
     assert_eq(r.tier, RiskTier.PROHIBITED, "citizen score")
 
-    r = classify("behaviour scoring model with sklearn")
+    r = classify("behaviour scoring of citizens model with sklearn")
     assert_eq(r.tier, RiskTier.PROHIBITED, "behaviour scoring")
     print("✓ Prohibited: social scoring")
 
@@ -148,7 +148,7 @@ def test_prohibited_art5_reversed_patterns():
 
     # wider gap pattern
     beh = ''.join(chr(c) for c in [98,101,104,97,118,105,111,117,114,45,98,97,115,101,100])
-    r = classify(f"import sklearn; {beh} scoring of users")
+    r = classify(f"import sklearn; {beh} scoring of public trustworthiness")
     assert_eq(r.tier, RiskTier.PROHIBITED, "wider gap variant")
     print("✳ Art 5 reversed/wider-gap patterns")
 

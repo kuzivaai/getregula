@@ -12,6 +12,7 @@ via SHA-256 content hashes.
 
 import hashlib
 import json
+import re
 import sys
 import zipfile
 from datetime import datetime, timezone
@@ -49,7 +50,8 @@ def generate_evidence_pack(
     from remediation_plan import generate_plan, format_plan_text
 
     project = Path(project_path).resolve()
-    name = project_name or project.name
+    # Sanitise project name to prevent path traversal (OWASP input validation)
+    name = re.sub(r'[^a-zA-Z0-9_\-]', '_', project_name or project.name)
     now = datetime.now(timezone.utc)
     date_str = now.strftime("%Y-%m-%d")
     pack_name = f"evidence-pack-{name}-{date_str}"

@@ -8,11 +8,11 @@
     "tests": "tests/test_classification.py (grep '^def test_')"
   },
   "counts": {
-    "commands": 65,
+    "commands": 60,
     "patterns": {
-      "tier_groups": 52,
-      "tier_regexes": 387,
-      "ai_indicators": 182,
+      "tier_groups": 53,
+      "tier_regexes": 404,
+      "ai_indicators": 212,
       "gpai_training": 17,
       "architecture": 38,
       "data_source": 10,

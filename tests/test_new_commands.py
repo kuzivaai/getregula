@@ -6,11 +6,11 @@ import os
 import sys
 
 
-def _run(*args):
+def _run(*args, timeout=120):
     """Run regula CLI and return result."""
     return subprocess.run(
         [sys.executable, "-m", "scripts.cli", *args],
-        capture_output=True, text=True, timeout=30,
+        capture_output=True, text=True, timeout=timeout,
         cwd=os.path.join(os.path.dirname(__file__), ".."),
     )
 

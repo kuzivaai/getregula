@@ -14,6 +14,7 @@ timestamps for audit-grade independence.
 
 import json
 import os
+import re
 import sys
 import time
 import uuid
@@ -68,16 +69,34 @@ def _extract_response(response) -> dict:
     return data
 
 
+_SAFE_SYSTEM_ID = re.compile(r'^[A-Za-z0-9_\-\.]{1,128}$')
+
+
+def _validate_system_id(system_id: str) -> str:
+    """Validate system_id to prevent path traversal (OWASP path traversal prevention)."""
+    if not _SAFE_SYSTEM_ID.match(system_id):
+        raise ValueError(
+            f"Invalid system_id: {system_id!r}. "
+            "Use alphanumeric characters, hyphens, underscores, and dots only (max 128 chars)."
+        )
+    return system_id
+
+
 def _get_monitor_dir(system_id: str, base_dir: Optional[str] = None) -> Path:
     """Return the monitor log directory for a system."""
+    _validate_system_id(system_id)
     if base_dir:
-        d = Path(base_dir) / system_id
+        parent = Path(base_dir).resolve()
     else:
-        d = Path(os.environ.get(
+        parent = Path(os.environ.get(
             "REGULA_MONITOR_DIR",
-            Path.home() / ".regula" / "monitor",
-        )) / system_id
-    d.mkdir(parents=True, exist_ok=True)
+            str(Path.home() / ".regula" / "monitor"),
+        )).resolve()
+    d = parent / system_id
+    # Belt-and-suspenders: verify resolved path is within parent
+    if not str(d.resolve()).startswith(str(parent)):
+        raise ValueError(f"system_id resolved outside monitor directory: {system_id!r}")
+    d.mkdir(parents=True, exist_ok=True, mode=0o700)
     return d
 
 
@@ -170,7 +189,7 @@ class Trace:
             "output_tokens": None,
             "latency_ms": elapsed_ms,
             "status": "error",
-            "error": f"{type(exception).__name__}: {exception}",
+            "error": (f"{type(exception).__name__}: {exception}" if exception is not None else "unknown error"),
             "consequential": self._session.defaults.get("consequential", False),
             "human_oversight": {
                 "required": self._session.defaults.get("human_oversight_required", False),
@@ -238,19 +257,30 @@ class MonitorSession:
         return t
 
     def _append_event(self, event: dict) -> None:
-        """Write event to log file with hash chain and file locking."""
-        log_file = _get_monitor_file(self.system_id, self._monitor_dir)
+        """Write event to log file with hash chain and file locking.
 
-        with open(log_file, "a", encoding="utf-8") as f:
-            _lock_file(f)
-            try:
-                previous_hash = _read_last_hash(log_file)
-                event["previous_hash"] = previous_hash
-                event["current_hash"] = compute_hash(event, previous_hash)
-                f.write(json.dumps(event, sort_keys=True) + "\n")
-                f.flush()
-            finally:
-                _unlock_file(f)
+        Monitoring failures must never crash the instrumented application.
+        OSError (disk full, permission denied) is caught and logged to stderr.
+        """
+        try:
+            log_file = _get_monitor_file(self.system_id, self._monitor_dir)
+            # Harden file permissions (Article 12 data confidentiality)
+            if not log_file.exists():
+                log_file.touch(mode=0o600, exist_ok=True)
+
+            with open(log_file, "a", encoding="utf-8") as f:
+                _lock_file(f)
+                try:
+                    previous_hash = _read_last_hash(log_file)
+                    event["previous_hash"] = previous_hash
+                    event["current_hash"] = compute_hash(event, previous_hash)
+                    f.write(json.dumps(event, sort_keys=True) + "\n")
+                    f.flush()
+                finally:
+                    _unlock_file(f)
+        except OSError as e:
+            print(f"regula monitor: failed to write event: {e}", file=sys.stderr)
+            return  # monitoring failure must not crash the application
 
         self._events.append(event)
 
@@ -262,7 +292,7 @@ class MonitorSession:
         overrides = [e for e in self._events
                      if e.get("human_oversight", {}).get("action") in
                      ("modified", "rejected")]
-        latencies = [e["latency_ms"] for e in inferences if e.get("latency_ms")]
+        latencies = [e["latency_ms"] for e in inferences if e.get("latency_ms") is not None]
         models = list({e.get("model") for e in inferences if e.get("model")})
 
         safety_events = {}
