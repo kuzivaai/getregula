@@ -100,11 +100,6 @@ def _current_pattern_version() -> str:
         return f"{VERSION}-patterns"  # Fallback when policy file unavailable
 
 
-# Primary commands shown in default --help (progressive disclosure).
-# All 52 commands remain functional — use --help-all to see them.
-_PRIMARY_COMMANDS = {
-    "check", "comply", "gap", "plan", "init", "quickstart", "demo",
-}
 
 
 def _run_bare_scan() -> None:
@@ -285,25 +280,12 @@ def _enrich_findings_with_jurisdictions(findings, jurisdiction_pairs):
     Mutates findings in place, adding a 'jurisdictions' key with a dict of
     {jurisdiction_short_name: [label_strings]}.
     """
-    from framework_mapper import map_to_frameworks, _FRAMEWORK_KEYS, format_mapping_text
+    from framework_mapper import map_to_frameworks, _FRAMEWORK_KEYS
 
     # Build the list of internal framework keys to query
     fw_keys = [fw_key for _, fw_key in jurisdiction_pairs]
 
     # Jurisdiction display names
-    _JURISDICTION_DISPLAY = {
-        'eu': 'EU AI Act',
-        'colorado': 'Colorado SB-205',
-        'korea': 'South Korea AI Basic Act',
-        'canada': 'Canada AIDA',
-        'singapore': 'Singapore AI Governance',
-        'oecd': 'OECD AI Principles',
-        'uk': 'UK ICO AI Guidance',
-        'brazil': 'LGPD (Brazil)',
-        'nist': 'NIST AI RMF',
-        'iso': 'ISO/IEC 42001',
-    }
-
     for finding in findings:
         articles = finding.get("articles") or []
         if not articles:
@@ -335,8 +317,6 @@ def _extract_jurisdiction_label(short_name, internal_key, data, finding):
     """Extract a single human-readable label from framework mapping data."""
     category = finding.get("category", "")
     desc = finding.get("description", "")
-    context = category or desc
-
     if internal_key == "eu_ai_act":
         title = data.get("title", "")
         return f"EU AI Act: {title}" if title else "EU AI Act"
@@ -1576,8 +1556,6 @@ def _make_progressive_help(parser, subparsers):
     Progressive disclosure (per clig.dev, Atlassian): show the 6 commands
     most users need. The full set is available via --help-all.
     """
-    original_format_usage = parser.format_help
-
     def progressive_help():
         # Build a condensed help showing only primary commands
         lines = []

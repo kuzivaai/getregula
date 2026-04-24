@@ -39,7 +39,7 @@ Regula looks for `target_elderly`, `exploit_disabil`, `vulnerable_group_target`.
 
 Evaluating or classifying people based on their social behaviour or personal traits, where this leads to detrimental treatment that is disproportionate to the context. The prohibition applies to scoring by public authorities or on their behalf.
 
-Patterns: `social_score`, `social_credit`, `citizen_score`, `behaviour_scoring` (when combined with terms like `citizen`, `public`, `government`, or `trustworthy`). Regula uses 6 patterns here because social scoring shows up in a lot of different phrasings. But a gamification leaderboard is not social scoring. More on false positives below.
+Patterns: `social_score`, `social_credit`, `citizen_score`, `behaviour_scoring` (when combined with terms like `citizen`, `public`, `government`, or `trustworthy`). Social scoring shows up in a lot of different phrasings, so the category uses several matchers. But a gamification leaderboard is not social scoring. More on false positives below.
 
 ### Article 5(1)(d) — Individual criminal risk prediction
 
