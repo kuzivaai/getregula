@@ -143,8 +143,8 @@ def _run_bare_scan() -> None:
         assessment = assess_compliance(project)
         gap_score = assessment.get("overall_score", 0)
         highest_risk = assessment.get("highest_risk", "unknown")
-    except Exception:
-        pass  # gap assessment is best-effort
+    except (ImportError, OSError, KeyError, ValueError, TypeError) as e:
+        print(f"  Warning: gap assessment unavailable ({type(e).__name__})", file=sys.stderr)
 
     elapsed = time.time() - start
 

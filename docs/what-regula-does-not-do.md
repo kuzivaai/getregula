@@ -26,7 +26,7 @@ produces useful signal:
 | **Art. 5** | Prohibited practices | Pattern-detects social scoring, subliminal manipulation, real-time biometric identification, emotion inference in workplaces. Human review required for intent. | High for pattern match; legal determination is human |
 | **Art. 10** | Data governance | Training-data file references, dataset-loading patterns, documented data sources | Medium — detects presence/absence, not quality |
 | **Art. 11 + Annex IV** | Technical documentation | Generates a pre-filled Annex IV template from scan findings and dependency graph (`regula conform`) | Scaffold only — human must complete |
-| **Art. 12** | Event logging | Presence of logging calls near AI model invocations, audit-trail patterns | Medium — detects presence, not completeness |
+| **Art. 12** | Event logging | Static: detects logging calls near AI model invocations. Runtime: `regula monitor` SDK instruments LLM calls with hash-chained JSONL logs (model, tokens, latency, oversight status). | Medium — static detects presence; runtime SDK provides structured logging but is self-attesting |
 | **Art. 13** | Transparency | User-facing AI disclosure strings, consent flows, Art. 50 markers | Medium |
 | **Art. 14** | Human oversight | Cross-file flow analysis for review-before-action gates (`regula oversight`) | High for pattern match; design determination is human |
 | **Art. 15** | Accuracy, robustness, cybersecurity | Error handling around model calls, input validation, known unsafe serialisation (`pickle`, `joblib`) | Medium — detects anti-patterns, not robustness |
@@ -174,22 +174,15 @@ Regula is only the last item on that list.
 
 McKinsey's April 2026 [AI Transformation Manifesto](https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/the-ai-transformation-manifesto)
 (Singla, Sukharevsky, Lamarre, Smaje & Levin) independently validates
-this scope boundary:
-
-> "Adoption often fails because adjacent upstream and downstream
-> processes are left unchanged. An AI solution may predict equipment
-> failures days in advance, but if maintenance still follows
-> calendar-based scheduling, nothing happens." — Theme 9
+this scope boundary: adoption fails when adjacent processes are left
+unchanged. A code scanner that detects risk patterns cannot verify that
+an organisation has acted on those findings.
 
 This is exactly why code scanning alone does not create compliance.
 Regula reads your code. Your organisation must still operate the risk
 management system, quality management system, post-market monitoring,
 and fundamental-rights impact assessment that the code scanning
 cannot verify.
-
-See [`docs/references/mckinsey-ai-manifesto-2026.md`](references/mckinsey-ai-manifesto-2026.md)
-for the full theme-by-theme mapping (including three themes that are
-honestly excluded because they don't apply to a CLI tool).
 
 ## Why this document exists
 
@@ -207,5 +200,5 @@ issue and tell us which sentence is wrong.
 
 ---
 
-*Last reviewed: 2026-04-11. Canonical version lives in the repository
+*Last reviewed: 2026-04-24. Canonical version lives in the repository
 at [docs/what-regula-does-not-do.md](https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md).*

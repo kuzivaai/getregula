@@ -19,14 +19,23 @@ from monitor import _get_monitor_dir
 
 
 def _read_all_events(system_id: str, monitor_dir: str = None) -> list:
-    """Read all events from all log files for a system."""
+    """Read all events from all log files for a system.
+
+    Tolerates corrupt JSONL lines (partial writes, power failures) by
+    skipping them with a stderr warning rather than crashing.
+    """
     log_dir = _get_monitor_dir(system_id, monitor_dir)
     events = []
     for f in sorted(log_dir.glob("monitor_*.jsonl")):
         for line in f.read_text(encoding="utf-8").splitlines():
             line = line.strip()
-            if line:
+            if not line:
+                continue
+            try:
                 events.append(json.loads(line))
+            except json.JSONDecodeError:
+                print(f"regula monitor: skipping corrupt line in {f.name}", file=sys.stderr)
+                continue
     return events
 
 
@@ -73,7 +82,7 @@ def cmd_monitor_report(args) -> dict:
     reviewed = [e for e in inferences
                 if e.get("human_oversight", {}).get("performed")]
 
-    latencies = [e["latency_ms"] for e in inferences if e.get("latency_ms")]
+    latencies = [e["latency_ms"] for e in inferences if e.get("latency_ms") is not None]
     models = sorted({e.get("model") for e in inferences if e.get("model")})
 
     safety_counts = {}
@@ -138,7 +147,7 @@ def cmd_monitor_status(args) -> dict:
                 files = list(d.glob("monitor_*.jsonl"))
                 total_bytes = sum(f.stat().st_size for f in files)
                 event_count = sum(
-                    sum(1 for line in f.read_text().splitlines() if line.strip())
+                    sum(1 for line in f.read_text(encoding="utf-8").splitlines() if line.strip())
                     for f in files
                 )
                 systems.append({

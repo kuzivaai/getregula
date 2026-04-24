@@ -35,7 +35,7 @@ PROHIBITED_PATTERNS = {
         "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "social_scoring": {
-        "patterns": [r"\bsocial.?scor(?:e|ing)\b", r"\bsocial.?credit.?(?:scor|system|rating)", r"\bsocial.?credit\b", r"\bcitizen.?score", r"\bscore.{0,5}citizen", r"\bbehaviour.{0,10}scor"],
+        "patterns": [r"\bsocial.?scor(?:e|ing)\b", r"\bsocial.?credit.?(?:scor|system|rating)", r"\bsocial.?credit\b", r"\bcitizen.?score", r"\bscore.{0,5}citizen", r"\bbehaviour.{0,10}scor.{0,40}(?:citizen|public|authorit|government|civic|trustworth)"],
         "article": "5(1)(c)",
         "description": "Social scoring by public authorities or on their behalf",
         "conditions": "Prohibited when evaluating or classifying persons based on social behaviour or personal traits, leading to detrimental treatment disproportionate to context.",
@@ -459,7 +459,7 @@ HIGH_RISK_PATTERNS = {
         # security, motor vehicles (and their trailers), agricultural vehicles,
         # marine equipment, and railway systems. AI that acts as a safety
         # component of any of these is high-risk regardless of domain.
-        "patterns": [r"\bautonomous.?vehicle", r"\bself.?driv", r"\bdriverless",
+        "patterns": [r"\bautonomous.?vehicle", r"\bself[\s_-]driv(?:ing|en|erless)\b", r"\bdriverless",
                      r"\bautomat\w*\W{0,3}driv",
                      r"\bvehicle.?control.?system", r"\baviation.?safety", r"\bmachinery.?safety",
                      r"\badas\b", r"\b(?:level[_\W]?[2-5]|l[2-5])[_\W]?(?:autonomy|automat|driv)",
@@ -634,7 +634,7 @@ AI_SECURITY_PATTERNS = {
     },
     "missing_temperature_control": {
         "patterns": [
-            r"temperature\s*[:=]\s*(?:[1-9]\.\d|[2-9]\.0|[1-9]\d+\.)",  # any float >= 1.0 (hallucination risk)
+            r"(?<!room_)(?<!water_)(?<!cpu_)(?<!body_)(?<!core_)(?<!ambient_)temperature\s*[:=]\s*(?:[1-9]\.\d|[2-9]\.0|[1-9]\d+\.)",  # AI model temperature >= 1.0 (hallucination risk)
         ],
         "owasp": "LLM09",
         "articles": ["15"],
@@ -818,6 +818,25 @@ AI_INDICATORS = {
                   r"portkey.?ai", r"portkey",
                   # Spring AI (Java)
                   r"org\.springframework\.ai",
+                  # Major ML frameworks (M14 audit — April 2026)
+                  r"import\s+jax\b", r"from\s+jax\b", r"import\s+flax\b",
+                  r"llama.?index", r"from\s+llama_index",
+                  r"import\s+gradio\b", r"gr\.Interface",
+                  r"import\s+fastai\b", r"from\s+fastai\b",
+                  r"sentence.?transformers",
+                  r"import\s+deepspeed\b",
+                  r"from\s+accelerate\b", r"import\s+accelerate\b",
+                  r"from\s+datasets\b", r"import\s+evaluate\b",
+                  r"import\s+catboost\b",
+                  r"from\s+ultralytics\b", r"import\s+ultralytics\b",
+                  r"import\s+openvino\b", r"import\s+tensorrt\b",
+                  r"from\s+detectron2\b",
+                  # Vector databases (AI data infrastructure)
+                  r"import\s+chromadb\b", r"from\s+chromadb\b",
+                  r"pinecone", r"import\s+weaviate\b",
+                  r"import\s+qdrant", r"from\s+qdrant",
+                  r"import\s+milvus\b", r"pymilvus",
+                  r"import\s+faiss\b",
                   # Edge / Mobile AI
                   r"tflite", r"tf\.lite", r"tensorflow.?lite",
                   r"coremltools", r"\.mlmodel",
@@ -896,7 +915,7 @@ GPAI_TRAINING_PATTERNS = [
     r"TrainingArguments", r"Trainer\(", r"SFTTrainer",
     r"\.compile\(.{0,30}optimizer", r"backpropagat",
     r"torch\.optim", r"tf\.keras\.optimizers",
-    r"lora", r"qlora", r"peft",
+    r"\blora\b", r"\bqlora\b", r"\bpeft\b",
 ]
 
 # Compact ISO 42001 mapping for high-risk classification output.
