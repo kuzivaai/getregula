@@ -6857,10 +6857,12 @@ if __name__ == "__main__":
         except _HookNotAvailable:
             skipped += 1
             print(f"  SKIP  {test.__name__} (hooks not available)")
-        except Exception as e:
+        except BaseException as e:
             if "Skipped" in type(e).__name__:
                 skipped += 1
                 print(f"  SKIP  {test.__name__} ({e})")
+            elif isinstance(e, (KeyboardInterrupt, SystemExit)):
+                raise
             else:
                 helpers.failed += 1
                 print(f"  EXCEPTION in {test.__name__}: {e}")
