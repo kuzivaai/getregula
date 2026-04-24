@@ -153,6 +153,10 @@
 \bfastest\b
 \$\d+\.\d+
 \b\d+\.\d+\s*MB\b
+# ---- EU AI Act Article 99(3) fine thresholds (regulatory text, not statistical claims)
+\b15\s+million\b
+# ---- Anti-superlative usage: "aren't unique" means requirements overlap across frameworks
+aren.t\s+unique
 # ---- Self-scan-results.md (transparency artefact describing its own output;
 #      each number is reproducible via `regula check .` on the stated commit)
 \bThe only WARN-tier\b
