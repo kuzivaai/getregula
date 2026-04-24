@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets — see commit
+         7ed6e47 on site/index.html for the full diagnosis. TL;DR: external
+         CSS is render-blocking, so the browser's default white canvas shows
+         for hundreds of ms on cold loads. Inline critical CSS establishes the
+         dark theme immediately; `color-scheme: dark` hints the canvas colour
+         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         so they don't block first paint. <noscript> fallback for JS off. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <title>EU AI Act Article 5 Is Already Live: Scanning Your Code for Prohibited AI Practices &mdash; Regula</title>
+    <meta name="description" content="Article 5 prohibited AI practices have been enforceable since 2 February 2025, with fines up to EUR 35 million or 7% of turnover. Here's how to scan your codebase for them.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta property="og:title" content="EU AI Act Article 5 Is Already Live: Scanning Your Code for Prohibited AI Practices">
+    <meta property="og:description" content="Article 5 prohibited AI practices have been enforceable since 2 February 2025, with fines up to EUR 35 million or 7% of turnover. Here's how to scan your codebase for them.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/blog/blog-article-5-prohibited-practices.html">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-04-25">
+    <meta property="article:author" content="The Implementation Layer">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EU AI Act Article 5 Is Already Live: Scanning Your Code for Prohibited AI Practices">
+    <meta name="twitter:description" content="Article 5 prohibited AI practices have been enforceable since 2 February 2025, with fines up to EUR 35 million or 7% of turnover. Here's how to scan your codebase for them.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+    <link rel="canonical" href="https://getregula.com/blog/blog-article-5-prohibited-practices.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/blog/blog-article-5-prohibited-practices.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/blog/blog-article-5-prohibited-practices.html">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "EU AI Act Article 5 Is Already Live: Scanning Your Code for Prohibited AI Practices",
+        "description": "Article 5 prohibited AI practices have been enforceable since 2 February 2025, with fines up to EUR 35 million or 7% of turnover. Here's how to scan your codebase for them.",
+        "url": "https://getregula.com/blog/blog-article-5-prohibited-practices.html",
+        "datePublished": "2026-04-25",
+        "dateModified": "2026-04-25",
+        "author": {
+            "@type": "Person",
+            "name": "The Implementation Layer"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Regula",
+            "url": "https://getregula.com",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://getregula.com/assets/og-image.png"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://getregula.com/blog/blog-article-5-prohibited-practices.html"
+        },
+        "keywords": ["EU AI Act", "Article 5", "prohibited AI practices", "code scanning", "AI compliance", "social scoring", "subliminal manipulation", "emotion recognition"]
+    }
+    </script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
+         If adding a Content Security Policy, migrate to a hashed <script> block. -->
+    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.css">
+        <link rel="stylesheet" href="/assets/site.css">
+    </noscript>
+    <style>
+        /* Category cards */
+        .prohibition-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: var(--s5) var(--s6);
+            margin: var(--s5) 0;
+        }
+        .prohibition-card h3 {
+            margin-top: 0;
+            font-size: 16px;
+        }
+        .prohibition-card .article-ref {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent);
+            margin-bottom: var(--s2);
+        }
+        .prohibition-card p {
+            font-size: 14px;
+            margin-bottom: var(--s2);
+        }
+        .prohibition-card code {
+            font-size: 13px;
+        }
+
+        /* CLI output block */
+        .cli-output {
+            background: #0d0d1a;
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: var(--s5) var(--s6);
+            margin: var(--s6) 0;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre;
+            color: var(--text-2);
+        }
+        .cli-output .cli-red { color: #f87171; }
+        .cli-output .cli-yellow { color: #fbbf24; }
+        .cli-output .cli-blue { color: #60a5fa; }
+        .cli-output .cli-dim { color: #707090; }
+
+        /* Warning box */
+        .warn-box {
+            background: rgba(245,158,11,0.06);
+            border: 1px solid rgba(245,158,11,0.2);
+            border-radius: var(--r-md);
+            padding: var(--s5) var(--s6);
+            margin: var(--s6) 0;
+            font-size: 14px;
+            color: var(--text-2);
+            line-height: 1.65;
+        }
+        .warn-box strong { color: var(--warn); }
+
+        /* Blog CTA */
+        .blog-cta {
+            margin: var(--s10) 0 var(--s8);
+            text-align: center;
+        }
+        .blog-cta .install-box {
+            display: inline-flex;
+            margin-bottom: var(--s4);
+        }
+        .blog-cta p {
+            font-size: 13px;
+            color: var(--text-faint);
+        }
+
+        @media (max-width: 600px) {
+            .cli-output { font-size: 11px; padding: var(--s4); }
+            .prohibition-card { padding: var(--s4); }
+        }
+    </style>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="progress-bar"></div>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <span class="active">Blog</span>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+
+<article>
+
+<div class="blog-hero">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / <a href="/blog/writing.html">Blog</a> / Article 5 Prohibited Practices
+    </div>
+    <div class="blog-meta">
+        <span>25 April 2026</span>
+        <span class="dot">&middot;</span>
+        <span>9 min read</span>
+        <span class="dot">&middot;</span>
+        <span>The Implementation Layer</span>
+    </div>
+    <h1>EU AI Act Article 5 Is Already Live: Scanning Your Code for Prohibited AI Practices</h1>
+    <p class="standfirst">Eight categories of AI practice have been illegal in the EU since 2 February 2025. The fines are up to EUR 35 million or 7% of global annual turnover. Most developers have no idea. Here's what the prohibitions actually mean in code, how to scan for them, and what to do when something gets flagged.</p>
+</div>
+
+<div class="blog-sep"></div>
+
+<div class="blog-body">
+
+    <h2>This is already law</h2>
+
+    <p>I keep meeting developers who think the EU AI Act is a future problem. Something to deal with in 2027 or 2028, once the Omnibus delay sorts itself out.</p>
+
+    <p>For high-risk systems, that might be true. The <a href="/blog/blog-omnibus-delay.html">Digital Omnibus on AI</a> proposes pushing those deadlines to late 2027 or mid-2028, and trilogue negotiations are underway.</p>
+
+    <p>But Article 5 isn't part of that delay. Article 5 has been enforceable since <strong>2 February 2025</strong>. That was over a year ago. The prohibitions are in force right now, with the highest penalty tier in the entire regulation: up to EUR 35 million, or 7% of worldwide annual turnover, whichever is higher. For context, the high-risk non-compliance penalty is 3% of turnover. Article 5 violations are penalised at more than double that rate.</p>
+
+    <p>If your codebase contains one of the eight prohibited practices and you deploy it in the EU, you're already in breach. Not "will be in breach when the deadline hits." Are, today.</p>
+
+    <h2>The eight prohibited categories</h2>
+
+    <p>Article 5 lists eight specific practices. Some are obvious. Others are narrower than you'd expect. Here's each one, and what it looks like when it shows up in code.</p>
+
+    <div class="prohibition-card">
+        <div class="article-ref">Article 5(1)(a)</div>
+        <h3>Subliminal manipulation</h3>
+        <p>AI systems that deploy techniques operating beyond a person's consciousness to materially distort their behaviour, causing or likely to cause significant harm. Think dark patterns backed by AI that the user literally can't perceive. The key word is "beyond consciousness": if the user can see the nudge, it isn't subliminal in the legal sense.</p>
+        <p>In code, Regula looks for patterns like: <code>subliminal</code>, <code>beyond_consciousness</code>, <code>subconscious_influence</code>. Developers building these systems tend to name things what they are.</p>
+    </div>
+
+    <div class="prohibition-card">
+        <div class="article-ref">Article 5(1)(b)</div>
+        <h3>Exploiting vulnerabilities</h3>
+        <p>AI systems that exploit the vulnerabilities of specific groups (due to age, disability, or socio-economic situation) to materially distort behaviour and cause significant harm. This is about targeting people because they are vulnerable, not about serving them.</p>
+        <p>Regula looks for <code>target_elderly</code>, <code>exploit_disabil</code>, <code>vulnerable_group_target</code>. The distinction matters. Building accessibility features for elderly users is fine. Building a system that targets elderly users because they're less likely to recognise a manipulative interface is not.</p>
+    </div>
+
+    <div class="prohibition-card">
+        <div class="article-ref">Article 5(1)(c)</div>
+        <h3>Social scoring</h3>
+        <p>Evaluating or classifying people based on their social behaviour or personal traits, where this leads to detrimental treatment that is disproportionate to the context. The prohibition applies to scoring by public authorities or on their behalf.</p>
+        <p>Patterns: <code>social_score</code>, <code>social_credit</code>, <code>citizen_score</code>, <code>behaviour_scoring</code> (when combined with terms like <code>citizen</code>, <code>public</code>, <code>government</code>, or <code>trustworthy</code>). Regula uses 6 patterns here because social scoring shows up in a lot of different phrasings. But a gamification leaderboard is not social scoring. More on false positives below.</p>
+    </div>
+
+    <div class="prohibition-card">
+        <div class="article-ref">Article 5(1)(d)</div>
+        <h3>Individual criminal risk prediction</h3>
+        <p>Predicting whether a person will commit a crime based solely on profiling or personality traits. The word "solely" is doing real work here. A system that uses multiple evidence sources (case facts, prior convictions with human review) may be lawful. One that predicts criminality from someone's profile alone is not.</p>
+        <p>Matched by: <code>crime_predict</code>, <code>criminal_risk_assess</code>, <code>predictive_policing</code>, <code>recidivism</code>. The <code>recidivism</code> pattern comes up most often in practice. If you're building a recidivism scoring model, look at this carefully.</p>
+    </div>
+
+    <div class="prohibition-card">
+        <div class="article-ref">Article 5(1)(e)</div>
+        <h3>Untargeted facial recognition scraping</h3>
+        <p>Creating or expanding facial recognition databases by scraping facial images from the internet or CCTV in an untargeted way. This is the Clearview AI prohibition. If your system scrapes faces from public sources to build a recognition database, it's prohibited regardless of the purpose.</p>
+        <p>Patterns: <code>face_scrap</code>, <code>facial_database_untarget</code>, <code>mass_facial_collect</code>. Straightforward.</p>
+    </div>
+
+    <div class="prohibition-card">
+        <div class="article-ref">Article 5(1)(f)</div>
+        <h3>Emotion inference in workplaces and schools</h3>
+        <p>Inferring emotions in workplace and educational settings. There's a narrow exception: medical or safety purposes, such as detecting driver fatigue or monitoring a patient's wellbeing in a clinical setting. But "let's see if our employees are happy" is prohibited.</p>
+        <p>Patterns: <code>emotion.*workplace</code>, <code>emotion.*school</code>, <code>sentiment.*employee</code>, <code>workplace.*emotion</code>, <code>employee.*emotion</code>. Regula matches these with a 40-character window between terms to catch common code structures like <code>detect_emotion(frame, context="workplace")</code>.</p>
+    </div>
+
+    <div class="prohibition-card">
+        <div class="article-ref">Article 5(1)(g)</div>
+        <h3>Biometric categorisation of sensitive attributes</h3>
+        <p>Using biometric data to categorise people by race, political opinions, trade union membership, religious beliefs, sex life, or sexual orientation. There's a narrow exception for labelling lawfully acquired biometric datasets (photo sorting, for example) where no categorisation of individuals actually occurs.</p>
+        <p>Patterns: <code>race_detect</code> (with a negative lookahead to exclude <code>race_condition</code> and <code>thread</code> contexts), <code>ethnicity_infer</code>, <code>political_opinion_biometric</code>, <code>religion_detect</code>, <code>sexual_orientation_infer</code>. The race condition guard is there because <code>race_detect</code> in a concurrent programming context is an extremely common false positive.</p>
+    </div>
+
+    <div class="prohibition-card">
+        <div class="article-ref">Article 5(1)(h)</div>
+        <h3>Real-time biometric identification in public spaces</h3>
+        <p>Real-time remote biometric identification in publicly accessible spaces for law enforcement. Narrow exceptions exist but require prior judicial authorisation: searching for victims of abduction or trafficking, preventing an imminent terrorist threat, or identifying suspects of serious criminal offences listed in Annex II.</p>
+        <p>Patterns: <code>real_time_facial_recogn</code>, <code>live_biometric_public</code>, <code>public_space_biometric</code>, <code>mass_surveillance_biometric</code>.</p>
+    </div>
+
+    <h2>What a scan actually looks like</h2>
+
+    <p>Enough theory. Here's what happens when you run <code>regula check</code> against a project that contains prohibited patterns. This is Regula's actual output format.</p>
+
+    <p>Say you have a Python file called <code>hr_analytics.py</code> that analyses employee sentiment from webcam feeds, and a <code>scoring.py</code> that builds a social credit system for a government client:</p>
+
+<div class="cli-output">$ regula check .
+
+  <span class="cli-dim">Regula v1.7.0 &mdash; EU AI Act compliance scanner</span>
+============================================================
+
+  <span class="cli-red">Verdict</span>: <span class="cli-red">PROHIBITED</span>
+  Your project contains AI practices prohibited under EU AI Act Article 5.
+  These must be removed before deployment in the EU.
+
+  Why:
+    1. hr_analytics.py:42 &mdash; Emotion inference in workplace or educational settings
+       (Art. 5)
+    2. scoring.py:17 &mdash; Social scoring by public authorities or on their behalf
+       (Art. 5)
+    3. scoring.py:89 &mdash; Social scoring by public authorities or on their behalf
+       (Art. 5)
+
+  Files scanned:       14
+  Prohibited:          3
+  Credentials:         0
+  High-risk:           1
+  Agent autonomy:      0
+  Limited-risk:        2
+  Suppressed:          0
+  Block tier:          3
+  Warn tier:           1
+  Info tier:           2
+
+  <span class="cli-red">PROHIBITED INDICATORS</span>:
+    [BLOCK] [ 92] hr_analytics.py &mdash; Emotion inference in workplace or educational settings [develop]
+    [BLOCK] [ 88] scoring.py &mdash; Social scoring by public authorities or on their behalf [develop]
+    [BLOCK] [ 85] scoring.py &mdash; Social scoring by public authorities or on their behalf [develop]
+
+============================================================
+  <span class="cli-dim">Confidence = pattern match + context analysis (0-100).</span>
+  <span class="cli-dim">Tiers: BLOCK (&gt;=80 or prohibited), WARN (50-79), INFO (&lt;50)</span>
+  <span class="cli-dim">Suppress findings: add '# regula-ignore' to file</span>
+
+  ────────────────────────────────────────────────────────
+  Next steps:
+    1. regula fix --project .         Remove prohibited practices
+    2. regula gap --project .         See which articles you need to address
+    3. regula roadmap --project .     Get a week-by-week compliance plan
+    4. regula evidence-pack --project . --bundle   Generate auditor-ready evidence</div>
+
+    <p>Three things immediately: your verdict (prohibited), which files caused it, and what to do next. The confidence scores (92, 88, 85) reflect how closely the matched code resembles a real prohibited practice. A score of 92 on an emotion-in-workplace finding means the pattern matched <code>sentiment.*employee</code> or <code>emotion.*workplace</code> with strong surrounding context.</p>
+
+    <p>All prohibited findings are automatically BLOCK tier, regardless of confidence score. There's no scenario where a prohibited pattern gets downgraded to WARN or INFO. The Act doesn't have a "sort of prohibited" category.</p>
+
+    <h2>False positives are real, and that's fine</h2>
+
+    <p>Regex-based scanning will produce false positives. That's a deliberate trade-off: I'd rather flag something that turns out to be fine than miss something that isn't.</p>
+
+    <p>Here are the most common ones I've seen across the prohibited categories:</p>
+
+    <p><strong>Emotion analysis for UX research.</strong> Running sentiment analysis on product feedback to improve your interface isn't the same as inferring emotions in a workplace setting under Article 5(1)(f). The prohibition is specifically about workplace and educational contexts. A pattern like <code>sentiment_analysis(user_feedback)</code> won't trigger the prohibited patterns because the regex requires the <code>workplace</code>, <code>school</code>, or <code>employee</code> context term nearby. But <code>sentiment_analysis(employee_feedback)</code> will, because the word <code>employee</code> appears within the 40-character match window.</p>
+
+    <p><strong>Gamification scoring.</strong> A leaderboard system that scores users on their activity in a game or app isn't social scoring under Article 5(1)(c). The prohibition requires evaluation by public authorities or on their behalf, and the scoring must lead to detrimental treatment disproportionate to the original context. If you have a variable called <code>social_score</code> in a gamification module, Regula will flag it. That's correct behaviour: document why it isn't a prohibited practice and move on.</p>
+
+    <p><strong>Race condition detection.</strong> The biometric categorisation pattern under Article 5(1)(g) includes <code>race_detect</code>. In concurrent programming, <code>detect_race_condition</code> is extremely common. Regula's pattern has a negative lookahead excluding matches followed by <code>condition</code>, <code>thread</code>, or <code>concurrent</code>. Catches most of these, but not all. If you name your mutex debugging function <code>race_detector</code>, expect a flag.</p>
+
+    <p><strong>Recidivism in academic research.</strong> If you're working on a paper about criminal justice outcomes and your code includes the word <code>recidivism</code>, Regula will flag it under Article 5(1)(d). The prohibition applies to systems that predict criminal risk based solely on profiling. Academic research analysing existing data isn't that. Document it and suppress.</p>
+
+    <h2>What to do when something gets flagged</h2>
+
+    <p>Depends on whether the flag is accurate.</p>
+
+    <p><strong>If it's a true positive:</strong> Remove or redesign the functionality before deploying in the EU. Run <code>regula fix --project .</code> for guided remediation. Article 5 doesn't have a grace period or a "comply or explain" mechanism. The practice is either prohibited or it isn't. If it is, it must not ship.</p>
+
+    <p><strong>If it's a false positive:</strong> Add a <code># regula-ignore</code> comment to the relevant line or file, with a rationale explaining why this isn't a prohibited practice. Regula tracks suppressed findings and will remind you if a suppression lacks a rationale. The suppression becomes part of your compliance evidence.</p>
+
+    <p>A suppression with rationale looks like this in your code:</p>
+
+    <pre><code># regula-ignore: social_score is a gamification leaderboard,
+# not public authority social scoring per Article 5(1)(c).
+user_social_score = calculate_engagement_points(activity_log)</code></pre>
+
+    <p><strong>If you're not sure:</strong> Get legal review. Some of these categories have exceptions that require actual legal judgment, not just a regex match. The emotion inference prohibition has a medical/safety exception. The criminal prediction prohibition hinges on whether the system uses "solely" profiling. Regula can tell you a pattern matched. It can't tell you whether your specific use case falls within a narrow exception. A lawyer can.</p>
+
+    <h2>The Omnibus doesn't change this</h2>
+
+    <p>I keep seeing this cause confusion, so I want to be direct. The <a href="/blog/blog-omnibus-delay.html">Digital Omnibus on AI</a>, currently in trilogue negotiations, proposes delaying the deadlines for <strong>high-risk AI systems</strong>. It doesn't touch Article 5.</p>
+
+    <p>The Article 5 prohibitions became enforceable on 2 February 2025. The Omnibus proposal doesn't modify that date. Neither the Council's general approach (13 March 2026) nor the Parliament's first-reading position (26 March 2026) proposed any change to the Article 5 application date. There's no version of the trilogue outcome that delays Article 5.</p>
+
+    <p>If someone on your team is saying "we can wait for the Omnibus," they're wrong about Article 5. They may be right about Annex III high-risk obligations. Not about this.</p>
+
+    <h2>The eight patterns in numbers</h2>
+
+    <p>Regula defines 8 prohibited pattern categories containing 33 individual regex patterns. Every category has <code>confidence: high</code>, <code>likelihood: high</code>, <code>impact: high</code> in the pattern definitions. That's not a configurable risk weighting. It reflects the fact that Article 5 carries the highest penalty tier in the regulation.</p>
+
+    <p>The patterns aren't trying to be clever. They match the terms that developers actually use when building these systems: <code>social_credit</code>, <code>predictive_policing</code>, <code>face_scrap</code>, <code>emotion.*workplace</code>. Intentionally direct. Prohibited practice detection isn't the place for fuzzy matching or probabilistic classification. If the pattern matches, look at it. If it's a false positive, document it and suppress it. If it isn't, stop deploying it.</p>
+
+    <h2>Run the scan</h2>
+
+    <p>Install Regula, point it at your project, and read the output. Takes about three seconds for a typical codebase. If everything comes back clean, you're done. If something gets flagged as prohibited, you now know about it before a regulator does.</p>
+
+    <div class="blog-cta">
+        <div class="install-box" onclick="copyInstall(this)">
+            <span class="dollar">$</span>
+            <span class="cmd">pipx install regula-ai && regula check .</span>
+            <span class="cp">copy</span>
+        </div>
+        <p>Scans your project for prohibited, high-risk, and limited-risk AI practices.</p>
+    </div>
+
+    <p>If you want only prohibited findings, filter with <code>regula check . --format json | python3 -c "import sys,json; d=json.load(sys.stdin); [print(f['file'],f['description']) for f in d['data']['findings'] if f['tier']=='prohibited']"</code>. But honestly, just read the full output. It isn't long, and you should know your full risk profile.</p>
+
+    <p>Article 5 isn't coming. It's here. The scan takes seconds. The fines don't.</p>
+
+    <div class="blog-sep" style="max-width:100%;"></div>
+
+    <div class="warn-box" style="margin-top: var(--s7);">
+        <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions. All regulatory dates and article references cited in this article are sourced from <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689">Regulation (EU) 2024/1689</a>. Penalty amounts are specified in Article 99(3).
+    </div>
+
+</div>
+
+<div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
+<div class="blog-body" style="margin-top:var(--s5);">
+    <h3>Keep reading</h3>
+    <ul>
+        <li><a href="/blog/blog-omnibus-delay.html">The EU AI Act Omnibus Delay: What Developers Need to Know</a> &mdash; The Omnibus delays high-risk deadlines, not Article 5</li>
+        <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act Risk Tiers in Actual Code</a> &mdash; What prohibited, high-risk, and limited-risk look like in real code</li>
+        <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act Apply to Your AI App?</a> &mdash; Quick applicability check for your product</li>
+    </ul>
+    <p style="margin-top:48px;font-size:13px;color:#707090;">
+        <a href="https://news.ycombinator.com/submitlink?u=https://getregula.com/blog/blog-article-5-prohibited-practices.html&t=EU%20AI%20Act%20Article%205%20Is%20Already%20Live%3A%20Scanning%20Your%20Code%20for%20Prohibited%20AI%20Practices" rel="noopener" target="_blank" style="color:#707090;">Discuss on Hacker News</a>
+    </p>
+</div>
+
+</article>
+
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+            </div>
+            <div class="foot-copy">Open source &middot; MIT licence &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Scroll progress bar
+    const progressBar = document.getElementById('progress-bar');
+    function updateProgress() {
+        const scrollTop = document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = pct + '%';
+    }
+
+    // Nav scroll
+    function updateNav() {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    }
+
+    window.addEventListener('scroll', () => {
+        updateProgress();
+        updateNav();
+    }, { passive: true });
+
+    // Copy install command
+    function copyInstall(el) {
+        navigator.clipboard.writeText('pipx install regula-ai && regula check .').then(() => {
+            el.classList.add('copied');
+            el.querySelector('.cp').textContent = 'copied';
+            setTimeout(() => {
+                el.classList.remove('copied');
+                el.querySelector('.cp').textContent = 'copy';
+            }, 2000);
+        });
+    }
+</script>
+
+</body>
+</html>
