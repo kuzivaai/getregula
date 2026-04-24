@@ -433,9 +433,9 @@ HIGH_RISK_PATTERNS = {
         "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "high_risk__emergency_services": {
-        # Annex III point 3(c) / point 5(e): AI systems intended to be
-        # used for dispatching or establishing priority in the dispatching
-        # of emergency first response services, including by firefighters
+        # Annex III point 5(d): AI systems intended to be used for
+        # dispatching or establishing priority in the dispatching of
+        # emergency first response services, including by firefighters
         # and medical aid.
         "patterns": [r"\bemergency[_\W]?dispatch", r"\btriage[_\W]?model",
                      r"\bfirst[_\W]?responder", r"\bemergency[_\W]?priority",
@@ -447,7 +447,7 @@ HIGH_RISK_PATTERNS = {
                      # Prompt-string templates.
                      r"(?:dispatch|triage|prioritise|prioritize)[^\"\\n]{0,30}(?:emergency|ambulance|fire|incident|first[_\W]responder)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
-        "category": "Annex III, Category 5(e)",
+        "category": "Annex III, Category 5(d)",
         "description": "Emergency services dispatch and triage",
         "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
