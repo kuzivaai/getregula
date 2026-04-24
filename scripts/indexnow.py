@@ -11,13 +11,14 @@ Requires the key file to be deployed to the live site first.
 
 import argparse
 import json
+import os
 import sys
 import urllib.request
 import urllib.error
 from pathlib import Path
 
 SITE_DIR = Path(__file__).resolve().parent.parent / "site"
-KEY = "ddf625ccd88f40018ebaf614953eb73f"
+KEY = os.environ.get("INDEXNOW_KEY", "")
 HOST = "getregula.com"
 INDEXNOW_ENDPOINTS = [
     "https://api.indexnow.org/indexnow",
@@ -85,6 +86,10 @@ def main():
 
     if not urls:
         print("No URLs to submit. Provide URLs as arguments or use --all-blogs/--sitemap.", file=sys.stderr)
+        sys.exit(1)
+
+    if not KEY:
+        print("INDEXNOW_KEY environment variable not set.", file=sys.stderr)
         sys.exit(1)
 
     urls = list(dict.fromkeys(urls))  # dedupe preserving order
