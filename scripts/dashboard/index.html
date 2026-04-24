@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regula | AI Governance Dashboard</title>
+    <style>
+      :root {
+        --bg-primary: #070711;
+        --bg-card: #0f0f1a;
+        --bg-card-hover: #151528;
+        --border: #1e1e3a;
+        --text-primary: #e2e2f0;
+        --text-secondary: #8888a8;
+        --text-muted: #55556a;
+        --accent: #6c5ce7;
+        --accent-dim: rgba(108,92,231,0.15);
+        --red: #e74c3c;
+        --red-dim: rgba(231,76,60,0.15);
+        --amber: #f39c12;
+        --amber-dim: rgba(243,156,18,0.15);
+        --green: #27ae60;
+        --green-dim: rgba(39,174,96,0.15);
+        --blue: #3498db;
+        --blue-dim: rgba(52,152,219,0.15);
+        --radius: 8px;
+        --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+        --mono: 'DM Mono', 'Fira Code', monospace;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: var(--font);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+      }
+
+      /* Layout */
+      .app { display: flex; min-height: 100vh; }
+      .sidebar {
+        width: 240px; background: var(--bg-card);
+        border-right: 1px solid var(--border);
+        padding: 24px 0; position: fixed; top: 0; left: 0;
+        height: 100vh; overflow-y: auto; z-index: 10;
+      }
+      .main { margin-left: 240px; flex: 1; padding: 32px; max-width: 1200px; }
+
+      /* Sidebar */
+      .sidebar-brand {
+        padding: 0 20px 24px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 16px;
+      }
+      .sidebar-brand h1 { font-size: 18px; font-weight: 600; letter-spacing: 1px; }
+      .sidebar-brand .subtitle {
+        font-size: 11px; color: var(--text-muted);
+        text-transform: uppercase; letter-spacing: 2px; margin-top: 4px;
+      }
+      .nav-item {
+        display: flex; align-items: center; gap: 10px;
+        padding: 10px 20px; cursor: pointer; font-size: 14px;
+        color: var(--text-secondary); transition: all 0.15s;
+        border-left: 3px solid transparent;
+      }
+      .nav-item:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+      .nav-item.active {
+        color: var(--accent); background: var(--accent-dim);
+        border-left-color: var(--accent);
+      }
+      .nav-icon { width: 18px; text-align: center; font-size: 16px; }
+      .nav-section {
+        font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+        color: var(--text-muted); padding: 16px 20px 6px; font-weight: 600;
+      }
+
+      /* Cards */
+      .card {
+        background: var(--bg-card); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+      }
+      .card-title {
+        font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px;
+        color: var(--text-muted); margin-bottom: 12px; font-weight: 600;
+      }
+
+      /* Status grid — 5-second rule: key metrics visible immediately */
+      .status-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+      .status-card {
+        background: var(--bg-card); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 20px; text-align: center;
+      }
+      .status-value { font-size: 36px; font-weight: 700; line-height: 1.2; }
+      .status-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+      .status-card.risk-prohibited { border-left: 3px solid var(--red); }
+      .status-card.risk-high { border-left: 3px solid var(--amber); }
+      .status-card.risk-limited { border-left: 3px solid var(--blue); }
+      .status-card.risk-minimal { border-left: 3px solid var(--green); }
+
+      /* Traffic light indicators */
+      .tier-badge {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 3px 10px; border-radius: 12px; font-size: 12px;
+        font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+      }
+      .tier-prohibited { background: var(--red-dim); color: var(--red); }
+      .tier-high { background: var(--amber-dim); color: var(--amber); }
+      .tier-limited { background: var(--blue-dim); color: var(--blue); }
+      .tier-minimal { background: var(--green-dim); color: var(--green); }
+
+      /* Progress bars */
+      .progress-row { margin-bottom: 14px; }
+      .progress-label {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 6px; font-size: 13px;
+      }
+      .progress-label .article { color: var(--text-primary); font-weight: 500; }
+      .progress-label .score { color: var(--text-secondary); font-size: 12px; }
+      .progress-bar {
+        height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%; border-radius: 3px; transition: width 0.6s ease;
+      }
+      .fill-red { background: var(--red); }
+      .fill-amber { background: var(--amber); }
+      .fill-green { background: var(--green); }
+      .fill-blue { background: var(--blue); }
+
+      /* Findings table */
+      .findings-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      .findings-table th {
+        text-align: left; padding: 10px 12px; font-size: 11px;
+        text-transform: uppercase; letter-spacing: 1px;
+        color: var(--text-muted); border-bottom: 1px solid var(--border);
+        font-weight: 600;
+      }
+      .findings-table td {
+        padding: 10px 12px; border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      .findings-table tr:hover td { background: var(--bg-card-hover); }
+      .file-path { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+      .finding-desc { color: var(--text-secondary); font-size: 12px; margin-top: 2px; }
+
+      /* Questionnaire */
+      .question-block {
+        padding: 16px; margin-bottom: 12px; border: 1px solid var(--border);
+        border-radius: var(--radius); background: var(--bg-card);
+      }
+      .question-text { font-size: 14px; margin-bottom: 8px; font-weight: 500; }
+      .question-help { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+      .question-options { display: flex; gap: 8px; }
+      .q-btn {
+        padding: 6px 16px; border: 1px solid var(--border); border-radius: 4px;
+        background: transparent; color: var(--text-secondary); cursor: pointer;
+        font-size: 13px; transition: all 0.15s;
+      }
+      .q-btn:hover { border-color: var(--accent); color: var(--text-primary); }
+      .q-btn.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+      /* Buttons */
+      .btn-primary {
+        padding: 10px 20px; background: var(--accent); color: white;
+        border: none; border-radius: var(--radius); cursor: pointer;
+        font-size: 14px; font-weight: 500; transition: opacity 0.15s;
+      }
+      .btn-primary:hover { opacity: 0.85; }
+      .btn-secondary {
+        padding: 10px 20px; background: transparent; color: var(--text-secondary);
+        border: 1px solid var(--border); border-radius: var(--radius);
+        cursor: pointer; font-size: 14px; transition: all 0.15s;
+      }
+      .btn-secondary:hover { border-color: var(--accent); color: var(--text-primary); }
+
+      /* Scan input */
+      .scan-input-row { display: flex; gap: 12px; margin-bottom: 24px; }
+      .scan-input {
+        flex: 1; padding: 10px 14px; background: var(--bg-primary);
+        border: 1px solid var(--border); border-radius: var(--radius);
+        color: var(--text-primary); font-family: var(--mono); font-size: 14px;
+      }
+      .scan-input:focus { outline: none; border-color: var(--accent); }
+
+      /* View management */
+      .view { display: none; }
+      .view.active { display: block; }
+
+      /* Header */
+      .page-header { margin-bottom: 24px; }
+      .page-header h2 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+      .page-header .subtitle { font-size: 13px; color: var(--text-secondary); }
+
+      /* Disclaimer */
+      .disclaimer {
+        background: var(--amber-dim); border: 1px solid rgba(243,156,18,0.3);
+        border-radius: var(--radius); padding: 12px 16px; font-size: 12px;
+        color: var(--amber); margin-bottom: 24px; line-height: 1.5;
+      }
+
+      /* Connected status */
+      .api-status {
+        padding: 8px 20px; font-size: 11px; color: var(--text-muted);
+        border-top: 1px solid var(--border); position: absolute;
+        bottom: 0; left: 0; right: 0; background: var(--bg-card);
+      }
+      .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
+      .dot-green { background: var(--green); }
+      .dot-red { background: var(--red); }
+      .dot-amber { background: var(--amber); }
+
+      /* Responsive */
+      @media (max-width: 900px) {
+        .sidebar { display: none; }
+        .main { margin-left: 0; padding: 16px; }
+        .status-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+
+      /* Donut chart */
+      .donut-container { display: flex; align-items: center; gap: 24px; }
+      .donut { width: 120px; height: 120px; }
+      .donut-legend { font-size: 13px; }
+      .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+      .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+      /* Empty state */
+      .empty-state {
+        text-align: center; padding: 60px 20px; color: var(--text-muted);
+      }
+      .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+      .empty-state p { max-width: 400px; margin: 0 auto 16px; font-size: 14px; }
+    </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-brand">
+        <h1>Regula</h1>
+        <div class="subtitle">AI Governance</div>
+      </div>
+
+      <div class="nav-section">Overview</div>
+      <div class="nav-item active" data-view="overview">
+        <span class="nav-icon">&#9632;</span> Governance Posture
+      </div>
+
+      <div class="nav-section">Assessment</div>
+      <div class="nav-item" data-view="scan">
+        <span class="nav-icon">&#9654;</span> Run Scan
+      </div>
+      <div class="nav-item" data-view="findings">
+        <span class="nav-icon">&#9872;</span> Findings
+      </div>
+      <div class="nav-item" data-view="compliance">
+        <span class="nav-icon">&#9745;</span> Compliance Gap
+      </div>
+
+      <div class="nav-section">Governance</div>
+      <div class="nav-item" data-view="questionnaire">
+        <span class="nav-icon">&#9998;</span> Self-Assessment
+      </div>
+      <div class="nav-item" data-view="timeline">
+        <span class="nav-icon">&#9201;</span> Enforcement Dates
+      </div>
+
+      <div class="nav-section">Evidence</div>
+      <div class="nav-item" data-view="audit">
+        <span class="nav-icon">&#9875;</span> Audit Trail
+      </div>
+      <div class="nav-item" data-view="export">
+        <span class="nav-icon">&#8681;</span> Export Reports
+      </div>
+
+      <div class="api-status">
+        <span class="dot dot-amber" id="apiDot"></span>
+        <span id="apiStatusText">Connecting...</span>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="main">
+
+      <!-- Overview view -->
+      <div class="view active" id="view-overview">
+        <div class="page-header">
+          <h2>Governance Posture</h2>
+          <div class="subtitle">EU AI Act readiness at a glance. Scan your project to populate.</div>
+        </div>
+
+        <div class="disclaimer">
+          Regula is a risk indication tool, not a legal opinion. Classification results require human review.
+          See <a href="https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md" style="color:var(--amber);text-decoration:underline">what Regula does not do</a>.
+        </div>
+
+        <div class="status-grid" id="statusGrid">
+          <div class="status-card risk-prohibited">
+            <div class="status-value" id="countProhibited">--</div>
+            <div class="status-label">Prohibited</div>
+          </div>
+          <div class="status-card risk-high">
+            <div class="status-value" id="countHigh">--</div>
+            <div class="status-label">High-Risk</div>
+          </div>
+          <div class="status-card risk-limited">
+            <div class="status-value" id="countLimited">--</div>
+            <div class="status-label">Limited-Risk</div>
+          </div>
+          <div class="status-card risk-minimal">
+            <div class="status-value" id="countMinimal">--</div>
+            <div class="status-label">Minimal-Risk</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="card">
+            <div class="card-title">Risk Distribution</div>
+            <div class="donut-container">
+              <svg class="donut" viewBox="0 0 36 36" id="donutChart">
+                <circle cx="18" cy="18" r="15.915" fill="none" stroke="var(--border)" stroke-width="3"/>
+              </svg>
+              <div class="donut-legend" id="donutLegend">
+                <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Prohibited</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> High-Risk</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Limited-Risk</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Minimal-Risk</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Compliance Readiness (Articles 9-15)</div>
+            <div id="complianceProgress">
+              <div class="empty-state" style="padding:20px">
+                <p style="font-size:12px;color:var(--text-muted)">Run a scan to see compliance readiness per article.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Recent Findings</div>
+          <div id="recentFindings">
+            <div class="empty-state" style="padding:20px">
+              <p style="font-size:12px;color:var(--text-muted)">No scan results yet. Use the "Run Scan" tab to scan a project.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scan view -->
+      <div class="view" id="view-scan">
+        <div class="page-header">
+          <h2>Run Scan</h2>
+          <div class="subtitle">Scan a project directory for EU AI Act compliance indicators.</div>
+        </div>
+
+        <div class="scan-input-row">
+          <input type="text" class="scan-input" id="scanPath" placeholder="/path/to/your/project" value=".">
+          <button class="btn-primary" onclick="runScan()">Scan</button>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-bottom:24px;">
+          <label style="font-size:13px;color:var(--text-secondary);display:flex;align-items:center;gap:6px;">
+            <input type="checkbox" id="skipTests" checked> Skip test files
+          </label>
+          <select id="minTier" style="padding:6px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;color:var(--text-primary);font-size:13px;">
+            <option value="minimal_risk">All tiers</option>
+            <option value="limited_risk">Limited-risk and above</option>
+            <option value="high_risk" selected>High-risk and above</option>
+            <option value="prohibited">Prohibited only</option>
+          </select>
+        </div>
+
+        <div id="scanResults">
+          <div class="empty-state">
+            <div class="icon">&#9654;</div>
+            <p>Enter a project path and press Scan. Results will appear here.</p>
+            <p style="font-size:12px;">Requires the API server: <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;font-family:var(--mono);">regula api-server</code></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Findings view -->
+      <div class="view" id="view-findings">
+        <div class="page-header">
+          <h2>Findings</h2>
+          <div class="subtitle">All risk indicators detected in the last scan.</div>
+        </div>
+
+        <div id="findingsContent">
+          <div class="empty-state">
+            <div class="icon">&#9872;</div>
+            <p>No findings yet. Run a scan first.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compliance view -->
+      <div class="view" id="view-compliance">
+        <div class="page-header">
+          <h2>Compliance Gap Analysis</h2>
+          <div class="subtitle">Assessment against EU AI Act Articles 9-15 obligations.</div>
+        </div>
+
+        <div class="disclaimer">
+          Gap analysis covers code-verifiable obligations only. Organisational obligations
+          (risk management system, quality management, fundamental rights impact assessment)
+          require the self-assessment questionnaire.
+        </div>
+
+        <div id="gapContent">
+          <div class="empty-state">
+            <div class="icon">&#9745;</div>
+            <p>Run a scan to generate the compliance gap analysis.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Questionnaire view -->
+      <div class="view" id="view-questionnaire">
+        <div class="page-header">
+          <h2>Governance Self-Assessment</h2>
+          <div class="subtitle">Organisational readiness questionnaire for EU AI Act obligations that code scanning cannot verify.</div>
+        </div>
+
+        <div class="disclaimer">
+          This is a structured questionnaire, not a compliance certificate. Answers are
+          self-reported and must be independently verified by an auditor, notified body,
+          or internal governance function.
+        </div>
+
+        <div id="questionnaireContent">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Timeline view -->
+      <div class="view" id="view-timeline">
+        <div class="page-header">
+          <h2>Enforcement Timeline</h2>
+          <div class="subtitle">Key EU AI Act compliance dates.</div>
+        </div>
+
+        <div class="card">
+          <div id="timelineContent">
+            <div class="progress-row">
+              <div class="progress-label">
+                <span class="article">2 Feb 2025 — Prohibited practices (Article 5)</span>
+                <span class="score tier-badge tier-prohibited">ENFORCED</span>
+              </div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-label">
+                <span class="article">2 Aug 2025 — GPAI obligations (Articles 51-55)</span>
+                <span class="score tier-badge tier-prohibited">ENFORCED</span>
+              </div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-label">
+                <span class="article">2 Aug 2026 — High-risk obligations (Annex III)</span>
+                <span class="score tier-badge tier-high">UPCOMING</span>
+              </div>
+            </div>
+            <div class="progress-row" style="margin-left:20px;">
+              <div class="progress-label">
+                <span class="article" style="font-size:12px;color:var(--text-muted)">
+                  Omnibus caveat: EP voted 569-45 on 26 Mar 2026 to delay high-risk deadlines to 2 Dec 2027.
+                  Trilogue ongoing. Not yet law — Aug 2026 remains the legal baseline.
+                </span>
+              </div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-label">
+                <span class="article">2 Aug 2027 — Full enforcement of all provisions</span>
+                <span class="score tier-badge tier-limited">PLANNED</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <div class="card-title">Applicable Fines</div>
+          <table class="findings-table">
+            <thead>
+              <tr><th>Violation</th><th>Maximum Fine</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Prohibited AI practices (Article 5)</td><td style="color:var(--red);font-weight:600">35M EUR or 7% global revenue</td></tr>
+              <tr><td>High-risk obligations (Articles 9-15)</td><td style="color:var(--amber);font-weight:600">15M EUR or 3% global revenue</td></tr>
+              <tr><td>Incorrect information to authorities</td><td style="color:var(--blue);font-weight:600">7.5M EUR or 1% global revenue</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Audit view -->
+      <div class="view" id="view-audit">
+        <div class="page-header">
+          <h2>Audit Trail</h2>
+          <div class="subtitle">SHA-256 hash-chained, tamper-evident scan history.</div>
+        </div>
+        <div class="card">
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">
+            Every Regula scan is logged in a tamper-evident chain. Verify integrity:
+          </p>
+          <code style="display:block;padding:12px;background:var(--bg-primary);border-radius:var(--radius);font-family:var(--mono);font-size:13px;color:var(--accent);">
+            regula audit verify
+          </code>
+          <p style="font-size:12px;color:var(--text-muted);margin-top:12px;">
+            Optional: anchor to a public RFC 3161 Time Stamp Authority with
+            <code style="font-family:var(--mono);font-size:11px;">regula audit anchor --tsa https://freetsa.org/tsr</code>
+          </p>
+        </div>
+      </div>
+
+      <!-- Export view -->
+      <div class="view" id="view-export">
+        <div class="page-header">
+          <h2>Export Reports</h2>
+          <div class="subtitle">Generate compliance artefacts for auditors and procurement teams.</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="card">
+            <div class="card-title">Scan Report</div>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Full findings with article mapping and remediation guidance.</p>
+            <div style="display:flex;gap:8px;">
+              <button class="btn-secondary" onclick="exportReport('json')">JSON</button>
+              <button class="btn-secondary" onclick="exportReport('sarif')">SARIF</button>
+              <button class="btn-secondary" onclick="exportReport('html')">HTML</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Conformity Evidence Pack</div>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Annex IV technical documentation scaffold with scan evidence.</p>
+            <button class="btn-secondary" onclick="alert('Run: regula conform /path/to/project')">Generate</button>
+          </div>
+          <div class="card">
+            <div class="card-title">AI Bill of Materials</div>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">CycloneDX 1.7 SBOM with GPAI signatory annotations.</p>
+            <button class="btn-secondary" onclick="alert('Run: regula sbom --ai-bom')">Generate</button>
+          </div>
+          <div class="card">
+            <div class="card-title">Self-Assessment Export</div>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Governance questionnaire answers as structured evidence document.</p>
+            <button class="btn-secondary" id="exportAssessment" disabled onclick="exportAssessmentJSON()">Export JSON</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // --- State ---
+    const API_BASE = window.location.origin;
+    let scanData = null;
+    let questionnaireAnswers = {};
+
+    // --- Navigation ---
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        item.classList.add('active');
+        document.getElementById('view-' + item.dataset.view).classList.add('active');
+      });
+    });
+
+    // --- API health check ---
+    async function checkAPI() {
+      try {
+        const r = await fetch(API_BASE + '/health');
+        if (r.ok) {
+          const d = await r.json();
+          document.getElementById('apiDot').className = 'dot dot-green';
+          document.getElementById('apiStatusText').textContent = 'Connected v' + (d.version || d.data?.version || '?');
+        }
+      } catch {
+        document.getElementById('apiDot').className = 'dot dot-red';
+        document.getElementById('apiStatusText').textContent = 'API offline — run: regula api-server';
+      }
+    }
+    checkAPI();
+    setInterval(checkAPI, 15000);
+
+    // --- Scan ---
+    async function runScan() {
+      const path = document.getElementById('scanPath').value.trim() || '.';
+      const skipTests = document.getElementById('skipTests').checked;
+      const minTier = document.getElementById('minTier').value;
+      const results = document.getElementById('scanResults');
+      results.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">Scanning...</div>';
+
+      try {
+        const r = await fetch(API_BASE + '/v1/check', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({path, skip_tests: skipTests, min_tier: minTier})
+        });
+        const d = await r.json();
+        scanData = d.data || d;
+        renderScanResults(scanData);
+        renderOverview(scanData);
+        renderFindings(scanData);
+      } catch (e) {
+        results.innerHTML = '<div class="card" style="border-color:var(--red)"><p style="color:var(--red)">Could not connect to API. Start the server:</p><code style="font-family:var(--mono);font-size:13px;">regula api-server --port 8487</code></div>';
+      }
+    }
+
+    function renderScanResults(data) {
+      const el = document.getElementById('scanResults');
+      const findings = data.findings || data.results || [];
+      if (!findings.length) {
+        el.innerHTML = '<div class="card"><p style="color:var(--green)">No findings at the selected tier. Your project looks clean at this threshold.</p></div>';
+        return;
+      }
+      el.innerHTML = '<div class="card"><p style="color:var(--text-secondary);margin-bottom:8px;">' + findings.length + ' finding(s) detected.</p></div>';
+    }
+
+    function renderOverview(data) {
+      const findings = data.findings || data.results || [];
+      const counts = {prohibited: 0, high: 0, limited: 0, minimal: 0};
+      findings.forEach(f => {
+        const t = (f.tier || f.risk_tier || '').toLowerCase();
+        if (t.includes('prohibit')) counts.prohibited++;
+        else if (t.includes('high')) counts.high++;
+        else if (t.includes('limited')) counts.limited++;
+        else counts.minimal++;
+      });
+      document.getElementById('countProhibited').textContent = counts.prohibited;
+      document.getElementById('countHigh').textContent = counts.high;
+      document.getElementById('countLimited').textContent = counts.limited;
+      document.getElementById('countMinimal').textContent = counts.minimal;
+
+      // Donut chart
+      const total = Math.max(1, findings.length);
+      const segments = [
+        {pct: counts.prohibited / total * 100, color: 'var(--red)'},
+        {pct: counts.high / total * 100, color: 'var(--amber)'},
+        {pct: counts.limited / total * 100, color: 'var(--blue)'},
+        {pct: counts.minimal / total * 100, color: 'var(--green)'},
+      ];
+      const svg = document.getElementById('donutChart');
+      svg.innerHTML = '<circle cx="18" cy="18" r="15.915" fill="none" stroke="var(--border)" stroke-width="3"/>';
+      let offset = 25;
+      segments.forEach(s => {
+        if (s.pct > 0) {
+          svg.innerHTML += `<circle cx="18" cy="18" r="15.915" fill="none" stroke="${s.color}" stroke-width="3" stroke-dasharray="${s.pct} ${100-s.pct}" stroke-dashoffset="${offset}" stroke-linecap="round"/>`;
+          offset -= s.pct;
+        }
+      });
+
+      // Recent findings
+      const recent = document.getElementById('recentFindings');
+      if (findings.length) {
+        let html = '<table class="findings-table"><thead><tr><th>Tier</th><th>Category</th><th>File</th></tr></thead><tbody>';
+        findings.slice(0, 8).forEach(f => {
+          const tier = (f.tier || f.risk_tier || 'unknown').replace('_', '-');
+          const tierClass = tier.includes('prohibit') ? 'prohibited' : tier.includes('high') ? 'high' : tier.includes('limited') ? 'limited' : 'minimal';
+          html += `<tr><td><span class="tier-badge tier-${tierClass}">${tier}</span></td><td>${f.category || f.pattern || '--'}</td><td class="file-path">${f.file || '--'}:${f.line || ''}</td></tr>`;
+        });
+        html += '</tbody></table>';
+        if (findings.length > 8) html += `<p style="font-size:12px;color:var(--text-muted);margin-top:8px;">${findings.length - 8} more findings. See Findings tab.</p>`;
+        recent.innerHTML = html;
+      }
+    }
+
+    function renderFindings(data) {
+      const el = document.getElementById('findingsContent');
+      const findings = data.findings || data.results || [];
+      if (!findings.length) {
+        el.innerHTML = '<div class="empty-state"><div class="icon">&#9745;</div><p>No findings.</p></div>';
+        return;
+      }
+      let html = '<table class="findings-table"><thead><tr><th>Tier</th><th>Category</th><th>File</th><th>Article</th><th>Description</th></tr></thead><tbody>';
+      findings.forEach(f => {
+        const tier = (f.tier || f.risk_tier || 'unknown').replace('_', '-');
+        const tierClass = tier.includes('prohibit') ? 'prohibited' : tier.includes('high') ? 'high' : tier.includes('limited') ? 'limited' : 'minimal';
+        const articles = (f.articles || f.applicable_articles || []).join(', ') || '--';
+        html += `<tr><td><span class="tier-badge tier-${tierClass}">${tier}</span></td><td>${f.category || f.pattern || '--'}</td><td class="file-path">${f.file || '--'}:${f.line || ''}</td><td>${articles}</td><td class="finding-desc">${f.description || f.message || '--'}</td></tr>`;
+      });
+      html += '</tbody></table>';
+      el.innerHTML = html;
+    }
+
+    // --- Questionnaire ---
+    const GOVERNANCE_QUESTIONS = [
+      {section: "Article 9 — Risk Management System", questions: [
+        {id: "rms_documented", text: "Is a documented risk management system in place for this AI system?", help: "Article 9 requires a risk management system established, implemented, documented, and maintained."},
+        {id: "rms_operated", text: "Is the risk management system actively operated (not just documented)?", help: "A documented but inoperative RMS does not satisfy Article 9."},
+        {id: "rms_reviewed", text: "Has the risk management system been reviewed in the last 12 months?", help: "The RMS must be regularly reviewed and updated throughout the AI system lifecycle."},
+        {id: "rms_owner", text: "Is there a named person accountable for the risk management system?", help: "Accountability requires a designated owner, not a diffused responsibility."},
+      ]},
+      {section: "Article 10 — Data Governance", questions: [
+        {id: "data_documented", text: "Are training, validation, and testing datasets documented?", help: "Article 10 requires documentation of data sources, collection methods, and preparation."},
+        {id: "data_bias_examined", text: "Have datasets been examined for bias relevant to the intended purpose?", help: "Data governance includes identifying and addressing possible biases."},
+        {id: "data_representative", text: "Are datasets sufficiently representative of the intended deployment context?", help: "Article 10 requires datasets to be relevant, representative, and to the best extent free of errors."},
+      ]},
+      {section: "Article 11 + Annex IV — Technical Documentation", questions: [
+        {id: "techdoc_exists", text: "Does technical documentation exist for this AI system?", help: "Annex IV specifies the minimum content of technical documentation for high-risk systems."},
+        {id: "techdoc_current", text: "Is the documentation current and maintained with each system update?", help: "Documentation must be kept up to date throughout the system lifecycle."},
+      ]},
+      {section: "Article 12 — Record-Keeping", questions: [
+        {id: "logging_active", text: "Does the AI system maintain automatic logs of its operation?", help: "Article 12 requires logging capabilities designed to enable traceability of functioning."},
+        {id: "logging_retained", text: "Are logs retained for the appropriate period?", help: "Log retention must be proportionate to the intended purpose and applicable legal obligations."},
+      ]},
+      {section: "Article 13 — Transparency", questions: [
+        {id: "transparency_instructions", text: "Are instructions for use provided to deployers?", help: "Article 13 requires AI systems to be designed to be sufficiently transparent to enable deployers to use them appropriately."},
+        {id: "transparency_disclosure", text: "Are individuals informed when they interact with this AI system?", help: "Article 50 requires disclosure of AI interaction for chatbots, emotion recognition, and deepfakes."},
+      ]},
+      {section: "Article 14 — Human Oversight", questions: [
+        {id: "oversight_design", text: "Is the system designed to allow effective human oversight?", help: "Article 14 requires human oversight measures built into the system by the provider."},
+        {id: "oversight_operated", text: "Are human oversight measures actively staffed and operated?", help: "Oversight design alone is insufficient — it must be operationally implemented by the deployer."},
+      ]},
+      {section: "Article 15 — Accuracy, Robustness, Cybersecurity", questions: [
+        {id: "accuracy_tested", text: "Has the system been tested for accuracy in its intended deployment context?", help: "Article 15 requires appropriate levels of accuracy, robustness, and cybersecurity."},
+        {id: "resilience_tested", text: "Has the system been tested for resilience against errors and adversarial inputs?", help: "Robustness includes resilience to attempts by unauthorised third parties to alter use or performance."},
+      ]},
+      {section: "Article 17 — Quality Management System", questions: [
+        {id: "qms_documented", text: "Is a documented quality management system in place?", help: "Article 17 requires providers to put a quality management system in place."},
+        {id: "qms_audited", text: "Have internal QMS audits been conducted?", help: "The QMS must include procedures for internal audits and corrective actions."},
+      ]},
+    ];
+
+    function renderQuestionnaire() {
+      const el = document.getElementById('questionnaireContent');
+      let html = '';
+      GOVERNANCE_QUESTIONS.forEach(section => {
+        html += `<div class="card"><div class="card-title">${section.section}</div>`;
+        section.questions.forEach(q => {
+          const current = questionnaireAnswers[q.id] || '';
+          html += `<div class="question-block">
+            <div class="question-text">${q.text}</div>
+            <div class="question-help">${q.help}</div>
+            <div class="question-options">
+              <button class="q-btn ${current==='yes'?'selected':''}" onclick="answerQ('${q.id}','yes',this)">Yes</button>
+              <button class="q-btn ${current==='no'?'selected':''}" onclick="answerQ('${q.id}','no',this)">No</button>
+              <button class="q-btn ${current==='unsure'?'selected':''}" onclick="answerQ('${q.id}','unsure',this)">Unsure</button>
+            </div>
+          </div>`;
+        });
+        html += '</div>';
+      });
+      html += '<div style="margin-top:16px;"><button class="btn-primary" onclick="evaluateAssessment()">Evaluate Governance Readiness</button></div>';
+      html += '<div id="assessmentResult" style="margin-top:16px;"></div>';
+      el.innerHTML = html;
+    }
+
+    function answerQ(id, value, btn) {
+      questionnaireAnswers[id] = value;
+      btn.parentElement.querySelectorAll('.q-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('exportAssessment').disabled = false;
+    }
+
+    function evaluateAssessment() {
+      const total = GOVERNANCE_QUESTIONS.reduce((s, sec) => s + sec.questions.length, 0);
+      const answered = Object.keys(questionnaireAnswers).length;
+      const yesCount = Object.values(questionnaireAnswers).filter(v => v === 'yes').length;
+      const noCount = Object.values(questionnaireAnswers).filter(v => v === 'no').length;
+      const unsureCount = Object.values(questionnaireAnswers).filter(v => v === 'unsure').length;
+      const score = Math.round((yesCount / Math.max(1, answered)) * 100);
+
+      let level, levelClass;
+      if (score >= 80) { level = 'Strong'; levelClass = 'tier-minimal'; }
+      else if (score >= 60) { level = 'Adequate'; levelClass = 'tier-limited'; }
+      else if (score >= 40) { level = 'Developing'; levelClass = 'tier-high'; }
+      else { level = 'Gaps Identified'; levelClass = 'tier-prohibited'; }
+
+      const el = document.getElementById('assessmentResult');
+      el.innerHTML = `<div class="card">
+        <div class="card-title">Governance Readiness Score</div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">
+          <div class="status-value">${score}%</div>
+          <span class="tier-badge ${levelClass}">${level}</span>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);">
+          ${answered}/${total} questions answered: ${yesCount} yes, ${noCount} no, ${unsureCount} unsure.
+        </p>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">
+          This score reflects self-reported governance readiness. It is not a compliance determination.
+          Combine with <code style="font-family:var(--mono);font-size:11px;">regula check</code> scan results for code-level evidence.
+        </p>
+      </div>`;
+
+      // Update overview compliance progress
+      renderComplianceProgress();
+    }
+
+    function renderComplianceProgress() {
+      const el = document.getElementById('complianceProgress');
+      let html = '';
+      GOVERNANCE_QUESTIONS.forEach(section => {
+        const qs = section.questions;
+        const answered = qs.filter(q => questionnaireAnswers[q.id]).length;
+        const yesCount = qs.filter(q => questionnaireAnswers[q.id] === 'yes').length;
+        const pct = Math.round((yesCount / Math.max(1, qs.length)) * 100);
+        const fillClass = pct >= 80 ? 'fill-green' : pct >= 50 ? 'fill-amber' : 'fill-red';
+        const label = section.section.split(' — ')[0];
+        html += `<div class="progress-row">
+          <div class="progress-label"><span class="article">${label}</span><span class="score">${pct}%</span></div>
+          <div class="progress-bar"><div class="progress-fill ${fillClass}" style="width:${pct}%"></div></div>
+        </div>`;
+      });
+      el.innerHTML = html;
+    }
+
+    function exportReport(format) {
+      if (!scanData) { alert('Run a scan first.'); return; }
+      const blob = new Blob([JSON.stringify(scanData, null, 2)], {type: 'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `regula-report.${format === 'sarif' ? 'sarif.json' : format}`;
+      a.click();
+    }
+
+    function exportAssessmentJSON() {
+      if (!Object.keys(questionnaireAnswers).length) { alert('Answer at least one question first.'); return; }
+      const data = {
+        type: 'governance_self_assessment',
+        generated_at: new Date().toISOString(),
+        disclaimer: 'Self-reported answers. Must be independently verified by an auditor or notified body.',
+        answers: questionnaireAnswers,
+        total_questions: GOVERNANCE_QUESTIONS.reduce((s, sec) => s + sec.questions.length, 0),
+        answered: Object.keys(questionnaireAnswers).length,
+        yes_count: Object.values(questionnaireAnswers).filter(v => v === 'yes').length,
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'regula-governance-assessment.json';
+      a.click();
+    }
+
+    // Init
+    renderQuestionnaire();
+  </script>
+</body>
+</html>

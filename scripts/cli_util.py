@@ -880,6 +880,20 @@ def cmd_audit(args) -> None:
         sys.exit(2)
 
 
+def cmd_api_server(args) -> None:
+    """Start the Regula REST API server with web dashboard."""
+    from api_server import main as run_api
+    import sys
+    # Pass through CLI args to api_server's argparse
+    api_args = []
+    if hasattr(args, 'port') and args.port:
+        api_args.extend(['--port', str(args.port)])
+    if hasattr(args, 'host') and args.host:
+        api_args.extend(['--host', args.host])
+    sys.argv = ['regula api-server'] + api_args
+    run_api()
+
+
 def cmd_mcp_server(args) -> None:
     """Start the Regula MCP server over stdio."""
     from mcp_server import run_server

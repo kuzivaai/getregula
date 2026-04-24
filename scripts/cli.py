@@ -465,8 +465,8 @@ _ORGANISATIONAL_QUESTIONS = {
             ("qms_audit_internal", "Have internal QMS audits been conducted?"),
         ],
     },
-    "article_29a_fria": {
-        "article": "Article 29a",
+    "article_27_fria": {
+        "article": "Article 27",
         "title": "Fundamental Rights Impact Assessment",
         "questions": [
             ("fria_conducted", "Has a fundamental rights impact assessment been conducted?"),
@@ -492,7 +492,7 @@ def _run_organisational_questionnaire(args):
     """Interactive questionnaire for organisational AI Act obligations.
 
     These are the articles Regula cannot verify from code — Art. 9 (RMS),
-    Art. 17 (QMS), Art. 29a (FRIA), Art. 72 (PMM). The output is a
+    Art. 17 (QMS), Art. 27 (FRIA), Art. 72 (PMM). The output is a
     structured evidence document, NOT a compliance certificate.
     """
     import json as _json
@@ -674,7 +674,7 @@ from cli_util import (
     cmd_doctor, cmd_self_test, cmd_config, cmd_install,
     cmd_quickstart, cmd_init, cmd_fix, cmd_explain_article,
     cmd_deps, cmd_timeline, cmd_regwatch, cmd_feed, cmd_bias,
-    cmd_attest, cmd_verify, cmd_status, cmd_audit, cmd_mcp_server,
+    cmd_attest, cmd_verify, cmd_status, cmd_audit, cmd_api_server, cmd_mcp_server,
     cmd_questionnaire, cmd_session, cmd_docs, cmd_telemetry,
     cmd_metrics, cmd_security_self_check, cmd_owasp_agentic,
     cmd_ai_codegen,
@@ -887,6 +887,12 @@ def _build_subparsers(subparsers):
         help="Attach RFC 3161 timestamp from FreeTSA to new audit events (requires network)"
     )
     p_audit.set_defaults(func=cmd_audit)
+
+    # --- api-server ---
+    p_api = subparsers.add_parser("api-server", help="Start the REST API server with web dashboard")
+    p_api.add_argument("--port", type=int, default=8487, help="Port to listen on (default: 8487)")
+    p_api.add_argument("--host", default="localhost", help="Host to bind to (default: localhost)")
+    p_api.set_defaults(func=cmd_api_server)
 
     # --- mcp-server ---
     p_mcp = subparsers.add_parser("mcp-server", help="Start the Regula MCP server (stdio transport)")
@@ -1112,7 +1118,7 @@ def _build_subparsers(subparsers):
         "conform",
         help="Generate conformity assessment evidence pack (Article 43), "
              "SME simplified Annex IV (Article 11(1)), or organisational "
-             "compliance questionnaire (Articles 9/17/29a/72)",
+             "compliance questionnaire (Articles 9/17/27/72)",
     )
     p_conform.add_argument("--project", "-p", default=".")
     p_conform.add_argument("--output", "-o", default=".", help="Output directory for the pack folder")
@@ -1121,7 +1127,7 @@ def _build_subparsers(subparsers):
                            help="Generate the SME-simplified Annex IV single-file form (Article 11(1) second subparagraph) instead of the full multi-folder evidence pack")
     p_conform.add_argument("--organisational", action="store_true",
                            help="Interactive questionnaire for organisational AI Act obligations "
-                                "(Articles 9 RMS, 17 QMS, 29a FRIA, 72 PMM) that Regula cannot "
+                                "(Articles 9 RMS, 17 QMS, 27 FRIA, 72 PMM) that Regula cannot "
                                 "verify from code. Produces a self-assessment evidence document, "
                                 "NOT a compliance certificate.")
     p_conform.add_argument("--model", default="llama3", help="Ollama model name for bias evaluation (default: llama3)")

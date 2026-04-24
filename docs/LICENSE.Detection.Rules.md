@@ -2,7 +2,7 @@
 
 Applies to: all files under `scripts/risk_patterns.py`, `data/patterns/`, and
 `content/regulations/delta-log/` in this repository. The scanning engine and CLI
-remain under the MIT License (`LICENSE.txt`).
+remain under the Apache License 2.0 (`LICENSE.txt`).
 
 ---
 

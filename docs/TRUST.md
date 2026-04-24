@@ -22,6 +22,7 @@
 7. [Security posture — what is hardened, what is not](#7-security-posture)
 8. [Privacy posture — what data Regula collects](#8-privacy-posture)
 9. [Vendor evaluation answers](#9-vendor-evaluation-answers)
+10. [Trust centre summary](#10-trust-centre-summary)
 
 ---
 
@@ -29,7 +30,7 @@
 
 Regula is an **open-source command-line tool** that scans source code for
 EU AI Act compliance signals at the point of creation. It is licensed
-under the MIT License. The full source is on GitHub at
+under the Apache License 2.0. The full source is on GitHub at
 [github.com/kuzivaai/getregula](https://github.com/kuzivaai/getregula).
 PyPI package: [`regula-ai`](https://pypi.org/project/regula-ai/).
 
@@ -58,7 +59,7 @@ your lawyer's job, not Regula's.
 | Cross-file Article 14 human-oversight detection (Python) | `regula oversight` |
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 1,223 internal tests under pytest, 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
+| 1,138 unique tests (1,223 pytest-collected), 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -75,13 +76,15 @@ your lawyer's job, not Regula's.
 > Every number Regula publishes can be reproduced by anyone with a checkout
 > of the repo. The commands below run in under 30 seconds total on a laptop.
 
-### 3.1 Internal test suite — 1,223 / 1,223 green
+### 3.1 Internal test suite — 1,138 unique / 1,223 pytest-collected, all green
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ -q
 # Expected: 1223 passed (~12 minutes on a laptop — verified 2026-04-23)
+# 1,138 unique tests; 85 are duplicated via globals() import binding
+# in test_classification.py and therefore collected twice by pytest.
 ```
 
 Regula also ships a legacy auto-discovery runner for the classification
@@ -241,7 +244,7 @@ and decide for themselves whether it is too broad or too narrow.
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (1,223 tests under pytest; 495 functions in the legacy `tests/test_classification.py` custom runner) |
+| Test suite | `tests/` (1,138 unique tests, 1,223 pytest-collected; 495 functions in the legacy `tests/test_classification.py` custom runner) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit hook source | `hooks/pre_tool_use.py` |
@@ -300,7 +303,60 @@ currently is:
 | Do you sign releases with Sigstore? | Not yet. Releases are reproducible from source via `python3 -m build`. |
 | Do you have an SBOM for your own releases? | Yes — Regula generates one of itself: `regula sbom --ai-bom` from a checkout. |
 
-### 7.3 Reported vulnerabilities
+### 7.3 Supply chain security
+
+Regula's supply chain attack surface is intentionally minimal.
+
+- **Zero runtime dependencies.** The core scanner uses only the Python
+  standard library. Verify with `pip show regula-ai` — the `Requires`
+  field is empty. This eliminates transitive dependency compromise as
+  an attack vector.
+- **Reproducible builds from source.** Anyone can rebuild the wheel from
+  a tagged commit and compare the SHA-256 against the PyPI artefact.
+  See [`SECURITY.md`](../SECURITY.md) "How to verify a release
+  independently" for the exact steps.
+- **No compiled binaries or obfuscated bytecode.** Every file in the
+  repository is human-readable source. There is no `.so`, `.dll`,
+  `.pyc`, or minified code committed.
+- **Optional dependencies are explicit opt-ins.** `pyyaml`,
+  `tree-sitter`, `weasyprint`, and `sentry-sdk` are declared as extras
+  in `pyproject.toml` (e.g. `pipx install "regula-ai[yaml,ast,pdf]"`).
+  They are never pulled in by a bare `pip install regula-ai`.
+- **SBOM self-generation.** Regula can generate a CycloneDX 1.7 ML-BOM
+  of itself from any checkout: `regula sbom --ai-bom`. This includes
+  component hashes and dependency declarations.
+- **OpenSSF Scorecard.** Adopting the OpenSSF Scorecard
+  (<https://scorecard.dev>) for automated supply chain hygiene checks
+  is on the roadmap. It is not yet run in CI — do not treat it as a
+  current achievement.
+
+### 7.4 Incident response
+
+The formal vulnerability disclosure process is defined in
+[`SECURITY.md`](../SECURITY.md). The key commitments are:
+
+| Stage | Target |
+|---|---|
+| Acknowledgement of report | within 72 hours |
+| Initial triage and severity confirmation | within 7 days |
+| Fix or mitigation merged to `main` | within 30 days for high/critical |
+| Coordinated disclosure | within 90 days from initial report |
+
+If a fix takes longer than the target, the reporter will receive a
+written explanation and an updated estimate. Reports are never
+silently ignored.
+
+The 90-day coordinated disclosure timeline is the default. Reporters
+who require a different timeline (e.g. regulatory deadlines or
+embargoed industry disclosure) should state this in the initial report.
+
+Report privately via:
+1. **GitHub Security Advisory** —
+   <https://github.com/kuzivaai/getregula/security/advisories/new>
+2. **Email** — `support@getregula.com` with subject `[SECURITY] <short
+   description>`
+
+### 7.5 Reported vulnerabilities
 
 None as of the published version. Report security issues privately by
 opening a GitHub Security Advisory at
@@ -367,9 +423,10 @@ the user's local filesystem under `~/.regula/` and the project
 directory. Nothing is uploaded.
 
 **Q: What is the licensing model?**
-A: MIT License. Commercial use, redistribution, and modification are
-permitted. There is no paid tier. The maintainer accepts sponsorships
-but does not gate features behind payment.
+A: Apache License 2.0 (with EUPL-1.2 dual-licence option). Commercial
+use, redistribution, and modification are permitted. There is no paid
+tier. The maintainer accepts sponsorships but does not gate features
+behind payment.
 
 **Q: How do you handle GDPR / DPA / SCCs?**
 A: Regula is a data processor only in the trivial sense that it
@@ -398,7 +455,7 @@ published PDF (ISBN 978-92-3-100863-4, DOI 10.54678/YJWP8855); the
 `references/FETCH.md` file records the SHA-256 of the canonical PDF.
 
 **Q: What happens if you stop maintaining Regula?**
-A: The repository is open source under MIT. Anyone can fork it. The
+A: The repository is open source under Apache 2.0. Anyone can fork it. The
 test suite is comprehensive enough that a competent maintainer can
 verify a fork. The pattern definitions are flat data files that
 anyone can update without touching the engine.
@@ -422,3 +479,33 @@ and [`docs/architecture.md`](architecture.md).
 
 If anything in this document is unclear, ambiguous, or unverifiable,
 that is a bug. Open an issue.
+
+---
+
+## 10. Trust centre summary
+
+Quick-reference table of all security and compliance evidence available
+in this repository. Every row links to a verifiable artefact.
+
+| Evidence | Location | What it covers |
+|---|---|---|
+| Vulnerability disclosure policy | [`SECURITY.md`](../SECURITY.md) | Supported versions, reporting channels, response timelines, scope |
+| Trust pack (this document) | [`docs/TRUST.md`](TRUST.md) | Reproducibility, tamper-evidence, transparency, security and privacy posture, vendor evaluation Q&A |
+| Licence | [`LICENSE.txt`](../LICENSE.txt) | Apache License 2.0 (with EUPL-1.2 dual-licence option) |
+| Third-party notices | [`NOTICE`](../NOTICE) | Attribution for bundled data and referenced standards |
+| Architecture overview | [`docs/architecture.md`](architecture.md) | Module map, data flow, scan pipeline, AST vs regex coverage |
+| Scope and limitations | [`docs/what-regula-does-not-do.md`](what-regula-does-not-do.md) | Explicit list of what Regula is not and cannot do |
+| Precision and recall benchmark | [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md) | Labelled corpus, methodology, per-tier and per-project breakdown |
+| Framework crosswalk data | [`references/framework_crosswalk.yaml`](../references/framework_crosswalk.yaml) | EU AI Act ↔ ISO 42001 / NIST AI RMF / SOC 2 / etc. mappings |
+| Pattern definitions | [`scripts/risk_patterns.py`](../scripts/risk_patterns.py) | All detection regexes, grouped by risk tier and category |
+| Test suite | `tests/` | 1,138 unique tests (1,223 pytest-collected) |
+| Self-test | `regula self-test` | 6 round-trip assertions |
+| Environment health | `regula doctor` | 11 checks (9 pass + 2 info on a clean install) |
+| SBOM | `regula sbom --ai-bom` | CycloneDX 1.7 ML-BOM from any checkout |
+| Changelog | [`CHANGELOG.md`](../CHANGELOG.md) | Version history and breaking changes |
+
+**Machine-readable security metadata.** A `security.txt` file
+(per [RFC 9116](https://www.rfc-editor.org/rfc/rfc9116)) is on the
+roadmap but not yet published. Until it is in place, the canonical
+security contact is `support@getregula.com` and the disclosure process
+is defined in [`SECURITY.md`](../SECURITY.md).

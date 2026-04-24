@@ -6,7 +6,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-1223%20passing-brightgreen.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-1138%20unique-brightgreen.svg)](#verified-numbers)
 [![WCAG 2.2 AA](https://img.shields.io/badge/WCAG%202.2-AA-success.svg)](docs/accessibility/README.md)
 
 ---
@@ -116,7 +116,7 @@ The EU AI Act defines four risk tiers. Regula maps code patterns to each:
 | Tier | Action | What it means |
 |------|--------|---------------|
 | **Prohibited** (Article 5) | Block | Social scoring, subliminal manipulation, real-time biometric ID, emotion detection in workplaces. Regula blocks these patterns and explains the specific prohibition. |
-| **High-risk** (Annex III) | Warn + requirements | CV screening, credit scoring, medical diagnosis, biometrics, education assessment. Regula lists the Articles 9-15 obligations that apply if the system is confirmed high-risk. |
+| **High-risk** (Annex III) | Warn + requirements | CV screening, credit scoring, healthcare services, biometrics, education assessment. Regula lists the Articles 9-15 obligations that apply if the system is confirmed high-risk. |
 | **Limited-risk** (Article 50) | Transparency note | Chatbots, deepfakes, emotion recognition. Regula flags the transparency disclosure required. |
 | **Minimal-risk** | Log only | Spam filters, recommendations, code completion. Logged for awareness, no action required. |
 
@@ -137,8 +137,21 @@ Every finding includes the relevant Article reference and explains when exceptio
 | `regula check --ci .` | CI mode -- exit code 1 on any WARN or BLOCK finding, SARIF output |
 | `regula assess` | Interactive applicability check -- does the EU AI Act apply to you? |
 | `regula demo` | Scan a bundled example project -- zero-commitment trial |
+| `regula api-server` | Start the REST API (localhost:8487) with web dashboard |
+| `regula conform --organisational` | Governance self-assessment for Articles 9/17/27/72 |
 
-Regula has 60 commands in total. Run `regula --help-all` for the full list, or see [`docs/cli-reference.md`](docs/cli-reference.md).
+Regula has 61 commands in total. Run `regula --help-all` for the full list, or see [`docs/cli-reference.md`](docs/cli-reference.md).
+
+### REST API and web dashboard
+
+For GRC integration or non-terminal users:
+
+```bash
+python3 scripts/api_server.py --port 8487
+# Open http://localhost:8487/v1/dashboard
+```
+
+Seven endpoints: `/health`, `/v1/check`, `/v1/classify`, `/v1/gap`, `/v1/questionnaire`, `/v1/questionnaire/evaluate`, `/v1/dashboard`. All return the same JSON envelope as the CLI. No auth -- run behind a reverse proxy for remote access.
 
 ## Who is this for?
 

@@ -36,21 +36,28 @@
       .term-body { position: relative; min-height: 340px }
     </style>
     <meta name="theme-color" content="#070711">
+    <link rel="preconnect" href="https://plausible.io" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <title>Regula | EU AI Act compliance tool for code | Open-source CLI</title>
     <meta name="description" content="Open-source EU AI Act compliance CLI. Scans your code, classifies AI risk tier, and tells you what to fix. 404 patterns, 8 languages. Free.">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta property="og:title" content="Regula | EU AI Act compliance tool for code | Open-source CLI">
     <meta property="og:description" content="Free, open-source scanner that tells you which EU AI Act tier you're in, why, and what to do about it. 404 risk patterns, 8 languages, 12 compliance frameworks, zero dependencies.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://getregula.com">
+    <meta property="og:url" content="https://getregula.com/">
+    <meta property="og:site_name" content="Regula">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@kuzivaai">
     <meta property="og:locale" content="en_GB">
     <meta name="twitter:title" content="Regula | EU AI Act Risk Scanner">
     <meta name="twitter:description" content="Free CLI that classifies your AI code against EU AI Act risk tiers. Shows why, what to do, and how long it takes.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Regula — EU AI Act compliance scanner for code">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+    <meta name="twitter:image:alt" content="Regula — EU AI Act compliance scanner for code">
+    <meta name="author" content="Regula">
     <link rel="canonical" href="https://getregula.com/">
     <script type="application/ld+json">
     {
@@ -117,7 +124,7 @@
                 "name": "What makes an AI system high-risk under the EU AI Act?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Annex III lists eight high-risk categories including credit scoring, hiring, medical diagnosis, education assessment, law enforcement, border control, essential services, and democratic process integrity. Regula identifies code patterns that match each category."
+                    "text": "Annex III lists eight high-risk categories including credit scoring, hiring, healthcare services, education assessment, law enforcement, border control, essential services, and democratic process integrity. Regula identifies code patterns that match each category."
                 }
             },
             {
@@ -125,7 +132,7 @@
                 "name": "When does the EU AI Act start being enforced?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Article 5 prohibitions took effect on 2 February 2025. GPAI obligations (Articles 53-55) took effect on 2 August 2025. High-risk obligations (Articles 9-15) take effect on 2 August 2026. A proposed Digital Omnibus may delay some Annex III deadlines to December 2027 but is not yet law."
+                    "text": "Article 5 prohibitions took effect on 2 February 2025. GPAI obligations (Articles 51-55) took effect on 2 August 2025. High-risk obligations (Articles 9-15) take effect on 2 August 2026. A proposed Digital Omnibus may delay some Annex III deadlines to December 2027 but is not yet law."
                 }
             },
             {
@@ -133,7 +140,7 @@
                 "name": "Is Regula free?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes. Regula is open-source under the Apache 2.0 licence. No account, no API key, no sales call. Install with pipx install regula-ai (see docs/installation.md for uv and pip alternatives) and run it locally on your codebase. The full CLI, all 60 commands (including `regula handoff` for Garak/Giskard/Promptfoo scoping and `regula regwatch` for delta-log drift warnings), all 404 risk patterns, and all 12 compliance framework mappings are free."
+                    "text": "Yes. Regula is open-source under the Apache 2.0 licence. No account, no API key, no sales call. Install with pipx install regula-ai (see docs/installation.md for uv and pip alternatives) and run it locally on your codebase. The full CLI, all 61 commands (including `regula handoff` for Garak/Giskard/Promptfoo scoping and `regula regwatch` for delta-log drift warnings), all 404 risk patterns, and all 12 compliance framework mappings are free."
                 }
             },
             {
@@ -438,7 +445,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
         <div class="tier tier-a">
             <div class="tier-badge">High-Risk</div>
-            <div class="tier-examples">Credit scoring &middot; Hiring &middot; Medical diagnosis &middot; Education &middot; Law enforcement</div>
+            <div class="tier-examples">Credit scoring &middot; Hiring &middot; Healthcare services &middot; Education &middot; Law enforcement</div>
             <div class="tier-hint">Art. 9&ndash;15 apply &rarr;</div>
         </div>
         <div class="tier tier-y">
@@ -617,9 +624,21 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <p>Each AI Act article is mapped to corresponding GDPR, DORA, and NIS2 obligations. One scan surfaces requirements across all four regulations.</p>
             <code style="font-size:11px;color:#9898b4;">regula gap .</code>
         </div>
+        <div class="card-base art-card">
+            <div class="tag tag-purple">API</div>
+            <h4>REST API for GRC tools</h4>
+            <p>Seven HTTP endpoints that return the same JSON envelope as the CLI. Plug Regula into ServiceNow, Jira, or your own GRC platform.</p>
+            <code style="font-size:11px;color:#9898b4;">regula api-server --port 8487</code>
+        </div>
+        <div class="card-base art-card">
+            <div class="tag tag-blue">Dashboard</div>
+            <h4>Web dashboard</h4>
+            <p>Governance posture at a glance. Risk distribution, compliance gaps per article, interactive self-assessment, and export to JSON/SARIF/HTML. No terminal needed.</p>
+            <code style="font-size:11px;color:#9898b4;">localhost:8487/v1/dashboard</code>
+        </div>
     </div>
     <p style="font-size:12px;color:#9898b4;margin-top:24px;font-family:'JetBrains Mono',monospace;text-align:center;">
-        60 commands total &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU CRA, and 7 other frameworks.
+        61 commands total &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-maps to ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU CRA, and 7 other frameworks.
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md" style="color:#8888aa;margin-left:4px;">Full CLI reference &rarr;</a>
     </p>
 </div>
@@ -711,6 +730,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
                     <a href="https://github.com/kuzivaai/getregula">GitHub</a>
                     <a href="https://pypi.org/project/regula-ai/">PyPI</a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">Trust pack</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/SUPPORT_SLA.md">Support SLA</a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md">Benchmarks</a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/SECURITY.md">Security</a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contributing</a>

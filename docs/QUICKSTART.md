@@ -20,7 +20,7 @@ Regula scans your code and tells you which **risk tier** your AI system falls in
 | Tier | What It Means | Example |
 |------|---------------|---------|
 | **PROHIBITED** | Banned in the EU. Stop. | Social credit scoring, subliminal manipulation |
-| **HIGH-RISK** | Heavy compliance required (Articles 9-15) | CV screening, credit scoring, medical diagnosis |
+| **HIGH-RISK** | Heavy compliance required (Articles 9-15) | CV screening, credit scoring, healthcare services |
 | **LIMITED-RISK** | Must disclose AI to users (Article 50) | Chatbots, deepfakes, emotion recognition |
 | **MINIMAL-RISK** | No mandatory requirements | Spam filters, recommendation engines |
 
