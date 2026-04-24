@@ -34,8 +34,12 @@ def _run_hook(hook_name, tool_name, tool_input, extra_fields=None):
     """Run a hook script via subprocess with JSON on stdin.
 
     Returns (returncode, stdout_parsed_json_or_None, stderr).
+    Skips if the hooks directory is not present (not tracked in git).
     """
     hook_path = HOOKS_DIR / f"{hook_name}.py"
+    if not hook_path.exists():
+        import pytest
+        pytest.skip(f"hooks/{hook_name}.py not present (local dev file, not tracked in git)")
     payload = {
         "tool_name": tool_name,
         "tool_input": tool_input,
