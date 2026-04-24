@@ -28,7 +28,7 @@ def build_context_map(content: str) -> dict:
     """
     try:
         tree = ast.parse(content)
-    except SyntaxError:
+    except (SyntaxError, ValueError):
         return {}
 
     context = {}  # line_number -> set of context strings
