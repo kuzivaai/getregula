@@ -1,0 +1,3829 @@
+{
+  "command": "check",
+  "data": [
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-core/llama_index/core/base/base_multi_modal_retriever.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-core/llama_index/core/base/llms/generic_utils.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 78,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "llama-index-core/llama_index/core/base/llms/types.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-core/llama_index/core/callbacks/token_counting.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 76,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 20,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": {
+        "boost": 17,
+        "detail": "Domain keywords detected: education + automated decision logic",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "llama-index-core/llama_index/core/evaluation/correctness.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-core/llama_index/core/image_retriever.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-core/llama_index/core/indices/multi_modal/retriever.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-core/llama_index/core/indices/struct_store/json_query.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 54,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-core/llama_index/core/llms/custom.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 39,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-core/llama_index/core/llms/llm.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 105,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-core/llama_index/core/llms/mock.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 101,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "llama-index-core/llama_index/core/prompts/system.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "llama-index-integrations/agent/llama-index-agent-azure/llama_index/agent/azure_foundry_agent/base.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 175,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/embeddings/llama-index-embeddings-huggingface-openvino/llama_index/embeddings/huggingface_openvino/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 194,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/embeddings/llama-index-embeddings-huggingface-optimum/llama_index/embeddings/huggingface_optimum/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 131,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/embeddings/llama-index-embeddings-openvino-genai/llama_index/embeddings/openvino_genai/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 100,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "llama-index-integrations/indices/llama-index-indices-managed-bge-m3/llama_index/indices/managed/bge_m3/base.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 157,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-integrations/indices/llama-index-indices-managed-postgresml/llama_index/indices/managed/postgresml/query.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-ai21/llama_index/llms/ai21/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 194,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "llama-index-integrations/llms/llama-index-llms-ai21/llama_index/llms/ai21/base.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 245,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-alephalpha/llama_index/llms/alephalpha/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 206,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-alephalpha/llama_index/llms/alephalpha/utils.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 74,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-alibabacloud-aisearch/llama_index/llms/alibabacloud_aisearch/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 184,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "llama-index-integrations/llms/llama-index-llms-anthropic/llama_index/llms/anthropic/base.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 454,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-anthropic/llama_index/llms/anthropic/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 478,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 30,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Move credentials to environment variables or a secrets manager.",
+      "file": "llama-index-integrations/llms/llama-index-llms-azure-openai/llama_index/llms/azure_openai/base.py",
+      "indicators": [
+        "generic_api_key"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 51,
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 30,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Move credentials to environment variables or a secrets manager.",
+      "file": "llama-index-integrations/llms/llama-index-llms-azure-openai/llama_index/llms/azure_openai/responses.py",
+      "indicators": [
+        "generic_api_key"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 47,
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-baseten/llama_index/llms/baseten/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 214,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-bedrock/llama_index/llms/bedrock/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 292,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-bedrock/llama_index/llms/bedrock/utils.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 178,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-clarifai/llama_index/llms/clarifai/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 193,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-cleanlab/llama_index/llms/cleanlab/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 113,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 15,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": {
+        "boost": 12,
+        "detail": "Domain keywords detected: education",
+        "domains_matched": [
+          "education"
+        ]
+      },
+      "exceptions": null,
+      "file": "llama-index-integrations/llms/llama-index-llms-cohere/llama_index/llms/cohere/base.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-cohere/llama_index/llms/cohere/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 325,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-integrations/llms/llama-index-llms-cohere/llama_index/llms/cohere/utils.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-cohere/llama_index/llms/cohere/utils.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 242,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-contextual/llama_index/llms/contextual/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 111,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-cortex/llama_index/llms/cortex/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 285,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-dashscope/llama_index/llms/dashscope/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 422,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-dashscope/llama_index/llms/dashscope/utils.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 20,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 30,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Move credentials to environment variables or a secrets manager.",
+      "file": "llama-index-integrations/llms/llama-index-llms-deepinfra/llama_index/llms/deepinfra/base.py",
+      "indicators": [
+        "generic_api_key"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 62,
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-deepinfra/llama_index/llms/deepinfra/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 185,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "llama-index-integrations/llms/llama-index-llms-friendli/llama_index/llms/friendli/base.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 109,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-friendli/llama_index/llms/friendli/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 109,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 4(b)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Worker monitoring and task allocation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-integrations/llms/llama-index-llms-gaudi/llama_index/llms/gaudi/utils.py",
+      "indicators": [
+        "high_risk__worker_management"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM03)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-gaudi/llama_index/llms/gaudi/utils.py",
+      "indicators": [
+        "supply_chain_model"
+      ],
+      "lifecycle_phases": [
+        "deploy"
+      ],
+      "line": 201,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Pin model revisions and verify checksums. Never use trust_remote_code=True in production. Use safetensors format. Audit third-party model sources. OWASP LLM03:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-gigachat/llama_index/llms/gigachat/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 100,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "llama-index-integrations/llms/llama-index-llms-google-genai/llama_index/llms/google_genai/base.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 193,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-huggingface-api/llama_index/llms/huggingface_api/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 308,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-huggingface/llama_index/llms/huggingface/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 348,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-ibm/llama_index/llms/ibm/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 376,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-ipex-llm/llama_index/llms/ipex_llm/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 476,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "llama-index-integrations/llms/llama-index-llms-keywordsai/llama_index/llms/keywordsai/base.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 224,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-konko/llama_index/llms/konko/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 280,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM10)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unbounded token generation \u2014 cost and resource exhaustion risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-konko/llama_index/llms/konko/base.py",
+      "indicators": [
+        "unbounded_token_generation"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 454,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Set explicit max_tokens limit. Add cost monitoring and rate limiting.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-konko/llama_index/llms/konko/utils.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 72,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "llama-index-integrations/llms/llama-index-llms-konko/llama_index/llms/konko/utils.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 210,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-langchain/llama_index/llms/langchain/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 101,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "llama-index-integrations/llms/llama-index-llms-langchain/llama_index/llms/langchain/base.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 104,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 10,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-integrations/llms/llama-index-llms-langchain/llama_index/llms/langchain/utils.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-litellm/llama_index/llms/litellm/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 362,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM10)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unbounded token generation \u2014 cost and resource exhaustion risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-litellm/llama_index/llms/litellm/base.py",
+      "indicators": [
+        "unbounded_token_generation"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 440,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Set explicit max_tokens limit. Add cost monitoring and rate limiting.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-litellm/llama_index/llms/litellm/utils.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 69,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-llama-cpp/llama_index/llms/llama_cpp/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 261,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-llamafile/llama_index/llms/llamafile/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 218,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-localai/llama_index/llms/localai/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 120,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-mistral-rs/llama_index/llms/mistral_rs/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 261,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-mistralai/llama_index/llms/mistralai/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 805,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-mlx/llama_index/llms/mlx/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 255,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-modelscope/llama_index/llms/modelscope/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 167,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-modelscope/llama_index/llms/modelscope/utils.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 20,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 30,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Move credentials to environment variables or a secrets manager.",
+      "file": "llama-index-integrations/llms/llama-index-llms-modelslab/llama_index/llms/modelslab/base.py",
+      "indicators": [
+        "generic_api_key"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 28,
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 30,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Move credentials to environment variables or a secrets manager.",
+      "file": "llama-index-integrations/llms/llama-index-llms-monsterapi/llama_index/llms/monsterapi/base.py",
+      "indicators": [
+        "generic_api_key"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 34,
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-mymagic/llama_index/llms/mymagic/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 228,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-nvidia-tensorrt/llama_index/llms/nvidia_tensorrt/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 294,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "llama-index-integrations/llms/llama-index-llms-nvidia-triton/llama_index/llms/nvidia_triton/base.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 59,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-nvidia-triton/llama_index/llms/nvidia_triton/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 276,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-oci-data-science/llama_index/llms/oci_data_science/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 486,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-integrations/llms/llama-index-llms-oci-genai/llama_index/llms/oci_genai/utils.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-octoai/llama_index/llms/octoai/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 147,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-ollama/llama_index/llms/ollama/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 669,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-openai-like/llama_index/llms/openai_like/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 184,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "llama-index-integrations/llms/llama-index-llms-openai/llama_index/llms/openai/base.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 307,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-openai/llama_index/llms/openai/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 443,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "llama-index-integrations/llms/llama-index-llms-openai/llama_index/llms/openai/base.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 500,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM09)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+      "file": "llama-index-integrations/llms/llama-index-llms-openai/llama_index/llms/openai/responses.py",
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 319,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-openvino-genai/llama_index/llms/openvino_genai/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 397,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-palm/llama_index/llms/palm/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 150,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 30,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Move credentials to environment variables or a secrets manager.",
+      "file": "llama-index-integrations/llms/llama-index-llms-perplexity/llama_index/llms/perplexity/base.py",
+      "indicators": [
+        "generic_api_key"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 40,
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-perplexity/llama_index/llms/perplexity/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 204,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-portkey/llama_index/llms/portkey/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 263,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-predibase/llama_index/llms/predibase/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 299,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "llama-index-integrations/llms/llama-index-llms-premai/llama_index/llms/premai/base.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 190,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-premai/llama_index/llms/premai/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 190,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-reka/llama_index/llms/reka/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 220,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-replicate/llama_index/llms/replicate/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 114,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-rungpt/llama_index/llms/rungpt/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 137,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-sagemaker-endpoint/llama_index/llms/sagemaker_endpoint/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 227,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-sglang/llama_index/llms/sglang/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 236,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-siliconflow/llama_index/llms/siliconflow/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 550,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-vertex/llama_index/llms/vertex/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 295,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-vertex/llama_index/llms/vertex/utils.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 113,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-vllm/llama_index/llms/vllm/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 280,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-xinference/llama_index/llms/xinference/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 258,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-yi/llama_index/llms/yi/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 141,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-you/llama_index/llms/you/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 102,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "llama-index-integrations/llms/llama-index-llms-zhipuai/llama_index/llms/zhipuai/base.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 245,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/llms/llama-index-llms-zhipuai/llama_index/llms/zhipuai/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 245,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 70,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "AI output may flow to File system modification \u2014 no human gate detected",
+      "file": "llama-index-integrations/readers/llama-index-readers-box/llama_index/readers/box/BoxAPI/box_api.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 162,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/readers/llama-index-readers-box/llama_index/readers/box/BoxAPI/box_api.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 220,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/readers/llama-index-readers-box/llama_index/readers/box/BoxReaderAIExtraction/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 109,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/readers/llama-index-readers-box/llama_index/readers/box/BoxReaderAIPrompt/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 112,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/readers/llama-index-readers-chatgpt-plugin/llama_index/readers/chatgpt_plugin/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 41,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 70,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "AI output may flow to File system modification \u2014 no human gate detected",
+      "file": "llama-index-integrations/readers/llama-index-readers-file/llama_index/readers/file/slides/image_extractor.py",
+      "indicators": [
+        "File system modification"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 128,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/readers/llama-index-readers-web/llama_index/readers/web/agentql_web/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 65,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 70,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Database connection string with possible credentials in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable for connection strings. Never hardcode credentials.",
+      "file": "llama-index-integrations/storage/chat_store/llama-index-storage-chat-store-redis/llama_index/storage/chat_store/redis/base.py",
+      "indicators": [
+        "connection_string"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 11,
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 70,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Database connection string with possible credentials in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable for connection strings. Never hardcode credentials.",
+      "file": "llama-index-integrations/storage/kvstore/llama-index-storage-kvstore-redis/llama_index/storage/kvstore/redis/base.py",
+      "indicators": [
+        "connection_string"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 10,
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/tools/llama-index-tools-airweave/llama_index/tools/airweave/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 199,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 35,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 human gate pattern detected nearby",
+      "file": "llama-index-integrations/tools/llama-index-tools-azure-code-interpreter/llama_index/tools/azure_code_interpreter/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 176,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-azure-cv/llama_index/tools/azure_cv/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 39,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-azure-translate/llama_index/tools/azure_translate/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 32,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/tools/llama-index-tools-box/llama_index/tools/box/ai_extract/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 85,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/tools/llama-index-tools-box/llama_index/tools/box/ai_prompt/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 89,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-brightdata/llama_index/tools/brightdata/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 59,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-brightdata/llama_index/tools/brightdata/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 117,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-brightdata/llama_index/tools/brightdata/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 308,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: Database query execution \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-cassandra/llama_index/tools/cassandra/cassandra_database_wrapper.py",
+      "indicators": [
+        "Database query execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 50,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-code-interpreter/llama_index/tools/code_interpreter/base.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 13,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-code-interpreter/llama_index/tools/code_interpreter/base.py",
+      "indicators": [
+        "System command execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 34,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-cogniswitch/llama_index/tools/cogniswitch/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 97,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-cogniswitch/llama_index/tools/cogniswitch/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 112,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-cogniswitch/llama_index/tools/cogniswitch/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 137,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: Database query execution \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-database/llama_index/tools/database/base.py",
+      "indicators": [
+        "Database query execution"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 98,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-graphql/llama_index/tools/graphql/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 33,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "llama-index-integrations/tools/llama-index-tools-neo4j/llama_index/tools/neo4j/base.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 115,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-notion/llama_index/tools/notion/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 106,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-integrations/tools/llama-index-tools-openai/llama_index/tools/openai/__init__.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "tooling",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 10,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-integrations/tools/llama-index-tools-openai/llama_index/tools/openai/image_generation/base.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-playgrounds/llama_index/tools/playgrounds/subgraph_connector/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 69,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-playgrounds/llama_index/tools/playgrounds/subgraph_inspector/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 108,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-requests/llama_index/tools/requests/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 86,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-requests/llama_index/tools/requests/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 117,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-requests/llama_index/tools/requests/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 148,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-requests/llama_index/tools/requests/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 180,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-integrations/tools/llama-index-tools-text-to-image/llama_index/tools/text_to_image/__init__.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "tooling",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Synthetic content generation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-integrations/tools/llama-index-tools-text-to-image/llama_index/tools/text_to_image/base.py",
+      "indicators": [
+        "synthetic_content"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 1",
+      "confidence_score": 23,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Biometric identification and categorisation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-integrations/tools/llama-index-tools-typecast/llama_index/tools/typecast/base.py",
+      "indicators": [
+        "biometrics"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "12",
+          "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+      "file": "llama-index-integrations/tools/llama-index-tools-zapier/llama_index/tools/zapier/base.py",
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 66,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Database connection string with possible credentials in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable for connection strings. Never hardcode credentials.",
+      "file": "llama-index-integrations/vector_stores/llama-index-vector-stores-alibabacloud-mysql/llama_index/vector_stores/alibabacloud_mysql/base.py",
+      "indicators": [
+        "connection_string"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 45,
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 30,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Move credentials to environment variables or a secrets manager.",
+      "file": "llama-index-integrations/vector_stores/llama-index-vector-stores-azureaisearch/llama_index/vector_stores/azureaisearch/base.py",
+      "indicators": [
+        "generic_api_key"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 95,
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 70,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Database connection string with possible credentials in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable for connection strings. Never hardcode credentials.",
+      "file": "llama-index-integrations/vector_stores/llama-index-vector-stores-mariadb/llama_index/vector_stores/mariadb/base.py",
+      "indicators": [
+        "connection_string"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 174,
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Move credentials to environment variables or a secrets manager.",
+      "file": "llama-index-integrations/vector_stores/llama-index-vector-stores-rocksetdb/llama_index/vector_stores/rocksetdb/base.py",
+      "indicators": [
+        "generic_api_key"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 38,
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Database connection string with possible credentials in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable for connection strings. Never hardcode credentials.",
+      "file": "llama-index-integrations/vector_stores/llama-index-vector-stores-tair/llama_index/vector_stores/tair/base.py",
+      "indicators": [
+        "connection_string"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 76,
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Database connection string with possible credentials in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable for connection strings. Never hardcode credentials.",
+      "file": "llama-index-integrations/vector_stores/llama-index-vector-stores-tidbvector/llama_index/vector_stores/tidbvector/base.py",
+      "indicators": [
+        "connection_string"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 62,
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Database connection string with possible credentials in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable for connection strings. Never hardcode credentials.",
+      "file": "llama-index-integrations/vector_stores/llama-index-vector-stores-timescalevector/llama_index/vector_stores/timescalevector/base.py",
+      "indicators": [
+        "connection_string"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 41,
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "category": "AI Security (LLM05)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+      "file": "llama-index-integrations/vector_stores/llama-index-vector-stores-txtai/llama_index/vector_stores/txtai/base.py",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 126,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 1",
+      "confidence_score": 23,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Biometric identification and categorisation",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-integrations/vector_stores/llama-index-vector-stores-vespa/llama_index/vector_stores/vespa/templates.py",
+      "indicators": [
+        "biometrics"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "12",
+          "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "Database connection string with possible credentials in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable for connection strings. Never hardcode credentials.",
+      "file": "llama-index-integrations/vector_stores/llama-index-vector-stores-volcenginemysql/llama_index/vector_stores/volcengine_mysql/base.py",
+      "indicators": [
+        "connection_string"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 123,
+      "open_question": true,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-integrations/voice_agents/llama-index-voice-agents-elevenlabs/llama_index/voice_agents/elevenlabs/base.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-integrations/voice_agents/llama-index-voice-agents-elevenlabs/llama_index/voice_agents/elevenlabs/interface.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: Message/email sending \u2014 no human gate detected",
+      "file": "llama-index-integrations/voice_agents/llama-index-voice-agents-gemini-live/llama_index/voice_agents/gemini_live/base.py",
+      "indicators": [
+        "Message/email sending"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 95,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+      "deadline_status": "current_law",
+      "description": "Agent tool infrastructure: Message/email sending \u2014 no human gate detected",
+      "file": "llama-index-integrations/voice_agents/llama-index-voice-agents-gemini-live/llama_index/voice_agents/gemini_live/base.py",
+      "indicators": [
+        "Message/email sending"
+      ],
+      "lifecycle_phases": [
+        "operate"
+      ],
+      "line": 106,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "agent_autonomy"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 5,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Chatbots and conversational AI",
+      "domain_boost": null,
+      "exceptions": null,
+      "file": "llama-index-integrations/voice_agents/llama-index-voice-agents-openai/llama_index/voice_agents/openai/base.py",
+      "indicators": [
+        "chatbots"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": true,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    }
+  ],
+  "exit_code": 0,
+  "format_version": "1.0",
+  "regula_version": "1.7.0",
+  "timestamp": "2026-04-24T15:06:46.264869Z"
+}
