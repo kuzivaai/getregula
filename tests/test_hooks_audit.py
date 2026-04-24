@@ -29,6 +29,18 @@ from helpers import assert_eq, assert_true, assert_false
 HOOKS_DIR = Path(__file__).parent.parent / "hooks"
 SCRIPTS_DIR = Path(__file__).parent.parent / "scripts"
 
+# hooks/ is not tracked in git (local dev tooling). Skip ALL hook tests
+# on CI where the directory is absent. Audit trail tests (log_event)
+# still run because they don't depend on hooks/.
+_HOOKS_AVAILABLE = (HOOKS_DIR / "pre_tool_use.py").exists()
+
+
+def _skip_if_no_hooks():
+    """Skip test if hooks/ is not present (not tracked in git)."""
+    if not _HOOKS_AVAILABLE:
+        import pytest
+        pytest.skip("hooks/ not present (local dev file, not tracked in git)")
+
 
 def _run_hook(hook_name, tool_name, tool_input, extra_fields=None):
     """Run a hook script via subprocess with JSON on stdin.
@@ -36,10 +48,8 @@ def _run_hook(hook_name, tool_name, tool_input, extra_fields=None):
     Returns (returncode, stdout_parsed_json_or_None, stderr).
     Skips if the hooks directory is not present (not tracked in git).
     """
+    _skip_if_no_hooks()
     hook_path = HOOKS_DIR / f"{hook_name}.py"
-    if not hook_path.exists():
-        import pytest
-        pytest.skip(f"hooks/{hook_name}.py not present (local dev file, not tracked in git)")
     payload = {
         "tool_name": tool_name,
         "tool_input": tool_input,
@@ -252,6 +262,7 @@ def test_pre_hook_clean_pass():
 
 def test_pre_hook_invalid_json_graceful():
     """Invalid JSON on stdin -> exit 0 (graceful failure)"""
+    _skip_if_no_hooks()
     hook_path = HOOKS_DIR / "pre_tool_use.py"
     r = subprocess.run(
         [sys.executable, str(hook_path)],
@@ -265,6 +276,7 @@ def test_pre_hook_invalid_json_graceful():
 
 def test_pre_hook_empty_stdin_graceful():
     """Empty stdin -> exit 0 (graceful failure)"""
+    _skip_if_no_hooks()
     hook_path = HOOKS_DIR / "pre_tool_use.py"
     r = subprocess.run(
         [sys.executable, str(hook_path)],
@@ -278,6 +290,7 @@ def test_pre_hook_empty_stdin_graceful():
 
 def test_pre_hook_large_payload_handled():
     """Very large tool_input doesn't hang or crash."""
+    _skip_if_no_hooks()
     # 500KB of content — well beyond typical tool input
     large_content = "x = 1\n" * 50000
     rc, out, stderr, tmpdir = _run_hook("pre_tool_use", "Write", {
@@ -290,6 +303,7 @@ def test_pre_hook_large_payload_handled():
 
 def test_pre_hook_binary_content_graceful():
     """Binary/non-UTF8 content in tool_input doesn't crash."""
+    _skip_if_no_hooks()
     hook_path = HOOKS_DIR / "pre_tool_use.py"
     # Send valid JSON structure but with escaped binary-like content
     payload = json.dumps({
@@ -393,6 +407,7 @@ def test_post_hook_includes_tool_response():
 
 
 def test_post_hook_invalid_json_graceful():
+    _skip_if_no_hooks()
     """PostToolUse handles invalid JSON gracefully"""
     hook_path = HOOKS_DIR / "post_tool_use.py"
     r = subprocess.run(
@@ -411,6 +426,7 @@ def test_post_hook_invalid_json_graceful():
 
 def test_stop_hook_produces_summary():
     """StopHook produces session compliance summary"""
+    _skip_if_no_hooks()
     # First, create some audit events
     tmp_audit = tempfile.mkdtemp(prefix="regula_test_stop_")
     env = os.environ.copy()
@@ -453,6 +469,7 @@ def test_stop_hook_produces_summary():
 
 def test_stop_hook_avoids_infinite_loop():
     """StopHook exits immediately when stop_hook_active is set"""
+    _skip_if_no_hooks()
     hook_path = HOOKS_DIR / "stop_hook.py"
     payload = json.dumps({"stop_hook_active": True, "session_id": "test"})
     r = subprocess.run(
@@ -468,6 +485,7 @@ def test_stop_hook_avoids_infinite_loop():
 
 def test_stop_hook_no_events_graceful():
     """StopHook with empty audit dir exits gracefully"""
+    _skip_if_no_hooks()
     tmp_audit = tempfile.mkdtemp(prefix="regula_test_empty_")
     env = os.environ.copy()
     env["REGULA_AUDIT_DIR"] = tmp_audit
@@ -486,6 +504,7 @@ def test_stop_hook_no_events_graceful():
 
 def test_stop_hook_invalid_json_graceful():
     """StopHook handles invalid JSON gracefully"""
+    _skip_if_no_hooks()
     hook_path = HOOKS_DIR / "stop_hook.py"
     r = subprocess.run(
         [sys.executable, str(hook_path)],
