@@ -64,6 +64,10 @@ docs/site/
 simplified-annex-iv-*.md
 regula-course.html
 
+# IndexNow key file (public by protocol, but no reason to track in git)
+site/*indexnow*.txt
+site/ddf625ccd88f40018ebaf614953eb73f.txt
+
 # Internal documents (not public)
 HANDOVER.md
 TODO.md

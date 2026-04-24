@@ -27,7 +27,8 @@
 \b60\s+commands?
 \bregula[- ]ai\b
 \bv1\.6
-# tests: pytest --collect-only reports 1223 as of 2026-04-23
+# tests: 1,138 unique test functions (pytest discovers 1,223 but 85 are duplicated via globals import)
+\b1[,.]?1\d{2}\s+tests?
 \b1[,.]?2\d{2}\s+tests?
 \b1[,.]?0\d{2}\s+tests?
 \b941\s+tests?

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-23T22:20:35.041969+00:00",
+  "generated_at": "2026-04-24T18:58:07.706740+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -9,6 +9,7 @@
   },
   "counts": {
     "commands": 60,
+    "commands_note": "60 top-level CLI commands via --help-all. site_facts.py reports 65 because it counts monitor subcommands separately.",
     "patterns": {
       "tier_groups": 53,
       "tier_regexes": 404,
@@ -19,13 +20,16 @@
       "logging": 4,
       "oversight": 4,
       "credential": 18,
-      "grand_total": 660,
+      "grand_total": 707,
       "historical_330_bucket": 447
     },
     "frameworks": 12,
     "languages": 8,
     "tests": {
-      "total_functions": 1223,
+      "unique_test_functions": 1138,
+      "pytest_collected": 1223,
+      "pytest_note": "pytest discovers 85 tests in both their source file and test_classification.py (globals import). 1,138 is the unique count.",
+      "grep_def_test": 1102,
       "per_file": {
         "test_agent_governance.py": 28,
         "test_ai_codegen.py": 0,
