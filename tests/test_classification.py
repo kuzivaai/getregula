@@ -1647,8 +1647,8 @@ def test_compliance_gap_assessment():
         assert_true("articles" in assessment, "has articles dict")
         assert_true("overall_score" in assessment, "has overall_score")
         assert_true(isinstance(assessment["overall_score"], (int, float)), "score is numeric")
-        # Should have all 7 articles
-        assert_eq(len(assessment["articles"]), 7, "7 articles assessed")
+        # Should have all 8 articles (9-15, 17)
+        assert_eq(len(assessment["articles"]), 8, "8 articles assessed")
         # Each article should have required keys
         for art_num, art_data in assessment["articles"].items():
             assert_true("score" in art_data, f"article {art_num} has score")

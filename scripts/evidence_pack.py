@@ -161,6 +161,7 @@ def generate_evidence_pack(
 
     # --- Manifest (written last) ---
     manifest = {
+        "schema_version": "1.0",
         "regula_version": VERSION,
         "generated_at": now.isoformat(),
         "project": name,

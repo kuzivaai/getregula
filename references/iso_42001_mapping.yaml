@@ -2,11 +2,22 @@
 # Source: ISO/IEC 42001:2023 standard; EU AI Act Regulation 2024/1689
 # Note: Approximately 90% overlap between frameworks
 
-version: "1.0"
+version: "2.0"
 framework: "ISO/IEC 42001:2023"
 mapped_to: "EU AI Act (Regulation 2024/1689)"
 
 mappings:
+  article_4_ai_literacy:
+    eu_ai_act: "Article 4 — AI Literacy"
+    iso_42001_controls:
+      - id: "A.7.1"
+        name: "Awareness of AI policy"
+        overlap: "high"
+      - id: "A.7.2"
+        name: "Training and competence for AI"
+        overlap: "high"
+    nist_ai_rmf: "GOVERN 2.1-2.2"
+
   article_9_risk_management:
     eu_ai_act: "Article 9 — Risk Management System"
     iso_42001_controls:
@@ -24,6 +35,21 @@ mappings:
         overlap: "high"
       - id: "A.5.4"
         name: "Responsible parties for risk"
+        overlap: "medium"
+      - id: "A.6.1"
+        name: "Resources for AI"
+        overlap: "medium"
+      - id: "A.6.2"
+        name: "AI system life cycle"
+        overlap: "high"
+      - id: "A.6.2.2"
+        name: "Assessment of AI system impact"
+        overlap: "high"
+      - id: "A.6.2.3"
+        name: "AI system requirements"
+        overlap: "high"
+      - id: "A.6.5"
+        name: "Responsible AI"
         overlap: "medium"
     nist_ai_rmf: "GOVERN 1.1-1.7, MAP 1.1-1.6"
 
@@ -73,6 +99,9 @@ mappings:
       - id: "A.6.10.2"
         name: "Event logging"
         overlap: "high"
+      - id: "A.6.2.5"
+        name: "AI system release and change management"
+        overlap: "medium"
     nist_ai_rmf: "GOVERN 3.2, MEASURE 4.2"
 
   article_13_transparency:
@@ -87,6 +116,9 @@ mappings:
       - id: "A.6.8.3"
         name: "Explainability"
         overlap: "medium"
+      - id: "A.7.5"
+        name: "Communication about AI"
+        overlap: "high"
     nist_ai_rmf: "MAP 5.1, MANAGE 4.2"
 
   article_14_human_oversight:
@@ -100,6 +132,9 @@ mappings:
         overlap: "high"
       - id: "A.6.7"
         name: "AI system operation and monitoring"
+        overlap: "medium"
+      - id: "A.6.5"
+        name: "Responsible AI"
         overlap: "medium"
     nist_ai_rmf: "GOVERN 4.1, MANAGE 2.4"
 
@@ -120,11 +155,66 @@ mappings:
         overlap: "high"
     nist_ai_rmf: "MEASURE 2.1-2.13"
 
+  article_17_quality_management:
+    eu_ai_act: "Article 17 — Quality Management System"
+    iso_42001_controls:
+      - id: "A.5.1"
+        name: "AI policy"
+        overlap: "high"
+      - id: "A.5.2"
+        name: "AI roles and responsibilities"
+        overlap: "high"
+      - id: "A.6.1"
+        name: "Resources for AI"
+        overlap: "high"
+      - id: "A.6.2"
+        name: "AI system life cycle"
+        overlap: "high"
+      - id: "A.6.2.4"
+        name: "Procurement and supply of AI systems"
+        overlap: "medium"
+      - id: "A.6.2.5"
+        name: "AI system release and change management"
+        overlap: "high"
+      - id: "A.6.2.6"
+        name: "Third-party relationships for AI"
+        overlap: "medium"
+      - id: "A.8.2"
+        name: "Compliance with AI regulations"
+        overlap: "high"
+      - id: "A.9.1"
+        name: "Management review of AI management system"
+        overlap: "high"
+    nist_ai_rmf: "GOVERN 1.1-1.7, GOVERN 2.1-2.3, MANAGE 1.1-1.4"
+
+  article_27_fundamental_rights_impact:
+    eu_ai_act: "Article 27 — Fundamental Rights Impact Assessment"
+    iso_42001_controls:
+      - id: "A.6.2.2"
+        name: "Assessment of AI system impact"
+        overlap: "high"
+      - id: "A.6.5"
+        name: "Responsible AI"
+        overlap: "medium"
+    nist_ai_rmf: "MAP 1.3, MAP 5.1-5.2"
+
+  article_43_conformity_assessment:
+    eu_ai_act: "Article 43 — Conformity Assessment"
+    iso_42001_controls:
+      - id: "A.8.1"
+        name: "Audit of AI systems"
+        overlap: "high"
+      - id: "A.8.2"
+        name: "Compliance with AI regulations"
+        overlap: "high"
+    nist_ai_rmf: "GOVERN 1.1, GOVERN 1.4, MEASURE 4.1-4.2"
+
 # Summary statistics
 summary:
-  total_eu_ai_act_articles: 7
-  total_iso_42001_controls_mapped: 24
-  high_overlap_controls: 20
-  medium_overlap_controls: 4
+  total_eu_ai_act_articles: 11
+  total_iso_42001_controls_mapped: 42
+  total_mapping_entries: 49
+  high_overlap_controls: 39
+  medium_overlap_controls: 10
   estimated_coverage: "~90%"
-  note: "Organisations pursuing ISO 42001 certification are simultaneously preparing for approximately 90% of EU AI Act high-risk requirements. The remaining ~10% consists of EU-specific requirements (conformity assessment procedures, CE marking, EU declaration of conformity) that do not have ISO 42001 equivalents."
+  note: "Organisations pursuing ISO 42001 certification are simultaneously preparing for approximately 90% of EU AI Act high-risk requirements. 42 unique ISO 42001 controls are mapped across 11 EU AI Act articles (4, 9, 10, 11, 12, 13, 14, 15, 17, 27, 43). Some controls appear under multiple articles where they are relevant. The remaining ~10% consists of EU-specific requirements (conformity assessment procedures, CE marking, EU declaration of conformity) that do not have ISO 42001 equivalents."
