@@ -36,4 +36,4 @@ Regula is the code layer of an AI governance programme. It handles what can be d
 
 - PyPI: https://pypi.org/project/regula-ai/
 - GitHub: https://github.com/kuzivaai/getregula
-- License: MIT OR EUPL-1.2
+- License: Apache-2.0 OR EUPL-1.2

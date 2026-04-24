@@ -8,7 +8,7 @@ authors:
     affiliation: "The Implementation Layer"
 repository-code: "https://github.com/kuzivaai/getregula"
 url: "https://getregula.com"
-license: MIT
+license: Apache-2.0
 version: "1.7.0"
 date-released: "2026-04-16"
 keywords:

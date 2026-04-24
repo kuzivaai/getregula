@@ -3,7 +3,7 @@
 **EU AI Act risk scanner for code.**
 
 [![PyPI](https://img.shields.io/pypi/v/regula-ai)](https://pypi.org/project/regula-ai/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
 [![Tests](https://img.shields.io/badge/tests-1223%20passing-brightgreen.svg)](#verified-numbers)
@@ -232,13 +232,13 @@ Regula is maintained by Kuziva Muzondo (solo). Commits include a `Co-Authored-By
 
 ## Licence
 
-**Engine and CLI:** [MIT License](LICENSE.txt) **OR** [European Union Public Licence v. 1.2](LICENSE.EUPL) — at your option. Pick the one that fits your context:
+**Engine and CLI:** [Apache License 2.0](LICENSE.txt) **OR** [European Union Public Licence v. 1.2](LICENSE.EUPL) — at your option. Pick the one that fits your context:
 
-- **MIT** is the simplest and most compatible choice for private companies, SaaS, and most commercial redistribution.
+- **Apache 2.0** includes an explicit patent grant, making it the preferred choice for enterprise adoption, commercial redistribution, and any context where patent clarity matters.
 - **EUPL-1.2** is explicitly recognised inside EU institutions and public-sector procurement, is strongly-copyleft on software, and has a formal compatibility appendix (GPL v2/v3, AGPL v3, OSL, EPL, CeCILL, MPL 2.0, LGPL, CC BY-SA 3.0) for downstream projects. If you work with a European public administration, EUPL is often the required or preferred licence.
 
-You may choose either licence for any use. You do not need to state which one you picked, but attribution (keep the copyright notice) is required under both.
+You may choose either licence for any use. You do not need to state which one you picked, but attribution (keep the copyright notice and NOTICE file) is required under both.
 
 **Risk patterns and regulatory data:** [Detection Rule License (DRL) 1.1](docs/LICENSE.Detection.Rules.md). You may use, modify, and redistribute the patterns freely. Attribution is required if you redistribute the patterns or use them in a product. If your tool generates match output from these patterns, the output must credit the source.
 
-The SPDX expression for the full package is `(MIT OR EUPL-1.2) AND LicenseRef-DRL-1.1`.
+The SPDX expression for the full package is `(Apache-2.0 OR EUPL-1.2) AND LicenseRef-DRL-1.1`.
