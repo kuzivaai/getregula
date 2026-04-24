@@ -4,7 +4,7 @@
 Regula EU AI Act Compliance Gap Assessment
 
 Scans a project for evidence of compliance infrastructure required by
-Articles 9-15 of the EU AI Act. Returns a structured gap assessment
+Articles 9-15 and 17 of the EU AI Act. Returns a structured gap assessment
 showing what exists, what is missing, and an overall compliance score.
 
 This module uses file scanning (glob/grep patterns) and optionally
@@ -64,7 +64,7 @@ if _dep_scan_available:
 
 DOC_EXTENSIONS = {".md", ".txt", ".rst", ".yaml", ".yml", ".json", ".toml"}
 ALL_SCANNABLE = CODE_EXTENSIONS | DOC_EXTENSIONS
-ARTICLE_NUMBERS = ["9", "10", "11", "12", "13", "14", "15"]
+ARTICLE_NUMBERS = ["9", "10", "11", "12", "13", "14", "15", "17"]
 
 ARTICLE_TITLES = {
     "9": "Risk Management",
@@ -74,6 +74,7 @@ ARTICLE_TITLES = {
     "13": "Transparency",
     "14": "Human Oversight",
     "15": "Accuracy, Robustness, Cybersecurity",
+    "17": "Quality Management System",
 }
 
 
@@ -946,6 +947,89 @@ def _check_article_15(project_path: str, files_index: list) -> tuple:
     return score, evidence, gaps
 
 
+def _check_article_17(project_path: str, files_index: list) -> tuple:
+    """Article 17 -- Quality Management System.
+
+    Deployers of high-risk AI systems must implement a QMS covering
+    policies, procedures, and documentation for quality assurance.
+    """
+    evidence = []
+    gaps = []
+    component_scores = {"qms_docs": 0, "quality_policy": 0, "procedures": 0}
+
+    qms_file_patterns = [
+        "qms*", "quality_management*", "quality-management*",
+        "quality_policy*", "quality-policy*", "quality_manual*",
+        "quality-manual*", "quality_plan*", "quality-plan*",
+    ]
+    qms_content_patterns = [
+        r"quality\s+management\s+system", r"quality\s+management",
+        r"qms", r"quality\s+assurance", r"quality\s+control",
+        r"iso\s*9001", r"iso\s*42001",
+    ]
+    quality_policy_patterns = [
+        r"quality\s+policy", r"quality\s+objective",
+        r"quality\s+commitment", r"quality\s+standard",
+        r"continuous\s+improvement", r"management\s+review",
+    ]
+    procedure_patterns = [
+        r"standard\s+operating\s+procedure", r"\bsop\b",
+        r"process\s+documentation", r"work\s+instruction",
+        r"change\s+management", r"corrective\s+action",
+        r"preventive\s+action", r"nonconformity", r"non.?conformity",
+        r"internal\s+audit", r"document\s+control",
+    ]
+
+    for rel_path, abs_path in files_index:
+        in_quality_dir = _is_in_directory(
+            rel_path, ["docs", "compliance", "governance", "quality", "qms"]
+        )
+
+        if _file_matches_glob(rel_path, qms_file_patterns):
+            evidence.append(f"QMS documentation file: {rel_path}")
+            component_scores["qms_docs"] = 1
+
+        if Path(rel_path).suffix.lower() in DOC_EXTENSIONS or in_quality_dir:
+            content = _read_file(abs_path)
+            if content is None:
+                continue
+
+            matched = _search_content(content, qms_content_patterns)
+            if matched:
+                if component_scores["qms_docs"] == 0:
+                    evidence.append(f"QMS content in: {rel_path}")
+                    component_scores["qms_docs"] = 1
+
+            policy_matched = _search_content(content, quality_policy_patterns)
+            if policy_matched:
+                if component_scores["quality_policy"] == 0:
+                    evidence.append(f"Quality policy content in: {rel_path}")
+                    component_scores["quality_policy"] = 1
+
+            proc_matched = _search_content(content, procedure_patterns)
+            if proc_matched:
+                if component_scores["procedures"] == 0:
+                    evidence.append(f"QMS procedures in: {rel_path}")
+                    component_scores["procedures"] = 1
+
+    if component_scores["qms_docs"] == 0:
+        gaps.append("No quality management system documentation found")
+    if component_scores["quality_policy"] == 0:
+        gaps.append("No quality policy or quality objectives found")
+    if component_scores["procedures"] == 0:
+        gaps.append("No standard operating procedures or process documentation found")
+
+    # Scoring: 3 components -- qms_docs, quality_policy, procedures.
+    # 0 = nothing; 30 = 1 (minimal QMS awareness); 65 = 2 (partial QMS);
+    # 100 = all 3 (docs + policy + procedures). Same curve as Articles 10/12/13.
+    # Heuristic, not empirically calibrated.
+    total = sum(component_scores.values())
+    score_map = {0: 0, 1: 30, 2: 65, 3: 100}
+    score = score_map[total]
+
+    return score, evidence, gaps
+
+
 # ---------------------------------------------------------------------------
 # Article checker dispatch
 # ---------------------------------------------------------------------------
@@ -958,6 +1042,7 @@ ARTICLE_CHECKERS = {
     "13": _check_article_13,
     "14": _check_article_14,
     "15": _check_article_15,
+    "17": _check_article_17,
 }
 
 
@@ -1014,7 +1099,7 @@ def assess_compliance(
     Args:
         project_path: Path to the project root directory.
         articles: Optional list of article numbers to check (e.g. ["9", "14"]).
-                  Defaults to all articles (9-15).
+                  Defaults to all articles (9-15, 17).
 
     Returns:
         A dict containing per-article scores, evidence, gaps, and an overall
@@ -1145,6 +1230,11 @@ _REGULATION_OVERLAP = {
         "dora": "Articles 5-7 — ICT risk management, testing, resilience",
         "nis2": "Article 21 — Cybersecurity risk management measures",
     },
+    "17": {
+        "gdpr": None,
+        "dora": "Article 5 — ICT governance and organisation (QMS overlap)",
+        "nis2": None,
+    },
 }
 
 
@@ -1266,7 +1356,7 @@ def format_gap_json(assessment: dict) -> str:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="EU AI Act compliance gap assessment (Articles 9-15)"
+        description="EU AI Act compliance gap assessment (Articles 9-15, 17)"
     )
     parser.add_argument(
         "--project", "-p",

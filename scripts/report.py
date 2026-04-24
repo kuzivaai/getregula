@@ -14,6 +14,7 @@ __all__ = [
     "generate_html_report", "generate_sarif", "generate_sales_report",
 ]
 
+import hashlib
 import json
 import os
 import re
@@ -1387,6 +1388,9 @@ def generate_sarif(findings: list, project_name: str) -> dict:
             "fullDescription": {"text": f"EU AI Act Article {config['article']}: {config['description']}"},
             "defaultConfiguration": {"level": "error"},
             "helpUri": "https://artificialintelligenceact.eu/article/5/",
+            "properties": {
+                "tags": ["eu-ai-act", "article-5", "prohibited-practice", "compliance"],
+            },
         }
 
     for rule_id, config in HIGH_RISK_PATTERNS.items():
@@ -1397,6 +1401,9 @@ def generate_sarif(findings: list, project_name: str) -> dict:
             "fullDescription": {"text": f"EU AI Act {config['category']}: {config['description']}. Articles {', '.join(config['articles'])} may apply."},
             "defaultConfiguration": {"level": "warning"},
             "helpUri": "https://artificialintelligenceact.eu/annex/3/",
+            "properties": {
+                "tags": ["eu-ai-act", "annex-iii", "high-risk", "compliance"],
+            },
         }
 
     # Credential governance rules
@@ -1409,6 +1416,9 @@ def generate_sarif(findings: list, project_name: str) -> dict:
             "fullDescription": {"text": f"EU AI Act Article 15 cybersecurity: {config['description']}. {config['remediation']}"},
             "defaultConfiguration": {"level": "error" if config["confidence"] == "high" else "warning"},
             "helpUri": "https://artificialintelligenceact.eu/article/15/",
+            "properties": {
+                "tags": ["eu-ai-act", "article-15", "cybersecurity", "credential-exposure"],
+            },
         }
 
     for rule_id, config in AI_SECURITY_PATTERNS.items():
@@ -1419,6 +1429,9 @@ def generate_sarif(findings: list, project_name: str) -> dict:
             "fullDescription": {"text": f"OWASP LLM Top 10 {config.get('owasp', '')}: {config['description']}. {config.get('remediation', '')}"},
             "defaultConfiguration": {"level": "warning"},
             "helpUri": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+            "properties": {
+                "tags": ["owasp-llm-top-10", "ai-security"],
+            },
         }
 
     # Agent autonomy rules (dynamic — generated from findings rather than static patterns)
@@ -1432,6 +1445,9 @@ def generate_sarif(findings: list, project_name: str) -> dict:
             "fullDescription": {"text": f"EU AI Act Article 50: {config['description']}. Transparency obligation applies."},
             "defaultConfiguration": {"level": "note"},
             "helpUri": "https://artificialintelligenceact.eu/article/50/",
+            "properties": {
+                "tags": ["eu-ai-act", "article-50", "transparency"],
+            },
         }
 
     # Build results from findings
@@ -1461,6 +1477,9 @@ def generate_sarif(findings: list, project_name: str) -> dict:
                     "fullDescription": {"text": f"EU AI Act Article 14 (Human Oversight): {f.get('description', 'Autonomous action detected')}"},
                     "defaultConfiguration": {"level": "warning"},
                     "helpUri": "https://artificialintelligenceact.eu/article/14/",
+                    "properties": {
+                        "tags": ["eu-ai-act", "article-14", "human-oversight"],
+                    },
                 }
         elif tier == "ai_security":
             rule_id = f"regula/ai-security/{primary_indicator}"
@@ -1474,6 +1493,10 @@ def generate_sarif(findings: list, project_name: str) -> dict:
         if f.get("open_question"):
             sarif_level = "note"
 
+        # Generate stable fingerprint for deduplication across runs
+        fp_input = f"{f['file']}:{f.get('line', 1)}:{rule_id}"
+        fp_hash = hashlib.sha256(fp_input.encode()).hexdigest()[:16]
+
         result = {
             "ruleId": rule_id,
             "level": sarif_level,
@@ -1486,6 +1509,9 @@ def generate_sarif(findings: list, project_name: str) -> dict:
                     "region": {"startLine": f.get("line", 1)},
                 },
             }],
+            "partialFingerprints": {
+                "primaryLocationLineHash": fp_hash,
+            },
             "properties": {
                 "confidence_score": f.get("confidence_score", 0),
                 "open_question": f.get("open_question", False),

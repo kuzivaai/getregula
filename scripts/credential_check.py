@@ -194,6 +194,20 @@ SECRET_PATTERNS = {
     },
 }
 
+# ---------------------------------------------------------------------------
+# Compiled regex cache — avoids recompiling 18 patterns on every call
+# Lazily populated on first use of check_secrets / has_high_confidence_secret
+# ---------------------------------------------------------------------------
+_SECRET_COMPILED: dict[str, "re.Pattern[str]"] = {}
+
+
+def _get_compiled() -> dict[str, "re.Pattern[str]"]:
+    """Return compiled regex cache, populating on first call."""
+    if not _SECRET_COMPILED:
+        for name, config in SECRET_PATTERNS.items():
+            _SECRET_COMPILED[name] = re.compile(config["pattern"])
+    return _SECRET_COMPILED
+
 
 def _redact(value: str) -> str:
     """Redact a secret value, showing only the first 4 characters."""
@@ -208,8 +222,9 @@ def check_secrets(text: str) -> list[SecretFinding]:
     Returns a list of SecretFinding objects, sorted by confidence (high first).
     """
     findings = []
+    compiled = _get_compiled()
     for name, config in SECRET_PATTERNS.items():
-        match = re.search(config["pattern"], text)
+        match = compiled[name].search(text)
         if match:
             matched_value = match.group(0)
             findings.append(SecretFinding(
@@ -228,8 +243,9 @@ def check_secrets(text: str) -> list[SecretFinding]:
 
 def has_high_confidence_secret(text: str) -> bool:
     """Quick check: does the text contain any high-confidence secret?"""
-    for config in SECRET_PATTERNS.values():
-        if config["confidence"] == "high" and re.search(config["pattern"], text):
+    compiled = _get_compiled()
+    for name, config in SECRET_PATTERNS.items():
+        if config["confidence"] == "high" and compiled[name].search(text):
             return True
     return False
 

@@ -20,7 +20,6 @@ __all__ = [
 ]
 
 import argparse
-import json
 import re
 import sys
 from pathlib import Path
@@ -142,6 +141,7 @@ def check_ai_security(text: str) -> list:
     for name, compiled_patterns in _AI_SECURITY_COMPILED.items():
         config = AI_SECURITY_PATTERNS[name]
         for rx in compiled_patterns:
+            in_docstring = False
             for i, line in enumerate(lines, 1):
                 # Skip extremely long lines to prevent regex performance issues
                 if len(line) > 2000:
@@ -181,8 +181,6 @@ def check_ai_security(text: str) -> list:
                         "matched_line": stripped[:100],
                     })
                     break  # One match per pattern per file is enough
-        # Reset docstring state between patterns
-        in_docstring = False
 
     return findings
 
@@ -269,6 +267,17 @@ def check_bias_risk(text: str) -> list:
 # ---------------------------------------------------------------------------
 # Scoring
 # ---------------------------------------------------------------------------
+
+def _safe_article_sort_key(article: str):
+    """Sort key for article IDs that may be non-integer (e.g. '29a').
+
+    Integer articles sort numerically; non-integer articles sort to the end.
+    """
+    try:
+        return (0, int(article), "")
+    except (ValueError, TypeError):
+        return (1, 0, str(article))
+
 
 def _compute_confidence_score(tier: str, num_matches: int, has_ai_indicator: bool) -> int:
     """Compute a 0-100 confidence score based on tier, match count, and AI context.
@@ -389,42 +398,77 @@ def is_ai_related(text: str, stripped_text: str = None) -> bool:
     return False
 
 
-def check_prohibited(text: str, stripped_text: str = None) -> Optional[Classification]:
+def _check_patterns(compiled_dict: dict, patterns_dict: dict,
+                     custom_key: str, text: str,
+                     stripped_text: str = None,
+                     custom_field_defaults: dict = None) -> list:
+    """Shared pattern-matching logic for all risk tiers.
+
+    Matches compiled patterns, checks custom rules, and filters against
+    stripped (comment-free) text. Returns a list of match dicts.
+
+    Args:
+        compiled_dict: Pre-compiled regex dict for this tier.
+        patterns_dict: Raw pattern definitions for this tier.
+        custom_key: Key into _CUSTOM_RULES (e.g. "prohibited").
+        text: Full source text.
+        stripped_text: Comment-stripped text for false-positive filtering.
+        custom_field_defaults: Default fields for custom rule matches.
+    """
     text_lower = text.lower()
     stripped_lower = stripped_text.lower() if stripped_text else None
     matches = []
-    for name, compiled_patterns in _PROHIBITED_COMPILED.items():
+
+    for name, compiled_patterns in compiled_dict.items():
         for rx in compiled_patterns:
             if rx.search(text_lower):
-                matches.append(PROHIBITED_PATTERNS[name] | {"indicator": name})
+                matches.append(patterns_dict[name] | {"indicator": name})
                 break
 
-    # Check custom prohibited rules
-    for rule in _CUSTOM_RULES.get("prohibited", []):
+    # Check custom rules for this tier
+    defaults = custom_field_defaults or {}
+    for rule in _CUSTOM_RULES.get(custom_key, []):
         for pattern in rule["patterns"]:
             try:
                 compiled = _compile_custom_pattern(pattern)
                 if compiled.search(text_lower):
-                    matches.append({
+                    entry = {
                         "indicator": rule["name"],
                         "patterns": rule["patterns"],
-                        "description": rule["description"],
-                        "article": rule.get("article", "5"),
-                    })
+                        "description": rule.get("description",
+                                                 defaults.get("description", "")),
+                    }
+                    # Merge tier-specific fields from the rule
+                    for field in ("article", "articles", "category"):
+                        if field in rule:
+                            entry[field] = rule[field]
+                        elif field in defaults:
+                            entry[field] = defaults[field]
+                    matches.append(entry)
                     break
             except ValueError:
                 continue  # Skip unsafe patterns silently
 
+    # Filter: keep only matches that also appear in stripped (non-comment) text
     if matches and stripped_lower is not None:
-        # Filter: keep only matches that also appear in stripped (non-comment) text
         confirmed = []
         for m in matches:
-            for pattern in m.get("patterns", PROHIBITED_PATTERNS.get(m["indicator"], {}).get("patterns", [])):
+            for pattern in m.get("patterns",
+                                 patterns_dict.get(m["indicator"], {}).get("patterns", [])):
                 if re.search(pattern, stripped_lower):
                     confirmed.append(m)
                     break
         matches = confirmed
 
+    return matches
+
+
+def check_prohibited(text: str, stripped_text: str = None) -> Optional[Classification]:
+    matches = _check_patterns(
+        _PROHIBITED_COMPILED, PROHIBITED_PATTERNS, "prohibited",
+        text, stripped_text,
+        custom_field_defaults={"article": "5"},
+    )
     if matches:
         primary = matches[0]
         has_ai = is_ai_related(text, stripped_text=stripped_text)
@@ -447,42 +491,11 @@ def check_prohibited(text: str, stripped_text: str = None) -> Optional[Classific
 
 
 def check_high_risk(text: str, stripped_text: str = None) -> Optional[Classification]:
-    text_lower = text.lower()
-    stripped_lower = stripped_text.lower() if stripped_text else None
-    matches = []
-    for name, compiled_patterns in _HIGH_RISK_COMPILED.items():
-        for rx in compiled_patterns:
-            if rx.search(text_lower):
-                matches.append(HIGH_RISK_PATTERNS[name] | {"indicator": name})
-                break
-
-    # Check custom high-risk rules
-    for rule in _CUSTOM_RULES.get("high_risk", []):
-        for pattern in rule["patterns"]:
-            try:
-                compiled = _compile_custom_pattern(pattern)
-                if compiled.search(text_lower):
-                    matches.append({
-                        "indicator": rule["name"],
-                        "patterns": rule["patterns"],
-                        "description": rule["description"],
-                        "articles": rule.get("articles", ["6"]),
-                        "category": rule.get("category", "Custom High-Risk"),
-                    })
-                    break
-            except ValueError:
-                continue  # Skip unsafe patterns silently
-
-    if matches and stripped_lower is not None:
-        # Filter: keep only matches that also appear in stripped (non-comment) text
-        confirmed = []
-        for m in matches:
-            for pattern in m.get("patterns", HIGH_RISK_PATTERNS.get(m["indicator"], {}).get("patterns", [])):
-                if re.search(pattern, stripped_lower):
-                    confirmed.append(m)
-                    break
-        matches = confirmed
-
+    matches = _check_patterns(
+        _HIGH_RISK_COMPILED, HIGH_RISK_PATTERNS, "high_risk",
+        text, stripped_text,
+        custom_field_defaults={"articles": ["6"], "category": "Custom High-Risk"},
+    )
     if matches:
         all_articles = set()
         for m in matches:
@@ -492,11 +505,11 @@ def check_high_risk(text: str, stripped_text: str = None) -> Optional[Classifica
             tier=RiskTier.HIGH_RISK,
             confidence="high" if len(matches) >= 2 else "medium",
             indicators_matched=[m["indicator"] for m in matches],
-            applicable_articles=sorted(all_articles, key=int),
+            applicable_articles=sorted(all_articles, key=_safe_article_sort_key),
             category=primary["category"],
             description=primary["description"],
             action="allow_with_requirements",
-            message=f"HIGH-RISK: {primary['description']} - Articles {', '.join(sorted(all_articles, key=int))}",
+            message=f"HIGH-RISK: {primary['description']} - Articles {', '.join(sorted(all_articles, key=_safe_article_sort_key))}",
             confidence_score=_compute_confidence_score("high_risk", len(matches), True),
             pattern_confidence=primary.get("confidence"),
             pattern_likelihood=primary.get("likelihood"),
@@ -506,40 +519,11 @@ def check_high_risk(text: str, stripped_text: str = None) -> Optional[Classifica
 
 
 def check_limited_risk(text: str, stripped_text: str = None) -> Optional[Classification]:
-    text_lower = text.lower()
-    stripped_lower = stripped_text.lower() if stripped_text else None
-    matches = []
-    for name, compiled_patterns in _LIMITED_RISK_COMPILED.items():
-        for rx in compiled_patterns:
-            if rx.search(text_lower):
-                matches.append(LIMITED_RISK_PATTERNS[name] | {"indicator": name})
-                break
-
-    # Check custom limited-risk rules
-    for rule in _CUSTOM_RULES.get("limited_risk", []):
-        for pattern in rule["patterns"]:
-            try:
-                compiled = _compile_custom_pattern(pattern)
-                if compiled.search(text_lower):
-                    matches.append({
-                        "indicator": rule["name"],
-                        "patterns": rule["patterns"],
-                        "description": rule.get("description", "Custom limited-risk rule"),
-                    })
-                    break
-            except ValueError:
-                continue  # Skip unsafe patterns silently
-
-    if matches and stripped_lower is not None:
-        # Filter: keep only matches that also appear in stripped (non-comment) text
-        confirmed = []
-        for m in matches:
-            for pattern in m.get("patterns", LIMITED_RISK_PATTERNS.get(m["indicator"], {}).get("patterns", [])):
-                if re.search(pattern, stripped_lower):
-                    confirmed.append(m)
-                    break
-        matches = confirmed
-
+    matches = _check_patterns(
+        _LIMITED_RISK_COMPILED, LIMITED_RISK_PATTERNS, "limited_risk",
+        text, stripped_text,
+        custom_field_defaults={"description": "Custom limited-risk rule"},
+    )
     if matches:
         primary = matches[0]
         return Classification(
