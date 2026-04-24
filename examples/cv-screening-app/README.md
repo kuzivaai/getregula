@@ -202,7 +202,7 @@ for the Annex IV draft a notified body would review.
 organisational parts of the compliance evidence. Risk Management System
 documentation (Article 9 process records), Quality Management System
 (Article 17), Post-Market Monitoring (Article 72), and Fundamental Rights
-Impact Assessment (Article 29a) are out of scope for a code scanner.
+Impact Assessment (Article 27) are out of scope for a code scanner.
 `regula conform --organisational` produces a questionnaire for those.
 
 The format produced above is the

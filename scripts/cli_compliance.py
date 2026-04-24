@@ -359,7 +359,7 @@ def cmd_conform(args) -> None:
     from cli import json_output, _validate_path
 
     # F1: --organisational — questionnaire mode for the articles Regula
-    # cannot verify from code (Art. 9 RMS, Art. 17 QMS, Art. 29a FRIA,
+    # cannot verify from code (Art. 9 RMS, Art. 17 QMS, Art. 27 FRIA,
     # Art. 72 PMM). This does NOT scan code — it asks structured yes/no
     # questions and produces an evidence document from the answers.
     if getattr(args, "organisational", False):

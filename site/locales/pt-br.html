@@ -100,7 +100,7 @@
                 "name": "O que torna um sistema de IA de alto risco segundo a Lei de IA da UE?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "O Anexo III lista oito categorias de alto risco, incluindo pontuação de crédito, contratação, diagnóstico médico, avaliação educacional, aplicação da lei, controle de fronteiras, serviços essenciais e integridade do processo democrático. O Regula identifica padrões de código que correspondem a cada categoria."
+                    "text": "O Anexo III lista oito categorias de alto risco, incluindo pontuação de crédito, contratação, serviços de saúde, avaliação educacional, aplicação da lei, controle de fronteiras, serviços essenciais e integridade do processo democrático. O Regula identifica padrões de código que correspondem a cada categoria."
                 }
             },
             {
@@ -108,7 +108,7 @@
                 "name": "Quando a Lei de IA da UE começa a ser aplicada?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "As proibições do Artigo 5 entraram em vigor em 2 de fevereiro de 2025. As obrigações de GPAI (Artigos 53-55) entraram em vigor em 2 de agosto de 2025. As obrigações de alto risco (Artigos 9-15) entram em vigor em 2 de agosto de 2026. Um Digital Omnibus proposto pode adiar alguns prazos do Anexo III para dezembro de 2027, mas ainda não é lei."
+                    "text": "As proibições do Artigo 5 entraram em vigor em 2 de fevereiro de 2025. As obrigações de GPAI (Artigos 51-55) entraram em vigor em 2 de agosto de 2025. As obrigações de alto risco (Artigos 9-15) entram em vigor em 2 de agosto de 2026. Um Digital Omnibus proposto pode adiar alguns prazos do Anexo III para dezembro de 2027, mas ainda não é lei."
                 }
             },
             {
@@ -116,7 +116,7 @@
                 "name": "O Regula é gratuito?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Sim. O Regula é open source sob a licença Apache 2.0. Sem conta, sem chave de API, sem ligação comercial. Instale com pipx install regula-ai e execute localmente no seu código. A CLI completa, todos os 60 comandos, todos os 404 padrões de risco e todos os 12 mapeamentos de frameworks de conformidade são gratuitos."
+                    "text": "Sim. O Regula é open source sob a licença Apache 2.0. Sem conta, sem chave de API, sem ligação comercial. Instale com pipx install regula-ai e execute localmente no seu código. A CLI completa, todos os 61 comandos, todos os 404 padrões de risco e todos os 12 mapeamentos de frameworks de conformidade são gratuitos."
                 }
             },
             {
@@ -271,7 +271,7 @@
             </div>
             <div class="tier tier-a">
                 <div class="tier-badge">Alto risco</div>
-                <div class="tier-examples">Pontuação de crédito &middot; Emprego &middot; Diagnóstico médico &middot; Educação &middot; Aplicação da lei</div>
+                <div class="tier-examples">Pontuação de crédito &middot; Emprego &middot; Serviços de saúde &middot; Educação &middot; Aplicação da lei</div>
                 <div class="tier-hint">Art. 9&ndash;15 aplicáveis &rarr;</div>
             </div>
             <div class="tier tier-y">
@@ -436,9 +436,21 @@
                 <p>Cada artigo da Lei de IA é mapeado para obrigações correspondentes da LGPD, DORA e NIS2. Uma varredura revela requisitos em todas as quatro regulações.</p>
                 <code style="font-size:11px;color:#9898b4;">regula gap .</code>
             </div>
+            <div class="card-base art-card">
+                <div class="tag tag-purple">API</div>
+                <h4>API REST para ferramentas GRC</h4>
+                <p>Sete endpoints HTTP que retornam o mesmo formato JSON da CLI. Integre o Regula ao ServiceNow, Jira ou sua plataforma GRC.</p>
+                <code style="font-size:11px;color:#9898b4;">regula api-server --port 8487</code>
+            </div>
+            <div class="card-base art-card">
+                <div class="tag tag-blue">Dashboard</div>
+                <h4>Painel web</h4>
+                <p>Postura de governança num relance. Distribuição de risco, lacunas de conformidade por artigo, autoavaliação interativa e exportação em JSON/SARIF/HTML. Sem terminal.</p>
+                <code style="font-size:11px;color:#9898b4;">localhost:8487/v1/dashboard</code>
+            </div>
         </div>
         <p style="font-size:12px;color:#9898b4;margin-top:24px;font-family:'JetBrains Mono',monospace;text-align:center;">
-            60 comandos no total &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Mapeamentos para ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU CRA e 7 outros frameworks.
+            61 comandos no total &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Mapeamentos para ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU CRA e 7 outros frameworks.
             <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md" style="color:#8888aa;margin-left:4px;">Referência completa da CLI &rarr;</a>
         </p>
     </div>

@@ -92,6 +92,11 @@ regula aibom --project . --format markdown     # Markdown table
 regula install claude-code
 regula install copilot-cli
 regula install list
+
+# Start the REST API server with web dashboard
+regula api-server
+regula api-server --port 9000
+regula api-server --host 0.0.0.0 --port 8487
 ```
 
 ### Compliance Gap Assessment
@@ -518,6 +523,56 @@ regula monitor export my-system --output events.csv
 ```
 
 Options: `--output FILE`
+
+### REST API Server & Web Dashboard
+
+Starts a local HTTP server that exposes Regula's core functionality over REST endpoints, plus a web dashboard for browser-based interaction. Built on Python's stdlib `http.server` with zero dependencies.
+
+```bash
+regula api-server                              # Start on localhost:8487
+regula api-server --port 9000                  # Custom port
+regula api-server --host 0.0.0.0 --port 8487   # Bind to all interfaces
+```
+
+Options: `--host HOST` (default: `localhost`), `--port PORT` (default: `8487`)
+
+**Endpoints:**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/health` | Liveness check (returns version) |
+| POST | `/v1/check` | Scan files for risk indicators |
+| POST | `/v1/classify` | Classify text against EU AI Act risk tiers |
+| POST | `/v1/gap` | Compliance gap analysis (Articles 9-15) |
+| GET | `/v1/questionnaire` | Governance self-assessment questionnaire |
+| POST | `/v1/questionnaire/evaluate` | Evaluate questionnaire answers |
+| GET | `/v1/dashboard` | Web dashboard (HTML) |
+
+All POST endpoints accept `application/json` and return the standard Regula JSON envelope (`format_version`, `regula_version`, `command`, `timestamp`, `exit_code`, `data`).
+
+**Dashboard.** Open `http://localhost:8487/v1/dashboard` in a browser after starting the server.
+
+**Example:**
+
+```bash
+# Start the server
+regula api-server &
+
+# Health check
+curl http://localhost:8487/health
+
+# Scan a project
+curl -X POST http://localhost:8487/v1/check \
+  -H "Content-Type: application/json" \
+  -d '{"path": "."}'
+
+# Classify text
+curl -X POST http://localhost:8487/v1/classify \
+  -H "Content-Type: application/json" \
+  -d '{"input": "import tensorflow; cv screening model"}'
+```
+
+**Security.** The API server has no authentication. Do not expose it on public networks without a reverse proxy that provides auth (e.g. nginx with API key validation). The `/v1/check` and `/v1/gap` endpoints reject paths outside the current working directory.
 
 ### MCP Server (use Regula from Claude Code, Cursor, Windsurf)
 

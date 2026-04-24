@@ -100,7 +100,7 @@
                 "name": "Was macht ein KI-System nach dem EU-KI-Gesetz hochriskant?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Anhang III listet acht Hochrisiko-Kategorien auf, darunter Kreditbewertung, Personaleinstellung, medizinische Diagnose, Bildungsbewertung, Strafverfolgung, Grenzkontrolle, wesentliche Dienstleistungen und Integrität demokratischer Prozesse. Regula erkennt Codemuster, die jeder Kategorie entsprechen."
+                    "text": "Anhang III listet acht Hochrisiko-Kategorien auf, darunter Kreditbewertung, Personaleinstellung, Gesundheitsdienstleistungen, Bildungsbewertung, Strafverfolgung, Grenzkontrolle, wesentliche Dienstleistungen und Integrität demokratischer Prozesse. Regula erkennt Codemuster, die jeder Kategorie entsprechen."
                 }
             },
             {
@@ -108,7 +108,7 @@
                 "name": "Wann wird das EU-KI-Gesetz durchgesetzt?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Artikel-5-Verbote gelten seit dem 2. Februar 2025. GPAI-Pflichten (Artikel 53-55) gelten seit dem 2. August 2025. Hochrisiko-Pflichten (Artikel 9-15) gelten ab dem 2. August 2026. Ein vorgeschlagener Digital Omnibus könnte einige Anhang-III-Fristen auf Dezember 2027 verschieben, ist aber noch nicht Gesetz."
+                    "text": "Artikel-5-Verbote gelten seit dem 2. Februar 2025. GPAI-Pflichten (Artikel 51-55) gelten seit dem 2. August 2025. Hochrisiko-Pflichten (Artikel 9-15) gelten ab dem 2. August 2026. Ein vorgeschlagener Digital Omnibus könnte einige Anhang-III-Fristen auf Dezember 2027 verschieben, ist aber noch nicht Gesetz."
                 }
             },
             {
@@ -116,7 +116,7 @@
                 "name": "Ist Regula kostenlos?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Ja. Regula ist Open Source unter der Apache-2.0-Lizenz. Kein Konto, kein API-Schlüssel, kein Verkaufsgespräch. Installieren Sie mit pipx install regula-ai und führen Sie es lokal auf Ihrer Codebasis aus. Die vollständige CLI, alle 60 Befehle, alle 404 Risikomuster und alle 12 Compliance-Framework-Zuordnungen sind kostenlos."
+                    "text": "Ja. Regula ist Open Source unter der Apache-2.0-Lizenz. Kein Konto, kein API-Schlüssel, kein Verkaufsgespräch. Installieren Sie mit pipx install regula-ai und führen Sie es lokal auf Ihrer Codebasis aus. Die vollständige CLI, alle 61 Befehle, alle 404 Risikomuster und alle 12 Compliance-Framework-Zuordnungen sind kostenlos."
                 }
             },
             {
@@ -271,7 +271,7 @@
             </div>
             <div class="tier tier-a">
                 <div class="tier-badge">Hochrisiko</div>
-                <div class="tier-examples">Kreditbewertung &middot; Beschäftigung &middot; Medizinische Diagnose &middot; Bildung &middot; Strafverfolgung</div>
+                <div class="tier-examples">Kreditbewertung &middot; Beschäftigung &middot; Gesundheitsdienstleistungen &middot; Bildung &middot; Strafverfolgung</div>
                 <div class="tier-hint">Art. 9&ndash;15 gelten &rarr;</div>
             </div>
             <div class="tier tier-y">
@@ -451,9 +451,21 @@
                 <p>Jeder KI-Gesetz-Artikel ist den entsprechenden DSGVO-, DORA- und NIS2-Pflichten zugeordnet. Ein Scan deckt Anforderungen über alle vier Verordnungen ab.</p>
                 <code style="font-size:11px;color:#9898b4;">regula gap .</code>
             </div>
+            <div class="card-base art-card">
+                <div class="tag tag-purple">API</div>
+                <h4>REST-API für GRC-Tools</h4>
+                <p>Sieben HTTP-Endpunkte mit dem gleichen JSON-Format wie die CLI. Regula in ServiceNow, Jira oder Ihre eigene GRC-Plattform einbinden.</p>
+                <code style="font-size:11px;color:#9898b4;">regula api-server --port 8487</code>
+            </div>
+            <div class="card-base art-card">
+                <div class="tag tag-blue">Dashboard</div>
+                <h4>Web-Dashboard</h4>
+                <p>Governance-Status auf einen Blick. Risikoverteilung, Compliance-Lücken pro Artikel, interaktive Selbstbewertung und Export als JSON/SARIF/HTML. Kein Terminal nötig.</p>
+                <code style="font-size:11px;color:#9898b4;">localhost:8487/v1/dashboard</code>
+            </div>
         </div>
         <p style="font-size:12px;color:#9898b4;margin-top:24px;font-family:'JetBrains Mono',monospace;text-align:center;">
-            60 Befehle insgesamt &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-Maps zu ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU CRA und 7 weiteren Frameworks.
+            61 Befehle insgesamt &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Cross-Maps zu ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU CRA und 7 weiteren Frameworks.
             <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md" style="color:#8888aa;margin-left:4px;">Vollständige CLI-Referenz &rarr;</a>
         </p>
     </div>

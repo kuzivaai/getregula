@@ -4,7 +4,7 @@ An explicit scope statement for the Regula project. This document exists
 because the deep-research pass on the moat thesis surfaced a load-bearing
 counterargument: **static code scanning may fundamentally address only
 about 30% of the EU AI Act.** Articles 9 (risk management system),
-Article 17 (quality management system), Article 29a (fundamental rights
+Article 17 (quality management system), Article 27 (fundamental rights
 impact assessment), Article 72 (post-market monitoring) and much of
 Annex IV are organisational obligations, not code-level ones. A Python
 CLI that reads source files cannot verify that an organisation has a
@@ -46,9 +46,9 @@ to do so from pattern matching alone would mislead the user.
 | **Art. 17** | **Quality management system** | Same logic as Art. 9 at a larger scale. QMS is the organisation's operating rhythm for AI — not something a scanner can observe from code alone. |
 | **Art. 26** | Deployer obligations (instructions for use, monitoring, logging retention) | These are operational duties of the deployer organisation. Regula scans the provider-side code; it does not see what the deployer does with the output. |
 | **Art. 27** | Fundamental rights impact assessment | FRIA is a structured document produced by the deployer with input from affected persons. Not a code artefact. |
-| **Art. 29** | Obligations of importers | Regulatory relationship between the importer and the provider. No code signal. |
+| **Art. 23** | Obligations of importers | Regulatory relationship between the importer and the provider. No code signal. |
 | **Art. 43** | Conformity assessment procedure (choosing the path) | Requires a human to choose between internal control (Annex VI) and third-party assessment (Annex VII). Regula can generate the Annex IV technical file but cannot run the conformity assessment. |
-| **Art. 63** | Post-market monitoring | Ongoing observation of a deployed system. Regula runs once per scan; PMM runs forever. |
+| **Art. 63** | Derogations for specific operators (SME simplified compliance) | Reduced obligations for SMEs and startups. Not a code-level determination. |
 | **Art. 72 / 73** | Serious incident reporting | A process triggered by real-world events. Not detectable from code. |
 | **Art. 74** | Market surveillance cooperation | Between the organisation and the market surveillance authority. No code layer. |
 
