@@ -33,14 +33,16 @@ def load_new_findings():
     """Load all findings from the v2 re-scan."""
     all_findings = []
     for f in sorted(NEW_RESULTS_DIR.glob("*.json")):
-        if f.name == "SUMMARY.json":
+        if f.name in ("SUMMARY.json", "PRECISION_COMPARISON.json"):
             continue
-        findings = json.loads(f.read_text())
+        data = json.loads(f.read_text())
+        if not isinstance(data, list):
+            continue
         # Tag each finding with the repo slug
         slug = f.stem.replace("__", "/")
-        for finding in findings:
+        for finding in data:
             finding["_repo"] = slug
-        all_findings.extend(findings)
+        all_findings.extend(data)
     return all_findings
 
 

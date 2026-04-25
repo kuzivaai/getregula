@@ -79,9 +79,9 @@ LLM import gating reduced FP from 42 to 22 on the same labelled corpus,
 improving production precision from 70.0% to 81.4%. 3 borderline ai_security
 TPs were lost (LLM02 findings in files without LLM library imports).
 
-The `high_risk` tier (22%) remains weakest — 5 subcategories (`critical_infrastructure`,
-`safety_components`, `worker_management`, `democratic_processes`, `essential_services`)
-now require `--domain` declaration or import fingerprinting to fire. Including test
+The `high_risk` tier (22%) remains weakest — 6 subcategories (`critical_infrastructure`,
+`safety_components`, `worker_management`, `democratic_processes`, `justice`,
+`essential_services`) now require `--domain` declaration or import fingerprinting to fire. Including test
 code drops overall precision to 59.5%.
 
 Full methodology and reproduction steps: `benchmarks/README.md`
@@ -147,7 +147,7 @@ Each finding was manually classified as true positive or false positive by the d
 
 ### Continuous validation
 
-- 1000 pytest-collected tests (893 `def test_*` functions; delta is pytest parametrisation)
+- 1232 pytest-collected tests (1111 `def test_*` functions; delta is pytest parametrisation)
 - 11 CLI integration tests
 - 6 self-test assertions (`regula self-test`)
 - 10 health checks (`regula doctor`)

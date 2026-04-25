@@ -112,7 +112,7 @@ separation, worker exclusion).
 
 **What this means:** About 8 in 10 of Regula's findings on production
 code in a random AI project are genuine risk indicators. The `high_risk`
-tier (22%) remains weakest — 5 domain keyword subcategories now require
+tier (22%) remains weakest — 6 domain keyword subcategories now require
 `--domain` declaration or import fingerprinting to fire. The structural
 tiers (`ai_security`, `agent_autonomy`, `limited_risk`, `minimal_risk`)
 are all above 80% because they match on code patterns (deserialization,

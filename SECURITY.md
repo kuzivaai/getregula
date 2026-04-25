@@ -81,7 +81,7 @@ disclosure, etc.), include that in your initial report.
 | `semgrep --config p/security-audit --config p/python` | Each release | 0 findings on 200 rules / 129 files |
 | `pip-audit` | Each release | 0 vulnerabilities (zero runtime deps) |
 | `regula self-test` | Each commit | 6 / 6 |
-| Custom regression suite | Each commit | 1,138 unique / 1,223 pytest-collected |
+| Custom regression suite | Each commit | 1,111 unique / 1,232 pytest-collected |
 
 The full posture is in [`docs/TRUST.md`](docs/TRUST.md), Section 7.
 

@@ -59,7 +59,7 @@ your lawyer's job, not Regula's.
 | Cross-file Article 14 human-oversight detection (Python) | `regula oversight` |
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 1,138 unique tests (1,223 pytest-collected), 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
+| 1,111 unique tests (1,232 pytest-collected), 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -76,14 +76,14 @@ your lawyer's job, not Regula's.
 > Every number Regula publishes can be reproduced by anyone with a checkout
 > of the repo. The commands below run in under 30 seconds total on a laptop.
 
-### 3.1 Internal test suite — 1,138 unique / 1,223 pytest-collected, all green
+### 3.1 Internal test suite — 1,111 unique / 1,232 pytest-collected, all green
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ -q
-# Expected: 1223 passed (~12 minutes on a laptop — verified 2026-04-23)
-# 1,138 unique tests; 85 are duplicated via globals() import binding
+# Expected: 1232 passed (~12 minutes on a laptop — verified 2026-04-25)
+# 1,111 unique tests; 121 are duplicated via globals() import binding
 # in test_classification.py and therefore collected twice by pytest.
 ```
 
@@ -150,7 +150,7 @@ file path, code context, and finding description — no project name,
 README, or purpose). This measures what users see with default
 `--skip-tests` settings. Per-tier: `ai_security` (85%), `agent_autonomy`
 (83%), `limited_risk` (88%), `minimal_risk` (100%). The `high_risk`
-tier (22%) remains weakest — 5 subcategories now require `--domain`
+tier (22%) remains weakest — 6 subcategories now require `--domain`
 declaration or import fingerprinting to fire (v1.7.0+).
 Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
 
@@ -247,7 +247,7 @@ and decide for themselves whether it is too broad or too narrow.
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (1,138 unique tests, 1,223 pytest-collected; 495 functions in the legacy `tests/test_classification.py` custom runner) |
+| Test suite | `tests/` (1,111 unique tests, 1,232 pytest-collected; 495 functions in the legacy `tests/test_classification.py` custom runner) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit hook source | `hooks/pre_tool_use.py` |
@@ -501,7 +501,7 @@ in this repository. Every row links to a verifiable artefact.
 | Precision and recall benchmark | [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md) | Labelled corpus, methodology, per-tier and per-project breakdown |
 | Framework crosswalk data | [`references/framework_crosswalk.yaml`](../references/framework_crosswalk.yaml) | EU AI Act ↔ ISO 42001 / NIST AI RMF / SOC 2 / etc. mappings |
 | Pattern definitions | [`scripts/risk_patterns.py`](../scripts/risk_patterns.py) | All detection regexes, grouped by risk tier and category |
-| Test suite | `tests/` | 1,138 unique tests (1,223 pytest-collected) |
+| Test suite | `tests/` | 1,111 unique tests (1,232 pytest-collected) |
 | Self-test | `regula self-test` | 6 round-trip assertions |
 | Environment health | `regula doctor` | 11 checks (9 pass + 2 info on a clean install) |
 | SBOM | `regula sbom --ai-bom` | CycloneDX 1.7 ML-BOM from any checkout |
