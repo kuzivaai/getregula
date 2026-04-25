@@ -10,7 +10,7 @@ report.py had 12 extensions while discover_ai_systems.py had 7, causing
 Regula to claim "8 languages" while actually scanning fewer.
 """
 
-__all__ = ["VERSION", "CODE_EXTENSIONS", "SKIP_DIRS", "MODEL_EXTENSIONS"]
+__all__ = ["VERSION", "CODE_EXTENSIONS", "SKIP_DIRS", "MODEL_EXTENSIONS", "OPT_IN_CATEGORIES"]
 
 VERSION = "1.7.0"
 
@@ -54,4 +54,15 @@ MODEL_EXTENSIONS = {
     ".onnx", ".pt", ".pth", ".pkl", ".joblib",
     ".h5", ".hdf5", ".safetensors",
     ".gguf", ".ggml",
+}
+
+# High-risk subcategories that require domain declaration or import
+# fingerprinting to fire. These produce 0% precision on random code
+# when matched by keyword alone. See benchmarks/results/random_corpus/.
+OPT_IN_CATEGORIES = {
+    "critical_infrastructure",
+    "safety_components",
+    "high_risk__worker_management",
+    "high_risk__democratic_processes",
+    "essential_services",
 }

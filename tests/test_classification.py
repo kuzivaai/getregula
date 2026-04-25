@@ -6845,6 +6845,46 @@ def test_scan_benchmarks_self_mode():
         shutil.rmtree(tmp)
 
 
+# ---------------------------------------------------------------------------
+# Project fingerprint — domain auto-detection from imports
+# ---------------------------------------------------------------------------
+
+def test_fingerprint_detects_medical_domain():
+    """Project importing monai should activate medical domain."""
+    import tempfile
+    from project_fingerprint import scan_project_imports
+
+    with tempfile.TemporaryDirectory() as tmp:
+        (Path(tmp) / "train.py").write_text("import monai\nfrom monai.transforms import Compose\n")
+        result = scan_project_imports(tmp)
+        assert "medical" in result["domains_detected"], f"Expected medical, got {result}"
+        print("  PASS  fingerprint detects medical domain")
+
+
+def test_fingerprint_detects_diffusers_suppression():
+    """Project importing diffusers should suppress critical_infrastructure."""
+    import tempfile
+    from project_fingerprint import scan_project_imports
+
+    with tempfile.TemporaryDirectory() as tmp:
+        (Path(tmp) / "gen.py").write_text("from diffusers import StableDiffusionPipeline\n")
+        result = scan_project_imports(tmp)
+        assert "critical_infrastructure" in result["suppress"], f"Expected suppress critical_infrastructure, got {result}"
+        print("  PASS  fingerprint suppresses critical_infrastructure for diffusers")
+
+
+def test_fingerprint_empty_project():
+    """Empty project should detect no domains and suppress nothing."""
+    import tempfile
+    from project_fingerprint import scan_project_imports
+
+    with tempfile.TemporaryDirectory() as tmp:
+        result = scan_project_imports(tmp)
+        assert result["domains_detected"] == set(), f"Expected empty, got {result}"
+        assert result["suppress"] == set(), f"Expected empty suppress, got {result}"
+        print("  PASS  fingerprint empty project")
+
+
 if __name__ == "__main__":
     # Auto-discover every top-level function whose name starts with `test_`.
     # Eliminates the manual-list maintenance burden that was the actual
