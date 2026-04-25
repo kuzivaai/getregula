@@ -132,22 +132,19 @@ Regula is explicitly **NOT** intended for:
 
 **Result:** 100% precision, 100% recall. All prohibited and high-risk patterns detected. Zero false positives on negative cases.
 
-### OSS corpus (precision measurement)
+### Curated library corpus (development baseline)
 
-257 findings hand-labelled across 5 mature open-source AI projects:
-- instructor (structured LLM outputs)
-- pydantic-ai (type-safe AI agents)
-- langchain (LLM orchestration)
-- scikit-learn (classical ML)
-- openai-python (OpenAI API client)
+257 findings hand-labelled across 5 mature open-source AI libraries (instructor, pydantic-ai, langchain, scikit-learn, openai-python). Each finding manually classified as TP or FP. Labels committed at `benchmarks/labels.json`. This corpus was used during development to tune patterns and is **not** the headline precision number — library code is mostly infrastructure, producing 15.2% precision at the `minimal_risk` tier.
 
-Each finding was manually classified as true positive or false positive by the developer. Labels are committed to the repository at `benchmarks/labels.json` and can be independently verified.
+### Random corpus (headline precision measurement)
 
-**Result:** 83.5% precision on production code from random corpus (blind-labelled, N=115); 0 false positives at BLOCK tier. Previous baseline was 70.0% before domain gating and LLM import gating.
+50 randomly selected Python AI repos (from 276 candidates, seed=42), scanned with Regula v1.7.0. 201 findings stratified-sampled and blind-labelled (labeller saw only file path, code context, and finding description — no project name, README, or purpose).
+
+**Result:** 83.5% precision on production code (N=115); 0 false positives at BLOCK tier. Previous baseline was 70.0% before domain gating and LLM import gating. Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
 
 ### Continuous validation
 
-- 1232 pytest-collected tests (1111 `def test_*` functions; delta is pytest parametrisation)
+- 1232 pytest-collected tests (1111 `def test_*` functions; delta is globals() import binding duplication)
 - 11 CLI integration tests
 - 6 self-test assertions (`regula self-test`)
 - 10 health checks (`regula doctor`)
@@ -161,4 +158,4 @@ This model card describes Regula v1.7.0. If the detection patterns, classificati
 
 ---
 
-*Last updated: 10 April 2026.*
+*Last updated: 25 April 2026.*
