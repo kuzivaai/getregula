@@ -7,6 +7,10 @@
 # Format: a regex that must match SOMEWHERE on the claim line or in the
 # claim snippet. Prefer narrow patterns over broad ones.
 #
+# ---- Dashboard UI headings (internal dev tool, not public marketing)
+\bExport\s+Reports\b
+\bScan\s+Results?\b
+\bCompliance\s+Score\b
 # ---- Regula project self-claims
 #      Each claim below is verified against scripts/site_facts.py canonical
 #      counts (commands, pattern categories, tier regexes, frameworks) OR
