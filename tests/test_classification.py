@@ -6849,6 +6849,39 @@ def test_scan_benchmarks_self_mode():
 # Project fingerprint — domain auto-detection from imports
 # ---------------------------------------------------------------------------
 
+def test_domain_gating_suppresses_high_risk_without_declaration():
+    """High-risk domain findings should be suppressed without domain declaration."""
+    import tempfile
+    from report import scan_files
+
+    with tempfile.TemporaryDirectory() as tmp:
+        # File with worker_management keywords that would trigger high_risk
+        code = (
+            "import torch\n"
+            "class WorkerPerformanceTracker:\n"
+            "    def evaluate_employee_performance(self, data):\n"
+            "        return self.model.predict(data)\n"
+            "    def monitor_worker_productivity(self, metrics):\n"
+            "        return self.model(metrics)\n"
+        )
+        (Path(tmp) / "tracker.py").write_text(code)
+        findings = scan_files(tmp)
+        high_risk_worker = [
+            f for f in findings
+            if f["tier"] == "high_risk"
+            and not f.get("suppressed")
+            and any(ind in f.get("indicators", []) for ind in
+                    ("high_risk__worker_management", "critical_infrastructure",
+                     "safety_components", "essential_services",
+                     "high_risk__democratic_processes"))
+        ]
+        assert len(high_risk_worker) == 0, (
+            f"Expected 0 opt-in high_risk findings without domain declaration, "
+            f"got {len(high_risk_worker)}: {high_risk_worker}"
+        )
+        print("  PASS  domain gating suppresses high_risk without declaration")
+
+
 def test_fingerprint_detects_medical_domain():
     """Project importing monai should activate medical domain."""
     import tempfile
