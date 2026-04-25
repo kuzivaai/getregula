@@ -95,5 +95,16 @@ docs/FULL_INSPECTION.md
 docs/SHOW_HN_DRAFT.md
 docs/superpowers/
 
+# Per-repo benchmark scan results (regenerable via rescan_corpus.py)
+benchmarks/results/random_corpus/*.json
+!benchmarks/results/random_corpus/PRECISION.json
+!benchmarks/results/random_corpus/SUMMARY.json
+!benchmarks/results/random_corpus/METHODOLOGY.json
+!benchmarks/results/random_corpus/BLIND_LABELS.json
+benchmarks/results/random_corpus_v2/*.json
+!benchmarks/results/random_corpus_v2/PRECISION_COMPARISON.json
+!benchmarks/results/random_corpus_v2/SUMMARY.json
+benchmarks/results/app_*.json
+
 # Reference PDFs (fetched via references/FETCH.md)
 references/*.pdf
