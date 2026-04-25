@@ -42,7 +42,7 @@ While the draft policy works through the gazette and the 60-day comment window, 
 
 ## Where Regula fits
 
-Regula is an open-source static analysis tool that scans code for AI Act-shaped risk indicators. It was built primarily against the EU AI Act (Regulation (EU) 2024/1689), but the risk categories it detects — employment, biometrics, education, law enforcement, migration, critical infrastructure, credit scoring, medical devices — are exactly the areas every modern AI governance regime treats as high-risk, including the sectors South Africa's draft policy will route to sector-specific regulators. If you need to know whether a deployment touches a high-risk category today, Regula will tell you.
+Regula is an open-source compliance CLI that combines code scanning with governance questionnaires for AI Act-shaped risk assessment. It was built primarily against the EU AI Act (Regulation (EU) 2024/1689), but the risk categories it detects — employment, biometrics, education, law enforcement, migration, critical infrastructure, credit scoring, medical devices — are exactly the areas every modern AI governance regime treats as high-risk, including the sectors South Africa's draft policy will route to sector-specific regulators. If you need to know whether a deployment touches a high-risk category today, Regula will tell you.
 
 For a South African team, the practically useful starting commands are:
 

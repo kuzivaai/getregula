@@ -1,8 +1,8 @@
 # Regula
 
-> Open-source CLI tool for EU AI Act compliance. Scans codebases for risk indicators, classifies AI systems into the Act's four risk tiers (prohibited, high-risk, limited-risk, minimal-risk), and reports which obligations apply. Runs locally with zero external dependencies -- no API calls, no data leaves the machine. Install: `pipx install regula-ai`.
+> Open-source CLI tool for EU AI Act compliance. Combines code scanning with governance questionnaires: scans codebases for risk indicators, classifies AI systems into the Act's four risk tiers (prohibited, high-risk, limited-risk, minimal-risk), and provides structured self-assessments for organisational obligations code cannot verify. Runs locally with zero external dependencies -- no API calls, no data leaves the machine. Install: `pipx install regula-ai`.
 
-Regula is the code layer of an AI governance programme. It handles what can be detected from source code -- risk patterns, dependency security, credential exposure, bias indicators -- and explicitly documents what it cannot do (organisational obligations like risk management systems, quality management, and fundamental rights impact assessments).
+Regula combines two approaches: (1) static code analysis for risk patterns, dependency security, credential exposure, and bias indicators, and (2) questionnaire-based assessment for organisational obligations like risk management systems (Article 9), quality management (Article 17), fundamental rights impact assessments (Article 27), and post-market monitoring (Article 72). It explicitly documents what it cannot do -- see docs/what-regula-does-not-do.md.
 
 ## Documentation
 

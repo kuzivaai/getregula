@@ -1,8 +1,9 @@
 # Security Policy
 
-> Regula is an open-source CLI tool that runs on the user's local
+> Regula is an open-source CLI tool that combines code scanning with
+> governance questionnaires, running entirely on the user's local
 > machine. It has zero runtime dependencies and makes no network calls
-> in its core scanner. The attack surface is therefore narrow, but it
+> in its core operations. The attack surface is therefore narrow, but it
 > is not nil — see this document for the full posture and how to
 > report issues.
 

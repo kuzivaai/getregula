@@ -23,8 +23,9 @@ keywords:
   - nist-ai-rmf
   - claude-code
 abstract: >-
-  Regula is an open-source command-line tool that scans source code for
-  EU AI Act compliance signals at the point of creation. It detects
+  Regula is an open-source command-line tool that combines code scanning
+  with governance questionnaires for EU AI Act compliance at the point
+  of creation. It detects
   Article 5 prohibited practices, Annex III high-risk categories, and
   Annex I cross-references; maps every finding to specific articles of
   Regulation (EU) 2024/1689 and 12 compliance frameworks (ISO 42001,

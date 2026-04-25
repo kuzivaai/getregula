@@ -2,7 +2,7 @@
 
 This document describes how AI is used in the development of Regula, what oversight processes exist, and where AI-generated outputs carry risk.
 
-Regula is a compliance scanning tool. It should demonstrate the governance practices it advocates. To generate a governance scaffold for your own project, run `regula governance --project /path/to/project`.
+Regula is a compliance tool combining code scanning with governance questionnaires. It should demonstrate the governance practices it advocates. To generate a governance scaffold for your own project, run `regula governance --project /path/to/project`.
 
 ---
 
