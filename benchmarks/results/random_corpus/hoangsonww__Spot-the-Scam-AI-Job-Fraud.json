@@ -1,0 +1,953 @@
+[
+  {
+    "file": "src/spot_scam/export/mlflow_logger.py",
+    "line": 520,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 70,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/spot_scam/export/mlflow_logger.py",
+    "line": 775,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 70,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/spot_scam/export/mlflow_logger.py",
+    "line": 783,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 70,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/spot_scam/export/mlflow_logger.py",
+    "line": 866,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 70,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/spot_scam/export/mlflow_logger.py",
+    "line": 880,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 70,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/spot_scam/export/mlflow_logger.py",
+    "line": 881,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 70,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/spot_scam/export/mlflow_logger.py",
+    "line": 886,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 70,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/spot_scam/export/mlflow_logger.py",
+    "line": 894,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 70,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/spot_scam/export/mlflow_logger.py",
+    "line": 186,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/spot_scam/export/mlflow_logger.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 2",
+    "description": "Critical infrastructure management",
+    "indicators": [
+      "critical_infrastructure"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 73,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "14",
+        "observation": "Model predictions detected \u2014 Article 14 requires human oversight with ability to override or reverse AI outputs."
+      },
+      {
+        "article": "13",
+        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+      },
+      {
+        "article": "15",
+        "observation": "Local model inference detected (Ollama, ONNX, llama.cpp, or GGUF model files). Article 15 accuracy and robustness obligations still apply to locally deployed models. Local deployment does not exempt from conformity requirements \u2014 it changes the deployment context."
+      }
+    ],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/spot_scam/inference/predictor.py",
+    "line": 225,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/spot_scam/inference/predictor.py",
+    "line": 188,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/spot_scam/api/schemas.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 53,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
+  },
+  {
+    "file": "artifacts/transformer/checkpoint-2910/rng_state.pth",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pth",
+    "indicators": [
+      ".pth"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/transformer/checkpoint-970/rng_state.pth",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pth",
+    "indicators": [
+      ".pth"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/transformer/checkpoint-1940/rng_state.pth",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pth",
+    "indicators": [
+      ".pth"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d6_lr0.03_ne800_mcw5_a0.1_l2.0_spw21/model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d6_lr0.03_ne800_mcw5_a0.1_l2.0_spw21/base_model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d4_lr0.05_ne600_mcw1_a0.0_l1.0_spw14/model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d4_lr0.05_ne600_mcw1_a0.0_l1.0_spw14/base_model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d4_lr0.02_ne600_mcw10_a0.0_l5.0_spw14/model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d4_lr0.02_ne600_mcw10_a0.0_l5.0_spw14/base_model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d4_lr0.05_ne1000_mcw1_a0.3_l1.0_spw27/model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d4_lr0.05_ne1000_mcw1_a0.3_l1.0_spw27/base_model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d6_lr0.05_ne600_mcw1_a0.0_l1.0_spw14/model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d6_lr0.05_ne600_mcw1_a0.0_l1.0_spw14/base_model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d6_lr0.05_ne1000_mcw1_a0.3_l1.0_spw27/model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d6_lr0.05_ne1000_mcw1_a0.3_l1.0_spw27/base_model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d8_lr0.02_ne600_mcw10_a0.0_l5.0_spw14/model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d8_lr0.02_ne600_mcw10_a0.0_l5.0_spw14/base_model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d4_lr0.03_ne800_mcw5_a0.1_l2.0_spw21/model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d4_lr0.03_ne800_mcw5_a0.1_l2.0_spw21/base_model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d8_lr0.05_ne600_mcw1_a0.0_l1.0_spw14/model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d8_lr0.05_ne600_mcw1_a0.0_l1.0_spw14/base_model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d8_lr0.03_ne800_mcw5_a0.1_l2.0_spw21/model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d8_lr0.03_ne800_mcw5_a0.1_l2.0_spw21/base_model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d6_lr0.02_ne600_mcw10_a0.0_l5.0_spw14/model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d6_lr0.02_ne600_mcw10_a0.0_l5.0_spw14/base_model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d8_lr0.05_ne1000_mcw1_a0.3_l1.0_spw27/model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost_variants/XGBOOST_d8_lr0.05_ne1000_mcw1_a0.3_l1.0_spw27/base_model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/features/tabular_scaler.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/features/tabular_feature_names.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/features/tfidf_vectorizer.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost/model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "artifacts/xgboost/base_model.joblib",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .joblib",
+    "indicators": [
+      ".joblib"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  }
+]

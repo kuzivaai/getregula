@@ -29,9 +29,16 @@ sys.path.insert(0, str(Path(__file__).parent))
 DOMAIN_KEYWORDS = {
     "employment": {
         "keywords": [
-            r"\bhir(?:e|ing)\b", r"\brecruit", r"\bresume", r"\bcv\b", r"\bcandidate",
+            r"\bhir(?:e|ing)\b", r"\brecruit", r"\bresume", r"\bcv\b",
             r"\bapplicant", r"\binterview", r"\bjob.?application",
-            r"\bperformance.?review", r"\btermination", r"\bpromotion.?decision",
+            r"\bperformance.?review", r"\bpromotion.?decision",
+        ],
+        # Suppress employment domain when file is clearly compute/ML context
+        "exclude_if": [
+            r"\bimport\s+(?:multiprocessing|subprocess|celery|ray|dask)",
+            r"\bfrom\s+(?:multiprocessing|subprocess|celery|ray|dask)\b",
+            r"\bProcessPoolExecutor\b", r"\bThreadPoolExecutor\b",
+            r"\bmp\.Process\b", r"\bworker_process\b",
         ],
         "category": "Annex III, Category 4",
         "boost": 15,
@@ -102,6 +109,7 @@ DOMAIN_KEYWORDS = {
 _DOMAIN_COMPILED = {
     domain: {
         "patterns": [re.compile(p, re.IGNORECASE) for p in cfg["keywords"]],
+        "excludes": [re.compile(p, re.IGNORECASE) for p in cfg.get("exclude_if", [])],
         "category": cfg["category"],
         "boost": cfg["boost"],
     }
@@ -203,6 +211,12 @@ def compute_domain_boost(text: str, has_ai_indicator: bool) -> dict:
     max_boost = 0
 
     for domain, cfg in _DOMAIN_COMPILED.items():
+        # Check exclusion patterns first — if any exclude pattern matches,
+        # skip this domain entirely. This prevents compute "worker" contexts
+        # from triggering employment domain.
+        excluded = any(rx.search(text_lower) for rx in cfg.get("excludes", []))
+        if excluded:
+            continue
         for rx in cfg["patterns"]:
             if rx.search(text_lower):
                 matched_domains.append(domain)

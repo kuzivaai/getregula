@@ -6528,26 +6528,36 @@ def test_published_precision_matches_labels():
     if not labels_path.exists():
         print("⊘ precision: skipped (no labels.json)")
         return
-    labels = json.loads(labels_path.read_text())
-    tp = sum(1 for x in labels if x.get("label") == "tp")
-    fp = sum(1 for x in labels if x.get("label") == "fp")
-    if tp + fp == 0:
-        print("⊘ precision: skipped (no tp/fp labels)")
-        return
-    measured = round(tp / (tp + fp), 3)
-    # README publishes 15.2% — fail loudly if labels move and the README isn't updated.
+    # The headline precision comes from the random corpus (blind-labelled).
+    # Development corpora (labels.json) are internal references only.
+    random_prec_path = root / "benchmarks" / "results" / "random_corpus" / "PRECISION.json"
+    if random_prec_path.exists():
+        rp = json.loads(random_prec_path.read_text())
+        measured = rp.get("overall_precision", 0)
+        source = "random_corpus/PRECISION.json"
+    else:
+        # Fall back to labels.json if no random corpus
+        labels = json.loads(labels_path.read_text())
+        tp = sum(1 for x in labels if x.get("label") == "tp")
+        fp = sum(1 for x in labels if x.get("label") == "fp")
+        if tp + fp == 0:
+            print("⊘ precision: skipped (no tp/fp labels)")
+            return
+        measured = round(tp / (tp + fp), 3)
+        source = "labels.json"
+
     bench_readme = (root / "benchmarks" / "README.md").read_text()
     main_readme = (root / "README.md").read_text()
     pct_str = f"{measured * 100:.1f}%"
     assert pct_str in bench_readme, (
         f"benchmarks/README.md publishes a precision number that does not match "
-        f"labels.json. Labels say {pct_str}; update the README table or relabel."
+        f"{source}. Source says {pct_str}; update the README table or relabel."
     )
     assert pct_str in main_readme, (
-        f"README.md publishes a precision number that does not match labels.json. "
-        f"Labels say {pct_str}; update the README table or relabel."
+        f"README.md publishes a precision number that does not match {source}. "
+        f"Source says {pct_str}; update the README table or relabel."
     )
-    print(f"✓ precision: published number {pct_str} matches labels.json (tp={tp}, fp={fp})")
+    print(f"✓ precision: published number {pct_str} matches {source}")
 
 
 # ---------------------------------------------------------------------------

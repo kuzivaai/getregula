@@ -1,0 +1,702 @@
+[
+  {
+    "id": "R065",
+    "file": "simpletuner/helpers/models/qwen_image/pipeline_edit_plus.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "confidence_score": 65,
+    "indicators": [
+      "synthetic_content"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R084",
+    "file": "tests/e2e/test_Qwen2-7B-Instruct_serving.py",
+    "line": 235,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "confidence_score": 30,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R051",
+    "file": "lhotse/lazy.py",
+    "line": 195,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "confidence_score": 80,
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R062",
+    "file": "Supervertaler.py",
+    "line": 50854,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R050",
+    "file": "deepmd/utils/tabulate.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Safety Components",
+    "description": "Safety components under Union harmonisation legislation",
+    "confidence_score": 73,
+    "indicators": [
+      "safety_components"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R030",
+    "file": "sagemaker-core/tests/unit/local/test_image.py",
+    "line": 204,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "AWS access key ID detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use AWS credential provider chain",
+    "confidence_score": 55,
+    "indicators": [
+      "aws_access_key"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R075",
+    "file": "src/lightmem/factory/memory_manager/vllm.py",
+    "line": 107,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R122",
+    "file": "utils/utils_DreamCoder/code_eval/bigcodebench/bigcodebench/provider/vllm.py",
+    "line": 64,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R143",
+    "file": ".dev/previous_versions/Supervertaler_v2.4.4-CLASSIC.py",
+    "line": 3716,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to System command execution \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "System command execution"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R157",
+    "file": "tests/pytorch_tests/layer_tests/test_layers_runner.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 3",
+    "description": "Education and vocational training",
+    "confidence_score": 33,
+    "indicators": [
+      "education"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R061",
+    "file": "utils/lm-evaluation-harness/tests/testdata/textsynth_test_4fd8d66a6dad7f602b40e5d7dc298d6fe329299d086a4659743a41f4a4012659.pkl",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pkl",
+    "confidence_score": 30,
+    "indicators": [
+      ".pkl"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R038",
+    "file": "ai-agents/sqlserver/sqlserver_agent_tool.py",
+    "line": 199,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Database query execution \u2014 no human gate detected",
+    "confidence_score": 60,
+    "indicators": [
+      "Database query execution"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R193",
+    "file": "tests/ci_use/GCU/run_ernie.py",
+    "line": 21,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 40,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R162",
+    "file": "services/analysis/ml_analyzer.py",
+    "line": 106,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R170",
+    "file": "ai-agents/sqlserver/sqlserver_agent_tool.py",
+    "line": 779,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Database query execution \u2014 no human gate detected",
+    "confidence_score": 60,
+    "indicators": [
+      "Database query execution"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R129",
+    "file": "ecdetseg/engine/edgecrafter/ecvit.py",
+    "line": 464,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "confidence_score": 80,
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R001",
+    "file": "simpletuner/worker_agent.py",
+    "line": 92,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "confidence_score": 60,
+    "indicators": [
+      "System command execution"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R072",
+    "file": "tests/xpu_ci/4cards_cases/run_ep4tp1_online.py",
+    "line": 163,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to System command execution \u2014 no human gate detected",
+    "confidence_score": 30,
+    "indicators": [
+      "System command execution"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R008",
+    "file": "tests/torch/function_hook/pruning/magnitude/test_algo.py",
+    "line": 134,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "confidence_score": 40,
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R128",
+    "file": "tests/entrypoints/openai/test_run_batch.py",
+    "line": 147,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to System command execution \u2014 no human gate detected",
+    "confidence_score": 30,
+    "indicators": [
+      "System command execution"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R045",
+    "file": "simpletuner/helpers/models/kolors/model.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "confidence_score": 53,
+    "indicators": [
+      "synthetic_content"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R049",
+    "file": ".dev/previous_versions/Supervertaler_v3.7.6.py",
+    "line": 4355,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 human gate pattern detected nearby",
+    "confidence_score": 45,
+    "indicators": [
+      "File system modification"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R130",
+    "file": "tests/xpu_ci/4cards_cases/test_w4a8.py",
+    "line": 71,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 40,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R100",
+    "file": "src/nncf/openvino/graph/model_transformer.py",
+    "line": 156,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R047",
+    "file": "scripts/offline_w4a8.py",
+    "line": 160,
+    "tier": "ai_security",
+    "category": "AI Security (LLM03)",
+    "description": "Model loaded from untrusted source or with unsafe deserialisation \u2014 supply chain attack risk",
+    "confidence_score": 80,
+    "indicators": [
+      "supply_chain_model"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R085",
+    "file": "tests/ci_use/Prefix_Caching_Swap/test_prefix_caching_swap.py",
+    "line": 211,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 40,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R083",
+    "file": "modules/llm_clients.py",
+    "line": 915,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R031",
+    "file": "bodo/tests/test_sql_errorchecking.py",
+    "line": 27,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "Database connection string with possible credentials in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use env",
+    "confidence_score": 30,
+    "indicators": [
+      "connection_string"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R023",
+    "file": "pixeltable/functions/groq.py",
+    "line": 94,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "confidence_score": 40,
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R142",
+    "file": "sagemaker-serve/src/sagemaker/serve/model_server/tensorflow_serving/inference.py",
+    "line": 114,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "confidence_score": 80,
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R067",
+    "file": "tests/ci_use/XPU_45T/run_45T.py",
+    "line": 27,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "confidence_score": 10,
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R137",
+    "file": "tests/e2e/test_ernie_03b_pd_router_v1_rdma_global_cache.py",
+    "line": 357,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 40,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R121",
+    "file": ".dev/previous_versions/Supervertaler-2.4.1/Supervertaler-2.4.1/Supervertaler_v2.4.1.py",
+    "line": 3247,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "File system modification"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R053",
+    "file": "sagemaker-serve/src/sagemaker/serve/model_server/tei/server.py",
+    "line": 67,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R058",
+    "file": ".dev/previous_versions/Supervertaler_v2.4.4-CLASSIC.py",
+    "line": 4074,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to System command execution \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "System command execution"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R197",
+    "file": ".dev/previous_versions/Supervertaler_v2.4.4-CLASSIC.py",
+    "line": 3758,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "File system modification"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R019",
+    "file": "returnn/datasets/basic.py",
+    "line": 372,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "confidence_score": 80,
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R021",
+    "file": "tests/test_torch_dataset.py",
+    "line": 48,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "confidence_score": 40,
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R052",
+    "file": "tests/model_executor/test_paddleformers_base.py",
+    "line": 132,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "confidence_score": 30,
+    "indicators": [
+      "File system modification"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R144",
+    "file": "source/tests/infer/deepdipole_pt.pth",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pth",
+    "confidence_score": 30,
+    "indicators": [
+      ".pth"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R113",
+    "file": "tests/xpu_ci/8cards_cases/test_pd_21b_ep4tp4_cudagraph.py",
+    "line": 84,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to System command execution \u2014 no human gate detected",
+    "confidence_score": 30,
+    "indicators": [
+      "System command execution"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R153",
+    "file": ".dev/previous_versions/Supervertaler_v3.1.1-beta_CAT.py",
+    "line": 832,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 human gate pattern detected nearby",
+    "confidence_score": 45,
+    "indicators": [
+      "File system modification"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R138",
+    "file": "tests/e2e/test_ernie_21b_mtp.py",
+    "line": 131,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 40,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R020",
+    "file": ".dev/previous_versions/Supervertaler-2.4.1/Supervertaler-2.4.1/Supervertaler_v2.4.1.py",
+    "line": 3319,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to System command execution \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "System command execution"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R026",
+    "file": "lhotse/recipes/this_american_life.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "confidence_score": 73,
+    "indicators": [
+      "biometrics"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R055",
+    "file": "utils/utils_DreamCoder/code_eval/evalplus/tools/_experimental/evaluate_runtime.py",
+    "line": 28,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: File system modification \u2014 no human gate detected",
+    "confidence_score": 60,
+    "indicators": [
+      "File system modification"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R176",
+    "file": "tests/e2e/golang_router/test_ernie_03b_golang_router.py",
+    "line": 241,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 40,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R173",
+    "file": "utils/lm-evaluation-harness/tests/testdata/gpt3_test_bb2cc49115e88788ed870ad0716eb00b280a885f91c7ed6e1e864435e5e2b6ac.pkl",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pkl",
+    "confidence_score": 30,
+    "indicators": [
+      ".pkl"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R025",
+    "file": ".dev/previous_versions/Supervertaler_v3.7.5.py",
+    "line": 337,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  },
+  {
+    "id": "R148",
+    "file": "fastdeploy/input/multimodal_processor.py",
+    "line": 524,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "confidence_score": 80,
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "your_label": "__________",
+    "your_notes": ""
+  }
+]

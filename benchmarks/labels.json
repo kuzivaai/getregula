@@ -2857,5 +2857,3801 @@
     "indicators": [],
     "label": "tp",
     "notes": "scikit-learn module \u2014 likely ML operations"
+  },
+  {
+    "project": "app_proctoring",
+    "file": "face_spoofing.py",
+    "line": 29,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "confidence_score": 80,
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "label": "tp",
+    "notes": "Proctoring app loads face spoofing detection model via unsafe deserialization (pickle)"
+  },
+  {
+    "project": "app_proctoring",
+    "file": "models/face_spoofing.pkl",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pkl",
+    "confidence_score": 30,
+    "indicators": [
+      ".pkl"
+    ],
+    "label": "tp",
+    "notes": "AI model file for face spoofing detection in exam proctoring system"
+  },
+  {
+    "project": "app_toad",
+    "file": "toad/nn/module.py",
+    "line": 120,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "confidence_score": 80,
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "label": "tp",
+    "notes": "Credit scorecard tool loads models via unsafe deserialization"
+  },
+  {
+    "project": "app_toad",
+    "file": "docs/source/complete tutorial.ipynb",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 5",
+    "description": "Access to essential services",
+    "confidence_score": 92,
+    "indicators": [
+      "essential_services",
+      "high_risk__credit_scoring"
+    ],
+    "label": "tp",
+    "notes": "Tutorial notebook demonstrating credit scoring model development \u2014 Annex III 5(b)"
+  },
+  {
+    "project": "app_rasa",
+    "file": "rasa/core/channels/webexteams.py",
+    "line": 31,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "confidence_score": 40,
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "label": "tp",
+    "notes": "Chatbot framework making external API calls to WebEx Teams channel"
+  },
+  {
+    "project": "app_rasa",
+    "file": "tests/conftest.py",
+    "line": 524,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "Private key detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Never inc",
+    "confidence_score": 58,
+    "indicators": [
+      "private_key"
+    ],
+    "label": "fp",
+    "notes": "Test fixture with dummy/test credentials, not production secrets"
+  },
+  {
+    "project": "app_quivr",
+    "file": "core/tests/conftest.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Emotion recognition systems",
+    "confidence_score": 13,
+    "indicators": [
+      "emotion_recognition"
+    ],
+    "label": "fp",
+    "notes": "Pattern matched on test config file; quivr is a knowledge management tool, not emotion recognition"
+  },
+  {
+    "project": "app_privategpt",
+    "file": "private_gpt/server/chat/chat_router.py",
+    "line": 113,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "PrivateGPT processes user documents through LLM \u2014 genuine PII/sensitive data flow"
+  },
+  {
+    "project": "app_privategpt",
+    "file": "private_gpt/server/chat/chat_service.py",
+    "line": 183,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "PrivateGPT processes user documents through LLM \u2014 genuine PII/sensitive data flow"
+  },
+  {
+    "project": "app_privategpt",
+    "file": "private_gpt/server/completions/completions_router.py",
+    "line": 92,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "PrivateGPT processes user documents through LLM \u2014 genuine PII/sensitive data flow"
+  },
+  {
+    "project": "app_privategpt",
+    "file": "private_gpt/open_ai/openai_models.py",
+    "line": 62,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "PrivateGPT processes user documents through LLM \u2014 genuine PII/sensitive data flow"
+  },
+  {
+    "project": "app_privategpt",
+    "file": "private_gpt/ui/ui.py",
+    "line": 270,
+    "tier": "ai_security",
+    "category": "AI Security (LLM07)",
+    "description": "System prompt exposed in client code, API response, or logs \u2014 prompt leakage risk",
+    "confidence_score": 60,
+    "indicators": [
+      "system_prompt_leakage"
+    ],
+    "label": "tp",
+    "notes": "System prompt visible in UI code \u2014 genuine prompt leakage risk"
+  },
+  {
+    "project": "app_privategpt",
+    "file": "private_gpt/ui/ui.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "confidence_score": 53,
+    "indicators": [
+      "chatbots"
+    ],
+    "label": "tp",
+    "notes": "PrivateGPT is a conversational AI for document QA \u2014 Article 50 transparency applies"
+  },
+  {
+    "project": "app_privategpt",
+    "file": "tests/server/chat/test_chat_routes.py",
+    "line": 13,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 40,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "fp",
+    "notes": "Test code with example data, not production data flow"
+  },
+  {
+    "project": "app_privategpt",
+    "file": "docker-compose.yaml",
+    "line": 25,
+    "tier": "minimal_risk",
+    "category": "AI Infrastructure",
+    "description": "AI API key configured: HF_TOKEN",
+    "confidence_score": 30,
+    "indicators": [
+      "ai_config"
+    ],
+    "label": "tp",
+    "notes": "HF_TOKEN API key in deployment config without secret management"
+  },
+  {
+    "project": "app_openadapt",
+    "file": "legacy/openadapt/record.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 4(b)",
+    "description": "Worker monitoring and task allocation",
+    "confidence_score": 88,
+    "indicators": [
+      "high_risk__worker_management"
+    ],
+    "label": "tp",
+    "notes": "OpenAdapt literally records worker screen/mouse/keyboard actions for RPA \u2014 Annex III 4(b)"
+  },
+  {
+    "project": "app_openadapt",
+    "file": "legacy/openadapt/models.py",
+    "line": 601,
+    "tier": "ai_security",
+    "category": "AI Security (LLM07)",
+    "description": "System prompt exposed in client code, API response, or logs \u2014 prompt leakage risk",
+    "confidence_score": 60,
+    "indicators": [
+      "system_prompt_leakage"
+    ],
+    "label": "tp",
+    "notes": "System prompts exposed in code \u2014 genuine leakage risk"
+  },
+  {
+    "project": "app_openadapt",
+    "file": "legacy/openadapt/drivers/openai.py",
+    "line": 287,
+    "tier": "ai_security",
+    "category": "AI Security (LLM07)",
+    "description": "System prompt exposed in client code, API response, or logs \u2014 prompt leakage risk",
+    "confidence_score": 60,
+    "indicators": [
+      "system_prompt_leakage"
+    ],
+    "label": "tp",
+    "notes": "System prompts exposed in code \u2014 genuine leakage risk"
+  },
+  {
+    "project": "app_openadapt",
+    "file": "legacy/openadapt/strategies/visual.py",
+    "line": 499,
+    "tier": "ai_security",
+    "category": "AI Security (LLM07)",
+    "description": "System prompt exposed in client code, API response, or logs \u2014 prompt leakage risk",
+    "confidence_score": 60,
+    "indicators": [
+      "system_prompt_leakage"
+    ],
+    "label": "tp",
+    "notes": "System prompts exposed in code \u2014 genuine leakage risk"
+  },
+  {
+    "project": "app_openadapt",
+    "file": "legacy/openadapt/strategies/visual_browser.py",
+    "line": 636,
+    "tier": "ai_security",
+    "category": "AI Security (LLM07)",
+    "description": "System prompt exposed in client code, API response, or logs \u2014 prompt leakage risk",
+    "confidence_score": 60,
+    "indicators": [
+      "system_prompt_leakage"
+    ],
+    "label": "tp",
+    "notes": "System prompts exposed in code \u2014 genuine leakage risk"
+  },
+  {
+    "project": "app_openadapt",
+    "file": "legacy/openadapt/strategies/mixins/openai.py",
+    "line": 111,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "OpenAdapt captures screen recordings containing PII and sends to LLM"
+  },
+  {
+    "project": "app_openadapt",
+    "file": "legacy/openadapt/strategies/mixins/huggingface.py",
+    "line": 81,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "OpenAdapt captures screen recordings containing PII and sends to LLM"
+  },
+  {
+    "project": "app_aider",
+    "file": "scripts/recording_audio.py",
+    "line": 289,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 human gate pattern detected nearby",
+    "confidence_score": 45,
+    "indicators": [
+      "File system modification"
+    ],
+    "label": "fp",
+    "notes": "Utility script with hardcoded subprocess calls, not AI-driven autonomous execution"
+  },
+  {
+    "project": "app_aider",
+    "file": "tests/basic/test_linter.py",
+    "line": 62,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to System command execution \u2014 no human gate detected",
+    "confidence_score": 30,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "fp",
+    "notes": "Test code \u2014 not production data flow"
+  },
+  {
+    "project": "app_aider",
+    "file": "tests/basic/test_sendchat.py",
+    "line": 50,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 40,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "fp",
+    "notes": "Test code \u2014 not production data flow"
+  },
+  {
+    "project": "app_aider",
+    "file": "aider/analytics.py",
+    "line": 56,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk syst",
+    "confidence_score": 60,
+    "indicators": [
+      "generic_api_key"
+    ],
+    "label": "tp",
+    "notes": "API key pattern in analytics code \u2014 correctly flagged for credential governance"
+  },
+  {
+    "project": "app_aider",
+    "file": "aider/models.py",
+    "line": 1043,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "Aider sends user code (potentially containing sensitive data) to LLMs"
+  },
+  {
+    "project": "app_aider",
+    "file": "aider/commands.py",
+    "line": 974,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to System command execution \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Aider /run command executes shell commands from AI context \u2014 genuine autonomy risk"
+  },
+  {
+    "project": "app_aider",
+    "file": "aider/commands.py",
+    "line": 1463,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "User code/data sent to LLM via commands"
+  },
+  {
+    "project": "app_aider",
+    "file": "aider/onboarding.py",
+    "line": 177,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "label": "fp",
+    "notes": "Onboarding HTTP call for setup/update check, not AI-driven mutation"
+  },
+  {
+    "project": "app_aider",
+    "file": "aider/coders/base_coder.py",
+    "line": 1419,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to Message/email sending \u2014 human gate pattern detected nearby",
+    "confidence_score": 45,
+    "indicators": [
+      "Message/email sending"
+    ],
+    "label": "fp",
+    "notes": "Pattern matched on LLM API call messaging, not autonomous message/email sending to humans"
+  },
+  {
+    "file": "setup.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "fp",
+    "notes": "setup.py is package metadata (setuptools config, dependencies, entry points). Contains no biometric processing code \u2014 only references to the package name 'deepface' in its description string.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "tests/unit/face-recognition-how.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Demo/example script that builds a VGG-Face model, extracts faces, generates embeddings, computes Euclidean distance between face pairs, and determines identity match. Directly exercises biometric identification pipeline.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "tests/unit/test_verify.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Test suite that invokes DeepFace.verify() across multiple face recognition models (VGG-Face, FaceNet, ArcFace) comparing face image pairs for identity matching. Directly exercises biometric verification functionality.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/DeepFace.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Main API module exposing verify(), recognize(), find(), analyze(), represent(), stream() \u2014 the core biometric identification, facial recognition, and demographic analysis functions. This is the primary entry point for all biometric operations.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/commons/weight_utils.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "fp",
+    "notes": "Pure infrastructure utility for downloading and loading model weight files (HTTP downloads, zip extraction, gdown). Contains no biometric processing logic \u2014 no face detection, embedding generation, or identity comparison.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/modules/verification.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Implements biometric verification: compares two facial images by extracting embeddings, computing cosine/Euclidean distance, and returning match/no-match with confidence scores. Core biometric verification module.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/modules/recognition.py",
+    "line": 735,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "label": "tp",
+    "notes": "File contains pickle.load() at line ~558 to deserialize cached face embeddings. While LightDSA signature verification is applied before deserialization, the use of pickle.load on datastore files is a genuine deserialization risk if signatures are bypassed or keys compromised.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/modules/recognition.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Implements biometric identification: find() searches a face database for matching identities using embedding comparison, with batch processing and threshold-based matching. Core biometric identification module.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/modules/streaming.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Real-time biometric identification from webcam/video: performs continuous face detection, identity search against a database, and demographic analysis (age, gender, emotion) with visual overlays. Highest-risk use case for real-time biometric categorisation.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/modules/modeling.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Model factory/registry that instantiates and caches biometric models across four task categories: facial recognition (11 models), face detection (15+ detectors), facial attribute analysis (age, gender, emotion, race), and spoofing detection. Directly enables all biometric operations.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/modules/representation.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Generates biometric face embeddings via represent(): detects faces, runs them through recognition models, produces multi-dimensional vectors for identity matching. Includes anti-spoofing and optional homomorphic encryption. Core biometric data generation module.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/modules/datastore.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Manages biometric data storage: register() enrolls face embeddings into databases, search() queries for matching identities, build_index() creates FAISS indexes for similarity search. Directly handles biometric data persistence and retrieval.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/modules/database/neo4j.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Neo4j client specifically for face embeddings: insert_embeddings() stores biometric vectors with SHA256 hashes, search_by_vector() performs ANN search for identity matching. Purpose-built for biometric data, not generic database code.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/modules/database/pgvector.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "PostgreSQL/pgvector client for face embedding storage and vector similarity search. Stores biometric embeddings with HNSW indexes, performs cosine/Euclidean distance searches for identity matching. Biometric-specific implementation.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/modules/database/weaviate.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Weaviate vector database client for biometric face embeddings: creates schemas for embedding storage, inserts face vectors with SHA-256 deduplication, performs ANN search for identity matching. Biometric-specific implementation.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/modules/database/pinecone.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Pinecone vector database client for face embedding storage and similarity search. Manages biometric embedding indexes, batch-inserts face vectors, performs ANN search for identity matching. Biometric-specific implementation.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/models/FacialRecognition.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Abstract base class defining the interface all facial recognition models must implement. The forward() method performs tensor preprocessing and inference to produce face embeddings. While abstract, it contains working inference logic that all recognition models inherit.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/models/facial_recognition/ArcFace.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Implements ArcFace facial recognition model: builds ResNet34 architecture producing 512-dimensional face embeddings for biometric identification. Loads pre-trained weights for face recognition inference.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/models/facial_recognition/Facenet.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Implements FaceNet facial recognition model (InceptionResNetV1): produces 128d or 512d face embeddings for biometric identification and verification.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/models/facial_recognition/VGGFace.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Implements VGGFace facial recognition model: deep CNN producing 4096-dimensional face embeddings with L2 normalization for biometric identification.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/models/facial_recognition/GhostFaceNet.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Implements GhostFaceNet facial recognition model: efficient architecture producing 512-dimensional face embeddings. Reported 99.77% accuracy on LFW benchmark for biometric identification.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/models/facial_recognition/DeepID.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Implements DeepID facial recognition model: dual-branch CNN producing 160-dimensional face embeddings for biometric identification.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/models/facial_recognition/Dlib.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Implements Dlib-based facial recognition: wraps Dlib's ResNet face recognition model to produce 128-dimensional face embeddings for biometric identification.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/models/facial_recognition/SFace.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Implements SFace facial recognition model via OpenCV's FaceRecognizerSF: produces 128-dimensional face embeddings for biometric identification.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/models/facial_recognition/OpenFace.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Implements OpenFace facial recognition model: Inception-inspired architecture producing L2-normalized 128-dimensional face embeddings for biometric identification.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/models/facial_recognition/Buffalo_L.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Implements Buffalo_L facial recognition model using ONNX inference (InsightFace webface_r50.onnx): produces 512-dimensional face embeddings for biometric identification.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/models/facial_recognition/FbDeepFace.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Implements Facebook's DeepFace facial recognition model: CNN with LocallyConnected2D layers producing 4096-dimensional face embeddings for biometric identification.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/models/spoofing/FasNet.py",
+    "line": 61,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "label": "tp",
+    "notes": "Contains two torch.load() calls (lines ~50 and ~66) without weights_only=True to load MiniFASNetV2 and MiniFASNetV1SE anti-spoofing model weights. Genuine unsafe deserialization risk via pickle.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/models/demography/Race.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Implements race/ethnicity classification from facial images: predicts probabilities across 6 categories (asian, indian, black, white, middle eastern, latino hispanic). Directly performs biometric categorisation by protected characteristics.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/models/demography/Age.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Implements age prediction from facial images: classifies across 101 age classes (0-100) and returns weighted average apparent age. Biometric categorisation by age.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/models/demography/Gender.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "tp",
+    "notes": "Implements gender classification from facial images: binary classification (Woman/Man) with softmax probabilities. Biometric categorisation by gender.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "deepface/api/src/app.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "label": "fp",
+    "notes": "Flask application factory with CORS setup and model preloading. Does not define any API endpoints itself \u2014 routes are in a separate blueprint module. This file is infrastructure boilerplate (create_app, load_models_on_startup) not biometric processing code.",
+    "project": "app_deepface"
+  },
+  {
+    "file": "frigate/app.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: biometrics"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "tp",
+    "notes": "Main application orchestrator that initialises face recognition, object detection, person tracking, PTZ autotracking, and the full surveillance pipeline. Conditionally enables biometric subsystems (face recognition, LPR) based on config. This is the entry point that wires up real CV/biometric capabilities.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "frigate/detectors/plugins/hailo8l.py",
+    "line": 59,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 35,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "The subprocess call at line 59 runs `hailortcli fw-control identify` to detect which Hailo hardware accelerator is present. This is a narrowly-scoped hardware identification command during detector initialisation, not agent autonomy or uncontrolled tool execution.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "frigate/detectors/plugins/memryx.py",
+    "line": 313,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: File system modification \u2014 human gate pattern detected nearby",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 35,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "File system modifications at line 313 download pre-compiled neural network models from MemryX developer portal and extract them to a cache directory. This is deterministic model setup during initialisation, not autonomous file system manipulation.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "frigate/data_processing/real_time/face.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 93,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 20,
+      "domains_matched": [
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: biometrics + automated decision logic"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "tp",
+    "notes": "Core real-time face detection and recognition module. Uses OpenCV FaceDetectorYN for face detection, then FaceNetRecognizer or ArcFaceRecognizer to identify individuals by name. Maintains person_face_history across frames with weighted averaging. Includes face registration. This is genuine biometric identification in a surveillance context.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "frigate/data_processing/common/face/model.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 93,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "10",
+        "observation": "Training data detected \u2014 Article 10 requires data to be relevant, representative, and examined for biases."
+      }
+    ],
+    "domain_boost": {
+      "boost": 20,
+      "domains_matched": [
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: biometrics + automated decision logic"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "tp",
+    "notes": "Implements FaceNetRecognizer and ArcFaceRecognizer with face alignment (eye landmark rotation), embedding generation, cosine similarity matching, and sigmoid confidence scoring. Includes two-layer outlier protection for building class means from training samples. This is production biometric identification logic.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "frigate/stats/util.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      },
+      {
+        "article": "10",
+        "observation": "RAG (retrieval-augmented generation) pipeline detected \u2014 external data is injected at inference time. Article 10 data governance requirements apply to retrieved data, not only training data. Consider: data source provenance, freshness, access controls, and bias in the retrieval corpus."
+      }
+    ],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: biometrics"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "Pure system telemetry utility collecting CPU/GPU usage, memory, temperatures, detector inference speeds, and storage metrics. References to face_recognition and plate_recognition are performance counters (inference speed measurements), not biometric identification logic. The RAG observation is also incorrect -- no retrieval-augmented generation pipeline exists here.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "frigate/comms/embeddings_updater.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 73,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "Inter-process communication middleware using ZeroMQ sockets. Defines EmbeddingsResponder and EmbeddingsRequestor classes that route messages between processes. While the EmbeddingsRequestEnum includes topic labels like 'recognize_face', this file only implements the message transport layer -- no biometric identification logic is present.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "frigate/embeddings/maintainer.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: biometrics"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "tp",
+    "notes": "EmbeddingMaintainer manages SQLite-vec embeddings and initialises real-time processors including FaceRealTimeProcessor. While its primary role is semantic search embedding management, it orchestrates face recognition, LPR, and classification subsystems -- making it part of the biometric pipeline. It routes face recognition requests to the actual processor.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "frigate/embeddings/__init__.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 33,
+    "suppressed": false,
+    "provenance": "tooling",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "tp",
+    "notes": "EmbeddingsContext class implements register_face(), recognize_face(), get_face_ids(), delete_face_ids(), and rename_face() -- a complete face enrollment and identification API. Also manages EmbeddingProcess daemon. Despite being a coordination layer, it exposes functional biometric identification capabilities.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "frigate/embeddings/onnx/face_embedding.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: biometrics"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "tp",
+    "notes": "Implements FaceNetEmbedding (TFLite, 160x160) and ArcfaceEmbedding (ONNX, 112x112) classes that perform biometric feature extraction. Preprocesses face images (resize, pad, normalise), runs neural network inference, and outputs numerical embedding vectors used for identity matching. Core biometric feature extraction code.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "frigate/config/config.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics",
+      "safety_components"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 100,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 20,
+      "domains_matched": [
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: biometrics + automated decision logic"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "Purely configuration parsing and validation using Pydantic models. Defines schemas for camera settings, detection regions, and motion masks. Contains no biometric identification logic, no inference, no image processing. The biometrics keyword match comes from config field names referencing face recognition settings, not from performing identification.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "frigate/config/classification.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      },
+      {
+        "article": "15",
+        "observation": "Local model inference detected (Ollama, ONNX, llama.cpp, or GGUF model files). Article 15 accuracy and robustness obligations still apply to locally deployed models. Local deployment does not exempt from conformity requirements \u2014 it changes the deployment context."
+      }
+    ],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "education",
+        "law_enforcement",
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: education, law_enforcement, biometrics"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "Pydantic configuration data classes only: FaceRecognitionConfig, LicensePlateRecognitionConfig, SemanticSearchConfig, etc. Defines threshold values, model sizes, and device settings. No actual classification, recognition, or inference logic. The education and law_enforcement domain matches are spurious keyword hits in config field names.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "frigate/config/camera/camera.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: biometrics"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "Pydantic configuration schema for camera settings. Defines CameraConfig with nested config objects and FFmpeg command building. No image processing, inference, or biometric identification. The biometrics keyword match comes from importing face recognition config types, not from performing any recognition.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "frigate/api/classification.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "education",
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: education, biometrics"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "REST API endpoint layer (FastAPI router) that delegates all biometric operations to EmbeddingsContext. Handles file upload, directory management, and request/response formatting. Contains no ML inference, face matching, or biometric logic itself -- purely a thin HTTP interface over the actual recognition modules.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "frigate/api/defs/response/classification_response.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "education",
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: education, biometrics"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "Two Pydantic response models: FacesResponse (maps face names to image filenames) and FaceRecognitionResponse (success, confidence, face name). Pure HTTP response serialisation schemas with no biometric identification logic, no inference, no image processing.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "testing-scripts/face_dataset.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "10",
+        "observation": "Training data detected \u2014 Article 10 requires data to be relevant, representative, and examined for biases."
+      },
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      },
+      {
+        "article": "15",
+        "observation": "Local model inference detected (Ollama, ONNX, llama.cpp, or GGUF model files). Article 15 accuracy and robustness obligations still apply to locally deployed models. Local deployment does not exempt from conformity requirements \u2014 it changes the deployment context."
+      }
+    ],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "employment",
+        "law_enforcement",
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: employment, law_enforcement, biometrics"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "tp",
+    "notes": "Diagnostic/testing script that replicates the ArcFace embedding pipeline to analyse face recognition training datasets. Generates face embeddings, computes similarity scores, detects outlier/contaminating training images, and tests false positive rates. While offline (not live surveillance), it directly exercises the biometric identification pipeline and training data quality -- relevant to Article 10 data governance.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "docs/sidebars.ts",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: biometrics"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "Docusaurus sidebar navigation configuration for the documentation site. Defines menu structure with links to doc pages. References to 'face_recognition' are documentation topic labels, not biometric identification code. No executable logic whatsoever.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "docs/scripts/lib/nav_map.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: biometrics"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "Documentation utility that maps settings UI breadcrumb paths (e.g. 'Face recognition' -> 'Settings > Global configuration > Face recognition'). Contains only string dictionaries and two helper functions for navigating the settings hierarchy. No biometric logic.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "web/src/components/ws/WsMessageFeed.tsx",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "13",
+        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+      },
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "employment",
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: employment, biometrics"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "React UI component that renders a scrollable feed of WebSocket messages with topic filtering (events, face_recognition, LPR, etc.) and camera selection. Purely presentational -- displays pre-processed data from the backend. 'face_recognition' and 'lpr' are filter category labels for message streams, not biometric processing. No inference or identification logic.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "web/src/types/stats.ts",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 73,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      },
+      {
+        "article": "10",
+        "observation": "RAG (retrieval-augmented generation) pipeline detected \u2014 external data is injected at inference time. Article 10 data governance requirements apply to retrieved data, not only training data. Consider: data source provenance, freshness, access controls, and bias in the retrieval corpus."
+      }
+    ],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "TypeScript interface definitions for system statistics (FrigateStats, CameraStats, DetectorStats, EmbeddingsStats, etc.). Pure type declarations for monitoring data structures. References to face_embedding_speed and plate_recognition_speed are performance metric field names, not biometric logic. The RAG observation is a false observation -- no retrieval-augmented generation exists here.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "web/e2e/specs/navigation.spec.ts",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 48,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: biometrics"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "Playwright e2e test validating UI navigation (sidebar links, conditional menu items, route redirects). References to 'face_recognition.enabled' are feature flag checks for conditional menu rendering, not biometric identification. Standard QA automation with no surveillance or CV logic.",
+    "project": "app_frigate"
+  },
+  {
+    "file": "monai/transforms/utils.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 2",
+    "description": "Critical infrastructure management",
+    "indicators": [
+      "critical_infrastructure"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "This file contains generic medical image processing utility functions (rescaling, bounding boxes, grid creation, padding, cropping). It has no connection to critical infrastructure (water, gas, electricity, transport). The 'education' domain boost is a false keyword match \u2014 the file is purely medical imaging preprocessing infrastructure.",
+    "project": "app_monai"
+  },
+  {
+    "file": "monai/transforms/__init__.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 2",
+    "description": "Critical infrastructure management",
+    "indicators": [
+      "critical_infrastructure"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 33,
+    "suppressed": false,
+    "provenance": "tooling",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "This is a pure re-export __init__.py that consolidates transform classes (crop, intensity, spatial, post-processing) into a single namespace. No critical infrastructure content whatsoever \u2014 it is a module index file for medical image transforms.",
+    "project": "app_monai"
+  },
+  {
+    "file": "monai/transforms/spatial/array.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 2",
+    "description": "Critical infrastructure management",
+    "indicators": [
+      "critical_infrastructure"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 90,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "13",
+        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+      },
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 17,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education + automated decision logic"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "This file implements spatial transforms (Rotate, Flip, Zoom, AffineGrid, Spacing, SpatialResample) for medical images. These are data preprocessing/augmentation operations \u2014 they manipulate image geometry, not manage critical infrastructure. The 'automated decision' observation is a false match; these transforms prepare data for models, they do not make decisions.",
+    "project": "app_monai"
+  },
+  {
+    "file": "monai/auto3dseg/utils.py",
+    "line": 321,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "tp",
+    "notes": "Verified: the algo_from_pickle function at line 321 uses pickle.loads() to deserialize both data and algorithm objects without validation. This is a genuine unsafe deserialization vulnerability in production code for the auto3dseg medical imaging pipeline \u2014 arbitrary code execution risk if pickle files are untrusted.",
+    "project": "app_monai"
+  },
+  {
+    "file": "monai/apps/generation/maisi/networks/controlnet_maisi.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 53,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02",
+    "label": "tp",
+    "notes": "MAISI (Medical AI for Synthetic Imaging) is a ControlNet component for a diffusion model that generates synthetic medical images. The file implements conditioning control for diffusion-based generation. While it is an architectural component rather than a standalone generator, it is a core part of a synthetic medical image generation pipeline \u2014 Article 50 transparency obligations apply to synthetic content generation systems.",
+    "project": "app_monai"
+  },
+  {
+    "file": "monai/apps/detection/utils/box_selector.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 8",
+    "description": "Democratic processes and elections",
+    "indicators": [
+      "high_risk__democratic_processes"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 85,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "13",
+        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+      },
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "This file implements a BoxSelector for medical object detection \u2014 it selects predicted bounding boxes via score thresholding and NMS for detecting lesions/anatomical structures in 3D medical scans. It has zero connection to democratic processes, elections, or voting. The category assignment is entirely wrong; likely a false keyword match on terms like 'selector' or 'vote' (NMS uses scoring, not political voting).",
+    "project": "app_monai"
+  },
+  {
+    "file": "monai/networks/utils.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 6",
+    "description": "Law enforcement",
+    "indicators": [
+      "law_enforcement"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "10",
+        "observation": "Training data detected \u2014 Article 10 requires data to be relevant, representative, and examined for biases."
+      },
+      {
+        "article": "15",
+        "observation": "Local model inference detected (Ollama, ONNX, llama.cpp, or GGUF model files). Article 15 accuracy and robustness obligations still apply to locally deployed models. Local deployment does not exempt from conformity requirements \u2014 it changes the deployment context."
+      }
+    ],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "This file contains generic neural network utilities: one-hot encoding, segmentation prediction, weight initialisation, ONNX export, TorchScript/TensorRT conversion. It has no connection to law enforcement, policing, or criminal justice. The 'law_enforcement' indicator is a false match \u2014 the ONNX export and local inference code triggered the pattern but serves medical imaging, not policing.",
+    "project": "app_monai"
+  },
+  {
+    "file": "monai/networks/trt_compiler.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 6",
+    "description": "Law enforcement",
+    "indicators": [
+      "law_enforcement"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 73,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "This is a TensorRT compiler for optimising neural network inference on GPUs. It handles engine building, caching, and CUDA graph optimisation. It has no connection to law enforcement. The 'law_enforcement' category is a false match \u2014 this is purely ML infrastructure for accelerating model inference.",
+    "project": "app_monai"
+  },
+  {
+    "file": "monai/networks/nets/controlnet.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 53,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02",
+    "label": "tp",
+    "notes": "This implements a ControlNet architecture for conditioning diffusion models, referencing the 'Adding Conditional Control to Text-to-Image Diffusion Models' paper. In MONAI's context, this is used to guide synthetic medical image generation. While it is an architectural component rather than a standalone generator, it is purpose-built for controlling image synthesis in a diffusion pipeline. Article 50 synthetic content transparency obligations are relevant.",
+    "project": "app_monai"
+  },
+  {
+    "file": "monai/networks/nets/resnet.py",
+    "line": 668,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "Verified the actual code: torch.load(pretrained_path, map_location=torch.device(device), weights_only=True). The weights_only=True parameter restricts loading to tensor data only, preventing arbitrary code execution. This is the safe usage pattern \u2014 the finding's remediation advice is already implemented in the code.",
+    "project": "app_monai"
+  },
+  {
+    "file": "monai/networks/schedulers/pndm.py",
+    "line": 181,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "Line 181 is a timestep calculation in a PNDM (Pseudo Numerical Methods for Diffusion Models) noise scheduler: 'timestep = self.prk_timesteps[self.counter // 4 * 4]'. This is a mathematical operation for diffusion model sampling \u2014 it does not handle PII, patient data, or any sensitive information. No LLM or API calls are involved. The finding is a complete false match.",
+    "project": "app_monai"
+  },
+  {
+    "file": "monai/metrics/calibration.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Medical Devices",
+    "description": "AI components of medical devices",
+    "indicators": [
+      "medical_devices"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 93,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 20,
+      "domains_matched": [
+        "medical",
+        "education"
+      ],
+      "detail": "Domain keywords detected: medical, education + automated decision logic"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Aug 2028 (Annex I / sectoral). Trilogue in progress.",
+    "omnibus_deadline": "2028-08-02",
+    "label": "tp",
+    "notes": "Verified: the file explicitly states 'This is particularly important in medical imaging where probability estimates may inform clinical decisions.' It implements ECE, ACE, and MCE calibration metrics for evaluating whether model confidence aligns with actual accuracy \u2014 directly relevant to medical device AI reliability under EU AI Act. References medical image segmentation use cases.",
+    "project": "app_monai"
+  },
+  {
+    "file": "monai/metrics/embedding_collapse.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 8",
+    "description": "Justice and democratic processes",
+    "indicators": [
+      "justice"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 85,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "10",
+        "observation": "Training data detected \u2014 Article 10 requires data to be relevant, representative, and examined for biases."
+      },
+      {
+        "article": "14",
+        "observation": "Model predictions detected \u2014 Article 14 requires human oversight with ability to override or reverse AI outputs."
+      },
+      {
+        "article": "13",
+        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+      }
+    ],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "This file implements a generic ML metric for detecting embedding collapse (centroid similarity, effective rank, domain shift, silhouette analysis). It has no connection to justice, courts, democratic processes, or legal proceedings. The 'justice' indicator is a false keyword match. This is a model quality monitoring tool, not a justice-domain application.",
+    "project": "app_monai"
+  },
+  {
+    "file": "monai/handlers/calibration.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Medical Devices",
+    "description": "AI components of medical devices",
+    "indicators": [
+      "medical_devices"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "medical",
+        "education"
+      ],
+      "detail": "Domain keywords detected: medical, education"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Aug 2028 (Annex I / sectoral). Trilogue in progress.",
+    "omnibus_deadline": "2028-08-02",
+    "label": "tp",
+    "notes": "Verified: the file explicitly states calibration 'can be problematic in medical imaging where probability estimates may inform clinical decisions.' It wraps CalibrationErrorMetric for PyTorch Ignite training engines, computing ECE/ACE/MCE during medical model training. Directly relevant to medical device AI \u2014 ensures prediction confidence is calibrated for clinical use.",
+    "project": "app_monai"
+  },
+  {
+    "file": "monai/data/dataset.py",
+    "line": 399,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "tp",
+    "notes": "Verified: PersistentDataset._cachecheck uses torch.load(hashfile, weights_only=self.weights_only) where weights_only is a configurable parameter that defaults to allowing arbitrary objects. When weights_only is False (or if set by users), this permits arbitrary code execution via pickle. The deserialization safety depends on runtime configuration, making this a legitimate security finding.",
+    "project": "app_monai"
+  },
+  {
+    "file": "monai/bundle/scripts.py",
+    "line": 734,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "Verified the actual code: torch.load(full_path, map_location=torch.device(device), weights_only=True). The weights_only=True parameter is already applied, which restricts deserialization to safe tensor data only. The remediation advice is already implemented \u2014 this is not an unsafe deserialization.",
+    "project": "app_monai"
+  },
+  {
+    "file": "tests/transforms/test_create_grid_and_affine.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 2",
+    "description": "Critical infrastructure management",
+    "indicators": [
+      "critical_infrastructure"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 33,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "This is a test file for grid and affine transform creation functions (create_grid, create_rotate, create_shear, create_scale, create_translate) used in medical image spatial processing. It tests mathematical transform operations, not critical infrastructure. Additionally, it is test code, not production code.",
+    "project": "app_monai"
+  },
+  {
+    "file": "tests/handlers/test_trt_compile.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 6",
+    "description": "Law enforcement",
+    "indicators": [
+      "law_enforcement"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 33,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "This is a test file for TensorRT compilation of neural networks (testing trt_compile function and TrtHandler). It has no connection to law enforcement \u2014 it tests GPU inference optimisation for medical imaging models. Also, it is test code, not production code.",
+    "project": "app_monai"
+  },
+  {
+    "file": "tests/data/utils/test_compute_shape_offset.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 33,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "This test file validates the compute_shape_offset function for spatial dimensions and affine matrices in medical image processing. It has no connection to biometric identification, face recognition, or categorisation of people. It is test code for mathematical spatial operations.",
+    "project": "app_monai"
+  },
+  {
+    "file": "tests/data/meta_tensor/test_meta_tensor.py",
+    "line": 248,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "tp",
+    "notes": "Verified: torch.load(fname, weights_only=False) is used explicitly with weights_only=False to test MetaTensor round-trip serialisation. While this is test code (lower severity), it does demonstrate the pattern of unsafe deserialization that could be copied into production. The finding correctly identifies the use of weights_only=False, which enables arbitrary code execution during unpickling.",
+    "project": "app_monai"
+  },
+  {
+    "file": "apps/backend/app/main.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 4",
+    "description": "Employment and workers management",
+    "indicators": [
+      "employment"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "employment"
+      ],
+      "detail": "Domain keywords detected: employment"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "Resume-Matcher is a job-seeker-side tool that helps individuals tailor their resumes to job descriptions. main.py is the FastAPI entry point that registers routers for resume upload, job description storage, and AI-powered resume improvement. It does not screen, rank, or filter candidates. The 'employment' keyword match is syntactically correct but contextually wrong: Annex III Category 4 targets AI systems used by employers/recruiters for recruitment decisions, not tools used by applicants to optimise their own CVs.",
+    "project": "app_resume_matcher"
+  },
+  {
+    "file": "apps/frontend/app/(default)/settings/page.tsx",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 4",
+    "description": "Employment and workers management",
+    "indicators": [
+      "employment"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      },
+      {
+        "article": "15",
+        "observation": "Local model inference detected (Ollama, ONNX, llama.cpp, or GGUF model files). Article 15 accuracy and robustness obligations still apply to locally deployed models. Local deployment does not exempt from conformity requirements \u2014 it changes the deployment context."
+      }
+    ],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "employment"
+      ],
+      "detail": "Domain keywords detected: employment"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "This is a settings/configuration page for the Resume-Matcher frontend. It allows users to select LLM providers (OpenAI, Anthropic, Ollama, etc.), configure API keys, toggle cover letter generation, and view system status. It contains no recruitment screening or candidate evaluation logic. The 'employment' domain keyword match is a false positive \u2014 this UI configures a job-seeker tool, not an employer-side screening system. The Ollama reference in the observations is contextually accurate (the app does support local model inference) but irrelevant to Annex III Category 4 since the application is not a high-risk recruitment AI system.",
+    "project": "app_resume_matcher"
+  },
+  {
+    "file": "apps/frontend/components/builder/resume-builder.tsx",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 4",
+    "description": "Employment and workers management",
+    "indicators": [
+      "employment"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "employment"
+      ],
+      "detail": "Domain keywords detected: employment"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02",
+    "label": "fp",
+    "notes": "resume-builder.tsx is a React component providing a multi-tab resume editing and preview interface (resume, cover letter, outreach, JD-match). It helps a single job seeker edit, format, and export their resume as PDF. It includes AI-powered regeneration for improving bullet points and a JD-match tab for comparing one resume against one job description. This is applicant-side resume optimisation \u2014 not candidate screening or ranking. No multi-candidate evaluation, filtering, or employer-facing decision-making exists in this component.",
+    "project": "app_resume_matcher"
+  },
+  {
+    "file": "docker-compose.yml",
+    "line": 22,
+    "tier": "minimal_risk",
+    "category": "AI Infrastructure",
+    "description": "AI model serving container: ollama",
+    "indicators": [
+      "ai_config"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "tooling",
+    "lifecycle_phases": [
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline.",
+    "label": "tp",
+    "notes": "The docker-compose.yml configures the Resume-Matcher service with environment variables for LLM provider selection, including Ollama as a supported provider (LLM_API_BASE can point to host.docker.internal:11434). While the compose file does not define a standalone Ollama container, it correctly identifies that the application supports Ollama-based local model inference as part of its AI infrastructure. The finding is appropriately classified as minimal-risk/AI Infrastructure rather than high-risk, and the 'ollama' indicator is genuinely present in the configuration.",
+    "project": "app_resume_matcher"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/src/crewai/llm.py",
+    "line": 546,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "Core LLM interface; sensitive data flows through to AI providers without redaction"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/src/crewai/a2a/utils/agent_card_signing.py",
+    "line": 106,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "Private key detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Never inc",
+    "confidence_score": 68,
+    "indicators": [
+      "private_key"
+    ],
+    "label": "tp",
+    "notes": "Code handles private keys for agent card signing; genuine credential handling concern"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/src/crewai/cli/tools/main.py",
+    "line": 254,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "confidence_score": 60,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "fp",
+    "notes": "CLI scaffolding tool for project setup (subprocess calls), not AI-driven autonomous action"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/src/crewai/cli/remote_template/main.py",
+    "line": 250,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "File system modification"
+    ],
+    "label": "fp",
+    "notes": "CLI remote template scaffolding, not AI-driven file modification"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/src/crewai/agents/crew_agent_executor.py",
+    "line": 1420,
+    "tier": "ai_security",
+    "category": "AI Security (LLM01)",
+    "description": "Tool / agent / shell output passed to LLM without validation \u2014 agentic prompt injection risk",
+    "confidence_score": 80,
+    "indicators": [
+      "prompt_injection_tool_output"
+    ],
+    "label": "tp",
+    "notes": "Agent executor passes tool output to LLM without validation; genuine agentic prompt injection risk"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/src/crewai/utilities/file_handler.py",
+    "line": 180,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "confidence_score": 80,
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "label": "tp",
+    "notes": "File handler with unsafe deserialization; genuine arbitrary code execution risk"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/src/crewai/utilities/internal_instructor.py",
+    "line": 148,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "Instructor module sends data to LLM without PII redaction; genuine disclosure risk"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/src/crewai/utilities/lock_store.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Safety Components",
+    "description": "Safety components under Union harmonisation legislation",
+    "confidence_score": 23,
+    "indicators": [
+      "safety_components"
+    ],
+    "label": "fp",
+    "notes": "Concurrency infrastructure (thread locking), not a safety component under EU harmonisation legislation"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/src/crewai/utilities/evaluators/task_evaluator.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 4(b)",
+    "description": "Worker monitoring and task allocation",
+    "confidence_score": 23,
+    "indicators": [
+      "high_risk__worker_management"
+    ],
+    "label": "fp",
+    "notes": "Evaluates AI agent task completion quality, not human worker performance monitoring"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/src/crewai/utilities/evaluators/crew_evaluator_handler.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 4(b)",
+    "description": "Worker monitoring and task allocation",
+    "confidence_score": 23,
+    "indicators": [
+      "high_risk__worker_management"
+    ],
+    "label": "fp",
+    "notes": "Evaluates AI crew/agent performance, not human worker management"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/src/crewai/llms/providers/openai/completion.py",
+    "line": 443,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "LLM provider completion code; data genuinely flows through external AI provider without PII redaction"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/src/crewai/llms/providers/azure/completion.py",
+    "line": 157,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "LLM provider completion code; data genuinely flows through external AI provider without PII redaction"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/src/crewai/llms/providers/gemini/completion.py",
+    "line": 330,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "LLM provider completion code; data genuinely flows through external AI provider without PII redaction"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/src/crewai/llms/providers/anthropic/completion.py",
+    "line": 331,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "LLM provider completion code; data genuinely flows through external AI provider without PII redaction"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/tests/test_async_human_feedback.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 4",
+    "description": "Employment and workers management",
+    "confidence_score": 5,
+    "indicators": [
+      "employment"
+    ],
+    "label": "fp",
+    "notes": "Test code; 'employment' keyword match is incidental, not an employment management system"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/tests/test_task.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 8",
+    "description": "Justice and democratic processes",
+    "confidence_score": 5,
+    "indicators": [
+      "justice"
+    ],
+    "label": "fp",
+    "notes": "Test code; 'justice' keyword match is incidental, not a justice/democratic process system"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/tests/cli/tools/test_main.py",
+    "line": 393,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "confidence_score": 20,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "fp",
+    "notes": "Test code for CLI scaffolding tool, not AI-driven autonomous action"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/tests/agents/test_agent.py",
+    "line": 32,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk syst",
+    "confidence_score": 20,
+    "indicators": [
+      "generic_api_key"
+    ],
+    "label": "fp",
+    "notes": "Test code using placeholder/mock API keys, not real credentials"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/tests/tools/agent_tools/test_agent_tools.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Safety Components",
+    "description": "Safety components under Union harmonisation legislation",
+    "confidence_score": 5,
+    "indicators": [
+      "safety_components"
+    ],
+    "label": "fp",
+    "notes": "Test code; 'safety_components' keyword match is incidental (likely 'medical' domain keyword in test data)"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai/tests/utilities/evaluators/test_crew_evaluator_handler.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 4(b)",
+    "description": "Worker monitoring and task allocation",
+    "confidence_score": 5,
+    "indicators": [
+      "high_risk__worker_management"
+    ],
+    "label": "fp",
+    "notes": "Evaluates AI crew/agent performance, not human worker management"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/devtools/src/crewai_devtools/docs_check.py",
+    "line": 156,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 45,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Devtools docs checker runs system commands; potentially AI-directed execution"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/devtools/src/crewai_devtools/docs_check.py",
+    "line": 185,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "Docs checker sends content to LLM; genuine PII disclosure risk"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/devtools/src/crewai_devtools/cli.py",
+    "line": 159,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 45,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "fp",
+    "notes": "Devtools CLI runs developer commands (build, deploy, etc.); developer tooling, not AI-autonomous execution"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/devtools/src/crewai_devtools/cli.py",
+    "line": 510,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "Devtools CLI sends data to LLM; genuine PII disclosure risk"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/rag/embedding_service.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "confidence_score": 38,
+    "indicators": [
+      "biometrics"
+    ],
+    "label": "fp",
+    "notes": "RAG embedding service for text/document embeddings, not biometric identification"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/rag/loaders/postgres_loader.py",
+    "line": 54,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Database query execution \u2014 no human gate detected",
+    "confidence_score": 60,
+    "indicators": [
+      "Database query execution"
+    ],
+    "label": "tp",
+    "notes": "RAG loader tool; AI agents can trigger data loading/DB queries at runtime"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/rag/loaders/docx_loader.py",
+    "line": 27,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "File system modification"
+    ],
+    "label": "tp",
+    "notes": "RAG loader tool; AI agents can trigger data loading/DB queries at runtime"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/rag/loaders/mysql_loader.py",
+    "line": 55,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Database query execution \u2014 no human gate detected",
+    "confidence_score": 60,
+    "indicators": [
+      "Database query execution"
+    ],
+    "label": "tp",
+    "notes": "RAG loader tool; AI agents can trigger data loading/DB queries at runtime"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/aws/bedrock/agents/invoke_agent_tool.py",
+    "line": 172,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "AWS Bedrock agent invocation; data flows to external AI service without PII redaction"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/oxylabs_amazon_search_scraper_tool/oxylabs_amazon_search_scraper_tool.py",
+    "line": 129,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/patronus_eval_tool/patronus_eval_tool.py",
+    "line": 146,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/patronus_eval_tool/patronus_local_evaluator_tool.py",
+    "line": 72,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/patronus_eval_tool/patronus_predefined_criteria_eval_tool.py",
+    "line": 95,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/browserbase_load_tool/browserbase_load_tool.py",
+    "line": 62,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/firecrawl_scrape_website_tool/firecrawl_scrape_website_tool.py",
+    "line": 96,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/mongodb_vector_search_tool/vector_search.py",
+    "line": 118,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 45,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/oxylabs_google_search_scraper_tool/oxylabs_google_search_scraper_tool.py",
+    "line": 132,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/linkup/linkup_search_tool.py",
+    "line": 46,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 45,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/firecrawl_search_tool/firecrawl_search_tool.py",
+    "line": 95,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/nl2sql/nl2sql_tool.py",
+    "line": 498,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Database query execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "Database query execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/ai_mind_tool/ai_mind_tool.py",
+    "line": 104,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "confidence_score": 80,
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "label": "tp",
+    "notes": "AI Mind tool sends data to external AI service without PII redaction"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/generate_crewai_automation_tool/generate_crewai_automation_tool.py",
+    "line": 52,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+    "confidence_score": 60,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/oxylabs_universal_scraper_tool/oxylabs_universal_scraper_tool.py",
+    "line": 123,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/dalle_tool/dalle_tool.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "confidence_score": 5,
+    "indicators": [
+      "synthetic_content"
+    ],
+    "label": "tp",
+    "notes": "DALL-E image generation tool; genuinely generates synthetic content requiring Article 50 transparency"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/serpapi_tool/serpapi_base_tool.py",
+    "line": 38,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/exa_tools/exa_search_tool.py",
+    "line": 89,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/tavily_extractor_tool/tavily_extractor_tool.py",
+    "line": 109,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/weaviate_tool/vector_search.py",
+    "line": 99,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 45,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/merge_agent_handler_tool/merge_agent_handler_tool.py",
+    "line": 98,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+    "confidence_score": 60,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/serper_dev_tool/serper_dev_tool.py",
+    "line": 257,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/invoke_crewai_automation_tool/invoke_crewai_automation_tool.py",
+    "line": 128,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: HTTP mutation request \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/tavily_search_tool/tavily_search_tool.py",
+    "line": 137,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/selenium_scraping_tool/selenium_scraping_tool.py",
+    "line": 90,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/selenium_scraping_tool/selenium_scraping_tool.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Safety Components",
+    "description": "Safety components under Union harmonisation legislation",
+    "confidence_score": 23,
+    "indicators": [
+      "safety_components"
+    ],
+    "label": "fp",
+    "notes": "Web scraping tool, not a safety component under EU harmonisation legislation"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/scrapegraph_scrape_tool/scrapegraph_scrape_tool.py",
+    "line": 102,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/scrapfly_scrape_website_tool/scrapfly_scrape_website_tool.py",
+    "line": 61,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/crewai_platform_tools/crewai_platform_action_tool.py",
+    "line": 70,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+    "confidence_score": 60,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/spider_tool/spider_tool.py",
+    "line": 107,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/parallel_tools/parallel_search_tool.py",
+    "line": 104,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: HTTP mutation request \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/serper_scrape_website_tool/serper_scrape_website_tool.py",
+    "line": 62,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 human gate pattern detected nearby",
+    "confidence_score": 45,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/oxylabs_amazon_product_scraper_tool/oxylabs_amazon_product_scraper_tool.py",
+    "line": 127,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/multion_tool/multion_tool.py",
+    "line": 45,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/couchbase_tool/couchbase_tool.py",
+    "line": 183,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/snowflake_search_tool/snowflake_search_tool.py",
+    "line": 218,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Database query execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "Database query execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/contextualai_rerank_tool/contextual_rerank_tool.py",
+    "line": 69,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/singlestore_search_tool/singlestore_search_tool.py",
+    "line": 419,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Database query execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "Database query execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/singlestore_search_tool/singlestore_search_tool.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "confidence_score": 35,
+    "indicators": [
+      "biometrics"
+    ],
+    "label": "fp",
+    "notes": "Vector search tool for text similarity, not biometric identification"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/brightdata_tool/brightdata_serp.py",
+    "line": 228,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/brightdata_tool/brightdata_unlocker.py",
+    "line": 141,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/firecrawl_crawl_website_tool/firecrawl_crawl_website_tool.py",
+    "line": 96,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 35,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/tools/contextualai_parse_tool/contextual_parse_tool.py",
+    "line": 80,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "confidence_score": 70,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "label": "tp",
+    "notes": "Agent-callable tool; AI agents can invoke this at runtime without human approval gate"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/adapters/enterprise_adapter.py",
+    "line": 258,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: HTTP mutation request \u2014 no human gate detected",
+    "confidence_score": 60,
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "label": "tp",
+    "notes": "Agent adapter infrastructure; enables AI-driven HTTP/command execution through external services"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/src/crewai_tools/adapters/mcp_adapter.py",
+    "line": 168,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to System command execution \u2014 human gate pattern detected nearby",
+    "confidence_score": 45,
+    "indicators": [
+      "System command execution"
+    ],
+    "label": "tp",
+    "notes": "Agent adapter infrastructure; enables AI-driven HTTP/command execution through external services"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/tests/rag/test_json_loader.py",
+    "line": 127,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 human gate pattern detected nearby",
+    "confidence_score": 10,
+    "indicators": [
+      "File system modification"
+    ],
+    "label": "fp",
+    "notes": "Test code; file system/DB operations in test fixtures are not AI-driven autonomous actions"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/tests/rag/test_csv_loader.py",
+    "line": 25,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 human gate pattern detected nearby",
+    "confidence_score": 10,
+    "indicators": [
+      "File system modification"
+    ],
+    "label": "fp",
+    "notes": "Test code; file system/DB operations in test fixtures are not AI-driven autonomous actions"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/tests/rag/test_mdx_loader.py",
+    "line": 24,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "confidence_score": 30,
+    "indicators": [
+      "File system modification"
+    ],
+    "label": "fp",
+    "notes": "Test code; file system/DB operations in test fixtures are not AI-driven autonomous actions"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/tests/rag/test_text_loaders.py",
+    "line": 21,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "confidence_score": 30,
+    "indicators": [
+      "File system modification"
+    ],
+    "label": "fp",
+    "notes": "Test code; file system/DB operations in test fixtures are not AI-driven autonomous actions"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/tests/tools/test_search_tools.py",
+    "line": 166,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: File system modification \u2014 no human gate detected",
+    "confidence_score": 20,
+    "indicators": [
+      "File system modification"
+    ],
+    "label": "fp",
+    "notes": "Test code; file system/DB operations in test fixtures are not AI-driven autonomous actions"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/tests/tools/stagehand_tool_test.py",
+    "line": 115,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk syst",
+    "confidence_score": 20,
+    "indicators": [
+      "generic_api_key"
+    ],
+    "label": "fp",
+    "notes": "Test code using placeholder/mock API keys, not real credentials"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/tests/tools/test_nl2sql_security.py",
+    "line": 132,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: File system modification \u2014 no human gate detected",
+    "confidence_score": 20,
+    "indicators": [
+      "File system modification"
+    ],
+    "label": "fp",
+    "notes": "Test code; file system/DB operations in test fixtures are not AI-driven autonomous actions"
+  },
+  {
+    "project": "app_crewai",
+    "file": "lib/crewai-tools/tests/tools/test_file_writer_tool.py",
+    "line": 193,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: File system modification \u2014 no human gate detected",
+    "confidence_score": 20,
+    "indicators": [
+      "File system modification"
+    ],
+    "label": "fp",
+    "notes": "Test code; file system/DB operations in test fixtures are not AI-driven autonomous actions"
   }
 ]

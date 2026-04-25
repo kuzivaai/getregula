@@ -211,7 +211,7 @@ documentation, not a production fairness monitor — see "What Regula is
 Regula performs **pattern-based risk indication**, not legal risk classification.
 
 - The EU AI Act classifies risk based on intended purpose and deployment context (Article 6), not code patterns. Regula's findings are indicators that warrant human review.
-- **False positives will occur.** The self-benchmark on five labelled open-source projects (257 hand-labelled findings, all at INFO tier or below) measured **15.2% overall precision at INFO**. **0 BLOCK-tier findings fired** across all 257 labelled findings, so BLOCK/WARN-tier precision on production-relevant code cannot yet be estimated from this benchmark. The minimal-risk tier accounts for 94% of findings on general-purpose libraries and is the noisiest. Full methodology, reproduction steps, and limitations: [`benchmarks/README.md`](benchmarks/README.md).
+- **False positives will occur.** Blind-labelled benchmark on 50 randomly selected Python AI repos measured **70.0% precision on production code** (95% CI: 62-78%, N=140, default `--skip-tests` settings). The `high_risk` tier is weakest (8% — domain keywords match without semantic context). `ai_security` (80%), `agent_autonomy` (83%), and `limited_risk` (88%) tiers are strongest. Full methodology, corpus selection, and reproduction steps: [`benchmarks/README.md`](benchmarks/README.md).
 - **False negatives will occur.** Novel risk patterns not in the database will be missed.
 - Article 5 prohibitions have conditions and exceptions that require human judgment.
 - The audit trail is self-attesting (locally verifiable, not externally witnessed).

@@ -1,0 +1,93 @@
+[
+  {
+    "file": "src/backend/main.py",
+    "line": 188,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/parallax/server/node_chat_http_server.py",
+    "line": 35,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/parallax/server/http_server.py",
+    "line": 565,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tests/test_executor.py",
+    "line": 234,
+    "tier": "ai_security",
+    "category": "AI Security (LLM09)",
+    "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+    "indicators": [
+      "missing_temperature_control"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  }
+]

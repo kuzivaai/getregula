@@ -1,0 +1,137 @@
+[
+  {
+    "file": "tests/test_llm_provider.py",
+    "line": 247,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tools/chat.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Safety Components",
+    "description": "Safety components under Union harmonisation legislation",
+    "indicators": [
+      "safety_components"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "medical",
+        "education"
+      ],
+      "detail": "Domain keywords detected: medical, education"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Aug 2028 (Annex I / sectoral). Trilogue in progress.",
+    "omnibus_deadline": "2028-08-02"
+  },
+  {
+    "file": "tools/test.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Safety Components",
+    "description": "Safety components under Union harmonisation legislation",
+    "indicators": [
+      "safety_components"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 85,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Aug 2028 (Annex I / sectoral). Trilogue in progress.",
+    "omnibus_deadline": "2028-08-02"
+  },
+  {
+    "file": ".env",
+    "line": 2,
+    "tier": "minimal_risk",
+    "category": "AI Infrastructure",
+    "description": "AI API key configured: HUGGINGFACE_TOKEN",
+    "indicators": [
+      "ai_config"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  }
+]

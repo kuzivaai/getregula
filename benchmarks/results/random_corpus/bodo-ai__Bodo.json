@@ -1,0 +1,492 @@
+[
+  {
+    "file": "bodo/compiler.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 2",
+    "description": "Critical infrastructure management",
+    "indicators": [
+      "critical_infrastructure"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 85,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "10",
+        "observation": "Training data detected \u2014 Article 10 requires data to be relevant, representative, and examined for biases."
+      }
+    ],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "bodo/transforms/typing_pass.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 2",
+    "description": "Critical infrastructure management",
+    "indicators": [
+      "critical_infrastructure"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 85,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "13",
+        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+      }
+    ],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "bodo/transforms/distributed_analysis.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 2",
+    "description": "Critical infrastructure management",
+    "indicators": [
+      "critical_infrastructure"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "10",
+        "observation": "Training data detected \u2014 Article 10 requires data to be relevant, representative, and examined for biases."
+      },
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "medical",
+        "education"
+      ],
+      "detail": "Domain keywords detected: medical, education"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "bodo/pandas/series.py",
+    "line": 1939,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "bodo/pandas/series.py",
+    "line": 1939,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "bodo/ai/train.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 4(b)",
+    "description": "Worker monitoring and task allocation",
+    "indicators": [
+      "high_risk__worker_management"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 73,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "bodo/ai/bodo_dist_sampler.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 4(b)",
+    "description": "Worker monitoring and task allocation",
+    "indicators": [
+      "high_risk__worker_management"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 73,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "bodo/tests/test_sql_errorchecking.py",
+    "line": 27,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "Database connection string with possible credentials in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable for connection strings. Never hardcode credentials.",
+    "indicators": [
+      "connection_string"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  },
+  {
+    "file": "bodo/tests/test_basic.py",
+    "line": 94,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "bodo/tests/test_df_lib/test_ai_funcs.py",
+    "line": 32,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "bodo/tests/data/query_embedding.pkl",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pkl",
+    "indicators": [
+      ".pkl"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "bodo/tests/data/lr.hdf5",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .hdf5",
+    "indicators": [
+      ".hdf5"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "bodo/tests/data/h5_test_filter.h5",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .h5",
+    "indicators": [
+      ".h5"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "bodo/tests/data/embeddings.pkl",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pkl",
+    "indicators": [
+      ".pkl"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "bodo/tests/data/test_group_read.hdf5",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .hdf5",
+    "indicators": [
+      ".hdf5"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "bodo/spawn/worker.py",
+    "line": 436,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "bodo/spawn/worker.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 4(b)",
+    "description": "Worker monitoring and task allocation",
+    "indicators": [
+      "high_risk__worker_management"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 73,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  }
+]

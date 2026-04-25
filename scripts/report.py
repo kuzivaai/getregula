@@ -360,14 +360,33 @@ def _scan_credentials(content, lines, rel_path, is_test, suppressed, provenance=
     return results
 
 
+_LLM_IMPORT_RE = re.compile(
+    r"\b(?:import|from)\s+(?:openai|anthropic|together|groq|cohere|"
+    r"google\.generativeai|litellm|replicate|mistralai|"
+    r"langchain|llama_index|transformers|vllm|"
+    r"huggingface_hub)\b",
+    re.IGNORECASE,
+)
+
+# LLM-specific OWASP categories that require an LLM library import.
+# LLM05 (deserialization) and LLM03 (supply chain) apply to model loading
+# and should fire regardless.
+_LLM_SPECIFIC_OWASP = {"LLM01", "LLM02", "LLM06", "LLM07", "LLM09", "LLM10"}
+
+
 def _scan_ai_security(content, rel_path, is_test, suppressed, provenance="production", ast_context=None):
     """Detect AI security antipatterns in a single file."""
     if ast_context is None:
         ast_context = {}
     results = []
+    _has_llm_import = bool(_LLM_IMPORT_RE.search(content))
     try:
         security_findings = check_ai_security(content)
         for sf in security_findings:
+            # Gate LLM-specific findings: require an LLM library import
+            # to avoid flagging scientific computing / data processing code.
+            if sf["owasp"] in _LLM_SPECIFIC_OWASP and not _has_llm_import:
+                continue
             _finding_line = sf["line"]
             _line_ctx = ast_context.get(_finding_line, set())
 

@@ -1,0 +1,869 @@
+[
+  {
+    "file": "source/tests/tf/test.hdf5",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .hdf5",
+    "indicators": [
+      ".hdf5"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "source/tests/infer/deeppot_dpa_sel.pth",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pth",
+    "indicators": [
+      ".pth"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "source/tests/infer/fparam_aparam_default.pth",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pth",
+    "indicators": [
+      ".pth"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "source/tests/infer/deeppot_dpa.pth",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pth",
+    "indicators": [
+      ".pth"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "source/tests/infer/deeppot_sea.pth",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pth",
+    "indicators": [
+      ".pth"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "source/tests/infer/deepdipole_pt.pth",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pth",
+    "indicators": [
+      ".pth"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "source/tests/pt/model/models/dpa1.pth",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pth",
+    "indicators": [
+      ".pth"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "source/tests/pt/model/models/dpa2.pth",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pth",
+    "indicators": [
+      ".pth"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "source/tests/pt/model/models/dpa2_tebd.pth",
+    "line": 1,
+    "tier": "minimal_risk",
+    "category": "Model File",
+    "description": "AI model file detected: .pth",
+    "indicators": [
+      ".pth"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 79,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 131,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 568,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 569,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 624,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 904,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 991,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 992,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 1081,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 1206,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 1207,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 1359,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 1450,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 1600,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 1759,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 1808,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "source/tests/pt_expt/infer/test_deep_eval.py",
+    "line": 1875,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "deepmd/dpmodel/model/frozen.py",
+    "line": 134,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "deepmd/tf/utils/tabulate.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Safety Components",
+    "description": "Safety components under Union harmonisation legislation",
+    "indicators": [
+      "safety_components"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 85,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Aug 2028 (Annex I / sectoral). Trilogue in progress.",
+    "omnibus_deadline": "2028-08-02"
+  },
+  {
+    "file": "deepmd/utils/argcheck.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 2",
+    "description": "Critical infrastructure management",
+    "indicators": [
+      "critical_infrastructure"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 90,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "10",
+        "observation": "Training data detected \u2014 Article 10 requires data to be relevant, representative, and examined for biases."
+      }
+    ],
+    "domain_boost": {
+      "boost": 17,
+      "domains_matched": [
+        "education",
+        "infrastructure"
+      ],
+      "detail": "Domain keywords detected: education, infrastructure + automated decision logic"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "deepmd/utils/tabulate.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Safety Components",
+    "description": "Safety components under Union harmonisation legislation",
+    "indicators": [
+      "safety_components"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 73,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Aug 2028 (Annex I / sectoral). Trilogue in progress.",
+    "omnibus_deadline": "2028-08-02"
+  },
+  {
+    "file": "deepmd/pd/model/model/frozen.py",
+    "line": 187,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "deepmd/pt/train/validation.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 4",
+    "description": "Employment and workers management",
+    "indicators": [
+      "employment"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "10",
+        "observation": "Training data detected \u2014 Article 10 requires data to be relevant, representative, and examined for biases."
+      }
+    ],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "employment"
+      ],
+      "detail": "Domain keywords detected: employment"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "deepmd/pt/model/model/frozen.py",
+    "line": 208,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "deepmd/pt/model/model/spin_model.py",
+    "line": 327,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "deepmd/pt/model/model/property_model.py",
+    "line": 82,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "deepmd/jax/jax2tf/serialization.py",
+    "line": 285,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "deepmd/jax/jax2tf/tfmodel.py",
+    "line": 248,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  }
+]
