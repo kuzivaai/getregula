@@ -91,7 +91,7 @@ One thing we didn't expect: credential exposure in example code. LlamaIndex's 16
 
 ## Why 404 patterns matters
 
-Some scanning tools run 39 checks. Regula runs 404 patterns across 53 risk categories, covering the EU AI Act (Articles 5, 9-15, 50, 51-55), OWASP LLM Top 10, OWASP Agentic Security, and 18 credential patterns. The difference shows up most in the AI security category, where deserialization risks and prompt injection surfaces need specific regex matchers to avoid false positives.
+Some scanning tools run 39 checks. Regula runs 404 patterns across 52 risk categories, covering the EU AI Act (Articles 5, 9-15, 50, 51-55), OWASP LLM Top 10, OWASP Agentic Security, and 18 credential patterns. The difference shows up most in the AI security category, where deserialization risks and prompt injection surfaces need specific regex matchers to avoid false positives.
 
 At 39 checks, a model-loading framework looks clean. At 404, you can see the cybersecurity surface that Article 15 actually cares about.
 

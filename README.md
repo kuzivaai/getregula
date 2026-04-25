@@ -6,7 +6,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-1138%20unique-brightgreen.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-1111%20unique-brightgreen.svg)](#verified-numbers)
 [![WCAG 2.2 AA](https://img.shields.io/badge/WCAG%202.2-AA-success.svg)](docs/accessibility/README.md)
 
 ---
@@ -225,7 +225,7 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | Risk detection patterns (regexes) | 404 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Compliance frameworks mapped | 12 |
-| Tests (pytest --collect-only, all passing) | 1223 |
+| Tests (pytest --collect-only, all passing) | 1232 |
 | Required production dependencies | 0 |
 
 For buyer-facing trust evidence (every number above paired with a reproducible command, plus precision/recall benchmark, security posture, and audit trail), see [`docs/TRUST.md`](docs/TRUST.md).
