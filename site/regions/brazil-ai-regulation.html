@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets — see commit
+         7ed6e47 on site/index.html for the full diagnosis. TL;DR: external
+         CSS is render-blocking, so the browser's default white canvas shows
+         for hundreds of ms on cold loads. Inline critical CSS establishes the
+         dark theme immediately; `color-scheme: dark` hints the canvas colour
+         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         so they don't block first paint. <noscript> fallback for JS off. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+
+    <!-- Primary SEO -->
+    <title>Brazil AI Regulation — LGPD & Marco Legal da IA (PL 2338/2023) | Regula</title>
+    <meta name="description" content="Brazil AI regulation tracker. PL 2338/2023 (Marco Legal da IA) legislative status, LGPD automated decision rights, ANPD enforcement priorities, and what developers should do now.">
+    <meta name="keywords" content="Brazil AI regulation, LGPD AI compliance, Marco Legal da IA, regulamentação IA Brasil, PL 2338/2023, ANPD AI enforcement, Lei 13.709/2018, Brazil AI Act, LGPD Article 20, RIPD data protection impact report">
+    <meta name="author" content="Regula">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/regions/brazil-ai-regulation.html">
+
+    <!-- Geo / regional -->
+    <meta name="geo.region" content="BR">
+    <meta name="geo.placename" content="Brazil">
+    <meta name="ICBM" content="-15.7801, -47.9292">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/regions/brazil-ai-regulation.html">
+    <meta property="og:title" content="Brazil AI Regulation — LGPD & Marco Legal da IA (PL 2338/2023)">
+    <meta property="og:description" content="PL 2338/2023 is in committee at the Chamber of Deputies. LGPD already applies to AI. Live tracker covering legislative status, ANPD enforcement, and what developers should do now.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-04-25T00:00:00-03:00">
+    <meta property="article:modified_time" content="2026-04-25T00:00:00-03:00">
+    <meta property="article:section" content="AI Governance">
+    <meta property="article:tag" content="Brazil">
+    <meta property="article:tag" content="LGPD">
+    <meta property="article:tag" content="Marco Legal da IA">
+    <meta property="article:tag" content="AI Regulation">
+    <meta property="article:tag" content="ANPD">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Brazil AI Regulation — LGPD & Marco Legal da IA (PL 2338/2023)">
+    <meta name="twitter:description" content="PL 2338/2023 in committee. LGPD already applies. Legislative tracker, ANPD enforcement priorities, developer checklist.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <!-- Hreflang -->
+    <link rel="alternate" hreflang="pt-br" href="https://getregula.com/regions/brazil-ai-regulation.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/regions/brazil-ai-regulation.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/regions/brazil-ai-regulation.html">
+
+    <!-- Structured data: Article -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Brazil AI Regulation — LGPD & Marco Legal da IA (PL 2338/2023)",
+      "description": "PL 2338/2023 (Marco Legal da IA) is awaiting a rapporteur's report in the Chamber of Deputies Special Commission. LGPD already governs automated decisions via Article 20. Live reference covering legislative status, risk classification under the bill, ANPD enforcement priorities, and what developers should do now.",
+      "image": "https://getregula.com/assets/og-image.png",
+      "datePublished": "2026-04-25T00:00:00-03:00",
+      "dateModified": "2026-04-25T00:00:00-03:00",
+      "author": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://getregula.com/assets/og-image.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/regions/brazil-ai-regulation.html"
+      },
+      "about": [
+        { "@type": "Thing", "name": "PL 2338/2023 Marco Legal da Inteligência Artificial" },
+        { "@type": "Thing", "name": "LGPD Lei Geral de Proteção de Dados" },
+        { "@type": "Thing", "name": "ANPD Autoridade Nacional de Proteção de Dados" },
+        { "@type": "Thing", "name": "Artificial Intelligence Governance" }
+      ],
+      "isBasedOn": [
+        {
+          "@type": "Legislation",
+          "name": "PL 2338/2023 — Marco Legal da Inteligência Artificial",
+          "url": "https://www25.senado.leg.br/web/atividade/materias/-/materia/157233",
+          "publisher": {
+            "@type": "GovernmentOrganization",
+            "name": "Senado Federal do Brasil"
+          }
+        },
+        {
+          "@type": "Legislation",
+          "name": "Lei 13.709/2018 — Lei Geral de Proteção de Dados (LGPD)",
+          "datePublished": "2018-08-14",
+          "publisher": {
+            "@type": "GovernmentOrganization",
+            "name": "Presidência da República Federativa do Brasil"
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- Structured data: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Regulations", "item": "https://getregula.com/regions/regulations.html" },
+        { "@type": "ListItem", "position": 3, "name": "Brazil AI Regulation", "item": "https://getregula.com/regions/brazil-ai-regulation.html" }
+      ]
+    }
+    </script>
+
+    <!-- Structured data: FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is PL 2338/2023 (Marco Legal da IA)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "PL 2338/2023, known as the Marco Legal da Inteligência Artificial, is a bill that would establish a legal framework for AI in Brazil. The Senate approved it by symbolic vote on 10 December 2024. It was sent to the Chamber of Deputies, where a Special Commission was created on 4 April 2025. As of April 2026, the bill is awaiting the rapporteur's report in that Special Commission. It is not yet law."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O que é o PL 2338/2023 (Marco Legal da IA)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O PL 2338/2023, conhecido como Marco Legal da Inteligência Artificial, é um projeto de lei que estabeleceria um marco regulatório para IA no Brasil. O Senado aprovou por votação simbólica em 10 de dezembro de 2024. Foi enviado à Câmara dos Deputados, onde uma Comissão Especial foi criada em 4 de abril de 2025. Em abril de 2026, aguarda relatório do relator na Comissão Especial. Ainda não é lei."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Brazil have an AI law?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not yet. PL 2338/2023 passed the Senate on 10 December 2024 but is still being considered by the Chamber of Deputies. Article 45 of the Senate-approved text provides for entry into force one year after publication, though the Chamber may modify this timeline. In the meantime, the LGPD (Lei 13.709/2018) already applies to AI systems that process personal data, including automated decision-making under Article 20."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does the LGPD apply to AI systems?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The LGPD applies to any AI system that processes personal data of individuals in Brazil. Article 20 gives data subjects the right to request a review of decisions made solely by automated processing that affect their interests (note: the original draft required human review, but a legislative amendment removed that requirement — Article 20 requires a review but does not mandate it be performed by a human). Article 38 requires a RIPD (Relatório de Impacto à Proteção de Dados Pessoais) for high-risk processing. Article 11 imposes stricter rules when sensitive personal data is involved. The ANPD has signalled that AI and automated decisions are enforcement priorities for 2026–2027."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the penalties under the Marco Legal da IA?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If PL 2338/2023 is enacted as currently drafted, penalties include fines of up to R$50,000,000 (fifty million reais) or 2% of annual revenue per infringement, whichever is higher. These penalty ranges are subject to change during Chamber deliberation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What risk categories does the Marco Legal define?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The bill as approved by the Senate establishes three risk tiers: excessive risk (prohibited uses such as social scoring by government and indiscriminate biometric surveillance), high risk (AI used in employment, credit, education, healthcare, criminal justice, essential services, and autonomous vehicles), and non-high risk (subject to general transparency and good-practice obligations). The Chamber may modify these categories."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quais são as penalidades previstas no Marco Legal da IA?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Conforme aprovado pelo Senado, as sanções incluem multa de até R$50.000.000 (cinquenta milhões de reais) ou 2% do faturamento anual por infração, o que for maior. Esses valores podem ser alterados durante a tramitação na Câmara dos Deputados."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Regula scan for LGPD and Marco Legal compliance?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Regula's framework crosswalk includes both LGPD and Marco Legal da IA. The commands 'regula gap --framework lgpd' and 'regula gap --framework marco-legal-ia' map risk findings to the relevant articles of each framework. The command 'regula check --jurisdictions brazil' applies LGPD-mapped rules to your scan results."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
+         If adding a Content Security Policy, migrate to a hashed <script> block. -->
+    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.css">
+        <link rel="stylesheet" href="/assets/site.css">
+    </noscript>
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <style>
+        /* Page-specific overrides — base styles come from site.css */
+
+        /* HERO — article layout (single-column, narrower than landing) */
+        .hero-wrap { position: relative; overflow: hidden; }
+        .hero-glow {
+            position: absolute;
+            top: -25%; right: -10%;
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(59,130,246,0.10) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        .hero {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 80px 32px 48px;
+            position: relative;
+            display: block;
+            grid-template-columns: none;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--warn);
+            background: rgba(245,158,11,0.08);
+            border: 1px solid rgba(245,158,11,0.25);
+            border-radius: 100px;
+            padding: 5px 14px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--warn); animation: pulse 2.4s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        h1 {
+            font-size: 52px;
+            font-weight: 700;
+            line-height: 1.08;
+            margin-bottom: 18px;
+        }
+        h1 .hl { color: var(--accent); }
+        .lede {
+            font-size: 18px;
+            color: var(--text-2);
+            line-height: 1.7;
+            margin-bottom: 28px;
+            max-width: 720px;
+        }
+        .last-updated {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-faint);
+            margin-bottom: 36px;
+        }
+        .last-updated strong { color: var(--text-dim); }
+
+        /* TRACKER BOX */
+        .tracker {
+            background: linear-gradient(180deg, rgba(245,158,11,0.06), rgba(245,158,11,0.02));
+            border: 1px solid rgba(245,158,11,0.25);
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin-bottom: 56px;
+        }
+        .tracker h2 {
+            font-size: 14px;
+            font-family: var(--font-mono);
+            color: var(--warn);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 14px;
+            font-weight: 500;
+        }
+        .tracker-row {
+            display: flex;
+            gap: 16px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(245,158,11,0.08);
+            font-size: 13px;
+        }
+        .tracker-row:last-child { border-bottom: none; }
+        .tracker-row .lbl { color: var(--text-dim); min-width: 180px; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+        .tracker-row .val { color: var(--text); }
+        .tracker-row .val .ok { color: var(--success); font-family: var(--font-mono); font-size: 11px; }
+        .tracker-row .val .pend { color: var(--warn); font-family: var(--font-mono); font-size: 11px; }
+        .tracker-row .val .est { color: var(--text-dim); font-family: var(--font-mono); font-size: 11px; }
+
+        /* CONTENT */
+        .content {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 0 32px 80px;
+        }
+        .content section { margin-bottom: 64px; }
+        .content h2 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .content h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-top: 36px;
+            margin-bottom: 14px;
+        }
+        .content p {
+            font-size: 16px;
+            color: var(--text-2);
+            margin-bottom: 18px;
+            line-height: 1.75;
+        }
+        .content p strong { color: var(--text); font-weight: 600; }
+        .content ul, .content ol {
+            margin: 18px 0 24px 24px;
+            color: var(--text-2);
+        }
+        .content li {
+            font-size: 15px;
+            margin-bottom: 10px;
+            line-height: 1.65;
+        }
+        .content li strong { color: var(--text); }
+        .content blockquote {
+            border-left: 3px solid var(--accent);
+            padding: 12px 0 12px 20px;
+            margin: 24px 0;
+            font-size: 16px;
+            color: var(--text-dim);
+            font-style: italic;
+        }
+
+        /* TABLE */
+        .tbl-wrap { overflow-x: auto; margin: 24px 0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            background: var(--bg-elev);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-2);
+            vertical-align: top;
+        }
+        th {
+            background: rgba(59,130,246,0.05);
+            color: var(--text);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        tr:last-child td { border-bottom: none; }
+        td .ok { color: var(--success); font-family: var(--font-mono); font-size: 11px; }
+        td .pend { color: var(--warn); font-family: var(--font-mono); font-size: 11px; }
+        td .no { color: var(--danger); font-family: var(--font-mono); font-size: 11px; }
+
+        /* INLINE NOTE */
+        .note-inline {
+            font-size: 13px !important;
+            color: var(--text-dim) !important;
+            background: rgba(59,130,246,0.04);
+            border-left: 2px solid var(--accent);
+            padding: 10px 14px;
+            border-radius: 0 6px 6px 0;
+            margin: 16px 0 !important;
+            font-style: italic;
+        }
+
+        /* CODE — page-specific terminal styling */
+        pre {
+            background: var(--bg-elev);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px 24px;
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.75;
+            color: var(--text-2);
+            margin: 20px 0;
+        }
+        code:not(pre code) {
+            background: var(--accent-soft);
+            color: var(--cyan);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+        }
+        pre code { background: none; padding: 0; color: inherit; font-size: 13px; }
+        .term-comment { color: var(--text-faint); }
+        .term-cmd { color: var(--cyan); }
+
+        /* CTA */
+        .cta-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin: 32px 0;
+        }
+        .cta-card {
+            background: var(--bg-elev);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 22px 24px;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .cta-card:hover { border-color: rgba(59,130,246,0.3); transform: translateY(-2px); }
+        .cta-card h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; margin-top: 0; font-family: var(--font-body); }
+        .cta-card p { font-size: 13px; color: var(--text-dim); margin: 0 0 12px; }
+        .cta-card a { font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+
+        /* GAPS */
+        .gaps-box {
+            background: linear-gradient(180deg, rgba(124,58,237,0.05), rgba(124,58,237,0.02));
+            border: 1px solid rgba(124,58,237,0.25);
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin: 32px 0;
+        }
+        .gaps-box h3 {
+            font-size: 14px;
+            font-family: var(--font-mono);
+            color: #a78bfa;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 14px;
+            font-weight: 500;
+            margin-top: 0;
+        }
+        .gaps-box ol { margin-left: 20px; }
+        .gaps-box li { font-size: 14px; color: var(--text-2); margin-bottom: 10px; }
+
+        /* SOURCES */
+        .sources {
+            background: var(--bg-elev);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin-top: 32px;
+        }
+        .sources h3 { font-size: 18px; margin-top: 0; margin-bottom: 14px; }
+        .sources ul { list-style: none; margin-left: 0; }
+        .sources li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+        .sources li:last-child { border-bottom: none; }
+        .sources li strong { color: var(--text); }
+
+        /* FAQ */
+        .faq details {
+            background: var(--bg-elev);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 22px;
+            margin-bottom: 10px;
+            transition: border-color 0.2s;
+        }
+        .faq details[open] { border-color: rgba(59,130,246,0.3); }
+        .faq summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 15px;
+            list-style: none;
+            position: relative;
+            padding-right: 24px;
+        }
+        .faq summary::-webkit-details-marker { display: none; }
+        .faq summary::after {
+            content: '+';
+            position: absolute;
+            right: 0;
+            top: 0;
+            color: var(--text-faint);
+            font-size: 20px;
+            font-weight: 400;
+            transition: transform 0.2s;
+        }
+        .faq details[open] summary::after { content: '\2212'; }
+        .faq details p { margin: 14px 0 0; font-size: 14px; color: var(--text-2); line-height: 1.7; }
+
+        /* RESPONSIVE */
+        @media (max-width: 700px) {
+            h1 { font-size: 36px; }
+            .content h2 { font-size: 26px; }
+            .cta-row { grid-template-columns: 1fr; }
+            .tracker-row { flex-direction: column; gap: 4px; }
+            .tracker-row .lbl { min-width: 0; }
+            .hero { padding: 56px 24px 32px; }
+            .content { padding: 0 24px 60px; }
+        }
+    </style>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div id="progress-bar"></div>
+
+    <nav class="nav" id="nav" aria-label="Primary">
+        <a href="/" class="nav-brand">Regula</a>
+        <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+        <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+            <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+            <a href="/regions/regulations.html">Regulations</a>
+            <span class="active">Brazil</span>
+            <a href="/">EN</a>
+            <a href="/locales/de.html">DE</a>
+            <a href="/locales/pt-br.html">BR</a>
+        </dialog>
+    </nav>
+
+    <header class="hero-wrap">
+        <div class="hero-glow"></div>
+        <div class="hero">
+            <div class="breadcrumb">
+                <a href="/">Regula</a> / <a href="/regions/regulations.html">Regulations</a> / Brazil AI Regulation
+            </div>
+            <span class="status-badge"><span class="status-dot"></span>In committee &middot; Chamber of Deputies</span>
+            <h1>Brazil AI Regulation &mdash; <span class="hl">LGPD &amp; Marco Legal da IA</span></h1>
+            <p class="lede">Brazil's Marco Legal da Inteligencia Artificial (PL 2338/2023) passed the Senate on 10 December 2024 and is now in a Special Commission at the Chamber of Deputies. It is not yet law. In the meantime, the LGPD already applies to AI systems that process personal data, including automated decision-making under Article 20. This page is the live reference &mdash; what is in force, what is pending, and what developers building for the Brazilian market should do now.</p>
+            <p class="last-updated"><strong>Last updated:</strong> 25 April 2026 &nbsp;&middot;&nbsp; <strong>Maintained by:</strong> Regula (open source) &nbsp;&middot;&nbsp; <a href="https://github.com/kuzivaai/getregula/issues" target="_blank" rel="noopener">Report a correction</a></p>
+
+            <div class="tracker">
+                <h2>Legislative tracker</h2>
+                <div>
+                    <div class="tracker-row">
+                        <div class="lbl">Senate vote</div>
+                        <div class="val">10 December 2024 &mdash; approved by symbolic vote &nbsp;<span class="ok">CONFIRMED</span></div>
+                    </div>
+                    <div class="tracker-row">
+                        <div class="lbl">Chamber Special Commission</div>
+                        <div class="val">Created 4 April 2025 &nbsp;<span class="ok">CONFIRMED</span></div>
+                    </div>
+                    <div class="tracker-row">
+                        <div class="lbl">Current status</div>
+                        <div class="val">Awaiting rapporteur's report in Special Commission (as of April 2026) &nbsp;<span class="pend">IN COMMITTEE</span></div>
+                    </div>
+                    <div class="tracker-row">
+                        <div class="lbl">Entry into force</div>
+                        <div class="val">1 year after publication per Art. 45 of the Senate-approved text; the Chamber may modify this timeline &nbsp;<span class="est">ESTIMATED</span></div>
+                    </div>
+                    <div class="tracker-row">
+                        <div class="lbl">Penalties (draft)</div>
+                        <div class="val">Up to R$50,000,000 or 2% annual revenue per infringement</div>
+                    </div>
+                    <div class="tracker-row">
+                        <div class="lbl">LGPD</div>
+                        <div class="val">Lei 13.709/2018 &mdash; in force since September 2020 &nbsp;<span class="ok">IN FORCE</span></div>
+                    </div>
+                    <div class="tracker-row">
+                        <div class="lbl">ANPD AI enforcement</div>
+                        <div class="val">AI and automated decisions listed as 2026&ndash;2027 enforcement priorities</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="main" class="content">
+
+        <section id="what-is-pl-2338">
+            <h2>What is PL 2338/2023?</h2>
+            <p>PL 2338/2023, known as the <strong>Marco Legal da Inteligencia Artificial</strong>, is a bill that would establish a comprehensive legal framework for the development and use of artificial intelligence in Brazil. It originated in the Senate, where it was approved by symbolic vote on 10 December 2024.</p>
+
+            <p>The bill was then sent to the Chamber of Deputies. On 4 April 2025, the Chamber created a Special Commission to analyse the text. As of April 2026, the bill is awaiting the rapporteur's report within that Special Commission. The Chamber may amend the text before voting; if it does, the bill returns to the Senate for conciliation.</p>
+
+            <p>Article 45 of the Senate-approved text states that the law enters into force one year after its publication in the Diario Oficial da Uniao. Note: Article 45 was amended during Senate deliberation by Senator Esperidiao Amim to address the National AI Governance System (SIA), and the Chamber of Deputies may further modify the implementation timeline. Penalties for non-compliance include fines of up to <strong>R$50,000,000</strong> (fifty million reais) or <strong>2% of annual revenue</strong> per infringement, whichever is higher.</p>
+
+            <p class="note-inline">PL 2338/2023 is not yet law. The penalty ranges, risk classifications, and obligations described on this page reflect the Senate-approved text and may be modified by the Chamber of Deputies.</p>
+        </section>
+
+        <section id="risk-classification">
+            <h2>Risk classification under the Marco Legal</h2>
+            <p>The Senate-approved text of PL 2338/2023 establishes three risk tiers. These broadly parallel the EU AI Act's risk pyramid but use different terminology and scope.</p>
+
+            <h3>Excessive risk (risco excessivo) &mdash; prohibited</h3>
+            <ul>
+                <li>Social scoring by government entities</li>
+                <li>Indiscriminate biometric surveillance in public spaces (with law-enforcement exceptions)</li>
+                <li>AI systems that exploit vulnerabilities of specific groups (children, elderly, persons with disabilities) in ways that cause harm</li>
+            </ul>
+
+            <h3>High risk (alto risco)</h3>
+            <ul>
+                <li>AI used in <strong>employment</strong> decisions (recruitment, evaluation, dismissal)</li>
+                <li>AI used in <strong>credit and insurance</strong> decisions</li>
+                <li>AI used in <strong>education</strong> (admissions, grading, allocation)</li>
+                <li>AI used in <strong>healthcare</strong> (diagnosis, treatment recommendations)</li>
+                <li>AI used in <strong>criminal justice</strong> and law enforcement</li>
+                <li>AI used in <strong>essential public services</strong> (welfare, utilities)</li>
+                <li>AI used in <strong>autonomous vehicles</strong></li>
+            </ul>
+            <p>High-risk systems would be subject to impact assessments, human oversight requirements, transparency obligations, and documentation duties.</p>
+
+            <h3>Non-high risk</h3>
+            <p>All other AI systems would be subject to general transparency and good-practice obligations, including the right of users to know they are interacting with an AI system.</p>
+        </section>
+
+        <section id="lgpd-and-ai">
+            <h2>LGPD and AI: what applies today</h2>
+            <p>While the Marco Legal works through the Chamber, the <strong>LGPD (Lei Geral de Protecao de Dados, Lei 13.709/2018)</strong> is already in force and already applies to AI systems that process personal data. Three articles are particularly relevant.</p>
+
+            <h3>Article 20 &mdash; automated decision review</h3>
+            <p>Data subjects have the right to request a <strong>review of decisions made solely by automated processing</strong> that affect their interests &mdash; including profiling, credit scoring, and hiring decisions. The data controller must provide clear and adequate information about the criteria and procedures used. Note: the original draft required <em>human</em> review, but a legislative amendment removed that requirement. Article 20 requires a review, but does not mandate that it be performed by a human. This applies to any AI system making decisions that affect individuals, regardless of whether the Marco Legal is enacted.</p>
+
+            <h3>Article 38 &mdash; RIPD (data protection impact report)</h3>
+            <p>The ANPD may require a <strong>Relatorio de Impacto a Protecao de Dados Pessoais (RIPD)</strong> for processing activities that present high risk to data subjects' fundamental rights and freedoms. AI-driven profiling, automated credit decisions, and large-scale processing of sensitive data are all candidates for a RIPD. This is Brazil's equivalent of a DPIA under the GDPR.</p>
+
+            <h3>Article 11 &mdash; sensitive personal data</h3>
+            <p>Processing of sensitive personal data (racial or ethnic origin, religious belief, political opinion, health data, biometric data, genetic data) requires explicit and specific consent or one of the narrow legal bases listed in Article 11. AI systems trained on or processing sensitive data face a higher compliance bar under the LGPD, regardless of the Marco Legal's status.</p>
+        </section>
+
+        <section id="anpd-enforcement">
+            <h2>ANPD enforcement priorities 2026&ndash;2027</h2>
+            <p>The <strong>Autoridade Nacional de Protecao de Dados (ANPD)</strong> has signalled that AI and automated decisions are among its enforcement priorities for the 2026&ndash;2027 cycle. This means that even without the Marco Legal, the ANPD is actively looking at how organisations use AI in ways that touch personal data.</p>
+
+            <p>Areas of particular ANPD focus include:</p>
+            <ul>
+                <li><strong>Automated decision-making</strong> that affects individuals' rights (Article 20 enforcement)</li>
+                <li><strong>Transparency</strong> in algorithmic processing of personal data</li>
+                <li><strong>Impact assessments</strong> for high-risk automated processing</li>
+                <li><strong>Cross-border data transfers</strong> involving AI systems</li>
+            </ul>
+
+            <p>Organisations deploying AI in Brazil should not wait for the Marco Legal to become law. The ANPD already has enforcement authority under the LGPD, and AI-related processing is squarely in its sights.</p>
+        </section>
+
+        <section id="what-to-do">
+            <h2>What developers should do now</h2>
+            <p>Whether or not PL 2338/2023 is enacted this year, the following steps are worth taking today. All are grounded in obligations that already exist under the LGPD or that will apply under the Marco Legal regardless of final text.</p>
+            <ol>
+                <li><strong>Inventory your AI systems.</strong> List every AI-powered feature in production: what data it processes, what decisions it makes or influences, and which user categories it affects. The LGPD already requires you to know this.</li>
+                <li><strong>Map your automated decisions.</strong> Identify every system that makes decisions solely by automated processing. Under LGPD Article 20, data subjects can request a review of these decisions. Document the criteria, the logic, and the review mechanism for each one. While Article 20 does not require human review specifically, implementing a human review path is a best practice that also prepares you for Marco Legal obligations.</li>
+                <li><strong>Assess whether you need a RIPD.</strong> If your AI system processes personal data at scale, profiles individuals, or handles sensitive data categories, you likely need a data protection impact report under LGPD Article 38.</li>
+                <li><strong>Review your sensitive data processing.</strong> AI systems trained on or inferring sensitive personal data (health, biometrics, racial/ethnic origin) face stricter requirements under LGPD Article 11. Confirm your legal basis.</li>
+                <li><strong>Prepare for Marco Legal high-risk obligations.</strong> If your system falls into any of the high-risk categories (employment, credit, education, healthcare, criminal justice, essential services, autonomous vehicles), start documenting risk assessments, human oversight provisions, and transparency measures now. You will need them if the bill passes.</li>
+                <li><strong>Track the bill.</strong> Follow the Special Commission proceedings at the <a href="https://www.camara.leg.br" target="_blank" rel="noopener">Camara dos Deputados</a>. The rapporteur's report will signal what the final text looks like.</li>
+            </ol>
+        </section>
+
+        <section id="regula">
+            <h2>How Regula helps</h2>
+            <p>Regula is an <strong>open-source static analysis tool</strong> that scans code for AI risk indicators. Its framework crosswalk already includes both the LGPD and the Marco Legal da IA, so you can map risk findings to the relevant Brazilian articles today.</p>
+
+            <p>For a team building AI for the Brazilian market, the practically useful commands are:</p>
+
+<pre><code><span class="term-comment"># Install</span>
+<span class="term-cmd">pipx install regula-ai</span>
+
+<span class="term-comment"># Scan for risk indicators with Brazil-specific mapping</span>
+<span class="term-cmd">regula check --jurisdictions brazil .</span>  <span class="term-comment"># Maps findings to LGPD articles</span>
+
+<span class="term-comment"># Gap analysis against Brazilian frameworks</span>
+<span class="term-cmd">regula gap --framework lgpd</span>            <span class="term-comment"># LGPD article-by-article gap assessment</span>
+<span class="term-cmd">regula gap --framework marco-legal-ia</span>  <span class="term-comment"># Marco Legal gap assessment</span>
+
+<span class="term-comment"># Inventory what you have</span>
+<span class="term-cmd">regula discover .</span>                      <span class="term-comment"># AI systems present in the project</span>
+<span class="term-cmd">regula inventory</span>                       <span class="term-comment"># AI library / model references</span>
+
+<span class="term-comment"># Generate compliance evidence</span>
+<span class="term-cmd">regula conform</span>                         <span class="term-comment"># Conformity evidence pack</span>
+<span class="term-cmd">regula oversight</span>                       <span class="term-comment"># Human oversight detection</span>
+
+<span class="term-comment"># Health and reproducibility</span>
+<span class="term-cmd">regula self-test</span>
+<span class="term-cmd">regula doctor</span></code></pre>
+
+            <p>The framework crosswalk covers all 7 EU AI Act obligation articles (Articles 9&ndash;15), each mapped to both LGPD and Marco Legal articles. This means you can use the same scan to understand your compliance posture across the EU AI Act, the LGPD, and the Marco Legal simultaneously.</p>
+
+            <p>Regula is open source, written in Python with <strong>zero production dependencies</strong>, and the entire detection ruleset is in the repository. Brazilian teams can fork it, add Brazil-specific patterns, and contribute them back.</p>
+
+            <div class="cta-row">
+                <div class="cta-card">
+                    <h3>Install Regula</h3>
+                    <p>Open source, zero dependencies, runs locally.</p>
+                    <a href="https://github.com/kuzivaai/getregula" target="_blank" rel="noopener">github.com/kuzivaai/getregula &rarr;</a>
+                </div>
+                <div class="cta-card">
+                    <h3>Contribute BR patterns</h3>
+                    <p>LGPD, ANPD, sector-specific markers welcome.</p>
+                    <a href="https://github.com/kuzivaai/getregula/issues" target="_blank" rel="noopener">Open an issue &rarr;</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq">
+            <h2>Frequently asked questions</h2>
+            <div class="faq">
+                <details>
+                    <summary>What is PL 2338/2023 (Marco Legal da IA)?</summary>
+                    <p>PL 2338/2023, known as the Marco Legal da Inteligencia Artificial, is a bill that would establish a legal framework for AI in Brazil. The Senate approved it by symbolic vote on 10 December 2024. It was sent to the Chamber of Deputies, where a Special Commission was created on 4 April 2025. As of April 2026, the bill is awaiting the rapporteur's report in that Special Commission. It is not yet law.</p>
+                </details>
+                <details>
+                    <summary>Does Brazil have an AI law?</summary>
+                    <p>Not yet. PL 2338/2023 passed the Senate on 10 December 2024 but is still being considered by the Chamber of Deputies. Article 45 of the Senate-approved text provides for entry into force one year after publication, though the Chamber may modify this timeline. In the meantime, the LGPD (Lei 13.709/2018) already applies to AI systems that process personal data, including automated decision-making under Article 20.</p>
+                </details>
+                <details>
+                    <summary>How does the LGPD apply to AI systems?</summary>
+                    <p>The LGPD applies to any AI system that processes personal data of individuals in Brazil. Article 20 gives data subjects the right to request a review of decisions made solely by automated processing that affect their interests (note: the original draft required human review, but that requirement was removed by legislative amendment). Article 38 requires a RIPD (data protection impact report) for high-risk processing. Article 11 imposes stricter rules when sensitive personal data is involved. The ANPD has signalled that AI and automated decisions are enforcement priorities for 2026&ndash;2027.</p>
+                </details>
+                <details>
+                    <summary>What are the penalties under the Marco Legal da IA?</summary>
+                    <p>If PL 2338/2023 is enacted as currently drafted, penalties include fines of up to R$50,000,000 (fifty million reais) or 2% of annual revenue per infringement, whichever is higher. These penalty ranges are subject to change during Chamber deliberation. The bill is not yet law.</p>
+                </details>
+                <details>
+                    <summary>What risk categories does the Marco Legal define?</summary>
+                    <p>The bill as approved by the Senate establishes three risk tiers: excessive risk (prohibited uses such as social scoring by government and indiscriminate biometric surveillance), high risk (AI used in employment, credit, education, healthcare, criminal justice, essential services, and autonomous vehicles), and non-high risk (subject to general transparency and good-practice obligations). The Chamber may modify these categories.</p>
+                </details>
+                <details>
+                    <summary>What should Brazilian developers do now?</summary>
+                    <p>Inventory AI systems in production. Map every automated decision to its LGPD Article 20 review mechanism. Assess whether a RIPD is needed under Article 38. Review sensitive data processing against Article 11. Prepare documentation for Marco Legal high-risk obligations. Track the Special Commission proceedings at the Chamber of Deputies.</p>
+                </details>
+                <details>
+                    <summary>Can Regula scan for LGPD and Marco Legal compliance?</summary>
+                    <p>Yes. Regula's framework crosswalk includes both LGPD and Marco Legal da IA. The commands <code>regula gap --framework lgpd</code> and <code>regula gap --framework marco-legal-ia</code> map risk findings to the relevant articles of each framework. The command <code>regula check --jurisdictions brazil</code> applies LGPD-mapped rules to your scan results.</p>
+                </details>
+                <details>
+                    <summary>How does the Marco Legal compare to the EU AI Act?</summary>
+                    <p>Both use a risk-based approach with prohibited practices, high-risk categories, and lighter obligations for lower-risk systems. The Marco Legal's high-risk categories overlap significantly with the EU AI Act's Annex III list (employment, credit, education, healthcare, law enforcement). Key differences: the Marco Legal does not have an EU-style central AI database or conformity assessment procedure (yet), and the penalty structure is different (R$50M / 2% revenue vs the EU's tiered percentage-of-global-revenue model). Regula's framework crosswalk maps between both frameworks, covering all 7 EU AI Act obligation articles (9&ndash;15).</p>
+                </details>
+            </div>
+        </section>
+
+        <section id="honest-gaps">
+            <h2>What we are tracking and what may change</h2>
+            <p>The Marco Legal is still in committee. The final text may differ significantly from the Senate-approved version. Here is what we are watching as of April 2026:</p>
+            <div class="gaps-box">
+                <h3>To verify on enactment</h3>
+                <ol>
+                    <li><strong>High-risk category definitions.</strong> The Chamber may add, remove, or redefine high-risk categories. Autonomous vehicles, in particular, were a late addition and may be scoped differently.</li>
+                    <li><strong>Penalty ranges.</strong> The R$50M / 2% revenue figures may be adjusted during Chamber deliberation.</li>
+                    <li><strong>Supervisory authority.</strong> The Senate text assigns oversight roles but the final institutional arrangement (single authority vs sector-specific model) may change.</li>
+                    <li><strong>Transition period.</strong> The Senate-approved text (Art. 45) provides for a one-year entry-into-force window. Some secondary legal analyses describe a phased approach (180 days for certain provisions, two years for others), which may reflect proposed Chamber amendments or an earlier draft. The final timeline will be confirmed upon enactment.</li>
+                    <li><strong>ANPD role.</strong> Whether the ANPD becomes the primary AI regulator or shares authority with sector-specific regulators.</li>
+                    <li><strong>Senate conciliation.</strong> If the Chamber amends the text, it returns to the Senate. The final text may differ from both the Senate-approved and Chamber-amended versions.</li>
+                </ol>
+            </div>
+            <p>We update this page as the bill progresses. If you want to be notified when the tracker changes, <a href="https://github.com/kuzivaai/getregula" target="_blank" rel="noopener">watch the repository</a>.</p>
+        </section>
+
+        <section id="sources">
+            <h2>Sources</h2>
+            <div class="sources">
+                <h3>Primary and secondary sources</h3>
+                <ul>
+                    <li><strong>Senado Federal &mdash; PL 2338/2023</strong> &mdash; full legislative text, voting record, and procedural history. <a href="https://www25.senado.leg.br/web/atividade/materias/-/materia/157233" target="_blank" rel="noopener">senado.leg.br/materia/157233</a></li>
+                    <li><strong>Camara dos Deputados</strong> &mdash; Special Commission creation (4 April 2025), rapporteur appointment, and procedural updates. <a href="https://www.camara.leg.br" target="_blank" rel="noopener">www.camara.leg.br</a></li>
+                    <li><strong>LGPD (Lei 13.709/2018)</strong> &mdash; full text of the Lei Geral de Protecao de Dados. Articles 11, 20, and 38 govern sensitive data, automated decisions, and data protection impact reports respectively.</li>
+                    <li><strong>ANPD &mdash; Autoridade Nacional de Protecao de Dados</strong> &mdash; enforcement priorities and regulatory agenda. <a href="https://www.gov.br/anpd" target="_blank" rel="noopener">gov.br/anpd</a></li>
+                    <li><strong>Securiti</strong> &mdash; analysis of PL 2338/2023 risk classification and penalty structure. Used as a secondary source for the risk tier summary.</li>
+                    <li><strong>Baker McKenzie</strong> &mdash; legal analysis of the Marco Legal da IA and its interaction with the LGPD. Used as a secondary source for the framework comparison.</li>
+                </ul>
+            </div>
+            <p style="margin-top: 24px; font-size: 14px; color: var(--text-dim);">If you spot an error on this page, open an issue on <a href="https://github.com/kuzivaai/getregula/issues" target="_blank" rel="noopener">github.com/kuzivaai/getregula</a> or email a correction. We would rather be told than be wrong.</p>
+        </section>
+
+    </main>
+
+    <div style="max-width:760px;margin:var(--s7) auto var(--s5);padding:0 var(--s5);">
+        <h3 style="font-size:18px;color:var(--text);margin-bottom:var(--s3);">Related reading</h3>
+        <ul style="list-style:none;padding:0;margin:0;">
+            <li style="margin-bottom:var(--s2);"><a href="/blog/blog-does-ai-act-apply.html" style="color:var(--accent);">Does the EU AI Act Apply to Your AI App?</a> <span style="color:var(--text-dim);font-size:14px;">&mdash; Extraterritorial reach and cross-border applicability</span></li>
+            <li style="margin-bottom:var(--s2);"><a href="/regions/south-africa-ai-policy.html" style="color:var(--accent);">South Africa Draft National AI Policy</a> <span style="color:var(--text-dim);font-size:14px;">&mdash; Another emerging-market AI governance framework</span></li>
+        </ul>
+    </div>
+
+    <footer>
+        <div class="foot-inner">
+            <div class="foot-left">
+                <div class="foot-brand">Regula</div>
+                <div class="foot-links">
+                    <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                    <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                    <a href="/blog/writing.html">Blog</a>
+                    <a href="/regions/regulations.html">Regulations</a>
+                </div>
+                <div class="foot-copy">Open source &middot; Apache 2.0 licence &middot; &copy; 2026 Regula</div>
+            </div>
+            <div class="foot-right">
+                <div class="foot-legal">
+                    <strong>Not legal advice.</strong> This page summarises publicly available information about Brazil's AI regulatory landscape. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll progress bar + nav background
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', function() {
+            const h = document.documentElement;
+            const b = document.body;
+            const st = 'scrollTop';
+            const sh = 'scrollHeight';
+            const scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+            document.getElementById('progress-bar').style.width = scroll + '%';
+            nav.classList.toggle('scrolled', window.scrollY > 20);
+        });
+    </script>
+</body>
+</html>
