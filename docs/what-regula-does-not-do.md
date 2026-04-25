@@ -12,9 +12,12 @@ functioning risk management system, a board-approved AI policy, or a
 legal team that has reviewed a conformity assessment.
 
 This is not a weakness to hide. It is a scope boundary to state plainly.
-Regula is the **code layer** of a governance programme. The human and
-organisational layers are not Regula's job, and any page that implies
-otherwise is wrong.
+Regula combines **code scanning** with **governance questionnaires**.
+The code layer handles what can be detected from source files. The
+questionnaire layer (`regula conform --organisational`, `regula assess`,
+`regula questionnaire`) provides structured self-assessments for
+organisational obligations code cannot verify — but the output is
+self-reported evidence, not a compliance certificate.
 
 ## Articles Regula can partially or fully address from code
 
