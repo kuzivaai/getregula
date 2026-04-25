@@ -1,0 +1,43 @@
+{
+  "methodology": "Blind-labelled random corpus, production code only (default --skip-tests=True)",
+  "corpus": "random_production",
+  "sample_size_total": 201,
+  "sample_size_production": 140,
+  "total_labelled": 140,
+  "overall_precision": 0.7,
+  "ci_95_low": 62.4,
+  "ci_95_high": 77.6,
+  "by_tier": {
+    "agent_autonomy": {
+      "tp": 34,
+      "fp": 7,
+      "precision": 0.829
+    },
+    "ai_security": {
+      "tp": 44,
+      "fp": 11,
+      "precision": 0.8
+    },
+    "credential_exposure": {
+      "tp": 1,
+      "fp": 0,
+      "precision": 1.0
+    },
+    "high_risk": {
+      "tp": 2,
+      "fp": 23,
+      "precision": 0.08
+    },
+    "limited_risk": {
+      "tp": 7,
+      "fp": 1,
+      "precision": 0.875
+    },
+    "minimal_risk": {
+      "tp": 10,
+      "fp": 0,
+      "precision": 1.0
+    }
+  },
+  "note": "This measures what users actually see with default settings (--skip-tests=True). The 51.2% figure includes test code which users do not see by default."
+}

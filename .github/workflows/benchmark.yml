@@ -1,0 +1,101 @@
+# regula-ignore
+name: Benchmark Regression
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/risk_patterns.py'
+      - 'scripts/classify_risk.py'
+      - 'scripts/report.py'
+      - 'benchmarks/**'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  precision-check:
+    name: Precision regression check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Save baseline precision
+        run: |
+          if [ -f benchmarks/results/PRECISION.json ]; then
+            cp benchmarks/results/PRECISION.json /tmp/baseline_precision.json
+            echo "BASELINE_EXISTS=true" >> "$GITHUB_ENV"
+          else
+            echo "BASELINE_EXISTS=false" >> "$GITHUB_ENV"
+          fi
+
+      - name: Score current labels
+        run: python3 benchmarks/label.py score
+
+      - name: Check precision thresholds
+        run: |
+          python3 -c "
+          import json, sys
+
+          precision = json.load(open('benchmarks/results/PRECISION.json'))
+
+          overall = precision['overall_precision']
+          print(f'Overall precision: {overall:.1%}')
+
+          # Per-tier checks
+          by_tier = precision.get('by_tier', {})
+          issues = []
+
+          for tier, stats in by_tier.items():
+              tp = stats['tp']
+              fp = stats['fp']
+              total = tp + fp
+              prec = stats['precision']
+              print(f'  {tier}: {prec:.1%} ({tp} TP, {fp} FP)')
+
+          # No hard failure threshold yet — this workflow exists
+          # to make precision visible on every pattern change PR.
+          # When app-level corpus is labelled, add a threshold.
+          print()
+          print('Benchmark scored successfully. Review precision in PR.')
+          "
+
+      - name: Compare with baseline
+        if: env.BASELINE_EXISTS == 'true'
+        run: |
+          python3 benchmarks/label.py compare /tmp/baseline_precision.json
+
+      - name: Upload precision report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: precision-report
+          path: benchmarks/results/PRECISION.json
+
+  synthetic-recall:
+    name: Synthetic recall check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run synthetic benchmarks
+        run: |
+          python3 benchmarks/synthetic/run.py 2>&1 | tee /tmp/synthetic_results.txt
+
+      - name: Upload synthetic results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-recall
+          path: /tmp/synthetic_results.txt

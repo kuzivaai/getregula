@@ -1,0 +1,427 @@
+{
+  "methodology": "Random sample from 276 GitHub Python repos with AI/ML topics, seed=42",
+  "total_repos": 50,
+  "repos_with_findings": 43,
+  "total_findings": 1243,
+  "by_tier": {
+    "high_risk": 164,
+    "ai_security": 501,
+    "agent_autonomy": 399,
+    "limited_risk": 61,
+    "minimal_risk": 107,
+    "credential_exposure": 11
+  },
+  "repos": [
+    {
+      "name": "roflcoopter/viseron",
+      "findings": 36,
+      "tiers": {
+        "high_risk": 36
+      }
+    },
+    {
+      "name": "bghira/SimpleTuner",
+      "findings": 98,
+      "tiers": {
+        "ai_security": 27,
+        "high_risk": 29,
+        "agent_autonomy": 17,
+        "limited_risk": 24,
+        "minimal_risk": 1
+      }
+    },
+    {
+      "name": "huggingface/finetrainers",
+      "findings": 8,
+      "tiers": {
+        "ai_security": 5,
+        "high_risk": 3
+      }
+    },
+    {
+      "name": "NatLabRockies/sup3r",
+      "findings": 22,
+      "tiers": {
+        "high_risk": 1,
+        "agent_autonomy": 16,
+        "minimal_risk": 5
+      }
+    },
+    {
+      "name": "hao-ai-lab/d3LLM",
+      "findings": 97,
+      "tiers": {
+        "ai_security": 45,
+        "minimal_risk": 23,
+        "high_risk": 9,
+        "limited_risk": 4,
+        "agent_autonomy": 16
+      }
+    },
+    {
+      "name": "kaya70875/ytfetcher",
+      "findings": 0,
+      "tiers": {}
+    },
+    {
+      "name": "zjunlp/LightMem",
+      "findings": 58,
+      "tiers": {
+        "high_risk": 1,
+        "limited_risk": 1,
+        "ai_security": 53,
+        "credential_exposure": 3
+      }
+    },
+    {
+      "name": "bodo-ai/Bodo",
+      "findings": 17,
+      "tiers": {
+        "high_risk": 6,
+        "ai_security": 5,
+        "credential_exposure": 1,
+        "minimal_risk": 5
+      }
+    },
+    {
+      "name": "scverse/anndata",
+      "findings": 0,
+      "tiers": {}
+    },
+    {
+      "name": "aws/sagemaker-python-sdk",
+      "findings": 27,
+      "tiers": {
+        "high_risk": 5,
+        "ai_security": 13,
+        "credential_exposure": 1,
+        "limited_risk": 1,
+        "agent_autonomy": 6,
+        "minimal_risk": 1
+      }
+    },
+    {
+      "name": "openvinotoolkit/nncf",
+      "findings": 25,
+      "tiers": {
+        "ai_security": 11,
+        "high_risk": 2,
+        "minimal_risk": 12
+      }
+    },
+    {
+      "name": "archi-physics/archi",
+      "findings": 27,
+      "tiers": {
+        "agent_autonomy": 15,
+        "high_risk": 1,
+        "limited_risk": 8,
+        "ai_security": 3
+      }
+    },
+    {
+      "name": "Silas-Asamoah/stormlog",
+      "findings": 3,
+      "tiers": {
+        "ai_security": 1,
+        "high_risk": 2
+      }
+    },
+    {
+      "name": "tkalevra/SuperPowersWUI",
+      "findings": 1,
+      "tiers": {
+        "ai_security": 1
+      }
+    },
+    {
+      "name": "xr843/fojin",
+      "findings": 7,
+      "tiers": {
+        "agent_autonomy": 5,
+        "limited_risk": 1,
+        "credential_exposure": 1
+      }
+    },
+    {
+      "name": "Supervertaler/Supervertaler-Workbench",
+      "findings": 207,
+      "tiers": {
+        "ai_security": 51,
+        "high_risk": 16,
+        "agent_autonomy": 140
+      }
+    },
+    {
+      "name": "PlumoAI/plumoai",
+      "findings": 20,
+      "tiers": {
+        "agent_autonomy": 16,
+        "high_risk": 3,
+        "minimal_risk": 1
+      }
+    },
+    {
+      "name": "mathLab/PINA",
+      "findings": 15,
+      "tiers": {
+        "ai_security": 6,
+        "high_risk": 4,
+        "minimal_risk": 5
+      }
+    },
+    {
+      "name": "tomrussobuilds/orchard-ml",
+      "findings": 6,
+      "tiers": {
+        "high_risk": 6
+      }
+    },
+    {
+      "name": "Intellindust-AI-Lab/EdgeCrafter",
+      "findings": 14,
+      "tiers": {
+        "ai_security": 13,
+        "high_risk": 1
+      }
+    },
+    {
+      "name": "NickCharlie/astrbot_plugin_self_learning",
+      "findings": 16,
+      "tiers": {
+        "limited_risk": 4,
+        "high_risk": 3,
+        "ai_security": 5,
+        "agent_autonomy": 3,
+        "credential_exposure": 1
+      }
+    },
+    {
+      "name": "roboflow/rf-detr_plus",
+      "findings": 0,
+      "tiers": {}
+    },
+    {
+      "name": "pytorch/ao",
+      "findings": 20,
+      "tiers": {
+        "ai_security": 18,
+        "minimal_risk": 1,
+        "agent_autonomy": 1
+      }
+    },
+    {
+      "name": "Jinfeng-Xu/Multimodal-Recommendation-Library",
+      "findings": 13,
+      "tiers": {
+        "ai_security": 13
+      }
+    },
+    {
+      "name": "Xenios91/Glyph",
+      "findings": 0,
+      "tiers": {}
+    },
+    {
+      "name": "SonySemiconductorSolutions/mct-model-optimization",
+      "findings": 12,
+      "tiers": {
+        "ai_security": 7,
+        "high_risk": 4,
+        "agent_autonomy": 1
+      }
+    },
+    {
+      "name": "graphnet-team/graphnet",
+      "findings": 12,
+      "tiers": {
+        "high_risk": 2,
+        "ai_security": 2,
+        "minimal_risk": 8
+      }
+    },
+    {
+      "name": "microsoft/CameraTraps",
+      "findings": 11,
+      "tiers": {
+        "ai_security": 11
+      }
+    },
+    {
+      "name": "GradientHQ/parallax",
+      "findings": 4,
+      "tiers": {
+        "ai_security": 4
+      }
+    },
+    {
+      "name": "Thysrael/Horizon",
+      "findings": 2,
+      "tiers": {
+        "ai_security": 2
+      }
+    },
+    {
+      "name": "kyegomez/Jamba",
+      "findings": 0,
+      "tiers": {}
+    },
+    {
+      "name": "PaddlePaddle/FastDeploy",
+      "findings": 235,
+      "tiers": {
+        "ai_security": 129,
+        "agent_autonomy": 101,
+        "limited_risk": 1,
+        "high_risk": 4
+      }
+    },
+    {
+      "name": "jonathanrao99/Inventory-Management-System",
+      "findings": 2,
+      "tiers": {
+        "ai_security": 1,
+        "minimal_risk": 1
+      }
+    },
+    {
+      "name": "Future-House/ldp",
+      "findings": 11,
+      "tiers": {
+        "ai_security": 6,
+        "high_risk": 1,
+        "credential_exposure": 2,
+        "agent_autonomy": 2
+      }
+    },
+    {
+      "name": "rwth-i6/returnn",
+      "findings": 28,
+      "tiers": {
+        "ai_security": 27,
+        "high_risk": 1
+      }
+    },
+    {
+      "name": "gmberton/VPR-methods-evaluation",
+      "findings": 4,
+      "tiers": {
+        "ai_security": 4
+      }
+    },
+    {
+      "name": "marcieltorres/safe-chat-slack-bot",
+      "findings": 0,
+      "tiers": {}
+    },
+    {
+      "name": "pixeltable/pixeltable",
+      "findings": 33,
+      "tiers": {
+        "ai_security": 8,
+        "limited_risk": 16,
+        "high_risk": 6,
+        "agent_autonomy": 3
+      }
+    },
+    {
+      "name": "lucidrains/HS-TasNet",
+      "findings": 2,
+      "tiers": {
+        "ai_security": 2
+      }
+    },
+    {
+      "name": "ids-imaging/ids-peak-examples",
+      "findings": 1,
+      "tiers": {
+        "high_risk": 1
+      }
+    },
+    {
+      "name": "antoninoLorenzo/AI-OPS",
+      "findings": 2,
+      "tiers": {
+        "ai_security": 1,
+        "minimal_risk": 1
+      }
+    },
+    {
+      "name": "deepmodeling/deepmd-kit",
+      "findings": 37,
+      "tiers": {
+        "minimal_risk": 9,
+        "agent_autonomy": 17,
+        "ai_security": 7,
+        "high_risk": 4
+      }
+    },
+    {
+      "name": "SRInternet-Studio/Jianer_QQ_bot",
+      "findings": 22,
+      "tiers": {
+        "ai_security": 2,
+        "agent_autonomy": 18,
+        "credential_exposure": 2
+      }
+    },
+    {
+      "name": "bayesflow-org/bayesflow",
+      "findings": 2,
+      "tiers": {
+        "ai_security": 1,
+        "high_risk": 1
+      }
+    },
+    {
+      "name": "hoangsonww/Spot-the-Scam-AI-Job-Fraud",
+      "findings": 45,
+      "tiers": {
+        "agent_autonomy": 8,
+        "ai_security": 3,
+        "high_risk": 1,
+        "limited_risk": 1,
+        "minimal_risk": 32
+      }
+    },
+    {
+      "name": "clstaudt/ragadoc",
+      "findings": 2,
+      "tiers": {
+        "ai_security": 1,
+        "minimal_risk": 1
+      }
+    },
+    {
+      "name": "lhotse-speech/lhotse",
+      "findings": 18,
+      "tiers": {
+        "ai_security": 8,
+        "high_risk": 9,
+        "agent_autonomy": 1
+      }
+    },
+    {
+      "name": "zamalali/DeepGit",
+      "findings": 4,
+      "tiers": {
+        "ai_security": 1,
+        "high_risk": 2,
+        "minimal_risk": 1
+      }
+    },
+    {
+      "name": "dualverse-ai/station",
+      "findings": 17,
+      "tiers": {
+        "agent_autonomy": 13,
+        "ai_security": 4
+      }
+    },
+    {
+      "name": "stfc/aiida-mlip",
+      "findings": 0,
+      "tiers": {}
+    }
+  ]
+}

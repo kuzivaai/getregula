@@ -65,16 +65,24 @@ A Python project will receive more granular findings than an equivalent Rust pro
 
 Published benchmark against 5 labelled open-source projects (257 hand-labelled findings):
 
-| Tier | True Positives | False Positives | Precision |
-|---|---|---|---|
-| BLOCK (>=80) | 0 | 0 | N/A (no findings) |
-| WARN (50-79) | 2 | 6 | 25.0% |
-| INFO (<50) | 37 | 212 | 14.9% |
-| **Overall** | **39** | **218** | **15.2%** |
+| Tier | TP | FP | Precision |
+|---|---:|---:|---:|
+| `minimal_risk` | 10 | 0 | 100.0% |
+| `limited_risk` | 7 | 1 | 87.5% |
+| `agent_autonomy` | 34 | 7 | 82.9% |
+| `ai_security` | 44 | 11 | 80.0% |
+| `high_risk` | 2 | 23 | 8.0% |
+| **Overall** | **98** | **42** | **70.0% (95% CI: 62-78%)** |
 
-**Critical context:** The BLOCK tier — the only tier that fails CI builds by default — produced zero false positives. The 15.2% figure applies to INFO-tier findings, which are surfaced for manual review only.
+**Methodology:** 50 randomly selected Python AI repos (from 276 candidates,
+random seed 42), 201 findings stratified-sampled and blind-labelled
+(labeller saw only file path, code context, and finding description — no
+project name, README, or purpose). Precision measured on production code
+only (default `--skip-tests` settings). Including test code drops
+precision to 51.2%. The `high_risk` tier is weakest because domain
+keywords match without semantic context.
 
-Full methodology and reproduction steps: `docs/benchmarks/PRECISION_RECALL_2026_04.md`
+Full methodology and reproduction steps: `benchmarks/README.md`
 
 ---
 
@@ -133,7 +141,7 @@ Regula is explicitly **NOT** intended for:
 
 Each finding was manually classified as true positive or false positive by the developer. Labels are committed to the repository at `benchmarks/labels.json` and can be independently verified.
 
-**Result:** 15.2% overall precision; 0 false positives at BLOCK tier.
+**Result:** 70.0% precision on production code from random corpus (blind-labelled, 95% CI: 62-78%); 0 false positives at BLOCK tier.
 
 ### Continuous validation
 

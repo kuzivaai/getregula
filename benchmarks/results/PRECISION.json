@@ -1,32 +1,38 @@
 {
-  "total_labelled": 257,
+  "corpus": "all",
+  "total_labelled": 446,
   "total_unlabelled": 0,
-  "overall_precision": 0.152,
+  "overall_precision": 0.368,
   "by_tier": {
     "agent_autonomy": {
-      "tp": 2,
-      "fp": 3,
-      "precision": 0.4
+      "tp": 47,
+      "fp": 20,
+      "precision": 0.701
     },
     "limited_risk": {
-      "tp": 1,
-      "fp": 2,
-      "precision": 0.333
+      "tp": 5,
+      "fp": 3,
+      "precision": 0.625
     },
     "minimal_risk": {
-      "tp": 36,
+      "tp": 39,
       "fp": 205,
-      "precision": 0.149
+      "precision": 0.16
     },
     "ai_security": {
-      "tp": 0,
-      "fp": 6,
-      "precision": 0.0
+      "tp": 33,
+      "fp": 11,
+      "precision": 0.75
     },
     "credential_exposure": {
-      "tp": 0,
-      "fp": 2,
-      "precision": 0.0
+      "tp": 2,
+      "fp": 5,
+      "precision": 0.286
+    },
+    "high_risk": {
+      "tp": 38,
+      "fp": 38,
+      "precision": 0.5
     }
   },
   "by_project": {
@@ -54,6 +60,195 @@
       "tp": 15,
       "fp": 35,
       "precision": 0.3
+    },
+    "app_proctoring": {
+      "tp": 2,
+      "fp": 0,
+      "precision": 1.0
+    },
+    "app_toad": {
+      "tp": 2,
+      "fp": 0,
+      "precision": 1.0
+    },
+    "app_rasa": {
+      "tp": 1,
+      "fp": 1,
+      "precision": 0.5
+    },
+    "app_quivr": {
+      "tp": 0,
+      "fp": 1,
+      "precision": 0.0
+    },
+    "app_privategpt": {
+      "tp": 7,
+      "fp": 1,
+      "precision": 0.875
+    },
+    "app_openadapt": {
+      "tp": 7,
+      "fp": 0,
+      "precision": 1.0
+    },
+    "app_aider": {
+      "tp": 4,
+      "fp": 5,
+      "precision": 0.444
+    },
+    "app_deepface": {
+      "tp": 29,
+      "fp": 3,
+      "precision": 0.906
+    },
+    "app_frigate": {
+      "tp": 7,
+      "fp": 14,
+      "precision": 0.333
+    },
+    "app_monai": {
+      "tp": 7,
+      "fp": 13,
+      "precision": 0.35
+    },
+    "app_resume_matcher": {
+      "tp": 1,
+      "fp": 3,
+      "precision": 0.25
+    },
+    "app_crewai": {
+      "tp": 58,
+      "fp": 23,
+      "precision": 0.716
+    }
+  },
+  "by_category": {
+    "AI Security (LLM05)": {
+      "tp": 8,
+      "fp": 2,
+      "precision": 0.8
+    },
+    "Model File": {
+      "tp": 1,
+      "fp": 0,
+      "precision": 1.0
+    },
+    "Annex III, Category 5": {
+      "tp": 1,
+      "fp": 0,
+      "precision": 1.0
+    },
+    "AI Security (LLM06)": {
+      "tp": 1,
+      "fp": 0,
+      "precision": 1.0
+    },
+    "AI Credential Governance (Article 15)": {
+      "tp": 2,
+      "fp": 3,
+      "precision": 0.4
+    },
+    "Limited Risk (Article 50)": {
+      "tp": 4,
+      "fp": 1,
+      "precision": 0.8
+    },
+    "AI Security (LLM02)": {
+      "tp": 18,
+      "fp": 3,
+      "precision": 0.857
+    },
+    "AI Security (LLM07)": {
+      "tp": 5,
+      "fp": 0,
+      "precision": 1.0
+    },
+    "AI Infrastructure": {
+      "tp": 2,
+      "fp": 0,
+      "precision": 1.0
+    },
+    "Annex III, Category 4(b)": {
+      "tp": 1,
+      "fp": 3,
+      "precision": 0.25
+    },
+    "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)": {
+      "tp": 45,
+      "fp": 17,
+      "precision": 0.726
+    },
+    "Annex III, Category 1": {
+      "tp": 34,
+      "fp": 18,
+      "precision": 0.654
+    },
+    "Annex III, Category 2": {
+      "tp": 0,
+      "fp": 4,
+      "precision": 0.0
+    },
+    "Annex III, Category 8": {
+      "tp": 0,
+      "fp": 3,
+      "precision": 0.0
+    },
+    "Annex III, Category 6": {
+      "tp": 0,
+      "fp": 3,
+      "precision": 0.0
+    },
+    "Medical Devices": {
+      "tp": 2,
+      "fp": 0,
+      "precision": 1.0
+    },
+    "Annex III, Category 4": {
+      "tp": 0,
+      "fp": 4,
+      "precision": 0.0
+    },
+    "AI Security (LLM01)": {
+      "tp": 1,
+      "fp": 0,
+      "precision": 1.0
+    },
+    "Safety Components": {
+      "tp": 0,
+      "fp": 3,
+      "precision": 0.0
+    }
+  },
+  "by_language": {
+    "Python": {
+      "tp": 160,
+      "fp": 276,
+      "precision": 0.367
+    },
+    "PKL": {
+      "tp": 1,
+      "fp": 0,
+      "precision": 1.0
+    },
+    "Jupyter": {
+      "tp": 1,
+      "fp": 0,
+      "precision": 1.0
+    },
+    "YAML": {
+      "tp": 1,
+      "fp": 0,
+      "precision": 1.0
+    },
+    "TypeScript": {
+      "tp": 0,
+      "fp": 6,
+      "precision": 0.0
+    },
+    "YML": {
+      "tp": 1,
+      "fp": 0,
+      "precision": 1.0
     }
   }
 }

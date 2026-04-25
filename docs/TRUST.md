@@ -140,16 +140,18 @@ The full report is at
 
 ```bash
 python3 benchmarks/label.py score
-# Expected: precision 15.2% on 257 labelled findings across 5 OSS projects
-# Sliced by tier, project, and category in the report
+# Random corpus (blind-labelled, production code): 70.0% precision (95% CI: 62-78%)
 ```
 
-The 15.2% headline is real and honest. The report breaks it down by
-display tier (BLOCK / WARN / INFO), by project, and by indicator
-category. **All 257 findings in the labelled corpus are at the INFO
-tier or below** — Regula's CI default tier is BLOCK, not INFO. The
-"Regula is noisy" claim from the headline applies to a tier that
-real users do not see in CI.
+The headline precision is **70.0%** (95% CI: 62-78%, N=140), measured on
+production code from a random corpus of 50 Python AI repos selected via
+GitHub API (pool of 276, random seed 42) and blind-labelled (labeller
+saw only file path, code context, and finding description — no project
+name, README, or purpose). This measures what users see with default
+`--skip-tests` settings. The structural tiers (`ai_security`,
+`agent_autonomy`, `limited_risk`) are all above 80%. The `high_risk`
+tier is weakest (8% — domain keywords match without semantic context).
+Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
 
 ### 3.6 Security posture — bandit, semgrep, pip-audit
 
