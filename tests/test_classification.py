@@ -6774,7 +6774,7 @@ def test_domain_boost_surfaces_in_finding():
                 "    model.fit(X_train, y_train)\n"
                 "    return model.predict([applicant.creditworthiness, applicant.loan_default_risk])\n"
             )
-        findings = scan_files(tmpdir)
+        findings = scan_files(tmpdir, declared_domains={"finance"})
         boosted = [f for f in findings if f.get("domain_boost")]
         assert len(boosted) >= 1, f"expected at least one boosted finding, got: {[(f.get('category'), f.get('tier')) for f in findings]}"
         b = boosted[0]["domain_boost"]
