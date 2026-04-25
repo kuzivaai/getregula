@@ -263,7 +263,7 @@
     <div class="hero-glow"></div>
     <div class="hero">
         <div class="hero-text">
-            <div class="badge"><span class="badge-dot"></span> Open-source CLI &middot; v1.7.0 &middot; Apache 2.0 + <a href="https://github.com/kuzivaai/getregula/blob/main/docs/LICENSE.Detection.Rules.md" title="Detection Rule License: detection rules are Apache-licensed with an attribution and responsible-use clause" style="color:inherit;text-decoration:underline dotted;text-underline-offset:3px;">DRL 1.1</a></div>
+            <div class="badge"><span class="badge-dot"></span> Open-source CLI &middot; v1.7.0 &middot; Apache 2.0</div>
             <h1>Is your AI app <span class="hl">legal</span> in Europe?</h1>
             <p class="sub">One command tells you which EU AI Act risk tier your code is in, why, and what to fix. <strong>30 seconds, free, no account.</strong></p>
 
@@ -292,13 +292,13 @@
                 <div class="term-dot td-g"></div>
             </div>
             <div class="term-tabs" role="tablist" aria-label="Regula command examples">
-                <div class="term-tab active" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-check" onclick="switchTab('check', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('check', this)}">check</div>
-                <div class="term-tab" role="tab" tabindex="0" aria-selected="false" aria-controls="tab-plan" onclick="switchTab('plan', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('plan', this)}">plan</div>
-                <div class="term-tab" role="tab" tabindex="0" aria-selected="false" aria-controls="tab-gap" onclick="switchTab('gap', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('gap', this)}">gap</div>
-                <div class="term-tab" role="tab" tabindex="0" aria-selected="false" aria-controls="tab-comply" onclick="switchTab('comply', this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('comply', this)}">comply</div>
+                <div class="term-tab active" role="tab" id="tab-check-label" tabindex="0" aria-selected="true" aria-controls="tab-check" onclick="switchTab('check', this)" onkeydown="handleTabKey(event, this)">check</div>
+                <div class="term-tab" role="tab" id="tab-plan-label" tabindex="-1" aria-selected="false" aria-controls="tab-plan" onclick="switchTab('plan', this)" onkeydown="handleTabKey(event, this)">plan</div>
+                <div class="term-tab" role="tab" id="tab-gap-label" tabindex="-1" aria-selected="false" aria-controls="tab-gap" onclick="switchTab('gap', this)" onkeydown="handleTabKey(event, this)">gap</div>
+                <div class="term-tab" role="tab" id="tab-comply-label" tabindex="-1" aria-selected="false" aria-controls="tab-comply" onclick="switchTab('comply', this)" onkeydown="handleTabKey(event, this)">comply</div>
             </div>
             <div class="term-body">
-                <div class="term-panel active" id="tab-check" role="tabpanel">
+                <div class="term-panel active" id="tab-check" role="tabpanel" aria-labelledby="tab-check-label">
                     <pre><span class="t-p">$</span> <span class="t-c">regula check . --explain</span>
 
 <span class="t-h">Classification: HIGH-RISK</span>
@@ -319,7 +319,7 @@
   Total: 160-324h | Deadline: <span class="t-y">Aug 2026</span>
   <span class="t-m">&#9888; Omnibus may delay to Dec 2027 (not yet law)</span></pre>
                 </div>
-                <div class="term-panel" id="tab-plan" role="tabpanel">
+                <div class="term-panel" id="tab-plan" role="tabpanel" aria-labelledby="tab-plan-label">
                     <pre><span class="t-p">$</span> <span class="t-c">regula plan .</span>
 
 <span class="t-h">COMPLIANCE PLAN  &middot;  HIGH-RISK (Annex III, Category 5)</span>
@@ -340,7 +340,7 @@ Priority 3 &mdash; Technical Documentation (Art. 11)
 
 Total: 64&ndash;96h estimated effort</pre>
                 </div>
-                <div class="term-panel" id="tab-gap" role="tabpanel">
+                <div class="term-panel" id="tab-gap" role="tabpanel" aria-labelledby="tab-gap-label">
                     <pre><span class="t-p">$</span> <span class="t-c">regula gap .</span>
 
 <span class="t-h">COMPLIANCE GAP ASSESSMENT</span>
@@ -355,7 +355,7 @@ Art. 15 Accuracy           <span class="t-y">&#9608;&#9608;&#9608;&#9608;&#9608;
 
 Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
                 </div>
-                <div class="term-panel" id="tab-comply" role="tabpanel">
+                <div class="term-panel" id="tab-comply" role="tabpanel" aria-labelledby="tab-comply-label">
                     <pre><span class="t-p">$</span> <span class="t-c">regula comply</span>
 
 <span class="t-h">EU AI Act Compliance Checklist</span>
@@ -399,14 +399,14 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <div class="audience-label">If you run the business</div>
             <h3>Do you know your legal exposure?</h3>
             <p>If your team builds or uses AI, the EU AI Act may apply, even outside the EU. Most tools fall under limited or minimal risk. Building with Claude Code or Cursor? Paste <code>regula assess</code> in your chat. Have a developer? Send them this page.</p>
-            <div class="audience-fwd" onclick="copyPageUrl(this)">
+            <button class="audience-fwd" onclick="copyPageUrl(this)">
                 <span class="fwd-icon">&#8599;</span>
                 <span class="fwd-txt">Copy link to send to your developer</span>
-            </div>
-            <div class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
+            </button>
+            <button class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
                 <span class="fwd-icon">&#9654;</span>
                 <span class="fwd-txt">Run regula assess (no code needed)</span>
-            </div>
+            </button>
         </div>
         <div class="audience-card audience-dev">
             <div class="audience-label">If you write the code</div>
@@ -423,10 +423,10 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <div class="audience-label">If you audit compliance</div>
             <h3>Verifiable evidence, not self-attestation.</h3>
             <p>Regula generates signed, timestamped evidence packs with SHA-256 integrity manifests. Every finding is traceable to a file and line. Verify the chain yourself.</p>
-            <div class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula evidence-pack --sign .')">
+            <button class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula evidence-pack --sign .')">
                 <span class="fwd-icon">&#9654;</span>
                 <span class="fwd-txt">regula evidence-pack --sign .</span>
-            </div>
+            </button>
         </div>
     </div>
 </div>
@@ -554,7 +554,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </thead>
         <tbody>
             <tr><td style="padding:6px 12px;color:#e0e0f0;">Approach</td><td>Static code scan</td><td>Scan + runtime trust layers</td><td>AST-based scan</td><td>Questionnaire + bias eval</td><td>Platform / dashboard</td></tr>
-            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Languages</td><td>8 families</td><td>Python</td><td>JS/TS</td><td>N/A</td><td>N/A</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Languages</td><td>8 families</td><td>Python</td><td>JS/TS</td><td>Not a code scanner</td><td>Not a code scanner</td></tr>
             <tr><td style="padding:6px 12px;color:#e0e0f0;">Detection patterns</td><td>404</td><td>39 checks</td><td>37+ frameworks</td><td>Questionnaire</td><td>Varies</td></tr>
             <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Dependencies</td><td>Zero (stdlib)</td><td>Multiple</td><td>npm</td><td>Next.js + Ollama</td><td>SaaS</td></tr>
             <tr><td style="padding:6px 12px;color:#e0e0f0;">Offline</td><td>Fully offline</td><td>Local</td><td>Local</td><td>Local + Ollama</td><td>Cloud</td></tr>
@@ -702,11 +702,11 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     <div class="final reveal">
         <h2>Find out where you stand</h2>
         <p>One command. Takes 30 seconds. No account needed.</p>
-        <div class="install-box" id="install-btn-2" onclick="copyInstall(this)" style="display:inline-flex;">
+        <button class="install-box" id="install-btn-2" onclick="copyInstall(this)" style="display:inline-flex;">
             <span class="dollar">$</span>
             <span class="cmd">pipx install regula-ai</span>
             <span class="cp">copy</span>
-        </div>
+        </button>
         <div data-fs-success style="display:none;font-size:13px;color:#10b981;margin-bottom:8px;">You're on the list. Major releases only.</div>
         <div data-fs-error style="display:none;font-size:13px;color:#ef4444;margin-bottom:8px;"></div>
         <form id="notify-form" class="notify">
@@ -783,11 +783,37 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         if (currentTab && currentTab !== el) {
             currentTab.classList.remove('active');
             currentTab.setAttribute('aria-selected', 'false');
+            currentTab.setAttribute('tabindex', '-1');
         }
         if (currentPanel) currentPanel.classList.remove('active');
         el.classList.add('active');
         el.setAttribute('aria-selected', 'true');
+        el.setAttribute('tabindex', '0');
+        el.focus();
         nextPanel.classList.add('active');
+    }
+
+    function handleTabKey(e, el) {
+        const tabs = Array.from(document.querySelectorAll('.term-tab'));
+        const i = tabs.indexOf(el);
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            const next = tabs[(i + 1) % tabs.length];
+            switchTab(next.textContent, next);
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            const prev = tabs[(i - 1 + tabs.length) % tabs.length];
+            switchTab(prev.textContent, prev);
+        } else if (e.key === 'Home') {
+            e.preventDefault();
+            switchTab(tabs[0].textContent, tabs[0]);
+        } else if (e.key === 'End') {
+            e.preventDefault();
+            switchTab(tabs[tabs.length - 1].textContent, tabs[tabs.length - 1]);
+        } else if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            switchTab(el.textContent, el);
+        }
     }
 
     // ===== COPY BUTTON =====
@@ -807,21 +833,6 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     }
 
     // ===== COPY ARBITRARY COMMAND =====
-    function copyCmd(el, cmd) {
-        const cp = el.querySelector('.cp');
-        navigator.clipboard.writeText(cmd).then(() => {
-            el.classList.add('copied');
-            cp.innerHTML = '&#10003;&nbsp;copied';
-            setTimeout(() => {
-                el.classList.remove('copied');
-                cp.textContent = 'copy';
-            }, 2000);
-        }).catch(() => {
-            cp.textContent = 'copy failed';
-            setTimeout(() => { cp.textContent = 'copy'; }, 2000);
-        });
-    }
-
     // ===== PILL BUTTON COPY =====
     function copyPill(el, cmd) {
         const original = el.innerHTML;
@@ -835,18 +846,6 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         }).catch(() => {
             el.innerHTML = '<span>&#9888;</span> Copy failed. Type:' + cmd;
             setTimeout(() => { el.innerHTML = original; }, 2500);
-        });
-    }
-
-    // ===== INLINE INSTALL COPY =====
-    function copyInstallInline(el) {
-        const original = el.textContent;
-        navigator.clipboard.writeText('pipx install regula-ai').then(() => {
-            el.textContent = '✓ copied';
-            setTimeout(() => { el.textContent = original; }, 2000);
-        }).catch(() => {
-            el.textContent = 'copy failed';
-            setTimeout(() => { el.textContent = original; }, 2000);
         });
     }
 
