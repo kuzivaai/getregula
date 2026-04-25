@@ -1,0 +1,210 @@
+{
+  "date": "2026-04-25 18:56 UTC",
+  "regula_version": "1.7.0",
+  "repos_scanned": 50,
+  "repos_failed": 0,
+  "total_findings": 1057,
+  "elapsed_seconds": 1374.0,
+  "per_repo": {
+    "huggingface/finetrainers": {
+      "findings_count": 5,
+      "error": null
+    },
+    "NatLabRockies/sup3r": {
+      "findings_count": 21,
+      "error": null
+    },
+    "roflcoopter/viseron": {
+      "findings_count": 36,
+      "error": null
+    },
+    "kaya70875/ytfetcher": {
+      "findings_count": 0,
+      "error": null
+    },
+    "zjunlp/LightMem": {
+      "findings_count": 55,
+      "error": null
+    },
+    "scverse/anndata": {
+      "findings_count": 0,
+      "error": null
+    },
+    "bghira/SimpleTuner": {
+      "findings_count": 68,
+      "error": null
+    },
+    "aws/sagemaker-python-sdk": {
+      "findings_count": 24,
+      "error": null
+    },
+    "hao-ai-lab/d3LLM": {
+      "findings_count": 89,
+      "error": null
+    },
+    "openvinotoolkit/nncf": {
+      "findings_count": 19,
+      "error": null
+    },
+    "archi-physics/archi": {
+      "findings_count": 24,
+      "error": null
+    },
+    "tkalevra/SuperPowersWUI": {
+      "findings_count": 0,
+      "error": null
+    },
+    "Silas-Asamoah/stormlog": {
+      "findings_count": 1,
+      "error": null
+    },
+    "PlumoAI/plumoai": {
+      "findings_count": 18,
+      "error": null
+    },
+    "xr843/fojin": {
+      "findings_count": 7,
+      "error": null
+    },
+    "mathLab/PINA": {
+      "findings_count": 11,
+      "error": null
+    },
+    "Intellindust-AI-Lab/EdgeCrafter": {
+      "findings_count": 11,
+      "error": null
+    },
+    "tomrussobuilds/orchard-ml": {
+      "findings_count": 4,
+      "error": null
+    },
+    "roboflow/rf-detr_plus": {
+      "findings_count": 0,
+      "error": null
+    },
+    "bodo-ai/Bodo": {
+      "findings_count": 11,
+      "error": null
+    },
+    "NickCharlie/astrbot_plugin_self_learning": {
+      "findings_count": 10,
+      "error": null
+    },
+    "Xenios91/Glyph": {
+      "findings_count": 0,
+      "error": null
+    },
+    "Jinfeng-Xu/Multimodal-Recommendation-Library": {
+      "findings_count": 13,
+      "error": null
+    },
+    "Supervertaler/Supervertaler-Workbench": {
+      "findings_count": 203,
+      "error": null
+    },
+    "graphnet-team/graphnet": {
+      "findings_count": 11,
+      "error": null
+    },
+    "microsoft/CameraTraps": {
+      "findings_count": 10,
+      "error": null
+    },
+    "Thysrael/Horizon": {
+      "findings_count": 2,
+      "error": null
+    },
+    "GradientHQ/parallax": {
+      "findings_count": 1,
+      "error": null
+    },
+    "kyegomez/Jamba": {
+      "findings_count": 0,
+      "error": null
+    },
+    "pytorch/ao": {
+      "findings_count": 20,
+      "error": null
+    },
+    "jonathanrao99/Inventory-Management-System": {
+      "findings_count": 2,
+      "error": null
+    },
+    "Future-House/ldp": {
+      "findings_count": 9,
+      "error": null
+    },
+    "gmberton/VPR-methods-evaluation": {
+      "findings_count": 4,
+      "error": null
+    },
+    "marcieltorres/safe-chat-slack-bot": {
+      "findings_count": 0,
+      "error": null
+    },
+    "SonySemiconductorSolutions/mct-model-optimization": {
+      "findings_count": 9,
+      "error": null
+    },
+    "lucidrains/HS-TasNet": {
+      "findings_count": 2,
+      "error": null
+    },
+    "ids-imaging/ids-peak-examples": {
+      "findings_count": 0,
+      "error": null
+    },
+    "rwth-i6/returnn": {
+      "findings_count": 24,
+      "error": null
+    },
+    "antoninoLorenzo/AI-OPS": {
+      "findings_count": 1,
+      "error": null
+    },
+    "SRInternet-Studio/Jianer_QQ_bot": {
+      "findings_count": 20,
+      "error": null
+    },
+    "pixeltable/pixeltable": {
+      "findings_count": 26,
+      "error": null
+    },
+    "PaddlePaddle/FastDeploy": {
+      "findings_count": 183,
+      "error": null
+    },
+    "hoangsonww/Spot-the-Scam-AI-Job-Fraud": {
+      "findings_count": 44,
+      "error": null
+    },
+    "bayesflow-org/bayesflow": {
+      "findings_count": 1,
+      "error": null
+    },
+    "clstaudt/ragadoc": {
+      "findings_count": 1,
+      "error": null
+    },
+    "zamalali/DeepGit": {
+      "findings_count": 1,
+      "error": null
+    },
+    "stfc/aiida-mlip": {
+      "findings_count": 0,
+      "error": null
+    },
+    "dualverse-ai/station": {
+      "findings_count": 15,
+      "error": null
+    },
+    "lhotse-speech/lhotse": {
+      "findings_count": 14,
+      "error": null
+    },
+    "deepmodeling/deepmd-kit": {
+      "findings_count": 27,
+      "error": null
+    }
+  }
+}

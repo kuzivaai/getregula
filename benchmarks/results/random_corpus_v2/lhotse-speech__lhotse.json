@@ -1,0 +1,386 @@
+[
+  {
+    "file": "lhotse/lazy.py",
+    "line": 195,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "lhotse/recipes/aishell4.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 73,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "lhotse/recipes/ali_meeting.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 73,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "lhotse/recipes/commonvoice.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 88,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "law_enforcement",
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: law_enforcement, biometrics"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "lhotse/recipes/this_american_life.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 73,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "lhotse/dataset/diarization.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 73,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "lhotse/dataset/signal_transforms.py",
+    "line": 43,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "lhotse/dataset/webdataset.py",
+    "line": 349,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "lhotse/tools/sph2pipe.py",
+    "line": 30,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "lhotse/features/io.py",
+    "line": 1351,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "test/test_feature_set.py",
+    "line": 114,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "test/dataset/test_webdataset.py",
+    "line": 33,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "test/dataset/sampling/test_sampler_restoring.py",
+    "line": 217,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "test/dataset/sampling/test_sampler_pickling.py",
+    "line": 71,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  }
+]

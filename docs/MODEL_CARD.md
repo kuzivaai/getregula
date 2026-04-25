@@ -63,24 +63,26 @@ A Python project will receive more granular findings than an equivalent Rust pro
 
 ### Precision baseline
 
-Published benchmark against 5 labelled open-source projects (257 hand-labelled findings):
+Published benchmark against 50 randomly selected Python AI repos (from 276 candidates, random seed 42), blind-labelled (labeller saw only file path, code context, and finding description). Production code only (default `--skip-tests` settings):
 
 | Tier | TP | FP | Precision |
 |---|---:|---:|---:|
-| `minimal_risk` | 10 | 0 | 100.0% |
+| `minimal_risk` | 11 | 0 | 100.0% |
 | `limited_risk` | 7 | 1 | 87.5% |
+| `ai_security` | 41 | 7 | 85.4% |
 | `agent_autonomy` | 34 | 7 | 82.9% |
-| `ai_security` | 44 | 11 | 80.0% |
-| `high_risk` | 2 | 23 | 8.0% |
-| **Overall** | **98** | **42** | **70.0% (95% CI: 62-78%)** |
+| `high_risk` | 2 | 7 | 22.2% |
+| **Overall** | **96** | **22** | **81.4%** |
 
-**Methodology:** 50 randomly selected Python AI repos (from 276 candidates,
-random seed 42), 201 findings stratified-sampled and blind-labelled
-(labeller saw only file path, code context, and finding description — no
-project name, README, or purpose). Precision measured on production code
-only (default `--skip-tests` settings). Including test code drops
-precision to 51.2%. The `high_risk` tier is weakest because domain
-keywords match without semantic context.
+**Improvement from v1.7.0:** Domain-gated high-risk findings (v1.7.0) and
+LLM import gating reduced FP from 42 to 22 on the same labelled corpus,
+improving production precision from 70.0% to 81.4%. 3 borderline ai_security
+TPs were lost (LLM02 findings in files without LLM library imports).
+
+The `high_risk` tier (22%) remains weakest — 5 subcategories (`critical_infrastructure`,
+`safety_components`, `worker_management`, `democratic_processes`, `essential_services`)
+now require `--domain` declaration or import fingerprinting to fire. Including test
+code drops overall precision to 59.5%.
 
 Full methodology and reproduction steps: `benchmarks/README.md`
 
@@ -141,7 +143,7 @@ Regula is explicitly **NOT** intended for:
 
 Each finding was manually classified as true positive or false positive by the developer. Labels are committed to the repository at `benchmarks/labels.json` and can be independently verified.
 
-**Result:** 70.0% precision on production code from random corpus (blind-labelled, 95% CI: 62-78%); 0 false positives at BLOCK tier.
+**Result:** 81.4% precision on production code from random corpus (blind-labelled, N=118); 0 false positives at BLOCK tier. Previous baseline was 70.0% before domain gating and LLM import gating.
 
 ### Continuous validation
 

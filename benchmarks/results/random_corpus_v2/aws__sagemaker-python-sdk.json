@@ -1,0 +1,593 @@
+[
+  {
+    "file": "sagemaker-core/src/sagemaker/core/shapes/shapes.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 2",
+    "description": "Critical infrastructure management",
+    "indicators": [
+      "critical_infrastructure",
+      "employment",
+      "high_risk__worker_management",
+      "safety_components"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "10",
+        "observation": "Training data detected \u2014 Article 10 requires data to be relevant, representative, and examined for biases."
+      }
+    ],
+    "domain_boost": {
+      "boost": 20,
+      "domains_matched": [
+        "employment",
+        "finance",
+        "education",
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: employment, finance, education, law_enforcement + automated decision logic"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-core/src/sagemaker/core/remote_function/core/serialization.py",
+    "line": 154,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-core/tests/unit/test_clarify.py",
+    "line": 1,
+    "tier": "high_risk",
+    "category": "Annex III, Category 1",
+    "description": "Biometric identification and categorisation",
+    "indicators": [
+      "biometrics"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 48,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "13",
+        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+      },
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: law_enforcement"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-core/tests/unit/local/test_image.py",
+    "line": 204,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "AWS access key ID detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use AWS credential provider chain or environment variables.",
+    "indicators": [
+      "aws_access_key"
+    ],
+    "confidence_score": 55,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  },
+  {
+    "file": "sagemaker-train/tests/data/train/script_mode/custom_script.py",
+    "line": 51,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-train/tests/data/local_script/local_training_script.py",
+    "line": 53,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-train/tests/data/script_mode/custom_script.py",
+    "line": 51,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "v3-examples/ml-ops-examples/v3-hyperparameter-tuning-example/mnist.py",
+    "line": 192,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-serve/src/sagemaker/serve/model_builder_utils.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 68,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "education",
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: education, law_enforcement"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
+  },
+  {
+    "file": "sagemaker-serve/src/sagemaker/serve/model_server/smd/custom_execution_inference.py",
+    "line": 33,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-serve/src/sagemaker/serve/model_server/tensorflow_serving/inference.py",
+    "line": 114,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-serve/src/sagemaker/serve/model_server/tensorflow_serving/server.py",
+    "line": 64,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "confidence_score": 70,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-serve/src/sagemaker/serve/model_server/tei/server.py",
+    "line": 67,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "confidence_score": 70,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-serve/src/sagemaker/serve/model_server/djl_serving/server.py",
+    "line": 58,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "confidence_score": 70,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-serve/src/sagemaker/serve/model_server/triton/model.py",
+    "line": 36,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-serve/src/sagemaker/serve/model_server/tgi/server.py",
+    "line": 76,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "confidence_score": 70,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-serve/src/sagemaker/serve/model_server/multi_model_server/inference.py",
+    "line": 35,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-serve/src/sagemaker/serve/model_server/multi_model_server/server.py",
+    "line": 64,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "confidence_score": 70,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-serve/src/sagemaker/serve/model_server/torchserve/inference.py",
+    "line": 38,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-serve/src/sagemaker/serve/model_server/torchserve/server.py",
+    "line": 51,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
+    "indicators": [
+      "HTTP mutation request"
+    ],
+    "confidence_score": 70,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-serve/src/sagemaker/serve/model_server/torchserve/xgboost_inference.py",
+    "line": 42,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-serve/tests/unit/detector/test_pickle_dependencies_additional.py",
+    "line": 100,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "sagemaker-mlops/tests/integ/code/mnist.py",
+    "line": 230,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "v3-examples/training-examples/docker-compose.yaml",
+    "line": 2,
+    "tier": "minimal_risk",
+    "category": "AI Infrastructure",
+    "description": "Cloud AI service configured: sagemaker",
+    "indicators": [
+      "ai_config"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "tooling",
+    "lifecycle_phases": [
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  }
+]

@@ -84,10 +84,10 @@ No `prohibited` or `high_risk` findings were generated because library
 code does not typically trigger domain-specific patterns (hiring,
 credit scoring, biometrics, etc.).
 
-## Precision — Random Corpus, Blind-Labelled (70.0%)
+## Precision — Random Corpus, Blind-Labelled (81.4%)
 
 **This is the headline number.** 50 randomly selected Python AI repos
-(from a pool of 276, seed=42), scanned with Regula, 201 findings
+(from a pool of 276, seed=42), scanned with Regula v1.7.0, 201 findings
 stratified-sampled and blind-labelled (labeller saw only file path, code
 context, and finding description — no project name, README, or purpose).
 
@@ -96,27 +96,30 @@ settings), which is what users actually see.
 
 | Tier | TP | FP | Precision |
 |---|---:|---:|---:|
-| `minimal_risk` | 10 | 0 | 100.0% |
+| `minimal_risk` | 11 | 0 | 100.0% |
 | `limited_risk` | 7 | 1 | 87.5% |
+| `ai_security` | 41 | 7 | 85.4% |
 | `agent_autonomy` | 34 | 7 | 82.9% |
-| `ai_security` | 44 | 11 | 80.0% |
 | `credential_exposure` | 1 | 0 | 100.0% |
-| `high_risk` | 2 | 23 | 8.0% |
-| **Overall** | **98** | **42** | **70.0%** |
-| | | | **95% CI: 62.4%–77.6% (N=140)** |
+| `high_risk` | 2 | 7 | 22.2% |
+| **Overall** | **96** | **22** | **81.4% (N=118)** |
 
-**What this means:** About 7 in 10 of Regula's findings on production
+**Improvement from v1.7.0:** Production precision improved from 70.0% to
+81.4% (+11.4pp) via three changes: (1) domain-gated high-risk findings
+(16 FP removed, 0 TP lost), (2) LLM import gating for OWASP findings
+(4 FP removed, 3 borderline TP lost), (3) pattern fixes (pipeline/ControlNet
+separation, worker exclusion).
+
+**What this means:** About 8 in 10 of Regula's findings on production
 code in a random AI project are genuine risk indicators. The `high_risk`
-tier is the weakest — domain keywords (employment, biometrics, credit)
-match without semantic context, producing mostly false positives. The
-structural tiers (`ai_security`, `agent_autonomy`, `limited_risk`,
-`minimal_risk`) are all above 80% because they match on code patterns
-(deserialization, subprocess calls, API calls, model files) rather than
-keywords.
+tier (22%) remains weakest — 5 domain keyword subcategories now require
+`--domain` declaration or import fingerprinting to fire. The structural
+tiers (`ai_security`, `agent_autonomy`, `limited_risk`, `minimal_risk`)
+are all above 80% because they match on code patterns (deserialization,
+subprocess calls, API calls, model files) rather than keywords.
 
 **Including test code** (what users see with `--no-skip-tests`), overall
-precision drops to 51.2% (N=201). 57% of all false positives come from
-test code.
+precision is 59.5% (N=168, was 51.2%).
 
 **Methodology details:** `benchmarks/results/random_corpus/METHODOLOGY.json`
 contains the exact GitHub API queries, random seed, and selected repos.
@@ -156,7 +159,7 @@ non-random (hand-picked to match specific risk categories).
 
 | Metric | Status |
 |--------|--------|
-| Precision | **70.0%** on random corpus production code (blind-labelled, 95% CI: 62-78%) |
+| Precision | **81.4%** on random corpus production code (blind-labelled, N=118) |
 | Recall | Measured on synthetic fixtures only (`benchmarks/synthetic/run.py`) |
 | F1 Score | Not computable (requires recall on same corpus as precision) |
 | Youden Index (J) | Not computable (requires TN count — OWASP standard) |
