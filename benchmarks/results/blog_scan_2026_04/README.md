@@ -31,7 +31,7 @@ regula check <repo> --format json > <repo>.json
 
 The original blog post reports 553 findings using Regula v1.6.1 (10 April 2026).
 The difference is primarily due to expanded AI security detection patterns in v1.7.0
-(404 patterns vs 330 in v1.6.1).
+(389 patterns vs 330 in v1.6.1).
 
 ## Category breakdown
 
