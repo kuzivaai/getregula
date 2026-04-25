@@ -28,8 +28,9 @@
 
 ## 1. Who built it and what is it
 
-Regula is an **open-source command-line tool** that scans source code for
-EU AI Act compliance signals at the point of creation. It is licensed
+Regula is an **open-source command-line tool** that combines code scanning
+with governance questionnaires for EU AI Act compliance at the point of
+creation. It is licensed
 under the Apache License 2.0. The full source is on GitHub at
 [github.com/kuzivaai/getregula](https://github.com/kuzivaai/getregula).
 PyPI package: [`regula-ai`](https://pypi.org/project/regula-ai/).
@@ -66,7 +67,7 @@ your lawyer's job, not Regula's.
 | "Compliant with the EU AI Act" | Compliance is a legal determination. Regula cannot make it. |
 | "100% precision" | Regula is intentionally tuned for recall on Annex III/Article 5. False positives at the INFO tier are documented and quantified — see [the precision/recall report](benchmarks/PRECISION_RECALL_2026_04.md). |
 | "Audits your AI vendor" | Regula sees your code, not the vendor's. It surfaces vendor names and their published GPAI Code of Practice signatory status, nothing more. |
-| "Replaces a DPIA / FRIA / HRIA" | These are organisational processes that involve people, policy, and stakeholder consultation. A static code scanner cannot perform them. |
+| "Replaces a DPIA / FRIA / HRIA" | These are organisational processes that involve people, policy, and stakeholder consultation. `regula conform --organisational` provides a structured self-assessment questionnaire for Articles 9/17/27/72, but the output is a self-reported evidence document, not a compliance certificate. A qualified assessor must verify the answers. |
 | "Works on every language" | Python and JS/TS have full AST + cross-file flow. Java/Go/Rust/C/C++ are regex-only. This is documented in [`docs/architecture.md`](architecture.md). |
 
 ---

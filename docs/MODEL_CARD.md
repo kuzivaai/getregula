@@ -21,7 +21,7 @@ Regula's detection engine is a static analysis system that classifies source cod
 
 ## Intended Use
 
-**Primary use case:** Scan source code to identify patterns that map to EU AI Act risk classifications. Surface findings for human review. Generate compliance documentation scaffolds.
+**Primary use case:** Combine code scanning with governance questionnaires to assess EU AI Act compliance. Scan source code for risk patterns, run structured self-assessments for organisational obligations code cannot verify (Articles 9, 17, 27, 72), and generate compliance documentation scaffolds.
 
 **Intended users:**
 
