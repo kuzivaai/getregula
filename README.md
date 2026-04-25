@@ -33,7 +33,7 @@
 
 ## What it does
 
-If you ship an AI product to EU users, the EU AI Act applies to you -- regardless of where you are based or how small your team is. Regula scans your codebase for risk indicators, classifies your system into one of the Act's four risk tiers, and tells you which obligations apply. It runs in your terminal, in CI/CD, or as a pre-commit hook. No external dependencies, no API calls, no data leaves your machine.
+If you ship an AI product to EU users, the EU AI Act applies to you -- regardless of where you are based or how small your team is. Regula combines code scanning with governance questionnaires: it scans your codebase for risk indicators, classifies your system into one of the Act's four risk tiers, and tells you which obligations apply. For the obligations code can't verify (risk management systems, quality management, fundamental rights impact assessments), it provides structured self-assessment questionnaires. It runs in your terminal, in CI/CD, or as a pre-commit hook. No external dependencies, no API calls, no data leaves your machine.
 
 ## Quick start
 
@@ -139,6 +139,12 @@ Every finding includes the relevant Article reference and explains when exceptio
 | `regula demo` | Scan a bundled example project -- zero-commitment trial |
 | `regula api-server` | Start the REST API (localhost:8487) with web dashboard |
 | `regula conform --organisational` | Governance self-assessment for Articles 9/17/27/72 |
+| `regula questionnaire` | Context-driven risk assessment questionnaire (also via REST API) |
+| `regula exempt` | Article 6(3) high-risk exemption decision tree |
+| `regula oversight .` | Article 14 human oversight analysis (cross-file flow tracing) |
+| `regula guardrails .` | Article 15 guardrail implementation coverage detection |
+| `regula owasp-agentic` | OWASP Top 10 for Agentic Applications assessment |
+| `regula monitor` | Runtime monitoring for AI applications (Article 12) |
 
 Regula has 61 commands in total. Run `regula --help-all` for the full list, or see [`docs/cli-reference.md`](docs/cli-reference.md).
 
@@ -163,8 +169,9 @@ Seven endpoints: `/health`, `/v1/check`, `/v1/classify`, `/v1/gap`, `/v1/questio
 
 **Regula is:**
 
-- A development-time static analysis tool that detects AI-related code patterns and maps them to EU AI Act obligations
+- A development-time compliance tool that combines static code analysis with governance questionnaires, mapping both to EU AI Act obligations
 - A shift-left compliance scanner -- like ESLint for regulatory risk, running in your terminal or CI/CD pipeline
+- A questionnaire-based assessment tool for organisational obligations that code patterns cannot verify (Articles 9, 17, 27, 72)
 - A starting point for compliance awareness, not a finish line
 
 **Regula is not:**
