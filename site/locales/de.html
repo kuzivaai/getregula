@@ -159,6 +159,30 @@
                     "@type": "Answer",
                     "text": "Regula enthält einen optionalen Bias-Evaluierungsbefehl (regula bias), der CrowS-Pairs- und BBQ-Stereotyp-Benchmarks gegen ein lokales Ollama-Modell ausführt, mit statistischen Konfidenzintervallen. Es ist ein Entwicklungszeit-Ausgangspunkt für die Artikel-10-Bias-Dokumentation, kein Produktions-Fairness-Testing-Tool. Für produktionsreife Bias-Messung nutzen Sie dedizierte Plattformen wie IBM watsonx.governance oder Fiddler AI."
                 }
+            },
+            {
+                "@type": "Question",
+                "name": "Überschneidet sich das EU-KI-Gesetz mit DSGVO, DORA oder NIS2?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja, erheblich. Hochrisiko-KI-Systeme, die personenbezogene Daten verarbeiten, müssen sowohl das KI-Gesetz als auch die DSGVO gleichzeitig einhalten. DORA gilt, wenn KI in Finanzdienstleistungen eingesetzt wird, und NIS2 gilt für Betreiber wesentlicher Dienste. Regula bildet jeden KI-Gesetz-Artikel auf die entsprechenden DSGVO-, DORA-, NIS2-, ISO-42001- und 8 weitere Framework-Pflichten in einem einzigen Scan ab. Führen Sie regula gap --project . aus, um zu sehen, wo sich Ihre Pflichten über alle 12 zugeordneten Frameworks überschneiden."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Funktioniert Regula mit KI-generiertem Code von Cursor, Claude Code oder Lovable?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja. Regula scannt Quellcode-Dateien unabhängig davon, wer oder was sie geschrieben hat. KI-generierter Code unterliegt denselben EU-KI-Gesetz-Pflichten wie handgeschriebener Code — Artikel 2 unterscheidet nicht nach Urheberschaft. Führen Sie regula check . für jedes Projekt aus. Wenn Sie Cursor oder Claude Code verwenden, fügen Sie regula assess in Ihren Chat ein, um schnell die Anwendbarkeit zu prüfen, ohne Ihren Editor zu verlassen."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Was sollte ich jetzt tun, um mich auf das EU-KI-Gesetz vorzubereiten?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Drei Schritte, unter fünf Minuten: (1) Installieren Sie mit pipx install regula-ai, (2) führen Sie regula assess aus, um zu prüfen, ob das Gesetz für Ihr Produkt gilt, (3) falls ja, führen Sie regula check . aus, um Ihre Risikostufe und Befunde zu sehen. Von dort aus erstellt regula plan einen priorisierten Maßnahmenplan mit Aufwandsschätzungen, und regula gap zeigt Ihre Compliance-Lage pro Artikel. Kein Konto, kein API-Schlüssel, keine Daten verlassen Ihren Rechner."
+                }
             }
         ]
     }

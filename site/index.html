@@ -158,6 +158,30 @@
                     "@type": "Answer",
                     "text": "Regula includes an optional bias evaluation command (regula bias) that runs CrowS-Pairs and BBQ stereotype benchmarks against a local Ollama model, with statistical confidence intervals. It is a development-time starting point for Article 10 bias documentation, not a production fairness testing tool. For production bias measurement, use dedicated platforms like IBM watsonx.governance or Fiddler AI."
                 }
+            },
+            {
+                "@type": "Question",
+                "name": "Does the EU AI Act overlap with GDPR, DORA, or NIS2?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, significantly. High-risk AI systems that process personal data must comply with both the AI Act and GDPR simultaneously. DORA applies if AI is used in financial services, and NIS2 applies to essential service providers. Regula cross-maps each AI Act article to corresponding GDPR, DORA, NIS2, ISO 42001, and 8 other framework obligations in a single scan. Run regula gap --project . to see where your obligations overlap across all 12 mapped frameworks."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Does Regula work with AI-generated code from Cursor, Claude Code, or Lovable?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. Regula scans source code files regardless of who or what wrote them. AI-generated code carries the same EU AI Act obligations as hand-written code — Article 2 does not distinguish by authorship. Run regula check . on any project. If you use Cursor or Claude Code, paste regula assess in your chat for a quick applicability check without leaving your editor."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What should I do right now to prepare for the EU AI Act?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Three steps, under five minutes: (1) Install with pipx install regula-ai, (2) run regula assess to check whether the Act applies to your product, (3) if it does, run regula check . to see your risk tier and findings. From there, regula plan generates a prioritised remediation plan with effort estimates, and regula gap shows your compliance posture per article. No account, no API key, no data leaves your machine."
+                }
             }
         ]
     }

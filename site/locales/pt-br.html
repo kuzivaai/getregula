@@ -168,6 +168,30 @@
                     "@type": "Answer",
                     "text": "A LGPD (Lei 13.709/2018) ja esta em vigor e o Artigo 20 garante ao titular dos dados o direito de solicitar revisao de decisoes tomadas exclusivamente por tratamento automatizado. O Marco Legal da IA (PL 2338/2023) foi aprovado no Senado em dezembro de 2024 e esta em Comissao Especial na Camara. Se aprovado, criara um regime de classificacao de risco semelhante a Lei de IA da UE. O Regula suporta ambos: regula gap --framework lgpd e regula gap --framework marco-legal-ia."
                 }
+            },
+            {
+                "@type": "Question",
+                "name": "A Lei de IA da UE se sobrepoe a LGPD, DORA ou NIS2?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Sim, significativamente. Sistemas de IA de alto risco que processam dados pessoais devem cumprir tanto a Lei de IA quanto a LGPD (ou GDPR, se na UE) simultaneamente. DORA se aplica se a IA for usada em servicos financeiros, e NIS2 se aplica a operadores de servicos essenciais. O Regula mapeia cada artigo da Lei de IA para as obrigacoes correspondentes de LGPD, GDPR, DORA, NIS2, ISO 42001 e mais 8 frameworks em uma unica varredura. Execute regula gap --project . para ver onde suas obrigacoes se sobrepoem nos 12 frameworks mapeados."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "O Regula funciona com codigo gerado por IA do Cursor, Claude Code ou Lovable?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Sim. O Regula escaneia arquivos de codigo-fonte independentemente de quem ou o que os escreveu. Codigo gerado por IA tem as mesmas obrigacoes da Lei de IA da UE que codigo escrito manualmente — o Artigo 2 nao distingue por autoria. Execute regula check . em qualquer projeto. Se voce usa Cursor ou Claude Code, cole regula assess no seu chat para uma verificacao rapida de aplicabilidade sem sair do seu editor."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "O que devo fazer agora para me preparar para a Lei de IA da UE?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Tres passos, em menos de cinco minutos: (1) Instale com pipx install regula-ai, (2) execute regula assess para verificar se a Lei se aplica ao seu produto, (3) se sim, execute regula check . para ver sua classificacao de risco e achados. A partir dai, regula plan gera um plano de remediacao priorizado com estimativas de esforco, e regula gap mostra sua postura de conformidade por artigo. Sem conta, sem chave de API, nenhum dado sai da sua maquina."
+                }
             }
         ]
     }
