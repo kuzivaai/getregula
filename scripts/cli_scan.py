@@ -85,11 +85,15 @@ def cmd_check(args) -> None:
 
     _validate_path(args.path)
     project = str(Path(args.path).resolve())
+    declared_domains = set()
+    if getattr(args, "domain", None):
+        declared_domains = {d.strip().lower() for d in args.domain.split(",")}
     findings = scan_files(
         project,
         respect_ignores=not args.no_ignore,
         skip_tests=getattr(args, "skip_tests", False),
         min_tier=getattr(args, "min_tier", "") or "",
+        declared_domains=declared_domains,
     )
 
     # Scope filtering: exclude non-production files when --scope production

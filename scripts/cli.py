@@ -822,6 +822,10 @@ def _build_subparsers(subparsers):
                          help="Scan scope: 'production' excludes test/example/generated/tooling files")
     p_check.add_argument("--min-tier", choices=["prohibited", "high_risk", "limited_risk", "minimal_risk"],
                          default="limited_risk", help="Minimum risk tier to include (default: limited_risk, use minimal_risk to see all)")
+    p_check.add_argument("--domain", metavar="DOMAIN",
+                         help="Declare project domain(s) to activate relevant high-risk patterns. "
+                              "Comma-separated: employment,medical,finance,biometrics,education,"
+                              "law_enforcement,infrastructure,migration")
     p_check.add_argument("--diff", metavar="REF", nargs="?", const="HEAD~1",
                          help="Only scan files changed since REF (default: HEAD~1)")
     p_check.add_argument("--rules", help="Path to custom rules file (regula-rules.yaml)")
