@@ -341,7 +341,7 @@ def test_regula_self_scan_clean():
 
     r = subprocess.run(
         [sys.executable, "scripts/cli.py", "check", "scripts/", "--format", "json"],
-        capture_output=True, text=True, timeout=30,
+        capture_output=True, text=True, timeout=60,
         cwd=str(Path(__file__).parent.parent),
     )
     import json

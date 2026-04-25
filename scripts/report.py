@@ -609,10 +609,13 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                             cached = [f for f in cached
                                       if _TIER_ORDER.get(f.get("tier", ""), 0) >= min_tier_level]
                         # Apply domain gating to cached findings too
-                        cached = [f for f in cached
-                                  if not (f.get("tier") == "high_risk"
-                                          and set(f.get("indicators", [])) & OPT_IN_CATEGORIES
-                                          and not (set(f.get("indicators", [])) & OPT_IN_CATEGORIES & _domain_activated))]
+                        def _is_domain_gated(f):
+                            if f.get("tier") != "high_risk":
+                                return False
+                            inds = set(f.get("indicators", []))
+                            opt_in = inds & OPT_IN_CATEGORIES
+                            return opt_in and not (inds - OPT_IN_CATEGORIES) and not (opt_in & _domain_activated)
+                        cached = [f for f in cached if not _is_domain_gated(f)]
                         findings.extend(cached)
                         # Maintain AI file counter for stats even on cache hits
                         if not cached and is_ai_related(content):
@@ -876,10 +879,14 @@ def scan_files(project_path: str, respect_ignores: bool = True,
 
             # Domain gating: suppress opt-in high_risk findings unless
             # activated by user declaration or import fingerprinting.
+            # Only suppress if ALL indicators are opt-in (no non-opt-in
+            # indicator to independently justify the finding).
             if result.tier.value == "high_risk":
-                _opt_in_matched = set(result.indicators_matched) & OPT_IN_CATEGORIES
-                if _opt_in_matched and not (_opt_in_matched & _domain_activated):
-                    continue  # suppress: opt-in category without domain activation
+                _indicators_set = set(result.indicators_matched)
+                _opt_in_matched = _indicators_set & OPT_IN_CATEGORIES
+                _has_non_opt_in = bool(_indicators_set - OPT_IN_CATEGORIES)
+                if _opt_in_matched and not _has_non_opt_in and not (_opt_in_matched & _domain_activated):
+                    continue  # suppress: all indicators are opt-in without activation
 
             finding["open_question"] = _is_open_question(finding)
             findings.append(finding)
