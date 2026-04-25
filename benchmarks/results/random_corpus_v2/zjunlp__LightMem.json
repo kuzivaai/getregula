@@ -1,0 +1,1246 @@
+[
+  {
+    "file": "src/lightmem/memory_toolkits/memory_construction.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 68,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: law_enforcement"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/inference_utils/backends.py",
+    "line": 45,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/memzero.py",
+    "line": 242,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/amem.py",
+    "line": 122,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/full_context.py",
+    "line": 283,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/langmem.py",
+    "line": 287,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/agentic_memory/memory_system.py",
+    "line": 248,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/agentic_memory/llm_controller.py",
+    "line": 31,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/agentic_memory/llm_controller.py",
+    "line": 31,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/memory/telemetry.py",
+    "line": 12,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Move credentials to environment variables or a secrets manager.",
+    "indicators": [
+      "generic_api_key"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/proxy/main.py",
+    "line": 110,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/vector_stores/faiss.py",
+    "line": 94,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/groq.py",
+    "line": 87,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/groq.py",
+    "line": 87,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/vllm.py",
+    "line": 106,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/vllm.py",
+    "line": 106,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/deepseek.py",
+    "line": 106,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/deepseek.py",
+    "line": 106,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/lmstudio.py",
+    "line": 113,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/lmstudio.py",
+    "line": 113,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/openai.py",
+    "line": 138,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/openai.py",
+    "line": 138,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/together.py",
+    "line": 87,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/together.py",
+    "line": 87,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/azure_openai.py",
+    "line": 140,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/azure_openai.py",
+    "line": 140,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/azure_openai_structured.py",
+    "line": 90,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/azure_openai_structured.py",
+    "line": 90,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/litellm.py",
+    "line": 86,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/layers/baselines/mem0/llms/anthropic.py",
+    "line": 86,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/memory_toolkits/memories/datasets/locomo.py",
+    "line": 102,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/factory/memory_manager/vllm.py",
+    "line": 107,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/factory/memory_manager/vllm.py",
+    "line": 107,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/factory/memory_manager/deepseek.py",
+    "line": 128,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/factory/memory_manager/deepseek.py",
+    "line": 128,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/factory/memory_manager/openai.py",
+    "line": 133,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "src/lightmem/factory/memory_manager/openai.py",
+    "line": 133,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tutorial-notebooks/LightMem_Example_longmemeval.ipynb",
+    "line": 370,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tutorial-notebooks/LightMem_Example_longmemeval.ipynb",
+    "line": 370,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tutorial-notebooks/LightMem_Example_longmemeval.ipynb",
+    "line": 377,
+    "tier": "ai_security",
+    "category": "AI Security (LLM09)",
+    "description": "LLM output used as factual information without grounding or verification \u2014 misinformation risk",
+    "indicators": [
+      "no_grounding"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Implement retrieval-augmented generation (RAG) for factual tasks. Require citations and source attribution. Add fact-checking or grounding verification before presenting LLM output as fact. OWASP LLM09:2025.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tutorial-notebooks/LightMem_Example_code.ipynb",
+    "line": 366,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tutorial-notebooks/LightMem_Example_code.ipynb",
+    "line": 366,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tutorial-notebooks/LightMem_Example_code.ipynb",
+    "line": 373,
+    "tier": "ai_security",
+    "category": "AI Security (LLM09)",
+    "description": "LLM output used as factual information without grounding or verification \u2014 misinformation risk",
+    "indicators": [
+      "no_grounding"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Implement retrieval-augmented generation (RAG) for factual tasks. Require citations and source attribution. Add fact-checking or grounding verification before presenting LLM output as fact. OWASP LLM09:2025.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tutorial-notebooks/LightMem_Example_travel.ipynb",
+    "line": 373,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tutorial-notebooks/LightMem_Example_travel.ipynb",
+    "line": 373,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tutorial-notebooks/LightMem_Example_travel.ipynb",
+    "line": 380,
+    "tier": "ai_security",
+    "category": "AI Security (LLM09)",
+    "description": "LLM output used as factual information without grounding or verification \u2014 misinformation risk",
+    "indicators": [
+      "no_grounding"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Implement retrieval-augmented generation (RAG) for factual tasks. Require citations and source attribution. Add fact-checking or grounding verification before presenting LLM output as fact. OWASP LLM09:2025.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "experiments/locomo/search_locomo.py",
+    "line": 457,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "experiments/locomo/search_locomo.py",
+    "line": 465,
+    "tier": "ai_security",
+    "category": "AI Security (LLM09)",
+    "description": "LLM output used as factual information without grounding or verification \u2014 misinformation risk",
+    "indicators": [
+      "no_grounding"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Implement retrieval-augmented generation (RAG) for factual tasks. Require citations and source attribution. Add fact-checking or grounding verification before presenting LLM output as fact. OWASP LLM09:2025.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "experiments/locomo/retrievers.py",
+    "line": 74,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "experiments/locomo/llm_judge.py",
+    "line": 60,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "experiments/locomo/llm_judge.py",
+    "line": 60,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "experiments/longmemeval/run_lightmem_gpt.py",
+    "line": 74,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "experiments/longmemeval/run_lightmem_qwen.py",
+    "line": 10,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "OpenAI API key detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable OPENAI_API_KEY instead of hardcoding.",
+    "indicators": [
+      "openai_api_key"
+    ],
+    "confidence_score": 95,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  },
+  {
+    "file": "experiments/longmemeval/run_lightmem_qwen.py",
+    "line": 10,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Move credentials to environment variables or a secrets manager.",
+    "indicators": [
+      "generic_api_key"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  },
+  {
+    "file": "experiments/longmemeval/run_lightmem_qwen.py",
+    "line": 92,
+    "tier": "ai_security",
+    "category": "AI Security (LLM02)",
+    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+    "indicators": [
+      "sensitive_info_disclosure"
+    ],
+    "confidence_score": 80,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "omnibus_deadline": "2027-12-02"
+  }
+]

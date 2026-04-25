@@ -1,0 +1,22 @@
+[
+  {
+    "file": "docker-compose.yml",
+    "line": 13,
+    "tier": "minimal_risk",
+    "category": "AI Infrastructure",
+    "description": "AI model serving container: Ollama",
+    "indicators": [
+      "ai_config"
+    ],
+    "confidence_score": 30,
+    "suppressed": false,
+    "provenance": "tooling",
+    "lifecycle_phases": [
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": null,
+    "deadline_status": "none",
+    "deadline_note": "Minimal-risk: no mandatory deadline."
+  }
+]

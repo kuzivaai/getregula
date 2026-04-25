@@ -1,0 +1,163 @@
+[
+  {
+    "file": "backend/alembic/versions/0024_add_capability_flags.py",
+    "line": 69,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Database query execution \u2014 no human gate detected",
+    "indicators": [
+      "Database query execution"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "backend/alembic/versions/0024_add_capability_flags.py",
+    "line": 72,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Database query execution \u2014 no human gate detected",
+    "indicators": [
+      "Database query execution"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "backend/alembic/versions/0024_add_capability_flags.py",
+    "line": 85,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Database query execution \u2014 no human gate detected",
+    "indicators": [
+      "Database query execution"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "backend/alembic/versions/0024_add_capability_flags.py",
+    "line": 101,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Database query execution \u2014 no human gate detected",
+    "indicators": [
+      "Database query execution"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "backend/alembic/versions/0024_add_capability_flags.py",
+    "line": 115,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Database query execution \u2014 no human gate detected",
+    "indicators": [
+      "Database query execution"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "backend/alembic/versions/0097_add_more_global_sources.py",
+    "line": 1,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 65,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+    "omnibus_deadline": "2026-11-02"
+  },
+  {
+    "file": "backend/app/config.py",
+    "line": 23,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "Database connection string with possible credentials in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable for connection strings. Never hardcode credentials.",
+    "indicators": [
+      "connection_string"
+    ],
+    "confidence_score": 70,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  }
+]

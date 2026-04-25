@@ -1,12 +1,11 @@
 {
-  "methodology": "Blind-labelled random corpus, production code only (default --skip-tests=True)",
+  "methodology": "Blind-labelled random corpus, production code only (default --skip-tests=True). Re-scanned with domain-gated Regula v1.7.0.",
   "corpus": "random_production",
   "sample_size_total": 201,
-  "sample_size_production": 140,
-  "total_labelled": 140,
-  "overall_precision": 0.7,
-  "ci_95_low": 62.4,
-  "ci_95_high": 77.6,
+  "sample_size_production": 118,
+  "total_labelled": 118,
+  "overall_precision": 0.814,
+  "previous_precision": 0.7,
   "by_tier": {
     "agent_autonomy": {
       "tp": 34,
@@ -14,9 +13,9 @@
       "precision": 0.829
     },
     "ai_security": {
-      "tp": 44,
-      "fp": 11,
-      "precision": 0.8
+      "tp": 41,
+      "fp": 7,
+      "precision": 0.854
     },
     "credential_exposure": {
       "tp": 1,
@@ -25,8 +24,8 @@
     },
     "high_risk": {
       "tp": 2,
-      "fp": 23,
-      "precision": 0.08
+      "fp": 7,
+      "precision": 0.222
     },
     "limited_risk": {
       "tp": 7,
@@ -34,10 +33,16 @@
       "precision": 0.875
     },
     "minimal_risk": {
-      "tp": 10,
+      "tp": 11,
       "fp": 0,
       "precision": 1.0
     }
   },
-  "note": "This measures what users actually see with default settings (--skip-tests=True). The 51.2% figure includes test code which users do not see by default."
+  "improvements": {
+    "domain_gating": "5 high_risk subcategories now opt-in via --domain flag or import fingerprinting. Removed 16 FP, 0 TP lost.",
+    "llm_import_gating": "LLM-specific OWASP findings (LLM01/02/06/07/09/10) require LLM library import. Removed 4 FP, 3 borderline TP lost.",
+    "pipeline_controlnet": "Separated pipeline from ControlNet context in risk patterns.",
+    "worker_exclusion": "Employment findings suppressed when multiprocessing/celery imported."
+  },
+  "note": "Production precision improved from 70.0% to 81.4% via domain gating, LLM import gating, and pattern fixes. 3 borderline ai_security TPs lost (LLM02 findings in files without LLM library imports). Including test code: 59.5% (was 51.2%)."
 }

@@ -1,0 +1,62 @@
+{
+  "methodology": "Re-scan of random corpus with domain-gated Regula, compared against existing BLIND_LABELS",
+  "date": "2026-04-25",
+  "sample_size_labelled": 201,
+  "labels_matched": 168,
+  "labels_suppressed": 33,
+  "labels_unmatched": 0,
+  "old_precision": 0.512,
+  "new_precision": 0.595,
+  "ci_95_low": 52.0,
+  "ci_95_high": 66.7,
+  "by_tier": {
+    "agent_autonomy": {
+      "old_tp": 34,
+      "old_fp": 30,
+      "old_precision": 0.531,
+      "new_tp": 34,
+      "new_fp": 30,
+      "new_precision": 0.531
+    },
+    "ai_security": {
+      "old_tp": 44,
+      "old_fp": 37,
+      "old_precision": 0.543,
+      "new_tp": 41,
+      "new_fp": 23,
+      "new_precision": 0.641
+    },
+    "credential_exposure": {
+      "old_tp": 1,
+      "old_fp": 2,
+      "old_precision": 0.333,
+      "new_tp": 1,
+      "new_fp": 2,
+      "new_precision": 0.333
+    },
+    "high_risk": {
+      "old_tp": 2,
+      "old_fp": 24,
+      "old_precision": 0.077,
+      "new_tp": 2,
+      "new_fp": 8,
+      "new_precision": 0.2
+    },
+    "limited_risk": {
+      "old_tp": 7,
+      "old_fp": 3,
+      "old_precision": 0.7,
+      "new_tp": 7,
+      "new_fp": 3,
+      "new_precision": 0.7
+    },
+    "minimal_risk": {
+      "old_tp": 15,
+      "old_fp": 2,
+      "old_precision": 0.882,
+      "new_tp": 15,
+      "new_fp": 2,
+      "new_precision": 0.882
+    }
+  }
+}
