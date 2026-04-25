@@ -263,6 +263,10 @@ dialog.nav-right {
     gap: var(--s4);
     flex-wrap: wrap;
 }
+button.install-box {
+    font-family: inherit;
+    border: none;
+}
 .install-box {
     display: inline-flex;
     align-items: center;
@@ -1005,6 +1009,12 @@ footer {
     color: var(--text-faint);
     font-size: 11px;
 }
+button.audience-fwd {
+    font-family: inherit;
+    font-size: inherit;
+    text-align: left;
+    background: none;
+}
 .audience-fwd {
     display: inline-flex;
     align-items: center;
@@ -1125,7 +1135,7 @@ footer {
     color: var(--text);
     transition: border-color 0.2s;
 }
-.notify input:focus { outline: none; border-color: rgba(59,130,246,0.5); }
+.notify input:focus { outline: 2px solid var(--accent); outline-offset: 2px; border-color: rgba(59,130,246,0.5); }
 .notify input::placeholder { color: var(--text-faint); }
 .notify button {
     padding: 10px 20px;
