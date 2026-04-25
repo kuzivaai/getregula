@@ -3,13 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Critical inline CSS + non-render-blocking stylesheets — see commit
-         7ed6e47 on site/index.html for the full diagnosis. TL;DR: external
-         CSS is render-blocking, so the browser's default white canvas shows
-         for hundreds of ms on cold loads. Inline critical CSS establishes the
-         dark theme immediately; `color-scheme: dark` hints the canvas colour
-         for dark-mode OSes; stylesheets load via media="print" + onload swap
-         so they don't block first paint. <noscript> fallback for JS off. -->
+    <!-- Critical inline CSS + non-render-blocking stylesheet loading.
+         Why: /assets/site.css is render-blocking, so Chrome shows a WHITE canvas
+         (the browser default) for the entire duration of the CSS fetch on cold
+         loads — measured at ~600ms on simulated 3G, worse on real slow networks.
+         That white→dark snap is what users reported as "the demo flashing": the
+         hero terminal sits at the top of the fold and takes the full brunt of it.
+         The earlier attempt (27cfba4) targeted panel opacity and font preload,
+         neither of which is the actual cause — the cause is that the browser
+         cannot paint at all until the external stylesheet arrives.
+
+         Fix: establish the brand background + basic tokens inline so first paint
+         is already dark, then load site.css asynchronously via the media="print"
+         + onload swap trick (well-documented pattern). A <noscript> fallback
+         preserves styling for JS-disabled clients. -->
     <style>
       :root { color-scheme: dark }
       html, body {
@@ -20,36 +27,54 @@
         line-height: 1.65;
         -webkit-font-smoothing: antialiased;
       }
+      /* Pre-external-CSS state for the hero terminal panels so the initial paint
+         shows the active panel at opacity 1 and hides the rest, matching the
+         post-CSS visual. Prevents a vertical stack of all four panels flashing
+         briefly before site.css loads. */
+      .term-panel { opacity: 0; position: absolute; top: 0; left: 0; right: 0 }
+      .term-panel.active { opacity: 1; position: relative }
+      .term-body { position: relative; min-height: 340px }
     </style>
     <meta name="theme-color" content="#070711">
-    <title>Regula | Conformidade IA para Código — Lei de IA da UE, LGPD e Marco Legal da IA</title>
-    <meta name="description" content="Análise estática open-source que verifica seu código de IA contra 389 padrões de risco. Lei de IA da UE, LGPD e Marco Legal da IA (PL 2338/2023). 8 linguagens. Zero dependências.">
-    <meta name="keywords" content="LGPD IA, Marco Legal da IA, PL 2338/2023, conformidade IA Brasil, ferramenta compliance IA, Lei de IA da UE, regulamentação inteligência artificial, LGPD artigo 20, classificação de risco IA">
+    <link rel="preconnect" href="https://plausible.io" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <title>Regula | Conformidade IA para Codigo — Lei de IA da UE, LGPD e Marco Legal da IA</title>
+    <meta name="description" content="Analise estatica open-source que verifica seu codigo de IA contra 389 padroes de risco. Lei de IA da UE, LGPD e Marco Legal da IA (PL 2338/2023). 8 linguagens. Zero dependencias.">
+    <meta name="keywords" content="LGPD IA, Marco Legal da IA, PL 2338/2023, conformidade IA Brasil, ferramenta compliance IA, Lei de IA da UE, regulamentacao inteligencia artificial, LGPD artigo 20, classificacao de risco IA">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta property="og:title" content="Regula | Conformidade IA para Código — UE, LGPD e Marco Legal da IA">
-    <meta property="og:description" content="Scanner gratuito e open-source que classifica risco do seu código contra Lei de IA da UE, LGPD e Marco Legal da IA. 389 padrões, 12 frameworks de conformidade.">
+    <meta property="og:title" content="Regula | Conformidade IA para Codigo — UE, LGPD e Marco Legal da IA">
+    <meta property="og:description" content="Scanner gratuito e open-source que classifica risco do seu codigo contra Lei de IA da UE, LGPD e Marco Legal da IA. 389 padroes, 12 frameworks de conformidade.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/locales/pt-br.html">
-    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Regula">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@kuzivaai">
+    <meta property="og:locale" content="pt_BR">
+    <meta name="twitter:title" content="Regula | Scanner de risco — Lei de IA da UE, LGPD e Marco Legal">
+    <meta name="twitter:description" content="CLI gratuita que classifica risco do seu codigo contra Lei de IA da UE, LGPD e Marco Legal da IA.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Regula — scanner de conformidade da Lei de IA da UE para codigo">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
-    <meta name="twitter:title" content="Regula | Scanner de risco — Lei de IA da UE, LGPD e Marco Legal">
-    <meta name="twitter:description" content="CLI gratuita que classifica risco do seu código contra Lei de IA da UE, LGPD e Marco Legal da IA.">
+    <meta name="twitter:image:alt" content="Regula — scanner de conformidade da Lei de IA da UE para codigo">
+    <meta name="author" content="Regula">
     <link rel="canonical" href="https://getregula.com/locales/pt-br.html">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
         "name": "Regula",
-        "description": "CLI open-source que analisa código contra padrões de risco de conformidade. Lei de IA da UE, LGPD e Marco Legal da IA. 389 padrões de risco, 8 linguagens de programação, 12 frameworks de conformidade.",
+        "description": "CLI open-source que analisa codigo contra padroes de risco de conformidade. Lei de IA da UE, LGPD e Marco Legal da IA. 389 padroes de risco, 8 linguagens de programacao, 12 frameworks de conformidade.",
         "url": "https://getregula.com/locales/pt-br.html",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Linux, macOS, Windows",
         "license": "https://www.apache.org/licenses/LICENSE-2.0",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
         "softwareVersion": "1.7.0",
         "programmingLanguage": "Python",
         "codeRepository": "https://github.com/kuzivaai/getregula",
@@ -63,7 +88,7 @@
         "name": "Regula",
         "url": "https://getregula.com",
         "logo": "https://getregula.com/assets/og-image.png",
-        "description": "Open-source EU AI Act compliance CLI for developers.",
+        "description": "CLI open-source de conformidade com a Lei de IA da UE para desenvolvedores.",
         "sameAs": [
             "https://github.com/kuzivaai/getregula",
             "https://pypi.org/project/regula-ai/"
@@ -82,18 +107,18 @@
         "mainEntity": [
             {
                 "@type": "Question",
-                "name": "Meu aplicativo de IA é proibido pela Lei de IA da UE?",
+                "name": "Meu aplicativo de IA e proibido pela Lei de IA da UE?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Pontuação social, manipulação subliminar, reconhecimento facial em tempo real em espaços públicos e inferência de emoções no ambiente de trabalho são proibidos pelo Artigo 5. O Regula escaneia seu código em busca de padrões que correspondam a esses usos proibidos."
+                    "text": "Pontuacao social, manipulacao subliminar, reconhecimento facial em tempo real em espacos publicos e inferencia de emocoes no ambiente de trabalho sao proibidos pelo Artigo 5. O Regula escaneia seu codigo em busca de padroes que correspondam a esses usos proibidos."
                 }
             },
             {
                 "@type": "Question",
-                "name": "A Lei de IA da UE se aplica à minha empresa se estou fora da UE?",
+                "name": "A Lei de IA da UE se aplica a minha empresa se estou fora da UE?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Sim. O Artigo 2(1)(c) se aplica extraterritorialmente. Se a saída do seu sistema de IA é utilizada na UE, a regulamentação se aplica independentemente de onde sua empresa está estabelecida. Isso abrange EAU, Reino Unido, EUA, Brasil e qualquer fornecedor ou implantador fora da UE."
+                    "text": "Sim. O Artigo 2(1)(c) se aplica extraterritorialmente. Se a saida do seu sistema de IA e utilizada na UE, a regulamentacao se aplica independentemente de onde sua empresa esta estabelecida. Isso abrange EAU, Reino Unido, EUA, Brasil e qualquer fornecedor ou implantador fora da UE."
                 }
             },
             {
@@ -101,39 +126,47 @@
                 "name": "O que torna um sistema de IA de alto risco segundo a Lei de IA da UE?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "O Anexo III lista oito categorias de alto risco, incluindo pontuação de crédito, contratação, serviços de saúde, avaliação educacional, aplicação da lei, controle de fronteiras, serviços essenciais e integridade do processo democrático. O Regula identifica padrões de código que correspondem a cada categoria."
+                    "text": "O Anexo III lista oito categorias de alto risco, incluindo pontuacao de credito, contratacao, servicos de saude, avaliacao educacional, aplicacao da lei, controle de fronteiras, servicos essenciais e integridade do processo democratico. O Regula identifica padroes de codigo que correspondem a cada categoria."
                 }
             },
             {
                 "@type": "Question",
-                "name": "Quando a Lei de IA da UE começa a ser aplicada?",
+                "name": "Quando a Lei de IA da UE comeca a ser aplicada?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "As proibições do Artigo 5 entraram em vigor em 2 de fevereiro de 2025. As obrigações de GPAI (Artigos 51-55) entraram em vigor em 2 de agosto de 2025. As obrigações de alto risco (Artigos 9-15) entram em vigor em 2 de agosto de 2026. Um Digital Omnibus proposto pode adiar alguns prazos do Anexo III para dezembro de 2027, mas ainda não é lei."
+                    "text": "As proibicoes do Artigo 5 entraram em vigor em 2 de fevereiro de 2025. As obrigacoes de GPAI (Artigos 51-55) entraram em vigor em 2 de agosto de 2025. As obrigacoes de alto risco (Artigos 9-15) entram em vigor em 2 de agosto de 2026. Um Digital Omnibus proposto pode adiar alguns prazos do Anexo III para dezembro de 2027, mas ainda nao e lei."
                 }
             },
             {
                 "@type": "Question",
-                "name": "O Regula é gratuito?",
+                "name": "O Regula e gratuito?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Sim. O Regula é open source sob a licença Apache 2.0. Sem conta, sem chave de API, sem ligação comercial. Instale com pipx install regula-ai e execute localmente no seu código. A CLI completa, todos os 61 comandos, todos os 389 padrões de risco e todos os 12 mapeamentos de frameworks de conformidade são gratuitos."
+                    "text": "Sim. O Regula e open source sob a licenca Apache 2.0. Sem conta, sem chave de API, sem ligacao comercial. Instale com pipx install regula-ai e execute localmente no seu codigo. A CLI completa, todos os 61 comandos (incluindo regula handoff para escopo Garak/Giskard/Promptfoo e regula regwatch para alertas de drift delta-log), todos os 389 padroes de risco e todos os 12 mapeamentos de frameworks de conformidade sao gratuitos."
                 }
             },
             {
                 "@type": "Question",
-                "name": "Quais são as multas da Lei de IA da UE?",
+                "name": "Quais sao as multas da Lei de IA da UE?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Práticas de IA proibidas (Artigo 5) acarretam multas de até 35 milhões de euros ou 7% do faturamento anual global, o que for maior. Violações de alto risco acarretam multas de até 15 milhões de euros ou 3% do faturamento. Não conformidade com requisitos de informação acarreta multas de até 7,5 milhões de euros ou 1% do faturamento."
+                    "text": "Praticas de IA proibidas (Artigo 5) acarretam multas de ate 35 milhoes de euros ou 7% do faturamento anual global, o que for maior. Violacoes de alto risco acarretam multas de ate 15 milhoes de euros ou 3% do faturamento. Nao conformidade com requisitos de informacao acarreta multas de ate 7,5 milhoes de euros ou 1% do faturamento."
                 }
             },
             {
                 "@type": "Question",
-                "name": "O Regula pode testar modelos de IA para viés?",
+                "name": "O Regula pode testar modelos de IA para vies?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "O Regula inclui um comando opcional de avaliação de viés (regula bias) que executa benchmarks de estereótipos CrowS-Pairs e BBQ contra um modelo Ollama local, com intervalos de confiança estatísticos. É um ponto de partida em tempo de desenvolvimento para documentação de viés do Artigo 10, não uma ferramenta de teste de fairness em produção. Para medição de viés em produção, use plataformas dedicadas como IBM watsonx.governance ou Fiddler AI."
+                    "text": "O Regula inclui um comando opcional de avaliacao de vies (regula bias) que executa benchmarks de estereotipos CrowS-Pairs e BBQ contra um modelo Ollama local, com intervalos de confianca estatisticos. E um ponto de partida em tempo de desenvolvimento para documentacao de vies do Artigo 10, nao uma ferramenta de teste de fairness em producao. Para medicao de vies em producao, use plataformas dedicadas como IBM watsonx.governance ou Fiddler AI."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "A LGPD e o Marco Legal da IA se aplicam ao meu sistema de IA?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "A LGPD (Lei 13.709/2018) ja esta em vigor e o Artigo 20 garante ao titular dos dados o direito de solicitar revisao de decisoes tomadas exclusivamente por tratamento automatizado. O Marco Legal da IA (PL 2338/2023) foi aprovado no Senado em dezembro de 2024 e esta em Comissao Especial na Camara. Se aprovado, criara um regime de classificacao de risco semelhante a Lei de IA da UE. O Regula suporta ambos: regula gap --framework lgpd e regula gap --framework marco-legal-ia."
                 }
             }
         ]
@@ -144,451 +177,741 @@
     <link rel="alternate" hreflang="pt-BR" href="https://getregula.com/locales/pt-br.html">
     <link rel="alternate" hreflang="x-default" href="https://getregula.com/">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <!-- Stylesheets loaded via media="print" + onload swap so they don't block
+         first paint. The inline critical CSS above already establishes the dark
+         theme; these sheets layer on the full design system once they arrive.
+         <noscript> fallback ensures JS-disabled clients still get full styling. -->
     <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
          If adding a Content Security Policy, migrate to a hashed <script> block. -->
     <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
-    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
     <noscript>
         <link rel="stylesheet" href="/assets/fonts.css">
         <link rel="stylesheet" href="/assets/site.css">
     </noscript>
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- JetBrains Mono is used only inside the hero terminal demo. Preload
+         eliminates the font-swap reflow that otherwise reads as a flash
+         when the woff2 arrives late. -->
+    <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <style>
+        /* pt-br.html overrides — values that intentionally differ from site.css */
+        body { line-height: 1.6; }
+        .nav { height: 52px; }
+        .badge { gap: 6px; padding: 4px 12px; }
+        .badge-dot { width: 5px; height: 5px; }
+        .hero h1 { font-size: 60px; line-height: 1.1; letter-spacing: -0.04em; }
+        .hero .sub { font-size: 16px; color: var(--text-dim); }
+        .term-bar { background: #080813; border-bottom-color: rgba(255,255,255,0.06); }
+        .td-r { background: var(--danger); } .td-y { background: #eab308; } .td-g { background: #22c55e; }
+        .sec { padding: 80px 32px 0; }
+        .sec-head { font-size: 28px; letter-spacing: -0.03em; line-height: 1.2; }
+        .sec-sub { margin-bottom: 32px; max-width: none; }
+        .sep { margin: 80px auto 0; height: 1px; background: rgba(255,255,255,0.06); border-top: none; }
+        .art-grid { gap: 10px; }
+        .cm { align-items: baseline; }
+        .cm code { background: none; padding: 0; border-radius: 0; }
+        .final-wrap { margin-top: 80px; border-color: rgba(255,255,255,0.06); }
+        .final-glow { top: -50%; bottom: auto; width: 600px; background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 65%); }
+        .final { max-width: 640px; padding: 80px 32px; }
+        .final h2 { font-size: 36px; margin-bottom: 10px; }
+        .final p { font-size: 15px; margin-bottom: 28px; line-height: 1.6; }
+        .final .install-box { margin: 0 auto 24px; }
+        .foot { max-width: 1200px; margin: 0 auto; padding: 28px 32px; border-top: 1px solid rgba(255,255,255,0.06); }
+        .foot-brand { font-size: 14px; }
+        .foot-links { margin-bottom: 8px; }
+        .foot-copy { font-size: 12px; margin-top: 8px; }
+        .foot-legal { border-color: rgba(255,255,255,0.05); }
+        .skip-link { text-decoration: none; }
+        @media (max-width: 768px) {
+            dialog.nav-right { top: 52px; }
+        }
+        @media (max-width: 900px) {
+            .hero { gap: 36px; padding: 48px 20px 32px; }
+            .hero h1 { font-size: 36px; }
+            .art-grid { grid-template-columns: 1fr; }
+            .scroll-hint { display: block !important; }
+        }
+        @media (max-width: 640px) {
+            .nav { padding: 0 16px; }
+            .hero { padding: 36px 16px 24px; }
+            .sec { padding: 56px 16px 0; }
+            .sep { margin: 56px auto 0; }
+            .final { padding: 56px 16px; }
+        }
+    </style>
     <!-- Privacy-friendly analytics by Plausible -->
     <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
     <script>
       window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
       plausible.init()
     </script>
+    <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 </head>
 <body>
-    <a href="#main" class="skip-link">Pular para o conteúdo</a>
 
-    <nav class="nav" id="nav" aria-label="Navegação principal">
-        <a href="/" class="nav-brand">Regula</a>
-        <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-        <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
-            <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
-            <a href="/regions/regulations.html" title="Rastreador global de regulação de IA">Regulação</a>
-            <a href="/blog/writing.html" title="Blog">Blog</a>
-            <a href="/">EN</a>
-            <a href="/locales/de.html">DE</a>
-            <span class="active">BR</span>
-        </dialog>
-    </nav>
+<a href="#main" class="skip-link">Pular para o conteudo</a>
+<!-- NAV -->
+<nav class="nav" id="nav" aria-label="Navegacao principal">
+    <a href="/" class="nav-brand">Regula</a>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html" title="Rastreador global de regulacao de IA">Regulacao</a>
+        <a href="/blog/writing.html" title="Blog">Blog</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <span class="active">BR</span>
+    </dialog>
+</nav>
 
-    <main id="main">
-    <div class="hero-wrap">
-        <div class="hero-glow"></div>
-        <div class="hero">
-            <div class="hero-text">
-                <div class="badge"><span class="badge-dot"></span>CLI open-source &middot; v1.7.0 &middot; Apache 2.0 + <a href="https://github.com/kuzivaai/getregula/blob/main/docs/LICENSE.Detection.Rules.md" title="Detection Rule License: regras de detecção são licenciadas sob Apache 2.0 com cláusula de atribuição e uso responsável" style="color:inherit;text-decoration:underline dotted;text-underline-offset:3px;">DRL 1.1</a></div>
-                <h1>Descubra se seu sistema de IA é de <span class="hl">alto risco</span> antes que os reguladores descubram.</h1>
-                <p class="sub">Scanner gratuito e open-source que mostra em qual nível de risco da Lei de IA da UE você está, por quê, e o que fazer. <strong>Sem conta, sem API key, sem consultores.</strong></p>
-                <div class="install-row">
-                    <div class="install-box" onclick="navigator.clipboard.writeText('pipx install regula-ai');this.querySelector('.cp').textContent='copiado'">
-                        <span class="dollar">$</span>
-                        <span class="cmd">pipx install regula-ai</span>
-                        <span class="cp">copiar</span>
-                    </div>
-                    <a href="https://github.com/kuzivaai/getregula" class="gh-link">
-                        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.38-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.38-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.38.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-                        Ver no GitHub
-                    </a>
+<!-- HERO -->
+<main id="main">
+<div class="hero-wrap">
+    <div class="hero-glow"></div>
+    <div class="hero">
+        <div class="hero-text">
+            <div class="badge"><span class="badge-dot"></span> CLI open-source &middot; v1.7.0 &middot; Apache 2.0</div>
+            <h1>Seu app de IA e de <span class="hl">alto risco</span> na Europa?</h1>
+            <p class="sub">Um comando mostra em qual nivel de risco da Lei de IA da UE seu codigo se encontra, por que, e o que corrigir. <strong>30 segundos, gratis, sem conta.</strong></p>
+
+            <button class="cta-pill" id="install-pill" onclick="copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
+                <span>&#9654;</span>
+                Teste gratis em 30 segundos
+            </button>
+
+            <div class="cta-secondary">
+                sem conta, sem API key &middot;
+                <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
+            </div>
+            <div class="social-proof">
+                <span>Licenca Apache 2.0</span>
+                <span class="sp-sep" aria-hidden="true">&middot;</span> zero dependencias
+                <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">1.111</strong> testes &middot; <strong style="color:var(--text);">0</strong> vulnerabilidades
+                <span class="sp-sep" aria-hidden="true">&middot;</span> <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md" style="color:#8888aa;">trust pack</a>
+            </div>
+        </div>
+
+        <!-- TERMINAL -->
+        <div class="term-wrap" role="region" aria-label="Demo interativa da CLI Regula. Alterne as abas para ver exemplos de saida dos comandos regula check, plan, gap e comply">
+            <div class="term-bar" aria-hidden="true">
+                <div class="term-dot td-r"></div>
+                <div class="term-dot td-y"></div>
+                <div class="term-dot td-g"></div>
+            </div>
+            <div class="term-tabs" role="tablist" aria-label="Exemplos de comandos Regula">
+                <div class="term-tab active" role="tab" id="tab-check-label" tabindex="0" aria-selected="true" aria-controls="tab-check" onclick="switchTab('check', this)" onkeydown="handleTabKey(event, this)">check</div>
+                <div class="term-tab" role="tab" id="tab-plan-label" tabindex="-1" aria-selected="false" aria-controls="tab-plan" onclick="switchTab('plan', this)" onkeydown="handleTabKey(event, this)">plan</div>
+                <div class="term-tab" role="tab" id="tab-gap-label" tabindex="-1" aria-selected="false" aria-controls="tab-gap" onclick="switchTab('gap', this)" onkeydown="handleTabKey(event, this)">gap</div>
+                <div class="term-tab" role="tab" id="tab-comply-label" tabindex="-1" aria-selected="false" aria-controls="tab-comply" onclick="switchTab('comply', this)" onkeydown="handleTabKey(event, this)">comply</div>
+            </div>
+            <div class="term-body">
+                <div class="term-panel active" id="tab-check" role="tabpanel" aria-labelledby="tab-check-label">
+                    <pre><span class="t-p">$</span> <span class="t-c">regula check . --explain</span>
+
+<span class="t-h">Classification: HIGH-RISK</span>
+  Annex III, Category 5
+
+<span class="t-y">WHY:</span>
+  scoring.py:23 &mdash; essential_services
+    <span class="t-m">Code: score = model.predict(applicant)</span>
+    Legal basis: Annex III &mdash; Articles 9-15
+    False positive if: not a credit decision
+
+<span class="t-h">ROLE:</span> DEPLOYER (confidence: high)
+  <span class="t-m">- OpenAI API usage detected</span>
+
+<span class="t-y">OBLIGATIONS:</span>
+  <span class="t-c">[HIGH]</span> Art. 9  Risk management   &mdash; 40-60h
+  <span class="t-c">[HIGH]</span> Art. 14 Human oversight  &mdash; 16-24h
+  Total: 160-324h | Deadline: <span class="t-y">Aug 2026</span>
+  <span class="t-m">&#9888; Omnibus may delay to Dec 2027 (not yet law)</span></pre>
+                </div>
+                <div class="term-panel" id="tab-plan" role="tabpanel" aria-labelledby="tab-plan-label">
+                    <pre><span class="t-p">$</span> <span class="t-c">regula plan .</span>
+
+<span class="t-h">COMPLIANCE PLAN  &middot;  HIGH-RISK (Annex III, Category 5)</span>
+
+Priority 1 &mdash; Risk Management System (Art. 9)
+  Effort: 40&ndash;60h
+  <span class="t-r">&times;</span> No risk assessment file found
+  <span class="t-r">&times;</span> No model evaluation documented
+
+Priority 2 &mdash; Human Oversight (Art. 14)
+  Effort: 16&ndash;24h
+  <span class="t-r">&times;</span> No review-before-action pattern detected
+  <span class="t-r">&times;</span> No override mechanism found
+
+Priority 3 &mdash; Technical Documentation (Art. 11)
+  Effort: 8&ndash;12h
+  <span class="t-g">&#10003;</span> Annex IV template: regula docs .
+
+Total: 64&ndash;96h estimated effort</pre>
+                </div>
+                <div class="term-panel" id="tab-gap" role="tabpanel" aria-labelledby="tab-gap-label">
+                    <pre><span class="t-p">$</span> <span class="t-c">regula gap .</span>
+
+<span class="t-h">COMPLIANCE GAP ASSESSMENT</span>
+
+Art. 9  Risk management    <span class="t-r">&#9608;&#9608;</span><span class="t-m">&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;</span>  20%  <span class="t-r">FAIL</span>
+Art. 10 Data governance    <span class="t-y">&#9608;&#9608;&#9608;&#9608;</span><span class="t-m">&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;</span>  40%  <span class="t-y">WARN</span>
+Art. 11 Documentation      <span class="t-y">&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;</span><span class="t-m">&#9617;&#9617;&#9617;&#9617;</span>  60%  <span class="t-y">WARN</span>
+Art. 12 Record-keeping     <span class="t-g">&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;</span><span class="t-m">&#9617;&#9617;</span>  80%  <span class="t-g">PASS</span>
+Art. 13 Transparency       <span class="t-m">&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;</span>   0%  <span class="t-r">FAIL</span>
+Art. 14 Human oversight    <span class="t-r">&#9608;&#9608;&#9608;</span><span class="t-m">&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;&#9617;</span>  30%  <span class="t-r">FAIL</span>
+Art. 15 Accuracy           <span class="t-y">&#9608;&#9608;&#9608;&#9608;&#9608;</span><span class="t-m">&#9617;&#9617;&#9617;&#9617;&#9617;</span>  50%  <span class="t-y">WARN</span>
+
+Run: <span class="t-b">regula plan .</span> for a prioritised fix list</pre>
+                </div>
+                <div class="term-panel" id="tab-comply" role="tabpanel" aria-labelledby="tab-comply-label">
+                    <pre><span class="t-p">$</span> <span class="t-c">regula comply</span>
+
+<span class="t-h">EU AI Act Compliance Checklist</span>
+  Overall compliance score: 42/100
+
+  <span class="t-r">&times;</span> Article 9   Risk Management              20%  <span class="t-r">NEEDS WORK</span>
+  <span class="t-y">~</span> Article 10  Data Governance              40%  <span class="t-y">PARTIAL</span>
+  <span class="t-y">~</span> Article 11  Technical Documentation      60%  <span class="t-y">PARTIAL</span>
+  <span class="t-g">&#10003;</span> Article 12  Record-Keeping              80%  <span class="t-g">PASS</span>
+  <span class="t-r">&times;</span> Article 13  Transparency                 0%  <span class="t-r">NOT FOUND</span>
+  <span class="t-r">&times;</span> Article 14  Human Oversight             30%  <span class="t-r">NEEDS WORK</span>
+  <span class="t-y">~</span> Article 15  Accuracy &amp; Robustness       50%  <span class="t-y">PARTIAL</span>
+
+  1/7 obligations have strong evidence
+
+Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
                 </div>
             </div>
-            <div class="term">
-                <div class="term-bar" aria-hidden="true"><div class="term-dot td-r"></div><div class="term-dot td-y"></div><div class="term-dot td-g"></div></div>
-                <pre aria-label="Saída exemplo de regula check"><span class="p">$</span> <span class="c">regula check .</span>
+        </div>
+    </div>
+</div>
 
-<span class="h">Regula Scan: servico-ml-pagamento</span>
-───────────────────────────────────────
-  Arquivos verificados: <span class="c">47</span>
-  Proibido:             <span class="g">0</span>
-  Alto risco:           <span class="y">2</span>       <span class="m"># Art. 6 pontuação de crédito</span>
-  Credenciais:          <span class="g">0</span>
-  Nível BLOQUEAR:       <span class="g">0</span>
-  Nível ALERTA:         <span class="y">2</span>
-───────────────────────────────────────
-  <span class="g">&#10004; Nenhuma prática proibida (Art. 5)</span>
-  <span class="y">&#9888; 2 alto risco: revisar gestão de risco Art. 9</span></pre>
-            </div>
+<script>
+  // Flip panel transitions on AFTER the first paint so the terminal does
+  // not play its 0→1 opacity fade on page load. Uses requestAnimationFrame
+  // rather than DOMContentLoaded so the class lands just after the browser
+  // has committed initial styles — guaranteed no flash.
+  requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+          document.body.classList.add('term-panels-ready');
+      });
+  });
+</script>
+
+<!-- PARA QUEM E ISTO -->
+<div class="sec reveal">
+    <h2 class="sec-head">Para quem e isto?</h2>
+    <p class="sec-sub">Desenvolvedores que enviam produtos de IA, e as empresas que os utilizam.</p>
+    <div class="audience-grid">
+        <div class="audience-card audience-biz">
+            <div class="audience-label">Se voce dirige o negocio</div>
+            <h3>Voce conhece sua exposicao legal?</h3>
+            <p>Se sua equipe constroi ou usa IA, a Lei de IA da UE pode se aplicar, mesmo fora da UE. A maioria das ferramentas se enquadra em risco limitado ou minimo. Usa Claude Code ou Cursor? Cole <code>regula assess</code> no seu chat. Tem um desenvolvedor? Envie esta pagina.</p>
+            <button class="audience-fwd" onclick="copyPageUrl(this)">
+                <span class="fwd-icon">&#8599;</span>
+                <span class="fwd-txt">Copiar link para enviar ao seu desenvolvedor</span>
+            </button>
+            <button class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
+                <span class="fwd-icon">&#9654;</span>
+                <span class="fwd-txt">Executar regula assess (sem codigo necessario)</span>
+            </button>
+        </div>
+        <div class="audience-card audience-dev">
+            <div class="audience-label">Se voce escreve o codigo</div>
+            <h3>Usuarios na UE? A Lei de IA se aplica a voce.</h3>
+            <p>O Artigo 2 e extraterritorial. A maioria dos chatbots e ferramentas de produtividade sao risco limitado: uma divulgacao de transparencia, nada mais. Escaneie para confirmar.</p>
+            <ul>
+                <li>Funciona com codigo gerado por IA (Cursor, Lovable, Bolt, Claude Code)</li>
+                <li>Gera documentacao Anexo IV a partir do seu codigo real</li>
+                <li>Integracao CI/CD &middot; JSON &middot; SARIF &middot; 12 frameworks de conformidade</li>
+            </ul>
+            <span class="step-cmd" style="margin-top:18px;">regula check .</span>
+        </div>
+        <div class="audience-card audience-audit">
+            <div class="audience-label">Se voce audita conformidade</div>
+            <h3>Evidencia verificavel, nao autoatestacao.</h3>
+            <p>O Regula gera pacotes de evidencias assinados e com marca temporal, com manifestos de integridade SHA-256. Cada descoberta e rastreavel ate um arquivo e linha. Verifique a cadeia voce mesmo.</p>
+            <button class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula evidence-pack --sign .')">
+                <span class="fwd-icon">&#9654;</span>
+                <span class="fwd-txt">regula evidence-pack --sign .</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- O QUE A REGULA MOSTRA -->
+<div class="sec reveal" id="tiers">
+    <h2 class="sec-head">O que a Regula mostra</h2>
+    <p class="sec-sub">A Lei de IA da UE classifica cada sistema de IA em um nivel de risco. O Regula escaneia seu codigo, mostra qual nivel se aplica e da a lista de correcoes.</p>
+    <div class="tiers">
+        <div class="tier tier-r">
+            <div class="tier-badge">Proibido</div>
+            <div class="tier-examples">Pontuacao social &middot; Inferencia de emocoes &middot; Biometria em tempo real &middot; Manipulacao subliminar</div>
+            <div class="tier-hint">Art. 5, proibido &rarr;</div>
+        </div>
+        <div class="tier tier-a">
+            <div class="tier-badge">Alto risco</div>
+            <div class="tier-examples">Pontuacao de credito &middot; Emprego &middot; Servicos de saude &middot; Educacao &middot; Aplicacao da lei</div>
+            <div class="tier-hint">Art. 9&ndash;15 aplicaveis &rarr;</div>
+        </div>
+        <div class="tier tier-y">
+            <div class="tier-badge">Risco limitado</div>
+            <div class="tier-examples">Chatbots &middot; Conteudo sintetico &middot; Reconhecimento de emocoes &middot; Deep fakes</div>
+            <div class="tier-hint">Regras de transparencia &rarr;</div>
+        </div>
+        <div class="tier tier-g">
+            <div class="tier-badge">Risco minimo</div>
+            <div class="tier-examples">Filtros de spam &middot; Jogos com IA &middot; Recomendacoes basicas &middot; Ranking de busca</div>
+            <div class="tier-hint">Sem requisitos obrigatorios &rarr;</div>
+        </div>
+    </div>
+    <p class="tier-cta">O Regula mostra onde seu codigo se encaixa, e exatamente por que.</p>
+</div>
+
+<div class="urgency">
+    <div class="urgency-box" role="note">
+        <div class="date">2026&ndash;27</div>
+        <div class="body"><strong>Obrigacoes de alto risco</strong> comecam em agosto de 2026, ou dezembro de 2027 se o Digital Omnibus for aprovado (Parlamento votou 569&ndash;45 a favor, marco 2026; trilogo a partir de 28 de abril). De qualquer forma, os requisitos nao mudam. <strong>Voce precisa saber onde esta.</strong></div>
+    </div>
+</div>
+
+<!-- Brazil-specific regulatory urgency -->
+<div class="urgency">
+    <div class="urgency-box" role="note">
+        <div class="date">Brasil</div>
+        <div class="body"><strong>LGPD Artigo 20</strong> ja esta em vigor: titulares podem solicitar revisao de decisoes automatizadas. O <strong>Marco Legal da IA (PL 2338/2023)</strong> foi aprovado no Senado em dezembro de 2024 e esta em Comissao Especial na Camara. Se aprovado, criara classificacao de risco semelhante a Lei de IA da UE. O Regula suporta ambos: <code>regula gap --framework lgpd</code> e <code>regula gap --framework marco-legal-ia</code>.</div>
+    </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- COMO FUNCIONA -->
+<div class="sec reveal" id="how">
+    <h2 class="sec-head">Como funciona</h2>
+    <p class="sec-sub">Tres passos. Sem conta, sem chave de API, nenhum dado sai da sua maquina.</p>
+    <div class="art-grid">
+        <div class="card-base art-card" style="text-align:center;">
+            <div class="tag tag-blue">Passo 1</div>
+            <h3>Instalar</h3>
+            <p><code>pipx install regula-ai</code><br>Funciona em qualquer SO. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md" style="color:#8888aa;">Outros metodos &#8599;</a></p>
+        </div>
+        <div class="card-base art-card" style="text-align:center;">
+            <div class="tag tag-blue">Passo 2</div>
+            <h3>Verificar</h3>
+            <p><code>regula</code><br>Pontuacao de conformidade, achados e proximos passos.</p>
+        </div>
+        <div class="card-base art-card" style="text-align:center;">
+            <div class="tag tag-blue">Passo 3</div>
+            <h3>Agir</h3>
+            <p><code>regula comply</code><br>Checklist de obrigacoes com status por artigo.</p>
+        </div>
+    </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar reveal">
+    <div class="stats-inner">
+        <div class="stat-item">
+            <div class="stat-num">389</div>
+            <div class="stat-label">padroes de risco verificados</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">8</div>
+            <div class="stat-label">linguagens de programacao</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">12</div>
+            <div class="stat-label">frameworks de conformidade</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">0</div>
+            <div class="stat-label">dependencias externas</div>
+        </div>
+    </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- FUNCIONALIDADES (antes da comparacao competitiva por pesquisa UX: usuarios devem entender capacidades antes de ver como se comparam) -->
+<div class="sec reveal" id="features">
+    <h2 class="sec-head">O que o Regula faz</h2>
+    <p class="sec-sub">O Regula le seu codigo diretamente, nao um questionario. Gera artefatos que um auditor pode revisar, nao apenas achados.</p>
+
+    <div class="feature-category">Avaliar</div>
+    <div class="art-grid">
+        <div class="card-base art-card">
+            <div class="tag tag-blue">Lacunas</div>
+            <h3>O que esta faltando?</h3>
+            <p>Gestao de riscos, governanca de dados, logging, transparencia, supervisao humana, precisao. Pontuacao por artigo com estimativas de esforco.</p>
+            <code style="font-size:11px;color:#9898b4;">regula gap .</code>
+        </div>
+        <div class="card-base art-card">
+            <div class="tag tag-purple">Seguranca</div>
+            <h3>Seu codigo de IA e seguro?</h3>
+            <p>Injecao de prompt, carregamento inseguro de modelo, saida de IA nao validada, chaves hardcoded e outras vulnerabilidades especificas de IA.</p>
+            <code style="font-size:11px;color:#9898b4;">regula check . &middot; regula guardrails .</code>
+        </div>
+        <div class="card-base art-card">
+            <div class="tag tag-blue">Supervisao</div>
+            <h3>Analise de revisao humana</h3>
+            <p>Rastreia saidas de IA entre arquivos. Verifica se cada caminho ate um endpoint voltado ao usuario passa por um gate de revisao humana.</p>
+            <code style="font-size:11px;color:#9898b4;">regula oversight .</code>
         </div>
     </div>
 
-    <!-- PARA QUEM É ISTO -->
-    <div class="sec">
-        <h2 class="sec-head">Para quem é isto?</h2>
-        <p class="sec-sub">Desenvolvedores que enviam produtos de IA, e as empresas que os utilizam.</p>
-        <div class="audience-grid">
-            <div class="audience-card audience-biz">
-                <div class="audience-label">Se você dirige o negócio</div>
-                <h3>Você conhece sua exposição legal?</h3>
-                <p>Se sua equipe constrói ou usa IA, a Lei de IA da UE pode se aplicar, mesmo fora da UE. A maioria das ferramentas se enquadra em risco limitado ou mínimo. Envie esta página para seu desenvolvedor. Um comando. Você recebe um relatório para sua diretoria.</p>
-                <div class="audience-fwd" onclick="copyPageUrl(this)">
-                    <span class="fwd-icon">&#8599;</span>
-                    <span class="fwd-txt">Copiar link para enviar ao seu desenvolvedor</span>
-                </div>
-                <div class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
-                    <span class="fwd-icon">&#9654;</span>
-                    <span class="fwd-txt">Executar regula assess, sem código necessário</span>
-                </div>
-            </div>
-            <div class="audience-card audience-dev">
-                <div class="audience-label">Se você escreve o código</div>
-                <h3>Usuários na UE? A Lei de IA se aplica a você.</h3>
-                <p>O Artigo 2 é extraterritorial. A maioria dos chatbots e ferramentas de produtividade são risco limitado: uma divulgação de transparência, nada mais. Escaneie para confirmar.</p>
-                <ul>
-                    <li>Funciona com código gerado por IA (Cursor, Lovable, Bolt, Claude Code)</li>
-                    <li>Gera documentação Anexo IV a partir do seu código real</li>
-                    <li>Integração CI/CD &middot; JSON &middot; SARIF &middot; 12 frameworks de conformidade</li>
-                </ul>
-                <span class="step-cmd" style="margin-top:18px;">regula check .</span>
-            </div>
-            <div class="audience-card audience-audit">
-                <div class="audience-label">Se você audita conformidade</div>
-                <h3>Evidência verificável, não autoatestação.</h3>
-                <p>O Regula gera pacotes de evidências assinados e com marca temporal, com manifestos de integridade SHA-256. Cada descoberta é rastreável até um arquivo e linha. Verifique a cadeia você mesmo.</p>
-                <div class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula evidence-pack --sign .')">
-                    <span class="fwd-icon">&#9654;</span>
-                    <span class="fwd-txt">regula evidence-pack --sign .</span>
-                </div>
-            </div>
+    <div class="feature-category">Evidencias</div>
+    <div class="art-grid">
+        <div class="card-base art-card">
+            <div class="tag tag-blue">Documentacao</div>
+            <h3>Voce consegue provar conformidade?</h3>
+            <p>Documentacao tecnica Anexo IV gerada a partir do seu codigo real. Funcoes, dependencias e cobertura de logging pre-preenchidos.</p>
+            <code style="font-size:11px;color:#9898b4;">regula docs . &middot; regula conform .</code>
+        </div>
+        <div class="card-base art-card">
+            <div class="tag tag-purple">Evidencias</div>
+            <h3>Pacote de avaliacao de conformidade</h3>
+            <p>Evidencias Art. 43: 26 arquivos mapeados para Artigos 9&ndash;15, pontuacoes de prontidao por artigo, hashes de integridade SHA-256.</p>
+            <code style="font-size:11px;color:#9898b4;">regula conform . &middot; regula evidence-pack .</code>
+        </div>
+        <div class="card-base art-card">
+            <div class="tag tag-purple">Integridade</div>
+            <h3>A prova de adulteracao e assinado</h3>
+            <p>Manifesto SHA-256 + assinatura Ed25519 + carimbos de tempo RFC 3161. Prove quando a avaliacao foi produzida e que nao foi alterada.</p>
+            <code style="font-size:11px;color:#9898b4;">regula evidence-pack --sign --timestamp .</code>
+        </div>
+        <div class="card-base art-card">
+            <div class="tag tag-purple">AI BOM</div>
+            <h3>Lista de materiais de IA</h3>
+            <p>AI-BOMs CycloneDX 1.7 com proveniencia de modelo, anotacoes de nivel GPAI por Art 51&ndash;55 e datasets de treinamento detectados.</p>
+            <code style="font-size:11px;color:#9898b4;">regula sbom --ai-bom .</code>
         </div>
     </div>
 
-    <div class="sep"></div>
-
-    <!-- O QUE A REGULA MOSTRA -->
-    <div class="sec" id="tiers">
-        <h2 class="sec-head">O que a Regula mostra</h2>
-        <p class="sec-sub">A Lei de IA da UE classifica cada sistema de IA em um nível de risco. O Regula escaneia seu código, mostra qual nível se aplica e dá a lista de correções.</p>
-        <div class="tiers">
-            <div class="tier tier-r">
-                <div class="tier-badge">Proibido</div>
-                <div class="tier-examples">Pontuação social &middot; Inferência de emoções &middot; Biometria em tempo real &middot; Manipulação subliminar</div>
-                <div class="tier-hint">Art. 5, proibido &rarr;</div>
-            </div>
-            <div class="tier tier-a">
-                <div class="tier-badge">Alto risco</div>
-                <div class="tier-examples">Pontuação de crédito &middot; Emprego &middot; Serviços de saúde &middot; Educação &middot; Aplicação da lei</div>
-                <div class="tier-hint">Art. 9&ndash;15 aplicáveis &rarr;</div>
-            </div>
-            <div class="tier tier-y">
-                <div class="tier-badge">Risco limitado</div>
-                <div class="tier-examples">Chatbots &middot; Conteúdo sintético &middot; Reconhecimento de emoções &middot; Deep fakes</div>
-                <div class="tier-hint">Regras de transparência &rarr;</div>
-            </div>
-            <div class="tier tier-g">
-                <div class="tier-badge">Risco mínimo</div>
-                <div class="tier-examples">Filtros de spam &middot; Jogos com IA &middot; Recomendações básicas &middot; Ranking de busca</div>
-                <div class="tier-hint">Sem requisitos obrigatórios &rarr;</div>
-            </div>
+    <div class="feature-category">Integrar</div>
+    <div class="art-grid">
+        <div class="card-base art-card">
+            <div class="tag tag-blue">Regulacao cruzada</div>
+            <h3>LGPD + DORA + NIS2 sobreposicao</h3>
+            <p>Cada artigo da Lei de IA e mapeado para obrigacoes correspondentes da LGPD, DORA e NIS2. Uma varredura revela requisitos em todas as quatro regulacoes.</p>
+            <code style="font-size:11px;color:#9898b4;">regula gap .</code>
         </div>
-        <p class="tier-cta">O Regula mostra onde seu código se encaixa, e exatamente por quê.</p>
-    </div>
-
-    <!-- URGENCY BANNER -->
-    <div class="urgency">
-        <div class="urgency-box" role="note">
-            <div class="date">2026&ndash;27</div>
-            <div class="body"><strong>Obrigações de alto risco</strong> começam em agosto de 2026, ou dezembro de 2027 se o Digital Omnibus for aprovado (Parlamento votou 569&ndash;45 a favor, março 2026). De qualquer forma, os requisitos não mudam. <strong>Você precisa saber onde está.</strong></div>
+        <div class="card-base art-card">
+            <div class="tag tag-purple">API</div>
+            <h3>API REST para ferramentas GRC</h3>
+            <p>Sete endpoints HTTP que retornam o mesmo formato JSON da CLI. Integre o Regula ao ServiceNow, Jira ou sua plataforma GRC.</p>
+            <code style="font-size:11px;color:#9898b4;">regula api-server --port 8487</code>
+        </div>
+        <div class="card-base art-card">
+            <div class="tag tag-blue">Dashboard</div>
+            <h3>Painel web</h3>
+            <p>Postura de governanca num relance. Distribuicao de risco, lacunas de conformidade por artigo, autoavaliacao interativa e exportacao em JSON/SARIF/HTML. Sem terminal.</p>
+            <code style="font-size:11px;color:#9898b4;">localhost:8487/v1/dashboard</code>
         </div>
     </div>
 
-    <div class="sep"></div>
+    <p style="font-size:12px;color:#9898b4;margin-top:24px;font-family:'JetBrains Mono',monospace;text-align:center;">
+        61 comandos no total &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Mapeamentos para ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU CRA e 7 outros frameworks.
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md" style="color:#8888aa;margin-left:4px;">Referencia completa da CLI &rarr;</a>
+    </p>
+</div>
 
-    <!-- COMO FUNCIONA -->
-    <div class="sec" id="how">
-        <h2 class="sec-head">Como funciona</h2>
-        <p class="sec-sub">Três passos. Sem conta, sem chave de API, nenhum dado sai da sua máquina.</p>
-        <div class="art-grid">
-            <div class="card-base art-card" style="text-align:center;">
-                <div class="tag tag-blue">Passo 1</div>
-                <h3>Instalar</h3>
-                <p><code>pipx install regula-ai</code><br>Funciona em qualquer SO. Totalmente offline.</p>
-            </div>
-            <div class="card-base art-card" style="text-align:center;">
-                <div class="tag tag-blue">Passo 2</div>
-                <h3>Verificar</h3>
-                <p><code>regula</code><br>Pontuação de conformidade, achados e próximos passos.</p>
-            </div>
-            <div class="card-base art-card" style="text-align:center;">
-                <div class="tag tag-blue">Passo 3</div>
-                <h3>Agir</h3>
-                <p><code>regula comply</code><br>Checklist de obrigações com status por artigo.</p>
-            </div>
+<div class="sep"></div>
+
+<!-- ONDE O REGULA SE ENCAIXA -->
+<div class="sec reveal">
+    <h2 class="sec-head">Onde o Regula se encaixa no mercado</h2>
+    <p class="sec-sub">Um scanner estatico do lado do desenvolvedor. Uma de varias ferramentas no ecossistema da Lei de IA da UE. Cada uma resolve uma parte diferente do problema.</p>
+    <div class="pricing-grid">
+        <div class="price-card">
+            <div class="price-tier">Governanca SaaS</div>
+            <div class="price-amount">Contato comercial</div>
+            <p class="price-desc">Credo AI, Saidot, Enzai, IBM watsonx.governance, Microsoft Purview. Fluxos de evidencia, bibliotecas de controles, monitoramento continuo, atualizacoes de politicas por advogados especialistas. Feito para departamentos de conformidade, nao para desenvolvedores. Sem precos publicados.</p>
+        </div>
+        <div class="price-card">
+            <div class="price-tier">Testes em runtime</div>
+            <div class="price-amount">Open source</div>
+            <p class="price-desc">Garak, Giskard, Promptfoo. Red-teaming de prompt injection, jailbreak e vies contra modelos em execucao. Complementares ao Regula, nao sobrepostos. Eles testam comportamento; Regula le o codigo.</p>
+        </div>
+        <div class="price-card featured">
+            <div class="price-tier price-featured-tier">Regula</div>
+            <div class="price-amount price-featured-amount">Gratuito e open source</div>
+            <p class="price-desc">Scanner estatico de codigo. Roda no seu laptop com um comando. Nucleo Python apenas da biblioteca padrao, zero dependencias de producao, totalmente offline. <code>pipx install regula-ai</code>, escaneie seu projeto, obtenha uma resposta clara. Licenca Apache 2.0.</p>
         </div>
     </div>
-
-    <!-- STATS BAR -->
-    <div class="stats">
-        <div class="st"><div class="st-n">389</div><div class="st-l">padrões de risco</div></div>
-        <div class="st"><div class="st-n">8</div><div class="st-l">linguagens</div></div>
-        <div class="st"><div class="st-n">12</div><div class="st-l">frameworks de conformidade</div></div>
-        <div class="st"><div class="st-n">0</div><div class="st-l">dependências</div></div>
+    <div role="region" aria-label="Comparacao de ferramentas de conformidade da Lei de IA da UE" style="overflow-x:auto;margin-top:32px;-webkit-overflow-scrolling:touch;">
+    <p class="scroll-hint" style="display:none;font-size:11px;color:var(--text-dim);margin-bottom:8px;text-align:right;">Deslize &rarr;</p>
+    <table class="cmp-table" style="width:100%;border-collapse:collapse;font-size:13px;color:#b0b0cc;">
+        <thead>
+            <tr style="border-bottom:1px solid #23234a;text-align:left;">
+                <th scope="col" style="padding:8px 12px;"></th>
+                <th scope="col" style="padding:8px 12px;">Regula</th>
+                <th scope="col" style="padding:8px 12px;">AIR Blackbox</th>
+                <th scope="col" style="padding:8px 12px;">Systima Comply</th>
+                <th scope="col" style="padding:8px 12px;">EuConform</th>
+                <th scope="col" style="padding:8px 12px;">Enterprise SaaS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td style="padding:6px 12px;color:#e0e0f0;">Abordagem</td><td>Analise estatica de codigo</td><td>Scan + camadas de confianca em runtime</td><td>Analise baseada em AST</td><td>Questionario + avaliacao de vies</td><td>Plataforma / dashboard</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Linguagens</td><td>8 familias</td><td>Python</td><td>JS/TS</td><td>Nao e scanner de codigo</td><td>Nao e scanner de codigo</td></tr>
+            <tr><td style="padding:6px 12px;color:#e0e0f0;">Padroes de deteccao</td><td>389</td><td>39 verificacoes</td><td>37+ frameworks</td><td>Questionario</td><td>Varia</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Dependencias</td><td>Zero (stdlib)</td><td>Multiplas</td><td>npm</td><td>Next.js + Ollama</td><td>SaaS</td></tr>
+            <tr><td style="padding:6px 12px;color:#e0e0f0;">Offline</td><td>Totalmente offline</td><td>Local</td><td>Local</td><td>Local + Ollama</td><td>Nuvem</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Assinatura de evidencias</td><td>Ed25519 + RFC 3161</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>Varia</td></tr>
+            <tr><td style="padding:6px 12px;color:#e0e0f0;">Mapeamentos de frameworks</td><td>12</td><td>3</td><td>Lei de IA da UE</td><td>Lei de IA da UE</td><td>Multiplos</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Integracao CI/CD</td><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>&mdash;</td><td>Nativo</td></tr>
+            <tr><td style="padding:6px 12px;color:#e0e0f0;">Documentacao Anexo IV</td><td>Gratuito</td><td>&mdash;</td><td>&mdash;</td><td>Relatorios PDF</td><td>Integrado</td></tr>
+            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Preco</td><td>Gratuito (Apache 2.0)</td><td>Gratuito (Apache 2.0)</td><td>Gratuito (Apache 2.0)</td><td>Gratuito (MIT + EUPL)</td><td>$30K&ndash;$200K/ano</td></tr>
+        </tbody>
+    </table>
     </div>
+    <p style="font-size:12px;color:var(--text-dim);margin-top:12px;">Escolha a ferramenta cuja cobertura de linguagens e compromissos se encaixem no seu stack. O Regula cobre mais linguagens e mapeamentos de frameworks entre as opcoes open-source listadas acima. Para governanca de agentes em <em>runtime</em>, veja o <a href="https://github.com/microsoft/agent-governance-toolkit" rel="noopener" style="color:var(--text-dim);">Agent Governance Toolkit da Microsoft</a>.</p>
+</div>
 
-    <div class="sep"></div>
+<div class="sep"></div>
 
-    <!-- FUNCIONALIDADES -->
-    <div class="sec" id="features">
-        <h2 class="sec-head">O que o Regula faz</h2>
-        <p class="sec-sub">O Regula lê seu código diretamente, não um questionário. Gera artefatos que um auditor pode revisar, não apenas achados.</p>
-
-        <div class="feature-category">Avaliar</div>
-        <div class="art-grid">
-            <div class="card-base art-card">
-                <div class="tag tag-blue">Lacunas de conformidade</div>
-                <h3>O que está faltando no seu código?</h3>
-                <p>Gestão de riscos, governança de dados, logging, transparência, supervisão humana, precisão. Pontuação por artigo com estimativas de esforço.</p>
-                <code style="font-size:11px;color:#9898b4;">regula gap .</code>
-            </div>
-            <div class="card-base art-card">
-                <div class="tag tag-purple">Segurança</div>
-                <h3>Seu código de IA é seguro?</h3>
-                <p>Verifica injeção de prompt, carregamento inseguro de modelo, saída de IA não validada, chaves hardcoded e outras vulnerabilidades específicas de IA.</p>
-                <code style="font-size:11px;color:#9898b4;">regula check . &middot; regula guardrails .</code>
-            </div>
-            <div class="card-base art-card">
-                <div class="tag tag-blue">Supervisão</div>
-                <h3>Análise de revisão humana</h3>
-                <p>Rastreia saídas de IA entre arquivos. Verifica se cada caminho até um endpoint voltado ao usuário passa por um gate de revisão humana.</p>
-                <code style="font-size:11px;color:#9898b4;">regula oversight .</code>
-            </div>
+<!-- HONESTIDADE — O QUE O REGULA FAZ E NAO FAZ -->
+<div class="sec reveal">
+    <h2 class="sec-head">O que o Regula nao faz</h2>
+    <p class="sec-sub">Uma ferramenta de conformidade que exagera suas capacidades e pior do que nenhuma ferramenta. Aqui esta o que o Regula realmente e, e o que nao e.</p>
+    <div class="art-grid">
+        <div class="card-base art-card">
+            <h3>Nao e consultoria juridica</h3>
+            <p>O Regula identifica indicadores de risco no codigo para revisao do desenvolvedor. Nao determina conformidade. Um profissional juridico qualificado deve revisar qualquer classificacao antes de voce agir.</p>
         </div>
-
-        <div class="feature-category">Evidências</div>
-        <div class="art-grid">
-            <div class="card-base art-card">
-                <div class="tag tag-blue">Documentação</div>
-                <h3>Você consegue provar conformidade?</h3>
-                <p>Gera automaticamente documentação técnica Anexo IV a partir do seu código real: funções, dependências e cobertura de logging já preenchidos.</p>
-                <code style="font-size:11px;color:#9898b4;">regula docs . &middot; regula conform .</code>
-            </div>
-            <div class="card-base art-card">
-                <div class="tag tag-purple">Evidências</div>
-                <h3>Pacote de avaliação de conformidade</h3>
-                <p>Evidências Art. 43: 26 arquivos mapeados para Artigos 9&ndash;15, pontuações de prontidão por artigo, hashes de integridade SHA-256.</p>
-                <code style="font-size:11px;color:#9898b4;">regula conform . &middot; regula evidence-pack .</code>
-            </div>
-            <div class="card-base art-card">
-                <div class="tag tag-purple">Integridade</div>
-                <h3>Evidências à prova de adulteração e assinadas</h3>
-                <p>Manifesto SHA-256 + assinatura Ed25519 + carimbos de tempo RFC 3161. Prove quando a avaliação foi produzida e que não foi alterada.</p>
-                <code style="font-size:11px;color:#9898b4;">regula evidence-pack --sign --timestamp .</code>
-            </div>
-            <div class="card-base art-card">
-                <div class="tag tag-purple">AI BOM</div>
-                <h3>Lista de materiais de IA</h3>
-                <p>AI-BOMs CycloneDX 1.7 com proveniência de modelo, anotações de nível GPAI por Art 51&ndash;55 e datasets de treinamento detectados.</p>
-                <code style="font-size:11px;color:#9898b4;">regula sbom --ai-bom .</code>
-            </div>
+        <div class="card-base art-card">
+            <h3>Correspondencia de padroes, nao compreensao</h3>
+            <p>83,5% de precisao em codigo de producao (corpus aleatorio blind-labelled, N=115). 0 falsos positivos no nivel BLOCK (o padrao de CI). 15,2% de precisao em codigo-fonte de bibliotecas AI — o corpus mais dificil, pois essas bibliotecas implementam AI em vez de usa-la para decisoes reguladas. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Benchmark publicado &rarr;</a></p>
         </div>
-
-        <div class="feature-category">Integrar</div>
-        <div class="art-grid">
-            <div class="card-base art-card">
-                <div class="tag tag-blue">Regulação cruzada</div>
-                <h3>LGPD + DORA + NIS2 sobreposição</h3>
-                <p>Cada artigo da Lei de IA é mapeado para obrigações correspondentes da LGPD, DORA e NIS2. Uma varredura revela requisitos em todas as quatro regulações.</p>
-                <code style="font-size:11px;color:#9898b4;">regula gap .</code>
-            </div>
-            <div class="card-base art-card">
-                <div class="tag tag-purple">API</div>
-                <h3>API REST para ferramentas GRC</h3>
-                <p>Sete endpoints HTTP que retornam o mesmo formato JSON da CLI. Integre o Regula ao ServiceNow, Jira ou sua plataforma GRC.</p>
-                <code style="font-size:11px;color:#9898b4;">regula api-server --port 8487</code>
-            </div>
-            <div class="card-base art-card">
-                <div class="tag tag-blue">Dashboard</div>
-                <h3>Painel web</h3>
-                <p>Postura de governança num relance. Distribuição de risco, lacunas de conformidade por artigo, autoavaliação interativa e exportação em JSON/SARIF/HTML. Sem terminal.</p>
-                <code style="font-size:11px;color:#9898b4;">localhost:8487/v1/dashboard</code>
-            </div>
-        </div>
-
-        <p style="font-size:12px;color:#9898b4;margin-top:24px;font-family:'JetBrains Mono',monospace;text-align:center;">
-            61 comandos no total &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Mapeamentos para ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU CRA e 7 outros frameworks.
-            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md" style="color:#8888aa;margin-left:4px;">Referência completa da CLI &rarr;</a>
-        </p>
-    </div>
-
-    <div class="sep"></div>
-
-    <!-- ONDE O REGULA SE ENCAIXA -->
-    <div class="sec">
-        <h2 class="sec-head">Onde o Regula se encaixa no mercado</h2>
-        <p class="sec-sub">Um scanner estático do lado do desenvolvedor. Uma de várias ferramentas no ecossistema da Lei de IA da UE. Cada uma resolve uma parte diferente do problema.</p>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:1080px;margin:32px auto 0;">
-            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:24px;">
-                <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#8888aa;margin-bottom:8px;">Governan&ccedil;a SaaS</div>
-                <div style="font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:600;margin-bottom:10px;">Contato comercial</div>
-                <p style="font-size:14px;color:#aaaac0;line-height:1.6;margin:0;">Credo AI, Saidot, Enzai, IBM watsonx.governance, Microsoft Purview. Fluxos de evid&ecirc;ncia, bibliotecas de controles, monitoramento cont&iacute;nuo, atualiza&ccedil;&otilde;es de pol&iacute;ticas por advogados especialistas. Feito para departamentos de conformidade, n&atilde;o para desenvolvedores. Sem pre&ccedil;os publicados.</p>
-            </div>
-            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:24px;">
-                <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#8888aa;margin-bottom:8px;">Testes em runtime</div>
-                <div style="font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:600;margin-bottom:10px;">Open source</div>
-                <p style="font-size:14px;color:#aaaac0;line-height:1.6;margin:0;">Garak, Giskard, Promptfoo. Red-teaming de prompt injection, jailbreak e vi&eacute;s contra modelos em execu&ccedil;&atilde;o. Complementares ao Regula, n&atilde;o sobrepostos. Eles testam comportamento; Regula l&ecirc; o c&oacute;digo.</p>
-            </div>
-            <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.4);border-radius:14px;padding:24px;">
-                <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#7dd3fc;margin-bottom:8px;">Regula</div>
-                <div style="font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:600;margin-bottom:10px;color:#fff;">Gratuito e open source</div>
-                <p style="font-size:14px;color:#e2e2f0;line-height:1.6;margin:0;">Scanner est&aacute;tico de c&oacute;digo. Roda no seu laptop com um comando. N&uacute;cleo Python apenas da biblioteca padr&atilde;o, zero depend&ecirc;ncias de produ&ccedil;&atilde;o, totalmente offline. <code>pipx install regula-ai</code>, escaneie seu projeto, obtenha uma resposta clara. Licen&ccedil;a Apache 2.0.</p>
-            </div>
-        </div>
-        <div role="region" aria-label="Comparação de ferramentas de conformidade da Lei de IA da UE" style="overflow-x:auto;margin-top:32px;">
-        <table class="cmp-table" style="width:100%;border-collapse:collapse;font-size:13px;color:#b0b0cc;">
-            <thead>
-                <tr style="border-bottom:1px solid #23234a;text-align:left;">
-                    <th scope="col" style="padding:8px 12px;"></th>
-                    <th scope="col" style="padding:8px 12px;">Regula</th>
-                    <th scope="col" style="padding:8px 12px;">AIR Blackbox</th>
-                    <th scope="col" style="padding:8px 12px;">Systima Comply</th>
-                    <th scope="col" style="padding:8px 12px;">EuConform</th>
-                    <th scope="col" style="padding:8px 12px;">Enterprise SaaS</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td style="padding:6px 12px;color:#e0e0f0;">Abordagem</td><td>Static code scan</td><td>Scan + runtime trust layers</td><td>AST-based scan</td><td>Questionnaire + bias eval</td><td>Platform / dashboard</td></tr>
-                <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Linguagens</td><td>8 families</td><td>Python</td><td>JS/TS</td><td>N/A</td><td>N/A</td></tr>
-                <tr><td style="padding:6px 12px;color:#e0e0f0;">Padr&otilde;es de detec&ccedil;&atilde;o</td><td>389</td><td>39 checks</td><td>37+ frameworks</td><td>Questionnaire</td><td>Varies</td></tr>
-                <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Depend&ecirc;ncias</td><td>Zero (stdlib)</td><td>Multiple</td><td>npm</td><td>Next.js + Ollama</td><td>SaaS</td></tr>
-                <tr><td style="padding:6px 12px;color:#e0e0f0;">Offline</td><td>Fully offline</td><td>Local</td><td>Local</td><td>Local + Ollama</td><td>Cloud</td></tr>
-                <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Assinatura de evid&ecirc;ncias</td><td>Ed25519 + RFC 3161</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>Varies</td></tr>
-                <tr><td style="padding:6px 12px;color:#e0e0f0;">Mapeamentos de frameworks</td><td>12</td><td>3</td><td>EU AI Act</td><td>EU AI Act</td><td>Multiple</td></tr>
-                <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Integra&ccedil;&atilde;o CI/CD</td><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>&mdash;</td><td>Native</td></tr>
-                <tr><td style="padding:6px 12px;color:#e0e0f0;">Documenta&ccedil;&atilde;o Anexo IV</td><td>Free</td><td>&mdash;</td><td>&mdash;</td><td>PDF reports</td><td>Built-in</td></tr>
-                <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Pre&ccedil;o</td><td>Free (Apache 2.0)</td><td>Free (Apache 2.0)</td><td>Free (Apache 2.0)</td><td>Free (MIT + EUPL)</td><td>$30K&ndash;$200K/yr</td></tr>
-            </tbody>
-        </table>
-        </div>
-        <p style="font-size:12px;color:var(--text-dim);margin-top:12px;">Escolha a ferramenta cuja cobertura de linguagens e compromissos se encaixem no seu stack. O Regula cobre mais linguagens e mapeamentos de frameworks entre as opções open-source listadas acima. Para governan&ccedil;a de agentes em <em>runtime</em>, veja o <a href="https://github.com/microsoft/agent-governance-toolkit" rel="noopener" style="color:var(--text-dim);">Agent Governance Toolkit da Microsoft</a>.</p>
-    </div>
-
-    <div class="sep"></div>
-
-    <!-- HONESTIDADE — O QUE O REGULA FAZ E NÃO FAZ -->
-    <div class="sec">
-        <h2 class="sec-head">O que o Regula n&atilde;o faz</h2>
-        <p class="sec-sub">Uma ferramenta de conformidade que exagera suas capacidades &eacute; pior do que nenhuma ferramenta. Aqui est&aacute; o que o Regula realmente &eacute;, e o que n&atilde;o &eacute;.</p>
-        <div class="art-grid">
-            <div class="card-base art-card">
-                <h3>N&atilde;o &eacute; consultoria jur&iacute;dica</h3>
-                <p>Regula identifica indicadores de risco no c&oacute;digo para revis&atilde;o do desenvolvedor. N&atilde;o determina conformidade. Um profissional jur&iacute;dico qualificado deve revisar qualquer classifica&ccedil;&atilde;o antes de voc&ecirc; agir.</p>
-            </div>
-            <div class="card-base art-card">
-                <h3>Correspond&ecirc;ncia de padr&otilde;es, n&atilde;o compreens&atilde;o</h3>
-                <p>83,5% de precis&atilde;o em c&oacute;digo de produ&ccedil;&atilde;o (corpus aleat&oacute;rio blind-labelled, N=115). 0 falsos positivos no n&iacute;vel BLOCK (o padr&atilde;o de CI). 15,2% de precis&atilde;o em c&oacute;digo-fonte de bibliotecas AI — o corpus mais dif&iacute;cil, pois essas bibliotecas implementam AI em vez de us&aacute;-la para decis&otilde;es reguladas. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Benchmark publicado &rarr;</a></p>
-            </div>
-            <div class="card-base art-card">
-                <h3>Estruturas, n&atilde;o subst&acirc;ncia</h3>
-                <p>Documentos Anexo IV, pacotes de evid&ecirc;ncia e frameworks de governan&ccedil;a s&atilde;o estruturas pr&eacute;-preenchidas. Um humano deve complet&aacute;-las com conte&uacute;do substantivo. O Regula n&atilde;o pode verificar se um sistema de gest&atilde;o de riscos realmente opera.</p>
-            </div>
-        </div>
-        <p class="sec-sub" style="margin-top:24px;font-size:13px;"><a href="https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md" style="color:#8888aa;">Divulga&ccedil;&atilde;o completa de limita&ccedil;&otilde;es &rarr;</a></p>
-    </div>
-
-    <div class="sep"></div>
-
-    <!-- BLOG -->
-    <div class="sec reveal">
-        <h2 class="sec-head">Últimas do blog</h2>
-        <p class="sec-sub">Análise de regulamentação de IA e padrões de conformidade.</p>
-        <div class="art-grid" lang="en">
-            <a href="/blog/blog-omnibus-delay.html" class="card-base art-card">
-                <div class="tag tag-blue">Regulation</div>
-                <h3>The EU AI Act Omnibus Delay</h3>
-                <p>Current deadline status and what developers should do while trilogue continues.</p>
-            </a>
-            <a href="/blog/blog-does-ai-act-apply.html" class="card-base art-card">
-                <div class="tag tag-blue">Applicability</div>
-                <h3>Does the EU AI Act Apply to Your AI App?</h3>
-                <p>Five questions to check whether your product falls under EU AI Act scope.</p>
-            </a>
-            <a href="/blog/blog-risk-tiers-in-code.html" class="card-base art-card">
-                <div class="tag tag-purple">Code</div>
-                <h3>EU AI Act Risk Tiers in Actual Code</h3>
-                <p>What prohibited, high-risk, and limited-risk indicators look like in real code.</p>
-            </a>
-            <a href="/blog/blog-startups-ignoring-ai-act.html" class="card-base art-card" lang="en">
-                <div class="tag tag-blue">Adoption</div>
-                <h3>Most Startups Are Ignoring the AI Act</h3>
-                <p>Why that's rational today, three triggers for when it stops being rational, and what preparing actually means.</p>
-            </a>
+        <div class="card-base art-card">
+            <h3>Estruturas, nao substancia</h3>
+            <p>Documentos Anexo IV, pacotes de evidencia e frameworks de governanca sao estruturas pre-preenchidas. Um humano deve completa-las com conteudo substantivo. O Regula nao pode verificar se um sistema de gestao de riscos realmente opera.</p>
         </div>
     </div>
+    <p class="sec-sub" style="margin-top:24px;font-size:13px;"><a href="https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md" style="color:#8888aa;">Divulgacao completa de limitacoes &rarr;</a></p>
+</div>
 
-    </main>
+<div class="sep"></div>
 
-    <div class="final-wrap">
-        <div class="final-glow"></div>
-        <div class="final">
-            <h2>Descubra onde você está</h2>
-            <p>Um comando. Leva 30 segundos. Sem conta necessária.</p>
-            <div class="install-box" onclick="navigator.clipboard.writeText('pipx install regula-ai');this.querySelector('.cp').textContent='copiado'" style="margin: 0 auto;">
-                <span class="dollar">$</span>
-                <span class="cmd">pipx install regula-ai</span>
-                <span class="cp">copiar</span>
-            </div>
-        </div>
+<!-- BLOG -->
+<div class="sec reveal">
+    <h2 class="sec-head">Ultimas do blog</h2>
+    <p class="sec-sub">Analise de regulamentacao de IA e padroes de conformidade.</p>
+    <div class="art-grid">
+        <a href="/blog/blog-code-scanning-vs-questionnaires.html" class="card-base art-card">
+            <div class="tag tag-purple">Analysis</div>
+            <h3>Questionnaires vs Code Scanning</h3>
+            <p>Questionnaires capture what you said. Code scanning shows what you did. Neither replaces the other.</p>
+        </a>
+        <a href="/blog/blog-does-ai-act-apply.html" class="card-base art-card">
+            <div class="tag tag-blue">Applicability</div>
+            <h3>Does the EU AI Act Apply to Your AI App?</h3>
+            <p>Five questions to check whether your product falls under EU AI Act scope.</p>
+        </a>
+        <a href="/blog/blog-risk-tiers-in-code.html" class="card-base art-card">
+            <div class="tag tag-purple">Code</div>
+            <h3>EU AI Act Risk Tiers in Actual Code</h3>
+            <p>What prohibited, high-risk, and limited-risk indicators look like in real code.</p>
+        </a>
+        <a href="/blog/blog-startups-ignoring-ai-act.html" class="card-base art-card">
+            <div class="tag tag-blue">Adoption</div>
+            <h3>Most Startups Are Ignoring the AI Act</h3>
+            <p>Why that's rational today, three triggers for when it stops being rational, and what preparing actually means.</p>
+        </a>
     </div>
+</div>
 
-    <footer>
+<!-- FINAL CTA -->
+<div class="final-wrap">
+    <div class="final-glow"></div>
+    <div class="final reveal">
+        <h2>Descubra onde voce esta</h2>
+        <p>Um comando. Leva 30 segundos. Sem conta necessaria.</p>
+        <button class="install-box" id="install-btn-2" onclick="copyInstall(this)" style="display:inline-flex;">
+            <span class="dollar">$</span>
+            <span class="cmd">pipx install regula-ai</span>
+            <span class="cp">copiar</span>
+        </button>
+        <p style="font-size:13px;color:var(--text-dim);margin:24px 0 12px;">Ainda nao quer instalar? Receba notificacoes quando os prazos mudarem.</p>
+        <div data-fs-success style="display:none;font-size:13px;color:#10b981;margin-bottom:8px;">Voce esta na lista. Apenas versoes principais.</div>
+        <div data-fs-error style="display:none;font-size:13px;color:#ef4444;margin-bottom:8px;"></div>
+        <form id="notify-form" class="notify">
+            <input type="email" id="notify-email" name="email" placeholder="seu@email.com" aria-label="E-mail para atualizacoes" data-fs-field required>
+            <span data-fs-error="email" style="font-size:11px;color:#ef4444;"></span>
+            <button type="submit" data-fs-submit-btn>Receber atualizacoes</button>
+        </form>
+        <p class="notify-msg">Sem spam. Apenas versoes principais e prazos da Lei de IA da UE.</p>
+    </div>
+</div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+    <div class="foot">
         <div class="foot-inner">
             <div class="foot-left">
                 <div class="foot-brand">Regula</div>
                 <div class="foot-links">
                     <a href="https://github.com/kuzivaai/getregula">GitHub</a>
                     <a href="https://pypi.org/project/regula-ai/">PyPI</a>
-                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">Trust pack</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/SUPPORT_SLA.md">Support SLA</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md">Benchmarks</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/SECURITY.md">Seguranca</a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contribuir</a>
+                    <a href="/regions/uae.html">UAE &amp; GCC</a>
+                    <a href="/regions/brazil-ai-regulation.html">Brasil — LGPD &amp; Marco Legal</a>
+                    <a href="mailto:support@getregula.com">support@getregula.com</a>
                 </div>
-                <div class="foot-copy">Open source &middot; Licença Apache 2.0 &middot; &copy; 2026 Regula</div>
+                <div class="foot-copy">Open source &middot; Licenca Apache 2.0 &middot; &copy; 2026 Regula &middot; <a href="mailto:support@getregula.com" style="color:#9898b4;">support@getregula.com</a></div>
             </div>
             <div class="foot-middle">
                 <div class="foot-col-head">Leitura</div>
                 <div class="foot-col-links">
-                    <a href="/regions/uae.html">🇦🇪 Lei de IA da UE para EAU e GCC <span class="muted">Responsabilidade extraterritorial para empresas do DIFC e ADGM</span></a>
-                    <a href="/regions/south-africa-ai-policy.html">🇿🇦 Política de IA da África do Sul <span class="muted">Gabinete aprovou em 2 de abril de 2026 &middot; rastreador ao vivo</span></a>
-                    <a href="/regions/brazil-ai-regulation.html">🇧🇷 Brasil — LGPD &amp; Marco Legal da IA <span class="muted">PL 2338/2023, LGPD Artigo 20, prioridades ANPD 2026-2027</span></a>
-                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/landscape.md">Lacunas de governança AICDI <span class="muted">Como Regula mapeia para o relatório UNESCO &middot; TRF 2026</span></a>
-                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/article-state-of-ai-compliance.md">Estado da conformidade de IA em OSS <span class="muted">O que 5 bibliotecas Python populares realmente contêm</span></a>
-                    <a href="https://theimplementationlayer.substack.com/p/when-ai-systems-dont-see-you" lang="en">When AI Systems Don't See You <span class="muted">Bias testing gaps · 35-year paper trail · peer-reviewed evidence</span></a>
-                    <a href="https://theimplementationlayer.substack.com/p/thinking-about-switching-from-chatgpt" lang="en">Switching from ChatGPT to Claude <span class="muted">What you're actually moving · data governance · prompt translation</span></a>
-                    <a href="https://theimplementationlayer.substack.com/p/how-i-went-from-ai-hype-to-ai-governance" lang="en">From AI hype to AI governance <span class="muted">The gap between governance theory and organisational reality</span></a>
+                    <a href="/regions/south-africa-ai-policy.html">Politica de IA da Africa do Sul <span class="muted">Gabinete aprovou em 2 de abril de 2026 &middot; rastreador ao vivo</span></a>
+                    <a href="/blog/blog-aicdi-governance-gaps.html">Lacunas de governanca AICDI <span class="muted">Como Regula mapeia para o relatorio UNESCO &middot; TRF 2026</span></a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/article-state-of-ai-compliance.md">Estado da conformidade de IA em OSS <span class="muted">O que 5 bibliotecas Python populares realmente contem</span></a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/article-south-africa-ai-policy.md">Politica de IA da Africa do Sul (markdown) <span class="muted">Mesmo conteudo, markdown, hospedado no GitHub</span></a>
+                    <a href="https://theimplementationlayer.substack.com/p/when-ai-systems-dont-see-you">When AI Systems Don't See You <span class="muted">Bias testing gaps &middot; 35-year paper trail &middot; peer-reviewed evidence</span></a>
+                    <a href="https://theimplementationlayer.substack.com/p/thinking-about-switching-from-chatgpt">Switching from ChatGPT to Claude <span class="muted">What you're actually moving &middot; data governance &middot; prompt translation</span></a>
+                    <a href="https://theimplementationlayer.substack.com/p/how-i-went-from-ai-hype-to-ai-governance">From AI hype to AI governance <span class="muted">The gap between governance theory and organisational reality</span></a>
                 </div>
             </div>
             <div class="foot-right">
                 <div class="foot-legal">
-                    <strong>Não é aconselhamento jurídico.</strong> O Regula identifica indicadores de risco regulatório no código para revisão por desenvolvedores. Não constitui aconselhamento jurídico e sua saída não deve ser usada como determinação definitiva de conformidade. Consulte um advogado qualificado para questões jurídicas.
+                    <strong>Nao e aconselhamento juridico.</strong> O Regula identifica indicadores de risco regulatorio no codigo para revisao por desenvolvedores. Nao constitui aconselhamento juridico e sua saida nao deve ser usada como determinacao definitiva de conformidade. Consulte um advogado qualificado para questoes juridicas.
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
+</footer>
 
-    <script>
-        const nav = document.getElementById('nav');
-        function onScroll() {
-            nav.classList.toggle('scrolled', window.scrollY > 20);
-        }
-        window.addEventListener('scroll', onScroll, { passive: true });
-        function copyPill(btn, cmd) {
-            navigator.clipboard.writeText(cmd);
-            btn.classList.add('copied');
-            var orig = btn.innerHTML;
-            btn.innerHTML = '<span>&#10003;</span> Copiado';
-            setTimeout(function() { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
-        }
+<script>
+    // ===== NAV SCROLL =====
+    function updateNav() {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    }
 
-        function copyPageUrl(el) {
-            navigator.clipboard.writeText('https://getregula.com/locales/pt-br.html').then(function() {
-                var txt = el.querySelector('.fwd-txt');
-                txt.textContent = '\u2713 Link copiado, envie ao seu desenvolvedor';
-                setTimeout(function() { txt.textContent = 'Copiar link para enviar ao seu desenvolvedor'; }, 3000);
-            });
+    window.addEventListener('scroll', () => {
+        updateNav();
+    }, { passive: true });
+
+    // ===== TERMINAL TABS =====
+    // Swap the currently-active tab and panel directly, rather than first
+    // deactivating ALL of them. The old approach briefly left zero panels
+    // with `.active`, so the outgoing panel started its opacity-fade to 0
+    // *before* the incoming one started fading in — visible as a flash.
+    function switchTab(name, el) {
+        const currentTab = document.querySelector('.term-tab.active');
+        const currentPanel = document.querySelector('.term-panel.active');
+        const nextPanel = document.getElementById('tab-' + name);
+        if (!nextPanel || currentPanel === nextPanel) return;
+        if (currentTab && currentTab !== el) {
+            currentTab.classList.remove('active');
+            currentTab.setAttribute('aria-selected', 'false');
+            currentTab.setAttribute('tabindex', '-1');
         }
-    </script>
+        if (currentPanel) currentPanel.classList.remove('active');
+        el.classList.add('active');
+        el.setAttribute('aria-selected', 'true');
+        el.setAttribute('tabindex', '0');
+        el.focus();
+        nextPanel.classList.add('active');
+    }
+
+    function handleTabKey(e, el) {
+        const tabs = Array.from(document.querySelectorAll('.term-tab'));
+        const i = tabs.indexOf(el);
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            const next = tabs[(i + 1) % tabs.length];
+            switchTab(next.textContent, next);
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            const prev = tabs[(i - 1 + tabs.length) % tabs.length];
+            switchTab(prev.textContent, prev);
+        } else if (e.key === 'Home') {
+            e.preventDefault();
+            switchTab(tabs[0].textContent, tabs[0]);
+        } else if (e.key === 'End') {
+            e.preventDefault();
+            switchTab(tabs[tabs.length - 1].textContent, tabs[tabs.length - 1]);
+        } else if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            switchTab(el.textContent, el);
+        }
+    }
+
+    // ===== COPY BUTTON =====
+    function copyInstall(el) {
+        const cp = el.querySelector('.cp');
+        navigator.clipboard.writeText('pipx install regula-ai').then(() => {
+            el.classList.add('copied');
+            cp.innerHTML = '&#10003;&nbsp;copiado';
+            setTimeout(() => {
+                el.classList.remove('copied');
+                cp.textContent = 'copiar';
+            }, 2000);
+        }).catch(() => {
+            cp.textContent = 'falha ao copiar';
+            setTimeout(() => { cp.textContent = 'copiar'; }, 2000);
+        });
+    }
+
+    // ===== COPY ARBITRARY COMMAND =====
+    // ===== PILL BUTTON COPY =====
+    function copyPill(el, cmd) {
+        const original = el.innerHTML;
+        navigator.clipboard.writeText(cmd).then(() => {
+            el.classList.add('copied');
+            el.innerHTML = '<span>&#10003;</span> Copiado! Cole no seu terminal';
+            setTimeout(() => {
+                el.classList.remove('copied');
+                el.innerHTML = original;
+            }, 2500);
+        }).catch(() => {
+            el.innerHTML = '<span>&#9888;</span> Falha ao copiar. Digite: ' + cmd;
+            setTimeout(() => { el.innerHTML = original; }, 2500);
+        });
+    }
+
+    // ===== COPY PAGE URL (for business owner CTA) =====
+    function copyPageUrl(el) {
+        navigator.clipboard.writeText('https://getregula.com/locales/pt-br.html').then(() => {
+            const txt = el.querySelector('.fwd-txt');
+            txt.textContent = '\u2713 Link copiado! Envie ao seu desenvolvedor';
+            setTimeout(() => { txt.textContent = 'Copiar link para enviar ao seu desenvolvedor'; }, 3000);
+        });
+    }
+
+    // ===== SCROLL REVEAL =====
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // Don't unobserve — keep visible
+            }
+        });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal, .sec, .step, .art-card').forEach(el => {
+        // Only add reveal class if not already set
+        if (!el.classList.contains('reveal')) {
+            el.classList.add('reveal');
+        }
+        revealObserver.observe(el);
+    });
+</script>
+
+<script>
+    window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+    formspree('initForm', { formElement: '#notify-form', formId: 'xjgppkkn' });
+</script>
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 </body>
 </html>
