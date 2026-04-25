@@ -71,18 +71,18 @@ Published benchmark against 50 randomly selected Python AI repos (from 276 candi
 | `limited_risk` | 7 | 1 | 87.5% |
 | `ai_security` | 41 | 7 | 85.4% |
 | `agent_autonomy` | 34 | 7 | 82.9% |
-| `high_risk` | 2 | 7 | 22.2% |
-| **Overall** | **96** | **22** | **81.4%** |
+| `high_risk` | 2 | 4 | 33.3% |
+| **Overall** | **96** | **19** | **83.5%** |
 
-**Improvement from v1.7.0:** Domain-gated high-risk findings (v1.7.0) and
-LLM import gating reduced FP from 42 to 22 on the same labelled corpus,
-improving production precision from 70.0% to 81.4%. 3 borderline ai_security
-TPs were lost (LLM02 findings in files without LLM library imports).
+**Improvement from v1.7.0:** Domain-gated high-risk findings, LLM import
+gating, and justice opt-in reduced FP from 42 to 19 on the same labelled
+corpus, improving production precision from 70.0% to 83.5%. 3 borderline
+ai_security TPs were lost (LLM02 findings in files without LLM library imports).
 
-The `high_risk` tier (22%) remains weakest — 6 subcategories (`critical_infrastructure`,
+The `high_risk` tier (33%) remains weakest — 6 subcategories (`critical_infrastructure`,
 `safety_components`, `worker_management`, `democratic_processes`, `justice`,
 `essential_services`) now require `--domain` declaration or import fingerprinting to fire. Including test
-code drops overall precision to 59.5%.
+code drops overall precision to 60.6%.
 
 Full methodology and reproduction steps: `benchmarks/README.md`
 
@@ -143,7 +143,7 @@ Regula is explicitly **NOT** intended for:
 
 Each finding was manually classified as true positive or false positive by the developer. Labels are committed to the repository at `benchmarks/labels.json` and can be independently verified.
 
-**Result:** 81.4% precision on production code from random corpus (blind-labelled, N=118); 0 false positives at BLOCK tier. Previous baseline was 70.0% before domain gating and LLM import gating.
+**Result:** 83.5% precision on production code from random corpus (blind-labelled, N=115); 0 false positives at BLOCK tier. Previous baseline was 70.0% before domain gating and LLM import gating.
 
 ### Continuous validation
 

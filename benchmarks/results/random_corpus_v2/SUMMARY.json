@@ -1,10 +1,10 @@
 {
-  "date": "2026-04-25 18:56 UTC",
+  "date": "2026-04-25 20:32 UTC",
   "regula_version": "1.7.0",
   "repos_scanned": 50,
   "repos_failed": 0,
-  "total_findings": 1057,
-  "elapsed_seconds": 1374.0,
+  "total_findings": 1041,
+  "elapsed_seconds": 1139.2,
   "per_repo": {
     "huggingface/finetrainers": {
       "findings_count": 5,
@@ -34,20 +34,16 @@
       "findings_count": 68,
       "error": null
     },
+    "openvinotoolkit/nncf": {
+      "findings_count": 19,
+      "error": null
+    },
     "aws/sagemaker-python-sdk": {
       "findings_count": 24,
       "error": null
     },
     "hao-ai-lab/d3LLM": {
-      "findings_count": 89,
-      "error": null
-    },
-    "openvinotoolkit/nncf": {
-      "findings_count": 19,
-      "error": null
-    },
-    "archi-physics/archi": {
-      "findings_count": 24,
+      "findings_count": 88,
       "error": null
     },
     "tkalevra/SuperPowersWUI": {
@@ -56,6 +52,10 @@
     },
     "Silas-Asamoah/stormlog": {
       "findings_count": 1,
+      "error": null
+    },
+    "archi-physics/archi": {
+      "findings_count": 24,
       "error": null
     },
     "PlumoAI/plumoai": {
@@ -82,32 +82,40 @@
       "findings_count": 0,
       "error": null
     },
-    "bodo-ai/Bodo": {
-      "findings_count": 11,
-      "error": null
-    },
     "NickCharlie/astrbot_plugin_self_learning": {
       "findings_count": 10,
-      "error": null
-    },
-    "Xenios91/Glyph": {
-      "findings_count": 0,
       "error": null
     },
     "Jinfeng-Xu/Multimodal-Recommendation-Library": {
       "findings_count": 13,
       "error": null
     },
+    "Xenios91/Glyph": {
+      "findings_count": 0,
+      "error": null
+    },
     "Supervertaler/Supervertaler-Workbench": {
-      "findings_count": 203,
+      "findings_count": 188,
+      "error": null
+    },
+    "bodo-ai/Bodo": {
+      "findings_count": 11,
+      "error": null
+    },
+    "microsoft/CameraTraps": {
+      "findings_count": 10,
       "error": null
     },
     "graphnet-team/graphnet": {
       "findings_count": 11,
       "error": null
     },
-    "microsoft/CameraTraps": {
-      "findings_count": 10,
+    "pytorch/ao": {
+      "findings_count": 20,
+      "error": null
+    },
+    "kyegomez/Jamba": {
+      "findings_count": 0,
       "error": null
     },
     "Thysrael/Horizon": {
@@ -116,14 +124,6 @@
     },
     "GradientHQ/parallax": {
       "findings_count": 1,
-      "error": null
-    },
-    "kyegomez/Jamba": {
-      "findings_count": 0,
-      "error": null
-    },
-    "pytorch/ao": {
-      "findings_count": 20,
       "error": null
     },
     "jonathanrao99/Inventory-Management-System": {
@@ -154,12 +154,12 @@
       "findings_count": 0,
       "error": null
     },
-    "rwth-i6/returnn": {
-      "findings_count": 24,
-      "error": null
-    },
     "antoninoLorenzo/AI-OPS": {
       "findings_count": 1,
+      "error": null
+    },
+    "rwth-i6/returnn": {
+      "findings_count": 24,
       "error": null
     },
     "SRInternet-Studio/Jianer_QQ_bot": {
@@ -174,20 +174,20 @@
       "findings_count": 183,
       "error": null
     },
-    "hoangsonww/Spot-the-Scam-AI-Job-Fraud": {
-      "findings_count": 44,
+    "clstaudt/ragadoc": {
+      "findings_count": 1,
       "error": null
     },
     "bayesflow-org/bayesflow": {
       "findings_count": 1,
       "error": null
     },
-    "clstaudt/ragadoc": {
+    "zamalali/DeepGit": {
       "findings_count": 1,
       "error": null
     },
-    "zamalali/DeepGit": {
-      "findings_count": 1,
+    "hoangsonww/Spot-the-Scam-AI-Job-Fraud": {
+      "findings_count": 44,
       "error": null
     },
     "stfc/aiida-mlip": {

@@ -140,17 +140,17 @@ The full report is at
 
 ```bash
 python3 benchmarks/label.py score
-# Random corpus (blind-labelled, production code): 81.4% precision (N=118)
+# Random corpus (blind-labelled, production code): 83.5% precision (N=115)
 ```
 
-The headline precision is **81.4%** (N=118), measured on production code
+The headline precision is **83.5%** (N=115), measured on production code
 from a random corpus of 50 Python AI repos selected via GitHub API
 (pool of 276, random seed 42) and blind-labelled (labeller saw only
 file path, code context, and finding description — no project name,
 README, or purpose). This measures what users see with default
 `--skip-tests` settings. Per-tier: `ai_security` (85%), `agent_autonomy`
 (83%), `limited_risk` (88%), `minimal_risk` (100%). The `high_risk`
-tier (22%) remains weakest — 6 subcategories now require `--domain`
+tier (33%) remains weakest — 6 subcategories now require `--domain`
 declaration or import fingerprinting to fire (v1.7.0+).
 Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
 

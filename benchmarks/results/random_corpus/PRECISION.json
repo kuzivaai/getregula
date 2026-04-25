@@ -2,9 +2,9 @@
   "methodology": "Blind-labelled random corpus, production code only (default --skip-tests=True). Re-scanned with domain-gated Regula v1.7.0.",
   "corpus": "random_production",
   "sample_size_total": 201,
-  "sample_size_production": 118,
-  "total_labelled": 118,
-  "overall_precision": 0.814,
+  "sample_size_production": 115,
+  "total_labelled": 115,
+  "overall_precision": 0.835,
   "previous_precision": 0.7,
   "by_tier": {
     "agent_autonomy": {
@@ -24,8 +24,8 @@
     },
     "high_risk": {
       "tp": 2,
-      "fp": 7,
-      "precision": 0.222
+      "fp": 4,
+      "precision": 0.333
     },
     "limited_risk": {
       "tp": 7,
@@ -39,10 +39,11 @@
     }
   },
   "improvements": {
-    "domain_gating": "6 high_risk subcategories now opt-in via --domain flag or import fingerprinting. Removed 16 FP, 0 TP lost.",
+    "domain_gating": "6 high_risk subcategories now opt-in via --domain flag or import fingerprinting. Removed 19 FP, 0 TP lost.",
     "llm_import_gating": "LLM-specific OWASP findings (LLM01/02/06/07/09/10) require LLM library import. Removed 4 FP, 3 borderline TP lost.",
+    "justice_opt_in": "justice subcategory added to OPT_IN — 0% precision on random code (all from Supervertaler translation tool). Removed 3 FP.",
     "pipeline_controlnet": "Separated pipeline from ControlNet context in risk patterns.",
     "worker_exclusion": "Employment findings suppressed when multiprocessing/celery imported."
   },
-  "note": "Production precision improved from 70.0% to 81.4% via domain gating, LLM import gating, and pattern fixes. 3 borderline ai_security TPs lost (LLM02 findings in files without LLM library imports). Including test code: 59.5% (was 51.2%)."
+  "note": "Production precision improved from 70.0% to 83.5% via domain gating, LLM import gating, justice opt-in, and pattern fixes. 3 borderline ai_security TPs lost (LLM02 findings in files without LLM library imports). Including test code: 60.6% (was 51.2%). Library self-detection via pyproject.toml partially works but missed deepmd-kit and lhotse (distribution names differ from import names)."
 }

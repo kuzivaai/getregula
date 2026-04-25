@@ -729,52 +729,6 @@
     "omnibus_deadline": "2026-11-02"
   },
   {
-    "file": "utils/lm-evaluation-harness/lm_eval/tasks/code_x_glue/code-text/bleu.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 8",
-    "description": "Justice and democratic processes",
-    "indicators": [
-      "justice"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 93,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
     "file": "utils/lm-evaluation-harness/lm_eval/tasks/scrolls/task.py",
     "line": 120,
     "tier": "ai_security",
