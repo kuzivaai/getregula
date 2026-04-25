@@ -45,65 +45,6 @@
     "omnibus_deadline": "2027-12-02"
   },
   {
-    "file": "Supervertaler.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 5",
-    "description": "Access to essential services",
-    "indicators": [
-      "essential_services",
-      "justice",
-      "high_risk__democratic_processes"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 100,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      },
-      {
-        "article": "10",
-        "observation": "RAG (retrieval-augmented generation) pipeline detected \u2014 external data is injected at inference time. Article 10 data governance requirements apply to retrieved data, not only training data. Consider: data source provenance, freshness, access controls, and bias in the retrieval corpus."
-      },
-      {
-        "article": "15",
-        "observation": "Local model inference detected (Ollama, ONNX, llama.cpp, or GGUF model files). Article 15 accuracy and robustness obligations still apply to locally deployed models. Local deployment does not exempt from conformity requirements \u2014 it changes the deployment context."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "finance",
-        "medical",
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: finance, medical, education, law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
     "file": "legacy_versions/Supervertaler_v2.5.0-CLASSIC.py",
     "line": 3716,
     "tier": "agent_autonomy",
@@ -509,56 +450,6 @@
     "omnibus_deadline": "2027-12-02"
   },
   {
-    "file": "legacy_versions/Supervertaler_tkinter.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 2",
-    "description": "Critical infrastructure management",
-    "indicators": [
-      "critical_infrastructure",
-      "justice",
-      "high_risk__democratic_processes"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 100,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "medical",
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: medical, education, law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
     "file": "modules/pdf_rescue_tkinter.py",
     "line": 589,
     "tier": "ai_security",
@@ -953,55 +844,6 @@
     "omnibus_deadline": "2027-12-02"
   },
   {
-    "file": ".dev/docs/archive/cat_tool_prototype/cat_editor_prototype.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 8",
-    "description": "Justice and democratic processes",
-    "indicators": [
-      "justice",
-      "high_risk__democratic_processes"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 100,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "medical",
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: medical, education, law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
     "file": ".dev/previous_versions/Supervertaler_v3.7.0.py",
     "line": 128,
     "tier": "agent_autonomy",
@@ -1164,55 +1006,6 @@
     "provenance": "production",
     "remediation": "Implement retrieval-augmented generation (RAG) for factual tasks. Require citations and source attribution. Add fact-checking or grounding verification before presenting LLM output as fact. OWASP LLM09:2025.",
     "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": ".dev/previous_versions/Supervertaler_v3.7.0.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 8",
-    "description": "Justice and democratic processes",
-    "indicators": [
-      "justice",
-      "high_risk__democratic_processes"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 100,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "medical",
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: medical, education, law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
       "develop"
     ],
     "open_question": false,
@@ -1427,56 +1220,6 @@
     "provenance": "production",
     "remediation": "Implement retrieval-augmented generation (RAG) for factual tasks. Require citations and source attribution. Add fact-checking or grounding verification before presenting LLM output as fact. OWASP LLM09:2025.",
     "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": ".dev/previous_versions/Supervertaler_v3.7.6.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 2",
-    "description": "Critical infrastructure management",
-    "indicators": [
-      "critical_infrastructure",
-      "justice",
-      "high_risk__democratic_processes"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 100,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "medical",
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: medical, education, law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
       "develop"
     ],
     "open_question": false,
@@ -1892,55 +1635,6 @@
     "omnibus_deadline": "2027-12-02"
   },
   {
-    "file": ".dev/previous_versions/Supervertaler_v3.7.4.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 8",
-    "description": "Justice and democratic processes",
-    "indicators": [
-      "justice",
-      "high_risk__democratic_processes"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 100,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "medical",
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: medical, education, law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
     "file": ".dev/previous_versions/Supervertaler_v3.7.5.py",
     "line": 129,
     "tier": "agent_autonomy",
@@ -2133,55 +1827,6 @@
     "omnibus_deadline": "2027-12-02"
   },
   {
-    "file": ".dev/previous_versions/Supervertaler_v3.7.5.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 8",
-    "description": "Justice and democratic processes",
-    "indicators": [
-      "justice",
-      "high_risk__democratic_processes"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 100,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "medical",
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: medical, education, law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
     "file": ".dev/previous_versions/Supervertaler_v2.1.1.py",
     "line": 2111,
     "tier": "agent_autonomy",
@@ -2353,55 +1998,6 @@
     "omnibus_deadline": "2027-12-02"
   },
   {
-    "file": ".dev/previous_versions/Supervertaler_v3.6.6-beta_CAT.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 8",
-    "description": "Justice and democratic processes",
-    "indicators": [
-      "justice",
-      "high_risk__democratic_processes"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 100,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "medical",
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: medical, education, law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
     "file": ".dev/previous_versions/Supervertaler_v2.5.2-CAT_ARCHIVED(2025-10-09).py",
     "line": 762,
     "tier": "agent_autonomy",
@@ -2523,55 +2119,6 @@
     "lifecycle_phases": [
       "develop",
       "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": ".dev/previous_versions/Supervertaler_v2.5.2-CAT_ARCHIVED(2025-10-09).py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 8",
-    "description": "Justice and democratic processes",
-    "indicators": [
-      "justice",
-      "high_risk__democratic_processes"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 100,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "medical",
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: medical, education, law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
     ],
     "open_question": false,
     "deadline": "2026-08-02",
@@ -3090,55 +2637,6 @@
     "omnibus_deadline": "2027-12-02"
   },
   {
-    "file": ".dev/previous_versions/Supervertaler_v3.3.0-beta_CAT.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 8",
-    "description": "Justice and democratic processes",
-    "indicators": [
-      "justice",
-      "high_risk__democratic_processes"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 100,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "medical",
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: medical, education, law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
     "file": ".dev/previous_versions/Supervertaler_v3.6.7-beta_CAT.py",
     "line": 3253,
     "tier": "agent_autonomy",
@@ -3280,55 +2778,6 @@
     "provenance": "production",
     "remediation": "Implement retrieval-augmented generation (RAG) for factual tasks. Require citations and source attribution. Add fact-checking or grounding verification before presenting LLM output as fact. OWASP LLM09:2025.",
     "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": ".dev/previous_versions/Supervertaler_v3.6.7-beta_CAT.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 8",
-    "description": "Justice and democratic processes",
-    "indicators": [
-      "justice",
-      "high_risk__democratic_processes"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 100,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "medical",
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: medical, education, law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
       "develop"
     ],
     "open_question": false,
@@ -3503,55 +2952,6 @@
     "lifecycle_phases": [
       "develop",
       "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": ".dev/previous_versions/Supervertaler_v3.1.1-beta_CAT.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 8",
-    "description": "Justice and democratic processes",
-    "indicators": [
-      "justice",
-      "high_risk__democratic_processes"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 100,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "medical",
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: medical, education, law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
     ],
     "open_question": false,
     "deadline": "2026-08-02",
@@ -3920,55 +3320,6 @@
     "omnibus_deadline": "2027-12-02"
   },
   {
-    "file": ".dev/previous_versions/Supervertaler_v3.7.2.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 8",
-    "description": "Justice and democratic processes",
-    "indicators": [
-      "justice",
-      "high_risk__democratic_processes"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 100,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "medical",
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: medical, education, law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
     "file": ".dev/previous_versions/Supervertaler-2.4.1/Supervertaler-2.4.1/Supervertaler_v2.4.1.py",
     "line": 2888,
     "tier": "agent_autonomy",
@@ -4260,55 +3611,6 @@
     "lifecycle_phases": [
       "develop",
       "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": ".dev/previous_versions/Supervertaler-2.4.1/Supervertaler-2.4.1/Supervertaler_v2.5.0 (experimental - CAT editor development).py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 8",
-    "description": "Justice and democratic processes",
-    "indicators": [
-      "justice",
-      "high_risk__democratic_processes"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 100,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "medical",
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: medical, education, law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
     ],
     "open_question": false,
     "deadline": "2026-08-02",
@@ -4740,55 +4042,6 @@
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
     "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": ".dev/previous_versions/Supervertaler-2.4.1/Supervertaler-2.4.1/docs/archive/cat_tool_prototype/cat_editor_prototype.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 8",
-    "description": "Justice and democratic processes",
-    "indicators": [
-      "justice",
-      "high_risk__democratic_processes"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 100,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "13",
-        "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
-      }
-    ],
-    "domain_boost": {
-      "boost": 20,
-      "domains_matched": [
-        "medical",
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: medical, education, law_enforcement + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
     "omnibus_deadline": "2027-12-02"
   }
 ]
