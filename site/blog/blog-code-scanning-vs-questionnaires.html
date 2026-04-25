@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets — see commit
+         7ed6e47 on site/index.html for the full diagnosis. TL;DR: external
+         CSS is render-blocking, so the browser's default white canvas shows
+         for hundreds of ms on cold loads. Inline critical CSS establishes the
+         dark theme immediately; `color-scheme: dark` hints the canvas colour
+         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         so they don't block first paint. <noscript> fallback for JS off. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+
+    <!-- Primary SEO -->
+    <title>Code scanning vs questionnaires for EU AI Act compliance | Regula</title>
+    <meta name="description" content="Questionnaires and code scanning cover different halves of the EU AI Act. Neither replaces the other. Together, they produce something closer to defensible compliance.">
+    <meta name="keywords" content="EU AI Act compliance, code scanning, questionnaires, AI governance, EU AI Act tools, AI risk assessment, static analysis, compliance automation">
+    <meta name="author" content="Regula">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/blog/blog-code-scanning-vs-questionnaires.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/blog/blog-code-scanning-vs-questionnaires.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/blog/blog-code-scanning-vs-questionnaires.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/blog/blog-code-scanning-vs-questionnaires.html">
+    <meta property="og:title" content="Questionnaires tell you what you said. Code scanning shows what you did.">
+    <meta property="og:description" content="Questionnaires and code scanning cover different halves of the EU AI Act. Neither replaces the other. Together, they produce something closer to defensible compliance.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-04-25">
+    <meta property="article:modified_time" content="2026-04-25">
+    <meta property="article:author" content="The Implementation Layer">
+    <meta property="article:section" content="AI Governance">
+    <meta property="article:tag" content="EU AI Act">
+    <meta property="article:tag" content="Compliance">
+    <meta property="article:tag" content="Code Scanning">
+    <meta property="article:tag" content="Questionnaires">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Questionnaires tell you what you said. Code scanning shows what you did.">
+    <meta name="twitter:description" content="Questionnaires and code scanning cover different halves of the EU AI Act. Neither replaces the other.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <!-- Structured data: Article -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Questionnaires tell you what you said. Code scanning shows what you did.",
+      "description": "Questionnaires and code scanning cover different halves of the EU AI Act. Neither replaces the other. Together, they produce something closer to defensible compliance.",
+      "image": "https://getregula.com/assets/og-image.png",
+      "datePublished": "2026-04-25T00:00:00+00:00",
+      "dateModified": "2026-04-25T00:00:00+00:00",
+      "author": {
+        "@type": "Person",
+        "name": "The Implementation Layer"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://getregula.com/assets/og-image.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/blog/blog-code-scanning-vs-questionnaires.html"
+      },
+      "keywords": ["EU AI Act", "compliance", "code scanning", "questionnaires"]
+    }
+    </script>
+
+    <!-- Structured data: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getregula.com/blog/writing.html" },
+        { "@type": "ListItem", "position": 3, "name": "Code scanning vs questionnaires", "item": "https://getregula.com/blog/blog-code-scanning-vs-questionnaires.html" }
+      ]
+    }
+    </script>
+
+    <!-- Favicon + Fonts -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
+         If adding a Content Security Policy, migrate to a hashed <script> block. -->
+    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.css">
+        <link rel="stylesheet" href="/assets/site.css">
+    </noscript>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="progress-bar"></div>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <span class="active">Blog</span>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+
+<article>
+
+<div class="blog-hero">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / <a href="/blog/writing.html">Blog</a> / Code scanning vs questionnaires
+    </div>
+    <div class="blog-meta">
+        <span>25 April 2026</span>
+        <span class="dot">&middot;</span>
+        <span>7 min read</span>
+        <span class="dot">&middot;</span>
+        <span>The Implementation Layer</span>
+    </div>
+    <h1>Questionnaires tell you what you said. Code scanning shows <span class="hl">what you did.</span></h1>
+    <p class="standfirst">Questionnaires and code scanning cover different halves of the EU AI Act. Neither replaces the other. Together, they produce something closer to defensible compliance.</p>
+</div>
+
+<div class="blog-sep"></div>
+
+<div class="blog-body">
+
+    <!-- Section 1: The split -->
+    <section id="the-split">
+        <h2>The split</h2>
+
+        <p>Browse any EU AI Act thread on Reddit and you will find the same split. Someone asks how to comply. Half the replies say hire a law firm. The other half recommend a governance platform: Holistic AI, Difinity, Airia, ClearAI Register. Every tool mentioned is a questionnaire, a risk register, or a policy layer.</p>
+
+        <p>Across nine Reddit threads I reviewed in April 2026, not one user mentioned scanning their source code. That absence is interesting, but the conclusion people tend to draw from it is wrong. The answer is not that code scanning should replace questionnaires. The answer is that questionnaires alone leave a gap, and code scanning fills a specific part of it.</p>
+    </section>
+
+    <!-- Section 2: What questionnaires do well -->
+    <section id="what-questionnaires-do-well">
+        <h2>What questionnaires do well</h2>
+
+        <p>A questionnaire captures organisational information that no scanner can reach. Does your company have a risk management system (Article 9)? A quality management system (Article 17)? A fundamental rights impact assessment process (Article 27)? A post-market monitoring plan (Article 72)?</p>
+
+        <p>These are human obligations. They exist in meeting rooms, policy documents, and governance structures. A regex cannot attend a board meeting. A static analyser cannot verify that your AI risk committee met last quarter. For these obligations, a structured questionnaire filled out by the responsible person in your organisation is not just acceptable. It is the correct tool.</p>
+
+        <p>No serious compliance programme can skip this layer. The EU AI Act is roughly 70% organisational and 30% technical. If you only scan code, you are ignoring the majority of what the regulation requires.</p>
+    </section>
+
+    <!-- Section 3: What questionnaires cannot do -->
+    <section id="what-questionnaires-cannot-do">
+        <h2>What questionnaires cannot do</h2>
+
+        <p>Questionnaire answers are self-reported. When your compliance lead ticks &ldquo;yes&rdquo; next to &ldquo;does your AI system implement appropriate logging?&rdquo;, an auditor has to trust their word. There is no mechanism inside the questionnaire to verify whether that answer reflects what the code actually does.</p>
+
+        <p>This is not a hypothetical problem. Code changes continuously. A developer adds a face detection pipeline in March. Another integrates a resume screening model in June. A third refactors the logging module and removes the audit trail the compliance team was relying on. None of these changes trigger a questionnaire update, because questionnaires are not wired into the development workflow.</p>
+
+        <p>The Sopact/Sprinto research on continuous compliance monitoring puts it plainly: annual questionnaires create snapshots that miss drift between assessments. The system you assessed in January is not the system running in production in October.</p>
+
+        <p>u/TumbleweedPuzzled293 on Reddit described the classification burden: &ldquo;the classification system is what kills most small teams.&rdquo; That burden gets worse when classification is a point-in-time exercise. If the only record of your risk tier is a form someone filled out six months ago, you are carrying compliance debt that compounds with every merge.</p>
+    </section>
+
+    <!-- Section 4: What code scanning adds -->
+    <section id="what-code-scanning-adds">
+        <h2>What code scanning adds</h2>
+
+        <p>A code scanner reads your actual source files. It does not ask you what your system does. It looks and reports.</p>
+
+        <p>For the technical subset of the EU AI Act, this produces evidence that questionnaires structurally cannot:</p>
+
+        <h3>Risk classification from code, not from memory</h3>
+
+        <p>When someone asks &ldquo;are we high-risk?&rdquo;, the answer should not depend on whether the compliance lead remembers what shipped last quarter. A scanner that detects Annex III category patterns in the codebase answers the classification question from evidence, not recollection. u/stairflyer noted the confusion directly: &ldquo;for now unless your AI could be considered high risk I&rsquo;d recommend not stressing too much.&rdquo; The problem is that many teams genuinely do not know whether their system is high-risk, because nobody has checked the code against the categories.</p>
+
+        <h3>Continuous verification, not periodic review</h3>
+
+        <p>Run the scanner in CI/CD. Every pull request gets checked. If someone introduces a prohibited practice (Article 5) or a high-risk pattern (Annex III), it surfaces in the PR review, not in next year&rsquo;s audit cycle.</p>
+
+        <h3>Specific, actionable findings</h3>
+
+        <p>Not &ldquo;your system may have transparency issues&rdquo; but &ldquo;<code>src/chatbot/handler.py</code>, line 47: AI-generated content served to users without disclosure. Article 50 requires marking.&rdquo; A developer can fix that. They cannot fix &ldquo;please ensure your AI systems comply with transparency requirements.&rdquo;</p>
+
+        <h3>Evidence tied to commits</h3>
+
+        <p>A questionnaire answer is a claim. A scan result tied to a specific git commit is evidence. When an auditor asks how you know your system does not do social scoring, there is a difference between &ldquo;our compliance lead said so&rdquo; and &ldquo;here is a scan of commit <code>a3f7b2c</code> showing zero Article 5 matches.&rdquo;</p>
+    </section>
+
+    <!-- Section 5: What code scanning cannot do -->
+    <section id="what-code-scanning-cannot-do">
+        <h2>What code scanning cannot do</h2>
+
+        <p>Static analysis addresses roughly 30% of the EU AI Act. That is not a pessimistic estimate. It is a structural reality. We have documented the boundary in detail: see <a href="https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md">what Regula does not do</a>.</p>
+
+        <p>Article 9 requires a risk management system. A set of processes, approvals, and reviews that happen inside an organisation. Not a code artefact.</p>
+
+        <p>Article 17 requires a quality management system. Same logic, larger scope.</p>
+
+        <p>Article 27 requires a fundamental rights impact assessment. A structured document produced with input from affected persons.</p>
+
+        <p>Article 72 requires post-market monitoring. Ongoing observation of a deployed system that no pre-deployment scan can substitute.</p>
+
+        <p>No amount of pattern matching will verify that your organisation holds quarterly AI risk review meetings, that your board has approved an AI policy, or that affected communities were consulted. A scanner that claims to handle these obligations is lying about its coverage.</p>
+
+        <p>u/amrit_za raised a related point: compliance tools that &ldquo;adds a lot of admin and paperwork which incentivises us to own fewer models.&rdquo; The criticism lands hardest against tools that overstate what they cover. If a vendor implies a scan result equals compliance, they are creating false confidence. A scan result is evidence for the parts of the regulation that have a code footprint. The rest still requires human work.</p>
+    </section>
+
+    <!-- Section 6: The combination -->
+    <section id="the-combination">
+        <h2>The combination</h2>
+
+        <p>The useful framing is not scanners versus questionnaires. It is scanners as the evidence layer that makes some questionnaire answers provable.</p>
+
+        <p>When your questionnaire asks &ldquo;does your AI system implement appropriate logging?&rdquo; and you answer &ldquo;yes&rdquo;, that answer is a claim. When you attach a scan result showing logging calls detected around model invocations in 14 files, with file paths and line numbers, the claim becomes verifiable.</p>
+
+        <p>When the questionnaire asks &ldquo;have you assessed your system for prohibited practices?&rdquo; and you answer &ldquo;yes&rdquo;, that is a checkbox. When you attach a scan showing zero Article 5 pattern matches across the entire codebase, signed against a specific commit, that is evidence backing the checkbox.</p>
+
+        <p>The questionnaire captures what your organisation says it does. The scan shows what the code actually does. Together, the two layers are stronger than either one alone. The questionnaire without the scan is unverified. The scan without the questionnaire is incomplete.</p>
+    </section>
+
+    <!-- Section 7: The gap that still exists -->
+    <section id="the-gap">
+        <h2>The gap that still exists</h2>
+
+        <p>u/balirUK observed that &ldquo;GDPR was a paper tiger.&rdquo; The implication was that regulations without enforcement teeth get treated as box-ticking exercises. Whether the AI Act follows the same trajectory remains to be seen, but the tooling pattern is familiar: most of what exists today produces paperwork, not evidence.</p>
+
+        <p>This is not because questionnaire vendors are doing something wrong. They are building the right tool for the organisational layer. The gap is at the code layer. Almost nobody is building tools that read the source code and check whether it matches the claims in the policy documents.</p>
+
+        <p>For a defensible AI Act compliance programme, you need both layers. The organisational layer captures obligations that exist above the codebase: policies, processes, governance structures, legal review, monitoring. The code layer captures what the system actually does: risk patterns, security surfaces, oversight gaps, transparency obligations.</p>
+
+        <p>Neither layer alone is compliance. But a governance programme built entirely on self-reported answers is a programme that cannot prove its own claims. When market surveillance authorities start checking, &ldquo;we filled out the form&rdquo; is going to be a weaker answer than &ldquo;here is the form, and here is the code evidence that backs it up.&rdquo;</p>
+    </section>
+
+    <!-- Closing -->
+    <section id="closing">
+        <div class="callout">
+            <p><a href="https://github.com/kuzivaai/getregula">Regula</a> is an open-source CLI that scans codebases for EU AI Act risk patterns. It covers the code layer of compliance, which is roughly 30% of the regulation. For everything it does not cover, see <a href="https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md">what Regula does not do</a>.</p>
+        </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        <p><strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. The EU AI Act requires contextual assessment that no automated tool can fully provide. For high-risk systems, consult a qualified legal professional. All Article references are to Regulation (EU) 2024/1689 as published in the Official Journal of the European Union on 12 July 2024.</p>
+    </div>
+
+</div>
+
+<div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
+<div class="blog-body" style="margin-top:var(--s5);">
+    <h3>Keep reading</h3>
+    <ul>
+        <li><a href="/blog/blog-startups-ignoring-ai-act.html">Most startups are ignoring the EU AI Act</a> &mdash; When ignoring it stops being rational, and what preparing actually costs</li>
+        <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act Apply to Your AI App?</a> &mdash; Quick applicability check for your product</li>
+        <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act Risk Tiers in Actual Code</a> &mdash; What prohibited, high-risk, and limited-risk look like in real code</li>
+    </ul>
+    <p style="margin-top:48px;font-size:13px;color:var(--text-dim);">
+        <a href="https://news.ycombinator.com/submitlink?u=https://getregula.com/blog/blog-code-scanning-vs-questionnaires.html&t=Questionnaires%20tell%20you%20what%20you%20said.%20Code%20scanning%20shows%20what%20you%20did." rel="noopener" target="_blank" style="color:var(--text-dim);">Discuss on Hacker News</a>
+    </p>
+</div>
+
+</article>
+
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 licence &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Scroll progress bar
+    const progressBar = document.getElementById('progress-bar');
+    function updateProgress() {
+        const scrollTop = document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        progressBar.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+    }
+
+    // Nav scroll
+    function updateNav() {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    }
+
+    window.addEventListener('scroll', () => { updateProgress(); updateNav(); }, { passive: true });
+    updateProgress();
+    updateNav();
+</script>
+
+</body>
+</html>
