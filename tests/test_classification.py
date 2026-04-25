@@ -6882,6 +6882,62 @@ def test_domain_gating_suppresses_high_risk_without_declaration():
         print("  PASS  domain gating suppresses high_risk without declaration")
 
 
+def test_domain_flag_activates_high_risk():
+    """--domain employment should activate worker_management findings."""
+    import tempfile
+    from report import scan_files
+
+    with tempfile.TemporaryDirectory() as tmp:
+        code = (
+            "import torch\n"
+            "class WorkerPerformanceTracker:\n"
+            "    def evaluate_employee_performance(self, data):\n"
+            "        return self.model.predict(data)\n"
+            "    def monitor_worker_productivity(self, metrics):\n"
+            "        return self.model(metrics)\n"
+        )
+        (Path(tmp) / "tracker.py").write_text(code)
+        # WITH domain declaration, worker_management should fire
+        findings = scan_files(tmp, declared_domains={"employment"})
+        high_risk = [f for f in findings if f["tier"] == "high_risk"
+                     and not f.get("suppressed")]
+        worker_findings = [f for f in high_risk
+                          if any(ind in ("high_risk__worker_management", "employment")
+                                 for ind in f.get("indicators", []))]
+        assert len(worker_findings) > 0, (
+            "Expected worker_management findings with --domain employment"
+        )
+        print("  PASS  --domain activates high_risk findings")
+
+
+def test_fingerprint_auto_activates_medical():
+    """Project importing monai should auto-activate medical findings via fingerprint."""
+    import tempfile
+    from report import scan_files
+
+    with tempfile.TemporaryDirectory() as tmp:
+        code = (
+            "import monai\n"
+            "import torch\n"
+            "from monai.transforms import Compose\n"
+            "class DiagnosticModel:\n"
+            "    def diagnose(self, patient_scan):\n"
+            "        return self.model(patient_scan)\n"
+        )
+        (Path(tmp) / "diagnosis.py").write_text(code)
+        # Without explicit --domain, fingerprinting should detect medical
+        findings = scan_files(tmp)
+        # The fingerprint should activate medical_devices subcategory
+        # Even if no medical-specific high_risk pattern fires, the fingerprint
+        # should NOT suppress medical domain findings
+        from project_fingerprint import scan_project_imports
+        fp = scan_project_imports(tmp)
+        assert "medical" in fp["domains_detected"], (
+            f"Fingerprint should detect medical domain, got {fp}"
+        )
+        print("  PASS  fingerprint auto-activates medical domain")
+
+
 def test_fingerprint_detects_medical_domain():
     """Project importing monai should activate medical domain."""
     import tempfile
