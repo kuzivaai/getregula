@@ -608,6 +608,11 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         if min_tier_level > 0:
                             cached = [f for f in cached
                                       if _TIER_ORDER.get(f.get("tier", ""), 0) >= min_tier_level]
+                        # Apply domain gating to cached findings too
+                        cached = [f for f in cached
+                                  if not (f.get("tier") == "high_risk"
+                                          and set(f.get("indicators", [])) & OPT_IN_CATEGORIES
+                                          and not (set(f.get("indicators", [])) & OPT_IN_CATEGORIES & _domain_activated))]
                         findings.extend(cached)
                         # Maintain AI file counter for stats even on cache hits
                         if not cached and is_ai_related(content):
