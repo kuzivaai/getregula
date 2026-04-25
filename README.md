@@ -1,6 +1,6 @@
 # Regula
 
-**EU AI Act risk scanner for code.**
+**EU AI Act compliance tool for code. Combines code scanning with governance questionnaires.**
 
 [![PyPI](https://img.shields.io/pypi/v/regula-ai)](https://pypi.org/project/regula-ai/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
@@ -236,6 +236,10 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | Required production dependencies | 0 |
 
 For buyer-facing trust evidence (every number above paired with a reproducible command, plus precision/recall benchmark, security posture, and audit trail), see [`docs/TRUST.md`](docs/TRUST.md).
+
+## Privacy and data handling
+
+Regula runs entirely on your machine. No code, findings, or metadata are transmitted to any external service. There is no account system, no API key, no telemetry by default (opt-in anonymous crash reports only, disabled unless you run `regula telemetry --enable`). The tool reads your source files, analyses them locally, and writes output to your local filesystem. Network access is only used when you explicitly request it (RFC 3161 timestamps via `--timestamp`). See [`SECURITY.md`](SECURITY.md) for the full security posture.
 
 ## Contributing
 
