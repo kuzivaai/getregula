@@ -209,6 +209,28 @@ def _check_telemetry():
                 "detail": f"Could not check telemetry: {exc}"}
 
 
+def _check_domain_declaration():
+    """Suggest domain declaration for domain-gated high-risk patterns."""
+    try:
+        policy_path = Path(__file__).parent.parent / "regula-policy.yaml"
+        if policy_path.exists():
+            try:
+                import yaml
+                data = yaml.safe_load(policy_path.read_text(encoding="utf-8")) or {}
+                system = data.get("system", {})
+                if system.get("domain"):
+                    return {"name": "Domain", "status": "PASS",
+                            "detail": f"Domain declared: {system['domain']}"}
+            except (ImportError, ValueError, KeyError, TypeError):
+                pass
+        return {"name": "Domain", "status": "INFO",
+                "detail": "No domain declared. Use --domain or set system.domain in regula-policy.yaml "
+                          "to activate domain-specific high-risk patterns (e.g. employment, medical)"}
+    except Exception as exc:
+        return {"name": "Domain", "status": "INFO",
+                "detail": f"Could not check domain declaration: {exc}"}
+
+
 def run_doctor(format_type="text"):
     """Run all health checks.
 
@@ -228,6 +250,7 @@ def run_doctor(format_type="text"):
         _check_config_validation(),
         _check_security(),
         _check_telemetry(),
+        _check_domain_declaration(),
     ]
 
     pass_count = sum(1 for c in checks if c["status"] == "PASS")
