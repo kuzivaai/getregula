@@ -64,5 +64,10 @@ OPT_IN_CATEGORIES = {
     "safety_components",
     "high_risk__worker_management",
     "high_risk__democratic_processes",
+    # "justice" is Annex III Cat 8 (judicial decisions, election influence).
+    # Benchmark shows 0 TP / 3 FP on random code — keyword patterns fire on
+    # legal-text NLP tools and translation software. Requires --domain
+    # law_enforcement or explicit fingerprint to activate.
+    "justice",
     "essential_services",
 }

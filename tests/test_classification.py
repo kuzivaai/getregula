@@ -6974,6 +6974,63 @@ def test_fingerprint_empty_project():
         print("  PASS  fingerprint empty project")
 
 
+def test_fingerprint_physics_sim_suppresses_employment():
+    """Physics simulation project should suppress employment findings."""
+    import tempfile
+    from pathlib import Path
+    from project_fingerprint import scan_project_imports
+
+    with tempfile.TemporaryDirectory() as tmp:
+        Path(tmp, "sim.py").write_text("import deepmd\nclass TrainingWorker:\n    pass\n")
+        result = scan_project_imports(tmp)
+        assert "employment" in result["suppress"], (
+            f"Expected employment suppressed for physics_sim, got {result['suppress']}"
+        )
+        print("  PASS  fingerprint: physics_sim suppresses employment")
+
+
+def test_fingerprint_library_self_detection():
+    """Library self-detection via pyproject.toml name."""
+    import tempfile
+    from pathlib import Path
+    from project_fingerprint import scan_project_imports
+
+    with tempfile.TemporaryDirectory() as tmp:
+        Path(tmp, "pyproject.toml").write_text('[project]\nname = "lhotse"\n')
+        Path(tmp, "recipes").mkdir()
+        Path(tmp, "recipes", "audio.py").write_text("from . import Recording\n")
+        result = scan_project_imports(tmp)
+        assert "biometrics" in result["suppress"], (
+            f"Expected biometrics suppressed when project name is lhotse, got {result['suppress']}"
+        )
+        print("  PASS  fingerprint: library self-detection via pyproject.toml")
+
+
+def test_justice_opt_in_suppressed_without_domain():
+    """Justice high_risk findings should be suppressed without domain declaration."""
+    import tempfile
+    from pathlib import Path
+    from report import scan_files
+
+    with tempfile.TemporaryDirectory() as tmp:
+        code = (
+            "import tensorflow as tf\n"
+            "def predict_verdict(case_facts):\n"
+            "    return court_outcome_model.predict(case_facts)\n"
+        )
+        Path(tmp, "decision.py").write_text(code)
+        findings = scan_files(tmp)
+        justice_findings = [
+            f for f in findings
+            if f.get("tier") == "high_risk"
+            and any("justice" in ind for ind in f.get("indicators", []))
+        ]
+        assert len(justice_findings) == 0, (
+            f"Expected 0 justice findings without domain declaration, got {len(justice_findings)}"
+        )
+        print("  PASS  justice opt-in: suppressed without domain declaration")
+
+
 if __name__ == "__main__":
     # Auto-discover every top-level function whose name starts with `test_`.
     # Eliminates the manual-list maintenance burden that was the actual
