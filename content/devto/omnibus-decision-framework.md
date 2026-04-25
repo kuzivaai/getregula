@@ -102,7 +102,7 @@ Building logging infrastructure, documentation pipelines, risk assessment proces
 
 ## What to do right now
 
-1. **Find out which track you're on.** Run `regula check .` in your project root. It scans your codebase against 404 risk patterns and tells you whether you fall into prohibited, high-risk, limited-risk, or minimal-risk territory. If you're not high-risk, the Omnibus delay is irrelevant to you. Your obligations are either already in force (Track 1) or on a fixed August 2026 timeline (Track 2).
+1. **Find out which track you're on.** Run `regula check .` in your project root. It scans your codebase against 389 risk patterns and tells you whether you fall into prohibited, high-risk, limited-risk, or minimal-risk territory. If you're not high-risk, the Omnibus delay is irrelevant to you. Your obligations are either already in force (Track 1) or on a fixed August 2026 timeline (Track 2).
 
 2. **If you're high-risk, start documenting now.** The single highest-value thing you can do today is start writing your Article 11 technical documentation and your Article 9 risk management plan. These are the most time-consuming requirements, and they only get harder to write the longer you wait, because institutional knowledge about design decisions fades. Start now while the people who made those decisions are still around.
 

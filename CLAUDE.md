@@ -6,7 +6,7 @@ GitHub: kuzivaai/getregula | PyPI: regula-ai | CLI: `regula`
 
 ## Quick Reference
 
-- **61 commands** | **52 pattern categories, 404 regexes** | **8 language families** | **12 compliance frameworks**
+- **61 commands** | **52 pattern categories, 389 regexes** | **8 language families** | **12 compliance frameworks**
 - **1,111 unique tests** (pytest collects 1,232; 121 duplicated via globals() binding)
 - **Zero production dependencies** (stdlib-only)
 - Positioned as the **code layer** of AI governance, not the whole programme — see `docs/what-regula-does-not-do.md`

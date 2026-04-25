@@ -12,7 +12,7 @@ Regula's detection engine is a static analysis system that classifies source cod
 | Version | 1.7.0 (this doc generated 2026-04-16) |
 | Type | Rule-based static analysis (regex + AST pattern matching) |
 | Training data | None — not a machine learning model |
-| Detection patterns | 404 tiered risk regexes across 52 categories (8 prohibited + 15 high-risk + 4 limited-risk + 17 AI security + 2 bias + 6 governance observations) + 17 GPAI training regexes. Regenerate with `python3 scripts/site_facts.py`. |
+| Detection patterns | 389 tiered risk regexes across 52 categories (8 prohibited + 15 high-risk + 4 limited-risk + 17 AI security + 2 bias + 6 governance observations) + 17 GPAI training regexes. Regenerate with `python3 scripts/site_facts.py`. |
 | Languages supported | Python, JavaScript, TypeScript, Java, Go, Rust, C, C++ |
 | Compliance frameworks | 12 with full crosswalk data (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO) |
 | Dependencies | Zero runtime (Python 3.10+ stdlib only); `regula[signing]` extra adds `cryptography` + `asn1crypto` for optional Ed25519 + RFC 3161 manifest signing. |

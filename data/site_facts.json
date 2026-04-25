@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-24T18:58:07.706740+00:00",
+  "generated_at": "2026-04-25T20:13:14.598862+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -8,11 +8,10 @@
     "tests": "tests/test_classification.py (grep '^def test_')"
   },
   "counts": {
-    "commands": 61,
-    "commands_note": "61 top-level CLI commands via --help-all. site_facts.py reports 66 because it counts monitor subcommands separately.",
+    "commands": 66,
     "patterns": {
-      "tier_groups": 53,
-      "tier_regexes": 404,
+      "tier_groups": 52,
+      "tier_regexes": 389,
       "ai_indicators": 212,
       "gpai_training": 17,
       "architecture": 38,
@@ -20,16 +19,13 @@
       "logging": 4,
       "oversight": 4,
       "credential": 18,
-      "grand_total": 707,
-      "historical_330_bucket": 447
+      "grand_total": 692,
+      "historical_330_bucket": 449
     },
     "frameworks": 12,
     "languages": 8,
     "tests": {
-      "unique_test_functions": 1138,
-      "pytest_collected": 1223,
-      "pytest_note": "pytest discovers 85 tests in both their source file and test_classification.py (globals import). 1,138 is the unique count.",
-      "grep_def_test": 1102,
+      "total_functions": 1111,
       "per_file": {
         "test_agent_governance.py": 28,
         "test_ai_codegen.py": 0,
@@ -39,7 +35,7 @@
         "test_bias_stats.py": 8,
         "test_build_regulations.py": 14,
         "test_claim_auditor.py": 24,
-        "test_classification.py": 428,
+        "test_classification.py": 437,
         "test_cli_integration.py": 21,
         "test_coverage_critical.py": 45,
         "test_dependency_compromised_text.py": 9,
@@ -80,7 +76,7 @@
     }
   },
   "notes": {
-    "pattern_count_methodology": "Regula's landing pages cite '404 risk patterns'. That figure is the total individual regexes in risk_patterns.py across all tiered groups (prohibited, high-risk, limited-risk, AI security, bias, governance, GPAI training). The `historical_330_bucket` adds architecture, credential, and oversight patterns from code_analysis.py. The `grand_total` also includes AI_INDICATORS.",
+    "pattern_count_methodology": "Regula's landing pages cite 'tier_regexes risk patterns'. That figure is the total individual regexes in risk_patterns.py across all tiered groups (prohibited, high-risk, limited-risk, AI security, bias, governance, GPAI training). The `historical_330_bucket` adds architecture, credential, and oversight patterns from code_analysis.py. The `grand_total` also includes AI_INDICATORS.",
     "frameworks_vs_claim": "Regula's landing pages cite '12 compliance frameworks'. 12 have full crosswalk data; 5 additional frameworks (Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI) accepted as filter keys with partial coverage."
   }
 }
