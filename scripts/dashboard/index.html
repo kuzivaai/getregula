@@ -388,6 +388,13 @@
             <div class="icon">&#9654;</div>
             <p>Enter a project path and press Scan. Results will appear here.</p>
             <p style="font-size:12px;">Requires the API server: <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;font-family:var(--mono);">regula api-server</code></p>
+            <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">Keyboard shortcut: Ctrl+Enter to scan</p>
+          </div>
+        </div>
+        <div id="scanHistorySection" style="display:none;">
+          <div class="card" style="margin-top:16px;">
+            <div class="card-title">Scan history (this session)</div>
+            <table class="findings-table" id="scanHistoryTable"><tbody></tbody></table>
           </div>
         </div>
       </div>
@@ -511,17 +518,61 @@
           <h2>Audit Trail</h2>
           <div class="subtitle">SHA-256 hash-chained, tamper-evident scan history.</div>
         </div>
+
         <div class="card">
-          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">
-            Every Regula scan is logged in a tamper-evident chain. Verify integrity:
+          <div class="card-title">How it works</div>
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">
+            Every <code style="font-family:var(--mono);font-size:12px;">regula check</code> scan is automatically logged to
+            <code style="font-family:var(--mono);font-size:12px;">~/.regula/audit/</code> as a hash-chained
+            <abbr title="JSON Lines — one JSON object per line">JSONL</abbr> file. Each entry includes a SHA-256 hash
+            of the previous entry, creating a tamper-evident chain (the same construction used by
+            <abbr title="RFC 6962 — Certificate Transparency">Certificate Transparency</abbr>).
           </p>
-          <code style="display:block;padding:12px;background:var(--bg-primary);border-radius:var(--radius);font-family:var(--mono);font-size:13px;color:var(--accent);">
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">
+            If a single byte of any past entry is altered, the chain breaks and verification fails.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Verify integrity</div>
+          <code style="display:block;padding:12px;background:var(--bg-primary);border-radius:var(--radius);font-family:var(--mono);font-size:13px;color:var(--accent);margin-bottom:12px;">
             regula audit verify
           </code>
-          <p style="font-size:12px;color:var(--text-muted);margin-top:12px;">
-            Optional: anchor to a public RFC 3161 Time Stamp Authority with
-            <code style="font-family:var(--mono);font-size:11px;">regula audit anchor --tsa https://freetsa.org/tsr</code>
+          <p style="font-size:12px;color:var(--text-secondary);">
+            Expected output: <em>"Audit chain verified (N entries, no tampering detected)"</em>
           </p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">View recent entries</div>
+          <code style="display:block;padding:12px;background:var(--bg-primary);border-radius:var(--radius);font-family:var(--mono);font-size:13px;color:var(--accent);margin-bottom:12px;">
+            regula audit show --format json | head -20
+          </code>
+          <p style="font-size:12px;color:var(--text-secondary);">
+            Each entry records: timestamp, command, file paths scanned, findings count, and the SHA-256 hash linking it to the previous entry.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Third-party timestamping (optional)</div>
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">
+            Anchor the current audit log head to a public <abbr title="RFC 3161 — Time-Stamp Protocol">RFC 3161</abbr>
+            Time Stamp Authority. This creates an independent, cryptographic proof that the audit log existed
+            in its current form at a specific time.
+          </p>
+          <code style="display:block;padding:12px;background:var(--bg-primary);border-radius:var(--radius);font-family:var(--mono);font-size:13px;color:var(--accent);">
+            regula audit anchor --tsa https://freetsa.org/tsr
+          </code>
+          <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">
+            Regula does not require trust in any specific TSA. Set <code style="font-family:var(--mono);font-size:11px;">REGULA_TSA_URL</code> to the authority of your choice.
+          </p>
+        </div>
+
+        <div class="card" id="dashboardAuditHistory">
+          <div class="card-title">Dashboard scan history (this session)</div>
+          <div id="auditSessionHistory">
+            <p style="font-size:12px;color:var(--text-muted);">No scans run this session. Scans from the "Run Scan" tab will appear here.</p>
+          </div>
         </div>
       </div>
 
@@ -568,6 +619,7 @@
     let scanData = null;
     let questionnaireAnswers = {};
     let lastScanTime = null;
+    let scanHistory = []; // {path, tier, timestamp, findingCount, findings}
 
     // --- Navigation ---
     document.querySelectorAll('.nav-item').forEach(item => {
@@ -645,7 +697,10 @@
         // API returns {data: [findings array]} — extract correctly
         scanData = Array.isArray(d.data) ? d.data : (d.data?.findings || d.data?.results || d.findings || d.results || []);
         lastScanTime = new Date().toISOString();
+        scanHistory.unshift({path, tier: minTier, timestamp: lastScanTime, findingCount: scanData.length, findings: scanData});
+        if (scanHistory.length > 10) scanHistory.pop();
         renderScanResults(scanData);
+        renderScanHistory();
         renderOverview(scanData);
         renderFindings(scanData);
       } catch (e) {
@@ -889,6 +944,52 @@
       a.href = URL.createObjectURL(blob);
       a.download = 'regula-governance-assessment.json';
       a.click();
+    }
+
+    function renderScanHistory() {
+      if (!scanHistory.length) return;
+      document.getElementById('scanHistorySection').style.display = 'block';
+      const tbody = document.querySelector('#scanHistoryTable tbody');
+      let html = '<tr><th>Time</th><th>Path</th><th>Tier filter</th><th>Findings</th><th></th></tr>';
+      scanHistory.forEach((s, i) => {
+        const time = new Date(s.timestamp).toLocaleTimeString();
+        html += `<tr>
+          <td style="font-size:12px;color:var(--text-muted)">${time}</td>
+          <td class="file-path">${s.path}</td>
+          <td style="font-size:12px">${s.tier || 'all'}</td>
+          <td>${s.findingCount}</td>
+          <td><button class="btn-secondary" style="padding:2px 8px;font-size:11px;" onclick="loadScanHistory(${i})">Load</button></td>
+        </tr>`;
+      });
+      tbody.innerHTML = html;
+
+      // Also update the audit trail view
+      const auditEl = document.getElementById('auditSessionHistory');
+      let auditHtml = '<table class="findings-table"><thead><tr><th>Time</th><th>Path</th><th>Findings</th><th>Prohibited</th><th>High-Risk</th></tr></thead><tbody>';
+      scanHistory.forEach(s => {
+        const time = new Date(s.timestamp).toLocaleTimeString();
+        const prohibited = s.findings.filter(f => (f.tier || '').toLowerCase().includes('prohibit')).length;
+        const high = s.findings.filter(f => (f.tier || '').toLowerCase().includes('high')).length;
+        auditHtml += `<tr>
+          <td style="font-size:12px;color:var(--text-muted)">${time}</td>
+          <td class="file-path">${s.path}</td>
+          <td>${s.findingCount}</td>
+          <td>${prohibited ? '<span class="tier-badge tier-prohibited">' + prohibited + '</span>' : '0'}</td>
+          <td>${high ? '<span class="tier-badge tier-high">' + high + '</span>' : '0'}</td>
+        </tr>`;
+      });
+      auditHtml += '</tbody></table>';
+      auditEl.innerHTML = auditHtml;
+    }
+
+    function loadScanHistory(index) {
+      const s = scanHistory[index];
+      if (!s) return;
+      scanData = s.findings;
+      lastScanTime = s.timestamp;
+      renderScanResults(scanData);
+      renderOverview(scanData);
+      renderFindings(scanData);
     }
 
     // Keyboard shortcuts
