@@ -28,7 +28,7 @@ html { scroll-behavior: smooth; overflow-x: hidden; }
     --text: #e2e2f0;
     --text-2: #b8b8c8;
     --text-dim: #9898b4;
-    --text-faint: #7a7aa0;
+    --text-faint: #8a8ab0;
     --accent: #3b82f6;
     --accent-hover: #60a5fa;
     --accent-soft: rgba(59,130,246,0.08);
@@ -175,9 +175,13 @@ dialog.nav-right {
     cursor: pointer;
     padding: 4px;
     line-height: 1;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
 }
 @media (max-width: 768px) {
-    .nav-toggle { display: block; }
+    .nav-toggle { display: flex; }
     dialog.nav-right {
         display: none;
         position: fixed;
@@ -604,6 +608,7 @@ a.card-base:hover { color: inherit; }
 .tag-red { background: rgba(239,68,68,0.18); color: #f87171; }
 .tag-amber { background: rgba(245,158,11,0.18); color: #fbbf24; }
 .tag-purple { background: rgba(124,58,237,0.18); color: #a78bfa; }
+.art-card h3,
 .art-card h4 {
     font-size: 14px;
     font-weight: 600;
@@ -856,7 +861,7 @@ footer {
     border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 .term-tab {
-    padding: 7px 14px;
+    padding: 12px 14px;
     font-family: var(--font-mono);
     font-size: 11px;
     color: var(--text-faint);
@@ -864,9 +869,13 @@ footer {
     border-bottom: 2px solid transparent;
     transition: color 0.15s, border-color 0.15s;
     user-select: none;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
 }
 .term-tab:hover { color: var(--text-dim); }
 .term-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.term-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 4px; }
 .term-body { position: relative; min-height: 340px; }
 .term-panel {
     position: absolute;
@@ -1436,6 +1445,32 @@ button.audience-fwd {
     margin-bottom: 0;
 }
 .callout strong { color: var(--warn); }
+
+/* ===== COMPARISON TABLE: STICKY FIRST COLUMN ===== */
+/* On mobile, the first column (row labels) stays fixed while other
+   columns scroll horizontally. Prevents loss of context. */
+.cmp-table td:first-child,
+.cmp-table th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--bg);
+}
+.cmp-table tr:nth-child(even) td:first-child { background: #0d0d1a; }
+
+/* ===== FEATURE CATEGORY HEADINGS ===== */
+.feature-category {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    margin: var(--s7) 0 var(--s4);
+    padding-bottom: var(--s2);
+    border-bottom: 1px solid var(--border);
+}
+.feature-category:first-of-type { margin-top: 0; }
 
 /* ===== COMPETITOR NOTE ===== */
 .competitor-note { font-size: 13px; color: var(--text-dim); margin-top: 24px; font-family: var(--font-mono); }
