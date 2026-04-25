@@ -264,7 +264,7 @@
     <div class="hero">
         <div class="hero-text">
             <div class="badge"><span class="badge-dot"></span> Open-source CLI &middot; v1.7.0 &middot; Apache 2.0</div>
-            <h1>Is your AI app <span class="hl">legal</span> in Europe?</h1>
+            <h1>Is your AI app <span class="hl">high-risk</span> in Europe?</h1>
             <p class="sub">One command tells you which EU AI Act risk tier your code is in, why, and what to fix. <strong>30 seconds, free, no account.</strong></p>
 
             <button class="cta-pill" id="install-pill" onclick="copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
@@ -667,7 +667,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
         <div class="card-base art-card">
             <h3>Pattern matching, not understanding</h3>
-            <p>0 false positives at BLOCK tier (the CI default). 15.2% precision at INFO tier on AI library source code — the hardest corpus, since these libraries implement AI rather than using it for regulated decisions. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Published benchmark &rarr;</a></p>
+            <p>83.5% precision on production code (blind-labelled random corpus, N=115). 0 false positives at BLOCK tier (the CI default). 15.2% precision on AI library source code — the hardest corpus, since those libraries implement AI rather than using it for regulated decisions. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Published benchmark &rarr;</a></p>
         </div>
         <div class="card-base art-card">
             <h3>Scaffolds, not substance</h3>

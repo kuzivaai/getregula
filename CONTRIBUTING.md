@@ -36,7 +36,7 @@ scripts/
 └── ...                    # See scripts/ for full list
 tests/
 ├── test_classification.py     # Core classification tests (main test file)
-└── ...                        # 44 test files total — see tests/ for full list
+└── ...                        # 45 test files total — see tests/ for full list
 ```
 
 ## How to Add a Risk Pattern
