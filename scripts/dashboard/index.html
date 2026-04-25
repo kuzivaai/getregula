@@ -230,6 +230,9 @@
       }
       .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
       .empty-state p { max-width: 400px; margin: 0 auto 16px; font-size: 14px; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .onboarding { background: var(--accent-dim); border: 1px solid rgba(108,92,231,0.3); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px; font-size: 13px; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center; }
+      .onboarding button { background: none; border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); cursor: pointer; padding: 4px 10px; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -242,37 +245,38 @@
       </div>
 
       <div class="nav-section">Overview</div>
-      <div class="nav-item active" data-view="overview">
+      <div class="nav-item active" role="button" tabindex="0" data-view="overview">
         <span class="nav-icon">&#9632;</span> Governance Posture
       </div>
 
       <div class="nav-section">Assessment</div>
-      <div class="nav-item" data-view="scan">
+      <div class="nav-item" role="button" tabindex="0" data-view="scan">
         <span class="nav-icon">&#9654;</span> Run Scan
       </div>
-      <div class="nav-item" data-view="findings">
+      <div class="nav-item" role="button" tabindex="0" data-view="findings">
         <span class="nav-icon">&#9872;</span> Findings
       </div>
-      <div class="nav-item" data-view="compliance">
+      <div class="nav-item" role="button" tabindex="0" data-view="compliance">
         <span class="nav-icon">&#9745;</span> Compliance Gap
       </div>
 
       <div class="nav-section">Governance</div>
-      <div class="nav-item" data-view="questionnaire">
+      <div class="nav-item" role="button" tabindex="0" data-view="questionnaire">
         <span class="nav-icon">&#9998;</span> Self-Assessment
       </div>
-      <div class="nav-item" data-view="timeline">
+      <div class="nav-item" role="button" tabindex="0" data-view="timeline">
         <span class="nav-icon">&#9201;</span> Enforcement Dates
       </div>
 
       <div class="nav-section">Evidence</div>
-      <div class="nav-item" data-view="audit">
+      <div class="nav-item" role="button" tabindex="0" data-view="audit">
         <span class="nav-icon">&#9875;</span> Audit Trail
       </div>
-      <div class="nav-item" data-view="export">
+      <div class="nav-item" role="button" tabindex="0" data-view="export">
         <span class="nav-icon">&#8681;</span> Export Reports
       </div>
 
+      <div style="padding:8px 20px;"><a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md" target="_blank" rel="noopener" style="font-size:11px;color:var(--text-muted);text-decoration:none;">Documentation</a></div>
       <div class="api-status">
         <span class="dot dot-amber" id="apiDot"></span>
         <span id="apiStatusText">Connecting...</span>
@@ -287,6 +291,11 @@
         <div class="page-header">
           <h2>Governance Posture</h2>
           <div class="subtitle">EU AI Act readiness at a glance. Scan your project to populate.</div>
+        </div>
+
+        <div class="onboarding" id="onboarding">
+          <span>First time? Start with "Run Scan" to scan a project, then review findings and complete the Self-Assessment.</span>
+          <button onclick="this.parentElement.style.display='none'">Dismiss</button>
         </div>
 
         <div class="disclaimer">
@@ -527,19 +536,19 @@
             <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Full findings with article mapping and remediation guidance.</p>
             <div style="display:flex;gap:8px;">
               <button class="btn-secondary" onclick="exportReport('json')">JSON</button>
-              <button class="btn-secondary" onclick="exportReport('sarif')">SARIF</button>
-              <button class="btn-secondary" onclick="exportReport('html')">HTML</button>
+              <button class="btn-secondary" disabled title="SARIF export coming soon — use regula check --format sarif from CLI">SARIF (CLI only)</button>
+              <button class="btn-secondary" disabled title="HTML export coming soon — use regula report --format html from CLI">HTML (CLI only)</button>
             </div>
           </div>
           <div class="card">
             <div class="card-title">Conformity Evidence Pack</div>
             <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Annex IV technical documentation scaffold with scan evidence.</p>
-            <button class="btn-secondary" onclick="alert('Run: regula conform /path/to/project')">Generate</button>
+            <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Run from terminal: <code style="font-family:var(--mono);font-size:11px;">regula conform /path/to/project</code></p>
           </div>
           <div class="card">
-            <div class="card-title">AI Bill of Materials</div>
-            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">CycloneDX 1.7 SBOM with GPAI signatory annotations.</p>
-            <button class="btn-secondary" onclick="alert('Run: regula sbom --ai-bom')">Generate</button>
+            <div class="card-title"><abbr title="AI Bill of Materials — machine-readable inventory of AI components">AI BOM</abbr></div>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;"><abbr title="CycloneDX is a standard for software bill of materials">CycloneDX</abbr> 1.7 <abbr title="Software Bill of Materials">SBOM</abbr> with <abbr title="General-Purpose AI">GPAI</abbr> signatory annotations.</p>
+            <p style="font-size:12px;color:var(--text-muted);">Run from terminal: <code style="font-family:var(--mono);font-size:11px;">regula sbom --ai-bom</code></p>
           </div>
           <div class="card">
             <div class="card-title">Self-Assessment Export</div>
@@ -557,16 +566,26 @@
     const API_BASE = window.location.origin;
     let scanData = null;
     let questionnaireAnswers = {};
+    let lastScanTime = null;
 
     // --- Navigation ---
     document.querySelectorAll('.nav-item').forEach(item => {
-      item.addEventListener('click', () => {
+      function activate() {
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         item.classList.add('active');
         document.getElementById('view-' + item.dataset.view).classList.add('active');
-      });
+        window.location.hash = item.dataset.view;
+      }
+      item.addEventListener('click', activate);
+      item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); } });
     });
+    // Hash-based routing
+    window.addEventListener('hashchange', () => {
+      const view = window.location.hash.slice(1);
+      if (view) { const el = document.querySelector(`[data-view="${view}"]`); if (el) el.click(); }
+    });
+    if (window.location.hash) { const el = document.querySelector(`[data-view="${window.location.hash.slice(1)}"]`); if (el) el.click(); }
 
     // --- API health check ---
     async function checkAPI() {
@@ -591,7 +610,7 @@
       const skipTests = document.getElementById('skipTests').checked;
       const minTier = document.getElementById('minTier').value;
       const results = document.getElementById('scanResults');
-      results.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">Scanning...</div>';
+      results.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)"><div style="display:inline-block;width:20px;height:20px;border:2px solid var(--accent);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;margin-right:10px;vertical-align:middle;"></div> Scanning...</div>';
 
       try {
         const r = await fetch(API_BASE + '/v1/check', {
@@ -600,18 +619,24 @@
           body: JSON.stringify({path, skip_tests: skipTests, min_tier: minTier})
         });
         const d = await r.json();
-        scanData = d.data || d;
+        if (!r.ok) {
+          results.innerHTML = `<div class="card" style="border-color:var(--red)"><p style="color:var(--red)">${d.error || 'Scan failed'}</p></div>`;
+          return;
+        }
+        // API returns {data: [findings array]} — extract correctly
+        scanData = Array.isArray(d.data) ? d.data : (d.data?.findings || d.data?.results || d.findings || d.results || []);
+        lastScanTime = new Date().toISOString();
         renderScanResults(scanData);
         renderOverview(scanData);
         renderFindings(scanData);
       } catch (e) {
-        results.innerHTML = '<div class="card" style="border-color:var(--red)"><p style="color:var(--red)">Could not connect to API. Start the server:</p><code style="font-family:var(--mono);font-size:13px;">regula api-server --port 8487</code></div>';
+        results.innerHTML = `<div class="card" style="border-color:var(--red)"><p style="color:var(--red)">Could not connect to API. Start the server:</p><code style="font-family:var(--mono);font-size:13px;">regula api-server --port ${window.location.port || '8487'}</code></div>`;
       }
     }
 
     function renderScanResults(data) {
       const el = document.getElementById('scanResults');
-      const findings = data.findings || data.results || [];
+      const findings = Array.isArray(data) ? data : (data.findings || data.results || []);
       if (!findings.length) {
         el.innerHTML = '<div class="card"><p style="color:var(--green)">No findings at the selected tier. Your project looks clean at this threshold.</p></div>';
         return;
@@ -620,7 +645,7 @@
     }
 
     function renderOverview(data) {
-      const findings = data.findings || data.results || [];
+      const findings = Array.isArray(data) ? data : (data.findings || data.results || []);
       const counts = {prohibited: 0, high: 0, limited: 0, minimal: 0};
       findings.forEach(f => {
         const t = (f.tier || f.risk_tier || '').toLowerCase();
@@ -669,7 +694,7 @@
 
     function renderFindings(data) {
       const el = document.getElementById('findingsContent');
-      const findings = data.findings || data.results || [];
+      const findings = Array.isArray(data) ? data : (data.findings || data.results || []);
       if (!findings.length) {
         el.innerHTML = '<div class="empty-state"><div class="icon">&#9745;</div><p>No findings.</p></div>';
         return;
@@ -743,7 +768,13 @@
         });
         html += '</div>';
       });
-      html += '<div style="margin-top:16px;"><button class="btn-primary" onclick="evaluateAssessment()">Evaluate Governance Readiness</button></div>';
+      const totalQs = GOVERNANCE_QUESTIONS.reduce((s, sec) => s + sec.questions.length, 0);
+      const answeredQs = Object.keys(questionnaireAnswers).length;
+      html += `<div style="margin-top:16px;display:flex;align-items:center;gap:12px;">`;
+      html += `<button class="btn-primary" onclick="evaluateAssessment()">Evaluate Governance Readiness</button>`;
+      html += `<button class="btn-secondary" onclick="questionnaireAnswers={};renderQuestionnaire()">Reset</button>`;
+      html += `<span style="font-size:12px;color:var(--text-muted);">${answeredQs}/${totalQs} answered</span>`;
+      html += `</div>`;
       html += '<div id="assessmentResult" style="margin-top:16px;"></div>';
       el.innerHTML = html;
     }
@@ -808,7 +839,7 @@
     }
 
     function exportReport(format) {
-      if (!scanData) { alert('Run a scan first.'); return; }
+      if (!scanData) { document.getElementById('scanResults').innerHTML = '<div class="card" style="border-color:var(--amber)"><p style="color:var(--amber)">Run a scan first to generate export data.</p></div>'; document.querySelector('[data-view="scan"]').click(); return; }
       const blob = new Blob([JSON.stringify(scanData, null, 2)], {type: 'application/json'});
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -817,7 +848,7 @@
     }
 
     function exportAssessmentJSON() {
-      if (!Object.keys(questionnaireAnswers).length) { alert('Answer at least one question first.'); return; }
+      if (!Object.keys(questionnaireAnswers).length) { document.querySelector('[data-view="questionnaire"]').click(); return; }
       const data = {
         type: 'governance_self_assessment',
         generated_at: new Date().toISOString(),
