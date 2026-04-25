@@ -79,14 +79,40 @@ SUPPRESS_FINGERPRINTS = {
     "physics_simulation": {
         "imports": {"deepmd", "ase", "lammps", "gromacs",
                     "openmm", "mdtraj"},
+        # employment suppressed: molecular dynamics / physics sim code uses
+        # "worker" for compute processes and "validation" for model checks,
+        # not for employment decisions (benchmark: 0 TP, 1 FP on deepmd).
         "suppresses": {"safety_components", "critical_infrastructure",
-                       "high_risk__worker_management"},
+                       "high_risk__worker_management", "employment"},
     },
 }
 
 _IMPORT_RE = re.compile(
     r"^\s*(?:import|from)\s+([\w.]+)", re.MULTILINE
 )
+_PYPROJECT_NAME_RE = re.compile(
+    r'^\s*name\s*=\s*["\']([^"\']+)["\']', re.MULTILINE
+)
+
+
+def _get_project_name(project_path):
+    """Extract package name from pyproject.toml or setup.py.
+
+    Used for library self-detection: when a library is scanning its own
+    source tree, internal files often use relative imports and won't appear
+    in the import fingerprint. Reading the package name directly avoids this.
+    """
+    p = Path(project_path)
+    for candidate in (p / "pyproject.toml", p / "setup.py", p / "setup.cfg"):
+        if candidate.exists():
+            try:
+                content = candidate.read_text(encoding="utf-8", errors="replace")
+                m = _PYPROJECT_NAME_RE.search(content)
+                if m:
+                    return m.group(1).lower().replace("-", "_")
+            except OSError:
+                pass
+    return None
 
 
 def _extract_imports(filepath):
@@ -134,11 +160,23 @@ def scan_project_imports(project_path):
             domains_detected.add(domain)
             activate.update(cfg["activates"])
 
-    # Detect suppressions
+    # Detect suppressions from import fingerprint
     suppress = set()
     for name, cfg in SUPPRESS_FINGERPRINTS.items():
         if all_imports & cfg["imports"]:
             suppress.update(cfg["suppresses"])
+
+    # Library self-detection: when a library scans its own source tree,
+    # internal files use relative imports that won't appear in the fingerprint.
+    # Reading the package name from pyproject.toml / setup.py catches this case.
+    # Example: lhotse scanning itself won't have `import lhotse` in its own files,
+    # but its pyproject.toml says name = "lhotse" → speech_audio suppression applies.
+    project_name = _get_project_name(str(project))
+    if project_name:
+        for cfg in SUPPRESS_FINGERPRINTS.values():
+            norm_imports = {i.replace("-", "_") for i in cfg["imports"]}
+            if project_name in norm_imports:
+                suppress.update(cfg["suppresses"])
 
     # Activations override suppressions (explicit domain signal wins)
     suppress -= activate
