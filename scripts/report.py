@@ -443,7 +443,8 @@ def _parse_suppression_rules(lines, respect_ignores, filepath="unknown"):
 
 
 def scan_files(project_path: str, respect_ignores: bool = True,
-               skip_tests: bool = False, min_tier: str = "") -> list:
+               skip_tests: bool = False, min_tier: str = "",
+               declared_domains: set = None) -> list:
     """Scan project files and return findings with file locations.
 
     Args:
@@ -455,6 +456,31 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     """
     project = Path(project_path).resolve()
     findings = []
+
+    # Domain gating: scan project imports for domain fingerprinting
+    from project_fingerprint import scan_project_imports
+    from constants import OPT_IN_CATEGORIES
+    _fingerprint = scan_project_imports(str(project))
+    _declared = declared_domains or set()
+
+    # Build the set of activated high_risk subcategories.
+    # A subcategory is active if: declared by user OR detected by fingerprint.
+    _domain_to_subcats = {
+        "employment": {"employment", "high_risk__worker_management"},
+        "medical": {"medical_devices"},
+        "finance": {"essential_services"},
+        "biometrics": {"biometrics"},
+        "education": {"education"},
+        "law_enforcement": {"law_enforcement"},
+        "infrastructure": {"critical_infrastructure"},
+        "migration": {"migration"},
+    }
+    _domain_activated = set()
+    for d in _declared:
+        _domain_activated.update(_domain_to_subcats.get(d, set()))
+    _domain_activated.update(_fingerprint.get("activate", set()))
+    _domain_suppressed = _fingerprint.get("suppress", set()) - _domain_activated
+
     # Side-channel counters so cmd_check can show an honest "files scanned"
     # number without refactoring every caller. Exposed on scan_files.last_stats.
     _scanned_files = 0
@@ -842,6 +868,13 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 if not _indicators or _indicators <= _GENERIC_INDICATORS:
                     confidence_score = min(confidence_score, 49)
                     finding["confidence_score"] = confidence_score
+
+            # Domain gating: suppress opt-in high_risk findings unless
+            # activated by user declaration or import fingerprinting.
+            if result.tier.value == "high_risk":
+                _opt_in_matched = set(result.indicators_matched) & OPT_IN_CATEGORIES
+                if _opt_in_matched and not (_opt_in_matched & _domain_activated):
+                    continue  # suppress: opt-in category without domain activation
 
             finding["open_question"] = _is_open_question(finding)
             findings.append(finding)
