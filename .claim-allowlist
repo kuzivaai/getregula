@@ -16,18 +16,18 @@
 #      counts (commands, pattern categories, tier regexes, frameworks) OR
 #      against test output (`pytest --collect-only`). Regenerate canonical
 #      counts by running `python3 scripts/site_facts.py` before editing.
-\b389\s+(risk|)patterns?
-\b389\s+individual\s+regexes
-\b389\s+Risikomuster
-\b389\s+padr
+\b409\s+(risk|)patterns?
+\b409\s+individual\s+regexes
+\b409\s+Risikomuster
+\b409\s+padr
 \b52\s+risk\s+pattern\s+categor
 \b12\s+compliance\s+frameworks?
 \b12\s+Konformit
 \b8\s+(programming\s+)?languages?
 \b8\s+Sprachen
 \b8\s+linguagens
-\b66\s+CLI\s+commands?
-\b66\s+commands?
+\b61\s+CLI\s+commands?
+\b61\s+commands?
 \bregula[- ]ai\b
 \bv1\.6
 # tests: 1,138 unique test functions (pytest discovers 1,223 but 85 are duplicated via globals import)

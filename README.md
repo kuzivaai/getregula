@@ -229,7 +229,7 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | What | Count |
 |------|------:|
 | CLI commands | 61 |
-| Risk detection patterns (regexes) | 389 |
+| Risk detection patterns (regexes) | 409 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Compliance frameworks mapped | 12 |
 | Tests (pytest --collect-only, all passing) | 1,232 |
