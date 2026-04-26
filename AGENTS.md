@@ -19,8 +19,8 @@ python3 tests/test_classification.py && python3 -m pytest tests/ -q && python3 -
 
 ## Architecture
 
-- Entry point: `scripts/cli.py` (monolith, 66 commands)
-- Risk patterns: `scripts/risk_patterns.py` (52 categories, 389 regexes)
+- Entry point: `scripts/cli.py` (monolith, 61 commands)
+- Risk patterns: `scripts/risk_patterns.py` (52 categories, 409 regexes)
 - Framework crosswalk: `references/framework_crosswalk.yaml` (12 frameworks)
 - Tests: `tests/test_classification.py` + `tests/test_*.py` (1,111 unique)
 - Site: `site/` (GitHub Pages, 3 locales: EN, DE, PT-BR)

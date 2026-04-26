@@ -8,7 +8,7 @@ Generated: `2026-04-26T08:22:12.525429+00:00`
 
 | Claim | Count | Source file |
 |---|---|---|
-| CLI commands | **66** | `scripts/cli.py` |
+| CLI commands | **61** | `scripts/cli.py` |
 | Detection patterns (historical bucket) | **449** | see breakdown below |
 | Detection patterns (grand total, inclusive) | **692** | see breakdown below |
 | Tiered risk pattern groups | 52 | `scripts/risk_patterns.py` |
@@ -22,7 +22,7 @@ Regula ships detection patterns across three source files. The landing page risk
 
 | Category | Source | Count |
 |---|---|---|
-| Tiered risk regexes (prohibited, high-risk, limited-risk, AI security, bias) | `risk_patterns.py` | 389 |
+| Tiered risk regexes (prohibited, high-risk, limited-risk, AI security, bias) | `risk_patterns.py` | 409 |
 | AI_INDICATORS (libraries, model files, API endpoints, ML patterns, domain keywords) | `risk_patterns.py` | 212 |
 | GPAI training code detectors | `risk_patterns.py` | 17 |
 | Architecture detectors | `code_analysis.py` | 38 |
