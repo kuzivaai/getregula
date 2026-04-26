@@ -26,9 +26,8 @@
 \b8\s+(programming\s+)?languages?
 \b8\s+Sprachen
 \b8\s+linguagens
-\b53\s+CLI\s+commands?
-\b53\s+commands?
-\b60\s+commands?
+\b66\s+CLI\s+commands?
+\b66\s+commands?
 \bregula[- ]ai\b
 \bv1\.6
 # tests: 1,138 unique test functions (pytest discovers 1,223 but 85 are duplicated via globals import)
