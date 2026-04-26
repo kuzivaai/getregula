@@ -48,7 +48,7 @@ regula assess               # 5 yes/no questions → your risk tier
 
 **Want to scan your code?**
 ```bash
-regula check .              # 389 patterns, 8 languages, 30 seconds
+regula check .              # 409 patterns, 8 languages, 30 seconds
 ```
 
 **Need documentation for auditors?**
@@ -146,7 +146,7 @@ Every finding includes the relevant Article reference and explains when exceptio
 | `regula owasp-agentic` | OWASP Top 10 for Agentic Applications assessment |
 | `regula monitor` | Runtime monitoring for AI applications (Article 12) |
 
-Regula has 66 commands in total. Run `regula --help-all` for the full list, or see [`docs/cli-reference.md`](docs/cli-reference.md).
+Regula has 61 commands in total. Run `regula --help-all` for the full list, or see [`docs/cli-reference.md`](docs/cli-reference.md).
 
 ### REST API and web dashboard
 
@@ -228,7 +228,7 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 
 | What | Count |
 |------|------:|
-| CLI commands | 66 |
+| CLI commands | 61 |
 | Risk detection patterns (regexes) | 389 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Compliance frameworks mapped | 12 |
