@@ -73,7 +73,7 @@ jobs:
 
       - name: Upload precision report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: precision-report
           path: benchmarks/results/PRECISION.json
@@ -95,7 +95,7 @@ jobs:
 
       - name: Upload synthetic results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: synthetic-recall
           path: /tmp/synthetic_results.txt
