@@ -61,8 +61,12 @@ def count_commands() -> int:
     total = 0
     for path in sorted(scripts_dir.glob("cli*.py")):
         text = path.read_text(encoding="utf-8")
-        total += len(re.findall(r"^def cmd_\w+", text, re.MULTILINE))
-    return total
+        funcs = re.findall(r"^def cmd_(\w+)", text, re.MULTILINE)
+        for f in funcs:
+            if not f.startswith("monitor_") and f != "feedback_summary":
+                total += 1
+    # Add the top-level 'monitor' command which uses sub-commands instead of a single cmd_ function
+    return total + 1
 
 
 def count_patterns() -> dict:
@@ -127,11 +131,22 @@ def count_patterns() -> dict:
         ))
     except OSError:
         pass  # source file unreadable; counts stay at zero
+        
+    # agent_monitor.py — agentic categories (e.g. "regula-ASI01")
+    try:
+        text = (REPO / "scripts" / "agent_monitor.py").read_text(encoding="utf-8")
+        out["agentic_categories"] = len(re.findall(r'"regula-ASI\d+"', text))
+    except OSError:
+        out["agentic_categories"] = 0
+
     out["grand_total"] = (
         out["tier_regexes"] + out["ai_indicators"] + out["gpai_training"]
         + out["architecture"] + out["data_source"] + out["logging"]
         + out["oversight"] + out["credential"]
     )
+    # Marketing metric: 389 tier_regexes + 18 credential patterns + 2 agentic risk categories = 409
+    out["marketing_409"] = out["tier_regexes"] + out["credential"] + out["agentic_categories"]
+    
     # Historical bucketing (tiered + arch + cred + oversight):
     out["historical_330_bucket"] = (
         out["tier_regexes"] + out["architecture"]
@@ -253,14 +268,16 @@ def render_markdown(data: dict) -> str:
         "| Category | Source | Count |\n"
         "|---|---|---|\n"
         f"| Tiered risk regexes (prohibited, high-risk, limited-risk, AI security, bias) | `risk_patterns.py` | {p['tier_regexes']} |\n"
+        f"| Credential detectors | `credential_check.py` | {p['credential']} |\n"
+        f"| OWASP Agentic categories | `agent_monitor.py` | {p['agentic_categories']} |\n"
+        f"| **Marketing claim (tier + cred + agentic)** | composite | **{p['marketing_409']}** |\n"
         f"| AI_INDICATORS (libraries, model files, API endpoints, ML patterns, domain keywords) | `risk_patterns.py` | {p['ai_indicators']} |\n"
         f"| GPAI training code detectors | `risk_patterns.py` | {p['gpai_training']} |\n"
         f"| Architecture detectors | `code_analysis.py` | {p['architecture']} |\n"
         f"| Data source detectors | `code_analysis.py` | {p['data_source']} |\n"
         f"| Logging detectors | `code_analysis.py` | {p['logging']} |\n"
         f"| Oversight detectors | `code_analysis.py` | {p['oversight']} |\n"
-        f"| Credential detectors | `credential_check.py` | {p['credential']} |\n"
-        f"| **Grand total (inclusive)** | across 3 files | **{p['grand_total']}** |\n"
+        f"| **Grand total (inclusive)** | across 4 files | **{p['grand_total']}** |\n"
         f"| **Historical 330 bucket** | tiered + arch + cred + oversight | **{p['historical_330_bucket']}** |\n\n"
         "## Honesty notes\n\n"
         "- If a landing page cites a different number, either the page is "

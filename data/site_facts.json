@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-26T08:22:12.525429+00:00",
+  "generated_at": "2026-04-27T15:41:13.030251+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -11,7 +11,7 @@
     "commands": 61,
     "patterns": {
       "tier_groups": 52,
-      "tier_regexes": 409,
+      "tier_regexes": 389,
       "ai_indicators": 212,
       "gpai_training": 17,
       "architecture": 38,
@@ -19,7 +19,9 @@
       "logging": 4,
       "oversight": 4,
       "credential": 18,
+      "agentic_categories": 30,
       "grand_total": 692,
+      "marketing_409": 437,
       "historical_330_bucket": 449
     },
     "frameworks": 12,

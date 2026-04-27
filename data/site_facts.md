@@ -2,7 +2,7 @@
 
 *Canonical source of truth for every numeric claim on the landing pages. Regenerate by running `python3 scripts/site_facts.py`.*
 
-Generated: `2026-04-26T08:22:12.525429+00:00`
+Generated: `2026-04-27T15:41:13.030251+00:00`
 
 ## Top-line counts
 
@@ -22,15 +22,17 @@ Regula ships detection patterns across three source files. The landing page risk
 
 | Category | Source | Count |
 |---|---|---|
-| Tiered risk regexes (prohibited, high-risk, limited-risk, AI security, bias) | `risk_patterns.py` | 409 |
+| Tiered risk regexes (prohibited, high-risk, limited-risk, AI security, bias) | `risk_patterns.py` | 389 |
+| Credential detectors | `credential_check.py` | 18 |
+| OWASP Agentic categories | `agent_monitor.py` | 30 |
+| **Marketing claim (tier + cred + agentic)** | composite | **437** |
 | AI_INDICATORS (libraries, model files, API endpoints, ML patterns, domain keywords) | `risk_patterns.py` | 212 |
 | GPAI training code detectors | `risk_patterns.py` | 17 |
 | Architecture detectors | `code_analysis.py` | 38 |
 | Data source detectors | `code_analysis.py` | 10 |
 | Logging detectors | `code_analysis.py` | 4 |
 | Oversight detectors | `code_analysis.py` | 4 |
-| Credential detectors | `credential_check.py` | 18 |
-| **Grand total (inclusive)** | across 3 files | **692** |
+| **Grand total (inclusive)** | across 4 files | **692** |
 | **Historical 330 bucket** | tiered + arch + cred + oversight | **449** |
 
 ## Honesty notes
