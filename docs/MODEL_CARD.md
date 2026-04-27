@@ -138,7 +138,7 @@ Regula is explicitly **NOT** intended for:
 
 ### Random corpus (headline precision measurement)
 
-50 randomly selected Python AI repos (from 276 candidates, seed=42), scanned with Regula v1.7.0. 201 findings stratified-sampled and blind-labelled (labeller saw only file path, code context, and finding description — no project name, README, or purpose).
+50 randomly selected Python AI repos (from 276 candidates, seed=42), scanned with Regula v1.7.0. 201 findings stratified-sampled and blind-labelled (labeller saw only file path, code context, and finding description — no project name, README, or purpose, see `benchmarks/labels.json`).
 
 **Result:** 83.5% precision on production code (N=115); 0 false positives at BLOCK tier. Previous baseline was 70.0% before domain gating and LLM import gating. Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
 
