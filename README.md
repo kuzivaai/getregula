@@ -33,7 +33,7 @@
 
 ## What it does
 
-If you ship an AI product to EU users, the EU AI Act applies to you -- regardless of where you are based or how small your team is. Regula combines code scanning with governance questionnaires: it scans your codebase for risk indicators, classifies your system into one of the Act's four risk tiers, and tells you which obligations apply. For the obligations code can't verify (risk management systems, quality management, fundamental rights impact assessments), it provides structured self-assessment questionnaires. It runs in your terminal, in CI/CD, or as a pre-commit hook. No external dependencies, no API calls, no data leaves your machine.
+If you ship an AI product to EU users, the EU AI Act applies to you -- regardless of where you are based or how small your team is. Regula combines code scanning with governance questionnaires: it scans your codebase for risk indicators, classifies your system into one of the Act's four risk tiers, and tells you which obligations apply. For the obligations code can't verify (risk management systems, quality management, fundamental rights impact assessments), it provides structured self-assessment questionnaires. It runs in your terminal, in CI/CD, or as a pre-commit hook. No external dependencies, no API calls, no data leaves your machine. Unlike cloud-based scanners, Regula makes zero network calls during scanning — no DPA required, no vendor data breach risk, no GDPR processor relationship.
 
 ## Quick start
 
