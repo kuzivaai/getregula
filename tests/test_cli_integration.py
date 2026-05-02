@@ -75,8 +75,12 @@ def test_handoff_garak(tmp_path):
 
 
 def test_regwatch():
+    """regwatch exit codes: 0=up-to-date, 1=stale (valid warning), 2=error.
+    Both 0 and 1 are correct behaviour — 1 means unreviewed regulatory
+    changes exist, which is the intended purpose of the command."""
     rc, out, err = run_cli("regwatch")
-    assert rc == 0
+    assert rc != 2, f"regwatch error (exit 2): {out}{err}"
+    assert "regwatch" in out.lower() or "ruleset" in out.lower()
 
 
 def test_inventory():
