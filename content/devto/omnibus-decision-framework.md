@@ -13,7 +13,7 @@ Two dates. One regulation. Nobody knows which deadline applies. Here is a three-
 
 If you're building AI systems that touch the European market, you have a planning problem. The EU AI Act says your high-risk obligations kick in on 2 August 2026. The Digital Omnibus on AI says actually, make that 2 December 2027. Both statements are currently true, in the sense that the first is law and the second is a formal legislative proposal with strong institutional backing.
 
-On 26 March 2026, the European Parliament voted 569-45-23 in favour of its negotiating position on the Omnibus. The Council had already adopted its general approach on 13 March. Trilogue negotiations between Parliament, Council, and Commission launched the same day as the EP vote. The Cypriot Council Presidency has set 28 April 2026 as its target date for political agreement, though that may slip into May.
+On 26 March 2026, the European Parliament voted 569-45-23 in favour of its negotiating position on the Omnibus. The Council had already adopted its general approach on 13 March. Trilogue negotiations between Parliament, Council, and Commission launched the same day as the EP vote. The Cypriot Council Presidency targeted 28 April 2026 for political agreement. The trilogue ran for approximately 12 hours and ended without agreement. The sticking point was conformity assessment architecture for AI in regulated products (Annex I). A follow-up is expected mid-May 2026. The Presidency must close the file before 30 June or it passes to Lithuania.
 
 So the delay has overwhelming political support. But it isn't law yet. And until the trilogue produces agreed text that passes formal adoption, the current legal baseline remains 2 August 2026.
 
@@ -41,7 +41,7 @@ The Omnibus doesn't propose to defer these obligations. If anything, the Parliam
 
 ### Track 3: High-risk system obligations (Annex III)
 
-**Current law: 2 August 2026. Omnibus proposal: 2 December 2027. Not yet agreed.**
+**Current law: 2 August 2026. Omnibus proposal: 2 December 2027. Omnibus proposal stalled — first trilogue failed 28 April. Next attempt mid-May.**
 
 This is where the uncertainty lives. If your system falls under Annex III (standalone high-risk AI systems used in areas like employment, creditworthiness, law enforcement, migration, or access to essential services), the Omnibus proposes to push your deadline back by 16 months.
 
@@ -116,9 +116,9 @@ pipx install regula-ai && regula check .
 
 ## The bottom line
 
-The Omnibus will very likely pass. The political support is there: 569 votes in favour, 45 against, 23 abstentions. Both Council and Parliament have their mandates. The trilogue is under way.
+The Omnibus has strong political support (569-45-23 EP vote) but the first trilogue collapsed over conformity assessment architecture for Annex I products. Passage is still probable but no longer certain before August 2026.
 
-But "very likely" is a prediction about politics, not a fact about law. Even if the delay does become law, it only affects Track 3: the Annex III and Annex I high-risk obligations. Everything else stays on its current schedule.
+"Probable" is a prediction about politics, not a fact about law. Even if the delay does become law, it only affects Track 3: the Annex III and Annex I high-risk obligations. Everything else stays on its current schedule.
 
 Plan for August. Treat December 2027 as buffer, not as a new start date. The work you do now isn't wasted regardless of which date the trilogue lands on. And if you start in the second half of 2027 because the delay gave you permission to procrastinate, you'll be in exactly the position that the compliance industry makes its money from: rushed, expensive, and cutting corners.
 
