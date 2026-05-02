@@ -127,6 +127,7 @@ function tierToSeverity(tier: string): vscode.DiagnosticSeverity {
 }
 
 async function scanFile(uri: vscode.Uri): Promise<void> {
+    const startTime = Date.now();
     const config = vscode.workspace.getConfiguration('regula');
     const executable = config.get<string>('executablePath', 'regula');
     const scope = config.get<string>('scope', 'all');
@@ -172,74 +173,107 @@ async function scanFile(uri: vscode.Uri): Promise<void> {
             updateStatusBarCount();
         }
     }
+
+    // Time budget warning
+    const elapsed = Date.now() - startTime;
+    if (elapsed > 8000) {
+        vscode.window.showWarningMessage(
+            `Regula: Scan took ${(elapsed / 1000).toFixed(1)}s. Consider using --scope production or excluding test files.`
+        );
+    } else if (elapsed > 4000) {
+        console.log(`Regula: Scan took ${(elapsed / 1000).toFixed(1)}s`);
+    }
 }
 
 async function scanWorkspace(uri: vscode.Uri): Promise<void> {
-    const config = vscode.workspace.getConfiguration('regula');
-    const executable = config.get<string>('executablePath', 'regula');
-    const scope = config.get<string>('scope', 'all');
+    await vscode.window.withProgress(
+        {
+            location: vscode.ProgressLocation.Notification,
+            title: 'Regula: Scanning workspace...',
+            cancellable: false,
+        },
+        async (progress) => {
+            const startTime = Date.now();
+            const config = vscode.workspace.getConfiguration('regula');
+            const executable = config.get<string>('executablePath', 'regula');
+            const scope = config.get<string>('scope', 'all');
 
-    const args = ['check', uri.fsPath, '--format', 'json'];
-    if (scope === 'production') {
-        args.push('--scope', 'production');
-    }
+            const args = ['check', uri.fsPath, '--format', 'json'];
+            if (scope === 'production') {
+                args.push('--scope', 'production');
+            }
 
-    statusBar.text = '$(sync~spin) Regula: scanning workspace...';
+            statusBar.text = '$(sync~spin) Regula: scanning workspace...';
+            progress.report({ message: 'Analysing files...' });
 
-    let findings: Finding[];
+            let findings: Finding[];
 
-    try {
-        const { stdout } = await execFileAsync(executable, args, {
-            timeout: 120000,
-            maxBuffer: 10 * 1024 * 1024,
-        });
-        findings = extractFindings(stdout);
-    } catch (err: unknown) {
-        if (isEnoent(err)) {
-            statusBar.text = '$(shield) Regula: CLI not found';
-            vscode.window.showWarningMessage(
-                'Regula not found. Install with: pip install regula-ai'
+            try {
+                const { stdout } = await execFileAsync(executable, args, {
+                    timeout: 120000,
+                    maxBuffer: 10 * 1024 * 1024,
+                });
+                findings = extractFindings(stdout);
+            } catch (err: unknown) {
+                if (isEnoent(err)) {
+                    statusBar.text = '$(shield) Regula: CLI not found';
+                    vscode.window.showWarningMessage(
+                        'Regula not found. Install with: pip install regula-ai'
+                    );
+                    return;
+                }
+                const stdout = getStdout(err);
+                if (!stdout) {
+                    updateStatusBarCount();
+                    return;
+                }
+                try {
+                    findings = extractFindings(stdout);
+                } catch {
+                    updateStatusBarCount();
+                    return;
+                }
+            }
+
+            // Group findings by file
+            const byFile = new Map<string, Finding[]>();
+            for (const f of findings) {
+                const filePath = f.file;
+                if (!byFile.has(filePath)) {
+                    byFile.set(filePath, []);
+                }
+                byFile.get(filePath)!.push(f);
+            }
+
+            // Clear old diagnostics and set per-file
+            diagnosticCollection.clear();
+            findingsTreeProvider.clear();
+
+            progress.report({ message: 'Updating diagnostics...' });
+
+            for (const [filePath, fileFindings] of byFile) {
+                const fullPath = vscode.Uri.joinPath(uri, filePath);
+                updateDiagnostics(fullPath, fileFindings);
+                updateFindingsTree(fullPath, fileFindings);
+            }
+
+            updateStatusBarCount();
+
+            const elapsed = Date.now() - startTime;
+            const totalFindings = findings.filter(f => !f.suppressed).length;
+            vscode.window.showInformationMessage(
+                `Regula: ${totalFindings} finding(s) across ${byFile.size} file(s)`
             );
-            return;
+
+            // Time budget warning (Gap 3)
+            if (elapsed > 8000) {
+                vscode.window.showWarningMessage(
+                    `Regula: Workspace scan took ${(elapsed / 1000).toFixed(1)}s. Consider using --scope production or excluding test files.`
+                );
+            } else if (elapsed > 4000) {
+                console.log(`Regula: Workspace scan took ${(elapsed / 1000).toFixed(1)}s`);
+            }
         }
-        const stdout = getStdout(err);
-        if (!stdout) {
-            updateStatusBarCount();
-            return;
-        }
-        try {
-            findings = extractFindings(stdout);
-        } catch {
-            updateStatusBarCount();
-            return;
-        }
-    }
-
-    // Group findings by file
-    const byFile = new Map<string, Finding[]>();
-    for (const f of findings) {
-        const filePath = f.file;
-        if (!byFile.has(filePath)) {
-            byFile.set(filePath, []);
-        }
-        byFile.get(filePath)!.push(f);
-    }
-
-    // Clear old diagnostics and set per-file
-    diagnosticCollection.clear();
-    findingsTreeProvider.clear();
-
-    for (const [filePath, fileFindings] of byFile) {
-        const fullPath = vscode.Uri.joinPath(uri, filePath);
-        updateDiagnostics(fullPath, fileFindings);
-        updateFindingsTree(fullPath, fileFindings);
-    }
-
-    updateStatusBarCount();
-
-    const totalFindings = findings.filter(f => !f.suppressed).length;
-    vscode.window.showInformationMessage(
-        `Regula: ${totalFindings} finding(s) across ${byFile.size} file(s)`
     );
 }
 
