@@ -11,7 +11,7 @@ Last updated: 2026-04-24. All figures verified against CLAUDE.md and
 > Open-source EU AI Act compliance scanner for code
 
 **Description** (254 chars):
-> Static analysis CLI that scans your codebase for EU AI Act risk indicators. 404 detection patterns, 8 programming languages, 12 compliance framework mappings. Zero dependencies, fully offline. Classifies your risk tier and tells you what to fix. Free.
+> Static analysis CLI that scans your codebase for EU AI Act risk indicators. 389 detection patterns, 8 programming languages, 12 compliance framework mappings. Zero dependencies, fully offline. Classifies your risk tier and tells you what to fix. Free.
 
 **First Comment:**
 
@@ -19,7 +19,7 @@ Hi, I'm Kuziva. I built Regula as a solo developer because I couldn't find a too
 
 Regula is an open-source Python CLI. You point it at a codebase, and it tells you which EU AI Act risk tier applies (prohibited, high-risk, limited, or minimal), which files triggered the classification, and what you need to do about it.
 
-What it does: 409 regex-based detection patterns across 8 language families (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter notebooks). Generates Annex IV documentation scaffolds, compliance gap assessments, and signed evidence packs. Maps findings to 12 compliance frameworks including ISO 42001 and NIST AI RMF. Zero production dependencies -- stdlib-only Python.
+What it does: 389 regex-based detection patterns across 8 language families (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter notebooks). Generates Annex IV documentation scaffolds, compliance gap assessments, and signed evidence packs. Maps findings to 12 compliance frameworks including ISO 42001 and NIST AI RMF. Zero production dependencies -- stdlib-only Python.
 
 What it is not: Regula is not legal advice and not a full compliance solution. It is the code layer of a governance programme. The organisational work -- risk management systems, quality management, post-market monitoring -- still requires humans. There is a full limitations disclosure in the repo.
 
@@ -41,7 +41,7 @@ GitHub: https://github.com/kuzivaai/getregula
 
 I've been writing about what EU AI Act compliance actually looks like in code. The Article 5 prohibited practices post (https://getregula.com/blog/blog-article-5-prohibited-practices.html) walks through what social scoring, subliminal manipulation, and emotion inference patterns look like when you grep for them in real repositories.
 
-Regula is the tool behind that analysis: a Python CLI that scans codebases for 409 regex-based patterns mapped to EU AI Act articles. Eight language families, zero dependencies, fully offline. It classifies your risk tier and generates compliance artefacts (gap assessments, Annex IV doc scaffolds, evidence packs).
+Regula is the tool behind that analysis: a Python CLI that scans codebases for 389 regex-based patterns mapped to EU AI Act articles. Eight language families, zero dependencies, fully offline. It classifies your risk tier and generates compliance artefacts (gap assessments, Annex IV doc scaffolds, evidence packs).
 
 Honest numbers: on synthetic fixtures, 100% recall. On a 257-finding corpus from five OSS projects (langchain, scikit-learn, etc.), 0 false positives at BLOCK tier (the CI default). 15.2% precision at INFO tier -- which is the expected noise floor for regex on AI library internals, since those libraries implement AI rather than deploying it for regulated decisions. Published benchmark methodology in the repo.
 
@@ -99,7 +99,7 @@ the URL is live before submitting.
 Regula is an open-source command-line tool that scans source code for EU AI Act risk indicators. It classifies codebases into risk tiers (prohibited, high-risk, limited, minimal), identifies which files triggered each classification, and generates compliance artefacts including gap assessments, Annex IV documentation scaffolds, and signed evidence packs. Written in Python with zero production dependencies. Runs fully offline. MIT licence.
 
 **Key Features:**
-1. **Risk tier classification** -- Scans codebases against 404 detection patterns mapped to EU AI Act articles, identifying prohibited practices (Art. 5), high-risk categories (Annex III), limited-risk transparency obligations, and GPAI usage.
+1. **Risk tier classification** -- Scans codebases against 389 detection patterns mapped to EU AI Act articles, identifying prohibited practices (Art. 5), high-risk categories (Annex III), limited-risk transparency obligations, and GPAI usage.
 2. **Compliance gap assessment** -- Scores compliance readiness per article (Arts. 9-15) with pass/warn/fail indicators and effort estimates.
 3. **Documentation generation** -- Produces Annex IV technical documentation scaffolds, model cards, and conformity assessment evidence packs pre-filled from scan findings.
 4. **Multi-framework mapping** -- Cross-references findings against 12 compliance frameworks including ISO 42001, NIST AI RMF, SOC 2, OWASP LLM Top 10, and EU CRA.
