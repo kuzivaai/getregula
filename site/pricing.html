@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets — same pattern as
+         blog posts. Inline critical CSS establishes dark theme immediately;
+         color-scheme: dark hints the canvas colour; stylesheets load via
+         media="print" + onload swap so they don't block first paint. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <title>Evidence Packs &mdash; Regula</title>
+    <meta name="description" content="Signed, timestamped compliance reports you can hand to an auditor. Regula is free. Evidence packs are the product.">
+    <meta name="robots" content="noindex">
+    <link rel="canonical" href="https://getregula.com/pricing.html">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.css">
+        <link rel="stylesheet" href="/assets/site.css">
+    </noscript>
+    <style>
+        /* Pricing page styles */
+        .pricing-hero {
+            max-width: 720px;
+            margin: var(--s12) auto var(--s10);
+            padding: 0 var(--s6);
+            text-align: center;
+        }
+        .pricing-hero h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(28px, 5vw, 42px);
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: var(--s5);
+        }
+        .pricing-hero .subtitle {
+            font-size: 16px;
+            color: var(--text-2);
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--s6);
+            max-width: 960px;
+            margin: 0 auto var(--s12);
+            padding: 0 var(--s6);
+        }
+
+        .pricing-card {
+            background: var(--bg-elev);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: var(--s7) var(--s6);
+            display: flex;
+            flex-direction: column;
+        }
+        .pricing-card.featured {
+            border-color: var(--accent);
+            background: var(--bg-elev-2);
+            position: relative;
+        }
+        .pricing-card.featured::before {
+            content: "Most useful";
+            position: absolute;
+            top: calc(-1 * var(--s3));
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: var(--s1) var(--s4);
+            border-radius: var(--r-pill);
+        }
+
+        .pricing-card h3 {
+            font-family: var(--font-serif);
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: var(--s2);
+        }
+        .pricing-card .price {
+            font-family: var(--font-serif);
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: var(--s2);
+        }
+        .pricing-card .price-note {
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-bottom: var(--s6);
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 var(--s7);
+            flex: 1;
+        }
+        .pricing-card ul li {
+            padding: var(--s2) 0;
+            font-size: 14px;
+            color: var(--text-2);
+            border-bottom: 1px solid var(--border);
+            line-height: 1.55;
+        }
+        .pricing-card ul li:last-child { border-bottom: none; }
+        .pricing-card ul li::before {
+            content: "\2713\00a0";
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .pricing-card .cta-btn {
+            display: block;
+            text-align: center;
+            padding: var(--s3) var(--s5);
+            border-radius: var(--r-md);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            min-height: 44px;
+            line-height: 44px;
+            padding: 0 var(--s5);
+            cursor: default;
+        }
+        .pricing-card .cta-btn.free {
+            background: var(--accent-soft);
+            color: var(--accent);
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+        .pricing-card .cta-btn.coming {
+            background: var(--bg-elev);
+            color: var(--text-dim);
+            border: 1px solid var(--border-strong);
+        }
+        .pricing-card.featured .cta-btn.coming {
+            background: rgba(59,130,246,0.1);
+            color: var(--accent);
+            border: 1px solid rgba(59,130,246,0.3);
+        }
+
+        .pricing-card code {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-dim);
+            background: rgba(255,255,255,0.04);
+            padding: 2px 6px;
+            border-radius: var(--r-sm);
+        }
+
+        .trust-note {
+            max-width: 640px;
+            margin: 0 auto var(--s12);
+            padding: 0 var(--s6);
+            text-align: center;
+        }
+        .trust-note p {
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+        .trust-note strong {
+            color: var(--text-2);
+        }
+
+        .pricing-faq {
+            max-width: 640px;
+            margin: 0 auto var(--s12);
+            padding: 0 var(--s6);
+        }
+        .pricing-faq h2 {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            margin-bottom: var(--s6);
+            text-align: center;
+        }
+        .pricing-faq details {
+            border-bottom: 1px solid var(--border);
+            padding: var(--s5) 0;
+        }
+        .pricing-faq summary {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text);
+            cursor: pointer;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+        }
+        .pricing-faq summary:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+            border-radius: var(--r-sm);
+        }
+        .pricing-faq details p {
+            font-size: 14px;
+            color: var(--text-2);
+            margin-top: var(--s3);
+            line-height: 1.7;
+        }
+
+        @media (max-width: 768px) {
+            .pricing-cards {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+            .pricing-hero {
+                margin: var(--s10) auto var(--s8);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html">Blog</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+
+<div class="pricing-hero">
+    <h1>Evidence packs for your auditor</h1>
+    <p class="subtitle">Regula is free. The CLI stays free forever. Evidence packs are signed, timestamped compliance reports you can hand to an auditor, a customer, or a regulator.</p>
+</div>
+
+<div class="pricing-cards">
+
+    <!-- Free tier -->
+    <div class="pricing-card">
+        <h3>Free</h3>
+        <div class="price">EUR 0</div>
+        <div class="price-note">Free forever</div>
+        <ul>
+            <li>Risk classification across 409 patterns</li>
+            <li>Gap analysis against EU AI Act articles</li>
+            <li>Remediation plan with effort estimates</li>
+            <li>JSON and text output</li>
+            <li>Annex IV documentation scaffold</li>
+        </ul>
+        <code style="margin-bottom: var(--s5); display: block;">regula check . && regula gap .</code>
+        <span class="cta-btn free">Current behaviour</span>
+    </div>
+
+    <!-- Starter tier -->
+    <div class="pricing-card featured">
+        <h3>Starter</h3>
+        <div class="price">EUR 49</div>
+        <div class="price-note">One-time per evidence pack</div>
+        <ul>
+            <li>Everything in Free</li>
+            <li>Ed25519-signed evidence pack</li>
+            <li>SHA-256 integrity manifest</li>
+            <li>Annex IV documentation scaffold</li>
+            <li>Compliance score with per-article breakdown</li>
+            <li>Auditor-ready PDF-printable format</li>
+        </ul>
+        <code style="margin-bottom: var(--s5); display: block;">regula evidence-pack --sign .</code>
+        <span class="cta-btn coming">Coming soon</span>
+    </div>
+
+    <!-- Professional tier -->
+    <div class="pricing-card">
+        <h3>Professional</h3>
+        <div class="price">EUR 149</div>
+        <div class="price-note">One-time per evidence pack</div>
+        <ul>
+            <li>Everything in Starter</li>
+            <li>Conformity assessment pack</li>
+            <li>Declaration of Conformity template</li>
+            <li>Prioritised remediation plan</li>
+            <li>CycloneDX AI SBOM</li>
+            <li>RFC 3161 timestamp</li>
+        </ul>
+        <code style="margin-bottom: var(--s5); display: block;">regula conform --sign .</code>
+        <span class="cta-btn coming">Coming soon</span>
+    </div>
+
+</div>
+
+<div class="trust-note">
+    <p><strong>Your code never leaves your machine.</strong> Evidence packs are generated locally. Payment is processed by Stripe. We never see your code or your scan results.</p>
+</div>
+
+<div class="pricing-faq">
+    <h2>Questions</h2>
+
+    <details>
+        <summary>Will the free tier ever become paid?</summary>
+        <p>No. The CLI is the distribution channel. Every command that exists today stays free forever. Evidence packs are a paid deliverable on top of the free tool.</p>
+    </details>
+
+    <details>
+        <summary>What do I actually get?</summary>
+        <p>A ZIP bundle containing JSON scan results, gap analysis, Annex IV documentation, remediation plan, and a SHA-256 integrity manifest. Starter packs are Ed25519-signed. Professional packs add a conformity assessment pack, Declaration of Conformity template, and a CycloneDX SBOM.</p>
+    </details>
+
+    <details>
+        <summary>Is this a subscription?</summary>
+        <p>No. Each payment generates one evidence pack for one project at a point in time. Run it again next quarter if your codebase has changed.</p>
+    </details>
+
+    <details>
+        <summary>Can my auditor verify the pack?</summary>
+        <p>Yes. Each bundle includes a standalone <code>verify.py</code> script that checks SHA-256 hashes of every file against the manifest. Signed packs also include an Ed25519 signature your auditor can verify independently.</p>
+    </details>
+</div>
+
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 licence &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Nav scroll
+    function updateNav() {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    }
+    window.addEventListener('scroll', updateNav, { passive: true });
+</script>
+
+</body>
+</html>
