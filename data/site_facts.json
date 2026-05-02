@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-02T12:14:33.565878+00:00",
+  "generated_at": "2026-05-02T12:49:45.321809+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
