@@ -144,7 +144,7 @@ def count_patterns() -> dict:
         + out["architecture"] + out["data_source"] + out["logging"]
         + out["oversight"] + out["credential"]
     )
-    # Marketing metric: 389 tier_regexes + 18 credential patterns + 2 agentic risk categories = 409
+    # Marketing metric: 389 tier_regexes + 18 credential patterns + 30 agentic categories = 437
     out["marketing_409"] = out["tier_regexes"] + out["credential"] + out["agentic_categories"]
     
     # Historical bucketing (tiered + arch + cred + oversight):
