@@ -75,11 +75,30 @@
     "commands": [
       {
         "command": "regula.scanFile",
-        "title": "Regula: Scan Current File"
+        "title": "Regula: Scan Current File",
+        "icon": "$(file-code)"
       },
       {
         "command": "regula.scanWorkspace",
-        "title": "Regula: Scan Workspace"
+        "title": "Regula: Scan Workspace",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "regula.scanWorkspace",
+          "when": "view == regulaFindings",
+          "group": "navigation"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "regula.scanFile",
+        "key": "ctrl+shift+r",
+        "mac": "cmd+shift+r",
+        "when": "editorTextFocus"
       }
     ],
     "viewsContainers": {
@@ -150,13 +169,15 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+    "vscode:prepublish": "node esbuild.js --production",
+    "compile": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/vscode": "^1.85.0",
     "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.28.0",
     "typescript": "^5.3.0"
   }
 }
