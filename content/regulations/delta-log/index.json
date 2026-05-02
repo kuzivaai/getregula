@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-09T20:34:27.717389+00:00",
-  "total_entries": 5,
-  "latest_date": "2026-04-28",
+  "generated_at": "2026-05-01T20:00:00.000000+00:00",
+  "total_entries": 6,
+  "latest_date": "2026-04-29",
   "types": [
     "amendment-proposal",
     "council-position",
@@ -9,6 +9,23 @@
     "regulation-adoption"
   ],
   "entries": [
+    {
+      "id": "2026-04-29-trilogue-failed",
+      "date": "2026-04-29",
+      "type": "amendment-proposal",
+      "affected_articles": [
+        "6",
+        "13",
+        "26",
+        "43",
+        "50",
+        "113"
+      ],
+      "summary": "The first political trilogue on the Digital Omnibus on AI ended without agreement on 29 April 2026 after approximately 12 hours of negotiations. Sticking point: Annex I conformity-assessment architectu",
+      "confidence": "verified-primary",
+      "source_url": "https://iapp.org/news/a/ai-act-omnibus-what-just-happened-and-what-comes-next",
+      "file": "entries/2026-04-29-trilogue-failed.json"
+    },
     {
       "id": "2026-04-28-trilogue-target",
       "date": "2026-04-28",
