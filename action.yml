@@ -1,9 +1,6 @@
 name: Regula AI Governance Check
 description: >-
-  Scan your AI project for EU AI Act compliance issues, dependency risks, and
-  governance gaps. Findings surface inline on PR diffs via GitHub workflow
-  command annotations (::error / ::warning / ::notice) — no SARIF/CodeQL setup
-  required. SARIF upload stays available as an opt-in for repos that want it.
+  Scan code for EU AI Act risk patterns. 389 patterns, 8 languages, zero data transmission. Your code never leaves your machine.
 author: Regula
 
 branding:
