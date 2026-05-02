@@ -2,7 +2,7 @@
 
 > **Document version:** 1.0
 > **Last reviewed:** 2026-04-24
-> **Regula version:** 1.7.0
+> **Regula version:** 1.7.1
 > **Maintainer:** Kuziva AI Ltd
 
 Regula is an open-source EU AI Act compliance CLI tool maintained by a
