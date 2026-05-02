@@ -5,10 +5,31 @@ import { promisify } from 'util';
 const execFileAsync = promisify(execFile);
 
 let diagnosticCollection: vscode.DiagnosticCollection;
+let statusBar: vscode.StatusBarItem;
+let findingsTreeProvider: FindingsTreeProvider;
 
 export function activate(context: vscode.ExtensionContext): void {
     diagnosticCollection = vscode.languages.createDiagnosticCollection('regula');
     context.subscriptions.push(diagnosticCollection);
+
+    // Status bar
+    statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+    statusBar.command = 'regula.scanWorkspace';
+    statusBar.text = '$(shield) Regula: 0 finding(s)';
+    statusBar.tooltip = 'Click to scan workspace for EU AI Act compliance';
+    statusBar.show();
+    context.subscriptions.push(statusBar);
+
+    // Findings tree view
+    findingsTreeProvider = new FindingsTreeProvider();
+    const treeView = vscode.window.createTreeView('regulaFindings', {
+        treeDataProvider: findingsTreeProvider,
+        showCollapseAll: true,
+    });
+    context.subscriptions.push(treeView);
+
+    // Set initial context for viewsWelcome
+    vscode.commands.executeCommand('setContext', 'regula.hasFindings', false);
 
     // Scan on save
     context.subscriptions.push(
@@ -48,14 +69,6 @@ export function activate(context: vscode.ExtensionContext): void {
             { providedCodeActionKinds: [vscode.CodeActionKind.QuickFix] }
         )
     );
-
-    // Status bar
-    const statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-    statusBar.command = 'regula.scanWorkspace';
-    statusBar.text = '$(shield) Regula';
-    statusBar.tooltip = 'Click to scan workspace for EU AI Act compliance';
-    statusBar.show();
-    context.subscriptions.push(statusBar);
 }
 
 interface Finding {
@@ -123,6 +136,8 @@ async function scanFile(uri: vscode.Uri): Promise<void> {
         args.push('--scope', 'production');
     }
 
+    statusBar.text = '$(sync~spin) Regula: scanning...';
+
     try {
         const { stdout } = await execFileAsync(executable, args, {
             timeout: 30000,
@@ -131,8 +146,11 @@ async function scanFile(uri: vscode.Uri): Promise<void> {
 
         const findings = extractFindings(stdout);
         updateDiagnostics(uri, findings);
+        updateFindingsTree(uri, findings);
+        updateStatusBarCount();
     } catch (err: unknown) {
         if (isEnoent(err)) {
+            statusBar.text = '$(shield) Regula: CLI not found';
             vscode.window.showWarningMessage(
                 'Regula not found. Install with: pip install regula-ai'
             );
@@ -144,9 +162,14 @@ async function scanFile(uri: vscode.Uri): Promise<void> {
             try {
                 const findings = extractFindings(stdout);
                 updateDiagnostics(uri, findings);
+                updateFindingsTree(uri, findings);
+                updateStatusBarCount();
             } catch {
                 diagnosticCollection.delete(uri);
+                updateStatusBarCount();
             }
+        } else {
+            updateStatusBarCount();
         }
     }
 }
@@ -161,6 +184,8 @@ async function scanWorkspace(uri: vscode.Uri): Promise<void> {
         args.push('--scope', 'production');
     }
 
+    statusBar.text = '$(sync~spin) Regula: scanning workspace...';
+
     let findings: Finding[];
 
     try {
@@ -171,16 +196,21 @@ async function scanWorkspace(uri: vscode.Uri): Promise<void> {
         findings = extractFindings(stdout);
     } catch (err: unknown) {
         if (isEnoent(err)) {
+            statusBar.text = '$(shield) Regula: CLI not found';
             vscode.window.showWarningMessage(
                 'Regula not found. Install with: pip install regula-ai'
             );
             return;
         }
         const stdout = getStdout(err);
-        if (!stdout) return;
+        if (!stdout) {
+            updateStatusBarCount();
+            return;
+        }
         try {
             findings = extractFindings(stdout);
         } catch {
+            updateStatusBarCount();
             return;
         }
     }
@@ -197,10 +227,15 @@ async function scanWorkspace(uri: vscode.Uri): Promise<void> {
 
     // Clear old diagnostics and set per-file
     diagnosticCollection.clear();
+    findingsTreeProvider.clear();
+
     for (const [filePath, fileFindings] of byFile) {
         const fullPath = vscode.Uri.joinPath(uri, filePath);
         updateDiagnostics(fullPath, fileFindings);
+        updateFindingsTree(fullPath, fileFindings);
     }
+
+    updateStatusBarCount();
 
     const totalFindings = findings.filter(f => !f.suppressed).length;
     vscode.window.showInformationMessage(
@@ -231,11 +266,140 @@ function updateDiagnostics(uri: vscode.Uri, findings: Finding[]): void {
 
         const diagnostic = new vscode.Diagnostic(range, message, severity);
         diagnostic.source = 'regula';
-        diagnostic.code = f.category;
+        diagnostic.code = {
+            value: f.category,
+            target: vscode.Uri.parse(`https://getregula.com/rules/${f.category}`),
+        };
         diagnostics.push(diagnostic);
     }
 
     diagnosticCollection.set(uri, diagnostics);
+}
+
+function updateStatusBarCount(): void {
+    let totalFindings = 0;
+    diagnosticCollection.forEach((_uri, diagnostics) => {
+        totalFindings += diagnostics.length;
+    });
+    statusBar.text = `$(shield) Regula: ${totalFindings} finding(s)`;
+    vscode.commands.executeCommand('setContext', 'regula.hasFindings', totalFindings > 0);
+}
+
+function updateFindingsTree(uri: vscode.Uri, findings: Finding[]): void {
+    const visible = findings.filter(f => {
+        if (f.suppressed) return false;
+        const config = vscode.workspace.getConfiguration('regula');
+        const minTier = config.get<string>('minTier', 'limited_risk');
+        const minLevel = TIER_ORDER[minTier] || 2;
+        const level = TIER_ORDER[f.tier] || 1;
+        return level >= minLevel;
+    });
+    findingsTreeProvider.setFindings(uri, visible);
+}
+
+// --- Tree Data Provider for Activity Bar sidebar ---
+
+class FindingFileNode {
+    constructor(
+        public readonly uri: vscode.Uri,
+        public readonly findings: FindingItemNode[],
+    ) {}
+}
+
+class FindingItemNode {
+    constructor(
+        public readonly finding: Finding,
+        public readonly uri: vscode.Uri,
+    ) {}
+}
+
+type TreeNode = FindingFileNode | FindingItemNode;
+
+class FindingsTreeProvider implements vscode.TreeDataProvider<TreeNode> {
+    private _onDidChangeTreeData = new vscode.EventEmitter<TreeNode | undefined | void>();
+    readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
+
+    private fileFindings = new Map<string, { uri: vscode.Uri; findings: Finding[] }>();
+
+    setFindings(uri: vscode.Uri, findings: Finding[]): void {
+        const key = uri.toString();
+        if (findings.length === 0) {
+            this.fileFindings.delete(key);
+        } else {
+            this.fileFindings.set(key, { uri, findings });
+        }
+        this._onDidChangeTreeData.fire();
+    }
+
+    clear(): void {
+        this.fileFindings.clear();
+        this._onDidChangeTreeData.fire();
+    }
+
+    getTreeItem(element: TreeNode): vscode.TreeItem {
+        if (element instanceof FindingFileNode) {
+            const label = vscode.workspace.asRelativePath(element.uri);
+            const item = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.Expanded);
+            item.resourceUri = element.uri;
+            item.iconPath = vscode.ThemeIcon.File;
+            item.description = `${element.findings.length} finding(s)`;
+            return item;
+        }
+
+        // FindingItemNode
+        const f = element.finding;
+        const tierIcon = tierToThemeIcon(f.tier);
+        const label = `${f.category}: ${f.description}`;
+        const item = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.None);
+        item.iconPath = tierIcon;
+        item.tooltip = `${f.tier} — ${f.description}${f.articles ? ` (${f.articles.join(', ')})` : ''}`;
+        item.description = `line ${f.line || 1}`;
+
+        // Click to navigate to the finding location
+        const line = Math.max(0, (f.line || 1) - 1);
+        item.command = {
+            command: 'vscode.open',
+            title: 'Go to finding',
+            arguments: [
+                element.uri,
+                { selection: new vscode.Range(line, 0, line, 0) },
+            ],
+        };
+
+        return item;
+    }
+
+    getChildren(element?: TreeNode): TreeNode[] {
+        if (!element) {
+            // Root: file nodes
+            const nodes: FindingFileNode[] = [];
+            for (const { uri, findings } of this.fileFindings.values()) {
+                const children = findings.map(f => new FindingItemNode(f, uri));
+                nodes.push(new FindingFileNode(uri, children));
+            }
+            return nodes;
+        }
+
+        if (element instanceof FindingFileNode) {
+            return element.findings;
+        }
+
+        return [];
+    }
+}
+
+function tierToThemeIcon(tier: string): vscode.ThemeIcon {
+    switch (tier) {
+        case 'prohibited':
+            return new vscode.ThemeIcon('error', new vscode.ThemeColor('errorForeground'));
+        case 'high_risk':
+        case 'credential_exposure':
+            return new vscode.ThemeIcon('warning', new vscode.ThemeColor('editorWarning.foreground'));
+        case 'limited_risk':
+            return new vscode.ThemeIcon('info', new vscode.ThemeColor('editorInfo.foreground'));
+        default:
+            return new vscode.ThemeIcon('lightbulb');
+    }
 }
 
 class RegulaCodeActionProvider implements vscode.CodeActionProvider {
