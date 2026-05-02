@@ -1,0 +1,8 @@
+- id: regula
+  name: Regula EU AI Act Compliance Check
+  description: Scan for EU AI Act risk patterns (389 patterns, 8 languages, zero data transmission)
+  entry: regula check --ci
+  language: python
+  types_or: [python, javascript, typescript, java, go, rust, c, c++]
+  additional_dependencies: ['regula-ai']
+  stages: [pre-commit]
