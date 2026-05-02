@@ -18,8 +18,8 @@ governance:
 regulatory_basis:
   eu_ai_act_version: "2024/1689"
   pattern_version: "1.1.0"
-  last_reviewed: "2026-04-09"
-  notes: "Patterns aligned to original text. Digital Omnibus timeline changes tracked but not yet enacted."
+  last_reviewed: "2026-05-01"
+  notes: "Patterns aligned to original text. Omnibus trilogue failed 28 Apr 2026; next ~13 May. Original Aug 2026 deadline remains legally binding."
 
 frameworks:
   - eu_ai_act
