@@ -1,7 +1,7 @@
 {
   "name": "regula-ai-act",
   "displayName": "Regula — EU AI Act Compliance",
-  "description": "EU AI Act compliance scanning for code. Detects risk patterns, classifies AI systems, and generates compliance evidence.",
+  "description": "EU AI Act compliance scanning for code. Scans on save, shows risk tier inline. Zero data transmission — your code never leaves your machine.",
   "version": "0.1.0",
   "publisher": "kuzivaai",
   "engines": {
@@ -15,7 +15,10 @@
     "compliance",
     "ai-governance",
     "regulatory",
-    "gdpr"
+    "gdpr",
+    "static-analysis",
+    "security",
+    "linter"
   ],
   "activationEvents": [
     "onLanguage:python",

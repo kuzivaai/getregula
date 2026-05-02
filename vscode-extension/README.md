@@ -1,31 +1,23 @@
-# Regula -- EU AI Act Compliance for VS Code
+# Regula — EU AI Act Compliance for VS Code
 
-Scans your code for EU AI Act risk patterns directly in the editor.
+Scans your AI code for regulatory risk patterns. Shows findings inline as you type. Zero data transmission — your code stays on your machine.
 
-## Requirements
+## What it does
 
-- [Regula CLI](https://pypi.org/project/regula-ai/) installed: `pip install regula-ai`
-- Python 3.10+
+If your product uses AI and has EU users, the EU AI Act applies. Regula scans for 389 risk patterns across Python, JavaScript, TypeScript, Java, Go, Rust, C, and C++ and tells you which risk tier each finding falls into.
 
 ## Features
 
-- Inline diagnostics (squiggly underlines) for risk patterns
-- Severity mapped from tier: Prohibited = Error, High-Risk = Warning, Limited = Info
-- Lifecycle phase shown in diagnostic messages
-- Quick-fix actions: `# regula-ignore` and `# regula-accept`
 - Scan on save (configurable)
-- Workspace scan command
+- Inline WARN/BLOCK decorations
+- Quick-fix: `# regula-ignore` and `# regula-accept` annotations
+- Workspace-wide scan command
+- Status bar indicator
 
-## Configuration
+## Requirements
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `regula.scanOnSave` | `true` | Scan files on save |
-| `regula.minTier` | `limited_risk` | Minimum tier to display |
-| `regula.scope` | `all` | `production` excludes test/example files |
-| `regula.executablePath` | `regula` | Path to regula CLI |
+Install the Regula CLI: `pipx install regula-ai`
 
-## Commands
+## Privacy
 
-- `Regula: Scan Current File` -- scan the active file
-- `Regula: Scan Workspace` -- scan the entire workspace
+Regula runs entirely on your machine. No code is uploaded, no telemetry is sent, no account is needed.
