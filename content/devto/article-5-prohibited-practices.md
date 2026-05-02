@@ -1,6 +1,6 @@
 ---
 title: "EU AI Act Article 5 Is Already Live: Scanning Your Code for Prohibited AI Practices"
-published: false
+published: true
 description: "Article 5 prohibited AI practices have been enforceable since 2 February 2025, with fines up to EUR 35 million or 7% of turnover. Here's how to scan your codebase for them."
 tags: euaiact, compliance, ai, security
 canonical_url: https://getregula.com/blog/blog-article-5-prohibited-practices.html
