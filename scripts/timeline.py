@@ -81,10 +81,10 @@ TIMELINE = [
     },
     {
         "date": "2026-04-28",
-        "event": "Omnibus trilogue — Cypriot Presidency target for political agreement",
+        "event": "Omnibus trilogue — first attempt failed after ~12 hours",
         "status": "proposed",
-        "source": "Cypriot Council Presidency (H1 2026); Lewis Silkin analysis, April 2026",
-        "note": "Trilogue negotiations between Parliament, Council and Commission began in April 2026 after Parliament's plenary vote on 23 March 2026. The Cypriot Council Presidency is targeting political agreement by late April / May 2026. Both co-legislators are aligned on key elements: Annex III delay to 2 December 2027, Annex I delay to 2 August 2028, new prohibition on non-consensual sexual deepfakes.",
+        "source": "IAPP, Modulos, The Next Web, Ropes & Gray (April 2026)",
+        "note": "The first political trilogue on the Digital Omnibus ran on 28 April 2026 for approximately 12 hours and ended without agreement. The sticking point was conformity assessment architecture for AI in regulated products (Annex I). A follow-up trilogue is expected mid-May 2026. The Cypriot Presidency must close the file before 30 June or it passes to Lithuania. The original 2 August 2026 deadline remains legally binding.",
     },
     {
         "date": "2026-08-02",
