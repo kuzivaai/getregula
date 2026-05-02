@@ -145,6 +145,9 @@ Every finding includes the relevant Article reference and explains when exceptio
 | `regula guardrails .` | Article 15 guardrail implementation coverage detection |
 | `regula owasp-agentic` | OWASP Top 10 for Agentic Applications assessment |
 | `regula monitor` | Runtime monitoring for AI applications (Article 12) |
+| `regula gdpr` | GDPR dual-compliance scan (14 patterns, 4 AI Act/GDPR hotspots) |
+| `regula mcp-server` | MCP server for Claude Code, Cursor, and other MCP clients |
+| `regula install <platform>` | Set up pre-commit hooks, git hooks, or Claude Code/Copilot/Windsurf integration |
 
 Regula has 61 commands in total. Run `regula --help-all` for the full list, or see [`docs/cli-reference.md`](docs/cli-reference.md).
 
