@@ -108,3 +108,4 @@ benchmarks/results/app_*.json
 
 # Reference PDFs (fetched via references/FETCH.md)
 references/*.pdf
+*.docx
