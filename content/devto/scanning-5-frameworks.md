@@ -1,6 +1,6 @@
 ---
 title: "We scanned 5 AI frameworks for EU AI Act compliance. Here's what 389 patterns found."
-published: false
+published: true
 description: "469 findings across PyTorch, HuggingFace Transformers, LangChain, LlamaIndex, and CrewAI. The framework you pick shapes your compliance surface before you write a line of code."
 tags: euaiact, ai, opensource, python
 canonical_url: https://getregula.com/blog/blog-scanning-5-frameworks.html

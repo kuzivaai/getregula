@@ -1,6 +1,6 @@
 ---
 title: "August 2026 or December 2027? A Developer's Guide to the Omnibus Uncertainty"
-published: false
+published: true
 description: "The EU AI Act has two possible deadlines for high-risk AI systems. A three-track framework for developers who need to plan now despite the uncertainty."
 tags: euaiact, compliance, ai, opensource
 canonical_url: https://getregula.com/blog/blog-omnibus-decision-framework.html
