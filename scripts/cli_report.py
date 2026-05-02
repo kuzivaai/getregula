@@ -95,6 +95,9 @@ def cmd_evidence_pack(args) -> None:
         print(f"Evidence pack written to: {pack_path}")
         print(f"Contains {file_count} files with SHA-256 integrity hashes.")
         print(f"Start with: {pack_path}/00-summary.md")
+        if not getattr(args, "sign", False):
+            print("\n  For a signed, timestamped evidence pack suitable for auditors,")
+            print("  see: regula evidence-pack --sign . or visit getregula.com/pricing")
 
 
 def cmd_sbom(args) -> None:
