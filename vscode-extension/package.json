@@ -69,6 +69,16 @@
           "type": "string",
           "default": "regula",
           "description": "Path to the regula executable"
+        },
+        "regula.scanTrigger": {
+          "type": "string",
+          "default": "onSave",
+          "enum": ["onSave", "onType"],
+          "enumDescriptions": [
+            "Scan when file is saved (default, recommended)",
+            "Scan as you type with a 2-second debounce (uses more CPU)"
+          ],
+          "description": "When to trigger compliance scanning"
         }
       }
     },
@@ -82,6 +92,10 @@
         "command": "regula.scanWorkspace",
         "title": "Regula: Scan Workspace",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "regula.fixAll",
+        "title": "Regula: Fix All (add regula-ignore to all findings)"
       }
     ],
     "menus": {

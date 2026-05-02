@@ -4,6 +4,16 @@ import { promisify } from 'util';
 
 const execFileAsync = promisify(execFile);
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function debounce<T extends (...args: any[]) => void>(fn: T, delay: number): T {
+    let timer: ReturnType<typeof setTimeout>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return ((...args: any[]) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+    }) as T;
+}
+
 let diagnosticCollection: vscode.DiagnosticCollection;
 let statusBar: vscode.StatusBarItem;
 let findingsTreeProvider: FindingsTreeProvider;
@@ -31,12 +41,26 @@ export function activate(context: vscode.ExtensionContext): void {
     // Set initial context for viewsWelcome
     vscode.commands.executeCommand('setContext', 'regula.hasFindings', false);
 
-    // Scan on save
+    // Debounced scan for onType mode (2-second debounce to prevent excessive CLI spawns)
+    const debouncedScan = debounce((uri: vscode.Uri) => scanFile(uri), 2000);
+
+    // Scan on save (respects scanTrigger setting)
     context.subscriptions.push(
         vscode.workspace.onDidSaveTextDocument((doc) => {
             const config = vscode.workspace.getConfiguration('regula');
-            if (config.get<boolean>('scanOnSave', true)) {
+            const trigger = config.get<string>('scanTrigger', 'onSave');
+            if (trigger === 'onSave' && config.get<boolean>('scanOnSave', true)) {
                 scanFile(doc.uri);
+            }
+        })
+    );
+
+    // Scan on type with debounce
+    context.subscriptions.push(
+        vscode.workspace.onDidChangeTextDocument((e) => {
+            const config = vscode.workspace.getConfiguration('regula');
+            if (config.get<string>('scanTrigger', 'onSave') === 'onType') {
+                debouncedScan(e.document.uri);
             }
         })
     );
@@ -61,12 +85,17 @@ export function activate(context: vscode.ExtensionContext): void {
         })
     );
 
-    // Code action provider for suppress/accept
+    // Code action provider for suppress/accept/fixAll
     context.subscriptions.push(
         vscode.languages.registerCodeActionsProvider(
             { scheme: 'file' },
             new RegulaCodeActionProvider(),
-            { providedCodeActionKinds: [vscode.CodeActionKind.QuickFix] }
+            {
+                providedCodeActionKinds: [
+                    vscode.CodeActionKind.QuickFix,
+                    vscode.CodeActionKind.SourceFixAll.append('regula'),
+                ],
+            }
         )
     );
 }
@@ -478,6 +507,32 @@ class RegulaCodeActionProvider implements vscode.CodeActionProvider {
             );
             accept.diagnostics = [diagnostic];
             actions.push(accept);
+        }
+
+        // Add "Fix All" action if multiple regula findings exist
+        const regulaDiagnostics = context.diagnostics.filter(d => d.source === 'regula');
+        if (regulaDiagnostics.length > 1) {
+            const fixAll = new vscode.CodeAction(
+                'Suppress all Regula findings in this file',
+                vscode.CodeActionKind.SourceFixAll.append('regula')
+            );
+            fixAll.edit = new vscode.WorkspaceEdit();
+            // Sort by line descending to avoid offset issues when inserting
+            const sorted = [...regulaDiagnostics].sort(
+                (a, b) => b.range.start.line - a.range.start.line
+            );
+            for (const diag of sorted) {
+                const line = diag.range.start.line;
+                const lineText = document.lineAt(line).text;
+                const indent = lineText.match(/^\s*/)?.[0] || '';
+                fixAll.edit.insert(
+                    document.uri,
+                    new vscode.Position(line, 0),
+                    `${indent}# regula-ignore\n`
+                );
+            }
+            fixAll.diagnostics = [...regulaDiagnostics];
+            actions.push(fixAll);
         }
 
         return actions;
