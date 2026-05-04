@@ -33,5 +33,24 @@
       "3.12": 28,
       "3.13": 4
     }
+  },
+  {
+    "date": "2026-05-04",
+    "period": "last_7_days",
+    "downloads": {
+      "with_mirrors": 1796,
+      "without_mirrors": 638
+    },
+    "by_system": {
+      "Darwin": 10,
+      "Linux": 77,
+      "Windows": 2
+    },
+    "by_python": {
+      "3.10": 29,
+      "3.11": 16,
+      "3.12": 38,
+      "3.13": 6
+    }
   }
 ]
