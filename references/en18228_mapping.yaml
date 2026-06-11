@@ -1,0 +1,148 @@
+# Regula ↔ prEN 18228 (AI Risk Management) Traceability Matrix
+#
+# DRAFT STATUS: prEN 18228 is at CEN-CENELEC Public Enquiry stage.
+# Final text may change before expected Q4 2026 publication.
+# This mapping is based on clause structure retrieved from:
+#   - AI Assurance Institute (aiassurance.institute/pren-18228-clauses.html)
+#   - Adam Leon Smith substack analysis (adamleonsmith.substack.com)
+#   accessed: 11 June 2026
+# It will be revised when the final standard is published.
+#
+# Relationship types:
+#   indicator: Regula detects a code-level indicator relevant to this clause
+#   evidence:  Regula output provides evidence toward meeting this clause
+#   cannot:    This clause requires organisational/runtime input Regula cannot address
+
+schema_version: "1.0-draft"
+standard: "prEN 18228"
+standard_title: "Artificial intelligence — AI risk management"
+maps_to: "EU AI Act Article 9"
+draft_status: "Public Enquiry (DIS ballot ~May 2026)"
+expected_publication: "Q4 2026"
+last_verified: "2026-06-11"
+source: "AI Assurance Institute + Adam Leon Smith commentary (not full enquiry text)"
+
+mappings:
+  # Clause 4: Risk Management System Requirements
+  - clause: "4.1"
+    topic: "Process establishment and documentation"
+    relationship: "cannot"
+    regula_categories: []
+    note: "Organisational process — requires documented procedures, not code"
+
+  - clause: "4.2"
+    topic: "Management responsibilities and governance"
+    relationship: "cannot"
+    regula_categories: []
+    note: "Governance structure — AI Officer, DPO roles (Regula's policy_config.py stores contact fields but cannot verify governance)"
+
+  - clause: "4.3"
+    topic: "Personnel competence requirements"
+    relationship: "cannot"
+    regula_categories: []
+    note: "HR/training matter — outside code scanning scope"
+
+  - clause: "4.4"
+    topic: "Risk acceptability criteria definition"
+    relationship: "cannot"
+    regula_categories: []
+    note: "Organisational risk appetite — requires documented thresholds set by humans"
+
+  - clause: "4.5"
+    topic: "Risk management planning"
+    relationship: "evidence"
+    regula_categories: ["all_high_risk"]
+    note: "regula plan generates a prioritised remediation plan that contributes planning evidence"
+
+  - clause: "4.6"
+    topic: "Risk Management File maintenance"
+    relationship: "evidence"
+    regula_categories: ["all_high_risk"]
+    note: "regula conform generates conformity pack that could populate the Risk Management File"
+
+  # Clause 5: Risk Management Process
+  - clause: "5"
+    topic: "Process integration across AI system life cycle"
+    relationship: "cannot"
+    regula_categories: []
+    note: "Lifecycle integration is an organisational capability, not a code property"
+
+  # Clause 6: Risk Analysis
+  - clause: "6"
+    topic: "Hazard identification, risk scenarios, estimation"
+    relationship: "indicator"
+    regula_categories:
+      - "biometrics"
+      - "critical_infrastructure"
+      - "education"
+      - "employment"
+      - "essential_services"
+      - "high_risk__credit_scoring"
+      - "high_risk__worker_management"
+      - "high_risk__democratic_processes"
+      - "high_risk__emergency_services"
+      - "high_risk__insurance"
+      - "justice"
+      - "law_enforcement"
+      - "medical_devices"
+      - "migration"
+      - "safety_components"
+    note: "Regula detects code patterns that indicate the system operates in high-risk domains. These are hazard indicators, not hazard analyses."
+
+  # Clause 7: Risk Evaluation
+  - clause: "7"
+    topic: "Comparison against acceptability criteria"
+    relationship: "indicator"
+    regula_categories: ["all_high_risk"]
+    note: "Confidence scores (0-100) provide a code-level risk signal. They do NOT constitute risk evaluation — that requires human judgement against Clause 4.4 criteria."
+
+  # Clause 8: Testing
+  - clause: "8"
+    topic: "Testing including real-world validation"
+    relationship: "evidence"
+    regula_categories:
+      - "missing_fairness_evaluation"
+      - "protected_class_as_feature"
+    note: "regula bias (CrowS-Pairs/BBQ) provides bias testing evidence. Real-world validation requires runtime testing beyond static analysis."
+
+  # Clause 9: Risk Control
+  - clause: "9"
+    topic: "Mitigation hierarchy and implementation verification"
+    relationship: "indicator"
+    regula_categories:
+      - "unsafe_deserialization"
+      - "prompt_injection_vulnerable"
+      - "prompt_injection_indirect"
+      - "no_output_validation"
+      - "exposed_api_key_env"
+      - "excessive_agency"
+      - "no_grounding"
+    note: "Regula detects absent or weak controls. Finding = indicator that a risk control is missing. Absence of finding does not prove control is adequate."
+
+  # Clause 10: Overall Residual Risk
+  - clause: "10"
+    topic: "Final acceptability determination"
+    relationship: "cannot"
+    regula_categories: []
+    note: "Residual risk acceptance is a human determination requiring domain expertise and stakeholder input"
+
+  # Clause 11: Risk Management Review
+  - clause: "11"
+    topic: "Periodic oversight and approval"
+    relationship: "cannot"
+    regula_categories: []
+    note: "Review cadence and approval are governance processes"
+
+  # Clause 12: Pre-Market and Post-Market
+  - clause: "12"
+    topic: "Continuous monitoring systems"
+    relationship: "indicator"
+    regula_categories: ["all_high_risk"]
+    note: "regula monitor provides runtime monitoring hooks; regula audit provides hash-chained event logs. These are building blocks, not a complete post-market monitoring system."
+
+coverage_summary:
+  total_clauses: 12
+  indicator: 4
+  evidence: 3
+  cannot: 5
+  note: "Regula provides indicators or evidence for 7 of 12 clauses. The 5 'cannot' clauses require organisational processes, governance, or human judgement that code scanning fundamentally cannot address."
