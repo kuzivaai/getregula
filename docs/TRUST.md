@@ -111,10 +111,10 @@ detection, framework mapping, limited-risk classification.
 
 ```bash
 python3 -m scripts.cli doctor
-# Expected (inside a git repo): 9 passed, 2 info, 0 warn
-# Expected (outside a git repo): 9 passed, 2 info, 1 warn
-#   The 1 warn is ".gitignore not found" — Regula recommends
-#   .gitignore-ing audit artefacts. Add a .gitignore to silence it.
+# Expected (inside a git repo): 9 passed, 3 info, 0 warn
+# Expected (outside a git repo): 9 passed, 3 info, 1 warn
+#   The 3 info messages cover: no hooks installed, no ai_officer in policy,
+#   and no domain declared. The 1 warn (outside git) is ".gitignore not found".
 ```
 
 Lists every optional dependency, hook installation status, audit
@@ -521,7 +521,7 @@ in this repository. Every row links to a verifiable artefact.
 | Pattern definitions | [`scripts/risk_patterns.py`](../scripts/risk_patterns.py) | All detection regexes, grouped by risk tier and category |
 | Test suite | `tests/` | 1,911 unique tests (2,309 pytest-collected) |
 | Self-test | `regula self-test` | 6 round-trip assertions |
-| Environment health | `regula doctor` | 11 checks (9 pass + 2 info on a clean install) |
+| Environment health | `regula doctor` | 12 checks (9 pass + 3 info on a clean install) |
 | SBOM | `regula sbom --ai-bom` | CycloneDX 1.7 ML-BOM from any checkout |
 | Changelog | [`CHANGELOG.md`](../CHANGELOG.md) | Version history and breaking changes |
 
