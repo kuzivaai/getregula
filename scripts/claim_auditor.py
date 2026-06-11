@@ -525,6 +525,126 @@ def backtest(n: int, allowlist: list[re.Pattern[str]]) -> int:
 # CLI
 # ---------------------------------------------------------------------------
 
+def verify_facts() -> int:
+    """Cross-reference published numbers against canonical counts from site_facts.
+
+    Regenerates site_facts.json, then scans key documents for numeric claims
+    that should match canonical counts. Returns 1 if any mismatch found.
+    """
+    # Regenerate canonical facts
+    sys.path.insert(0, str(REPO_ROOT / "scripts"))
+    try:
+        import site_facts as sf
+        facts = sf.compute()
+    except Exception as e:
+        print(f"claim-auditor --verify-facts: cannot load site_facts: {e}",
+              file=sys.stderr)
+        return 2
+
+    canonical = {
+        "389": ("tier_regexes", facts["counts"]["patterns"]["tier_regexes"]),
+        "61": ("commands", facts["counts"]["commands"]),
+        "12": ("frameworks", facts["counts"]["frameworks"]),
+        "8": ("languages", facts["counts"]["languages"]),
+    }
+
+    # Files to check (relative to repo root)
+    check_files = [
+        "README.md",
+        "docs/TRUST.md",
+        "docs/MODEL_CARD.md",
+        "site/index.html",
+    ]
+
+    mismatches: list[str] = []
+    checked = 0
+
+    for rel_path in check_files:
+        fpath = REPO_ROOT / rel_path
+        if not fpath.exists():
+            continue
+        text = fpath.read_text(encoding="utf-8", errors="replace")
+
+        for published_str, (fact_name, actual_val) in canonical.items():
+            actual_str = str(actual_val)
+            if published_str != actual_str:
+                # The published number and the canonical number differ.
+                # Check if the WRONG (published) number appears in the file.
+                # This would mean a doc still uses a stale number.
+                # Not relevant here since we check that the correct number
+                # IS present and the wrong one is NOT.
+                pass
+
+            # Check that the canonical number appears in the file in the
+            # expected context (near the fact name or unit word).
+            # This catches cases where someone changes the code but not the docs.
+            # We search for common patterns like "389 patterns", "61 commands",
+            # "12 frameworks", "8 languages".
+            unit_patterns = {
+                "tier_regexes": r"(?<!\d)389\s*(?:pattern|regex|risk\s+pattern)",
+                "commands": r"(?<!\d)61\s+(?:commands?\b|CLI\s+commands?)",
+                "frameworks": r"(?<!\d)12\s+(?:compliance\s+)?frameworks?",
+                "languages": r"(?<!\d)8\s+(?:programming\s+)?languages?",
+            }
+            pat = unit_patterns.get(fact_name)
+            if not pat:
+                continue
+
+            actual_pat = pat.replace(published_str, actual_str)
+            if actual_str != published_str:
+                actual_pat = re.sub(r"\d+", actual_str, pat, count=1)
+
+            # Search for the canonical number in context
+            if not re.search(actual_pat, text, re.IGNORECASE):
+                # Canonical number not found in expected context — check if
+                # a WRONG number is present instead
+                wrong_pat = re.sub(r"\d+", r"\\d+", pat, count=1)
+                wrong_matches = list(re.finditer(wrong_pat, text, re.IGNORECASE))
+                for wm in wrong_matches:
+                    found_num = re.search(r"\d+", wm.group(0))
+                    if found_num and found_num.group(0) != actual_str:
+                        found_val = int(found_num.group(0))
+                        # Skip small numbers that are clearly a different
+                        # count (e.g. "14 GDPR patterns" vs "389 risk patterns").
+                        # Only flag if the found number is >= 50% of canonical.
+                        if found_val < int(actual_str) * 0.5:
+                            continue
+                        line_num = text[:wm.start()].count("\n") + 1
+                        mismatches.append(
+                            f"  {rel_path}:L{line_num} — "
+                            f"{fact_name}: found {found_num.group(0)}, "
+                            f"expected {actual_str} "
+                            f"(context: {wm.group(0)[:60]!r})"
+                        )
+            checked += 1
+
+    # Also check for the known-bad number 780 in pattern context
+    for rel_path in check_files:
+        fpath = REPO_ROOT / rel_path
+        if not fpath.exists():
+            continue
+        text = fpath.read_text(encoding="utf-8", errors="replace")
+        for m in re.finditer(r"\b780\b.*?pattern", text, re.IGNORECASE):
+            line_num = text[:m.start()].count("\n") + 1
+            mismatches.append(
+                f"  {rel_path}:L{line_num} — "
+                f"PROHIBITED: '780' in pattern context "
+                f"(context: {m.group(0)[:60]!r})"
+            )
+
+    print(f"claim-auditor --verify-facts: checked {checked} fact references "
+          f"across {len(check_files)} files")
+
+    if mismatches:
+        print(f"\n  FAIL — {len(mismatches)} mismatch(es):\n")
+        for m in mismatches:
+            print(m)
+        return 1
+    else:
+        print("  all published numbers match canonical counts — OK")
+        return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     p.add_argument("files", nargs="*", type=Path,
@@ -535,10 +655,16 @@ def main(argv: list[str] | None = None) -> int:
                    help="scan files changed vs REF (e.g. origin/main)")
     p.add_argument("--backtest", type=int, metavar="N",
                    help="run auditor against files in last N commits")
+    p.add_argument("--verify-facts", action="store_true",
+                   help="cross-reference published numbers against "
+                        "canonical counts from site_facts.py")
     p.add_argument("--format", choices=("text", "json"), default="text")
     args = p.parse_args(argv)
 
     allowlist = load_allowlist()
+
+    if args.verify_facts:
+        return verify_facts()
 
     if args.backtest is not None:
         return backtest(args.backtest, allowlist)
@@ -552,7 +678,7 @@ def main(argv: list[str] | None = None) -> int:
         targets = [Path(f) for f in args.files]
     else:
         print("claim-auditor: no input (use FILE, --staged, --diff-base, "
-              "or --backtest)", file=sys.stderr)
+              "--verify-facts, or --backtest)", file=sys.stderr)
         return 2
 
     reports = [scan_file(t, allowlist) for t in targets]

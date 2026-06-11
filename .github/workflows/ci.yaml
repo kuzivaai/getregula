@@ -98,6 +98,8 @@ jobs:
           else
             python3 scripts/claim_auditor.py --diff-base HEAD~1
           fi
+      - name: Verify published numbers match canonical counts
+        run: python3 scripts/claim_auditor.py --verify-facts
 
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
