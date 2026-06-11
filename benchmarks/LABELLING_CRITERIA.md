@@ -114,9 +114,14 @@ If YES → **TP**. If NO → **FP**.
 4. Apply the tier-specific criteria above
 5. Set `"label": "tp"` or `"label": "fp"`
 6. Add a brief `"notes"` explaining the rationale (required for auditability)
+7. Set `"labeller"` to your identifier (e.g. `"kuziva-muzondo"`) — required for
+   inter-rater tracking and auditability
 
 ## Quality Controls
 
+- **Labeller attribution**: Every entry must have a `"labeller"` field identifying
+  who labelled it. This enables inter-rater reliability measurement and audit trails.
+  All 446 entries in the current corpus are attributed to `kuziva-muzondo`.
 - **Single reviewer minimum**: One person labels all findings for consistency
 - **Spot-check target**: At least 10% of labels should be independently
   verified by a second reviewer (not yet implemented — tracked as P2)
