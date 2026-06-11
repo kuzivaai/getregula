@@ -140,19 +140,36 @@ The full report is at
 [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md).
 
 ```bash
+# Headline precision (blind-labelled random corpus, production code only):
+python3 benchmarks/label.py score --corpus random
+# Expected: 83.5% precision (N=115)
+
+# Full development corpus (library + application projects, all code):
 python3 benchmarks/label.py score
-# Random corpus (blind-labelled, production code): 83.5% precision (N=115)
+# Expected: 36.8% precision (N=446)
 ```
 
-The headline precision is **83.5%** (N=115), measured on production code
+**Two corpora, two numbers — both honest, different scopes.** The
+headline precision is **83.5%** (N=115), measured on production code
 from a random corpus of 50 Python AI repos selected via GitHub API
 (pool of 276, random seed 42) and blind-labelled (labeller saw only
 file path, code context, and finding description — no project name,
 README, or purpose). This measures what users see with default
-`--skip-tests` settings. Per-tier: `ai_security` (85%), `agent_autonomy`
-(83%), `limited_risk` (88%), `minimal_risk` (100%). The `high_risk`
-tier (33%) remains weakest — 6 subcategories now require `--domain`
-declaration or import fingerprinting to fire (v1.7.0+).
+`--skip-tests` and domain-gating settings (v1.7.0+). Per-tier:
+`ai_security` (85%), `agent_autonomy` (83%), `limited_risk` (88%),
+`minimal_risk` (100%). The `high_risk` tier (33%) remains weakest —
+6 subcategories now require `--domain` declaration or import
+fingerprinting to fire.
+
+The development corpus (`python3 benchmarks/label.py score`, no flags)
+scores **36.8%** on 446 entries across 5 AI library projects and 12
+application projects. The library subset (scikit-learn, langchain,
+pydantic-ai, instructor, openai-python) alone is 15.2% — AI framework
+infrastructure code is the hardest corpus, analogous to running an SQL
+injection scanner on psycopg2 itself. Discovering this 36.8% figure is
+not a contradiction of the 83.5% headline — it is a different corpus
+measuring a different thing.
+
 Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
 
 ### 3.6 Security posture — bandit, semgrep, pip-audit
