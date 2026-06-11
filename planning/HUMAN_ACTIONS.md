@@ -224,3 +224,58 @@ offs, or the regulatory landscape.
   explain domain gating and the N=6 sample size.
 - **No defensive responses.** If someone says "this is just regex matching",
   agree — it is. Then explain why that's still useful.
+
+---
+
+## 9. Benchmark Labelling Pipeline (A2/A3) — HUMAN ACTION REQUIRED
+
+### What the founder must do (Rater 1)
+
+**Time estimate:** 3-4 hours total
+
+1. **Generate the targeted corpus manifest** (`benchmarks/targeted_manifest.json`):
+   - The repo sourcing research identified candidate repos (see session summary)
+   - Create the manifest with repo URLs, pinned commits, licences, and domains
+   - Run: `python3 benchmarks/harvest_targeted.py --manifest benchmarks/targeted_manifest.json`
+   - Review the output in `benchmarks/targeted_corpus/candidates.json`
+
+2. **Label the targeted findings** (Rater 1):
+   - Open `benchmarks/targeted_corpus/candidates.json`
+   - For each finding, set `"label": "tp"` or `"label": "fp"` with `"notes"`
+   - Time estimate: ~2 minutes per finding, ~1 hour for 30 findings
+
+3. **Label the blind subset** (Rater 1 copy):
+   - Open `benchmarks/rater2_blind_subset.json`, make a COPY as `rater1_blind_subset.json`
+   - Label independently (do not look at original labels in labels.json)
+   - This enables direct comparison with Rater 2
+
+### What the independent Rater 2 must do
+
+**Recruitment (founder action):**
+- Reach out to academic contacts in AI auditing, fairness, or compliance
+- Offer: co-authorship/acknowledgement on the published benchmark corpus
+- Requirement: technical background, independence from the project
+- Time commitment: ~2-3 hours for ~80 findings (50 blind subset + 30 targeted)
+
+**Rating task:**
+- Rater 2 receives `benchmarks/rater2_blind_subset.json` (50 entries) AND
+  the targeted corpus `candidates.json` (all findings)
+- Labels each as "tp" or "fp" with notes
+- Returns completed file(s)
+
+### After both raters complete
+
+Run: `python3 benchmarks/compute_kappa.py rater1_labels.json rater2_labels.json`
+
+This produces:
+- Cohen's kappa with 95% CI
+- Agreement matrix
+- Disagreement list for adjudication
+
+If kappa >= 0.75: publishable. If 0.60-0.74: publishable with disclosure.
+If < 0.60: review labelling criteria for ambiguity before publishing.
+
+### Gate
+
+**No precision figure from the targeted corpus is publishable until both
+raters complete and kappa is computed.** This is non-negotiable.
