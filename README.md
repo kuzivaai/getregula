@@ -49,7 +49,7 @@ regula assess               # 5 yes/no questions → your risk tier
 
 **Want to scan your code?**
 ```bash
-regula check .              # 389 patterns, 8 languages, 30 seconds
+regula check .              # 398 patterns, 8 languages, 30 seconds
 ```
 
 **Need documentation for auditors?**
@@ -233,7 +233,7 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | What | Count |
 |------|------:|
 | CLI commands | 61 |
-| Risk detection patterns (regexes) | 389 |
+| Risk detection patterns (regexes) | 398 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Compliance frameworks mapped | 12 |
 | Tests (pytest --collect-only, all passing) | 2,309 |
