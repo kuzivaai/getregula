@@ -322,7 +322,7 @@ def _extract_jurisdiction_label(short_name, internal_key, data, finding):
         return f"EU AI Act: {title}" if title else "EU AI Act"
     elif internal_key == "colorado_sb205":
         reqs = data.get("requirements", [])
-        return f"Colorado SB-205: {reqs[0]}" if reqs else "Colorado SB-205: Consequential decision"
+        return f"Colorado SB-189 (replaces SB-205): {reqs[0]}" if reqs else "Colorado SB-189 (disclosure-only, replaces SB-205)"
     elif internal_key == "south_korea_ai":
         reqs = data.get("requirements", [])
         return f"South Korea: {reqs[0]}" if reqs else "South Korea: High-impact AI"

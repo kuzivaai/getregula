@@ -221,8 +221,8 @@ def format_mapping_text(mapping: dict) -> str:
 
         colorado = frameworks.get("colorado_sb205", {})
         if colorado:
-            status = colorado.get("status", "Effective 1 February 2026")
-            lines.append(f"  Colorado SB 205 — {status}")
+            status = colorado.get("status", "SB 205 repealed; replaced by SB 189 (disclosure-only, effective 1 January 2027)")
+            lines.append(f"  Colorado SB 189 (replaces SB 205) — {status}")
             for req in colorado.get("requirements", []):
                 lines.append(f"    • {req}")
             if colorado.get("notes"):
