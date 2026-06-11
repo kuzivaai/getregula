@@ -160,11 +160,14 @@ deployer_indicators:
   - "Inference-only code (model.predict, model.generate, no .fit/.train)"
   - "Third-party model wrapper usage (langchain, litellm)"
 
-# Omnibus timeline context
+# Omnibus timeline context (updated 12 May 2026)
 timeline:
-  current_law: "2 August 2026"
-  omnibus_proposed:
+  original_law: "2 August 2026"
+  omnibus_agreed:
     annex_iii: "2 December 2027"
     annex_i: "2 August 2028"
-  omnibus_status: "Trilogue negotiations; Parliament voted 569-45-23 (March 2026)"
-  guidance: "Plan for August 2026 until Omnibus is formally enacted"
+    art_5_csam: "2 December 2026"
+    watermarking_existing: "2 December 2026"
+    sandboxes: "2 August 2027"
+  omnibus_status: "Provisional agreement 7 May 2026; awaiting formal adoption before 2 Aug 2026"
+  guidance: "Plan against 2 Dec 2027 for Annex III (subject to formal adoption)"
