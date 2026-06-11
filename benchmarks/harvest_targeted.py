@@ -60,7 +60,12 @@ def scan_repo(repo_path: Path, domain: str | None = None) -> list[dict]:
             cwd=REPO_ROOT,
         )
         data = json.loads(result.stdout)
-        return data.get("data", {}).get("findings", [])
+        data_field = data.get("data", [])
+        if isinstance(data_field, list):
+            return data_field
+        elif isinstance(data_field, dict):
+            return data_field.get("findings", [])
+        return []
     except (json.JSONDecodeError, subprocess.TimeoutExpired, KeyError) as e:
         print(f"  WARN: scan failed: {e}", file=sys.stderr)
         return []

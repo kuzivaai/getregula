@@ -1,0 +1,28 @@
+{
+  "repo": "Face-Biometry",
+  "url": "https://github.com/prathameshparit/Face-Biometry.git",
+  "commit": "HEAD",
+  "domain": null,
+  "annex_iii_category": "biometrics",
+  "licence": "MIT",
+  "total_findings": 1,
+  "high_risk_findings": 1,
+  "candidates": [
+    {
+      "id": "T-Face-Biometry-001",
+      "repo": "Face-Biometry",
+      "repo_url": "https://github.com/prathameshparit/Face-Biometry.git",
+      "commit": "HEAD",
+      "file": "app.py",
+      "line": 1,
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "confidence_score": 88,
+      "description": "Biometric identification and categorisation",
+      "pattern_name": "",
+      "code_context": "   1 >> import webbrowser\n   2    from flask import Flask, render_template, Response\n   3    import cv2\n   4    import face_recognition\n   5    import numpy as np\n   6    import os\n   7    from datetime import datetime\n   8    import pandas as pd\n   9    from flask import Flask, render_template\n  10    from flask_wtf import FlaskForm\n  11    from wtforms import StringField, PasswordField",
+      "annex_iii_domain": "biometrics",
+      "licence": "MIT"
+    }
+  ]
+}

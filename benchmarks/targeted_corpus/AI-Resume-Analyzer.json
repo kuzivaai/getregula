@@ -1,0 +1,28 @@
+{
+  "repo": "AI-Resume-Analyzer",
+  "url": "https://github.com/deepakpadhi986/AI-Resume-Analyzer.git",
+  "commit": "HEAD",
+  "domain": "employment",
+  "annex_iii_category": "employment",
+  "licence": "MIT",
+  "total_findings": 2,
+  "high_risk_findings": 1,
+  "candidates": [
+    {
+      "id": "T-AI-Resume-Analyzer-001",
+      "repo": "AI-Resume-Analyzer",
+      "repo_url": "https://github.com/deepakpadhi986/AI-Resume-Analyzer.git",
+      "commit": "HEAD",
+      "file": "App/App.py",
+      "line": 1,
+      "tier": "high_risk",
+      "category": "Annex III, Category 4",
+      "confidence_score": 88,
+      "description": "Employment and workers management",
+      "pattern_name": "",
+      "code_context": "   1 >> # Developed by dnoobnerd [https://dnoobnerd.netlify.app]    Made with Streamlit\n   2    \n   3    \n   4    ###### Packages Used ######\n   5    import streamlit as st # core package used in this project\n   6    import pandas as pd\n   7    import base64, random\n   8    import time,datetime\n   9    import pymysql\n  10    import os\n  11    import socket",
+      "annex_iii_domain": "employment",
+      "licence": "MIT"
+    }
+  ]
+}
