@@ -1056,6 +1056,8 @@ CATEGORY_LIFECYCLE_PHASES = {
     "emotion_inference_restricted": ["plan"],
     "biometric_categorisation_sensitive": ["plan"],
     "realtime_biometric_public": ["plan"],
+    "ncii_generation": ["plan"],
+    "csam_generation": ["plan"],
     # High-risk (Annex III) — primarily plan + develop
     "biometrics": ["plan", "develop"],
     "critical_infrastructure": ["plan", "develop"],
