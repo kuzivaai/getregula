@@ -74,5 +74,7 @@
       "search_method": "GitHub search: credit scoring model Python",
       "selection_rationale": "Logistic regression credit scoring with decile methodology for lending decisions. No explicit licence (excluded from analysis if licence check fails)."
     }
-  ]
+  ],
+  "sha_note": "All repos were harvested at HEAD on 2026-06-11. The harvest script did not record resolved commit SHAs. Re-running harvest_targeted.py may produce different results if repos have been updated since. The candidates.json file records the findings at harvest time and remains the canonical labelling input regardless of repo changes.",
+  "harvested_at": "2026-06-11T14:30:00Z"
 }

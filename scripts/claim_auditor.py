@@ -548,12 +548,16 @@ def verify_facts() -> int:
         "8": ("languages", facts["counts"]["languages"]),
     }
 
-    # Files to check (relative to repo root)
+    # Files to check (relative to repo root) — includes deployed site pages
     check_files = [
         "README.md",
         "docs/TRUST.md",
         "docs/MODEL_CARD.md",
         "site/index.html",
+        "site/pricing.html",
+        "site/regions/regulations.html",
+        "site/locales/de.html",
+        "site/locales/pt-br.html",
     ]
 
     mismatches: list[str] = []
