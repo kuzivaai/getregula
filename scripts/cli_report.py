@@ -16,6 +16,7 @@ def cmd_report(args) -> None:
     """Generate reports."""
     from cli import json_output, _validate_path, _build_envelope
     from report import scan_files, generate_html_report, generate_sarif, generate_sales_report
+    from exec_summary import generate_exec_summary
 
     if hasattr(args, 'project') and args.project != ".":
         _validate_path(args.project)
@@ -39,6 +40,8 @@ def cmd_report(args) -> None:
 
     if args.format == "html":
         content = generate_html_report(findings, project_name, audit_events, chain_valid)
+    elif args.format == "exec-summary":
+        content = generate_exec_summary(findings, project_name)
     elif args.format == "sales":
         content = generate_sales_report(findings, project_name)
     elif args.format == "sarif":

@@ -873,7 +873,7 @@ def _build_subparsers(subparsers):
     # --- report ---
     p_report = subparsers.add_parser("report", help="Generate reports (HTML, SARIF, JSON)")
     p_report.add_argument("--project", "-p", default=".")
-    p_report.add_argument("--format", "-f", choices=["html", "sarif", "json", "sales"], default="html")
+    p_report.add_argument("--format", "-f", choices=["html", "sarif", "json", "sales", "exec-summary"], default="html")
     p_report.add_argument("--output", "-o", help="Output file")
     p_report.add_argument("--name", "-n", help="Project name")
     p_report.add_argument("--include-audit", action="store_true", help="Include audit trail data")
