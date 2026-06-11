@@ -3,23 +3,25 @@
 """
 Regula Timeline — EU AI Act Enforcement Dates
 
-Displays current enforcement dates with Digital Omnibus status.
-Updated with verified information as of 5 April 2026.
+Displays current enforcement dates, including the Digital Omnibus
+provisional agreement of 7 May 2026.
 
-Sources (verified Apr 2026):
+Updated: 11 June 2026.
+
+Regulatory baseline (verified sources):
 - Regulation (EU) 2024/1689 (eur-lex.europa.eu/eli/reg/2024/1689/oj)
-- Commission Omnibus proposal COM(2025) 836, adopted 19 November 2025
-  (europarl.europa.eu/legislative-train/package-digital-package/file-digital-omnibus-on-ai)
-- Council general approach, 13 March 2026
-  (consilium.europa.eu/en/press/press-releases/2026/03/13/council-agrees-position-to-streamline-rules-on-artificial-intelligence/)
-- Parliament plenary 23 March 2026: 569 in favour, 45 against, 23 abstentions
-  (europarl.europa.eu/news/en/press-room/20260323IPR38829/ +
-   howtheyvote.eu/votes/189384)
-- IAPP: Commission missed Article 6(5) guidance deadline of 2 February 2026
-  (iapp.org/news/a/european-commission-misses-deadline-for-ai-act-guidance-on-high-risk-systems)
-- Trilogues began April 2026 (post-Parliament-plenary). Cypriot Council
-  Presidency H1 2026 targets political agreement by late April / May 2026.
-- Transparency Code of Practice second draft, 3 March 2026
+- Digital Omnibus provisional agreement, 7 May 2026
+  (consilium.europa.eu/en/press/press-releases/2026/05/07/
+   artificial-intelligence-council-and-parliament-agree-to-
+   simplify-and-streamline-rules/)
+- Gibson Dunn analysis, May 2026
+- Latham & Watkins analysis, May 2026
+- Bird & Bird, Travers Smith, Inside Privacy, White & Case (May 2026)
+- Code of Practice on AI content marking — final, 10 June 2026
+  (digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content)
+- Art 50 transparency guidelines — draft, consultation closed 3 June 2026
+- Art 6 high-risk classification guidelines — draft, consultation open
+  until 23 June 2026
 """
 
 import json
@@ -27,7 +29,7 @@ from datetime import date
 
 
 # ---------------------------------------------------------------------------
-# Timeline data — verified against primary sources
+# Timeline data — verified against primary sources (June 2026)
 # ---------------------------------------------------------------------------
 
 TIMELINE = [
@@ -39,94 +41,129 @@ TIMELINE = [
     },
     {
         "date": "2025-02-02",
-        "event": "Prohibited AI practices (Article 5) apply",
+        "event": "Article 5 prohibitions apply (8 practices)",
         "status": "effective",
         "source": "Article 113(a)",
-        "note": "All 8 Article 5 prohibitions are now enforceable. Penalties: up to EUR 35M or 7% global turnover.",
+        "note": (
+            "All 8 Article 5 prohibitions are now enforceable. "
+            "Penalties: up to EUR 35M or 7% global turnover."
+        ),
     },
     {
         "date": "2025-08-02",
-        "event": "General-purpose AI model rules apply",
+        "event": "General-purpose AI model rules apply (Articles 51-55)",
         "status": "effective",
         "source": "Article 113(b)",
-        "note": "GPAI transparency requirements in effect. Model providers must document training data and provide Safety and Security Reports.",
+        "note": (
+            "GPAI transparency requirements in effect. Model providers must "
+            "document training data and provide technical documentation."
+        ),
     },
     {
-        "date": "2026-02-02",
-        "event": "Article 6 guidance deadline (MISSED)",
-        "status": "overdue",
-        "source": "IAPP, March 2026",
-        "note": "European Commission missed its own deadline for publishing guidance on high-risk classification. Still not published as of 5 April 2026.",
-    },
-    {
-        "date": "2026-03-03",
-        "event": "Transparency Code of Practice — second draft published",
-        "status": "in_progress",
-        "source": "EC, 3 March 2026",
-        "note": "Second draft of Code of Practice on marking and labelling AI-generated content. Two-layered system: secured metadata + digital watermarking. Stakeholder feedback closed 30 March 2026. Finalization expected May-June 2026.",
-    },
-    {
-        "date": "2026-03-26",
-        "event": "Parliament plenary adopts Omnibus position (569 in favour, 45 against, 23 abstentions)",
+        "date": "2026-05-07",
+        "event": "Digital Omnibus provisional agreement reached",
         "status": "effective",
-        "source": "European Parliament, 23 March 2026",
-        "note": "Parliament confirmed committee position on Digital Omnibus. Key additions: reinstated registration for non-high-risk AI systems, November 2026 watermarking deadline, new prohibition on non-consensual intimate deepfakes.",
+        "source": "Council press release, 7 May 2026",
+        "note": (
+            "Council and Parliament reached provisional political agreement "
+            "on the Digital Omnibus on AI. Key changes: Annex III high-risk "
+            "deferred to 2 December 2027; Annex I to 2 August 2028; new "
+            "Article 5 prohibition on CSAM/NCII generation (2 December 2026); "
+            "watermarking for existing systems deferred to 2 December 2026; "
+            "sandboxes deferred to 2 August 2027. PENDING FORMAL ADOPTION: "
+            "EP plenary, Council endorsement, and Official Journal publication "
+            "expected before 2 August 2026. Until OJ publication, original "
+            "deadlines remain legally binding."
+        ),
     },
     {
-        "date": "2026-04-01",
-        "event": "AICDI corporate AI governance report published",
+        "date": "2026-06-10",
+        "event": "Code of Practice on AI content marking — FINAL published",
         "status": "effective",
-        "source": "UNESCO + Thomson Reuters Foundation, Apr 2026",
-        "note": "UNESCO + Thomson Reuters Foundation AI Company Data Initiative. Final analysed dataset: 2,972 companies (initial target 3,000; PDF p.24) across 11 GICS sectors (p.27) and 7 regions (p.26). Data collected July–November 2025. Key figures verified against the full AICDI PDF: 43.7% publicly communicate an AI strategy (p.10); 13% align with a formal governance framework and of those 53% cite the EU AI Act (p.10); 40% have board/committee-level AI oversight (p.10); 12.4% have a human-oversight policy (p.10); 2.7% have a formal AI model registry (p.37); 15.4% can trace ethical impacts to a responsible person (p.37); 3.8% have an AI ethics committee and 2.5% an AI safety/security taskforce (p.36); 31% claim any AI training programme, 12% structured coverage (p.10); 14% have worker-protection policies (p.46); 11% conduct Environmental Impact Assessments (p.10); 7% Human Rights Impact Assessments (p.10); 5% Ethical Impact Assessments (p.53); 18% Data Protection Impact Assessments (p.38); 14% Privacy Impact Assessments (p.38); 72% conduct NO impact assessment of any kind (p.10); 76% show no evidence of training-data quality policies (p.10); 2.3% have an internal complaints mechanism (p.47); ~1 in 5 with AI strategies have third-party data-sharing policies (p.59). ISBN 978-92-3-100863-4; DOI 10.54678/YJWP8855. Press release: https://www.unesco.org/en/articles/pioneering-report-thomson-reuters-foundation-and-unesco-sheds-light-way-3000-companies-approach-ai ; full PDF: https://unesdoc.unesco.org/ark:/48223/pf0000397817_eng (local path: references/aicdi_2025_global_insights.pdf — see references/FETCH.md for SHA-256).",
-    },
-    {
-        "date": "2026-04-28",
-        "event": "Omnibus trilogue — first attempt failed after ~12 hours",
-        "status": "proposed",
-        "source": "IAPP, Modulos, The Next Web, Ropes & Gray (April 2026)",
-        "note": "The first political trilogue on the Digital Omnibus ran on 28 April 2026 for approximately 12 hours and ended without agreement. The sticking point was conformity assessment architecture for AI in regulated products (Annex I). A follow-up trilogue is expected mid-May 2026. The Cypriot Presidency must close the file before 30 June or it passes to Lithuania. The original 2 August 2026 deadline remains legally binding.",
+        "source": "European Commission, 10 June 2026",
+        "note": (
+            "Voluntary code of practice for Article 50(2) machine-readable "
+            "marking and Article 50(4) deepfake labelling. Open for "
+            "signatories. Compliance with Art 50 obligations applies from "
+            "2 August 2026."
+        ),
     },
     {
         "date": "2026-08-02",
-        "event": "High-risk AI system requirements (Articles 9-15)",
+        "event": "Article 50 transparency obligations apply",
         "status": "current_law",
-        "source": "Article 113(c)",
-        "note": "LEGALLY BINDING DATE as of today. However, the Digital Omnibus proposes postponement (see below).",
+        "source": "Article 113(b); unchanged by Omnibus",
+        "note": (
+            "Interaction disclosure (Art 50(1)), watermarking for NEW systems "
+            "(Art 50(2)), emotion recognition (Art 50(3)), and deepfake "
+            "labelling (Art 50(4)) all apply from this date. Unchanged by "
+            "the Omnibus. Article 49 registration also applies."
+        ),
     },
     {
-        "date": "2026-10-30",
-        "event": "prEN 18286 (Quality Management System) — public enquiry closed Jan 2026",
-        "status": "in_progress",
-        "source": "CEN/CENELEC JTC 21",
-        "note": "First harmonised standard for AI Act. Addresses Article 17 (QMS). Enquiry ran 30 Oct 2025 — 22 Jan 2026. Publication expected Q4 2026.",
+        "date": "2026-12-02",
+        "event": "Omnibus: watermarking for EXISTING systems + Art 5 CSAM/NCII",
+        "status": "agreed",
+        "source": "Omnibus provisional agreement, 7 May 2026",
+        "note": (
+            "Two obligations take effect on this date under the Omnibus: "
+            "(1) Art 50(2) watermarking obligations for AI systems already "
+            "on the market before 2 August 2026. (2) New Art 5 prohibition "
+            "on AI systems that generate child sexual abuse material or "
+            "non-consensual intimate imagery of identifiable persons. "
+            "PENDING FORMAL ADOPTION."
+        ),
     },
     {
         "date": "2026-12-31",
-        "event": "Target: CEN-CENELEC AI Act standards publication",
+        "event": "Target: CEN-CENELEC harmonised standards publication",
         "status": "in_progress",
-        "source": "CEN/CENELEC acceleration measures, Oct 2025",
-        "note": "Standards expected to cover: risk management (Art 9), data governance (Art 10), transparency (Art 13), human oversight (Art 14), accuracy/robustness (Art 15). Accelerated process adopted Oct 2025 to allow direct publication without separate Formal Vote.",
+        "source": "CEN/CENELEC JTC 21; AI Assurance Institute",
+        "note": (
+            "prEN 18228 (AI risk management, maps to Art 9) and prEN 18282 "
+            "(cybersecurity for AI, maps to Art 15) are in Public Enquiry. "
+            "Publication expected Q4 2026. OJEU citation (presumption of "
+            "conformity) estimated H1 2027."
+        ),
+    },
+    {
+        "date": "2027-08-02",
+        "event": "Omnibus: AI regulatory sandbox establishment deadline",
+        "status": "agreed",
+        "source": "Omnibus provisional agreement, 7 May 2026",
+        "note": (
+            "Member States must establish national AI regulatory sandboxes "
+            "by this date. Original deadline was 2 August 2026; deferred "
+            "by 12 months under the Omnibus. PENDING FORMAL ADOPTION."
+        ),
     },
     {
         "date": "2027-12-02",
-        "event": "Proposed: High-risk Annex III systems deadline (Digital Omnibus)",
-        "status": "proposed",
-        "source": "EU Parliament plenary 569-45, 23 March 2026; Council mandate 13 March 2026",
-        "note": "NOT YET LAW — trilogue in progress (began April 2026 after Parliament's 26 March plenary vote). Both co-legislators aligned. Would replace August 2026 deadline for Annex III systems (employment, credit, education, biometrics, etc.). Cypriot Council Presidency targets political agreement by late April / May 2026.",
+        "event": "Omnibus: Annex III standalone high-risk AI obligations",
+        "status": "agreed",
+        "source": "Omnibus provisional agreement, 7 May 2026",
+        "note": (
+            "High-risk obligations (Articles 9-15) for standalone use-based "
+            "AI systems under Annex III: biometrics, employment, education, "
+            "credit scoring, law enforcement, migration, etc. Original "
+            "deadline was 2 August 2026; deferred 16 months under the "
+            "Omnibus. PENDING FORMAL ADOPTION. Multiple law firms (Bird & "
+            "Bird, Travers Smith, Modulos) advise planning against this "
+            "date as the baseline."
+        ),
     },
     {
         "date": "2028-08-02",
-        "event": "Proposed: High-risk Annex I systems deadline (Digital Omnibus)",
-        "status": "proposed",
-        "source": "EU Parliament committees joint report, March 2026",
-        "note": "NOT YET LAW. Would apply to AI systems under EU harmonisation legislation (machinery, medical devices, etc.).",
-    },
-    {
-        "date": "2027-12-02",
-        "event": "Proposed: AI regulatory sandbox establishment deadline (Omnibus)",
-        "status": "proposed",
-        "source": "Council mandate 13 March 2026; Pearl Cohen analysis",
-        "note": "NOT YET LAW. Postpones the original August 2026 deadline for Member States to establish national AI regulatory sandboxes by 16 months. Aligns with the proposed Annex III high-risk delay.",
+        "event": "Omnibus: Annex I product-embedded high-risk AI obligations",
+        "status": "agreed",
+        "source": "Omnibus provisional agreement, 7 May 2026",
+        "note": (
+            "High-risk obligations for AI systems embedded in products "
+            "regulated under EU harmonisation legislation (Annex I): "
+            "medical devices, machinery, toys, lifts, radio equipment. "
+            "Original deadline was 2 August 2027; deferred 12 months under "
+            "the Omnibus. PENDING FORMAL ADOPTION."
+        ),
     },
 ]
 
@@ -136,7 +173,7 @@ STATUS_LABELS = {
     "overdue": "OVERDUE",
     "current_law": "CURRENT LAW",
     "in_progress": "IN PROGRESS",
-    "proposed": "PROPOSED",
+    "agreed": "AGREED (pending adoption)",
 }
 
 STATUS_INDICATORS = {
@@ -144,7 +181,7 @@ STATUS_INDICATORS = {
     "overdue": "[LATE]",
     "current_law": "[LAW]",
     "in_progress": "[WIP]",
-    "proposed": "[PROP]",
+    "agreed": "[AGR]",
 }
 
 
@@ -152,13 +189,20 @@ def format_timeline_text() -> str:
     today = date.today().isoformat()
     lines = [
         "",
-        "=" * 64,
+        "=" * 68,
         "  Regula — EU AI Act Enforcement Timeline",
         f"  As of: {today}",
-        "=" * 64,
+        "=" * 68,
         "",
-        "  Status: [LIVE] = enforceable now  [LAW] = legally binding date",
-        "          [PROP] = proposed, not yet law  [LATE] = deadline missed",
+        "  Status key:",
+        "    [LIVE] = enforceable now   [LAW] = legally binding date",
+        "    [AGR]  = agreed in Omnibus (pending formal adoption)",
+        "    [WIP]  = in progress       [LATE] = deadline missed",
+        "",
+        "  IMPORTANT: The Digital Omnibus reached provisional agreement on",
+        "  7 May 2026. Formal adoption is expected before 2 August 2026.",
+        "  Until publication in the Official Journal, original deadlines",
+        "  remain legally binding.",
         "",
     ]
 
@@ -166,12 +210,10 @@ def format_timeline_text() -> str:
         indicator = STATUS_INDICATORS.get(entry["status"], "[???]")
         lines.append(f"  {entry['date']}  {indicator}  {entry['event']}")
         if entry.get("note"):
-            # Wrap note at ~60 chars
             note = entry["note"]
             while note:
                 chunk = note[:58]
                 if len(note) > 58:
-                    # Break at last space
                     last_space = chunk.rfind(" ")
                     if last_space > 30:
                         chunk = note[:last_space]
@@ -180,14 +222,15 @@ def format_timeline_text() -> str:
         lines.append("")
 
     lines.extend([
-        "  " + "-" * 60,
-        "  IMPORTANT: The August 2026 deadline remains legally binding.",
-        "  The December 2027 extension is a proposal under active",
-        "  negotiation and has NOT yet become law.",
-        "  " + "-" * 60,
+        "  " + "-" * 64,
+        "  Provisional agreement ≠ formal adoption. The Omnibus must",
+        "  pass EP plenary, Council endorsement, and be published in",
+        "  the Official Journal before new deadlines become binding.",
+        "  " + "-" * 64,
         "",
-        "  Sources: artificialintelligenceact.eu, IAPP, EU Council,",
-        "  EU Parliament committees joint report (18 March 2026)",
+        "  Sources: EU Council press release (7 May 2026), Gibson Dunn,",
+        "  Latham & Watkins, Bird & Bird, Travers Smith, White & Case,",
+        "  EC Code of Practice on AI content marking (10 June 2026)",
         "",
     ])
 
@@ -197,15 +240,23 @@ def format_timeline_text() -> str:
 def main():
     import argparse
 
-    parser = argparse.ArgumentParser(description="EU AI Act enforcement timeline")
-    parser.add_argument("--format", "-f", choices=["text", "json"], default="text")
+    parser = argparse.ArgumentParser(
+        description="EU AI Act enforcement timeline"
+    )
+    parser.add_argument(
+        "--format", "-f", choices=["text", "json"], default="text"
+    )
     args = parser.parse_args()
 
     if args.format == "json":
         print(json.dumps({
             "as_of": date.today().isoformat(),
+            "omnibus_status": (
+                "Provisional agreement reached 7 May 2026. "
+                "Formal adoption pending. Until OJ publication, "
+                "original deadlines remain legally binding."
+            ),
             "timeline": TIMELINE,
-            "disclaimer": "August 2026 remains legally binding. December 2027 extension is proposed, not enacted.",
         }, indent=2))
     else:
         print(format_timeline_text())
