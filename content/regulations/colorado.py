@@ -28,35 +28,31 @@ REGION = {
     "geo_region": "US-CO",
     "geo_placename": "Colorado",
 
-    "status_cls": "live",
-    "status_text": "Effective 30 June 2026 · statute live",
+    "status_cls": "replaced",
+    "status_text": "Replaced — SB 189 signed 14 May 2026",
 
-    "title_tag": "Colorado AI Act Tracker — SB 24-205 + SB 25B-004, 30 June 2026 | Regula",
+    "title_tag": "Colorado AI Regulation — SB 205 Repealed, SB 189 (Disclosure-Only) | Regula",
     "title_html": 'Colorado — <span class="hl">Colorado AI Act</span> tracker',
     "meta_description": (
-        "Live tracker of the Colorado Artificial Intelligence Act (SB 24-205) as "
-        "amended by SB 25B-004. Effective 30 June 2026. What developers and "
-        "deployers of high-risk AI systems must do, what 'algorithmic "
-        "discrimination' means under the statute, and what Regula can tell you "
-        "about your code today."
+        "Colorado SB 24-205 (Colorado Artificial Intelligence Act) has been "
+        "repealed and replaced by SB 26-189, a disclosure-only measure signed "
+        "14 May 2026, effective 1 January 2027. Historical tracker preserved."
     ),
     "meta_keywords": (
-        "Colorado AI Act, SB 24-205, SB 25B-004, algorithmic discrimination, "
-        "high-risk artificial intelligence, consequential decision, Colorado AG, "
-        "AI impact assessment, reasonable care AI"
+        "Colorado AI Act, SB 24-205, SB 26-189, algorithmic discrimination, "
+        "disclosure AI, consequential decision, Colorado AG"
     ),
-    "og_title": "Colorado AI Act Tracker — Regula",
+    "og_title": "Colorado AI Regulation — SB 205 Repealed | Regula",
     "og_description": (
-        "SB 24-205 as amended by SB 25B-004. Effective 30 June 2026. "
-        "Developer and deployer obligations for high-risk AI systems. "
-        "Regula's live coverage and framework crosswalk."
+        "SB 24-205 repealed and replaced by SB 26-189 (disclosure-only, "
+        "effective 1 January 2027). Historical content preserved."
     ),
-    "twitter_title": "Colorado AI Act Tracker — Regula",
+    "twitter_title": "Colorado AI Regulation — SB 205 Repealed | Regula",
     "twitter_description": (
-        "SB 24-205 + SB 25B-004. Effective 30 June 2026. Regula's live coverage."
+        "SB 24-205 repealed. SB 26-189 is disclosure-only (1 Jan 2027)."
     ),
 
-    "last_updated": "2026-04-08",
+    "last_updated": "2026-06-11",
     "published_time": "2026-04-08T00:00:00+00:00",
     "modified_time": "2026-04-08T00:00:00+00:00",
 
