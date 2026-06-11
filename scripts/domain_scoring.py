@@ -35,10 +35,11 @@ DOMAIN_KEYWORDS = {
         ],
         # Suppress employment domain when file is clearly compute/ML context
         "exclude_if": [
-            r"\bimport\s+(?:multiprocessing|subprocess|celery|ray|dask)",
-            r"\bfrom\s+(?:multiprocessing|subprocess|celery|ray|dask)\b",
+            r"\bimport\s+(?:multiprocessing|subprocess|celery|ray|dask|threading|joblib)",
+            r"\bfrom\s+(?:multiprocessing|subprocess|celery|ray|dask|threading|concurrent\.futures|joblib)\b",
             r"\bProcessPoolExecutor\b", r"\bThreadPoolExecutor\b",
             r"\bmp\.Process\b", r"\bworker_process\b",
+            r"\bthreading\.Thread\b", r"\bconcurrent\.futures\b",
         ],
         "category": "Annex III, Category 4",
         "boost": 15,

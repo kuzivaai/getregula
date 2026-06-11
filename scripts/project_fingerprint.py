@@ -24,7 +24,9 @@ __all__ = ["scan_project_imports"]
 DOMAIN_FINGERPRINTS = {
     "medical": {
         "imports": {"monai", "nibabel", "pydicom", "simpleitk", "medpy",
-                    "torchio", "dicom", "hl7", "fhir", "medcat"},
+                    "torchio", "dicom", "hl7", "fhir", "medcat",
+                    "medkit_lib", "dicomweb_client", "pylidc",
+                    "radiology", "nifti", "mne"},
         "activates": {"medical_devices"},
     },
     "employment": {
@@ -34,12 +36,15 @@ DOMAIN_FINGERPRINTS = {
     },
     "finance": {
         "imports": {"yfinance", "fredapi", "ta", "zipline",
-                    "quantlib", "pyalgotrade", "bt"},
+                    "quantlib", "pyalgotrade", "bt",
+                    "ccxt", "pandas_datareader", "alpaca_trade_api",
+                    "polygon", "plaid", "stripe"},
         "activates": {"essential_services"},
     },
     "biometrics": {
         "imports": {"deepface", "face_recognition", "insightface",
-                    "arcface"},
+                    "arcface", "openface", "vggface", "vggface2",
+                    "facenet", "dlib"},
         "activates": {"biometrics"},
     },
     "education": {
@@ -84,6 +89,30 @@ SUPPRESS_FINGERPRINTS = {
         # not for employment decisions (benchmark: 0 TP, 1 FP on deepmd).
         "suppresses": {"safety_components", "critical_infrastructure",
                        "high_risk__worker_management", "employment"},
+    },
+    "medical_imaging": {
+        # Medical imaging libraries use "grid" (spatial transforms) and
+        # "pipeline" (processing pipeline) — not infrastructure grids.
+        # Benchmark: 4 FPs on monai from grid/pipeline patterns.
+        "imports": {"monai", "nibabel", "simpleitk", "torchio",
+                    "medpy", "pydicom"},
+        "suppresses": {"critical_infrastructure"},
+    },
+    "experiment_tracking": {
+        # ML experiment trackers use "pipeline", "run", "worker" in
+        # compute-management context, not infrastructure operations.
+        # Benchmark: 2 FPs from mlflow/wandb.
+        "imports": {"mlflow", "wandb", "neptune", "comet_ml",
+                    "clearml", "tensorboard"},
+        "suppresses": {"critical_infrastructure", "high_risk__worker_management"},
+    },
+    "database_migration": {
+        # ORM migration tools use "pipeline", "migrate", "worker" in
+        # schema-management context, not infrastructure operations.
+        # Benchmark: 1 FP from alembic.
+        "imports": {"alembic", "django", "flask_migrate",
+                    "tortoise", "peewee"},
+        "suppresses": {"critical_infrastructure"},
     },
 }
 

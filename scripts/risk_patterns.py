@@ -678,8 +678,10 @@ AI_SECURITY_PATTERNS = {
             r"(?:chat\.completions|messages\.create|llm\.invoke)\s*\([^\n]{0,500}(?:personal_data|pii|user_email|user_phone|patient_record|medical_record)",
             # Model output returned to user without PII filtering (proximity match only;
             # file-level redaction check is in classify_risk.py).
-            # Excludes CamelCase class names (e.g., OpenAICompletion) via (?<![A-Z])
-            r"(?:return|response|send|render)\s[^\n]{0,80}(?<![A-Z])(?:completion|ai_response|llm_output|model_output)",
+            # Narrowed Apr 2026: require PII/sensitive context nearby to avoid
+            # matching generic API response handlers. Benchmark: multiple FPs
+            # from Flask/Django views that return completion results.
+            r"(?:return|response|send|render)\s[^\n]{0,80}(?<![A-Z])(?:completion|ai_response|llm_output|model_output)[^\n]{0,80}(?:pii|personal|ssn|email|phone|patient|medical|credit_card|sensitive)",
         ],
         "owasp": "LLM02",
         "articles": ["15"],
