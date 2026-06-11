@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+
+    <title>How to Classify Your AI System Under the EU AI Act | Regula</title>
+    <meta name="description" content="Classification depends on intended purpose and deployment context, not just code. A developer guide to Article 6, the four risk tiers, and what code scanning can and cannot tell you.">
+    <meta name="keywords" content="EU AI Act classification, AI risk tier, Article 6, Annex III, high-risk AI, limited risk AI, EU AI Act Omnibus, regula assess, AI system classification guide">
+    <meta name="author" content="Kuziva Muzondo">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/blog/blog-classify-ai-system.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/blog/blog-classify-ai-system.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/blog/blog-classify-ai-system.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/blog/blog-classify-ai-system.html">
+    <meta property="og:title" content="How to Classify Your AI System Under the EU AI Act">
+    <meta property="og:description" content="Classification depends on intended purpose and deployment context. A guide to Article 6, the four risk tiers, and what code scanning can tell you.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula - EU AI Act compliance tool for code">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-06-11T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-06-11T00:00:00+00:00">
+    <meta property="article:section" content="AI Governance">
+    <meta property="article:tag" content="EU AI Act">
+    <meta property="article:tag" content="Risk Classification">
+    <meta property="article:tag" content="Article 6">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How to Classify Your AI System Under the EU AI Act">
+    <meta name="twitter:description" content="Classification depends on intended purpose and deployment context. A guide to Article 6, risk tiers, and what code scanning can tell you.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript><link rel="stylesheet" href="/assets/fonts.css"><link rel="stylesheet" href="/assets/site.css"></noscript>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "How to Classify Your AI System Under the EU AI Act",
+      "description": "Classification depends on intended purpose and deployment context. A developer guide to Article 6, the four risk tiers, and what code scanning can and cannot tell you.",
+      "image": "https://getregula.com/assets/og-image.png",
+      "datePublished": "2026-06-11T00:00:00+00:00",
+      "dateModified": "2026-06-11T00:00:00+00:00",
+      "author": {
+        "@type": "Person",
+        "name": "Kuziva Muzondo"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://getregula.com/assets/og-image.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/blog/blog-classify-ai-system.html"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getregula.com/blog/writing.html" },
+        { "@type": "ListItem", "position": 3, "name": "How to Classify Your AI System Under the EU AI Act", "item": "https://getregula.com/blog/blog-classify-ai-system.html" }
+      ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I know which risk tier my AI system falls into?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Classification depends on your system's intended purpose and deployment context, not just the code. Article 6 of the EU AI Act defines the routes: systems listed in Annex III by use case are high-risk, systems embedded in products covered by Annex I are high-risk, and systems with transparency obligations fall under limited risk (Article 50). Everything else is minimal risk. A code scanner can detect risk indicators but cannot make the final determination — that requires understanding your deployment context."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the Article 6(3) derogation for high-risk AI?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Article 6(3) allows a system listed in Annex III to be classified as non-high-risk if it performs a narrow procedural task, improves the result of a previously completed human activity, or is used for human decision support where the human decision is not bypassed. You must document this assessment. This is a self-assessment — it is not automatic, and the conditions are narrow."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When do the high-risk obligations start applying?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Under the Digital Omnibus provisional agreement of 7 May 2026, Annex III (use-based) high-risk obligations are postponed to 2 December 2027. Annex I (product-embedded) obligations apply from 2 August 2028. These dates are provisional pending formal adoption, which is expected before August 2026. The original Annex III deadline of 2 August 2026 no longer applies."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a code scanner classify my AI system for me?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not fully. A code scanner like Regula can detect risk indicators — AI library imports, pattern matches suggesting high-risk use cases, credential exposure, and agent autonomy markers. It can suggest a risk tier based on code patterns. It cannot determine if your system meets the significant risk threshold, assess your deployment context, verify Article 6(3) exemption applicability, or replace legal advice."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the Article 5 prohibitions under the EU AI Act?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Article 5 defines practices not permitted under the Act. The original regulation listed 8 categories; the Digital Omnibus adds 2 further categories, bringing the total to 10. These prohibitions take effect on 2 December 2026. The specific categories are listed in Article 5(1)(a) through (h) of the original text plus the Omnibus additions. If your system falls into any of these categories, it may not be placed on the EU market."
+          }
+        }
+      ]
+    }
+    </script>
+</head>
+<body>
+<nav style="background:var(--nav-bg, rgba(7,7,17,0.85));backdrop-filter:blur(12px);padding:12px 24px;position:sticky;top:0;z-index:100;">
+    <a href="/" style="color:var(--text);text-decoration:none;font-weight:600;">Regula</a>
+    <span style="color:var(--text-dim);margin:0 8px;">/</span>
+    <a href="/blog/writing.html" style="color:var(--text-dim);text-decoration:none;">Blog</a>
+</nav>
+<main id="main" style="max-width:720px;margin:0 auto;padding:32px 20px;">
+<article>
+<div style="margin-bottom:32px;">
+    <p style="color:var(--text-dim);font-size:0.9rem;">11 June 2026 &middot; Kuziva Muzondo</p>
+    <h1 style="margin:8px 0 16px;">How to Classify Your AI System Under the EU&nbsp;AI&nbsp;Act</h1>
+    <p style="color:var(--text-2);font-size:1.1rem;line-height:1.6;">Classification depends on your system&rsquo;s <strong>intended purpose</strong> and <strong>deployment context</strong>, not just what the code does. Article&nbsp;6 defines the routes. A code scanner like Regula can detect risk indicators but cannot make the Article&nbsp;6 determination for you &mdash; that requires understanding how, where, and on whom your system is deployed.</p>
+</div>
+
+<h2>The four risk tiers</h2>
+
+<p>The EU AI Act sorts AI systems into four tiers. Your obligations depend entirely on which tier applies.</p>
+<h3>Practices not permitted (Article&nbsp;5)</h3>
+<p>Article&nbsp;5 defines 10 categories of AI practices not permitted under the Act &mdash; 8 in the original text plus 2 additions from the <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442">Digital Omnibus</a> provisional agreement. If your system falls into any of these categories, it may not be placed on the EU market. The prohibitions take effect on <strong>2&nbsp;December&nbsp;2026</strong>. See <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Article&nbsp;5(1) of Regulation&nbsp;(EU)&nbsp;2024/1689</a> for the full list.</p>
+
+<h3>High-risk: use-based (Annex&nbsp;III)</h3>
+<p>Systems whose intended purpose falls into one of eight domains: biometrics, critical infrastructure, education and vocational training, employment, access to essential services, law enforcement, migration and border control, and administration of justice. Classification is determined by what the system is <em>used for</em>, not what libraries it imports. Compliance deadline: <strong>2&nbsp;December&nbsp;2027</strong> (Digital Omnibus provisional agreement of 7&nbsp;May&nbsp;2026; original deadline was 2&nbsp;August&nbsp;2026).</p>
+
+<h3>High-risk: product-embedded (Annex&nbsp;I)</h3>
+<p>AI systems that are safety components of, or are themselves, products covered by EU harmonisation legislation listed in Annex&nbsp;I &mdash; including medical devices, machinery, toys, lifts, and radio equipment. These follow the existing CE marking framework. Compliance deadline: <strong>2&nbsp;August&nbsp;2028</strong> (Digital Omnibus).</p>
+
+<h3>Limited risk (Article&nbsp;50)</h3>
+<p>Systems with transparency obligations: chatbots that interact with people, systems generating synthetic content (deepfakes, AI-generated text or images), emotion recognition systems, and biometric categorisation systems. The obligation is disclosure, not the full high-risk conformity assessment. These obligations apply from <strong>2&nbsp;August&nbsp;2026</strong>.</p>
+
+<h3>Minimal risk</h3>
+<p>Everything else. No specific obligations under the Act. Most AI systems fall here. You may still choose to follow the voluntary codes of practice.</p>
+
+<h2>How Article&nbsp;6 works</h2>
+
+<p>Article&nbsp;6 is the gateway provision. It determines whether your Annex&nbsp;III system is actually high-risk by introducing a <strong>significant risk</strong> threshold. A system listed in Annex&nbsp;III is high-risk only if it poses a significant risk of harm to health, safety, or fundamental rights.</p>
+
+<p>Article&nbsp;6(3) provides a narrow derogation. An Annex&nbsp;III system is <em>not</em> high-risk if it:</p>
+<ul>
+    <li>Performs a <strong>narrow procedural task</strong> (e.g. converting unstructured data to structured data);</li>
+    <li><strong>Improves the result</strong> of a previously completed human activity; or</li>
+    <li>Is intended for <strong>human decision support</strong> where the human decision is not bypassed or overridden by the AI output.</li>
+</ul>
+
+<p>This is a self-assessment, not an automatic exemption. You must document why your system qualifies. The conditions are narrow and context-dependent &mdash; the same model used for different purposes can fall on different sides of this line. <strong>Context matters more than code.</strong></p>
+
+<h2>What Regula can and cannot tell you</h2>
+
+<p>Regula is a code scanner. It reads your source code and matches patterns. That is useful, but it has clear boundaries.</p>
+
+<table style="width:100%;border-collapse:collapse;margin:16px 0;">
+<thead>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+    <th style="text-align:left;padding:8px;">Regula can</th>
+    <th style="text-align:left;padding:8px;">Regula cannot</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+    <td style="padding:8px;">Detect risk indicators in your code (AI library imports, pattern matches, credential exposure, agent autonomy markers)</td>
+    <td style="padding:8px;">Determine if your system meets the Article&nbsp;6 &ldquo;significant risk&rdquo; threshold</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+    <td style="padding:8px;">Classify your risk tier based on code patterns</td>
+    <td style="padding:8px;">Assess your deployment context (who uses it, where, on whom)</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+    <td style="padding:8px;">Flag gaps in your technical documentation</td>
+    <td style="padding:8px;">Verify Article&nbsp;6(3) exemption applicability</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+    <td style="padding:8px;">Generate an evidence pack for your compliance file</td>
+    <td style="padding:8px;">Replace legal advice</td>
+</tr>
+</tbody>
+</table>
+
+<p>The code-level scan is a starting point. It narrows the field. It does not make the legal determination.</p>
+
+<h2>Practical steps</h2>
+
+<p>Start with the guided assessment, then scan your code, then check for gaps:</p>
+
+<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code># 1. Guided assessment: 5 questions, no code needed
+regula assess
+
+# 2. Scan your codebase for risk indicators
+regula check .
+
+# 3. Check for compliance gaps against the Act
+regula gap .</code></pre>
+
+<p><code>regula assess</code> asks about your intended purpose and deployment context &mdash; the factors that code scanning alone cannot determine. It then maps your answers to a risk tier. <code>regula check</code> scans your source code for risk indicators that corroborate or challenge that classification. <code>regula gap</code> identifies which obligations apply to your tier and where your documentation or technical measures fall short.</p>
+
+<h2>Omnibus caveat</h2>
+
+<p>All dates referencing the Digital Omnibus are based on the provisional political agreement of <strong>7&nbsp;May&nbsp;2026</strong>. Formal adoption is expected before August&nbsp;2026 but has not yet occurred. Until formal adoption, the original EU AI Act deadlines technically remain in force. We will update this post when the Omnibus is formally adopted.</p>
+
+<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
+
+<p style="color:var(--text-dim);font-size:0.85rem;">
+    <strong>Last verified:</strong> 11 June 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
+    <strong>Sources:</strong> <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" style="color:var(--text-dim);">Regulation (EU) 2024/1689</a>, <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442" style="color:var(--text-dim);">Digital Omnibus provisional agreement (7 May 2026)</a> &middot;
+    <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
+</p>
+</article>
+</main>
+</body>
+</html>
