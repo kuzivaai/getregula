@@ -1,3 +1,4 @@
+<!-- mcp-name: regula -->
 # Regula
 
 **EU AI Act compliance tool for code. Combines code scanning with governance questionnaires.**
