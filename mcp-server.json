@@ -1,0 +1,42 @@
+{
+  "name": "regula",
+  "display_name": "Regula — EU AI Act Compliance Scanner",
+  "description": "Scan codebases for EU AI Act compliance issues. Classifies AI systems into risk tiers, maps findings to 12 compliance frameworks, generates gap assessments. 389 detection patterns across 8 languages. Fully offline, zero runtime dependencies.",
+  "version": "1.7.1",
+  "repository": "https://github.com/kuzivaai/getregula",
+  "homepage": "https://getregula.com",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Kuziva Muzondo",
+    "url": "https://getregula.com"
+  },
+  "transport": "stdio",
+  "install": {
+    "command": "pipx install regula-ai && python3 -c \"import scripts.mcp_server\"",
+    "instructions": "Install via pipx: `pipx install regula-ai`. Run: `regula mcp-server` or `python3 scripts/mcp_server.py`."
+  },
+  "config": {
+    "mcpServers": {
+      "regula": {
+        "command": "python3",
+        "args": ["-m", "scripts.mcp_server"]
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "regula_check",
+      "description": "Scan a project directory for EU AI Act compliance issues. Returns findings with risk tier, confidence, and remediation guidance."
+    },
+    {
+      "name": "regula_classify",
+      "description": "Classify a code snippet against EU AI Act risk tiers: Prohibited (Art 5), High-Risk (Annex III), Limited-Risk (Art 50), or Minimal-Risk."
+    },
+    {
+      "name": "regula_gap",
+      "description": "Assess compliance gaps for Articles 9-15 of the EU AI Act. Returns a 0-100 score per article with evidence and gaps."
+    }
+  ],
+  "categories": ["compliance", "security", "developer-tools"],
+  "keywords": ["eu-ai-act", "compliance", "static-analysis", "ai-governance", "regulatory"]
+}
