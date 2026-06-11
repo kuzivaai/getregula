@@ -157,9 +157,11 @@ file path, code context, and finding description — no project name,
 README, or purpose). This measures what users see with default
 `--skip-tests` and domain-gating settings (v1.7.0+). Per-tier:
 `ai_security` (85%), `agent_autonomy` (83%), `limited_risk` (88%),
-`minimal_risk` (100%). The `high_risk` tier (33%) remains weakest —
-6 subcategories now require `--domain` declaration or import
-fingerprinting to fire.
+`minimal_risk` (100%). The `high_risk` tier (33%, N=6) remains weakest and is
+**statistically unmeasurable** at this sample size — corpus expansion
+to N>=30 is required before any meaningful conclusion about high_risk
+precision. Six subcategories now require `--domain` declaration or
+import fingerprinting to fire.
 
 The development corpus (`python3 benchmarks/label.py score`, no flags)
 scores **36.8%** on 446 entries across 5 AI library projects and 12
