@@ -122,6 +122,13 @@ subprocess calls, API calls, model files) rather than keywords.
 **Including test code** (what users see with `--no-skip-tests`), overall
 precision is 60.6% (N=165, was 51.2%).
 
+**May 2026 changes (not yet re-benchmarked):** Three additional
+SUPPRESS_FINGERPRINTS groups added (medical_imaging, experiment_tracking,
+database_migration) which should eliminate 4+ FPs from monai/mlflow/alembic.
+The sensitive_info_disclosure pattern #3 was narrowed to require PII context.
+These changes can only improve precision (FP removal, no TP loss). A re-scan
+is required to produce updated numbers.
+
 **Methodology details:** `benchmarks/results/random_corpus/METHODOLOGY.json`
 contains the exact GitHub API queries, random seed, and selected repos.
 `benchmarks/results/random_corpus/BLIND_LABELS.json` contains all 201
