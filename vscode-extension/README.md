@@ -4,7 +4,7 @@ Scans your AI code for regulatory risk patterns. Shows findings inline as you ty
 
 ## What it does
 
-If your product uses AI and has EU users, the EU AI Act applies. Regula scans for 389 risk patterns across Python, JavaScript, TypeScript, Java, Go, Rust, C, and C++ and tells you which risk tier each finding falls into.
+If your product uses AI and has EU users, the EU AI Act applies. Regula scans for 398 risk patterns across Python, JavaScript, TypeScript, Java, Go, Rust, C, and C++ and tells you which risk tier each finding falls into.
 
 ## Features
 

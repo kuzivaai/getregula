@@ -85,6 +85,26 @@ PROHIBITED_PATTERNS = {
         "exceptions": "Narrow exceptions exist with PRIOR judicial authorisation for: (i) targeted search for victims of abduction/trafficking/sexual exploitation, (ii) prevention of specific imminent terrorist threat, (iii) identification of suspects of serious criminal offences (as defined in Annex II).",
         "confidence": "high", "likelihood": "high", "impact": "high",
     },
+    "ncii_generation": {
+        "patterns": [r"\bnudif", r"\bundress(?:ing)?[\s_-]?(?:ai|model|gen)",
+                     r"\bdeepnude", r"\bcloth_off", r"\bstrip_ai"],
+        "article": "5(1)(i) [Omnibus]",
+        "description": "AI systems generating non-consensual intimate imagery of identifiable persons",
+        "conditions": "Added by Digital Omnibus provisional agreement 7 May 2026. Effective 2 December 2026.",
+        "exceptions": None,
+        "confidence": "high", "likelihood": "high", "impact": "high",
+    },
+    "csam_generation": {
+        "patterns": [r"age_regress(?:ion)?[\s_-]?(?:generat|synthesi|model|face)",
+                     r"\bdeage[\s_-]?(?:generat|face|model|synthes)",
+                     r"\bchild[\s_-]?(?:face[\s_-]?(?:swap|generat)|body[\s_-]?generat|image[\s_-]?generat)",
+                     r"\bminor[\s_-]?(?:face[\s_-]?(?:swap|generat)|body[\s_-]?generat|image[\s_-]?generat)"],
+        "article": "5(1)(i) [Omnibus]",
+        "description": "AI systems generating material depicting minors in sexually explicit contexts",
+        "conditions": "Added by Digital Omnibus provisional agreement 7 May 2026. Effective 2 December 2026.",
+        "exceptions": None,
+        "confidence": "high", "likelihood": "high", "impact": "high",
+    },
 }
 
 
