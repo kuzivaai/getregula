@@ -1150,16 +1150,17 @@ def test_baseline_save_and_compare():
 
 
 def test_timeline_data():
-    """Timeline contains verified enforcement dates"""
+    """Timeline contains verified enforcement dates (post-7 May 2026 Omnibus)"""
     from timeline import TIMELINE
     dates = [e["date"] for e in TIMELINE]
     assert_true("2025-02-02" in dates, "Article 5 date present")
-    assert_true("2026-08-02" in dates, "High-risk date present")
-    assert_true("2027-12-02" in dates, "Digital Omnibus proposed date present")
+    assert_true("2026-08-02" in dates, "Art 50 transparency date present")
+    assert_true("2027-12-02" in dates, "Omnibus Annex III date present")
 
-    # Verify Digital Omnibus entry has correct status
+    # Verify Omnibus Annex III entry has 'agreed' status (not 'proposed' —
+    # provisional agreement reached 7 May 2026, pending formal adoption)
     omnibus = [e for e in TIMELINE if e["date"] == "2027-12-02"][0]
-    assert_eq(omnibus["status"], "proposed", "Digital Omnibus is 'proposed' not 'effective'")
+    assert_eq(omnibus["status"], "agreed", "Omnibus Annex III is 'agreed' not 'proposed'")
     print("✓ Timeline: verified enforcement dates present and accurate")
 
 
@@ -6237,14 +6238,14 @@ def test_mcp_path_validation():
     assert_eq("not permitted" in result, True, "root scan blocked")
     print("✓ MCP: root path scan blocked")
 
-def test_timeline_has_trilogue_entries():
-    """Timeline includes March/April 2026 Omnibus events."""
+def test_timeline_has_omnibus_entries():
+    """Timeline includes 7 May 2026 Omnibus agreement and key milestones."""
     from timeline import TIMELINE
     dates = [e["date"] for e in TIMELINE]
-    assert_eq("2026-03-26" in dates, True, "Parliament plenary in timeline")
-    assert_eq("2026-04-28" in dates, True, "Second trilogue in timeline")
-    assert_eq("2026-03-03" in dates, True, "Transparency CoP in timeline")
-    print("✓ timeline: March/April 2026 events present")
+    assert_eq("2026-05-07" in dates, True, "7 May Omnibus agreement in timeline")
+    assert_eq("2026-06-10" in dates, True, "Code of Practice final in timeline")
+    assert_eq("2026-12-02" in dates, True, "Dec 2026 watermarking/CSAM in timeline")
+    print("✓ timeline: Omnibus agreement and post-agreement milestones present")
 
 
 def test_deadline_credential_exposure():
