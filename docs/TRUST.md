@@ -150,12 +150,17 @@ python3 benchmarks/label.py score
 ```
 
 **Two corpora, two numbers — both honest, different scopes.** The
-headline precision is **83.5%** (N=115), measured on production code
-from a random corpus of 50 Python AI repos selected via GitHub API
-(pool of 276, random seed 42) and blind-labelled (labeller saw only
-file path, code context, and finding description — no project name,
-README, or purpose). This measures what users see with default
-`--skip-tests` and domain-gating settings (v1.7.0+). Per-tier:
+headline precision is **83.5%** (N=115, **measured on Regula v1.7.0**),
+on production code from a random corpus of 50 Python AI repos selected
+via GitHub API (pool of 276, random seed 42) and blind-labelled
+(labeller saw only file path, code context, and finding description —
+no project name, README, or purpose). This measures what users see
+with default `--skip-tests` and domain-gating settings.
+
+> **Version note:** Precision figures are re-measured per release where
+> the corpus permits. Pattern additions in v1.7.1+ (including Article
+> 5(1)(i) NCII/CSAM detection) are not yet reflected in benchmark
+> numbers. Figures cite the Regula version they were measured on. Per-tier:
 `ai_security` (85%), `agent_autonomy` (83%), `limited_risk` (88%),
 `minimal_risk` (100%). The `high_risk` tier (33%, N=6) remains weakest and is
 **statistically unmeasurable** at this sample size — corpus expansion
