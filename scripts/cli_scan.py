@@ -335,6 +335,16 @@ def cmd_check(args) -> None:
             phase_str = ", ".join(f"{p}: {c}" for p, c in sorted(phase_counts.items()))
             print(f"  {'Lifecycle:':<20}{phase_str}")
 
+        # Domain gating INFO: tell users about --domain when findings were suppressed
+        gated_count = stats.get("domain_gated_count", 0)
+        gated_cats = stats.get("domain_gated_categories", [])
+        if gated_count > 0:
+            cats_str = ", ".join(gated_cats)
+            print(f"\n  INFO: {gated_count} high-risk finding(s) suppressed by domain gating")
+            print(f"        Categories: {cats_str}")
+            print(f"        To activate, use: regula check --domain <domain>")
+            print(f"        Or add domain-specific imports to your project.")
+
         if prohibited:
             print(f"\n  {red('PROHIBITED INDICATORS')}:")
             for f in prohibited:

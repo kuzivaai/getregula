@@ -493,6 +493,11 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     # Instead of creating a low-confidence finding per file (94% of FPs),
     # we aggregate into a single summary counter.
     _ai_files_no_indicators = 0
+    # Track how many findings were suppressed by domain gating and which
+    # opt-in categories were involved. Used by cmd_check to show an
+    # INFO message explaining the --domain flag.
+    _domain_gated_count = 0
+    _domain_gated_categories = set()
 
     # Initialise scan cache (failures must never block a scan)
     cache = None
@@ -886,6 +891,8 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 _opt_in_matched = _indicators_set & OPT_IN_CATEGORIES
                 _has_non_opt_in = bool(_indicators_set - OPT_IN_CATEGORIES)
                 if _opt_in_matched and not _has_non_opt_in and not (_opt_in_matched & _domain_activated):
+                    _domain_gated_categories.update(_opt_in_matched)
+                    _domain_gated_count += 1
                     continue  # suppress: all indicators are opt-in without activation
 
             finding["open_question"] = _is_open_question(finding)
@@ -928,6 +935,8 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         "skip_tests": skip_tests,
         "tests_skipped": _tests_skipped,
         "ai_files_no_indicators": _ai_files_no_indicators,
+        "domain_gated_count": _domain_gated_count,
+        "domain_gated_categories": sorted(_domain_gated_categories),
     }
 
     return findings
