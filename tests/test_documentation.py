@@ -338,7 +338,7 @@ def test_docs_nested_in_tests_dir_not_blank():
     Regression: skip_dirs used filepath.parts (absolute path), so any project
     located inside tests/ had every file silently skipped.
     """
-    import tempfile, os
+    import tempfile
     # Build a nested path: <tmp>/tests/my_project/model.py
     with tempfile.TemporaryDirectory() as base:
         nested = Path(base) / "tests" / "my_project"
