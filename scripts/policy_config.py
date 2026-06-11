@@ -12,6 +12,7 @@ __all__ = [
 import json
 import os
 import re
+import sys
 from pathlib import Path
 from degradation import check_optional
 
