@@ -1,22 +1,37 @@
 User-agent: *
 Allow: /
 
-# AI search and assistant crawlers
+# AI search and assistant crawlers (updated June 2026)
+# Sources: Search Engine Journal, xSeek, Alice Labs AI crawler docs
+
+# OpenAI
 User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
 Allow: /
 
 User-agent: ChatGPT-User
 Allow: /
 
+# Anthropic
 User-agent: ClaudeBot
 Allow: /
 
-User-agent: claude-web
+User-agent: Claude-SearchBot
 Allow: /
 
+User-agent: Claude-User
+Allow: /
+
+# Perplexity
 User-agent: PerplexityBot
 Allow: /
 
+User-agent: Perplexity-User
+Allow: /
+
+# Google / Apple / Cohere
 User-agent: Google-Extended
 Allow: /
 
