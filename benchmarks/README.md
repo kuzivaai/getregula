@@ -122,12 +122,22 @@ subprocess calls, API calls, model files) rather than keywords.
 **Including test code** (what users see with `--no-skip-tests`), overall
 precision is 60.6% (N=165, was 51.2%).
 
-**May 2026 changes (not yet re-benchmarked):** Three additional
-SUPPRESS_FINGERPRINTS groups added (medical_imaging, experiment_tracking,
-database_migration) which should eliminate 4+ FPs from monai/mlflow/alembic.
-The sensitive_info_disclosure pattern #3 was narrowed to require PII context.
-These changes can only improve precision (FP removal, no TP loss). A re-scan
-is required to produce updated numbers.
+**Post-v1.7.0 pattern improvements (not yet re-benchmarked against random corpus):**
+
+Three SUPPRESS_FINGERPRINTS groups added (medical_imaging, experiment_tracking,
+database_migration), sensitive_info_disclosure pattern narrowed to require PII
+context, employment domain excludes threading/joblib/concurrent.futures. These
+changes should reduce false positives but have NOT been measured against the
+random corpus because re-scanning requires cloning the 50 repos and re-labelling
+new findings. The 83.5% figure remains the last verified measurement (v1.7.0,
+domain-gated, April 2026).
+
+**B1 status (June 2026):** The random corpus PRECISION.json already reflects
+domain-gated scanning (v1.7.0). The high_risk tier remains at 33.3% on N=6 —
+this is statistically unmeasurable (Wilson CI: ~4%–78%). No conclusion about
+high_risk precision is possible until the corpus is expanded to N>=30 (task A3).
+A full rescan of the random corpus with current patterns is needed to verify
+whether the post-v1.7.0 improvements affect the 83.5% headline.
 
 **Methodology details:** `benchmarks/results/random_corpus/METHODOLOGY.json`
 contains the exact GitHub API queries, random seed, and selected repos.
