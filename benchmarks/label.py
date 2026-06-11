@@ -226,13 +226,46 @@ def cmd_score(args):
         print("Run: python3 benchmarks/label.py sample --per-project 50")
         sys.exit(1)
 
-    labels = json.load(LABELS_FILE.open())
     corpus_filter = args.corpus
     breakdown = args.breakdown
 
-    # Filter by corpus type
-    if corpus_filter != "all":
-        labels = [l for l in labels if _classify_corpus(l["project"]) == corpus_filter]
+    # Random corpus: display the pre-scored headline benchmark result.
+    # Raw data is in BLIND_LABELS.json (201 entries); scored result is in
+    # PRECISION.json (115 production-code entries after domain-gated rescan).
+    if corpus_filter == "random":
+        prec_path = Path(__file__).parent / "results" / "random_corpus" / "PRECISION.json"
+        if not prec_path.exists():
+            print(f"Random corpus precision data not found at {prec_path}")
+            sys.exit(1)
+        prec = json.load(prec_path.open())
+        n = prec.get("total_labelled", 0)
+        overall = prec.get("overall_precision", 0)
+        print(f"Random corpus (blind-labelled, production code, domain-gated)")
+        print(f"Methodology: {prec.get('methodology', 'N/A')}\n")
+        print(f"{'Tier':<25} {'TP':>5} {'FP':>5} {'Total':>7} {'Precision':>10}")
+        print(f"{'-'*25} {'-'*5} {'-'*5} {'-'*7} {'-'*10}")
+        for tier, stats in sorted(prec.get("by_tier", {}).items()):
+            tp = stats.get("tp", 0)
+            fp = stats.get("fp", 0)
+            total = tp + fp
+            p = stats.get("precision", 0)
+            print(f"{tier:<25} {tp:>5} {fp:>5} {total:>7} {p:>9.1%}")
+        # Compute overall from tier data
+        total_tp = sum(s["tp"] for s in prec["by_tier"].values())
+        total_fp = sum(s["fp"] for s in prec["by_tier"].values())
+        total_n = total_tp + total_fp
+        print(f"{'-'*25} {'-'*5} {'-'*5} {'-'*7} {'-'*10}")
+        print(f"{'OVERALL':<25} {total_tp:>5} {total_fp:>5} {total_n:>7} {overall:>9.1%}")
+        print(f"\nHeadline: {overall:.1%} precision (N={total_n})")
+        print(f"Raw data: benchmarks/results/random_corpus/BLIND_LABELS.json ({prec.get('sample_size_total', '?')} total)")
+        print(f"Methodology: benchmarks/results/random_corpus/METHODOLOGY.json")
+        return
+    else:
+        labels = json.load(LABELS_FILE.open())
+
+        # Filter by corpus type
+        if corpus_filter != "all":
+            labels = [l for l in labels if _classify_corpus(l["project"]) == corpus_filter]
 
     labelled = [l for l in labels if l.get("label") in ("tp", "fp")]
     unlabelled = [l for l in labels if not l.get("label")]
@@ -253,7 +286,7 @@ def cmd_score(args):
 
     for l in labelled:
         _accumulate(tier_stats, l["tier"], l["label"])
-        _accumulate(project_stats, l["project"], l["label"])
+        _accumulate(project_stats, l.get("project", "unknown"), l["label"])
 
         # Category (may not exist in older labels)
         cat = l.get("category", "")
@@ -506,8 +539,11 @@ def main():
                           default="all", help="Corpus type to sample (default: all)")
 
     p_score = sub.add_parser("score", help="Calculate precision from labels")
-    p_score.add_argument("--corpus", choices=["library", "app", "all"],
-                         default="all", help="Filter by corpus type (default: all)")
+    p_score.add_argument("--corpus", choices=["library", "app", "random", "all"],
+                         default="all",
+                         help="Filter by corpus type: all (development), "
+                              "library, app, or random (blind-labelled "
+                              "production code, headline precision)")
     p_score.add_argument("--breakdown", action="store_true",
                          help="Show per-category and per-language breakdowns")
 
