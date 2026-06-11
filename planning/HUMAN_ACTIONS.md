@@ -279,3 +279,10 @@ If < 0.60: review labelling criteria for ambiguity before publishing.
 
 **No precision figure from the targeted corpus is publishable until both
 raters complete and kappa is computed.** This is non-negotiable.
+
+## 10. EN 18228/18282 Publication Tracking (G1/G2)
+
+**When:** Expected Q4 2026 (CEN-CENELEC). Monitor via ai-act-standards.com
+**Action:** Revise references/en18228_mapping.yaml and en18282_mapping.yaml
+against the final published text. Update draft-status headers. Check for
+clause renumbering. Update the docs page.
