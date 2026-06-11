@@ -28,6 +28,18 @@ jobs:
       - name: Security self-check (blocks unexpected findings in Regula's own source)
         run: python3 -m scripts.cli security-self-check
 
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - name: Check for genuine code issues (not style)
+        run: ruff check scripts/ tests/ --select F821,F811 --ignore E402 --exclude "tests/fixtures"
+
   html-wellformed:
     name: HTML well-formedness (landing pages)
     runs-on: ubuntu-latest
