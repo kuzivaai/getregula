@@ -1,0 +1,737 @@
+{
+  "corpus": "blind_subset_existing",
+  "source": "/home/mkuziva/getregula/benchmarks/labels.json",
+  "total_in_source": 446,
+  "selected": 50,
+  "seed": 2026,
+  "instructions": "For each finding, set 'label' to 'tp' (true positive — genuinely risky) or 'fp' (false positive — pattern matched but not a real risk). Add 'notes' explaining your rationale. See LABELLING_CRITERIA.md for definitions and examples per tier.",
+  "labels": [
+    {
+      "project": "langchain",
+      "file": "libs/standard-tests/tests/unit_tests/test_decorated_tool.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "pydantic-ai",
+      "file": "pydantic_graph/pydantic_graph/beta/paths.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "app_proctoring",
+      "file": "face_spoofing.py",
+      "line": 29,
+      "tier": "ai_security",
+      "category": "AI Security (LLM05)",
+      "description": "Unsafe model deserialization — arbitrary code execution risk",
+      "confidence_score": 80,
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "app_rasa",
+      "file": "tests/conftest.py",
+      "line": 524,
+      "tier": "credential_exposure",
+      "category": "AI Credential Governance (Article 15)",
+      "description": "Private key detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Never inc",
+      "confidence_score": 58,
+      "indicators": [
+        "private_key"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "file": "frigate/config/classification.py",
+      "line": 1,
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "description": "Biometric identification and categorisation",
+      "indicators": [
+        "biometrics"
+      ],
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "exceptions": null,
+      "confidence_score": 88,
+      "suppressed": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "observations": [
+        {
+          "article": "12",
+          "observation": "No logging detected — Article 12 requires automatic recording of events for traceability."
+        },
+        {
+          "article": "15",
+          "observation": "Local model inference detected (Ollama, ONNX, llama.cpp, or GGUF model files). Article 15 accuracy and robustness obligations still apply to locally deployed models. Local deployment does not exempt from conformity requirements — it changes the deployment context."
+        }
+      ],
+      "domain_boost": {
+        "boost": 15,
+        "domains_matched": [
+          "education",
+          "law_enforcement",
+          "biometrics"
+        ],
+        "detail": "Domain keywords detected: education, law_enforcement, biometrics"
+      },
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "open_question": false,
+      "deadline": "2026-08-02",
+      "deadline_status": "current_law",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Provisional agreement 7 May 2026. Pending formal adoption.",
+      "omnibus_deadline": "2027-12-02",
+      "notes": "",
+      "project": "app_frigate",
+      "label": ""
+    },
+    {
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/tests/rag/test_mdx_loader.py",
+      "line": 24,
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "description": "AI output may flow to File system modification — no human gate detected",
+      "confidence_score": 30,
+      "indicators": [
+        "File system modification"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "langchain",
+      "file": "libs/partners/openai/tests/unit_tests/chat_models/test_responses_stream.py",
+      "line": 62,
+      "tier": "ai_security",
+      "description": "High temperature setting — increased hallucination risk in production",
+      "confidence_score": 10,
+      "indicators": [
+        "missing_temperature_control"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "openai-python",
+      "file": "src/openai/types/beta/thread_create_and_run_params.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "file": "deepface/models/facial_recognition/VGGFace.py",
+      "line": 1,
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "description": "Biometric identification and categorisation",
+      "notes": "",
+      "project": "app_deepface",
+      "label": ""
+    },
+    {
+      "file": "deepface/models/demography/Gender.py",
+      "line": 1,
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "description": "Biometric identification and categorisation",
+      "notes": "",
+      "project": "app_deepface",
+      "label": ""
+    },
+    {
+      "project": "app_aider",
+      "file": "aider/commands.py",
+      "line": 974,
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "description": "AI output may flow to System command execution — no human gate detected",
+      "confidence_score": 70,
+      "indicators": [
+        "System command execution"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "scikit-learn",
+      "file": "sklearn/utils/tests/test_optimize.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/tools/oxylabs_google_search_scraper_tool/oxylabs_google_search_scraper_tool.py",
+      "line": 132,
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "description": "Agent tool infrastructure: System command execution — human gate pattern detected nearby",
+      "confidence_score": 35,
+      "indicators": [
+        "System command execution"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "file": "deepface/modules/verification.py",
+      "line": 1,
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "description": "Biometric identification and categorisation",
+      "notes": "",
+      "project": "app_deepface",
+      "label": ""
+    },
+    {
+      "project": "app_aider",
+      "file": "tests/basic/test_linter.py",
+      "line": 62,
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "description": "AI output may flow to System command execution — no human gate detected",
+      "confidence_score": 30,
+      "indicators": [
+        "System command execution"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/tools/singlestore_search_tool/singlestore_search_tool.py",
+      "line": 1,
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "description": "Biometric identification and categorisation",
+      "confidence_score": 35,
+      "indicators": [
+        "biometrics"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "app_crewai",
+      "file": "lib/crewai/src/crewai/utilities/evaluators/crew_evaluator_handler.py",
+      "line": 1,
+      "tier": "high_risk",
+      "category": "Annex III, Category 4(b)",
+      "description": "Worker monitoring and task allocation",
+      "confidence_score": 23,
+      "indicators": [
+        "high_risk__worker_management"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/tools/patronus_eval_tool/patronus_predefined_criteria_eval_tool.py",
+      "line": 95,
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "description": "AI output may flow to HTTP mutation request — no human gate detected",
+      "confidence_score": 70,
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/aws/bedrock/agents/invoke_agent_tool.py",
+      "line": 172,
+      "tier": "ai_security",
+      "category": "AI Security (LLM02)",
+      "description": "PII or sensitive data flows into or out of LLM without redaction — information disclosure risk",
+      "confidence_score": 80,
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "scikit-learn",
+      "file": "sklearn/datasets/__init__.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "app_crewai",
+      "file": "lib/crewai/tests/utilities/evaluators/test_crew_evaluator_handler.py",
+      "line": 1,
+      "tier": "high_risk",
+      "category": "Annex III, Category 4(b)",
+      "description": "Worker monitoring and task allocation",
+      "confidence_score": 5,
+      "indicators": [
+        "high_risk__worker_management"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/tools/patronus_eval_tool/patronus_eval_tool.py",
+      "line": 146,
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "description": "AI output may flow to HTTP mutation request — no human gate detected",
+      "confidence_score": 70,
+      "indicators": [
+        "HTTP mutation request"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "file": "deepface/modules/database/neo4j.py",
+      "line": 1,
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "description": "Biometric identification and categorisation",
+      "notes": "",
+      "project": "app_deepface",
+      "label": ""
+    },
+    {
+      "project": "scikit-learn",
+      "file": "sklearn/datasets/_covtype.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "openai-python",
+      "file": "src/openai/types/evals/create_eval_completions_run_data_source_param.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "instructor",
+      "file": "instructor/providers/gemini/utils.py",
+      "line": 1,
+      "tier": "limited_risk",
+      "description": "Synthetic content generation",
+      "confidence_score": 53,
+      "indicators": [
+        "synthetic_content"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "file": "deepface/models/facial_recognition/FbDeepFace.py",
+      "line": 1,
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "description": "Biometric identification and categorisation",
+      "notes": "",
+      "project": "app_deepface",
+      "label": ""
+    },
+    {
+      "project": "instructor",
+      "file": "tests/test_logging.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "langchain",
+      "file": "libs/langchain/langchain_classic/load/__init__.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "openai-python",
+      "file": "src/openai/types/responses/response_input_image_param.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/tools/selenium_scraping_tool/selenium_scraping_tool.py",
+      "line": 1,
+      "tier": "high_risk",
+      "category": "Safety Components",
+      "description": "Safety components under Union harmonisation legislation",
+      "confidence_score": 23,
+      "indicators": [
+        "safety_components"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "instructor",
+      "file": "examples/logfire-fastapi/server.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "scikit-learn",
+      "file": "sklearn/experimental/enable_halving_search_cv.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "instructor",
+      "file": "tests/test_message_processing.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/tools/selenium_scraping_tool/selenium_scraping_tool.py",
+      "line": 90,
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "description": "Agent tool infrastructure: System command execution — human gate pattern detected nearby",
+      "confidence_score": 35,
+      "indicators": [
+        "System command execution"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "file": "monai/networks/nets/resnet.py",
+      "line": 668,
+      "tier": "ai_security",
+      "category": "AI Security (LLM05)",
+      "description": "Unsafe model deserialization — arbitrary code execution risk",
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "confidence_score": 80,
+      "suppressed": false,
+      "provenance": "production",
+      "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "open_question": false,
+      "deadline": "2026-08-02",
+      "deadline_status": "current_law",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Provisional agreement 7 May 2026. Pending formal adoption.",
+      "omnibus_deadline": "2027-12-02",
+      "notes": "",
+      "project": "app_monai",
+      "label": ""
+    },
+    {
+      "file": "monai/networks/utils.py",
+      "line": 1,
+      "tier": "high_risk",
+      "category": "Annex III, Category 6",
+      "description": "Law enforcement",
+      "indicators": [
+        "law_enforcement"
+      ],
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "exceptions": null,
+      "confidence_score": 60,
+      "suppressed": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "observations": [
+        {
+          "article": "10",
+          "observation": "Training data detected — Article 10 requires data to be relevant, representative, and examined for biases."
+        },
+        {
+          "article": "15",
+          "observation": "Local model inference detected (Ollama, ONNX, llama.cpp, or GGUF model files). Article 15 accuracy and robustness obligations still apply to locally deployed models. Local deployment does not exempt from conformity requirements — it changes the deployment context."
+        }
+      ],
+      "domain_boost": {
+        "boost": 12,
+        "domains_matched": [
+          "education"
+        ],
+        "detail": "Domain keywords detected: education"
+      },
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "open_question": false,
+      "deadline": "2026-08-02",
+      "deadline_status": "current_law",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Provisional agreement 7 May 2026. Pending formal adoption.",
+      "omnibus_deadline": "2027-12-02",
+      "notes": "",
+      "project": "app_monai",
+      "label": ""
+    },
+    {
+      "project": "pydantic-ai",
+      "file": "tests/test_utils.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "openai-python",
+      "file": "src/openai/_utils/_logs.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "pydantic-ai",
+      "file": "pydantic_ai_slim/pydantic_ai/providers/litellm.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "openai-python",
+      "file": "src/openai/types/image.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "pydantic-ai",
+      "file": "pydantic_evals/pydantic_evals/evaluators/report_evaluator.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "pydantic-ai",
+      "file": "tests/test_tools.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/tools/weaviate_tool/vector_search.py",
+      "line": 99,
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "description": "AI output may flow to System command execution — human gate pattern detected nearby",
+      "confidence_score": 45,
+      "indicators": [
+        "System command execution"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "pydantic-ai",
+      "file": "pydantic_ai_slim/pydantic_ai/_run_context.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "app_crewai",
+      "file": "lib/crewai/tests/cli/tools/test_main.py",
+      "line": 393,
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "description": "Agent tool infrastructure: System command execution — no human gate detected",
+      "confidence_score": 20,
+      "indicators": [
+        "System command execution"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "file": "frigate/comms/embeddings_updater.py",
+      "line": 1,
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "description": "Biometric identification and categorisation",
+      "indicators": [
+        "biometrics"
+      ],
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "exceptions": null,
+      "confidence_score": 73,
+      "suppressed": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "observations": [],
+      "domain_boost": null,
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "open_question": false,
+      "deadline": "2026-08-02",
+      "deadline_status": "current_law",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Provisional agreement 7 May 2026. Pending formal adoption.",
+      "omnibus_deadline": "2027-12-02",
+      "notes": "",
+      "project": "app_frigate",
+      "label": ""
+    },
+    {
+      "project": "instructor",
+      "file": "tests/dsl/test_simple_type_fix.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "app_crewai",
+      "file": "lib/crewai/src/crewai/utilities/file_handler.py",
+      "line": 180,
+      "tier": "ai_security",
+      "category": "AI Security (LLM05)",
+      "description": "Unsafe model deserialization — arbitrary code execution risk",
+      "confidence_score": 80,
+      "indicators": [
+        "unsafe_deserialization"
+      ],
+      "notes": "",
+      "label": ""
+    },
+    {
+      "project": "pydantic-ai",
+      "file": "examples/pydantic_ai_examples/data_analyst.py",
+      "line": 1,
+      "tier": "minimal_risk",
+      "description": "AI-related code with no specific risk indicators",
+      "confidence_score": 20,
+      "indicators": [],
+      "notes": "",
+      "label": ""
+    }
+  ]
+}
