@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+
+    <title>Static Analysis for AI Compliance: Why Code Scanning Complements Questionnaires | Regula Blog</title>
+    <meta name="description" content="Code scanning and questionnaires each cover different parts of EU AI Act compliance. Neither alone is sufficient. Here is an honest comparison.">
+    <meta name="author" content="Kuziva Muzondo">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript><link rel="stylesheet" href="/assets/fonts.css"><link rel="stylesheet" href="/assets/site.css"></noscript>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Static Analysis for AI Compliance: Why Code Scanning Complements Questionnaires",
+        "author": {"@type": "Person", "name": "Kuziva Muzondo"},
+        "datePublished": "2026-06-11",
+        "dateModified": "2026-06-11",
+        "publisher": {"@type": "Organization", "name": "The Implementation Layer"}
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Can code scanning replace questionnaires for EU AI Act compliance?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No. Code scanning finds risk indicators in source code (prohibited practice patterns, unsafe deserialisation, missing oversight gates) but cannot assess organisational processes, deployment context, or post-market monitoring plans. Questionnaires cover those areas. Most teams need both."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What does static analysis detect that a compliance questionnaire misses?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Static analysis detects concrete code-level signals: AI framework imports, prohibited practice indicators under Article 5, credential exposure, unsafe deserialisation, and agent autonomy patterns without human oversight gates. These exist in the code regardless of how questionnaire answers are worded."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Which AI Act compliance tools use code scanning versus questionnaires?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Code scanners include Regula (398 patterns, 8 languages, offline), AIR Blackbox (51 checks, Python-only, Apache 2.0), and Systima Comply (tree-sitter AST, TS/JS/Python). Questionnaire-based tools include the EU Commission ALTAI checker and EuroComply. Enterprise platforms like Credo AI and Holistic AI combine both approaches."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is Regula a replacement for legal advice on the EU AI Act?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No. Regula is a code scanning tool that identifies risk indicators for developer review. It does not provide legal advice, does not determine your system's final risk classification, and cannot assess organisational or contextual compliance obligations."
+                }
+            }
+        ]
+    }
+    </script>
+</head>
+<body>
+
+<nav style="background:var(--nav-bg, rgba(7,7,17,0.85));backdrop-filter:blur(12px);padding:12px 24px;position:sticky;top:0;z-index:100;">
+    <a href="/" style="color:var(--text);text-decoration:none;font-weight:600;">Regula</a>
+    <span style="color:var(--text-dim);margin:0 8px;">/</span>
+    <a href="/blog/writing.html" style="color:var(--text-dim);text-decoration:none;">Blog</a>
+</nav>
+
+<main id="main" style="max-width:720px;margin:0 auto;padding:32px 20px;">
+
+<article>
+
+<div style="margin-bottom:32px;">
+    <p style="color:var(--text-dim);font-size:0.9rem;">11 June 2026 &middot; Kuziva Muzondo</p>
+    <h1 style="margin:8px 0 16px;">Static Analysis for AI Compliance: Why Code Scanning Complements Questionnaires</h1>
+    <p style="color:var(--text-2);font-size:1.1rem;line-height:1.6;">Code scanning and compliance questionnaires cover different parts of the EU AI Act. Neither alone is sufficient. Most teams need both &mdash; and understanding the gap each leaves is the first step to closing it.</p>
+</div>
+
+<h2>What code scanning finds that questionnaires miss</h2>
+
+<p>Code scanners analyse source code directly. The findings exist in the repository regardless of how anyone answers a questionnaire.</p>
+
+<ul>
+    <li><strong>Article 5 prohibited practice indicators</strong> &mdash; patterns in code that match behaviours the AI Act bans outright. A questionnaire asks whether your system does these things; a code scanner checks.</li>
+    <li><strong>AI framework imports and risk patterns</strong> &mdash; the presence of specific libraries (face recognition, reinforcement learning, biometric processing) that indicate risk tier before anyone fills in a form.</li>
+    <li><strong>Credential exposure and unsafe deserialisation</strong> &mdash; security risks that affect Article 15 (accuracy, robustness, cybersecurity) and exist entirely in code.</li>
+    <li><strong>Agent autonomy without human oversight gates</strong> &mdash; agentic AI systems that make decisions without breakpoints for human review, relevant to Article 14 (human oversight).</li>
+</ul>
+
+<p>These are facts about the codebase. A questionnaire respondent may not know about them, may understate them, or may describe them inaccurately. Code scanning provides an independent check.</p>
+
+<h2>What questionnaires cover that code scanning cannot</h2>
+
+<p>Questionnaires capture organisational and contextual information that does not exist in source code.</p>
+
+<ul>
+    <li><strong>Risk management system (Article 9)</strong> &mdash; whether your organisation has a documented process for identifying and mitigating AI risks. This is a policy question, not a code question.</li>
+    <li><strong>Deployment context</strong> &mdash; the same model can be high-risk or minimal-risk depending on where it is deployed. A facial recognition model used for phone unlock is different from one used for law enforcement. Code scanning sees the model; it does not see the deployment.</li>
+    <li><strong>Stakeholder consultation and impact assessments</strong> &mdash; fundamental rights impact assessments (Article 27) require engagement with affected communities. No code scanner can evidence this.</li>
+    <li><strong>Post-market monitoring plans</strong> &mdash; Article 72 requires ongoing monitoring after deployment. This is an operational commitment, not a code property.</li>
+    <li><strong>Data governance policies</strong> &mdash; Article 10 requires data quality and governance measures. Code scanning can detect some data handling patterns, but the broader governance framework lives in documentation and process.</li>
+</ul>
+
+<h2>Honest comparison: tools in this space</h2>
+
+<table class="cmp-table" style="width:100%;border-collapse:collapse;margin:16px 0;font-size:0.95rem;">
+<thead>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+    <th style="text-align:left;padding:8px;">Tool</th>
+    <th style="text-align:left;padding:8px;">Approach</th>
+    <th style="text-align:left;padding:8px;">Strengths</th>
+    <th style="text-align:left;padding:8px;">Limitations</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+    <td style="padding:8px;"><strong>Regula</strong></td>
+    <td style="padding:8px;">Code scan (regex)</td>
+    <td style="padding:8px;">398 patterns, 8 languages, zero runtime dependencies, offline, zero false positives at BLOCK/CI tier</td>
+    <td style="padding:8px;">Regex-based &mdash; no semantic understanding. Deep coverage for Python; shallower for other languages. Cannot assess organisational compliance.</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+    <td style="padding:8px;"><strong>AIR Blackbox</strong></td>
+    <td style="padding:8px;">Code scan (Python)</td>
+    <td style="padding:8px;">51 checks across Articles 9&ndash;15, Apache 2.0 licence, 7 framework trust layers</td>
+    <td style="padding:8px;">Python-only. Narrower pattern set. Focused on high-risk obligations rather than full Act coverage.</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+    <td style="padding:8px;"><strong>Systima Comply</strong></td>
+    <td style="padding:8px;">Code scan (AST)</td>
+    <td style="padding:8px;">Tree-sitter AST analysis, 37+ frameworks, TS/JS/Python</td>
+    <td style="padding:8px;">Newer entrant. AST approach gives deeper understanding per file but limited language coverage.</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+    <td style="padding:8px;"><strong>EU Commission ALTAI checker</strong></td>
+    <td style="padding:8px;">Questionnaire</td>
+    <td style="padding:8px;">Free, official, covers organisational and ethical dimensions</td>
+    <td style="padding:8px;">Self-assessment only. No code verification. Pre-dates the final AI Act text.</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+    <td style="padding:8px;"><strong>EuroComply</strong></td>
+    <td style="padding:8px;">Questionnaire</td>
+    <td style="padding:8px;">Guided workflow for EU AI Act obligations, document generation</td>
+    <td style="padding:8px;">No code analysis. Relies entirely on the accuracy of respondent answers.</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+    <td style="padding:8px;"><strong>Credo AI, Holistic AI</strong></td>
+    <td style="padding:8px;">Platform (both)</td>
+    <td style="padding:8px;">Combine code-level analysis with governance workflows, policy management, and questionnaires</td>
+    <td style="padding:8px;">Enterprise pricing. Heavier integration requirements. Not open source.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>When you need both</h2>
+
+<p>Most teams building AI systems that may fall under the EU AI Act need code scanning in CI and a questionnaire or governance platform for organisational obligations. The combination looks like this:</p>
+
+<ul>
+    <li><strong>CI pipeline:</strong> run a code scanner on every commit to catch prohibited practice indicators, new framework imports, and security risks before they reach production.</li>
+    <li><strong>Quarterly or milestone review:</strong> complete a compliance questionnaire to document risk management processes, deployment context, stakeholder engagement, and data governance.</li>
+    <li><strong>Legal review:</strong> neither tool replaces a lawyer. The AI Act is complex legislation with delegated acts still being published. If your system is high-risk under Annex III, get legal advice.</li>
+</ul>
+
+<p>The Omnibus Regulation provisional agreement of 7 May 2026 postpones Annex III high-risk obligations to 2 December 2027, pending formal adoption. This gives teams more time to build both technical and organisational compliance &mdash; but the prohibited practice prohibitions under Article 5 already apply (since 2 February 2025).</p>
+
+<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
+
+<p style="color:var(--text-dim);font-size:0.85rem;">
+    <strong>Last verified:</strong> 11 June 2026 &middot;
+    <strong>Author:</strong> Kuziva Muzondo &middot;
+    <em>Not legal advice. Regula is a code scanning tool that identifies risk indicators for developer review. It does not determine your system&rsquo;s risk classification or replace professional legal counsel.</em>
+</p>
+
+</article>
+
+</main>
+</body>
+</html>
