@@ -53,6 +53,20 @@ grep -rn 'pending.*formal.*adoption\|pending.*adoption\|awaiting.*formal\|provis
 - [ ] `site/blog/blog-omnibus-delay.html:223` — Update "pending formal adoption" to "adopted [DATE]"
 - [ ] `site/blog/blog-omnibus-decision-framework.html:247` — Same update
 
+### Scripts (additional — found by Session 9 audit)
+- [ ] `scripts/exec_summary.py:31-32` — Update "pending formal adoption of the Digital Omnibus"
+- [ ] `scripts/risk_patterns.py:93,104` — Update "provisional agreement 7 May 2026" to adopted language
+- [ ] `scripts/remediation_plan.py:53` — Update "pending formal adoption" in DEADLINE_OMNIBUS
+
+### Blog posts (additional — found by Session 9 audit)
+- [ ] `site/blog/blog-static-analysis-ai-compliance.html:197` — "pending formal adoption"
+- [ ] `site/blog/blog-art50-code-of-practice.html:163` — "pending formal adoption"
+- [ ] `site/blog/blog-classify-ai-system.html:120,238,252` — Multiple references
+- [ ] `site/blog/blog-omnibus-trilogue-failed.html:179` — "Formal adoption is pending"
+
+### Examples
+- [ ] `docs/examples/exec-summary-sample.html:61` — "pending formal adoption"
+
 ### Internal/tooling (non-user-facing but should be correct)
 - [ ] `.claude/skills/regulatory-context/SKILL.md:26` — Update "awaiting formal adoption"
 - [ ] `.claude/rules/regulatory-content.md:11` — Update the NEVER rule to reference adoption date
