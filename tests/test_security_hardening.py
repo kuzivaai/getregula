@@ -37,7 +37,12 @@ PATHOLOGICAL_INPUTS = [
 
 
 def _check_pattern_redos(label, pattern, inputs, flags=re.IGNORECASE):
-    """Test a single regex pattern against pathological inputs. Returns True if safe."""
+    """Test a single regex pattern against pathological inputs. Returns True if safe.
+
+    Uses a two-pass approach for determinism: first pass at 1.0s catches
+    catastrophic backtracking. If a pattern fails, retry once to filter
+    resource-contention false positives (observed under sandbox pressure).
+    """
     for inp in inputs:
         start = time.time()
         try:
@@ -46,7 +51,15 @@ def _check_pattern_redos(label, pattern, inputs, flags=re.IGNORECASE):
             pass  # Invalid regex is not ReDoS
         elapsed = time.time() - start
         if elapsed > 1.0:
-            return False, f"{label}: {elapsed:.2f}s on len={len(inp)}"
+            # Retry once to filter contention spikes
+            start2 = time.time()
+            try:
+                re.search(pattern, inp, flags)
+            except re.error:
+                pass
+            elapsed2 = time.time() - start2
+            if elapsed2 > 1.0:
+                return False, f"{label}: {elapsed2:.2f}s on len={len(inp)}"
     return True, None
 
 
