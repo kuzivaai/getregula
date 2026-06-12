@@ -656,21 +656,26 @@ Assess whether AGPL for the detection rule database (separate from the Apache-li
 
 ## Summary Statistics
 
-| Status | Count |
-|--------|-------|
-| DONE | 27 |
-| PARTIAL | 7 (A2, A3, C5, D2, D3, D4, D5) |
-| NOT STARTED | 7 (A4, A6, B2, B3, D11, E2, E3, F1, F4) |
-| GATED | 2 (H2, H3 — visa) |
-| **Total** | **43** |
+*Recomputed from status lines above on 12 June 2026. 42 task headings
+(G3 shares scope with C7 — both counted). Original file claimed 43; that
+was always wrong.*
 
-| Workstream | Done | Partial | Remaining |
-|------------|------|---------|-----------|
-| A — Benchmark Integrity | 2 | 2 | 2 |
-| B — Detection Quality | 1 | 0 | 2 |
-| C — Regulatory Currency | 6 | 1 | 0 |
-| D — Distribution | 4 | 4 | 2 (D7 human, D11 human) |
-| E — Buyer Surface | 1 | 0 | 2 |
-| F — Website Elevation | 2 | 0 | 2 |
-| G — Multi-Regime Expansion | 4 | 0 | 0 |
-| H — Business Model | 1 | 0 | 2 (gated) |
+| Status | Count | Tasks |
+|--------|-------|-------|
+| DONE | 21 | A1, A5, B1, C1, C2, C3, C4, C6, C7, C8, D6, D9, D10, E1, F2, F3, G1, G2, G3, G4, H1 |
+| PARTIAL | 8 | A2, A3, C5, D2, D3, D4, D5, D8 |
+| NOT STARTED | 10 | A4, A6, B2, B3, D7, D11, E2, E3, F1, F4 |
+| NOT SUBMITTED | 1 | D1 (fails awesome-static-analysis criteria) |
+| GATED | 2 | H2, H3 (visa) |
+| **Total** | **42** | |
+
+| Workstream | Done | Partial | Not Started | Other |
+|------------|------|---------|-------------|-------|
+| A — Benchmark Integrity | 2 (A1, A5) | 2 (A2, A3) | 2 (A4, A6) | — |
+| B — Detection Quality | 1 (B1) | 0 | 2 (B2, B3) | — |
+| C — Regulatory Currency | 7 (C1–C4, C6–C8) | 1 (C5) | 0 | — |
+| D — Distribution | 3 (D6, D9, D10) | 5 (D2–D5, D8) | 2 (D7, D11) | 1 not submitted (D1) |
+| E — Buyer Surface | 1 (E1) | 0 | 2 (E2, E3) | — |
+| F — Website Elevation | 2 (F2, F3) | 0 | 2 (F1, F4) | — |
+| G — Multi-Regime Expansion | 4 (G1–G4) | 0 | 0 | — |
+| H — Business Model | 1 (H1) | 0 | 0 | 2 gated (H2, H3) |

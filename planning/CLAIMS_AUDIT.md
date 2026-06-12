@@ -188,9 +188,9 @@ Wait — let me re-check. The earlier session updated TRUST.md. Let me verify th
 
 | Claim | Value | Status |
 |-------|-------|--------|
-| tests-2309 passing (badge) | 2,309 | VERIFIED |
-| 389 patterns, 8 languages, 30 seconds | 389, 8 | VERIFIED |
-| Tests (pytest --collect-only) = 2,309 | 2,309 | VERIFIED |
+| tests-N passing (badge) | 2,318 | STALE — was 2,309, updated Session 9 |
+| 398 patterns, 8 languages, 30 seconds | 398, 8 | STALE — was 389, updated Session 9 |
+| Tests (pytest --collect-only) = 2,318 | 2,318 | STALE — was 2,309, updated Session 9 |
 | 61 CLI commands | 61 | VERIFIED |
 | 12 compliance frameworks | 12 | VERIFIED |
 | 0 required production dependencies | 0 | VERIFIED |
@@ -199,11 +199,11 @@ Wait — let me re-check. The earlier session updated TRUST.md. Let me verify th
 
 | Claim | Value | Status |
 |-------|-------|--------|
-| 389 risk patterns | 389 | VERIFIED |
+| 398 risk patterns | 398 | STALE — was 389, updated Session 9 |
 | 8 programming languages | 8 | VERIFIED |
 | 12 compliance frameworks | 12 | VERIFIED |
 | 0 external dependencies | 0 | VERIFIED |
-| 2,309 tests | 2,309 | VERIFIED |
+| 2,318 tests | 2,318 | STALE — was 2,309, updated Session 9 |
 | 0 security findings | 0 | VERIFIED |
 | 83.5% precision (honesty section) | 83.5% | VERIFIED |
 | 15.2% on AI library source code | 15.2% | VERIFIED (library subset) |
@@ -213,10 +213,10 @@ Wait — let me re-check. The earlier session updated TRUST.md. Let me verify th
 
 | Claim | Value | Status |
 |-------|-------|--------|
-| 389 tiered risk regexes | 389 | VERIFIED |
-| 52 categories | 52 | VERIFIED |
-| 2,309 pytest-collected | 2,309 | VERIFIED |
-| 1,911 unique | Corrected from 1,824 | VERIFIED |
+| 398 tiered risk regexes | 398 | STALE — was 389, updated Session 9 |
+| 54 categories | 54 | STALE — was 52, updated Session 9 |
+| 2,318 pytest-collected | 2,318 | STALE — was 2,309, updated Session 9 |
+| 1,920 unique | Recalculated Session 9 | STALE — was 1,911 |
 | 8 languages | 8 | VERIFIED |
 | 12 frameworks | 12 | VERIFIED |
 

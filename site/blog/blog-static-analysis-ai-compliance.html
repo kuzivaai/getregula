@@ -75,13 +75,27 @@
         ]
     }
     </script>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
 </head>
 <body>
 
-<nav style="background:var(--nav-bg, rgba(7,7,17,0.85));backdrop-filter:blur(12px);padding:12px 24px;position:sticky;top:0;z-index:100;">
-    <a href="/" style="color:var(--text);text-decoration:none;font-weight:600;">Regula</a>
-    <span style="color:var(--text-dim);margin:0 8px;">/</span>
-    <a href="/blog/writing.html" style="color:var(--text-dim);text-decoration:none;">Blog</a>
+<nav class="nav" id="nav" aria-label="Primary">
+    <a href="/" class="nav-brand">Regula</a>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html">Regulations</a>
+        <a href="/blog/writing.html">Blog</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
 </nav>
 
 <main id="main" style="max-width:720px;margin:0 auto;padding:32px 20px;">
@@ -193,5 +207,26 @@
 </article>
 
 </main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 licence &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Content on this site is for developer education. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
 </body>
 </html>

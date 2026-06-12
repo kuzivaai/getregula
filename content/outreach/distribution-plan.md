@@ -16,7 +16,7 @@ Status: Ready to execute
 ```
 I built Regula because I couldn't find a tool that reads your actual code and tells you which EU AI Act risk tier you're in. Every compliance tool I found was a questionnaire, a governance SaaS, or a policy layer. None of them looked at the source.
 
-Regula is a static scanner. It reads Python, JS, TS, Java, Go, Rust, C, and C++. It checks against 389 risk patterns and tells you: prohibited, high-risk, limited-risk, or minimal. With the exact file, line, and legal basis for each finding.
+Regula is a static scanner. It reads Python, JS, TS, Java, Go, Rust, C, and C++. It checks against 398 risk patterns and tells you: prohibited, high-risk, limited-risk, or minimal. With the exact file, line, and legal basis for each finding.
 
 What it does:
 - `regula check .` — scan and classify risk tier
@@ -74,7 +74,7 @@ Architecture: regex-based pattern matching + tree-sitter AST for Python/JS/TS. N
 - **Language:** Python (scans Python, JS, TS, Java, Go, Rust, C, C++)
 - **Licence:** Apache 2.0
 - **What it does:** Scans source code for EU AI Act risk patterns. Classifies AI systems into risk tiers (prohibited, high-risk, limited-risk, minimal). Maps findings to 12 compliance frameworks including NIST AI RMF, ISO 42001, LGPD, and OWASP LLM Top 10.
-- **Key differentiator:** Zero production dependencies (stdlib-only). Fully offline. 389 detection patterns. Evidence signing with SHA-256 + Ed25519.
+- **Key differentiator:** Zero production dependencies (stdlib-only). Fully offline. 398 detection patterns. Evidence signing with SHA-256 + Ed25519.
 - **Install:** `pipx install regula-ai`
 - **Repo:** https://github.com/kuzivaai/getregula
 ```

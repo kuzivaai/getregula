@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-11T10:32:17.564811+00:00",
+  "generated_at": "2026-06-12T16:10:42.097127+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -10,8 +10,8 @@
   "counts": {
     "commands": 61,
     "patterns": {
-      "tier_groups": 52,
-      "tier_regexes": 389,
+      "tier_groups": 54,
+      "tier_regexes": 398,
       "ai_indicators": 212,
       "gpai_training": 17,
       "architecture": 38,
@@ -20,14 +20,14 @@
       "oversight": 4,
       "credential": 18,
       "agentic_categories": 30,
-      "grand_total": 692,
-      "marketing_409": 437,
-      "historical_330_bucket": 449
+      "grand_total": 701,
+      "marketing_409": 446,
+      "historical_330_bucket": 458
     },
     "frameworks": 12,
     "languages": 8,
     "tests": {
-      "total_functions": 1466,
+      "total_functions": 1475,
       "per_file": {
         "test_agent_governance.py": 28,
         "test_ai_codegen.py": 0,
@@ -53,6 +53,7 @@
         "test_evidence_bundle.py": 4,
         "test_evidence_format_v1.py": 13,
         "test_evidence_pack_unit.py": 0,
+        "test_exec_summary.py": 9,
         "test_file_provenance.py": 9,
         "test_first_run.py": 4,
         "test_gdpr_patterns.py": 32,

@@ -6153,13 +6153,13 @@ def test_deadline_high_risk_annex_i():
     print("✓ deadline: safety/medical → omnibus 2028-08-02")
 
 def test_deadline_limited_risk():
-    """Limited-risk findings get Nov 2026 omnibus deadline."""
+    """Limited-risk findings get Dec 2026 omnibus deadline for existing-system watermarking."""
     from report import _enrich_deadlines
     findings = [{"tier": "limited_risk", "category": "Chatbots"}]
     _enrich_deadlines(findings)
     assert_eq(findings[0]["deadline"], "2026-08-02", "limited current law")
-    assert_eq(findings[0]["omnibus_deadline"], "2026-11-02", "limited omnibus")
-    print("✓ deadline: limited-risk → omnibus 2026-11-02")
+    assert_eq(findings[0]["omnibus_deadline"], "2026-12-02", "limited omnibus")
+    print("✓ deadline: limited-risk → omnibus 2026-12-02")
 
 def test_deadline_minimal_risk():
     """Minimal-risk findings get no deadline."""

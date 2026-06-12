@@ -246,7 +246,7 @@ def _generate_summary(name, now, findings, gap, plan):
 
 **Total tasks:** {plan_total}
 **Estimated effort:** ~{effort_low}-{effort_high} hours
-**Primary deadline:** 2 August 2026
+**Primary deadline:** 2 August 2026 (Omnibus agreed: 2 Dec 2027 for Annex III, pending formal adoption)
 
 ## Pack Contents
 

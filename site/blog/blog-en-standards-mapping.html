@@ -23,12 +23,26 @@
 <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
 <noscript><link rel="stylesheet" href="/assets/fonts.css"><link rel="stylesheet" href="/assets/site.css"></noscript>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"EN 18228 and EN 18282: What Regula Can Evidence Against Draft AI Standards","author":{"@type":"Person","name":"Kuziva Muzondo"},"datePublished":"2026-06-12","publisher":{"@type":"Organization","name":"The Implementation Layer"}}</script>
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
 </head>
 <body>
-<nav style="background:var(--nav-bg,rgba(7,7,17,0.85));backdrop-filter:blur(12px);padding:12px 24px;position:sticky;top:0;z-index:100;">
-<a href="/" style="color:var(--text);text-decoration:none;font-weight:600;">Regula</a>
-<span style="color:var(--text-dim);margin:0 8px;">/</span>
-<a href="/blog/writing.html" style="color:var(--text-dim);text-decoration:none;">Blog</a>
+<nav class="nav" id="nav" aria-label="Primary">
+    <a href="/" class="nav-brand">Regula</a>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html">Regulations</a>
+        <a href="/blog/writing.html">Blog</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
 </nav>
 <main id="main" style="max-width:720px;margin:0 auto;padding:32px 20px;">
 <article>
@@ -60,6 +74,7 @@
 <thead><tr style="border-bottom:1px solid rgba(255,255,255,0.1);"><th style="text-align:left;padding:8px;">Gap</th><th style="text-align:left;padding:8px;">Why</th></tr></thead>
 <tbody>
 <tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:8px;">EN 18228 Clauses 4.1&ndash;4.4 (process, governance, competence, risk criteria)</td><td style="padding:8px;">Organisational processes &mdash; require documented procedures, not code</td></tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:8px;">EN 18228 Clause 5 (lifecycle process integration)</td><td style="padding:8px;">Organisational capability &mdash; integrating risk management across the AI lifecycle is not a code property</td></tr>
 <tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:8px;">EN 18228 Clauses 10&ndash;11 (residual risk, review)</td><td style="padding:8px;">Human determination &mdash; risk acceptance is a domain-expert judgement</td></tr>
 <tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:8px;">EN 18282 Respond and Resolve outcomes</td><td style="padding:8px;">Runtime/organisational &mdash; incident response and recovery require operational runbooks</td></tr>
 </tbody></table>
@@ -77,5 +92,26 @@
 <p style="color:var(--text-dim);font-size:0.85rem;"><em>Not legal advice. Regula identifies risk indicators for developer review.</em></p>
 </article>
 </main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 licence &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Content on this site is for developer education. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
 </body>
 </html>

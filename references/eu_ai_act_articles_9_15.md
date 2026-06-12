@@ -131,5 +131,5 @@ High-risk AI systems shall be designed and developed to achieve appropriate leve
 
 ## Compliance Timeline
 
-- **2 August 2026:** Full application of Articles 9-15 for high-risk AI systems
+- **2 August 2026:** Full application of Articles 9-15 for high-risk AI systems (Omnibus agreed: 2 December 2027 for Annex III, pending formal adoption)
 - Providers must ensure compliance before placing systems on the market

@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 CATEGORY_REMEDIATIONS = {
     "employment": {
         "summary": "Add human oversight before automated hiring/employment decisions",
-        "article": "Articles 9-15 (effective Aug 2026)",
+        "article": "Articles 9-15 (current law: Aug 2026; Omnibus agreed: Dec 2027 for Annex III)",
         "fix_code": (
             "# Article 14: Add human review before any employment decision\n"
             "def review_candidate(ai_prediction, reviewer_id):\n"
@@ -41,7 +41,7 @@ CATEGORY_REMEDIATIONS = {
     },
     "essential_services": {
         "summary": "Add explainability and human override for credit/financial decisions",
-        "article": "Articles 9-15 (effective Aug 2026)",
+        "article": "Articles 9-15 (current law: Aug 2026; Omnibus agreed: Dec 2027 for Annex III)",
         "fix_code": (
             "# Article 13: Add transparency to financial AI decisions\n"
             "def explain_decision(prediction, features, model):\n"
@@ -63,7 +63,7 @@ CATEGORY_REMEDIATIONS = {
     },
     "biometrics": {
         "summary": "Add consent mechanism and data minimisation for biometric processing",
-        "article": "Articles 9-15 (effective Aug 2026)",
+        "article": "Articles 9-15 (current law: Aug 2026; Omnibus agreed: Dec 2027 for Annex III)",
         "fix_code": (
             "# Article 10: Data governance for biometric systems\n"
             "def process_biometric(data, purpose, consent_record):\n"
@@ -79,7 +79,7 @@ CATEGORY_REMEDIATIONS = {
     },
     "education": {
         "summary": "Add human oversight for educational assessment decisions",
-        "article": "Articles 9-15 (effective Aug 2026)",
+        "article": "Articles 9-15 (current law: Aug 2026; Omnibus agreed: Dec 2027 for Annex III)",
         "fix_code": (
             "# Article 14: Human oversight for educational AI\n"
             "def assess_student(ai_score, teacher_id):\n"
@@ -103,7 +103,7 @@ CATEGORY_REMEDIATIONS = {
     },
     "law_enforcement": {
         "summary": "Add human oversight and audit logging for law enforcement AI",
-        "article": "Articles 9-15 (effective Aug 2026)",
+        "article": "Articles 9-15 (current law: Aug 2026; Omnibus agreed: Dec 2027 for Annex III)",
         "fix_code": (
             "# Article 14: Human oversight for law enforcement AI\n"
             "def review_evidence_assessment(ai_output, officer_id):\n"
@@ -118,7 +118,7 @@ CATEGORY_REMEDIATIONS = {
     },
     "migration": {
         "summary": "Add human oversight for migration and border control AI decisions",
-        "article": "Articles 9-15 (effective Aug 2026)",
+        "article": "Articles 9-15 (current law: Aug 2026; Omnibus agreed: Dec 2027 for Annex III)",
         "fix_code": (
             "# Article 14: Human oversight for migration AI\n"
             "def review_application(ai_recommendation, officer_id):\n"
@@ -130,7 +130,7 @@ CATEGORY_REMEDIATIONS = {
     },
     "justice": {
         "summary": "Add human oversight for judicial and democratic process AI",
-        "article": "Articles 9-15 (effective Aug 2026)",
+        "article": "Articles 9-15 (current law: Aug 2026; Omnibus agreed: Dec 2027 for Annex III)",
         "fix_code": (
             "# Article 14: Human oversight for justice AI\n"
             "def review_judicial_recommendation(ai_output, judge_id):\n"
@@ -142,7 +142,7 @@ CATEGORY_REMEDIATIONS = {
     },
     "critical_infrastructure": {
         "summary": "Add safety monitoring and human override for critical infrastructure AI",
-        "article": "Articles 9-15 (effective Aug 2026)",
+        "article": "Articles 9-15 (current law: Aug 2026; Omnibus agreed: Dec 2027 for Annex III)",
         "fix_code": (
             "# Article 14: Human override for critical infrastructure AI\n"
             "def monitor_infrastructure(ai_action, operator_id):\n"
@@ -288,7 +288,7 @@ def _remediate_high_risk(category, indicators, file_path):
     # Generic high-risk remediation
     return {
         "summary": "Add human oversight, logging, and transparency for this high-risk AI system",
-        "article": "Articles 9-15 (effective Aug 2026)",
+        "article": "Articles 9-15 (current law: Aug 2026; Omnibus agreed: Dec 2027 for Annex III)",
         "fix_code": (
             "# Article 14: Generic human oversight pattern\n"
             "def review_ai_output(ai_output, reviewer_id):\n"
