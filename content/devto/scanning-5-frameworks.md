@@ -1,3 +1,4 @@
+<!-- STALE — pattern count and Omnibus dates need updating from site_facts.py before republishing. Last verified: v1.7.0, April 2026. Current: v1.7.1, 398 patterns, Omnibus agreed 7 May 2026. -->
 ---
 title: "We scanned 5 AI frameworks for EU AI Act compliance. Here's what 389 patterns found."
 published: true
