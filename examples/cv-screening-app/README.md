@@ -87,7 +87,7 @@ TASK-001 [HIGH] Article 12 — Record-Keeping
     - No logging framework detected in code files
     - No structured or auditable logging format detected
   Effort: ~5-11h
-  Deadline: 2 August 2026
+  Deadline: 2 August 2026 (Omnibus agreed: 2 December 2027 for Annex III employment systems, pending formal adoption)
 
 TASK-002 [HIGH] Article 13 — Transparency
   …

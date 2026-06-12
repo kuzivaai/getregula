@@ -233,7 +233,7 @@ def compute() -> dict:
             "frameworks_vs_claim": (
                 "Regula's landing pages cite '12 compliance frameworks'. "
                 "12 have full crosswalk data; 5 additional frameworks "
-                "(Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, "
+                "(Colorado SB-189 [replaced SB-205], Canada AIDA, Singapore AI, OECD AI, "
                 "South Korea AI) accepted as filter keys with partial coverage."
             ),
         },

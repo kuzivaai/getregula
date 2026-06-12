@@ -35,7 +35,7 @@
       "article": "49(2)",
       "obligated_party": "provider_self_exempted",
       "submission_status": "mandatory",
-      "omnibus_field_simplification": "pending_trilogue_as_of_2026-04-07",
+      "omnibus_field_simplification": "provisional_agreement_2026-05-07_pending_formal_adoption",
       "heading": "Information to be submitted by providers of high-risk AI systems in accordance with Article 49(2)",
       "fields": [
         {"point": 1, "key": "provider_identity",                  "label": "Provider name, address and contact details",                                  "autofill_source": "policy_config", "excluded_under_49_4": false},
@@ -65,6 +65,6 @@
   "deadlines": {
     "applicable_deadline": "2026-08-02",
     "omnibus_proposed_deadline": "2027-12-02",
-    "omnibus_status": "trilogue_in_progress_as_of_2026-04-07"
+    "omnibus_status": "provisional_agreement_2026-05-07_pending_formal_adoption"
   }
 }

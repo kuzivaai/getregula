@@ -2,27 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://getregula.com/</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-12</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://getregula.com/llms.txt</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-04-26</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://getregula.com/locales/de.html</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-06-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://getregula.com/locales/pt-br.html</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-06-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://getregula.com/regions/regulations.html</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-06-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -34,7 +34,7 @@
   </url>
   <url>
     <loc>https://getregula.com/regions/uk-ai-regulation.html</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-04-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -46,30 +46,30 @@
   </url>
   <url>
     <loc>https://getregula.com/regions/south-korea-ai-regulation.html</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-04-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/regions/south-africa-ai-policy.html</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-04-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/blog/writing.html</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-05-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-does-ai-act-apply.html</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-06-11</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-risk-tiers-in-code.html</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-06-11</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
@@ -79,17 +79,17 @@
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-startups-ignoring-ai-act.html</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-04-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-scanning-10-ai-apps.html</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-06-11</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-aicdi-governance-gaps.html</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-04-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
@@ -104,7 +104,7 @@
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-scanning-5-frameworks.html</loc>
-    <lastmod>2026-04-25</lastmod>
+    <lastmod>2026-06-11</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
@@ -119,7 +119,7 @@
   </url>
   <url>
     <loc>https://getregula.com/regions/brazil-ai-regulation.html</loc>
-    <lastmod>2026-04-25</lastmod>
+    <lastmod>2026-04-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>

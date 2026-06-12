@@ -354,7 +354,7 @@ token in the block is the exact byte sequence such a tool expects.
 {
   "base_deadline": "2026-08-02",
   "omnibus_provisional_deadline": "2027-12-02",
-  "omnibus_status": "not yet adopted (trilogue 2026-04-28)",
+  "omnibus_status": "provisional agreement 2026-05-07, pending formal adoption",
   "applicable_to_this_system": "high-risk" | "limited-risk" | "minimal-risk" | "prohibited"
 }
 ```

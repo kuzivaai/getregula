@@ -141,8 +141,10 @@ mappings:
     note: "regula monitor provides runtime monitoring hooks; regula audit provides hash-chained event logs. These are building blocks, not a complete post-market monitoring system."
 
 coverage_summary:
-  total_clauses: 12
-  indicator: 4
-  evidence: 3
-  cannot: 5
-  note: "Regula provides indicators or evidence for 7 of 12 clauses. The 5 'cannot' clauses require organisational processes, governance, or human judgement that code scanning fundamentally cannot address."
+  total_entries: 14  # 4.1-4.6 + 5-12
+  top_level_clauses: 9  # clauses 4-12 (standard has 12 clauses; 1-3 are scope/terms/normative refs)
+  indicator: 4  # clauses 6, 7, 9, 12
+  evidence: 3   # clauses 4.5, 4.6, 8
+  cannot: 7     # clauses 4.1, 4.2, 4.3, 4.4, 5, 10, 11
+  coverage: "7 of 14 mapping entries have indicator or evidence relationship"
+  note: "Regula provides indicators or evidence for 7 of 14 mapped entries. The 7 'cannot' entries require organisational processes, governance, or human judgement that code scanning fundamentally cannot address."

@@ -168,10 +168,9 @@ def format_result(tier: str, non_eu_provider: bool) -> str:
             "",
             "  Deadlines:",
             "  - Legally binding: 2 August 2026.",
-            "  - The EU Digital Omnibus proposes extending this to",
-            "    2 December 2027 for Annex III systems. This is under",
-            "    active negotiation and is NOT yet law. Do not plan",
-            "    around it as certain.",
+            "  - The EU Digital Omnibus is subject to provisional agreement",
+            "    (7 May 2026), pending formal adoption. Until OJ publication,",
+            "    the original deadline remains in force.",
             "",
         ]
         if non_eu_provider:

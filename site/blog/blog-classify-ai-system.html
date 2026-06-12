@@ -117,7 +117,7 @@
           "name": "When do the high-risk obligations start applying?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Under the Digital Omnibus provisional agreement of 7 May 2026, Annex III (use-based) high-risk obligations are postponed to 2 December 2027. Annex I (product-embedded) obligations apply from 2 August 2028. These dates are provisional pending formal adoption, which is expected before August 2026. The original Annex III deadline of 2 August 2026 no longer applies."
+            "text": "Under the Digital Omnibus provisional agreement of 7 May 2026, Annex III (use-based) high-risk obligations are postponed to 2 December 2027. Annex I (product-embedded) obligations apply from 2 August 2028. These dates are pending formal adoption (EP plenary, Council endorsement, and Official Journal publication), expected before August 2026. Until formal adoption, the original 2 August 2026 deadline remains technically in force."
           }
         },
         {
@@ -133,18 +133,32 @@
           "name": "What are the Article 5 prohibitions under the EU AI Act?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Article 5 defines practices not permitted under the Act. The original regulation listed 8 categories; the Digital Omnibus adds 2 further categories, bringing the total to 10. These prohibitions take effect on 2 December 2026. The specific categories are listed in Article 5(1)(a) through (h) of the original text plus the Omnibus additions. If your system falls into any of these categories, it may not be placed on the EU market."
+            "text": "Article 5 defines practices not permitted under the Act. The original 8 categories have been enforceable since 2 February 2025. The Digital Omnibus adds 2 further categories (CSAM and NCII generation), bringing the total to 10; these 2 new prohibitions take effect on 2 December 2026 (pending formal adoption). The specific categories are listed in Article 5(1)(a) through (h) of the original text plus the Omnibus additions. If your system falls into any of these categories, it may not be placed on the EU market."
           }
         }
       ]
     }
     </script>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
 </head>
 <body>
-<nav style="background:var(--nav-bg, rgba(7,7,17,0.85));backdrop-filter:blur(12px);padding:12px 24px;position:sticky;top:0;z-index:100;">
-    <a href="/" style="color:var(--text);text-decoration:none;font-weight:600;">Regula</a>
-    <span style="color:var(--text-dim);margin:0 8px;">/</span>
-    <a href="/blog/writing.html" style="color:var(--text-dim);text-decoration:none;">Blog</a>
+<nav class="nav" id="nav" aria-label="Primary">
+    <a href="/" class="nav-brand">Regula</a>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html">Regulations</a>
+        <a href="/blog/writing.html">Blog</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
 </nav>
 <main id="main" style="max-width:720px;margin:0 auto;padding:32px 20px;">
 <article>
@@ -246,5 +260,26 @@ regula gap .</code></pre>
 </p>
 </article>
 </main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 licence &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Content on this site is for developer education. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
 </body>
 </html>

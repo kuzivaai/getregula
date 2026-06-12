@@ -125,7 +125,7 @@ def test_register_section_b_for_provider_with_art_6_3_self_exemption():
     assert decision["target"] == "eu_database_public"
     schema_b = load_schema()["sections"]["B"]
     assert schema_b["submission_status"] == "mandatory"
-    assert "pending_trilogue" in schema_b["omnibus_field_simplification"]
+    assert "provisional_agreement" in schema_b["omnibus_field_simplification"]
     print("✓ register: Art 6(3) exemption → B mandatory")
 
 
@@ -252,7 +252,7 @@ def test_register_build_packet_dual_timeline_present(monkeypatch):
     d = packet["deadlines"]
     assert d["applicable_deadline"] == "2026-08-02"
     assert d["omnibus_proposed_deadline"] == "2027-12-02"
-    assert "trilogue_in_progress" in d["omnibus_status"]
+    assert "provisional_agreement" in d["omnibus_status"]
     print("✓ register: dual timeline present")
 
 
