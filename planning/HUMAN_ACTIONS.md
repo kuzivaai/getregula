@@ -152,7 +152,12 @@ support@getregula.com
 
 ---
 
-## 8. Show HN Submission (D8) — PREPARED, Founder Decision Required
+## 8. Show HN Submission (D8) — PACKAGE PREPARED, GATED ON LABELLING
+
+**Do not launch until items 7–13 above are complete.** The HN post cites
+33% high_risk precision on N=6 and single-rater labelling. Launching before
+the second-rater pipeline produces published kappa and updated figures is a
+credibility risk — HN readers will probe the weakest number.
 
 **Do not launch without reading the engagement protocol below.**
 
