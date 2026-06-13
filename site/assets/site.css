@@ -21,9 +21,9 @@ html { scroll-behavior: smooth; overflow-x: hidden; }
 :root {
     /* Colour */
     --bg: #070711;
-    --bg-elev: #101020;
-    --bg-elev-2: #161632;
-    --border: rgba(255,255,255,0.08);
+    --bg-elev: #1a1a2e;
+    --bg-elev-2: #22223a;
+    --border: rgba(255,255,255,0.10);
     --border-strong: rgba(255,255,255,0.16);
     --text: #e2e2f0;
     --text-2: #b8b8c8;
