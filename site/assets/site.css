@@ -960,15 +960,15 @@ footer {
 }
 .stat-item:last-child { border-right: none; }
 .stat-num {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xl);
+    font-family: var(--font-serif);
+    font-size: var(--fs-2xl);
     font-weight: 600;
-    color: var(--accent);
+    color: var(--text);
     line-height: 1;
-    margin-bottom: 6px;
-    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    letter-spacing: -0.03em;
 }
-.stat-label { font-size: 0.75rem; color: var(--text-dim); }
+.stat-label { font-size: var(--fs-sm); color: var(--text-dim); line-height: 1.4; }
 
 /* ===== AUDIENCE ===== */
 .audience-grid {
