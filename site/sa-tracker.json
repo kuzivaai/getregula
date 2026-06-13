@@ -1,45 +1,45 @@
 {
   "$schema": "https://getregula.com/sa-tracker.schema.json",
   "version": "1.0",
-  "last_updated": "2026-04-07",
-  "gazette_status": "pending",
-  "next_review": "Within 7 days of gazette publication",
+  "last_updated": "2026-06-13",
+  "gazette_status": "withdrawn",
+  "next_review": "Monitor for revised draft (expected 2027)",
   "rows": [
     {
       "label": "Cabinet approval",
-      "value": "2 April 2026 — draft approved for public comment by Minister in the Presidency Khumbudzo Ntshavheni at a post-Cabinet briefing",
+      "value": "25 March 2026 (combined with Special Sitting 1 April 2026) — draft approved for public comment",
       "state": "verified",
-      "source": "https://www.sowetan.co.za/news/2026-04-02-watch-live-minister-in-the-presidency-khumbudzo-ntshavheni-holds-a-post-cabinet-briefing/"
+      "source": "https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf"
     },
     {
       "label": "Gazette publication",
-      "value": "Pending as of 7 April 2026 — we will update the moment it drops",
-      "state": "pending",
-      "source": null
+      "value": "10 April 2026 — Government Gazette No. 54477, Notice 3880 of 2026",
+      "state": "verified",
+      "source": "https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf"
     },
     {
       "label": "Public comment window",
-      "value": "60 days from gazette date (expected April–June 2026)",
+      "value": "60 days from 10 April 2026 (closing 10 June 2026 at 16h00) — superseded by withdrawal",
+      "state": "superseded",
+      "source": "https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf"
+    },
+    {
+      "label": "Withdrawal",
+      "value": "~26 April 2026 — Minister Solly Malatsi withdrew the draft after at least 6 of 67 academic citations were found to be AI-generated hallucinations. Called it 'an unacceptable lapse' that 'compromised the integrity and credibility of the draft policy'",
+      "state": "verified",
+      "source": "https://www.cnbcafrica.com/2026/south-africa-pulls-ai-policy-after-hallucinated-citations-expose-drafting-scandal"
+    },
+    {
+      "label": "Revised timeline",
+      "value": "No immediate timeline for a revised draft. Reports suggest 2027. Minister committed to resubmitting with 'much more rigorous oversight'",
       "state": "estimated",
-      "source": null
+      "source": "https://thenextweb.com/news/south-africa-ai-policy-hallucinated-citations"
     },
     {
       "label": "Regulatory model",
-      "value": "Sector-specific, multi-regulator (financial services, health, education, telecoms) — per Michalsons reporting; confirm on gazette",
+      "value": "Sector-specific, multi-regulator (financial services, health, education, telecoms) — as described in withdrawn draft",
       "state": "secondary",
-      "source": "https://www.michalsons.com"
-    },
-    {
-      "label": "Final policy",
-      "value": "2026/2027 financial year (target)",
-      "state": "estimated",
-      "source": null
-    },
-    {
-      "label": "Sector regulations",
-      "value": "2027/2028 financial year (target)",
-      "state": "estimated",
-      "source": null
+      "source": "https://www.michalsons.com/blog/draft-south-africa-national-ai-policy/81592"
     },
     {
       "label": "Background",
