@@ -602,6 +602,29 @@ a.card-base:hover { color: inherit; }
     grid-template-columns: repeat(3, 1fr);
     gap: var(--s4);
 }
+
+/* "How it works" steps: horizontal flow with connecting rhythm */
+#how .art-grid {
+    gap: var(--s6);
+}
+#how .art-card {
+    border: none;
+    background: transparent;
+    text-align: center;
+}
+
+/* "Runs where you work" integrations: compact 2×3 with tighter cards */
+#integrations .art-card {
+    padding: 16px 20px;
+}
+#integrations .art-card h3 {
+    font-size: var(--fs-base);
+    margin-bottom: var(--s1);
+}
+#integrations .art-card p {
+    font-size: var(--fs-sm);
+}
+
 .art-card {
     border-radius: var(--r-lg);
     padding: 22px 24px;
