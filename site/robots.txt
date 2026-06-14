@@ -1,8 +1,8 @@
 User-agent: *
 Allow: /
 
-# AI search and assistant crawlers (updated June 2026)
-# Sources: Search Engine Journal, xSeek, Alice Labs AI crawler docs
+# AI search and assistant crawlers (updated 14 June 2026)
+# Sources: ai-robots-txt/ai.robots.txt repo (3 Jun 2026), vendor docs
 
 # OpenAI
 User-agent: GPTBot
@@ -12,6 +12,9 @@ User-agent: OAI-SearchBot
 Allow: /
 
 User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ChatGPTAgent
 Allow: /
 
 # Anthropic
@@ -24,6 +27,12 @@ Allow: /
 User-agent: Claude-User
 Allow: /
 
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Claude-Code
+Allow: /
+
 # Perplexity
 User-agent: PerplexityBot
 Allow: /
@@ -31,14 +40,50 @@ Allow: /
 User-agent: Perplexity-User
 Allow: /
 
-# Google / Apple / Cohere
+# Google
 User-agent: Google-Extended
 Allow: /
 
+User-agent: GoogleOther
+Allow: /
+
+# Apple
 User-agent: Applebot-Extended
 Allow: /
 
+# Microsoft
+User-agent: Bingbot
+Allow: /
+
+User-agent: AzureAI-SearchBot
+Allow: /
+
+# Amazon
+User-agent: Amazonbot
+Allow: /
+
+# Meta
+User-agent: Meta-ExternalAgent
+Allow: /
+
+# Cohere
 User-agent: cohere-ai
+Allow: /
+
+# Other AI search
+User-agent: DeepSeekBot
+Allow: /
+
+User-agent: MistralAI-User
+Allow: /
+
+User-agent: Bravebot
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
+
+User-agent: PhindBot
 Allow: /
 
 Sitemap: https://getregula.com/sitemap.xml
