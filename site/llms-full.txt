@@ -1,0 +1,1232 @@
+# Regula — Full Context for LLM Agents
+
+> Open-source CLI tool for EU AI Act compliance. Combines code scanning with governance questionnaires. Runs locally with zero external dependencies. Install: pipx install regula-ai.
+
+## README
+
+<!-- mcp-name: regula -->
+# Regula
+
+**EU AI Act compliance tool for code. Combines code scanning with governance questionnaires.**
+
+[![PyPI](https://img.shields.io/pypi/v/regula-ai)](https://pypi.org/project/regula-ai/)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
+[![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
+[![Tests](https://img.shields.io/badge/tests-2318%20passing-brightgreen.svg)](#verified-numbers)
+[![WCAG 2.2 AA](https://img.shields.io/badge/WCAG%202.2-AA-success.svg)](docs/accessibility/README.md)
+
+---
+
+## Table of contents
+
+- [What it does](#what-it-does)
+- [Quick start](#quick-start)
+- [What Regula tells you](#what-regula-tells-you)
+- [Key commands](#key-commands)
+- [Who is this for?](#who-is-this-for)
+- [What Regula is (and isn't)](#what-regula-is-and-isnt)
+- [Bias evaluation — methodology and ethics](#bias-evaluation--methodology-and-ethics)
+- [Important limitations](#important-limitations)
+- [Verified numbers](#verified-numbers)
+- [Contributing](#contributing)
+- [Licence](#licence)
+
+---
+
+![Regula check demo](site/assets/demo/regula-check.svg)
+
+---
+
+## What it does
+
+If you ship an AI product to EU users, the EU AI Act applies to you -- regardless of where you are based or how small your team is. Regula combines code scanning with governance questionnaires: it scans your codebase for risk indicators, classifies your system into one of the Act's four risk tiers, and tells you which obligations apply. For the obligations code can't verify (risk management systems, quality management, fundamental rights impact assessments), it provides structured self-assessment questionnaires. It runs in your terminal, in CI/CD, or as a pre-commit hook. No external dependencies, no API calls, no data leaves your machine. Unlike cloud-based scanners, Regula makes zero network calls during scanning — no DPA required, no vendor data breach risk, no GDPR processor relationship.
+
+## Quick start
+
+```bash
+pipx install regula-ai      # or: pip install regula-ai / uv pip install regula-ai
+```
+
+**Not sure if the AI Act applies?** No code needed:
+```bash
+regula assess               # 5 yes/no questions → your risk tier
+```
+
+**Want to scan your code?**
+```bash
+regula check .              # 398 patterns, 8 languages, 30 seconds
+```
+
+**Need documentation for auditors?**
+```bash
+regula evidence-pack --sign .   # signed, timestamped, SHA-256 verified
+```
+
+**Just want to see it work?**
+```bash
+regula demo                 # scan a bundled example project
+```
+
+### Install details
+
+The recommended install is **pipx** — it isolates Regula from your system Python and avoids the `externally-managed-environment` error on Ubuntu 22.04+, Debian 12+, Fedora, Arch, and Homebrew Python.
+
+If you don't have pipx yet, install it first (one-time):
+
+| Platform | Install pipx |
+|---|---|
+| macOS | `brew install pipx && pipx ensurepath` |
+| Debian / Ubuntu | `sudo apt install pipx && pipx ensurepath` |
+| Fedora | `sudo dnf install pipx && pipx ensurepath` |
+| Arch | `sudo pacman -S python-pipx && pipx ensurepath` |
+| Windows | `python -m pip install --user pipx && python -m pipx ensurepath` |
+
+**Already using uv?** `uvx --from regula-ai regula` runs it with no install step (the `--from` flag is required because the PyPI package name `regula-ai` differs from the CLI name `regula`). Or install it permanently with `uv tool install regula-ai`.
+
+**Running inside a venv or conda env?** `pip install regula-ai` works fine there — the PEP 668 restriction only applies to system Python.
+
+See [`docs/installation.md`](docs/installation.md) for troubleshooting (`externally-managed-environment`, `command not found: regula` after install, PATH setup per shell).
+
+### Try it against a known high-risk fixture:
+
+```bash
+regula check examples/cv-screening-app
+```
+
+See [`examples/`](examples/) for runnable reference projects covering each EU AI Act risk tier, or walk through the full 10-minute evaluation journey in [`examples/cv-screening-app/`](examples/cv-screening-app/) — install, scan, plan, gap, conform, verify, handoff to red-team tooling.
+
+For a deeper first-time-user walk-through (policy tuning, CI integration, baselining) see [`docs/QUICKSTART.md`](docs/QUICKSTART.md).
+
+### CI/CD
+
+```yaml
+# .github/workflows/regula.yaml
+name: AI Governance Check
+on: [push, pull_request]
+jobs:
+  regula:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kuzivaai/getregula@v1
+        with:
+          path: '.'
+          upload-sarif: 'true'
+          fail-on-prohibited: 'true'
+```
+
+## What Regula tells you
+
+The EU AI Act defines four risk tiers. Regula maps code patterns to each:
+
+| Tier | Action | What it means |
+|------|--------|---------------|
+| **Prohibited** (Article 5) | Block | Social scoring, subliminal manipulation, real-time biometric ID, emotion detection in workplaces. Regula blocks these patterns and explains the specific prohibition. |
+| **High-risk** (Annex III) | Warn + requirements | CV screening, credit scoring, healthcare services, biometrics, education assessment. Regula lists the Articles 9-15 obligations that apply if the system is confirmed high-risk. |
+| **Limited-risk** (Article 50) | Transparency note | Chatbots, deepfakes, emotion recognition. Regula flags the transparency disclosure required. |
+| **Minimal-risk** | Log only | Spam filters, recommendations, code completion. Logged for awareness, no action required. |
+
+Every finding includes the relevant Article reference and explains when exceptions may apply. Regula flags patterns -- it does not make legal determinations.
+
+## Key commands
+
+| Command | What it does |
+|---------|-------------|
+| `regula` | Scan current directory, show compliance score and next steps |
+| `regula check .` | Detailed risk scan with per-file findings |
+| `regula comply` | EU AI Act obligation checklist with completion status |
+| `regula gap --project .` | Compliance gap assessment against Articles 9-15 |
+| `regula plan --project .` | Prioritised remediation plan based on gap results |
+| `regula fix --project .` | Generate compliance fix scaffolds for findings |
+| `regula evidence-pack --project .` | Auditor-ready evidence package |
+| `regula conform --project .` | Article 43 conformity assessment evidence pack |
+| `regula check --ci .` | CI mode -- exit code 1 on any WARN or BLOCK finding, SARIF output |
+| `regula assess` | Interactive applicability check -- does the EU AI Act apply to you? |
+| `regula demo` | Scan a bundled example project -- zero-commitment trial |
+| `regula api-server` | Start the REST API (localhost:8487) with web dashboard |
+| `regula conform --organisational` | Governance self-assessment for Articles 9/17/27/72 |
+| `regula questionnaire` | Context-driven risk assessment questionnaire (also via REST API) |
+| `regula exempt` | Article 6(3) high-risk exemption decision tree |
+| `regula oversight .` | Article 14 human oversight analysis (cross-file flow tracing) |
+| `regula guardrails .` | Article 15 guardrail implementation coverage detection |
+| `regula owasp-agentic` | OWASP Top 10 for Agentic Applications assessment |
+| `regula monitor` | Runtime monitoring for AI applications (Article 12) |
+| `regula gdpr` | GDPR dual-compliance scan (14 patterns, 4 AI Act/GDPR hotspots) |
+| `regula mcp-server` | MCP server for Claude Code, Cursor, and other MCP clients |
+| `regula install <platform>` | Set up pre-commit hooks, git hooks, or Claude Code/Copilot/Windsurf integration |
+
+Regula has 61 commands in total. Run `regula --help-all` for the full list, or see [`docs/cli-reference.md`](docs/cli-reference.md).
+
+### REST API and web dashboard
+
+For GRC integration or non-terminal users:
+
+```bash
+python3 scripts/api_server.py --port 8487
+# Open http://localhost:8487/v1/dashboard
+```
+
+Seven endpoints: `/health`, `/v1/check`, `/v1/classify`, `/v1/gap`, `/v1/questionnaire`, `/v1/questionnaire/evaluate`, `/v1/dashboard`. All return the same JSON envelope as the CLI. No auth -- run behind a reverse proxy for remote access.
+
+## Who is this for?
+
+- **Solo founders and indie hackers** building AI products (with Claude Code, Cursor, or similar) who have EU users and need to know what the EU AI Act means for their code.
+- **Small teams** who want to understand their compliance exposure before it becomes a sales blocker. Enterprise procurement is already asking for AI Act evidence.
+- **Engineering teams** who want EU AI Act scanning in CI/CD to catch high-risk or prohibited patterns before they ship.
+
+## What Regula is (and isn't)
+
+**Regula is:**
+
+- A development-time compliance tool that combines static code analysis with governance questionnaires, mapping both to EU AI Act obligations
+- A shift-left compliance scanner -- like ESLint for regulatory risk, running in your terminal or CI/CD pipeline
+- A questionnaire-based assessment tool for organisational obligations that code patterns cannot verify (Articles 9, 17, 27, 72)
+- A starting point for compliance awareness, not a finish line
+
+**Regula is not:**
+
+- A runtime monitoring system (it analyses source code, not running systems)
+- A legal compliance certificate (findings are indicators, not legal determinations)
+- A replacement for enterprise GRC platforms like Credo AI or Holistic AI (it complements them)
+- A production fairness testing platform (`regula bias` runs benchmark probes against a local model as a starting point, but does not replace runtime fairness monitoring)
+- Legal advice (consult qualified legal counsel for compliance decisions)
+
+Regula helps development teams understand their EU AI Act exposure early. It does not replace the organisational, procedural, and legal work required for full compliance. For a detailed account of what falls outside Regula's scope, see [`docs/what-regula-does-not-do.md`](docs/what-regula-does-not-do.md), and for Regula's own model card (intended use, training data, evaluation, known failure modes) see [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md).
+
+## Bias evaluation — methodology and ethics
+
+`regula bias` runs two social-bias benchmarks against a locally-hosted
+language model (Ollama, `llama3.2`/`mistral`/`qwen` variants supported)
+as evidence for EU AI Act Article 10 data-governance documentation.
+
+| Benchmark | Paper | Method | What it measures |
+|---|---|---|---|
+| CrowS-Pairs | Nangia et al., 2020 | Log-probability difference between stereotypical and anti-stereotypical sentence pairs | Intrinsic bias in masked/causal LM output |
+| BBQ | Parrish et al., 2022 | Question-answering on ambiguous-context prompts | Bias surfacing in downstream QA behaviour |
+
+Both include Wilson confidence intervals for small-sample reliability and
+bootstrap CIs for distribution estimates. Full methodology lives in
+[`scripts/bias_eval.py`](scripts/bias_eval.py) and
+[`docs/benchmarks/PRECISION_RECALL_2026_04.md`](docs/benchmarks/PRECISION_RECALL_2026_04.md).
+
+**Ethics statement.** CrowS-Pairs and BBQ stereotype pairs are used
+**solely for scientific evaluation** of model behaviour under controlled
+conditions. Regula does **not display individual stereotype pairs** in
+terminal output or reports — only aggregated scores, confidence
+intervals, and benchmark-level verdicts. The pairs are distributed under
+the dataset's own licence (CC BY-SA 4.0 for CrowS-Pairs) and are not
+redistributed or modified by Regula. Opinions encoded in the stereotype
+pairs do not reflect the views of the maintainer, Regula contributors,
+or any user running the tool; their presence is instrumental, not
+endorsing. `regula bias` is a development-time starting point for bias
+documentation, not a production fairness monitor — see "What Regula is
+(and isn't)" above.
+
+## Important limitations
+
+Regula performs **pattern-based risk indication**, not legal risk classification.
+
+- The EU AI Act classifies risk based on intended purpose and deployment context (Article 6), not code patterns. Regula's findings are indicators that warrant human review.
+- **False positives will occur.** Blind-labelled benchmark on 50 randomly selected Python AI repos measured **83.5% precision on production code** (N=115, measured on v1.7.0). Per-tier: `ai_security` (85%), `agent_autonomy` (83%), `limited_risk` (88%), `minimal_risk` (100%). The `high_risk` tier (33%, N=6) is statistically unmeasurable at this sample size. Full methodology, corpus selection, and reproduction steps: [`benchmarks/README.md`](benchmarks/README.md).
+- **False negatives will occur.** Novel risk patterns not in the database will be missed.
+- Article 5 prohibitions have conditions and exceptions that require human judgment.
+- The audit trail is self-attesting (locally verifiable, not externally witnessed).
+- This is not a substitute for legal advice or DPO review.
+
+## Verified numbers
+
+| What | Count |
+|------|------:|
+| CLI commands | 61 |
+| Risk detection patterns (regexes) | 398 |
+| Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
+| Compliance frameworks mapped | 12 |
+| Tests (pytest --collect-only, all passing) | 2,318 |
+| Required production dependencies | 0 |
+
+For buyer-facing trust evidence (every number above paired with a reproducible command, plus precision/recall benchmark, security posture, and audit trail), see [`docs/TRUST.md`](docs/TRUST.md).
+
+## Privacy and data handling
+
+Regula runs entirely on your machine. No code, findings, or metadata are transmitted to any external service. There is no account system, no API key, no telemetry by default (opt-in anonymous crash reports only, disabled unless you run `regula telemetry --enable`). The tool reads your source files, analyses them locally, and writes output to your local filesystem. Network access is only used when you explicitly request it (RFC 3161 timestamps via `--timestamp`). See [`SECURITY.md`](SECURITY.md) for the full security posture.
+
+## Contributing
+
+Bug reports and pull requests are welcome.
+
+- Run `pytest tests/ -q` before opening a PR.
+- Pattern additions go in `scripts/risk_patterns.py`. Each pattern should have a corresponding test.
+- Regula is intentionally risk *indication*, not legal classification. New patterns should be conservative -- false positives erode trust more than false negatives for a developer tool.
+- See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full contributor guide and [`CHANGELOG.md`](CHANGELOG.md) for version history.
+
+### Authorship
+
+Regula is maintained by Kuziva Muzondo (solo). Commits include a `Co-Authored-By: Claude Opus 4.6` trailer where the work was paired with Anthropic's Claude. This is standard pair-programming attribution — the maintainer is accountable for every merged change, and every commit was reviewed and reasoned about by a human before landing. Said plainly so you know how the sausage is made.
+
+## Licence
+
+**Engine and CLI:** [Apache License 2.0](LICENSE.txt) **OR** [European Union Public Licence v. 1.2](LICENSE.EUPL) — at your option. Pick the one that fits your context:
+
+- **Apache 2.0** includes an explicit patent grant, making it the preferred choice for enterprise adoption, commercial redistribution, and any context where patent clarity matters.
+- **EUPL-1.2** is explicitly recognised inside EU institutions and public-sector procurement, is strongly-copyleft on software, and has a formal compatibility appendix (GPL v2/v3, AGPL v3, OSL, EPL, CeCILL, MPL 2.0, LGPL, CC BY-SA 3.0) for downstream projects. If you work with a European public administration, EUPL is often the required or preferred licence.
+
+You may choose either licence for any use. You do not need to state which one you picked, but attribution (keep the copyright notice and NOTICE file) is required under both.
+
+**Risk patterns and regulatory data:** [Detection Rule License (DRL) 1.1](docs/LICENSE.Detection.Rules.md). You may use, modify, and redistribute the patterns freely. Attribution is required if you redistribute the patterns or use them in a product. If your tool generates match output from these patterns, the output must credit the source.
+
+The SPDX expression for the full package is `(Apache-2.0 OR EUPL-1.2) AND LicenseRef-DRL-1.1`.
+
+---
+
+## What Regula Does Not Do
+
+# What Regula does NOT do
+
+An explicit scope statement for the Regula project. This document exists
+because the deep-research pass on the moat thesis surfaced a load-bearing
+counterargument: **static code scanning may fundamentally address only
+about 30% of the EU AI Act.** Articles 9 (risk management system),
+Article 17 (quality management system), Article 27 (fundamental rights
+impact assessment), Article 72 (post-market monitoring) and much of
+Annex IV are organisational obligations, not code-level ones. A Python
+CLI that reads source files cannot verify that an organisation has a
+functioning risk management system, a board-approved AI policy, or a
+legal team that has reviewed a conformity assessment.
+
+This is not a weakness to hide. It is a scope boundary to state plainly.
+Regula combines **code scanning** with **governance questionnaires**.
+The code layer handles what can be detected from source files. The
+questionnaire layer (`regula conform --organisational`, `regula assess`,
+`regula questionnaire`) provides structured self-assessments for
+organisational obligations code cannot verify — but the output is
+self-reported evidence, not a compliance certificate.
+
+## Articles Regula can partially or fully address from code
+
+These are the obligations where static analysis of source files
+produces useful signal:
+
+| Article | Obligation | What Regula checks | Confidence |
+|---|---|---|---|
+| **Art. 5** | Prohibited practices | Pattern-detects social scoring, subliminal manipulation, real-time biometric identification, emotion inference in workplaces. Human review required for intent. | High for pattern match; legal determination is human |
+| **Art. 10** | Data governance | Training-data file references, dataset-loading patterns, documented data sources | Medium — detects presence/absence, not quality |
+| **Art. 11 + Annex IV** | Technical documentation | Generates a pre-filled Annex IV template from scan findings and dependency graph (`regula conform`) | Scaffold only — human must complete |
+| **Art. 12** | Event logging | Static: detects logging calls near AI model invocations. Runtime: `regula monitor` SDK instruments LLM calls with hash-chained JSONL logs (model, tokens, latency, oversight status). | Medium — static detects presence; runtime SDK provides structured logging but is self-attesting |
+| **Art. 13** | Transparency | User-facing AI disclosure strings, consent flows, Art. 50 markers | Medium |
+| **Art. 14** | Human oversight | Cross-file flow analysis for review-before-action gates (`regula oversight`) | High for pattern match; design determination is human |
+| **Art. 15** | Accuracy, robustness, cybersecurity | Error handling around model calls, input validation, known unsafe serialisation (`pickle`, `joblib`) | Medium — detects anti-patterns, not robustness |
+| **Art. 49 + Annex VIII** | EU database registration | Generates a pre-filled registration packet from scan findings (`regula register`) | Scaffold only — human must submit |
+| **Art. 51–55** | GPAI obligations | Detects GPAI model usage, extracts provenance into an AI-BOM (`regula sbom --ai-bom`) | Medium |
+| **Art. 99** | Penalties reference | Surfaces the fine tiers in reports; does not determine liability | Reference only |
+
+## Articles Regula cannot address at all
+
+These are the obligations where static code analysis is structurally
+the wrong tool. Regula will not pretend to verify them, and any attempt
+to do so from pattern matching alone would mislead the user.
+
+| Article | Obligation | Why Regula cannot verify it |
+|---|---|---|
+| **Art. 9** | **Risk management system** | A functioning RMS is a set of documented processes, meetings, approvals and reviews that happen inside an organisation. It has no source-code footprint. Regula can detect *absence* of an `docs/ai-rms.md` file or similar artefact, but cannot verify that the RMS is actually operated. |
+| **Art. 17** | **Quality management system** | Same logic as Art. 9 at a larger scale. QMS is the organisation's operating rhythm for AI — not something a scanner can observe from code alone. |
+| **Art. 26** | Deployer obligations (instructions for use, monitoring, logging retention) | These are operational duties of the deployer organisation. Regula scans the provider-side code; it does not see what the deployer does with the output. |
+| **Art. 27** | Fundamental rights impact assessment | FRIA is a structured document produced by the deployer with input from affected persons. Not a code artefact. |
+| **Art. 23** | Obligations of importers | Regulatory relationship between the importer and the provider. No code signal. |
+| **Art. 43** | Conformity assessment procedure (choosing the path) | Requires a human to choose between internal control (Annex VI) and third-party assessment (Annex VII). Regula can generate the Annex IV technical file but cannot run the conformity assessment. |
+| **Art. 63** | Derogations for specific operators (SME simplified compliance) | Reduced obligations for SMEs and startups. Not a code-level determination. |
+| **Art. 72 / 73** | Serious incident reporting | A process triggered by real-world events. Not detectable from code. |
+| **Art. 74** | Market surveillance cooperation | Between the organisation and the market surveillance authority. No code layer. |
+
+## What the lawyer, the auditor, and the internal governance function still have to do
+
+Even on the articles Regula addresses well, a human is on the critical
+path. The scanner's job is to produce **evidence** that a lawyer, an
+internal auditor, or a notified body can then rely on. The scanner's
+job is **not** to produce a legal conclusion.
+
+Specifically, Regula does not:
+
+1. **Determine whether a system is high-risk under Article 6.** This
+   requires contextual assessment of intended purpose and deployment
+   context. Regula flags Annex III category matches; a human decides
+   whether the narrow-procedural-task carve-out in Article 6(3) applies.
+2. **Decide whether the Article 2 open-source exemption applies to
+   your distribution.** Licence text parsing cannot answer that.
+3. **Verify that a GPAI model meets the systemic-risk threshold.**
+   Regula surfaces the GPAI usage pattern; the threshold (10^25 FLOPs)
+   is a model-provider determination.
+4. **Run a fundamental rights impact assessment.** FRIA is a structured
+   stakeholder engagement, not a code artefact.
+5. **Replace legal advice.** The tool is developer education and
+   evidence production. It is not a compliance certificate.
+
+## Where Regula's coverage is thin
+
+Three areas where Regula has commands but the coverage is honest-to-God
+shallow. We list them here so nobody overstates what these features do.
+
+### Bias evaluation (`regula bias`)
+
+The `bias` command evaluates stereotype bias in a local Ollama model
+using two complementary benchmarks:
+
+- **CrowS-Pairs** (Nangia et al., 2020) — 1,508 sentence pairs measuring
+  whether the model assigns higher probability to stereotyped sentences.
+  Uses mean per-token log-probability scoring (length-normalised).
+- **BBQ** (Parrish et al., 2022) — question-answering items testing whether
+  the model relies on stereotypes when answering ambiguous questions.
+
+Results include Wilson score confidence intervals per category, bootstrap
+confidence intervals on overall scores, and sample size confidence labels.
+Use `--format annex-iv` to generate a structured section for Annex IV
+technical documentation.
+
+It does not:
+
+- Test your actual model with your actual data
+- Measure fairness metrics (demographic parity, equalised odds, etc.)
+- Test for bias in languages other than English
+- Evaluate bias across protected characteristics specific to your jurisdiction
+- Replace the production bias testing that Article 10 data governance requires
+
+Known limitations are disclosed in every output: CrowS-Pairs has
+documented reliability issues (Blodgett et al., ACL 2021), both
+benchmarks are US-centric and English-only, and bundled samples are
+curated subsets of the full datasets.
+
+Enterprise tools (IBM watsonx.governance, Fiddler AI, Arthur AI) do
+production fairness measurement on deployed models with real data.
+Regula's bias command is a starting point, not a compliance artefact.
+
+### Documentation generation (`regula conform`, `regula docs`, `regula model-card`)
+
+These commands generate **scaffolds** — structured templates pre-filled
+with data from the scan. They are not completed documents. A scaffold
+with empty sections is not technical documentation under Annex IV.
+
+Specifically:
+- `regula conform` generates an evidence pack structure, not a conformity assessment
+- `regula docs --format model-card` generates a model card template, not a model card
+- `regula docs --format pdf` generates a formatted shell, not a legal document
+- `regula conform --organisational` generates a self-attestation questionnaire — you answer it yourself, nobody verifies your answers
+
+The human work of filling in these scaffolds with substantive content,
+reviewing them with legal counsel, and maintaining them across model
+versions is the actual compliance activity. The scaffold saves time; it
+does not replace the work.
+
+### Guardrail and oversight detection (`regula guardrails`, `regula oversight`)
+
+These commands detect the **presence** of guardrail implementations and
+human oversight patterns in code. Presence is not effectiveness.
+
+- `regula guardrails` checks whether input validation, output filtering,
+  and execution controls exist in the codebase. It does not test whether
+  they actually block adversarial inputs, filter harmful outputs, or
+  function under load.
+- `regula oversight` traces data flows to human review points. It does
+  not verify that the human review is meaningful, timely, or staffed.
+
+A codebase can pass both checks and still have ineffective guardrails
+and rubber-stamp oversight. Runtime testing (red teaming, penetration
+testing, user studies) is required to verify effectiveness.
+
+## Positioning
+
+Regula is positioned explicitly as the **code layer of a broader AI
+governance programme**. The other layers — policy, legal review,
+organisational risk management, post-market monitoring, incident
+response, regulatory correspondence — are work that humans do, often
+supported by enterprise AI governance SaaS (Credo AI, Saidot, Enzai,
+IBM watsonx.governance, Microsoft Purview AI Hub). Regula does not
+compete with those tools for those layers; it complements them by
+doing the part of the job that is best done by reading source code.
+
+For a production compliance programme you will need all of:
+
+- A legal team (or outside counsel) familiar with Regulation (EU) 2024/1689
+- An internal governance function with a documented AI policy
+- A risk management process tied to actual ISO 42001-style clauses
+- A conformity assessment workflow — either via a notified body
+  (Annex VII) or internal control (Annex VI)
+- Post-market monitoring and incident response procedures
+- Staff training on AI Act obligations
+- **And** a static code scanner that reads your actual code
+
+Regula is only the last item on that list.
+
+## Industry validation
+
+McKinsey's April 2026 [AI Transformation Manifesto](https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/the-ai-transformation-manifesto)
+(Singla, Sukharevsky, Lamarre, Smaje & Levin) independently validates
+this scope boundary: adoption fails when adjacent processes are left
+unchanged. A code scanner that detects risk patterns cannot verify that
+an organisation has acted on those findings.
+
+This is exactly why code scanning alone does not create compliance.
+Regula reads your code. Your organisation must still operate the risk
+management system, quality management system, post-market monitoring,
+and fundamental-rights impact assessment that the code scanning
+cannot verify.
+
+## Why this document exists
+
+Because the first rule of this project is honesty about capability.
+Saying "Regula is an AI governance platform" would be a material
+misrepresentation of what a stdlib-only Python CLI can do. Saying
+"Regula is a static code scanner that maps AI Act articles to code
+patterns and produces evidence for the items it detects" is exactly
+true and correspondingly useful.
+
+The test of this document is simple: can an investor, a regulator, or
+a compliance buyer read it and come away with an accurate mental model
+of what Regula is and is not? If you think the answer is no, open an
+issue and tell us which sentence is wrong.
+
+---
+
+*Last reviewed: 2026-04-24. Canonical version lives in the repository
+at [docs/what-regula-does-not-do.md](https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md).*
+
+---
+
+## Quick Start
+
+# Regula Quickstart for AI Builders
+
+You built an AI-powered app. Maybe with Claude, ChatGPT, Cursor, Lovable, or Bolt. It works. Now what?
+
+If your app is used by anyone in the EU — or you plan to sell it there — the **EU AI Act** applies to you. Violations carry fines up to **EUR 35 million or 7% of global turnover**. Art 50 transparency obligations apply from **2 August 2026**. Annex III high-risk obligations are deferred to **2 December 2027** under the Digital Omnibus provisional agreement of 7 May 2026 (pending formal adoption — until OJ publication, the original 2 August 2026 deadline remains legally binding).
+
+Regula tells you where you stand in 10 seconds.
+
+---
+
+## Step 1: Find Out Your Risk Tier
+
+```bash
+pipx install regula-ai
+regula check .
+```
+
+Regula scans your code and tells you which **risk tier** your AI system falls into:
+
+| Tier | What It Means | Example |
+|------|---------------|---------|
+| **PROHIBITED** | Banned in the EU. Stop. | Social credit scoring, subliminal manipulation |
+| **HIGH-RISK** | Heavy compliance required (Articles 9-15) | CV screening, credit scoring, healthcare services |
+| **LIMITED-RISK** | Must disclose AI to users (Article 50) | Chatbots, deepfakes, emotion recognition |
+| **MINIMAL-RISK** | No mandatory requirements | Spam filters, recommendation engines |
+
+If you built a chatbot — that's limited-risk. If it screens job applications — that's high-risk. If it scores people's social behaviour — that's prohibited.
+
+**Regula detects this from your code patterns.** It doesn't need you to fill in a questionnaire.
+
+---
+
+## Step 2: Understand Why
+
+```bash
+regula check --explain .
+```
+
+This tells you in plain English:
+- Which risk tier and why
+- Which EU AI Act articles apply to your system
+- What each article actually requires
+- Whether you're the **provider** (built it) or **deployer** (using someone else's model)
+
+---
+
+## Step 3: Check What's Missing
+
+```bash
+regula gap .
+```
+
+If you're high-risk, Articles 9-15 apply. This command scores you on each one:
+
+| Article | Requirement | What Regula Checks |
+|---------|-------------|-------------------|
+| Art. 9 | Risk management system | Error handling, risk documentation |
+| Art. 10 | Data governance | Training data documentation, bias checks |
+| Art. 11 | Technical documentation | Whether docs exist and cover required areas |
+| Art. 12 | Record-keeping (logging) | Whether your AI calls are logged |
+| Art. 13 | Transparency to deployers | Whether capabilities/limitations are documented |
+| Art. 14 | Human oversight | Whether humans can review/override AI outputs |
+| Art. 15 | Accuracy and cybersecurity | Input validation, dependency security, testing |
+
+You can also check against other frameworks:
+```bash
+regula gap . --framework cra            # EU Cyber Resilience Act
+regula gap . --framework nist-ai-rmf    # NIST AI Risk Management
+regula gap . --framework iso-42001      # ISO/IEC 42001
+```
+
+---
+
+## Step 4: Generate Documentation
+
+```bash
+regula docs .
+```
+
+The EU AI Act requires technical documentation (Annex IV). This generates a skeleton with everything Regula can auto-detect — AI libraries, model references, function signatures, risk classification. You fill in the rest.
+
+---
+
+## Step 5: Get a Fix Plan
+
+```bash
+regula plan .
+```
+
+Returns a prioritised list of tasks: what to fix first, estimated effort, which article each task addresses. Start with the highest-priority items.
+
+---
+
+## Step 6: Package Evidence
+
+```bash
+regula evidence-pack .
+```
+
+Bundles your scan results, gap assessment, documentation, and audit trail into a .zip file. Hand this to your compliance officer, lawyer, or auditor.
+
+---
+
+## Common Scenarios
+
+### "I built a chatbot with the OpenAI API"
+- Risk tier: **LIMITED-RISK** (Article 50)
+- What you need: Tell users they're talking to AI. That's it.
+- Run: `regula check .` to confirm, `regula disclose .` for disclosure text
+
+### "I built a CV screening tool for recruiters"
+- Risk tier: **HIGH-RISK** (Annex III, Category 4 — Employment)
+- What you need: Full Articles 9-15 compliance, conformity assessment
+- Run: `regula check .` → `regula gap .` → `regula plan .` → `regula docs .`
+
+### "I built a recommendation engine for an online shop"
+- Risk tier: **MINIMAL-RISK**
+- What you need: Nothing mandatory. Optional: transparency is good practice.
+- Run: `regula check .` to confirm you're in the clear
+
+### "I fine-tuned an open-source model"
+- Risk tier: Depends on use case + whether you're distributing the model
+- GPAI obligations may apply if training compute exceeds thresholds
+- Run: `regula check .` — Regula detects training patterns and flags GPAI obligations
+
+---
+
+## What Regula Does Not Do
+
+- **Does not catch general security bugs** (XSS, SQL injection). Use Bandit, Semgrep, or Snyk for that.
+- **Does not assess code quality or architecture.** It checks regulatory risk patterns, not whether your code is well-structured.
+- **Does not check EU Cyber Resilience Act obligations** beyond the overlap with AI Act Article 15. Use `regula gap . --framework cra` to see where CRA and AI Act intersect, but CRA-specific requirements (SBOM, 5-year update obligation, 24-hour vulnerability reporting) are not fully covered.
+- **Does not make you compliant.** It tells you where you stand. Compliance requires human judgement, legal review, and organisational measures that no tool can automate.
+
+Findings are indicators for human review, not legal determinations.
+
+---
+
+## Install
+
+```bash
+pipx install regula-ai    # PyPI
+regula check .           # scan current directory
+regula self-test         # verify installation
+regula doctor            # check dependencies
+```
+
+Zero dependencies for core features. Optional: `pyyaml` for config, `tree-sitter` for JS/TS AST analysis.
+
+---
+
+## Installation
+
+# Installing Regula
+
+This page covers every supported install path, the errors you will hit if you pick the wrong one for your platform, and how to fix them.
+
+**TL;DR:** use `pipx install regula-ai`. If you already use `uv`, use `uvx --from regula-ai regula`. Everything else is for people who know why they're doing it differently.
+
+---
+
+## Before you begin
+
+You need **Python 3.10 or newer**. Check with:
+
+```bash
+python3 --version
+```
+
+If that prints `Python 3.10.x` or higher, you're set. If it prints an older version or `command not found`, install Python from [python.org/downloads](https://www.python.org/downloads/) or via your package manager (e.g. `brew install python@3.12`, `sudo apt install python3.12`).
+
+---
+
+## Recommended: pipx
+
+`pipx` installs Regula into its own isolated virtualenv and puts the `regula` command on your PATH, without touching your system Python. This is the install that works on every platform and does not break on Debian/Ubuntu's externally-managed Python.
+
+### Install pipx (one-time)
+
+| Platform | Command |
+|---|---|
+| **macOS** | `brew install pipx && pipx ensurepath` |
+| **Debian / Ubuntu** | `sudo apt install pipx && pipx ensurepath` |
+| **Fedora** | `sudo dnf install pipx && pipx ensurepath` |
+| **Arch** | `sudo pacman -S python-pipx && pipx ensurepath` |
+| **openSUSE** | `sudo zypper install python3-pipx && pipx ensurepath` |
+| **Windows (PowerShell)** | `python -m pip install --user pipx` then `python -m pipx ensurepath` |
+| **Any Linux, no package available** | `python3 -m pip install --user pipx` then `python3 -m pipx ensurepath` |
+
+After `pipx ensurepath` finishes, open a new terminal so the updated PATH is picked up.
+
+### Install Regula
+
+```bash
+pipx install regula-ai
+```
+
+That's it. `regula --version` should now work from anywhere.
+
+### Upgrading and uninstalling
+
+```bash
+pipx upgrade regula-ai
+pipx uninstall regula-ai
+```
+
+---
+
+## Alternative: uv / uvx
+
+If you already use [uv](https://docs.astral.sh/uv/), it's faster than pipx and the install is one command.
+
+### Run without installing
+
+```bash
+uvx --from regula-ai regula check .
+```
+
+`uvx` downloads, caches, and runs Regula in one step. The `--from regula-ai` flag is required because the PyPI package name (`regula-ai`) is different from the CLI command name (`regula`); plain `uvx regula-ai` will error with a hint.
+
+### Install permanently
+
+```bash
+uv tool install regula-ai
+```
+
+Then `regula` is on your PATH the same way pipx would put it there.
+
+---
+
+## Fallback: plain pip (only inside a venv or with a flag)
+
+Plain `pip install regula-ai` **will fail** on Ubuntu 22.04+, Debian 12+, Fedora, Arch, and macOS Homebrew Python with:
+
+```
+error: externally-managed-environment
+× This environment is externally managed
+```
+
+This is PEP 668 at work — your OS doesn't want you `pip install`-ing packages into the Python it uses to run system tools. You have three options:
+
+### Inside a virtualenv (safest)
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate     # or .venv\Scripts\activate on Windows
+pip install regula-ai
+```
+
+### Inside a conda env
+
+```bash
+conda create -n regula python=3.12
+conda activate regula
+pip install regula-ai
+```
+
+### `pip --user --break-system-packages` (only if you know what this means)
+
+```bash
+pip install --user --break-system-packages regula-ai
+```
+
+This installs into `~/.local/` and explicitly overrides PEP 668. Use it only if you accept that you may step on your distro's Python packaging later. For most people, pipx is what this flag wanted to be.
+
+---
+
+## Windows
+
+Windows does not enforce PEP 668, so `pip install regula-ai` technically works — but pipx is still recommended for the same reasons (isolated, upgradeable, on PATH).
+
+### PowerShell (recommended)
+
+```powershell
+python -m pip install --user pipx
+python -m pipx ensurepath
+# Close & reopen PowerShell so PATH updates, then:
+pipx install regula-ai
+regula --version
+```
+
+### cmd.exe
+
+Identical to PowerShell — `python -m pipx ensurepath` writes the PATH update to your user environment regardless of shell. You will need to open a fresh cmd window for the change to take effect.
+
+### PATH on Windows 11
+
+If `regula` still isn't found after reopening your terminal, the pipx bin directory may not be on PATH. pipx installs binaries to `%USERPROFILE%\.local\bin` on modern Windows. Add it manually:
+
+1. Start → "Edit environment variables for your account"
+2. Select **Path** → Edit → New
+3. Add `%USERPROFILE%\.local\bin`
+4. OK through every dialog; open a new terminal.
+
+---
+
+## Verifying your install
+
+Regardless of install method, verify with:
+
+```bash
+regula --version
+```
+
+You should see a line like `regula 1.6.x`.
+
+To verify the scanner actually works, clone the repo and scan one of the fixtures:
+
+```bash
+git clone https://github.com/kuzivaai/getregula.git
+cd getregula
+regula check examples/cv-screening-app
+```
+
+You should see exactly one WARN finding flagging the high-risk employment pattern:
+
+```
+  HIGH-RISK INDICATORS:
+    [WARN] [ 68] app.py — Employment and workers management
+      Add human oversight before automated hiring/employment decisions
+```
+
+See [`examples/README.md`](../examples/README.md) for the other two fixtures (Article 50 limited-risk chatbot, minimal-risk code-completion tool).
+
+---
+
+## Troubleshooting
+
+Error messages here are the literal strings you'll paste into a search engine. Match the one you're seeing and jump to the fix.
+
+### `error: externally-managed-environment`
+
+Your OS ships Python under PEP 668 protection. Use pipx:
+
+```bash
+# Linux
+sudo apt install pipx || sudo dnf install pipx || sudo pacman -S python-pipx
+pipx ensurepath
+pipx install regula-ai
+
+# macOS
+brew install pipx
+pipx ensurepath
+pipx install regula-ai
+```
+
+See the pipx section above for the full table.
+
+### `command not found: regula` (after install)
+
+The install succeeded but your shell can't find the binary. pipx puts binaries in `~/.local/bin` (Linux/macOS) or `%USERPROFILE%\.local\bin` (Windows). These need to be on your PATH.
+
+**Quick check:**
+
+```bash
+ls -l ~/.local/bin/regula     # should exist after pipx install
+echo $PATH | tr ':' '\n' | grep '.local/bin'  # should print the path
+```
+
+**Fix per shell:**
+
+- **bash:** add `export PATH="$HOME/.local/bin:$PATH"` to `~/.bashrc`, then `source ~/.bashrc`.
+- **zsh (macOS default):** add the same line to `~/.zshrc`.
+- **fish:** `fish_add_path ~/.local/bin` (persistent, no file editing).
+- **PowerShell (Windows):** the `pipx ensurepath` command above handles this. If it didn't, add `%USERPROFILE%\.local\bin` manually as described in the Windows section.
+
+Alternatively, run `pipx ensurepath` again and open a fresh terminal.
+
+### `pip: command not found`
+
+You don't have Python installed, or it was installed without pip. Install Python 3.10+ from [python.org/downloads](https://www.python.org/downloads/) or your package manager:
+
+- macOS: `brew install python@3.12`
+- Debian/Ubuntu: `sudo apt install python3 python3-pip`
+- Fedora: `sudo dnf install python3 python3-pip`
+- Windows: download the installer from python.org and tick "Add python.exe to PATH" during setup.
+
+Then rerun the install.
+
+### `ModuleNotFoundError: No module named 'yaml'` when running bias / pdf / ast features
+
+Regula's core is stdlib-only, but three optional subsystems (YAML policy parsing, PDF export, deep AST parsing) pull in extras. Install with:
+
+```bash
+pipx install "regula-ai[yaml,ast,pdf]"
+# or with pip inside a venv:
+pip install "regula-ai[yaml,ast,pdf]"
+```
+
+### `regula check` shows `Files scanned: 0`
+
+Two likely causes:
+
+1. **You pointed at a directory with no code files matching Regula's extensions.** Regula scans `.py, .js, .ts, .jsx, .tsx, .java, .go, .rs, .c, .cpp, .mjs, .cjs, .ipynb`. The CLI now tells you this with `(no code files matched; check path and extensions)` rather than the old misleading `(test files excluded)` suffix.
+2. **You're on an older release.** Versions before 1.6.1 had a telemetry bug where a clean scan could misreport 0 files scanned. Upgrade: `pipx upgrade regula-ai` (once 1.6.1+ is published — see the PyPI release-gap issue tracked separately).
+
+### `regula: permission denied`
+
+On macOS/Linux, check the binary is executable: `ls -l $(which regula)`. If the `x` bit is missing, `chmod +x` it. If pipx installed it, uninstall and reinstall: `pipx uninstall regula-ai && pipx install regula-ai`.
+
+---
+
+## Upgrading existing installs
+
+```bash
+pipx upgrade regula-ai        # pipx
+uv tool upgrade regula-ai     # uv
+pip install --upgrade regula-ai  # pip (inside venv)
+```
+
+---
+
+## Uninstalling
+
+```bash
+pipx uninstall regula-ai      # pipx
+uv tool uninstall regula-ai   # uv
+pip uninstall regula-ai       # pip
+```
+
+All three remove only Regula. They do not remove the optional policy file at `~/.regula/regula-policy.yaml` or the audit log at `~/.regula/audit/` — delete those manually if you want a clean slate.
+
+---
+
+## Precision and Recall Benchmarks
+
+# Regula precision & recall — published methodology, April 2026
+
+> This is Regula's published precision and recall benchmark. Every number
+> below can be reproduced from the labelled corpus checked into the repo
+> at `benchmarks/labels.json` using a single command.
+>
+> The benchmark deliberately includes **two distinct corpora**:
+>
+> 1. **Synthetic corpus** — 13 hand-crafted fixtures covering 5 Article 5
+>    prohibited practices, 5 Annex III high-risk categories, and 3
+>    negative cases. Designed to measure recall on what Regula is built
+>    to find.
+> 2. **OSS corpus** — 257 hand-labelled findings sampled from 5 mature
+>    open-source projects (instructor, pydantic-ai, langchain,
+>    scikit-learn, openai-python). Designed to measure precision on
+>    code that is *not* an EU AI Act high-risk system but contains
+>    AI library imports.
+>
+> Both numbers are honest. They measure different things.
+
+---
+
+## Headline numbers
+
+| Corpus | Tier | TP | FP | Precision | Recall |
+|---|---|---:|---:|---:|---:|
+| **Synthetic** | all | 5 prohibited + 5 high-risk | 0 | **100%** | **100%** |
+| OSS (5 projects, 257 findings) | **BLOCK (≥80)** | 0 | **0** | **N/A — 0 findings** | n/a |
+| OSS | WARN (50–79) | 2 | 6 | 25.0% | n/a |
+| OSS | INFO (<50) | 37 | 212 | 14.9% | n/a |
+| OSS — overall | all tiers | 39 | 218 | **15.2%** | n/a |
+
+**The most important row is the third one.** Regula's CI default gate
+is BLOCK tier. **0 BLOCK findings fired across 257 sampled findings on
+five mature OSS projects.** That means a Python team installing Regula
+on a comparable codebase gets **0 false positives in CI by default**.
+
+The 15.2% headline is real but applies to a tier — INFO — that does
+not fail CI builds by default. INFO findings are surfaced for manual
+review only when the user explicitly requests them (`regula check
+--show-info` or the JSON envelope).
+
+---
+
+## Reproducing every number on this page
+
+### Synthetic precision + recall
+
+```bash
+git clone https://github.com/kuzivaai/getregula.git
+cd getregula
+python3 benchmarks/synthetic/run.py
+```
+
+Expected output:
+
+```
+synthetic: prohibited 100/100, high_risk 100/100 (5 TP each, 0 FP, 0 FN)
+```
+
+The 13 fixtures are versioned at `benchmarks/synthetic/fixtures/`. Each
+fixture is a minimal Python file constructed by hand to represent one
+Annex III category or one Article 5 prohibition. The "ground truth"
+labels are the directory structure (`prohibited/`, `high_risk/`,
+`negative/`) — there is no pattern leakage from `risk_patterns.py` to
+the fixture text.
+
+### OSS precision
+
+```bash
+python3 benchmarks/label.py score
+```
+
+Expected output:
+
+```
+precision: 15.2% (tp=39, fp=218, n=257)
+```
+
+The 257 labels are at `benchmarks/labels.json`. Every entry has:
+
+- `project` — the OSS project the finding came from
+- `file` — the relative path inside that project
+- `line` — line number of the finding
+- `tier` — the underlying classification category Regula assigned
+- `confidence_score` — the 0–100 confidence Regula computed
+- `description` — Regula's natural-language description
+- `indicators` — the list of pattern names that fired
+- `label` — `tp` (true positive) or `fp` (false positive)
+- `notes` — the labeller's free-text rationale
+
+Every label was assigned by hand. The labelling protocol is documented
+at `benchmarks/README.md`.
+
+### Internal regression suite
+
+```bash
+python3 tests/test_classification.py
+```
+
+The custom runner walks `globals()` of `test_classification.py` and
+runs every `test_*` function (including those imported from 5 sub-modules).
+The count grows with each release — verify with:
+
+```bash
+python3 tests/test_classification.py 2>&1 | tail -3
+python3 -m pytest tests/ --collect-only -q 2>&1 | tail -1  # Full pytest count
+```
+
+---
+
+## Slice 1: per-project precision (OSS corpus)
+
+| Project | Findings | TP | FP | Precision | Notes |
+|---|---:|---:|---:|---:|---|
+| scikit-learn | 50 | 15 | 35 | **30.0%** | Highest precision — has the most genuine ML pipeline + bias-relevant code |
+| langchain | 53 | 12 | 41 | 22.6% | Mixed — agent/tool patterns trigger but most are framework infrastructure |
+| pydantic-ai | 52 | 10 | 42 | 19.2% | Similar to langchain — agent patterns in framework code |
+| instructor | 51 | 2 | 49 | 3.9% | Mostly LLM provider adapters — fires on every model call |
+| openai-python | 51 | 0 | 51 | **0.0%** | Canonical AI library implementation. Every file is an AI library call. Pure FP territory by design. |
+
+**Reading the table:**
+
+- **`scikit-learn` shows the realistic ceiling.** A real ML codebase with
+  bias-relevant features and pipelines gets **30% precision** across all
+  tiers, not 15%. Filter to BLOCK tier and the figure is 0 FPs.
+- **`openai-python` and `instructor` show the floor.** Both are AI library
+  implementations themselves. Regula's job is to flag *use* of AI in
+  application code; it is not designed to be run on the SDK that wraps
+  the OpenAI HTTP API. Running Regula on `openai-python` is like
+  running an SQL injection scanner on `psycopg2` itself.
+- **The benchmark deliberately includes both extremes** so the 15.2%
+  headline is honest about the worst case. A user scanning their own
+  application code rather than the SDKs they import is closer to the
+  scikit-learn number.
+
+---
+
+## Slice 2: per–display-tier precision (the CI-relevant cut)
+
+| Display tier | Threshold | Findings | TP | FP | Precision | CI behaviour |
+|---|---|---:|---:|---:|---:|---|
+| **BLOCK** | confidence ≥ 80 | **0** | 0 | 0 | **n/a** (no findings) | Fails CI build |
+| WARN | 50 ≤ confidence < 80 | 8 | 2 | 6 | 25.0% | Logged, does not fail CI |
+| INFO | confidence < 50 | 249 | 37 | 212 | 14.9% | Hidden by default, opt-in via `--show-info` |
+
+**Why this matters more than the headline:**
+
+A user runs `regula check` in CI. By default, only BLOCK-tier findings
+fail the build. **On the labelled corpus, 0 BLOCK findings fire across
+all 5 projects.** The user's CI is silent until Regula sees something
+genuinely high-confidence — for example, a literal `def classify_resume`
+function calling OpenAI (the synthetic-corpus high-risk fixture set,
+which scores 88+ and triggers BLOCK).
+
+This is deliberate. The confidence-score model is tuned so that the
+gap between "definitely worth a human's attention" (BLOCK) and
+"possibly interesting context" (INFO) is wide. The 15.2% figure is the
+precision of the wide INFO cast — the part the user almost never sees.
+
+---
+
+## Slice 3: per–underlying-tier precision
+
+| Tier | Findings | TP | FP | Precision | What it means |
+|---|---:|---:|---:|---:|---|
+| `agent_autonomy` | 5 | 2 | 3 | 40.0% | Autonomous tool-calling patterns. Small sample. |
+| `limited_risk` | 3 | 1 | 2 | 33.3% | Article 50 disclosure (chatbot, deepfake). Small sample. |
+| `minimal_risk` | 241 | 36 | 205 | 14.9% | The bulk of the OSS corpus. Most are AI library imports without high-risk context. |
+| `ai_security` | 6 | 0 | 6 | 0.0% | OWASP LLM Top 10 patterns. All 6 FPs are framework code, not application code. |
+| `credential_exposure` | 2 | 0 | 2 | 0.0% | Tiny sample. Both FPs are test fixtures. |
+
+The `ai_security` 0% and `credential_exposure` 0% cells are real but
+the sample sizes (6 and 2) are too small to draw conclusions from. The
+actionable signal is in the 241-finding `minimal_risk` row, which is
+where Regula spends most of its energy on a typical OSS corpus.
+
+---
+
+## Slice 4: false-positive root causes
+
+The labeller's `notes` field on every FP is the ground-truth taxonomy.
+Counting keywords in the notes field across all 218 OSS FPs:
+
+| Root cause | FPs | Mitigation in current code |
+|---|---:|---|
+| Test files | 71 | `regula check --skip-tests` (default ON since v1.5) |
+| `__init__.py` re-exports | 39 | Excluded from minimal_risk by `_is_init_file()` heuristic in `classify_risk.py` |
+| Mock / docstring / example | 3 | Excluded by `_has_mock_patterns()` and `_is_example_file()` heuristics |
+| Library marshalling code | tracked but not yet automated | Manual `# regula-ignore` annotation today |
+
+**71 of 218 FPs (33%) come from test files.** The default
+`--skip-tests` flag suppresses these, which means **the operational
+precision a user sees is materially better than the 15.2% reported on
+the unfiltered corpus**.
+
+### Addendum: April 2026 precision improvements (post-benchmark)
+
+Three changes shipped on 17 April 2026 that improve operational
+precision on this same corpus. These have NOT been re-measured via a
+formal re-labelling — the numbers below are simulated from the
+existing 257 labels by filtering out findings that the new code would
+skip or deprioritise:
+
+| Configuration | TP | FP | Precision |
+|---|---:|---:|---:|
+| Raw (no filters) | 39 | 218 | 15.2% |
+| + `--skip-tests` (default since v1.5) | 39 | 142 | 21.5% |
+| + new SKIP_DIRS (examples/, demo/) | 36 | 100 | 26.5% |
+| + AI library self-scan penalty (-50 conf) | 36 | 64 | **36.0%** |
+
+**Caveats:**
+- The 36.0% is a simulation, not a re-measured benchmark. 3 TP in
+  example directories are lost (acceptable — examples are not production).
+- The AI library penalty causes openai-python findings to drop below
+  WARN threshold (confidence 65 → 15), effectively hiding them. This
+  is correct behaviour: openai-python IS an AI library, not an AI
+  application.
+- A formal re-labelling with the new code is tracked as future work.
+
+---
+
+## What this benchmark does NOT measure
+
+In the spirit of [CORE-Bench](https://arxiv.org/abs/2409.11363) and the
+2026 [OSS Trust Score methodology](https://hub.stabilarity.com/quarterly-benchmark-q1-2026-open-source-trust-score-evolution/),
+honest benchmark publication requires explicit limitations.
+
+1. **Recall on real OSS is not measured.** The OSS corpus is a sample
+   of *Regula's existing findings*, labelled TP/FP. It does not measure
+   the false negatives — the high-risk AI in those projects that Regula
+   missed. To measure that we would need an independent ground-truth
+   labelling of the projects, which does not exist.
+2. **The corpus is Python-centric.** All 5 projects are Python
+   libraries. JS/TS, Java, Go, Rust, C, and C++ are documented as
+   separate tiers in `docs/architecture.md` and have not yet been
+   benchmarked at this level of detail.
+3. **The corpus is library-centric.** All 5 projects are AI/ML
+   libraries themselves, not application code that *uses* AI/ML
+   libraries. Application code is what Regula is designed for. The
+   library corpus is the harder case by design.
+4. **The labelling is single-rater.** Inter-rater reliability has not
+   been measured. Future work: have a second labeller score the same
+   257 findings independently and publish the Cohen's kappa.
+5. **The synthetic fixtures may be biased toward Regula's strengths.**
+   The fixtures were authored by the same team that wrote the patterns.
+   Independent fixtures (e.g. from the [AVID database](https://avidml.org/))
+   are on the roadmap.
+6. **Confidence score calibration is not measured.** A score of 88
+   should mean "88% probability of being a true positive", but this is
+   not currently checked against the labelled data. Future work:
+   compute the calibration curve and publish it here.
+
+---
+
+## How this benchmark is updated
+
+- **Per release.** Every Regula release re-runs `python3 benchmarks/label.py
+  score` and asserts the published number against the previous baseline.
+  A regression triggers a release-blocking failure in the CI verify
+  gate. See `tests/test_classification.py::test_oss_precision_baseline`.
+- **Per quarter.** New OSS projects are added to the corpus. The
+  current target: 5 → 10 projects, with two non-Python (JS/TS, Go) by
+  Q3 2026.
+- **On request.** If a user wants Regula benchmarked on their own
+  codebase as part of evaluation, they can run `python3
+  benchmarks/label.py score --project /path/to/their/repo` and
+  contribute the labels back as a pull request.
+
+---
+
+## Citation
+
+If you cite this benchmark in a research paper, vendor evaluation, or
+audit report, the recommended format is:
+
+> Regula precision/recall benchmark, April 2026 release.
+> Synthetic corpus: 100% precision, 100% recall (5 prohibited + 5 high-risk fixtures, 0 FP, 0 FN).
+> OSS corpus: 15.2% precision overall (39 TP / 218 FP / n=257), 0% on BLOCK tier (0 findings),
+> 25.0% on WARN tier (n=8), 14.9% on INFO tier (n=249).
+> Reproducible from `github.com/kuzivaai/getregula` at v1.6.0 via
+> `python3 benchmarks/label.py score`.
+
+If anything in this document is unclear, ambiguous, or unverifiable —
+or if you can reproduce a different number with the same command — open
+an issue at <https://github.com/kuzivaai/getregula/issues>.
+
+---
+
+## Future: RegulaBench
+
+The existing OSS corpus (257 findings across 5 projects) is a starting
+point. The Regula project plans to publish **RegulaBench** — a larger,
+hand-labelled, citable dataset of real-world AI code snippets with
+TP/FP labels mapped to EU AI Act Articles. Design details are in
+[`docs/moat-research.md`](../moat-research.md) under "Candidate 2".
+
+There is no NIST-Juliet-equivalent for AI Act compliance at the code
+level today (see [`docs/moat-research.md`](../moat-research.md), which
+cites [NIST SARD](https://samate.nist.gov/SARD/test-suites),
+[Juliet 1.3](https://samate.nist.gov/SARD/test-suites/112), and
+[MLCommons AILuminate](https://ailuminate.mlcommons.org/) as the
+closest precedents in adjacent domains). RegulaBench aims to fill that
+gap.
+
+**Status:** design phase. Target v0.1: 100 hand-labelled cases,
+published on [HuggingFace Datasets](https://huggingface.co/datasets) +
+[Zenodo](https://zenodo.org/) with a DOI. If you have labelling
+expertise and want to contribute, open an issue.
+
+---

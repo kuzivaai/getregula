@@ -15,6 +15,7 @@ Regula combines two approaches: (1) static code analysis for risk patterns, depe
 - [Evidence pack guide](https://github.com/kuzivaai/getregula/blob/main/docs/evidence-pack-guide.md): Generating compliance documentation for auditors
 - [Runtime monitoring](https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md#runtime-monitoring-article-12): Article 12 runtime logging SDK and CLI (`regula monitor`) for recording LLM calls in production
 - [Precision and recall benchmarks](https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md): Published accuracy data
+- [Trust pack](https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md): Security findings, test counts, verified numbers
 
 ## Blog
 
@@ -23,14 +24,26 @@ Regula combines two approaches: (1) static code analysis for risk patterns, depe
 - [The Omnibus delay](https://getregula.com/blog/blog-omnibus-delay.html): Current status of EU AI Act implementation timeline
 - [Why startups are ignoring the AI Act](https://getregula.com/blog/blog-startups-ignoring-ai-act.html): Common misconceptions about scope and deadlines
 - [Scanning 10 real AI apps](https://getregula.com/blog/blog-scanning-10-ai-apps.html): What Regula finds when pointed at production code
+- [Code scanning vs questionnaires](https://getregula.com/blog/blog-code-scanning-vs-questionnaires.html): Why you need both for EU AI Act compliance
+- [Article 5 prohibited practices](https://getregula.com/blog/blog-article-5-prohibited-practices.html): Scanning your code for banned AI uses
+- [Omnibus decision framework](https://getregula.com/blog/blog-omnibus-decision-framework.html): What the Omnibus means for your compliance timeline
+- [Scanning 5 compliance frameworks](https://getregula.com/blog/blog-scanning-5-frameworks.html): Cross-regulation mapping in practice
+- [AICDI governance gaps](https://getregula.com/blog/blog-aicdi-governance-gaps.html): How Regula maps to the UNESCO/TRF corporate governance report
+- [Omnibus trilogue outcome](https://getregula.com/blog/blog-omnibus-trilogue-failed.html): What happened and what it means for compliance teams
+- [Static analysis for AI compliance](https://getregula.com/blog/blog-static-analysis-ai-compliance.html): Honest comparison of code scanning and questionnaire approaches
+- [How to classify your AI system](https://getregula.com/blog/blog-classify-ai-system.html): Article 6 routes, risk tiers, and what code scanning can tell you
+- [Art 50 Code of Practice mapping](https://getregula.com/blog/blog-art50-code-of-practice.html): What the 10 June 2026 final code means for your codebase
+- [EN 18228 and EN 18282 standards mapping](https://getregula.com/blog/blog-en-standards-mapping.html): What a code scanner can evidence against draft harmonised standards
 
 ## Regional coverage
 
-- [UK AI regulation](https://getregula.com/regions/uk-ai-regulation.html)
-- [UAE AI governance](https://getregula.com/regions/uae.html)
-- [Colorado SB-205](https://getregula.com/regions/colorado-ai-regulation.html)
-- [South Korea AI regulation](https://getregula.com/regions/south-korea-ai-regulation.html)
-- [South Africa AI policy](https://getregula.com/regions/south-africa-ai-policy.html)
+- [Global AI regulation tracker](https://getregula.com/regions/regulations.html): Comparative tracker across jurisdictions
+- [UK AI regulation](https://getregula.com/regions/uk-ai-regulation.html): ICO, DSIT, principles-based approach
+- [UAE AI governance](https://getregula.com/regions/uae.html): CBUAE, ADIA framework
+- [Colorado AI regulation](https://getregula.com/regions/colorado-ai-regulation.html): SB 25-189 disclosure requirements
+- [South Korea AI regulation](https://getregula.com/regions/south-korea-ai-regulation.html): AI Basic Act
+- [South Africa AI policy](https://getregula.com/regions/south-africa-ai-policy.html): Draft National AI Policy tracker
+- [Brazil AI regulation](https://getregula.com/regions/brazil-ai-regulation.html): PL 2338/2023 and LGPD
 
 ## Package
 

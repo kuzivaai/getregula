@@ -7,8 +7,13 @@
   </url>
   <url>
     <loc>https://getregula.com/llms.txt</loc>
-    <lastmod>2026-04-26</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://getregula.com/llms-full.txt</loc>
+    <lastmod>2026-06-14</lastmod>
+    <priority>0.3</priority>
   </url>
   <url>
     <loc>https://getregula.com/locales/de.html</loc>
