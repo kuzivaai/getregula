@@ -1,0 +1,513 @@
+{
+  "provenance": "Model pre-label \u2014 NOT a rater of record. Excluded from kappa computation. Decision support only. Model: Claude Opus 4.6, session date 2026-06-15.",
+  "disclosure": "This file contains model-generated labels for decision support. These labels must NOT be copied into rater label files without independent human judgement. They must NOT be counted in inter-rater reliability (kappa) computation.",
+  "corpus": "blind_subset_existing",
+  "total": 50,
+  "summary": {
+    "model_tp": 19,
+    "model_fp": 31,
+    "ambiguous_cases": 14
+  },
+  "labels": [
+    {
+      "index": 1,
+      "project": "langchain",
+      "file": "libs/standard-tests/tests/unit_tests/test_decorated_tool.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Test file. Does not contain production AI application logic. Per LABELLING_CRITERIA context rule 2: test code is generally FP."
+    },
+    {
+      "index": 2,
+      "project": "pydantic-ai",
+      "file": "pydantic_graph/pydantic_graph/beta/paths.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Graph path utilities. Infrastructure code, not AI application logic."
+    },
+    {
+      "index": 3,
+      "project": "app_proctoring",
+      "file": "face_spoofing.py",
+      "tier": "ai_security",
+      "category": "AI Security (LLM05)",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Unsafe model deserialization in production code. Genuine LLM05 supply chain risk."
+    },
+    {
+      "index": 4,
+      "project": "app_rasa",
+      "file": "tests/conftest.py",
+      "tier": "credential_exposure",
+      "category": "AI Credential Governance (Article 15)",
+      "model_label": "fp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: Credential pattern in test conftest.py. Per LABELLING_CRITERIA: test code with credentials could be real secrets committed to tests, or test fixtures. Human must check whether this is a real private key or a test placeholder."
+    },
+    {
+      "index": 5,
+      "project": "app_frigate",
+      "file": "frigate/config/classification.py",
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Frigate is a home surveillance system with person detection/recognition. Classification and embedding modules perform biometric-adjacent identification. TP under Annex III Category 1."
+    },
+    {
+      "index": 6,
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/tests/rag/test_mdx_loader.py",
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Test file. Command execution is in test context, not production AI-to-action flow. Per LABELLING_CRITERIA context rule 2."
+    },
+    {
+      "index": 7,
+      "project": "langchain",
+      "file": "libs/partners/openai/tests/unit_tests/chat_models/test_responses_stream.py",
+      "tier": "ai_security",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Temperature setting in a test file. Not a production configuration concern."
+    },
+    {
+      "index": 8,
+      "project": "openai-python",
+      "file": "src/openai/types/beta/thread_create_and_run_params.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Type definition / parameter schema file. Structural infrastructure, not AI application logic."
+    },
+    {
+      "index": 9,
+      "project": "app_deepface",
+      "file": "deepface/models/facial_recognition/VGGFace.py",
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric module in deepface. Directly performs or stores biometric identification data. Annex III Category 1."
+    },
+    {
+      "index": 10,
+      "project": "app_deepface",
+      "file": "deepface/models/demography/Gender.py",
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric module in deepface. Directly performs or stores biometric identification data. Annex III Category 1."
+    },
+    {
+      "index": 11,
+      "project": "app_aider",
+      "file": "aider/commands.py",
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Aider's command execution module. AI coding assistant that executes system commands based on LLM output. Genuine agent autonomy \u2014 AI output flows to shell commands. TP."
+    },
+    {
+      "index": 12,
+      "project": "scikit-learn",
+      "file": "sklearn/utils/tests/test_optimize.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Test file. Does not contain production AI application logic. Per LABELLING_CRITERIA context rule 2: test code is generally FP."
+    },
+    {
+      "index": 13,
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/tools/oxylabs_google_search_scraper_tool/oxylabs_google_search_scraper_tool.py",
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "model_label": "fp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: Regula detected a human gate pattern nearby, which suggests the autonomy concern is mitigated. But 'nearby' is approximate. Leaning FP given the gate detection, but human should verify the gate is actually in the execution path."
+    },
+    {
+      "index": 14,
+      "project": "app_deepface",
+      "file": "deepface/modules/verification.py",
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric module in deepface. Directly performs or stores biometric identification data. Annex III Category 1."
+    },
+    {
+      "index": 15,
+      "project": "app_aider",
+      "file": "tests/basic/test_linter.py",
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Test file. Command execution is in test context, not production AI-to-action flow. Per LABELLING_CRITERIA context rule 2."
+    },
+    {
+      "index": 16,
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/tools/singlestore_search_tool/singlestore_search_tool.py",
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "model_label": "fp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: SingleStore search tool in CrewAI. Matched biometrics pattern but this is a generic vector search tool, not a biometric system. Low confidence (35). Leaning FP."
+    },
+    {
+      "index": 17,
+      "project": "app_crewai",
+      "file": "lib/crewai/src/crewai/utilities/evaluators/crew_evaluator_handler.py",
+      "tier": "high_risk",
+      "category": "Annex III, Category 4(b)",
+      "model_label": "fp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: CrewAI's 'crew evaluator handler' matched worker_management pattern, but CrewAI manages AI agents, not human workers. The 'crew' and 'task allocation' vocabulary triggered the pattern, but the system allocates tasks to software agents, not to employees. Leaning FP \u2014 a regulator would distinguish AI-agent orchestration from human-worker management."
+    },
+    {
+      "index": 18,
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/tools/patronus_eval_tool/patronus_predefined_criteria_eval_tool.py",
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "High-confidence agent autonomy finding. AI output flows to HTTP mutations or system commands without detected human gate."
+    },
+    {
+      "index": 19,
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/aws/bedrock/agents/invoke_agent_tool.py",
+      "tier": "ai_security",
+      "category": "AI Security (LLM02)",
+      "model_label": "tp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: Sensitive data flow through AI agent. Depends on what data actually flows. High confidence (80) suggests the pattern is strong. Human should verify."
+    },
+    {
+      "index": 20,
+      "project": "scikit-learn",
+      "file": "sklearn/datasets/__init__.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Package init file. Infrastructure, not AI application logic."
+    },
+    {
+      "index": 21,
+      "project": "app_crewai",
+      "file": "lib/crewai/tests/utilities/evaluators/test_crew_evaluator_handler.py",
+      "tier": "high_risk",
+      "category": "Annex III, Category 4(b)",
+      "model_label": "fp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: CrewAI's 'crew evaluator handler' matched worker_management pattern, but CrewAI manages AI agents, not human workers. The 'crew' and 'task allocation' vocabulary triggered the pattern, but the system allocates tasks to software agents, not to employees. Leaning FP \u2014 a regulator would distinguish AI-agent orchestration from human-worker management."
+    },
+    {
+      "index": 22,
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/tools/patronus_eval_tool/patronus_eval_tool.py",
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "High-confidence agent autonomy finding. AI output flows to HTTP mutations or system commands without detected human gate."
+    },
+    {
+      "index": 23,
+      "project": "app_deepface",
+      "file": "deepface/modules/database/neo4j.py",
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric module in deepface. Directly performs or stores biometric identification data. Annex III Category 1."
+    },
+    {
+      "index": 24,
+      "project": "scikit-learn",
+      "file": "sklearn/datasets/_covtype.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: Dataset loader in scikit-learn. It loads data, which is a step in ML pipelines, but the file itself is a data-fetching utility, not inference/training logic."
+    },
+    {
+      "index": 25,
+      "project": "openai-python",
+      "file": "src/openai/types/evals/create_eval_completions_run_data_source_param.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Type definition / parameter schema file. Structural infrastructure, not AI application logic."
+    },
+    {
+      "index": 26,
+      "project": "instructor",
+      "file": "instructor/providers/gemini/utils.py",
+      "tier": "limited_risk",
+      "category": "",
+      "model_label": "tp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: Synthetic content generation detected. Depends on whether the output could be mistaken for human-created content. Provider utility code for Gemini \u2014 it connects to a model that generates content. Whether the specific integration constitutes limited-risk depends on the application using it. Human should decide."
+    },
+    {
+      "index": 27,
+      "project": "app_deepface",
+      "file": "deepface/models/facial_recognition/FbDeepFace.py",
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric module in deepface. Directly performs or stores biometric identification data. Annex III Category 1."
+    },
+    {
+      "index": 28,
+      "project": "instructor",
+      "file": "tests/test_logging.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Test file. Does not contain production AI application logic. Per LABELLING_CRITERIA context rule 2: test code is generally FP."
+    },
+    {
+      "index": 29,
+      "project": "langchain",
+      "file": "libs/langchain/langchain_classic/load/__init__.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Package init file. Infrastructure, not AI application logic."
+    },
+    {
+      "index": 30,
+      "project": "openai-python",
+      "file": "src/openai/types/responses/response_input_image_param.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Type definition / parameter schema file. Structural infrastructure, not AI application logic."
+    },
+    {
+      "index": 31,
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/tools/selenium_scraping_tool/selenium_scraping_tool.py",
+      "tier": "high_risk",
+      "category": "Safety Components",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Selenium web scraping tool in CrewAI toolkit. Matched 'safety_components' pattern but this is a web scraper, not a safety component under Union harmonisation legislation."
+    },
+    {
+      "index": 32,
+      "project": "instructor",
+      "file": "examples/logfire-fastapi/server.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "tp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: Example/demo code. Per LABELLING_CRITERIA context rule 1: label based on what the code does. If it demonstrates real AI usage, it's TP. Human should check."
+    },
+    {
+      "index": 33,
+      "project": "scikit-learn",
+      "file": "sklearn/experimental/enable_halving_search_cv.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Experimental feature flag file in scikit-learn. Infrastructure for enabling experimental APIs, not AI logic itself."
+    },
+    {
+      "index": 34,
+      "project": "instructor",
+      "file": "tests/test_message_processing.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Test file. Does not contain production AI application logic. Per LABELLING_CRITERIA context rule 2: test code is generally FP."
+    },
+    {
+      "index": 35,
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/tools/selenium_scraping_tool/selenium_scraping_tool.py",
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "model_label": "fp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: Regula detected a human gate pattern nearby, which suggests the autonomy concern is mitigated. But 'nearby' is approximate. Leaning FP given the gate detection, but human should verify the gate is actually in the execution path."
+    },
+    {
+      "index": 36,
+      "project": "app_monai",
+      "file": "monai/networks/nets/resnet.py",
+      "tier": "ai_security",
+      "category": "AI Security (LLM05)",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Unsafe model deserialization in production code. Genuine LLM05 supply chain risk."
+    },
+    {
+      "index": 37,
+      "project": "app_monai",
+      "file": "monai/networks/utils.py",
+      "tier": "high_risk",
+      "category": "Annex III, Category 6",
+      "model_label": "fp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: MONAI is a medical imaging framework. Flagged as law_enforcement (Category 6) likely due to domain keyword matching. MONAI's primary domain is healthcare, not law enforcement. However, healthcare IS an Annex III domain (Category 5 \u2014 access to essential services). The category assignment may be wrong even if the tier is right. Leaning FP for the stated category (law enforcement), but the file may be TP under a different category (healthcare). Human should adjudicate."
+    },
+    {
+      "index": 38,
+      "project": "pydantic-ai",
+      "file": "tests/test_utils.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Test file. Does not contain production AI application logic. Per LABELLING_CRITERIA context rule 2: test code is generally FP."
+    },
+    {
+      "index": 39,
+      "project": "openai-python",
+      "file": "src/openai/_utils/_logs.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Utility/logging module. Infrastructure code, not AI application logic."
+    },
+    {
+      "index": 40,
+      "project": "pydantic-ai",
+      "file": "pydantic_ai_slim/pydantic_ai/providers/litellm.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "tp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: LLM provider integration. Contains connection logic to AI services. Arguably AI-related infrastructure. Human should decide if 'connecting to an LLM' counts as 'meaningful AI application logic.'"
+    },
+    {
+      "index": 41,
+      "project": "openai-python",
+      "file": "src/openai/types/image.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Type definition / parameter schema file. Structural infrastructure, not AI application logic."
+    },
+    {
+      "index": 42,
+      "project": "pydantic-ai",
+      "file": "pydantic_evals/pydantic_evals/evaluators/report_evaluator.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Evaluation logic for AI outputs. Contains functional AI-related logic (judging AI system outputs)."
+    },
+    {
+      "index": 43,
+      "project": "pydantic-ai",
+      "file": "tests/test_tools.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Test file. Does not contain production AI application logic. Per LABELLING_CRITERIA context rule 2: test code is generally FP."
+    },
+    {
+      "index": 44,
+      "project": "app_crewai",
+      "file": "lib/crewai-tools/src/crewai_tools/tools/weaviate_tool/vector_search.py",
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "model_label": "fp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: Regula detected a human gate pattern nearby, which suggests the autonomy concern is mitigated. But 'nearby' is approximate. Leaning FP given the gate detection, but human should verify the gate is actually in the execution path."
+    },
+    {
+      "index": 45,
+      "project": "pydantic-ai",
+      "file": "pydantic_ai_slim/pydantic_ai/_run_context.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Internal runtime context for pydantic-ai. Framework plumbing, not application logic."
+    },
+    {
+      "index": 46,
+      "project": "app_crewai",
+      "file": "lib/crewai/tests/cli/tools/test_main.py",
+      "tier": "agent_autonomy",
+      "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Test file. Command execution is in test context, not production AI-to-action flow. Per LABELLING_CRITERIA context rule 2."
+    },
+    {
+      "index": 47,
+      "project": "app_frigate",
+      "file": "frigate/comms/embeddings_updater.py",
+      "tier": "high_risk",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Frigate is a home surveillance system with person detection/recognition. Classification and embedding modules perform biometric-adjacent identification. TP under Annex III Category 1."
+    },
+    {
+      "index": 48,
+      "project": "instructor",
+      "file": "tests/dsl/test_simple_type_fix.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Test file. Does not contain production AI application logic. Per LABELLING_CRITERIA context rule 2: test code is generally FP."
+    },
+    {
+      "index": 49,
+      "project": "app_crewai",
+      "file": "lib/crewai/src/crewai/utilities/file_handler.py",
+      "tier": "ai_security",
+      "category": "AI Security (LLM05)",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Unsafe model deserialization in production code. Genuine LLM05 supply chain risk."
+    },
+    {
+      "index": 50,
+      "project": "pydantic-ai",
+      "file": "examples/pydantic_ai_examples/data_analyst.py",
+      "tier": "minimal_risk",
+      "category": "",
+      "model_label": "tp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: Example/demo code. Per LABELLING_CRITERIA context rule 1: label based on what the code does. If it demonstrates real AI usage, it's TP. Human should check."
+    }
+  ]
+}

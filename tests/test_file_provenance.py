@@ -84,7 +84,14 @@ def test_pyproject_toml_is_not_tooling():
 
 
 def test_scope_production_filters_non_production_findings():
-    """--scope production filtering excludes test/example/tooling findings."""
+    """--scope production filtering excludes test/example/tooling findings.
+
+    Updated for tier-aware filter (Session 17): prohibited and
+    credential_exposure are never excluded, __init__.py and types/
+    are excluded only for minimal_risk.
+    """
+    from cli_scan import _should_exclude_for_production_scope
+
     findings = [
         {"file": "src/app.py", "tier": "high_risk", "provenance": "production"},
         {"file": "tests/test_app.py", "tier": "high_risk", "provenance": "test"},
@@ -94,22 +101,22 @@ def test_scope_production_filters_non_production_findings():
         {"file": "src/model.py", "tier": "limited_risk", "provenance": "production"},
     ]
 
-    # Replicate the --scope production filter from cli_scan.py line 98
-    filtered = [f for f in findings if f.get("provenance", "production") == "production"]
+    filtered = [f for f in findings if not _should_exclude_for_production_scope(f)]
 
     assert len(filtered) == 2
-    assert all(f["provenance"] == "production" for f in filtered)
     assert {f["file"] for f in filtered} == {"src/app.py", "src/model.py"}
 
 
 def test_scope_production_defaults_missing_provenance_to_production():
-    """Findings without a provenance field default to 'production' (backward compat)."""
+    """Findings without a provenance field default to 'production' (not excluded)."""
+    from cli_scan import _should_exclude_for_production_scope
+
     findings = [
         {"file": "src/app.py", "tier": "high_risk"},  # no provenance key
         {"file": "tests/test_app.py", "tier": "high_risk", "provenance": "test"},
     ]
 
-    filtered = [f for f in findings if f.get("provenance", "production") == "production"]
+    filtered = [f for f in findings if not _should_exclude_for_production_scope(f)]
 
     assert len(filtered) == 1
     assert filtered[0]["file"] == "src/app.py"

@@ -1,0 +1,365 @@
+{
+  "provenance": "Model pre-label \u2014 NOT a rater of record. Excluded from kappa computation. Decision support only. Model: Claude Opus 4.6, session date 2026-06-15.",
+  "disclosure": "This file contains model-generated labels for decision support. These labels must NOT be copied into rater label files without independent human judgement. They must NOT be counted in inter-rater reliability (kappa) computation. If published alongside the benchmark, they must appear in a supplementary table, not in the main reliability results.",
+  "corpus": "targeted_high_risk",
+  "total": 39,
+  "summary": {
+    "model_tp": 35,
+    "model_fp": 4,
+    "ambiguous_cases": 6,
+    "model_precision_estimate": 89.7
+  },
+  "labels": [
+    {
+      "id": "T-deepface-001",
+      "repo": "deepface",
+      "file": "deepface/DeepFace.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-002",
+      "repo": "deepface",
+      "file": "deepface/api/src/app.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "API entry point for the biometric system. Exposes biometric identification as a service. Enables the regulated activity."
+    },
+    {
+      "id": "T-deepface-003",
+      "repo": "deepface",
+      "file": "deepface/commons/weight_utils.py",
+      "category": "Annex III, Category 1",
+      "model_label": "fp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: Generic utility for downloading model weights / managing folders. While it serves the biometric system, the code itself is domain-agnostic (could be in any ML project). The file does not perform or specifically enable biometric identification \u2014 it downloads files. Leaning FP."
+    },
+    {
+      "id": "T-deepface-004",
+      "repo": "deepface",
+      "file": "deepface/models/FacialRecognition.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-005",
+      "repo": "deepface",
+      "file": "deepface/models/demography/Age.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-006",
+      "repo": "deepface",
+      "file": "deepface/models/demography/Gender.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-007",
+      "repo": "deepface",
+      "file": "deepface/models/demography/Race.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-008",
+      "repo": "deepface",
+      "file": "deepface/models/facial_recognition/ArcFace.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-009",
+      "repo": "deepface",
+      "file": "deepface/models/facial_recognition/Buffalo_L.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-010",
+      "repo": "deepface",
+      "file": "deepface/models/facial_recognition/DeepID.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-011",
+      "repo": "deepface",
+      "file": "deepface/models/facial_recognition/Dlib.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-012",
+      "repo": "deepface",
+      "file": "deepface/models/facial_recognition/Facenet.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-013",
+      "repo": "deepface",
+      "file": "deepface/models/facial_recognition/FbDeepFace.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-014",
+      "repo": "deepface",
+      "file": "deepface/models/facial_recognition/GhostFaceNet.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-015",
+      "repo": "deepface",
+      "file": "deepface/models/facial_recognition/OpenFace.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-016",
+      "repo": "deepface",
+      "file": "deepface/models/facial_recognition/SFace.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-017",
+      "repo": "deepface",
+      "file": "deepface/models/facial_recognition/VGGFace.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-018",
+      "repo": "deepface",
+      "file": "deepface/modules/database/milvus.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: Database adapter for storing/querying biometric embeddings. Does not perform identification itself, but is purpose-built infrastructure that enables biometric identification at scale. Leaning TP because these modules exist solely to serve the biometric system \u2014 they are not general-purpose. A regulator would likely consider the embedding storage layer part of the biometric system."
+    },
+    {
+      "id": "T-deepface-019",
+      "repo": "deepface",
+      "file": "deepface/modules/database/neo4j.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: Database adapter for storing/querying biometric embeddings. Does not perform identification itself, but is purpose-built infrastructure that enables biometric identification at scale. Leaning TP because these modules exist solely to serve the biometric system \u2014 they are not general-purpose. A regulator would likely consider the embedding storage layer part of the biometric system."
+    },
+    {
+      "id": "T-deepface-020",
+      "repo": "deepface",
+      "file": "deepface/modules/database/pgvector.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: Database adapter for storing/querying biometric embeddings. Does not perform identification itself, but is purpose-built infrastructure that enables biometric identification at scale. Leaning TP because these modules exist solely to serve the biometric system \u2014 they are not general-purpose. A regulator would likely consider the embedding storage layer part of the biometric system."
+    },
+    {
+      "id": "T-deepface-021",
+      "repo": "deepface",
+      "file": "deepface/modules/database/pinecone.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: Database adapter for storing/querying biometric embeddings. Does not perform identification itself, but is purpose-built infrastructure that enables biometric identification at scale. Leaning TP because these modules exist solely to serve the biometric system \u2014 they are not general-purpose. A regulator would likely consider the embedding storage layer part of the biometric system."
+    },
+    {
+      "id": "T-deepface-022",
+      "repo": "deepface",
+      "file": "deepface/modules/database/weaviate.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": true,
+      "reasoning": "BORDERLINE: Database adapter for storing/querying biometric embeddings. Does not perform identification itself, but is purpose-built infrastructure that enables biometric identification at scale. Leaning TP because these modules exist solely to serve the biometric system \u2014 they are not general-purpose. A regulator would likely consider the embedding storage layer part of the biometric system."
+    },
+    {
+      "id": "T-deepface-023",
+      "repo": "deepface",
+      "file": "deepface/modules/datastore.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-024",
+      "repo": "deepface",
+      "file": "deepface/modules/modeling.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-025",
+      "repo": "deepface",
+      "file": "deepface/modules/recognition.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-026",
+      "repo": "deepface",
+      "file": "deepface/modules/representation.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-027",
+      "repo": "deepface",
+      "file": "deepface/modules/streaming.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-028",
+      "repo": "deepface",
+      "file": "deepface/modules/verification.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core biometric functionality: this module directly implements facial recognition, verification, demography analysis, or biometric data processing. Falls squarely under Annex III Category 1."
+    },
+    {
+      "id": "T-deepface-029",
+      "repo": "deepface",
+      "file": "setup.py",
+      "category": "Annex III, Category 1",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Packaging/distribution file. Does not perform or enable biometric identification. Standard Python packaging infrastructure."
+    },
+    {
+      "id": "T-face_recognition-001",
+      "repo": "face_recognition",
+      "file": "docs/conf.py",
+      "category": "Annex III, Category 1",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Sphinx documentation configuration file. Does not perform biometric identification. Infrastructure for generating docs."
+    },
+    {
+      "id": "T-face_recognition-002",
+      "repo": "face_recognition",
+      "file": "face_recognition/api.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Core face recognition API. Directly implements biometric identification functions (face detection, encoding, comparison). Clear TP under Annex III Category 1."
+    },
+    {
+      "id": "T-face_recognition-003",
+      "repo": "face_recognition",
+      "file": "face_recognition/face_detection_cli.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "CLI tool that performs face detection using the biometric library. Directly enables biometric identification. Clear TP."
+    },
+    {
+      "id": "T-AI-Resume-Analyzer-001",
+      "repo": "AI-Resume-Analyzer",
+      "file": "App/App.py",
+      "category": "Annex III, Category 4",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "AI-powered resume analysis tool. Annex III Category 4 \u2014 employment decisions influenced by AI analysis of applicant materials. Clear TP."
+    },
+    {
+      "id": "T-Lending-Club-Credit-Scoring-001",
+      "repo": "Lending-Club-Credit-Scoring",
+      "file": "notebooks/3_pd_modeling.ipynb",
+      "category": "Annex III, Category 5",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Jupyter notebook implementing credit risk models (PD, LGD, EAD). Directly performs credit scoring. Clear TP under Annex III Category 5."
+    },
+    {
+      "id": "T-Lending-Club-Credit-Scoring-002",
+      "repo": "Lending-Club-Credit-Scoring",
+      "file": "notebooks/4_lgd_ead_modeling.ipynb",
+      "category": "Annex III, Category 5",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Jupyter notebook implementing credit risk models (PD, LGD, EAD). Directly performs credit scoring. Clear TP under Annex III Category 5."
+    },
+    {
+      "id": "T-Lending-Club-Credit-Scoring-003",
+      "repo": "Lending-Club-Credit-Scoring",
+      "file": "notebooks/5_pd_model_monitoring.ipynb",
+      "category": "Annex III, Category 5",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Jupyter notebook implementing credit risk models (PD, LGD, EAD). Directly performs credit scoring. Clear TP under Annex III Category 5."
+    },
+    {
+      "id": "T-Lending-Club-Credit-Scoring-004",
+      "repo": "Lending-Club-Credit-Scoring",
+      "file": "setup.py",
+      "category": "Annex III, Category 5",
+      "model_label": "fp",
+      "ambiguous": false,
+      "reasoning": "Packaging file. Does not perform credit scoring. Standard infrastructure."
+    },
+    {
+      "id": "T-Lending-Club-Credit-Scoring-005",
+      "repo": "Lending-Club-Credit-Scoring",
+      "file": "src/modelling_utils.py",
+      "category": "Annex III, Category 5",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Utility functions for credit risk modelling (PD/LGD/EAD). Directly enables the credit scoring decision. Clear TP under Annex III Category 5."
+    },
+    {
+      "id": "T-Face-Biometry-001",
+      "repo": "Face-Biometry",
+      "file": "app.py",
+      "category": "Annex III, Category 1",
+      "model_label": "tp",
+      "ambiguous": false,
+      "reasoning": "Application that uses face_recognition for biometric identification and attendance tracking. Direct Annex III Category 1 use case."
+    }
+  ]
+}

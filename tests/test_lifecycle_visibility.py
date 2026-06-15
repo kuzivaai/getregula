@@ -28,7 +28,7 @@ def test_check_text_output_contains_lifecycle(tmp_path):
     src.mkdir()
     _write_ai_code(src)
     result = subprocess.run(
-        [sys.executable, "-m", "scripts.cli", "check", str(src), "--no-skip-tests"],
+        [sys.executable, "-m", "scripts.cli", "check", str(src), "--no-skip-tests", "--scope", "all"],
         capture_output=True, text=True,
         cwd=PROJECT_ROOT,
     )
@@ -43,7 +43,7 @@ def test_lifecycle_summary_in_header(tmp_path):
     src.mkdir()
     _write_ai_code(src)
     result = subprocess.run(
-        [sys.executable, "-m", "scripts.cli", "check", str(src), "--no-skip-tests"],
+        [sys.executable, "-m", "scripts.cli", "check", str(src), "--no-skip-tests", "--scope", "all"],
         capture_output=True, text=True,
         cwd=PROJECT_ROOT,
     )
@@ -101,7 +101,7 @@ def test_json_output_unaffected(tmp_path):
     src.mkdir()
     _write_ai_code(src)
     result = subprocess.run(
-        [sys.executable, "-m", "scripts.cli", "check", str(src), "--no-skip-tests", "--format", "json"],
+        [sys.executable, "-m", "scripts.cli", "check", str(src), "--no-skip-tests", "--scope", "all", "--format", "json"],
         capture_output=True, text=True,
         cwd=PROJECT_ROOT,
     )

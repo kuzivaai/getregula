@@ -818,8 +818,9 @@ def _build_subparsers(subparsers):
                          help="Exclude test files from results (default: on, use --no-skip-tests to include)")
     p_check.add_argument("--no-skip-tests", dest="skip_tests", action="store_false",
                          help="Include test files in results")
-    p_check.add_argument("--scope", choices=["all", "production"], default="all",
-                         help="Scan scope: 'production' excludes test/example/generated/tooling files")
+    p_check.add_argument("--scope", choices=["all", "production"], default="production",
+                         help="Scan scope: 'production' excludes test/example/tooling files "
+                              "(default). Use 'all' to include non-production findings.")
     p_check.add_argument("--min-tier", choices=["prohibited", "high_risk", "limited_risk", "minimal_risk"],
                          default="limited_risk", help="Minimum risk tier to include (default: limited_risk, use minimal_risk to see all)")
     p_check.add_argument("--domain", metavar="DOMAIN",
