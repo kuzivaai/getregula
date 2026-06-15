@@ -6,8 +6,9 @@ Items that require the founder's hands — cannot be automated in a build sessio
 
 ## 1. Bing Webmaster Tools — Sitemap Submission (D7)
 
-**Why:** ChatGPT's web search uses Bing's index. If getregula.com's sitemap is
-not submitted to Bing, the site may be absent from ChatGPT search results.
+**Why:** Bing Webmaster submission improves discoverability in Bing Chat and
+Microsoft Copilot, and may supplement ChatGPT's indexing. ChatGPT's OAI-SearchBot
+crawls independently (robots.txt already allows it), but Bing feeds Copilot directly.
 
 **Steps:**
 1. Go to https://www.bing.com/webmasters/
@@ -32,7 +33,7 @@ not submitted to Bing, the site may be absent from ChatGPT search results.
 
 ## 2. IAPP Vendor Report Submission (D5, Session 2)
 
-**Why:** The IAPP AI Governance Vendor Report is the primary discovery channel
+**Why:** The IAPP AI Governance Vendor Report is a significant discovery channel
 for compliance buyers. Regula is not listed.
 
 **Steps:**
