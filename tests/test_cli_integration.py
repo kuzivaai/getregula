@@ -139,7 +139,7 @@ def test_github_annotations_emitted_under_github_actions():
     the test is grounded in the actual Regula output — no fabricated messages.
     """
     rc, stdout, stderr = run_cli(
-        "check", "--ci", "examples/cv-screening-app",
+        "check", "--ci", "--scope", "all", "examples/cv-screening-app",
         env_overrides={"GITHUB_ACTIONS": "true"},
     )
     # CI mode exits 1 on WARN or BLOCK findings.
@@ -162,7 +162,7 @@ def test_github_annotations_suppressed_without_github_actions():
     at their terminal isn't spammed with ::warning lines.
     """
     rc, stdout, stderr = run_cli(
-        "check", "--ci", "examples/cv-screening-app",
+        "check", "--ci", "--scope", "all", "examples/cv-screening-app",
         env_overrides={"GITHUB_ACTIONS": ""},
     )
     assert rc == 1
@@ -205,7 +205,7 @@ def test_examples_customer_chatbot_prints_limited_risk_row():
         [tier] [score] file:line — message
     """
     import re
-    rc, stdout, stderr = run_cli("check", "examples/customer-chatbot")
+    rc, stdout, stderr = run_cli("check", "--scope", "all", "examples/customer-chatbot")
     assert rc == 0, f"expected rc=0, got {rc}\nstderr={stderr}"
     assert "LIMITED-RISK" in stdout, f"missing LIMITED-RISK header:\n{stdout}"
     row_pattern = re.compile(

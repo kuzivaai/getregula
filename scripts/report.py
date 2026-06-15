@@ -145,9 +145,20 @@ def _is_init_file(filepath: Path) -> bool:
 
 
 def classify_provenance(filepath: Path) -> str:
-    """Classify a file's provenance for confidence weighting.
+    """Classify a file's provenance for confidence weighting and scope filtering.
 
     Returns one of: production, test, example, documentation, tooling.
+
+    Used by --scope production to exclude non-production files from findings.
+    Each classification is traceable to why that file class is non-production:
+
+    - test: test frameworks, fixtures, mocks — not deployed code
+    - example: demo/sample code — teaches patterns, not deployed
+    - documentation: docs build config, markup — not executable
+    - tooling: packaging (setup.py), CI/CD, __init__ re-exports, build
+      configs, type stubs — infrastructure that doesn't perform the
+      regulated activity itself
+    - production: default — anything not matched above
     """
     filepath = Path(filepath)
     if _is_test_file(filepath):
@@ -164,9 +175,18 @@ def classify_provenance(filepath: Path) -> str:
     # Documentation build configs (Sphinx conf.py, mkdocs hooks, etc.)
     if "docs" in parts and name in ("conf.py", "conftest.py", "mkdocs.py"):
         return "documentation"
-    if name in ("dockerfile", "makefile", "cmakelists.txt", "justfile",
+    # Packaging and build files — do not perform the regulated activity
+    if name in ("setup.py", "setup.cfg", "noxfile.py", "fabfile.py",
+                "dockerfile", "makefile", "cmakelists.txt", "justfile",
                 "docker-compose.yml", "docker-compose.yaml",
                 ".dockerignore", ".gitignore", ".editorconfig"):
+        return "tooling"
+    # Type definition directories (e.g. src/openai/types/) and utility
+    # internals (_utils/) — structural infrastructure for minimal_risk
+    # tier (the scope filter handles the per-tier nuance)
+    if "types" in parts and suffix == ".py":
+        return "tooling"
+    if "_utils" in parts:
         return "tooling"
     if suffix in (".yml", ".yaml", ".toml", ".cfg", ".ini") and name not in ("pyproject.toml",):
         return "tooling"

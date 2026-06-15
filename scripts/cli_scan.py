@@ -13,6 +13,63 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 
+def _should_exclude_for_production_scope(finding: dict) -> bool:
+    """Determine if a finding should be excluded in --scope production.
+
+    Tier-aware rules (each traceable to why exclusion is safe or unsafe):
+
+    - prohibited: NEVER exclude. A prohibited practice in a test file is
+      still a prohibited practice — Article 5 has no test-code exemption.
+    - credential_exposure: NEVER exclude. Real credentials in test files
+      are a genuine security risk.
+    - __init__.py: exclude only for minimal_risk. An __init__.py can
+      legitimately wire up a high-risk biometric pipeline (e.g.
+      deepface/__init__.py re-exports face verification functions).
+    - example: exclude only for non-minimal tiers. Per LABELLING_CRITERIA
+      context rule 1, example code that demonstrates real AI usage IS a
+      finding — it teaches patterns users will replicate. But example
+      code flagged as high_risk/agent_autonomy is less actionable.
+    - All other non-production provenance + non-exempt tiers: exclude.
+    """
+    tier = finding.get("tier", "")
+    provenance = finding.get("provenance", "production")
+
+    # Never exclude prohibited or credential findings
+    if tier in ("prohibited", "credential_exposure"):
+        return False
+
+    # Production files are never excluded
+    if provenance == "production":
+        return False
+
+    # Tooling provenance with tier-dependent rules:
+    # - __init__.py: exclude only for minimal_risk (can wire high-risk pipelines)
+    # - types/ directories: exclude only for minimal_risk (type defs are
+    #   structural, but a types/ dir could contain validation logic for high-risk)
+    # - _utils/ directories: exclude only for minimal_risk (utility code,
+    #   but could contain functional logic in high-risk contexts)
+    # - setup.py, CI, build files: exclude for all non-exempt tiers
+    filepath = finding.get("file", "")
+    if provenance == "tooling":
+        _is_structural = (
+            filepath.endswith("__init__.py")
+            or "/types/" in filepath or "\\types\\" in filepath
+            or "/_utils/" in filepath or "\\_utils\\" in filepath
+        )
+        if _is_structural:
+            return tier == "minimal_risk"
+        # Non-structural tooling (setup.py, CI, build): exclude for all
+        return True
+
+    # Example code: keep for minimal_risk (demonstrates real AI usage),
+    # exclude for other tiers (less actionable for compliance)
+    if provenance == "example":
+        return tier != "minimal_risk"
+
+    # All other non-production provenance (test, documentation): exclude
+    return True
+
+
 # Mapping from Regula's display tier to GitHub Actions workflow command level.
 # ::error     — surfaces as a red annotation on the file/line in PR diffs
 # ::warning   — yellow annotation
@@ -96,10 +153,24 @@ def cmd_check(args) -> None:
         declared_domains=declared_domains,
     )
 
-    # Scope filtering: exclude non-production files when --scope production
-    scope = getattr(args, "scope", "all")
+    # Scope filtering: exclude non-production files when --scope production.
+    # Tier-aware: prohibited and credential_exposure findings are NEVER
+    # excluded (a real credential in a test file is still dangerous; a
+    # prohibited practice in any file must be flagged). __init__.py files
+    # are excluded only for minimal_risk (they can wire high-risk pipelines).
+    scope = getattr(args, "scope", "production")
+    _scope_excluded = []
     if scope == "production":
-        findings = [f for f in findings if f.get("provenance", "production") == "production"]
+        kept = []
+        for f in findings:
+            if _should_exclude_for_production_scope(f):
+                _scope_excluded.append(f)
+            else:
+                kept.append(f)
+        if _scope_excluded:
+            print(f"  Scope: {len(_scope_excluded)} non-production finding(s) excluded "
+                  f"(--scope all to include)", file=sys.stderr)
+        findings = kept
 
     # GDPR dual-compliance patterns: merge into findings when requested
     if getattr(args, "include_gdpr", False):

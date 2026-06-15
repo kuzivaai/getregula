@@ -2332,7 +2332,7 @@ def test_integration_full_check_cli():
         print("✓ Integration: CLI check (SKIPPED — fixture not found)")
         return
     result = subprocess.run(
-        [sys.executable, "scripts/cli.py", "check", fixture_path, "--format", "json", "--no-skip-tests", "--min-tier", "minimal_risk"],
+        [sys.executable, "scripts/cli.py", "check", fixture_path, "--format", "json", "--no-skip-tests", "--min-tier", "minimal_risk", "--scope", "all"],
         capture_output=True, text=True, timeout=30,
         cwd=str(Path(__file__).parent.parent),
     )

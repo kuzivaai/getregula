@@ -131,7 +131,7 @@ def test_env_regula_strict():
     env = os.environ.copy()
     env["REGULA_STRICT"] = "1"
     result = subprocess.run(
-        [sys.executable, "-m", "scripts.cli", "check", "examples/cv-screening-app/"],
+        [sys.executable, "-m", "scripts.cli", "check", "examples/cv-screening-app/", "--scope", "all"],
         capture_output=True, text=True, timeout=30, env=env,
         cwd=os.path.join(os.path.dirname(__file__), ".."),
     )
