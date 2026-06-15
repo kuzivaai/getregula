@@ -150,7 +150,7 @@ Rated on six axes, each scored 1–5 (1=poor, 5=excellent). Scores reflect buyer
 
 **Honesty/credibility (Regula: 5)**
 - Published precision figures with methodology and corpus size. "What Regula does not do" section on landing page. Explicit limitations disclosure. "Statistically unmeasurable" for high_risk N=6. No inflated claims.
-- AIR Blackbox: no published accuracy metrics (3). Systima: no published metrics (3). EuConform: no accuracy claims applicable (3). Enterprise SaaS: marketing-heavy, mixed credibility signals (3).
+- AIR Blackbox: publishes precision/recall on a 72-fixture synthetic corpus (SCANNER_EVAL.md, precision 1.00/recall 1.00), but not on real-world production code (3). Systima: no published metrics (3). EuConform: no accuracy claims applicable (3). Enterprise SaaS: marketing-heavy, mixed credibility signals (3).
 - **Evidence:** Landing page honesty section (VERIFIED), PRECISION_RECALL_2026_04.md (VERIFIED), TRUST.md (VERIFIED).
 
 **Regulatory currency (Regula: 5)**
