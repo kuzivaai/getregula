@@ -32,6 +32,19 @@ from typing import Any, Dict
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Directories that must not be scanned.  Two categories:
+#   _BLOCKED_EXACT  — block the directory itself but NOT user subdirectories
+#                      (e.g. /home is blocked, /home/user/project is allowed)
+#   _BLOCKED_PREFIXES — block the directory AND all children
+#                      (e.g. /proc, /sys — nothing useful for code scanning)
+_BLOCKED_EXACT = {Path(p) for p in ("/", "/home", "/root")}
+_BLOCKED_PREFIXES = [
+    Path(p) for p in (
+        "/etc", "/usr", "/var", "/bin", "/sbin", "/tmp",
+        "/proc", "/sys", "/dev", "/boot",
+    )
+]
+
 from constants import VERSION
 
 PROTOCOL_VERSION = "2024-11-05"
@@ -125,10 +138,17 @@ def _call_regula_check(arguments: dict) -> str:
     resolved = _Path(path).resolve()
     if not resolved.is_dir() and not resolved.is_file():
         return f"Error: path does not exist: {path}"
-    # Block scanning root or system directories
-    blocked = {"/", "/etc", "/usr", "/var", "/bin", "/sbin", "/tmp", "/home", "/root"}  # nosec B108 — this is a denylist of directories we refuse to scan, not a tmp path used for writing
-    if str(resolved) in blocked:
+    # Block scanning system directories.
+    # Exact-match: /, /home, /root — these are too broad, but user projects
+    # UNDER them (e.g. /home/user/project) are allowed.
+    # Prefix-match: /etc, /proc, /sys, etc. — nothing scannable lives here.
+    # nosec B108 — this is a denylist of paths we refuse to scan, not a path
+    # used for writing.
+    if resolved in _BLOCKED_EXACT:
         return f"Error: scanning {resolved} is not permitted — specify a project directory."
+    for bp in _BLOCKED_PREFIXES:
+        if resolved == bp or resolved.is_relative_to(bp):
+            return f"Error: scanning {resolved} is not permitted — specify a project directory."
 
     try:
         findings = scan_files(path, skip_tests=skip_tests, min_tier=min_tier)
