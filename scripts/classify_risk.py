@@ -319,15 +319,32 @@ def strip_comments(text: str, language: str = "python") -> str:
 
             # Inline comment -- keep the code part, strip the comment
             if "#" in line:
-                # Strip from first # that's not inside quotes
+                # Strip from first # that's not inside quotes.
+                # Handles escaped quotes (\" \') and escaped backslashes (\\).
                 in_str = False
                 str_char = None
                 for i, c in enumerate(line):
+                    if c == "\\" and in_str:
+                        # Skip the next character (it's escaped)
+                        continue
                     if c in ('"', "'") and not in_str:
-                        in_str = True
-                        str_char = c
+                        # Count preceding backslashes to handle \\\" etc.
+                        n_bs = 0
+                        j = i - 1
+                        while j >= 0 and line[j] == "\\":
+                            n_bs += 1
+                            j -= 1
+                        if n_bs % 2 == 0:
+                            in_str = True
+                            str_char = c
                     elif c == str_char and in_str:
-                        in_str = False
+                        n_bs = 0
+                        j = i - 1
+                        while j >= 0 and line[j] == "\\":
+                            n_bs += 1
+                            j -= 1
+                        if n_bs % 2 == 0:
+                            in_str = False
                     elif c == "#" and not in_str:
                         line = line[:i]
                         break
