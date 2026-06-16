@@ -95,7 +95,7 @@ def scan_config_files(project_path: str) -> list:
                         "line": line_num,
                         "tier": "minimal_risk",
                         "category": "AI Infrastructure",
-                        "description": f"{description}: {match.group()[:40]}",
+                        "description": f"{description} [REDACTED — {len(match.group())} chars at line {line_num}]",
                         "indicators": ["ai_config"],
                         "confidence_score": 30,
                         "suppressed": False,
