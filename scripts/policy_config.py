@@ -7,6 +7,7 @@ access to policy values, governance contacts, and regulatory basis.
 
 __all__ = [
     "get_policy", "get_governance_contacts", "get_regulatory_basis",
+    "get_policy_parse_error",
 ]
 
 import json
@@ -16,9 +17,24 @@ import sys
 from pathlib import Path
 from degradation import check_optional
 
+# Set to (path_str, error_str) when a policy file is found but fails to parse.
+# None means no parse error has occurred.
+_POLICY_PARSE_ERROR = None
+
+
+def get_policy_parse_error():
+    """Return the parse error tuple (path, error) or None if no error occurred.
+
+    Callers (e.g. the doctor command) can use this to surface a clear
+    warning when a policy file was found but could not be loaded.
+    """
+    return _POLICY_PARSE_ERROR
+
 
 def _load_policy() -> dict:
     """Load policy configuration. Tries YAML (via pyyaml) then JSON fallback."""
+    global _POLICY_PARSE_ERROR
+
     candidates = []
     env_path = os.environ.get("REGULA_POLICY")
     if env_path:
@@ -46,7 +62,12 @@ def _load_policy() -> dict:
             else:
                 return _parse_yaml_fallback(content)
         except Exception as e:
-            print(f"regula: config parse failed for {path}: {e}", file=sys.stderr)
+            _POLICY_PARSE_ERROR = (str(path), str(e))
+            print(
+                f"regula: WARNING — policy file {path} exists but failed to parse: {e}. "
+                "Running with default settings.",
+                file=sys.stderr,
+            )
             continue
     return {}
 
@@ -135,6 +156,8 @@ def get_policy(path: str = None) -> dict:
 
 def _load_policy_from(path: str) -> dict:
     """Load policy from a specific file path."""
+    global _POLICY_PARSE_ERROR
+
     p = Path(path)
     if not p.exists():
         return {}
@@ -147,8 +170,14 @@ def _load_policy_from(path: str) -> dict:
             return yaml.safe_load(content) or {}
         else:
             return _parse_yaml_fallback(content)
-    except Exception:
-        return {}  # Config parse failure — return empty policy
+    except Exception as e:
+        _POLICY_PARSE_ERROR = (str(p), str(e))
+        print(
+            f"regula: WARNING — policy file {p} exists but failed to parse: {e}. "
+            "Running with default settings.",
+            file=sys.stderr,
+        )
+        return {}
 
 
 def get_governance_contacts() -> dict:

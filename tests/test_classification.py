@@ -24,6 +24,7 @@ import test_domain_scoring as _test_domain_scoring  # noqa: F401
 import test_project_fingerprint as _test_project_fingerprint  # noqa: F401
 import test_cross_file_flow as _test_cross_file_flow  # noqa: F401
 import test_compliance_check as _test_compliance_check  # noqa: F401
+import test_policy_config as _test_policy_config  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
@@ -35,7 +36,7 @@ from helpers import assert_eq, assert_true, assert_false
 # with proper fixture injection.
 import inspect as _inspect
 _PYTEST_FIXTURES = {"monkeypatch", "tmp_path", "capsys", "tmpdir", "request"}
-for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check):
+for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
             continue
@@ -49,7 +50,7 @@ for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_ne
         if _params & _PYTEST_FIXTURES:
             continue
         globals()[_name] = _fn
-del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check
+del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:
