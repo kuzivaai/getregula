@@ -43,7 +43,18 @@ def _check_optional_dep(module_name, install_hint):
 
 
 def _check_policy_file():
-    """Check if a policy file exists and is readable."""
+    """Check if a policy file exists, is readable, and parsed successfully."""
+    sys.path.insert(0, str(Path(__file__).parent))
+    try:
+        from policy_config import get_policy_parse_error
+        parse_error = get_policy_parse_error()
+        if parse_error is not None:
+            err_path, err_msg = parse_error
+            return {"name": "Policy file", "status": "WARN",
+                    "detail": f"Policy file {err_path} failed to parse: {err_msg}. Running with defaults."}
+    except Exception:
+        pass
+
     candidates = []
     env_path = os.environ.get("REGULA_POLICY")
     if env_path:
