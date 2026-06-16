@@ -1,4 +1,4 @@
-<!-- mcp-name: regula -->
+<!-- mcp-name: io.github.kuzivaai/regula -->
 # Regula
 
 **EU AI Act compliance tool for code. Combines code scanning with governance questionnaires.**

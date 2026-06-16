@@ -102,7 +102,7 @@ is in README.md. Submissions to each registry require web forms or CLI tools:
 
 ### mcp.so
 1. Go to https://mcp.so/submit (or open a GitHub issue at the mcp.so repo)
-2. Fill in: name=regula, description="EU AI Act static analysis CLI. 389 detection
+2. Fill in: name=regula, description="EU AI Act static analysis CLI. 398 detection
    patterns, 8 languages, offline, zero dependencies.", transport=stdio,
    GitHub=https://github.com/kuzivaai/getregula, homepage=https://getregula.com
 

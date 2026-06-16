@@ -7,9 +7,12 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.7.2] — 2026-06-15
+
 Precision engineering release. Regex bug fixes, AST context gating,
 and smarter filtering reduce false positives on application code.
 Documentation audit brings all counts and claims up to date.
+MCP Registry namespace tag updated for official registry compatibility.
 
 ### Added
 
@@ -65,6 +68,13 @@ Documentation audit brings all counts and claims up to date.
 - Documentation audit: architecture.md, cli-reference.md,
   evidence-pack-guide.md, CONTRIBUTING.md all reconciled with current
   codebase state.
+- **MCP Registry namespace**: `<!-- mcp-name: regula -->` →
+  `<!-- mcp-name: io.github.kuzivaai/regula -->` for Official MCP
+  Registry compatibility (PyPI ownership verification).
+- **File-path exclusion layer** (`classify_provenance` +
+  `_should_exclude_for_production_scope`): `--scope production` is now
+  the default for `regula check`. Excludes test files, type stubs,
+  utility plumbing, and examples from non-minimal tiers.
 
 ## [1.7.0] — 2026-04-16
 
