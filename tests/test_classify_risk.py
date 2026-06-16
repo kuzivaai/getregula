@@ -279,6 +279,55 @@ class TestStripComments:
         result = strip_comments("# python comment")
         assert result.strip() == ""
 
+    # --- Escape handling (fix for audit issue #39) ---
+
+    def test_python_escaped_double_quote_preserves_content(self):
+        """Escaped quotes inside strings must not exit string context."""
+        code = r's = "say \"hello\" # not a comment"'
+        result = strip_comments(code)
+        assert "# not a comment" in result, (
+            "Content after escaped quote inside string was stripped as a comment"
+        )
+
+    def test_python_escaped_single_quote_preserves_content(self):
+        code = r"s = 'it\'s fine # not a comment'"
+        result = strip_comments(code)
+        assert "# not a comment" in result
+
+    def test_python_escaped_backslash_before_quote(self):
+        r"""\\\" = escaped backslash + real closing quote."""
+        # In source: path = "C:\\"  # comment
+        code = 'path = "C:\\\\"  # comment'
+        result = strip_comments(code)
+        assert "# comment" not in result, (
+            "Comment after escaped-backslash + closing quote should be stripped"
+        )
+
+    def test_python_normal_inline_still_stripped(self):
+        """Regression: normal inline comments must still be stripped."""
+        result = strip_comments("x = 42  # a comment")
+        assert "# a comment" not in result
+        assert "x = 42" in result
+
+    def test_python_hash_in_url_string_preserved(self):
+        """Hash inside a quoted URL is not a comment."""
+        code = 'url = "https://example.com/#fragment"  # real comment'
+        result = strip_comments(code)
+        assert "#fragment" in result
+        assert "# real comment" not in result
+
+    def test_python_mixed_quotes_with_escapes(self):
+        """Mixed quote types with escapes on the same line."""
+        code = """msg = 'he said \\"hi\\"'  # greeting"""
+        result = strip_comments(code)
+        assert "# greeting" not in result
+
+    def test_python_no_escape_outside_string(self):
+        """Backslash outside a string does not affect hash detection."""
+        code = "x = 1 \\ # comment"
+        result = strip_comments(code)
+        assert "# comment" not in result
+
 
 # ═══════════════════════════════════════════════════════════════════════
 # check_prohibited()
