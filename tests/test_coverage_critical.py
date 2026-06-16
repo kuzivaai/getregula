@@ -550,8 +550,6 @@ _REDOS_KNOWN_SAFE = {
     r"f['\"]",
     # supply_chain_model: subprocess.{0,200}pip — bounded, no nesting
     r"subprocess",
-    # rag_poisoning: @(?:app|router) with bounded range — no nesting
-    r"@(?:app|router)",
 }
 
 
@@ -647,6 +645,54 @@ def test_no_redos_ai_security():
     elapsed = time.time() - start
     assert_true(elapsed < 5.0, f"timing backup: ai_security took {elapsed:.2f}s")
     print("✓ No ReDoS: AI security patterns safe (static + timing)")
+
+
+def test_redos_rag_poisoning_and_no_grounding():
+    """Timing proof: rag_poisoning and no_grounding patterns complete within 1s on
+    catastrophic inputs that would trigger exponential backtracking in the old
+    negative-lookahead-inside-quantifier form.
+    """
+    import re as _re
+    from risk_patterns import AI_SECURITY_PATTERNS
+
+    rag_patterns = AI_SECURITY_PATTERNS.get("rag_poisoning", {}).get("patterns", [])
+    grounding_patterns = AI_SECURITY_PATTERNS.get("no_grounding", {}).get("patterns", [])
+
+    # Catastrophic input for rag_poisoning pattern 3:
+    # @app.post( + 500 non-auth chars + embed + 500 chars
+    inp_rag = "@app.post(" + "x" * 500 + "embed" + "x" * 280
+    # Variant: auth keyword mid-string to force top-level lookahead rejection fast
+    inp_rag_auth = "@app.post(" + "x" * 200 + "auth" + "x" * 300 + "embed" + "x" * 280
+
+    # Catastrophic input for no_grounding pattern 3:
+    # messages = + 500 non-grounding chars + provide facts
+    inp_ng = "messages = " + "x" * 500 + "provide facts"
+    # Variant: cite keyword to force rejection
+    inp_ng_cite = "messages = cite " + "x" * 500 + "provide facts"
+
+    THRESHOLD = 1.0
+
+    for pat in rag_patterns:
+        for label, inp in [("rag_catastrophic", inp_rag), ("rag_auth_mid", inp_rag_auth)]:
+            start = time.time()
+            _re.search(pat, inp)
+            elapsed = time.time() - start
+            assert_true(
+                elapsed < THRESHOLD,
+                f"rag_poisoning pattern took {elapsed:.3f}s on {label} (>{THRESHOLD}s threshold)"
+            )
+
+    for pat in grounding_patterns:
+        for label, inp in [("ng_catastrophic", inp_ng), ("ng_cite_mid", inp_ng_cite)]:
+            start = time.time()
+            _re.search(pat, inp)
+            elapsed = time.time() - start
+            assert_true(
+                elapsed < THRESHOLD,
+                f"no_grounding pattern took {elapsed:.3f}s on {label} (>{THRESHOLD}s threshold)"
+            )
+
+    print("✓ ReDoS timing: rag_poisoning and no_grounding complete <1s on catastrophic inputs")
 
 
 # ── Serialisation / Edge Cases ─────────────────────────────────────

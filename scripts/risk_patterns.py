@@ -785,7 +785,9 @@ AI_SECURITY_PATTERNS = {
             # Embedding user content without sanitisation
             r"(?:embed|embed_documents|embed_query|get_embedding)\s*\([^\n]{0,200}(?:user_input|request\.|upload|untrusted)",
             # Unauthenticated vector store write endpoint
-            r"@(?:app|router)\.(?:post|put)\s*\((?:(?!auth|login_required|Depends|require_auth|verify_token|api_key)[^\n]){0,200}(?:embed|ingest|index|vector)(?:(?!auth|login_required|Depends|require_auth|verify_token|api_key)[^\n]){10,300}$",
+            # Bounded lookahead: check within the 500-char match window for auth
+            # keywords, not the entire remaining text (avoids O(n²) on long lines).
+            r"@(?:app|router)\.(?:post|put)\s*\((?![^\n]{0,500}(?:auth|login_required|Depends|require_auth|verify_token|api_key))[^\n]{0,200}(?:embed|ingest|index|vector)[^\n]{10,300}$",
         ],
         "owasp": "LLM08",
         "articles": ["15"],
@@ -801,7 +803,9 @@ AI_SECURITY_PATTERNS = {
             # Medical/legal/financial advice from LLM without grounding
             r"(?:diagnosis|legal_advice|financial_advice|medical_recommendation|treatment_plan)\s*[:=][^\n]{0,200}(?:completion|ai_response|llm_output|chat\.completions|messages\.create)",
             # No citation or source requirement in prompt for factual task
-            r"(?:messages|prompt)\s*[:=](?:(?!cite|source|reference|ground|retriev|verify|fact.?check)[^\n]){0,500}(?:provide facts|answer accurately|give information|tell me about)",
+            # Bounded lookahead: check the 500-char match window for grounding keywords,
+            # not the entire remaining text (avoids O(n²) on long single-line inputs).
+            r"(?:messages|prompt)\s*[:=](?![^\n]{0,500}(?:cite|source|reference|ground|retriev|verify|fact.?check))[^\n]{0,500}(?:provide facts|answer accurately|give information|tell me about)",
         ],
         "owasp": "LLM09",
         "articles": ["15"],
