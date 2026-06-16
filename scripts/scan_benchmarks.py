@@ -99,8 +99,29 @@ def benchmark_path(label: str, path: Path, sha: str = "local") -> dict:
     }
 
 
+def _validate_clone_url(url: str) -> None:
+    """Reject non-https git clone URLs to prevent SSRF / command injection.
+
+    Allows only https:// scheme.  Rejects:
+    - git:// (plaintext, unauthenticated)
+    - ssh:// / git+ssh:// (may execute remote code via git hooks)
+    - file:// (local filesystem access)
+    - ext:: and other git transport helpers (arbitrary command execution)
+    - Relative or absolute local paths (no scheme)
+    """
+    if not isinstance(url, str):
+        raise ValueError(f"Invalid repo URL (not a string): {url!r}")
+    url_lower = url.strip().lower()
+    if not url_lower.startswith("https://"):
+        raise ValueError(
+            f"Refusing non-https git clone URL: {url!r} — "
+            "only https:// scheme is permitted."
+        )
+
+
 def benchmark_repo(url: str, workdir: Path) -> dict:
     """Shallow-clone `url` into `workdir`, then benchmark."""
+    _validate_clone_url(url)
     name = url.rstrip("/").split("/")[-1]
     target = workdir / name
     subprocess.check_call(

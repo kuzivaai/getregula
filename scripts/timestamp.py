@@ -14,21 +14,72 @@ Custom TSA: set REGULA_TSA_URL environment variable.
 """
 
 import hashlib
+import ipaddress
 import os
 import secrets
 import struct
+import urllib.parse
 import urllib.request
 import urllib.error
 from datetime import datetime, timezone
 from typing import Optional
 
+# RFC 1918 / loopback / link-local networks that must never be reachable via
+# an operator-supplied TSA URL (SSRF protection).
+_BLOCKED_NETWORKS = [
+    ipaddress.ip_network("127.0.0.0/8"),      # IPv4 loopback
+    ipaddress.ip_network("10.0.0.0/8"),        # RFC 1918
+    ipaddress.ip_network("172.16.0.0/12"),     # RFC 1918
+    ipaddress.ip_network("192.168.0.0/16"),    # RFC 1918
+    ipaddress.ip_network("169.254.0.0/16"),    # link-local / AWS metadata
+    ipaddress.ip_network("::1/128"),           # IPv6 loopback
+    ipaddress.ip_network("fc00::/7"),          # IPv6 ULA
+    ipaddress.ip_network("fe80::/10"),         # IPv6 link-local
+]
+
 
 def _require_http_url(url: str) -> None:
-    """Reject non-http(s) schemes before urlopen (bandit B310 / semgrep
-    dynamic-urllib guard). TSA URLs come from environment — must be
-    validated because an operator could set REGULA_TSA_URL to file:// ."""
+    """Reject non-http(s) schemes and internal/metadata hosts before urlopen.
+
+    Guards against:
+    - Non-http(s) schemes (file://, ftp://, etc.)  — bandit B310 / semgrep
+      dynamic-urllib guard.
+    - SSRF to loopback, RFC 1918, and cloud-metadata addresses — an operator
+      could set REGULA_TSA_URL to http://169.254.169.254/latest/meta-data/.
+
+    The _REGULA_TESTING_ALLOW_LOCAL env var bypasses the private-IP check
+    for test suites that run a local mock TSA on 127.0.0.1.  This variable
+    is never set in production; it is only used in the test harness.
+    """
     if not isinstance(url, str) or not (url.startswith("http://") or url.startswith("https://")):
         raise ValueError(f"Refusing non-http(s) TSA URL: {url!r}")
+
+    # Test harness bypass: allow localhost when explicitly opted in.
+    if os.environ.get("_REGULA_TESTING_ALLOW_LOCAL") == "1":
+        return
+
+    parsed = urllib.parse.urlparse(url)
+    hostname = parsed.hostname or ""
+
+    # Reject bare "localhost" and any case variant
+    if hostname.lower() in ("localhost", "localhost."):
+        raise ValueError(f"Refusing internal TSA URL (localhost): {url!r}")
+
+    # Attempt to resolve the hostname as a literal IP address.  A DNS-based
+    # SSRF bypass (resolving a public name to a private IP) is out of scope
+    # for a stdlib-only check — the operator controls the DNS environment.
+    try:
+        addr = ipaddress.ip_address(hostname)
+    except ValueError:
+        # Not a literal IP — accept the hostname (DNS lookup happens later).
+        return
+
+    for net in _BLOCKED_NETWORKS:
+        if addr in net:
+            raise ValueError(
+                f"Refusing TSA URL pointing to internal/metadata address "
+                f"{addr} (matched {net}): {url!r}"
+            )
 
 DEFAULT_TSA_URL = os.environ.get("REGULA_TSA_URL", "https://freetsa.org/tsr")
 
