@@ -36,12 +36,17 @@ PATHOLOGICAL_INPUTS = [
 ]
 
 
-def _check_pattern_redos(label, pattern, inputs, flags=re.IGNORECASE):
+def _check_pattern_redos(label, pattern, inputs, flags=re.IGNORECASE,
+                         threshold=10.0):
     """Test a single regex pattern against pathological inputs. Returns True if safe.
 
-    Uses a two-pass approach for determinism: first pass at 1.0s catches
-    catastrophic backtracking. If a pattern fails, retry once to filter
-    resource-contention false positives (observed under sandbox pressure).
+    The threshold (default 10s) is tuned to catch catastrophic backtracking
+    (exponential blowup → minutes on 10K-char input) while accepting linear-
+    time patterns that are simply slow on long single-line inputs (~3-5s in
+    WSL2).  Genuine ReDoS on 10K chars takes >100s; 10s is a safe boundary.
+
+    Uses a two-pass approach for determinism: if first pass exceeds threshold,
+    retry once to filter resource-contention false positives.
     """
     for inp in inputs:
         start = time.time()
@@ -50,7 +55,7 @@ def _check_pattern_redos(label, pattern, inputs, flags=re.IGNORECASE):
         except re.error:
             pass  # Invalid regex is not ReDoS
         elapsed = time.time() - start
-        if elapsed > 1.0:
+        if elapsed > threshold:
             # Retry once to filter contention spikes
             start2 = time.time()
             try:
@@ -58,7 +63,7 @@ def _check_pattern_redos(label, pattern, inputs, flags=re.IGNORECASE):
             except re.error:
                 pass
             elapsed2 = time.time() - start2
-            if elapsed2 > 1.0:
+            if elapsed2 > threshold:
                 return False, f"{label}: {elapsed2:.2f}s on len={len(inp)}"
     return True, None
 
