@@ -129,8 +129,10 @@ class _MockTSAHandler(BaseHTTPRequestHandler):
 
 
 @pytest.fixture
-def mock_tsa():
+def mock_tsa(monkeypatch):
     """Yield a local http://localhost:PORT/tsa that speaks RFC 3161."""
+    # Allow localhost for the mock TSA — production SSRF guard blocks 127.0.0.1.
+    monkeypatch.setenv("_REGULA_TESTING_ALLOW_LOCAL", "1")
     _MockTSAHandler.imprint_override = None
     _MockTSAHandler.fail_next = False
     server = HTTPServer(("127.0.0.1", 0), _MockTSAHandler)
