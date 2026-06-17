@@ -13,6 +13,7 @@ Scans a codebase for runtime guardrail implementations covering:
 No external dependencies — stdlib only.
 """
 
+import bisect
 import os
 import re
 import sys
@@ -269,21 +270,25 @@ def _read_file(filepath: str) -> Optional[str]:
 # Core scanning
 # ---------------------------------------------------------------------------
 
-def _scan_file_for_patterns(content: str, patterns: list) -> list:
-    """Return list of matched pattern strings (case-insensitive)."""
+def _scan_file_for_patterns(content: str, compiled_patterns: list) -> list:
+    """Return list of (match_object, raw_pattern_string) for each compiled
+    pattern that matches content (case-insensitive, first match only)."""
     matched = []
-    for pattern in patterns:
-        if re.search(pattern, content, re.IGNORECASE):
-            matched.append(pattern)
+    for cpat in compiled_patterns:
+        m = cpat.search(content)
+        if m:
+            matched.append((m, cpat.pattern))
     return matched
 
 
-def _find_line_number(content: str, pattern: str) -> int:
-    """Find the first line number where pattern matches."""
-    for i, line in enumerate(content.split("\n"), 1):
-        if re.search(pattern, line, re.IGNORECASE):
-            return i
-    return 0
+def _build_newline_index(content: str) -> list:
+    """Return sorted list of newline positions for O(log n) line lookup."""
+    return [i for i, c in enumerate(content) if c == "\n"]
+
+
+def _line_for_pos(newline_index: list, pos: int) -> int:
+    """Return 1-based line number for character position pos."""
+    return bisect.bisect_left(newline_index, pos) + 1
 
 
 def scan_for_guardrails(project_path: str) -> dict:
@@ -291,24 +296,48 @@ def scan_for_guardrails(project_path: str) -> dict:
 
     Returns structured result with per-category scores, detected patterns,
     gaps, library detections, overall score, and recommendations.
+
+    Fix #5: Stream one file at a time — read, scan, discard.  Peak RAM is
+    now bounded to a single file's content rather than all files at once.
+
+    Fix #3: Uses pre-compiled patterns (_COMPILED_PATTERNS, etc.) so regex
+    compilation cost is paid once at module load, not per file.
+
+    Fix #4: Line numbers are computed via bisect on a per-file newline index
+    (O(log n)) rather than re-searching each line (O(lines × patterns)).
     """
     project_path = str(Path(project_path).resolve())
     files_index = list(_walk_project(project_path))
 
-    # Read all file contents once
-    file_contents = {}
+    # Accumulators for the single streaming pass.
+    # per_subkey_detections preserves the original output order:
+    #   for each sub_key, entries appear in files_index order.
+    libraries_detected = []
+    library_names_found: set = set()
+
+    # cat_key → sub_key → list of detection dicts (in file-visit order)
+    per_subkey_detections: dict = {
+        cat_key: {sub_key: [] for sub_key in cat_def["patterns"]}
+        for cat_key, cat_def in GUARDRAIL_CATEGORIES.items()
+    }
+    # cat_key → set of sub_keys that matched at least once
+    patterns_matched_per_cat: dict = {
+        cat_key: set() for cat_key in GUARDRAIL_CATEGORIES
+    }
+
+    # Single streaming pass — read one file, scan it, discard content.
     for rel_path, abs_path in files_index:
         content = _read_file(abs_path)
-        if content:
-            file_contents[rel_path] = content
+        if not content:
+            continue
 
-    # Detect known libraries
-    libraries_detected = []
-    library_names_found = set()
-    for rel_path, content in file_contents.items():
-        for lib_pattern, lib_name, lib_type in KNOWN_LIBRARIES:
+        # Build newline index once per file for O(log n) line lookups (Fix #4)
+        nl_index = _build_newline_index(content)
+
+        # Library detection
+        for compiled_lib, lib_name, lib_type in _COMPILED_KNOWN_LIBRARIES:
             if lib_name not in library_names_found:
-                if re.search(lib_pattern, content, re.IGNORECASE):
+                if compiled_lib.search(content):
                     libraries_detected.append({
                         "name": lib_name,
                         "file": rel_path,
@@ -316,26 +345,17 @@ def scan_for_guardrails(project_path: str) -> dict:
                     })
                     library_names_found.add(lib_name)
 
-    # Determine which categories get library bonus
-    library_category_bonus = set()
-    for lib in libraries_detected:
-        for cat in LIBRARY_CATEGORY_MAP.get(lib["name"], []):
-            library_category_bonus.add(cat)
-
-    # Scan each category
-    categories = {}
-    for cat_key, cat_def in GUARDRAIL_CATEGORIES.items():
-        detected = []
-        patterns_matched = set()
-
-        for sub_key, sub_patterns in cat_def["patterns"].items():
-            for rel_path, content in file_contents.items():
-                matches = _scan_file_for_patterns(content, sub_patterns)
+        # Category pattern scanning
+        for cat_key, cat_def in GUARDRAIL_CATEGORIES.items():
+            compiled_cat = _COMPILED_PATTERNS[cat_key]
+            for sub_key in cat_def["patterns"]:
+                sub_compiled = compiled_cat[sub_key]
+                matches = _scan_file_for_patterns(content, sub_compiled)
                 if matches:
-                    patterns_matched.add(sub_key)
-                    for m in matches:
-                        line = _find_line_number(content, m)
-                        detected.append({
+                    patterns_matched_per_cat[cat_key].add(sub_key)
+                    for match_obj, raw_pattern in matches:
+                        line = _line_for_pos(nl_index, match_obj.start())
+                        per_subkey_detections[cat_key][sub_key].append({
                             "pattern": sub_key,
                             "file": rel_path,
                             "line": line,
@@ -343,18 +363,33 @@ def scan_for_guardrails(project_path: str) -> dict:
                                 "pii_detection", "toxicity_filtering",
                                 "human_in_the_loop", "io_logging",
                             ) else "medium",
-                            "match": m,
+                            "match": raw_pattern,
                         })
 
+    # Determine which categories get library bonus
+    library_category_bonus = set()
+    for lib in libraries_detected:
+        for cat in LIBRARY_CATEGORY_MAP.get(lib["name"], []):
+            library_category_bonus.add(cat)
+
+    # Assemble per-category results, preserving original sub_key → file order
+    categories = {}
+    for cat_key, cat_def in GUARDRAIL_CATEGORIES.items():
+        patterns_matched = patterns_matched_per_cat[cat_key]
+
+        # Flatten detections in sub_key order (matches original loop order)
+        detected_flat = []
+        for sub_key in cat_def["patterns"]:
+            detected_flat.extend(per_subkey_detections[cat_key][sub_key])
+
         # Deduplicate: keep first detection per (pattern, file)
-        seen = set()
+        seen: set = set()
         unique_detected = []
-        for d in detected:
+        for d in detected_flat:
             key = (d["pattern"], d["file"])
             if key not in seen:
                 seen.add(key)
                 unique_detected.append(d)
-        detected = unique_detected
 
         # Scoring: library=10, code patterns=5 each (cap 15), total cap 20
         library_score = 10 if cat_key in library_category_bonus else 0
@@ -369,7 +404,7 @@ def scan_for_guardrails(project_path: str) -> dict:
 
         categories[cat_key] = {
             "score": score,
-            "detected": detected,
+            "detected": unique_detected,
             "gaps": gaps,
             "article_ref": cat_def["article_ref"],
             "description": cat_def["description"],
@@ -461,6 +496,38 @@ _GAP_ARTICLE_MAP = {
 }
 
 
+# ---------------------------------------------------------------------------
+# Pre-compiled pattern tables (Fix #3 — compile once at module load)
+# ---------------------------------------------------------------------------
+
+# _COMPILED_PATTERNS: category → subcategory → list of compiled re objects
+_COMPILED_PATTERNS: dict = {
+    cat_key: {
+        sub_key: [re.compile(p, re.IGNORECASE) for p in patterns]
+        for sub_key, patterns in cat_def["patterns"].items()
+    }
+    for cat_key, cat_def in GUARDRAIL_CATEGORIES.items()
+}
+
+# _COMPILED_KNOWN_LIBRARIES: list of (compiled_re, display_name, lib_type)
+_COMPILED_KNOWN_LIBRARIES = [
+    (re.compile(lib_pattern, re.IGNORECASE), lib_name, lib_type)
+    for lib_pattern, lib_name, lib_type in KNOWN_LIBRARIES
+]
+
+# _COMPILED_AI_CALL_PATTERNS: list of (compiled_re, call_label)
+_COMPILED_AI_CALL_PATTERNS = [
+    (re.compile(call_regex, re.IGNORECASE), call_label)
+    for call_regex, call_label in AI_CALL_PATTERNS
+]
+
+# _COMPILED_GUARDRAIL_PATTERNS: guard_type → list of compiled re objects
+_COMPILED_GUARDRAIL_PATTERNS: dict = {
+    guard_type: [re.compile(p, re.IGNORECASE) for p in patterns]
+    for guard_type, patterns in _NEARBY_GUARDRAIL_PATTERNS.items()
+}
+
+
 def detect_guardrail_gaps(project_path: str) -> list:
     """Detect AI API call sites missing nearby guardrail patterns.
 
@@ -484,9 +551,9 @@ def detect_guardrail_gaps(project_path: str) -> list:
 
         lines = content.split("\n")
 
-        for call_regex, call_label in AI_CALL_PATTERNS:
+        for compiled_call, call_label in _COMPILED_AI_CALL_PATTERNS:
             for line_idx, line_text in enumerate(lines):
-                if not re.search(call_regex, line_text, re.IGNORECASE):
+                if not compiled_call.search(line_text):
                     continue
 
                 # Extract +-20 line window
@@ -497,10 +564,10 @@ def detect_guardrail_gaps(project_path: str) -> list:
                 present = []
                 missing = []
 
-                for guard_type, patterns in _NEARBY_GUARDRAIL_PATTERNS.items():
+                for guard_type, compiled_pats in _COMPILED_GUARDRAIL_PATTERNS.items():
                     found = False
-                    for pat in patterns:
-                        if re.search(pat, window, re.IGNORECASE):
+                    for cpat in compiled_pats:
+                        if cpat.search(window):
                             found = True
                             break
                     if found:
