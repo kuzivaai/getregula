@@ -1948,7 +1948,7 @@ def test_dep_scan_compromised_detection():
             import yaml
             assert_true(False, "pyyaml installed but no advisories loaded — real failure")
         except ImportError:
-            print("✓ Dependency scan: detects known compromised versions (SKIPPED — pyyaml required)")
+            print("⊘ Dependency scan: detects known compromised versions (SKIPPED — pyyaml required)")
             return
     assert_true(len(findings) > 0, "finds compromised litellm")
     assert_eq(findings[0]["package"], "litellm", "identifies litellm")
@@ -2183,7 +2183,7 @@ def test_framework_mapper_all_frameworks():
 def test_framework_mapper_owasp_llm():
     """Maps findings to OWASP Top 10 for LLMs"""
     if not _HAS_PYYAML:
-        print("✓ Framework mapper: OWASP LLM Top 10 mapping (SKIPPED — pyyaml required)")
+        print("⊘ Framework mapper: OWASP LLM Top 10 mapping (SKIPPED — pyyaml required)")
         return
     from framework_mapper import map_to_frameworks
     mapping = map_to_frameworks(articles=["15"], frameworks=["owasp-llm-top10"])
@@ -2196,7 +2196,7 @@ def test_framework_mapper_owasp_llm():
 def test_framework_mapper_mitre_atlas():
     """Maps findings to MITRE ATLAS techniques"""
     if not _HAS_PYYAML:
-        print("✓ Framework mapper: MITRE ATLAS mapping (SKIPPED — pyyaml required)")
+        print("⊘ Framework mapper: MITRE ATLAS mapping (SKIPPED — pyyaml required)")
         return
     from framework_mapper import map_to_frameworks
     mapping = map_to_frameworks(articles=["10"], frameworks=["mitre-atlas"])
@@ -2209,7 +2209,7 @@ def test_framework_mapper_mitre_atlas():
 def test_framework_mapper_nist_csf():
     """Maps findings to NIST CSF 2.0"""
     if not _HAS_PYYAML:
-        print("✓ Framework mapper: NIST CSF 2.0 mapping (SKIPPED — pyyaml required)")
+        print("⊘ Framework mapper: NIST CSF 2.0 mapping (SKIPPED — pyyaml required)")
         return
     from framework_mapper import map_to_frameworks
     mapping = map_to_frameworks(articles=["15"], frameworks=["nist-csf"])
@@ -2223,7 +2223,7 @@ def test_framework_mapper_nist_csf():
 def test_framework_mapper_soc2():
     """Maps findings to SOC 2 Trust Services Criteria"""
     if not _HAS_PYYAML:
-        print("✓ Framework mapper: SOC 2 mapping (SKIPPED — pyyaml required)")
+        print("⊘ Framework mapper: SOC 2 mapping (SKIPPED — pyyaml required)")
         return
     from framework_mapper import map_to_frameworks
     mapping = map_to_frameworks(articles=["9"], frameworks=["soc2"])
@@ -2236,7 +2236,7 @@ def test_framework_mapper_soc2():
 def test_framework_mapper_iso_27001():
     """Maps findings to ISO 27001:2022"""
     if not _HAS_PYYAML:
-        print("✓ Framework mapper: ISO 27001 mapping (SKIPPED — pyyaml required)")
+        print("⊘ Framework mapper: ISO 27001 mapping (SKIPPED — pyyaml required)")
         return
     from framework_mapper import map_to_frameworks
     mapping = map_to_frameworks(articles=["12"], frameworks=["iso-27001"])
@@ -2289,7 +2289,7 @@ def test_integration_high_risk_project():
     from report import scan_files
     fixture_path = str(Path(__file__).parent / "fixtures" / "sample_high_risk")
     if not Path(fixture_path).exists():
-        print("✓ Integration: high-risk fixture (SKIPPED — fixture not found)")
+        print("⊘ Integration: high-risk fixture (SKIPPED — fixture not found)")
         return
     findings = scan_files(fixture_path)
     tiers = [f["tier"] for f in findings if not f.get("suppressed")]
@@ -2302,7 +2302,7 @@ def test_integration_compliant_project():
     from compliance_check import assess_compliance
     fixture_path = str(Path(__file__).parent / "fixtures" / "sample_compliant")
     if not Path(fixture_path).exists():
-        print("✓ Integration: compliant fixture (SKIPPED — fixture not found)")
+        print("⊘ Integration: compliant fixture (SKIPPED — fixture not found)")
         return
     assessment = assess_compliance(fixture_path)
     assert_true(assessment["overall_score"] > 30,
@@ -2315,7 +2315,7 @@ def test_integration_unpinned_deps():
     from dependency_scan import scan_dependencies
     fixture_path = str(Path(__file__).parent / "fixtures" / "sample_unpinned")
     if not Path(fixture_path).exists():
-        print("✓ Integration: unpinned fixture (SKIPPED — fixture not found)")
+        print("⊘ Integration: unpinned fixture (SKIPPED — fixture not found)")
         return
     results = scan_dependencies(fixture_path)
     assert_true(results["pinning_score"] < 50,
@@ -2330,7 +2330,7 @@ def test_integration_full_check_cli():
     import subprocess
     fixture_path = str(Path(__file__).parent / "fixtures" / "sample_high_risk")
     if not Path(fixture_path).exists():
-        print("✓ Integration: CLI check (SKIPPED — fixture not found)")
+        print("⊘ Integration: CLI check (SKIPPED — fixture not found)")
         return
     result = subprocess.run(
         [sys.executable, "scripts/cli.py", "check", fixture_path, "--format", "json", "--no-skip-tests", "--min-tier", "minimal_risk", "--scope", "all"],
@@ -2437,7 +2437,7 @@ def test_tree_sitter_js_import_extraction():
         assert_true(len(result["ai_imports"]) >= 2, f"finds 2+ AI imports (got {len(result['ai_imports'])})")
         print("✓ Tree-sitter: JS import extraction")
     except ImportError:
-        print("✓ Tree-sitter: JS import extraction (SKIPPED — tree-sitter not installed)")
+        print("⊘ Tree-sitter: JS import extraction (SKIPPED — tree-sitter not installed)")
 
 
 def test_tree_sitter_js_data_flow():
@@ -2463,7 +2463,7 @@ async function process(data) {
         assert_true(len(dest_types) > 0, f"has destinations (got {dest_types})")
         print("✓ Tree-sitter: JS data flow tracing")
     except ImportError:
-        print("✓ Tree-sitter: JS data flow tracing (SKIPPED — tree-sitter not installed)")
+        print("⊘ Tree-sitter: JS data flow tracing (SKIPPED — tree-sitter not installed)")
 
 
 def test_tree_sitter_ts_oversight_detection():
@@ -2490,7 +2490,7 @@ function humanReview(recommendation: string): boolean {
                     f"oversight score > 50 (got {result['oversight']['oversight_score']})")
         print("✓ Tree-sitter: TS oversight detection")
     except ImportError:
-        print("✓ Tree-sitter: TS oversight detection (SKIPPED — tree-sitter not installed)")
+        print("⊘ Tree-sitter: TS oversight detection (SKIPPED — tree-sitter not installed)")
 
 
 def test_tree_sitter_js_function_extraction():
@@ -2513,7 +2513,7 @@ class AIService {
         assert_true("AIService" in class_names, "finds class")
         print("✓ Tree-sitter: JS function/class extraction")
     except ImportError:
-        print("✓ Tree-sitter: JS function/class extraction (SKIPPED — tree-sitter not installed)")
+        print("⊘ Tree-sitter: JS function/class extraction (SKIPPED — tree-sitter not installed)")
 
 
 # ── Rust/C/C++ language support (3 tests) ─────────────────────────
@@ -7053,14 +7053,26 @@ if __name__ == "__main__":
 
     print(f"Running {len(tests)} tests...\n")
 
+    import io
     skipped = 0
     for test in tests:
+        # Capture stdout per-test so we can detect silent skips (⊘ prefix)
+        # and count them accurately before re-printing the output.
+        captured = io.StringIO()
+        _real_stdout = sys.stdout
+        sys.stdout = captured
         try:
             test()
         except _HookNotAvailable:
+            sys.stdout = _real_stdout
             skipped += 1
             print(f"  SKIP  {test.__name__} (hooks not available)")
+            continue
         except BaseException as e:
+            sys.stdout = _real_stdout
+            output = captured.getvalue()
+            if output:
+                print(output, end="")
             if "Skipped" in type(e).__name__:
                 skipped += 1
                 print(f"  SKIP  {test.__name__} ({e})")
@@ -7069,9 +7081,19 @@ if __name__ == "__main__":
             else:
                 helpers.failed += 1
                 print(f"  EXCEPTION in {test.__name__}: {e}")
+            continue
+        finally:
+            sys.stdout = _real_stdout
 
-    print(f"\n{'=' * 50}")
-    print(f"Results: {helpers.passed} passed, {helpers.failed} failed ({len(tests)} test functions)")
+        output = captured.getvalue()
+        # A test that prints a line starting with ⊘ has taken a skip path.
+        if any(line.lstrip().startswith("⊘") for line in output.splitlines()):
+            skipped += 1
+        if output:
+            print(output, end="")
+
+    print("\n" + "=" * 50)
+    print(f"Results: {helpers.passed} passed, {helpers.failed} failed, {skipped} skipped ({len(tests)} test functions)")
     if helpers.failed:
         print("❌ SOME TESTS FAILED")
         sys.exit(1)
