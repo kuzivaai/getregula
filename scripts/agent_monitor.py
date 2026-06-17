@@ -38,6 +38,13 @@ SENSITIVE_RESOURCE_PATTERNS = {
     "system_command": [r"subprocess\.(run|call|Popen)", r"os\.system\(", r"exec\(", r"eval\("],
 }
 
+# Pre-compiled version of SENSITIVE_RESOURCE_PATTERNS for O(1) per-call
+# pattern matching instead of re-compiling raw strings on every call.
+_SENSITIVE_COMPILED = {
+    cat: [re.compile(p, re.IGNORECASE) for p in patterns]
+    for cat, patterns in SENSITIVE_RESOURCE_PATTERNS.items()
+}
+
 
 def analyse_agent_session(session_id: str = None, hours: int = 8) -> dict:
     """Analyse an agent session for governance metrics.
@@ -94,9 +101,9 @@ def analyse_agent_session(session_id: str = None, hours: int = 8) -> dict:
     sensitive = {}
     for e in events:
         tool_input = str(e.get("data", {}).get("tool_input", ""))
-        for category, patterns in SENSITIVE_RESOURCE_PATTERNS.items():
-            for pattern in patterns:
-                if re.search(pattern, tool_input, re.IGNORECASE):
+        for category, compiled_patterns in _SENSITIVE_COMPILED.items():
+            for compiled in compiled_patterns:
+                if compiled.search(tool_input):
                     if category not in sensitive:
                         sensitive[category] = {"count": 0, "examples": []}
                     sensitive[category]["count"] += 1

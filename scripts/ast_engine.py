@@ -12,6 +12,7 @@ No external dependencies required. Tree-sitter is optional for JS/TS
 """
 
 import argparse
+import bisect
 import json
 import os
 import re
@@ -96,6 +97,122 @@ _JS_TEST_PATTERNS = re.compile(
     r"""(?:describe\s*\(|it\s*\(|test\s*\(|expect\s*\(|jest\.|vitest\.|\.spec\.|\.test\.)""",
     re.MULTILINE,
 )
+
+# ---------------------------------------------------------------------------
+# Module-level compiled patterns (hoisted for performance)
+# ---------------------------------------------------------------------------
+
+# Oversight keywords: single compiled alternation used across all language
+# analysers instead of looping over individual re.search() calls per keyword.
+_OVERSIGHT_RE = re.compile(
+    r"""\b(?:review|approve|approval|confirm|verify|human|manual|override|escalate|moderator)\b""",
+    re.IGNORECASE,
+)
+
+# JS/TS — context classification (config detection)
+_JS_CONFIG_RE = re.compile(
+    r"""(?:model|endpoint|api_key|temperature|max_tokens|prompt)\s*[:=]""",
+    re.IGNORECASE,
+)
+
+# JS/TS — AI call detection (data-flow)
+_JS_AI_CALL_RE = re.compile(
+    r"""(?:await\s+)?(\w+(?:\.\w+)*)\s*\.\s*(?:create|complete|generate|chat|embed|invoke|predict|run)\s*\(""",
+    re.MULTILINE,
+)
+
+# JS/TS — logging call detection
+_JS_LOGGING_RE = re.compile(
+    r"""(?:console\.\w+|logger\.\w+|log\.\w+|winston\.\w+|pino\.\w+)\s*\(""",
+    re.MULTILINE,
+)
+
+# Java — context classification (config detection)
+_JAVA_CONFIG_RE = re.compile(
+    r"""(?:model|endpoint|apiKey|api_key|temperature|maxTokens|prompt)\s*[=:]""",
+    re.IGNORECASE,
+)
+
+# Java — logging call detection
+_JAVA_LOGGING_RE = re.compile(
+    r"""(?:logger\.\w+|log\.\w+|Logger\.\w+|System\.out\.print)\s*\(""",
+    re.MULTILINE,
+)
+
+# Go — context classification (config detection)
+_GO_CONFIG_RE = re.compile(
+    r"""(?:model|endpoint|apiKey|api_key|temperature|maxTokens|prompt)\s*[=:]""",
+    re.IGNORECASE,
+)
+
+# Go — logging call detection
+_GO_LOGGING_RE = re.compile(
+    r"""(?:log\.\w+|fmt\.Print|slog\.\w+|zap\.\w+|logrus\.\w+)\s*\(""",
+    re.MULTILINE,
+)
+
+# Rust — context classification (config detection)
+_RUST_CONFIG_RE = re.compile(
+    r"""(?:model|endpoint|api_key|temperature|max_tokens|prompt)\s*[=:]""",
+    re.IGNORECASE,
+)
+
+# Rust — logging call detection
+_RUST_LOGGING_RE = re.compile(
+    r"""(?:log::(?:info|debug|warn|error|trace)|println!|eprintln!|tracing::(?:info|debug|warn|error|trace))\s*[!(]""",
+    re.MULTILINE,
+)
+
+# C/C++ — context classification (config detection)
+_CPP_CONFIG_RE = re.compile(
+    r"""(?:model|endpoint|api_key|temperature|max_tokens|prompt)\s*[=:]""",
+    re.IGNORECASE,
+)
+
+# C/C++ — namespace usage patterns (AI library detection)
+_CPP_USAGE_RE = re.compile(
+    r'\b(?:cv|torch|tf|ort|dlib|caffe|ncnn|mxnet|armnn|trt|ov)::\w+',
+    re.MULTILINE,
+)
+
+# C/C++ — logging call detection
+_CPP_LOGGING_RE = re.compile(
+    r"""(?:std::cout|std::cerr|printf|fprintf|spdlog::\w+|LOG(?:_INFO|_DEBUG|_WARN|_ERROR)?)\s*[(<]""",
+    re.MULTILINE,
+)
+
+# Tree-sitter path — context classification (config detection)
+_TS_CONFIG_RE = re.compile(
+    r"""(?:model|endpoint|api_key|temperature|max_tokens|prompt)\s*[:=]""",
+    re.IGNORECASE,
+)
+
+
+def _build_line_index(content: str):
+    """Return a sorted list of newline positions for O(log n) line lookups."""
+    return [i for i, c in enumerate(content) if c == '\n']
+
+
+def _line_at(newlines: list, pos: int) -> int:
+    """Return 1-based line number for byte offset *pos* using bisect."""
+    return bisect.bisect_left(newlines, pos) + 1
+
+
+def _oversight_patterns_for(content: str) -> list:
+    """Return one oversight dict per distinct keyword found in *content*.
+
+    Matches the original behaviour of looping over a fixed set of keywords
+    and appending {"keyword": kw} once per keyword that appears at least once.
+    Uses the pre-compiled _OVERSIGHT_RE alternation for performance.
+    """
+    seen: list = []
+    seen_set: set = set()
+    for m in _OVERSIGHT_RE.finditer(content):
+        kw = m.group(0).lower()
+        if kw not in seen_set:
+            seen_set.add(kw)
+            seen.append({"keyword": kw})
+    return seen
 
 
 JAVA_AI_LIBRARIES = {
@@ -434,11 +551,7 @@ def _tree_sitter_parse(content: str, language: str, filename: str = "unknown.js"
     elif has_ai_code:
         context = "implementation"
     else:
-        config_patterns = re.compile(
-            r"""(?:model|endpoint|api_key|temperature|max_tokens|prompt)\s*[:=]""",
-            re.IGNORECASE,
-        )
-        context = "configuration" if config_patterns.search(content) else "implementation"
+        context = "configuration" if _TS_CONFIG_RE.search(content) else "implementation"
 
     # ── 6. AI call detection & data-flow tracing ──────────────────────────
     # Known AI method names that indicate an AI operation
@@ -859,39 +972,24 @@ def _analyse_js_ts_regex(content: str, filename: str) -> dict:
         context = "implementation"
     else:
         # Check for config-like patterns
-        config_patterns = re.compile(
-            r"""(?:model|endpoint|api_key|temperature|max_tokens|prompt)\s*[:=]""",
-            re.IGNORECASE,
-        )
-        if config_patterns.search(content):
-            context = "configuration"
-        else:
-            context = "implementation"
+        context = "configuration" if _JS_CONFIG_RE.search(content) else "implementation"
+
+    # Build line index once for O(log n) line-number lookups
+    _nl = _build_line_index(content)
 
     # Basic data flow detection for JS/TS (simplified)
     data_flows = []
     if has_ai_code:
         # Look for common AI call patterns
-        ai_call_re = re.compile(
-            r"""(?:await\s+)?(\w+(?:\.\w+)*)\s*\.\s*(?:create|complete|generate|chat|embed|invoke|predict|run)\s*\(""",
-            re.MULTILINE,
-        )
-        for match in ai_call_re.finditer(content):
+        for match in _JS_AI_CALL_RE.finditer(content):
             data_flows.append({
                 "source": match.group(0).rstrip("(").strip(),
-                "source_line": content[:match.start()].count("\n") + 1,
+                "source_line": _line_at(_nl, match.start()),
                 "destinations": [],
             })
 
     # Basic oversight detection
-    oversight_keywords = {
-        "review", "approve", "approval", "confirm", "verify",
-        "human", "manual", "override", "escalate", "moderator",
-    }
-    oversight_patterns = []
-    for kw in oversight_keywords:
-        if re.search(r"\b" + kw + r"\b", content, re.IGNORECASE):
-            oversight_patterns.append({"keyword": kw})
+    oversight_patterns = _oversight_patterns_for(content)
 
     oversight = {
         "has_oversight": len(oversight_patterns) > 0,
@@ -902,15 +1000,11 @@ def _analyse_js_ts_regex(content: str, filename: str) -> dict:
     oversight["oversight_score"] = min(100, oversight["oversight_score"])
 
     # Basic logging detection
-    logging_re = re.compile(
-        r"""(?:console\.\w+|logger\.\w+|log\.\w+|winston\.\w+|pino\.\w+)\s*\(""",
-        re.MULTILINE,
-    )
     logging_patterns = []
-    for match in logging_re.finditer(content):
+    for match in _JS_LOGGING_RE.finditer(content):
         logging_patterns.append({
             "call": match.group(0).rstrip("(").strip(),
-            "line": content[:match.start()].count("\n") + 1,
+            "line": _line_at(_nl, match.start()),
         })
 
     logging_info = {
@@ -1043,21 +1137,13 @@ def _analyse_java_regex(content: str) -> dict:
     elif has_ai_code:
         context = "implementation"
     else:
-        config_patterns = re.compile(
-            r"""(?:model|endpoint|apiKey|api_key|temperature|maxTokens|prompt)\s*[=:]""",
-            re.IGNORECASE,
-        )
-        context = "configuration" if config_patterns.search(content) else "implementation"
+        context = "configuration" if _JAVA_CONFIG_RE.search(content) else "implementation"
+
+    # Build line index once for O(log n) line-number lookups
+    _nl = _build_line_index(content)
 
     # Basic oversight detection
-    oversight_keywords = {
-        "review", "approve", "approval", "confirm", "verify",
-        "human", "manual", "override", "escalate", "moderator",
-    }
-    oversight_patterns = []
-    for kw in oversight_keywords:
-        if re.search(r"\b" + kw + r"\b", content, re.IGNORECASE):
-            oversight_patterns.append({"keyword": kw})
+    oversight_patterns = _oversight_patterns_for(content)
 
     oversight = {
         "has_oversight": len(oversight_patterns) > 0,
@@ -1067,15 +1153,11 @@ def _analyse_java_regex(content: str) -> dict:
     }
 
     # Basic logging detection
-    logging_re = re.compile(
-        r"""(?:logger\.\w+|log\.\w+|Logger\.\w+|System\.out\.print)\s*\(""",
-        re.MULTILINE,
-    )
     logging_patterns = []
-    for match in logging_re.finditer(content):
+    for match in _JAVA_LOGGING_RE.finditer(content):
         logging_patterns.append({
             "call": match.group(0).rstrip("(").strip(),
-            "line": content[:match.start()].count("\n") + 1,
+            "line": _line_at(_nl, match.start()),
         })
 
     logging_info = {
@@ -1162,21 +1244,13 @@ def _analyse_go_regex(content: str) -> dict:
     elif has_ai_code:
         context = "implementation"
     else:
-        config_patterns = re.compile(
-            r"""(?:model|endpoint|apiKey|api_key|temperature|maxTokens|prompt)\s*[=:]""",
-            re.IGNORECASE,
-        )
-        context = "configuration" if config_patterns.search(content) else "implementation"
+        context = "configuration" if _GO_CONFIG_RE.search(content) else "implementation"
+
+    # Build line index once for O(log n) line-number lookups
+    _nl = _build_line_index(content)
 
     # Basic oversight detection
-    oversight_keywords = {
-        "review", "approve", "approval", "confirm", "verify",
-        "human", "manual", "override", "escalate", "moderator",
-    }
-    oversight_patterns = []
-    for kw in oversight_keywords:
-        if re.search(r"\b" + kw + r"\b", content, re.IGNORECASE):
-            oversight_patterns.append({"keyword": kw})
+    oversight_patterns = _oversight_patterns_for(content)
 
     oversight = {
         "has_oversight": len(oversight_patterns) > 0,
@@ -1186,15 +1260,11 @@ def _analyse_go_regex(content: str) -> dict:
     }
 
     # Basic logging detection
-    logging_re = re.compile(
-        r"""(?:log\.\w+|fmt\.Print|slog\.\w+|zap\.\w+|logrus\.\w+)\s*\(""",
-        re.MULTILINE,
-    )
     logging_patterns = []
-    for match in logging_re.finditer(content):
+    for match in _GO_LOGGING_RE.finditer(content):
         logging_patterns.append({
             "call": match.group(0).rstrip("(").strip(),
-            "line": content[:match.start()].count("\n") + 1,
+            "line": _line_at(_nl, match.start()),
         })
 
     logging_info = {
@@ -1297,21 +1367,13 @@ def _analyse_rust_regex(content: str) -> dict:
     elif has_ai_code:
         context = "implementation"
     else:
-        config_patterns = re.compile(
-            r"""(?:model|endpoint|api_key|temperature|max_tokens|prompt)\s*[=:]""",
-            re.IGNORECASE,
-        )
-        context = "configuration" if config_patterns.search(content) else "implementation"
+        context = "configuration" if _RUST_CONFIG_RE.search(content) else "implementation"
+
+    # Build line index once for O(log n) line-number lookups
+    _nl = _build_line_index(content)
 
     # Basic oversight detection
-    oversight_keywords = {
-        "review", "approve", "approval", "confirm", "verify",
-        "human", "manual", "override", "escalate", "moderator",
-    }
-    oversight_patterns = []
-    for kw in oversight_keywords:
-        if re.search(r"\b" + kw + r"\b", content, re.IGNORECASE):
-            oversight_patterns.append({"keyword": kw})
+    oversight_patterns = _oversight_patterns_for(content)
 
     oversight = {
         "has_oversight": len(oversight_patterns) > 0,
@@ -1321,15 +1383,11 @@ def _analyse_rust_regex(content: str) -> dict:
     }
 
     # Basic logging detection
-    logging_re = re.compile(
-        r"""(?:log::(?:info|debug|warn|error|trace)|println!|eprintln!|tracing::(?:info|debug|warn|error|trace))\s*[!(]""",
-        re.MULTILINE,
-    )
     logging_patterns = []
-    for match in logging_re.finditer(content):
+    for match in _RUST_LOGGING_RE.finditer(content):
         logging_patterns.append({
             "call": match.group(0).rstrip("!(").strip(),
-            "line": content[:match.start()].count("\n") + 1,
+            "line": _line_at(_nl, match.start()),
         })
 
     logging_info = {
@@ -1390,11 +1448,7 @@ def _analyse_cpp_regex(content: str) -> dict:
                 break
 
     # Also detect usage patterns like cv::Mat, torch::Tensor, tf::Tensor
-    cpp_usage_patterns = re.compile(
-        r'\b(?:cv|torch|tf|ort|dlib|caffe|ncnn|mxnet|armnn|trt|ov)::\w+',
-        re.MULTILINE,
-    )
-    for match in cpp_usage_patterns.finditer(content):
+    for match in _CPP_USAGE_RE.finditer(content):
         # Map namespace to a representative library if not already detected
         ns = match.group(0).split("::")[0]
         ns_to_lib = {
@@ -1437,21 +1491,13 @@ def _analyse_cpp_regex(content: str) -> dict:
     elif has_ai_code:
         context = "implementation"
     else:
-        config_patterns = re.compile(
-            r"""(?:model|endpoint|api_key|temperature|max_tokens|prompt)\s*[=:]""",
-            re.IGNORECASE,
-        )
-        context = "configuration" if config_patterns.search(content) else "implementation"
+        context = "configuration" if _CPP_CONFIG_RE.search(content) else "implementation"
+
+    # Build line index once for O(log n) line-number lookups
+    _nl = _build_line_index(content)
 
     # Basic oversight detection
-    oversight_keywords = {
-        "review", "approve", "approval", "confirm", "verify",
-        "human", "manual", "override", "escalate", "moderator",
-    }
-    oversight_patterns = []
-    for kw in oversight_keywords:
-        if re.search(r"\b" + kw + r"\b", content, re.IGNORECASE):
-            oversight_patterns.append({"keyword": kw})
+    oversight_patterns = _oversight_patterns_for(content)
 
     oversight = {
         "has_oversight": len(oversight_patterns) > 0,
@@ -1461,15 +1507,11 @@ def _analyse_cpp_regex(content: str) -> dict:
     }
 
     # Basic logging detection
-    logging_re = re.compile(
-        r"""(?:std::cout|std::cerr|printf|fprintf|spdlog::\w+|LOG(?:_INFO|_DEBUG|_WARN|_ERROR)?)\s*[(<]""",
-        re.MULTILINE,
-    )
     logging_patterns = []
-    for match in logging_re.finditer(content):
+    for match in _CPP_LOGGING_RE.finditer(content):
         logging_patterns.append({
             "call": match.group(0).rstrip("(<").strip(),
-            "line": content[:match.start()].count("\n") + 1,
+            "line": _line_at(_nl, match.start()),
         })
 
     logging_info = {
