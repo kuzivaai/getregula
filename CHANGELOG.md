@@ -7,6 +7,31 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.7.3] — 2026-06-17
+
+Security hardening and correctness release. Fixes `regula register`
+crash in pip-installed environments (#8), eliminates two ReDoS
+vulnerabilities in risk patterns, redacts secrets from scan output,
+and hardens the MCP server and timestamp paths against SSRF.
+
+### Fixed
+
+- **Packaging: `regula register` crash on pip-install** — `references/annex_viii_sections.json`
+  was missing from package-data; added `*.json` glob to `pyproject.toml`.
+- **ReDoS in `rag_poisoning` and `no_grounding` patterns** — negative lookahead inside
+  quantified groups caused catastrophic backtracking; rewritten to bounded lookaheads.
+- **Secret values leaked in finding descriptions** — `scan_config_files()` embedded
+  first 40 chars of matched secrets in output; now redacted to type + char count.
+- **`strip_comments()` escape handling** — backslash-escaped quotes (`\"`, `\'`) were
+  mishandled, causing false negatives and false positives in Python classification.
+- **Malformed policy file silently ignored** — `_load_policy()` now surfaces a clear
+  WARNING to stderr and exposes the error via `get_policy_parse_error()`.
+- **MCP path denylist bypass** — exact-match check replaced with prefix blocking via
+  `Path.is_relative_to()`; `/proc`, `/sys`, `/dev`, `/boot` added to blocklist.
+- **SSRF via `REGULA_TSA_URL`** — `_require_http_url()` now rejects private/internal IPs
+  (loopback, RFC 1918, link-local, AWS metadata).
+- **SSRF via `--repos` git clone** — `_validate_clone_url()` rejects non-https schemes.
+
 ## [1.7.2] — 2026-06-15
 
 Precision engineering release. Regex bug fixes, AST context gating,
