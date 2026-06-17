@@ -60,6 +60,12 @@ _AI_CONFIG_PATTERNS = [
     (re.compile(r"openai|anthropic|google.generativeai|aws.sagemaker|azurerm_openai", re.IGNORECASE), "AI provider reference"),
 ]
 
+# Critical ungated security patterns: eval/exec on AI output variables.
+# Defined at module level so the regex is compiled once, not per file.
+_CRITICAL_UNGATED = [
+    (re.compile(r"(?:exec|eval)\s*\(\s*(?:ai_response|llm_output|completion|model_output|ai_output|generated_code)"), "AI Security (LLM06)"),
+]
+
 
 def scan_config_files(project_path: str) -> list:
     """Scan config/env files for AI service references.
@@ -462,6 +468,21 @@ def _parse_suppression_rules(lines, respect_ignores, filepath="unknown"):
     return suppression_set, decisions
 
 
+def _check_domain_gated(f: dict, domain_activated: set, opt_in_categories: set) -> bool:
+    """Return True if a cached finding should be suppressed by domain gating.
+
+    A finding is domain-gated when ALL of its indicators are opt-in and none of
+    those opt-in indicators have been activated (by user declaration or
+    fingerprinting).  Defined at module level so the closure is not recreated
+    on every file in the scan loop.
+    """
+    if f.get("tier") != "high_risk":
+        return False
+    inds = set(f.get("indicators", []))
+    opt_in = inds & opt_in_categories
+    return bool(opt_in) and not (inds - opt_in_categories) and not (opt_in & domain_activated)
+
+
 def scan_files(project_path: str, respect_ignores: bool = True,
                skip_tests: bool = False, min_tier: str = "",
                declared_domains: set = None) -> list:
@@ -625,6 +646,11 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         and not re.search(r'^[A-Za-z_]\w*\s*=', content, re.MULTILINE)):
                     continue
 
+            # Cache is_ai_related result once per file — it is called up to 3×
+            # (cache stats path, non-AI gate, domain boost) so computing it
+            # once here avoids repeated full-content regex scans.
+            _is_ai = is_ai_related(content)
+
             # Check scan cache — if content unchanged, reuse cached findings
             try:
                 if cache is not None:
@@ -634,16 +660,10 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                             cached = [f for f in cached
                                       if _TIER_ORDER.get(f.get("tier", ""), 0) >= min_tier_level]
                         # Apply domain gating to cached findings too
-                        def _is_domain_gated(f):
-                            if f.get("tier") != "high_risk":
-                                return False
-                            inds = set(f.get("indicators", []))
-                            opt_in = inds & OPT_IN_CATEGORIES
-                            return opt_in and not (inds - OPT_IN_CATEGORIES) and not (opt_in & _domain_activated)
-                        cached = [f for f in cached if not _is_domain_gated(f)]
+                        cached = [f for f in cached if not _check_domain_gated(f, _domain_activated, OPT_IN_CATEGORIES)]
                         findings.extend(cached)
                         # Maintain AI file counter for stats even on cache hits
-                        if not cached and is_ai_related(content):
+                        if not cached and _is_ai:
                             _ai_files_no_indicators += 1
                         continue
             except Exception:
@@ -700,14 +720,10 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                             pass  # Cache write is best-effort
                         continue
 
-            if not is_ai_related(content):
+            if not _is_ai:
                 # Even non-AI-related files should be checked for critical
                 # security patterns: eval/exec on variables named after AI output.
                 # These represent code execution risks regardless of imports.
-                import re as _re
-                _CRITICAL_UNGATED = [
-                    (_re.compile(r"(?:exec|eval)\s*\(\s*(?:ai_response|llm_output|completion|model_output|ai_output|generated_code)"), "AI Security (LLM06)"),
-                ]
                 for _crit_pat, _crit_cat in _CRITICAL_UNGATED:
                     for _crit_m in _crit_pat.finditer(content):
                         _crit_line = content[:_crit_m.start()].count("\n") + 1
@@ -804,7 +820,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             indicator_bonus = min(len(result.indicators_matched) * 8, 15)
 
             # Domain-aware boost: co-occurrence of AI + regulatory domain keywords
-            domain_result = compute_domain_boost(content, is_ai_related(content))
+            domain_result = compute_domain_boost(content, _is_ai)
             domain_boost = domain_result["boost"]
 
             confidence_score = min(base_score + indicator_bonus + domain_boost, 100)
