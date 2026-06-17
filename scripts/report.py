@@ -44,6 +44,16 @@ from scan_cache import ScanCache
 from constants import CODE_EXTENSIONS, SKIP_DIRS, MODEL_EXTENSIONS, VERSION
 CONFIG_FILES = {".env", ".env.production", ".env.local", "docker-compose.yml", "docker-compose.yaml", "Dockerfile"}
 
+# ---------------------------------------------------------------------------
+# EU AI Act enforcement deadlines — canonical source of truth.
+# Update these when the Omnibus is formally adopted (OJ publication).
+# ---------------------------------------------------------------------------
+DEADLINE_PROHIBITED        = "2025-02-02"  # Article 5 — not affected by Omnibus
+DEADLINE_CURRENT_LAW       = "2026-08-02"  # General high-risk / current law
+DEADLINE_OMNIBUS_ANNEX_III = "2027-12-02"  # Omnibus agreed extension for Annex III
+DEADLINE_OMNIBUS_ANNEX_I   = "2028-08-02"  # Omnibus agreed extension for Annex I / sectoral
+DEADLINE_OMNIBUS_LIMITED   = "2026-12-02"  # Omnibus agreed extension for limited-risk watermarking
+
 # Generic indicator names that don't convey specific risk — used to gate
 # WARN-tier visibility. If a finding's only indicators are in this set,
 # it gets demoted to INFO.
@@ -991,7 +1001,7 @@ def _enrich_deadlines(findings: list) -> None:
         category = f.get("category", "")
 
         if tier == "prohibited":
-            f["deadline"] = "2025-02-02"
+            f["deadline"] = DEADLINE_PROHIBITED
             f["deadline_status"] = "enforceable"
             f["deadline_note"] = "Article 5 prohibitions enforceable since 2 Feb 2025. Not affected by Omnibus."
         elif tier in ("high_risk", "ai_security"):
@@ -999,29 +1009,29 @@ def _enrich_deadlines(findings: list) -> None:
             annex_i_keywords = ("Safety Component", "Medical Device", "Machinery",
                                 "harmonisation", "sectoral")
             if any(kw.lower() in category.lower() for kw in annex_i_keywords):
-                f["deadline"] = "2026-08-02"
+                f["deadline"] = DEADLINE_CURRENT_LAW
                 f["deadline_status"] = "current_law"
-                f["deadline_note"] = "Current law: 2 Aug 2026. Omnibus agreed: 2 Aug 2028 (Annex I / sectoral). Pending formal adoption."
-                f["omnibus_deadline"] = "2028-08-02"
+                f["deadline_note"] = f"Current law: 2 Aug 2026. Omnibus agreed: 2 Aug 2028 (Annex I / sectoral). Pending formal adoption."
+                f["omnibus_deadline"] = DEADLINE_OMNIBUS_ANNEX_I
             else:
-                f["deadline"] = "2026-08-02"
+                f["deadline"] = DEADLINE_CURRENT_LAW
                 f["deadline_status"] = "current_law"
-                f["deadline_note"] = "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Pending formal adoption."
-                f["omnibus_deadline"] = "2027-12-02"
+                f["deadline_note"] = f"Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Pending formal adoption."
+                f["omnibus_deadline"] = DEADLINE_OMNIBUS_ANNEX_III
         elif tier == "credential_exposure":
-            f["deadline"] = "2026-08-02"
+            f["deadline"] = DEADLINE_CURRENT_LAW
             f["deadline_status"] = "current_law"
             f["deadline_note"] = "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
         elif tier == "limited_risk":
-            f["deadline"] = "2026-08-02"
+            f["deadline"] = DEADLINE_CURRENT_LAW
             f["deadline_status"] = "current_law"
-            f["deadline_note"] = "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus agreed, pending formal adoption)."
-            f["omnibus_deadline"] = "2026-12-02"
+            f["deadline_note"] = f"Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus agreed, pending formal adoption)."
+            f["omnibus_deadline"] = DEADLINE_OMNIBUS_LIMITED
         elif tier == "agent_autonomy":
-            f["deadline"] = "2026-08-02"
+            f["deadline"] = DEADLINE_CURRENT_LAW
             f["deadline_status"] = "current_law"
-            f["deadline_note"] = "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Pending formal adoption."
-            f["omnibus_deadline"] = "2027-12-02"
+            f["deadline_note"] = f"Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Pending formal adoption."
+            f["omnibus_deadline"] = DEADLINE_OMNIBUS_ANNEX_III
         else:
             f["deadline"] = None
             f["deadline_status"] = "none"
