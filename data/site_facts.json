@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-12T16:10:42.097127+00:00",
+  "generated_at": "2026-06-17T12:21:40.954435+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,7 +27,7 @@
     "frameworks": 12,
     "languages": 8,
     "tests": {
-      "total_functions": 1475,
+      "total_functions": 1482,
       "per_file": {
         "test_agent_governance.py": 28,
         "test_ai_codegen.py": 0,
@@ -43,7 +43,7 @@
         "test_cli_integration.py": 21,
         "test_compliance_check.py": 61,
         "test_conform.py": 0,
-        "test_coverage_critical.py": 45,
+        "test_coverage_critical.py": 46,
         "test_cross_file_flow.py": 103,
         "test_dependency_compromised_text.py": 9,
         "test_dependency_pinning.py": 14,
@@ -68,6 +68,7 @@
         "test_new_commands.py": 14,
         "test_open_questions.py": 5,
         "test_owasp_agentic.py": 24,
+        "test_policy_config.py": 5,
         "test_project_fingerprint.py": 70,
         "test_redteam_coverage.py": 19,
         "test_register.py": 22,
@@ -78,6 +79,7 @@
         "test_roadmap.py": 16,
         "test_sbom_enrichment.py": 25,
         "test_scan_cache.py": 3,
+        "test_scope_exclusion.py": 1,
         "test_security_hardening.py": 12,
         "test_session.py": 12,
         "test_signing.py": 17,
@@ -88,6 +90,6 @@
   },
   "notes": {
     "pattern_count_methodology": "Regula's landing pages cite 'tier_regexes risk patterns'. That figure is the total individual regexes in risk_patterns.py across all tiered groups (prohibited, high-risk, limited-risk, AI security, bias, governance, GPAI training). The `historical_330_bucket` adds architecture, credential, and oversight patterns from code_analysis.py. The `grand_total` also includes AI_INDICATORS.",
-    "frameworks_vs_claim": "Regula's landing pages cite '12 compliance frameworks'. 12 have full crosswalk data; 5 additional frameworks (Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI) accepted as filter keys with partial coverage."
+    "frameworks_vs_claim": "Regula's landing pages cite '12 compliance frameworks'. 12 have full crosswalk data; 5 additional frameworks (Colorado SB-189 [replaced SB-205], Canada AIDA, Singapore AI, OECD AI, South Korea AI) accepted as filter keys with partial coverage."
   }
 }

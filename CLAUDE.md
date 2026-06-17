@@ -2,7 +2,7 @@
 
 @AGENTS.md
 
-Regula v1.7.2 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only core.
+Regula v1.7.3 — EU AI Act compliance CLI for code. Python 3.10+ stdlib-only core.
 
 GitHub: kuzivaai/getregula | PyPI: regula-ai | CLI: `regula`
 
