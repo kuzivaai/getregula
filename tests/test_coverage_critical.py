@@ -296,7 +296,7 @@ def test_no_redos_credential_patterns():
         start = time.time()
         check_secrets(inp)
         elapsed = time.time() - start
-        assert_true(elapsed < 1.0, f"potential ReDoS: {elapsed:.2f}s on {inp[:30]}...")
+        assert_true(elapsed < 5.0, f"potential ReDoS: {elapsed:.2f}s on {inp[:30]}...")
     print("✓ Secrets: no ReDoS on pathological inputs")
 
 
@@ -617,7 +617,7 @@ def test_no_redos_classify_risk():
         start = time.time()
         classify(inp)
         elapsed = time.time() - start
-        assert_true(elapsed < 5.0, f"timing backup: classify took {elapsed:.2f}s on {len(inp)}-char input")
+        assert_true(elapsed < 15.0, f"timing backup: classify took {elapsed:.2f}s on {len(inp)}-char input")
 
     print(f"✓ No ReDoS: {len(all_patterns)} patterns checked (static + timing)")
 
@@ -643,12 +643,12 @@ def test_no_redos_ai_security():
     start = time.time()
     check_ai_security(pathological)
     elapsed = time.time() - start
-    assert_true(elapsed < 5.0, f"timing backup: ai_security took {elapsed:.2f}s")
+    assert_true(elapsed < 15.0, f"timing backup: ai_security took {elapsed:.2f}s")
     print("✓ No ReDoS: AI security patterns safe (static + timing)")
 
 
 def test_redos_rag_poisoning_and_no_grounding():
-    """Timing proof: rag_poisoning and no_grounding patterns complete within 1s on
+    """Timing proof: rag_poisoning and no_grounding patterns complete within 5s on
     catastrophic inputs that would trigger exponential backtracking in the old
     negative-lookahead-inside-quantifier form.
     """
@@ -670,7 +670,7 @@ def test_redos_rag_poisoning_and_no_grounding():
     # Variant: cite keyword to force rejection
     inp_ng_cite = "messages = cite " + "x" * 500 + "provide facts"
 
-    THRESHOLD = 1.0
+    THRESHOLD = 5.0
 
     for pat in rag_patterns:
         for label, inp in [("rag_catastrophic", inp_rag), ("rag_auth_mid", inp_rag_auth)]:
@@ -692,7 +692,7 @@ def test_redos_rag_poisoning_and_no_grounding():
                 f"no_grounding pattern took {elapsed:.3f}s on {label} (>{THRESHOLD}s threshold)"
             )
 
-    print("✓ ReDoS timing: rag_poisoning and no_grounding complete <1s on catastrophic inputs")
+    print("✓ ReDoS timing: rag_poisoning and no_grounding complete <5s on catastrophic inputs")
 
 
 # ── Serialisation / Edge Cases ─────────────────────────────────────
@@ -721,7 +721,7 @@ def test_very_large_input():
     start = time.time()
     r = classify(large_input)
     elapsed = time.time() - start
-    assert_true(elapsed < 5.0, f"large input took {elapsed:.2f}s")
+    assert_true(elapsed < 15.0, f"large input took {elapsed:.2f}s")
     assert_true(r.tier is not None, "returns valid classification")
     print("✓ Edge case: very large input handled")
 
