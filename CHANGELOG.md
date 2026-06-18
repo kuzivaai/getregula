@@ -101,6 +101,19 @@ MCP Registry namespace tag updated for official registry compatibility.
   the default for `regula check`. Excludes test files, type stubs,
   utility plumbing, and examples from non-minimal tiers.
 
+## [1.7.1] — 2026-05-02
+
+Market readiness release. Landing page rewritten with questionnaire
+framing, competitive comparison table, and auditor persona card. Blog
+content: 5 articles published (Article 5 prohibited practices, Omnibus
+decision framework, Omnibus delay, Omnibus trilogue failure, 5 AI
+frameworks scanned). Regulatory accuracy: Omnibus trilogue failure
+tracked, pattern count consolidated to 389 (later 398 in v1.7.2).
+VS Code extension prepared. Pre-commit hook added. IndexNow support.
+REST API, web dashboard, and Trust Center added. Precision confirmed
+at 83.5% on random corpus. Domain gating for opt-in high-risk
+categories. 55 commits.
+
 ## [1.7.0] — 2026-04-16
 
 Evidence Format **v1.1** — tamper-evident conformity packs. Optional

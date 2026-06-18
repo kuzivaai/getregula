@@ -2,38 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://getregula.com/</loc>
-    <lastmod>2026-06-12</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://getregula.com/llms.txt</loc>
-    <lastmod>2026-06-14</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://getregula.com/llms-full.txt</loc>
-    <lastmod>2026-06-14</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://getregula.com/locales/de.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://getregula.com/locales/pt-br.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://getregula.com/regions/regulations.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/regions/uae.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -45,7 +45,7 @@
   </url>
   <url>
     <loc>https://getregula.com/regions/colorado-ai-regulation.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -69,17 +69,17 @@
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-does-ai-act-apply.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-risk-tiers-in-code.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-omnibus-delay.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
@@ -89,7 +89,7 @@
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-scanning-10-ai-apps.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
@@ -104,12 +104,12 @@
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-omnibus-decision-framework.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-scanning-5-frameworks.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
@@ -119,7 +119,7 @@
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-omnibus-trilogue-failed.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
@@ -130,22 +130,22 @@
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-art50-code-of-practice.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-static-analysis-ai-compliance.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-classify-ai-system.html</loc>
-    <lastmod>2026-06-11</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://getregula.com/blog/blog-en-standards-mapping.html</loc>
-    <lastmod>2026-06-12</lastmod>
+    <lastmod>2026-06-18</lastmod>
     <priority>0.9</priority>
   </url>
 </urlset>

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-17T12:21:40.954435+00:00",
+  "generated_at": "2026-06-18T08:54:56.412263+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,7 +27,7 @@
     "frameworks": 12,
     "languages": 8,
     "tests": {
-      "total_functions": 1482,
+      "total_functions": 1481,
       "per_file": {
         "test_agent_governance.py": 28,
         "test_ai_codegen.py": 0,
@@ -73,7 +73,7 @@
         "test_redteam_coverage.py": 19,
         "test_register.py": 22,
         "test_registry.py": 8,
-        "test_reliability.py": 12,
+        "test_reliability.py": 11,
         "test_report.py": 0,
         "test_risk_decisions.py": 17,
         "test_roadmap.py": 16,
