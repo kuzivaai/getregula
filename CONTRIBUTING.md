@@ -20,6 +20,10 @@ pytest tests/ -q
 # Must output: "X passed"
 ```
 
+## Import convention (important)
+
+Every file in `scripts/` uses **bare imports** — `from errors import RegulaError`, NOT `from scripts.errors import RegulaError` or `from .errors import RegulaError`. This works because every `scripts/*.py` file has `sys.path.insert(0, str(Path(__file__).parent))` near the top. Do NOT remove these lines or switch to relative imports.
+
 ## Project Structure
 
 ```
@@ -35,8 +39,8 @@ scripts/
 ├── remediation.py         # Fix suggestions
 └── ...                    # See scripts/ for full list
 tests/
-├── test_classification.py     # Core classification tests (main test file)
-└── ...                        # 45 test files total — see tests/ for full list
+├── test_classification.py     # Core classification tests (custom runner)
+└── ...                        # 56 test files — see tests/ for full list
 ```
 
 ## How to Add a Risk Pattern
@@ -75,7 +79,7 @@ Regula scans source code for AI-related patterns. To add support for a new progr
 
 ## Testing
 
-Tests are spread across 44 files in `tests/`. The main classification tests live in `tests/test_classification.py`; other test files cover agent governance, documentation, hooks, registry, reliability, security hardening, and critical path coverage. Run all tests with `pytest tests/ -q`.
+Tests are spread across 56 files in `tests/`. The main classification tests live in `tests/test_classification.py` (a custom runner with 835 test functions); the rest are pytest-native. Run the full verification before any PR:
 
 The test pattern is:
 
@@ -120,7 +124,7 @@ tests = [
 
 Before submitting, verify:
 
-- [ ] `pytest tests/ -q` shows "X passed"
+- [ ] Full verify passes: `python3 tests/test_classification.py && python3 -m pytest tests/ -q && python3 -m scripts.cli self-test && python3 -m scripts.cli doctor`
 - [ ] New behaviour has at least one test
 - [ ] No new external dependencies added to core (discuss first if needed)
 - [ ] Commit messages follow conventional format (`feat:`, `fix:`, `docs:`, etc.)

@@ -54,11 +54,13 @@ regula check .              # 398 patterns, 8 languages, 30 seconds
 
 **Need documentation for auditors?**
 ```bash
-regula evidence-pack --sign .   # signed, timestamped, SHA-256 verified
+regula evidence-pack --project .   # Annex IV docs + evidence pack
+regula conform --sign --timestamp  # signed + timestamped (requires regula[signing])
 ```
 
-**Just want to see it work?**
+**Just want to see it work?** (requires the cloned repo — `examples/` is not bundled in the pip package)
 ```bash
+git clone https://github.com/kuzivaai/getregula && cd getregula
 regula demo                 # scan a bundled example project
 ```
 

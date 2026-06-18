@@ -73,6 +73,7 @@ def _validate_path(path_str: str) -> Path:
     """Validate and canonicalise a path. Raises PathError if invalid.
 
     Resolves symlinks to prevent traversal via symlink chains.
+    Rejects filesystem root and system directories to prevent hangs.
     """
     p = Path(path_str).resolve()
     if not p.exists():
@@ -84,6 +85,16 @@ def _validate_path(path_str: str) -> Path:
         raise PathError(
             f"Path is not a file or directory: {path_str}\n"
             f"  Usage: regula check /path/to/project or regula check file.py"
+        )
+    # Reject filesystem root and system directories — scanning these
+    # hangs indefinitely and is never the user's intent.
+    _blocked = {Path("/"), Path("/etc"), Path("/usr"), Path("/var"),
+                Path("/bin"), Path("/sbin"), Path("/proc"), Path("/sys"),
+                Path("/dev"), Path("/boot"), Path("/tmp")}
+    if p in _blocked:
+        raise PathError(
+            f"Scanning {p} is not permitted — specify a project directory.\n"
+            f"  Usage: regula check /path/to/your/project"
         )
     return p
 
