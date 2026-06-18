@@ -87,8 +87,10 @@ See [`docs/installation.md`](docs/installation.md) for troubleshooting (`externa
 ### Try it against a known high-risk fixture:
 
 ```bash
-regula check examples/cv-screening-app
+regula check examples/cv-screening-app --scope all
 ```
+
+The `--scope all` flag is needed because Regula's default scope (`production`) skips example directories. This fixture intentionally triggers an Annex III Category 4 (Employment) high-risk classification.
 
 See [`examples/`](examples/) for runnable reference projects covering each EU AI Act risk tier, or walk through the full 10-minute evaluation journey in [`examples/cv-screening-app/`](examples/cv-screening-app/) — install, scan, plan, gap, conform, verify, handoff to red-team tooling.
 
