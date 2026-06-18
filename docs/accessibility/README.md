@@ -1,20 +1,45 @@
 # Accessibility — WCAG 2.2 AA audit
 
-**Status:** ✅ 14 / 14 pages pass WCAG 2.2 AA
-**Last audit:** 2026-04-16
+**Status:** ✅ 14 / 28 pages pass WCAG 2.2 AA (axe-verified)
+**Last axe audit:** 2026-04-16
+**Manual skip-link fix:** 2026-06-18 (4 blog pages)
 **Tool:** [axe-core](https://github.com/dequelabs/axe-core) 4.x via
 [`@axe-core/playwright`](https://www.npmjs.com/package/@axe-core/playwright),
 ruleset `wcag2a + wcag2aa + wcag21a + wcag21aa + wcag22aa`
 
 ## Scope
 
-All 14 non-stub canonical HTML pages under `site/`:
+14 pages were axe-tested on 2026-04-16. Since then, 14 additional pages
+have been added (blog posts and the Brazil regulation page) that have NOT
+been axe-tested. The untested pages follow the same template and CSS tokens
+as the tested ones, so structural WCAG compliance is expected but unverified.
+
+### Axe-tested (14 pages)
 
 - `/` (English landing)
 - `/locales/de.html`, `/locales/pt-br.html` (localised landings)
 - `/regions/{uae,regulations,colorado-ai-regulation,south-africa-ai-policy,south-korea-ai-regulation,uk-ai-regulation}.html`
 - `/blog/{writing,blog-does-ai-act-apply,blog-omnibus-delay,blog-risk-tiers-in-code}.html`
 - `/404.html`
+
+### Not yet axe-tested (14 pages — added after 2026-04-16)
+
+- `/blog/blog-omnibus-trilogue-failed.html`
+- `/blog/blog-omnibus-decision-framework.html`
+- `/blog/blog-startups-ignoring-ai-act.html`
+- `/blog/blog-code-scanning-vs-questionnaires.html`
+- `/blog/blog-article-5-prohibited-practices.html`
+- `/blog/blog-scanning-10-ai-apps.html`
+- `/blog/blog-scanning-5-frameworks.html`
+- `/blog/blog-classify-ai-system.html`
+- `/blog/blog-static-analysis-ai-compliance.html`
+- `/blog/blog-en-standards-mapping.html`
+- `/blog/blog-art50-code-of-practice.html`
+- `/blog/blog-aicdi-governance-gaps.html`
+- `/regions/brazil-ai-regulation.html`
+- `/pricing.html`
+
+**Action:** Re-run the axe audit to cover all 28 pages. Use `node docs/accessibility/run-axe.js` after updating the URL list in the script.
 
 Redirect stubs at the root level (`site/de.html`, `site/pt-br.html`, etc.) are
 excluded — they meta-refresh in 0 seconds and never render their own content.

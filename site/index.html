@@ -36,6 +36,13 @@
       .term-body { position: relative; min-height: 340px }
     </style>
     <meta name="theme-color" content="#070711">
+    <!-- CSP: GitHub Pages cannot set server headers; meta tag is the only option.
+         'unsafe-inline' is required (inline scripts/styles throughout).
+         frame-ancestors is ignored in meta CSP per spec — clickjacking protection
+         requires a server header or CDN proxy (e.g. Cloudflare). -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://formspree.io https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self' https://formspree.io">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="preconnect" href="https://plausible.io" crossorigin>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <title>Regula | EU AI Act compliance tool for code | Open-source CLI</title>
