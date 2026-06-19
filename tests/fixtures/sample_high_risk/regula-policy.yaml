@@ -1,0 +1,5 @@
+# Domain declaration for the CV screening fixture.
+# Employment is an opt-in high-risk category — it requires explicit domain
+# declaration to activate, preventing false positives on generic code.
+system:
+  domain: employment
