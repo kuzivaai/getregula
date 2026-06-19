@@ -990,6 +990,24 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     # Enrich each finding with Omnibus-aware enforcement deadline
     _enrich_deadlines(findings)
 
+    # Cross-file oversight enrichment for high-risk findings (Article 14)
+    high_risk_findings = [f for f in findings if f.get("tier") == "high_risk"]
+    if high_risk_findings:
+        try:
+            from cross_file_flow import analyse_project_oversight
+            oversight = analyse_project_oversight(project_path)
+            raw_score = oversight.get("summary", {}).get("oversight_score", 0)
+            # oversight_score from analyse_project_oversight is int 0-100; normalise to float 0-1
+            score = round(raw_score / 100, 2) if isinstance(raw_score, (int, float)) and raw_score >= 0 else 0.0
+            for f in high_risk_findings:
+                f["oversight_score"] = score
+                f["oversight_status"] = "present" if score > 0.5 else "needs_review"
+        except Exception:
+            # Graceful degradation — cross-file analysis is best-effort
+            for f in high_risk_findings:
+                f["oversight_score"] = None
+                f["oversight_status"] = "not_analysed"
+
     # Clear progress indicator if shown
     if _scanned_files >= 50 and hasattr(sys.stderr, 'isatty') and sys.stderr.isatty():
         print(f"\r  Scanned {_scanned_files} files    ", file=sys.stderr)
