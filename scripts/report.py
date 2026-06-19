@@ -495,7 +495,8 @@ def _check_domain_gated(f: dict, domain_activated: set, opt_in_categories: set) 
 
 def scan_files(project_path: str, respect_ignores: bool = True,
                skip_tests: bool = False, min_tier: str = "",
-               declared_domains: set = None) -> list:
+               declared_domains: set = None,
+               enrich_oversight: bool = False) -> list:
     """Scan project files and return findings with file locations.
 
     Args:
@@ -990,23 +991,25 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     # Enrich each finding with Omnibus-aware enforcement deadline
     _enrich_deadlines(findings)
 
-    # Cross-file oversight enrichment for high-risk findings (Article 14)
-    high_risk_findings = [f for f in findings if f.get("tier") == "high_risk"]
-    if high_risk_findings:
-        try:
-            from cross_file_flow import analyse_project_oversight
-            oversight = analyse_project_oversight(project_path)
-            raw_score = oversight.get("summary", {}).get("oversight_score", 0)
-            # oversight_score from analyse_project_oversight is int 0-100; normalise to float 0-1
-            score = round(raw_score / 100, 2) if isinstance(raw_score, (int, float)) and raw_score >= 0 else 0.0
-            for f in high_risk_findings:
-                f["oversight_score"] = score
-                f["oversight_status"] = "present" if score > 0.5 else "needs_review"
-        except Exception:
-            # Graceful degradation — cross-file analysis is best-effort
-            for f in high_risk_findings:
-                f["oversight_score"] = None
-                f["oversight_status"] = "not_analysed"
+    # Cross-file oversight enrichment for high-risk findings (Article 14).
+    # This is expensive (full project AST walk) — only run when explicitly
+    # requested via enrich_oversight=True, not on every default scan.
+    # Use `regula govern` for full oversight analysis.
+    if enrich_oversight:
+        high_risk_findings = [f for f in findings if f.get("tier") == "high_risk"]
+        if high_risk_findings:
+            try:
+                from cross_file_flow import analyse_project_oversight
+                oversight = analyse_project_oversight(project_path)
+                raw_score = oversight.get("summary", {}).get("oversight_score", 0)
+                score = round(raw_score / 100, 2) if isinstance(raw_score, (int, float)) and raw_score >= 0 else 0.0
+                for f in high_risk_findings:
+                    f["oversight_score"] = score
+                    f["oversight_status"] = "present" if score > 0.5 else "needs_review"
+            except Exception:
+                for f in high_risk_findings:
+                    f["oversight_score"] = None
+                    f["oversight_status"] = "not_analysed"
 
     # Clear progress indicator if shown
     if _scanned_files >= 50 and hasattr(sys.stderr, 'isatty') and sys.stderr.isatty():
