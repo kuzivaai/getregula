@@ -52,6 +52,11 @@ DOMAIN_KEYWORDS = {
             r"\bcredit.?risk", r"\bcredit.?assess", r"\bassess.?credit",
             r"\bcredit.?model", r"\bcredit.?predict", r"\bcredit.?decision",
         ],
+        # Suppress finance domain when file is a quantitative/backtesting library
+        "exclude_if": [
+            r"\b(?:backtrader|zipline|quantlib|ta[\-_]lib|pyalgotrading)\b",
+            r"\b(?:yfinance|alpha_vantage|polygon_io)\b",
+        ],
         "category": "Annex III, Category 5",
         "boost": 15,
     },
@@ -61,6 +66,11 @@ DOMAIN_KEYWORDS = {
             r"\btreatment", r"\btriage", r"\bmedical", r"\bhealthcare",
             r"\bsymptom", r"\bprescri(?:be|ption)",
         ],
+        # Suppress medical domain when file is a medical-imaging or computational-biology library
+        "exclude_if": [
+            r"\b(?:monai|nibabel|simpleitk|torchio|medpy|pydicom)\b",
+            r"\b(?:biopython|rdkit|openbabel)\b",
+        ],
         "category": "Medical Devices",
         "boost": 15,
     },
@@ -68,6 +78,10 @@ DOMAIN_KEYWORDS = {
         "keywords": [
             r"\badmission", r"\bstudent", r"\bexam", r"\bgrade\b", r"\bschool",
             r"\buniversity", r"\benrollment", r"\bscholarship",
+        ],
+        # Suppress education domain when file is a tutorial/notebook context
+        "exclude_if": [
+            r"\b(?:jupyter|nbformat|notebook|tutorial_?\w+)\b",
         ],
         "category": "Annex III, Category 3",
         "boost": 12,
@@ -77,6 +91,10 @@ DOMAIN_KEYWORDS = {
             r"\bpolice", r"\blaw.?enforcement", r"\bcriminal", r"\bsuspect",
             r"\bevidence", r"\bsentenc", r"\binvestigation", r"\bsurveillance",
         ],
+        # Suppress law_enforcement domain when file is a gaming/fiction context
+        "exclude_if": [
+            r"\b(?:pygame|unity|godot|unreal|game_engine)\b",
+        ],
         "category": "Annex III, Category 6",
         "boost": 15,
     },
@@ -84,6 +102,10 @@ DOMAIN_KEYWORDS = {
         "keywords": [
             r"\bbiometric", r"\bfacial", r"\bface.?recogn", r"\bfingerprint",
             r"\bvoice.?recogn", r"\biris.?scan",
+        ],
+        # Suppress biometrics domain when file is a speech/audio processing library
+        "exclude_if": [
+            r"\b(?:lhotse|speechbrain|espnet|librosa|pyaudioanalysis)\b",
         ],
         "category": "Annex III, Category 1",
         "boost": 15,
@@ -93,6 +115,10 @@ DOMAIN_KEYWORDS = {
             r"\benergy.?grid", r"\bwater.?supply", r"\bpower.?plant",
             r"\btraffic.?control", r"\bscada\b",
         ],
+        # Suppress infrastructure domain when file is infra-as-code/DevOps tooling
+        "exclude_if": [
+            r"\b(?:terraform|ansible|puppet|chef|kubernetes|docker|podman)\b",
+        ],
         "category": "Annex III, Category 2",
         "boost": 12,
     },
@@ -100,6 +126,10 @@ DOMAIN_KEYWORDS = {
         "keywords": [
             r"\basylum", r"\bvisa", r"\bborder.?control", r"\bimmigration",
             r"\brefugee", r"\bdeportation",
+        ],
+        # Suppress migration domain when file is a database migration tool
+        "exclude_if": [
+            r"\b(?:alembic|django\.db|flask_migrate|flyway|liquibase)\b",
         ],
         "category": "Annex III, Category 7",
         "boost": 15,

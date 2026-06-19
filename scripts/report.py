@@ -270,7 +270,7 @@ _AI_LIBRARY_PACKAGES = {
     "openai", "anthropic", "langchain", "langchain-core", "langchain-community",
     "transformers", "torch", "pytorch", "tensorflow", "keras", "jax",
     "scikit-learn", "sklearn", "xgboost", "lightgbm", "catboost",
-    "pydantic-ai", "instructor", "llama-index", "llamaindex",
+    "pydantic-ai", "pydantic_ai", "instructor", "llama-index", "llamaindex",
     "autogen", "crewai", "haystack", "dspy", "vllm", "ollama",
     "huggingface-hub", "diffusers", "accelerate", "datasets",
     "sentence-transformers", "spacy", "nltk", "gensim", "fastai",
@@ -495,7 +495,8 @@ def _check_domain_gated(f: dict, domain_activated: set, opt_in_categories: set) 
 
 def scan_files(project_path: str, respect_ignores: bool = True,
                skip_tests: bool = False, min_tier: str = "",
-               declared_domains: set = None) -> list:
+               declared_domains: set = None,
+               enrich_oversight: bool = False) -> list:
     """Scan project files and return findings with file locations.
 
     Args:
@@ -845,9 +846,12 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 if ctx_penalty > 0:
                     confidence_score = max(confidence_score - ctx_penalty, 10)
 
-            # AI library self-scan penalty (31% of FPs in benchmarks)
+            # AI library self-scan: hard-cap all non-prohibited findings at 10.
+            # A -50 soft penalty wasn't strong enough (openai-python: 0 TP / 51 FP).
+            # Capping at 10 effectively suppresses non-critical findings for AI SDK
+            # projects that match patterns by definition (31% of FPs in benchmarks).
             if _is_ai_library_self_scan and result.tier.value != "prohibited":
-                confidence_score = max(confidence_score - 50, 5)
+                confidence_score = min(confidence_score, 10)
 
             # Library infrastructure penalty (24% of FPs in benchmarks).
             # Files in provider/adapter/converter paths or with utility
@@ -886,6 +890,18 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     elif _in_try_count == _total and _total > 0:
                         confidence_score = max(confidence_score - 10, 10)
 
+            # Suppress findings where ALL pattern matches are inside string literals
+            # (docstrings, f-strings, etc.) — the pattern fired on documentation, not code.
+            if _ast_context and result.match_lines and result.tier.value != "prohibited":
+                from ast_context import is_in_string as _is_in_str
+                _lines_in_strings = sum(1 for ln in result.match_lines if _is_in_str(_ast_context, ln))
+                if _lines_in_strings == len(result.match_lines):
+                    # Every match was inside a string literal — skip entirely
+                    continue
+                elif _lines_in_strings > 0:
+                    # Some matches in strings — penalise confidence
+                    confidence_score = max(confidence_score - 25, 5)
+
             # Generate Article-specific observations for high-risk findings
             observations = []
             if result.tier == RiskTier.HIGH_RISK:
@@ -898,7 +914,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             _primary_indicator = result.indicators_matched[0] if result.indicators_matched else ""
             finding = {
                 "file": rel_path,
-                "line": 1,
+                "line": result.match_lines[0] if result.match_lines else 1,
                 "tier": result.tier.value,
                 "category": result.category or "Unknown",
                 "description": result.description or result.message or "",
@@ -927,6 +943,12 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 if not _indicators or _indicators <= _GENERIC_INDICATORS:
                     confidence_score = min(confidence_score, 49)
                     finding["confidence_score"] = confidence_score
+
+            # Confidence floor: suppress very-low-confidence minimal_risk findings.
+            # Base minimal_risk score is 15; anything below 20 has no corroborating
+            # evidence and is noise (205 FPs at 16% precision in dev benchmark).
+            if result.tier.value == "minimal_risk" and confidence_score < 20:
+                continue
 
             # Domain gating: suppress opt-in high_risk findings unless
             # activated by user declaration or import fingerprinting.
@@ -968,6 +990,26 @@ def scan_files(project_path: str, respect_ignores: bool = True,
 
     # Enrich each finding with Omnibus-aware enforcement deadline
     _enrich_deadlines(findings)
+
+    # Cross-file oversight enrichment for high-risk findings (Article 14).
+    # This is expensive (full project AST walk) — only run when explicitly
+    # requested via enrich_oversight=True, not on every default scan.
+    # Use `regula govern` for full oversight analysis.
+    if enrich_oversight:
+        high_risk_findings = [f for f in findings if f.get("tier") == "high_risk"]
+        if high_risk_findings:
+            try:
+                from cross_file_flow import analyse_project_oversight
+                oversight = analyse_project_oversight(project_path)
+                raw_score = oversight.get("summary", {}).get("oversight_score", 0)
+                score = round(raw_score / 100, 2) if isinstance(raw_score, (int, float)) and raw_score >= 0 else 0.0
+                for f in high_risk_findings:
+                    f["oversight_score"] = score
+                    f["oversight_status"] = "present" if score > 0.5 else "needs_review"
+            except Exception:
+                for f in high_risk_findings:
+                    f["oversight_score"] = None
+                    f["oversight_status"] = "not_analysed"
 
     # Clear progress indicator if shown
     if _scanned_files >= 50 and hasattr(sys.stderr, 'isatty') and sys.stderr.isatty():

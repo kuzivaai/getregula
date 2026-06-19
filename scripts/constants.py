@@ -70,4 +70,11 @@ OPT_IN_CATEGORIES = {
     # law_enforcement or explicit fingerprint to activate.
     "justice",
     "essential_services",
+    # The three categories below had 0 true positives in the dev corpus benchmark
+    # and only produced false positives (employment: 4 FP, law_enforcement: 3 FP,
+    # migration: 0 FP but noisy). They are gated behind domain declaration or
+    # import fingerprinting to prevent false positives on generic code.
+    "employment",
+    "law_enforcement",
+    "migration",
 }

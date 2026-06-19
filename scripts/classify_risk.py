@@ -438,8 +438,10 @@ def _check_patterns(compiled_dict: dict, patterns_dict: dict,
 
     for name, compiled_patterns in compiled_dict.items():
         for rx in compiled_patterns:
-            if rx.search(text_lower):
-                matches.append(patterns_dict[name] | {"indicator": name})
+            m = rx.search(text_lower)
+            if m:
+                line_num = text_lower[:m.start()].count("\n") + 1
+                matches.append(patterns_dict[name] | {"indicator": name, "match_line": line_num})
                 break
 
     # Check custom rules for this tier
@@ -448,12 +450,15 @@ def _check_patterns(compiled_dict: dict, patterns_dict: dict,
         for pattern in rule["patterns"]:
             try:
                 compiled = _compile_custom_pattern(pattern)
-                if compiled.search(text_lower):
+                m = compiled.search(text_lower)
+                if m:
+                    line_num = text_lower[:m.start()].count("\n") + 1
                     entry = {
                         "indicator": rule["name"],
                         "patterns": rule["patterns"],
                         "description": rule.get("description",
                                                  defaults.get("description", "")),
+                        "match_line": line_num,
                     }
                     # Merge tier-specific fields from the rule
                     for field in ("article", "articles", "category"):
@@ -489,6 +494,7 @@ def check_prohibited(text: str, stripped_text: str = None) -> Optional[Classific
     if matches:
         primary = matches[0]
         has_ai = is_ai_related(text, stripped_text=stripped_text)
+        match_lines = [m["match_line"] for m in matches if "match_line" in m]
         return Classification(
             tier=RiskTier.PROHIBITED,
             confidence="high" if len(matches) >= 2 else "medium",
@@ -503,6 +509,7 @@ def check_prohibited(text: str, stripped_text: str = None) -> Optional[Classific
             pattern_confidence=primary.get("confidence"),
             pattern_likelihood=primary.get("likelihood"),
             pattern_impact=primary.get("impact"),
+            match_lines=match_lines,
         )
     return None
 
@@ -518,6 +525,7 @@ def check_high_risk(text: str, stripped_text: str = None) -> Optional[Classifica
         for m in matches:
             all_articles.update(m["articles"])
         primary = matches[0]
+        match_lines = [m["match_line"] for m in matches if "match_line" in m]
         return Classification(
             tier=RiskTier.HIGH_RISK,
             confidence="high" if len(matches) >= 2 else "medium",
@@ -531,6 +539,7 @@ def check_high_risk(text: str, stripped_text: str = None) -> Optional[Classifica
             pattern_confidence=primary.get("confidence"),
             pattern_likelihood=primary.get("likelihood"),
             pattern_impact=primary.get("impact"),
+            match_lines=match_lines,
         )
     return None
 
@@ -543,6 +552,7 @@ def check_limited_risk(text: str, stripped_text: str = None) -> Optional[Classif
     )
     if matches:
         primary = matches[0]
+        match_lines = [m["match_line"] for m in matches if "match_line" in m]
         return Classification(
             tier=RiskTier.LIMITED_RISK,
             confidence="high" if len(matches) >= 2 else "medium",
@@ -556,6 +566,7 @@ def check_limited_risk(text: str, stripped_text: str = None) -> Optional[Classif
             pattern_confidence=primary.get("confidence"),
             pattern_likelihood=primary.get("likelihood"),
             pattern_impact=primary.get("impact"),
+            match_lines=match_lines,
         )
     return None
 
