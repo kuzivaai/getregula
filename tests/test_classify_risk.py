@@ -98,6 +98,7 @@ class TestClassification:
         assert c.pattern_confidence is None
         assert c.pattern_likelihood is None
         assert c.pattern_impact is None
+        assert c.match_lines == []
 
     def test_to_dict_serialises_tier(self):
         c = Classification(tier=RiskTier.HIGH_RISK, confidence="high")
@@ -1153,6 +1154,46 @@ class TestClassify:
         r = classify(text)
         assert isinstance(r.confidence_score, int)
         assert 0 <= r.confidence_score <= 100
+
+    def test_match_lines_populated_for_high_risk(self):
+        """classify() should return non-empty match_lines for code with a clear match."""
+        text = "import sklearn\nline two\ncredit scoring model for loan decisions"
+        r = classify(text)
+        assert r.tier == RiskTier.HIGH_RISK
+        assert isinstance(r.match_lines, list)
+        assert len(r.match_lines) >= 1
+        # The credit scoring pattern is on line 3
+        assert 3 in r.match_lines
+
+    def test_match_lines_populated_for_prohibited(self):
+        """Prohibited matches should also carry match_lines."""
+        text = "import tensorflow\nsocial credit scoring system"
+        r = classify(text)
+        assert r.tier == RiskTier.PROHIBITED
+        assert len(r.match_lines) >= 1
+        # Social credit scoring is on line 2
+        assert 2 in r.match_lines
+
+    def test_match_lines_populated_for_limited_risk(self):
+        """Limited-risk matches should carry match_lines."""
+        text = "import openai\nsome filler line\nchatbot for customer service"
+        r = classify(text)
+        assert r.tier == RiskTier.LIMITED_RISK
+        assert len(r.match_lines) >= 1
+        assert 3 in r.match_lines
+
+    def test_match_lines_empty_for_minimal_risk(self):
+        """Minimal-risk (no pattern match) should have empty match_lines."""
+        text = "import torch\nmodel = torch.nn.Linear(10, 1)"
+        r = classify(text)
+        assert r.tier == RiskTier.MINIMAL_RISK
+        assert r.match_lines == []
+
+    def test_match_lines_empty_for_not_ai(self):
+        """Non-AI code should have empty match_lines."""
+        r = classify("def add(a, b): return a + b")
+        assert r.tier == RiskTier.NOT_AI
+        assert r.match_lines == []
 
     def test_prohibited_cannot_be_overridden_by_policy(self):
         """Prohibited classification ALWAYS checked first, cannot be exempted."""

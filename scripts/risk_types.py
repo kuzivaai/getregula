@@ -63,6 +63,7 @@ class Classification:
     pattern_confidence: Optional[str] = None   # high/medium/low - how likely the pattern correctly identifies the risk
     pattern_likelihood: Optional[str] = None   # high/medium/low - how likely this risk manifests in practice
     pattern_impact: Optional[str] = None       # high/medium/low - severity if the risk materialises
+    match_lines: list = field(default_factory=list)  # line numbers where patterns matched
 
     def get_finding_tier(self) -> str:
         """Return finding tier based on confidence score and policy thresholds.
