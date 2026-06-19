@@ -660,3 +660,88 @@ def test_ml_framework_suppresses_critical_infrastructure(tmp_path):
     result = scan_project_imports(str(tmp_path))
     assert "critical_infrastructure" in result["suppress"]
     assert "safety_components" in result["suppress"]
+
+
+# ===================================================================
+# 18. JS/TS package.json fingerprinting
+# ===================================================================
+
+
+def test_package_json_plain_dep_added_to_imports(tmp_path):
+    """A plain (non-scoped) package.json dependency is added to imports_found."""
+    pkg = tmp_path / "package.json"
+    pkg.write_text('{"dependencies": {"openai": "^4.0.0"}}')
+    result = scan_project_imports(str(tmp_path))
+    assert "openai" in result["imports_found"]
+
+
+def test_package_json_scoped_dep_cleaned(tmp_path):
+    """Scoped packages like @tensorflow/tfjs are cleaned to 'tfjs'."""
+    pkg = tmp_path / "package.json"
+    pkg.write_text('{"dependencies": {"@tensorflow/tfjs": "^4.0.0"}}')
+    result = scan_project_imports(str(tmp_path))
+    assert "tfjs" in result["imports_found"]
+
+
+def test_package_json_openai_triggers_js_ai_sdk_suppression(tmp_path):
+    """openai in package.json -> js_ai_sdk suppression applied."""
+    pkg = tmp_path / "package.json"
+    pkg.write_text('{"dependencies": {"openai": "^4.0.0"}}')
+    result = scan_project_imports(str(tmp_path))
+    assert "critical_infrastructure" in result["suppress"]
+    assert "safety_components" in result["suppress"]
+    assert "high_risk__worker_management" in result["suppress"]
+
+
+def test_package_json_tfjs_triggers_suppression(tmp_path):
+    """@tensorflow/tfjs (cleaned to tfjs) -> js_ai_sdk suppression."""
+    pkg = tmp_path / "package.json"
+    pkg.write_text('{"devDependencies": {"@tensorflow/tfjs": "^4.0.0"}}')
+    result = scan_project_imports(str(tmp_path))
+    assert "critical_infrastructure" in result["suppress"]
+
+
+def test_package_json_dev_and_peer_deps_read(tmp_path):
+    """devDependencies and peerDependencies are also scanned."""
+    pkg = tmp_path / "package.json"
+    pkg.write_text(
+        '{"devDependencies": {"langchain": "^0.2.0"},'
+        ' "peerDependencies": {"react": "^18.0.0"}}'
+    )
+    result = scan_project_imports(str(tmp_path))
+    assert "langchain" in result["imports_found"]
+    assert "react" in result["imports_found"]
+
+
+def test_package_json_missing_does_not_error(tmp_path):
+    """No package.json -> no error, empty imports from JS path."""
+    # No package.json created
+    result = scan_project_imports(str(tmp_path))
+    assert isinstance(result["imports_found"], set)
+
+
+def test_package_json_invalid_json_does_not_error(tmp_path):
+    """Malformed package.json is silently ignored."""
+    pkg = tmp_path / "package.json"
+    pkg.write_text("{not valid json")
+    result = scan_project_imports(str(tmp_path))
+    assert isinstance(result["imports_found"], set)
+
+
+def test_package_json_empty_deps_keys(tmp_path):
+    """package.json with no dependencies keys does not error."""
+    pkg = tmp_path / "package.json"
+    pkg.write_text('{"name": "my-app", "version": "1.0.0"}')
+    result = scan_project_imports(str(tmp_path))
+    assert isinstance(result["imports_found"], set)
+
+
+def test_package_json_combined_with_python_imports(tmp_path):
+    """package.json deps and Python imports are both in imports_found."""
+    pkg = tmp_path / "package.json"
+    pkg.write_text('{"dependencies": {"openai": "^4.0.0"}}')
+    py_file = tmp_path / "server.py"
+    py_file.write_text("import flask\n")
+    result = scan_project_imports(str(tmp_path))
+    assert "openai" in result["imports_found"]
+    assert "flask" in result["imports_found"]
