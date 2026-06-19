@@ -3,12 +3,14 @@
 Project-level import fingerprinting for domain auto-detection.
 
 Scans all Python files in a project for import statements and matches
-against known domain-specific libraries. Used to automatically gate
+against known domain-specific libraries. Also reads package.json
+dependencies for JS/TS projects. Used to automatically gate
 high_risk findings that would otherwise produce false positives.
 
 Run once per project scan, not per file.
 """
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -114,6 +116,21 @@ SUPPRESS_FINGERPRINTS = {
                     "tortoise", "peewee"},
         "suppresses": {"critical_infrastructure"},
     },
+    "js_ai_sdk": {
+        # JS/TS AI SDK packages detected via package.json.
+        # These indicate a general AI application, not a regulated
+        # infrastructure or safety domain.
+        # Scoped packages (@scope/name) are normalised to just the
+        # final segment by the package.json reader, so @anthropic-ai/sdk
+        # becomes "sdk" — excluded below. Non-scoped names match directly.
+        # tfjs → @tensorflow/tfjs cleaned to "tfjs"
+        # openai → openai JS SDK
+        # transformers → @xenova/transformers or transformers.js cleaned to "transformers"
+        "imports": {"openai", "tfjs", "transformers",
+                    "langchain", "llamaindex"},
+        "suppresses": {"critical_infrastructure", "safety_components",
+                       "high_risk__worker_management"},
+    },
 }
 
 _IMPORT_RE = re.compile(
@@ -174,12 +191,25 @@ def scan_project_imports(project_path):
 
     for ext in CODE_EXTENSIONS:
         if ext != ".py":
-            continue  # Fingerprinting is Python-only for now
+            continue  # Fingerprinting Python via import statements
         for filepath in project.rglob(f"*{ext}"):
             # Skip directories we always skip
             if any(skip in filepath.parts for skip in SKIP_DIRS):
                 continue
             all_imports.update(_extract_imports(filepath))
+
+    # JS/TS: read package.json dependencies for fingerprinting
+    pkg_json_path = project / "package.json"
+    if pkg_json_path.exists():
+        try:
+            pkg = json.loads(pkg_json_path.read_text(encoding="utf-8"))
+            for dep_key in ("dependencies", "devDependencies", "peerDependencies"):
+                for dep_name in pkg.get(dep_key, {}):
+                    # Handle scoped packages: @scope/name → name
+                    clean_name = dep_name.split("/")[-1] if "/" in dep_name else dep_name
+                    all_imports.add(clean_name)
+        except (ValueError, OSError):
+            pass
 
     # Detect domains
     domains_detected = set()
