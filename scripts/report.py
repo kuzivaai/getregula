@@ -270,7 +270,7 @@ _AI_LIBRARY_PACKAGES = {
     "openai", "anthropic", "langchain", "langchain-core", "langchain-community",
     "transformers", "torch", "pytorch", "tensorflow", "keras", "jax",
     "scikit-learn", "sklearn", "xgboost", "lightgbm", "catboost",
-    "pydantic-ai", "instructor", "llama-index", "llamaindex",
+    "pydantic-ai", "pydantic_ai", "instructor", "llama-index", "llamaindex",
     "autogen", "crewai", "haystack", "dspy", "vllm", "ollama",
     "huggingface-hub", "diffusers", "accelerate", "datasets",
     "sentence-transformers", "spacy", "nltk", "gensim", "fastai",
@@ -845,9 +845,12 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 if ctx_penalty > 0:
                     confidence_score = max(confidence_score - ctx_penalty, 10)
 
-            # AI library self-scan penalty (31% of FPs in benchmarks)
+            # AI library self-scan: hard-cap all non-prohibited findings at 10.
+            # A -50 soft penalty wasn't strong enough (openai-python: 0 TP / 51 FP).
+            # Capping at 10 effectively suppresses non-critical findings for AI SDK
+            # projects that match patterns by definition (31% of FPs in benchmarks).
             if _is_ai_library_self_scan and result.tier.value != "prohibited":
-                confidence_score = max(confidence_score - 50, 5)
+                confidence_score = min(confidence_score, 10)
 
             # Library infrastructure penalty (24% of FPs in benchmarks).
             # Files in provider/adapter/converter paths or with utility
@@ -898,7 +901,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             _primary_indicator = result.indicators_matched[0] if result.indicators_matched else ""
             finding = {
                 "file": rel_path,
-                "line": 1,
+                "line": result.match_lines[0] if result.match_lines else 1,
                 "tier": result.tier.value,
                 "category": result.category or "Unknown",
                 "description": result.description or result.message or "",
@@ -927,6 +930,12 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 if not _indicators or _indicators <= _GENERIC_INDICATORS:
                     confidence_score = min(confidence_score, 49)
                     finding["confidence_score"] = confidence_score
+
+            # Confidence floor: suppress very-low-confidence minimal_risk findings.
+            # Base minimal_risk score is 15; anything below 20 has no corroborating
+            # evidence and is noise (205 FPs at 16% precision in dev benchmark).
+            if result.tier.value == "minimal_risk" and confidence_score < 20:
+                continue
 
             # Domain gating: suppress opt-in high_risk findings unless
             # activated by user declaration or import fingerprinting.
