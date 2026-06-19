@@ -889,6 +889,18 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     elif _in_try_count == _total and _total > 0:
                         confidence_score = max(confidence_score - 10, 10)
 
+            # Suppress findings where ALL pattern matches are inside string literals
+            # (docstrings, f-strings, etc.) — the pattern fired on documentation, not code.
+            if _ast_context and result.match_lines and result.tier.value != "prohibited":
+                from ast_context import is_in_string as _is_in_str
+                _lines_in_strings = sum(1 for ln in result.match_lines if _is_in_str(_ast_context, ln))
+                if _lines_in_strings == len(result.match_lines):
+                    # Every match was inside a string literal — skip entirely
+                    continue
+                elif _lines_in_strings > 0:
+                    # Some matches in strings — penalise confidence
+                    confidence_score = max(confidence_score - 25, 5)
+
             # Generate Article-specific observations for high-risk findings
             observations = []
             if result.tier == RiskTier.HIGH_RISK:
