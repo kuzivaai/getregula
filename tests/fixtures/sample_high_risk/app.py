@@ -1,10 +1,12 @@
 import openai
 from sklearn.ensemble import RandomForestClassifier
 
-def screen_candidates(resumes):
-    """Automated CV screening for hiring decisions."""
-    model = RandomForestClassifier()
-    model.fit(training_data, labels)
-    predictions = model.predict(resumes)
-    # No human review — directly filters candidates
-    return [r for r, p in zip(resumes, predictions) if p == 1]
+hiring_model = RandomForestClassifier()
+
+def classify_resume(applicant_data):
+    """Score job applicants."""
+    resume_score = hiring_model.predict(applicant_data)
+    # Automated employment decision — no human review
+    if resume_score > 0.5:
+        accept_candidate = True
+    return resume_score

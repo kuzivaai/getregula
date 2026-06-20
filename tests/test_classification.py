@@ -2291,7 +2291,7 @@ def test_integration_high_risk_project():
     if not Path(fixture_path).exists():
         print("⊘ Integration: high-risk fixture (SKIPPED — fixture not found)")
         return
-    findings = scan_files(fixture_path)
+    findings = scan_files(fixture_path, skip_tests=False, declared_domains={"employment"})
     tiers = [f["tier"] for f in findings if not f.get("suppressed")]
     assert_true("high_risk" in tiers, "detects high-risk in employment screening project")
     print("✓ Integration: high-risk fixture scanned correctly")
@@ -2333,7 +2333,7 @@ def test_integration_full_check_cli():
         print("⊘ Integration: CLI check (SKIPPED — fixture not found)")
         return
     result = subprocess.run(
-        [sys.executable, "scripts/cli.py", "check", fixture_path, "--format", "json", "--no-skip-tests", "--min-tier", "minimal_risk", "--scope", "all"],
+        [sys.executable, "scripts/cli.py", "check", fixture_path, "--format", "json", "--no-skip-tests", "--min-tier", "minimal_risk", "--scope", "all", "--domain", "employment"],
         capture_output=True, text=True, timeout=30,
         cwd=str(Path(__file__).parent.parent),
     )

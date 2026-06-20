@@ -47,8 +47,14 @@ def evaluate(verbose: bool = True) -> dict:
     manifest = json.loads(MANIFEST.read_text())
     expectations = manifest["expectations"]
 
-    # Run Regula against the fixture directory
-    findings = scan_files(str(FIXTURES))
+    # Run Regula against the fixture directory.
+    # Activate all opt-in domains so the benchmark measures detection accuracy
+    # across every Annex III category, not just auto-fingerprinted ones.
+    _all_domains = {
+        "employment", "medical", "finance", "biometrics",
+        "education", "law_enforcement", "infrastructure", "migration",
+    }
+    findings = scan_files(str(FIXTURES), declared_domains=_all_domains)
     by_file: dict[str, list[dict]] = defaultdict(list)
     for f in findings:
         # `file` field is relative to the scanned project root
