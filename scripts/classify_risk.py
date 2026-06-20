@@ -437,12 +437,21 @@ def _check_patterns(compiled_dict: dict, patterns_dict: dict,
     matches = []
 
     for name, compiled_patterns in compiled_dict.items():
+        first_match = None
+        all_lines = []
         for rx in compiled_patterns:
             m = rx.search(text_lower)
             if m:
                 line_num = text_lower[:m.start()].count("\n") + 1
-                matches.append(patterns_dict[name] | {"indicator": name, "match_line": line_num})
-                break
+                all_lines.append(line_num)
+                if first_match is None:
+                    first_match = patterns_dict[name] | {"indicator": name, "match_line": line_num}
+        if first_match is not None:
+            # Store all match lines so AST context can check if ANY match
+            # is in executable code (not just the first match, which may
+            # be in a docstring).
+            first_match["match_lines_all"] = all_lines
+            matches.append(first_match)
 
     # Check custom rules for this tier
     defaults = custom_field_defaults or {}
@@ -494,7 +503,12 @@ def check_prohibited(text: str, stripped_text: str = None) -> Optional[Classific
     if matches:
         primary = matches[0]
         has_ai = is_ai_related(text, stripped_text=stripped_text)
-        match_lines = [m["match_line"] for m in matches if "match_line" in m]
+        match_lines = []
+        for m in matches:
+            if "match_lines_all" in m:
+                match_lines.extend(m["match_lines_all"])
+            elif "match_line" in m:
+                match_lines.append(m["match_line"])
         return Classification(
             tier=RiskTier.PROHIBITED,
             confidence="high" if len(matches) >= 2 else "medium",
@@ -525,7 +539,12 @@ def check_high_risk(text: str, stripped_text: str = None) -> Optional[Classifica
         for m in matches:
             all_articles.update(m["articles"])
         primary = matches[0]
-        match_lines = [m["match_line"] for m in matches if "match_line" in m]
+        match_lines = []
+        for m in matches:
+            if "match_lines_all" in m:
+                match_lines.extend(m["match_lines_all"])
+            elif "match_line" in m:
+                match_lines.append(m["match_line"])
         return Classification(
             tier=RiskTier.HIGH_RISK,
             confidence="high" if len(matches) >= 2 else "medium",
@@ -552,7 +571,12 @@ def check_limited_risk(text: str, stripped_text: str = None) -> Optional[Classif
     )
     if matches:
         primary = matches[0]
-        match_lines = [m["match_line"] for m in matches if "match_line" in m]
+        match_lines = []
+        for m in matches:
+            if "match_lines_all" in m:
+                match_lines.extend(m["match_lines_all"])
+            elif "match_line" in m:
+                match_lines.append(m["match_line"])
         return Classification(
             tier=RiskTier.LIMITED_RISK,
             confidence="high" if len(matches) >= 2 else "medium",

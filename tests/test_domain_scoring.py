@@ -486,14 +486,11 @@ def test_employment_has_exclude_if():
     assert len(DOMAIN_KEYWORDS["employment"]["exclude_if"]) > 0
 
 
-def test_only_employment_has_exclude_if():
-    """Currently only employment has exclude_if patterns."""
+def test_all_domains_have_exclude_if():
+    """All domains should have exclude_if patterns for precision."""
     for domain, cfg in DOMAIN_KEYWORDS.items():
-        if domain == "employment":
-            assert "exclude_if" in cfg
-        else:
-            assert cfg.get("exclude_if") is None or len(cfg.get("exclude_if", [])) == 0, \
-                f"Unexpected exclude_if on {domain}"
+        assert "exclude_if" in cfg, f"{domain} missing exclude_if"
+        assert len(cfg["exclude_if"]) > 0, f"{domain} has empty exclude_if"
 
 
 def test_compiled_patterns_match_source():

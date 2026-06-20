@@ -28,7 +28,8 @@ def test_check_text_output_contains_lifecycle(tmp_path):
     src.mkdir()
     _write_ai_code(src)
     result = subprocess.run(
-        [sys.executable, "-m", "scripts.cli", "check", str(src), "--no-skip-tests", "--scope", "all"],
+        [sys.executable, "-m", "scripts.cli", "check", str(src), "--no-skip-tests", "--scope", "all",
+         "--domain", "employment"],
         capture_output=True, text=True,
         cwd=PROJECT_ROOT,
     )

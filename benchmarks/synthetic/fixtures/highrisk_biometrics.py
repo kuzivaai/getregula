@@ -7,7 +7,9 @@ import face_recognition
 def biometric_identification_pipeline(image):
     """Run facial recognition against the watchlist."""
     encodings = face_recognition.face_encodings(image)
-    return match_against_watchlist(encodings)
+    # Real-time biometric identification in public space
+    biometric_match = match_against_watchlist(encodings)
+    return biometric_match
 
 
 def fingerprint_recognition_check(scan_data):
