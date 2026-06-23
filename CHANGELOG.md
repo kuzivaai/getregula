@@ -331,7 +331,7 @@ users. All 941 tests still pass.
   warns when the installed ruleset is older than the most recent
   regulatory change. Ignores future-dated placeholder entries.
 
-### Added — open data assets (the moat)
+### Added — open data assets
 
 - **[`content/regulations/delta-log/`](content/regulations/delta-log/)**
   — primary-source-linked regulatory changelog for the EU AI Act.
@@ -392,20 +392,10 @@ users. All 941 tests still pass.
   auditor-facing documentation of `regula conform` output (26-file
   Article 43 pack, SHA-256 verification steps, reproducibility
   guarantees).
-- **[`docs/competitor-analysis.md`](docs/competitor-analysis.md)** —
-  objective competitor landscape. Promotes AIR Blackbox (closest
-  positional overlap to Regula in the market) and Microsoft Agent
-  Governance Toolkit (released 2 April 2026, adjacent runtime
-  category) into the main table. Includes `desiorac/mcp-eu-ai-act`
-  as a second independent MCP-server scanner.
-- **[`docs/moat-research.md`](docs/moat-research.md)** — proprietary
-  data moat thesis, ranked 13 candidates, with counterevidence.
-- Translation skill recommendation (EN → DE/PT-BR workflow using
-  cross-model reflection) — internal document, removed from public tree.
-- Three audit reports (research-eval, public-readiness, repo-readiness)
-  were produced during this development cycle. They served their purpose
-  and were removed from the public tree — the fixes they recommended are
-  all applied. Available in git history if needed.
+- Internal planning and research documents were produced during this
+  development cycle. They served their purpose and were removed from the
+  public tree — the fixes they recommended are all applied. Available in
+  git history if needed.
 
 ### Changed
 
@@ -628,7 +618,7 @@ EU and UNESCO sources.
      Regula has 10 high-risk pattern categories because it includes 2
      Annex I (Article 6(1) harmonised legislation) categories: medical
      devices and machinery safety components. README, ROADMAP, and
-     `docs/landscape.md` now make the split honest. Detection logic was
+     the documentation now makes the split honest. Detection logic was
      correct; only the labelling was wrong.
      ([Regulation (EU) 2024/1689 Annex III](https://eur-lex.europa.eu/eli/reg/2024/1689/oj))
   3. Trilogue timing — was "first trilogue completed in late March 2026,

@@ -72,13 +72,12 @@ regula enforcement --format json
 curl https://getregula.com/content/regulations/enforcement-tracker/feed.xml
 ```
 
-## Why this exists, bluntly
+## Why this exists
 
 No existing publication covers EU AI Act enforcement as a structured
 dataset. The CMS GDPR Enforcement Tracker is a proven precedent for the
-GDPR regime. This tracker replicates that precedent for the AI Act.
-Being first with a clean schema and a maintained feed is the entire
-moat.
+GDPR regime. This tracker replicates that precedent for the AI Act
+with a clean schema and a maintained feed.
 
 ## Licence
 

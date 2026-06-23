@@ -1,7 +1,7 @@
 # What Regula does NOT do
 
 An explicit scope statement for the Regula project. This document exists
-because the deep-research pass on the moat thesis surfaced a load-bearing
+because an honest assessment of our coverage surfaced a load-bearing
 counterargument: **static code scanning may fundamentally address only
 about 30% of the EU AI Act.** Articles 9 (risk management system),
 Article 17 (quality management system), Article 27 (fundamental rights

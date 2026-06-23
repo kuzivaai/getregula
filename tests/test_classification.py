@@ -1159,7 +1159,7 @@ def test_timeline_data():
     assert_true("2027-12-02" in dates, "Omnibus Annex III date present")
 
     # Verify Omnibus Annex III entry has 'agreed' status (not 'proposed' —
-    # provisional agreement reached 7 May 2026, pending formal adoption)
+    # provisional agreement 7 May 2026, EP approved 16 Jun 2026; pending Council adoption)
     omnibus = [e for e in TIMELINE if e["date"] == "2027-12-02"][0]
     assert_eq(omnibus["status"], "agreed", "Omnibus Annex III is 'agreed' not 'proposed'")
     print("✓ Timeline: verified enforcement dates present and accurate")
@@ -4664,7 +4664,7 @@ def test_custom_rule_redos_protection():
 
 
 # ---------------------------------------------------------------------------
-# Cross-function data flow tracing (depth moat)
+# Cross-function data flow tracing
 # ---------------------------------------------------------------------------
 
 def test_cross_function_ai_flow_detected():

@@ -15,8 +15,8 @@
   }
 </style>
 <meta name="theme-color" content="#070711">
-<title>EN 18228 and EN 18282: What Regula Can Evidence Against Draft AI Standards | Regula</title>
-<meta name="description" content="Traceability mapping between Regula's detection categories and the draft harmonised standards for EU AI Act Articles 9 and 15. Based on public enquiry text — will be revised on publication.">
+<title>EN 18228 &amp; EN 18282: Regula vs Draft AI Standards</title>
+<meta name="description" content="Mapping Regula's detections to draft harmonised standards EN 18228 and EN 18282 for EU AI Act Articles 9 and 15. Based on public enquiry text.">
 <meta name="author" content="Kuziva Muzondo">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <link rel="canonical" href="https://getregula.com/blog/blog-en-standards-mapping.html">
@@ -25,8 +25,8 @@
 
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://getregula.com/blog/blog-en-standards-mapping.html">
-<meta property="og:title" content="EN 18228 and EN 18282: What Regula Can Evidence Against Draft AI Standards">
-<meta property="og:description" content="Traceability mapping between Regula's detection categories and the draft harmonised standards for EU AI Act Articles 9 and 15.">
+<meta property="og:title" content="EN 18228 & EN 18282: Regula vs Draft AI Standards">
+<meta property="og:description" content="Mapping Regula's detections to draft harmonised standards EN 18228 and EN 18282 for EU AI Act Articles 9 and 15.">
 <meta property="og:image" content="https://getregula.com/assets/og-image.png">
 <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
 <meta property="og:locale" content="en_GB">
@@ -39,8 +39,8 @@
 <meta property="article:tag" content="Harmonised Standards">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="EN 18228 and EN 18282: What Regula Can Evidence Against Draft AI Standards">
-<meta name="twitter:description" content="Traceability mapping for draft EU AI Act harmonised standards. What a code scanner can and cannot evidence.">
+<meta name="twitter:title" content="EN 18228 & EN 18282: Regula vs Draft AI Standards">
+<meta name="twitter:description" content="Mapping Regula's detections to EN 18228 and EN 18282. What a code scanner can and cannot evidence.">
 <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
@@ -51,12 +51,24 @@
 {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    "headline": "EN 18228 and EN 18282: What Regula Can Evidence Against Draft AI Standards",
+    "headline": "EN 18228 & EN 18282: Regula vs Draft AI Standards",
     "description": "Traceability mapping between Regula's detection categories and the draft harmonised standards for EU AI Act Articles 9 and 15.",
-    "author": {"@type": "Person", "name": "Kuziva Muzondo"},
+    "author": {
+        "@type": "Person",
+        "name": "Kuziva Muzondo",
+        "url": "https://getregula.com/about.html"
+    },
     "datePublished": "2026-06-12",
     "dateModified": "2026-06-12",
-    "publisher": {"@type": "Organization", "name": "The Implementation Layer"},
+    "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://getregula.com/assets/regula-logo.png"
+        }
+    },
     "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": "https://getregula.com/blog/blog-en-standards-mapping.html"
@@ -88,7 +100,7 @@
 <nav class="nav" id="nav" aria-label="Primary">
     <a href="/" class="nav-brand">Regula</a>
     <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html">Regulations</a>
@@ -111,10 +123,12 @@
 </aside>
 
 <h2>What these standards are</h2>
+<p>prEN 18228 and prEN 18282 are draft CEN-CENELEC harmonised standards for the EU AI Act, currently at public enquiry stage. EN 18228 covers AI risk management (Article 9) and EN 18282 covers cybersecurity for AI systems (Article 15). Once published, they will provide presumption of conformity with their respective articles. Final publication is expected Q4 2026.</p>
 <p><strong>prEN 18228</strong> (AI Risk Management) provides presumption of conformity with <strong>Article 9</strong> of the EU AI Act. It covers risk identification, risk controls, testing, and post-market monitoring across the AI lifecycle.</p>
 <p><strong>prEN 18282</strong> (Cybersecurity for AI Systems) maps to <strong>Article 15</strong>. It organises AI cybersecurity around five outcome categories &mdash; Prevent, Detect, Respond, Resolve, Control &mdash; applied to five attack types: data poisoning, model poisoning, adversarial attacks, confidentiality attacks, and model flaws.</p>
 
 <h2>What Regula can evidence</h2>
+<p>Regula provides code-level indicators relevant to EN 18228 clauses on hazard identification, testing, risk controls, and monitoring (clauses 6, 8, 9, 12), and contributes artefacts toward the Risk Management File (clauses 4.5, 4.6). For EN 18282, 16 of 17 AI_SECURITY detection categories map to at least one outcome in the Prevent, Detect, or Control categories.</p>
 <table style="width:100%;border-collapse:collapse;margin:16px 0;">
 <thead><tr style="border-bottom:1px solid rgba(255,255,255,0.1);"><th style="text-align:left;padding:8px;">Standard</th><th style="text-align:left;padding:8px;">Clauses with coverage</th><th style="text-align:left;padding:8px;">Relationship</th></tr></thead>
 <tbody>
@@ -124,6 +138,7 @@
 </tbody></table>
 
 <h2>What Regula cannot address</h2>
+<p>Regula cannot address organisational process clauses (EN 18228 clauses 4.1–4.4 on governance, competence, and risk criteria), lifecycle integration (clause 5), residual risk acceptance (clauses 10–11), or EN 18282 Respond and Resolve outcomes. These require documented procedures, domain-expert judgement, and operational runbooks that are not code properties.</p>
 <table style="width:100%;border-collapse:collapse;margin:16px 0;">
 <thead><tr style="border-bottom:1px solid rgba(255,255,255,0.1);"><th style="text-align:left;padding:8px;">Gap</th><th style="text-align:left;padding:8px;">Why</th></tr></thead>
 <tbody>
@@ -134,6 +149,7 @@
 </tbody></table>
 
 <h2>Three relationship types</h2>
+<p>The Regula standards mapping uses three distinct relationship types: Indicator (Regula detects a relevant code-level signal, but detection does not mean the clause is satisfied), Evidence (Regula output contributes an artefact toward the clause, but is not sufficient alone), and Cannot (the clause requires organisational, runtime, or human-judgement input that code scanning cannot address).</p>
 <p>The full matrices (in <a href="https://github.com/kuzivaai/getregula/tree/main/references">references/</a>) use three distinct relationship types, never conflated:</p>
 <ul>
 <li><strong>Indicator:</strong> Regula detects a code-level signal relevant to the clause. Finding present &ne; clause satisfied.</li>
@@ -144,6 +160,17 @@
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 <p style="color:var(--text-dim);font-size:0.85rem;"><strong>Last verified:</strong> 12 June 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot; <strong>Sources:</strong> <a href="https://aiassurance.institute/pren-18228-clauses.html" style="color:var(--text-dim);">AI Assurance Institute (EN 18228)</a>, <a href="https://adamleonsmith.substack.com/p/pren-18282-heads-to-enquiry-cybersecurity" style="color:var(--text-dim);">Adam Leon Smith (EN 18282)</a> &middot; <strong>Full matrices:</strong> <a href="https://github.com/kuzivaai/getregula/blob/main/references/en18228_mapping.yaml" style="color:var(--text-dim);">en18228_mapping.yaml</a>, <a href="https://github.com/kuzivaai/getregula/blob/main/references/en18282_mapping.yaml" style="color:var(--text-dim);">en18282_mapping.yaml</a></p>
 <p style="color:var(--text-dim);font-size:0.85rem;"><em>Not legal advice. Regula identifies risk indicators for developer review.</em></p>
+
+<div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
+<div class="blog-body" style="margin-top:var(--s5);">
+    <h3>Related reading</h3>
+    <ul>
+        <li><a href="/blog/blog-art50-code-of-practice.html">Article 50 Code of Practice mapping</a> &mdash; What a code scanner can evidence against the AI content marking rules</li>
+        <li><a href="/blog/blog-scanning-5-frameworks.html">Scanning 5 compliance frameworks</a> &mdash; 562 findings across PyTorch, HuggingFace, LangChain, LlamaIndex, CrewAI</li>
+        <li><a href="/blog/blog-classify-ai-system.html">How to classify your AI system</a> &mdash; Article 6, the four tiers, and what code scanning can tell you</li>
+    </ul>
+</div>
+
 </article>
 </main>
 

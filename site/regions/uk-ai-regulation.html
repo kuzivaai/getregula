@@ -23,7 +23,7 @@
     </style>
     <meta name="theme-color" content="#070711">
 
-    <title>UK AI Regulation Tracker — ICO, DSIT, principles-based | Regula</title>
+    <title>UK AI Regulation Tracker &mdash; Regula</title>
     <meta name="description" content="UK AI regulation tracker. How the EU AI Act affects UK firms, where the UK regulatory framework stands, and what UK organisations should prepare for.">
     <meta name="keywords" content="UK AI regulation, ICO AI guidance, DSIT AI policy, UK AI Bill, sector-specific AI regulation, UK data protection AI, principles-based AI">
     <meta name="author" content="Regula">
@@ -180,12 +180,12 @@
 </head>
 <body>
     <a href="#main" class="skip-link">Skip to content</a>
-    <div id="progress-bar"></div>
+    <div id="progress-bar" aria-hidden="true"></div>
 
     <nav class="nav" id="nav" aria-label="Primary">
         <a href="/" class="nav-brand">Regula</a>
         <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-        <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+        <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
             <a href="https://github.com/kuzivaai/getregula">GitHub</a>
             <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
             <a href="/regions/regulations.html">Regulations</a>

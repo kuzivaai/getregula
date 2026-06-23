@@ -13,7 +13,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-2381%20passing-brightgreen.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-2395%20passing-brightgreen.svg)](#verified-numbers)
 [![WCAG 2.2 AA](https://img.shields.io/badge/WCAG%202.2-AA-success.svg)](docs/accessibility/README.md)
 
 ---
@@ -242,7 +242,7 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | Risk detection patterns (regexes) | 398 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Compliance frameworks mapped | 12 |
-| Tests (pytest --collect-only, all passing) | 2,381 |
+| Tests (pytest --collect-only, all passing) | 2,395 |
 | Required production dependencies | 0 |
 
 For buyer-facing trust evidence (every number above paired with a reproducible command, plus precision/recall benchmark, security posture, and audit trail), see [`docs/TRUST.md`](docs/TRUST.md).
@@ -284,7 +284,7 @@ The SPDX expression for the full package is `(Apache-2.0 OR EUPL-1.2) AND Licens
 # What Regula does NOT do
 
 An explicit scope statement for the Regula project. This document exists
-because the deep-research pass on the moat thesis surfaced a load-bearing
+because an honest assessment of our coverage surfaced a load-bearing
 counterargument: **static code scanning may fundamentally address only
 about 30% of the EU AI Act.** Articles 9 (risk management system),
 Article 17 (quality management system), Article 27 (fundamental rights
@@ -497,7 +497,7 @@ at [docs/what-regula-does-not-do.md](https://github.com/kuzivaai/getregula/blob/
 
 You built an AI-powered app. Maybe with Claude, ChatGPT, Cursor, Lovable, or Bolt. It works. Now what?
 
-If your app is used by anyone in the EU — or you plan to sell it there — the **EU AI Act** applies to you. Violations carry fines up to **EUR 35 million or 7% of global turnover**. Art 50 transparency obligations apply from **2 August 2026**. Annex III high-risk obligations are deferred to **2 December 2027** under the Digital Omnibus provisional agreement of 7 May 2026 (pending formal adoption — until OJ publication, the original 2 August 2026 deadline remains legally binding).
+If your app is used by anyone in the EU — or you plan to sell it there — the **EU AI Act** applies to you. Violations carry fines up to **EUR 35 million or 7% of global turnover**. Art 50 transparency obligations apply from **2 August 2026**. Annex III high-risk obligations are deferred to **2 December 2027** under the Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026 (pending Council adoption and OJ publication — until OJ publication, the original 2 August 2026 deadline remains legally binding).
 
 Regula tells you where you stand in 10 seconds.
 
@@ -1213,16 +1213,14 @@ an issue at <https://github.com/kuzivaai/getregula/issues>.
 The existing OSS corpus (257 findings across 5 projects) is a starting
 point. The Regula project plans to publish **RegulaBench** — a larger,
 hand-labelled, citable dataset of real-world AI code snippets with
-TP/FP labels mapped to EU AI Act Articles. Design details are in
-[`docs/moat-research.md`](../moat-research.md) under "Candidate 2".
+TP/FP labels mapped to EU AI Act Articles.
 
 There is no NIST-Juliet-equivalent for AI Act compliance at the code
-level today (see [`docs/moat-research.md`](../moat-research.md), which
-cites [NIST SARD](https://samate.nist.gov/SARD/test-suites),
+level today. The closest precedents in adjacent domains are
+[NIST SARD](https://samate.nist.gov/SARD/test-suites),
 [Juliet 1.3](https://samate.nist.gov/SARD/test-suites/112), and
-[MLCommons AILuminate](https://ailuminate.mlcommons.org/) as the
-closest precedents in adjacent domains). RegulaBench aims to fill that
-gap.
+[MLCommons AILuminate](https://ailuminate.mlcommons.org/).
+RegulaBench aims to fill that gap.
 
 **Status:** design phase. Target v0.1: 100 hand-labelled cases,
 published on [HuggingFace Datasets](https://huggingface.co/datasets) +

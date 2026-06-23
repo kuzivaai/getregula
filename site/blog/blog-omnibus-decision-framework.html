@@ -22,10 +22,10 @@
       }
     </style>
     <meta name="theme-color" content="#070711">
-    <title>August 2026 or December 2027? A Developer's Guide to the Omnibus Uncertainty &mdash; Regula</title>
+    <title>Omnibus Uncertainty: Aug 2026 or Dec 2027? &mdash; Regula</title>
     <meta name="description" content="The EU AI Act has two possible deadlines for high-risk AI systems. A three-track framework for developers who need to plan now despite the uncertainty.">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta property="og:title" content="August 2026 or December 2027? A Developer's Guide to the Omnibus Uncertainty">
+    <meta property="og:title" content="Omnibus Uncertainty: Aug 2026 or Dec 2027? — Regula">
     <meta property="og:description" content="The EU AI Act has two possible deadlines for high-risk AI systems. A three-track framework for developers who need to plan now despite the uncertainty.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://getregula.com/blog/blog-omnibus-decision-framework.html">
@@ -34,9 +34,9 @@
     <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
     <meta property="og:site_name" content="Regula">
     <meta property="article:published_time" content="2026-04-25">
-    <meta property="article:author" content="The Implementation Layer">
+    <meta property="article:author" content="Kuziva Muzondo">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="August 2026 or December 2027? A Developer's Guide to the Omnibus Uncertainty">
+    <meta name="twitter:title" content="Omnibus Uncertainty: Aug 2026 or Dec 2027? — Regula">
     <meta name="twitter:description" content="The EU AI Act has two possible deadlines for high-risk AI systems. A three-track framework for developers who need to plan now despite the uncertainty.">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
     <link rel="canonical" href="https://getregula.com/blog/blog-omnibus-decision-framework.html">
@@ -46,14 +46,15 @@
     {
         "@context": "https://schema.org",
         "@type": "Article",
-        "headline": "August 2026 or December 2027? A Developer's Guide to the Omnibus Uncertainty",
+        "headline": "Omnibus Uncertainty: Aug 2026 or Dec 2027? — Regula",
         "description": "The EU AI Act has two possible deadlines for high-risk AI systems. A three-track framework for developers who need to plan now despite the uncertainty.",
         "url": "https://getregula.com/blog/blog-omnibus-decision-framework.html",
         "datePublished": "2026-04-25",
         "dateModified": "2026-04-25",
         "author": {
             "@type": "Person",
-            "name": "The Implementation Layer"
+            "name": "Kuziva Muzondo",
+            "url": "https://getregula.com/about.html"
         },
         "publisher": {
             "@type": "Organization",
@@ -61,7 +62,7 @@
             "url": "https://getregula.com",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://getregula.com/assets/og-image.png"
+                "url": "https://getregula.com/assets/regula-logo.png"
             }
         },
         "mainEntityOfPage": {
@@ -234,12 +235,12 @@
 <body>
 
 <a href="#main" class="skip-link">Skip to content</a>
-<div id="progress-bar"></div>
+<div id="progress-bar" aria-hidden="true"></div>
 
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -255,7 +256,7 @@
 <article>
 
 <aside style="background:rgba(16,185,129,0.08);border-left:3px solid #10b981;padding:16px 20px;margin:0 0 16px;border-radius:0 8px 8px 0;">
-  <strong>Editor's note (June 2026):</strong> The Digital Omnibus reached provisional political agreement on 7 May 2026. The decision framework below is now resolved: Annex III high-risk obligations are deferred to 2 December 2027 (pending formal adoption). Plan against December 2027 as the baseline.
+  <strong>Editor's note (June 2026):</strong> The Digital Omnibus reached provisional political agreement on 7 May 2026. The decision framework below is now resolved: Annex III high-risk obligations are deferred to 2 December 2027 (EP approved 16 Jun 2026; pending Council adoption). Plan against December 2027 as the baseline.
   <br><small>Source: <a href="https://www.consilium.europa.eu/en/press/press-releases/2026/05/07/artificial-intelligence-council-and-parliament-agree-to-simplify-and-streamline-rules/">Council press release, 7 May 2026</a></small>
 </aside>
 
@@ -294,6 +295,8 @@
 
     <h2>Three tracks, not one deadline</h2>
 
+    <p>The EU AI Act phases in across three separate tracks: prohibited practices under Article 5 (in force since February 2025), transparency obligations under Article 50 (due August 2026, not delayed), and high-risk system obligations under Annex III (current law says August 2026, Omnibus proposes December 2027). Each track has its own timeline and the Omnibus only affects the third.</p>
+
     <p>The EU AI Act doesn't have a single compliance date. It phases in over several years, and the Omnibus only proposes changes to some of those phases. Treating it as a single event leads to either panic (August is soon) or complacency (they're pushing it back, we can relax). Neither is correct.</p>
 
     <div class="track-box track-active">
@@ -318,6 +321,8 @@
     </div>
 
     <h2>What the Omnibus actually changes</h2>
+
+    <p>The Omnibus defers only two deadlines: standalone high-risk AI systems (Annex III) from August 2026 to December 2027, and product-embedded high-risk AI (Annex I) from August 2026 to August 2028. Article 5 prohibitions, GPAI obligations, and Article 50 transparency requirements are not touched. The Omnibus also adjusts the Article 6(3) procedural-task carve-out and regulatory sandbox provisions.</p>
 
     <p>Most coverage collapses everything into "the deadline is delayed" without distinguishing what is delayed from what isn't. The detail matters.</p>
 
@@ -416,6 +421,8 @@
 
     <h2>What to do right now</h2>
 
+    <p>Start by running <code>regula check .</code> to determine your risk tier. If you are high-risk, begin writing your Article 11 technical documentation and Article 9 risk management plan now, because these are the most time-consuming requirements and only get harder to produce as institutional knowledge fades. Build audit-grade logging infrastructure for Article 12 in parallel.</p>
+
     <ol class="action-steps">
         <li>
             <div>
@@ -462,6 +469,11 @@
 
     <p>Start now. Go at a sustainable pace. If the deadline moves, you're early. That's fine.</p>
 
+    <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
+        <strong>Last verified:</strong> 25 April 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
+        <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
+    </p>
+
     <div class="blog-sep" style="max-width:100%;"></div>
 
     <div class="warn-box" style="margin-top: var(--s7);">
@@ -472,11 +484,11 @@
 
 <div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
 <div class="blog-body" style="margin-top:var(--s5);">
-    <h3>Keep reading</h3>
+    <h3>Related reading</h3>
     <ul>
-        <li><a href="/blog/blog-omnibus-delay.html">EU AI Act Omnibus Delay: What Developers Need to Know</a> &mdash; The full timeline of the Omnibus proposal and what it means</li>
-        <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act Risk Tiers in Actual Code</a> &mdash; What prohibited, high-risk, and limited-risk look like in real code</li>
-        <li><a href="/blog/blog-startups-ignoring-ai-act.html">Most startups are ignoring the EU AI Act</a> &mdash; When ignoring it stops being rational</li>
+        <li><a href="/blog/blog-omnibus-delay.html">The EU AI Act Omnibus delay</a> &mdash; Full timeline, deadline table, and risk-tier-specific guidance</li>
+        <li><a href="/blog/blog-omnibus-trilogue-failed.html">What happened in the Omnibus trilogue</a> &mdash; The 28 April failure, Annex I sticking point, and what followed</li>
+        <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act apply to your AI app?</a> &mdash; Decision tree for scope, provider vs deployer, and extraterritorial reach</li>
     </ul>
     <p style="margin-top:48px;font-size:13px;color:var(--text-dim);">
         <a href="https://news.ycombinator.com/submitlink?u=https://getregula.com/blog/blog-omnibus-decision-framework.html&t=August%202026%20or%20December%202027%3F%20A%20Developer%27s%20Guide%20to%20the%20Omnibus%20Uncertainty" rel="noopener" target="_blank" style="color:var(--text-dim);">Discuss on Hacker News</a>

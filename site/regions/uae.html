@@ -275,7 +275,7 @@
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -291,7 +291,7 @@
 <section class="hero">
     <div class="badge">For DIFC, ADGM &amp; GCC AI teams selling into Europe</div>
     <h1>If your AI features touch EU users, you&rsquo;re <span class="hl">already liable</span>.</h1>
-    <p class="sub">The EU AI Act applies <strong>extraterritorially</strong>. A UAE-licensed company that ships AI to EU customers is a &ldquo;provider&rdquo; or &ldquo;deployer&rdquo; under Article&nbsp;2(1)(c) — and on the hook for fines up to <strong>&euro;35M or 7% of global turnover</strong>. Art&nbsp;50 transparency applies from <strong>2 August 2026</strong>; Annex&nbsp;III high-risk from <strong>2 December 2027</strong> (Omnibus agreed, pending formal adoption). Regula audits your codebase locally in one command. Free, open-source, no consultants.</p>
+    <p class="sub">The EU AI Act applies <strong>extraterritorially</strong>. A UAE-licensed company that ships AI to EU customers is a &ldquo;provider&rdquo; or &ldquo;deployer&rdquo; under Article&nbsp;2(1)(c) — and on the hook for fines up to <strong>&euro;35M or 7% of global turnover</strong>. Art&nbsp;50 transparency applies from <strong>2 August 2026</strong>; Annex&nbsp;III high-risk from <strong>2 December 2027</strong> (Omnibus agreed, approved by European Parliament on 16 June 2026; pending Council adoption and OJ publication). Regula audits your codebase locally in one command. Free, open-source, no consultants.</p>
 
     <button class="cta-pill" onclick="copyCmd(this, 'pipx install regula-ai \u0026\u0026 regula quickstart')">
         <span>&#9654;</span>
@@ -308,7 +308,7 @@
         <span class="sp-sep" aria-hidden="true">&middot;</span>
         <span>zero runtime dependencies</span>
         <span class="sp-sep" aria-hidden="true">&middot;</span>
-        <span>2,381 tests</span>
+        <span>2,395 tests</span>
         <span class="sp-sep" aria-hidden="true">&middot;</span>
         <span>0 known security findings</span>
     </div>
@@ -337,7 +337,7 @@
         </div>
         <div class="card-base liab-card">
             <h3>High-risk deadline: 2 December 2027 (Omnibus)</h3>
-            <p>The Digital Omnibus provisional agreement of 7 May 2026 defers Annex III high-risk obligations from 2 August 2026 to 2 December 2027. Formal adoption is pending (expected before 2 August 2026). Until publication in the Official Journal, the original August 2026 deadline remains legally binding. Article 50 transparency obligations still apply from 2 August 2026.</p>
+            <p>The Digital Omnibus provisional agreement of 7 May 2026 defers Annex III high-risk obligations from 2 August 2026 to 2 December 2027. The European Parliament approved the Omnibus on 16 June 2026 (423 for, 57 against, 174 abstentions). Council adoption is expected before 2 August 2026. Until OJ publication, the original August 2026 deadline remains legally binding. Article 50 transparency obligations still apply from 2 August 2026.</p>
             <p class="ref">Source: Council press release, 7 May 2026; Regulation (EU) 2024/1689 Article 113</p>
         </div>
     </div>

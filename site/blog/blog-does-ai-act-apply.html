@@ -27,7 +27,7 @@
     <title>Does the EU AI Act Apply to Your AI App? | Regula</title>
     <meta name="description" content="A developer's decision tree for EU AI Act applicability. Extraterritorial scope, provider vs deployer, risk tiers, and what non-EU companies need to know.">
     <meta name="keywords" content="does EU AI Act apply to my app, EU AI Act US companies, EU AI Act SaaS, EU AI Act provider vs deployer, EU AI Act extraterritorial scope, EU AI Act OpenAI API, EU AI Act solo founder, EU AI Act Article 2">
-    <meta name="author" content="Regula">
+    <meta name="author" content="Kuziva Muzondo">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
     <link rel="canonical" href="https://getregula.com/blog/blog-does-ai-act-apply.html">
     <link rel="alternate" hreflang="en" href="https://getregula.com/blog/blog-does-ai-act-apply.html">
@@ -67,9 +67,9 @@
       "datePublished": "2026-04-10T00:00:00+00:00",
       "dateModified": "2026-04-10T00:00:00+00:00",
       "author": {
-        "@type": "Organization",
-        "name": "Regula",
-        "url": "https://getregula.com"
+        "@type": "Person",
+        "name": "Kuziva Muzondo",
+        "url": "https://getregula.com/about.html"
       },
       "publisher": {
         "@type": "Organization",
@@ -77,7 +77,7 @@
         "url": "https://getregula.com",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://getregula.com/assets/og-image.png"
+          "url": "https://getregula.com/assets/regula-logo.png"
         }
       },
       "mainEntityOfPage": {
@@ -210,13 +210,13 @@
 </head>
 <body>
 
-<div id="progress-bar"></div>
+<div id="progress-bar" aria-hidden="true"></div>
 <a class="skip-link" href="#main">Skip to content</a>
 
 <nav class="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula" target="_blank" rel="noopener">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md" target="_blank" rel="noopener">Docs</a>
         <a href="/regions/regulations.html">Regulations</a>
@@ -249,7 +249,7 @@
 <div class="blog-sep"></div>
 
 <aside style="background:rgba(59,130,246,0.08);border-left:3px solid var(--accent);padding:12px 16px;margin:0 0 24px;border-radius:4px;font-size:0.9rem;color:var(--text-2);">
-<strong>Editor's note (June 2026):</strong> The Digital Omnibus reached provisional agreement on 7 May 2026. Annex III high-risk deadlines are deferred to 2 December 2027 (pending formal adoption). References in this article to the Omnibus being "under active trilogue negotiation" and "not yet law" are now historical. See <a href="/blog/writing.html" style="color:var(--accent);">the blog index</a> for current coverage.
+<strong>Editor's note (June 2026):</strong> The Digital Omnibus reached provisional agreement on 7 May 2026. Annex III high-risk deadlines are deferred to 2 December 2027 (EP approved 16 Jun 2026; pending Council adoption). References in this article to the Omnibus being "under active trilogue negotiation" and "not yet law" are now historical. See <a href="/blog/writing.html" style="color:var(--accent);">the blog index</a> for current coverage.
 </aside>
 
 <div class="blog-body">
@@ -276,6 +276,8 @@
     <!-- Section 2: Decision tree -->
     <section id="decision-tree">
         <h2>A decision tree</h2>
+
+        <p>Five questions determine your position under the EU AI Act: whether your product uses AI, whether you have EU users, whether you are the provider or deployer, which risk tier applies, and what obligations follow. Working through them in order takes under a minute and gives you a clear regulatory classification under Regulation (EU) 2024/1689.</p>
 
         <p>Work through these five questions in order. Each one narrows your position under the regulation.</p>
 
@@ -338,6 +340,8 @@
     <!-- Section 4: Provider vs deployer -->
     <section id="provider-deployer">
         <h2>I use the OpenAI API &mdash; am I a provider or a deployer?</h2>
+
+        <p>If you integrate a hosted model (OpenAI, Anthropic, Google) into your product and serve it to end users, you are a deployer under Article 3(4). The API provider is the GPAI model provider. You only become a provider yourself if you place the AI system on the market under your own name or make a substantial modification to a high-risk system under Article 25.</p>
 
         <p>This is the single most common question on developer forums, and the answer is more straightforward than most people expect.</p>
 
@@ -454,6 +458,8 @@
     <section id="next-steps">
         <h2>What to do next</h2>
 
+        <p>Run <code>regula assess</code> to confirm your risk tier, then <code>regula check .</code> to scan your codebase for risk patterns. High-risk systems need a gap assessment against Articles 9&ndash;15. Limited-risk systems need an Article 50 transparency disclosure. Minimal-risk systems have no mandatory obligations beyond the Article 5 prohibitions that apply to everyone.</p>
+
         <p>Based on where you landed in the decision tree:</p>
 
         <ul>
@@ -479,6 +485,11 @@
         </div>
     </section>
 
+    <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
+        <strong>Last verified:</strong> 10 April 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
+        <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
+    </p>
+
     <!-- Disclaimer -->
     <div class="disclaimer">
         <p><strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. The EU AI Act requires contextual assessment that no automated tool can fully provide. For high-risk systems, consult a qualified legal professional. All Article references are to Regulation (EU) 2024/1689 as published in the Official Journal of the European Union on 12 July 2024.</p>
@@ -488,11 +499,11 @@
 
 <div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
 <div class="blog-body" style="margin-top:var(--s5);">
-    <h3>Keep reading</h3>
+    <h3>Related reading</h3>
     <ul>
-        <li><a href="/blog/blog-startups-ignoring-ai-act.html">Most startups are ignoring the EU AI Act</a> — When ignoring it stops being rational</li>
-        <li><a href="/blog/blog-omnibus-delay.html">The EU AI Act Omnibus Delay</a> — Current deadline status and what developers should do now</li>
-        <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act Risk Tiers in Actual Code</a> — What prohibited, high-risk, and limited-risk look like in real code</li>
+        <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act risk tiers in actual code</a> &mdash; What each risk tier looks like in Python with scanner output</li>
+        <li><a href="/blog/blog-classify-ai-system.html">How to classify your AI system</a> &mdash; Article 6, the four tiers, and what code scanning can tell you</li>
+        <li><a href="/blog/blog-startups-ignoring-ai-act.html">Why startups are ignoring the AI Act</a> &mdash; Three triggers that change the calculus for founders</li>
     </ul>
     <p style="margin-top:48px;font-size:13px;color:var(--text-dim);">
         <a href="https://news.ycombinator.com/submitlink?u=https://getregula.com/blog/blog-does-ai-act-apply.html&t=Does%20the%20EU%20AI%20Act%20Apply%20to%20Your%20AI%20App%3F" rel="noopener" target="_blank" style="color:var(--text-dim);">Discuss on Hacker News</a>

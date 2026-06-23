@@ -16,7 +16,7 @@
     </style>
     <meta name="theme-color" content="#070711">
 
-    <title>What the Art 50 Code of Practice Means for Your Codebase | Regula Blog</title>
+    <title>Art 50 Code of Practice for Your Codebase — Regula</title>
     <meta name="description" content="The EU AI Act Code of Practice on AI content marking was published 10 June 2026. Here is what a code scanner can and cannot evidence against it.">
     <meta name="author" content="Kuziva Muzondo">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
@@ -26,7 +26,7 @@
 
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://getregula.com/blog/blog-art50-code-of-practice.html">
-    <meta property="og:title" content="What the Art 50 Code of Practice Means for Your Codebase">
+    <meta property="og:title" content="Art 50 Code of Practice for Your Codebase — Regula">
     <meta property="og:description" content="The EU AI Act Code of Practice on AI content marking was published 10 June 2026. What a code scanner can and cannot evidence against it.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
@@ -39,7 +39,7 @@
     <meta property="article:tag" content="Code of Practice">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Art 50 Code of Practice: What It Means for Your Codebase">
+    <meta name="twitter:title" content="Art 50 Code of Practice for Your Codebase — Regula">
     <meta name="twitter:description" content="The EU AI Act Code of Practice on AI content marking. What a code scanner can and cannot evidence.">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
 
@@ -52,12 +52,24 @@
     {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
-        "headline": "What the Art 50 Code of Practice Means for Your Codebase",
+        "headline": "Art 50 Code of Practice for Your Codebase — Regula",
         "description": "The EU AI Act Code of Practice on AI content marking was published 10 June 2026. What a code scanner can and cannot evidence against it.",
-        "author": {"@type": "Person", "name": "Kuziva Muzondo"},
+        "author": {
+            "@type": "Person",
+            "name": "Kuziva Muzondo",
+            "url": "https://getregula.com/about.html"
+        },
         "datePublished": "2026-06-11",
         "dateModified": "2026-06-11",
-        "publisher": {"@type": "Organization", "name": "The Implementation Layer"},
+        "publisher": {
+            "@type": "Organization",
+            "name": "Regula",
+            "url": "https://getregula.com",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://getregula.com/assets/regula-logo.png"
+            }
+        },
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https://getregula.com/blog/blog-art50-code-of-practice.html"
@@ -90,7 +102,7 @@
 <nav class="nav" id="nav" aria-label="Primary">
     <a href="/" class="nav-brand">Regula</a>
     <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html">Regulations</a>
@@ -125,6 +137,7 @@
 
 <h2>What Regula can evidence</h2>
 
+<p>Regula can detect the presence of synthetic content generation, chatbot interaction, emotion recognition, and biometric categorisation patterns in your codebase — the four Article 50 transparency categories. It identifies whether your code uses these capabilities, which is useful for scoping your obligations. It cannot verify that marking or disclosure is effective at runtime.</p>
 <p>Regula&rsquo;s <code>limited_risk</code> detection tier includes 23 patterns across four Article 50 categories. Against the Code of Practice provisions:</p>
 
 <table style="width:100%;border-collapse:collapse;margin:16px 0;">
@@ -161,6 +174,7 @@
 
 <h2>What Regula cannot evidence</h2>
 
+<p>Regula cannot verify that machine-readable marking is present in generated outputs, that watermarking is effective or robust, that deployer disclosure appears at the interaction layer, or that AI-generated text underwent human editorial review. These are runtime, UI, and editorial workflow questions that static code analysis fundamentally cannot answer.</p>
 <p>This list matters as much as the one above.</p>
 
 <table style="width:100%;border-collapse:collapse;margin:16px 0;">
@@ -196,6 +210,7 @@
 
 <h2>Practical guidance</h2>
 
+<p>If your system generates synthetic content, run <code>regula check . --min-tier limited_risk</code> to detect generative AI patterns and <code>regula gap . --framework eu-ai-act</code> to check for transparency gaps. Article 50 obligations apply from 2 August 2026 for all systems. Watermarking for systems already on the market is required by 2 December 2026 (Digital Omnibus; EP approved 16 Jun 2026; pending Council adoption).</p>
 <p>If you generate synthetic content (images, audio, video, text that could be mistaken for human-created), run:</p>
 
 <pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>regula check . --min-tier limited_risk
@@ -203,7 +218,7 @@ regula gap . --framework eu-ai-act</code></pre>
 
 <p>Regula will flag the <em>presence</em> of generative AI patterns in your codebase. It will not verify that your watermarking implementation is effective &mdash; that requires a separate testing step (consider <a href="https://giskard.ai">Giskard</a> or manual adversarial testing).</p>
 
-<p>Article 50 transparency obligations apply from <strong>2 August 2026</strong> for all systems. For systems already on the market, the watermarking deadline is <strong>2 December 2026</strong> (Digital Omnibus provisional agreement, 7 May 2026; pending formal adoption).</p>
+<p>Article 50 transparency obligations apply from <strong>2 August 2026</strong> for all systems. For systems already on the market, the watermarking deadline is <strong>2 December 2026</strong> (Digital Omnibus; approved by European Parliament on 16 June 2026; pending Council adoption and OJ publication).</p>
 
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
@@ -213,6 +228,16 @@ regula gap . --framework eu-ai-act</code></pre>
     <strong>Source:</strong> <a href="https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content" style="color:var(--text-dim);">EC Code of Practice on AI content marking (10 June 2026)</a> &middot;
     <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
 </p>
+
+<div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
+<div class="blog-body" style="margin-top:var(--s5);">
+    <h3>Related reading</h3>
+    <ul>
+        <li><a href="/blog/blog-en-standards-mapping.html">EN standards mapping (EN 18228, EN 18282)</a> &mdash; Traceability between Regula detections and draft harmonised standards</li>
+        <li><a href="/blog/blog-omnibus-decision-framework.html">Omnibus decision framework</a> &mdash; Three-track planning approach for deadline uncertainty</li>
+        <li><a href="/blog/blog-scanning-5-frameworks.html">Scanning 5 compliance frameworks</a> &mdash; 562 findings across PyTorch, HuggingFace, LangChain, LlamaIndex, CrewAI</li>
+    </ul>
+</div>
 
 </article>
 

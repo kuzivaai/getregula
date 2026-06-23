@@ -16,7 +16,7 @@
     </style>
     <meta name="theme-color" content="#070711">
 
-    <title>Static Analysis for AI Compliance: Why Code Scanning Complements Questionnaires | Regula Blog</title>
+    <title>Static Analysis for AI Compliance — Regula</title>
     <meta name="description" content="Code scanning and questionnaires each cover different parts of EU AI Act compliance. Neither alone is sufficient. Here is an honest comparison.">
     <meta name="author" content="Kuziva Muzondo">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
@@ -26,7 +26,7 @@
 
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://getregula.com/blog/blog-static-analysis-ai-compliance.html">
-    <meta property="og:title" content="Static Analysis for AI Compliance: Why Code Scanning Complements Questionnaires">
+    <meta property="og:title" content="Static Analysis for AI Compliance — Regula">
     <meta property="og:description" content="Code scanning and questionnaires each cover different parts of EU AI Act compliance. Neither alone is sufficient. An honest comparison.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
@@ -39,7 +39,7 @@
     <meta property="article:tag" content="Compliance">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Static Analysis for AI Compliance: Code Scanning vs Questionnaires">
+    <meta name="twitter:title" content="Static Analysis for AI Compliance — Regula">
     <meta name="twitter:description" content="Code scanning and questionnaires cover different parts of EU AI Act compliance. Neither alone is sufficient.">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
 
@@ -52,12 +52,24 @@
     {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
-        "headline": "Static Analysis for AI Compliance: Why Code Scanning Complements Questionnaires",
+        "headline": "Static Analysis for AI Compliance — Regula",
         "description": "Code scanning and questionnaires each cover different parts of EU AI Act compliance. Neither alone is sufficient.",
-        "author": {"@type": "Person", "name": "Kuziva Muzondo"},
+        "author": {
+            "@type": "Person",
+            "name": "Kuziva Muzondo",
+            "url": "https://getregula.com/about.html"
+        },
         "datePublished": "2026-06-11",
         "dateModified": "2026-06-11",
-        "publisher": {"@type": "Organization", "name": "The Implementation Layer"},
+        "publisher": {
+            "@type": "Organization",
+            "name": "Regula",
+            "url": "https://getregula.com",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://getregula.com/assets/regula-logo.png"
+            }
+        },
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https://getregula.com/blog/blog-static-analysis-ai-compliance.html"
@@ -130,7 +142,7 @@
 <nav class="nav" id="nav" aria-label="Primary">
     <a href="/" class="nav-brand">Regula</a>
     <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html">Regulations</a>
@@ -153,6 +165,8 @@
 
 <h2>What code scanning finds that questionnaires miss</h2>
 
+<p>Code scanners detect concrete, verifiable signals that questionnaire respondents may not know about or may describe inaccurately: Article 5 prohibited-practice indicators, AI framework imports that suggest risk tier, credential exposure and unsafe deserialisation affecting Article 15 cybersecurity, and agent autonomy patterns without human oversight gates relevant to Article 14.</p>
+
 <p>Code scanners analyse source code directly. The findings exist in the repository regardless of how anyone answers a questionnaire.</p>
 
 <ul>
@@ -166,6 +180,8 @@
 
 <h2>What questionnaires cover that code scanning cannot</h2>
 
+<p>Questionnaires capture the roughly 70% of the EU AI Act that has no source-code footprint: risk management systems (Article 9), deployment context that determines risk tier, fundamental rights impact assessments (Article 27), post-market monitoring plans (Article 72), and data governance policies (Article 10). These are organisational obligations that no scanner can verify.</p>
+
 <p>Questionnaires capture organisational and contextual information that does not exist in source code.</p>
 
 <ul>
@@ -177,6 +193,8 @@
 </ul>
 
 <h2>Honest comparison: tools in this space</h2>
+
+<p>Code scanners include Regula (398 patterns, 8 languages, offline), AIR Blackbox (51 checks, Python-only, Apache 2.0), and Systima Comply (tree-sitter AST, TS/JS/Python). Questionnaire-based tools include the EU Commission ALTAI checker and EuroComply. Enterprise platforms like Credo AI and Holistic AI combine both approaches at enterprise pricing.</p>
 
 <table class="cmp-table" style="width:100%;border-collapse:collapse;margin:16px 0;font-size:0.95rem;">
 <thead>
@@ -237,7 +255,7 @@
     <li><strong>Legal review:</strong> neither tool replaces a lawyer. The AI Act is complex legislation with delegated acts still being published. If your system is high-risk under Annex III, get legal advice.</li>
 </ul>
 
-<p>The Omnibus Regulation provisional agreement of 7 May 2026 postpones Annex III high-risk obligations to 2 December 2027, pending formal adoption. This gives teams more time to build both technical and organisational compliance &mdash; but the prohibited practice prohibitions under Article 5 already apply (since 2 February 2025).</p>
+<p>The Omnibus Regulation provisional agreement of 7 May 2026 postpones Annex III high-risk obligations to 2 December 2027 (EP approved 16 Jun 2026; pending Council adoption). This gives teams more time to build both technical and organisational compliance &mdash; but the prohibited practice prohibitions under Article 5 already apply (since 2 February 2025).</p>
 
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
@@ -246,6 +264,16 @@
     <strong>Author:</strong> Kuziva Muzondo &middot;
     <em>Not legal advice. Regula is a code scanning tool that identifies risk indicators for developer review. It does not determine your system&rsquo;s risk classification or replace professional legal counsel.</em>
 </p>
+
+<div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
+<div class="blog-body" style="margin-top:var(--s5);">
+    <h3>Related reading</h3>
+    <ul>
+        <li><a href="/blog/blog-code-scanning-vs-questionnaires.html">Code scanning vs questionnaires</a> &mdash; Why neither alone is sufficient for EU AI Act compliance</li>
+        <li><a href="/blog/blog-classify-ai-system.html">How to classify your AI system</a> &mdash; Article 6, the four tiers, and what code scanning can tell you</li>
+        <li><a href="/blog/blog-scanning-10-ai-apps.html">Scanning 10 real AI apps with Regula</a> &mdash; 553 findings across 219,000-star open-source projects</li>
+    </ul>
+</div>
 
 </article>
 

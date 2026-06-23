@@ -86,4 +86,13 @@ Allow: /
 User-agent: PhindBot
 Allow: /
 
+User-agent: YouBot
+Allow: /
+
+User-agent: AI2Bot
+Allow: /
+
+User-agent: iaskBot
+Allow: /
+
 Sitemap: https://getregula.com/sitemap.xml
