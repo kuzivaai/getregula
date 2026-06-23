@@ -1067,7 +1067,7 @@ def _enrich_deadlines(findings: list) -> None:
         elif tier == "limited_risk":
             f["deadline"] = DEADLINE_CURRENT_LAW
             f["deadline_status"] = "current_law"
-            f["deadline_note"] = f"Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus agreed, pending formal adoption)."
+            f["deadline_note"] = f"Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus, EP approved 16 Jun 2026; pending Council adoption)."
             f["omnibus_deadline"] = DEADLINE_OMNIBUS_LIMITED
         elif tier == "agent_autonomy":
             f["deadline"] = DEADLINE_CURRENT_LAW

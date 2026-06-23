@@ -22,11 +22,11 @@
       }
     </style>
     <meta name="theme-color" content="#070711">
-    <title>EU AI Act Article 5 Is Already Live: Scanning Your Code for Prohibited AI Practices &mdash; Regula</title>
-    <meta name="description" content="Article 5 prohibited AI practices have been enforceable since 2 February 2025, with fines up to EUR 35 million or 7% of turnover. Here's how to scan your codebase for them.">
+    <title>Article 5 Prohibited AI Practices &mdash; Regula</title>
+    <meta name="description" content="Article 5 prohibited AI practices are enforceable since Feb 2025, with fines up to EUR 35M or 7% of turnover. How to scan your codebase.">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta property="og:title" content="EU AI Act Article 5 Is Already Live: Scanning Your Code for Prohibited AI Practices">
-    <meta property="og:description" content="Article 5 prohibited AI practices have been enforceable since 2 February 2025, with fines up to EUR 35 million or 7% of turnover. Here's how to scan your codebase for them.">
+    <meta property="og:title" content="Article 5 Prohibited AI Practices — Regula">
+    <meta property="og:description" content="Article 5 prohibited AI practices are enforceable since Feb 2025, with fines up to EUR 35M or 7% of turnover. How to scan your codebase for them.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://getregula.com/blog/blog-article-5-prohibited-practices.html">
     <meta property="og:locale" content="en_GB">
@@ -34,10 +34,10 @@
     <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
     <meta property="og:site_name" content="Regula">
     <meta property="article:published_time" content="2026-04-25">
-    <meta property="article:author" content="The Implementation Layer">
+    <meta property="article:author" content="Kuziva Muzondo">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="EU AI Act Article 5 Is Already Live: Scanning Your Code for Prohibited AI Practices">
-    <meta name="twitter:description" content="Article 5 prohibited AI practices have been enforceable since 2 February 2025, with fines up to EUR 35 million or 7% of turnover. Here's how to scan your codebase for them.">
+    <meta name="twitter:title" content="Article 5 Prohibited AI Practices — Regula">
+    <meta name="twitter:description" content="Article 5 prohibited AI practices are enforceable since Feb 2025, with fines up to EUR 35M or 7% of turnover.">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
     <link rel="canonical" href="https://getregula.com/blog/blog-article-5-prohibited-practices.html">
     <link rel="alternate" hreflang="en" href="https://getregula.com/blog/blog-article-5-prohibited-practices.html">
@@ -46,14 +46,15 @@
     {
         "@context": "https://schema.org",
         "@type": "Article",
-        "headline": "EU AI Act Article 5 Is Already Live: Scanning Your Code for Prohibited AI Practices",
+        "headline": "Article 5 Prohibited AI Practices — Regula",
         "description": "Article 5 prohibited AI practices have been enforceable since 2 February 2025, with fines up to EUR 35 million or 7% of turnover. Here's how to scan your codebase for them.",
         "url": "https://getregula.com/blog/blog-article-5-prohibited-practices.html",
         "datePublished": "2026-04-25",
         "dateModified": "2026-04-25",
         "author": {
             "@type": "Person",
-            "name": "The Implementation Layer"
+            "name": "Kuziva Muzondo",
+            "url": "https://getregula.com/about.html"
         },
         "publisher": {
             "@type": "Organization",
@@ -61,7 +62,7 @@
             "url": "https://getregula.com",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://getregula.com/assets/og-image.png"
+                "url": "https://getregula.com/assets/regula-logo.png"
             }
         },
         "mainEntityOfPage": {
@@ -181,12 +182,12 @@
 <body>
 
 <a href="#main" class="skip-link">Skip to content</a>
-<div id="progress-bar"></div>
+<div id="progress-bar" aria-hidden="true"></div>
 
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -213,18 +214,20 @@
         <span>The Implementation Layer</span>
     </div>
     <h1>EU AI Act Article 5 Is Already Live: Scanning Your Code for Prohibited AI Practices</h1>
-    <p class="standfirst">Eight categories of AI practice have been illegal in the EU since 2 February 2025. The fines are up to EUR 35 million or 7% of global annual turnover. Most developers have no idea. Here's what the prohibitions actually mean in code, how to scan for them, and what to do when something gets flagged.</p>
+    <p class="standfirst">Eight categories of AI practice have been illegal in the EU since 2 February 2025, with two more added by the Digital Omnibus (taking effect 2 December 2026). The fines are up to EUR 35 million or 7% of global annual turnover. Most developers have no idea. Here's what the original eight prohibitions actually mean in code, how to scan for them, and what to do when something gets flagged.</p>
 </div>
 
 <div class="blog-sep"></div>
 
 <aside style="background:rgba(59,130,246,0.08);border-left:3px solid var(--accent);padding:12px 16px;margin:0 0 24px;border-radius:4px;font-size:0.9rem;color:var(--text-2);">
-<strong>Editor's note (June 2026):</strong> The Digital Omnibus reached provisional agreement on 7 May 2026. References in this article to trilogue negotiations being "underway" are now historical — the Omnibus has been agreed, and Annex III high-risk deadlines are deferred to 2 December 2027 (pending formal adoption). Article 5 prohibitions remain unchanged. See <a href="/blog/writing.html" style="color:var(--accent);">the blog index</a> for current coverage.
+<strong>Editor's note (June 2026):</strong> The Digital Omnibus reached provisional agreement on 7 May 2026 and was approved by the European Parliament on 16 June 2026 (423 for, 57 against, 174 abstentions). Annex III high-risk deadlines are deferred to 2 December 2027 (pending Council adoption and OJ publication). The Omnibus adds 2 new Article 5 prohibitions (non-consensual intimate imagery and CSAM generation), bringing the total to 10; these take effect 2 December 2026. The original 8 prohibitions described below remain unchanged and have been in force since 2 February 2025. See <a href="/blog/writing.html" style="color:var(--accent);">the blog index</a> for current coverage.
 </aside>
 
 <div class="blog-body">
 
     <h2>This is already law</h2>
+
+    <p>Article 5 of the EU AI Act has been enforceable since 2 February 2025. The original eight prohibited AI practices carry fines of up to EUR 35 million or 7% of worldwide annual turnover, the highest penalty tier in the regulation. The Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026, does not change these 8 categories or their application date. It adds 2 new prohibitions (non-consensual intimate imagery and CSAM generation) that take effect on 2 December 2026, bringing the total to 10.</p>
 
     <p>I keep meeting developers who think the EU AI Act is a future problem. Something to deal with in 2027 or 2028, once the Omnibus delay sorts itself out.</p>
 
@@ -235,6 +238,8 @@
     <p>If your codebase contains one of the eight prohibited practices and you deploy it in the EU, you're already in breach. Not "will be in breach when the deadline hits." Are, today.</p>
 
     <h2>The eight prohibited categories</h2>
+
+    <p>The eight practices banned under Article 5 are: subliminal manipulation, exploiting vulnerabilities of specific groups, social scoring by public authorities, individual criminal risk prediction based solely on profiling, untargeted facial recognition scraping, emotion inference in workplaces and schools, biometric categorisation of sensitive attributes, and real-time biometric identification in public spaces for law enforcement.</p>
 
     <p>Article 5 lists eight specific practices. Some are obvious. Others are narrower than you'd expect. Here's each one, and what it looks like when it shows up in code.</p>
 
@@ -295,6 +300,8 @@
     </div>
 
     <h2>What a scan actually looks like</h2>
+
+    <p>Running <code>regula check .</code> on a project with prohibited patterns produces a verdict of PROHIBITED, lists each flagged file with its line number and Article 5 sub-paragraph, and shows confidence scores from 0 to 100. All prohibited findings are classified as BLOCK tier regardless of confidence, because the regulation has no partial-prohibition category.</p>
 
     <p>Enough theory. Here's what happens when you run <code>regula check</code> against a project that contains prohibited patterns. This is Regula's actual output format.</p>
 
@@ -365,6 +372,8 @@
 
     <h2>What to do when something gets flagged</h2>
 
+    <p>When Regula flags a prohibited pattern, you have three paths: if it is a true positive, remove or redesign the functionality before EU deployment. If it is a false positive, add a <code># regula-ignore</code> comment with a rationale explaining why the code is not a prohibited practice. If you are unsure, get legal review, because some Article 5 categories have narrow exceptions that require professional judgment.</p>
+
     <p>Depends on whether the flag is accurate.</p>
 
     <p><strong>If it's a true positive:</strong> Remove or redesign the functionality before deploying in the EU. Run <code>regula fix --project .</code> for guided remediation. Article 5 doesn't have a grace period or a "comply or explain" mechanism. The practice is either prohibited or it isn't. If it is, it must not ship.</p>
@@ -381,6 +390,8 @@ user_social_score = calculate_engagement_points(activity_log)</code></pre>
 
     <h2>The Omnibus doesn't change this</h2>
 
+    <p>The Digital Omnibus on AI, which reached provisional agreement on 7 May 2026 and was approved by the European Parliament on 16 June 2026, defers Annex III high-risk deadlines to 2 December 2027 (pending Council adoption and OJ publication). It does not modify the original 8 Article 5 prohibitions or their 2 February 2025 application date. The Omnibus does add 2 new prohibitions (non-consensual intimate imagery and CSAM generation), which take effect on 2 December 2026. The 8 categories described in this article remain fully enforceable now.</p>
+
     <p>I keep seeing this cause confusion, so I want to be direct. The <a href="/blog/blog-omnibus-delay.html">Digital Omnibus on AI</a>, currently in trilogue negotiations, proposes delaying the deadlines for <strong>high-risk AI systems</strong>. It doesn't touch Article 5.</p>
 
     <p>The Article 5 prohibitions became enforceable on 2 February 2025. The Omnibus proposal doesn't modify that date. Neither the Council's general approach (13 March 2026) nor the Parliament's first-reading position (26 March 2026) proposed any change to the Article 5 application date. There's no version of the trilogue outcome that delays Article 5.</p>
@@ -389,7 +400,7 @@ user_social_score = calculate_engagement_points(activity_log)</code></pre>
 
     <h2>The eight patterns in numbers</h2>
 
-    <p>Regula defines 8 prohibited pattern categories containing 33 individual regex patterns. Every category has <code>confidence: high</code>, <code>likelihood: high</code>, <code>impact: high</code> in the pattern definitions. That's not a configurable risk weighting. It reflects the fact that Article 5 carries the highest penalty tier in the regulation.</p>
+    <p>Regula defines 8 prohibited pattern categories (covering the original Article 5 prohibitions) containing 33 individual regex patterns. Every category has <code>confidence: high</code>, <code>likelihood: high</code>, <code>impact: high</code> in the pattern definitions. That's not a configurable risk weighting. It reflects the fact that Article 5 carries the highest penalty tier in the regulation. The 2 additional Omnibus prohibitions (non-consensual intimate imagery and CSAM generation, effective 2 December 2026) are tracked separately.</p>
 
     <p>The patterns aren't trying to be clever. They match the terms that developers actually use when building these systems: <code>social_credit</code>, <code>predictive_policing</code>, <code>face_scrap</code>, <code>emotion.*workplace</code>. Intentionally direct. Prohibited practice detection isn't the place for fuzzy matching or probabilistic classification. If the pattern matches, look at it. If it's a false positive, document it and suppress it. If it isn't, stop deploying it.</p>
 
@@ -412,6 +423,11 @@ user_social_score = calculate_engagement_points(activity_log)</code></pre>
 
     <div class="blog-sep" style="max-width:100%;"></div>
 
+    <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
+        <strong>Last verified:</strong> 25 April 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
+        <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
+    </p>
+
     <div class="warn-box" style="margin-top: var(--s7);">
         <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions. All regulatory dates and article references cited in this article are sourced from <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689">Regulation (EU) 2024/1689</a>. Penalty amounts are specified in Article 99(3).
     </div>
@@ -420,11 +436,11 @@ user_social_score = calculate_engagement_points(activity_log)</code></pre>
 
 <div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
 <div class="blog-body" style="margin-top:var(--s5);">
-    <h3>Keep reading</h3>
+    <h3>Related reading</h3>
     <ul>
-        <li><a href="/blog/blog-omnibus-delay.html">The EU AI Act Omnibus Delay: What Developers Need to Know</a> &mdash; The Omnibus delays high-risk deadlines, not Article 5</li>
-        <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act Risk Tiers in Actual Code</a> &mdash; What prohibited, high-risk, and limited-risk look like in real code</li>
-        <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act Apply to Your AI App?</a> &mdash; Quick applicability check for your product</li>
+        <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act risk tiers in actual code</a> &mdash; What each risk tier looks like in Python with scanner output</li>
+        <li><a href="/blog/blog-scanning-10-ai-apps.html">Scanning 10 real AI apps with Regula</a> &mdash; 553 findings across 219,000-star open-source projects</li>
+        <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act apply to your AI app?</a> &mdash; Decision tree for scope, provider vs deployer, and extraterritorial reach</li>
     </ul>
     <p style="margin-top:48px;font-size:13px;color:var(--text-dim);">
         <a href="https://news.ycombinator.com/submitlink?u=https://getregula.com/blog/blog-article-5-prohibited-practices.html&t=EU%20AI%20Act%20Article%205%20Is%20Already%20Live%3A%20Scanning%20Your%20Code%20for%20Prohibited%20AI%20Practices" rel="noopener" target="_blank" style="color:var(--text-dim);">Discuss on Hacker News</a>

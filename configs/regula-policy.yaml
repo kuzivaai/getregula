@@ -19,7 +19,7 @@ regulatory_basis:
   eu_ai_act_version: "2024/1689"
   pattern_version: "1.1.0"
   last_reviewed: "2026-05-01"
-  notes: "Patterns aligned to original text. Omnibus provisional agreement reached 7 May 2026. Annex III deferred to 2 Dec 2027. Pending formal adoption; original dates remain legally binding until OJ publication."
+  notes: "Patterns aligned to original text. Omnibus provisional agreement reached 7 May 2026, approved by European Parliament 16 Jun 2026. Annex III deferred to 2 Dec 2027. Pending Council adoption and OJ publication; original dates remain legally binding until then."
 
 frameworks:
   - eu_ai_act

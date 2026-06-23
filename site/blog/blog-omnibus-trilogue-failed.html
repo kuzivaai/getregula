@@ -22,11 +22,11 @@
       }
     </style>
     <meta name="theme-color" content="#070711">
-    <title>The Omnibus Trilogue Failed. The August 2026 Deadline Is Back. &mdash; Regula</title>
-    <meta name="description" content="The first EU AI Act Omnibus trilogue failed on 28 April after 12 hours. The original August 2026 deadline for high-risk AI is now legally binding. Here is what to do.">
+    <title>Omnibus Trilogue Failed: Aug 2026 Deadline Stands &mdash; Regula</title>
+    <meta name="description" content="The EU AI Act Omnibus trilogue failed on 28 April after 12 hours. The August 2026 deadline for high-risk AI is now legally binding.">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta property="og:title" content="The Omnibus Trilogue Failed. The August 2026 Deadline Is Back.">
-    <meta property="og:description" content="The first EU AI Act Omnibus trilogue failed on 28 April after 12 hours. The original August 2026 deadline for high-risk AI is now legally binding. Here is what to do.">
+    <meta property="og:title" content="Omnibus Trilogue Failed: Aug 2026 Deadline Stands — Regula">
+    <meta property="og:description" content="The EU AI Act Omnibus trilogue failed on 28 April after 12 hours. The August 2026 deadline for high-risk AI is legally binding. Here is what to do.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://getregula.com/blog/blog-omnibus-trilogue-failed.html">
     <meta property="og:locale" content="en_GB">
@@ -34,10 +34,10 @@
     <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
     <meta property="og:site_name" content="Regula">
     <meta property="article:published_time" content="2026-05-02">
-    <meta property="article:author" content="The Implementation Layer">
+    <meta property="article:author" content="Kuziva Muzondo">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="The Omnibus Trilogue Failed. The August 2026 Deadline Is Back.">
-    <meta name="twitter:description" content="The first EU AI Act Omnibus trilogue failed on 28 April after 12 hours. The original August 2026 deadline for high-risk AI is now legally binding. Here is what to do.">
+    <meta name="twitter:title" content="Omnibus Trilogue Failed: Aug 2026 Deadline Stands — Regula">
+    <meta name="twitter:description" content="The EU AI Act Omnibus trilogue failed on 28 April. The August 2026 deadline for high-risk AI is legally binding.">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
     <link rel="canonical" href="https://getregula.com/blog/blog-omnibus-trilogue-failed.html">
     <link rel="alternate" hreflang="en" href="https://getregula.com/blog/blog-omnibus-trilogue-failed.html">
@@ -46,14 +46,15 @@
     {
         "@context": "https://schema.org",
         "@type": "Article",
-        "headline": "The Omnibus Trilogue Failed. The August 2026 Deadline Is Back.",
+        "headline": "Omnibus Trilogue Failed: Aug 2026 Deadline Stands — Regula",
         "description": "The first EU AI Act Omnibus trilogue failed on 28 April after 12 hours. The original August 2026 deadline for high-risk AI is now legally binding. Here is what to do.",
         "url": "https://getregula.com/blog/blog-omnibus-trilogue-failed.html",
         "datePublished": "2026-05-02",
         "dateModified": "2026-05-02",
         "author": {
             "@type": "Person",
-            "name": "The Implementation Layer"
+            "name": "Kuziva Muzondo",
+            "url": "https://getregula.com/about.html"
         },
         "publisher": {
             "@type": "Organization",
@@ -61,7 +62,7 @@
             "url": "https://getregula.com",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://getregula.com/assets/og-image.png"
+                "url": "https://getregula.com/assets/regula-logo.png"
             }
         },
         "mainEntityOfPage": {
@@ -166,12 +167,12 @@
 <body>
 
 <a href="#main" class="skip-link">Skip to content</a>
-<div id="progress-bar"></div>
+<div id="progress-bar" aria-hidden="true"></div>
 
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -238,6 +239,8 @@
 
     <h2>What to do now</h2>
 
+    <p>Establish your risk classification with <code>regula check .</code>, run a gap assessment against Articles 9–15 with <code>regula gap .</code>, build your documentation scaffolding with <code>regula docs .</code>, and track the next trilogue outcome. Starting the technical documentation and risk management work now buys time on the harder obligations regardless of which deadline ultimately applies.</p>
+
     <ol class="action-steps">
         <li>
             <div>
@@ -278,6 +281,11 @@
 
     <p>Regula is a static code scanner that identifies regulatory risk indicators in your codebase. It tells you your risk tier, shows which Articles 9&ndash;15 obligations apply, and generates documentation scaffolding. It does not replace legal advice, and it does not monitor the legislative process in real time. What it does is give you a concrete, code-level starting point so that when your legal counsel says &ldquo;prepare for August&rdquo;, you know exactly what &ldquo;prepare&rdquo; means for your specific codebase. For background on the Omnibus proposal itself, see our earlier post: <a href="/blog/blog-omnibus-delay.html">The EU AI Act Omnibus Delay: What Developers Actually Need to Know</a>.</p>
 
+    <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
+        <strong>Last verified:</strong> 2 May 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
+        <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
+    </p>
+
     <div class="blog-sep" style="max-width:100%;"></div>
 
     <div class="warn-box" style="margin-top: var(--s7);">
@@ -288,12 +296,11 @@
 
 <div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
 <div class="blog-body" style="margin-top:var(--s5);">
-    <h3>Keep reading</h3>
+    <h3>Related reading</h3>
     <ul>
-        <li><a href="/blog/blog-omnibus-decision-framework.html">August 2026 or December 2027? A developer&rsquo;s guide to the Omnibus uncertainty</a> &mdash; Three-track framework for planning under deadline uncertainty</li>
-        <li><a href="/blog/blog-omnibus-delay.html">The EU AI Act Omnibus Delay: What Developers Actually Need to Know</a> &mdash; Full background on the Omnibus proposal, deadlines, and risk-tier analysis</li>
-        <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act Apply to Your AI App?</a> &mdash; Quick applicability check for your product</li>
-        <li><a href="/blog/blog-startups-ignoring-ai-act.html">Most startups are ignoring the EU AI Act</a> &mdash; When ignoring it stops being rational</li>
+        <li><a href="/blog/blog-omnibus-delay.html">The EU AI Act Omnibus delay</a> &mdash; Full timeline, deadline table, and risk-tier-specific guidance</li>
+        <li><a href="/blog/blog-omnibus-decision-framework.html">Omnibus decision framework</a> &mdash; Three-track planning approach for deadline uncertainty</li>
+        <li><a href="/blog/blog-startups-ignoring-ai-act.html">Why startups are ignoring the AI Act</a> &mdash; Three triggers that change the calculus for founders</li>
     </ul>
     <p style="margin-top:48px;font-size:13px;color:var(--text-dim);">
         <a href="https://news.ycombinator.com/submitlink?u=https://getregula.com/blog/blog-omnibus-trilogue-failed.html&t=The%20Omnibus%20Trilogue%20Failed.%20The%20August%202026%20Deadline%20Is%20Back." rel="noopener" target="_blank" style="color:var(--text-dim);">Discuss on Hacker News</a>

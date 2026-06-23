@@ -2,8 +2,7 @@
 """Custom rule engine — load user-defined risk patterns from regula-rules.yaml.
 
 Allows teams to define organisation-specific risk patterns that supplement
-Regula's built-in patterns. Creates a defensible moat: community-contributed
-rules create switching costs and network effects.
+Regula's built-in patterns.
 
 Rule file locations (checked in order):
   1. Path from --rules CLI flag

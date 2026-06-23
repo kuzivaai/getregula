@@ -50,7 +50,7 @@ ARTICLE_EFFORT = {
 }
 
 DEADLINE_HIGH_RISK = "2 August 2026"
-DEADLINE_OMNIBUS = "2 December 2027 (Omnibus agreed 7 May 2026, pending formal adoption)"
+DEADLINE_OMNIBUS = "2 December 2027 (Omnibus agreed 7 May 2026, EP approved 16 Jun 2026; pending Council adoption)"
 
 
 # ---------------------------------------------------------------------------

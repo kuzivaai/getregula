@@ -157,29 +157,29 @@ jobs:
               "action_needed": False,
           }
 
-          # Simple HTTP check — see if EUR-Lex returns results
-          try:
-              # Use the REST API for recent EU AI Act documents
-              api_url = (
-                  "https://eur-lex.europa.eu/EURLexWebService/api/v2/search?"
-                  "text=%22artificial+intelligence+act%22"
-                  "&type=legislation&sortBy=date&sortOrder=desc&pageSize=5"
-              )
-              req = urllib.request.Request(api_url, headers={"Accept": "application/json"})
-              with urllib.request.urlopen(req, timeout=15) as resp:
-                  data = json.loads(resp.read())
-                  result_count = data.get("totalResults", 0)
-                  alert["eurlex_results"] = result_count
-                  if result_count > 0:
-                      alert["action_needed"] = True
-                      alert["note"] = f"Found {result_count} recent document(s). Review needed."
-          except Exception as e:
-              # EUR-Lex API may not be publicly accessible or may have changed
-              alert["eurlex_error"] = str(e)
-              alert["note"] = (
-                  "EUR-Lex API check failed. Manual check recommended: "
-                  f"{search_url}"
-              )
+          # EUR-Lex does not offer a stable public REST/JSON API.
+          # The v2/search endpoint (used previously) returned 404 for 9 consecutive
+          # weeks. EUR-Lex requires JS rendering for search results; HEAD requests
+          # return 202. Instead, we check the AI Act Official Journal page and the
+          # EU AI Office page are reachable, and log the manual-review URLs.
+          check_urls = [
+              ("eurlex_ai_act", "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689"),
+              ("ai_office", ai_office_url),
+          ]
+          for label, url in check_urls:
+              try:
+                  req = urllib.request.Request(url, method="HEAD",
+                      headers={"User-Agent": "regula-monitor/1.0"})
+                  with urllib.request.urlopen(req, timeout=15) as resp:
+                      alert[f"{label}_status"] = resp.status
+              except Exception as e:
+                  alert[f"{label}_error"] = str(e)
+
+          alert["note"] = (
+              "Automated reachability check only. EUR-Lex has no public JSON API. "
+              "Review the search URL manually for new AI Act documents: "
+              f"{search_url}"
+          )
 
           alerts.append(alert)
           alerts = alerts[-52:]

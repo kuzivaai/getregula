@@ -95,6 +95,17 @@ docs/audit/
 docs/FULL_INSPECTION.md
 docs/SHOW_HN_DRAFT.md
 docs/superpowers/
+docs/evidence-pack-tiers.md
+
+# Internal planning and strategy (not public)
+planning/
+docs/FULL_REVIEW.md
+docs/IMPROVEMENT_PLAN.md
+docs/review-progress.md
+docs/seo-geo-audit.md
+docs/seo-geo-plan.md
+docs/seo-geo-progress.md
+scripts/verify_seo.py
 
 # Per-repo benchmark scan results (regenerable via rescan_corpus.py)
 benchmarks/results/random_corpus/*.json

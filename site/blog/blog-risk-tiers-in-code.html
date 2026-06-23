@@ -49,14 +49,18 @@
         "datePublished": "2026-04-10",
         "dateModified": "2026-04-10",
         "author": {
-            "@type": "Organization",
-            "name": "Regula",
-            "url": "https://getregula.com"
+            "@type": "Person",
+            "name": "Kuziva Muzondo",
+            "url": "https://getregula.com/about.html"
         },
         "publisher": {
             "@type": "Organization",
             "name": "Regula",
-            "url": "https://getregula.com"
+            "url": "https://getregula.com",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://getregula.com/assets/regula-logo.png"
+            }
         },
         "mainEntityOfPage": "https://getregula.com/blog/blog-risk-tiers-in-code.html",
         "keywords": ["EU AI Act", "risk tiers", "code examples", "high-risk AI", "prohibited AI", "AI compliance", "developer", "classification"]
@@ -249,12 +253,12 @@
 <body>
 
 <a href="#main" class="skip-link">Skip to content</a>
-<div id="progress-bar"></div>
+<div id="progress-bar" aria-hidden="true"></div>
 
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -287,7 +291,7 @@
 <div class="blog-sep"></div>
 
 <aside style="background:rgba(59,130,246,0.08);border-left:3px solid var(--accent);padding:12px 16px;margin:0 0 24px;border-radius:4px;font-size:0.9rem;color:var(--text-2);">
-<strong>Editor's note (June 2026):</strong> The Digital Omnibus reached provisional agreement on 7 May 2026. Annex III high-risk deadlines are deferred to 2 December 2027 (pending formal adoption). References in this article to the Omnibus potentially delaying deadlines and being "not yet law" are now historical. See <a href="/blog/writing.html" style="color:var(--accent);">the blog index</a> for current coverage.
+<strong>Editor's note (June 2026):</strong> The Digital Omnibus reached provisional agreement on 7 May 2026. Annex III high-risk deadlines are deferred to 2 December 2027 (EP approved 16 Jun 2026; pending Council adoption). References in this article to the Omnibus potentially delaying deadlines and being "not yet law" are now historical. See <a href="/blog/writing.html" style="color:var(--accent);">the blog index</a> for current coverage.
 </aside>
 
 <div class="blog-body">
@@ -308,6 +312,7 @@
 
         <!-- SECTION 2: PROHIBITED -->
         <h2>Prohibited &mdash; what triggers it</h2>
+        <p>Article 5 of the EU AI Act bans eight AI practices outright, enforceable since 2 February 2025 with fines up to EUR 35 million or 7% of global turnover. In code, these appear as social scoring systems, emotion inference in workplaces, subliminal manipulation, biometric categorisation of sensitive attributes, and similar patterns that a static scanner can detect from variable names and function signatures.</p>
         <p><span class="art-ref">Article 5</span> bans eight categories of AI practice. Two of the clearest in code are <strong>social scoring</strong> (<span class="art-ref">Article 5(1)(c)</span>) and <strong>emotion inference in the workplace</strong> (<span class="art-ref">Article 5(1)(f)</span>).</p>
 
         <h3>Example: social scoring system</h3>
@@ -530,6 +535,7 @@ Regula Scan: recommender.py
 
         <!-- SECTION 6: GREY ZONES -->
         <h2>The grey zones</h2>
+        <p>Static code scanning cannot determine EU AI Act risk classification on its own. It catches domain-specific naming in variables, functions, and docstrings, but it cannot infer deployment context, detect obfuscated intent, or assess whether a system poses significant risk under the Article 6 two-step test. Pattern matches are starting points for human review, not final determinations.</p>
         <p>Pattern matching is useful but limited. It catches what is written in the code &mdash; variable names, function signatures, docstrings, string literals. It cannot catch:</p>
         <ul>
             <li><strong>Intent from architecture alone.</strong> A generic <code>classifier.predict()</code> call could be used for spam filtering (minimal-risk) or parole decisions (high-risk). The pattern matcher does not know which.</li>
@@ -556,15 +562,20 @@ Regula Scan: recommender.py
             <p style="margin-top:16px; font-size:13px; color:#9898b4;">Runs locally. Nothing leaves your machine. <a href="https://github.com/kuzivaai/getregula">Source on GitHub</a>.</p>
         </div>
 
+    <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
+        <strong>Last verified:</strong> 10 April 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
+        <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
+    </p>
+
     </div><!-- /blog-body -->
 
 <div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
 <div class="blog-body" style="margin-top:var(--s5);">
-    <h3>Keep reading</h3>
+    <h3>Related reading</h3>
     <ul>
-        <li><a href="/blog/blog-startups-ignoring-ai-act.html">Most startups are ignoring the EU AI Act</a> — When ignoring it stops being rational</li>
-        <li><a href="/blog/blog-omnibus-delay.html">The EU AI Act Omnibus Delay</a> — Current deadline status and what developers should do now</li>
-        <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act Apply to Your AI App?</a> — Quick applicability check for your product</li>
+        <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act apply to your AI app?</a> &mdash; Decision tree for scope, provider vs deployer, and extraterritorial reach</li>
+        <li><a href="/blog/blog-article-5-prohibited-practices.html">Article 5 prohibited AI practices</a> &mdash; Eight banned categories, already enforceable, with code examples</li>
+        <li><a href="/blog/blog-classify-ai-system.html">How to classify your AI system</a> &mdash; Article 6, the four tiers, and what code scanning can tell you</li>
     </ul>
     <p style="margin-top:48px;font-size:13px;color:var(--text-dim);">
         <a href="https://news.ycombinator.com/submitlink?u=https://getregula.com/blog/blog-risk-tiers-in-code.html&t=EU%20AI%20Act%20Risk%20Tiers%20in%20Actual%20Code" rel="noopener" target="_blank" style="color:var(--text-dim);">Discuss on Hacker News</a>

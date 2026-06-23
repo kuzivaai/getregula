@@ -45,10 +45,10 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="preconnect" href="https://plausible.io" crossorigin>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
-    <title>Regula | EU AI Act compliance tool for code | Open-source CLI</title>
+    <title>Regula | EU AI Act compliance tool for code</title>
     <meta name="description" content="Open-source EU AI Act compliance CLI. 398 risk patterns, 12 frameworks, zero data transmission. Your code never leaves your machine. Free.">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta property="og:title" content="Regula | EU AI Act compliance tool for code | Open-source CLI">
+    <meta property="og:title" content="Regula | EU AI Act compliance tool for code">
     <meta property="og:description" content="Free, open-source scanner that tells you which EU AI Act tier you're in, why, and what to do about it. 398 risk patterns, 12 frameworks. Zero data transmission — your code never leaves your machine.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/">
@@ -91,9 +91,11 @@
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "Regula",
+        "alternateName": "Regula EU AI Act CLI",
         "url": "https://getregula.com",
-        "logo": "https://getregula.com/assets/og-image.png",
+        "logo": "https://getregula.com/assets/regula-logo.png",
         "description": "Open-source EU AI Act compliance CLI for developers.",
+        "disambiguatingDescription": "Open-source command-line tool for EU AI Act compliance scanning. Not affiliated with Regula Forensics (identity verification).",
         "sameAs": [
             "https://github.com/kuzivaai/getregula",
             "https://pypi.org/project/regula-ai/"
@@ -164,7 +166,7 @@
                 "name": "When does the EU AI Act start being enforced?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Article 5 prohibitions took effect on 2 February 2025. GPAI obligations (Articles 51-55) took effect on 2 August 2025. High-risk obligations (Articles 9-15) were originally due 2 August 2026. The Digital Omnibus provisional agreement of 7 May 2026 postpones Annex III high-risk to 2 December 2027 and Annex I product-embedded to 2 August 2028. Formal adoption is expected before 2 August 2026."
+                    "text": "Article 5 prohibitions took effect on 2 February 2025. GPAI obligations (Articles 51-55) took effect on 2 August 2025. High-risk obligations (Articles 9-15) were originally due 2 August 2026. The Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026, postpones Annex III high-risk to 2 December 2027 and Annex I product-embedded to 2 August 2028. Pending Council adoption and OJ publication."
                 }
             },
             {
@@ -302,7 +304,7 @@
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -323,7 +325,7 @@
             <h1>Is your AI app <span class="hl">high-risk</span> in Europe?</h1>
             <p class="sub">One command tells you which EU AI Act risk tier your code is in, why, and what to fix. <strong>30 seconds, free, no account.</strong></p>
 
-            <button class="cta-pill" id="install-pill" onclick="copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
+            <button class="cta-pill" id="install-pill" aria-live="polite" onclick="copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
                 Try free in 30 seconds
             </button>
@@ -333,7 +335,7 @@
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2,381</strong> tests
+                <strong style="color:var(--text);">2,395</strong> tests
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> unexpected security findings
                 <span class="sp-sep" aria-hidden="true">&middot;</span> zero dependencies
                 <span class="sp-sep" aria-hidden="true">&middot;</span> your code never leaves your machine
@@ -374,7 +376,7 @@
   <span class="t-c">[HIGH]</span> Art. 9  Risk management   &mdash; 40-60h
   <span class="t-c">[HIGH]</span> Art. 14 Human oversight  &mdash; 16-24h
   Total: 160-324h | Deadline: <span class="t-y">Dec 2027</span>
-  <span class="t-m">&#9888; Omnibus agreed 7 May 2026 (pending formal adoption)</span></pre>
+  <span class="t-m">&#9888; Omnibus agreed 7 May 2026, EP approved 16 Jun 2026 (pending Council adoption)</span></pre>
                 </div>
                 <div class="term-panel" id="tab-plan" role="tabpanel" aria-labelledby="tab-plan-label">
                     <pre><span class="t-p">$</span> <span class="t-c">regula plan .</span>
@@ -460,7 +462,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
                 <span class="fwd-icon">&#8599;</span>
                 <span class="fwd-txt">Copy link to send to your developer</span>
             </button>
-            <button class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
+            <button class="audience-fwd" aria-live="polite" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
                 <span class="fwd-icon">&#9654;</span>
                 <span class="fwd-txt">Run regula assess (no code needed)</span>
             </button>
@@ -480,7 +482,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <div class="audience-label">If you audit compliance</div>
             <h3>Locally verifiable evidence.</h3>
             <p>Regula generates signed, timestamped evidence packs with SHA-256 integrity manifests. Every finding is traceable to a file and line. Verify the chain yourself.</p>
-            <button class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula evidence-pack --sign .')">
+            <button class="audience-fwd" aria-live="polite" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula evidence-pack --sign .')">
                 <span class="fwd-icon">&#9654;</span>
                 <span class="fwd-txt">regula evidence-pack --sign .</span>
             </button>
@@ -522,7 +524,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 <div class="urgency">
     <div class="urgency-box" role="note">
         <div class="date">2026&ndash;27</div>
-        <div class="body"><strong>High-risk obligations</strong> for Annex III systems now apply from December 2027, following the Digital Omnibus provisional agreement of 7 May 2026. Annex I product-embedded systems apply from August 2028. Formal adoption is expected before 2 August 2026. Either way, the requirements do not change &mdash; only the timeline. <strong>You need to know where you stand.</strong></div>
+        <div class="body"><strong>High-risk obligations</strong> for Annex III systems now apply from December 2027, following the Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026. Annex I product-embedded systems apply from August 2028. Council adoption is expected before 2 August 2026. Either way, the requirements do not change &mdash; only the timeline. <strong>You need to know where you stand.</strong></div>
     </div>
 </div>
 
@@ -718,6 +720,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     <div role="region" aria-label="Competitive comparison of EU AI Act compliance tools" style="overflow-x:auto;margin-top:32px;-webkit-overflow-scrolling:touch;">
     <p class="scroll-hint" style="display:none;font-size:11px;color:var(--text-dim);margin-bottom:8px;text-align:right;">Scroll &rarr;</p>
     <table class="cmp-table" style="width:100%;border-collapse:collapse;font-size:13px;color:#b0b0cc;">
+        <caption class="sr-only">Feature comparison of EU AI Act compliance tools: Regula, AIR Blackbox, Systima Comply, EuConform, and Enterprise SaaS</caption>
         <thead>
             <tr style="border-bottom:1px solid #23234a;text-align:left;">
                 <th scope="col" style="padding:8px 12px;"></th>
@@ -803,6 +806,53 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     </div>
 </div>
 
+<!-- FAQ (visible — content mirrors the FAQPage schema for GEO extractability) -->
+<div class="sep"></div>
+<div class="sec reveal" id="faq">
+    <h2 class="sec-head">Common questions</h2>
+    <p class="sec-sub">Answers grounded in the regulation. Every claim cites a specific Article.</p>
+    <div class="faq" style="max-width:760px;margin:0 auto;">
+        <details>
+            <summary>Does the EU AI Act apply to my company if I'm outside the EU?</summary>
+            <p>Yes. Article 2(1)(c) applies extraterritorially. If your AI system's output is used in the EU, the regulation applies regardless of where your company is established. This covers UAE, UK, US, Brazil, and any non-EU provider or deployer.</p>
+        </details>
+        <details>
+            <summary>Is my AI app prohibited under the EU AI Act?</summary>
+            <p>Social scoring, subliminal manipulation, real-time facial recognition in public spaces, and emotion inference in workplaces are banned outright under Article 5. Regula scans your code for patterns that map to these prohibited uses.</p>
+        </details>
+        <details>
+            <summary>What makes an AI system high-risk?</summary>
+            <p>Annex III lists eight high-risk categories including credit scoring, hiring, healthcare services, education assessment, law enforcement, border control, essential services, and democratic process integrity. Regula identifies code patterns that match each category.</p>
+        </details>
+        <details>
+            <summary>When does the EU AI Act start being enforced?</summary>
+            <p>Article 5 prohibitions took effect on 2 February 2025. GPAI obligations took effect on 2 August 2025. High-risk obligations (Annex III) are now due 2 December 2027, following the Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026. Council adoption is expected before 2 August 2026.</p>
+        </details>
+        <details>
+            <summary>What are the fines under the EU AI Act?</summary>
+            <p>Prohibited AI practices (Article 5) carry fines up to &euro;35 million or 7% of global annual turnover, whichever is higher. High-risk violations carry fines up to &euro;15 million or 3% of turnover. Non-compliance with information requirements carries fines up to &euro;7.5 million or 1% of turnover.</p>
+        </details>
+        <details>
+            <summary>Is Regula free?</summary>
+            <p>Yes. Regula is open-source under the Apache 2.0 or EUPL 1.2 licence. No account, no API key, no sales call. Install with <code>pipx install regula-ai</code> and run it locally. All 61 commands, all 398 risk patterns, and all 12 compliance framework mappings are free.</p>
+        </details>
+        <details>
+            <summary>Does the EU AI Act overlap with GDPR, DORA, or NIS2?</summary>
+            <p>Yes, significantly. High-risk AI systems that process personal data must comply with both the AI Act and GDPR. DORA applies if AI is used in financial services, NIS2 applies to essential service providers. Regula cross-maps obligations across all 12 frameworks in a single scan.</p>
+        </details>
+        <details>
+            <summary>Does Regula work with AI-generated code?</summary>
+            <p>Yes. Regula scans source files regardless of who or what wrote them. AI-generated code carries the same EU AI Act obligations as hand-written code &mdash; Article 2 does not distinguish by authorship. Run <code>regula check .</code> on any project.</p>
+        </details>
+        <details>
+            <summary>What should I do right now to prepare?</summary>
+            <p>Three steps, under five minutes: (1) install with <code>pipx install regula-ai</code>, (2) run <code>regula assess</code> to check whether the Act applies to your product, (3) if it does, run <code>regula check .</code> to see your risk tier and findings. No account, no API key, no data leaves your machine.</p>
+        </details>
+    </div>
+</div>
+
+<div class="sep"></div>
+
 <!-- FINAL CTA -->
 <div class="final-wrap">
     <div class="final-glow"></div>
@@ -812,7 +862,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <button class="install-box" id="install-btn-2" onclick="copyInstall(this)" style="display:inline-flex;">
             <span class="dollar">$</span>
             <span class="cmd">pipx install regula-ai</span>
-            <span class="cp">copy</span>
+            <span class="cp" aria-live="polite">copy</span>
         </button>
         <p style="font-size:13px;color:var(--text-dim);margin:24px 0 12px;">Not ready to install? Get notified when deadlines change.</p>
         <div data-fs-success style="display:none;font-size:13px;color:#10b981;margin-bottom:8px;">You're on the list. Major releases only.</div>

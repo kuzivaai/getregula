@@ -83,8 +83,8 @@ curl https://getregula.com/content/regulations/delta-log/feed.xml
 ## Counterevidence and known gaps
 
 - IAPP, Future of Life Institute and OneTrust could all publish a
-  structured tracker. The moat here is being first, being open-source,
-  and being maintained by developers who can wire it directly into the
+  structured tracker. The advantage of this one is being open-source
+  and maintained by developers who can wire it directly into the
   scanning tool.
 - This log is not a substitute for legal advice. It is a citation
   infrastructure for developers and compliance teams who need to know

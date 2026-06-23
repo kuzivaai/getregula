@@ -6,8 +6,8 @@ lists each one, its canonical fetch URL, and its SHA-256 hash so
 contributors can verify their local copy.
 
 Drop fetched PDFs into `references/` at the path shown and citations
-in `docs/landscape.md`, `scripts/timeline.py`, and `README.md` will
-resolve to the correct file.
+in `scripts/timeline.py` and `README.md` will resolve to the correct
+file.
 
 ## References
 
@@ -24,5 +24,5 @@ resolve to the correct file.
   downloaded in a browser; curl/wget receive a challenge page)
 - **SHA-256:** `895f48950284458b5dc77436b2337297434a20f03c7bbc0f8a79eb9c58def9fe`
 - **Pages:** 94
-- **Cited in:** `docs/landscape.md`, `scripts/timeline.py`,
+- **Cited in:** `scripts/timeline.py`,
   `README.md` (AICDI gap table with page references)
