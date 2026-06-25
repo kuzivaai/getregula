@@ -47,6 +47,8 @@
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
     <noscript><link rel="stylesheet" href="/assets/fonts.css"><link rel="stylesheet" href="/assets/site.css"></noscript>
 
@@ -133,7 +135,7 @@
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
-<nav class="nav" id="nav" aria-label="Primary">
+<nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
@@ -146,13 +148,16 @@
         <a href="/locales/pt-br.html">BR</a>
     </dialog>
 </nav>
-<main id="main" style="max-width:720px;margin:0 auto;padding:32px 20px;">
+<main id="main">
 <article>
-<div style="margin-bottom:32px;">
+
+<div class="blog-hero" style="padding-bottom:24px;">
     <p style="color:var(--text-dim);font-size:0.9rem;">25 June 2026 &middot; Kuziva Muzondo</p>
     <h1 style="margin:8px 0 16px;">EU AI Act Article&nbsp;9: Risk Management System Requirements</h1>
     <p style="color:var(--text-2);font-size:1.1rem;line-height:1.6;">Article&nbsp;9 of <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Regulation&nbsp;(EU)&nbsp;2024/1689</a> requires providers of high-risk AI systems to establish, implement, document, and maintain a risk management system. This is an organisational obligation. A code scanner cannot verify it. But code scanning can detect some of the technical components that Article&nbsp;9 refers to, and flag where they are missing.</p>
 </div>
+
+<div class="blog-body">
 
 <h2>What Article&nbsp;9 actually requires</h2>
 
@@ -186,15 +191,23 @@
 
 <pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula check --domain healthcare .
 
-Risk tier: HIGH_RISK (healthcare domain)
-Findings:
-  [HIGH]  model_call_no_error_handling   src/predict.py:42
-  [MED]   no_input_validation            src/api/routes.py:18
-  [LOW]   missing_risk_documentation     (no risk_assessment files found)
+Regula Scan: /home/dev/myproject
+============================================================
 
-3 findings across 12 files scanned</code></pre>
+  Verdict: HIGH-RISK
+  Your project is classified as high-risk under EU AI Act Annex III.
+  Files scanned:      34
+  High-risk:          2
 
-<p>Each finding maps to a specific Article&nbsp;9 concern. The <code>model_call_no_error_handling</code> finding relates to residual risk management (Article&nbsp;9(6)). The missing documentation finding is a proxy indicator, not a determination.</p>
+  HIGH-RISK INDICATORS:
+    [INFO] [ 43] predict.py — Healthcare services [plan]
+    [INFO] [ 38] routes.py — Healthcare services [plan]
+
+============================================================</code></pre>
+
+<p style="color:var(--text-dim);font-size:0.85rem;margin-top:8px;"><em>The exact output depends on your codebase. The format above is illustrative.</em></p>
+
+<p>Each finding maps to a specific Article&nbsp;9 concern. High-risk indicators flag where the codebase touches domains that trigger Annex III obligations. The scan is a starting point, not a determination.</p>
 
 <h2>What code scanning cannot detect</h2>
 
@@ -216,23 +229,21 @@ Findings:
 
 <pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula gap --project .
 
-Compliance gap assessment (Articles 9-15)
-==========================================
+EU AI Act Compliance Gap Assessment: myproject
+Overall score:     29%
 
-Article  9 (Risk Management)     38/100
-  - Risk documentation:          MISSING
-  - Error handling coverage:     62%
-  - Input validation:            44%
-  - Decision logging:            71%
+Article 9   Risk Management                     [ 60%] MODERATE
+  Evidence: Risk management content in: README.md
+  Gap:      Risk documentation lacks structured mitigations
 
-Article 10 (Data Governance)     52/100
-Article 11 (Technical Docs)      29/100
-Article 13 (Transparency)        45/100
-Article 14 (Human Oversight)     61/100
+Article 10  Data Governance                     [ 30%] PARTIAL
+Article 11  Technical Documentation             [  0%] NOT FOUND
+Article 13  Transparency                        [  0%] NOT FOUND
+Article 14  Human Oversight                     [ 45%] PARTIAL</code></pre>
 
-Overall score: 45/100</code></pre>
+<p style="color:var(--text-dim);font-size:0.85rem;margin-top:8px;"><em>Scores reflect only the technical components Regula can measure.</em></p>
 
-<p>The Article&nbsp;9 score reflects only the technical components Regula can measure. A score of 38/100 means your codebase has significant gaps in the areas a scanner can evaluate. It does not mean your overall Article&nbsp;9 compliance is at 38%, because the organisational components (which Regula cannot assess) also matter. A project could score 100 on the code scan and still fail Article&nbsp;9 if no risk management process exists.</p>
+<p>The Article&nbsp;9 score reflects only the technical components Regula can measure. A moderate score means your codebase has some evidence of risk management artefacts but significant gaps remain. It does not mean your overall Article&nbsp;9 compliance is at that level, because the organisational components (which Regula cannot assess) also matter. A project could score highly on the code scan and still fail Article&nbsp;9 if no risk management process exists.</p>
 
 <p>To focus on Article&nbsp;9 specifically:</p>
 
@@ -281,6 +292,8 @@ Q3: Have residual risks been communicated to deployers? [y/n]
     <strong>Sources:</strong> <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" style="color:var(--text-dim);">Regulation (EU) 2024/1689, Article 9</a>, <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442" style="color:var(--text-dim);">Digital Omnibus provisional agreement (7 May 2026)</a> &middot;
     <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
 </p>
+
+</div>
 
 <div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
 <div class="blog-body" style="margin-top:var(--s5);">
