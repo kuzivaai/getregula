@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+
+    <title>EU AI Act Article 50: Transparency Requirements for AI Systems</title>
+    <meta name="description" content="Article 50 requires AI systems that interact with people to disclose that fact. How to check your codebase for transparency obligations including chatbots, deepfakes, and synthetic content.">
+    <meta name="keywords" content="EU AI Act Article 50, AI transparency, chatbot disclosure, deepfake labelling, synthetic content, limited risk AI, regula transparency, AI Act transparency requirements">
+    <meta name="author" content="Kuziva Muzondo">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/guides/article-50-transparency.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/guides/article-50-transparency.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/guides/article-50-transparency.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/guides/article-50-transparency.html">
+    <meta property="og:title" content="EU AI Act Article 50: Transparency Requirements for AI Systems">
+    <meta property="og:description" content="Article 50 requires AI systems interacting with people to disclose that fact. How to check your codebase for chatbot, deepfake, and synthetic content obligations.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula: EU AI Act compliance tool for code">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-06-25T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-06-25T00:00:00+00:00">
+    <meta property="article:section" content="AI Governance">
+    <meta property="article:tag" content="EU AI Act">
+    <meta property="article:tag" content="Article 50">
+    <meta property="article:tag" content="Transparency">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EU AI Act Article 50: Transparency Requirements for AI Systems">
+    <meta name="twitter:description" content="Article 50 requires AI systems interacting with people to disclose that fact. How to check your codebase for chatbot, deepfake, and synthetic content obligations.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.css">
+        <link rel="stylesheet" href="/assets/site.css">
+    </noscript>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "EU AI Act Article 50: Transparency Requirements for AI Systems",
+      "description": "Article 50 requires AI systems that interact with people to disclose that fact. How to check your codebase for transparency obligations including chatbots, deepfakes, and synthetic content.",
+      "image": "https://getregula.com/assets/og-image.png",
+      "datePublished": "2026-06-25T00:00:00+00:00",
+      "dateModified": "2026-06-25T00:00:00+00:00",
+      "author": {
+        "@type": "Person",
+        "name": "Kuziva Muzondo",
+        "url": "https://getregula.com/about.html"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://getregula.com/assets/regula-logo.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/guides/article-50-transparency.html"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://getregula.com/guides/" },
+        { "@type": "ListItem", "position": 3, "name": "Article 50: Transparency" }
+      ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does Article 50 of the EU AI Act require?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Article 50 requires transparency for several categories of AI system. AI systems that interact directly with people (such as chatbots) must inform the person they are interacting with AI, unless it is obvious from the circumstances. Providers of systems that generate synthetic audio, images, video, or text must mark those outputs in a machine-readable format. Deployers of deepfake AI must disclose that the content is artificially generated or manipulated."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Article 50 apply to chatbots?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Article 50(1) specifically requires that AI systems designed to interact directly with natural persons must inform those persons that they are interacting with an AI system. The exception is where this is obvious from the circumstances and context of use. Most chatbots and conversational AI systems fall within this obligation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When does Article 50 take effect?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Article 50 transparency obligations take effect on 2 August 2026, per Article 113 of Regulation (EU) 2024/1689. Unlike the high-risk obligations in Chapter III, Article 50 was not deferred by the Digital Omnibus provisional agreement of 7 May 2026, which postpones Annex III high-risk obligations to 2 December 2027."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html">Regulations</a>
+        <a href="/blog/writing.html">Blog</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+<article>
+
+<div class="blog-hero" style="padding-bottom:24px;">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / <a href="/blog/writing.html">Guides</a> / Article 50
+    </div>
+    <h1>Article 50: transparency for <span class="hl">limited-risk AI</span></h1>
+    <p class="standfirst">If your AI system talks to people, generates synthetic content, or produces deepfakes, you need to tell someone. Article 50 of Regulation (EU) 2024/1689 sets out transparency obligations that apply regardless of risk level. Unlike the high-risk rules in Chapter III, these take effect on 2 August 2026 with no deferral from the Digital Omnibus.</p>
+    <p style="color:var(--text-dim);font-size:0.9rem;">25 June 2026 &middot; Kuziva Muzondo</p>
+</div>
+
+<div class="blog-body">
+
+<h2>What Article 50 actually says</h2>
+
+<p>Article 50 sits in Chapter IV of the AI Act, titled "Transparency obligations for providers and deployers of certain AI systems." It applies to a broader set of systems than the high-risk obligations in <a href="/guides/article-9-risk-management.html">Article 9</a> or <a href="/guides/article-14-human-oversight.html">Article 14</a>. Where those articles target Annex III high-risk systems, Article 50 catches chatbots, image generators, deepfake tools, emotion recognition systems, and any AI that interacts directly with a person.</p>
+
+<p>The article breaks down into seven paragraphs, each addressing a different category of system and obligation.</p>
+
+<h3>Article 50(1) &mdash; AI systems interacting with persons</h3>
+
+<p>Providers must design AI systems that interact directly with natural persons so that the persons are informed they are interacting with an AI system. This applies "unless this is obvious from the circumstances and the context of use." The obligation sits with the provider at the design stage: the disclosure mechanism must be built into the system, not bolted on by the deployer afterwards.</p>
+
+<p>There is an exception for AI systems authorised by law for the detection, prevention, investigation, or prosecution of criminal offences, subject to appropriate safeguards for the rights of third parties.</p>
+
+<p>In practice, this means chatbots, conversational agents, voice assistants, and any system where a user might reasonably think they are talking to another person. If your <a href="/guides/eu-ai-act-python.html">Python application</a> has a chat interface backed by a language model, Article 50(1) applies.</p>
+
+<h3>Article 50(2) &mdash; synthetic content marking</h3>
+
+<p>Providers of AI systems that generate synthetic audio, image, video, or text content must mark those outputs in a machine-readable format so they are detectable as artificially generated or manipulated. The technical marking must be "effective, interoperable, robust and reliable" as far as technically feasible.</p>
+
+<p>This covers text generators, image generators, voice synthesis tools, and video generation systems. The obligation is on the provider, not the deployer. If you build the tool that generates the content, you must mark the output.</p>
+
+<p>The exception here is for AI systems performing an assistive function for standard editing (where the AI does not substantially alter the input), and for systems authorised by law for law enforcement purposes.</p>
+
+<h3>Article 50(3) &mdash; emotion recognition and biometric categorisation</h3>
+
+<p>Deployers of emotion recognition systems or biometric categorisation systems must inform the natural persons exposed to them. They must also comply with Regulation (EU) 2016/679 (GDPR) when processing personal data. Note that certain uses of these systems are outright <a href="/guides/article-5-prohibited-practices.html">prohibited under Article 5</a>, particularly emotion recognition in the workplace and in educational institutions.</p>
+
+<p>The exception again covers law enforcement use authorised by law.</p>
+
+<h3>Article 50(4) &mdash; deepfakes</h3>
+
+<p>Deployers of AI systems that generate or manipulate image, audio, or video content constituting a deepfake must disclose that the content has been artificially generated or manipulated. This is the user-facing side of the obligation: where Article 50(2) requires providers to mark content technically, Article 50(4) requires deployers to tell people about it.</p>
+
+<p>There are two exceptions. First, for artistic, satirical, or fictional work, the disclosure must not hamper the display or enjoyment of the work. The obligation still exists, but it can be placed alongside the work (e.g. in credits or metadata) rather than interrupting it. Second, for AI-generated text published for the purpose of informing the public on matters of public interest, disclosure is required unless the content has undergone human editorial review and a natural person or legal entity holds editorial responsibility for it.</p>
+
+<h3>Article 50(5) &mdash; form of disclosure</h3>
+
+<p>All information required under paragraphs 1 to 4 must be provided in a clear and distinguishable manner, at the latest at the time of the first interaction or exposure, and must conform to applicable accessibility requirements. This is a design constraint: the disclosure must be upfront and understandable, not buried in terms of service.</p>
+
+<h3>Article 50(6) &mdash; relationship to Chapter III</h3>
+
+<p>Article 50 is without prejudice to the requirements in Chapter III. If your system is both high-risk and falls under Article 50 (for example, an <a href="/guides/eu-ai-act-recruitment-hiring.html">AI recruitment chatbot</a> that is also classified as high-risk under Annex III), you must comply with both sets of obligations.</p>
+
+<h3>Article 50(7) &mdash; codes of practice</h3>
+
+<p>The AI Office is tasked with facilitating the drawing up of codes of practice at Union level to help implement the detection and labelling obligations. These codes of practice are not yet finalised.</p>
+
+<h2>Who has obligations and when</h2>
+
+<p>Article 50 splits obligations between providers and deployers. Understanding which role you fill determines what you must do.</p>
+
+<p><strong>Providers</strong> (those who develop or commission the AI system):</p>
+<ul>
+    <li>Design AI-to-person interaction systems with built-in disclosure (50(1))</li>
+    <li>Mark synthetic content outputs in machine-readable format (50(2))</li>
+</ul>
+
+<p><strong>Deployers</strong> (those who put the AI system to use under their authority):</p>
+<ul>
+    <li>Inform persons exposed to emotion recognition or biometric categorisation (50(3))</li>
+    <li>Disclose deepfake content as artificially generated or manipulated (50(4))</li>
+</ul>
+
+<p>You can be both. If you build a chatbot and deploy it to your own customers, you are both provider and deployer, and both sets of obligations apply. If <a href="/blog/blog-does-ai-act-apply.html">the AI Act applies to you</a>, work out which role you hold for each system.</p>
+
+<h2>How Regula detects transparency obligations</h2>
+
+<p>Regula's <code>check</code> command scans your codebase for patterns that indicate limited-risk AI components subject to Article 50. When it finds chatbot frameworks, conversational AI patterns, or content generation code, it flags them as limited-risk.</p>
+
+<pre><code>$ regula check sample_chatbot.py
+
+Regula Scan: sample_chatbot.py
+============================================================
+
+  Verdict: LIMITED-RISK
+  Your project has limited-risk AI components (Article 50 transparency).
+  You must disclose AI usage to users.
+  Files scanned:      1
+  Limited-risk:       1
+
+  LIMITED-RISK (Article 50):
+    [INFO] [ 47] sample_chatbot.py:9 &mdash; Chatbots and conversational AI [develop]</code></pre>
+
+<p>The output tells you two things. First, the system has been classified as limited-risk under Article 50. Second, the specific line of code that triggered the detection. The <code>[develop]</code> tag indicates this is a development-phase pattern, meaning you are building the system (provider role).</p>
+
+<p>Regula detects patterns, not compliance. A detection means your code has characteristics that match Article 50 obligations. Whether you have actually satisfied those obligations requires checking that your disclosure mechanisms are in place, clear, and presented at first interaction.</p>
+
+<h2>What code scanning covers and what it does not</h2>
+
+<p>Regula can detect:</p>
+<ul>
+    <li>Chatbot and conversational AI frameworks in your codebase</li>
+    <li>Content generation patterns (text, image, audio, video synthesis)</li>
+    <li>Emotion recognition and biometric categorisation libraries</li>
+    <li>Whether disclosure strings or notification mechanisms exist near the detected patterns</li>
+</ul>
+
+<p>Regula cannot verify:</p>
+<ul>
+    <li>Whether the disclosure is actually shown to end users at first interaction</li>
+    <li>Whether synthetic content outputs carry machine-readable provenance markers</li>
+    <li>Whether the disclosure is "clear and distinguishable" as Article 50(5) requires</li>
+    <li>Whether your deepfake disclosure meets the artistic/satirical exception correctly</li>
+    <li>Whether your GDPR processing for emotion recognition data is lawful</li>
+</ul>
+
+<p>Code scanning and <a href="/assess/">self-assessment questionnaires</a> are complementary. Regula finds the technical indicators. A legal review determines whether the implementation satisfies the regulation. Neither replaces the other.</p>
+
+<h2>Common transparency patterns in code</h2>
+
+<p>Article 50(1) compliance at the code level typically looks like a disclosure check at the start of an interaction. Here is a minimal example:</p>
+
+<pre><code># No transparency disclosure (Article 50 problem)
+def handle_message(user_input):
+    response = model.generate(user_input)
+    return response
+
+# With transparency disclosure (Article 50 pattern)
+def handle_message(user_input, session):
+    if not session.get("disclosure_shown"):
+        send_disclosure("You are interacting with an AI system.")
+        session["disclosure_shown"] = True
+    response = model.generate(user_input)
+    return response</code></pre>
+
+<p>For Article 50(2), synthetic content marking is typically metadata embedded in the output:</p>
+
+<pre><code># Synthetic image without provenance (Article 50 problem)
+def generate_image(prompt):
+    image = model.generate(prompt)
+    return image
+
+# With machine-readable marking (Article 50 pattern)
+def generate_image(prompt):
+    image = model.generate(prompt)
+    image.metadata["ai_generated"] = True
+    image.metadata["generator"] = "model_v2"
+    image.metadata["timestamp"] = datetime.utcnow().isoformat()
+    return image</code></pre>
+
+<p>These are simplified examples. Production implementations will vary based on your framework, content type, and output format. The point is structural: the disclosure or marking must exist in the code path, not just in documentation.</p>
+
+<h2>Transparency versus risk classification</h2>
+
+<p>Article 50 transparency obligations are independent of <a href="/blog/blog-risk-tiers-in-code.html">risk tier classification</a>. A chatbot classified as limited-risk under Article 50 can also be classified as high-risk under Annex III if it operates in a regulated domain (recruitment, credit scoring, healthcare services). In that case, both sets of obligations apply simultaneously.</p>
+
+<p>Regula handles this by reporting all applicable classifications. If your codebase contains both high-risk patterns and limited-risk transparency indicators, the scan output will show both.</p>
+
+<p>The practical implication: do not assume that a "limited-risk" classification means lighter obligations. Article 50 obligations are specific and enforceable, with penalties for non-compliance. They are "limited" in the sense that they require transparency rather than the full conformity assessment process of Chapter III, not in the sense that they are optional.</p>
+
+<h2>Practical steps</h2>
+
+<ol>
+    <li><strong>Run <code>regula check .</code></strong> to identify which files in your codebase trigger limited-risk (Article 50) classifications.</li>
+    <li><strong>Map each detection to a paragraph.</strong> Is it a person-facing interaction (50(1))? Synthetic content generation (50(2))? Emotion recognition (50(3))? Deepfake generation or manipulation (50(4))?</li>
+    <li><strong>Check for disclosure mechanisms.</strong> For each flagged pattern, verify that your code includes a disclosure, notification, or marking mechanism in the same execution path.</li>
+    <li><strong>Verify timing.</strong> Article 50(5) requires disclosure "at the latest at the time of the first interaction or exposure." A disclosure buried in settings or shown only after several interactions does not meet this.</li>
+    <li><strong>Check machine-readable marking.</strong> If you generate synthetic content (50(2)), verify that outputs carry metadata identifying them as AI-generated. Text, images, audio, and video each have different technical standards for provenance marking.</li>
+    <li><strong>Review exceptions.</strong> If you believe an exception applies (obvious context, law enforcement, artistic work), document the legal basis. Do not assume an exception applies without analysis.</li>
+    <li><strong>Use <code>regula conform --organisational</code></strong> to generate a structured self-assessment covering Article 50 alongside your other obligations.</li>
+</ol>
+
+<h2>Deadline</h2>
+
+<p>Article 50 transparency obligations take effect on 2 August 2026, per Article 113 of Regulation (EU) 2024/1689. Unlike the Annex III high-risk obligations, Article 50 was not deferred by the Digital Omnibus (provisional agreement 7 May 2026, approved by European Parliament 16 June 2026, pending Council adoption). The Omnibus defers Annex III high-risk obligations to 2 December 2027 and Annex I product-embedded AI to 2 August 2028, but transparency obligations under Chapter IV remain on the original timeline.</p>
+
+<p>This means Article 50 is among the earliest substantive obligations to become enforceable, alongside the <a href="/guides/article-5-prohibited-practices.html">prohibited practices in Article 5</a> (which took effect 2 February 2025).</p>
+
+<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
+
+<h2>Related</h2>
+
+<ul>
+    <li><a href="/guides/article-5-prohibited-practices.html">Article 5: prohibited AI practices</a></li>
+    <li><a href="/guides/article-9-risk-management.html">Article 9: risk management system requirements</a></li>
+    <li><a href="/guides/article-14-human-oversight.html">Article 14: human oversight for high-risk AI</a></li>
+    <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act risk tiers explained with code examples</a></li>
+    <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act apply to you?</a></li>
+    <li><a href="/guides/eu-ai-act-python.html">EU AI Act compliance for Python developers</a></li>
+    <li><a href="/guides/eu-ai-act-recruitment-hiring.html">EU AI Act requirements for AI in recruitment</a></li>
+    <li><a href="/assess/">Regula web assessment tool</a></li>
+    <li><a href="/about.html">About Regula: what it does and does not do</a></li>
+</ul>
+
+<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
+
+<p style="color:var(--text-dim);font-size:0.85rem;">
+    <strong>Last verified:</strong> 25 June 2026 &middot;
+    <strong>Author:</strong> Kuziva Muzondo &middot;
+    <em>Not legal advice. Regula identifies risk indicators in code for developer review. It does not determine compliance or replace professional legal counsel.</em>
+</p>
+
+</div>
+
+</article>
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
