@@ -38,3 +38,5 @@ python3 tests/test_classification.py && python3 -m pytest tests/ -q && python3 -
 - Tests: `tests/test_classification.py` (custom runner) + `tests/test_*.py` (pytest)
 - Site: `site/` (GitHub Pages, 3 locales: EN, DE, PT-BR)
 - Version source of truth: `scripts/constants.py:VERSION` (must match `pyproject.toml`)
+- **Web scanner**: `site/assess/scanner.js` — client-side port of 627 patterns from `risk_patterns.py`. Must be regenerated when patterns change (see `.claude/handover.md`). Verify with `benchmarks/synthetic/fixtures/` (13 fixtures must match CLI tier).
+- **Assess tool**: `site/assess/` — EN (`index.html`), DE (`de.html`), PT-BR (`pt-br.html`). All share `scanner.js`. Locale pages duplicate the JS scoring engine with translated strings — changes to scoring logic must be applied to all 3 files.

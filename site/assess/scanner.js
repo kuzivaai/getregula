@@ -6,13 +6,16 @@
 'use strict';
 
 // =====================================================================
-// Pattern definitions — auto-generated from scripts/risk_patterns.py
-// Do not edit pattern data manually — regenerate with:
-//   python3 scripts/export_patterns_js.py && python3 scripts/generate_scanner_js.py
+// Pattern definitions — ported from scripts/risk_patterns.py
+// To regenerate after pattern changes:
+//   1. Run: python3 -c "import json,sys; sys.path.insert(0,'scripts'); from risk_patterns import *; ..." > /tmp/patterns.json
+//   2. Convert JSON to JS const declarations
+//   3. Replace the pattern data section below
+//   4. Verify: node -e "const s=require('./scanner.js'); ..." against benchmarks/synthetic/fixtures/
+// See .claude/handover.md for the full regeneration process used to create this file.
 // =====================================================================
 
-// Pattern data — auto-generated from scripts/risk_patterns.py (627 patterns)
-// Do not edit this section manually.
+// Pattern data (627 patterns)
 
 const PROHIBITED_PATTERNS = {
   "subliminal_manipulation": {

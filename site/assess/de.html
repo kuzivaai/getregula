@@ -27,6 +27,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="EU-KI-Gesetz-Bewertung: Betrifft es Sie?">
     <meta name="twitter:description" content="Kostenlose Risikobewertung für Ihr KI-System. Risikostufe und Pflichten in unter 5 Minuten.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
     <noscript><link rel="stylesheet" href="/assets/fonts.css"></noscript>
@@ -288,7 +289,7 @@
 
 <nav class="nav-bar" aria-label="Hauptnavigation">
   <a href="/" class="nav-brand">Regula</a>
-  <div class="nav-links" role="navigation">
+  <div class="nav-links">
     <a href="https://github.com/kuzivaai/getregula">GitHub</a>
     <a href="/blog/writing.html">Blog</a>
     <a href="/regions/regulations.html">Regulierung</a>
@@ -385,8 +386,6 @@
   <div class="results" id="resultsSection" aria-live="polite">
     <div id="tierResult"></div>
     <div id="obligationsList"></div>
-    <div id="gapAnalysis"></div>
-    <div id="nextSteps"></div>
 
     <div class="export-section">
       <h3>Ergebnisse exportieren</h3>
@@ -396,7 +395,7 @@
         <button type="button" class="btn btn-secondary" onclick="exportJSON()">JSON herunterladen</button>
       </div>
       <div class="share-section" id="shareSection" style="display:none;">
-        <input class="share-url" id="shareUrl" readonly onclick="this.select()">
+        <input class="share-url" id="shareUrl" readonly onclick="this.select()" aria-label="Teilbarer Ergebnis-Link">
         <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Jeder mit diesem Link sieht dieselben Ergebnisse. Es werden keine Daten gespeichert.</div>
       </div>
     </div>
@@ -420,7 +419,6 @@
     </p>
     <p style="margin-top:4px;">Nicht verbunden mit <a href="https://regulaforensics.com">Regula Forensics</a> (Identitätsverifizierung).</p>
   </div>
-</div>
 
 <script src="scanner.js"></script>
 <script>

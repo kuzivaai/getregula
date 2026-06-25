@@ -8,7 +8,11 @@ const PAGES = [
   '/regions/south-korea-ai-regulation.html', '/regions/uk-ai-regulation.html',
   '/blog/writing.html', '/blog/blog-does-ai-act-apply.html',
   '/blog/blog-omnibus-delay.html', '/blog/blog-risk-tiers-in-code.html',
-  '/assess/',
+  '/assess/', '/assess/de.html', '/assess/pt-br.html',
+  '/guides/article-5-prohibited-practices.html',
+  '/guides/article-50-transparency.html',
+  '/guides/eu-ai-act-healthcare.html',
+  '/guides/eu-ai-act-javascript.html',
   '/404.html',
 ];
 
