@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EU AI Act Assessment: Does It Apply to You? | Regula</title>
+    <meta name="description" content="Free EU AI Act risk assessment. Answer questions about your AI system, get your risk tier, applicable articles, obligation checklist, and gap analysis. No signup, no install.">
+    <meta name="author" content="Kuziva Muzondo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://getregula.com/assess/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://getregula.com/assess/">
+    <meta property="og:title" content="EU AI Act Assessment: Does It Apply to You?">
+    <meta property="og:description" content="Free risk assessment for your AI system. Answer questions, get your risk tier and obligations. No signup, no install. By Regula.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EU AI Act Assessment: Does It Apply to You?">
+    <meta name="twitter:description" content="Free risk assessment for your AI system. Get your risk tier and obligations in under 5 minutes.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Regula EU AI Act Assessment",
+      "url": "https://getregula.com/assess/",
+      "description": "Free EU AI Act risk assessment tool. Classifies your AI system into the Act's risk tiers and maps applicable obligations.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Any (web browser)",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+      "author": { "@type": "Person", "name": "Kuziva Muzondo", "url": "https://getregula.com/about.html" }
+    }
+    </script>
+    <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
+    <script>window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)}</script>
+    <style>
+      :root {
+        --bg: #070711; --bg-card: #0f0f1a; --bg-hover: #151528;
+        --border: #1e1e3a; --border-active: #3b82f6;
+        --text: #e2e2f0; --text-dim: #8888a8; --text-muted: #55556a;
+        --accent: #3b82f6; --accent-dim: rgba(59,130,246,0.12);
+        --red: #e74c3c; --red-dim: rgba(231,76,60,0.12);
+        --amber: #f39c12; --amber-dim: rgba(243,156,18,0.12);
+        --green: #27ae60; --green-dim: rgba(39,174,96,0.12);
+        --purple: #6c5ce7; --purple-dim: rgba(108,92,231,0.12);
+        --radius: 10px;
+        --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+        --mono: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+      }
+      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+      html { color-scheme: dark; }
+      body {
+        background: var(--bg); color: var(--text);
+        font-family: var(--font); line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+      }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      /* Layout */
+      .shell { max-width: 680px; margin: 0 auto; padding: 24px 20px 80px; }
+      .nav-bar {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 12px 20px; border-bottom: 1px solid var(--border);
+        max-width: 680px; margin: 0 auto;
+      }
+      .nav-brand { color: var(--text); font-weight: 700; font-size: 1.1rem; }
+      .nav-links { display: flex; gap: 16px; font-size: 0.85rem; }
+      .nav-links a { color: var(--text-dim); }
+
+      /* Hero */
+      .hero { padding: 48px 0 32px; text-align: center; }
+      .hero h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 12px; line-height: 1.25; }
+      .hero h1 span { color: var(--accent); }
+      .hero p { color: var(--text-dim); font-size: 1.05rem; max-width: 520px; margin: 0 auto; }
+      .hero-stats {
+        display: flex; justify-content: center; gap: 24px;
+        margin-top: 20px; font-size: 0.8rem; color: var(--text-muted);
+      }
+
+      /* Progress bar */
+      .progress-wrap { margin: 32px 0 24px; }
+      .progress-label {
+        display: flex; justify-content: space-between;
+        font-size: 0.8rem; color: var(--text-dim); margin-bottom: 6px;
+      }
+      .progress-track {
+        height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%; background: var(--accent); border-radius: 2px;
+        transition: width 0.4s ease;
+      }
+
+      /* Question card */
+      .q-card {
+        background: var(--bg-card); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 28px; margin-bottom: 16px;
+      }
+      .q-card.hidden { display: none; }
+      .q-number { font-size: 0.75rem; color: var(--accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 8px; }
+      .q-text { font-size: 1.1rem; font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
+      .q-help { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 20px; line-height: 1.5; }
+      .q-article { font-size: 0.75rem; color: var(--text-muted); font-family: var(--mono); margin-bottom: 16px; }
+
+      /* Answer buttons */
+      .answers { display: flex; gap: 10px; }
+      .ans-btn {
+        flex: 1; padding: 12px 16px; border: 1px solid var(--border);
+        border-radius: 8px; background: transparent; color: var(--text);
+        font-family: var(--font); font-size: 0.95rem; font-weight: 500;
+        cursor: pointer; transition: all 0.15s;
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+      }
+      .ans-btn:hover { background: var(--bg-hover); border-color: var(--text-dim); }
+      .ans-btn.selected { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+      .ans-btn.selected-no { border-color: var(--red); background: var(--red-dim); color: var(--red); }
+      .ans-btn.selected-unsure { border-color: var(--amber); background: var(--amber-dim); color: var(--amber); }
+
+      /* Navigation buttons */
+      .nav-buttons {
+        display: flex; justify-content: space-between; margin-top: 24px;
+      }
+      .btn {
+        padding: 10px 24px; border-radius: 8px; font-family: var(--font);
+        font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none;
+        transition: all 0.15s;
+      }
+      .btn-primary { background: var(--accent); color: #fff; }
+      .btn-primary:hover { filter: brightness(1.1); }
+      .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+      .btn-secondary { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
+      .btn-secondary:hover { border-color: var(--text-dim); color: var(--text); }
+
+      /* Results */
+      .results { display: none; }
+      .results.active { display: block; }
+      .result-tier {
+        text-align: center; padding: 32px; border-radius: var(--radius);
+        margin-bottom: 24px;
+      }
+      .tier-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 8px; }
+      .tier-name { font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; }
+      .tier-desc { font-size: 0.95rem; opacity: 0.85; max-width: 480px; margin: 0 auto; }
+      .tier-high { background: var(--red-dim); border: 1px solid rgba(231,76,60,0.3); }
+      .tier-high .tier-label, .tier-high .tier-name { color: var(--red); }
+      .tier-limited { background: var(--amber-dim); border: 1px solid rgba(243,156,18,0.3); }
+      .tier-limited .tier-label, .tier-limited .tier-name { color: var(--amber); }
+      .tier-minimal { background: var(--green-dim); border: 1px solid rgba(39,174,96,0.3); }
+      .tier-minimal .tier-label, .tier-minimal .tier-name { color: var(--green); }
+      .tier-prohibited { background: rgba(140,40,200,0.12); border: 1px solid rgba(140,40,200,0.3); }
+      .tier-prohibited .tier-label, .tier-prohibited .tier-name { color: #b060e0; }
+
+      /* Obligation cards */
+      .obligations { margin: 24px 0; }
+      .obl-card {
+        background: var(--bg-card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 16px 20px; margin-bottom: 8px;
+      }
+      .obl-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+      .obl-title { font-weight: 600; font-size: 0.95rem; }
+      .obl-deadline { font-size: 0.75rem; color: var(--text-muted); font-family: var(--mono); }
+      .obl-desc { font-size: 0.85rem; color: var(--text-dim); line-height: 1.5; }
+      .obl-effort { font-size: 0.75rem; color: var(--amber); margin-top: 6px; }
+
+      /* Gap scoring */
+      .gap-bar-wrap { margin: 4px 0 2px; display: flex; align-items: center; gap: 10px; }
+      .gap-bar { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+      .gap-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+      .gap-score { font-size: 0.8rem; font-weight: 600; min-width: 36px; text-align: right; }
+
+      /* Export section */
+      .export-section {
+        margin-top: 32px; padding: 20px; background: var(--bg-card);
+        border: 1px solid var(--border); border-radius: var(--radius);
+      }
+      .export-section h3 { font-size: 0.95rem; margin-bottom: 12px; }
+      .export-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+
+      /* Shareable link */
+      .share-section { margin-top: 16px; }
+      .share-url {
+        width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--border);
+        border-radius: 6px; color: var(--text-dim); font-size: 0.8rem;
+        font-family: var(--mono); outline: none;
+      }
+      .share-url:focus { border-color: var(--accent); }
+
+      /* Next steps */
+      .next-steps { margin-top: 24px; }
+      .next-steps h3 { font-size: 1rem; margin-bottom: 12px; }
+      .step-item {
+        display: flex; gap: 12px; padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+      }
+      .step-num {
+        min-width: 28px; height: 28px; background: var(--accent-dim);
+        color: var(--accent); border-radius: 50%; display: flex;
+        align-items: center; justify-content: center;
+        font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+      }
+      .step-text { font-size: 0.9rem; }
+      .step-text strong { display: block; margin-bottom: 2px; }
+      .step-text span { color: var(--text-dim); font-size: 0.85rem; }
+
+      /* Footer */
+      .foot {
+        margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
+        font-size: 0.8rem; color: var(--text-muted); text-align: center;
+      }
+      .foot a { color: var(--text-dim); }
+
+      /* Responsive */
+      @media (max-width: 520px) {
+        .hero h1 { font-size: 1.4rem; }
+        .answers { flex-direction: column; }
+        .hero-stats { flex-direction: column; gap: 4px; }
+        .nav-links { gap: 10px; font-size: 0.8rem; }
+      }
+
+      /* Print */
+      @media print {
+        body { background: #fff; color: #111; }
+        .nav-bar, .progress-wrap, .nav-buttons, .export-section, .share-section, .foot { display: none; }
+        .q-card, .obl-card, .result-tier, .export-section { border-color: #ccc; background: #f9f9f9; }
+        .q-card.hidden { display: none; }
+      }
+    </style>
+</head>
+<body>
+
+<nav class="nav-bar" aria-label="Main navigation">
+  <a href="/" class="nav-brand">Regula</a>
+  <div class="nav-links" role="navigation">
+    <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+    <a href="/blog/writing.html">Blog</a>
+    <a href="/regions/regulations.html">Regulations</a>
+    <a href="/about.html">About</a>
+  </div>
+</nav>
+
+<main class="shell" role="main">
+
+  <!-- HERO -->
+  <div class="hero" id="heroSection">
+    <h1>Does the EU AI Act <span>apply to you?</span></h1>
+    <p>Answer a few questions about your AI system. Get your risk tier, applicable articles, and a compliance gap analysis. No signup, no install, nothing leaves your browser.</p>
+    <div class="hero-stats">
+      <span>12 questions</span>
+      <span>Under 5 minutes</span>
+      <span>Shareable results</span>
+    </div>
+    <div style="margin-top:28px;">
+      <button class="btn btn-primary" onclick="startAssessment()" style="padding:14px 36px;font-size:1rem;">Start assessment</button>
+    </div>
+  </div>
+
+  <!-- QUESTIONNAIRE -->
+  <div id="questionnaireSection" style="display:none;">
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="progressText">Question 1 of 12</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
+    </div>
+    <div id="questionContainer"></div>
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>Back</button>
+      <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Next</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results" id="resultsSection">
+    <div id="tierResult"></div>
+    <div id="obligationsList"></div>
+    <div id="gapAnalysis"></div>
+    <div id="nextSteps"></div>
+
+    <div class="export-section">
+      <h3>Export your results</h3>
+      <div class="export-buttons">
+        <button class="btn btn-secondary" onclick="window.print()">Print / Save as PDF</button>
+        <button class="btn btn-secondary" onclick="copyShareLink()">Copy shareable link</button>
+        <button class="btn btn-secondary" onclick="exportJSON()">Download JSON</button>
+      </div>
+      <div class="share-section" id="shareSection" style="display:none;">
+        <input class="share-url" id="shareUrl" readonly onclick="this.select()">
+        <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Anyone with this link sees the same results. No data is stored.</div>
+      </div>
+    </div>
+
+    <div class="next-steps" id="nextStepsSection"></div>
+
+    <div style="margin-top:24px;text-align:center;">
+      <button class="btn btn-secondary" onclick="resetAssessment()">Start over</button>
+    </div>
+  </div>
+</main>
+
+  <!-- FOOTER -->
+  <div class="foot">
+    <p><strong>Not legal advice.</strong> This tool identifies regulatory risk indicators for review. It does not determine compliance. Consult a qualified legal professional for legal questions.</p>
+    <p style="margin-top:8px;">
+      <a href="/">Regula</a> &middot;
+      <a href="https://github.com/kuzivaai/getregula">GitHub</a> &middot;
+      <a href="https://pypi.org/project/regula-ai/">PyPI</a> &middot;
+      Open source (Apache 2.0 / EUPL 1.2)
+    </p>
+    <p style="margin-top:4px;">Not affiliated with <a href="https://regulaforensics.com">Regula Forensics</a> (identity verification).</p>
+  </div>
+</div>
+
+<script>
+// =====================================================================
+// Regula Web Assessment — ported from scripts/questionnaire.py
+// All logic runs client-side. Nothing leaves the browser.
+// =====================================================================
+
+const QUESTIONS = [
+  {
+    id: "deployment_eu",
+    text: "Will this system be deployed in the EU or affect people in the EU?",
+    help: "The EU AI Act applies to AI systems placed on the EU market or whose output is used in the EU, regardless of where the provider is based (Article 2).",
+    article: "Article 2",
+    weight: { yes: 10, no: -10, unsure: 5 },
+    signal: "jurisdiction"
+  },
+  {
+    id: "affected_domain",
+    text: "Does this system operate in any of these domains: employment/hiring, credit/finance, education/admissions, healthcare, law enforcement, immigration, critical infrastructure?",
+    help: "These domains are listed in Annex III as areas where AI systems may be classified as high-risk.",
+    article: "Article 6(2), Annex III",
+    weight: { yes: 25, no: -15, unsure: 10 },
+    signal: "high_risk"
+  },
+  {
+    id: "autonomous_decisions",
+    text: "Does this system make or materially influence decisions about individuals without a human reviewing each decision?",
+    help: "Article 14 requires human oversight for high-risk systems. Systems where humans review every output before action may have lower risk.",
+    article: "Article 14",
+    weight: { yes: 30, no: -20, unsure: 10 },
+    signal: "high_risk"
+  },
+  {
+    id: "significant_harm",
+    text: "Could errors or failures in this system cause significant harm to someone's health, safety, or fundamental rights?",
+    help: "Article 6 requires the system to pose a 'significant risk of harm' to qualify as high-risk, beyond just operating in an Annex III area.",
+    article: "Article 6(2)",
+    weight: { yes: 25, no: -15, unsure: 10 },
+    signal: "high_risk"
+  },
+  {
+    id: "biometric_data",
+    text: "Does this system process biometric data (face, fingerprint, voice, gait)?",
+    help: "Biometric processing appears in both Annex III Category 1 and Article 5 prohibited practices depending on context.",
+    article: "Annex III(1), Article 5",
+    weight: { yes: 20, no: -5, unsure: 10 },
+    signal: "high_risk"
+  },
+  {
+    id: "social_scoring",
+    text: "Does this system evaluate or score individuals based on their social behaviour, personality traits, or predicted characteristics?",
+    help: "Social scoring by public authorities is prohibited under Article 5(1)(c). Private social scoring that leads to detrimental treatment may also be caught.",
+    article: "Article 5(1)(c)",
+    weight: { yes: 35, no: -5, unsure: 10 },
+    signal: "prohibited"
+  },
+  {
+    id: "emotion_recognition",
+    text: "Does this system infer emotions from biometric data in a workplace or educational setting?",
+    help: "Article 5(1)(f) prohibits emotion recognition in workplaces and educational institutions, with narrow exceptions for medical or safety purposes.",
+    article: "Article 5(1)(f)",
+    weight: { yes: 35, no: -5, unsure: 10 },
+    signal: "prohibited"
+  },
+  {
+    id: "public_facing",
+    text: "Will individuals be informed that they are interacting with an AI system?",
+    help: "Article 50 requires transparency: users must know when they interact with AI, when content is AI-generated, or when AI analyses their data.",
+    article: "Article 50",
+    weight: { yes: -5, no: 15, unsure: 5 },
+    signal: "transparency"
+  },
+  {
+    id: "narrow_procedural",
+    text: "Does this system perform only narrow procedural tasks (data formatting, document sorting, pattern matching for human review)?",
+    help: "Article 6(3)(a) exempts systems that perform narrow procedural tasks from high-risk classification, even if they operate in an Annex III domain.",
+    article: "Article 6(3)(a)",
+    weight: { yes: -25, no: 10, unsure: 0 },
+    signal: "exemption"
+  },
+  {
+    id: "improves_human_activity",
+    text: "Does this system only improve the result of a previously completed human activity (grammar check, photo enhancement, formatting)?",
+    help: "Article 6(3)(b) exempts systems that improve previously completed human activities.",
+    article: "Article 6(3)(b)",
+    weight: { yes: -20, no: 5, unsure: 0 },
+    signal: "exemption"
+  },
+  {
+    id: "risk_documentation",
+    text: "Does your organisation maintain a risk register or risk management documentation for this AI system?",
+    help: "Article 9 requires a documented, continuously updated risk management system. This question helps assess your current compliance posture.",
+    article: "Article 9",
+    weight: { yes: -5, no: 5, unsure: 0 },
+    signal: "gap_assessment"
+  },
+  {
+    id: "logging_active",
+    text: "Does this system automatically log its operations (inputs, outputs, decisions, timestamps)?",
+    help: "Article 12 requires automatic recording of events during the AI system's operation to enable traceability.",
+    article: "Article 12",
+    weight: { yes: -5, no: 5, unsure: 0 },
+    signal: "gap_assessment"
+  }
+];
+
+// Article obligations for high-risk systems
+const OBLIGATIONS = [
+  {
+    article: 9, name: "Risk management system",
+    desc: "Establish, implement, document, and maintain a continuous risk management system covering the entire AI lifecycle. Identify and analyse known and foreseeable risks. Adopt appropriate mitigation measures. Communicate residual risks to deployers (Article 9(5)).",
+    effort: "40-80 hours",
+    deadline: "2 Dec 2027 (Omnibus; EP approved 16 Jun 2026)"
+  },
+  {
+    article: 10, name: "Data governance",
+    desc: "Training, validation, and testing datasets must meet quality criteria. Document data collection processes, identify gaps and biases, and ensure data is representative of the intended deployment context.",
+    effort: "20-60 hours",
+    deadline: "2 Dec 2027"
+  },
+  {
+    article: 11, name: "Technical documentation",
+    desc: "Prepare technical documentation following Annex IV before the system is placed on the market. Includes system description, design specification, development methodology, monitoring and testing procedures.",
+    effort: "30-80 hours",
+    deadline: "2 Dec 2027"
+  },
+  {
+    article: 12, name: "Record-keeping",
+    desc: "Design the system to automatically record events (logs) during operation. Logs must enable traceability of the system's functioning and allow post-market monitoring.",
+    effort: "10-30 hours",
+    deadline: "2 Dec 2027"
+  },
+  {
+    article: 13, name: "Transparency",
+    desc: "Design for transparency: deployers must be able to understand the system's capabilities, limitations, and intended purpose. Provide instructions for use.",
+    effort: "15-40 hours",
+    deadline: "2 Dec 2027"
+  },
+  {
+    article: 14, name: "Human oversight",
+    desc: "Design with appropriate human oversight measures. Humans must be able to understand, monitor, override, and stop the system. Ensure oversight is effective, not nominal.",
+    effort: "15-50 hours",
+    deadline: "2 Dec 2027"
+  },
+  {
+    article: 15, name: "Accuracy, robustness, cybersecurity",
+    desc: "Achieve appropriate levels of accuracy, robustness, and cybersecurity throughout the lifecycle. Resilient against errors, attacks, and attempts to exploit vulnerabilities.",
+    effort: "20-60 hours",
+    deadline: "2 Dec 2027"
+  }
+];
+
+const LIMITED_RISK_OBLIGATIONS = [
+  {
+    article: 50, name: "Transparency obligations",
+    desc: "Inform users they are interacting with an AI system. Label AI-generated content (text, audio, image, video) as artificially generated. Mark deepfakes and synthetic content.",
+    effort: "5-15 hours",
+    deadline: "2 Aug 2026 (new systems); 2 Dec 2026 (existing, watermarking)"
+  }
+];
+
+// =====================================================================
+// State
+// =====================================================================
+let currentQuestion = 0;
+let answers = {};
+let assessmentStarted = false;
+
+// =====================================================================
+// Questionnaire logic
+// =====================================================================
+
+function startAssessment() {
+  assessmentStarted = true;
+  document.getElementById("heroSection").style.display = "none";
+  document.getElementById("questionnaireSection").style.display = "block";
+  document.getElementById("resultsSection").classList.remove("active");
+  renderQuestion();
+  if (window.plausible) plausible("Assessment Started");
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[currentQuestion];
+  const existing = answers[q.id] || null;
+  const container = document.getElementById("questionContainer");
+
+  container.innerHTML = `
+    <div class="q-card">
+      <div class="q-number">QUESTION ${currentQuestion + 1} OF ${QUESTIONS.length}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="q-article">${q.article}</div>
+      <div class="q-help">${q.help}</div>
+      <div class="answers">
+        <button class="ans-btn ${existing === 'yes' ? 'selected' : ''}" onclick="answer('yes', this)">Yes</button>
+        <button class="ans-btn ${existing === 'no' ? 'selected-no' : ''}" onclick="answer('no', this)">No</button>
+        <button class="ans-btn ${existing === 'unsure' ? 'selected-unsure' : ''}" onclick="answer('unsure', this)">Not sure</button>
+      </div>
+    </div>
+  `;
+
+  // Update progress
+  const pct = Math.round((currentQuestion / QUESTIONS.length) * 100);
+  document.getElementById("progressBar").style.width = pct + "%";
+  document.getElementById("progressPct").textContent = pct + "%";
+  document.getElementById("progressText").textContent = `Question ${currentQuestion + 1} of ${QUESTIONS.length}`;
+
+  // Button states
+  document.getElementById("prevBtn").disabled = currentQuestion === 0;
+  document.getElementById("nextBtn").disabled = !existing;
+  document.getElementById("nextBtn").textContent = currentQuestion === QUESTIONS.length - 1 ? "See results" : "Next";
+}
+
+function answer(value, btn) {
+  const q = QUESTIONS[currentQuestion];
+  answers[q.id] = value;
+
+  // Update button states visually
+  btn.parentElement.querySelectorAll(".ans-btn").forEach(b => {
+    b.className = "ans-btn";
+  });
+  if (value === "yes") btn.className = "ans-btn selected";
+  else if (value === "no") btn.className = "ans-btn selected-no";
+  else btn.className = "ans-btn selected-unsure";
+
+  document.getElementById("nextBtn").disabled = false;
+}
+
+function nextQuestion() {
+  if (currentQuestion < QUESTIONS.length - 1) {
+    currentQuestion++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function prevQuestion() {
+  if (currentQuestion > 0) {
+    currentQuestion--;
+    renderQuestion();
+  }
+}
+
+// =====================================================================
+// Scoring — ported from questionnaire.py evaluate_questionnaire()
+// =====================================================================
+
+function calculateResults() {
+  let adjustment = 0;
+  let prohibitedSignals = [];
+  let highRiskSignals = [];
+  let transparencySignals = [];
+  let exemptionSignals = [];
+  let gapSignals = {};
+
+  for (const q of QUESTIONS) {
+    const a = answers[q.id] || "unsure";
+    adjustment += q.weight[a] || 0;
+
+    if (q.signal === "prohibited" && a === "yes") prohibitedSignals.push(q.id);
+    if (q.signal === "high_risk" && a === "yes") highRiskSignals.push(q.id);
+    if (q.signal === "transparency" && a === "no") transparencySignals.push(q.id);
+    if (q.signal === "exemption" && a === "yes") exemptionSignals.push(q.id);
+    if (q.signal === "gap_assessment") gapSignals[q.id] = a;
+  }
+
+  // Score: map adjustment to 0-100
+  const score = Math.max(0, Math.min(100, 50 + Math.round(adjustment * 0.55)));
+
+  // Determine tier
+  let tier, tierName, tierDesc, tierClass, obligations;
+
+  if (prohibitedSignals.length > 0) {
+    tier = "prohibited";
+    tierName = "Prohibited practice detected";
+    tierDesc = "Your system may contain practices banned under Article 5. These are enforceable now (since 2 February 2025) with fines up to EUR 35 million or 7% of global turnover.";
+    tierClass = "tier-prohibited";
+    obligations = [];
+  } else if (score >= 65 && exemptionSignals.length === 0) {
+    tier = "high_risk";
+    tierName = "High-risk AI system";
+    tierDesc = "Your system likely falls under Annex III. Articles 9-15 obligations apply. The Omnibus (EP approved 16 Jun 2026) defers the deadline to 2 December 2027, pending Council adoption.";
+    tierClass = "tier-high";
+    obligations = OBLIGATIONS;
+  } else if (score >= 65 && exemptionSignals.length > 0) {
+    tier = "high_risk_exempt";
+    tierName = "Potentially exempt high-risk";
+    tierDesc = "Your system operates in an Annex III domain but may qualify for Article 6(3) exemption. Document why the exemption applies. If the exemption does not hold, Articles 9-15 apply.";
+    tierClass = "tier-limited";
+    obligations = OBLIGATIONS;
+  } else if (score >= 35 || transparencySignals.length > 0) {
+    tier = "limited_risk";
+    tierName = "Limited-risk AI system";
+    tierDesc = "Article 50 transparency obligations apply. Users must know they are interacting with AI, and AI-generated content must be labelled.";
+    tierClass = "tier-limited";
+    obligations = LIMITED_RISK_OBLIGATIONS;
+  } else {
+    tier = "minimal_risk";
+    tierName = "Minimal-risk AI system";
+    tierDesc = "No specific EU AI Act obligations. You may still want to follow voluntary codes of conduct (Article 95) and maintain good AI practices.";
+    tierClass = "tier-minimal";
+    obligations = [];
+  }
+
+  // Gap scoring based on governance questions
+  const gapScores = {
+    9: gapSignals.risk_documentation === "yes" ? 60 : (gapSignals.risk_documentation === "unsure" ? 30 : 10),
+    10: 20, // Can't assess data governance from questionnaire alone
+    11: 15, // Can't assess technical docs from questionnaire alone
+    12: gapSignals.logging_active === "yes" ? 65 : (gapSignals.logging_active === "unsure" ? 30 : 10),
+    13: answers.public_facing === "yes" ? 50 : 15,
+    14: answers.autonomous_decisions === "no" ? 70 : 25,
+    15: 30 // Can't assess robustness from questionnaire alone
+  };
+
+  return { tier, tierName, tierDesc, tierClass, obligations, score, gapScores, prohibitedSignals, highRiskSignals, exemptionSignals };
+}
+
+// =====================================================================
+// Results rendering
+// =====================================================================
+
+function showResults() {
+  document.getElementById("questionnaireSection").style.display = "none";
+  const results = calculateResults();
+  const section = document.getElementById("resultsSection");
+  section.classList.add("active");
+
+  // Tier card
+  document.getElementById("tierResult").innerHTML = `
+    <div class="result-tier ${results.tierClass}">
+      <div class="tier-label">YOUR RISK TIER</div>
+      <div class="tier-name">${results.tierName}</div>
+      <div class="tier-desc">${results.tierDesc}</div>
+      <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">Confidence score: ${results.score}/100</div>
+    </div>
+  `;
+
+  // Obligations
+  if (results.obligations.length > 0) {
+    let oblHtml = `<h3 style="margin-bottom:12px;">Applicable obligations</h3><div class="obligations">`;
+    for (const o of results.obligations) {
+      const gapScore = results.gapScores[o.article] || 0;
+      const gapColor = gapScore >= 50 ? "var(--green)" : gapScore >= 30 ? "var(--amber)" : "var(--red)";
+      const gapLabel = gapScore >= 50 ? "PARTIAL" : gapScore >= 30 ? "LOW" : "GAP";
+      oblHtml += `
+        <div class="obl-card">
+          <div class="obl-header">
+            <div class="obl-title">Article ${o.article}: ${o.name}</div>
+            <div class="obl-deadline">${o.deadline}</div>
+          </div>
+          <div class="obl-desc">${o.desc}</div>
+          ${results.tier === "high_risk" || results.tier === "high_risk_exempt" ? `
+            <div class="gap-bar-wrap">
+              <span style="font-size:0.75rem;color:var(--text-muted);min-width:80px;">Readiness:</span>
+              <div class="gap-bar"><div class="gap-fill" style="width:${gapScore}%;background:${gapColor};"></div></div>
+              <div class="gap-score" style="color:${gapColor};">${gapScore}% ${gapLabel}</div>
+            </div>
+          ` : ""}
+          <div class="obl-effort">Estimated effort: ${o.effort}</div>
+        </div>
+      `;
+    }
+    oblHtml += `</div>`;
+    if (results.tier === "high_risk" || results.tier === "high_risk_exempt") {
+      oblHtml += `<p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">Gap scores are estimates based on your questionnaire answers. For precise scoring, run <code style="background:var(--bg);padding:2px 6px;border-radius:3px;">regula gap --project .</code> against your codebase.</p>`;
+    }
+    document.getElementById("obligationsList").innerHTML = oblHtml;
+  } else {
+    document.getElementById("obligationsList").innerHTML = "";
+  }
+
+  // Next steps
+  let stepsHtml = `<div class="next-steps"><h3>What to do next</h3>`;
+  const steps = getNextSteps(results);
+  steps.forEach((s, i) => {
+    stepsHtml += `
+      <div class="step-item">
+        <div class="step-num">${i + 1}</div>
+        <div class="step-text"><strong>${s.title}</strong><span>${s.desc}</span></div>
+      </div>
+    `;
+  });
+  stepsHtml += `</div>`;
+  document.getElementById("nextStepsSection").innerHTML = stepsHtml;
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  // Analytics
+  if (window.plausible) plausible("Assessment Complete", { props: { tier: results.tier, score: results.score } });
+}
+
+function getNextSteps(results) {
+  if (results.tier === "prohibited") {
+    return [
+      { title: "Get legal advice immediately", desc: "Article 5 prohibitions carry the highest penalty tier. A qualified lawyer needs to assess whether your system falls within scope or qualifies for an exception." },
+      { title: "Review your system against Article 5 categories", desc: "Run regula check . to see which specific prohibition your code patterns match. Some matches may be false positives depending on context." },
+      { title: "Document your assessment", desc: "Whether you proceed, modify, or remove the practice, document the reasoning. Regulatory authorities will want to see that you considered the prohibition." }
+    ];
+  }
+  if (results.tier === "high_risk" || results.tier === "high_risk_exempt") {
+    return [
+      { title: "Scan your codebase", desc: "Install Regula (pipx install regula-ai) and run regula gap --project . to get article-by-article gap scoring against your actual code, not just questionnaire answers." },
+      { title: "Start with the biggest gaps", desc: "Focus on the obligations where your readiness score is lowest. Technical documentation (Article 11) and data governance (Article 10) are typically the largest gaps." },
+      { title: "Set up logging now", desc: "Article 12 logging is easier to build in from the start than to retrofit. Add structured logging around model inference calls before the codebase grows." },
+      { title: "Document the risk management system", desc: "Article 9 requires a continuously maintained risk register. Start a markdown file in your repo. Update it when the system changes." },
+      { title: "Share this assessment with your team", desc: "Use the shareable link below. A compliance officer, developer, and legal contact should all see these results." }
+    ];
+  }
+  if (results.tier === "limited_risk") {
+    return [
+      { title: "Add transparency notices", desc: "Article 50 requires users to know when they interact with AI or consume AI-generated content. Add disclosure in your UI." },
+      { title: "Label AI-generated content", desc: "If your system generates text, images, audio, or video, mark the output as AI-generated in a machine-readable format." },
+      { title: "Scan your code for other indicators", desc: "Run regula check . to verify no high-risk patterns were missed. Some limited-risk systems have high-risk components." }
+    ];
+  }
+  return [
+    { title: "No specific obligations apply", desc: "Your system appears to be minimal-risk. Consider following voluntary codes of conduct (Article 95) as good practice." },
+    { title: "Re-assess if scope changes", desc: "If you add new features (especially in Annex III domains), re-run this assessment. Risk classification depends on intended purpose, which can change." }
+  ];
+}
+
+// =====================================================================
+// URL encoding (stateless, like EuroComply)
+// =====================================================================
+
+function encodeAnswers() {
+  const parts = QUESTIONS.map(q => {
+    const a = answers[q.id];
+    return a === "yes" ? "y" : a === "no" ? "n" : "u";
+  });
+  return parts.join("");
+}
+
+function decodeAnswers(code) {
+  if (code.length !== QUESTIONS.length) return null;
+  const decoded = {};
+  QUESTIONS.forEach((q, i) => {
+    const c = code[i];
+    decoded[q.id] = c === "y" ? "yes" : c === "n" ? "no" : "unsure";
+  });
+  return decoded;
+}
+
+function copyShareLink() {
+  const code = encodeAnswers();
+  const url = window.location.origin + window.location.pathname + "?r=" + code;
+  const input = document.getElementById("shareUrl");
+  input.value = url;
+  document.getElementById("shareSection").style.display = "block";
+  input.select();
+  navigator.clipboard.writeText(url).catch(() => {});
+}
+
+function exportJSON() {
+  const results = calculateResults();
+  const data = {
+    tool: "Regula Web Assessment",
+    version: "1.0",
+    date: new Date().toISOString(),
+    disclaimer: "Not legal advice. Assessment based on self-reported answers.",
+    tier: results.tier,
+    tier_name: results.tierName,
+    score: results.score,
+    answers: answers,
+    obligations: results.obligations.map(o => ({
+      article: o.article,
+      name: o.name,
+      deadline: o.deadline,
+      estimated_effort: o.effort,
+      gap_score: results.gapScores[o.article] || null
+    }))
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "regula-assessment-" + new Date().toISOString().slice(0, 10) + ".json";
+  a.click();
+}
+
+function resetAssessment() {
+  currentQuestion = 0;
+  answers = {};
+  document.getElementById("resultsSection").classList.remove("active");
+  document.getElementById("heroSection").style.display = "block";
+  document.getElementById("questionnaireSection").style.display = "none";
+  window.history.replaceState(null, "", window.location.pathname);
+}
+
+// =====================================================================
+// Init: check for shared results in URL
+// =====================================================================
+
+(function init() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("r");
+  if (code) {
+    const decoded = decodeAnswers(code);
+    if (decoded) {
+      answers = decoded;
+      assessmentStarted = true;
+      document.getElementById("heroSection").style.display = "none";
+      showResults();
+    }
+  }
+})();
+</script>
+</body>
+</html>
