@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+
+    <title>EU AI Act Compliance for Python Developers: Scan Your Code</title>
+    <meta name="description" content="Python AI frameworks like PyTorch, TensorFlow, and scikit-learn trigger EU AI Act risk patterns. How to scan your Python code and what the findings mean.">
+    <meta name="keywords" content="EU AI Act Python, Python AI compliance, PyTorch EU AI Act, TensorFlow compliance, scikit-learn AI Act, regula Python scan, AI Act code scanning">
+    <meta name="author" content="Kuziva Muzondo">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/guides/eu-ai-act-python.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/guides/eu-ai-act-python.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/guides/eu-ai-act-python.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/guides/eu-ai-act-python.html">
+    <meta property="og:title" content="EU AI Act Compliance for Python Developers: Scan Your Code">
+    <meta property="og:description" content="Python AI frameworks like PyTorch, TensorFlow, and scikit-learn trigger EU AI Act risk patterns. How to scan your Python code and what the findings mean.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula: EU AI Act compliance tool for code">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-06-23T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-06-23T00:00:00+00:00">
+    <meta property="article:section" content="AI Governance">
+    <meta property="article:tag" content="EU AI Act">
+    <meta property="article:tag" content="Python">
+    <meta property="article:tag" content="Code Scanning">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EU AI Act Compliance for Python Developers: Scan Your Code">
+    <meta name="twitter:description" content="Python AI frameworks like PyTorch, TensorFlow, and scikit-learn trigger EU AI Act risk patterns. How to scan your Python code and what the findings mean.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.css">
+        <link rel="stylesheet" href="/assets/site.css">
+    </noscript>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "EU AI Act Compliance for Python Developers: Scan Your Code",
+      "description": "Python AI frameworks like PyTorch, TensorFlow, and scikit-learn trigger EU AI Act risk patterns. How to scan your Python code and what the findings mean.",
+      "image": "https://getregula.com/assets/og-image.png",
+      "datePublished": "2026-06-23T00:00:00+00:00",
+      "dateModified": "2026-06-23T00:00:00+00:00",
+      "author": {
+        "@type": "Person",
+        "name": "Kuziva Muzondo",
+        "url": "https://getregula.com/about.html"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://getregula.com/assets/regula-logo.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/guides/eu-ai-act-python.html"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://getregula.com/guides/" },
+        { "@type": "ListItem", "position": 3, "name": "EU AI Act for Python Developers" }
+      ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does the EU AI Act apply to Python projects?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The EU AI Act does not regulate programming languages. It regulates AI systems that affect people in the EU. If your Python project uses machine learning to make or inform decisions about people — hiring, lending, content moderation, medical triage — and those people are in the EU, the Act applies regardless of the language your code is written in."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I scan my Python code for EU AI Act compliance?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Install Regula with pipx install regula-ai, then run regula check . in your project directory. Regula scans Python files for import patterns, function calls, and variable names that indicate AI system behaviour covered by the EU AI Act. It reports a risk tier (prohibited, high-risk, limited-risk, or minimal) and lists specific findings with article references."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What Python AI frameworks does Regula detect?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Regula detects patterns from PyTorch, TensorFlow, Keras, scikit-learn, Hugging Face transformers, LangChain, LlamaIndex, OpenAI SDK, Anthropic SDK, and other common Python AI/ML libraries. Detection is based on import statements, function calls such as model.predict() or pipeline(), and variable naming patterns that indicate AI system behaviour."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html">Regulations</a>
+        <a href="/blog/writing.html">Blog</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+<article>
+
+<div class="blog-hero" style="padding-bottom:24px;">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / <a href="/blog/writing.html">Guides</a> / Python
+    </div>
+    <h1>EU AI Act compliance for <span class="hl">Python developers</span></h1>
+    <p class="standfirst">Python dominates AI development. If you use PyTorch, TensorFlow, scikit-learn, Hugging Face transformers, LangChain, or any ML framework in a product that reaches EU users, the EU AI Act applies to you. The regulation does not care which language you write in. It cares what your code does to people.</p>
+    <p style="color:var(--text-dim);font-size:0.9rem;">23 June 2026 &middot; Kuziva Muzondo</p>
+</div>
+
+<div class="blog-body">
+
+<h2>Python frameworks that trigger risk patterns</h2>
+
+<p>Regula scans Python files for import patterns, function calls, and variable names that map to EU AI Act obligations. Here is what it looks for in each major framework.</p>
+
+<h3>PyTorch and TensorFlow</h3>
+
+<p>Model loading (<code>torch.load()</code>, <code>tf.saved_model.load()</code>), prediction calls (<code>model(input)</code>, <code>model.predict()</code>), and training pipelines (<code>loss.backward()</code>, <code>model.fit()</code>). These indicate an AI system exists. The risk tier depends on <em>what</em> the model does — a cat classifier and a loan scorer both use <code>model.predict()</code>, but only one is high-risk.</p>
+
+<h3>scikit-learn</h3>
+
+<p>Classification (<code>RandomForestClassifier</code>, <code>LogisticRegression</code>), regression, and clustering on personal data. scikit-learn models are common in employment screening, credit scoring, and insurance pricing — all Annex III high-risk categories.</p>
+
+<h3>Hugging Face transformers</h3>
+
+<p>Sentiment analysis pipelines, named entity recognition, text generation, and zero-shot classification. A <code>pipeline("sentiment-analysis")</code> call on customer reviews is limited-risk (Article 50 transparency). The same call on job applications is high-risk (Annex III Category 4).</p>
+
+<h3>LangChain and LlamaIndex</h3>
+
+<p>Agent autonomy patterns, tool use, and retrieval-augmented generation. Regula flags agent chains where an LLM decides which tools to invoke, because autonomous decision-making raises the risk tier when it affects people.</p>
+
+<h3>OpenAI and Anthropic SDKs</h3>
+
+<p>API calls (<code>openai.chat.completions.create()</code>, <code>anthropic.messages.create()</code>) and chat completion patterns. Using an API does not exempt you from the AI Act — Article 28 places obligations on deployers, not just providers. If you build on top of a foundation model, you inherit obligations based on your use case.</p>
+
+<p><strong>Important:</strong> not every match is high-risk. A PyTorch import in a research notebook and a PyTorch import in a production hiring tool are different things. Regula reports what it finds; you decide whether the context makes it relevant.</p>
+
+<h2>Quick start: scanning a Python project</h2>
+
+<pre><code>pipx install regula-ai
+regula check .                      # scan current directory
+regula check . --domain healthcare  # activate domain-specific patterns
+regula assess                       # interactive: does the AI Act apply?</code></pre>
+
+<p><code>regula check</code> scans all Python files in the directory tree. It does not execute your code, install dependencies, or send data anywhere. Everything runs locally.</p>
+
+<p>The <code>--domain</code> flag activates domain-specific risk patterns. Without it, Regula only flags patterns that are high-risk regardless of domain (biometric identification, social scoring, etc.). With <code>--domain healthcare</code>, it also flags medical triage, diagnostic, and treatment recommendation patterns.</p>
+
+<p><code>regula assess</code> is a guided questionnaire that helps you determine whether the AI Act applies to your product at all. No code scanning required — just answer the questions.</p>
+
+<h2>Understanding the output</h2>
+
+<p>A scan produces a verdict and a list of findings. Here is what a typical result looks like:</p>
+
+<pre><code>$ regula check .
+
+Regula Scan: /home/dev/myproject
+============================================================
+
+  Verdict: HIGH-RISK
+  Your project is classified as high-risk under EU AI Act Annex III.
+
+  Files scanned:      34
+  High-risk:          1
+  Limited-risk:       0
+
+  HIGH-RISK INDICATORS:
+    [BLOCK] [ 95] app.py — Employment and workers management [plan]
+      Add consent mechanism and data minimisation for biometric processing
+
+============================================================
+  Confidence scores: 0-100 (higher = more indicators matched)
+  Tiers: BLOCK (&gt;=80 or prohibited), WARN (50-79), INFO (&lt;50)
+  Suppress findings: add '# regula-ignore' to file</code></pre>
+
+<p>The three tiers:</p>
+
+<ul>
+    <li><strong>BLOCK</strong> (confidence 80+, or prohibited practice): high confidence this is a regulated AI pattern. You need to act on this before deployment.</li>
+    <li><strong>WARN</strong> (confidence 50-79): moderate confidence. Worth investigating. May be a regulated pattern or may be a false positive depending on context.</li>
+    <li><strong>INFO</strong> (confidence below 50): low confidence indicator. Regula found something that <em>could</em> be relevant but likely needs more context to determine.</li>
+</ul>
+
+<p>The number in brackets (e.g. <code>[ 95]</code>) is the confidence score. The lifecycle tag (<code>[plan]</code>, <code>[develop]</code>, <code>[deploy]</code>) indicates which phase of development the finding is most relevant to.</p>
+
+<h2>Common Python patterns Regula flags</h2>
+
+<h3>Deserialisation with no input validation</h3>
+
+<pre><code># Flagged: pickle.load() / joblib.load() with no validation
+model = pickle.load(open("model.pkl", "rb"))
+model = joblib.load("classifier.joblib")</code></pre>
+
+<p>Article 15 (accuracy, robustness, and cybersecurity) requires that AI systems are resilient to errors and attacks. Loading serialised models without validation is a known attack vector — an adversary can craft a pickle file that executes arbitrary code. Regula flags this as a robustness concern.</p>
+
+<h3>Predictions with no logging</h3>
+
+<pre><code># Flagged: model.predict() with no record-keeping
+result = model.predict(user_data)
+send_decision(result)  # no log of what was predicted or why</code></pre>
+
+<p>Article 12 requires high-risk AI systems to have automatic logging of events during operation. If your model makes predictions that affect people and you are not logging the inputs, outputs, and timestamps, that is a gap.</p>
+
+<h3>Sentiment analysis without disclosure</h3>
+
+<pre><code># Flagged: sentiment analysis on user content
+from transformers import pipeline
+classifier = pipeline("sentiment-analysis")
+result = classifier(user_message)</code></pre>
+
+<p>Article 50 (transparency obligations for certain AI systems) requires that people are told when they are interacting with an AI system or when AI is being used to analyse their content. Running sentiment analysis on user messages without telling the user is a transparency gap.</p>
+
+<h3>CV screening and candidate ranking</h3>
+
+<pre><code># Flagged: employment screening patterns
+candidates = rank_candidates(applications, model)
+shortlist = [c for c in candidates if c.score > threshold]</code></pre>
+
+<p>Annex III Category 4 covers AI systems used in employment, specifically for screening applications, evaluating candidates, and making recruitment decisions. Variable names like <code>candidates</code>, <code>applications</code>, and function names like <code>rank_candidates</code> combined with model scoring patterns trigger this category.</p>
+
+<h2>What Regula does not check in Python</h2>
+
+<p>Regula is a static analysis tool. There are things it cannot do, and you should know what they are.</p>
+
+<ul>
+    <li><strong>Runtime model behaviour.</strong> Regula reads your source files. It does not execute your code, load your models, or observe inference behaviour. A model that discriminates at runtime will not be caught by static analysis.</li>
+    <li><strong>Training data quality.</strong> Regula can detect whether training data loading patterns exist (e.g. <code>pd.read_csv("training_data.csv")</code>), but it cannot assess whether your training data is representative, balanced, or free of bias. Article 10 (data and data governance) requires this, but it is beyond code scanning.</li>
+    <li><strong>Model fairness metrics.</strong> <code>regula bias</code> exists as a separate command, but it is limited. It does not compute fairness metrics across protected groups. Use dedicated tools like Fairlearn or AI Fairness 360 for that.</li>
+    <li><strong>Dependency vulnerabilities.</strong> Regula does not scan your <code>requirements.txt</code> or <code>pyproject.toml</code> for known CVEs. Use <code>pip-audit</code> or <code>safety</code> for that. Article 15 cares about cybersecurity, but dependency scanning is a separate concern.</li>
+</ul>
+
+<h2>CI/CD integration for Python projects</h2>
+
+<p>Add Regula to your GitHub Actions pipeline so every pull request gets scanned. Here is a minimal workflow:</p>
+
+<pre><code># .github/workflows/regula.yml
+name: EU AI Act Scan
+
+on:
+  pull_request:
+    paths:
+      - '**.py'
+
+jobs:
+  regula-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Regula
+        run: pipx install regula-ai
+
+      - name: Scan for AI Act risk patterns
+        run: regula check . --format json &gt; regula-report.json
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: regula-report
+          path: regula-report.json</code></pre>
+
+<p>The <code>--format json</code> flag outputs structured JSON, which you can parse in subsequent steps or feed into dashboards. Regula also supports <code>--format sarif</code> for GitHub Code Scanning integration.</p>
+
+<p>If you want the workflow to fail on BLOCK-tier findings, add <code>--exit-code</code> to the check command. Regula returns a non-zero exit code when it finds BLOCK-tier indicators.</p>
+
+<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
+
+<h2>Related</h2>
+
+<ul>
+    <li><a href="/guides/article-14-human-oversight.html">Article 14: human oversight requirements for AI systems</a></li>
+    <li><a href="/guides/article-9-risk-management.html">Article 9: risk management system requirements</a></li>
+    <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act risk tiers explained with code examples</a></li>
+    <li><a href="/blog/blog-classify-ai-system.html">How to classify your AI system under the EU AI Act</a></li>
+    <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act apply to you?</a></li>
+    <li><a href="/blog/blog-static-analysis-ai-compliance.html">Static analysis for AI compliance</a></li>
+</ul>
+
+<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
+
+<p style="color:var(--text-dim);font-size:0.85rem;">
+    <strong>Last verified:</strong> 23 June 2026 &middot;
+    <strong>Author:</strong> Kuziva Muzondo &middot;
+    <em>Not legal advice. Regula identifies risk indicators in code for developer review. It does not determine compliance or replace professional legal counsel.</em>
+</p>
+
+</div>
+
+</article>
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
