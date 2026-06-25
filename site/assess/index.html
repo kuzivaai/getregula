@@ -27,6 +27,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="EU AI Act Assessment: Does It Apply to You?">
     <meta name="twitter:description" content="Free risk assessment for your AI system. Get your risk tier and obligations in under 5 minutes.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
     <noscript><link rel="stylesheet" href="/assets/fonts.css"></noscript>
@@ -289,7 +290,7 @@
 
 <nav class="nav-bar" aria-label="Main navigation">
   <a href="/" class="nav-brand">Regula</a>
-  <div class="nav-links" role="navigation">
+  <div class="nav-links">
     <a href="https://github.com/kuzivaai/getregula">GitHub</a>
     <a href="/blog/writing.html">Blog</a>
     <a href="/regions/regulations.html">Regulations</a>
@@ -394,7 +395,7 @@
         <button type="button" class="btn btn-secondary" onclick="exportJSON()">Download JSON</button>
       </div>
       <div class="share-section" id="shareSection" style="display:none;">
-        <input class="share-url" id="shareUrl" readonly onclick="this.select()">
+        <input class="share-url" id="shareUrl" readonly onclick="this.select()" aria-label="Shareable results URL">
         <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Anyone with this link sees the same results. No data is stored.</div>
       </div>
     </div>
@@ -418,7 +419,6 @@
     </p>
     <p style="margin-top:4px;">Not affiliated with <a href="https://regulaforensics.com">Regula Forensics</a> (identity verification).</p>
   </div>
-</div>
 
 <script src="scanner.js"></script>
 <script>

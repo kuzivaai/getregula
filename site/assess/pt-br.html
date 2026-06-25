@@ -433,96 +433,96 @@ const QUESTIONS = [
   {
     id: "deployment_eu",
     text: "Este sistema será implantado na UE ou afetará pessoas na UE?",
-    help: "A Lei de IA da UE se aplica a sistemas de IA colocados no mercado da UE ou cujo output é usado na UE, independentemente de onde o fornecedor está sediado (Article 2).",
-    article: "Article 2",
+    help: "A Lei de IA da UE se aplica a sistemas de IA colocados no mercado da UE ou cujo output é usado na UE, independentemente de onde o fornecedor está sediado (Artigo 2).",
+    article: "Artigo 2",
     weight: { yes: 10, no: -10, unsure: 5 },
     signal: "jurisdiction"
   },
   {
     id: "affected_domain",
     text: "Este sistema opera em algum destes domínios: emprego/contratação, crédito/finanças, educação/admissões, saúde, segurança pública, imigração, infraestrutura crítica?",
-    help: "Estes domínios estão listados no Annex III como áreas onde sistemas de IA podem ser classificados como alto risco.",
-    article: "Article 6(2), Annex III",
+    help: "Estes domínios estão listados no Anexo III como áreas onde sistemas de IA podem ser classificados como alto risco.",
+    article: "Artigo 6(2), Anexo III",
     weight: { yes: 25, no: -15, unsure: 10 },
     signal: "high_risk"
   },
   {
     id: "autonomous_decisions",
     text: "Este sistema toma ou influencia materialmente decisões sobre indivíduos sem que um humano revise cada decisão?",
-    help: "O Article 14 exige supervisão humana para sistemas de alto risco. Sistemas onde humanos revisam cada output antes da ação podem ter menor risco.",
-    article: "Article 14",
+    help: "O Artigo 14 exige supervisão humana para sistemas de alto risco. Sistemas onde humanos revisam cada output antes da ação podem ter menor risco.",
+    article: "Artigo 14",
     weight: { yes: 30, no: -20, unsure: 10 },
     signal: "high_risk"
   },
   {
     id: "significant_harm",
     text: "Erros ou falhas neste sistema poderiam causar danos significativos à saúde, segurança ou direitos fundamentais de alguém?",
-    help: "O Article 6 exige que o sistema represente um 'risco significativo de dano' para ser classificado como alto risco, além de apenas operar em uma área do Annex III.",
-    article: "Article 6(2)",
+    help: "O Artigo 6 exige que o sistema represente um 'risco significativo de dano' para ser classificado como alto risco, além de apenas operar em uma área do Anexo III.",
+    article: "Artigo 6(2)",
     weight: { yes: 25, no: -15, unsure: 10 },
     signal: "high_risk"
   },
   {
     id: "biometric_data",
     text: "Este sistema processa dados biométricos (rosto, impressão digital, voz, modo de andar)?",
-    help: "O processamento biométrico aparece tanto no Annex III Categoria 1 quanto nas práticas proibidas do Article 5, dependendo do contexto.",
-    article: "Annex III(1), Article 5",
+    help: "O processamento biométrico aparece tanto no Anexo III Categoria 1 quanto nas práticas proibidas do Artigo 5, dependendo do contexto.",
+    article: "Anexo III(1), Artigo 5",
     weight: { yes: 20, no: -5, unsure: 10 },
     signal: "high_risk"
   },
   {
     id: "social_scoring",
     text: "Este sistema avalia ou pontua indivíduos com base em seu comportamento social, traços de personalidade ou características previstas?",
-    help: "A pontuação social por autoridades públicas é proibida pelo Article 5(1)(c). Pontuação social privada que leva a tratamento prejudicial também pode ser abrangida.",
-    article: "Article 5(1)(c)",
+    help: "A pontuação social por autoridades públicas é proibida pelo Artigo 5(1)(c). Pontuação social privada que leva a tratamento prejudicial também pode ser abrangida.",
+    article: "Artigo 5(1)(c)",
     weight: { yes: 35, no: -5, unsure: 10 },
     signal: "prohibited"
   },
   {
     id: "emotion_recognition",
     text: "Este sistema infere emoções a partir de dados biométricos em um ambiente de trabalho ou educacional?",
-    help: "O Article 5(1)(f) proíbe o reconhecimento de emoções em locais de trabalho e instituições educacionais, com exceções restritas para fins médicos ou de segurança.",
-    article: "Article 5(1)(f)",
+    help: "O Artigo 5(1)(f) proíbe o reconhecimento de emoções em locais de trabalho e instituições educacionais, com exceções restritas para fins médicos ou de segurança.",
+    article: "Artigo 5(1)(f)",
     weight: { yes: 35, no: -5, unsure: 10 },
     signal: "prohibited"
   },
   {
     id: "public_facing",
     text: "Os indivíduos serão informados de que estão interagindo com um sistema de IA?",
-    help: "O Article 50 exige transparência: os usuários devem saber quando interagem com IA, quando o conteúdo é gerado por IA, ou quando a IA analisa seus dados.",
-    article: "Article 50",
+    help: "O Artigo 50 exige transparência: os usuários devem saber quando interagem com IA, quando o conteúdo é gerado por IA, ou quando a IA analisa seus dados.",
+    article: "Artigo 50",
     weight: { yes: -5, no: 15, unsure: 5 },
     signal: "transparency"
   },
   {
     id: "narrow_procedural",
     text: "Este sistema realiza apenas tarefas procedimentais restritas (formatação de dados, classificação de documentos, correspondência de padrões para revisão humana)?",
-    help: "O Article 6(3)(a) isenta sistemas que realizam tarefas procedimentais restritas da classificação de alto risco, mesmo que operem em um domínio do Annex III.",
-    article: "Article 6(3)(a)",
+    help: "O Artigo 6(3)(a) isenta sistemas que realizam tarefas procedimentais restritas da classificação de alto risco, mesmo que operem em um domínio do Anexo III.",
+    article: "Artigo 6(3)(a)",
     weight: { yes: -25, no: 10, unsure: 0 },
     signal: "exemption"
   },
   {
     id: "improves_human_activity",
     text: "Este sistema apenas melhora o resultado de uma atividade humana previamente concluída (correção gramatical, melhoria de fotos, formatação)?",
-    help: "O Article 6(3)(b) isenta sistemas que melhoram atividades humanas previamente concluídas.",
-    article: "Article 6(3)(b)",
+    help: "O Artigo 6(3)(b) isenta sistemas que melhoram atividades humanas previamente concluídas.",
+    article: "Artigo 6(3)(b)",
     weight: { yes: -20, no: 5, unsure: 0 },
     signal: "exemption"
   },
   {
     id: "risk_documentation",
     text: "Sua organização mantém um registro de riscos ou documentação de gestão de riscos para este sistema de IA?",
-    help: "O Article 9 exige um sistema de gestão de riscos documentado e continuamente atualizado. Esta pergunta ajuda a avaliar sua postura atual de conformidade.",
-    article: "Article 9",
+    help: "O Artigo 9 exige um sistema de gestão de riscos documentado e continuamente atualizado. Esta pergunta ajuda a avaliar sua postura atual de conformidade.",
+    article: "Artigo 9",
     weight: { yes: -5, no: 5, unsure: 0 },
     signal: "gap_assessment"
   },
   {
     id: "logging_active",
     text: "Este sistema registra automaticamente suas operações (entradas, saídas, decisões, timestamps)?",
-    help: "O Article 12 exige o registro automático de eventos durante a operação do sistema de IA para permitir rastreabilidade.",
-    article: "Article 12",
+    help: "O Artigo 12 exige o registro automático de eventos durante a operação do sistema de IA para permitir rastreabilidade.",
+    article: "Artigo 12",
     weight: { yes: -5, no: 5, unsure: 0 },
     signal: "gap_assessment"
   }
@@ -532,7 +532,7 @@ const QUESTIONS = [
 const OBLIGATIONS = [
   {
     article: 9, name: "Sistema de gestão de riscos",
-    desc: "Estabelecer, implementar, documentar e manter um sistema contínuo de gestão de riscos cobrindo todo o ciclo de vida da IA. Identificar e analisar riscos conhecidos e previsíveis. Adotar medidas de mitigação apropriadas. Comunicar riscos residuais aos implantadores (Article 9(5)).",
+    desc: "Estabelecer, implementar, documentar e manter um sistema contínuo de gestão de riscos cobrindo todo o ciclo de vida da IA. Identificar e analisar riscos conhecidos e previsíveis. Adotar medidas de mitigação apropriadas. Comunicar riscos residuais aos implantadores (Artigo 9(5)).",
     effort: "40-80 horas",
     deadline: "2 dez 2027 (Omnibus; PE aprovou em 16 jun 2026)"
   },
@@ -544,7 +544,7 @@ const OBLIGATIONS = [
   },
   {
     article: 11, name: "Documentação técnica",
-    desc: "Preparar documentação técnica seguindo o Annex IV antes que o sistema seja colocado no mercado. Inclui descrição do sistema, especificação de design, metodologia de desenvolvimento, procedimentos de monitoramento e teste.",
+    desc: "Preparar documentação técnica seguindo o Anexo IV antes que o sistema seja colocado no mercado. Inclui descrição do sistema, especificação de design, metodologia de desenvolvimento, procedimentos de monitoramento e teste.",
     effort: "30-80 horas",
     deadline: "2 dez 2027"
   },
@@ -705,31 +705,31 @@ function calculateResults() {
   if (prohibitedSignals.length > 0) {
     tier = "prohibited";
     tierName = "Prática proibida detectada";
-    tierDesc = "Seu sistema pode conter práticas proibidas pelo Article 5. Estas são aplicáveis desde 2 de fevereiro de 2025, com multas de até 35 milhões de euros ou 7% do faturamento global.";
+    tierDesc = "Seu sistema pode conter práticas proibidas pelo Artigo 5. Estas são aplicáveis desde 2 de fevereiro de 2025, com multas de até 35 milhões de euros ou 7% do faturamento global.";
     tierClass = "tier-prohibited";
     obligations = [];
   } else if (score >= 65 && exemptionSignals.length === 0) {
     tier = "high_risk";
     tierName = "Sistema de IA de alto risco";
-    tierDesc = "Seu sistema provavelmente se enquadra no Annex III. As obrigações dos Articles 9-15 se aplicam. O Omnibus (PE aprovou em 16 jun 2026) adiou o prazo para 2 de dezembro de 2027, pendente adoção pelo Conselho.";
+    tierDesc = "Seu sistema provavelmente se enquadra no Anexo III. As obrigações dos Artigos 9-15 se aplicam. O Omnibus (PE aprovou em 16 jun 2026) adiou o prazo para 2 de dezembro de 2027, pendente adoção pelo Conselho.";
     tierClass = "tier-high";
     obligations = OBLIGATIONS;
   } else if (score >= 65 && exemptionSignals.length > 0) {
     tier = "high_risk_exempt";
     tierName = "Potencialmente isento de alto risco";
-    tierDesc = "Seu sistema opera em um domínio do Annex III, mas pode se qualificar para a isenção do Article 6(3). Documente por que a isenção se aplica. Se a isenção não se sustentar, os Articles 9-15 se aplicam.";
+    tierDesc = "Seu sistema opera em um domínio do Anexo III, mas pode se qualificar para a isenção do Artigo 6(3). Documente por que a isenção se aplica. Se a isenção não se sustentar, os Artigos 9-15 se aplicam.";
     tierClass = "tier-limited";
     obligations = OBLIGATIONS;
   } else if (score >= 35 || transparencySignals.length > 0) {
     tier = "limited_risk";
     tierName = "Sistema de IA de risco limitado";
-    tierDesc = "As obrigações de transparência do Article 50 se aplicam. Os usuários devem saber que estão interagindo com IA, e conteúdo gerado por IA deve ser rotulado.";
+    tierDesc = "As obrigações de transparência do Artigo 50 se aplicam. Os usuários devem saber que estão interagindo com IA, e conteúdo gerado por IA deve ser rotulado.";
     tierClass = "tier-limited";
     obligations = LIMITED_RISK_OBLIGATIONS;
   } else {
     tier = "minimal_risk";
     tierName = "Sistema de IA de risco mínimo";
-    tierDesc = "Sem obrigações específicas da Lei de IA da UE. Você ainda pode querer seguir códigos de conduta voluntários (Article 95) e manter boas práticas de IA.";
+    tierDesc = "Sem obrigações específicas da Lei de IA da UE. Você ainda pode querer seguir códigos de conduta voluntários (Artigo 95) e manter boas práticas de IA.";
     tierClass = "tier-minimal";
     obligations = [];
   }
@@ -778,7 +778,7 @@ function showResults() {
       oblHtml += `
         <div class="obl-card">
           <div class="obl-header">
-            <div class="obl-title">Article ${o.article}: ${o.name}</div>
+            <div class="obl-title">Artigo ${o.article}: ${o.name}</div>
             <div class="obl-deadline">${o.deadline}</div>
           </div>
           <div class="obl-desc">${o.desc}</div>
@@ -826,30 +826,30 @@ function showResults() {
 function getNextSteps(results) {
   if (results.tier === "prohibited") {
     return [
-      { title: "Obtenha aconselhamento jurídico imediatamente", desc: "As proibições do Article 5 preveem a faixa de penalidade mais alta. Um advogado qualificado precisa avaliar se seu sistema está dentro do escopo ou se qualifica para uma exceção." },
-      { title: "Revise seu sistema contra as categorias do Article 5", desc: "Execute regula check . para ver quais proibições específicas os padrões do seu código correspondem. Algumas correspondências podem ser falsos positivos dependendo do contexto." },
+      { title: "Obtenha aconselhamento jurídico imediatamente", desc: "As proibições do Artigo 5 preveem a faixa de penalidade mais alta. Um advogado qualificado precisa avaliar se seu sistema está dentro do escopo ou se qualifica para uma exceção." },
+      { title: "Revise seu sistema contra as categorias do Artigo 5", desc: "Execute regula check . para ver quais proibições específicas os padrões do seu código correspondem. Algumas correspondências podem ser falsos positivos dependendo do contexto." },
       { title: "Documente sua avaliação", desc: "Independentemente de prosseguir, modificar ou remover a prática, documente o raciocínio. As autoridades regulatórias vão querer ver que você considerou a proibição." }
     ];
   }
   if (results.tier === "high_risk" || results.tier === "high_risk_exempt") {
     return [
       { title: "Analise seu código-fonte", desc: "Instale o Regula (pipx install regula-ai) e execute regula gap --project . para obter pontuação de lacuna artigo por artigo contra seu código real, não apenas respostas de questionário." },
-      { title: "Comece pelas maiores lacunas", desc: "Foque nas obrigações onde sua pontuação de prontidão é mais baixa. Documentação técnica (Article 11) e governança de dados (Article 10) são tipicamente as maiores lacunas." },
-      { title: "Configure logging agora", desc: "O logging do Article 12 é mais fácil de implementar desde o início do que retrofit. Adicione logging estruturado ao redor das chamadas de inferência do modelo antes que o código-fonte cresça." },
-      { title: "Documente o sistema de gestão de riscos", desc: "O Article 9 exige um registro de riscos mantido continuamente. Comece um arquivo markdown no seu repositório. Atualize-o quando o sistema mudar." },
+      { title: "Comece pelas maiores lacunas", desc: "Foque nas obrigações onde sua pontuação de prontidão é mais baixa. Documentação técnica (Artigo 11) e governança de dados (Artigo 10) são tipicamente as maiores lacunas." },
+      { title: "Configure logging agora", desc: "O logging do Artigo 12 é mais fácil de implementar desde o início do que retrofit. Adicione logging estruturado ao redor das chamadas de inferência do modelo antes que o código-fonte cresça." },
+      { title: "Documente o sistema de gestão de riscos", desc: "O Artigo 9 exige um registro de riscos mantido continuamente. Comece um arquivo markdown no seu repositório. Atualize-o quando o sistema mudar." },
       { title: "Compartilhe esta avaliação com sua equipe", desc: "Use o link compartilhável abaixo. Um responsável pela conformidade, um desenvolvedor e um contato jurídico devem ver estes resultados." }
     ];
   }
   if (results.tier === "limited_risk") {
     return [
-      { title: "Adicione avisos de transparência", desc: "O Article 50 exige que os usuários saibam quando interagem com IA ou consomem conteúdo gerado por IA. Adicione divulgação na sua interface." },
+      { title: "Adicione avisos de transparência", desc: "O Artigo 50 exige que os usuários saibam quando interagem com IA ou consomem conteúdo gerado por IA. Adicione divulgação na sua interface." },
       { title: "Rotule conteúdo gerado por IA", desc: "Se seu sistema gera texto, imagens, áudio ou vídeo, marque o output como gerado por IA em um formato legível por máquina." },
       { title: "Analise seu código para outros indicadores", desc: "Execute regula check . para verificar se nenhum padrão de alto risco foi perdido. Alguns sistemas de risco limitado têm componentes de alto risco." }
     ];
   }
   return [
-    { title: "Nenhuma obrigação específica se aplica", desc: "Seu sistema parece ser de risco mínimo. Considere seguir códigos de conduta voluntários (Article 95) como boa prática." },
-    { title: "Reavalie se o escopo mudar", desc: "Se você adicionar novas funcionalidades (especialmente em domínios do Annex III), execute esta avaliação novamente. A classificação de risco depende da finalidade pretendida, que pode mudar." }
+    { title: "Nenhuma obrigação específica se aplica", desc: "Seu sistema parece ser de risco mínimo. Considere seguir códigos de conduta voluntários (Artigo 95) como boa prática." },
+    { title: "Reavalie se o escopo mudar", desc: "Se você adicionar novas funcionalidades (especialmente em domínios do Anexo III), execute esta avaliação novamente. A classificação de risco depende da finalidade pretendida, que pode mudar." }
   ];
 }
 
@@ -1084,7 +1084,7 @@ function renderScanResults(result) {
         </div>
         <div class="finding-desc">${c.message}</div>
         ${c.exceptions ? `<div class="finding-remediation"><strong>Exceções:</strong> ${c.exceptions}</div>` : ''}
-        <div class="finding-meta">Articles: ${c.applicable_articles.join(', ')} &middot; Linhas: ${c.match_lines.join(', ')}</div>
+        <div class="finding-meta">Artigos: ${c.applicable_articles.join(', ')} &middot; Linhas: ${c.match_lines.join(', ')}</div>
       </div>`;
     } else {
       html += `<div class="finding-card severity-${c.tier === 'high_risk' ? 'high' : 'medium'}">
@@ -1094,7 +1094,7 @@ function renderScanResults(result) {
         </div>
         <div class="finding-desc">${c.description}</div>
         <div class="finding-meta">
-          Articles: ${c.applicable_articles.join(', ')}
+          Artigos: ${c.applicable_articles.join(', ')}
           ${c.match_lines.length ? ' &middot; Linhas: ' + c.match_lines.join(', ') : ''}
         </div>
       </div>`;
@@ -1103,7 +1103,7 @@ function renderScanResults(result) {
 
   // Security findings
   if (result.security.length > 0) {
-    html += `<div class="scan-section-title">Achados de segurança (Article 15)</div>`;
+    html += `<div class="scan-section-title">Achados de segurança (Artigo 15)</div>`;
     for (const f of result.security) {
       html += `<div class="finding-card severity-${f.severity}">
         <div class="finding-header">
@@ -1122,7 +1122,7 @@ function renderScanResults(result) {
     for (const o of result.observations) {
       html += `<div class="finding-card severity-medium">
         <div class="finding-header">
-          <div class="finding-title">Article ${o.article}</div>
+          <div class="finding-title">Artigo ${o.article}</div>
           <span class="finding-badge badge-medium">REVISÃO</span>
         </div>
         <div class="finding-desc">${o.observation}</div>
@@ -1136,7 +1136,7 @@ function renderScanResults(result) {
     for (const b of result.bias) {
       html += `<div class="finding-card severity-medium">
         <div class="finding-header">
-          <div class="finding-title">Article ${b.article}</div>
+          <div class="finding-title">Artigo ${b.article}</div>
           <span class="finding-badge badge-medium">RISCO DE VIÉS</span>
         </div>
         <div class="finding-desc">${b.observation}</div>
@@ -1151,7 +1151,7 @@ function renderScanResults(result) {
     for (const o of OBLIGATIONS) {
       html += `<div class="obl-card">
         <div class="obl-header">
-          <div class="obl-title">Article ${o.article}: ${o.name}</div>
+          <div class="obl-title">Artigo ${o.article}: ${o.name}</div>
           <div class="obl-deadline">${o.deadline}</div>
         </div>
         <div class="obl-desc">${o.desc}</div>
@@ -1165,7 +1165,7 @@ function renderScanResults(result) {
     for (const o of LIMITED_RISK_OBLIGATIONS) {
       html += `<div class="obl-card">
         <div class="obl-header">
-          <div class="obl-title">Article ${o.article}: ${o.name}</div>
+          <div class="obl-title">Artigo ${o.article}: ${o.name}</div>
           <div class="obl-deadline">${o.deadline}</div>
         </div>
         <div class="obl-desc">${o.desc}</div>
@@ -1223,7 +1223,7 @@ function escapeHtml(text) {
 function getScanNextSteps(tier) {
   if (tier === "prohibited") {
     return [
-      { title: "Obtenha aconselhamento jurídico", desc: "As proibições do Article 5 preveem as penalidades mais altas. Um advogado qualificado precisa avaliar se seu sistema está dentro do escopo ou se qualifica para uma exceção restrita." },
+      { title: "Obtenha aconselhamento jurídico", desc: "As proibições do Artigo 5 preveem as penalidades mais altas. Um advogado qualificado precisa avaliar se seu sistema está dentro do escopo ou se qualifica para uma exceção restrita." },
       { title: "Revise os padrões correspondentes", desc: "Algumas correspondências podem ser falsos positivos. Os padrões acima mostram exatamente o que acionou a classificação. Verifique se o código sinalizado implementa a prática descrita." },
       { title: "Instale a CLI para análise mais profunda", desc: "Execute pip install regula-ai e depois regula check . para análise arquivo por arquivo com números de linha e contexto." },
     ];
@@ -1232,19 +1232,19 @@ function getScanNextSteps(tier) {
     return [
       { title: "Revise os achados acima", desc: "Verifique se os indicadores correspondentes descrevem corretamente a finalidade do seu sistema. Classificação baseada em padrões requer revisão humana para confirmar o contexto." },
       { title: "Analise seu projeto completo", desc: "Esta análise avaliou um único arquivo ou trecho. Instale o Regula (pip install regula-ai) e execute regula gap --project . para análise de lacunas em todo o projeto." },
-      { title: "Comece pelas maiores lacunas", desc: "Documentação técnica (Article 11) e governança de dados (Article 10) são tipicamente as maiores lacunas de conformidade para equipes de desenvolvimento." },
+      { title: "Comece pelas maiores lacunas", desc: "Documentação técnica (Artigo 11) e governança de dados (Artigo 10) são tipicamente as maiores lacunas de conformidade para equipes de desenvolvimento." },
       { title: "Responda o questionário também", desc: "O questionário avalia o contexto de implantação que a análise de código não consegue detectar. Use ambos para ter uma visão completa." },
     ];
   }
   if (tier === "limited_risk") {
     return [
-      { title: "Adicione avisos de transparência", desc: "O Article 50 exige que os usuários saibam quando interagem com IA ou consomem conteúdo gerado por IA." },
+      { title: "Adicione avisos de transparência", desc: "O Artigo 50 exige que os usuários saibam quando interagem com IA ou consomem conteúdo gerado por IA." },
       { title: "Analise seu projeto completo", desc: "Instale o Regula e execute regula check . para verificar se nenhum padrão de alto risco foi perdido em outros arquivos." },
     ];
   }
   return [
-    { title: "Nenhuma obrigação específica detectada", desc: "Seu código não parece corresponder a padrões de risco da Lei de IA da UE. Considere seguir códigos de conduta voluntários (Article 95)." },
-    { title: "Analise novamente se o escopo mudar", desc: "Se você adicionar funcionalidades em domínios do Annex III (contratação, crédito, saúde, etc.), analise novamente." },
+    { title: "Nenhuma obrigação específica detectada", desc: "Seu código não parece corresponder a padrões de risco da Lei de IA da UE. Considere seguir códigos de conduta voluntários (Artigo 95)." },
+    { title: "Analise novamente se o escopo mudar", desc: "Se você adicionar funcionalidades em domínios do Anexo III (contratação, crédito, saúde, etc.), analise novamente." },
   ];
 }
 
