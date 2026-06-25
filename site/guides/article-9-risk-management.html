@@ -173,7 +173,7 @@
 <p>Once identified, risks must be estimated and evaluated, considering both the probability of harm and its severity (Article&nbsp;9(2)(b)). This includes risks that may emerge from the interaction between the AI system and the environment in which it operates.</p>
 
 <h3>4. Adoption of risk management measures</h3>
-<p>Article&nbsp;9(2)(d) requires "appropriate and targeted risk management measures" to address identified risks. Article&nbsp;9(6) adds that residual risks that cannot be eliminated must be communicated to deployers, along with appropriate mitigation guidance. Testing under Article&nbsp;9(5)-(7) must confirm that the system performs consistently and that risk management measures are effective.</p>
+<p>Article&nbsp;9(2)(d) requires "appropriate and targeted risk management measures" to address identified risks. Article&nbsp;9(5) adds that residual risks must be judged acceptable, and that deployers must receive the information required under Article&nbsp;13, along with appropriate training where needed. Testing under Article&nbsp;9(6)-(8) must confirm that the system performs consistently and that risk management measures are effective.</p>
 
 <h2>What code scanning can detect</h2>
 
@@ -181,7 +181,7 @@
 
 <p><strong>Risk assessment documentation.</strong> Regula looks for files matching patterns like <code>risk_assessment.*</code>, <code>risk_register.*</code>, or <code>RISK_MANAGEMENT.*</code> in your project. If none exist, that is a gap signal. If they exist, their content still needs human review.</p>
 
-<p><strong>Error handling around model calls.</strong> Article&nbsp;9(6) requires that residual risks be managed. Unhandled exceptions in model inference code mean a failure mode exists with no mitigation. Regula flags model calls (e.g. calls to OpenAI, Anthropic, HuggingFace APIs) that lack try/except or equivalent error handling.</p>
+<p><strong>Error handling around model calls.</strong> Article&nbsp;9(5) requires that residual risks be acceptable. Unhandled exceptions in model inference code mean a failure mode exists with no mitigation. Regula flags model calls (e.g. calls to OpenAI, Anthropic, HuggingFace APIs) that lack try/except or equivalent error handling.</p>
 
 <p><strong>Input validation and sanitisation.</strong> Validating inputs before they reach the model is a basic risk management measure. Regula checks whether input data passes through validation logic before model consumption.</p>
 
@@ -217,7 +217,7 @@ Regula Scan: /home/dev/myproject
     <li><strong>Whether the risk management system is actually operated.</strong> A risk register file can exist but never be updated. Regula sees the file. It cannot verify that someone reviews it quarterly.</li>
     <li><strong>Whether risk assessments involve the right stakeholders.</strong> Article&nbsp;9 expects input from domain experts, affected communities, and deployers. A code scanner has no visibility into your process.</li>
     <li><strong>Whether the RMS covers the full AI lifecycle.</strong> Article&nbsp;9(1) requires coverage from design through post-market monitoring. Code scanning sees a snapshot of the current codebase. It does not know what happened during training or what your post-deployment monitoring looks like.</li>
-    <li><strong>Whether identified risks have been communicated to deployers.</strong> Article&nbsp;9(6) requires that residual risks be communicated to downstream deployers with mitigation guidance. This is a documentation and process requirement, not a code pattern.</li>
+    <li><strong>Whether identified risks have been communicated to deployers.</strong> Article&nbsp;9(5) requires that residual risks be communicated to deployers with information per Article&nbsp;13 and appropriate training. This is a documentation and process requirement, not a code pattern.</li>
     <li><strong>Whether testing is sufficient.</strong> Article&nbsp;9(5) requires testing "at appropriate times throughout the development process, and, in any event, prior to the placing on the market." Regula can check for test files but cannot evaluate whether the testing regime is adequate.</li>
 </ul>
 
