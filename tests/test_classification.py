@@ -5871,7 +5871,7 @@ def test_assess_format_result_high_risk_eu():
     assert "Art. 9" in result
     assert "Art. 14" in result
     assert "2 August 2026" in result
-    assert "provisional agreement" in result
+    assert "Omnibus" in result
     # EU provider: no AR requirement
     assert "Authorised Representative" not in result
     print("✓ assess: high-risk EU provider result correct")
