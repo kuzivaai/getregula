@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+
+    <title>EU AI Act Article 9: Risk Management System Requirements | Regula</title>
+    <meta name="description" content="Article 9 of the EU AI Act requires a documented risk management system for high-risk AI. What code scanning covers, what it cannot, and where to start.">
+    <meta name="keywords" content="EU AI Act Article 9, risk management system, high-risk AI, Regulation EU 2024/1689, AI risk assessment, regula gap, AI compliance, risk management measures">
+    <meta name="author" content="Kuziva Muzondo">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/guides/article-9-risk-management.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/guides/article-9-risk-management.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/guides/article-9-risk-management.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/guides/article-9-risk-management.html">
+    <meta property="og:title" content="EU AI Act Article 9: Risk Management System Requirements">
+    <meta property="og:description" content="Article 9 of the EU AI Act requires a documented risk management system for high-risk AI. What code scanning covers, what it cannot, and where to start.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula - EU AI Act compliance tool for code">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-06-25T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-06-25T00:00:00+00:00">
+    <meta property="article:section" content="AI Governance">
+    <meta property="article:tag" content="EU AI Act">
+    <meta property="article:tag" content="Article 9">
+    <meta property="article:tag" content="Risk Management">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EU AI Act Article 9: Risk Management System Requirements">
+    <meta name="twitter:description" content="Article 9 of the EU AI Act requires a documented risk management system for high-risk AI. What code scanning covers, what it cannot, and where to start.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript><link rel="stylesheet" href="/assets/fonts.css"><link rel="stylesheet" href="/assets/site.css"></noscript>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "EU AI Act Article 9: Risk Management System Requirements",
+      "description": "Article 9 of the EU AI Act requires a documented risk management system for high-risk AI. What code scanning covers, what it cannot, and where to start.",
+      "image": "https://getregula.com/assets/og-image.png",
+      "datePublished": "2026-06-25T00:00:00+00:00",
+      "dateModified": "2026-06-25T00:00:00+00:00",
+      "author": {
+        "@type": "Person",
+        "name": "Kuziva Muzondo",
+        "url": "https://getregula.com/about.html"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://getregula.com/assets/regula-logo.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/guides/article-9-risk-management.html"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://getregula.com/guides/" },
+        { "@type": "ListItem", "position": 3, "name": "Article 9: Risk Management System", "item": "https://getregula.com/guides/article-9-risk-management.html" }
+      ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does Article 9 of the EU AI Act require?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Article 9 of Regulation (EU) 2024/1689 requires providers of high-risk AI systems to establish, implement, document, and maintain a risk management system. This system must be a continuous iterative process that runs throughout the entire lifecycle of the AI system. It covers risk identification, risk estimation and evaluation, adoption of risk management measures, and testing to confirm residual risks are acceptable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a code scanner fulfil Article 9 obligations?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Article 9 is an organisational obligation that requires an ongoing risk management process, stakeholder engagement, and documented risk assessments across the AI lifecycle. A code scanner can detect some technical indicators relevant to Article 9 — such as error handling, input validation, logging, and the presence of risk documentation files — but it cannot verify that a risk management system is actually being operated, that risk assessments involve the right stakeholders, or that identified risks have been communicated to deployers."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When do Article 9 obligations apply?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Article 9 applies to providers of high-risk AI systems. Under the Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026, Annex III (use-based) high-risk obligations are postponed to 2 December 2027. Annex I (product-embedded) obligations apply from 2 August 2028. Council adoption is expected before 2 August 2026. Until Council adoption and OJ publication, the original 2 August 2026 deadline remains technically in force."
+          }
+        }
+      ]
+    }
+    </script>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<nav class="nav" id="nav" aria-label="Primary">
+    <a href="/" class="nav-brand">Regula</a>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html">Regulations</a>
+        <a href="/blog/writing.html">Blog</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+<main id="main" style="max-width:720px;margin:0 auto;padding:32px 20px;">
+<article>
+<div style="margin-bottom:32px;">
+    <p style="color:var(--text-dim);font-size:0.9rem;">25 June 2026 &middot; Kuziva Muzondo</p>
+    <h1 style="margin:8px 0 16px;">EU AI Act Article&nbsp;9: Risk Management System Requirements</h1>
+    <p style="color:var(--text-2);font-size:1.1rem;line-height:1.6;">Article&nbsp;9 of <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Regulation&nbsp;(EU)&nbsp;2024/1689</a> requires providers of high-risk AI systems to establish, implement, document, and maintain a risk management system. This is an organisational obligation. A code scanner cannot verify it. But code scanning can detect some of the technical components that Article&nbsp;9 refers to, and flag where they are missing.</p>
+</div>
+
+<h2>What Article&nbsp;9 actually requires</h2>
+
+<p>Article&nbsp;9 defines four core requirements for the risk management system. All four apply throughout the entire lifecycle of the AI system, not just at the point of deployment.</p>
+
+<h3>1. A continuous iterative process</h3>
+<p>The risk management system must run throughout the AI system's lifecycle (Article&nbsp;9(1)). It is not a one-off assessment. You update it when the system changes, when new risks emerge, or when post-market monitoring reveals something unexpected. The emphasis on "continuous" and "iterative" means a static document filed at launch does not satisfy this requirement.</p>
+
+<h3>2. Identification and analysis of known and foreseeable risks</h3>
+<p>Article&nbsp;9(2)(a) requires identifying and analysing "known and reasonably foreseeable risks" that the high-risk AI system can pose to health, safety, or fundamental rights. This includes risks from intended use and from conditions of reasonably foreseeable misuse.</p>
+
+<h3>3. Estimation and evaluation of risks</h3>
+<p>Once identified, risks must be estimated and evaluated, considering both the probability of harm and its severity (Article&nbsp;9(2)(b)). This includes risks that may emerge from the interaction between the AI system and the environment in which it operates.</p>
+
+<h3>4. Adoption of risk management measures</h3>
+<p>Article&nbsp;9(2)(d) requires "appropriate and targeted risk management measures" to address identified risks. Article&nbsp;9(6) adds that residual risks that cannot be eliminated must be communicated to deployers, along with appropriate mitigation guidance. Testing under Article&nbsp;9(5)-(7) must confirm that the system performs consistently and that risk management measures are effective.</p>
+
+<h2>What code scanning can detect</h2>
+
+<p>A code scanner operates on source files. It cannot observe processes, interview stakeholders, or verify that a risk register is actually maintained. But it can check for technical artefacts that map to Article&nbsp;9 requirements.</p>
+
+<p><strong>Risk assessment documentation.</strong> Regula looks for files matching patterns like <code>risk_assessment.*</code>, <code>risk_register.*</code>, or <code>RISK_MANAGEMENT.*</code> in your project. If none exist, that is a gap signal. If they exist, their content still needs human review.</p>
+
+<p><strong>Error handling around model calls.</strong> Article&nbsp;9(6) requires that residual risks be managed. Unhandled exceptions in model inference code mean a failure mode exists with no mitigation. Regula flags model calls (e.g. calls to OpenAI, Anthropic, HuggingFace APIs) that lack try/except or equivalent error handling.</p>
+
+<p><strong>Input validation and sanitisation.</strong> Validating inputs before they reach the model is a basic risk management measure. Regula checks whether input data passes through validation logic before model consumption.</p>
+
+<p><strong>Logging of model decisions.</strong> An audit trail supports the "continuous iterative" requirement: you cannot review and update risk assessments without records of what the system actually did. Regula checks for logging around model inference calls.</p>
+
+<p>Example: scanning a healthcare project for high-risk indicators.</p>
+
+<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula check --domain healthcare .
+
+Risk tier: HIGH_RISK (healthcare domain)
+Findings:
+  [HIGH]  model_call_no_error_handling   src/predict.py:42
+  [MED]   no_input_validation            src/api/routes.py:18
+  [LOW]   missing_risk_documentation     (no risk_assessment files found)
+
+3 findings across 12 files scanned</code></pre>
+
+<p>Each finding maps to a specific Article&nbsp;9 concern. The <code>model_call_no_error_handling</code> finding relates to residual risk management (Article&nbsp;9(6)). The missing documentation finding is a proxy indicator, not a determination.</p>
+
+<h2>What code scanning cannot detect</h2>
+
+<p>Be clear about the limits. Code scanning does not cover:</p>
+
+<ul>
+    <li><strong>Whether the risk management system is actually operated.</strong> A risk register file can exist but never be updated. Regula sees the file. It cannot verify that someone reviews it quarterly.</li>
+    <li><strong>Whether risk assessments involve the right stakeholders.</strong> Article&nbsp;9 expects input from domain experts, affected communities, and deployers. A code scanner has no visibility into your process.</li>
+    <li><strong>Whether the RMS covers the full AI lifecycle.</strong> Article&nbsp;9(1) requires coverage from design through post-market monitoring. Code scanning sees a snapshot of the current codebase. It does not know what happened during training or what your post-deployment monitoring looks like.</li>
+    <li><strong>Whether identified risks have been communicated to deployers.</strong> Article&nbsp;9(6) requires that residual risks be communicated to downstream deployers with mitigation guidance. This is a documentation and process requirement, not a code pattern.</li>
+    <li><strong>Whether testing is sufficient.</strong> Article&nbsp;9(5) requires testing "at appropriate times throughout the development process, and, in any event, prior to the placing on the market." Regula can check for test files but cannot evaluate whether the testing regime is adequate.</li>
+</ul>
+
+<p>The gap between what code scanning covers and what Article&nbsp;9 requires is large. Code scanning is a partial input into a broader compliance process.</p>
+
+<h2>Gap analysis with Regula</h2>
+
+<p>The <code>regula gap</code> command scores your project against each applicable article, including Article&nbsp;9. Run it against your project root:</p>
+
+<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula gap --project .
+
+Compliance gap assessment (Articles 9-15)
+==========================================
+
+Article  9 (Risk Management)     38/100
+  - Risk documentation:          MISSING
+  - Error handling coverage:     62%
+  - Input validation:            44%
+  - Decision logging:            71%
+
+Article 10 (Data Governance)     52/100
+Article 11 (Technical Docs)      29/100
+Article 13 (Transparency)        45/100
+Article 14 (Human Oversight)     61/100
+
+Overall score: 45/100</code></pre>
+
+<p>The Article&nbsp;9 score reflects only the technical components Regula can measure. A score of 38/100 means your codebase has significant gaps in the areas a scanner can evaluate. It does not mean your overall Article&nbsp;9 compliance is at 38%, because the organisational components (which Regula cannot assess) also matter. A project could score 100 on the code scan and still fail Article&nbsp;9 if no risk management process exists.</p>
+
+<p>To focus on Article&nbsp;9 specifically:</p>
+
+<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula gap --project . --article 9</code></pre>
+
+<h2>Practical next steps</h2>
+
+<p>If your system is high-risk (or likely to be classified as such), here is a concrete starting point for Article&nbsp;9 compliance.</p>
+
+<h3>Create a risk register</h3>
+<p>A plain text or markdown file in your repository is fine to start. List each known risk, its severity, its probability, and what you are doing about it. Update it when the system changes. The format matters less than the habit of maintaining it.</p>
+
+<h3>Map risks to mitigation measures</h3>
+<p>For each risk in your register, document what technical or organisational measure addresses it. "We validate inputs before model inference" is a measure. "We will think about it later" is not. Article&nbsp;9(2)(d) requires that measures be "appropriate and targeted."</p>
+
+<h3>Set up periodic review</h3>
+<p>The "continuous iterative process" requirement means scheduling reviews. Monthly or quarterly, depending on how fast your system changes. Record what was reviewed and what changed. A git commit log showing updates to your risk register is simple evidence that the process is active.</p>
+
+<h3>Use the organisational questionnaire</h3>
+<p>Regula includes a questionnaire mode that covers the organisational components a code scanner cannot detect:</p>
+
+<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula conform --organisational
+
+Organisational compliance questionnaire
+========================================
+
+Article 9 - Risk Management System
+Q1: Do you maintain a risk register? [y/n]
+Q2: Is the risk register reviewed at defined intervals? [y/n]
+Q3: Have residual risks been communicated to deployers? [y/n]
+...</code></pre>
+
+<p>This produces a structured record of your self-assessment. It is not a substitute for legal review, but it gives you a documented baseline and highlights areas that need attention.</p>
+
+<h3>Combine code scan and questionnaire</h3>
+<p>The code scan covers technical implementation. The questionnaire covers organisational process. Together, they give you a more complete picture of where you stand against Article&nbsp;9. Neither alone is sufficient.</p>
+
+<h2>Omnibus caveat</h2>
+
+<p>All dates referencing the Digital Omnibus are based on the provisional political agreement of <strong>7&nbsp;May&nbsp;2026</strong>, approved by the European Parliament on <strong>16&nbsp;June&nbsp;2026</strong>. Council adoption is expected before 2&nbsp;August&nbsp;2026. Until Council adoption and OJ publication, the original EU AI Act deadlines technically remain in force. We will update this page when the Omnibus is formally adopted.</p>
+
+<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
+
+<p style="color:var(--text-dim);font-size:0.85rem;">
+    <strong>Last verified:</strong> 25 June 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
+    <strong>Sources:</strong> <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" style="color:var(--text-dim);">Regulation (EU) 2024/1689, Article 9</a>, <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442" style="color:var(--text-dim);">Digital Omnibus provisional agreement (7 May 2026)</a> &middot;
+    <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
+</p>
+
+<div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
+<div class="blog-body" style="margin-top:var(--s5);">
+    <h3>Related reading</h3>
+    <ul>
+        <li><a href="/blog/blog-classify-ai-system.html">How to classify your AI system under the EU AI Act</a> &mdash; Article 6, the four risk tiers, and what code scanning can tell you</li>
+        <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act apply to your AI app?</a> &mdash; Decision tree for scope, provider vs deployer, and extraterritorial reach</li>
+        <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act risk tiers in actual code</a> &mdash; What each risk tier looks like in Python with scanner output</li>
+        <li><a href="/blog/blog-code-scanning-vs-questionnaires.html">Code scanning vs questionnaires</a> &mdash; Where automated scanning ends and organisational assessment begins</li>
+        <li><a href="/blog/blog-static-analysis-ai-compliance.html">Static analysis for AI compliance</a> &mdash; How code scanning fits into the compliance toolchain</li>
+    </ul>
+</div>
+
+</article>
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Content on this site is for developer education. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
