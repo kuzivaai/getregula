@@ -311,8 +311,8 @@
       <span>Nichts verlaesst Ihren Browser</span>
     </div>
     <div style="margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-      <button class="btn btn-primary" onclick="startAssessment()" style="padding:14px 36px;font-size:1rem;">Fragen beantworten</button>
-      <button class="btn btn-secondary" onclick="startScanner()" style="padding:14px 36px;font-size:1rem;">Code scannen</button>
+      <button type="button" class="btn btn-primary" onclick="startAssessment()" style="padding:14px 36px;font-size:1rem;">Fragen beantworten</button>
+      <button type="button" class="btn btn-secondary" onclick="startScanner()" style="padding:14px 36px;font-size:1rem;">Code scannen</button>
     </div>
     <div style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);">Beantworten Sie Fragen fuer eine schnelle Bewertung oder scannen Sie Code fuer eine musterbasierte Analyse. Sie koennen beides tun.</div>
   </div>
@@ -328,8 +328,8 @@
     </div>
     <div id="questionContainer"></div>
     <div class="nav-buttons">
-      <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>Zurueck</button>
-      <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Weiter</button>
+      <button type="button" class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>Zurueck</button>
+      <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Weiter</button>
     </div>
   </div>
 
@@ -365,7 +365,7 @@
         </label>
         <span id="fileName" style="font-size:0.8rem;color:var(--text-dim);"></span>
         <div style="flex:1;"></div>
-        <button class="btn btn-primary" id="scanBtn" onclick="runScan()" disabled>Code scannen</button>
+        <button type="button" class="btn btn-primary" id="scanBtn" onclick="runScan()" disabled>Code scannen</button>
       </div>
     </div>
 
@@ -376,8 +376,8 @@
     <div id="scanResults" style="display:none;"></div>
 
     <div style="margin-top:16px;display:flex;gap:10px;">
-      <button class="btn btn-secondary" onclick="resetScanner()">Loeschen</button>
-      <button class="btn btn-secondary" onclick="backToHero()">Zurueck</button>
+      <button type="button" class="btn btn-secondary" onclick="resetScanner()">Loeschen</button>
+      <button type="button" class="btn btn-secondary" onclick="backToHero()">Zurueck</button>
     </div>
   </div>
 
@@ -391,9 +391,9 @@
     <div class="export-section">
       <h3>Ergebnisse exportieren</h3>
       <div class="export-buttons">
-        <button class="btn btn-secondary" onclick="window.print()">Drucken / Als PDF speichern</button>
-        <button class="btn btn-secondary" onclick="copyShareLink()">Teilbaren Link kopieren</button>
-        <button class="btn btn-secondary" onclick="exportJSON()">JSON herunterladen</button>
+        <button type="button" class="btn btn-secondary" onclick="window.print()">Drucken / Als PDF speichern</button>
+        <button type="button" class="btn btn-secondary" onclick="copyShareLink()">Teilbaren Link kopieren</button>
+        <button type="button" class="btn btn-secondary" onclick="exportJSON()">JSON herunterladen</button>
       </div>
       <div class="share-section" id="shareSection" style="display:none;">
         <input class="share-url" id="shareUrl" readonly onclick="this.select()">
@@ -404,7 +404,7 @@
     <div class="next-steps" id="nextStepsSection"></div>
 
     <div style="margin-top:24px;text-align:center;">
-      <button class="btn btn-secondary" onclick="resetAssessment()">Neu starten</button>
+      <button type="button" class="btn btn-secondary" onclick="resetAssessment()">Neu starten</button>
     </div>
   </div>
 </main>
@@ -1190,8 +1190,8 @@ function renderScanResults(result) {
     <div class="export-section" style="margin-top:24px;">
       <h3>Scan-Ergebnisse exportieren</h3>
       <div class="export-buttons">
-        <button class="btn btn-secondary" onclick="window.print()">Drucken / Als PDF speichern</button>
-        <button class="btn btn-secondary" onclick="exportScanJSON()">JSON herunterladen</button>
+        <button type="button" class="btn btn-secondary" onclick="window.print()">Drucken / Als PDF speichern</button>
+        <button type="button" class="btn btn-secondary" onclick="exportScanJSON()">JSON herunterladen</button>
       </div>
     </div>
   `;
