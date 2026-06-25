@@ -380,7 +380,7 @@ jobs:
 
 <p>The <code>--format json</code> flag outputs structured JSON, which you can parse in subsequent steps or feed into dashboards. Regula also supports <code>--format sarif</code> for GitHub Code Scanning integration.</p>
 
-<p>If you want the workflow to fail on BLOCK-tier findings, add <code>--exit-code</code> to the check command. Regula returns a non-zero exit code when it finds BLOCK-tier indicators.</p>
+<p>If you want the workflow to fail on BLOCK-tier findings, add <code>--ci</code> to the check command. Regula returns a non-zero exit code when it finds WARN or BLOCK-tier indicators.</p>
 
 <h2>Omnibus amendment and enforcement timeline</h2>
 

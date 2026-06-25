@@ -153,9 +153,12 @@
 <article>
 
 <div class="blog-hero" style="padding-bottom:24px;">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / <a href="/blog/writing.html">Guides</a> / Healthcare AI
+    </div>
+    <h1>EU AI Act and Healthcare: What AI in Medicine <span class="hl">Must Comply With</span></h1>
+    <p class="standfirst">AI in healthcare hits the EU AI Act from two directions. If the software is a medical device (or part of one), it is high-risk under Annex I, Section A via Regulation (EU) 2017/745 (MDR) and 2017/746 (IVDR). If it determines patient access to healthcare services &mdash; emergency dispatch, triage, priority queuing &mdash; it is high-risk under Annex III, Category 5 (&ldquo;Access to and enjoyment of essential public services and essential private services&rdquo;). The two pathways have different deadlines, different conformity procedures, and different implications for your code.</p>
     <p style="color:var(--text-dim);font-size:0.9rem;">25 June 2026 &middot; Kuziva Muzondo</p>
-    <h1 style="margin:8px 0 16px;">EU AI Act and Healthcare: What AI in Medicine Must Comply With</h1>
-    <p class="standfirst" style="color:var(--text-2);font-size:1.1rem;line-height:1.6;">AI in healthcare hits the EU AI Act from two directions. If the software is a medical device (or part of one), it is high-risk under Annex I, Section A via Regulation (EU) 2017/745 (MDR) and 2017/746 (IVDR). If it determines patient access to healthcare services &mdash; emergency dispatch, triage, priority queuing &mdash; it is high-risk under Annex III, Category 5 (&ldquo;Access to and enjoyment of essential public services and essential private services&rdquo;). The two pathways have different deadlines, different conformity procedures, and different implications for your code.</p>
 </div>
 
 <div class="blog-body">
@@ -242,7 +245,7 @@ Regula Scan: sample_medical.py
     [WARN] [ 70] sample_medical.py — Access to essential services [plan]
       Add explainability and human override for credit/financial decisions</code></pre>
 
-<p>The output identifies the file as high-risk under the &ldquo;Access to essential services&rdquo; category. The remediation suggestion references explainability and human override &mdash; the core obligations of Articles 13 and 14.</p>
+<p>The output identifies the file as high-risk under the &ldquo;Access to essential services&rdquo; category. The remediation text references &ldquo;credit/financial decisions&rdquo; because this Annex III category covers both healthcare and financial services &mdash; Regula uses a generic suggestion for the category. The underlying obligation (explainability and human override) applies equally to healthcare AI under Articles 13 and 14.</p>
 
 <p>If you are not sure whether your AI system falls under the EU AI Act at all, the <a href="/assess/">web assessment tool</a> walks through the scope questions without requiring a CLI installation. For installation and usage instructions, see the <a href="/">Regula homepage</a>. For a broader look at <a href="/guides/eu-ai-act-python.html">scanning Python projects</a> with Regula, see the Python-specific guide.</p>
 
@@ -299,7 +302,7 @@ Regula Scan: sample_medical.py
 <p>Run <code>regula check</code> on your codebase to see what risk patterns are detected. Cross-reference with your intended purpose documentation and your MDR classification (if applicable). The code scan is one input, not the final answer.</p>
 
 <h3>2. Start technical documentation early</h3>
-<p>Article 11 (Annex IV documentation) is consistently the biggest gap in healthcare AI projects. Use <code>regula annex-iv</code> to generate a scaffold, then fill it in. The template covers system description, intended purpose, training methodology, validation results, and risk management measures. For medical device AI, align this with your MDR technical file.</p>
+<p>Article 11 (Annex IV documentation) is consistently the biggest gap in healthcare AI projects. Use <code>regula docs .</code> to generate a scaffold, then fill it in. The template covers system description, intended purpose, training methodology, validation results, and risk management measures. For medical device AI, align this with your MDR technical file.</p>
 
 <h3>3. Implement structured logging</h3>
 <p>Article 12 requires automatic logging of system operations. For diagnostic AI, log every prediction with input metadata, output, confidence, and contributing features. For triage systems, log each prioritisation decision. Build this into the system now rather than retrofitting later.</p>
@@ -354,7 +357,7 @@ Regula Scan: sample_medical.py
         </div>
         <div class="foot-right">
             <div class="foot-legal">
-                <strong>Not legal advice.</strong> Content on this site is for developer education. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
             </div>
         </div>
     </div>
