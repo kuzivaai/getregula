@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+
+    <title>EU AI Act Compliance for JavaScript and TypeScript Developers</title>
+    <meta name="description" content="JavaScript and TypeScript AI libraries like OpenAI SDK, LangChain, TensorFlow.js, and Vercel AI SDK trigger EU AI Act risk patterns. How to scan your JS/TS code and what the findings mean.">
+    <meta name="keywords" content="EU AI Act JavaScript, TypeScript AI compliance, OpenAI SDK EU AI Act, TensorFlow.js compliance, LangChain JavaScript, regula JavaScript scan, AI Act code scanning, Vercel AI SDK compliance">
+    <meta name="author" content="Kuziva Muzondo">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/guides/eu-ai-act-javascript.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/guides/eu-ai-act-javascript.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/guides/eu-ai-act-javascript.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/guides/eu-ai-act-javascript.html">
+    <meta property="og:title" content="EU AI Act Compliance for JavaScript and TypeScript Developers">
+    <meta property="og:description" content="JavaScript and TypeScript AI libraries like OpenAI SDK, LangChain, TensorFlow.js, and Vercel AI SDK trigger EU AI Act risk patterns. How to scan your JS/TS code and what the findings mean.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula: EU AI Act compliance tool for code">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-06-25T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-06-25T00:00:00+00:00">
+    <meta property="article:section" content="AI Governance">
+    <meta property="article:tag" content="EU AI Act">
+    <meta property="article:tag" content="JavaScript">
+    <meta property="article:tag" content="TypeScript">
+    <meta property="article:tag" content="Code Scanning">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EU AI Act Compliance for JavaScript and TypeScript Developers">
+    <meta name="twitter:description" content="JavaScript and TypeScript AI libraries like OpenAI SDK, LangChain, TensorFlow.js, and Vercel AI SDK trigger EU AI Act risk patterns. How to scan your JS/TS code and what the findings mean.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.css">
+        <link rel="stylesheet" href="/assets/site.css">
+    </noscript>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "EU AI Act Compliance for JavaScript and TypeScript Developers",
+      "description": "JavaScript and TypeScript AI libraries like OpenAI SDK, LangChain, TensorFlow.js, and Vercel AI SDK trigger EU AI Act risk patterns. How to scan your JS/TS code and what the findings mean.",
+      "image": "https://getregula.com/assets/og-image.png",
+      "datePublished": "2026-06-25T00:00:00+00:00",
+      "dateModified": "2026-06-25T00:00:00+00:00",
+      "author": {
+        "@type": "Person",
+        "name": "Kuziva Muzondo",
+        "url": "https://getregula.com/about.html"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://getregula.com/assets/regula-logo.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/guides/eu-ai-act-javascript.html"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://getregula.com/guides/" },
+        { "@type": "ListItem", "position": 3, "name": "EU AI Act for JavaScript and TypeScript Developers" }
+      ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does the EU AI Act apply to JavaScript and TypeScript projects?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The EU AI Act does not regulate programming languages. It regulates AI systems that affect people in the EU. If your JavaScript or TypeScript project uses AI libraries to make or inform decisions about people — hiring, lending, content moderation, medical triage — and those people are in the EU, the Act applies regardless of the language your code is written in."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I scan my JavaScript project for EU AI Act compliance?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Install Regula with pipx install regula-ai, then run regula check . in your project directory. Regula scans JavaScript and TypeScript files for import patterns, function calls, and variable names that indicate AI system behaviour covered by the EU AI Act. It reports a risk tier (prohibited, high-risk, limited-risk, or minimal) and lists specific findings with article references. You can also scan code directly in your browser at getregula.com/assess/."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What JavaScript AI libraries does Regula detect?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Regula detects patterns from the OpenAI SDK, @anthropic-ai/sdk, @langchain, transformers.js, @tensorflow/tfjs, brain.js, @ai-sdk (Vercel AI SDK), @mastra, and other common JavaScript and TypeScript AI/ML libraries. Detection is based on import and require statements, function calls, and variable naming patterns that indicate AI system behaviour."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html">Regulations</a>
+        <a href="/blog/writing.html">Blog</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+<article>
+
+<div class="blog-hero" style="padding-bottom:24px;">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / <a href="/blog/writing.html">Guides</a> / JavaScript &amp; TypeScript
+    </div>
+    <h1>EU AI Act compliance for <span class="hl">JavaScript and TypeScript developers</span></h1>
+    <p class="standfirst">JavaScript and TypeScript are the backbone of modern web applications, and increasingly the backbone of AI-powered ones. If you use the OpenAI SDK, Vercel AI SDK, LangChain, TensorFlow.js, or any AI library in a product that reaches EU users, the EU AI Act applies to you. The regulation does not care which language you write in. It cares what your code does to people.</p>
+    <p style="color:var(--text-dim);font-size:0.9rem;">25 June 2026 &middot; Kuziva Muzondo</p>
+</div>
+
+<div class="blog-body">
+
+<h2>Why JavaScript and TypeScript developers need to pay attention</h2>
+
+<p>AI in JavaScript used to mean a handful of TensorFlow.js demos. That changed. The OpenAI SDK, Anthropic SDK, Vercel AI SDK, Mastra, and LangChain all have first-class JavaScript and TypeScript support. Server-side JS applications now routinely call foundation models, run inference pipelines, and make automated decisions that affect real people.</p>
+
+<p>The EU AI Act (Regulation 2024/1689) regulates AI systems based on what they do, not how they are built. A Node.js API that scores job applicants using GPT-4 has the same obligations as a Python service doing the same thing. <a href="/blog/blog-does-ai-act-apply.html">Whether the AI Act applies</a> depends on your use case, not your runtime.</p>
+
+<p>Regula supports 8 programming languages, including JavaScript and TypeScript. It scans your <code>.js</code>, <code>.ts</code>, <code>.jsx</code>, and <code>.tsx</code> files for import patterns, function calls, and variable names that map to EU AI Act obligations.</p>
+
+<h2>JS/TS AI libraries Regula detects</h2>
+
+<p>Regula identifies AI-related patterns from the most common JavaScript and TypeScript libraries. Here is what it looks for.</p>
+
+<h3>OpenAI SDK and Anthropic SDK</h3>
+
+<p>API calls via <code>openai</code> and <code>@anthropic-ai/sdk</code>. If your application calls <code>openai.chat.completions.create()</code> or uses the Anthropic messages API, Regula detects it. Using a third-party API does not exempt you from the AI Act &mdash; <a href="/guides/article-9-risk-management.html">Article 9 (risk management)</a> and Article 26 place obligations on deployers, not just providers. If you build on top of a foundation model, you inherit obligations based on your use case.</p>
+
+<h3>Vercel AI SDK and Mastra</h3>
+
+<p>The <code>@ai-sdk</code> package (Vercel AI SDK) and <code>@mastra</code> are increasingly common in Next.js and Node.js applications. They abstract away provider-specific details, which is convenient for development but can obscure the fact that your application is using AI systems covered by the regulation. Regula detects these imports and flags them for review.</p>
+
+<h3>LangChain (JavaScript)</h3>
+
+<p>The <code>@langchain</code> package brings agent autonomy patterns, tool use, and retrieval-augmented generation to JavaScript. Regula flags agent chains where an LLM decides which tools to invoke, because autonomous decision-making raises the <a href="/blog/blog-risk-tiers-in-code.html">risk tier</a> when it affects people.</p>
+
+<h3>TensorFlow.js and transformers.js</h3>
+
+<p><code>@tensorflow/tfjs</code> enables model training and inference directly in the browser or in Node.js. <code>transformers.js</code> brings Hugging Face transformer models to JavaScript. Both allow on-device or server-side ML without a Python backend. Regula detects model loading, prediction calls, and pipeline instantiation from these libraries.</p>
+
+<h3>brain.js</h3>
+
+<p>A neural network library for JavaScript. Less common in production than the libraries above, but Regula still detects it. A brain.js model that classifies loan applications has the same regulatory obligations as one built with scikit-learn in Python.</p>
+
+<p><strong>Important:</strong> not every match is high-risk. An OpenAI import in a chatbot demo and an OpenAI import in a production hiring tool are different things. Regula reports what it finds; you decide whether the context makes it relevant.</p>
+
+<h2>Comment stripping and how Regula reads JS/TS files</h2>
+
+<p>Regula strips comments before scanning, so commented-out code does not produce false positives. For JavaScript and TypeScript files, it handles both single-line comments (<code>//</code>) and block comments (<code>/* */</code>). This means:</p>
+
+<pre><code>// import OpenAI from 'openai'  &larr; not flagged (commented out)
+
+/*
+const anthropic = new Anthropic()
+anthropic.messages.create(...)   &larr; not flagged (block comment)
+*/
+
+import OpenAI from 'openai'      &larr; flagged (live code)</code></pre>
+
+<p>Regula scans the actual code your application runs, not dead code left behind in comments.</p>
+
+<h2>Quick start: scanning a JavaScript project</h2>
+
+<pre><code>pipx install regula-ai
+regula check .                      # scan current directory
+regula check . --domain employment  # activate domain-specific patterns
+regula assess                       # interactive: does the AI Act apply?</code></pre>
+
+<p><code>regula check</code> scans all JavaScript and TypeScript files in the directory tree. It does not execute your code, install dependencies, or send data anywhere. Everything runs locally.</p>
+
+<p>You can also scan JavaScript code directly in your browser at <a href="/assess/">getregula.com/assess/</a>. The web assessment tool includes a client-side code scanner with 627 patterns &mdash; no installation required.</p>
+
+<h2>Why the --domain flag matters for JS projects</h2>
+
+<p>In Python, AI library imports tend to be explicit: <code>import torch</code>, <code>from sklearn.ensemble import RandomForestClassifier</code>. In JavaScript and TypeScript, AI usage is often wrapped behind generic API calls or abstracted by frameworks like the Vercel AI SDK. A call to <code>generateText()</code> does not immediately reveal what domain the AI is operating in.</p>
+
+<p>The <code>--domain</code> flag tells Regula which sector your application operates in. Without it, Regula only flags patterns that are high-risk regardless of domain (<a href="/guides/article-5-prohibited-practices.html">prohibited practices</a> like social scoring, real-time biometric identification). With a domain flag, Regula activates sector-specific patterns:</p>
+
+<ul>
+    <li><code>--domain employment</code> &mdash; hiring, recruitment, workforce management (<a href="/guides/eu-ai-act-recruitment-hiring.html">Annex III Category 4</a>)</li>
+    <li><code>--domain healthcare</code> &mdash; medical triage, diagnostic, treatment recommendation</li>
+    <li><code>--domain education</code> &mdash; student assessment, admissions, learning analytics</li>
+    <li><code>--domain finance</code> &mdash; credit scoring, insurance pricing, fraud detection</li>
+</ul>
+
+<p>For JavaScript projects where AI usage may be less explicit in the code, the domain flag is particularly useful.</p>
+
+<h2>Understanding the output</h2>
+
+<p>Here is what Regula produces when it classifies a JavaScript file with employment-related AI patterns:</p>
+
+<pre><code>$ regula classify --file hiring_scorer.js
+HIGH-RISK: Employment and workers management - Articles 9, 10, 11, 12, 13, 14, 15</code></pre>
+
+<p>And a full check with the domain flag:</p>
+
+<pre><code>$ regula check sample_js_hiring.js --domain employment
+
+Regula Scan: sample_js_hiring.js
+============================================================
+
+  Verdict: HIGH-RISK
+  Your project is classified as high-risk under EU AI Act Annex III.
+  You must comply with Articles 9-15 before the enforcement deadline.
+
+  Why:
+    1. sample_js_hiring.js:16 &mdash; Employment and workers management
+       (Art. 9, Art. 10)
+  Files scanned:      1
+  High-risk:          1
+
+  HIGH-RISK INDICATORS:
+    [BLOCK] [ 95] sample_js_hiring.js &mdash; Employment and workers management [plan]
+      Add human oversight before automated hiring/employment decisions</code></pre>
+
+<p>The three tiers:</p>
+
+<ul>
+    <li><strong>BLOCK</strong> (confidence 80+, or prohibited practice): high confidence this is a regulated AI pattern. You need to act on this before deployment.</li>
+    <li><strong>WARN</strong> (confidence 50-79): moderate confidence. Worth investigating. May be a regulated pattern or may be a false positive depending on context.</li>
+    <li><strong>INFO</strong> (confidence below 50): low confidence indicator. Regula found something that <em>could</em> be relevant but likely needs more context to determine.</li>
+</ul>
+
+<p>The number in brackets (e.g. <code>[ 95]</code>) is the confidence score. The lifecycle tag (<code>[plan]</code>, <code>[develop]</code>, <code>[deploy]</code>) indicates which phase of development the finding is most relevant to.</p>
+
+<h2>Common JavaScript patterns Regula flags</h2>
+
+<h3>CV screening and candidate ranking</h3>
+
+<pre><code>// Flagged: employment screening patterns
+const ranked = scoreResume(applicant, model)
+const shortlist = candidates.filter(c =&gt; c.score &gt; threshold)
+const filtered = filterApplicants(applications, criteria)</code></pre>
+
+<p>Annex III Category 4 covers AI systems used in employment: screening applications, evaluating candidates, and making recruitment decisions. Function names like <code>scoreResume</code>, <code>rankCandidates</code>, and <code>filterApplicants</code> combined with model scoring patterns trigger this category. See the <a href="/guides/eu-ai-act-recruitment-hiring.html">recruitment and hiring guide</a> for a detailed breakdown of employment obligations.</p>
+
+<h3>AI API calls with no logging</h3>
+
+<pre><code>// Flagged: API call with no record-keeping
+const response = await openai.chat.completions.create({
+  model: 'gpt-4',
+  messages: [{ role: 'user', content: userData }]
+})
+return response.choices[0].message.content  // no log</code></pre>
+
+<p>Article 12 requires high-risk AI systems to have automatic logging of events during operation. If your application calls an AI API to process personal data and you are not logging the inputs, outputs, and timestamps, that is a gap. This is common in Express and Next.js API routes where developers focus on the response and forget the audit trail.</p>
+
+<h3>Content generation without disclosure</h3>
+
+<pre><code>// Flagged: AI-generated content without transparency
+const reply = await generateText({
+  model: openai('gpt-4'),
+  prompt: userMessage
+})
+res.json({ message: reply.text })  // user not told this is AI</code></pre>
+
+<p><a href="/guides/article-50-transparency.html">Article 50 (transparency obligations)</a> requires that people are told when they are interacting with an AI system. A chatbot that responds to users without disclosing it is AI-generated, or a content tool that produces text without labelling it as synthetic, has a transparency gap.</p>
+
+<h3>Sentiment analysis on user content</h3>
+
+<pre><code>// Flagged: emotion/sentiment inference
+import { pipeline } from '@xenova/transformers'
+const classifier = await pipeline('sentiment-analysis')
+const result = await classifier(customerMessage)</code></pre>
+
+<p>Running sentiment analysis or emotion detection on user-submitted content triggers Article 50 transparency requirements. If the results feed into decisions about the user &mdash; customer service priority, content moderation, access to services &mdash; the risk tier escalates further.</p>
+
+<h2>What Regula does not check in JavaScript</h2>
+
+<p>Regula is a static analysis tool. There are things it cannot do, and you should know what they are.</p>
+
+<ul>
+    <li><strong>Runtime model behaviour.</strong> Regula reads your source files. It does not execute your code, load models, or observe inference behaviour. A model that discriminates at runtime will not be caught by static analysis.</li>
+    <li><strong>Bundled or minified code.</strong> Regula scans source files. If your AI logic is in a bundled <code>dist/</code> file or a minified production build, Regula will not detect it. Point it at your source directory, not your build output.</li>
+    <li><strong>Dynamic imports and string interpolation.</strong> <code>import(libraryName)</code> where <code>libraryName</code> is a variable at runtime cannot be resolved statically. Regula catches literal import strings, not computed ones.</li>
+    <li><strong>Third-party API behaviour.</strong> If you call a REST API that happens to use AI internally, Regula will not know. It detects known AI SDK patterns, not arbitrary HTTP calls to AI services.</li>
+    <li><strong>Training data quality.</strong> Regula can detect whether model loading or training patterns exist, but it cannot assess whether your training data is representative, balanced, or free of bias. Article 10 (data and data governance) requires this, but it is beyond code scanning.</li>
+</ul>
+
+<p>Regula and questionnaire-based assessments are complementary. Code scanning catches what is in your source files; questionnaires capture organisational context that code cannot express. <a href="/">Regula</a> does both &mdash; <code>regula assess</code> runs a guided questionnaire alongside the code scan.</p>
+
+<h2>CI/CD integration for JavaScript projects</h2>
+
+<p>Add Regula to your GitHub Actions pipeline so every pull request gets scanned. Here is a minimal workflow for a JavaScript or TypeScript project:</p>
+
+<pre><code># .github/workflows/regula.yml
+name: EU AI Act Scan
+
+on:
+  pull_request:
+    paths:
+      - '**.js'
+      - '**.ts'
+      - '**.jsx'
+      - '**.tsx'
+
+jobs:
+  regula-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Regula
+        run: pipx install regula-ai
+
+      - name: Scan for AI Act risk patterns
+        run: regula check . --format json &gt; regula-report.json
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: regula-report
+          path: regula-report.json</code></pre>
+
+<p>Regula is a Python tool, so the workflow needs a Python setup step even though your project is JavaScript. The scan reads your JS/TS source files without executing them &mdash; no <code>npm install</code> required.</p>
+
+<p>The <code>--format json</code> flag outputs structured JSON, which you can parse in subsequent steps or feed into dashboards. Regula also supports <code>--format sarif</code> for GitHub Code Scanning integration.</p>
+
+<p>If you want the workflow to fail on BLOCK-tier findings, add <code>--exit-code</code> to the check command. Regula returns a non-zero exit code when it finds BLOCK-tier indicators.</p>
+
+<h2>Omnibus amendment and enforcement timeline</h2>
+
+<p>The EU AI Act entered into force on 1 August 2024. Article 5 (prohibited practices) became enforceable on 2 February 2025. However, the EU Omnibus simplification package has changed the timeline for Annex III high-risk categories: the provisional agreement was reached on 7 May 2026, and the European Parliament approved it on 16 June 2026. Pending Council adoption, Annex III high-risk obligations (Articles 9-15) are deferred to <strong>2 December 2027</strong>.</p>
+
+<p>That deferral is not a reason to ignore compliance. Building <a href="/guides/article-9-risk-management.html">risk management</a>, <a href="/guides/article-14-human-oversight.html">human oversight</a>, and logging into your JavaScript applications now means less rework when the deadline arrives. Retrofitting compliance into a production system is harder than building it in from the start.</p>
+
+<h2>From scan to compliance: what to do with findings</h2>
+
+<p>A Regula scan is a starting point, not a finish line. If your JavaScript project gets a HIGH-RISK verdict, here is a practical sequence:</p>
+
+<ol>
+    <li><strong>Verify the context.</strong> Does the flagged pattern actually affect people in the EU? A candidate ranking function in an internal tool for a 5-person team in New Zealand is different from one in a SaaS product with EU customers.</li>
+    <li><strong>Map to specific articles.</strong> Regula tells you which articles apply. Read them. <a href="/guides/article-9-risk-management.html">Article 9</a> requires a risk management system. <a href="/guides/article-14-human-oversight.html">Article 14</a> requires human oversight. These are specific obligations with specific requirements.</li>
+    <li><strong>Add logging and audit trails.</strong> Article 12 requires automatic logging. In a Node.js application, this means logging AI inputs, outputs, timestamps, and model versions. Structured logging libraries like Pino or Winston work well for this.</li>
+    <li><strong>Add human oversight controls.</strong> Article 14 requires that humans can understand and override AI decisions. In a hiring tool, this means a human reviews AI-ranked candidates before any decision is made.</li>
+    <li><strong>Document everything.</strong> The AI Act requires technical documentation (Article 11) and transparency to users (Article 13). Start writing it now, not the week before the deadline.</li>
+</ol>
+
+<p>If you are not sure whether the AI Act applies to your project at all, start with <code>regula assess</code> or use the <a href="/assess/">web assessment tool</a> &mdash; it walks you through the key questions without requiring any code scanning.</p>
+
+<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
+
+<h2>Related</h2>
+
+<ul>
+    <li><a href="/guides/eu-ai-act-python.html">EU AI Act compliance for Python developers</a></li>
+    <li><a href="/guides/eu-ai-act-recruitment-hiring.html">EU AI Act compliance for recruitment and hiring</a></li>
+    <li><a href="/guides/article-14-human-oversight.html">Article 14: human oversight requirements for AI systems</a></li>
+    <li><a href="/guides/article-9-risk-management.html">Article 9: risk management system requirements</a></li>
+    <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act risk tiers explained with code examples</a></li>
+    <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act apply to you?</a></li>
+    <li><a href="/about.html">About Regula</a></li>
+</ul>
+
+<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
+
+<p style="color:var(--text-dim);font-size:0.85rem;">
+    <strong>Last verified:</strong> 25 June 2026 &middot;
+    <strong>Author:</strong> Kuziva Muzondo &middot;
+    <em>Not legal advice. Regula identifies risk indicators in code for developer review. It does not determine compliance or replace professional legal counsel.</em>
+</p>
+
+</div>
+
+</article>
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

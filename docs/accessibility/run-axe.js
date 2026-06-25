@@ -8,6 +8,7 @@ const PAGES = [
   '/regions/south-korea-ai-regulation.html', '/regions/uk-ai-regulation.html',
   '/blog/writing.html', '/blog/blog-does-ai-act-apply.html',
   '/blog/blog-omnibus-delay.html', '/blog/blog-risk-tiers-in-code.html',
+  '/assess/',
   '/404.html',
 ];
 

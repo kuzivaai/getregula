@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+
+    <title>EU AI Act Article 5: Prohibited AI Practices — What Developers Must Avoid</title>
+    <meta name="description" content="Article 5 of the EU AI Act bans specific AI practices outright, with fines up to EUR 35 million or 7% of global turnover. A developer's guide to the eight prohibited categories and how to check your code.">
+    <meta name="keywords" content="EU AI Act Article 5, prohibited AI practices, social scoring AI, subliminal manipulation AI, biometric categorisation, emotion recognition workplace, AI Act banned practices, regula classify">
+    <meta name="author" content="Kuziva Muzondo">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/guides/article-5-prohibited-practices.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/guides/article-5-prohibited-practices.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/guides/article-5-prohibited-practices.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/guides/article-5-prohibited-practices.html">
+    <meta property="og:title" content="EU AI Act Article 5: Prohibited AI Practices — What Developers Must Avoid">
+    <meta property="og:description" content="Article 5 bans specific AI practices outright. Fines up to EUR 35 million or 7% of global turnover. What developers need to know.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula: EU AI Act compliance tool for code">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-06-25T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-06-25T00:00:00+00:00">
+    <meta property="article:section" content="AI Governance">
+    <meta property="article:tag" content="EU AI Act">
+    <meta property="article:tag" content="Article 5">
+    <meta property="article:tag" content="Prohibited Practices">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EU AI Act Article 5: Prohibited AI Practices — What Developers Must Avoid">
+    <meta name="twitter:description" content="Article 5 bans specific AI practices outright. Fines up to EUR 35 million or 7% of global turnover. What developers need to know.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.css">
+        <link rel="stylesheet" href="/assets/site.css">
+    </noscript>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "EU AI Act Article 5: Prohibited AI Practices — What Developers Must Avoid",
+      "description": "Article 5 of the EU AI Act bans specific AI practices outright, with fines up to EUR 35 million or 7% of global turnover. A developer's guide to the eight prohibited categories and how to check your code.",
+      "image": "https://getregula.com/assets/og-image.png",
+      "datePublished": "2026-06-25T00:00:00+00:00",
+      "dateModified": "2026-06-25T00:00:00+00:00",
+      "author": {
+        "@type": "Person",
+        "name": "Kuziva Muzondo",
+        "url": "https://getregula.com/about.html"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://getregula.com/assets/regula-logo.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/guides/article-5-prohibited-practices.html"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://getregula.com/guides/" },
+        { "@type": "ListItem", "position": 3, "name": "Article 5: Prohibited Practices" }
+      ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What AI practices does Article 5 of the EU AI Act prohibit?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Article 5 prohibits eight categories of AI practice: subliminal or manipulative techniques, exploitation of vulnerabilities, social scoring with detrimental treatment, criminal risk prediction based solely on profiling, untargeted facial image scraping, emotion inference in workplace and education settings, biometric categorisation by protected characteristics, and real-time remote biometric identification in public spaces for law enforcement (with narrow exceptions). A ninth category covering NCII and CSAM generation was added by the Digital Omnibus."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When did Article 5 prohibitions take effect?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The original eight Article 5 prohibitions have been in force since 2 February 2025, per Article 113(a) of the AI Act. The Omnibus addition under Article 5(1)(i) covering NCII and CSAM generation takes effect on 2 December 2026."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the penalties for deploying a prohibited AI system?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Under Article 99, deploying an AI system that falls under Article 5 carries fines of up to EUR 35 million or 7% of total worldwide annual turnover, whichever is higher. These are the highest penalties in the AI Act, above those for high-risk or general-purpose AI violations."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html">Regulations</a>
+        <a href="/blog/writing.html">Blog</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+<article>
+
+<div class="blog-hero" style="padding-bottom:24px;">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / <a href="/blog/writing.html">Guides</a> / Article 5
+    </div>
+    <h1>Article 5: prohibited AI practices <span class="hl">developers must avoid</span></h1>
+    <p class="standfirst">Some AI systems are not high-risk. They are outright banned. Article 5 of Regulation (EU) 2024/1689 lists specific AI practices that no provider or deployer may place on the EU market, put into service, or use. The penalties for getting this wrong are the highest in the Act: up to EUR 35 million or 7% of total worldwide annual turnover (Article 99).</p>
+    <p style="color:var(--text-dim);font-size:0.9rem;">25 June 2026 &middot; Kuziva Muzondo</p>
+</div>
+
+<div class="blog-body">
+
+<h2>Why Article 5 matters for developers</h2>
+
+<p>Most of the EU AI Act deals with obligations: risk management, documentation, conformity assessments. Article 5 is different. It draws hard lines. If your system falls into one of these categories, there is no conformity assessment path and no risk mitigation plan that makes it compliant. The system cannot be deployed in the EU.</p>
+
+<p>This matters at the code level because prohibited practices can appear in systems that were not designed to be harmful. A recommendation engine can cross into manipulative techniques if it exploits psychological vulnerabilities. A facial recognition module built for access control can cross into biometric categorisation if it infers race or religion. The line between high-risk and prohibited is in the implementation details.</p>
+
+<p>The prohibitions have been in force since 2 February 2025 (Article 113(a)). If you are building or deploying AI systems that reach EU users, these rules apply now.</p>
+
+<h2>The eight prohibited categories</h2>
+
+<p>Article 5(1) lists eight categories of prohibited AI practice, with a ninth added by the Digital Omnibus. Here is what the legislation says and where the boundaries sit.</p>
+
+<h3>5(1)(a): Subliminal and manipulative techniques</h3>
+
+<p>Prohibited: AI systems that deploy subliminal techniques beyond a person's consciousness, or purposefully manipulative or deceptive techniques, with the objective or effect of materially distorting behaviour and causing or likely causing significant harm.</p>
+
+<p>The operative elements are "beyond consciousness" and "significant harm." A/B testing a button colour is not subliminal manipulation. An AI system that uses psychological profiling to exploit cognitive biases &mdash; dynamically altering interface patterns to prevent users from disengaging &mdash; is closer to the line. If your system uses behavioural profiling to alter content delivery, ask whether a reasonable person would be aware of the technique and whether the outcome could cause them harm.</p>
+
+<h3>5(1)(b): Exploiting vulnerabilities</h3>
+
+<p>Prohibited: AI systems that exploit vulnerabilities due to age, disability, or social or economic situation, where the effect is to materially distort behaviour and cause significant harm.</p>
+
+<p>This targets systems that take advantage of specific vulnerabilities. An AI marketing system that targets elderly users with confusing subscription flows, or a lending AI that offers predatory terms to people in financial distress, would fall here. For <a href="/guides/eu-ai-act-recruitment-hiring.html">recruitment and hiring systems</a>, this means extra caution around age-related signals &mdash; treating candidates differently based on inferred age or disability is not just a discrimination risk under high-risk rules, it may be a prohibited practice.</p>
+
+<h3>5(1)(c): Social scoring</h3>
+
+<p>Prohibited: AI systems used by public authorities, or on their behalf, for evaluating or classifying natural persons based on their social behaviour or personal characteristics, where the resulting social score leads to detrimental or unfavourable treatment that is either:</p>
+
+<ol>
+    <li>(i) in social contexts unrelated to the contexts in which the data was originally collected, or</li>
+    <li>(ii) disproportionate to the social behaviour or its gravity.</li>
+</ol>
+
+<p>The scope is narrower than it first appears. It applies to public authorities (or those acting on their behalf), not private companies. And it triggers on the <em>combination</em> of social scoring plus detrimental treatment in unrelated contexts or disproportionate to the behaviour. A bank's credit scoring is not caught because it is a private entity and the scoring is contextually related. A local authority AI that uses parking fine data to deny housing applications would be.</p>
+
+<pre><code>$ regula classify --input "system using social credit scoring for citizens"
+PROHIBITED: Social scoring by public authorities or on their behalf</code></pre>
+
+<p>Regula's <a href="/blog/blog-classify-ai-system.html">classify command</a> checks system descriptions against Article 5 categories. Verify the classification against the full legislative text, because context matters.</p>
+
+<h3>5(1)(d): Criminal risk prediction from profiling</h3>
+
+<p>Prohibited: AI systems that assess criminal risk based solely on profiling or personality traits. The exception covers AI used to support human assessment already based on objective, verifiable facts directly linked to criminal activity.</p>
+
+<p>The word "solely" does the heavy lifting. Predicting who will commit crimes based on demographic data or personality profiles is prohibited. Analysing case evidence to support a human investigator's assessment of an identified suspect is not &mdash; provided the assessment is based on objective facts linked to a specific criminal activity. See <a href="/guides/article-14-human-oversight.html">Article 14: human oversight requirements</a> for the oversight obligations that apply to permitted law enforcement AI.</p>
+
+<h3>5(1)(e): Untargeted facial image scraping</h3>
+
+<p>Prohibited: AI systems that create or expand facial recognition databases through untargeted scraping of facial images from the internet or CCTV footage.</p>
+
+<p>The prohibition is on <em>untargeted</em> scraping &mdash; building a database by hoovering up every face from publicly available images or surveillance footage. Targeted collection under lawful authority (e.g., mugshots taken during a lawful arrest) is not covered, though it may trigger other obligations. If your code includes web scraping modules that collect images, check whether facial images are being gathered and whether the collection is targeted or a bulk trawl.</p>
+
+<h3>5(1)(f): Emotion inference in workplace and education</h3>
+
+<p>Prohibited: AI systems that infer emotions in the workplace or in educational institutions, except where the AI system is intended to be put into service or placed on the market for medical or safety reasons.</p>
+
+<p>If your system detects stress, engagement, or emotional states of workers or students, it falls here unless it has a medical or safety purpose. A factory system that monitors workers for fatigue to prevent industrial accidents may qualify for the safety exception. A call centre AI that monitors agent emotions to optimise customer service does not. The exception is narrow. If you are building <a href="/guides/eu-ai-act-python.html">AI systems in Python</a> or any other language that processes audio, video, or biometric signals from employees or students, check what inferences the system draws and what the purpose is.</p>
+
+<h3>5(1)(g): Biometric categorisation by protected characteristics</h3>
+
+<p>Prohibited: AI systems that categorise persons based on biometric data to infer race, political opinions, trade union membership, religious beliefs, sex life, or sexual orientation. Exception: labelling or filtering of lawfully acquired biometric datasets, or law enforcement categorisation.</p>
+
+<p>This is about <em>deducing or inferring</em> protected characteristics from biometric data &mdash; using facial features to infer ethnicity, gait analysis to infer political affiliation, or voice patterns to infer sexual orientation. If your model's feature pipeline extracts biometric signals and your output categories include any of the listed characteristics, this prohibition applies. The dataset labelling exception is narrow: it covers filtering an existing lawfully acquired dataset, not building a classifier to sort people by protected characteristics.</p>
+
+<h3>5(1)(h): Real-time remote biometric identification in public spaces</h3>
+
+<p>Prohibited: the use of real-time remote biometric identification systems in publicly accessible spaces for law enforcement purposes, except under narrow circumstances with judicial authorisation.</p>
+
+<p>The three permitted exceptions, each requiring prior judicial or independent administrative authorisation (or post-hoc authorisation in urgent cases within 24 hours), are:</p>
+
+<ul>
+    <li>Targeted search for specific victims of abduction, trafficking, or sexual exploitation, or for missing persons</li>
+    <li>Prevention of a specific, substantial, and imminent threat to life or a foreseeable terrorist attack</li>
+    <li>Identification of suspects of criminal offences punishable by at least four years of imprisonment</li>
+</ul>
+
+<p>Articles 5(2) through 5(6) set out the conditions and safeguards: necessity and proportionality assessments, judicial authorisation, notification to supervisory authorities, time and geographic limitations, and fundamental rights impact assessments. If you are building biometric identification for law enforcement, the <a href="/guides/article-9-risk-management.html">Article 9 risk management obligations</a> apply on top of these specific conditions.</p>
+
+<h3>5(1)(i): NCII and CSAM generation (Omnibus addition)</h3>
+
+<p>The Digital Omnibus (provisional agreement 7 May 2026, EP approved 16 June 2026; pending Council adoption) adds a ninth prohibited category: AI systems designed to generate non-consensual intimate imagery (NCII) or child sexual abuse material (CSAM). This takes effect on 2 December 2026. The obligation is on the design of the system, not just its use &mdash; image generation systems need technical safeguards to prevent generation of this material.</p>
+
+<h2>Timeline: what is already in force</h2>
+
+<p>The Article 5 prohibitions were the first part of the AI Act to take effect. Under Article 113(a), they have applied since 2 February 2025 &mdash; the original eight categories are enforceable now. The Omnibus addition under Article 5(1)(i) takes effect on 2 December 2026. For how Article 5 fits into the broader timeline, including the deferral of Annex III high-risk obligations to 2 December 2027, see <a href="/blog/blog-risk-tiers-in-code.html">risk tiers explained with code examples</a>.</p>
+
+<h2>Penalties</h2>
+
+<p>Article 99 sets the penalty ceiling for prohibited practice violations at EUR 35 million or 7% of total worldwide annual turnover, whichever is higher. For comparison, high-risk non-compliance carries fines of up to EUR 15 million or 3%. Prohibited practices carry the highest penalties in the Act. National market surveillance authorities enforce these provisions; each Member State designates its own competent authority.</p>
+
+<h2>How to check your system</h2>
+
+<p>The first question is whether your system falls into any of the prohibited categories. Regula can help with the technical side.</p>
+
+<h3>Step 1: Classify your system</h3>
+
+<p>Use <code>regula classify</code> with a description of your system to check whether it matches a prohibited category:</p>
+
+<pre><code>$ regula classify --input "system using social credit scoring for citizens"
+PROHIBITED: Social scoring by public authorities or on their behalf</code></pre>
+
+<p>If the classification returns PROHIBITED, that requires legal review. Regula matches on patterns in the description, but the legal determination depends on context that code scanning cannot fully assess.</p>
+
+<h3>Step 2: Scan your codebase for risk patterns</h3>
+
+<p>Run <code>regula scan</code> on your codebase to identify risk indicators. Patterns that may indicate proximity to prohibited practices include:</p>
+
+<ul>
+    <li>Biometric data processing (facial recognition, emotion detection, gait analysis)</li>
+    <li>Social scoring or behavioural profiling functions</li>
+    <li>Web scraping modules that collect images at scale</li>
+    <li>Predictive models with criminal justice or law enforcement labels in training data</li>
+    <li>Emotion inference from audio, video, or physiological signals</li>
+</ul>
+
+<p>A risk indicator is not a compliance finding. Emotion detection code does not mean your system is prohibited &mdash; context determines that. But it tells you where to look.</p>
+
+<h3>Step 3: Get a broader assessment</h3>
+
+<p>Use the <a href="/assess/">web assessment tool</a> if you want a non-technical overview of where your system sits. For a full <a href="/blog/blog-does-ai-act-apply.html">applicability check</a>, combine the classify output with a review of your system's purpose, deployment context, and user base.</p>
+
+<h2>Grey areas developers should watch</h2>
+
+<p>The prohibited categories have clear centres and blurry edges. Here are the areas where reasonable people disagree and where developers should tread carefully:</p>
+
+<ul>
+    <li><strong>Personalisation vs. manipulation.</strong> Article 5(1)(a) prohibits techniques that distort behaviour beyond a person's consciousness. Most recommendation algorithms will not cross this line, but engagement-maximisation systems that exploit psychological vulnerabilities might.</li>
+    <li><strong>Emotion detection vs. sentiment analysis.</strong> Article 5(1)(f) prohibits emotion inference in workplace and education. Processing text sentiment in customer reviews is different from inferring an employee's emotional state from their webcam. But if your system categorises employee messages as "frustrated" or "disengaged," seek legal advice.</li>
+    <li><strong>Demographic analysis vs. biometric categorisation.</strong> Article 5(1)(g) prohibits categorisation by protected characteristics from biometric data. Aggregate demographic statistics are different from individual-level categorisation by race from facial images.</li>
+</ul>
+
+<h2>What code scanning cannot tell you</h2>
+
+<p>Regula flags risk patterns and classifies system descriptions against Article 5 categories. It cannot determine whether your system is legally prohibited, because that depends on the deployer's identity, the system's actual effect, whether an exception applies, and jurisdiction-specific interpretation by national authorities.</p>
+
+<p>Code scanning and legal review are complementary. Regula identifies where to look. A qualified legal professional determines what it means. See the <a href="/blog/writing.html">guides and blog</a> for more on AI Act compliance from a developer's perspective.</p>
+
+<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
+
+<h2>Related</h2>
+
+<ul>
+    <li><a href="/guides/article-9-risk-management.html">Article 9: risk management system requirements</a></li>
+    <li><a href="/guides/article-14-human-oversight.html">Article 14: human oversight for high-risk AI</a></li>
+    <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act risk tiers explained with code examples</a></li>
+    <li><a href="/blog/blog-classify-ai-system.html">How to classify your AI system under the EU AI Act</a></li>
+    <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act apply to you?</a></li>
+    <li><a href="/about.html">About Regula: what it does and does not do</a></li>
+</ul>
+
+<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
+
+<p style="color:var(--text-dim);font-size:0.85rem;">
+    <strong>Last verified:</strong> 25 June 2026 &middot;
+    <strong>Author:</strong> Kuziva Muzondo &middot;
+    <em>Not legal advice. Regula identifies risk indicators in code for developer review. It does not determine compliance or replace professional legal counsel.</em>
+</p>
+
+</div>
+
+</article>
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
