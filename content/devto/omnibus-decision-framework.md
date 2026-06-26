@@ -1,4 +1,4 @@
-<!-- STALE — pattern count and Omnibus dates need updating from site_facts.py before republishing. Last verified: v1.7.0, April 2026. Current: v1.7.1, 398 patterns, Omnibus agreed 7 May 2026. -->
+<!-- STALE — pattern count and Omnibus dates need updating from site_facts.py before republishing. Last verified: v1.7.0, April 2026. Current: v1.7.1, 419 patterns, Omnibus agreed 7 May 2026. -->
 ---
 title: "August 2026 or December 2027? A Developer's Guide to the Omnibus Uncertainty"
 published: true

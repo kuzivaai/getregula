@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-26T08:35:23.485864+00:00",
+  "generated_at": "2026-06-26T17:44:39.971300+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -10,8 +10,8 @@
   "counts": {
     "commands": 61,
     "patterns": {
-      "tier_groups": 54,
-      "tier_regexes": 398,
+      "tier_groups": 57,
+      "tier_regexes": 419,
       "ai_indicators": 212,
       "gpai_training": 17,
       "architecture": 38,
@@ -20,14 +20,14 @@
       "oversight": 4,
       "credential": 18,
       "agentic_categories": 30,
-      "grand_total": 701,
-      "marketing_409": 446,
-      "historical_330_bucket": 458
+      "grand_total": 722,
+      "marketing_409": 467,
+      "historical_330_bucket": 479
     },
     "frameworks": 12,
     "languages": 8,
     "tests": {
-      "total_functions": 1490,
+      "total_functions": 1523,
       "per_file": {
         "test_agent_governance.py": 28,
         "test_ai_codegen.py": 0,
@@ -65,6 +65,7 @@
         "test_manifest_timestamp.py": 13,
         "test_mcp_server.py": 6,
         "test_monitor.py": 24,
+        "test_multi_jurisdiction.py": 33,
         "test_new_commands.py": 14,
         "test_open_questions.py": 5,
         "test_owasp_agentic.py": 24,

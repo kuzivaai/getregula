@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// test_scanner_js.js — Tests for site/assess/scanner.js (627 detection patterns)
+// test_scanner_js.js — Tests for site/assess/scanner.js (648 detection patterns)
 // Verifies parity with Python CLI classifications on all 13 benchmark fixtures.
 // Run: node tests/test_scanner_js.js
 

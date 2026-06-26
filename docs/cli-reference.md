@@ -9,6 +9,8 @@ Verify command syntax against your installed version with `regula --help` and `r
 ```bash
 # Find out if the EU AI Act applies to your product (a few yes/no questions, no code required)
 regula assess
+regula assess --jurisdiction korea      # South Korea AI Basic Act (9 questions)
+regula assess --jurisdiction colorado   # Colorado SB 26-189 (8 questions)
 
 # Scan a project for risk indicators
 regula check .
@@ -18,6 +20,7 @@ regula check . --ci              # Exit 1 on any WARN or BLOCK finding
 regula check . --strict          # Exit 1 on WARN-tier findings
 regula check . --skip-tests      # Exclude test files from results
 regula check . --min-tier limited_risk  # Filter out minimal_risk noise
+regula check . --jurisdictions eu,korea,colorado  # Multi-jurisdiction scan
 
 # Classify a text input
 regula classify --input "import tensorflow; cv screening model"

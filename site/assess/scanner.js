@@ -1,6 +1,6 @@
 // scanner.js — Regula client-side EU AI Act detection pattern scanner
 // regula-ignore: this file defines compliance detection rules, not prohibited AI practices
-// Ported from scripts/risk_patterns.py + scripts/classify_risk.py (627 detection patterns)
+// Ported from scripts/risk_patterns.py + scripts/classify_risk.py (648 detection patterns)
 // All logic runs client-side. Nothing leaves the browser.
 // Licensed under the Detection Rule License (DRL) 1.1.
 
@@ -16,7 +16,7 @@
 // See .claude/handover.md for the full regeneration process used to create this file.
 // =====================================================================
 
-// Pattern data (627 detection patterns: 398 risk + 212 indicators + 17 GPAI)
+// Pattern data (648 detection patterns: 419 risk + 212 indicators + 17 GPAI)
 
 const PROHIBITED_PATTERNS = {
   "subliminal_manipulation": {

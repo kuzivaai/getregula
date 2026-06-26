@@ -2,19 +2,19 @@
 
 *Canonical source of truth for every numeric claim on the landing pages. Regenerate by running `python3 scripts/site_facts.py`.*
 
-Generated: `2026-06-26T08:35:23.485864+00:00`
+Generated: `2026-06-26T17:44:39.971300+00:00`
 
 ## Top-line counts
 
 | Claim | Count | Source file |
 |---|---|---|
 | CLI commands | **61** | `scripts/cli.py` |
-| Detection patterns (historical bucket) | **458** | see breakdown below |
-| Detection patterns (grand total, inclusive) | **701** | see breakdown below |
-| Tiered risk pattern groups | 54 | `scripts/risk_patterns.py` |
+| Detection patterns (historical bucket) | **479** | see breakdown below |
+| Detection patterns (grand total, inclusive) | **722** | see breakdown below |
+| Tiered risk pattern groups | 57 | `scripts/risk_patterns.py` |
 | Compliance frameworks | **12** | `references/framework_crosswalk.yaml` + EU AI Act |
 | Programming languages | 8 | `scripts/ast_engine.py` |
-| Test functions (all files) | 1490 | `tests/test_*.py` |
+| Test functions (all files) | 1523 | `tests/test_*.py` |
 
 ## Detection pattern breakdown
 
@@ -22,18 +22,18 @@ Regula ships detection patterns across three source files. The landing page risk
 
 | Category | Source | Count |
 |---|---|---|
-| Tiered risk regexes (prohibited, high-risk, limited-risk, AI security, bias) | `risk_patterns.py` | 398 |
+| Tiered risk regexes (prohibited, high-risk, limited-risk, AI security, bias) | `risk_patterns.py` | 419 |
 | Credential detectors | `credential_check.py` | 18 |
 | OWASP Agentic categories | `agent_monitor.py` | 30 |
-| **Marketing claim (tier + cred + agentic)** | composite | **446** |
+| **Marketing claim (tier + cred + agentic)** | composite | **467** |
 | AI_INDICATORS (libraries, model files, API endpoints, ML patterns, domain keywords) | `risk_patterns.py` | 212 |
 | GPAI training code detectors | `risk_patterns.py` | 17 |
 | Architecture detectors | `code_analysis.py` | 38 |
 | Data source detectors | `code_analysis.py` | 10 |
 | Logging detectors | `code_analysis.py` | 4 |
 | Oversight detectors | `code_analysis.py` | 4 |
-| **Grand total (inclusive)** | across 4 files | **701** |
-| **Historical 330 bucket** | tiered + arch + cred + oversight | **458** |
+| **Grand total (inclusive)** | across 4 files | **722** |
+| **Historical 330 bucket** | tiered + arch + cred + oversight | **479** |
 
 ## Honesty notes
 

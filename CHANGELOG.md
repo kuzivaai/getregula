@@ -7,6 +7,51 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **Multi-jurisdiction support** — pattern-based risk indication now covers
+  3 jurisdictions: EU AI Act (Regulation (EU) 2024/1689), South Korea AI
+  Basic Act (Act No. 20556, in force 22 January 2026), and Colorado
+  SB 26-189 (disclosure-only, effective 1 January 2027).
+- **`scripts/regulation_map.py`** — new module mapping jurisdictions to
+  their regulation configs, risk patterns, and questionnaire flows.
+- **3 jurisdiction YAML configs** (`references/jurisdictions/eu_ai_act.yaml`,
+  `south_korea.yaml`, `colorado.yaml`) — each defines the jurisdiction's
+  risk tiers, article references, and obligation mappings.
+- **`--jurisdictions` flag on `regula check`** — comma-separated list
+  (e.g. `--jurisdictions eu,korea,colorado`) applies all relevant
+  framework mappings simultaneously.
+- **`--jurisdiction` flag on `regula assess`** — selects the jurisdiction
+  questionnaire (`eu`, `korea`, or `colorado`).
+- **Domain detection** (`detect_domains` in `classify_risk.py`) — identifies
+  housing, transportation, and other domain contexts for jurisdiction-
+  specific risk mapping.
+- **Web assess jurisdiction selector** — Korea (9 questions) and Colorado
+  (8 questions) questionnaires available via the web tool at
+  `https://getregula.com/assess/?j=kr` and `?j=co`.
+- **New housing and transportation detection patterns** — Housing
+  (Colorado SB 26-189) and Transportation (Korea AI Basic Act Art 33)
+  risk categories added to `risk_patterns.py`.
+- **Emotion inference pattern split** — separated for correct domain
+  mapping across jurisdictions (EU workplace restriction vs Korea/Colorado
+  broader scope).
+- **33 new multi-jurisdiction tests** covering jurisdiction loading,
+  domain detection, regulation mapping, questionnaire flows, and
+  path traversal protection.
+
+### Fixed
+
+- **YAML fallback parser** enhanced for flow mappings (`{key: value}`)
+  used in jurisdiction config files.
+- **Path traversal protection** on jurisdiction loading — prevents
+  loading configs from outside `references/jurisdictions/`.
+
+### Changed
+
+- **WCAG accessibility fixes** — contrast improvements, `focus-visible`
+  rules, and `aria-pressed` attributes on jurisdiction selector buttons
+  in the web assess tool.
+
 ## [1.7.3] — 2026-06-17
 
 Security hardening and correctness release. Fixes `regula register`
