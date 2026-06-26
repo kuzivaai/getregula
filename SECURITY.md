@@ -82,7 +82,7 @@ disclosure, etc.), include that in your initial report.
 | `semgrep --config p/security-audit --config p/python` | Each release | 0 findings on 200 rules / 129 files |
 | `pip-audit` | Each release | 0 vulnerabilities (zero runtime deps) |
 | `regula self-test` | Each commit | 6 / 6 |
-| Custom regression suite | Each commit | 2,395 unique / 2,395 pytest-collected |
+| Custom regression suite | Each commit | 2,461 unique / 2,461 pytest-collected |
 
 The full posture is in [`docs/TRUST.md`](docs/TRUST.md), Section 7.
 
@@ -98,8 +98,8 @@ Honest list, also recorded in `docs/TRUST.md`:
   <https://github.com/kuzivaai/getregula>.
 - **Sigstore release signing — on the roadmap, not yet shipped.**
   Current method: reproducible builds from `python3 -m build` against
-  the published commit hash. v1.7.0 will add Sigstore-keyless signing
-  via PyPI's trusted publishing flow.
+  the published commit hash. Sigstore-keyless signing via PyPI's
+  trusted publishing flow is planned but has not yet been implemented.
 - **No formal CVE program (yet).** The next public CVE we receive will
   also be the moment we register as a CNA. Until then, GitHub Security
   Advisory + email.
@@ -110,13 +110,13 @@ Honest list, also recorded in `docs/TRUST.md`:
 # Verify the wheel matches the published commit
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
-git checkout v1.7.0
+git checkout v1.7.3
 python3 -m build
-sha256sum dist/regula_ai-1.7.0-py3-none-any.whl
+sha256sum dist/regula_ai-1.7.3-py3-none-any.whl
 
 # Compare against the wheel served by PyPI
-pip download --no-deps -d /tmp/verify regula-ai==1.7.0
-sha256sum /tmp/verify/regula_ai-1.7.0-py3-none-any.whl
+pip download --no-deps -d /tmp/verify regula-ai==1.7.3
+sha256sum /tmp/verify/regula_ai-1.7.3-py3-none-any.whl
 ```
 
 The two SHA-256 hashes should match. If they do not, **stop and report

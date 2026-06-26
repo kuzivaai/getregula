@@ -9,10 +9,10 @@ Regula's detection engine is a static analysis system that classifies source cod
 | Field | Value |
 |---|---|
 | Name | Regula Detection Engine |
-| Version | 1.7.0 (this doc generated 2026-04-16) |
+| Version | 1.7.3 (this doc updated 2026-06-26) |
 | Type | Rule-based static analysis (regex + AST pattern matching) |
 | Training data | None — not a machine learning model |
-| Detection patterns | 398 tiered risk regexes across 54 categories (10 prohibited + 15 high-risk + 4 limited-risk + 17 AI security + 2 bias + 6 governance observations) + 17 GPAI training regexes. Regenerate with `python3 scripts/site_facts.py`. |
+| Detection patterns | 419 tiered risk regexes across 57 categories (10 prohibited + 18 high-risk + 4 limited-risk + 17 AI security + 2 bias + 6 governance observations) + 17 GPAI training regexes. Includes housing (Colorado SB 26-189), transportation (Korea AI Basic Act Art 33), and emotion inference split categories. Regenerate with `python3 scripts/site_facts.py`. |
 | Languages supported | Python, JavaScript, TypeScript, Java, Go, Rust, C, C++ |
 | Compliance frameworks | 12 with full crosswalk data (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO) |
 | Dependencies | Zero runtime (Python 3.10+ stdlib only); `regula[signing]` extra adds `cryptography` + `asn1crypto` for optional Ed25519 + RFC 3161 manifest signing. |
@@ -21,7 +21,7 @@ Regula's detection engine is a static analysis system that classifies source cod
 
 ## Intended Use
 
-**Primary use case:** Combine code scanning with governance questionnaires to assess EU AI Act compliance. Scan source code for risk patterns, run structured self-assessments for organisational obligations code cannot verify (Articles 9, 17, 27, 72), and generate compliance documentation scaffolds.
+**Primary use case:** Combine code scanning with governance questionnaires to assess compliance across 3 jurisdictions: EU AI Act (Regulation (EU) 2024/1689), South Korea AI Basic Act (Act No. 20556), and Colorado SB 26-189. Scan source code for risk patterns, run structured self-assessments for organisational obligations code cannot verify (Articles 9, 17, 27, 72), and generate compliance documentation scaffolds.
 
 **Intended users:**
 
@@ -144,7 +144,7 @@ Regula is explicitly **NOT** intended for:
 
 ### Continuous validation
 
-- 2,395 pytest-collected tests (2,395 unique; no duplication detected as of 2026-06-23)
+- 2,461 pytest-collected tests (2,461 unique; no duplication detected as of 2026-06-23)
 - 11 CLI integration tests
 - 6 self-test assertions (`regula self-test`)
 - 10 health checks (`regula doctor`)
@@ -154,8 +154,8 @@ Regula is explicitly **NOT** intended for:
 
 ## Versioning
 
-This model card describes Regula v1.7.0. If the detection patterns, classification logic, or evaluation methodology change, this document should be updated in the same commit.
+This model card describes Regula v1.7.3. If the detection patterns, classification logic, or evaluation methodology change, this document should be updated in the same commit.
 
 ---
 
-*Last updated: 25 April 2026.*
+*Last updated: 26 June 2026.*

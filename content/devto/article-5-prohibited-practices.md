@@ -1,4 +1,4 @@
-<!-- STALE — trilogue references need updating. Omnibus agreed 7 May 2026. Current: v1.7.1, 398 patterns. -->
+<!-- STALE — trilogue references need updating. Omnibus agreed 7 May 2026. Current: v1.7.1, 419 patterns. -->
 ---
 title: "EU AI Act Article 5 Is Already Live: Scanning Your Code for Prohibited AI Practices"
 published: true

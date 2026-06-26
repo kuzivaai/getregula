@@ -542,7 +542,7 @@ def verify_facts() -> int:
         return 2
 
     canonical = {
-        "398": ("tier_regexes", facts["counts"]["patterns"]["tier_regexes"]),
+        "419": ("tier_regexes", facts["counts"]["patterns"]["tier_regexes"]),
         "61": ("commands", facts["counts"]["commands"]),
         "12": ("frameworks", facts["counts"]["frameworks"]),
         "8": ("languages", facts["counts"]["languages"]),
@@ -582,7 +582,7 @@ def verify_facts() -> int:
             # Check that the canonical number appears in the file in the
             # expected context (near the fact name or unit word).
             # This catches cases where someone changes the code but not the docs.
-            # We search for common patterns like "398 patterns", "61 commands",
+            # We search for common patterns like "419 patterns", "61 commands",
             # "12 frameworks", "8 languages".
             unit_patterns = {
                 "tier_regexes": rf"(?<!\d){actual_str}\s*(?:pattern|regex|risk\s+pattern)",

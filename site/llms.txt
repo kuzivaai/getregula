@@ -41,7 +41,7 @@ Regula combines two approaches: (1) static code analysis for risk patterns, depe
 - [Global AI regulation tracker](https://getregula.com/regions/regulations.html): Comparative tracker across jurisdictions
 - [UK AI regulation](https://getregula.com/regions/uk-ai-regulation.html): ICO, DSIT, principles-based approach
 - [UAE AI governance](https://getregula.com/regions/uae.html): CBUAE, ADIA framework
-- [Colorado AI regulation](https://getregula.com/regions/colorado-ai-regulation.html): SB 25-189 disclosure requirements
+- [Colorado AI regulation](https://getregula.com/regions/colorado-ai-regulation.html): SB 26-189 disclosure requirements
 - [South Korea AI regulation](https://getregula.com/regions/south-korea-ai-regulation.html): AI Basic Act
 - [South Africa AI policy](https://getregula.com/regions/south-africa-ai-policy.html): Draft National AI Policy tracker
 - [Brazil AI regulation](https://getregula.com/regions/brazil-ai-regulation.html): PL 2338/2023 and LGPD
@@ -50,7 +50,7 @@ Regula combines two approaches: (1) static code analysis for risk patterns, depe
 
 - **What is Regula?** An open-source CLI that scans Python, JavaScript, TypeScript, Java, Go, Rust, C, and C++ code for EU AI Act risk patterns. It classifies systems into the Act's four risk tiers, maps findings to Articles 5-15, generates compliance gap assessments, and produces auditor-ready evidence packs. Runs fully offline with zero dependencies.
 - **What does Regula NOT do?** It does not determine final legal risk classification (that depends on intended purpose and deployment context, which are business decisions). It does not verify organisational compliance processes (Articles 9, 17, 27, 72). It does not replace legal advice. See [what-regula-does-not-do.md](https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md) for the full scope statement.
-- **What frameworks does Regula map to?** EU AI Act, GDPR, DORA, NIS2, ISO 42001, NIST AI RMF, OWASP LLM Top 10, OWASP Agentic Top 10, UK AI principles, Colorado SB 25-189, and others (12 frameworks total via `references/framework_crosswalk.yaml`).
+- **What frameworks does Regula map to?** EU AI Act, ISO 42001, NIST AI RMF, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, ICO/DSIT UK AI principles, LGPD, CRA, and South Korea AI Basic Act (12 frameworks total via `references/framework_crosswalk.yaml`).
 - **When are the EU AI Act deadlines?** Article 5 prohibitions: 2 Feb 2025 (already enforceable). GPAI obligations: 2 Aug 2025 (already enforceable). High-risk (Annex III): deferred to 2 Dec 2027 under the Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026 (pending Council adoption and OJ publication). Annex I product-embedded: deferred to 2 Aug 2028. Code of Practice on AI content marking: finalised 10 Jun 2026.
 - **Does the EU AI Act apply outside the EU?** Yes. Article 2(1)(c) applies extraterritorially to any provider or deployer whose AI system output is used within the EU, regardless of where the company is established.
 - **How accurate is Regula?** Published precision on a random corpus of 115 real-world findings: 83.5%. See [benchmarks](https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md) for methodology and confidence intervals.

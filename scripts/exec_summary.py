@@ -210,4 +210,4 @@ def _pattern_count() -> int:
         facts = site_facts.compute()
         return facts["counts"]["patterns"]["tier_regexes"]
     except Exception:
-        return 398  # fallback
+        return 419  # fallback

@@ -1,13 +1,13 @@
 <!-- mcp-name: io.github.kuzivaai/regula -->
 # Regula
 
-**EU AI Act compliance tool for code. Combines code scanning with governance questionnaires.**
+**AI governance risk indication for code — EU AI Act, South Korea AI Basic Act, Colorado SB 26-189. Combines code scanning with governance questionnaires.**
 
 [![PyPI](https://img.shields.io/pypi/v/regula-ai)](https://pypi.org/project/regula-ai/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-2395%20passing-brightgreen.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-2461%20passing-brightgreen.svg)](#verified-numbers)
 [![WCAG 2.2 AA](https://img.shields.io/badge/WCAG%202.2-AA-success.svg)](docs/accessibility/README.md)
 
 ---
@@ -34,7 +34,7 @@
 
 ## What it does
 
-If you ship an AI product to EU users, the EU AI Act applies to you -- regardless of where you are based or how small your team is. Regula combines code scanning with governance questionnaires: it scans your codebase for risk indicators, classifies your system into one of the Act's four risk tiers, and tells you which obligations apply. For the obligations code can't verify (risk management systems, quality management, fundamental rights impact assessments), it provides structured self-assessment questionnaires. It runs in your terminal, in CI/CD, or as a pre-commit hook. No external dependencies, no API calls, no data leaves your machine. Unlike cloud-based scanners, Regula makes zero network calls during scanning — no DPA required, no vendor data breach risk, no GDPR processor relationship.
+If you ship an AI product to EU users, the EU AI Act applies to you -- regardless of where you are based or how small your team is. Regula combines code scanning with governance questionnaires: it scans your codebase for risk indicators, classifies your system into one of the Act's four risk tiers, and tells you which obligations apply. Multi-jurisdiction support covers the EU AI Act, South Korea's AI Basic Act (Act No. 20556), and Colorado SB 26-189 -- pattern-based risk indication across 3 jurisdictions, each with its own YAML config and tailored questionnaire. For the obligations code can't verify (risk management systems, quality management, fundamental rights impact assessments), it provides structured self-assessment questionnaires. It runs in your terminal, in CI/CD, or as a pre-commit hook. No external dependencies, no API calls, no data leaves your machine. Unlike cloud-based scanners, Regula makes zero network calls during scanning — no DPA required, no vendor data breach risk, no GDPR processor relationship.
 
 ## Quick start
 
@@ -49,7 +49,8 @@ regula assess               # 5 yes/no questions → your risk tier
 
 **Want to scan your code?**
 ```bash
-regula check .              # 398 patterns, 8 languages, 30 seconds
+regula check .              # 419 patterns, 8 languages, 30 seconds
+regula check . --jurisdictions eu,korea,colorado  # all 3 jurisdictions
 ```
 
 **Need documentation for auditors?**
@@ -127,6 +128,8 @@ The EU AI Act defines four risk tiers. Regula maps code patterns to each:
 
 Every finding includes the relevant Article reference and explains when exceptions may apply. Regula flags patterns -- it does not make legal determinations.
 
+**Multi-jurisdiction support.** Beyond the EU AI Act, Regula maps risk patterns to South Korea's AI Basic Act (Act No. 20556, in force 22 January 2026) and Colorado SB 26-189 (disclosure-only, effective 1 January 2027). Use `--jurisdictions eu,korea,colorado` on `regula check` or `--jurisdiction korea` on `regula assess` to apply the relevant framework. Each jurisdiction has its own YAML config (`references/jurisdictions/`) and tailored web questionnaire.
+
 ## Key commands
 
 | Command | What it does |
@@ -177,9 +180,10 @@ Seven endpoints: `/health`, `/v1/check`, `/v1/classify`, `/v1/gap`, `/v1/questio
 
 **Regula is:**
 
-- A development-time compliance tool that combines static code analysis with governance questionnaires, mapping both to EU AI Act obligations
+- A development-time compliance tool that combines static code analysis with governance questionnaires, mapping both to obligations across 3 jurisdictions (EU AI Act, South Korea AI Basic Act, Colorado SB 26-189)
 - A shift-left compliance scanner -- like ESLint for regulatory risk, running in your terminal or CI/CD pipeline
 - A questionnaire-based assessment tool for organisational obligations that code patterns cannot verify (Articles 9, 17, 27, 72)
+- Pattern-based risk indication across 3 jurisdictions, not a legal compliance certificate
 - A starting point for compliance awareness, not a finish line
 
 **Regula is not:**
@@ -237,10 +241,10 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | What | Count |
 |------|------:|
 | CLI commands | 61 |
-| Risk detection patterns (regexes) | 398 |
+| Risk detection patterns (regexes) | 419 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Compliance frameworks mapped | 12 |
-| Tests (pytest --collect-only, all passing) | 2,395 |
+| Tests (pytest --collect-only, all passing) | 2,461 |
 | Required production dependencies | 0 |
 
 For buyer-facing trust evidence (every number above paired with a reproducible command, plus precision/recall benchmark, security posture, and audit trail), see [`docs/TRUST.md`](docs/TRUST.md).

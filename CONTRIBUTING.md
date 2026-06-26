@@ -79,7 +79,7 @@ Regula scans source code for AI-related patterns. To add support for a new progr
 
 ## Testing
 
-Tests are spread across 56 files in `tests/`. The main classification tests live in `tests/test_classification.py` (a custom runner with 835 test functions); the rest are pytest-native. Run the full verification before any PR:
+Tests are spread across 58 files in `tests/`. The main classification tests live in `tests/test_classification.py` (a custom runner with 437 test functions); the rest are pytest-native. Run the full verification before any PR:
 
 The test pattern is:
 
