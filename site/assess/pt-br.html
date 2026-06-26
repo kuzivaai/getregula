@@ -9,7 +9,7 @@
     </style>
     <meta name="theme-color" content="#070711">
     <title>Avaliação da Lei de IA da UE: Ela se Aplica a Você? | Regula</title>
-    <meta name="description" content="Avalia\u00e7\u00e3o gratuita de risco da Lei de IA da UE. Responda 14 perguntas para conhecer seu n\u00edvel de risco, obriga\u00e7\u00f5es legais e pr\u00f3ximos passos. Equipes de desenvolvimento tamb\u00e9m podem analisar c\u00f3digo contra 627 padr\u00f5es de detec\u00e7\u00e3o. Sem cadastro, sem instala\u00e7\u00e3o.">
+    <meta name="description" content="Avalia\u00e7\u00e3o gratuita de risco da Lei de IA da UE. Responda 15 perguntas para conhecer seu n\u00edvel de risco, obriga\u00e7\u00f5es legais e pr\u00f3ximos passos. Equipes de desenvolvimento tamb\u00e9m podem analisar c\u00f3digo contra 627 padr\u00f5es de detec\u00e7\u00e3o. Sem cadastro, sem instala\u00e7\u00e3o.">
     <meta name="author" content="Kuziva Muzondo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://getregula.com/assess/pt-br.html">
@@ -37,7 +37,7 @@
       "@type": "WebApplication",
       "name": "Regula — Avaliação da Lei de IA da UE",
       "url": "https://getregula.com/assess/pt-br.html",
-      "description": "Ferramenta gratuita de avaliação de risco da Lei de IA da UE. Responda 14 perguntas para conhecer seu nível de risco e obrigações legais. Equipes de desenvolvimento também podem analisar código contra 627 padrões de detecção.",
+      "description": "Ferramenta gratuita de avaliação de risco da Lei de IA da UE. Responda 15 perguntas para conhecer seu nível de risco e obrigações legais. Equipes de desenvolvimento também podem analisar código contra 627 padrões de detecção.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Any (web browser)",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
@@ -305,9 +305,9 @@
   <!-- HERO -->
   <div class="hero" id="heroSection">
     <h1>A Lei de IA da UE <span>se aplica a você?</span></h1>
-    <p>Descubra em menos de 5 minutos. Responda 14 perguntas sobre seu sistema de IA para conhecer seu nível de risco, suas obrigações legais e o que fazer a seguir. Nada sai do seu navegador.</p>
+    <p>Descubra em menos de 5 minutos. Responda 15 perguntas sobre seu sistema de IA para conhecer seu nível de risco, suas obrigações legais e o que fazer a seguir. Nada sai do seu navegador.</p>
     <div class="hero-stats">
-      <span>14 perguntas, menos de 5 minutos</span>
+      <span>15 perguntas, menos de 5 minutos</span>
       <span>Classificação de risco instantânea</span>
       <span>Nada sai do seu navegador</span>
     </div>
@@ -325,7 +325,7 @@
     </div>
     <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da avaliação" id="progressWrap">
       <div class="progress-label" aria-live="polite">
-        <span id="progressText">Pergunta 1 de 14</span>
+        <span id="progressText">Pergunta 1 de 15</span>
         <span id="progressPct">0%</span>
       </div>
       <div class="progress-track"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
@@ -497,6 +497,14 @@ const QUESTIONS = [
     article: "Artigo 50",
     weight: { yes: 15, no: -5, unsure: 5 },
     signal: "transparency"
+  },
+  {
+    id: "profiling",
+    text: "Este sistema cria perfis de indivíduos com base em seus dados pessoais (ex.: rastreamento de desempenho, análise de comportamento, modelagem de preferências, pontuação de risco baseada em características pessoais)?",
+    help: "Se um sistema perfila pessoas naturais conforme definido no Artigo 4(4) do RGPD, as isenções do Artigo 6(3) NÃO podem se aplicar — o sistema é automaticamente de alto risco, independentemente de quão restrita ou procedimental seja sua função. Perfilamento significa qualquer processamento automatizado de dados pessoais para avaliar aspectos pessoais.",
+    article: "Article 6(3), GDPR Article 4(4)",
+    weight: { yes: 15, no: 0, unsure: 5 },
+    signal: "profiling"
   },
   {
     id: "narrow_procedural",
@@ -758,6 +766,13 @@ function calculateResults() {
     if (q.signal === "transparency" && a === "yes") transparencySignals.push(q.id);
     if (q.signal === "exemption" && a === "yes") exemptionSignals.push(q.id);
     if (q.signal === "gap_assessment") gapSignals[q.id] = a;
+  }
+
+  // Article 6(3) profiling gate: if the system profiles individuals,
+  // exemptions cannot apply (hard carve-out in second subparagraph)
+  const profilingAnswer = answers.profiling || "unsure";
+  if (profilingAnswer === "yes") {
+    exemptionSignals = [];  // nullify any claimed exemptions
   }
 
   // Score: map adjustment to 0-100

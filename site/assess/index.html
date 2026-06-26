@@ -9,7 +9,7 @@
     </style>
     <meta name="theme-color" content="#070711">
     <title>EU AI Act Assessment: Does It Apply to You? | Regula</title>
-    <meta name="description" content="Free EU AI Act risk assessment. Answer 14 questions to find your risk tier, legal obligations, and what to do next. Development teams can also scan code against 627 detection patterns. No signup, no install.">
+    <meta name="description" content="Free EU AI Act risk assessment. Answer 15 questions to find your risk tier, legal obligations, and what to do next. Development teams can also scan code against 627 detection patterns. No signup, no install.">
     <meta name="author" content="Kuziva Muzondo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://getregula.com/assess/">
@@ -38,7 +38,7 @@
       "@type": "WebApplication",
       "name": "Regula EU AI Act Assessment",
       "url": "https://getregula.com/assess/",
-      "description": "Free EU AI Act risk assessment tool. Answer 14 questions to find your risk tier and legal obligations. Development teams can also scan code against 627 detection patterns.",
+      "description": "Free EU AI Act risk assessment tool. Answer 15 questions to find your risk tier and legal obligations. Development teams can also scan code against 627 detection patterns.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Any (web browser)",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
@@ -303,9 +303,9 @@
   <!-- HERO -->
   <div class="hero" id="heroSection">
     <h1>Does the EU AI Act <span>apply to you?</span></h1>
-    <p>Find out in under 5 minutes. Answer 14 questions about your AI system to learn your risk tier, your legal obligations, and what to do next. Nothing leaves your browser.</p>
+    <p>Find out in under 5 minutes. Answer 15 questions about your AI system to learn your risk tier, your legal obligations, and what to do next. Nothing leaves your browser.</p>
     <div class="hero-stats">
-      <span>14 questions, under 5 minutes</span>
+      <span>15 questions, under 5 minutes</span>
       <span>Instant risk classification</span>
       <span>Nothing leaves your browser</span>
     </div>
@@ -323,7 +323,7 @@
     </div>
     <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Assessment progress" id="progressWrap">
       <div class="progress-label" aria-live="polite">
-        <span id="progressText">Question 1 of 14</span>
+        <span id="progressText">Question 1 of 15</span>
         <span id="progressPct">0%</span>
       </div>
       <div class="progress-track"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
@@ -494,6 +494,14 @@ const QUESTIONS = [
     article: "Article 50",
     weight: { yes: 15, no: -5, unsure: 5 },
     signal: "transparency"
+  },
+  {
+    id: "profiling",
+    text: "Does this system build profiles of individuals based on their personal data (e.g. performance tracking, behaviour analysis, preference modelling, risk scoring based on personal characteristics)?",
+    help: "If a system profiles natural persons as defined in GDPR Article 4(4), Article 6(3) exemptions CANNOT apply — the system is automatically high-risk regardless of how narrow or procedural it is. Profiling means any automated processing of personal data to evaluate personal aspects.",
+    article: "Article 6(3), GDPR Article 4(4)",
+    weight: { yes: 15, no: 0, unsure: 5 },
+    signal: "profiling"
   },
   {
     id: "narrow_procedural",
@@ -757,6 +765,13 @@ function calculateResults() {
     if (q.signal === "transparency" && a === "yes") transparencySignals.push(q.id);
     if (q.signal === "exemption" && a === "yes") exemptionSignals.push(q.id);
     if (q.signal === "gap_assessment") gapSignals[q.id] = a;
+  }
+
+  // Article 6(3) profiling gate: if the system profiles individuals,
+  // exemptions cannot apply (hard carve-out in second subparagraph)
+  const profilingAnswer = answers.profiling || "unsure";
+  if (profilingAnswer === "yes") {
+    exemptionSignals = [];  // nullify any claimed exemptions
   }
 
   // Score: map adjustment to 0-100

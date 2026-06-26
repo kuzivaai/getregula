@@ -20,6 +20,7 @@ const QUESTIONS = [
   { id: "social_scoring", text: "Evaluate individuals?", weight: { yes: 35, no: -5, unsure: 10 }, signal: "prohibited" },
   { id: "emotion_recognition", text: "Emotion recognition?", weight: { yes: 35, no: -5, unsure: 10 }, signal: "prohibited" },
   { id: "public_facing", text: "AI undisclosed?", weight: { yes: 15, no: -5, unsure: 5 }, signal: "transparency" },
+  { id: "profiling", text: "Profiles individuals?", weight: { yes: 15, no: 0, unsure: 5 }, signal: "profiling" },
   { id: "narrow_procedural", text: "Narrow procedural?", weight: { yes: -25, no: 10, unsure: 0 }, signal: "exemption" },
   { id: "improves_human_activity", text: "Improves human activity?", weight: { yes: -20, no: 5, unsure: 0 }, signal: "exemption" },
   { id: "pattern_detection", text: "Pattern detection for review?", weight: { yes: -20, no: 5, unsure: 0 }, signal: "exemption" },
@@ -45,6 +46,12 @@ function calculateResults(answers) {
     if (q.signal === "transparency" && a === "yes") transparencySignals.push(q.id);
     if (q.signal === "exemption" && a === "yes") exemptionSignals.push(q.id);
     if (q.signal === "gap_assessment") gapSignals[q.id] = a;
+  }
+
+  // Article 6(3) profiling gate: if profiling, exemptions cannot apply
+  const profilingAnswer = answers.profiling || "unsure";
+  if (profilingAnswer === "yes") {
+    exemptionSignals = [];
   }
 
   const score = Math.max(0, Math.min(100, 50 + Math.round(adjustment * 0.55)));
@@ -170,6 +177,38 @@ console.log('\n── Tier classification tests ──\n');
   assertEq(r.tier, 'limited_risk', 'transparency signal → limited_risk');
   assert(r.transparencySignals.length > 0, 'transparency signals populated');
   console.log(`  PASS  transparency signal → ${r.tier}`);
+}
+
+// Profiling gate: exemptions nullified when profiling = yes
+{
+  const answers = {};
+  QUESTIONS.forEach(q => answers[q.id] = 'no');
+  answers.deployment_eu = 'yes';
+  answers.affected_domain = 'yes';
+  answers.autonomous_decisions = 'yes';
+  answers.significant_harm = 'yes';
+  answers.narrow_procedural = 'yes';  // would normally exempt
+  answers.profiling = 'yes';          // but profiling blocks exemptions
+  const r = calculateResults(answers);
+  assertEq(r.tier, 'high_risk', 'profiling blocks exemption → high_risk (not exempt)');
+  assertEq(r.exemptionSignals.length, 0, 'profiling nullifies exemption signals');
+  console.log(`  PASS  profiling gate blocks exemption → ${r.tier}`);
+}
+
+// Profiling = no: exemptions still work
+{
+  const answers = {};
+  QUESTIONS.forEach(q => answers[q.id] = 'no');
+  answers.deployment_eu = 'yes';
+  answers.affected_domain = 'yes';
+  answers.autonomous_decisions = 'yes';
+  answers.significant_harm = 'yes';
+  answers.narrow_procedural = 'yes';  // exemption claimed
+  answers.profiling = 'no';           // no profiling — exemption holds
+  const r = calculateResults(answers);
+  assertEq(r.tier, 'high_risk_exempt', 'no profiling → exemption holds');
+  assert(r.exemptionSignals.length > 0, 'exemption signals present');
+  console.log(`  PASS  no profiling → exemption holds → ${r.tier}`);
 }
 
 // All unsure → limited risk (cautious default)
@@ -341,7 +380,7 @@ console.log('\n── Signal accumulation tests ──\n');
 console.log('\n── Structure tests ──\n');
 
 {
-  assertEq(QUESTIONS.length, 14, 'exactly 14 questions');
+  assertEq(QUESTIONS.length, 15, 'exactly 15 questions');
   const signals = new Set(QUESTIONS.map(q => q.signal));
   assert(signals.has('jurisdiction'), 'has jurisdiction signal');
   assert(signals.has('high_risk'), 'has high_risk signal');
@@ -349,7 +388,7 @@ console.log('\n── Structure tests ──\n');
   assert(signals.has('transparency'), 'has transparency signal');
   assert(signals.has('exemption'), 'has exemption signal');
   assert(signals.has('gap_assessment'), 'has gap_assessment signal');
-  console.log(`  PASS  14 questions across ${signals.size} signal types`);
+  console.log(`  PASS  15 questions across ${signals.size} signal types`);
 }
 
 {
