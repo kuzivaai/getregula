@@ -9,7 +9,7 @@
     </style>
     <meta name="theme-color" content="#070711">
     <title>Avaliação da Lei de IA da UE: Ela se Aplica a Você? | Regula</title>
-    <meta name="description" content="Avalia\u00e7\u00e3o gratuita de risco da Lei de IA da UE. Responda 12 perguntas para conhecer seu n\u00edvel de risco, obriga\u00e7\u00f5es legais e pr\u00f3ximos passos. Equipes de desenvolvimento tamb\u00e9m podem analisar c\u00f3digo contra 627 padr\u00f5es de detec\u00e7\u00e3o. Sem cadastro, sem instala\u00e7\u00e3o.">
+    <meta name="description" content="Avalia\u00e7\u00e3o gratuita de risco da Lei de IA da UE. Responda 14 perguntas para conhecer seu n\u00edvel de risco, obriga\u00e7\u00f5es legais e pr\u00f3ximos passos. Equipes de desenvolvimento tamb\u00e9m podem analisar c\u00f3digo contra 627 padr\u00f5es de detec\u00e7\u00e3o. Sem cadastro, sem instala\u00e7\u00e3o.">
     <meta name="author" content="Kuziva Muzondo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://getregula.com/assess/pt-br.html">
@@ -37,7 +37,7 @@
       "@type": "WebApplication",
       "name": "Regula — Avaliação da Lei de IA da UE",
       "url": "https://getregula.com/assess/pt-br.html",
-      "description": "Ferramenta gratuita de avaliação de risco da Lei de IA da UE. Responda 12 perguntas para conhecer seu nível de risco e obrigações legais. Equipes de desenvolvimento também podem analisar código contra 627 padrões de detecção.",
+      "description": "Ferramenta gratuita de avaliação de risco da Lei de IA da UE. Responda 14 perguntas para conhecer seu nível de risco e obrigações legais. Equipes de desenvolvimento também podem analisar código contra 627 padrões de detecção.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Any (web browser)",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
@@ -305,9 +305,9 @@
   <!-- HERO -->
   <div class="hero" id="heroSection">
     <h1>A Lei de IA da UE <span>se aplica a você?</span></h1>
-    <p>Descubra em menos de 5 minutos. Responda 12 perguntas sobre seu sistema de IA para conhecer seu nível de risco, suas obrigações legais e o que fazer a seguir. Nada sai do seu navegador.</p>
+    <p>Descubra em menos de 5 minutos. Responda 14 perguntas sobre seu sistema de IA para conhecer seu nível de risco, suas obrigações legais e o que fazer a seguir. Nada sai do seu navegador.</p>
     <div class="hero-stats">
-      <span>12 perguntas, menos de 5 minutos</span>
+      <span>14 perguntas, menos de 5 minutos</span>
       <span>Classificação de risco instantânea</span>
       <span>Nada sai do seu navegador</span>
     </div>
@@ -325,7 +325,7 @@
     </div>
     <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da avaliação" id="progressWrap">
       <div class="progress-label" aria-live="polite">
-        <span id="progressText">Pergunta 1 de 12</span>
+        <span id="progressText">Pergunta 1 de 14</span>
         <span id="progressPct">0%</span>
       </div>
       <div class="progress-track"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
@@ -500,17 +500,33 @@ const QUESTIONS = [
   },
   {
     id: "narrow_procedural",
-    text: "Este sistema realiza apenas tarefas procedimentais restritas (formatação de dados, classificação de documentos, correspondência de padrões para revisão humana)?",
-    help: "O Artigo 6(3)(a) isenta sistemas que realizam tarefas procedimentais restritas da classificação de alto risco, mesmo que operem em um domínio do Anexo III.",
+    text: "Este sistema realiza APENAS tarefas procedimentais restritas (ex.: converter dados entre formatos, classificar documentos por metadados, comparar registros contra um modelo fixo)?",
+    help: "O Artigo 6(3)(a) isenta sistemas de IA que realizam tarefas procedimentais restritas da classificação de alto risco, mesmo que operem em um domínio do Anexo III. A tarefa deve ser puramente procedimental, sem tomada de decisão sobre indivíduos.",
     article: "Artigo 6(3)(a)",
     weight: { yes: -25, no: 10, unsure: 0 },
     signal: "exemption"
   },
   {
     id: "improves_human_activity",
-    text: "Este sistema apenas melhora o resultado de uma atividade humana previamente concluída (correção gramatical, melhoria de fotos, formatação)?",
-    help: "O Artigo 6(3)(b) isenta sistemas que melhoram atividades humanas previamente concluídas.",
+    text: "Este sistema APENAS melhora o resultado de uma atividade humana previamente concluída (ex.: correção gramatical de texto escrito por humano, melhoria de foto tirada por humano, formatação automática de documento criado por humano)?",
+    help: "O Artigo 6(3)(b) isenta sistemas de IA que melhoram atividades humanas previamente concluídas. A atividade humana deve estar completa antes que a IA atue sobre ela — a IA aprimora, não cria.",
     article: "Artigo 6(3)(b)",
+    weight: { yes: -20, no: 5, unsure: 0 },
+    signal: "exemption"
+  },
+  {
+    id: "pattern_detection",
+    text: "Este sistema detecta padrões para revisão humana SEM substituir a avaliação própria do humano (ex.: sinalizando anomalias para um analista, destacando correspondências potenciais para um revisor)?",
+    help: "O Artigo 6(3)(c) isenta sistemas de IA que detectam padrões ou desvios de padrões anteriores sem substituir a avaliação humana. O humano deve fazer a determinação final, não a IA.",
+    article: "Artigo 6(3)(c)",
+    weight: { yes: -20, no: 5, unsure: 0 },
+    signal: "exemption"
+  },
+  {
+    id: "preparatory_task",
+    text: "Este sistema realiza APENAS tarefas preparatórias para um avaliador humano (ex.: pré-classificar candidaturas, extrair pontos de dados centrais para revisão, gerar resumos para tomadores de decisão humanos)?",
+    help: "O Artigo 6(3)(d) isenta sistemas de IA que realizam tarefas preparatórias para avaliações que serão realizadas por uma pessoa natural. O avaliador humano ainda deve tomar a decisão substantiva.",
+    article: "Artigo 6(3)(d)",
     weight: { yes: -20, no: 5, unsure: 0 },
     signal: "exemption"
   },
@@ -830,7 +846,7 @@ function showResults() {
             <div class="obl-deadline">${o.deadline}</div>
           </div>
           <div class="obl-desc">${o.desc}</div>
-          ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>Em linguagem simples:</strong> ${o.plain}</div>` : ""}
+          ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>Em linguagem simples:</strong> ${o.plain} <a href="https://artificialintelligenceact.eu/article/${o.article}/" target="_blank" rel="noopener" style="color:var(--accent);font-size:0.75rem;white-space:nowrap;">[Ler Artigo ${o.article}]</a></div>` : ""}
           ${results.tier === "high_risk" || results.tier === "high_risk_exempt" ? `
             <div class="gap-bar-wrap">
               <span style="font-size:0.75rem;color:var(--text-muted);min-width:80px;">Prontidão:</span>
@@ -923,7 +939,9 @@ function decodeAnswers(code) {
     version = 2;
     raw = code.slice(1);
   }
-  if (raw.length !== QUESTIONS.length) return null;
+  // Accept URLs from older versions with fewer questions (pad with "u" for unsure)
+  if (raw.length > QUESTIONS.length) return null;
+  while (raw.length < QUESTIONS.length) raw += "u";
   const decoded = {};
   QUESTIONS.forEach((q, i) => {
     let c = raw[i];

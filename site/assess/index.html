@@ -9,7 +9,7 @@
     </style>
     <meta name="theme-color" content="#070711">
     <title>EU AI Act Assessment: Does It Apply to You? | Regula</title>
-    <meta name="description" content="Free EU AI Act risk assessment. Answer 12 questions to find your risk tier, legal obligations, and what to do next. Development teams can also scan code against 627 detection patterns. No signup, no install.">
+    <meta name="description" content="Free EU AI Act risk assessment. Answer 14 questions to find your risk tier, legal obligations, and what to do next. Development teams can also scan code against 627 detection patterns. No signup, no install.">
     <meta name="author" content="Kuziva Muzondo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://getregula.com/assess/">
@@ -38,7 +38,7 @@
       "@type": "WebApplication",
       "name": "Regula EU AI Act Assessment",
       "url": "https://getregula.com/assess/",
-      "description": "Free EU AI Act risk assessment tool. Answer 12 questions to find your risk tier and legal obligations. Development teams can also scan code against 627 detection patterns.",
+      "description": "Free EU AI Act risk assessment tool. Answer 14 questions to find your risk tier and legal obligations. Development teams can also scan code against 627 detection patterns.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Any (web browser)",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
@@ -303,9 +303,9 @@
   <!-- HERO -->
   <div class="hero" id="heroSection">
     <h1>Does the EU AI Act <span>apply to you?</span></h1>
-    <p>Find out in under 5 minutes. Answer 12 questions about your AI system to learn your risk tier, your legal obligations, and what to do next. Nothing leaves your browser.</p>
+    <p>Find out in under 5 minutes. Answer 14 questions about your AI system to learn your risk tier, your legal obligations, and what to do next. Nothing leaves your browser.</p>
     <div class="hero-stats">
-      <span>12 questions, under 5 minutes</span>
+      <span>14 questions, under 5 minutes</span>
       <span>Instant risk classification</span>
       <span>Nothing leaves your browser</span>
     </div>
@@ -323,7 +323,7 @@
     </div>
     <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Assessment progress" id="progressWrap">
       <div class="progress-label" aria-live="polite">
-        <span id="progressText">Question 1 of 12</span>
+        <span id="progressText">Question 1 of 14</span>
         <span id="progressPct">0%</span>
       </div>
       <div class="progress-track"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
@@ -497,17 +497,33 @@ const QUESTIONS = [
   },
   {
     id: "narrow_procedural",
-    text: "Does this system perform only narrow procedural tasks (data formatting, document sorting, pattern matching for human review)?",
-    help: "Article 6(3)(a) exempts systems that perform narrow procedural tasks from high-risk classification, even if they operate in an Annex III domain.",
+    text: "Does this system perform ONLY narrow procedural tasks (e.g. converting data between formats, sorting documents by metadata, matching records against a fixed template)?",
+    help: "Article 6(3)(a) exempts AI systems that perform narrow procedural tasks from high-risk classification, even if they operate in an Annex III domain. The task must be purely procedural with no decision-making about individuals.",
     article: "Article 6(3)(a)",
     weight: { yes: -25, no: 10, unsure: 0 },
     signal: "exemption"
   },
   {
     id: "improves_human_activity",
-    text: "Does this system only improve the result of a previously completed human activity (grammar check, photo enhancement, formatting)?",
-    help: "Article 6(3)(b) exempts systems that improve previously completed human activities.",
+    text: "Does this system ONLY improve the result of a previously completed human activity (e.g. grammar-checking human-written text, enhancing a human-taken photo, auto-formatting a human-created document)?",
+    help: "Article 6(3)(b) exempts AI that improves previously completed human activities. The human activity must be complete before the AI acts on it — the AI polishes, it does not create.",
     article: "Article 6(3)(b)",
+    weight: { yes: -20, no: 5, unsure: 0 },
+    signal: "exemption"
+  },
+  {
+    id: "pattern_detection",
+    text: "Does this system detect patterns for human review WITHOUT replacing or substituting the human's own assessment (e.g. flagging anomalies for an analyst, highlighting potential matches for a reviewer)?",
+    help: "Article 6(3)(c) exempts AI that detects patterns or deviations from prior patterns without replacing human assessment. The human must make the final determination, not the AI.",
+    article: "Article 6(3)(c)",
+    weight: { yes: -20, no: 5, unsure: 0 },
+    signal: "exemption"
+  },
+  {
+    id: "preparatory_task",
+    text: "Does this system ONLY perform preparatory tasks for a human assessor (e.g. pre-sorting applications, extracting key data points for review, generating summaries for human decision-makers)?",
+    help: "Article 6(3)(d) exempts AI performing preparatory tasks for assessments that will be carried out by a natural person. The human assessor must still make the substantive decision.",
+    article: "Article 6(3)(d)",
     weight: { yes: -20, no: 5, unsure: 0 },
     signal: "exemption"
   },
@@ -829,7 +845,7 @@ function showResults() {
             <div class="obl-deadline">${o.deadline}</div>
           </div>
           <div class="obl-desc">${o.desc}</div>
-          ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>In plain language:</strong> ${o.plain}</div>` : ""}
+          ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>In plain language:</strong> ${o.plain} <a href="https://artificialintelligenceact.eu/article/${o.article}/" target="_blank" rel="noopener" style="color:var(--accent);font-size:0.75rem;white-space:nowrap;">[Read Article ${o.article}]</a></div>` : ""}
           ${results.tier === "high_risk" || results.tier === "high_risk_exempt" ? `
             <div class="gap-bar-wrap">
               <span style="font-size:0.75rem;color:var(--text-muted);min-width:80px;">Readiness:</span>
@@ -922,7 +938,9 @@ function decodeAnswers(code) {
     version = 2;
     raw = code.slice(1);
   }
-  if (raw.length !== QUESTIONS.length) return null;
+  // Accept URLs from older versions with fewer questions (pad with "u" for unsure)
+  if (raw.length > QUESTIONS.length) return null;
+  while (raw.length < QUESTIONS.length) raw += "u";
   const decoded = {};
   QUESTIONS.forEach((q, i) => {
     let c = raw[i];

@@ -22,6 +22,8 @@ const QUESTIONS = [
   { id: "public_facing", text: "AI undisclosed?", weight: { yes: 15, no: -5, unsure: 5 }, signal: "transparency" },
   { id: "narrow_procedural", text: "Narrow procedural?", weight: { yes: -25, no: 10, unsure: 0 }, signal: "exemption" },
   { id: "improves_human_activity", text: "Improves human activity?", weight: { yes: -20, no: 5, unsure: 0 }, signal: "exemption" },
+  { id: "pattern_detection", text: "Pattern detection for review?", weight: { yes: -20, no: 5, unsure: 0 }, signal: "exemption" },
+  { id: "preparatory_task", text: "Preparatory task?", weight: { yes: -20, no: 5, unsure: 0 }, signal: "exemption" },
   { id: "risk_documentation", text: "Risk register?", weight: { yes: -5, no: 5, unsure: 0 }, signal: "gap_assessment" },
   { id: "logging_active", text: "Logging active?", weight: { yes: -5, no: 5, unsure: 0 }, signal: "gap_assessment" },
 ];
@@ -339,7 +341,7 @@ console.log('\n── Signal accumulation tests ──\n');
 console.log('\n── Structure tests ──\n');
 
 {
-  assertEq(QUESTIONS.length, 12, 'exactly 12 questions');
+  assertEq(QUESTIONS.length, 14, 'exactly 14 questions');
   const signals = new Set(QUESTIONS.map(q => q.signal));
   assert(signals.has('jurisdiction'), 'has jurisdiction signal');
   assert(signals.has('high_risk'), 'has high_risk signal');
@@ -347,7 +349,7 @@ console.log('\n── Structure tests ──\n');
   assert(signals.has('transparency'), 'has transparency signal');
   assert(signals.has('exemption'), 'has exemption signal');
   assert(signals.has('gap_assessment'), 'has gap_assessment signal');
-  console.log(`  PASS  12 questions across ${signals.size} signal types`);
+  console.log(`  PASS  14 questions across ${signals.size} signal types`);
 }
 
 {
