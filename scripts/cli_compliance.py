@@ -607,10 +607,25 @@ def cmd_plan(args) -> None:
 
 
 def cmd_assess(args) -> None:
-    """EU AI Act applicability check -- no code required."""
+    """AI regulation applicability check -- no code required."""
     from assess import run_assess
     output_format = getattr(args, "format", "text")
     answers = getattr(args, "answers", None)
+    jurisdiction = getattr(args, "jurisdiction", "eu")
+
+    # Korea and Colorado assessments are web-only for now
+    if jurisdiction != "eu":
+        jur_urls = {"korea": "?j=kr", "colorado": "?j=co"}
+        url_param = jur_urls.get(jurisdiction, "")
+        print(
+            f"The {jurisdiction} assessment is available via the web tool:\n"
+            f"  https://getregula.com/assess/{url_param}\n\n"
+            f"The CLI assess command currently supports EU AI Act only.\n"
+            f"For CLI multi-jurisdiction scanning, use:\n"
+            f"  regula check . --jurisdictions {jurisdiction}",
+            file=sys.stderr,
+        )
+        sys.exit(0)
 
     # Interactive mode requires a TTY
     if not answers and not (hasattr(sys.stdin, 'isatty') and sys.stdin.isatty()):

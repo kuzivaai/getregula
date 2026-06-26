@@ -207,9 +207,13 @@ _PROHIBITED_SUBSECTIONS = {
         "article": "Article 5(1)(e)",
         "exception": None,
     },
-    "emotion_inference_restricted": {
+    "emotion_inference_workplace": {
         "article": "Article 5(1)(f)",
         "exception": "Exempt when used for medical or safety purposes (e.g., detecting driver fatigue).",
+    },
+    "emotion_inference_education": {
+        "article": "Article 5(1)(f)",
+        "exception": "Exempt when used for medical or safety purposes (e.g., monitoring student wellbeing in clinical settings).",
     },
     "biometric_categorisation_sensitive": {
         "article": "Article 5(1)(g)",

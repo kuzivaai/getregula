@@ -13,10 +13,10 @@ for human review, not as legal determinations.
 """
 
 __all__ = [
-    "classify", "is_ai_related", "check_prohibited", "check_high_risk",
-    "check_limited_risk", "check_ai_security", "check_bias_risk",
-    "generate_observations", "is_training_activity", "strip_comments",
-    "RiskTier", "Classification",
+    "classify", "detect_domains", "is_ai_related", "check_prohibited",
+    "check_high_risk", "check_limited_risk", "check_ai_security",
+    "check_bias_risk", "generate_observations", "is_training_activity",
+    "strip_comments", "RiskTier", "Classification",
 ]
 
 import argparse
@@ -227,6 +227,42 @@ def generate_observations(text: str) -> list:
     return observations
 
 
+def detect_domains(text: str, stripped_text: str = None) -> list:
+    """Detect all domain concepts present in the text.
+
+    Scans HIGH_RISK_PATTERNS and PROHIBITED_PATTERNS for domain fields.
+    When stripped_text is provided (comment-free), scans that instead to
+    avoid false positives from domain keywords in comments/docstrings.
+    Returns a sorted list of unique domain strings found.
+    Used for multi-jurisdiction mapping.
+    """
+    # Use stripped text (comment-free) when available to avoid FPs
+    scan_text = (stripped_text.lower() if stripped_text is not None else text.lower())
+    domains = set()
+
+    for name, compiled_patterns in _HIGH_RISK_COMPILED.items():
+        config = HIGH_RISK_PATTERNS[name]
+        domain = config.get("domain")
+        if not domain:
+            continue
+        for rx in compiled_patterns:
+            if rx.search(scan_text):
+                domains.add(domain)
+                break
+
+    for name, compiled_patterns in _PROHIBITED_COMPILED.items():
+        config = PROHIBITED_PATTERNS[name]
+        domain = config.get("domain")
+        if not domain:
+            continue
+        for rx in compiled_patterns:
+            if rx.search(scan_text):
+                domains.add(domain)
+                break
+
+    return sorted(domains)
+
+
 def check_bias_risk(text: str) -> list:
     """Detect protected class attributes used as ML features.
 
@@ -433,7 +469,7 @@ def _check_patterns(compiled_dict: dict, patterns_dict: dict,
         custom_field_defaults: Default fields for custom rule matches.
     """
     text_lower = text.lower()
-    stripped_lower = stripped_text.lower() if stripped_text else None
+    stripped_lower = stripped_text.lower() if stripped_text is not None else None
     matches = []
 
     for name, compiled_patterns in compiled_dict.items():
@@ -661,14 +697,19 @@ def classify(text: str, language: str = "python") -> Classification:
     # Strip comments/docstrings to reduce false positives
     stripped = strip_comments(text, language)
 
+    # Detect domains for multi-jurisdiction mapping (runs regardless of tier)
+    domains = detect_domains(text, stripped_text=stripped)
+
     # 1. ALWAYS check prohibited first — policy cannot override Article 5
     prohibited = check_prohibited(text, stripped_text=stripped)
     if prohibited:
+        prohibited.detected_domains = domains
         return prohibited
 
     # 2. Policy overrides (only for non-prohibited classifications)
     policy_result = _check_policy_overrides(text)
     if policy_result:
+        policy_result.detected_domains = domains
         return policy_result
 
     # 3. Standard classification
@@ -676,6 +717,7 @@ def classify(text: str, language: str = "python") -> Classification:
         return Classification(
             tier=RiskTier.NOT_AI, confidence="high",
             action="allow", message="No AI indicators detected.",
+            detected_domains=domains,
         )
 
     high_risk = check_high_risk(text, stripped_text=stripped)
@@ -691,6 +733,9 @@ def classify(text: str, language: str = "python") -> Classification:
                 message="Minimal-risk AI system. No specific EU AI Act requirements.",
             )
 
+    # Attach detected domains to result
+    result.detected_domains = domains
+
     # Confidence threshold filtering (policy-configurable)
     policy = get_policy()
     min_conf = 0
@@ -705,6 +750,7 @@ def classify(text: str, language: str = "python") -> Classification:
             action="allow",
             message=f"Finding suppressed (confidence {result.confidence_score} < threshold {min_conf})",
             confidence_score=result.confidence_score,
+            detected_domains=domains,
         )
 
     return result

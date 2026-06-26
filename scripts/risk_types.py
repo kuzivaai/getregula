@@ -64,6 +64,7 @@ class Classification:
     pattern_likelihood: Optional[str] = None   # high/medium/low - how likely this risk manifests in practice
     pattern_impact: Optional[str] = None       # high/medium/low - severity if the risk materialises
     match_lines: list = field(default_factory=list)  # line numbers where patterns matched
+    detected_domains: list = field(default_factory=list)  # domain concepts found (e.g. "employment", "credit")
 
     def get_finding_tier(self) -> str:
         """Return finding tier based on confidence score and policy thresholds.

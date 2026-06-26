@@ -19,6 +19,7 @@ Author: The Implementation Layer (https://getregula.com)
 
 PROHIBITED_PATTERNS = {
     "subliminal_manipulation": {
+        "domain": "manipulation",
         "patterns": [r"subliminal", r"beyond.?consciousness", r"subconscious.?influence"],
         "article": "5(1)(a)",
         "description": "AI deploying subliminal techniques beyond a person's consciousness",
@@ -27,6 +28,7 @@ PROHIBITED_PATTERNS = {
         "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "exploitation_vulnerabilities": {
+        "domain": "exploitation",
         "patterns": [r"target.?elderly", r"exploit.?disabil", r"vulnerable.?group.?target"],
         "article": "5(1)(b)",
         "description": "Exploiting vulnerabilities of specific groups (age, disability, economic situation)",
@@ -35,6 +37,7 @@ PROHIBITED_PATTERNS = {
         "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "social_scoring": {
+        "domain": "social_scoring",
         "patterns": [r"\bsocial.?scor(?:e|ing)\b", r"\bsocial.?credit.?(?:scor|system|rating)", r"\bsocial.?credit\b", r"\bcitizen.?score", r"\bscore.{0,5}citizen", r"\bbehaviour.{0,10}scor.{0,40}(?:citizen|public|authorit|government|civic|trustworth)"],
         "article": "5(1)(c)",
         "description": "Social scoring by public authorities or on their behalf",
@@ -43,6 +46,7 @@ PROHIBITED_PATTERNS = {
         "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "criminal_prediction": {
+        "domain": "law_enforcement",
         "patterns": [r"crime.?predict", r"criminal.?risk.?assess", r"predictive.?policing", r"recidivism"],
         "article": "5(1)(d)",
         "description": "Criminal risk prediction based solely on profiling or personality traits",
@@ -51,6 +55,7 @@ PROHIBITED_PATTERNS = {
         "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "facial_recognition_scraping": {
+        "domain": "biometrics",
         "patterns": [r"\bface.?scrap", r"facial.?database.?untarget", r"mass.?facial.?collect"],
         "article": "5(1)(e)",
         "description": "Creating facial recognition databases through untargeted scraping",
@@ -58,16 +63,28 @@ PROHIBITED_PATTERNS = {
         "exceptions": None,
         "confidence": "high", "likelihood": "high", "impact": "high",
     },
-    "emotion_inference_restricted": {
-        "patterns": [r"emotion.{0,40}workplace", r"emotion.{0,40}school", r"sentiment.{0,40}employee",
+    "emotion_inference_workplace": {
+        "domain": "employment",
+        "patterns": [r"emotion.{0,40}workplace", r"sentiment.{0,40}employee",
                      r"workplace.{0,40}emotion", r"employee.{0,40}emotion"],
         "article": "5(1)(f)",
-        "description": "Emotion inference in workplace or educational settings",
+        "description": "Emotion inference in workplace settings",
         "conditions": "Prohibited in workplace and educational institutions.",
         "exceptions": "EXEMPT when used for medical or safety purposes (e.g., detecting driver fatigue, monitoring patient wellbeing in clinical settings).",
         "confidence": "high", "likelihood": "high", "impact": "high",
     },
+    "emotion_inference_education": {
+        "domain": "education",
+        "patterns": [r"emotion.{0,40}school", r"emotion.{0,40}classroom",
+                     r"emotion.{0,40}student", r"student.{0,40}emotion"],
+        "article": "5(1)(f)",
+        "description": "Emotion inference in educational settings",
+        "conditions": "Prohibited in workplace and educational institutions.",
+        "exceptions": "EXEMPT when used for medical or safety purposes (e.g., monitoring student wellbeing in clinical settings).",
+        "confidence": "high", "likelihood": "high", "impact": "high",
+    },
     "biometric_categorisation_sensitive": {
+        "domain": "biometrics",
         "patterns": [r"\brace.?detect(?!.*(?:condition|thread|concurrent))", r"ethnicity.?infer", r"political.?opinion.?biometric",
                      r"religion.?detect", r"sexual.?orientation.?infer"],
         "article": "5(1)(g)",
@@ -77,6 +94,7 @@ PROHIBITED_PATTERNS = {
         "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "realtime_biometric_public": {
+        "domain": "biometrics",
         "patterns": [r"real.?time.?facial.?recogn", r"live.?biometric.?public",
                      r"public.?space.?biometric", r"mass.?surveillance.?biometric"],
         "article": "5(1)(h)",
@@ -86,6 +104,7 @@ PROHIBITED_PATTERNS = {
         "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "ncii_generation": {
+        "domain": "harmful_content",
         "patterns": [r"\bnudif", r"\bundress(?:ing)?[\s_-]?(?:ai|model|gen)",
                      r"\bdeepnude", r"\bcloth_off", r"\bstrip_ai"],
         "article": "5(1)(i) [Omnibus]",
@@ -95,6 +114,7 @@ PROHIBITED_PATTERNS = {
         "confidence": "high", "likelihood": "high", "impact": "high",
     },
     "csam_generation": {
+        "domain": "harmful_content",
         "patterns": [r"age_regress(?:ion)?[\s_-]?(?:generat|synthesi|model|face)",
                      r"\bdeage[\s_-]?(?:generat|face|model|synthes)",
                      r"\bchild[\s_-]?(?:face[\s_-]?(?:swap|generat)|body[\s_-]?generat|image[\s_-]?generat)",
@@ -124,6 +144,7 @@ PROHIBITED_PATTERNS = {
 
 HIGH_RISK_PATTERNS = {
     "biometrics": {
+        "domain": "biometrics",
         # regula-ignore (pattern definitions, not practice).
         # Recall expansion (Apr 2026): Annex III point 1 covers biometric
         # identification, categorisation of natural persons, and biometric
@@ -152,6 +173,7 @@ HIGH_RISK_PATTERNS = {
         "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "critical_infrastructure": {
+        "domain": "critical_infrastructure",
         # Recall expansion (Apr 2026): Annex III point 2 covers safety
         # components in the management and operation of critical digital
         # infrastructure, road traffic, and the supply of water, gas,
@@ -185,6 +207,7 @@ HIGH_RISK_PATTERNS = {
         "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "education": {
+        "domain": "education",
         "patterns": [r"\badmission.?decision", r"\bstudent.?assess", r"\bexam.?scor",
                      r"\bprocto\w*.{0,15}(exam|test|monitor|ai|automat|student|cheat)",
                      # Recall expansion (Apr 2026): real-world ed-tech AI phrasings.
@@ -209,6 +232,7 @@ HIGH_RISK_PATTERNS = {
         "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "employment": {
+        "domain": "employment",
         "patterns": [r"\bcv.?screen", r"\bresume.?filt", r"\bhiring.?decision", r"\brecruit\w*\W{0,3}automat",
                      r"\bautomat\w*\W{0,3}recruit", r"\bcandidate[_\W]?rank", r"rank[_\W]?candidate",
                      r"\bpromotion.?decision",
@@ -236,6 +260,7 @@ HIGH_RISK_PATTERNS = {
         "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "essential_services": {
+        "domain": "essential_services",
         "patterns": [r"\bcredit.?scor", r"\bcreditworth", r"\bloan.?decision", r"\binsurance.?pric",
                      r"\bbenefit.?eligib", r"\bemergency.?dispatch",
                      r"credit.?risk", r"credit.?model", r"credit.?predict",
@@ -264,6 +289,7 @@ HIGH_RISK_PATTERNS = {
         "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "law_enforcement": {
+        "domain": "law_enforcement",
         # regula-ignore (this block defines patterns that match the very
         # phrases it lists; the literal strings here are pattern definitions,
         # not a prohibited practice — Article 5(1)(d) covers the *use*, not
@@ -297,6 +323,7 @@ HIGH_RISK_PATTERNS = {
         "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "migration": {
+        "domain": "migration",
         # Recall expansion (Apr 2026): Annex III point 7 covers AI used by
         # or on behalf of competent public authorities in migration, asylum
         # and border control — risk assessment of persons entering, examining
@@ -324,6 +351,7 @@ HIGH_RISK_PATTERNS = {
         "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "justice": {
+        "domain": "justice",
         # Recall expansion (Apr 2026): Annex III point 8 covers AI used by
         # or on behalf of a judicial authority to assist in researching and
         # interpreting facts/law and in applying the law to concrete facts,
@@ -351,6 +379,7 @@ HIGH_RISK_PATTERNS = {
         "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "medical_devices": {
+        "domain": "healthcare",
         # Recall expansion (Apr 2026): EU AI Act Article 6(1) cross-references
         # Annex I Section A (medical devices under Regulation (EU) 2017/745 MDR
         # and in-vitro diagnostics under 2017/746 IVDR). AI used as or in a
@@ -379,7 +408,8 @@ HIGH_RISK_PATTERNS = {
         "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "high_risk__insurance": {
-        # Annex III point 5(d): AI systems used to assess risk and pricing
+        "domain": "insurance",
+        # Annex III point 5(c): AI systems used to assess risk and pricing
         # for natural persons in the case of life and health insurance.
         # Complements the broader essential_services category with patterns
         # specific to insurance underwriting and claims AI.
@@ -392,11 +422,12 @@ HIGH_RISK_PATTERNS = {
                      # Prompt-string templates.
                      r"(?:score|assess|predict|price)[^\"\\n]{0,30}(?:insurance|underwriting|actuarial|policy[_\W]risk)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
-        "category": "Annex III, Category 5(d)",
+        "category": "Annex III, Category 5(c)",
         "description": "Insurance access and pricing",
         "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "high_risk__credit_scoring": {
+        "domain": "credit",
         # Annex III point 5(b): AI systems used to evaluate the
         # creditworthiness of natural persons (excluding fraud detection).
         # Complements the broader essential_services category with patterns
@@ -415,6 +446,7 @@ HIGH_RISK_PATTERNS = {
         "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "high_risk__worker_management": {
+        "domain": "employment",
         # Annex III point 4(b): AI systems intended to be used to make
         # decisions affecting terms of work-related relationships, for
         # monitoring and evaluating performance and behaviour of persons
@@ -435,6 +467,7 @@ HIGH_RISK_PATTERNS = {
         "confidence": "medium", "likelihood": "high", "impact": "high",
     },
     "high_risk__democratic_processes": {
+        "domain": "justice",
         # Annex III point 8 (second part): AI systems intended to be used
         # to influence the outcome of an election or referendum or the
         # voting behaviour of natural persons in the exercise of their
@@ -455,6 +488,7 @@ HIGH_RISK_PATTERNS = {
         "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "high_risk__emergency_services": {
+        "domain": "essential_services",
         # Annex III point 5(d): AI systems intended to be used for
         # dispatching or establishing priority in the dispatching of
         # emergency first response services, including by firefighters
@@ -474,6 +508,7 @@ HIGH_RISK_PATTERNS = {
         "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
     "safety_components": {
+        "domain": "safety_components",
         # Recall expansion (Apr 2026): EU AI Act Article 6(1) cross-references
         # Annex I Sections A and B — safety components of machinery, toys,
         # recreational craft, lifts, ATEX equipment, radio equipment,
@@ -502,6 +537,46 @@ HIGH_RISK_PATTERNS = {
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Safety Components",
         "description": "Safety components under Union harmonisation legislation",
+        "confidence": "medium", "likelihood": "medium", "impact": "high",
+    },
+    "transportation": {
+        "domain": "transportation",
+        # South Korea AI Basic Act Article 33 covers AI in the operation
+        # of transport conveyances. Separate from safety_components which
+        # covers the broader EU Annex I safety component category.
+        "patterns": [r"\bautonomous[_\W]?(?:vehicle|driving|car|bus|truck|shuttle)",
+                     r"\bself[_\W]?driv(?:ing|en|erless)\b",
+                     r"\bdriverless\b",
+                     r"\brailway[_\W]?(?:signal|control|dispatch|automat)",
+                     r"\b(?:metro|subway|tram)[_\W]?(?:signal|dispatch|control|automat)",
+                     r"\b(?:air[_\W]?traffic|atc)[_\W]?(?:control|manage|dispatch)",
+                     r"\b(?:maritime|vessel|port)[_\W]?(?:traffic|autonom|navigation)",
+                     r"\badas\b",
+                     r"\b(?:autopilot|auto[_\W]?pilot)\b"],
+        "articles": [],
+        "category": "Transportation (Korea AI Basic Act Art 33)",
+        "description": "AI in operation of transport conveyances",
+        "confidence": "medium", "likelihood": "medium", "impact": "high",
+    },
+    "housing": {
+        "domain": "housing",
+        # Colorado SB 26-189 covers AI in housing/residential real estate.
+        # Not an EU AI Act Annex III category, but needed for multi-jurisdiction
+        # domain detection. Patterns target tenant screening, rental/mortgage
+        # decisions, and housing allocation AI.
+        "patterns": [r"\btenant[_\W]?(?:screen|scor|risk|background|check|reject|approv|rank|select)",
+                     r"\b(?:screen|score|rank|approve|deny|reject)[_\W]?tenants?\b",
+                     r"\brental[_\W]?(?:applic|decision|screen|approv|deny|eligib|risk|scor)",
+                     r"\b(?:housing|apartment|rental)[_\W]?(?:allocat|assign|decision|eligib|waitlist|priorit)",
+                     r"\b(?:fair[_\W]?housing|housing[_\W]?discriminat)",
+                     r"\b(?:eviction|evict)[_\W]?(?:predict|risk|scor|model|decision)",
+                     r"\bproperty[_\W]?(?:valuat|apprais)[_\W]?(?:ai|model|automat|predict|algorithm)",
+                     r"\b(?:mortgage|home[_\W]?loan)[_\W]?(?:approv|deny|decision|risk|scor|automat|algorithm)",
+                     # Prompt-string templates.
+                     r"(?:screen|score|approve|deny|rank)[^\"\\n]{0,30}(?:tenant|rental|housing|eviction)"],
+        "articles": [],
+        "category": "Housing (Colorado SB 26-189)",
+        "description": "Housing and residential real estate decisions",
         "confidence": "medium", "likelihood": "medium", "impact": "high",
     },
 }
@@ -1057,7 +1132,8 @@ CATEGORY_LIFECYCLE_PHASES = {
     "social_scoring": ["plan"],
     "criminal_prediction": ["plan"],
     "facial_recognition_scraping": ["plan"],
-    "emotion_inference_restricted": ["plan"],
+    "emotion_inference_workplace": ["plan"],
+    "emotion_inference_education": ["plan"],
     "biometric_categorisation_sensitive": ["plan"],
     "realtime_biometric_public": ["plan"],
     "ncii_generation": ["plan"],
@@ -1078,6 +1154,8 @@ CATEGORY_LIFECYCLE_PHASES = {
     "high_risk__democratic_processes": ["plan", "develop"],
     "high_risk__emergency_services": ["plan", "develop"],
     "safety_components": ["plan", "develop"],
+    "transportation": ["plan", "develop"],
+    "housing": ["plan", "develop"],
     # Limited risk (Article 50) — develop + deploy
     "chatbots": ["develop", "deploy"],
     "emotion_recognition": ["develop", "deploy"],

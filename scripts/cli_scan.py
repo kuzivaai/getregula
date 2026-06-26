@@ -136,6 +136,7 @@ def cmd_check(args) -> None:
     from cli import (
         json_output, _validate_path, _is_tty, _get_changed_files,
         _resolve_jurisdictions, _enrich_findings_with_jurisdictions,
+        _enrich_findings_with_domain_obligations,
         _print_remediation, JURISDICTION_MAP,
     )
     from report import scan_files
@@ -198,6 +199,7 @@ def cmd_check(args) -> None:
         jurisdiction_pairs = _resolve_jurisdictions(args.jurisdictions)
         if jurisdiction_pairs:
             _enrich_findings_with_jurisdictions(findings, jurisdiction_pairs)
+            _enrich_findings_with_domain_obligations(findings, jurisdiction_pairs)
 
     # Partition findings via the pure function in findings_view.
     # This used to be 16 inlined lines mutating the input list; the
@@ -484,6 +486,40 @@ def cmd_check(args) -> None:
                 print(f"      {f.get('description', '')} (confidence: {f.get('confidence_score', 0)}%)")
             if len(open_qs) > 10:
                 print(f"    ... and {len(open_qs) - 10} more (use --format json to see all)")
+
+        # Multi-jurisdiction domain obligations summary
+        if jurisdiction_pairs:
+            _any_domain_obs = any(f.get("domain_obligations") for f in findings)
+            if _any_domain_obs:
+                print(f"\n  {'─' * 56}")
+                print(f"  {yellow('MULTI-JURISDICTION OBLIGATIONS')}:")
+                # Collect unique (jurisdiction, domain, obligations) across all findings
+                _seen_jur_domains = set()
+                for f in findings:
+                    for jur_name, jur_data in (f.get("domain_obligations") or {}).items():
+                        for cd in jur_data.get("covered_domains", []):
+                            key = (jur_name, cd["domain"])
+                            if key in _seen_jur_domains:
+                                continue
+                            _seen_jur_domains.add(key)
+                # Print per-jurisdiction summary
+                for short_name, _fw_key in jurisdiction_pairs:
+                    _jur_domains = [(j, d) for j, d in _seen_jur_domains if j == short_name]
+                    if not _jur_domains:
+                        continue
+                    # Get summary from first finding that has this jurisdiction
+                    _jur_info = None
+                    for f in findings:
+                        _jur_info = (f.get("domain_obligations") or {}).get(short_name)
+                        if _jur_info:
+                            break
+                    if not _jur_info:
+                        continue
+                    print(f"\n    {_jur_info['jurisdiction']} ({_jur_info['law']})")
+                    print(f"    Status: {_jur_info['status']} | Penalties: {_jur_info['penalty_range']}")
+                    for cd in _jur_info.get("covered_domains", []):
+                        print(f"      • {cd['domain']}: {cd['risk_level']} — "
+                              f"{len(cd['obligations'])} obligations (Articles {', '.join(cd['articles'])})")
 
         print(f"{'=' * 60}")
         print(f"  {t('confidence_note')}")

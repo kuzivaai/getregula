@@ -1,4 +1,5 @@
 // scanner.js — Regula client-side EU AI Act detection pattern scanner
+// regula-ignore: this file defines compliance detection rules, not prohibited AI practices
 // Ported from scripts/risk_patterns.py + scripts/classify_risk.py (627 detection patterns)
 // All logic runs client-side. Nothing leaves the browser.
 // Licensed under the Detection Rule License (DRL) 1.1.
@@ -92,18 +93,32 @@ const PROHIBITED_PATTERNS = {
     "likelihood": "high",
     "impact": "high"
   },
-  "emotion_inference_restricted": {
+  "emotion_inference_workplace": {
     "patterns": [
       "emotion.{0,40}workplace",
-      "emotion.{0,40}school",
       "sentiment.{0,40}employee",
       "workplace.{0,40}emotion",
       "employee.{0,40}emotion"
     ],
     "article": "5(1)(f)",
-    "description": "Emotion inference in workplace or educational settings",
+    "description": "Emotion inference in workplace settings",
     "conditions": "Prohibited in workplace and educational institutions.",
     "exceptions": "EXEMPT when used for medical or safety purposes (e.g., detecting driver fatigue, monitoring patient wellbeing in clinical settings).",
+    "confidence": "high",
+    "likelihood": "high",
+    "impact": "high"
+  },
+  "emotion_inference_education": {
+    "patterns": [
+      "emotion.{0,40}school",
+      "emotion.{0,40}classroom",
+      "emotion.{0,40}student",
+      "student.{0,40}emotion"
+    ],
+    "article": "5(1)(f)",
+    "description": "Emotion inference in educational settings",
+    "conditions": "Prohibited in workplace and educational institutions.",
+    "exceptions": "EXEMPT when used for medical or safety purposes (e.g., monitoring student wellbeing in clinical settings).",
     "confidence": "high",
     "likelihood": "high",
     "impact": "high"
@@ -521,7 +536,7 @@ const HIGH_RISK_PATTERNS = {
       "14",
       "15"
     ],
-    "category": "Annex III, Category 5(d)",
+    "category": "Annex III, Category 5(c)",
     "description": "Insurance access and pricing",
     "confidence": "medium",
     "likelihood": "high",
@@ -681,6 +696,44 @@ const HIGH_RISK_PATTERNS = {
     ],
     "category": "Safety Components",
     "description": "Safety components under Union harmonisation legislation",
+    "confidence": "medium",
+    "likelihood": "medium",
+    "impact": "high"
+  },
+  "transportation": {
+    "patterns": [
+      "autonomous[_\\W]?(?:vehicle|driving|car|bus|truck|shuttle)",
+      "self[_\\W]?driv(?:ing|en|erless)",
+      "driverless",
+      "railway[_\\W]?(?:signal|control|dispatch|automat)",
+      "(?:metro|subway|tram)[_\\W]?(?:signal|dispatch|control|automat)",
+      "(?:air[_\\W]?traffic|atc)[_\\W]?(?:control|manage|dispatch)",
+      "(?:maritime|vessel|port)[_\\W]?(?:traffic|autonom|navigation)",
+      "adas",
+      "(?:autopilot|auto[_\\W]?pilot)"
+    ],
+    "articles": [],
+    "category": "Transportation (Korea AI Basic Act Art 33)",
+    "description": "AI in operation of transport conveyances",
+    "confidence": "medium",
+    "likelihood": "medium",
+    "impact": "high"
+  },
+  "housing": {
+    "patterns": [
+      "tenant[_\\W]?(?:screen|scor|risk|background|check|reject|approv|rank|select)",
+      "(?:screen|score|rank|approve|deny|reject)[_\\W]?tenants?",
+      "rental[_\\W]?(?:applic|decision|screen|approv|deny|eligib|risk|scor)",
+      "(?:housing|apartment|rental)[_\\W]?(?:allocat|assign|decision|eligib|waitlist|priorit)",
+      "(?:fair[_\\W]?housing|housing[_\\W]?discriminat)",
+      "(?:eviction|evict)[_\\W]?(?:predict|risk|scor|model|decision)",
+      "property[_\\W]?(?:valuat|apprais)[_\\W]?(?:ai|model|automat|predict|algorithm)",
+      "(?:mortgage|home[_\\W]?loan)[_\\W]?(?:approv|deny|decision|risk|scor|automat|algorithm)",
+      "(?:screen|score|approve|deny|rank)[^\"\\n]{0,30}(?:tenant|rental|housing|eviction)"
+    ],
+    "articles": [],
+    "category": "Housing (Colorado SB 26-189)",
+    "description": "Housing and residential real estate decisions",
     "confidence": "medium",
     "likelihood": "medium",
     "impact": "high"

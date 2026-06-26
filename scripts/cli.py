@@ -326,8 +326,6 @@ def _enrich_findings_with_jurisdictions(findings, jurisdiction_pairs):
 
 def _extract_jurisdiction_label(short_name, internal_key, data, finding):
     """Extract a single human-readable label from framework mapping data."""
-    category = finding.get("category", "")
-    desc = finding.get("description", "")
     if internal_key == "eu_ai_act":
         title = data.get("title", "")
         return f"EU AI Act: {title}" if title else "EU AI Act"
@@ -359,6 +357,67 @@ def _extract_jurisdiction_label(short_name, internal_key, data, finding):
         controls = data.get("controls", [])
         return f"ISO 42001: {controls[0]}" if controls else "ISO/IEC 42001"
     return short_name
+
+
+# ---------------------------------------------------------------------------
+# Jurisdiction → regulation_map.py domain-level enrichment
+# ---------------------------------------------------------------------------
+
+# Map CLI jurisdiction short names → regulation_map.py YAML IDs.
+# Derived from JURISDICTION_MAP keys + available YAML files.
+# When adding a new jurisdiction, add the YAML to references/jurisdictions/
+# and add the short name here. Keep in sync with JURISDICTION_MAP above.
+_JURISDICTION_TO_REG_MAP = {
+    "eu": "eu_ai_act",
+    "korea": "south_korea",
+    "colorado": "colorado",
+}
+
+
+def _enrich_findings_with_domain_obligations(findings, jurisdiction_pairs):
+    """Add domain-level jurisdiction obligations to findings.
+
+    Uses regulation_map.py to map detected_domains → per-jurisdiction
+    obligations. Adds a 'domain_obligations' key to each finding.
+    Jurisdictions without domain-level YAML data are warned about.
+    """
+    from regulation_map import map_domains_to_obligations, get_jurisdiction_summary
+
+    # Warn about jurisdictions that lack domain-level obligation data
+    for short_name, _fw_key in jurisdiction_pairs:
+        if short_name not in _JURISDICTION_TO_REG_MAP:
+            print(f"  Note: '{short_name}' has article-level crosswalk mapping but no "
+                  f"domain-level obligation data. Domain obligations will only appear "
+                  f"for: {', '.join(sorted(_JURISDICTION_TO_REG_MAP))}",
+                  file=sys.stderr)
+
+    for finding in findings:
+        domains = finding.get("detected_domains", [])
+        if not domains:
+            continue
+
+        domain_obs = {}
+        for short_name, _fw_key in jurisdiction_pairs:
+            reg_id = _JURISDICTION_TO_REG_MAP.get(short_name)
+            if not reg_id:
+                continue
+            try:
+                results = map_domains_to_obligations(domains, reg_id)
+                if results:
+                    summary = get_jurisdiction_summary(reg_id)
+                    domain_obs[short_name] = {
+                        "jurisdiction": summary["name"],
+                        "law": summary["law"],
+                        "status": summary["status"],
+                        "penalty_range": summary["penalty_range"],
+                        "covered_domains": results,
+                    }
+            except (ValueError, OSError) as e:
+                print(f"  Warning: could not load jurisdiction '{reg_id}': {e}",
+                      file=sys.stderr)
+
+        if domain_obs:
+            finding["domain_obligations"] = domain_obs
 
 
 # ---------------------------------------------------------------------------
@@ -1310,7 +1369,7 @@ def _build_subparsers(subparsers):
     # --- assess ---
     p_assess = subparsers.add_parser(
         "assess",
-        help="EU AI Act applicability check -- does this apply to your product? (no code required)",
+        help="AI regulation applicability check -- does this apply to your product? (no code required)",
     )
     p_assess.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_assess.add_argument(
@@ -1322,6 +1381,12 @@ def _build_subparsers(subparsers):
             "(the 5th slot is non_eu_provider when high_risk=yes, "
             "else transparency_trigger)."
         ),
+    )
+    p_assess.add_argument(
+        "--jurisdiction", choices=["eu", "korea", "colorado"], default="eu",
+        help="Jurisdiction to assess against (default: eu). "
+             "Korea and Colorado assessments are available via the web tool at "
+             "https://getregula.com/assess/?j=kr or ?j=co",
     )
     p_assess.set_defaults(func=cmd_assess)
 

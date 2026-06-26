@@ -1,8 +1,8 @@
 schema_version: 1.0
 generated_on: 2026-04-09
-total_patterns: 34
+total_patterns: 35
 by_tier:
-  prohibited: 8
+  prohibited: 9
   high_risk: 10
   limited_risk: 4
   ai_security: 10
@@ -37,10 +37,15 @@ patterns:
     article: 5(1)(e)
     file: prohibited__facial_recognition_scraping.yaml
   -
-    pattern_id: prohibited__emotion_inference_restricted
+    pattern_id: prohibited__emotion_inference_workplace
     tier: prohibited
     article: 5(1)(f)
-    file: prohibited__emotion_inference_restricted.yaml
+    file: prohibited__emotion_inference_workplace.yaml
+  -
+    pattern_id: prohibited__emotion_inference_education
+    tier: prohibited
+    article: 5(1)(f)
+    file: prohibited__emotion_inference_education.yaml
   -
     pattern_id: prohibited__biometric_categorisation_sensitive
     tier: prohibited
