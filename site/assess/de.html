@@ -614,9 +614,9 @@ function renderQuestion() {
       <div class="q-article">${q.article}</div>
       <div class="q-help" id="${qId}-help">${q.help}</div>
       <div class="answers" role="group" aria-label="Wählen Sie Ihre Antwort" aria-describedby="${qId}-help">
-        <button class="ans-btn ${existing === 'yes' ? 'selected' : ''}" onclick="answer('yes', this)" aria-pressed="${existing === 'yes'}" type="button">Ja</button>
-        <button class="ans-btn ${existing === 'no' ? 'selected-no' : ''}" onclick="answer('no', this)" aria-pressed="${existing === 'no'}" type="button">Nein</button>
-        <button class="ans-btn ${existing === 'unsure' ? 'selected-unsure' : ''}" onclick="answer('unsure', this)" aria-pressed="${existing === 'unsure'}" type="button">Unsicher</button>
+        <button type="button" class="ans-btn ${existing === 'yes' ? 'selected' : ''}" onclick="answer('yes', this)" aria-pressed="${existing === 'yes'}" type="button">Ja</button>
+        <button type="button" class="ans-btn ${existing === 'no' ? 'selected-no' : ''}" onclick="answer('no', this)" aria-pressed="${existing === 'no'}" type="button">Nein</button>
+        <button type="button" class="ans-btn ${existing === 'unsure' ? 'selected-unsure' : ''}" onclick="answer('unsure', this)" aria-pressed="${existing === 'unsure'}" type="button">Unsicher</button>
       </div>
     </div>
   `;

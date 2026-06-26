@@ -143,7 +143,7 @@
 
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
-    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
@@ -237,7 +237,7 @@ regula assess                       # interactive: does the AI Act apply?</code>
 
 <ul>
     <li><code>--domain employment</code> &mdash; hiring, recruitment, workforce management (<a href="/guides/eu-ai-act-recruitment-hiring.html">Annex III Category 4</a>)</li>
-    <li><code>--domain healthcare</code> &mdash; medical triage, diagnostic, treatment recommendation</li>
+    <li><code>--domain medical</code> &mdash; medical triage, diagnostic, treatment recommendation (<a href="/guides/eu-ai-act-healthcare.html">healthcare AI guide</a>)</li>
     <li><code>--domain education</code> &mdash; student assessment, admissions, learning analytics</li>
     <li><code>--domain finance</code> &mdash; credit scoring, insurance pricing, fraud detection</li>
 </ul>

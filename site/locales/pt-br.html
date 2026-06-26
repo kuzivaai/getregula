@@ -310,7 +310,7 @@
 <!-- NAV -->
 <nav class="nav" id="nav" aria-label="Navegacao principal">
     <a href="/" class="nav-brand">Regula</a>
-    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
@@ -332,7 +332,7 @@
             <h1>Seu app de IA e de <span class="hl">alto risco</span> na Europa?</h1>
             <p class="sub">Um comando mostra em qual nivel de risco da Lei de IA da UE seu codigo se encontra, por que, e o que corrigir. <strong>30 segundos, gratis, sem conta.</strong></p>
 
-            <button class="cta-pill" id="install-pill" onclick="copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
+            <button type="button" class="cta-pill" id="install-pill" onclick="copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
                 Teste gratis em 30 segundos
             </button>
@@ -465,11 +465,11 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <div class="audience-label">Se voce dirige o negocio</div>
             <h3>Voce conhece sua exposicao legal?</h3>
             <p>Se sua equipe constroi ou usa IA, a Lei de IA da UE pode se aplicar, mesmo fora da UE. A maioria das ferramentas se enquadra em risco limitado ou minimo. Usa Claude Code ou Cursor? Cole <code>regula assess</code> no seu chat. Tem um desenvolvedor? Envie esta pagina.</p>
-            <button class="audience-fwd" onclick="copyPageUrl(this)">
+            <button type="button" class="audience-fwd" onclick="copyPageUrl(this)">
                 <span class="fwd-icon">&#8599;</span>
                 <span class="fwd-txt">Copiar link para enviar ao seu desenvolvedor</span>
             </button>
-            <button class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
+            <button type="button" class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
                 <span class="fwd-icon">&#9654;</span>
                 <span class="fwd-txt">Executar regula assess (sem codigo necessario)</span>
             </button>
@@ -489,7 +489,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <div class="audience-label">Se voce audita conformidade</div>
             <h3>Evidencia verificavel, nao autoatestacao.</h3>
             <p>O Regula gera pacotes de evidencias assinados e com marca temporal, com manifestos de integridade SHA-256. Cada descoberta e rastreavel ate um arquivo e linha. Verifique a cadeia voce mesmo.</p>
-            <button class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula evidence-pack --sign .')">
+            <button type="button" class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula evidence-pack --sign .')">
                 <span class="fwd-icon">&#9654;</span>
                 <span class="fwd-txt">regula evidence-pack --sign .</span>
             </button>
@@ -857,7 +857,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     <div class="final reveal">
         <h2>Descubra onde voce esta</h2>
         <p>Um comando. Leva 30 segundos. Sem conta necessaria.</p>
-        <button class="install-box" id="install-btn-2" onclick="copyInstall(this)" style="display:inline-flex;">
+        <button type="button" class="install-box" id="install-btn-2" onclick="copyInstall(this)" style="display:inline-flex;">
             <span class="dollar">$</span>
             <span class="cmd">pipx install regula-ai</span>
             <span class="cp">copiar</span>
