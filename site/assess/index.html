@@ -430,7 +430,11 @@
 // All logic runs client-side. Nothing leaves the browser.
 // =====================================================================
 
+// QUESTIONS array: positions 0-11 are the original 12 questions (stable for URL encoding).
+// Positions 12-14 are new questions appended to preserve backward compatibility.
+// DISPLAY_ORDER controls the sequence users see (profiling before exemptions).
 const QUESTIONS = [
+  // --- Original 12 (positions 0-11, stable for URL encoding) ---
   {
     id: "deployment_eu",
     text: "Will this system be deployed in the EU or affect people in the EU?",
@@ -496,14 +500,6 @@ const QUESTIONS = [
     signal: "transparency"
   },
   {
-    id: "profiling",
-    text: "Does this system build profiles of individuals based on their personal data (e.g. performance tracking, behaviour analysis, preference modelling, risk scoring based on personal characteristics)?",
-    help: "If a system profiles natural persons as defined in GDPR Article 4(4), Article 6(3) exemptions CANNOT apply — the system is automatically high-risk regardless of how narrow or procedural it is. Profiling means any automated processing of personal data to evaluate personal aspects.",
-    article: "Article 6(3), GDPR Article 4(4)",
-    weight: { yes: 15, no: 0, unsure: 5 },
-    signal: "profiling"
-  },
-  {
     id: "narrow_procedural",
     text: "Does this system perform ONLY narrow procedural tasks (e.g. converting data between formats, sorting documents by metadata, matching records against a fixed template)?",
     help: "Article 6(3)(a) exempts AI systems that perform narrow procedural tasks from high-risk classification, even if they operate in an Annex III domain. The task must be purely procedural with no decision-making about individuals.",
@@ -516,22 +512,6 @@ const QUESTIONS = [
     text: "Does this system ONLY improve the result of a previously completed human activity (e.g. grammar-checking human-written text, enhancing a human-taken photo, auto-formatting a human-created document)?",
     help: "Article 6(3)(b) exempts AI that improves previously completed human activities. The human activity must be complete before the AI acts on it — the AI polishes, it does not create.",
     article: "Article 6(3)(b)",
-    weight: { yes: -20, no: 5, unsure: 0 },
-    signal: "exemption"
-  },
-  {
-    id: "pattern_detection",
-    text: "Does this system detect patterns for human review WITHOUT replacing or substituting the human's own assessment (e.g. flagging anomalies for an analyst, highlighting potential matches for a reviewer)?",
-    help: "Article 6(3)(c) exempts AI that detects patterns or deviations from prior patterns without replacing human assessment. The human must make the final determination, not the AI.",
-    article: "Article 6(3)(c)",
-    weight: { yes: -20, no: 5, unsure: 0 },
-    signal: "exemption"
-  },
-  {
-    id: "preparatory_task",
-    text: "Does this system ONLY perform preparatory tasks for a human assessor (e.g. pre-sorting applications, extracting key data points for review, generating summaries for human decision-makers)?",
-    help: "Article 6(3)(d) exempts AI performing preparatory tasks for assessments that will be carried out by a natural person. The human assessor must still make the substantive decision.",
-    article: "Article 6(3)(d)",
     weight: { yes: -20, no: 5, unsure: 0 },
     signal: "exemption"
   },
@@ -550,8 +530,39 @@ const QUESTIONS = [
     article: "Article 12",
     weight: { yes: -5, no: 5, unsure: 0 },
     signal: "gap_assessment"
+  },
+  // --- New questions (positions 12-14, appended to preserve URL encoding) ---
+  {
+    id: "profiling",
+    text: "Does this system build profiles of individuals based on their personal data (e.g. performance tracking, behaviour analysis, preference modelling, risk scoring based on personal characteristics)?",
+    help: "If a system profiles natural persons as defined in GDPR Article 4(4), Article 6(3) exemptions CANNOT apply — the system is automatically high-risk regardless of how narrow or procedural it is. Profiling means any automated processing of personal data to evaluate personal aspects.",
+    article: "Article 6(3), GDPR Article 4(4)",
+    weight: { yes: 15, no: 0, unsure: 5 },
+    signal: "profiling"
+  },
+  {
+    id: "pattern_detection",
+    text: "Does this system detect patterns for human review WITHOUT replacing or substituting the human's own assessment (e.g. flagging anomalies for an analyst, highlighting potential matches for a reviewer)?",
+    help: "Article 6(3)(c) exempts AI that detects patterns or deviations from prior patterns without replacing human assessment. The human must make the final determination, not the AI.",
+    article: "Article 6(3)(c)",
+    weight: { yes: -20, no: 5, unsure: 0 },
+    signal: "exemption"
+  },
+  {
+    id: "preparatory_task",
+    text: "Does this system ONLY perform preparatory tasks for a human assessor (e.g. pre-sorting applications, extracting key data points for review, generating summaries for human decision-makers)?",
+    help: "Article 6(3)(d) exempts AI performing preparatory tasks for assessments that will be carried out by a natural person. The human assessor must still make the substantive decision.",
+    article: "Article 6(3)(d)",
+    weight: { yes: -20, no: 5, unsure: 0 },
+    signal: "exemption"
   }
 ];
+
+// Display order: users see questions in this logical sequence.
+// Profiling (Q12 in array) is shown before exemptions (Q8-9) so users
+// understand the gate before answering exemption questions.
+// Array indices into QUESTIONS:
+const DISPLAY_ORDER = [0,1,2,3,4,5,6,7, 12, 8,9,13,14, 10,11];
 
 // Article obligations for high-risk systems
 // Effort estimates are combined team effort (developer + compliance + legal review).
@@ -666,14 +677,14 @@ function startAssessment() {
 }
 
 function renderQuestion() {
-  const q = QUESTIONS[currentQuestion];
+  const q = QUESTIONS[DISPLAY_ORDER[currentQuestion]];
   const existing = answers[q.id] || null;
   const container = document.getElementById("questionContainer");
   const qId = "q-" + q.id;
 
   container.innerHTML = `
     <div class="q-card" role="group" aria-labelledby="${qId}-text">
-      <div class="q-number" aria-hidden="true">QUESTION ${currentQuestion + 1} OF ${QUESTIONS.length}</div>
+      <div class="q-number" aria-hidden="true">QUESTION ${currentQuestion + 1} OF ${DISPLAY_ORDER.length}</div>
       <div class="q-text" id="${qId}-text">${q.text}</div>
       <div class="q-help" id="${qId}-help">${q.help}</div>
       <div class="q-article">${q.article}</div>
@@ -692,16 +703,16 @@ function renderQuestion() {
   }
 
   // Update progress
-  const pct = Math.round((currentQuestion / QUESTIONS.length) * 100);
+  const pct = Math.round((currentQuestion / DISPLAY_ORDER.length) * 100);
   document.getElementById("progressBar").style.width = pct + "%";
   document.getElementById("progressPct").textContent = pct + "%";
-  document.getElementById("progressText").textContent = `Question ${currentQuestion + 1} of ${QUESTIONS.length}`;
+  document.getElementById("progressText").textContent = `Question ${currentQuestion + 1} of ${DISPLAY_ORDER.length}`;
   document.getElementById("progressWrap").setAttribute("aria-valuenow", pct);
 
   // Button states
   document.getElementById("prevBtn").disabled = currentQuestion === 0;
   document.getElementById("nextBtn").disabled = !existing;
-  document.getElementById("nextBtn").textContent = currentQuestion === QUESTIONS.length - 1 ? "See results" : "Next";
+  document.getElementById("nextBtn").textContent = currentQuestion === DISPLAY_ORDER.length - 1 ? "See results" : "Next";
 
   // Focus management: move focus to the question text for screen readers
   const qText = document.getElementById(qId + "-text");
@@ -709,7 +720,7 @@ function renderQuestion() {
 }
 
 function answer(value, btn) {
-  const q = QUESTIONS[currentQuestion];
+  const q = QUESTIONS[DISPLAY_ORDER[currentQuestion]];
   answers[q.id] = value;
 
   // Update button states visually and aria-pressed
@@ -727,7 +738,7 @@ function answer(value, btn) {
 }
 
 function nextQuestion() {
-  if (currentQuestion < QUESTIONS.length - 1) {
+  if (currentQuestion < DISPLAY_ORDER.length - 1) {
     currentQuestion++;
     renderQuestion();
     saveProgress();
