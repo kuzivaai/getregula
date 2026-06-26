@@ -9,7 +9,7 @@
     </style>
     <meta name="theme-color" content="#070711">
     <title>EU-KI-Gesetz-Bewertung: Betrifft es Sie? | Regula</title>
-    <meta name="description" content="Kostenlose EU-KI-Gesetz-Risikobewertung. Beantworten Sie Fragen oder scannen Sie Ihren Code gegen 627 Risikomuster. Risikostufe, anwendbare Artikel und Pflichtencheckliste. Keine Anmeldung, keine Installation.">
+    <meta name="description" content="Kostenlose EU-KI-Gesetz-Risikobewertung. Beantworten Sie 12 Fragen, um Ihre Risikostufe, rechtliche Pflichten und n\u00e4chste Schritte zu erfahren. Entwicklungsteams k\u00f6nnen auch Code gegen 627 Erkennungsmuster scannen. Keine Anmeldung, keine Installation.">
     <meta name="author" content="Kuziva Muzondo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://getregula.com/assess/de.html">
@@ -37,7 +37,7 @@
       "@type": "WebApplication",
       "name": "Regula EU-KI-Gesetz-Bewertung",
       "url": "https://getregula.com/assess/de.html",
-      "description": "Kostenloses EU-KI-Gesetz-Risikobewertungstool. Code gegen 627 Risikomuster scannen oder Fragen beantworten. Klassifiziert KI-Systeme in Risikostufen und ordnet Pflichten zu.",
+      "description": "Kostenloses EU-KI-Gesetz-Risikobewertungstool. Code gegen 627 Erkennungsmuster scannen oder Fragen beantworten. Klassifiziert KI-Systeme in Risikostufen und ordnet Pflichten zu.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Any (web browser)",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
@@ -305,21 +305,24 @@
   <!-- HERO -->
   <div class="hero" id="heroSection">
     <h1>Gilt die EU-KI-Verordnung <span>für Sie?</span></h1>
-    <p>Beantworten Sie Fragen zu Ihrem KI-System oder scannen Sie Ihren Code gegen 627 Risikomuster. Erhalten Sie Ihre Risikostufe, anwendbare Artikel und eine Compliance-Lückenanalyse. Nichts verlässt Ihren Browser.</p>
+    <p>Finden Sie es in unter 5 Minuten heraus. Beantworten Sie 12 Fragen zu Ihrem KI-System, um Ihre Risikostufe, Ihre rechtlichen Pflichten und die nächsten Schritte zu erfahren. Nichts verlässt Ihren Browser.</p>
     <div class="hero-stats">
-      <span>12 Fragen oder Code-Scan</span>
-      <span>627 Risikomuster</span>
+      <span>12 Fragen, unter 5 Minuten</span>
+      <span>Sofortige Risikoeinstufung</span>
       <span>Nichts verlässt Ihren Browser</span>
     </div>
     <div style="margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-      <button type="button" class="btn btn-primary" onclick="startAssessment()" style="padding:14px 36px;font-size:1rem;">Fragen beantworten</button>
-      <button type="button" class="btn btn-secondary" onclick="startScanner()" style="padding:14px 36px;font-size:1rem;">Code scannen</button>
+      <button type="button" class="btn btn-primary" onclick="startAssessment()" style="padding:14px 36px;font-size:1rem;">Bewertung starten</button>
     </div>
-    <div style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);">Beantworten Sie Fragen für eine schnelle Bewertung oder scannen Sie Code für eine musterbasierte Analyse. Sie können beides tun.</div>
+    <div style="margin-top:16px;font-size:0.85rem;color:var(--text-dim);">Entwicklungsteams können auch <button type="button" onclick="startScanner()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">Quellcode scannen</button> gegen 627 Erkennungsmuster.</div>
   </div>
 
   <!-- QUESTIONNAIRE -->
   <div id="questionnaireSection" style="display:none;">
+    <div id="assessIntro" style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:20px;font-size:0.9rem;line-height:1.6;color:var(--text-dim);">
+      <p style="margin:0 0 8px 0;">Die EU-KI-Verordnung stuft KI-Systeme in Risikokategorien ein &mdash; von minimalem Risiko bis verboten &mdash; mit unterschiedlichen rechtlichen Pflichten für jede Stufe. Diese Bewertung ermittelt, welche Stufe für Ihr System gilt und was Sie als Nächstes tun müssen.</p>
+      <p style="margin:0;font-size:0.8rem;color:var(--text-muted);">Ihre Antworten werden weder gespeichert noch übermittelt. Ergebnisse können über einen zustandslosen Link geteilt werden.</p>
+    </div>
     <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Bewertungsfortschritt" id="progressWrap">
       <div class="progress-label" aria-live="polite">
         <span id="progressText">Frage 1 von 12</span>
@@ -337,9 +340,9 @@
   <!-- CODE SCANNER -->
   <div id="scannerSection" style="display:none;">
     <div class="q-card">
-      <div class="q-number">CODE-SCANNER</div>
+      <div class="q-number">CODE-SCANNER <span style="font-size:0.7rem;background:var(--accent-dim);color:var(--accent);padding:2px 8px;border-radius:4px;margin-left:8px;vertical-align:middle;">Für Entwicklungsteams</span></div>
       <div class="q-text">Code einfügen oder Datei hochladen</div>
-      <div class="q-help">Regula scannt nach EU-KI-Gesetz-Risikomustern &mdash; verbotene Praktiken, Hochrisiko-Indikatoren, Sicherheits-Antipatterns und Transparenzanforderungen. Alles läuft in Ihrem Browser. Nichts wird hochgeladen oder gespeichert.</div>
+      <div class="q-help">Regula scannt Quellcode nach EU-KI-Gesetz-Risikomustern &mdash; verbotene Praktiken, Hochrisiko-Indikatoren, Sicherheits-Antipatterns und Transparenzanforderungen. Alles läuft in Ihrem Browser. Nichts wird hochgeladen oder gespeichert. Kein Entwickler? Nutzen Sie stattdessen den <button type="button" onclick="backToHero()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">Fragebogen</button>.</div>
 
       <div style="margin-bottom:12px;">
         <label for="scanLang" style="font-size:0.8rem;color:var(--text-dim);display:block;margin-bottom:4px;">Sprache (automatisch erkannt anhand der Dateiendung)</label>
@@ -438,8 +441,8 @@ const QUESTIONS = [
   },
   {
     id: "affected_domain",
-    text: "Ist dieses System in einem der folgenden Bereiche tätig: Beschäftigung/Einstellung, Kredit/Finanzen, Bildung/Zulassung, Gesundheitswesen, Strafverfolgung, Einwanderung, kritische Infrastruktur?",
-    help: "Diese Bereiche sind in Anhang III als Gebiete aufgeführt, in denen KI-Systeme als hochriskant eingestuft werden können.",
+    text: "Ist dieses System in einem der folgenden Bereiche tätig: biometrische Identifizierung, kritische Infrastruktur, Bildung, Beschäftigung/Einstellung, wesentliche Dienste (Kredit, Versicherung, Gesundheitswesen, Sozialleistungen), Strafverfolgung, Migration/Grenzkontrolle, Justiz/demokratische Prozesse?",
+    help: "Die EU-KI-Verordnung benennt bestimmte Sektoren, in denen KI erhöhte Risiken für Grundrechte birgt. Diese sind in Anhang III der Verordnung aufgeführt. KI-Systeme in diesen Bereichen können als hochriskant eingestuft werden, was zusätzliche Anforderungen auslöst.",
     article: "Artikel 6(2), Anhang III",
     weight: { yes: 25, no: -15, unsure: 10 },
     signal: "high_risk"
@@ -454,8 +457,8 @@ const QUESTIONS = [
   },
   {
     id: "significant_harm",
-    text: "Könnten Fehler oder Ausfälle dieses Systems erheblichen Schaden für Gesundheit, Sicherheit oder Grundrechte einer Person verursachen?",
-    help: "Artikel 6 erfordert, dass das System ein \u201Aerhebliches Schadensrisiko\u2018 darstellt, um als hochriskant eingestuft zu werden \u2014 über den bloßen Betrieb in einem Anhang-III-Bereich hinaus.",
+    text: "Könnten Fehler oder Ausfälle dieses Systems erheblichen Schaden für Gesundheit, Sicherheit oder Grundrechte einer Person verursachen (z. B. Recht auf Nichtdiskriminierung, Privatsphäre, faires Verfahren, Bildung)?",
+    help: "Der bloße Betrieb in einem regulierten Bereich reicht für die Hochrisiko-Einstufung nicht aus. Das System muss auch ein erhebliches Schadensrisiko darstellen. Diese Frage hilft, Systeme zu unterscheiden, die lediglich in einem regulierten Sektor tätig sind, von solchen, die das Leben von Menschen wesentlich beeinflussen könnten.",
     article: "Artikel 6(2)",
     weight: { yes: 25, no: -15, unsure: 10 },
     signal: "high_risk"
@@ -463,7 +466,7 @@ const QUESTIONS = [
   {
     id: "biometric_data",
     text: "Verarbeitet dieses System biometrische Daten (Gesicht, Fingerabdruck, Stimme, Gangart)?",
-    help: "Biometrische Verarbeitung erscheint sowohl in Anhang III Kategorie 1 als auch in den verbotenen Praktiken nach Artikel 5, je nach Kontext.",
+    help: "Die Verarbeitung biometrischer Daten kann von hochriskant (bei Verwendung zur Identifizierung oder Kategorisierung) bis verboten (bei Echtzeit-Überwachung im öffentlichen Raum) reichen. Die Einstufung hängt davon ab, wie Sie die Daten verwenden, nicht allein davon, dass Sie sie verarbeiten.",
     article: "Anhang III(1), Artikel 5",
     weight: { yes: 20, no: -5, unsure: 10 },
     signal: "high_risk"
@@ -486,10 +489,10 @@ const QUESTIONS = [
   },
   {
     id: "public_facing",
-    text: "Werden Einzelpersonen darüber informiert, dass sie mit einem KI-System interagieren?",
-    help: "Artikel 50 verlangt Transparenz: Nutzer müssen wissen, wenn sie mit KI interagieren, wenn Inhalte KI-generiert sind oder wenn KI ihre Daten analysiert.",
+    text: "Könnten Einzelpersonen mit diesem System interagieren, ohne zu wissen, dass es KI-gestützt ist?",
+    help: "Artikel 50 verlangt Transparenz: Nutzer müssen wissen, wenn sie mit KI interagieren, wenn Inhalte KI-generiert sind oder wenn KI ihre Daten analysiert. Wenn Ihr System seine KI-Natur derzeit nicht offenlegt, gelten Transparenzpflichten.",
     article: "Artikel 50",
-    weight: { yes: -5, no: 15, unsure: 5 },
+    weight: { yes: 15, no: -5, unsure: 5 },
     signal: "transparency"
   },
   {
@@ -582,11 +585,37 @@ const LIMITED_RISK_OBLIGATIONS = [
 ];
 
 // =====================================================================
-// Zustand
+// Zustand (mit sessionStorage-Persistenz)
 // =====================================================================
 let currentQuestion = 0;
 let answers = {};
 let assessmentStarted = false;
+
+function saveProgress() {
+  try {
+    sessionStorage.setItem("regula_assess", JSON.stringify({
+      currentQuestion, answers, assessmentStarted
+    }));
+  } catch (e) { /* quota or private browsing */ }
+}
+
+function loadProgress() {
+  try {
+    const saved = sessionStorage.getItem("regula_assess");
+    if (saved) {
+      const data = JSON.parse(saved);
+      currentQuestion = data.currentQuestion || 0;
+      answers = data.answers || {};
+      assessmentStarted = data.assessmentStarted || false;
+      if (assessmentStarted) {
+        document.getElementById("heroSection").style.display = "none";
+        document.getElementById("questionnaireSection").style.display = "block";
+        document.getElementById("assessIntro").style.display = "block";
+        renderQuestion();
+      }
+    }
+  } catch (e) { /* ignore */ }
+}
 
 // =====================================================================
 // Fragebogen-Logik
@@ -597,6 +626,7 @@ function startAssessment() {
   document.getElementById("heroSection").style.display = "none";
   document.getElementById("questionnaireSection").style.display = "block";
   document.getElementById("resultsSection").classList.remove("active");
+  document.getElementById("assessIntro").style.display = "block";
   renderQuestion();
   if (window.plausible) plausible("Assessment Started");
 }
@@ -611,15 +641,21 @@ function renderQuestion() {
     <div class="q-card" role="group" aria-labelledby="${qId}-text">
       <div class="q-number" aria-hidden="true">FRAGE ${currentQuestion + 1} VON ${QUESTIONS.length}</div>
       <div class="q-text" id="${qId}-text">${q.text}</div>
-      <div class="q-article">${q.article}</div>
       <div class="q-help" id="${qId}-help">${q.help}</div>
+      <div class="q-article">${q.article}</div>
       <div class="answers" role="group" aria-label="Wählen Sie Ihre Antwort" aria-describedby="${qId}-help">
-        <button type="button" class="ans-btn ${existing === 'yes' ? 'selected' : ''}" onclick="answer('yes', this)" aria-pressed="${existing === 'yes'}" type="button">Ja</button>
-        <button type="button" class="ans-btn ${existing === 'no' ? 'selected-no' : ''}" onclick="answer('no', this)" aria-pressed="${existing === 'no'}" type="button">Nein</button>
-        <button type="button" class="ans-btn ${existing === 'unsure' ? 'selected-unsure' : ''}" onclick="answer('unsure', this)" aria-pressed="${existing === 'unsure'}" type="button">Unsicher</button>
+        <button type="button" class="ans-btn ${existing === 'yes' ? 'selected' : ''}" onclick="answer('yes', this)" aria-pressed="${existing === 'yes'}">Ja</button>
+        <button type="button" class="ans-btn ${existing === 'no' ? 'selected-no' : ''}" onclick="answer('no', this)" aria-pressed="${existing === 'no'}">Nein</button>
+        <button type="button" class="ans-btn ${existing === 'unsure' ? 'selected-unsure' : ''}" onclick="answer('unsure', this)" aria-pressed="${existing === 'unsure'}">Unsicher</button>
       </div>
     </div>
   `;
+
+  // Hide intro after first question
+  if (currentQuestion > 0) {
+    const intro = document.getElementById("assessIntro");
+    if (intro) intro.style.display = "none";
+  }
 
   // Update progress
   const pct = Math.round((currentQuestion / QUESTIONS.length) * 100);
@@ -653,12 +689,14 @@ function answer(value, btn) {
   else btn.className = "ans-btn selected-unsure";
 
   document.getElementById("nextBtn").disabled = false;
+  saveProgress();
 }
 
 function nextQuestion() {
   if (currentQuestion < QUESTIONS.length - 1) {
     currentQuestion++;
     renderQuestion();
+    saveProgress();
   } else {
     showResults();
   }
@@ -668,6 +706,7 @@ function prevQuestion() {
   if (currentQuestion > 0) {
     currentQuestion--;
     renderQuestion();
+    saveProgress();
   }
 }
 
@@ -689,7 +728,7 @@ function calculateResults() {
 
     if (q.signal === "prohibited" && a === "yes") prohibitedSignals.push(q.id);
     if (q.signal === "high_risk" && a === "yes") highRiskSignals.push(q.id);
-    if (q.signal === "transparency" && a === "no") transparencySignals.push(q.id);
+    if (q.signal === "transparency" && a === "yes") transparencySignals.push(q.id);
     if (q.signal === "exemption" && a === "yes") exemptionSignals.push(q.id);
     if (q.signal === "gap_assessment") gapSignals[q.id] = a;
   }
@@ -709,13 +748,13 @@ function calculateResults() {
   } else if (score >= 65 && exemptionSignals.length === 0) {
     tier = "high_risk";
     tierName = "Hochrisiko-KI-System";
-    tierDesc = "Ihr System fällt voraussichtlich unter Anhang III. Die Pflichten nach Artikeln 9\u201315 gelten. Der Omnibus (EP-Zustimmung 16. Juni 2026) verschiebt die Frist auf den 2. Dezember 2027, vorbehaltlich der Annahme durch den Rat.";
+    tierDesc = "Ihr System fällt voraussichtlich in eine Kategorie, die die EU-KI-Verordnung als hochriskant einstuft. Sie müssen Anforderungen an Risikomanagement, Daten-Governance, Dokumentation, Protokollierung, Transparenz, menschliche Aufsicht und Cybersicherheit erfüllen. Die Compliance-Frist wurde auf den 2. Dezember 2027 verschoben, vorbehaltlich der endgültigen Annahme der Omnibus-Änderung.";
     tierClass = "tier-high";
     obligations = OBLIGATIONS;
   } else if (score >= 65 && exemptionSignals.length > 0) {
     tier = "high_risk_exempt";
     tierName = "Möglicherweise ausgenommenes Hochrisiko-System";
-    tierDesc = "Ihr System ist in einem Anhang-III-Bereich tätig, könnte aber für eine Ausnahme nach Artikel 6(3) in Frage kommen. Dokumentieren Sie, warum die Ausnahme zutrifft. Falls die Ausnahme nicht greift, gelten die Artikel 9\u201315.";
+    tierDesc = "Ihr System ist in einem regulierten Bereich tätig, könnte aber für eine Ausnahme in Frage kommen, da es eng begrenzte Verfahrensaufgaben ausführt oder bereits abgeschlossene menschliche Tätigkeiten verbessert. Dokumentieren Sie, warum die Ausnahme zutrifft, einschließlich dessen, was das System tut und was nicht. Wenn die Ausnahme nicht greift, gelten die vollständigen Hochrisiko-Anforderungen.";
     tierClass = "tier-limited";
     obligations = OBLIGATIONS;
   } else if (score >= 35 || transparencySignals.length > 0) {
@@ -738,7 +777,7 @@ function calculateResults() {
     10: 20, // Can't assess data governance from questionnaire alone
     11: 15, // Can't assess technical docs from questionnaire alone
     12: gapSignals.logging_active === "yes" ? 65 : (gapSignals.logging_active === "unsure" ? 30 : 10),
-    13: answers.public_facing === "yes" ? 50 : 15,
+    13: answers.public_facing === "no" ? 50 : 15,
     14: answers.autonomous_decisions === "no" ? 70 : 25,
     15: 30 // Can't assess robustness from questionnaire alone
   };
@@ -762,7 +801,7 @@ function showResults() {
       <div class="tier-label">IHRE RISIKOSTUFE</div>
       <div class="tier-name">${results.tierName}</div>
       <div class="tier-desc">${results.tierDesc}</div>
-      <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">Konfidenzwert: ${results.score}/100</div>
+      <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">Risikobewertung: ${results.score}/100 (höher = größeres regulatorisches Risiko)</div>
     </div>
   `;
 
@@ -793,7 +832,7 @@ function showResults() {
     }
     oblHtml += `</div>`;
     if (results.tier === "high_risk" || results.tier === "high_risk_exempt") {
-      oblHtml += `<p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">Lückenwerte sind Schätzungen basierend auf Ihren Fragebogenantworten. Für eine präzise Bewertung führen Sie <code style="background:var(--bg);padding:2px 6px;border-radius:3px;">regula gap --project .</code> gegen Ihre Codebasis aus.</p>`;
+      oblHtml += `<p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">L\u00fcckenwerte sind Sch\u00e4tzungen basierend auf Ihren Fragebogenantworten. Ihr Entwicklungsteam kann pr\u00e4zise Bewertungen erhalten, indem es <code style="background:var(--bg);padding:2px 6px;border-radius:3px;">regula gap --project .</code> gegen Ihre Codebasis ausf\u00fchrt.</p>`;
     }
     document.getElementById("obligationsList").innerHTML = oblHtml;
   } else {
@@ -825,29 +864,31 @@ function getNextSteps(results) {
   if (results.tier === "prohibited") {
     return [
       { title: "Sofort Rechtsberatung einholen", desc: "Artikel-5-Verbote unterliegen der höchsten Bußgeldkategorie. Ein qualifizierter Anwalt muss beurteilen, ob Ihr System in den Anwendungsbereich fällt oder für eine Ausnahme in Frage kommt." },
-      { title: "Ihr System gegen die Artikel-5-Kategorien prüfen", desc: "Führen Sie regula check . aus, um zu sehen, welchem spezifischen Verbot Ihre Code-Muster entsprechen. Einige Treffer können je nach Kontext falsch-positiv sein." },
-      { title: "Ihre Bewertung dokumentieren", desc: "Ob Sie die Praktik fortsetzen, ändern oder entfernen \u2014 dokumentieren Sie die Begründung. Regulierungsbehörden werden sehen wollen, dass Sie das Verbot in Betracht gezogen haben." }
+      { title: "Diese Bewertung mit der Rechtsabteilung teilen", desc: "Laden Sie die JSON-Datei herunter oder drucken Sie diese Seite als PDF. Ihre Rechtsabteilung muss das spezifische Verbot prüfen und beraten, ob eine Ausnahme greift." },
+      { title: "Ihre Bewertung dokumentieren", desc: "Ob Sie die Praktik fortsetzen, ändern oder entfernen \u2014 dokumentieren Sie die Begründung. Regulierungsbehörden werden sehen wollen, dass Sie das Verbot in Betracht gezogen haben." },
+      { title: "Für Ihr Entwicklungsteam", desc: "Ihre Entwickler können die Regula-CLI ausführen (<code>pipx install regula-ai</code>, dann <code>regula check .</code>), um genau zu sehen, welche Code-Muster das Verbot ausgelöst haben." }
     ];
   }
   if (results.tier === "high_risk" || results.tier === "high_risk_exempt") {
     return [
-      { title: "Ihre Codebasis scannen", desc: "Installieren Sie Regula (pipx install regula-ai) und führen Sie regula gap --project . aus, um eine artikelweise Lückenanalyse gegen Ihren tatsächlichen Code zu erhalten \u2014 nicht nur Fragebogenantworten." },
+      { title: "Diese Bewertung mit Ihrem Team teilen", desc: "Nutzen Sie den teilbaren Link oder drucken Sie diese Seite als PDF. Ein Compliance-Beauftragter, ein Entwickler und ein Rechtsberater sollten diese Ergebnisse sehen." },
       { title: "Mit den größten Lücken beginnen", desc: "Konzentrieren Sie sich auf die Pflichten mit dem niedrigsten Bereitschaftswert. Technische Dokumentation (Artikel 11) und Daten-Governance (Artikel 10) sind typischerweise die größten Lücken." },
-      { title: "Protokollierung jetzt einrichten", desc: "Die Protokollierung nach Artikel 12 ist von Anfang an leichter einzubauen als nachzurüsten. Fügen Sie strukturierte Protokollierung rund um Modellinferenz-Aufrufe hinzu, bevor die Codebasis wächst." },
-      { title: "Risikomanagementsystem dokumentieren", desc: "Artikel 9 verlangt ein kontinuierlich gepflegtes Risikoregister. Beginnen Sie mit einer Markdown-Datei in Ihrem Repository. Aktualisieren Sie diese bei Systemanpassungen." },
-      { title: "Diese Bewertung mit Ihrem Team teilen", desc: "Nutzen Sie den teilbaren Link unten. Ein Compliance-Beauftragter, Entwickler und ein Rechtsberater sollten diese Ergebnisse sehen." }
+      { title: "Risikomanagementsystem dokumentieren", desc: "Artikel 9 verlangt ein kontinuierlich gepflegtes Risikoregister. Erstellen Sie ein lebendes Dokument, das identifizierte Risiken, Minderungsmaßnahmen und Restrisiken abdeckt. Aktualisieren Sie es bei Systemänderungen." },
+      { title: "Protokollierung einrichten", desc: "Artikel 12 verlangt die automatische Aufzeichnung der Systemvorgänge. Arbeiten Sie mit Ihrem Entwicklungsteam zusammen, um strukturierte Protokollierung rund um KI-Inferenz-Aufrufe hinzuzufügen." },
+      { title: "Für Ihr Entwicklungsteam", desc: "Ihre Entwickler können eine artikelweise Lückenanalyse gegen die tatsächliche Codebasis erhalten, indem sie die Regula-CLI ausführen: <code>pipx install regula-ai</code>, dann <code>regula gap --project .</code>" }
     ];
   }
   if (results.tier === "limited_risk") {
     return [
-      { title: "Transparenzhinweise hinzufügen", desc: "Artikel 50 verlangt, dass Nutzer wissen, wenn sie mit KI interagieren oder KI-generierte Inhalte konsumieren. Fügen Sie einen Hinweis in Ihre Benutzeroberfläche ein." },
-      { title: "KI-generierte Inhalte kennzeichnen", desc: "Wenn Ihr System Text, Bilder, Audio oder Video generiert, kennzeichnen Sie die Ausgabe in einem maschinenlesbaren Format als KI-generiert." },
-      { title: "Ihren Code auf weitere Indikatoren scannen", desc: "Führen Sie regula check . aus, um zu prüfen, ob keine Hochrisiko-Muster übersehen wurden. Einige Systeme mit begrenztem Risiko haben Hochrisiko-Komponenten." }
+      { title: "Transparenzhinweise hinzufügen", desc: "Artikel 50 verlangt, dass Nutzer wissen, wenn sie mit KI interagieren oder KI-generierte Inhalte konsumieren. Arbeiten Sie mit Ihrem Produktteam zusammen, um eine klare Offenlegung in der Benutzeroberfläche hinzuzufügen." },
+      { title: "KI-generierte Inhalte kennzeichnen", desc: "Wenn Ihr System Text, Bilder, Audio oder Video generiert, kennzeichnen Sie die Ausgabe als KI-generiert. Dies gilt sowohl für nutzersichtbare Labels als auch für maschinenlesbare Metadaten." },
+      { title: "Mit Ihrem Team teilen", desc: "Laden Sie diese Bewertung herunter oder drucken Sie sie aus und teilen Sie sie mit Ihrem Produkt- und Rechtsteam, um die Umsetzung der Transparenzanforderungen zu koordinieren." },
+      { title: "Für Ihr Entwicklungsteam", desc: "Ihre Entwickler können die Codebasis auf weitere Risikoindikatoren scannen mit der Regula-CLI: <code>pipx install regula-ai</code>, dann <code>regula check .</code>" }
     ];
   }
   return [
-    { title: "Keine spezifischen Pflichten anwendbar", desc: "Ihr System scheint minimales Risiko aufzuweisen. Erwägen Sie die Einhaltung freiwilliger Verhaltenskodizes (Artikel 95) als gute Praxis." },
-    { title: "Bei Änderung des Einsatzbereichs erneut bewerten", desc: "Wenn Sie neue Funktionen hinzufügen (insbesondere in Anhang-III-Bereichen), führen Sie diese Bewertung erneut durch. Die Risikoeinstufung hängt vom beabsichtigten Zweck ab, der sich ändern kann." }
+    { title: "Keine spezifischen Pflichten anwendbar", desc: "Ihr System scheint unter der EU-KI-Verordnung minimales Risiko aufzuweisen. Erwägen Sie die Einhaltung freiwilliger Verhaltenskodizes (Artikel 95) als gute Praxis." },
+    { title: "Bei Änderung des Einsatzbereichs erneut bewerten", desc: "Wenn Sie neue Funktionen hinzufügen \u2014 insbesondere in Bereichen wie Beschäftigung, Gesundheitswesen, Kredit, Strafverfolgung oder kritische Infrastruktur \u2014 führen Sie diese Bewertung erneut durch. Die Risikoeinstufung hängt vom beabsichtigten Zweck ab, der sich ändern kann." }
   ];
 }
 
@@ -860,14 +901,24 @@ function encodeAnswers() {
     const a = answers[q.id];
     return a === "yes" ? "y" : a === "no" ? "n" : "u";
   });
-  return parts.join("");
+  return "2" + parts.join("");  // v2: Q8 polarity reversed
 }
 
 function decodeAnswers(code) {
-  if (code.length !== QUESTIONS.length) return null;
+  let version = 1;
+  let raw = code;
+  if (code.charAt(0) === "2") {
+    version = 2;
+    raw = code.slice(1);
+  }
+  if (raw.length !== QUESTIONS.length) return null;
   const decoded = {};
   QUESTIONS.forEach((q, i) => {
-    const c = code[i];
+    let c = raw[i];
+    // v1 URLs had Q8 (public_facing, index 7) with opposite polarity
+    if (version === 1 && i === 7) {
+      c = c === "y" ? "n" : c === "n" ? "y" : c;
+    }
     decoded[q.id] = c === "y" ? "yes" : c === "n" ? "no" : "unsure";
   });
   return decoded;
@@ -912,10 +963,12 @@ function exportJSON() {
 function resetAssessment() {
   currentQuestion = 0;
   answers = {};
+  assessmentStarted = false;
   document.getElementById("resultsSection").classList.remove("active");
   document.getElementById("heroSection").style.display = "block";
   document.getElementById("questionnaireSection").style.display = "none";
   window.history.replaceState(null, "", window.location.pathname);
+  try { sessionStorage.removeItem("regula_assess"); } catch (e) {}
 }
 
 // =====================================================================
@@ -1220,23 +1273,25 @@ function escapeHtml(text) {
 function getScanNextSteps(tier) {
   if (tier === "prohibited") {
     return [
-      { title: "Rechtsberatung einholen", desc: "Artikel-5-Verbote unterliegen den höchsten Strafen. Ein qualifizierter Anwalt muss beurteilen, ob Ihr System in den Anwendungsbereich fällt oder für eine enge Ausnahme in Frage kommt." },
-      { title: "Die erkannten Muster überprüfen", desc: "Einige Treffer können falsch-positiv sein. Die obigen Muster zeigen genau, was die Einstufung ausgelöst hat. Prüfen Sie, ob der markierte Code die beschriebene Praktik umsetzt." },
-      { title: "CLI für tiefere Analyse installieren", desc: "Führen Sie pip install regula-ai und dann regula check . für eine dateiweise Analyse mit Zeilennummern und Kontext aus." },
+      { title: "Rechtsberatung einholen", desc: "Artikel-5-Verbote unterliegen den h\u00f6chsten Strafen. Ein qualifizierter Anwalt muss beurteilen, ob Ihr System in den Anwendungsbereich f\u00e4llt oder f\u00fcr eine enge Ausnahme in Frage kommt." },
+      { title: "Die erkannten Muster \u00fcberpr\u00fcfen", desc: "Einige Treffer k\u00f6nnen falsch-positiv sein. Die obigen Muster zeigen genau, was die Einstufung ausgel\u00f6st hat. Pr\u00fcfen Sie, ob der markierte Code die beschriebene Praktik umsetzt." },
+      { title: "Mit Ihrem Team teilen", desc: "Exportieren Sie diesen Scan als JSON oder drucken Sie ihn als PDF. Ihre Compliance- und Rechtsteams m\u00fcssen diese Ergebnisse pr\u00fcfen." },
+      { title: "F\u00fcr tiefere Analyse", desc: "Ihr Entwicklungsteam kann die Regula-CLI f\u00fcr dateiweise Analyse ausf\u00fchren: <code>pipx install regula-ai</code>, dann <code>regula check .</code>" },
     ];
   }
   if (tier === "high_risk") {
     return [
-      { title: "Die obigen Befunde überprüfen", desc: "Prüfen Sie, ob die erkannten Indikatoren den Zweck Ihres Systems korrekt beschreiben. Musterbasierte Einstufung erfordert eine menschliche Überprüfung zur Kontextbestätigung." },
-      { title: "Ihr gesamtes Projekt scannen", desc: "Dieser Scan hat eine einzelne Datei oder einen Ausschnitt analysiert. Installieren Sie Regula (pip install regula-ai) und führen Sie regula gap --project . für eine projektweite Lückenanalyse aus." },
-      { title: "Mit den größten Lücken beginnen", desc: "Technische Dokumentation (Artikel 11) und Daten-Governance (Artikel 10) sind typischerweise die größten Compliance-Lücken für Entwicklungsteams." },
-      { title: "Auch den Fragebogen beantworten", desc: "Der Fragebogen bewertet den Einsatzkontext, den Code-Scanning nicht erkennen kann. Nutzen Sie beides für ein vollständiges Bild." },
+      { title: "Die obigen Befunde \u00fcberpr\u00fcfen", desc: "Pr\u00fcfen Sie, ob die erkannten Indikatoren den Zweck Ihres Systems korrekt beschreiben. Musterbasierte Einstufung erfordert eine menschliche \u00dcberpr\u00fcfung zur Kontextbest\u00e4tigung." },
+      { title: "Auch den Fragebogen beantworten", desc: "Der Fragebogen bewertet den Einsatzkontext, den Code-Scanning nicht erkennen kann. Nutzen Sie beides f\u00fcr ein vollst\u00e4ndiges Bild." },
+      { title: "Mit den gr\u00f6\u00dften L\u00fccken beginnen", desc: "Technische Dokumentation (Artikel 11) und Daten-Governance (Artikel 10) sind typischerweise die gr\u00f6\u00dften Compliance-L\u00fccken." },
+      { title: "F\u00fcr projektweite Analyse", desc: "Dieser Scan hat eine einzelne Datei analysiert. Ihr Entwicklungsteam kann das gesamte Projekt scannen: <code>pipx install regula-ai</code>, dann <code>regula gap --project .</code>" },
     ];
   }
   if (tier === "limited_risk") {
     return [
-      { title: "Transparenzhinweise hinzufügen", desc: "Artikel 50 verlangt, dass Nutzer wissen, wenn sie mit KI interagieren oder KI-generierte Inhalte konsumieren." },
-      { title: "Ihr gesamtes Projekt scannen", desc: "Installieren Sie Regula und führen Sie regula check . aus, um zu prüfen, ob in anderen Dateien keine Hochrisiko-Muster übersehen wurden." },
+      { title: "Transparenzhinweise hinzuf\u00fcgen", desc: "Artikel 50 verlangt, dass Nutzer wissen, wenn sie mit KI interagieren oder KI-generierte Inhalte konsumieren." },
+      { title: "Auch den Fragebogen beantworten", desc: "Der Fragebogen bewertet den Einsatzkontext, den Code-Scanning nicht erkennen kann." },
+      { title: "F\u00fcr projektweites Scanning", desc: "Ihr Entwicklungsteam kann andere Dateien auf Risikomuster pr\u00fcfen: <code>pipx install regula-ai</code>, dann <code>regula check .</code>" },
     ];
   }
   return [
@@ -1286,8 +1341,11 @@ function exportScanJSON() {
       assessmentStarted = true;
       document.getElementById("heroSection").style.display = "none";
       showResults();
+      return;
     }
   }
+  // Restore in-progress assessment from sessionStorage
+  loadProgress();
 })();
 </script>
 </body>

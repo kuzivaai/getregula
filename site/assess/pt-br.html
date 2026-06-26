@@ -9,7 +9,7 @@
     </style>
     <meta name="theme-color" content="#070711">
     <title>Avaliação da Lei de IA da UE: Ela se Aplica a Você? | Regula</title>
-    <meta name="description" content="Avaliação gratuita de risco da Lei de IA da UE. Responda perguntas ou analise seu código contra 627 padrões de risco. Obtenha seu nível de risco, artigos aplicáveis e checklist de obrigações. Sem cadastro, sem instalação.">
+    <meta name="description" content="Avalia\u00e7\u00e3o gratuita de risco da Lei de IA da UE. Responda 12 perguntas para conhecer seu n\u00edvel de risco, obriga\u00e7\u00f5es legais e pr\u00f3ximos passos. Equipes de desenvolvimento tamb\u00e9m podem analisar c\u00f3digo contra 627 padr\u00f5es de detec\u00e7\u00e3o. Sem cadastro, sem instala\u00e7\u00e3o.">
     <meta name="author" content="Kuziva Muzondo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://getregula.com/assess/pt-br.html">
@@ -37,7 +37,7 @@
       "@type": "WebApplication",
       "name": "Regula — Avaliação da Lei de IA da UE",
       "url": "https://getregula.com/assess/pt-br.html",
-      "description": "Ferramenta gratuita de avaliação de risco da Lei de IA da UE. Analise código contra 627 padrões de risco ou responda perguntas. Classifica sistemas de IA em níveis de risco e mapeia obrigações.",
+      "description": "Ferramenta gratuita de avaliação de risco da Lei de IA da UE. Responda 12 perguntas para conhecer seu nível de risco e obrigações legais. Equipes de desenvolvimento também podem analisar código contra 627 padrões de detecção.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Any (web browser)",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
@@ -290,12 +290,13 @@
 <nav class="nav-bar" aria-label="Navegação principal">
   <a href="/locales/pt-br.html" class="nav-brand">Regula</a>
   <div class="nav-links">
-    <a href="/assess/">EN</a>
-    <a href="/assess/de.html">DE</a>
     <a href="https://github.com/kuzivaai/getregula">GitHub</a>
     <a href="/blog/writing.html">Blog</a>
     <a href="/regions/regulations.html">Regulação</a>
     <a href="/about.html">Sobre</a>
+    <a href="/assess/">EN</a>
+    <a href="/assess/de.html">DE</a>
+    <span style="color:var(--accent);font-weight:600;">BR</span>
   </div>
 </nav>
 
@@ -304,21 +305,24 @@
   <!-- HERO -->
   <div class="hero" id="heroSection">
     <h1>A Lei de IA da UE <span>se aplica a você?</span></h1>
-    <p>Responda perguntas sobre seu sistema de IA ou analise seu código contra 627 padrões de risco. Obtenha seu nível de risco, artigos aplicáveis e uma análise de lacunas de conformidade. Nada sai do seu navegador.</p>
+    <p>Descubra em menos de 5 minutos. Responda 12 perguntas sobre seu sistema de IA para conhecer seu nível de risco, suas obrigações legais e o que fazer a seguir. Nada sai do seu navegador.</p>
     <div class="hero-stats">
-      <span>12 perguntas ou análise de código</span>
-      <span>627 padrões de risco</span>
+      <span>12 perguntas, menos de 5 minutos</span>
+      <span>Classificação de risco instantânea</span>
       <span>Nada sai do seu navegador</span>
     </div>
     <div style="margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-      <button type="button" class="btn btn-primary" onclick="startAssessment()" style="padding:14px 36px;font-size:1rem;">Responder perguntas</button>
-      <button type="button" class="btn btn-secondary" onclick="startScanner()" style="padding:14px 36px;font-size:1rem;">Analisar seu código</button>
+      <button type="button" class="btn btn-primary" onclick="startAssessment()" style="padding:14px 36px;font-size:1rem;">Iniciar avaliação</button>
     </div>
-    <div style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);">Responda perguntas para uma avaliação rápida, ou analise código para uma análise em nível de padrão. Você pode fazer ambos.</div>
+    <div style="margin-top:16px;font-size:0.85rem;color:var(--text-dim);">Equipes de desenvolvimento também podem <button type="button" onclick="startScanner()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">analisar código-fonte</button> contra 627 padrões de detecção.</div>
   </div>
 
   <!-- QUESTIONNAIRE -->
   <div id="questionnaireSection" style="display:none;">
+    <div id="assessIntro" style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:20px;font-size:0.9rem;line-height:1.6;color:var(--text-dim);">
+      <p style="margin:0 0 8px 0;">A Lei de IA da UE classifica sistemas de IA em níveis de risco &mdash; de risco mínimo a proibido &mdash; com diferentes obrigações legais para cada um. Esta avaliação determina qual nível se aplica ao seu sistema e o que você precisa fazer a seguir.</p>
+      <p style="margin:0;font-size:0.8rem;color:var(--text-muted);">Suas respostas não são armazenadas nem transmitidas. Os resultados podem ser compartilhados via URL sem estado.</p>
+    </div>
     <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da avaliação" id="progressWrap">
       <div class="progress-label" aria-live="polite">
         <span id="progressText">Pergunta 1 de 12</span>
@@ -336,9 +340,9 @@
   <!-- CODE SCANNER -->
   <div id="scannerSection" style="display:none;">
     <div class="q-card">
-      <div class="q-number">SCANNER DE CÓDIGO</div>
+      <div class="q-number">SCANNER DE CÓDIGO <span style="font-size:0.7rem;background:var(--accent-dim);color:var(--accent);padding:2px 8px;border-radius:4px;margin-left:8px;vertical-align:middle;">Para equipes de desenvolvimento</span></div>
       <div class="q-text">Cole seu código ou envie um arquivo</div>
-      <div class="q-help">O Regula analisa padrões de risco da Lei de IA da UE — práticas proibidas, indicadores de alto risco, antipadrões de segurança e requisitos de transparência. Tudo roda no seu navegador. Nada é enviado ou armazenado.</div>
+      <div class="q-help">O Regula analisa código-fonte para padrões de risco da Lei de IA da UE &mdash; práticas proibidas, indicadores de alto risco, antipadrões de segurança e requisitos de transparência. Tudo roda no seu navegador. Nada é enviado ou armazenado. Não é desenvolvedor? Use o <button type="button" onclick="backToHero()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">questionário</button> em vez disso.</div>
 
       <div style="margin-bottom:12px;">
         <label for="scanLang" style="font-size:0.8rem;color:var(--text-dim);display:block;margin-bottom:4px;">Linguagem (detectada automaticamente pela extensão do arquivo)</label>
@@ -438,8 +442,8 @@ const QUESTIONS = [
   },
   {
     id: "affected_domain",
-    text: "Este sistema opera em algum destes domínios: emprego/contratação, crédito/finanças, educação/admissões, saúde, segurança pública, imigração, infraestrutura crítica?",
-    help: "Estes domínios estão listados no Anexo III como áreas onde sistemas de IA podem ser classificados como alto risco.",
+    text: "Este sistema opera em algum destes domínios: identificação biométrica, infraestrutura crítica, educação, emprego/contratação, serviços essenciais (crédito, seguros, saúde, benefícios sociais), aplicação da lei, migração/controle de fronteiras, justiça/processos democráticos?",
+    help: "A Lei de IA da UE identifica setores específicos onde a IA apresenta riscos elevados aos direitos fundamentais. Estes estão listados no Anexo III do regulamento. Sistemas de IA nesses domínios podem ser classificados como alto risco, o que aciona requisitos adicionais.",
     article: "Artigo 6(2), Anexo III",
     weight: { yes: 25, no: -15, unsure: 10 },
     signal: "high_risk"
@@ -454,8 +458,8 @@ const QUESTIONS = [
   },
   {
     id: "significant_harm",
-    text: "Erros ou falhas neste sistema poderiam causar danos significativos à saúde, segurança ou direitos fundamentais de alguém?",
-    help: "O Artigo 6 exige que o sistema represente um 'risco significativo de dano' para ser classificado como alto risco, além de apenas operar em uma área do Anexo III.",
+    text: "Erros ou falhas neste sistema poderiam causar danos significativos à saúde, segurança ou direitos fundamentais de alguém (ex.: direito à não discriminação, privacidade, julgamento justo, educação)?",
+    help: "Operar em um domínio regulado por si só não é suficiente para classificação como alto risco. O sistema também deve representar um risco significativo de dano. Esta pergunta ajuda a distinguir sistemas que simplesmente operam em um setor regulado daqueles que poderiam afetar materialmente a vida das pessoas.",
     article: "Artigo 6(2)",
     weight: { yes: 25, no: -15, unsure: 10 },
     signal: "high_risk"
@@ -463,7 +467,7 @@ const QUESTIONS = [
   {
     id: "biometric_data",
     text: "Este sistema processa dados biométricos (rosto, impressão digital, voz, modo de andar)?",
-    help: "O processamento biométrico aparece tanto no Anexo III Categoria 1 quanto nas práticas proibidas do Artigo 5, dependendo do contexto.",
+    help: "O processamento de dados biométricos pode variar de alto risco (se usado para identificação ou categorização) a proibido (se usado para vigilância em tempo real em espaços públicos). A classificação depende de como você usa os dados, não apenas do fato de processá-los.",
     article: "Anexo III(1), Artigo 5",
     weight: { yes: 20, no: -5, unsure: 10 },
     signal: "high_risk"
@@ -486,10 +490,10 @@ const QUESTIONS = [
   },
   {
     id: "public_facing",
-    text: "Os indivíduos serão informados de que estão interagindo com um sistema de IA?",
-    help: "O Artigo 50 exige transparência: os usuários devem saber quando interagem com IA, quando o conteúdo é gerado por IA, ou quando a IA analisa seus dados.",
+    text: "Indivíduos poderiam interagir com este sistema sem saber que ele é movido a IA?",
+    help: "O Artigo 50 exige transparência: os usuários devem saber quando interagem com IA, quando o conteúdo é gerado por IA, ou quando a IA analisa seus dados. Se seu sistema atualmente não divulga sua natureza de IA, as obrigações de transparência se aplicam.",
     article: "Artigo 50",
-    weight: { yes: -5, no: 15, unsure: 5 },
+    weight: { yes: 15, no: -5, unsure: 5 },
     signal: "transparency"
   },
   {
@@ -582,11 +586,37 @@ const LIMITED_RISK_OBLIGATIONS = [
 ];
 
 // =====================================================================
-// State
+// State (with sessionStorage persistence)
 // =====================================================================
 let currentQuestion = 0;
 let answers = {};
 let assessmentStarted = false;
+
+function saveProgress() {
+  try {
+    sessionStorage.setItem("regula_assess", JSON.stringify({
+      currentQuestion, answers, assessmentStarted
+    }));
+  } catch (e) { /* quota or private browsing */ }
+}
+
+function loadProgress() {
+  try {
+    const saved = sessionStorage.getItem("regula_assess");
+    if (saved) {
+      const data = JSON.parse(saved);
+      currentQuestion = data.currentQuestion || 0;
+      answers = data.answers || {};
+      assessmentStarted = data.assessmentStarted || false;
+      if (assessmentStarted) {
+        document.getElementById("heroSection").style.display = "none";
+        document.getElementById("questionnaireSection").style.display = "block";
+        document.getElementById("assessIntro").style.display = "block";
+        renderQuestion();
+      }
+    }
+  } catch (e) { /* ignore */ }
+}
 
 // =====================================================================
 // Questionnaire logic
@@ -597,6 +627,7 @@ function startAssessment() {
   document.getElementById("heroSection").style.display = "none";
   document.getElementById("questionnaireSection").style.display = "block";
   document.getElementById("resultsSection").classList.remove("active");
+  document.getElementById("assessIntro").style.display = "block";
   renderQuestion();
   if (window.plausible) plausible("Assessment Started");
 }
@@ -611,15 +642,21 @@ function renderQuestion() {
     <div class="q-card" role="group" aria-labelledby="${qId}-text">
       <div class="q-number" aria-hidden="true">PERGUNTA ${currentQuestion + 1} DE ${QUESTIONS.length}</div>
       <div class="q-text" id="${qId}-text">${q.text}</div>
-      <div class="q-article">${q.article}</div>
       <div class="q-help" id="${qId}-help">${q.help}</div>
+      <div class="q-article">${q.article}</div>
       <div class="answers" role="group" aria-label="Selecione sua resposta" aria-describedby="${qId}-help">
-        <button type="button" class="ans-btn ${existing === 'yes' ? 'selected' : ''}" onclick="answer('yes', this)" aria-pressed="${existing === 'yes'}" type="button">Sim</button>
-        <button type="button" class="ans-btn ${existing === 'no' ? 'selected-no' : ''}" onclick="answer('no', this)" aria-pressed="${existing === 'no'}" type="button">Não</button>
-        <button type="button" class="ans-btn ${existing === 'unsure' ? 'selected-unsure' : ''}" onclick="answer('unsure', this)" aria-pressed="${existing === 'unsure'}" type="button">Não tenho certeza</button>
+        <button type="button" class="ans-btn ${existing === 'yes' ? 'selected' : ''}" onclick="answer('yes', this)" aria-pressed="${existing === 'yes'}">Sim</button>
+        <button type="button" class="ans-btn ${existing === 'no' ? 'selected-no' : ''}" onclick="answer('no', this)" aria-pressed="${existing === 'no'}">Não</button>
+        <button type="button" class="ans-btn ${existing === 'unsure' ? 'selected-unsure' : ''}" onclick="answer('unsure', this)" aria-pressed="${existing === 'unsure'}">Não tenho certeza</button>
       </div>
     </div>
   `;
+
+  // Hide intro after first question
+  if (currentQuestion > 0) {
+    const intro = document.getElementById("assessIntro");
+    if (intro) intro.style.display = "none";
+  }
 
   // Update progress
   const pct = Math.round((currentQuestion / QUESTIONS.length) * 100);
@@ -653,12 +690,14 @@ function answer(value, btn) {
   else btn.className = "ans-btn selected-unsure";
 
   document.getElementById("nextBtn").disabled = false;
+  saveProgress();
 }
 
 function nextQuestion() {
   if (currentQuestion < QUESTIONS.length - 1) {
     currentQuestion++;
     renderQuestion();
+    saveProgress();
   } else {
     showResults();
   }
@@ -668,6 +707,7 @@ function prevQuestion() {
   if (currentQuestion > 0) {
     currentQuestion--;
     renderQuestion();
+    saveProgress();
   }
 }
 
@@ -689,7 +729,7 @@ function calculateResults() {
 
     if (q.signal === "prohibited" && a === "yes") prohibitedSignals.push(q.id);
     if (q.signal === "high_risk" && a === "yes") highRiskSignals.push(q.id);
-    if (q.signal === "transparency" && a === "no") transparencySignals.push(q.id);
+    if (q.signal === "transparency" && a === "yes") transparencySignals.push(q.id);
     if (q.signal === "exemption" && a === "yes") exemptionSignals.push(q.id);
     if (q.signal === "gap_assessment") gapSignals[q.id] = a;
   }
@@ -709,13 +749,13 @@ function calculateResults() {
   } else if (score >= 65 && exemptionSignals.length === 0) {
     tier = "high_risk";
     tierName = "Sistema de IA de alto risco";
-    tierDesc = "Seu sistema provavelmente se enquadra no Anexo III. As obrigações dos Artigos 9-15 se aplicam. O Omnibus (PE aprovou em 16 jun 2026) adiou o prazo para 2 de dezembro de 2027, pendente adoção pelo Conselho.";
+    tierDesc = "Seu sistema provavelmente se enquadra em uma categoria que a Lei de IA da UE considera alto risco. Você deve atender aos requisitos de gestão de riscos, governança de dados, documentação, logging, transparência, supervisão humana e cibersegurança. O prazo de conformidade foi estendido para 2 de dezembro de 2027, pendente adoção final da emenda Omnibus.";
     tierClass = "tier-high";
     obligations = OBLIGATIONS;
   } else if (score >= 65 && exemptionSignals.length > 0) {
     tier = "high_risk_exempt";
     tierName = "Potencialmente isento de alto risco";
-    tierDesc = "Seu sistema opera em um domínio do Anexo III, mas pode se qualificar para a isenção do Artigo 6(3). Documente por que a isenção se aplica. Se a isenção não se sustentar, os Artigos 9-15 se aplicam.";
+    tierDesc = "Seu sistema opera em um domínio regulado, mas pode se qualificar para uma isenção porque realiza tarefas procedimentais restritas ou melhora atividades humanas previamente concluídas. Documente por que a isenção se aplica, incluindo o que o sistema faz e não faz. Se a isenção não se sustentar, os requisitos completos de alto risco se aplicam.";
     tierClass = "tier-limited";
     obligations = OBLIGATIONS;
   } else if (score >= 35 || transparencySignals.length > 0) {
@@ -738,7 +778,7 @@ function calculateResults() {
     10: 20, // Can't assess data governance from questionnaire alone
     11: 15, // Can't assess technical docs from questionnaire alone
     12: gapSignals.logging_active === "yes" ? 65 : (gapSignals.logging_active === "unsure" ? 30 : 10),
-    13: answers.public_facing === "yes" ? 50 : 15,
+    13: answers.public_facing === "no" ? 50 : 15,
     14: answers.autonomous_decisions === "no" ? 70 : 25,
     15: 30 // Can't assess robustness from questionnaire alone
   };
@@ -762,7 +802,7 @@ function showResults() {
       <div class="tier-label">SEU NÍVEL DE RISCO</div>
       <div class="tier-name">${results.tierName}</div>
       <div class="tier-desc">${results.tierDesc}</div>
-      <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">Pontuação de confiança: ${results.score}/100</div>
+      <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">Pontuação de risco: ${results.score}/100 (maior = maior risco regulatório)</div>
     </div>
   `;
 
@@ -793,7 +833,7 @@ function showResults() {
     }
     oblHtml += `</div>`;
     if (results.tier === "high_risk" || results.tier === "high_risk_exempt") {
-      oblHtml += `<p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">Pontuações de lacuna são estimativas baseadas nas suas respostas ao questionário. Para pontuação precisa, execute <code style="background:var(--bg);padding:2px 6px;border-radius:3px;">regula gap --project .</code> no seu código-fonte.</p>`;
+      oblHtml += `<p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">Pontua\u00e7\u00f5es de lacuna s\u00e3o estimativas baseadas nas suas respostas. Sua equipe de desenvolvimento pode obter pontua\u00e7\u00e3o precisa executando <code style="background:var(--bg);padding:2px 6px;border-radius:3px;">regula gap --project .</code> no c\u00f3digo-fonte.</p>`;
     }
     document.getElementById("obligationsList").innerHTML = oblHtml;
   } else {
@@ -825,29 +865,31 @@ function getNextSteps(results) {
   if (results.tier === "prohibited") {
     return [
       { title: "Obtenha aconselhamento jurídico imediatamente", desc: "As proibições do Artigo 5 preveem a faixa de penalidade mais alta. Um advogado qualificado precisa avaliar se seu sistema está dentro do escopo ou se qualifica para uma exceção." },
-      { title: "Revise seu sistema contra as categorias do Artigo 5", desc: "Execute regula check . para ver quais proibições específicas os padrões do seu código correspondem. Algumas correspondências podem ser falsos positivos dependendo do contexto." },
-      { title: "Documente sua avaliação", desc: "Independentemente de prosseguir, modificar ou remover a prática, documente o raciocínio. As autoridades regulatórias vão querer ver que você considerou a proibição." }
+      { title: "Compartilhe esta avaliação com seu consultor jurídico", desc: "Baixe o JSON ou imprima esta página como PDF. Sua equipe jurídica precisa revisar a proibição específica sinalizada e orientar se uma exceção se aplica." },
+      { title: "Documente sua avaliação", desc: "Independentemente de prosseguir, modificar ou remover a prática, documente o raciocínio. As autoridades regulatórias vão querer ver que você considerou a proibição." },
+      { title: "Para sua equipe de desenvolvimento", desc: "Seus desenvolvedores podem executar a CLI do Regula (<code>pipx install regula-ai</code>, depois <code>regula check .</code>) para ver exatamente quais padrões de código acionaram a sinalização de proibição." }
     ];
   }
   if (results.tier === "high_risk" || results.tier === "high_risk_exempt") {
     return [
-      { title: "Analise seu código-fonte", desc: "Instale o Regula (pipx install regula-ai) e execute regula gap --project . para obter pontuação de lacuna artigo por artigo contra seu código real, não apenas respostas de questionário." },
+      { title: "Compartilhe esta avaliação com sua equipe", desc: "Use o link compartilhável ou imprima esta página como PDF. Um responsável pela conformidade, um desenvolvedor e um contato jurídico devem ver estes resultados." },
       { title: "Comece pelas maiores lacunas", desc: "Foque nas obrigações onde sua pontuação de prontidão é mais baixa. Documentação técnica (Artigo 11) e governança de dados (Artigo 10) são tipicamente as maiores lacunas." },
-      { title: "Configure logging agora", desc: "O logging do Artigo 12 é mais fácil de implementar desde o início do que retrofit. Adicione logging estruturado ao redor das chamadas de inferência do modelo antes que o código-fonte cresça." },
-      { title: "Documente o sistema de gestão de riscos", desc: "O Artigo 9 exige um registro de riscos mantido continuamente. Comece um arquivo markdown no seu repositório. Atualize-o quando o sistema mudar." },
-      { title: "Compartilhe esta avaliação com sua equipe", desc: "Use o link compartilhável abaixo. Um responsável pela conformidade, um desenvolvedor e um contato jurídico devem ver estes resultados." }
+      { title: "Documente o sistema de gestão de riscos", desc: "O Artigo 9 exige um registro de riscos mantido continuamente. Crie um documento vivo que cubra riscos identificados, medidas de mitigação e riscos residuais. Atualize-o quando o sistema mudar." },
+      { title: "Configure logging", desc: "O Artigo 12 exige registro automático das operações do sistema. Trabalhe com sua equipe de desenvolvimento para adicionar logging estruturado ao redor das chamadas de inferência de IA." },
+      { title: "Para sua equipe de desenvolvimento", desc: "Seus desenvolvedores podem obter pontuação de lacuna artigo por artigo contra o código-fonte real executando a CLI do Regula: <code>pipx install regula-ai</code>, depois <code>regula gap --project .</code>" }
     ];
   }
   if (results.tier === "limited_risk") {
     return [
-      { title: "Adicione avisos de transparência", desc: "O Artigo 50 exige que os usuários saibam quando interagem com IA ou consomem conteúdo gerado por IA. Adicione divulgação na sua interface." },
-      { title: "Rotule conteúdo gerado por IA", desc: "Se seu sistema gera texto, imagens, áudio ou vídeo, marque o output como gerado por IA em um formato legível por máquina." },
-      { title: "Analise seu código para outros indicadores", desc: "Execute regula check . para verificar se nenhum padrão de alto risco foi perdido. Alguns sistemas de risco limitado têm componentes de alto risco." }
+      { title: "Adicione avisos de transparência", desc: "O Artigo 50 exige que os usuários saibam quando interagem com IA ou consomem conteúdo gerado por IA. Trabalhe com sua equipe de produto para adicionar divulgação clara na interface do usuário." },
+      { title: "Rotule conteúdo gerado por IA", desc: "Se seu sistema gera texto, imagens, áudio ou vídeo, marque o output como gerado por IA. Isso se aplica tanto a rótulos visíveis ao usuário quanto a metadados legíveis por máquina." },
+      { title: "Compartilhe com sua equipe", desc: "Baixe ou imprima esta avaliação e compartilhe com suas equipes de produto e jurídica para coordenar a implementação de transparência." },
+      { title: "Para sua equipe de desenvolvimento", desc: "Seus desenvolvedores podem analisar o código-fonte para indicadores de risco adicionais usando a CLI do Regula: <code>pipx install regula-ai</code>, depois <code>regula check .</code>" }
     ];
   }
   return [
-    { title: "Nenhuma obrigação específica se aplica", desc: "Seu sistema parece ser de risco mínimo. Considere seguir códigos de conduta voluntários (Artigo 95) como boa prática." },
-    { title: "Reavalie se o escopo mudar", desc: "Se você adicionar novas funcionalidades (especialmente em domínios do Anexo III), execute esta avaliação novamente. A classificação de risco depende da finalidade pretendida, que pode mudar." }
+    { title: "Nenhuma obrigação específica se aplica", desc: "Seu sistema parece ser de risco mínimo sob a Lei de IA da UE. Considere seguir códigos de conduta voluntários (Artigo 95) como boa prática." },
+    { title: "Reavalie se o escopo mudar", desc: "Se você adicionar novas funcionalidades — especialmente em áreas como emprego, saúde, crédito, aplicação da lei ou infraestrutura crítica — execute esta avaliação novamente. A classificação de risco depende da finalidade pretendida, que pode mudar." }
   ];
 }
 
@@ -860,14 +902,24 @@ function encodeAnswers() {
     const a = answers[q.id];
     return a === "yes" ? "y" : a === "no" ? "n" : "u";
   });
-  return parts.join("");
+  return "2" + parts.join("");  // v2: Q8 polarity reversed
 }
 
 function decodeAnswers(code) {
-  if (code.length !== QUESTIONS.length) return null;
+  let version = 1;
+  let raw = code;
+  if (code.charAt(0) === "2") {
+    version = 2;
+    raw = code.slice(1);
+  }
+  if (raw.length !== QUESTIONS.length) return null;
   const decoded = {};
   QUESTIONS.forEach((q, i) => {
-    const c = code[i];
+    let c = raw[i];
+    // v1 URLs had Q8 (public_facing, index 7) with opposite polarity
+    if (version === 1 && i === 7) {
+      c = c === "y" ? "n" : c === "n" ? "y" : c;
+    }
     decoded[q.id] = c === "y" ? "yes" : c === "n" ? "no" : "unsure";
   });
   return decoded;
@@ -913,10 +965,12 @@ function exportJSON() {
 function resetAssessment() {
   currentQuestion = 0;
   answers = {};
+  assessmentStarted = false;
   document.getElementById("resultsSection").classList.remove("active");
   document.getElementById("heroSection").style.display = "block";
   document.getElementById("questionnaireSection").style.display = "none";
   window.history.replaceState(null, "", window.location.pathname);
+  try { sessionStorage.removeItem("regula_assess"); } catch (e) {}
 }
 
 // =====================================================================
@@ -1221,28 +1275,30 @@ function escapeHtml(text) {
 function getScanNextSteps(tier) {
   if (tier === "prohibited") {
     return [
-      { title: "Obtenha aconselhamento jurídico", desc: "As proibições do Artigo 5 preveem as penalidades mais altas. Um advogado qualificado precisa avaliar se seu sistema está dentro do escopo ou se qualifica para uma exceção restrita." },
-      { title: "Revise os padrões correspondentes", desc: "Algumas correspondências podem ser falsos positivos. Os padrões acima mostram exatamente o que acionou a classificação. Verifique se o código sinalizado implementa a prática descrita." },
-      { title: "Instale a CLI para análise mais profunda", desc: "Execute pip install regula-ai e depois regula check . para análise arquivo por arquivo com números de linha e contexto." },
+      { title: "Obtenha aconselhamento jur\u00eddico", desc: "As proibi\u00e7\u00f5es do Artigo 5 preveem as penalidades mais altas. Um advogado qualificado precisa avaliar se seu sistema est\u00e1 dentro do escopo ou se qualifica para uma exce\u00e7\u00e3o restrita." },
+      { title: "Revise os padr\u00f5es correspondentes", desc: "Algumas correspond\u00eancias podem ser falsos positivos. Os padr\u00f5es acima mostram exatamente o que acionou a classifica\u00e7\u00e3o. Verifique se o c\u00f3digo sinalizado implementa a pr\u00e1tica descrita." },
+      { title: "Compartilhe com sua equipe", desc: "Exporte esta an\u00e1lise como JSON ou imprima como PDF. Suas equipes de compliance e jur\u00eddica precisam revisar estes achados." },
+      { title: "Para an\u00e1lise mais profunda", desc: "Sua equipe de desenvolvimento pode executar a CLI do Regula para an\u00e1lise arquivo por arquivo: <code>pipx install regula-ai</code>, depois <code>regula check .</code>" },
     ];
   }
   if (tier === "high_risk") {
     return [
-      { title: "Revise os achados acima", desc: "Verifique se os indicadores correspondentes descrevem corretamente a finalidade do seu sistema. Classificação baseada em padrões requer revisão humana para confirmar o contexto." },
-      { title: "Analise seu projeto completo", desc: "Esta análise avaliou um único arquivo ou trecho. Instale o Regula (pip install regula-ai) e execute regula gap --project . para análise de lacunas em todo o projeto." },
-      { title: "Comece pelas maiores lacunas", desc: "Documentação técnica (Artigo 11) e governança de dados (Artigo 10) são tipicamente as maiores lacunas de conformidade para equipes de desenvolvimento." },
-      { title: "Responda o questionário também", desc: "O questionário avalia o contexto de implantação que a análise de código não consegue detectar. Use ambos para ter uma visão completa." },
+      { title: "Revise os achados acima", desc: "Verifique se os indicadores correspondentes descrevem corretamente a finalidade do seu sistema. Classifica\u00e7\u00e3o baseada em padr\u00f5es requer revis\u00e3o humana para confirmar o contexto." },
+      { title: "Responda o question\u00e1rio tamb\u00e9m", desc: "O question\u00e1rio avalia o contexto de implanta\u00e7\u00e3o que a an\u00e1lise de c\u00f3digo n\u00e3o consegue detectar. Use ambos para ter uma vis\u00e3o completa." },
+      { title: "Comece pelas maiores lacunas", desc: "Documenta\u00e7\u00e3o t\u00e9cnica (Artigo 11) e governan\u00e7a de dados (Artigo 10) s\u00e3o tipicamente as maiores lacunas de conformidade." },
+      { title: "Para an\u00e1lise de todo o projeto", desc: "Esta an\u00e1lise avaliou um \u00fanico arquivo. Sua equipe de desenvolvimento pode analisar o projeto completo: <code>pipx install regula-ai</code>, depois <code>regula gap --project .</code>" },
     ];
   }
   if (tier === "limited_risk") {
     return [
-      { title: "Adicione avisos de transparência", desc: "O Artigo 50 exige que os usuários saibam quando interagem com IA ou consomem conteúdo gerado por IA." },
-      { title: "Analise seu projeto completo", desc: "Instale o Regula e execute regula check . para verificar se nenhum padrão de alto risco foi perdido em outros arquivos." },
+      { title: "Adicione avisos de transpar\u00eancia", desc: "O Artigo 50 exige que os usu\u00e1rios saibam quando interagem com IA ou consomem conte\u00fado gerado por IA." },
+      { title: "Responda o question\u00e1rio tamb\u00e9m", desc: "O question\u00e1rio avalia o contexto de implanta\u00e7\u00e3o que a an\u00e1lise de c\u00f3digo n\u00e3o consegue detectar." },
+      { title: "Para an\u00e1lise de todo o projeto", desc: "Sua equipe de desenvolvimento pode verificar outros arquivos: <code>pipx install regula-ai</code>, depois <code>regula check .</code>" },
     ];
   }
   return [
-    { title: "Nenhuma obrigação específica detectada", desc: "Seu código não parece corresponder a padrões de risco da Lei de IA da UE. Considere seguir códigos de conduta voluntários (Artigo 95)." },
-    { title: "Analise novamente se o escopo mudar", desc: "Se você adicionar funcionalidades em domínios do Anexo III (contratação, crédito, saúde, etc.), analise novamente." },
+    { title: "Nenhuma obriga\u00e7\u00e3o espec\u00edfica detectada", desc: "Seu c\u00f3digo n\u00e3o parece corresponder a padr\u00f5es de risco da Lei de IA da UE. Considere seguir c\u00f3digos de conduta volunt\u00e1rios (Artigo 95)." },
+    { title: "Analise novamente se o escopo mudar", desc: "Se voc\u00ea adicionar funcionalidades em \u00e1reas como contrata\u00e7\u00e3o, cr\u00e9dito, sa\u00fade ou aplica\u00e7\u00e3o da lei, analise novamente." },
   ];
 }
 
@@ -1288,8 +1344,11 @@ function exportScanJSON() {
       assessmentStarted = true;
       document.getElementById("heroSection").style.display = "none";
       showResults();
+      return;
     }
   }
+  // Restore in-progress assessment from sessionStorage
+  loadProgress();
 })();
 </script>
 </body>
