@@ -432,7 +432,11 @@
 // Gesamte Logik läuft clientseitig. Nichts verlässt den Browser.
 // =====================================================================
 
+// QUESTIONS array: positions 0-11 are the original 12 questions (stable for URL encoding).
+// Positions 12-14 are new questions appended to preserve backward compatibility.
+// DISPLAY_ORDER controls the sequence users see (profiling before exemptions).
 const QUESTIONS = [
+  // --- Original 12 (positions 0-11, stable for URL encoding) ---
   {
     id: "deployment_eu",
     text: "Wird dieses System in der EU eingesetzt oder betrifft es Personen in der EU?",
@@ -498,14 +502,6 @@ const QUESTIONS = [
     signal: "transparency"
   },
   {
-    id: "profiling",
-    text: "Erstellt dieses System Profile von Einzelpersonen auf Basis ihrer personenbezogenen Daten (z. B. Leistungsverfolgung, Verhaltensanalyse, Präferenzmodellierung, Risikobewertung auf Grundlage persönlicher Merkmale)?",
-    help: "Wenn ein System natürliche Personen im Sinne von Artikel 4 Absatz 4 DSGVO profiliert, können Ausnahmen nach Artikel 6 Absatz 3 NICHT greifen — das System gilt automatisch als hochriskant, unabhängig davon, wie eng begrenzt oder verfahrenstechnisch es ist. Profiling bedeutet jede automatisierte Verarbeitung personenbezogener Daten zur Bewertung persönlicher Aspekte.",
-    article: "Article 6(3), GDPR Article 4(4)",
-    weight: { yes: 15, no: 0, unsure: 5 },
-    signal: "profiling"
-  },
-  {
     id: "narrow_procedural",
     text: "Führt dieses System NUR eng begrenzte Verfahrensaufgaben aus (z. B. Daten zwischen Formaten konvertieren, Dokumente nach Metadaten sortieren, Datensätze gegen eine feste Vorlage abgleichen)?",
     help: "Artikel 6(3)(a) nimmt KI-Systeme, die eng begrenzte Verfahrensaufgaben ausführen, von der Hochrisiko-Einstufung aus, auch wenn sie in einem Anhang-III-Bereich tätig sind. Die Aufgabe muss rein verfahrenstechnisch sein, ohne Entscheidungsfindung über Einzelpersonen.",
@@ -518,22 +514,6 @@ const QUESTIONS = [
     text: "Verbessert dieses System NUR das Ergebnis einer bereits abgeschlossenen menschlichen Tätigkeit (z. B. Grammatikprüfung von menschlich verfasstem Text, Verbesserung eines menschlich aufgenommenen Fotos, automatische Formatierung eines menschlich erstellten Dokuments)?",
     help: "Artikel 6(3)(b) nimmt KI-Systeme aus, die bereits abgeschlossene menschliche Tätigkeiten verbessern. Die menschliche Tätigkeit muss abgeschlossen sein, bevor die KI eingreift — die KI verfeinert, sie erstellt nicht.",
     article: "Artikel 6(3)(b)",
-    weight: { yes: -20, no: 5, unsure: 0 },
-    signal: "exemption"
-  },
-  {
-    id: "pattern_detection",
-    text: "Erkennt dieses System Muster zur menschlichen Überprüfung, OHNE die eigene Beurteilung des Menschen zu ersetzen oder zu substituieren (z. B. Anomalien für einen Analysten kennzeichnen, potenzielle Übereinstimmungen für einen Prüfer hervorheben)?",
-    help: "Artikel 6(3)(c) nimmt KI-Systeme aus, die Muster oder Abweichungen von früheren Mustern erkennen, ohne die menschliche Beurteilung zu ersetzen. Der Mensch muss die endgültige Entscheidung treffen, nicht die KI.",
-    article: "Artikel 6(3)(c)",
-    weight: { yes: -20, no: 5, unsure: 0 },
-    signal: "exemption"
-  },
-  {
-    id: "preparatory_task",
-    text: "Führt dieses System NUR vorbereitende Aufgaben für einen menschlichen Beurteiler aus (z. B. Anträge vorsortieren, zentrale Datenpunkte zur Überprüfung extrahieren, Zusammenfassungen für menschliche Entscheidungsträger erstellen)?",
-    help: "Artikel 6(3)(d) nimmt KI-Systeme aus, die vorbereitende Aufgaben für Beurteilungen ausführen, die von einer natürlichen Person durchgeführt werden. Der menschliche Beurteiler muss weiterhin die inhaltliche Entscheidung treffen.",
-    article: "Artikel 6(3)(d)",
     weight: { yes: -20, no: 5, unsure: 0 },
     signal: "exemption"
   },
@@ -552,8 +532,39 @@ const QUESTIONS = [
     article: "Artikel 12",
     weight: { yes: -5, no: 5, unsure: 0 },
     signal: "gap_assessment"
+  },
+  // --- New questions (positions 12-14, appended to preserve URL encoding) ---
+  {
+    id: "profiling",
+    text: "Erstellt dieses System Profile von Einzelpersonen auf Basis ihrer personenbezogenen Daten (z. B. Leistungsverfolgung, Verhaltensanalyse, Präferenzmodellierung, Risikobewertung auf Grundlage persönlicher Merkmale)?",
+    help: "Wenn ein System natürliche Personen im Sinne von Artikel 4 Absatz 4 DSGVO profiliert, können Ausnahmen nach Artikel 6 Absatz 3 NICHT greifen — das System gilt automatisch als hochriskant, unabhängig davon, wie eng begrenzt oder verfahrenstechnisch es ist. Profiling bedeutet jede automatisierte Verarbeitung personenbezogener Daten zur Bewertung persönlicher Aspekte.",
+    article: "Article 6(3), GDPR Article 4(4)",
+    weight: { yes: 15, no: 0, unsure: 5 },
+    signal: "profiling"
+  },
+  {
+    id: "pattern_detection",
+    text: "Erkennt dieses System Muster zur menschlichen Überprüfung, OHNE die eigene Beurteilung des Menschen zu ersetzen oder zu substituieren (z. B. Anomalien für einen Analysten kennzeichnen, potenzielle Übereinstimmungen für einen Prüfer hervorheben)?",
+    help: "Artikel 6(3)(c) nimmt KI-Systeme aus, die Muster oder Abweichungen von früheren Mustern erkennen, ohne die menschliche Beurteilung zu ersetzen. Der Mensch muss die endgültige Entscheidung treffen, nicht die KI.",
+    article: "Artikel 6(3)(c)",
+    weight: { yes: -20, no: 5, unsure: 0 },
+    signal: "exemption"
+  },
+  {
+    id: "preparatory_task",
+    text: "Führt dieses System NUR vorbereitende Aufgaben für einen menschlichen Beurteiler aus (z. B. Anträge vorsortieren, zentrale Datenpunkte zur Überprüfung extrahieren, Zusammenfassungen für menschliche Entscheidungsträger erstellen)?",
+    help: "Artikel 6(3)(d) nimmt KI-Systeme aus, die vorbereitende Aufgaben für Beurteilungen ausführen, die von einer natürlichen Person durchgeführt werden. Der menschliche Beurteiler muss weiterhin die inhaltliche Entscheidung treffen.",
+    article: "Artikel 6(3)(d)",
+    weight: { yes: -20, no: 5, unsure: 0 },
+    signal: "exemption"
   }
 ];
+
+// Display order: users see questions in this logical sequence.
+// Profiling (Q12 in array) is shown before exemptions (Q8-9) so users
+// understand the gate before answering exemption questions.
+// Array indices into QUESTIONS:
+const DISPLAY_ORDER = [0,1,2,3,4,5,6,7, 12, 8,9,13,14, 10,11];
 
 // Artikelpflichten für Hochrisiko-Systeme
 const OBLIGATIONS = [
@@ -666,14 +677,14 @@ function startAssessment() {
 }
 
 function renderQuestion() {
-  const q = QUESTIONS[currentQuestion];
+  const q = QUESTIONS[DISPLAY_ORDER[currentQuestion]];
   const existing = answers[q.id] || null;
   const container = document.getElementById("questionContainer");
   const qId = "q-" + q.id;
 
   container.innerHTML = `
     <div class="q-card" role="group" aria-labelledby="${qId}-text">
-      <div class="q-number" aria-hidden="true">FRAGE ${currentQuestion + 1} VON ${QUESTIONS.length}</div>
+      <div class="q-number" aria-hidden="true">FRAGE ${currentQuestion + 1} VON ${DISPLAY_ORDER.length}</div>
       <div class="q-text" id="${qId}-text">${q.text}</div>
       <div class="q-help" id="${qId}-help">${q.help}</div>
       <div class="q-article">${q.article}</div>
@@ -692,16 +703,16 @@ function renderQuestion() {
   }
 
   // Update progress
-  const pct = Math.round((currentQuestion / QUESTIONS.length) * 100);
+  const pct = Math.round((currentQuestion / DISPLAY_ORDER.length) * 100);
   document.getElementById("progressBar").style.width = pct + "%";
   document.getElementById("progressPct").textContent = pct + "%";
-  document.getElementById("progressText").textContent = `Frage ${currentQuestion + 1} von ${QUESTIONS.length}`;
+  document.getElementById("progressText").textContent = `Frage ${currentQuestion + 1} von ${DISPLAY_ORDER.length}`;
   document.getElementById("progressWrap").setAttribute("aria-valuenow", pct);
 
   // Button states
   document.getElementById("prevBtn").disabled = currentQuestion === 0;
   document.getElementById("nextBtn").disabled = !existing;
-  document.getElementById("nextBtn").textContent = currentQuestion === QUESTIONS.length - 1 ? "Ergebnisse anzeigen" : "Weiter";
+  document.getElementById("nextBtn").textContent = currentQuestion === DISPLAY_ORDER.length - 1 ? "Ergebnisse anzeigen" : "Weiter";
 
   // Focus management: move focus to the question text for screen readers
   const qText = document.getElementById(qId + "-text");
@@ -709,7 +720,7 @@ function renderQuestion() {
 }
 
 function answer(value, btn) {
-  const q = QUESTIONS[currentQuestion];
+  const q = QUESTIONS[DISPLAY_ORDER[currentQuestion]];
   answers[q.id] = value;
 
   // Update button states visually and aria-pressed
@@ -727,7 +738,7 @@ function answer(value, btn) {
 }
 
 function nextQuestion() {
-  if (currentQuestion < QUESTIONS.length - 1) {
+  if (currentQuestion < DISPLAY_ORDER.length - 1) {
     currentQuestion++;
     renderQuestion();
     saveProgress();

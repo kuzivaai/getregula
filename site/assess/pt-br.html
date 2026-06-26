@@ -433,7 +433,11 @@
 // PT-BR locale — only display strings changed.
 // =====================================================================
 
+// QUESTIONS array: positions 0-11 are the original 12 questions (stable for URL encoding).
+// Positions 12-14 are new questions appended to preserve backward compatibility.
+// DISPLAY_ORDER controls the sequence users see (profiling before exemptions).
 const QUESTIONS = [
+  // --- Original 12 (positions 0-11, stable for URL encoding) ---
   {
     id: "deployment_eu",
     text: "Este sistema será implantado na UE ou afetará pessoas na UE?",
@@ -499,14 +503,6 @@ const QUESTIONS = [
     signal: "transparency"
   },
   {
-    id: "profiling",
-    text: "Este sistema cria perfis de indivíduos com base em seus dados pessoais (ex.: rastreamento de desempenho, análise de comportamento, modelagem de preferências, pontuação de risco baseada em características pessoais)?",
-    help: "Se um sistema perfila pessoas naturais conforme definido no Artigo 4(4) do RGPD, as isenções do Artigo 6(3) NÃO podem se aplicar — o sistema é automaticamente de alto risco, independentemente de quão restrita ou procedimental seja sua função. Perfilamento significa qualquer processamento automatizado de dados pessoais para avaliar aspectos pessoais.",
-    article: "Article 6(3), GDPR Article 4(4)",
-    weight: { yes: 15, no: 0, unsure: 5 },
-    signal: "profiling"
-  },
-  {
     id: "narrow_procedural",
     text: "Este sistema realiza APENAS tarefas procedimentais restritas (ex.: converter dados entre formatos, classificar documentos por metadados, comparar registros contra um modelo fixo)?",
     help: "O Artigo 6(3)(a) isenta sistemas de IA que realizam tarefas procedimentais restritas da classificação de alto risco, mesmo que operem em um domínio do Anexo III. A tarefa deve ser puramente procedimental, sem tomada de decisão sobre indivíduos.",
@@ -519,22 +515,6 @@ const QUESTIONS = [
     text: "Este sistema APENAS melhora o resultado de uma atividade humana previamente concluída (ex.: correção gramatical de texto escrito por humano, melhoria de foto tirada por humano, formatação automática de documento criado por humano)?",
     help: "O Artigo 6(3)(b) isenta sistemas de IA que melhoram atividades humanas previamente concluídas. A atividade humana deve estar completa antes que a IA atue sobre ela — a IA aprimora, não cria.",
     article: "Artigo 6(3)(b)",
-    weight: { yes: -20, no: 5, unsure: 0 },
-    signal: "exemption"
-  },
-  {
-    id: "pattern_detection",
-    text: "Este sistema detecta padrões para revisão humana SEM substituir a avaliação própria do humano (ex.: sinalizando anomalias para um analista, destacando correspondências potenciais para um revisor)?",
-    help: "O Artigo 6(3)(c) isenta sistemas de IA que detectam padrões ou desvios de padrões anteriores sem substituir a avaliação humana. O humano deve fazer a determinação final, não a IA.",
-    article: "Artigo 6(3)(c)",
-    weight: { yes: -20, no: 5, unsure: 0 },
-    signal: "exemption"
-  },
-  {
-    id: "preparatory_task",
-    text: "Este sistema realiza APENAS tarefas preparatórias para um avaliador humano (ex.: pré-classificar candidaturas, extrair pontos de dados centrais para revisão, gerar resumos para tomadores de decisão humanos)?",
-    help: "O Artigo 6(3)(d) isenta sistemas de IA que realizam tarefas preparatórias para avaliações que serão realizadas por uma pessoa natural. O avaliador humano ainda deve tomar a decisão substantiva.",
-    article: "Artigo 6(3)(d)",
     weight: { yes: -20, no: 5, unsure: 0 },
     signal: "exemption"
   },
@@ -553,8 +533,39 @@ const QUESTIONS = [
     article: "Artigo 12",
     weight: { yes: -5, no: 5, unsure: 0 },
     signal: "gap_assessment"
+  },
+  // --- New questions (positions 12-14, appended to preserve URL encoding) ---
+  {
+    id: "profiling",
+    text: "Este sistema cria perfis de indivíduos com base em seus dados pessoais (ex.: rastreamento de desempenho, análise de comportamento, modelagem de preferências, pontuação de risco baseada em características pessoais)?",
+    help: "Se um sistema perfila pessoas naturais conforme definido no Artigo 4(4) do RGPD, as isenções do Artigo 6(3) NÃO podem se aplicar — o sistema é automaticamente de alto risco, independentemente de quão restrita ou procedimental seja sua função. Perfilamento significa qualquer processamento automatizado de dados pessoais para avaliar aspectos pessoais.",
+    article: "Article 6(3), GDPR Article 4(4)",
+    weight: { yes: 15, no: 0, unsure: 5 },
+    signal: "profiling"
+  },
+  {
+    id: "pattern_detection",
+    text: "Este sistema detecta padrões para revisão humana SEM substituir a avaliação própria do humano (ex.: sinalizando anomalias para um analista, destacando correspondências potenciais para um revisor)?",
+    help: "O Artigo 6(3)(c) isenta sistemas de IA que detectam padrões ou desvios de padrões anteriores sem substituir a avaliação humana. O humano deve fazer a determinação final, não a IA.",
+    article: "Artigo 6(3)(c)",
+    weight: { yes: -20, no: 5, unsure: 0 },
+    signal: "exemption"
+  },
+  {
+    id: "preparatory_task",
+    text: "Este sistema realiza APENAS tarefas preparatórias para um avaliador humano (ex.: pré-classificar candidaturas, extrair pontos de dados centrais para revisão, gerar resumos para tomadores de decisão humanos)?",
+    help: "O Artigo 6(3)(d) isenta sistemas de IA que realizam tarefas preparatórias para avaliações que serão realizadas por uma pessoa natural. O avaliador humano ainda deve tomar a decisão substantiva.",
+    article: "Artigo 6(3)(d)",
+    weight: { yes: -20, no: 5, unsure: 0 },
+    signal: "exemption"
   }
 ];
+
+// Display order: users see questions in this logical sequence.
+// Profiling (Q12 in array) is shown before exemptions (Q8-9) so users
+// understand the gate before answering exemption questions.
+// Array indices into QUESTIONS:
+const DISPLAY_ORDER = [0,1,2,3,4,5,6,7, 12, 8,9,13,14, 10,11];
 
 // Article obligations for high-risk systems
 const OBLIGATIONS = [
@@ -667,14 +678,14 @@ function startAssessment() {
 }
 
 function renderQuestion() {
-  const q = QUESTIONS[currentQuestion];
+  const q = QUESTIONS[DISPLAY_ORDER[currentQuestion]];
   const existing = answers[q.id] || null;
   const container = document.getElementById("questionContainer");
   const qId = "q-" + q.id;
 
   container.innerHTML = `
     <div class="q-card" role="group" aria-labelledby="${qId}-text">
-      <div class="q-number" aria-hidden="true">PERGUNTA ${currentQuestion + 1} DE ${QUESTIONS.length}</div>
+      <div class="q-number" aria-hidden="true">PERGUNTA ${currentQuestion + 1} DE ${DISPLAY_ORDER.length}</div>
       <div class="q-text" id="${qId}-text">${q.text}</div>
       <div class="q-help" id="${qId}-help">${q.help}</div>
       <div class="q-article">${q.article}</div>
@@ -693,16 +704,16 @@ function renderQuestion() {
   }
 
   // Update progress
-  const pct = Math.round((currentQuestion / QUESTIONS.length) * 100);
+  const pct = Math.round((currentQuestion / DISPLAY_ORDER.length) * 100);
   document.getElementById("progressBar").style.width = pct + "%";
   document.getElementById("progressPct").textContent = pct + "%";
-  document.getElementById("progressText").textContent = `Pergunta ${currentQuestion + 1} de ${QUESTIONS.length}`;
+  document.getElementById("progressText").textContent = `Pergunta ${currentQuestion + 1} de ${DISPLAY_ORDER.length}`;
   document.getElementById("progressWrap").setAttribute("aria-valuenow", pct);
 
   // Button states
   document.getElementById("prevBtn").disabled = currentQuestion === 0;
   document.getElementById("nextBtn").disabled = !existing;
-  document.getElementById("nextBtn").textContent = currentQuestion === QUESTIONS.length - 1 ? "Ver resultados" : "Próxima";
+  document.getElementById("nextBtn").textContent = currentQuestion === DISPLAY_ORDER.length - 1 ? "Ver resultados" : "Próxima";
 
   // Focus management: move focus to the question text for screen readers
   const qText = document.getElementById(qId + "-text");
@@ -710,7 +721,7 @@ function renderQuestion() {
 }
 
 function answer(value, btn) {
-  const q = QUESTIONS[currentQuestion];
+  const q = QUESTIONS[DISPLAY_ORDER[currentQuestion]];
   answers[q.id] = value;
 
   // Update button states visually and aria-pressed
@@ -728,7 +739,7 @@ function answer(value, btn) {
 }
 
 function nextQuestion() {
-  if (currentQuestion < QUESTIONS.length - 1) {
+  if (currentQuestion < DISPLAY_ORDER.length - 1) {
     currentQuestion++;
     renderQuestion();
     saveProgress();
