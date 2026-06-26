@@ -335,6 +335,7 @@
       <button type="button" class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>Zurück</button>
       <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Weiter</button>
     </div>
+    <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:8px;" aria-hidden="true">Tastatur: <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">Y</kbd> Ja &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">N</kbd> Nein &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">U</kbd> Unsicher &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">&rarr;</kbd> Weiter</div>
   </div>
 
   <!-- CODE SCANNER -->
@@ -421,6 +422,7 @@
       Open Source (Apache 2.0 / EUPL 1.2)
     </p>
     <p style="margin-top:4px;">Nicht verbunden mit <a href="https://regulaforensics.com">Regula Forensics</a> (Identitätsverifizierung).</p>
+    <p style="margin-top:8px;font-size:0.7rem;color:var(--text-muted);opacity:0.5;" title="Gebaut von einem Menschen in Harare, Simbabwe. Angetrieben von Rooibos und existenzieller Angst vor regulatorischen Fristen.">Gebaut von einem Menschen. Geprüft von Maschinen. Keinem von beiden vertraut ohne Belege.</p>
   </div>
 
 <script src="scanner.js"></script>
@@ -534,43 +536,50 @@ const OBLIGATIONS = [
   {
     article: 9, name: "Risikomanagementsystem",
     desc: "Ein kontinuierliches Risikomanagementsystem einrichten, umsetzen, dokumentieren und aufrechterhalten, das den gesamten KI-Lebenszyklus abdeckt. Bekannte und vorhersehbare Risiken identifizieren und analysieren. Geeignete Minderungsmaßnahmen ergreifen. Restrisiken an Betreiber kommunizieren (Artikel 9(5)).",
-    effort: "40\u201380 Stunden",
+    plain: "Sie benötigen ein lebendes Dokument, das auflistet, was bei Ihrem KI-System schiefgehen könnte, was Sie gegen jedes Risiko unternommen haben und welche Risiken verbleiben. Es muss fortlaufend aktualisiert werden.",
+    effort: "40\u201380 Stunden (Team)",
     deadline: "2. Dez. 2027 (Omnibus; EP-Zustimmung 16. Juni 2026)"
   },
   {
     article: 10, name: "Daten-Governance",
     desc: "Trainings-, Validierungs- und Testdatensätze müssen Qualitätskriterien erfüllen. Datenerhebungsprozesse dokumentieren, Lücken und Verzerrungen identifizieren und sicherstellen, dass die Daten den beabsichtigten Einsatzkontext repräsentieren.",
-    effort: "20\u201360 Stunden",
+    plain: "Sie müssen dokumentieren, woher Ihre Trainingsdaten stammen, sie auf Verzerrungen prüfen und nachweisen, dass sie die betroffenen Personen repräsentieren.",
+    effort: "20\u201360 Stunden (Team)",
     deadline: "2. Dez. 2027"
   },
   {
     article: 11, name: "Technische Dokumentation",
     desc: "Technische Dokumentation gemäß Anhang IV vor dem Inverkehrbringen des Systems erstellen. Umfasst Systembeschreibung, Entwurfsspezifikation, Entwicklungsmethodik, Überwachungs- und Prüfverfahren.",
-    effort: "30\u201380 Stunden",
+    plain: "Sie benötigen eine technische Akte, die beschreibt, wie das System funktioniert, wie es entwickelt und getestet wurde und wie es überwacht wird. Stellen Sie sich ein Handbuch für eine Aufsichtsbehörde vor.",
+    effort: "30\u201380 Stunden (Team)",
     deadline: "2. Dez. 2027"
   },
   {
     article: 12, name: "Aufzeichnungspflichten",
     desc: "Das System so gestalten, dass es während des Betriebs automatisch Ereignisse (Protokolle) aufzeichnet. Protokolle müssen die Rückverfolgbarkeit der Systemfunktion ermöglichen und die Marktüberwachung unterstützen.",
-    effort: "10\u201330 Stunden",
+    plain: "Das System muss ein automatisches Protokoll führen: was eingegeben wurde, was ausgegeben wurde und wann. Wenn etwas schiefgeht, müssen Sie die Vorgänge zurückverfolgen können.",
+    effort: "10\u201330 Stunden (Team)",
     deadline: "2. Dez. 2027"
   },
   {
     article: 13, name: "Transparenz",
     desc: "Auf Transparenz ausgelegt: Betreiber müssen die Fähigkeiten, Einschränkungen und den beabsichtigten Zweck des Systems verstehen können. Nutzungsanweisungen bereitstellen.",
-    effort: "15\u201340 Stunden",
+    plain: "Jeder, der Ihr System nutzt oder betreibt, muss verstehen, was es kann, was es nicht kann und wie es richtig eingesetzt wird. Keine Black Boxes.",
+    effort: "15\u201340 Stunden (Team)",
     deadline: "2. Dez. 2027"
   },
   {
     article: 14, name: "Menschliche Aufsicht",
     desc: "Mit angemessenen Maßnahmen zur menschlichen Aufsicht gestalten. Menschen müssen in der Lage sein, das System zu verstehen, zu überwachen, zu übersteuern und zu stoppen. Sicherstellen, dass die Aufsicht wirksam und nicht nur nominal ist.",
-    effort: "15\u201350 Stunden",
+    plain: "Ein Mensch muss verstehen können, was das System tut, eingreifen können, wenn es falsch liegt, und es bei Bedarf abschalten können. Ein Kontrollkästchen mit \u201eMensch hat geprüft\u201c reicht nicht aus.",
+    effort: "15\u201350 Stunden (Team)",
     deadline: "2. Dez. 2027"
   },
   {
     article: 15, name: "Genauigkeit, Robustheit, Cybersicherheit",
     desc: "Angemessene Niveaus an Genauigkeit, Robustheit und Cybersicherheit über den gesamten Lebenszyklus erreichen. Widerstandsfähig gegen Fehler, Angriffe und Versuche, Schwachstellen auszunutzen.",
-    effort: "20\u201360 Stunden",
+    plain: "Das System muss zuverlässig funktionieren, unerwartete Eingaben ohne gefährliches Versagen verarbeiten und gegen Angriffe geschützt sein. Dies ist eine fortlaufende Aufgabe, keine einmalige Prüfung.",
+    effort: "20\u201360 Stunden (Team)",
     deadline: "2. Dez. 2027"
   }
 ];
@@ -579,7 +588,8 @@ const LIMITED_RISK_OBLIGATIONS = [
   {
     article: 50, name: "Transparenzpflichten",
     desc: "Nutzer darüber informieren, dass sie mit einem KI-System interagieren. KI-generierte Inhalte (Text, Audio, Bild, Video) als künstlich erzeugt kennzeichnen. Deepfakes und synthetische Inhalte markieren.",
-    effort: "5\u201315 Stunden",
+    plain: "Wenn jemand mit Ihrer KI spricht, teilen Sie es mit. Wenn Ihre KI Inhalte erstellt, kennzeichnen Sie diese als KI-generiert. Kein Vortäuschen, ein Mensch zu sein.",
+    effort: "5\u201315 Stunden (Team)",
     deadline: "2. Aug. 2026 (neue Systeme); 2. Dez. 2026 (bestehende, Wasserzeichen)"
   }
 ];
@@ -819,6 +829,7 @@ function showResults() {
             <div class="obl-deadline">${o.deadline}</div>
           </div>
           <div class="obl-desc">${o.desc}</div>
+          ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>Einfach erklärt:</strong> ${o.plain}</div>` : ""}
           ${results.tier === "high_risk" || results.tier === "high_risk_exempt" ? `
             <div class="gap-bar-wrap">
               <span style="font-size:0.75rem;color:var(--text-muted);min-width:80px;">Bereitschaft:</span>

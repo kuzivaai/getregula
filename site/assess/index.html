@@ -333,6 +333,7 @@
       <button type="button" class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>Back</button>
       <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Next</button>
     </div>
+    <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:8px;" aria-hidden="true">Keyboard: <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">Y</kbd> yes &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">N</kbd> no &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">U</kbd> not sure &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">&rarr;</kbd> next</div>
   </div>
 
   <!-- CODE SCANNER -->
@@ -419,6 +420,7 @@
       Open source (Apache 2.0 / EUPL 1.2)
     </p>
     <p style="margin-top:4px;">Not affiliated with <a href="https://regulaforensics.com">Regula Forensics</a> (identity verification).</p>
+    <p style="margin-top:8px;font-size:0.7rem;color:var(--text-muted);opacity:0.5;" title="Built by a human in Harare, Zimbabwe. Fuelled by rooibos and existential dread about regulatory deadlines.">Built by a human. Checked by machines. Trusted by neither without evidence.</p>
   </div>
 
 <script src="scanner.js"></script>
@@ -528,47 +530,56 @@ const QUESTIONS = [
 ];
 
 // Article obligations for high-risk systems
+// Effort estimates are combined team effort (developer + compliance + legal review).
+// Based on a small team (2-5 people) starting from limited existing documentation.
 const OBLIGATIONS = [
   {
     article: 9, name: "Risk management system",
     desc: "Establish, implement, document, and maintain a continuous risk management system covering the entire AI lifecycle. Identify and analyse known and foreseeable risks. Adopt appropriate mitigation measures. Communicate residual risks to deployers (Article 9(5)).",
-    effort: "40-80 hours",
+    plain: "You need a living document that lists what could go wrong with your AI system, what you have done about each risk, and what risks remain. It must be kept up to date.",
+    effort: "40-80 hours (team)",
     deadline: "2 Dec 2027 (Omnibus; EP approved 16 Jun 2026)"
   },
   {
     article: 10, name: "Data governance",
     desc: "Training, validation, and testing datasets must meet quality criteria. Document data collection processes, identify gaps and biases, and ensure data is representative of the intended deployment context.",
-    effort: "20-60 hours",
+    plain: "You need to document where your training data came from, check it for bias, and show it represents the people your system will affect.",
+    effort: "20-60 hours (team)",
     deadline: "2 Dec 2027"
   },
   {
     article: 11, name: "Technical documentation",
     desc: "Prepare technical documentation following Annex IV before the system is placed on the market. Includes system description, design specification, development methodology, monitoring and testing procedures.",
-    effort: "30-80 hours",
+    plain: "You need a technical file describing how the system works, how it was built, how it was tested, and how it is monitored. Think of it as an instruction manual for a regulator.",
+    effort: "30-80 hours (team)",
     deadline: "2 Dec 2027"
   },
   {
     article: 12, name: "Record-keeping",
     desc: "Design the system to automatically record events (logs) during operation. Logs must enable traceability of the system's functioning and allow post-market monitoring.",
-    effort: "10-30 hours",
+    plain: "The system must keep an automatic diary of what it does: what went in, what came out, and when. If something goes wrong, you need to be able to trace back through the logs.",
+    effort: "10-30 hours (team)",
     deadline: "2 Dec 2027"
   },
   {
     article: 13, name: "Transparency",
     desc: "Design for transparency: deployers must be able to understand the system's capabilities, limitations, and intended purpose. Provide instructions for use.",
-    effort: "15-40 hours",
+    plain: "Anyone using or deploying your system must understand what it can do, what it cannot do, and how to use it properly. No black boxes.",
+    effort: "15-40 hours (team)",
     deadline: "2 Dec 2027"
   },
   {
     article: 14, name: "Human oversight",
     desc: "Design with appropriate human oversight measures. Humans must be able to understand, monitor, override, and stop the system. Ensure oversight is effective, not nominal.",
-    effort: "15-50 hours",
+    plain: "A human must be able to understand what the system is doing, intervene when it gets it wrong, and shut it down if needed. A checkbox that says 'human reviewed' is not enough.",
+    effort: "15-50 hours (team)",
     deadline: "2 Dec 2027"
   },
   {
     article: 15, name: "Accuracy, robustness, cybersecurity",
     desc: "Achieve appropriate levels of accuracy, robustness, and cybersecurity throughout the lifecycle. Resilient against errors, attacks, and attempts to exploit vulnerabilities.",
-    effort: "20-60 hours",
+    plain: "The system must work reliably, handle unexpected inputs without failing dangerously, and be protected against attacks. This is ongoing, not a one-off check.",
+    effort: "20-60 hours (team)",
     deadline: "2 Dec 2027"
   }
 ];
@@ -577,7 +588,8 @@ const LIMITED_RISK_OBLIGATIONS = [
   {
     article: 50, name: "Transparency obligations",
     desc: "Inform users they are interacting with an AI system. Label AI-generated content (text, audio, image, video) as artificially generated. Mark deepfakes and synthetic content.",
-    effort: "5-15 hours",
+    plain: "If someone is talking to your AI, tell them. If your AI creates content, label it as AI-generated. No pretending to be human.",
+    effort: "5-15 hours (team)",
     deadline: "2 Aug 2026 (new systems); 2 Dec 2026 (existing, watermarking)"
   }
 ];
@@ -817,6 +829,7 @@ function showResults() {
             <div class="obl-deadline">${o.deadline}</div>
           </div>
           <div class="obl-desc">${o.desc}</div>
+          ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>In plain language:</strong> ${o.plain}</div>` : ""}
           ${results.tier === "high_risk" || results.tier === "high_risk_exempt" ? `
             <div class="gap-bar-wrap">
               <span style="font-size:0.75rem;color:var(--text-muted);min-width:80px;">Readiness:</span>
