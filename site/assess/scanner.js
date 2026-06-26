@@ -1,5 +1,5 @@
-// scanner.js — Regula client-side EU AI Act risk pattern scanner
-// Ported from scripts/risk_patterns.py + scripts/classify_risk.py (627 patterns)
+// scanner.js — Regula client-side EU AI Act detection pattern scanner
+// Ported from scripts/risk_patterns.py + scripts/classify_risk.py (627 detection patterns)
 // All logic runs client-side. Nothing leaves the browser.
 // Licensed under the Detection Rule License (DRL) 1.1.
 
@@ -15,7 +15,7 @@
 // See .claude/handover.md for the full regeneration process used to create this file.
 // =====================================================================
 
-// Pattern data (627 patterns)
+// Pattern data (627 detection patterns: 398 risk + 212 indicators + 17 GPAI)
 
 const PROHIBITED_PATTERNS = {
   "subliminal_manipulation": {
