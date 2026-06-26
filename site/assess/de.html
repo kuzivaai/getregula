@@ -9,7 +9,7 @@
     </style>
     <meta name="theme-color" content="#070711">
     <title>EU-KI-Gesetz-Bewertung: Betrifft es Sie? | Regula</title>
-    <meta name="description" content="Kostenlose EU-KI-Gesetz-Risikobewertung. Beantworten Sie 12 Fragen, um Ihre Risikostufe, rechtliche Pflichten und n\u00e4chste Schritte zu erfahren. Entwicklungsteams k\u00f6nnen auch Code gegen 627 Erkennungsmuster scannen. Keine Anmeldung, keine Installation.">
+    <meta name="description" content="Kostenlose EU-KI-Gesetz-Risikobewertung. Beantworten Sie 14 Fragen, um Ihre Risikostufe, rechtliche Pflichten und n\u00e4chste Schritte zu erfahren. Entwicklungsteams k\u00f6nnen auch Code gegen 627 Erkennungsmuster scannen. Keine Anmeldung, keine Installation.">
     <meta name="author" content="Kuziva Muzondo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://getregula.com/assess/de.html">
@@ -37,7 +37,7 @@
       "@type": "WebApplication",
       "name": "Regula EU-KI-Gesetz-Bewertung",
       "url": "https://getregula.com/assess/de.html",
-      "description": "Kostenloses EU-KI-Gesetz-Risikobewertungstool. Code gegen 627 Erkennungsmuster scannen oder Fragen beantworten. Klassifiziert KI-Systeme in Risikostufen und ordnet Pflichten zu.",
+      "description": "Kostenloses EU-KI-Gesetz-Risikobewertungstool. Beantworten Sie 14 Fragen, um Ihre Risikostufe und rechtliche Pflichten zu erfahren. Entwicklungsteams können auch Code gegen 627 Erkennungsmuster scannen.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Any (web browser)",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
@@ -305,9 +305,9 @@
   <!-- HERO -->
   <div class="hero" id="heroSection">
     <h1>Gilt die EU-KI-Verordnung <span>für Sie?</span></h1>
-    <p>Finden Sie es in unter 5 Minuten heraus. Beantworten Sie 12 Fragen zu Ihrem KI-System, um Ihre Risikostufe, Ihre rechtlichen Pflichten und die nächsten Schritte zu erfahren. Nichts verlässt Ihren Browser.</p>
+    <p>Finden Sie es in unter 5 Minuten heraus. Beantworten Sie 14 Fragen zu Ihrem KI-System, um Ihre Risikostufe, Ihre rechtlichen Pflichten und die nächsten Schritte zu erfahren. Nichts verlässt Ihren Browser.</p>
     <div class="hero-stats">
-      <span>12 Fragen, unter 5 Minuten</span>
+      <span>14 Fragen, unter 5 Minuten</span>
       <span>Sofortige Risikoeinstufung</span>
       <span>Nichts verlässt Ihren Browser</span>
     </div>
@@ -325,7 +325,7 @@
     </div>
     <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Bewertungsfortschritt" id="progressWrap">
       <div class="progress-label" aria-live="polite">
-        <span id="progressText">Frage 1 von 12</span>
+        <span id="progressText">Frage 1 von 14</span>
         <span id="progressPct">0%</span>
       </div>
       <div class="progress-track"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
@@ -499,17 +499,33 @@ const QUESTIONS = [
   },
   {
     id: "narrow_procedural",
-    text: "Führt dieses System nur eng begrenzte Verfahrensaufgaben aus (Datenformatierung, Dokumentensortierung, Mustererkennung für menschliche Überprüfung)?",
-    help: "Artikel 6(3)(a) nimmt Systeme, die eng begrenzte Verfahrensaufgaben ausführen, von der Hochrisiko-Einstufung aus, auch wenn sie in einem Anhang-III-Bereich tätig sind.",
+    text: "Führt dieses System NUR eng begrenzte Verfahrensaufgaben aus (z. B. Daten zwischen Formaten konvertieren, Dokumente nach Metadaten sortieren, Datensätze gegen eine feste Vorlage abgleichen)?",
+    help: "Artikel 6(3)(a) nimmt KI-Systeme, die eng begrenzte Verfahrensaufgaben ausführen, von der Hochrisiko-Einstufung aus, auch wenn sie in einem Anhang-III-Bereich tätig sind. Die Aufgabe muss rein verfahrenstechnisch sein, ohne Entscheidungsfindung über Einzelpersonen.",
     article: "Artikel 6(3)(a)",
     weight: { yes: -25, no: 10, unsure: 0 },
     signal: "exemption"
   },
   {
     id: "improves_human_activity",
-    text: "Verbessert dieses System nur das Ergebnis einer bereits abgeschlossenen menschlichen Tätigkeit (Grammatikprüfung, Fotoverbesserung, Formatierung)?",
-    help: "Artikel 6(3)(b) nimmt Systeme aus, die bereits abgeschlossene menschliche Tätigkeiten verbessern.",
+    text: "Verbessert dieses System NUR das Ergebnis einer bereits abgeschlossenen menschlichen Tätigkeit (z. B. Grammatikprüfung von menschlich verfasstem Text, Verbesserung eines menschlich aufgenommenen Fotos, automatische Formatierung eines menschlich erstellten Dokuments)?",
+    help: "Artikel 6(3)(b) nimmt KI-Systeme aus, die bereits abgeschlossene menschliche Tätigkeiten verbessern. Die menschliche Tätigkeit muss abgeschlossen sein, bevor die KI eingreift — die KI verfeinert, sie erstellt nicht.",
     article: "Artikel 6(3)(b)",
+    weight: { yes: -20, no: 5, unsure: 0 },
+    signal: "exemption"
+  },
+  {
+    id: "pattern_detection",
+    text: "Erkennt dieses System Muster zur menschlichen Überprüfung, OHNE die eigene Beurteilung des Menschen zu ersetzen oder zu substituieren (z. B. Anomalien für einen Analysten kennzeichnen, potenzielle Übereinstimmungen für einen Prüfer hervorheben)?",
+    help: "Artikel 6(3)(c) nimmt KI-Systeme aus, die Muster oder Abweichungen von früheren Mustern erkennen, ohne die menschliche Beurteilung zu ersetzen. Der Mensch muss die endgültige Entscheidung treffen, nicht die KI.",
+    article: "Artikel 6(3)(c)",
+    weight: { yes: -20, no: 5, unsure: 0 },
+    signal: "exemption"
+  },
+  {
+    id: "preparatory_task",
+    text: "Führt dieses System NUR vorbereitende Aufgaben für einen menschlichen Beurteiler aus (z. B. Anträge vorsortieren, zentrale Datenpunkte zur Überprüfung extrahieren, Zusammenfassungen für menschliche Entscheidungsträger erstellen)?",
+    help: "Artikel 6(3)(d) nimmt KI-Systeme aus, die vorbereitende Aufgaben für Beurteilungen ausführen, die von einer natürlichen Person durchgeführt werden. Der menschliche Beurteiler muss weiterhin die inhaltliche Entscheidung treffen.",
+    article: "Artikel 6(3)(d)",
     weight: { yes: -20, no: 5, unsure: 0 },
     signal: "exemption"
   },
@@ -829,7 +845,7 @@ function showResults() {
             <div class="obl-deadline">${o.deadline}</div>
           </div>
           <div class="obl-desc">${o.desc}</div>
-          ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>Einfach erklärt:</strong> ${o.plain}</div>` : ""}
+          ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>Einfach erkl\u00e4rt:</strong> ${o.plain} <a href="https://artificialintelligenceact.eu/article/${o.article}/" target="_blank" rel="noopener" style="color:var(--accent);font-size:0.75rem;white-space:nowrap;">[Artikel ${o.article} lesen]</a></div>` : ""}
           ${results.tier === "high_risk" || results.tier === "high_risk_exempt" ? `
             <div class="gap-bar-wrap">
               <span style="font-size:0.75rem;color:var(--text-muted);min-width:80px;">Bereitschaft:</span>
@@ -922,7 +938,9 @@ function decodeAnswers(code) {
     version = 2;
     raw = code.slice(1);
   }
-  if (raw.length !== QUESTIONS.length) return null;
+  // Accept URLs from older versions with fewer questions (pad with "u" for unsure)
+  if (raw.length > QUESTIONS.length) return null;
+  while (raw.length < QUESTIONS.length) raw += "u";
   const decoded = {};
   QUESTIONS.forEach((q, i) => {
     let c = raw[i];
