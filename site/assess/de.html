@@ -19,14 +19,14 @@
     <link rel="alternate" hreflang="x-default" href="https://getregula.com/assess/">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/assess/de.html">
-    <meta property="og:title" content="EU-KI-Gesetz-Bewertung: Betrifft es Sie?">
-    <meta property="og:description" content="Kostenlose Risikobewertung für Ihr KI-System. Beantworten Sie Fragen, erhalten Sie Ihre Risikostufe und Pflichten. Keine Anmeldung, keine Installation. Von Regula.">
+    <meta property="og:title" content="KI-Regulierung-Bewertung: EU AI Act, Südkorea, Colorado">
+    <meta property="og:description" content="Kostenlose KI-Regulierung-Risikobewertung. Prüfen Sie Ihre Pflichten unter dem EU AI Act, dem südkoreanischen KI-Grundgesetz oder Colorado SB 26-189. Keine Anmeldung, keine Installation.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:locale" content="de_DE">
     <meta property="og:site_name" content="Regula">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="EU-KI-Gesetz-Bewertung: Betrifft es Sie?">
-    <meta name="twitter:description" content="Kostenlose Risikobewertung für Ihr KI-System. Risikostufe und Pflichten in unter 5 Minuten.">
+    <meta name="twitter:title" content="KI-Regulierung-Bewertung: EU AI Act, Südkorea, Colorado">
+    <meta name="twitter:description" content="Kostenlose KI-Regulierung-Risikobewertung. Prüfen Sie Ihre Pflichten unter dem EU AI Act, dem südkoreanischen KI-Grundgesetz oder Colorado SB 26-189.">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
@@ -35,9 +35,9 @@
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Regula EU-KI-Gesetz-Bewertung",
+      "name": "Regula KI-Regulierung-Bewertung",
       "url": "https://getregula.com/assess/de.html",
-      "description": "Kostenloses EU-KI-Gesetz-Risikobewertungstool. Beantworten Sie 15 Fragen, um Ihre Risikostufe und rechtliche Pflichten zu erfahren. Entwicklungsteams können auch Code gegen 627 Erkennungsmuster scannen.",
+      "description": "Kostenlose KI-Regulierung-Risikobewertung. Prüfen Sie Ihre Pflichten unter dem EU AI Act, dem südkoreanischen KI-Grundgesetz oder Colorado SB 26-189. Entwicklungsteams können auch Code gegen 627 Erkennungsmuster scannen.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Any (web browser)",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
@@ -50,7 +50,7 @@
       :root {
         --bg: #070711; --bg-card: #0f0f1a; --bg-hover: #151528;
         --border: #1e1e3a; --border-active: #3b82f6;
-        --text: #e2e2f0; --text-dim: #8888a8; --text-muted: #55556a;
+        --text: #e2e2f0; --text-dim: #8888a8; --text-muted: #7a7a92;
         --accent: #3b82f6; --accent-dim: rgba(59,130,246,0.12);
         --red: #e74c3c; --red-dim: rgba(231,76,60,0.12);
         --amber: #f39c12; --amber-dim: rgba(243,156,18,0.12);
@@ -145,6 +145,10 @@
       .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
       .btn-secondary { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
       .btn-secondary:hover { border-color: var(--text-dim); color: var(--text); }
+
+      /* Focus-visible for keyboard navigation (WCAG 2.4.7) */
+      :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .ans-btn:focus-visible, .btn:focus-visible, .jurisdiction-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--radius); }
 
       /* Results */
       .results { display: none; }
@@ -314,9 +318,9 @@
     <div style="margin-top:24px;">
       <label style="font-size:0.85rem;color:var(--text-dim);display:block;margin-bottom:8px;">Welche Regulierung betrifft Sie?</label>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-        <button type="button" class="jurisdiction-btn selected" onclick="selectJurisdiction('eu')" id="jur-eu" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border-active);background:var(--accent-dim);color:var(--accent);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">EU AI Act</button>
-        <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('kr')" id="jur-kr" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Südkorea</button>
-        <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('co')" id="jur-co" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Colorado</button>
+        <button type="button" class="jurisdiction-btn selected" onclick="selectJurisdiction('eu')" id="jur-eu" aria-pressed="true" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border-active);background:var(--accent-dim);color:var(--accent);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">EU AI Act</button>
+        <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('kr')" id="jur-kr" aria-pressed="false" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Südkorea</button>
+        <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('co')" id="jur-co" aria-pressed="false" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Colorado</button>
       </div>
       <div id="jurisdictionInfo" style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);"></div>
     </div>
@@ -328,10 +332,18 @@
 
   <!-- QUESTIONNAIRE -->
   <div id="questionnaireSection" style="display:none;">
-    <div id="assessIntro" style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:20px;font-size:0.9rem;line-height:1.6;color:var(--text-dim);">
-      <p style="margin:0 0 8px 0;">Die EU-KI-Verordnung stuft KI-Systeme in Risikokategorien ein &mdash; von minimalem Risiko bis verboten &mdash; mit unterschiedlichen rechtlichen Pflichten für jede Stufe. Diese Bewertung ermittelt, welche Stufe für Ihr System gilt und was Sie als Nächstes tun müssen.</p>
-      <p style="margin:0;font-size:0.8rem;color:var(--text-muted);">Ihre Antworten werden weder gespeichert noch übermittelt. Ergebnisse können über einen zustandslosen Link geteilt werden.</p>
-    </div>
+    <div id="assessIntro" style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:20px;font-size:0.9rem;line-height:1.6;color:var(--text-dim);"></div>
+    <script>
+    function updateAssessIntro() {
+      const intros = {
+        eu: "Die EU-KI-Verordnung stuft KI-Systeme in Risikokategorien ein &mdash; von minimalem Risiko bis verboten &mdash; mit unterschiedlichen rechtlichen Pflichten f\u00fcr jede Stufe. Diese Bewertung ermittelt, welche Stufe f\u00fcr Ihr System gilt und was Sie als N\u00e4chstes tun m\u00fcssen.",
+        kr: "Das s\u00fcdkoreanische KI-Grundgesetz stuft KI-Systeme als hochriskant oder hochleistungsf\u00e4hig ein, mit Pflichten f\u00fcr Risikomanagement, Transparenz und Erkl\u00e4rbarkeit. Diese Bewertung ermittelt, ob Ihr System betroffen ist und was Sie tun m\u00fcssen.",
+        co: "Colorado SB 26-189 reguliert automatisierte Entscheidungstechnologie (ADMT), die folgenreiche Entscheidungen \u00fcber Personen in bestimmten Bereichen trifft. Diese Bewertung ermittelt, ob Ihr System betroffen ist und welche Offenlegungspflichten gelten."
+      };
+      const el = document.getElementById("assessIntro");
+      if (el) el.innerHTML = '<p style="margin:0 0 8px 0;">' + (intros[activeJurisdiction] || intros.eu) + '</p><p style="margin:0 0 0 0;font-size:0.8rem;color:var(--text-muted);">Dies ist keine Rechtsberatung. Ihre Antworten werden weder gespeichert noch \u00fcbermittelt. Ergebnisse k\u00f6nnen \u00fcber einen zustandslosen Link geteilt werden.</p>';
+    }
+    </script>
     <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Bewertungsfortschritt" id="progressWrap">
       <div class="progress-label" aria-live="polite">
         <span id="progressText">Frage 1 von 15</span>
@@ -459,12 +471,14 @@ function selectJurisdiction(jur) {
     b.style.background = "transparent";
     b.style.color = "var(--text-dim)";
     b.classList.remove("selected");
+    b.setAttribute("aria-pressed", "false");
   });
   const btn = document.getElementById("jur-" + jur);
   btn.style.border = "1px solid var(--border-active)";
   btn.style.background = "var(--accent-dim)";
   btn.style.color = "var(--accent)";
   btn.classList.add("selected");
+  btn.setAttribute("aria-pressed", "true");
 
   const info = JURISDICTION_INFO[jur];
   document.getElementById("jurisdictionInfo").textContent =
@@ -896,6 +910,7 @@ function startAssessment() {
   document.getElementById("questionnaireSection").style.display = "block";
   document.getElementById("resultsSection").classList.remove("active");
   document.getElementById("assessIntro").style.display = "block";
+  updateAssessIntro();
   renderQuestion();
   if (window.plausible) plausible("Assessment Started");
 }
@@ -1199,7 +1214,7 @@ function showResults() {
           </div>
           <div class="obl-desc">${o.desc}</div>
           ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>Einfach erkl\u00e4rt:</strong> ${o.plain}${activeJurisdiction === "eu" ? ` <a href="https://artificialintelligenceact.eu/article/${o.article}/" target="_blank" rel="noopener" style="color:var(--accent);font-size:0.75rem;white-space:nowrap;">[Artikel ${o.article} lesen]</a>` : ` <span style="font-size:0.75rem;color:var(--text-muted);">[Artikel ${o.article}]</span>`}</div>` : ""}
-          ${results.tier === "high_risk" || results.tier === "high_risk_exempt" ? `
+          ${["high_risk", "high_risk_exempt", "high_impact", "high_performance", "covered"].includes(results.tier) ? `
             <div class="gap-bar-wrap">
               <span style="font-size:0.75rem;color:var(--text-muted);min-width:80px;">Bereitschaft:</span>
               <div class="gap-bar"><div class="gap-fill" style="width:${gapScore}%;background:${gapColor};"></div></div>
@@ -1211,7 +1226,7 @@ function showResults() {
       `;
     }
     oblHtml += `</div>`;
-    if (results.tier === "high_risk" || results.tier === "high_risk_exempt") {
+    if (["high_risk", "high_risk_exempt", "high_impact", "high_performance", "covered"].includes(results.tier)) {
       oblHtml += `<p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">L\u00fcckenwerte sind Sch\u00e4tzungen basierend auf Ihren Fragebogenantworten. Ihr Entwicklungsteam kann pr\u00e4zise Bewertungen erhalten, indem es <code style="background:var(--bg);padding:2px 6px;border-radius:3px;">regula gap --project .</code> gegen Ihre Codebasis ausf\u00fchrt.</p>`;
     }
     document.getElementById("obligationsList").innerHTML = oblHtml;

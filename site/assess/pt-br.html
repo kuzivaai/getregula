@@ -19,14 +19,14 @@
     <link rel="alternate" hreflang="x-default" href="https://getregula.com/assess/">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/assess/pt-br.html">
-    <meta property="og:title" content="Avaliação da Lei de IA da UE: Ela se Aplica a Você?">
-    <meta property="og:description" content="Avaliação gratuita de risco para seu sistema de IA. Responda perguntas, obtenha seu nível de risco e obrigações. Sem cadastro, sem instalação. Por Regula.">
+    <meta property="og:title" content="Avaliação de Regulamentação de IA: Lei de IA da UE, Coreia do Sul, Colorado">
+    <meta property="og:description" content="Avaliação gratuita de risco de regulamentação de IA. Verifique suas obrigações sob a Lei de IA da UE, Lei Básica de IA da Coreia do Sul, ou Colorado SB 26-189. Sem cadastro, sem instalação.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:locale" content="pt_BR">
     <meta property="og:site_name" content="Regula">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Avaliação da Lei de IA da UE: Ela se Aplica a Você?">
-    <meta name="twitter:description" content="Avaliação gratuita de risco para seu sistema de IA. Obtenha seu nível de risco e obrigações em menos de 5 minutos.">
+    <meta name="twitter:title" content="Avaliação de Regulamentação de IA: Lei de IA da UE, Coreia do Sul, Colorado">
+    <meta name="twitter:description" content="Avaliação gratuita de risco de regulamentação de IA. Verifique suas obrigações sob a Lei de IA da UE, Lei Básica de IA da Coreia do Sul, ou Colorado SB 26-189.">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
@@ -50,7 +50,7 @@
       :root {
         --bg: #070711; --bg-card: #0f0f1a; --bg-hover: #151528;
         --border: #1e1e3a; --border-active: #3b82f6;
-        --text: #e2e2f0; --text-dim: #8888a8; --text-muted: #55556a;
+        --text: #e2e2f0; --text-dim: #8888a8; --text-muted: #7a7a92;
         --accent: #3b82f6; --accent-dim: rgba(59,130,246,0.12);
         --red: #e74c3c; --red-dim: rgba(231,76,60,0.12);
         --amber: #f39c12; --amber-dim: rgba(243,156,18,0.12);
@@ -145,6 +145,10 @@
       .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
       .btn-secondary { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
       .btn-secondary:hover { border-color: var(--text-dim); color: var(--text); }
+
+      /* Focus-visible for keyboard navigation (WCAG 2.4.7) */
+      :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .ans-btn:focus-visible, .btn:focus-visible, .jurisdiction-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--radius); }
 
       /* Results */
       .results { display: none; }
@@ -314,9 +318,9 @@
     <div style="margin-top:24px;">
       <label style="font-size:0.85rem;color:var(--text-dim);display:block;margin-bottom:8px;">Qual regulamentação se aplica a você?</label>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-        <button type="button" class="jurisdiction-btn selected" onclick="selectJurisdiction('eu')" id="jur-eu" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border-active);background:var(--accent-dim);color:var(--accent);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Lei de IA da UE</button>
-        <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('kr')" id="jur-kr" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Coreia do Sul</button>
-        <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('co')" id="jur-co" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Colorado</button>
+        <button type="button" class="jurisdiction-btn selected" onclick="selectJurisdiction('eu')" id="jur-eu" aria-pressed="true" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border-active);background:var(--accent-dim);color:var(--accent);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Lei de IA da UE</button>
+        <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('kr')" id="jur-kr" aria-pressed="false" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Coreia do Sul</button>
+        <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('co')" id="jur-co" aria-pressed="false" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Colorado</button>
       </div>
       <div id="jurisdictionInfo" style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);"></div>
     </div>
@@ -328,10 +332,18 @@
 
   <!-- QUESTIONNAIRE -->
   <div id="questionnaireSection" style="display:none;">
-    <div id="assessIntro" style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:20px;font-size:0.9rem;line-height:1.6;color:var(--text-dim);">
-      <p style="margin:0 0 8px 0;">A Lei de IA da UE classifica sistemas de IA em níveis de risco &mdash; de risco mínimo a proibido &mdash; com diferentes obrigações legais para cada um. Esta avaliação determina qual nível se aplica ao seu sistema e o que você precisa fazer a seguir.</p>
-      <p style="margin:0;font-size:0.8rem;color:var(--text-muted);">Suas respostas não são armazenadas nem transmitidas. Os resultados podem ser compartilhados via URL sem estado.</p>
-    </div>
+    <div id="assessIntro" style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:20px;font-size:0.9rem;line-height:1.6;color:var(--text-dim);"></div>
+    <script>
+    function updateAssessIntro() {
+      const intros = {
+        eu: "A Lei de IA da UE classifica sistemas de IA em n\u00edveis de risco &mdash; de risco m\u00ednimo a proibido &mdash; com diferentes obriga\u00e7\u00f5es legais para cada um. Esta avalia\u00e7\u00e3o determina qual n\u00edvel se aplica ao seu sistema e o que voc\u00ea precisa fazer a seguir.",
+        kr: "A Lei B\u00e1sica de IA da Coreia do Sul classifica sistemas de IA como de alto impacto ou alto desempenho, com obriga\u00e7\u00f5es de gest\u00e3o de risco, transpar\u00eancia e explicabilidade. Esta avalia\u00e7\u00e3o determina se o seu sistema \u00e9 abrangido e o que voc\u00ea precisa fazer.",
+        co: "Colorado SB 26-189 regulamenta tecnologia de tomada de decis\u00e3o automatizada (ADMT) que toma decis\u00f5es consequentes sobre indiv\u00edduos em dom\u00ednios espec\u00edficos. Esta avalia\u00e7\u00e3o determina se o seu sistema \u00e9 abrangido e quais obriga\u00e7\u00f5es de divulga\u00e7\u00e3o se aplicam."
+      };
+      const el = document.getElementById("assessIntro");
+      if (el) el.innerHTML = '<p style="margin:0 0 8px 0;">' + (intros[activeJurisdiction] || intros.eu) + '</p><p style="margin:0 0 0 0;font-size:0.8rem;color:var(--text-muted);">Isto n\u00e3o \u00e9 aconselhamento jur\u00eddico. Suas respostas n\u00e3o s\u00e3o armazenadas nem transmitidas. Os resultados podem ser compartilhados via URL sem estado.</p>';
+    }
+    </script>
     <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da avaliação" id="progressWrap">
       <div class="progress-label" aria-live="polite">
         <span id="progressText">Pergunta 1 de 15</span>
@@ -460,12 +472,14 @@ function selectJurisdiction(jur) {
     b.style.background = "transparent";
     b.style.color = "var(--text-dim)";
     b.classList.remove("selected");
+    b.setAttribute("aria-pressed", "false");
   });
   const btn = document.getElementById("jur-" + jur);
   btn.style.border = "1px solid var(--border-active)";
   btn.style.background = "var(--accent-dim)";
   btn.style.color = "var(--accent)";
   btn.classList.add("selected");
+  btn.setAttribute("aria-pressed", "true");
 
   const info = JURISDICTION_INFO[jur];
   document.getElementById("jurisdictionInfo").textContent =
@@ -897,6 +911,7 @@ function startAssessment() {
   document.getElementById("questionnaireSection").style.display = "block";
   document.getElementById("resultsSection").classList.remove("active");
   document.getElementById("assessIntro").style.display = "block";
+  updateAssessIntro();
   renderQuestion();
   if (window.plausible) plausible("Assessment Started");
 }
@@ -1200,7 +1215,7 @@ function showResults() {
           </div>
           <div class="obl-desc">${o.desc}</div>
           ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>Em linguagem simples:</strong> ${o.plain}${activeJurisdiction === "eu" ? ` <a href="https://artificialintelligenceact.eu/article/${o.article}/" target="_blank" rel="noopener" style="color:var(--accent);font-size:0.75rem;white-space:nowrap;">[Ler Artigo ${o.article}]</a>` : ` <span style="font-size:0.75rem;color:var(--text-muted);">[Artigo ${o.article}]</span>`}</div>` : ""}
-          ${results.tier === "high_risk" || results.tier === "high_risk_exempt" ? `
+          ${["high_risk", "high_risk_exempt", "high_impact", "high_performance", "covered"].includes(results.tier) ? `
             <div class="gap-bar-wrap">
               <span style="font-size:0.75rem;color:var(--text-muted);min-width:80px;">Prontidão:</span>
               <div class="gap-bar"><div class="gap-fill" style="width:${gapScore}%;background:${gapColor};"></div></div>
@@ -1212,7 +1227,7 @@ function showResults() {
       `;
     }
     oblHtml += `</div>`;
-    if (results.tier === "high_risk" || results.tier === "high_risk_exempt") {
+    if (["high_risk", "high_risk_exempt", "high_impact", "high_performance", "covered"].includes(results.tier)) {
       oblHtml += `<p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">Pontua\u00e7\u00f5es de lacuna s\u00e3o estimativas baseadas nas suas respostas. Sua equipe de desenvolvimento pode obter pontua\u00e7\u00e3o precisa executando <code style="background:var(--bg);padding:2px 6px;border-radius:3px;">regula gap --project .</code> no c\u00f3digo-fonte.</p>`;
     }
     document.getElementById("obligationsList").innerHTML = oblHtml;
