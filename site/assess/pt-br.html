@@ -335,6 +335,7 @@
       <button type="button" class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>Voltar</button>
       <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Próxima</button>
     </div>
+    <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:8px;" aria-hidden="true">Teclado: <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">S</kbd> sim &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">N</kbd> não &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">I</kbd> incerto &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">&rarr;</kbd> próxima</div>
   </div>
 
   <!-- CODE SCANNER -->
@@ -421,6 +422,7 @@
       Open source (Apache 2.0 / EUPL 1.2)
     </p>
     <p style="margin-top:4px;">Sem afiliação com a <a href="https://regulaforensics.com">Regula Forensics</a> (verificação de identidade).</p>
+    <p style="margin-top:8px;font-size:0.7rem;color:var(--text-muted);opacity:0.5;" title="Construído por um humano em Harare, Zimbábue. Movido a rooibos e pavor existencial sobre prazos regulatórios.">Construído por um humano. Verificado por máquinas. Nenhum dos dois confia sem evidências.</p>
   </div>
 
 <script src="scanner.js"></script>
@@ -535,43 +537,50 @@ const OBLIGATIONS = [
   {
     article: 9, name: "Sistema de gestão de riscos",
     desc: "Estabelecer, implementar, documentar e manter um sistema contínuo de gestão de riscos cobrindo todo o ciclo de vida da IA. Identificar e analisar riscos conhecidos e previsíveis. Adotar medidas de mitigação apropriadas. Comunicar riscos residuais aos implantadores (Artigo 9(5)).",
-    effort: "40-80 horas",
+    plain: "Você precisa de um documento vivo que liste o que pode dar errado com seu sistema de IA, o que você fez em relação a cada risco e quais riscos permanecem. Ele deve ser mantido atualizado.",
+    effort: "40-80 horas (equipe)",
     deadline: "2 dez 2027 (Omnibus; PE aprovou em 16 jun 2026)"
   },
   {
     article: 10, name: "Governança de dados",
     desc: "Conjuntos de dados de treinamento, validação e teste devem atender a critérios de qualidade. Documentar processos de coleta de dados, identificar lacunas e vieses, e garantir que os dados sejam representativos do contexto de implantação pretendido.",
-    effort: "20-60 horas",
+    plain: "Você precisa documentar de onde vieram seus dados de treinamento, verificar se há viés e mostrar que eles representam as pessoas que seu sistema vai afetar.",
+    effort: "20-60 horas (equipe)",
     deadline: "2 dez 2027"
   },
   {
     article: 11, name: "Documentação técnica",
     desc: "Preparar documentação técnica seguindo o Anexo IV antes que o sistema seja colocado no mercado. Inclui descrição do sistema, especificação de design, metodologia de desenvolvimento, procedimentos de monitoramento e teste.",
-    effort: "30-80 horas",
+    plain: "Você precisa de um dossiê técnico descrevendo como o sistema funciona, como foi construído, como foi testado e como é monitorado. Pense nele como um manual de instruções para um regulador.",
+    effort: "30-80 horas (equipe)",
     deadline: "2 dez 2027"
   },
   {
     article: 12, name: "Manutenção de registros",
     desc: "Projetar o sistema para registrar automaticamente eventos (logs) durante a operação. Os logs devem permitir a rastreabilidade do funcionamento do sistema e possibilitar o monitoramento pós-mercado.",
-    effort: "10-30 horas",
+    plain: "O sistema deve manter um diário automático do que faz: o que entrou, o que saiu e quando. Se algo der errado, você precisa conseguir rastrear o histórico nos logs.",
+    effort: "10-30 horas (equipe)",
     deadline: "2 dez 2027"
   },
   {
     article: 13, name: "Transparência",
     desc: "Projetar para transparência: os implantadores devem ser capazes de compreender as capacidades, limitações e finalidade pretendida do sistema. Fornecer instruções de uso.",
-    effort: "15-40 horas",
+    plain: "Qualquer pessoa que use ou implante seu sistema deve entender o que ele pode fazer, o que não pode fazer e como usá-lo corretamente. Sem caixas-pretas.",
+    effort: "15-40 horas (equipe)",
     deadline: "2 dez 2027"
   },
   {
     article: 14, name: "Supervisão humana",
     desc: "Projetar com medidas adequadas de supervisão humana. Humanos devem ser capazes de compreender, monitorar, anular e parar o sistema. Garantir que a supervisão seja efetiva, não nominal.",
-    effort: "15-50 horas",
+    plain: "Um humano deve ser capaz de entender o que o sistema está fazendo, intervir quando ele errar e desligá-lo se necessário. Uma caixa de seleção dizendo 'humano revisou' não é suficiente.",
+    effort: "15-50 horas (equipe)",
     deadline: "2 dez 2027"
   },
   {
     article: 15, name: "Precisão, robustez, cibersegurança",
     desc: "Alcançar níveis adequados de precisão, robustez e cibersegurança ao longo de todo o ciclo de vida. Resiliência contra erros, ataques e tentativas de exploração de vulnerabilidades.",
-    effort: "20-60 horas",
+    plain: "O sistema deve funcionar de forma confiável, lidar com entradas inesperadas sem falhar perigosamente e estar protegido contra ataques. Isso é contínuo, não uma verificação única.",
+    effort: "20-60 horas (equipe)",
     deadline: "2 dez 2027"
   }
 ];
@@ -580,7 +589,8 @@ const LIMITED_RISK_OBLIGATIONS = [
   {
     article: 50, name: "Obrigações de transparência",
     desc: "Informar os usuários que estão interagindo com um sistema de IA. Rotular conteúdo gerado por IA (texto, áudio, imagem, vídeo) como gerado artificialmente. Marcar deepfakes e conteúdo sintético.",
-    effort: "5-15 horas",
+    plain: "Se alguém está conversando com sua IA, avise. Se sua IA cria conteúdo, rotule como gerado por IA. Sem fingir ser humano.",
+    effort: "5-15 horas (equipe)",
     deadline: "2 ago 2026 (novos sistemas); 2 dez 2026 (existentes, marca d'água)"
   }
 ];
@@ -820,6 +830,7 @@ function showResults() {
             <div class="obl-deadline">${o.deadline}</div>
           </div>
           <div class="obl-desc">${o.desc}</div>
+          ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>Em linguagem simples:</strong> ${o.plain}</div>` : ""}
           ${results.tier === "high_risk" || results.tier === "high_risk_exempt" ? `
             <div class="gap-bar-wrap">
               <span style="font-size:0.75rem;color:var(--text-muted);min-width:80px;">Prontidão:</span>
@@ -1016,13 +1027,13 @@ document.addEventListener("keydown", function(e) {
   } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
     e.preventDefault();
     if (!document.getElementById("prevBtn").disabled) prevQuestion();
-  } else if (e.key === "1" || e.key === "y") {
+  } else if (e.key === "1" || e.key === "y" || e.key === "s") {
     const btns = document.querySelectorAll(".ans-btn");
     if (btns.length >= 1) { btns[0].click(); btns[0].focus(); }
   } else if (e.key === "2" || e.key === "n") {
     const btns = document.querySelectorAll(".ans-btn");
     if (btns.length >= 2) { btns[1].click(); btns[1].focus(); }
-  } else if (e.key === "3" || e.key === "u") {
+  } else if (e.key === "3" || e.key === "u" || e.key === "i") {
     const btns = document.querySelectorAll(".ans-btn");
     if (btns.length >= 3) { btns[2].click(); btns[2].focus(); }
   }
