@@ -301,7 +301,7 @@
 <!-- NAV -->
 <nav class="nav" id="nav" aria-label="Hauptnavigation">
     <a href="/" class="nav-brand">Regula</a>
-    <button class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Men&uuml;" aria-expanded="false">&#9776;</button>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Men&uuml;" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
@@ -323,7 +323,7 @@
             <h1>Ist Ihre KI-App in Europa <span class="hl">hochriskant</span>?</h1>
             <p class="sub">Ein Befehl zeigt Ihnen, in welche EU-KI-Gesetz-Risikostufe Ihr Code f&auml;llt, warum, und was zu beheben ist. <strong>30 Sekunden, kostenlos, kein Konto.</strong></p>
 
-            <button class="cta-pill" id="install-pill" onclick="copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
+            <button type="button" class="cta-pill" id="install-pill" onclick="copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
                 Jetzt kostenlos testen
             </button>
@@ -456,11 +456,11 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <div class="audience-label">Wenn Sie das Unternehmen leiten</div>
             <h3>Kennen Sie Ihr rechtliches Risiko?</h3>
             <p>Wenn Ihr Team KI baut oder nutzt, kann das EU-KI-Gesetz gelten, auch au&szlig;erhalb der EU. Die meisten Tools fallen unter begrenztes oder minimales Risiko. Entwickeln Sie mit Claude Code oder Cursor? F&uuml;gen Sie <code>regula assess</code> in Ihren Chat ein. Haben Sie einen Entwickler? Senden Sie ihm diese Seite.</p>
-            <button class="audience-fwd" onclick="copyPageUrl(this)">
+            <button type="button" class="audience-fwd" onclick="copyPageUrl(this)">
                 <span class="fwd-icon">&#8599;</span>
                 <span class="fwd-txt">Link kopieren und an Ihren Entwickler senden</span>
             </button>
-            <button class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
+            <button type="button" class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
                 <span class="fwd-icon">&#9654;</span>
                 <span class="fwd-txt">regula assess ausf&uuml;hren (kein Code n&ouml;tig)</span>
             </button>
@@ -480,7 +480,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <div class="audience-label">Wenn Sie Compliance pr&uuml;fen</div>
             <h3>&Uuml;berpr&uuml;fbare Nachweise, keine Selbstbescheinigung.</h3>
             <p>Regula generiert signierte, zeitgestempelte Nachweispakete mit SHA-256-Integrit&auml;tsmanifesten. Jedes Ergebnis ist auf eine Datei und Zeile r&uuml;ckverfolgbar. &Uuml;berpr&uuml;fen Sie die Kette selbst.</p>
-            <button class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula evidence-pack --sign .')">
+            <button type="button" class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula evidence-pack --sign .')">
                 <span class="fwd-icon">&#9654;</span>
                 <span class="fwd-txt">regula evidence-pack --sign .</span>
             </button>
@@ -840,7 +840,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     <div class="final reveal">
         <h2>Finden Sie heraus, wo Sie stehen</h2>
         <p>Ein Befehl. Dauert 30 Sekunden. Kein Konto n&ouml;tig.</p>
-        <button class="install-box" id="install-btn-2" onclick="copyInstall(this)" style="display:inline-flex;">
+        <button type="button" class="install-box" id="install-btn-2" onclick="copyInstall(this)" style="display:inline-flex;">
             <span class="dollar">$</span>
             <span class="cmd">pipx install regula-ai</span>
             <span class="cp">kopieren</span>
