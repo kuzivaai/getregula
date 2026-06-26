@@ -1,0 +1,125 @@
+jurisdiction_id: south_korea
+name: South Korea AI Basic Act
+law_reference: "Act on Development of AI and Establishment of Trust (Act No. 20738)"
+effective_date: "2026-01-22"
+status: "In force (grace period through 2026)"
+
+penalties:
+  max_fine: "KRW 30 million (~USD 20,700)"
+  criminal: "Up to 3 years imprisonment"
+  range: "Up to KRW 30M fine or 3 years imprisonment"
+  grace_period: "MSIT deferring enforcement through 2026 except for serious harm"
+
+deadlines:
+  default: "2026-01-22"
+  grace_period_end: "2027-01-01"
+
+risk_tiers:
+  - high_impact
+  - high_performance
+  - general
+
+domain_mappings:
+  biometrics:
+    risk_level: high_impact
+    articles: ["33", "34"]
+    category: "Criminal investigations using biometric data"
+    obligations:
+      - {article: "34", name: "Risk management plan"}
+      - {article: "34", name: "Documentation and recordkeeping"}
+      - {article: "34", name: "Human oversight"}
+      - {article: "34", name: "Explainability of AI decisions"}
+      - {article: "31", name: "Transparency notification"}
+  employment:
+    risk_level: high_impact
+    articles: ["33", "34"]
+    category: "Employment decisions (hiring, recruitment)"
+    obligations:
+      - {article: "34", name: "Risk management plan"}
+      - {article: "34", name: "Documentation and recordkeeping"}
+      - {article: "34", name: "Human oversight"}
+      - {article: "34", name: "Explainability of AI decisions"}
+      - {article: "31", name: "Transparency notification"}
+  credit:
+    risk_level: high_impact
+    articles: ["33", "34"]
+    category: "Loan/credit evaluation"
+    obligations:
+      - {article: "34", name: "Risk management plan"}
+      - {article: "34", name: "Documentation and recordkeeping"}
+      - {article: "34", name: "Human oversight"}
+      - {article: "34", name: "Explainability of AI decisions"}
+      - {article: "31", name: "Transparency notification"}
+  healthcare:
+    risk_level: high_impact
+    articles: ["33", "34"]
+    category: "Healthcare system operation, medical devices"
+    obligations:
+      - {article: "34", name: "Risk management plan"}
+      - {article: "34", name: "Documentation and recordkeeping"}
+      - {article: "34", name: "Human oversight"}
+      - {article: "34", name: "Explainability of AI decisions"}
+      - {article: "31", name: "Transparency notification"}
+  education:
+    risk_level: high_impact
+    articles: ["33", "34"]
+    category: "Student assessment (early childhood, elementary, secondary)"
+    obligations:
+      - {article: "34", name: "Risk management plan"}
+      - {article: "34", name: "Documentation and recordkeeping"}
+      - {article: "34", name: "Human oversight"}
+      - {article: "34", name: "Explainability of AI decisions"}
+      - {article: "31", name: "Transparency notification"}
+  law_enforcement:
+    risk_level: high_impact
+    articles: ["33", "34"]
+    category: "Criminal investigations"
+    obligations:
+      - {article: "34", name: "Risk management plan"}
+      - {article: "34", name: "Documentation and recordkeeping"}
+      - {article: "34", name: "Human oversight"}
+      - {article: "34", name: "Explainability of AI decisions"}
+      - {article: "31", name: "Transparency notification"}
+  critical_infrastructure:
+    risk_level: high_impact
+    articles: ["33", "34"]
+    category: "Energy supply, drinking water, nuclear"
+    obligations:
+      - {article: "34", name: "Risk management plan"}
+      - {article: "34", name: "Documentation and recordkeeping"}
+      - {article: "34", name: "Human oversight"}
+      - {article: "34", name: "Explainability of AI decisions"}
+      - {article: "31", name: "Transparency notification"}
+  essential_services:
+    risk_level: high_impact
+    articles: ["33", "34"]
+    category: "Government decisions affecting public services, taxes, welfare"
+    obligations:
+      - {article: "34", name: "Risk management plan"}
+      - {article: "34", name: "Documentation and recordkeeping"}
+      - {article: "34", name: "Human oversight"}
+      - {article: "34", name: "Explainability of AI decisions"}
+      - {article: "31", name: "Transparency notification"}
+  transportation:
+    risk_level: high_impact
+    articles: ["33", "34"]
+    category: "Operation of transport conveyances"
+    obligations:
+      - {article: "34", name: "Risk management plan"}
+      - {article: "34", name: "Documentation and recordkeeping"}
+      - {article: "34", name: "Human oversight"}
+      - {article: "34", name: "Explainability of AI decisions"}
+      - {article: "31", name: "Transparency notification"}
+
+high_performance_threshold:
+  flops: 1.0e+26
+  article: "32"
+  obligations:
+    - {article: "32", name: "Safety evaluation"}
+    - {article: "32", name: "Incident reporting"}
+
+# Domains NOT covered by Korea (present in EU):
+# migration: NOT COVERED
+# justice: NOT COVERED (separate from law_enforcement in Korea)
+# insurance: NOT COVERED as separate domain
+# safety_components: NOT COVERED (but transportation is covered separately)

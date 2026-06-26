@@ -98,14 +98,20 @@ prohibited_patterns:
       - face_scrap
       - facial_database_untarget
       - mass_facial_collect
-  emotion_inference_restricted:
+  emotion_inference_workplace:
     article: "5(1)(f)"
-    description: "Emotion inference in workplace or educational settings"
+    description: "Emotion inference in workplace settings"
     patterns:
       - "emotion + workplace"
-      - "emotion + school"
       - "sentiment + employee"
       - "emotion + employee"
+  emotion_inference_education:
+    article: "5(1)(f)"
+    description: "Emotion inference in educational settings"
+    patterns:
+      - "emotion + school"
+      - "emotion + classroom"
+      - "emotion + student"
   biometric_categorisation_sensitive:
     article: "5(1)(g)"
     description: "Biometric categorisation inferring sensitive attributes"

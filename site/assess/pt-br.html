@@ -8,8 +8,8 @@
       html, body { background: #070711; color: #e2e2f0; margin: 0; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
     </style>
     <meta name="theme-color" content="#070711">
-    <title>Avaliação da Lei de IA da UE: Ela se Aplica a Você? | Regula</title>
-    <meta name="description" content="Avalia\u00e7\u00e3o gratuita de risco da Lei de IA da UE. Responda 15 perguntas para conhecer seu n\u00edvel de risco, obriga\u00e7\u00f5es legais e pr\u00f3ximos passos. Equipes de desenvolvimento tamb\u00e9m podem analisar c\u00f3digo contra 627 padr\u00f5es de detec\u00e7\u00e3o. Sem cadastro, sem instala\u00e7\u00e3o.">
+    <title>Avaliação de Regulamentação de IA: Lei de IA da UE, Coreia do Sul, Colorado | Regula</title>
+    <meta name="description" content="Avaliação gratuita de risco de regulamentação de IA. Verifique suas obrigações sob a Lei de IA da UE, Lei Básica de IA da Coreia do Sul, ou Colorado SB 26-189. Responda perguntas para conhecer seu nível de risco e o que fazer a seguir. Sem cadastro, sem instalação.">
     <meta name="author" content="Kuziva Muzondo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://getregula.com/assess/pt-br.html">
@@ -35,9 +35,9 @@
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Regula — Avaliação da Lei de IA da UE",
+      "name": "Regula — Avaliação de Regulamentação de IA",
       "url": "https://getregula.com/assess/pt-br.html",
-      "description": "Ferramenta gratuita de avaliação de risco da Lei de IA da UE. Responda 15 perguntas para conhecer seu nível de risco e obrigações legais. Equipes de desenvolvimento também podem analisar código contra 627 padrões de detecção.",
+      "description": "Ferramenta gratuita de avaliação de risco de regulamentação de IA. Verifique suas obrigações sob a Lei de IA da UE, Lei Básica de IA da Coreia do Sul, ou Colorado SB 26-189. Equipes de desenvolvimento também podem analisar código contra 627 padrões de detecção.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Any (web browser)",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
@@ -304,14 +304,23 @@
 
   <!-- HERO -->
   <div class="hero" id="heroSection">
-    <h1>A Lei de IA da UE <span>se aplica a você?</span></h1>
-    <p>Descubra em menos de 5 minutos. Responda 15 perguntas sobre seu sistema de IA para conhecer seu nível de risco, suas obrigações legais e o que fazer a seguir. Nada sai do seu navegador.</p>
+    <h1>A regulamentação de IA <span>se aplica a você?</span></h1>
+    <p>Escolha sua jurisdição e responda algumas perguntas para conhecer sua classificação de risco, obrigações legais e o que fazer a seguir. Nada sai do seu navegador.</p>
     <div class="hero-stats">
-      <span>15 perguntas, menos de 5 minutos</span>
+      <span>Menos de 5 minutos</span>
       <span>Classificação de risco instantânea</span>
       <span>Nada sai do seu navegador</span>
     </div>
-    <div style="margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <div style="margin-top:24px;">
+      <label style="font-size:0.85rem;color:var(--text-dim);display:block;margin-bottom:8px;">Qual regulamentação se aplica a você?</label>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+        <button type="button" class="jurisdiction-btn selected" onclick="selectJurisdiction('eu')" id="jur-eu" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border-active);background:var(--accent-dim);color:var(--accent);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Lei de IA da UE</button>
+        <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('kr')" id="jur-kr" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Coreia do Sul</button>
+        <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('co')" id="jur-co" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Colorado</button>
+      </div>
+      <div id="jurisdictionInfo" style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);"></div>
+    </div>
+    <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <button type="button" class="btn btn-primary" onclick="startAssessment()" style="padding:14px 36px;font-size:1rem;">Iniciar avaliação</button>
     </div>
     <div style="margin-top:16px;font-size:0.85rem;color:var(--text-dim);">Equipes de desenvolvimento também podem <button type="button" onclick="startScanner()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">analisar código-fonte</button> contra 627 padrões de detecção.</div>
@@ -431,6 +440,183 @@
 // All logic runs client-side. Nothing leaves the browser.
 // PT-BR locale — only display strings changed.
 // =====================================================================
+
+// =====================================================================
+// Multi-jurisdiction support
+// =====================================================================
+
+let activeJurisdiction = "eu";
+
+const JURISDICTION_INFO = {
+  eu: { name: "Lei de IA da UE", law: "Regulamento (UE) 2024/1689", status: "Em vigor (aplicação faseada)", questionCount: 15 },
+  kr: { name: "Lei Básica de IA da Coreia do Sul", law: "Lei Nº 20738", status: "Em vigor (período de carência até 2026)", questionCount: 9 },
+  co: { name: "Colorado SB 26-189", law: "C.R.S. Título 6, Artigo 1, Parte 17", status: "Promulgada, vigência em 1º de janeiro de 2027", questionCount: 8 },
+};
+
+function selectJurisdiction(jur) {
+  activeJurisdiction = jur;
+  document.querySelectorAll(".jurisdiction-btn").forEach(b => {
+    b.style.border = "1px solid var(--border)";
+    b.style.background = "transparent";
+    b.style.color = "var(--text-dim)";
+    b.classList.remove("selected");
+  });
+  const btn = document.getElementById("jur-" + jur);
+  btn.style.border = "1px solid var(--border-active)";
+  btn.style.background = "var(--accent-dim)";
+  btn.style.color = "var(--accent)";
+  btn.classList.add("selected");
+
+  const info = JURISDICTION_INFO[jur];
+  document.getElementById("jurisdictionInfo").textContent =
+    info.law + " — " + info.status + " — " + info.questionCount + " perguntas";
+}
+
+// Korea questions (mapped from south-korea-mapping.md research)
+const QUESTIONS_KR = [
+  {
+    id: "kr_scope",
+    text: "Este sistema afeta usuários na Coreia do Sul?",
+    help: "A Lei Básica de IA se aplica a sistemas de IA operados na Coreia do Sul ou que afetam pessoas na Coreia do Sul (Artigo 4).",
+    article: "Artigo 4",
+    weight: { yes: 10, no: -10, unsure: 5 },
+    signal: "jurisdiction"
+  },
+  {
+    id: "kr_high_impact_domain",
+    text: "Este sistema opera em algum destes domínios: identificação biométrica, investigação criminal, avaliação educacional, emprego/contratação, avaliação de crédito, saúde, infraestrutura de energia/água/nuclear, serviços governamentais que afetam benefícios ou impostos, ou operações de transporte?",
+    help: "O Artigo 33 define IA de alto impacto como sistemas que operam em domínios que afetam a vida, segurança física ou direitos fundamentais. Esses domínios acionam obrigações adicionais sob o Artigo 34.",
+    article: "Artigo 33",
+    weight: { yes: 25, no: -15, unsure: 10 },
+    signal: "high_impact"
+  },
+  {
+    id: "kr_high_performance",
+    text: "Este sistema foi treinado com 10^26 FLOPs ou mais de computação?",
+    help: "O Artigo 32 define sistemas de IA de alto desempenho pelo poder computacional de treinamento. Sistemas acima deste limiar têm obrigações adicionais de segurança, incluindo avaliação e relato de incidentes.",
+    article: "Artigo 32",
+    weight: { yes: 20, no: -5, unsure: 5 },
+    signal: "high_performance"
+  },
+  {
+    id: "kr_transparency",
+    text: "Os usuários são notificados de que estão interagindo com um sistema de IA?",
+    help: "O Artigo 31 exige que os operadores de IA notifiquem os usuários de que estão interagindo com IA. Isso se aplica a todos os sistemas de IA, não apenas aos de alto impacto.",
+    article: "Artigo 31",
+    weight: { yes: -5, no: 10, unsure: 5 },
+    signal: "transparency"
+  },
+  {
+    id: "kr_generative",
+    text: "Este sistema gera conteúdo (texto, imagens, áudio ou vídeo)?",
+    help: "O Artigo 31 exige que os outputs de IA generativa sejam rotulados como conteúdo gerado por IA.",
+    article: "Artigo 31",
+    weight: { yes: 10, no: -5, unsure: 5 },
+    signal: "transparency"
+  },
+  {
+    id: "kr_explanation",
+    text: "Pessoas afetadas podem solicitar uma explicação sobre decisões de IA que as afetam?",
+    help: "O Artigo 34 exige que operadores de IA de alto impacto forneçam explicações para resultados gerados por IA dentro dos limites técnicos, incluindo critérios-chave de decisão e uma visão geral dos dados de treinamento.",
+    article: "Artigo 34",
+    weight: { yes: -5, no: 10, unsure: 5 },
+    signal: "gap_assessment"
+  },
+  {
+    id: "kr_risk_management",
+    text: "Existe um plano documentado de gestão de riscos para este sistema de IA?",
+    help: "O Artigo 34 exige que operadores de IA de alto impacto estabeleçam planos de gestão de riscos cobrindo documentação, supervisão humana e monitoramento contínuo.",
+    article: "Artigo 34",
+    weight: { yes: -5, no: 5, unsure: 0 },
+    signal: "gap_assessment"
+  },
+  {
+    id: "kr_human_oversight",
+    text: "Existe supervisão humana para decisões tomadas por este sistema de IA?",
+    help: "O Artigo 34 exige medidas de supervisão humana para sistemas de IA de alto impacto.",
+    article: "Artigo 34",
+    weight: { yes: -5, no: 10, unsure: 5 },
+    signal: "gap_assessment"
+  },
+  {
+    id: "kr_representative",
+    text: "Se você é um operador estrangeiro: você tem um representante doméstico na Coreia do Sul?",
+    help: "O Artigo 36 exige que operadores estrangeiros de IA que atendam a certos limiares nomeiem um representante doméstico na Coreia do Sul.",
+    article: "Artigo 36",
+    weight: { yes: -5, no: 5, unsure: 0 },
+    signal: "gap_assessment"
+  },
+];
+const DISPLAY_ORDER_KR = [0,1,2,3,4,5,6,7,8];
+
+// Colorado questions (mapped from colorado-mapping.md research)
+const QUESTIONS_CO = [
+  {
+    id: "co_scope",
+    text: "Este sistema processa dados pessoais de residentes do Colorado?",
+    help: "O Colorado SB 26-189 se aplica a desenvolvedores e implantadores de tecnologia automatizada de tomada de decisão (TATD) que processa dados pessoais de residentes do Colorado.",
+    article: "Seção 6-1-1701",
+    weight: { yes: 10, no: -10, unsure: 5 },
+    signal: "jurisdiction"
+  },
+  {
+    id: "co_decisions",
+    text: "Este sistema toma ou influencia materialmente decisões sobre indivíduos?",
+    help: "A lei se aplica a TATD que toma ou é um fator material em decisões consequenciais. Usos incidentais ou triviais são excluídos.",
+    article: "Seção 6-1-1701",
+    weight: { yes: 25, no: -15, unsure: 10 },
+    signal: "covered"
+  },
+  {
+    id: "co_domain",
+    text: "Ele opera em um domínio abrangido: emprego, educação, financeiro/crédito, habitação, seguros, saúde ou serviços governamentais essenciais?",
+    help: "O Colorado abrange 7 domínios específicos onde decisões automatizadas sobre indivíduos acionam obrigações de divulgação.",
+    article: "Seção 6-1-1701",
+    weight: { yes: 25, no: -15, unsure: 10 },
+    signal: "covered"
+  },
+  {
+    id: "co_material",
+    text: "O output da IA é um fator não trivial no resultado da decisão?",
+    help: "O sistema deve influenciar materialmente a decisão. Se o output da IA é incidental ou trivial para o resultado, pode não ser abrangido.",
+    article: "Seção 6-1-1701",
+    weight: { yes: 15, no: -10, unsure: 5 },
+    signal: "covered"
+  },
+  {
+    id: "co_role",
+    text: "Você é o desenvolvedor (construiu/treinou o sistema) ou implantador (usa o sistema para tomar decisões)?",
+    help: "O Colorado atribui diferentes obrigações a desenvolvedores e implantadores. Desenvolvedores devem fornecer documentação; implantadores devem fornecer avisos ao consumidor e lidar com resultados adversos.",
+    article: "Seções 6-1-1702 a 6-1-1705",
+    weight: { yes: 5, no: 5, unsure: 5 },
+    signal: "gap_assessment"
+  },
+  {
+    id: "co_pre_notice",
+    text: "Um aviso prévio é fornecido aos consumidores antes de a TATD ser usada?",
+    help: "A Seção 6-1-1704 exige que implantadores forneçam aviso claro aos consumidores antes de usar TATD para tomar uma decisão consequencial.",
+    article: "Seção 6-1-1704",
+    weight: { yes: -5, no: 10, unsure: 5 },
+    signal: "gap_assessment"
+  },
+  {
+    id: "co_adverse",
+    text: "Existe um processo para divulgar resultados adversos aos consumidores dentro de 30 dias?",
+    help: "A Seção 6-1-1704 exige que implantadores notifiquem consumidores dentro de 30 dias de uma decisão consequencial adversa, incluindo uma descrição da decisão, o papel da TATD e os direitos do consumidor.",
+    article: "Seção 6-1-1704",
+    weight: { yes: -5, no: 10, unsure: 5 },
+    signal: "gap_assessment"
+  },
+  {
+    id: "co_consumer_rights",
+    text: "Os consumidores podem solicitar acesso aos seus dados, correção e revisão humana significativa?",
+    help: "A Seção 6-1-1705 concede aos consumidores o direito de acessar dados usados na decisão, solicitar correção e obter revisão humana significativa de decisões adversas.",
+    article: "Seção 6-1-1705",
+    weight: { yes: -5, no: 10, unsure: 5 },
+    signal: "gap_assessment"
+  },
+];
+const DISPLAY_ORDER_CO = [0,1,2,3,4,5,6,7];
 
 // QUESTIONS array: positions 0-11 are the original 12 questions (stable for URL encoding).
 // Positions 12-14 are new questions appended to preserve backward compatibility.
@@ -629,6 +815,41 @@ const LIMITED_RISK_OBLIGATIONS = [
   }
 ];
 
+// Korea obligations
+const OBLIGATIONS_KR = [
+  { article: 34, name: "Plano de gestão de riscos", desc: "Operadores de IA de alto impacto devem estabelecer e manter um plano de gestão de riscos cobrindo o ciclo de vida do sistema de IA.", plain: "Você precisa de um plano documentado para identificar e gerenciar riscos do seu sistema de IA. Esta é uma obrigação de esforço ('empenhar-se').", effort: "20-40 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
+  { article: 34, name: "Documentação e manutenção de registros", desc: "Manter documentação do design, desenvolvimento e processos operacionais do sistema de IA.", plain: "Mantenha registros de como o sistema foi construído, quais dados ele usa e como toma decisões.", effort: "15-30 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
+  { article: 34, name: "Supervisão humana", desc: "Implementar medidas de supervisão humana para sistemas de IA de alto impacto.", plain: "Um humano deve ser capaz de monitorar e intervir nas decisões do sistema de IA.", effort: "10-30 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
+  { article: 34, name: "Explicabilidade de decisões de IA", desc: "Operadores devem fornecer explicações para resultados gerados por IA dentro dos limites técnicos, incluindo critérios-chave de decisão e uma visão geral dos dados de treinamento (Artigo 34).", plain: "Quando sua IA toma uma decisão sobre alguém, você deve ser capaz de explicar por quê — incluindo os fatores que impulsionaram a decisão e os dados com os quais o sistema foi treinado.", effort: "10-25 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
+  { article: 31, name: "Notificação de transparência", desc: "Os usuários devem ser notificados quando interagem com IA. Conteúdo de IA generativa deve ser rotulado.", plain: "Informe as pessoas que estão interagindo com IA e rotule conteúdo gerado por IA como tal.", effort: "5-15 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
+];
+
+const KR_TRANSPARENCY_OBLIGATIONS = [
+  { article: 31, name: "Notificação de interação com IA", desc: "Os usuários devem ser informados de que estão interagindo com um sistema de IA.", plain: "Se alguém conversa com sua IA, informe que é IA.", effort: "5-10 horas (equipe)", deadline: "Em vigor" },
+  { article: 31, name: "Rotulagem de conteúdo generativo", desc: "Conteúdo gerado por IA (texto, imagem, áudio, vídeo) deve ser rotulado como tal.", plain: "Rotule conteúdo criado por IA para que as pessoas saibam que não foi feito por um humano.", effort: "5-10 horas (equipe)", deadline: "Em vigor" },
+];
+
+// Colorado obligations
+const OBLIGATIONS_CO = [
+  { article: "6-1-1702", name: "Documentação do desenvolvedor", desc: "Desenvolvedores devem fornecer aos implantadores documentação cobrindo usos pretendidos, categorias de dados de treinamento, limitações conhecidas e instruções de uso.", plain: "Se você construiu a IA, deve dar aos usuários uma descrição clara do que ela faz, quais dados a treinaram e o que ela não pode fazer.", effort: "15-30 horas (equipe)", deadline: "1º de janeiro de 2027" },
+  { article: "6-1-1703", name: "Retenção de registros (3 anos)", desc: "Tanto desenvolvedores quanto implantadores devem reter registros relacionados à TATD por pelo menos 3 anos.", plain: "Mantenha registros de como o sistema foi usado e quaisquer decisões que influenciou por pelo menos 3 anos.", effort: "5-10 horas (equipe)", deadline: "1º de janeiro de 2027" },
+  { article: "6-1-1704", name: "Aviso prévio ao consumidor", desc: "Implantadores devem fornecer aviso claro aos consumidores antes de usar TATD para tomar uma decisão consequencial.", plain: "Antes de a IA tomar uma decisão sobre alguém, informe que ela será usada.", effort: "5-15 horas (equipe)", deadline: "1º de janeiro de 2027" },
+  { article: "6-1-1704", name: "Divulgação pós-adversa (30 dias)", desc: "Dentro de 30 dias de uma decisão adversa, implantadores devem divulgar a decisão, o papel da TATD e os direitos do consumidor.", plain: "Se a IA contribui para uma decisão negativa sobre alguém, você tem 30 dias para informar o que aconteceu, que a IA esteve envolvida e quais direitos a pessoa tem.", effort: "10-20 horas (equipe)", deadline: "1º de janeiro de 2027" },
+  { article: "6-1-1705", name: "Direitos do consumidor", desc: "Consumidores podem solicitar acesso aos seus dados, correção de erros e revisão humana significativa de decisões adversas.", plain: "Pessoas afetadas por decisões de IA podem pedir para ver seus dados, corrigir erros e ter uma revisão humana da decisão.", effort: "15-30 horas (equipe)", deadline: "1º de janeiro de 2027" },
+];
+
+// Helper: get active questions/order/obligations for current jurisdiction
+function getActiveQuestions() {
+  if (activeJurisdiction === "kr") return QUESTIONS_KR;
+  if (activeJurisdiction === "co") return QUESTIONS_CO;
+  return QUESTIONS;
+}
+function getActiveDisplayOrder() {
+  if (activeJurisdiction === "kr") return DISPLAY_ORDER_KR;
+  if (activeJurisdiction === "co") return DISPLAY_ORDER_CO;
+  return DISPLAY_ORDER;
+}
+
 // =====================================================================
 // State (with sessionStorage persistence)
 // =====================================================================
@@ -639,7 +860,7 @@ let assessmentStarted = false;
 function saveProgress() {
   try {
     sessionStorage.setItem("regula_assess", JSON.stringify({
-      currentQuestion, answers, assessmentStarted
+      currentQuestion, answers, assessmentStarted, activeJurisdiction
     }));
   } catch (e) { /* quota or private browsing */ }
 }
@@ -652,6 +873,10 @@ function loadProgress() {
       currentQuestion = data.currentQuestion || 0;
       answers = data.answers || {};
       assessmentStarted = data.assessmentStarted || false;
+      if (data.activeJurisdiction) {
+        activeJurisdiction = data.activeJurisdiction;
+        selectJurisdiction(activeJurisdiction);
+      }
       if (assessmentStarted) {
         document.getElementById("heroSection").style.display = "none";
         document.getElementById("questionnaireSection").style.display = "block";
@@ -677,14 +902,16 @@ function startAssessment() {
 }
 
 function renderQuestion() {
-  const q = QUESTIONS[DISPLAY_ORDER[currentQuestion]];
+  const activeQ = getActiveQuestions();
+  const activeOrder = getActiveDisplayOrder();
+  const q = activeQ[activeOrder[currentQuestion]];
   const existing = answers[q.id] || null;
   const container = document.getElementById("questionContainer");
   const qId = "q-" + q.id;
 
   container.innerHTML = `
     <div class="q-card" role="group" aria-labelledby="${qId}-text">
-      <div class="q-number" aria-hidden="true">PERGUNTA ${currentQuestion + 1} DE ${DISPLAY_ORDER.length}</div>
+      <div class="q-number" aria-hidden="true">PERGUNTA ${currentQuestion + 1} DE ${activeOrder.length}</div>
       <div class="q-text" id="${qId}-text">${q.text}</div>
       <div class="q-help" id="${qId}-help">${q.help}</div>
       <div class="q-article">${q.article}</div>
@@ -703,16 +930,16 @@ function renderQuestion() {
   }
 
   // Update progress
-  const pct = Math.round((currentQuestion / DISPLAY_ORDER.length) * 100);
+  const pct = Math.round((currentQuestion / activeOrder.length) * 100);
   document.getElementById("progressBar").style.width = pct + "%";
   document.getElementById("progressPct").textContent = pct + "%";
-  document.getElementById("progressText").textContent = `Pergunta ${currentQuestion + 1} de ${DISPLAY_ORDER.length}`;
+  document.getElementById("progressText").textContent = `Pergunta ${currentQuestion + 1} de ${activeOrder.length}`;
   document.getElementById("progressWrap").setAttribute("aria-valuenow", pct);
 
   // Button states
   document.getElementById("prevBtn").disabled = currentQuestion === 0;
   document.getElementById("nextBtn").disabled = !existing;
-  document.getElementById("nextBtn").textContent = currentQuestion === DISPLAY_ORDER.length - 1 ? "Ver resultados" : "Próxima";
+  document.getElementById("nextBtn").textContent = currentQuestion === activeOrder.length - 1 ? "Ver resultados" : "Próxima";
 
   // Focus management: move focus to the question text for screen readers
   const qText = document.getElementById(qId + "-text");
@@ -720,7 +947,9 @@ function renderQuestion() {
 }
 
 function answer(value, btn) {
-  const q = QUESTIONS[DISPLAY_ORDER[currentQuestion]];
+  const activeQ = getActiveQuestions();
+  const activeOrder = getActiveDisplayOrder();
+  const q = activeQ[activeOrder[currentQuestion]];
   answers[q.id] = value;
 
   // Update button states visually and aria-pressed
@@ -738,7 +967,7 @@ function answer(value, btn) {
 }
 
 function nextQuestion() {
-  if (currentQuestion < DISPLAY_ORDER.length - 1) {
+  if (currentQuestion < getActiveDisplayOrder().length - 1) {
     currentQuestion++;
     renderQuestion();
     saveProgress();
@@ -760,6 +989,12 @@ function prevQuestion() {
 // =====================================================================
 
 function calculateResults() {
+  if (activeJurisdiction === "kr") return calculateResultsKR();
+  if (activeJurisdiction === "co") return calculateResultsCO();
+  return calculateResultsEU();
+}
+
+function calculateResultsEU() {
   let adjustment = 0;
   let prohibitedSignals = [];
   let highRiskSignals = [];
@@ -837,6 +1072,99 @@ function calculateResults() {
   return { tier, tierName, tierDesc, tierClass, obligations, score, gapScores, prohibitedSignals, highRiskSignals, exemptionSignals };
 }
 
+function calculateResultsKR() {
+  let adjustment = 0;
+  let highImpactSignals = [];
+  let highPerformanceSignals = [];
+  let transparencySignals = [];
+  let gapSignals = {};
+
+  for (const q of QUESTIONS_KR) {
+    const a = answers[q.id] || "unsure";
+    adjustment += q.weight[a] || 0;
+    if (q.signal === "high_impact" && a === "yes") highImpactSignals.push(q.id);
+    if (q.signal === "high_performance" && a === "yes") highPerformanceSignals.push(q.id);
+    if (q.signal === "transparency" && (a === "no" || a === "yes")) transparencySignals.push(q.id);
+    if (q.signal === "gap_assessment") gapSignals[q.id] = a;
+  }
+
+  const score = Math.max(0, Math.min(100, 50 + Math.round(adjustment * 0.55)));
+  let tier, tierName, tierDesc, tierClass, obligations;
+
+  if (highImpactSignals.length > 0 && score >= 50) {
+    tier = "high_impact";
+    tierName = "Sistema de IA de alto impacto";
+    tierDesc = "Seu sistema opera em um domínio classificado como alto impacto pelo Artigo 33. Você deve cumprir obrigações de gestão de riscos, documentação, supervisão humana, transparência e explicabilidade sob os Artigos 31 e 34. Nota: a Coreia está em período de carência até 2026 — a aplicação é diferida exceto para danos graves. Penalidades: até KRW 30 milhões (~USD 20.700) ou 3 anos de prisão.";
+    tierClass = "tier-high";
+    obligations = OBLIGATIONS_KR;
+  } else if (highPerformanceSignals.length > 0) {
+    tier = "high_performance";
+    tierName = "Sistema de IA de alto desempenho";
+    tierDesc = "Seu sistema excede o limiar de 10^26 FLOPs sob o Artigo 32 e tem obrigações adicionais de segurança, incluindo avaliação e relato de incidentes.";
+    tierClass = "tier-high";
+    obligations = OBLIGATIONS_KR;
+  } else if (transparencySignals.length > 0) {
+    tier = "general";
+    tierName = "Sistema de IA geral";
+    tierDesc = "Seu sistema não é classificado como alto impacto, mas obrigações de transparência sob o Artigo 31 se aplicam. Os usuários devem ser notificados quando interagem com IA, e conteúdo gerado por IA deve ser rotulado.";
+    tierClass = "tier-limited";
+    obligations = KR_TRANSPARENCY_OBLIGATIONS;
+  } else {
+    tier = "general";
+    tierName = "Sistema de IA geral";
+    tierDesc = "Nenhuma obrigação específica de alto impacto ou alto desempenho se aplica sob a Lei Básica de IA da Coreia. Obrigações gerais de boas práticas se aplicam a todos os operadores de IA.";
+    tierClass = "tier-minimal";
+    obligations = [];
+  }
+
+  const gapScores = {
+    34: gapSignals.kr_risk_management === "yes" ? 60 : (gapSignals.kr_risk_management === "unsure" ? 30 : 10),
+    "34_explain": gapSignals.kr_explanation === "yes" ? 60 : (gapSignals.kr_explanation === "unsure" ? 30 : 10),
+    31: answers.kr_transparency === "yes" ? 70 : 15,
+  };
+
+  return { tier, tierName, tierDesc, tierClass, obligations, score, gapScores, prohibitedSignals: [], highRiskSignals: highImpactSignals, exemptionSignals: [] };
+}
+
+function calculateResultsCO() {
+  let adjustment = 0;
+  let coveredSignals = [];
+  let gapSignals = {};
+
+  for (const q of QUESTIONS_CO) {
+    const a = answers[q.id] || "unsure";
+    adjustment += q.weight[a] || 0;
+    if (q.signal === "covered" && a === "yes") coveredSignals.push(q.id);
+    if (q.signal === "gap_assessment") gapSignals[q.id] = a;
+  }
+
+  const score = Math.max(0, Math.min(100, 50 + Math.round(adjustment * 0.55)));
+  let tier, tierName, tierDesc, tierClass, obligations;
+
+  if (coveredSignals.length >= 2 && score >= 50) {
+    tier = "covered";
+    tierName = "TATD abrangida";
+    tierDesc = "Seu sistema parece ser uma tecnologia automatizada de tomada de decisão (TATD) abrangida pelo Colorado SB 26-189. Obrigações de desenvolvedor e implantador se aplicam, incluindo documentação, avisos ao consumidor, divulgação pós-adversa e direitos do consumidor. Vigência em 1º de janeiro de 2027 com período de correção de 60 dias. Penalidades de até $20.000 por violação, aplicadas pelo Procurador-Geral do Colorado.";
+    tierClass = "tier-high";
+    obligations = OBLIGATIONS_CO;
+  } else {
+    tier = "not_covered";
+    tierName = "TATD não abrangida";
+    tierDesc = "Seu sistema não parece atender à definição de TATD abrangida pelo Colorado SB 26-189. Esta lei se aplica apenas a sistemas de IA que processam dados pessoais e tomam ou influenciam materialmente decisões consequenciais em domínios específicos.";
+    tierClass = "tier-minimal";
+    obligations = [];
+  }
+
+  const gapScores = {
+    "6-1-1702": 20,
+    "6-1-1703": 20,
+    "6-1-1704": gapSignals.co_pre_notice === "yes" ? 60 : (gapSignals.co_pre_notice === "unsure" ? 30 : 10),
+    "6-1-1705": gapSignals.co_consumer_rights === "yes" ? 60 : (gapSignals.co_consumer_rights === "unsure" ? 30 : 10),
+  };
+
+  return { tier, tierName, tierDesc, tierClass, obligations, score, gapScores, prohibitedSignals: [], highRiskSignals: coveredSignals, exemptionSignals: [] };
+}
+
 // =====================================================================
 // Results rendering
 // =====================================================================
@@ -871,7 +1199,7 @@ function showResults() {
             <div class="obl-deadline">${o.deadline}</div>
           </div>
           <div class="obl-desc">${o.desc}</div>
-          ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>Em linguagem simples:</strong> ${o.plain} <a href="https://artificialintelligenceact.eu/article/${o.article}/" target="_blank" rel="noopener" style="color:var(--accent);font-size:0.75rem;white-space:nowrap;">[Ler Artigo ${o.article}]</a></div>` : ""}
+          ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>Em linguagem simples:</strong> ${o.plain}${activeJurisdiction === "eu" ? ` <a href="https://artificialintelligenceact.eu/article/${o.article}/" target="_blank" rel="noopener" style="color:var(--accent);font-size:0.75rem;white-space:nowrap;">[Ler Artigo ${o.article}]</a>` : ` <span style="font-size:0.75rem;color:var(--text-muted);">[Artigo ${o.article}]</span>`}</div>` : ""}
           ${results.tier === "high_risk" || results.tier === "high_risk_exempt" ? `
             <div class="gap-bar-wrap">
               <span style="font-size:0.75rem;color:var(--text-muted);min-width:80px;">Prontidão:</span>
@@ -914,6 +1242,8 @@ function showResults() {
 }
 
 function getNextSteps(results) {
+  if (activeJurisdiction === "kr") return getNextStepsKR(results);
+  if (activeJurisdiction === "co") return getNextStepsCO(results);
   if (results.tier === "prohibited") {
     return [
       { title: "Obtenha aconselhamento jurídico imediatamente", desc: "As proibições do Artigo 5 preveem a faixa de penalidade mais alta. Um advogado qualificado precisa avaliar se seu sistema está dentro do escopo ou se qualifica para uma exceção." },
@@ -945,16 +1275,51 @@ function getNextSteps(results) {
   ];
 }
 
+function getNextStepsKR(results) {
+  if (results.tier === "high_impact" || results.tier === "high_performance") {
+    return [
+      { title: "Compartilhe esta avaliação com sua equipe", desc: "Use o link compartilhável ou imprima esta página como PDF. Um responsável pela conformidade e um contato jurídico devem revisar estes resultados." },
+      { title: "Prepare um plano de gestão de riscos", desc: "O Artigo 34 exige um plano documentado de gestão de riscos. Esta é uma obrigação de esforço ('empenhar-se'), mas conformidade documentada é fortemente recomendada." },
+      { title: "Implemente a capacidade de explicabilidade", desc: "O Artigo 34 exige que operadores forneçam explicações para resultados gerados por IA dentro dos limites técnicos. Garanta que seu sistema possa explicar seus critérios-chave de decisão." },
+      { title: "Nota: período de carência até 2026", desc: "O MSIT está diferindo a aplicação até 2026, exceto para danos graves. Use este tempo para construir conformidade, não para atrasar." },
+      { title: "Para sua equipe de desenvolvimento", desc: "Seus desenvolvedores podem analisar o código-fonte usando a CLI do Regula: <code>pipx install regula-ai</code>, depois <code>regula check . --jurisdictions korea</code>" }
+    ];
+  }
+  return [
+    { title: "Adicione avisos de transparência", desc: "O Artigo 31 exige que os usuários saibam que estão interagindo com IA. Rotule conteúdo gerado por IA adequadamente." },
+    { title: "Reavalie se o escopo mudar", desc: "Se seu sistema começar a operar em um domínio de alto impacto, execute esta avaliação novamente." }
+  ];
+}
+
+function getNextStepsCO(results) {
+  if (results.tier === "covered") {
+    return [
+      { title: "Compartilhe esta avaliação com sua equipe", desc: "Tanto desenvolvedores quanto implantadores têm obrigações. Certifique-se de que ambos os lados da relação entendam o que é exigido." },
+      { title: "Implemente o aviso prévio ao consumidor", desc: "A Seção 6-1-1704 exige aviso claro aos consumidores antes de a TATD ser usada para decisões consequenciais." },
+      { title: "Construa o processo de divulgação pós-adversa", desc: "Dentro de 30 dias de uma decisão adversa, os consumidores devem ser notificados da decisão, do papel da TATD e de seus direitos." },
+      { title: "Garanta mecanismos de direitos do consumidor", desc: "A Seção 6-1-1705 exige capacidades de acesso, correção e revisão humana." },
+      { title: "Nota: vigência em 1º de janeiro de 2027", desc: "A lei inclui um período de correção de 60 dias (expira em 2030). Use o prazo para construir conformidade." },
+      { title: "Para sua equipe de desenvolvimento", desc: "Seus desenvolvedores podem analisar o código-fonte usando a CLI do Regula: <code>pipx install regula-ai</code>, depois <code>regula check . --jurisdictions colorado</code>" }
+    ];
+  }
+  return [
+    { title: "Nenhuma obrigação específica se aplica", desc: "Seu sistema não parece ser TATD abrangida pelo Colorado SB 26-189." },
+    { title: "Reavalie se o escopo mudar", desc: "Se seu sistema começar a tomar decisões consequenciais sobre indivíduos em domínios abrangidos, execute esta avaliação novamente." }
+  ];
+}
+
 // =====================================================================
 // URL encoding (stateless, like EuroComply)
 // =====================================================================
 
 function encodeAnswers() {
-  const parts = QUESTIONS.map(q => {
+  const activeQ = getActiveQuestions();
+  const parts = activeQ.map(q => {
     const a = answers[q.id];
     return a === "yes" ? "y" : a === "no" ? "n" : "u";
   });
-  return "2" + parts.join("");  // v2: Q8 polarity reversed
+  if (activeJurisdiction === "eu") return "2" + parts.join("");  // v2: Q8 polarity reversed
+  return parts.join("");
 }
 
 function decodeAnswers(code) {
@@ -964,14 +1329,15 @@ function decodeAnswers(code) {
     version = 2;
     raw = code.slice(1);
   }
+  const activeQ = getActiveQuestions();
   // Accept URLs from older versions with fewer questions (pad with "u" for unsure)
-  if (raw.length > QUESTIONS.length) return null;
-  while (raw.length < QUESTIONS.length) raw += "u";
+  if (raw.length > activeQ.length) return null;
+  while (raw.length < activeQ.length) raw += "u";
   const decoded = {};
-  QUESTIONS.forEach((q, i) => {
+  activeQ.forEach((q, i) => {
     let c = raw[i];
-    // v1 URLs had Q8 (public_facing, index 7) with opposite polarity
-    if (version === 1 && i === 7) {
+    // v1 URLs had Q8 (public_facing, index 7) with opposite polarity — EU only
+    if (version === 1 && i === 7 && activeJurisdiction === "eu") {
       c = c === "y" ? "n" : c === "n" ? "y" : c;
     }
     decoded[q.id] = c === "y" ? "yes" : c === "n" ? "no" : "unsure";
@@ -981,7 +1347,8 @@ function decodeAnswers(code) {
 
 function copyShareLink() {
   const code = encodeAnswers();
-  const url = window.location.origin + window.location.pathname + "?r=" + code;
+  const jurParam = activeJurisdiction !== "eu" ? "&j=" + activeJurisdiction : "";
+  const url = window.location.origin + window.location.pathname + "?r=" + code + jurParam;
   const input = document.getElementById("shareUrl");
   input.value = url;
   document.getElementById("shareSection").style.display = "block";
@@ -993,8 +1360,10 @@ function exportJSON() {
   const results = calculateResults();
   const data = {
     tool: "Regula Web Assessment",
-    version: "1.0",
+    version: "1.1",
     locale: "pt-BR",
+    jurisdiction: activeJurisdiction,
+    jurisdiction_name: JURISDICTION_INFO[activeJurisdiction].name,
     date: new Date().toISOString(),
     disclaimer: "Isto não é aconselhamento jurídico. Avaliação baseada em respostas autorreportadas.",
     tier: results.tier,
@@ -1020,6 +1389,8 @@ function resetAssessment() {
   currentQuestion = 0;
   answers = {};
   assessmentStarted = false;
+  activeJurisdiction = "eu";
+  selectJurisdiction("eu");
   document.getElementById("resultsSection").classList.remove("active");
   document.getElementById("heroSection").style.display = "block";
   document.getElementById("questionnaireSection").style.display = "none";
@@ -1390,6 +1761,14 @@ function exportScanJSON() {
 
 (function init() {
   const params = new URLSearchParams(window.location.search);
+
+  // Parse jurisdiction from URL
+  const jurParam = params.get("j");
+  if (jurParam && JURISDICTION_INFO[jurParam]) {
+    activeJurisdiction = jurParam;
+    selectJurisdiction(jurParam);
+  }
+
   const code = params.get("r");
   if (code) {
     const decoded = decodeAnswers(code);

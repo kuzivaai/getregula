@@ -1,0 +1,171 @@
+jurisdiction_id: eu_ai_act
+name: EU AI Act
+law_reference: "Regulation (EU) 2024/1689"
+effective_date: "2024-08-01"
+status: "In force (phased enforcement)"
+
+penalties:
+  prohibited: "EUR 35 million or 7% global turnover"
+  high_risk: "EUR 15 million or 3% global turnover"
+  range: "Up to EUR 35 million or 7% global turnover"
+
+deadlines:
+  prohibited: "2025-02-02"
+  transparency: "2026-08-02"
+  high_risk_annex_iii: "2027-12-02"
+  high_risk_annex_i: "2028-08-02"
+  default: "2027-12-02"
+  omnibus_note: "Annex III deadline deferred by Omnibus (EP approved 16 Jun 2026, pending Council)"
+
+risk_tiers:
+  - prohibited
+  - high_risk
+  - high_risk_exempt
+  - limited_risk
+  - minimal_risk
+
+domain_mappings:
+  biometrics:
+    risk_level: high_risk
+    articles: ["9", "10", "11", "12", "13", "14", "15"]
+    category: "Annex III, Category 1"
+    obligations:
+      - {article: "9", name: "Risk management system"}
+      - {article: "10", name: "Data governance"}
+      - {article: "11", name: "Technical documentation"}
+      - {article: "12", name: "Record-keeping"}
+      - {article: "13", name: "Transparency"}
+      - {article: "14", name: "Human oversight"}
+      - {article: "15", name: "Accuracy, robustness, cybersecurity"}
+  employment:
+    risk_level: high_risk
+    articles: ["9", "10", "11", "12", "13", "14", "15"]
+    category: "Annex III, Category 4"
+    obligations:
+      - {article: "9", name: "Risk management system"}
+      - {article: "10", name: "Data governance"}
+      - {article: "11", name: "Technical documentation"}
+      - {article: "12", name: "Record-keeping"}
+      - {article: "13", name: "Transparency"}
+      - {article: "14", name: "Human oversight"}
+      - {article: "15", name: "Accuracy, robustness, cybersecurity"}
+  credit:
+    risk_level: high_risk
+    articles: ["9", "10", "11", "12", "13", "14", "15"]
+    category: "Annex III, Category 5(b)"
+    obligations:
+      - {article: "9", name: "Risk management system"}
+      - {article: "10", name: "Data governance"}
+      - {article: "11", name: "Technical documentation"}
+      - {article: "12", name: "Record-keeping"}
+      - {article: "13", name: "Transparency"}
+      - {article: "14", name: "Human oversight"}
+      - {article: "15", name: "Accuracy, robustness, cybersecurity"}
+  healthcare:
+    risk_level: high_risk
+    articles: ["9", "10", "11", "12", "13", "14", "15"]
+    category: "Medical Devices / Annex III"
+    obligations:
+      - {article: "9", name: "Risk management system"}
+      - {article: "10", name: "Data governance"}
+      - {article: "11", name: "Technical documentation"}
+      - {article: "12", name: "Record-keeping"}
+      - {article: "13", name: "Transparency"}
+      - {article: "14", name: "Human oversight"}
+      - {article: "15", name: "Accuracy, robustness, cybersecurity"}
+  education:
+    risk_level: high_risk
+    articles: ["9", "10", "11", "12", "13", "14", "15"]
+    category: "Annex III, Category 3"
+    obligations:
+      - {article: "9", name: "Risk management system"}
+      - {article: "10", name: "Data governance"}
+      - {article: "11", name: "Technical documentation"}
+      - {article: "12", name: "Record-keeping"}
+      - {article: "13", name: "Transparency"}
+      - {article: "14", name: "Human oversight"}
+      - {article: "15", name: "Accuracy, robustness, cybersecurity"}
+  law_enforcement:
+    risk_level: high_risk
+    articles: ["9", "10", "11", "12", "13", "14", "15"]
+    category: "Annex III, Category 6"
+    obligations:
+      - {article: "9", name: "Risk management system"}
+      - {article: "10", name: "Data governance"}
+      - {article: "11", name: "Technical documentation"}
+      - {article: "12", name: "Record-keeping"}
+      - {article: "13", name: "Transparency"}
+      - {article: "14", name: "Human oversight"}
+      - {article: "15", name: "Accuracy, robustness, cybersecurity"}
+  migration:
+    risk_level: high_risk
+    articles: ["9", "10", "11", "12", "13", "14", "15"]
+    category: "Annex III, Category 7"
+    obligations:
+      - {article: "9", name: "Risk management system"}
+      - {article: "10", name: "Data governance"}
+      - {article: "11", name: "Technical documentation"}
+      - {article: "12", name: "Record-keeping"}
+      - {article: "13", name: "Transparency"}
+      - {article: "14", name: "Human oversight"}
+      - {article: "15", name: "Accuracy, robustness, cybersecurity"}
+  justice:
+    risk_level: high_risk
+    articles: ["9", "10", "11", "12", "13", "14", "15"]
+    category: "Annex III, Category 8"
+    obligations:
+      - {article: "9", name: "Risk management system"}
+      - {article: "10", name: "Data governance"}
+      - {article: "11", name: "Technical documentation"}
+      - {article: "12", name: "Record-keeping"}
+      - {article: "13", name: "Transparency"}
+      - {article: "14", name: "Human oversight"}
+      - {article: "15", name: "Accuracy, robustness, cybersecurity"}
+  essential_services:
+    risk_level: high_risk
+    articles: ["9", "10", "11", "12", "13", "14", "15"]
+    category: "Annex III, Category 5"
+    obligations:
+      - {article: "9", name: "Risk management system"}
+      - {article: "10", name: "Data governance"}
+      - {article: "11", name: "Technical documentation"}
+      - {article: "12", name: "Record-keeping"}
+      - {article: "13", name: "Transparency"}
+      - {article: "14", name: "Human oversight"}
+      - {article: "15", name: "Accuracy, robustness, cybersecurity"}
+  critical_infrastructure:
+    risk_level: high_risk
+    articles: ["9", "10", "11", "12", "13", "14", "15"]
+    category: "Annex III, Category 2"
+    obligations:
+      - {article: "9", name: "Risk management system"}
+      - {article: "10", name: "Data governance"}
+      - {article: "11", name: "Technical documentation"}
+      - {article: "12", name: "Record-keeping"}
+      - {article: "13", name: "Transparency"}
+      - {article: "14", name: "Human oversight"}
+      - {article: "15", name: "Accuracy, robustness, cybersecurity"}
+  insurance:
+    risk_level: high_risk
+    articles: ["9", "10", "11", "12", "13", "14", "15"]
+    category: "Annex III, Category 5(c)"
+    obligations:
+      - {article: "9", name: "Risk management system"}
+      - {article: "10", name: "Data governance"}
+      - {article: "11", name: "Technical documentation"}
+      - {article: "12", name: "Record-keeping"}
+      - {article: "13", name: "Transparency"}
+      - {article: "14", name: "Human oversight"}
+      - {article: "15", name: "Accuracy, robustness, cybersecurity"}
+  safety_components:
+    risk_level: high_risk
+    articles: ["9", "10", "11", "12", "13", "14", "15"]
+    category: "Annex I safety component"
+    obligations:
+      - {article: "9", name: "Risk management system"}
+      - {article: "10", name: "Data governance"}
+      - {article: "11", name: "Technical documentation"}
+      - {article: "12", name: "Record-keeping"}
+      - {article: "13", name: "Transparency"}
+      - {article: "14", name: "Human oversight"}
+      - {article: "15", name: "Accuracy, robustness, cybersecurity"}

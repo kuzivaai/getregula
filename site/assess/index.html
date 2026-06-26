@@ -8,8 +8,8 @@
       html, body { background: #070711; color: #e2e2f0; margin: 0; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
     </style>
     <meta name="theme-color" content="#070711">
-    <title>EU AI Act Assessment: Does It Apply to You? | Regula</title>
-    <meta name="description" content="Free EU AI Act risk assessment. Answer 15 questions to find your risk tier, legal obligations, and what to do next. Development teams can also scan code against 627 detection patterns. No signup, no install.">
+    <title>AI Regulation Assessment: EU AI Act, South Korea, Colorado | Regula</title>
+    <meta name="description" content="Free AI regulation risk assessment. Check your obligations under the EU AI Act, South Korea AI Basic Act, or Colorado SB 26-189. Answer questions to find your risk tier and what to do next. No signup, no install.">
     <meta name="author" content="Kuziva Muzondo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://getregula.com/assess/">
@@ -302,14 +302,23 @@
 
   <!-- HERO -->
   <div class="hero" id="heroSection">
-    <h1>Does the EU AI Act <span>apply to you?</span></h1>
-    <p>Find out in under 5 minutes. Answer 15 questions about your AI system to learn your risk tier, your legal obligations, and what to do next. Nothing leaves your browser.</p>
+    <h1>Does AI regulation <span>apply to you?</span></h1>
+    <p>Choose your jurisdiction and answer a few questions to learn your risk classification, legal obligations, and what to do next. Nothing leaves your browser.</p>
     <div class="hero-stats">
-      <span>15 questions, under 5 minutes</span>
+      <span>Under 5 minutes</span>
       <span>Instant risk classification</span>
       <span>Nothing leaves your browser</span>
     </div>
-    <div style="margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <div style="margin-top:24px;">
+      <label style="font-size:0.85rem;color:var(--text-dim);display:block;margin-bottom:8px;">Which regulation applies to you?</label>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+        <button type="button" class="jurisdiction-btn selected" onclick="selectJurisdiction('eu')" id="jur-eu" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border-active);background:var(--accent-dim);color:var(--accent);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">EU AI Act</button>
+        <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('kr')" id="jur-kr" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">South Korea</button>
+        <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('co')" id="jur-co" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Colorado</button>
+      </div>
+      <div id="jurisdictionInfo" style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);"></div>
+    </div>
+    <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <button type="button" class="btn btn-primary" onclick="startAssessment()" style="padding:14px 36px;font-size:1rem;">Start assessment</button>
     </div>
     <div style="margin-top:16px;font-size:0.85rem;color:var(--text-dim);">Development teams can also <button type="button" onclick="startScanner()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">scan source code</button> against 627 detection patterns.</div>
@@ -428,6 +437,183 @@
 // Regula Web Assessment — ported from scripts/questionnaire.py
 // All logic runs client-side. Nothing leaves the browser.
 // =====================================================================
+
+// =====================================================================
+// Multi-jurisdiction support
+// =====================================================================
+
+let activeJurisdiction = "eu";
+
+const JURISDICTION_INFO = {
+  eu: { name: "EU AI Act", law: "Regulation (EU) 2024/1689", status: "In force (phased enforcement)", questionCount: 15 },
+  kr: { name: "South Korea AI Basic Act", law: "Act No. 20738", status: "In force (grace period through 2026)", questionCount: 9 },
+  co: { name: "Colorado SB 26-189", law: "C.R.S. Title 6, Article 1, Part 17", status: "Enacted, effective 1 January 2027", questionCount: 8 },
+};
+
+function selectJurisdiction(jur) {
+  activeJurisdiction = jur;
+  document.querySelectorAll(".jurisdiction-btn").forEach(b => {
+    b.style.border = "1px solid var(--border)";
+    b.style.background = "transparent";
+    b.style.color = "var(--text-dim)";
+    b.classList.remove("selected");
+  });
+  const btn = document.getElementById("jur-" + jur);
+  btn.style.border = "1px solid var(--border-active)";
+  btn.style.background = "var(--accent-dim)";
+  btn.style.color = "var(--accent)";
+  btn.classList.add("selected");
+
+  const info = JURISDICTION_INFO[jur];
+  document.getElementById("jurisdictionInfo").textContent =
+    info.law + " — " + info.status + " — " + info.questionCount + " questions";
+}
+
+// Korea questions (mapped from south-korea-mapping.md research)
+const QUESTIONS_KR = [
+  {
+    id: "kr_scope",
+    text: "Does this system affect users in South Korea?",
+    help: "The AI Basic Act applies to AI systems operated in South Korea or affecting persons in South Korea (Article 4).",
+    article: "Article 4",
+    weight: { yes: 10, no: -10, unsure: 5 },
+    signal: "jurisdiction"
+  },
+  {
+    id: "kr_high_impact_domain",
+    text: "Does this system operate in any of these domains: biometric identification, criminal investigation, education assessment, employment/hiring, credit evaluation, healthcare, energy/water/nuclear infrastructure, government services affecting welfare or taxes, or transport operations?",
+    help: "Article 33 defines high-impact AI as systems operating in domains that affect life, physical safety, or fundamental rights. These domains trigger additional obligations under Article 34.",
+    article: "Article 33",
+    weight: { yes: 25, no: -15, unsure: 10 },
+    signal: "high_impact"
+  },
+  {
+    id: "kr_high_performance",
+    text: "Was this system trained with 10^26 FLOPs or more of compute?",
+    help: "Article 32 defines high-performance AI systems by their training compute. Systems above this threshold have additional safety obligations including evaluation and incident reporting.",
+    article: "Article 32",
+    weight: { yes: 20, no: -5, unsure: 5 },
+    signal: "high_performance"
+  },
+  {
+    id: "kr_transparency",
+    text: "Are users notified they are interacting with an AI system?",
+    help: "Article 31 requires AI operators to notify users that they are interacting with AI. This applies to all AI systems, not just high-impact ones.",
+    article: "Article 31",
+    weight: { yes: -5, no: 10, unsure: 5 },
+    signal: "transparency"
+  },
+  {
+    id: "kr_generative",
+    text: "Does this system generate content (text, images, audio, or video)?",
+    help: "Article 31 requires generative AI outputs to be labelled as AI-generated content.",
+    article: "Article 31",
+    weight: { yes: 10, no: -5, unsure: 5 },
+    signal: "transparency"
+  },
+  {
+    id: "kr_explanation",
+    text: "Can affected persons request an explanation of AI decisions that affect them?",
+    help: "Article 34 requires operators of high-impact AI to provide explanations for AI-generated results within technical limits, including key decision criteria and an overview of training data.",
+    article: "Article 34",
+    weight: { yes: -5, no: 10, unsure: 5 },
+    signal: "gap_assessment"
+  },
+  {
+    id: "kr_risk_management",
+    text: "Is there a documented risk management plan for this AI system?",
+    help: "Article 34 requires operators of high-impact AI to establish risk management plans covering documentation, human oversight, and ongoing monitoring.",
+    article: "Article 34",
+    weight: { yes: -5, no: 5, unsure: 0 },
+    signal: "gap_assessment"
+  },
+  {
+    id: "kr_human_oversight",
+    text: "Is there human oversight for decisions made by this AI system?",
+    help: "Article 34 requires human oversight measures for high-impact AI systems.",
+    article: "Article 34",
+    weight: { yes: -5, no: 10, unsure: 5 },
+    signal: "gap_assessment"
+  },
+  {
+    id: "kr_representative",
+    text: "If you are a foreign operator: do you have a domestic representative in South Korea?",
+    help: "Article 36 requires foreign AI operators meeting certain thresholds to appoint a domestic representative in South Korea.",
+    article: "Article 36",
+    weight: { yes: -5, no: 5, unsure: 0 },
+    signal: "gap_assessment"
+  },
+];
+const DISPLAY_ORDER_KR = [0,1,2,3,4,5,6,7,8];
+
+// Colorado questions (mapped from colorado-mapping.md research)
+const QUESTIONS_CO = [
+  {
+    id: "co_scope",
+    text: "Does this system process personal data of Colorado residents?",
+    help: "Colorado SB 26-189 applies to developers and deployers of automated decision-making technology (ADMT) that processes personal data of Colorado residents.",
+    article: "Section 6-1-1701",
+    weight: { yes: 10, no: -10, unsure: 5 },
+    signal: "jurisdiction"
+  },
+  {
+    id: "co_decisions",
+    text: "Does this system make or materially influence decisions about individuals?",
+    help: "The law applies to ADMT that makes or is a material factor in consequential decisions. Incidental or trivial uses are excluded.",
+    article: "Section 6-1-1701",
+    weight: { yes: 25, no: -15, unsure: 10 },
+    signal: "covered"
+  },
+  {
+    id: "co_domain",
+    text: "Does it operate in a covered domain: employment, education, financial/lending, housing, insurance, healthcare, or essential government services?",
+    help: "Colorado covers 7 specific domains where automated decisions about individuals trigger disclosure obligations.",
+    article: "Section 6-1-1701",
+    weight: { yes: 25, no: -15, unsure: 10 },
+    signal: "covered"
+  },
+  {
+    id: "co_material",
+    text: "Is the AI output a non-trivial factor in the decision outcome?",
+    help: "The system must materially influence the decision. If the AI output is incidental or trivial to the outcome, it may not be covered.",
+    article: "Section 6-1-1701",
+    weight: { yes: 15, no: -10, unsure: 5 },
+    signal: "covered"
+  },
+  {
+    id: "co_role",
+    text: "Are you the developer (built or trained the system) rather than the deployer (using it to make decisions)?",
+    help: "Colorado assigns different obligations to developers and deployers. Developers must provide documentation; deployers must provide consumer notices and handle adverse outcomes. Answer 'Yes' if you are the developer, 'No' if you are the deployer, 'Not sure' if both.",
+    article: "Sections 6-1-1702 to 6-1-1705",
+    weight: { yes: 5, no: 5, unsure: 5 },
+    signal: "gap_assessment"
+  },
+  {
+    id: "co_pre_notice",
+    text: "Is a pre-use notice provided to consumers before the ADMT is used?",
+    help: "Section 6-1-1704 requires deployers to provide clear notice to consumers before using ADMT to make a consequential decision.",
+    article: "Section 6-1-1704",
+    weight: { yes: -5, no: 10, unsure: 5 },
+    signal: "gap_assessment"
+  },
+  {
+    id: "co_adverse",
+    text: "Is there a process for disclosing adverse outcomes to consumers within 30 days?",
+    help: "Section 6-1-1704 requires deployers to notify consumers within 30 days of an adverse consequential decision, including a description of the decision, the ADMT's role, and consumer rights.",
+    article: "Section 6-1-1704",
+    weight: { yes: -5, no: 10, unsure: 5 },
+    signal: "gap_assessment"
+  },
+  {
+    id: "co_consumer_rights",
+    text: "Can consumers request access to their data, correction, and meaningful human review?",
+    help: "Section 6-1-1705 grants consumers the right to access data used in the decision, request correction, and obtain meaningful human review of adverse decisions.",
+    article: "Section 6-1-1705",
+    weight: { yes: -5, no: 10, unsure: 5 },
+    signal: "gap_assessment"
+  },
+];
+const DISPLAY_ORDER_CO = [0,1,2,3,4,5,6,7];
 
 // QUESTIONS array: positions 0-11 are the original 12 questions (stable for URL encoding).
 // Positions 12-14 are new questions appended to preserve backward compatibility.
@@ -628,6 +814,41 @@ const LIMITED_RISK_OBLIGATIONS = [
   }
 ];
 
+// Korea obligations
+const OBLIGATIONS_KR = [
+  { article: 34, name: "Risk management plan", desc: "Operators of high-impact AI must establish and maintain a risk management plan covering the AI system lifecycle.", plain: "You need a documented plan for identifying and managing risks from your AI system. This is an effort-based obligation ('endeavour to').", effort: "20-40 hours (team)", deadline: "In force (grace period through 2026)" },
+  { article: 34, name: "Documentation and recordkeeping", desc: "Maintain documentation of the AI system's design, development, and operational processes.", plain: "Keep records of how the system was built, what data it uses, and how it makes decisions.", effort: "15-30 hours (team)", deadline: "In force (grace period through 2026)" },
+  { article: 34, name: "Human oversight", desc: "Implement human oversight measures for high-impact AI systems.", plain: "A human must be able to monitor and intervene in the AI system's decisions.", effort: "10-30 hours (team)", deadline: "In force (grace period through 2026)" },
+  { article: 34, name: "Explainability of AI decisions", desc: "Operators must provide explanations for AI-generated results within technical limits, including key decision criteria and an overview of training data (Article 34).", plain: "When your AI makes a decision about someone, you must be able to explain why — including what factors drove the decision and what data the system was trained on.", effort: "10-25 hours (team)", deadline: "In force (grace period through 2026)" },
+  { article: 31, name: "Transparency notification", desc: "Users must be notified when interacting with AI. Generative AI content must be labelled.", plain: "Tell people they are interacting with AI, and label AI-generated content as such.", effort: "5-15 hours (team)", deadline: "In force (grace period through 2026)" },
+];
+
+const KR_TRANSPARENCY_OBLIGATIONS = [
+  { article: 31, name: "AI interaction notification", desc: "Users must be informed they are interacting with an AI system.", plain: "If someone talks to your AI, tell them it is AI.", effort: "5-10 hours (team)", deadline: "In force" },
+  { article: 31, name: "Generative content labelling", desc: "AI-generated content (text, image, audio, video) must be labelled as such.", plain: "Label AI-created content so people know it was not made by a human.", effort: "5-10 hours (team)", deadline: "In force" },
+];
+
+// Colorado obligations
+const OBLIGATIONS_CO = [
+  { article: "6-1-1702", name: "Developer documentation", desc: "Developers must provide deployers with documentation covering intended uses, training data categories, known limitations, and instructions for use.", plain: "If you built the AI, you must give users a clear description of what it does, what data trained it, and what it cannot do.", effort: "15-30 hours (team)", deadline: "1 January 2027" },
+  { article: "6-1-1703", name: "Record retention (3 years)", desc: "Both developers and deployers must retain records related to ADMT for at least 3 years.", plain: "Keep records of how the system was used and any decisions it influenced for at least 3 years.", effort: "5-10 hours (team)", deadline: "1 January 2027" },
+  { article: "6-1-1704", name: "Pre-use consumer notice", desc: "Deployers must provide clear notice to consumers before using ADMT to make a consequential decision.", plain: "Before the AI makes a decision about someone, tell them it will be used.", effort: "5-15 hours (team)", deadline: "1 January 2027" },
+  { article: "6-1-1704", name: "Post-adverse disclosure (30 days)", desc: "Within 30 days of an adverse decision, deployers must disclose the decision, the ADMT's role, and consumer rights.", plain: "If the AI contributes to a negative decision about someone, you have 30 days to tell them what happened, that AI was involved, and what rights they have.", effort: "10-20 hours (team)", deadline: "1 January 2027" },
+  { article: "6-1-1705", name: "Consumer rights", desc: "Consumers can request access to their data, correction of errors, and meaningful human review of adverse decisions.", plain: "People affected by AI decisions can ask to see their data, fix mistakes, and have a human review the decision.", effort: "15-30 hours (team)", deadline: "1 January 2027" },
+];
+
+// Helper: get active questions/order/obligations for current jurisdiction
+function getActiveQuestions() {
+  if (activeJurisdiction === "kr") return QUESTIONS_KR;
+  if (activeJurisdiction === "co") return QUESTIONS_CO;
+  return QUESTIONS;
+}
+function getActiveDisplayOrder() {
+  if (activeJurisdiction === "kr") return DISPLAY_ORDER_KR;
+  if (activeJurisdiction === "co") return DISPLAY_ORDER_CO;
+  return DISPLAY_ORDER;
+}
+
 // =====================================================================
 // State (with sessionStorage persistence)
 // =====================================================================
@@ -638,7 +859,7 @@ let assessmentStarted = false;
 function saveProgress() {
   try {
     sessionStorage.setItem("regula_assess", JSON.stringify({
-      currentQuestion, answers, assessmentStarted
+      currentQuestion, answers, assessmentStarted, activeJurisdiction
     }));
   } catch (e) { /* quota or private browsing */ }
 }
@@ -651,6 +872,10 @@ function loadProgress() {
       currentQuestion = data.currentQuestion || 0;
       answers = data.answers || {};
       assessmentStarted = data.assessmentStarted || false;
+      if (data.activeJurisdiction) {
+        activeJurisdiction = data.activeJurisdiction;
+        selectJurisdiction(activeJurisdiction);
+      }
       if (assessmentStarted) {
         document.getElementById("heroSection").style.display = "none";
         document.getElementById("questionnaireSection").style.display = "block";
@@ -676,14 +901,16 @@ function startAssessment() {
 }
 
 function renderQuestion() {
-  const q = QUESTIONS[DISPLAY_ORDER[currentQuestion]];
+  const activeQ = getActiveQuestions();
+  const activeOrder = getActiveDisplayOrder();
+  const q = activeQ[activeOrder[currentQuestion]];
   const existing = answers[q.id] || null;
   const container = document.getElementById("questionContainer");
   const qId = "q-" + q.id;
 
   container.innerHTML = `
     <div class="q-card" role="group" aria-labelledby="${qId}-text">
-      <div class="q-number" aria-hidden="true">QUESTION ${currentQuestion + 1} OF ${DISPLAY_ORDER.length}</div>
+      <div class="q-number" aria-hidden="true">QUESTION ${currentQuestion + 1} OF ${activeOrder.length}</div>
       <div class="q-text" id="${qId}-text">${q.text}</div>
       <div class="q-help" id="${qId}-help">${q.help}</div>
       <div class="q-article">${q.article}</div>
@@ -702,16 +929,16 @@ function renderQuestion() {
   }
 
   // Update progress
-  const pct = Math.round((currentQuestion / DISPLAY_ORDER.length) * 100);
+  const pct = Math.round((currentQuestion / activeOrder.length) * 100);
   document.getElementById("progressBar").style.width = pct + "%";
   document.getElementById("progressPct").textContent = pct + "%";
-  document.getElementById("progressText").textContent = `Question ${currentQuestion + 1} of ${DISPLAY_ORDER.length}`;
+  document.getElementById("progressText").textContent = `Question ${currentQuestion + 1} of ${activeOrder.length}`;
   document.getElementById("progressWrap").setAttribute("aria-valuenow", pct);
 
   // Button states
   document.getElementById("prevBtn").disabled = currentQuestion === 0;
   document.getElementById("nextBtn").disabled = !existing;
-  document.getElementById("nextBtn").textContent = currentQuestion === DISPLAY_ORDER.length - 1 ? "See results" : "Next";
+  document.getElementById("nextBtn").textContent = currentQuestion === activeOrder.length - 1 ? "See results" : "Next";
 
   // Focus management: move focus to the question text for screen readers
   const qText = document.getElementById(qId + "-text");
@@ -719,7 +946,9 @@ function renderQuestion() {
 }
 
 function answer(value, btn) {
-  const q = QUESTIONS[DISPLAY_ORDER[currentQuestion]];
+  const activeQ = getActiveQuestions();
+  const activeOrder = getActiveDisplayOrder();
+  const q = activeQ[activeOrder[currentQuestion]];
   answers[q.id] = value;
 
   // Update button states visually and aria-pressed
@@ -737,7 +966,7 @@ function answer(value, btn) {
 }
 
 function nextQuestion() {
-  if (currentQuestion < DISPLAY_ORDER.length - 1) {
+  if (currentQuestion < getActiveDisplayOrder().length - 1) {
     currentQuestion++;
     renderQuestion();
     saveProgress();
@@ -759,6 +988,12 @@ function prevQuestion() {
 // =====================================================================
 
 function calculateResults() {
+  if (activeJurisdiction === "kr") return calculateResultsKR();
+  if (activeJurisdiction === "co") return calculateResultsCO();
+  return calculateResultsEU();
+}
+
+function calculateResultsEU() {
   let adjustment = 0;
   let prohibitedSignals = [];
   let highRiskSignals = [];
@@ -836,6 +1071,99 @@ function calculateResults() {
   return { tier, tierName, tierDesc, tierClass, obligations, score, gapScores, prohibitedSignals, highRiskSignals, exemptionSignals };
 }
 
+function calculateResultsKR() {
+  let adjustment = 0;
+  let highImpactSignals = [];
+  let highPerformanceSignals = [];
+  let transparencySignals = [];
+  let gapSignals = {};
+
+  for (const q of QUESTIONS_KR) {
+    const a = answers[q.id] || "unsure";
+    adjustment += q.weight[a] || 0;
+    if (q.signal === "high_impact" && a === "yes") highImpactSignals.push(q.id);
+    if (q.signal === "high_performance" && a === "yes") highPerformanceSignals.push(q.id);
+    if (q.signal === "transparency" && (a === "no" || a === "yes")) transparencySignals.push(q.id);
+    if (q.signal === "gap_assessment") gapSignals[q.id] = a;
+  }
+
+  const score = Math.max(0, Math.min(100, 50 + Math.round(adjustment * 0.55)));
+  let tier, tierName, tierDesc, tierClass, obligations;
+
+  if (highImpactSignals.length > 0 && score >= 50) {
+    tier = "high_impact";
+    tierName = "High-impact AI system";
+    tierDesc = "Your system operates in a domain classified as high-impact under Article 33. You must comply with risk management, documentation, human oversight, transparency, and explainability obligations under Articles 31 and 34. Note: Korea is in a grace period through 2026 — enforcement is deferred except for serious harm. Penalties: up to KRW 30 million (~USD 20,700) or 3 years imprisonment.";
+    tierClass = "tier-high";
+    obligations = OBLIGATIONS_KR;
+  } else if (highPerformanceSignals.length > 0) {
+    tier = "high_performance";
+    tierName = "High-performance AI system";
+    tierDesc = "Your system exceeds the 10^26 FLOP threshold under Article 32 and has additional safety obligations including evaluation and incident reporting.";
+    tierClass = "tier-high";
+    obligations = OBLIGATIONS_KR;
+  } else if (transparencySignals.length > 0) {
+    tier = "general";
+    tierName = "General AI system";
+    tierDesc = "Your system is not classified as high-impact but transparency obligations under Article 31 apply. Users must be notified when interacting with AI, and AI-generated content must be labelled.";
+    tierClass = "tier-limited";
+    obligations = KR_TRANSPARENCY_OBLIGATIONS;
+  } else {
+    tier = "general";
+    tierName = "General AI system";
+    tierDesc = "No specific high-impact or high-performance obligations apply under the Korean AI Basic Act. General good practice obligations apply to all AI operators.";
+    tierClass = "tier-minimal";
+    obligations = [];
+  }
+
+  const gapScores = {
+    34: gapSignals.kr_risk_management === "yes" ? 60 : (gapSignals.kr_risk_management === "unsure" ? 30 : 10),
+    "34_explain": gapSignals.kr_explanation === "yes" ? 60 : (gapSignals.kr_explanation === "unsure" ? 30 : 10),
+    31: answers.kr_transparency === "yes" ? 70 : 15,
+  };
+
+  return { tier, tierName, tierDesc, tierClass, obligations, score, gapScores, prohibitedSignals: [], highRiskSignals: highImpactSignals, exemptionSignals: [] };
+}
+
+function calculateResultsCO() {
+  let adjustment = 0;
+  let coveredSignals = [];
+  let gapSignals = {};
+
+  for (const q of QUESTIONS_CO) {
+    const a = answers[q.id] || "unsure";
+    adjustment += q.weight[a] || 0;
+    if (q.signal === "covered" && a === "yes") coveredSignals.push(q.id);
+    if (q.signal === "gap_assessment") gapSignals[q.id] = a;
+  }
+
+  const score = Math.max(0, Math.min(100, 50 + Math.round(adjustment * 0.55)));
+  let tier, tierName, tierDesc, tierClass, obligations;
+
+  if (coveredSignals.length >= 2 && score >= 50) {
+    tier = "covered";
+    tierName = "Covered ADMT";
+    tierDesc = "Your system appears to be covered automated decision-making technology (ADMT) under Colorado SB 26-189. Developer and deployer obligations apply, including documentation, consumer notices, post-adverse disclosure, and consumer rights. Effective 1 January 2027 with a 60-day cure period. Penalties up to $20,000 per violation, enforced by the Colorado Attorney General.";
+    tierClass = "tier-high";
+    obligations = OBLIGATIONS_CO;
+  } else {
+    tier = "not_covered";
+    tierName = "Not covered ADMT";
+    tierDesc = "Your system does not appear to meet the definition of covered ADMT under Colorado SB 26-189. This law applies only to AI systems that process personal data and make or materially influence consequential decisions in specific domains.";
+    tierClass = "tier-minimal";
+    obligations = [];
+  }
+
+  const gapScores = {
+    "6-1-1702": 20,
+    "6-1-1703": 20,
+    "6-1-1704": gapSignals.co_pre_notice === "yes" ? 60 : (gapSignals.co_pre_notice === "unsure" ? 30 : 10),
+    "6-1-1705": gapSignals.co_consumer_rights === "yes" ? 60 : (gapSignals.co_consumer_rights === "unsure" ? 30 : 10),
+  };
+
+  return { tier, tierName, tierDesc, tierClass, obligations, score, gapScores, prohibitedSignals: [], highRiskSignals: coveredSignals, exemptionSignals: [] };
+}
+
 // =====================================================================
 // Results rendering
 // =====================================================================
@@ -870,8 +1198,8 @@ function showResults() {
             <div class="obl-deadline">${o.deadline}</div>
           </div>
           <div class="obl-desc">${o.desc}</div>
-          ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>In plain language:</strong> ${o.plain} <a href="https://artificialintelligenceact.eu/article/${o.article}/" target="_blank" rel="noopener" style="color:var(--accent);font-size:0.75rem;white-space:nowrap;">[Read Article ${o.article}]</a></div>` : ""}
-          ${results.tier === "high_risk" || results.tier === "high_risk_exempt" ? `
+          ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>In plain language:</strong> ${o.plain}${activeJurisdiction === "eu" ? ` <a href="https://artificialintelligenceact.eu/article/${o.article}/" target="_blank" rel="noopener" style="color:var(--accent);font-size:0.75rem;white-space:nowrap;">[Read Article ${o.article}]</a>` : ` <span style="font-size:0.75rem;color:var(--text-muted);">[Article ${o.article}]</span>`}</div>` : ""}
+          ${["high_risk", "high_risk_exempt", "high_impact", "high_performance", "covered"].includes(results.tier) ? `
             <div class="gap-bar-wrap">
               <span style="font-size:0.75rem;color:var(--text-muted);min-width:80px;">Readiness:</span>
               <div class="gap-bar"><div class="gap-fill" style="width:${gapScore}%;background:${gapColor};"></div></div>
@@ -883,7 +1211,7 @@ function showResults() {
       `;
     }
     oblHtml += `</div>`;
-    if (results.tier === "high_risk" || results.tier === "high_risk_exempt") {
+    if (["high_risk", "high_risk_exempt", "high_impact", "high_performance", "covered"].includes(results.tier)) {
       oblHtml += `<p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">Gap scores are estimates based on your questionnaire answers. Your development team can get precise scoring by running <code style="background:var(--bg);padding:2px 6px;border-radius:3px;">regula gap --project .</code> against your codebase.</p>`;
     }
     document.getElementById("obligationsList").innerHTML = oblHtml;
@@ -909,10 +1237,12 @@ function showResults() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 
   // Analytics
-  if (window.plausible) plausible("Assessment Complete", { props: { tier: results.tier, score: results.score } });
+  if (window.plausible) plausible("Assessment Complete", { props: { tier: results.tier, score: results.score, jurisdiction: activeJurisdiction } });
 }
 
 function getNextSteps(results) {
+  if (activeJurisdiction === "kr") return getNextStepsKR(results);
+  if (activeJurisdiction === "co") return getNextStepsCO(results);
   if (results.tier === "prohibited") {
     return [
       { title: "Get legal advice immediately", desc: "Article 5 prohibitions carry the highest penalty tier. A qualified lawyer needs to assess whether your system falls within scope or qualifies for an exception." },
@@ -944,16 +1274,51 @@ function getNextSteps(results) {
   ];
 }
 
+function getNextStepsKR(results) {
+  if (results.tier === "high_impact" || results.tier === "high_performance") {
+    return [
+      { title: "Share this assessment with your team", desc: "Use the shareable link or print this page as a PDF. A compliance officer and legal contact should review these results." },
+      { title: "Prepare a risk management plan", desc: "Article 34 requires a documented risk management plan. This is an effort-based obligation ('endeavour to'), but documented compliance is strongly recommended." },
+      { title: "Implement explainability capability", desc: "Article 34 requires operators to provide explanations for AI-generated results within technical limits. Ensure your system can explain its key decision criteria." },
+      { title: "Note: grace period through 2026", desc: "MSIT is deferring enforcement through 2026 except for serious harm. Use this time to build compliance, not to delay." },
+      { title: "For your development team", desc: "Your developers can scan the codebase using the Regula CLI: <code>pipx install regula-ai</code>, then <code>regula check . --jurisdictions korea</code>" }
+    ];
+  }
+  return [
+    { title: "Add transparency notices", desc: "Article 31 requires users to know they are interacting with AI. Label AI-generated content accordingly." },
+    { title: "Re-assess if scope changes", desc: "If your system starts operating in a high-impact domain, re-run this assessment." }
+  ];
+}
+
+function getNextStepsCO(results) {
+  if (results.tier === "covered") {
+    return [
+      { title: "Share this assessment with your team", desc: "Both developers and deployers have obligations. Make sure both sides of the relationship understand what is required." },
+      { title: "Implement pre-use consumer notice", desc: "Section 6-1-1704 requires clear notice to consumers before ADMT is used for consequential decisions." },
+      { title: "Build post-adverse disclosure process", desc: "Within 30 days of an adverse decision, consumers must be notified of the decision, the ADMT's role, and their rights." },
+      { title: "Ensure consumer rights mechanisms", desc: "Section 6-1-1705 requires access, correction, and human review capabilities." },
+      { title: "Note: effective 1 January 2027", desc: "The law includes a 60-day cure period (sunsets 2030). Use the lead time to build compliance." },
+      { title: "For your development team", desc: "Your developers can scan the codebase using the Regula CLI: <code>pipx install regula-ai</code>, then <code>regula check . --jurisdictions colorado</code>" }
+    ];
+  }
+  return [
+    { title: "No specific obligations apply", desc: "Your system does not appear to be covered ADMT under Colorado SB 26-189." },
+    { title: "Re-assess if scope changes", desc: "If your system starts making consequential decisions about individuals in covered domains, re-run this assessment." }
+  ];
+}
+
 // =====================================================================
 // URL encoding (stateless, like EuroComply)
 // =====================================================================
 
 function encodeAnswers() {
-  const parts = QUESTIONS.map(q => {
+  const activeQ = getActiveQuestions();
+  const parts = activeQ.map(q => {
     const a = answers[q.id];
     return a === "yes" ? "y" : a === "no" ? "n" : "u";
   });
-  return "2" + parts.join("");  // v2: Q8 polarity reversed
+  if (activeJurisdiction === "eu") return "2" + parts.join("");  // v2: Q8 polarity reversed
+  return parts.join("");
 }
 
 function decodeAnswers(code) {
@@ -963,14 +1328,15 @@ function decodeAnswers(code) {
     version = 2;
     raw = code.slice(1);
   }
+  const activeQ = getActiveQuestions();
   // Accept URLs from older versions with fewer questions (pad with "u" for unsure)
-  if (raw.length > QUESTIONS.length) return null;
-  while (raw.length < QUESTIONS.length) raw += "u";
+  if (raw.length > activeQ.length) return null;
+  while (raw.length < activeQ.length) raw += "u";
   const decoded = {};
-  QUESTIONS.forEach((q, i) => {
+  activeQ.forEach((q, i) => {
     let c = raw[i];
-    // v1 URLs had Q8 (public_facing, index 7) with opposite polarity
-    if (version === 1 && i === 7) {
+    // v1 URLs had Q8 (public_facing, index 7) with opposite polarity — EU only
+    if (version === 1 && i === 7 && activeJurisdiction === "eu") {
       c = c === "y" ? "n" : c === "n" ? "y" : c;
     }
     decoded[q.id] = c === "y" ? "yes" : c === "n" ? "no" : "unsure";
@@ -980,7 +1346,8 @@ function decodeAnswers(code) {
 
 function copyShareLink() {
   const code = encodeAnswers();
-  const url = window.location.origin + window.location.pathname + "?r=" + code;
+  const jurParam = activeJurisdiction !== "eu" ? "&j=" + activeJurisdiction : "";
+  const url = window.location.origin + window.location.pathname + "?r=" + code + jurParam;
   const input = document.getElementById("shareUrl");
   input.value = url;
   document.getElementById("shareSection").style.display = "block";
@@ -992,7 +1359,9 @@ function exportJSON() {
   const results = calculateResults();
   const data = {
     tool: "Regula Web Assessment",
-    version: "1.0",
+    version: "1.1",
+    jurisdiction: activeJurisdiction,
+    jurisdiction_name: JURISDICTION_INFO[activeJurisdiction].name,
     date: new Date().toISOString(),
     disclaimer: "Not legal advice. Assessment based on self-reported answers.",
     tier: results.tier,
@@ -1018,6 +1387,8 @@ function resetAssessment() {
   currentQuestion = 0;
   answers = {};
   assessmentStarted = false;
+  activeJurisdiction = "eu";
+  selectJurisdiction("eu");
   document.getElementById("resultsSection").classList.remove("active");
   document.getElementById("heroSection").style.display = "block";
   document.getElementById("questionnaireSection").style.display = "none";
@@ -1387,6 +1758,14 @@ function exportScanJSON() {
 
 (function init() {
   const params = new URLSearchParams(window.location.search);
+
+  // Parse jurisdiction from URL
+  const jurParam = params.get("j");
+  if (jurParam && JURISDICTION_INFO[jurParam]) {
+    activeJurisdiction = jurParam;
+    selectJurisdiction(jurParam);
+  }
+
   const code = params.get("r");
   if (code) {
     const decoded = decodeAnswers(code);

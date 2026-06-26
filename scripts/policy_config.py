@@ -100,9 +100,35 @@ def _parse_yaml_fallback(text: str) -> dict:
 
         # List item
         if stripped.startswith("- "):
-            item = stripped[2:].strip().strip('"').strip("'")
-            if isinstance(current, list):
-                current.append(item)
+            item_text = stripped[2:].strip()
+            # Flow mapping in list: - {key: val, key2: val2}
+            if item_text.startswith("{") and item_text.endswith("}"):
+                flow_dict = _parse_flow_mapping(item_text)
+                if isinstance(current, list):
+                    current.append(flow_dict)
+                elif isinstance(current, dict):
+                    # Parent expected a dict but got list items — find the
+                    # last key added and convert its value to a list
+                    parent = stack[-2] if len(stack) > 1 else None
+                    if parent and isinstance(parent, dict):
+                        for k in reversed(list(parent.keys())):
+                            if parent[k] is current:
+                                parent[k] = [flow_dict]
+                                stack[-1] = parent[k]
+                                break
+            else:
+                item = item_text.strip('"').strip("'")
+                if isinstance(current, list):
+                    current.append(item)
+                elif isinstance(current, dict):
+                    # Parent expected a dict but got list items — convert
+                    parent = stack[-2] if len(stack) > 1 else None
+                    if parent and isinstance(parent, dict):
+                        for k in reversed(list(parent.keys())):
+                            if parent[k] is current:
+                                parent[k] = [item]
+                                stack[-1] = parent[k]
+                                break
             continue
 
         # Key-value
@@ -112,7 +138,7 @@ def _parse_yaml_fallback(text: str) -> dict:
             val = val.strip()
 
             if not val:
-                # New dict section
+                # New dict section (may be converted to list if followed by - items)
                 new_dict = {}
                 if isinstance(current, dict):
                     current[key] = new_dict
@@ -134,9 +160,43 @@ def _parse_yaml_fallback(text: str) -> dict:
                     val = False
                 elif val.isdigit():
                     val = int(val)
+                else:
+                    try:
+                        val = float(val)
+                    except ValueError:
+                        pass
                 if isinstance(current, dict):
                     current[key] = val
 
+    return result
+
+
+def _parse_flow_mapping(text: str) -> dict:
+    """Parse a YAML flow mapping like {key: val, key2: val2} into a dict.
+
+    Handles quoted values and nested colons in values.
+    Values remain as strings — no numeric coercion, since flow mappings
+    are used for obligation dicts where article references must stay strings.
+    """
+    result = {}
+    inner = text.strip().strip("{}").strip()
+    if not inner:
+        return result
+    # Split on commas not inside quotes
+    parts = re.split(r',\s*(?=(?:[^"]*"[^"]*")*[^"]*$)', inner)
+    for part in parts:
+        part = part.strip()
+        if ":" not in part:
+            continue
+        k, _, v = part.partition(":")
+        k = k.strip().strip('"').strip("'")
+        v = v.strip().strip('"').strip("'")
+        if v.lower() == "true":
+            v = True
+        elif v.lower() == "false":
+            v = False
+        # No numeric coercion — article refs like "9", "6-1-1702" must stay strings
+        result[k] = v
     return result
 
 

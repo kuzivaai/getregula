@@ -932,6 +932,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     "detail": domain_result.get("detail", ""),
                 } if domain_boost > 0 else None,
                 "lifecycle_phases": CATEGORY_LIFECYCLE_PHASES.get(_primary_indicator, ["develop"]),
+                "detected_domains": getattr(result, "detected_domains", []),
             }
             # WARN-tier demotion: if a finding would land in WARN (confidence
             # 50-79) but has no specific indicators, demote to INFO by capping
