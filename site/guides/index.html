@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+
+    <title>EU AI Act Technical Guides for Developers | Regula</title>
+    <meta name="description" content="Practical guides for EU AI Act compliance: Python, JavaScript, healthcare, recruitment, Articles 5, 9, 14, and 50. Code examples and obligations explained.">
+    <meta name="author" content="Kuziva Muzondo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://getregula.com/guides/">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/guides/">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/guides/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://getregula.com/guides/">
+    <meta property="og:title" content="EU AI Act Technical Guides for Developers">
+    <meta property="og:description" content="Practical guides for EU AI Act compliance: Python, JavaScript, healthcare, recruitment, Articles 5, 9, 14, and 50.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula EU AI Act compliance guides for developers">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EU AI Act Technical Guides for Developers">
+    <meta name="twitter:description" content="Practical guides for EU AI Act compliance: Python, JavaScript, healthcare, recruitment, Articles 5, 9, 14, and 50.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript><link rel="stylesheet" href="/assets/fonts.css"></noscript>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "EU AI Act Technical Guides for Developers",
+      "description": "Practical compliance guides covering Python, JavaScript, healthcare AI, recruitment AI, and key EU AI Act articles.",
+      "url": "https://getregula.com/guides/",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides" }
+      ]
+    }
+    </script>
+
+    <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+        <a href="/assess/">Assess</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html">Regulations</a>
+        <a href="/blog/writing.html">Blog</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+
+<div class="blog-hero" style="padding-bottom:24px;">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / Guides
+    </div>
+    <h1>EU AI Act guides for <span class="hl">developers</span></h1>
+    <p class="standfirst">Practical compliance guides for development teams. Each guide covers what the regulation requires, what code scanning can detect, and what needs human review.</p>
+</div>
+
+<div class="blog-body">
+
+<h2>By programming language</h2>
+
+<div style="display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-bottom:32px;">
+    <a href="/guides/eu-ai-act-python.html" style="display:block;padding:20px;background:#0f0f1a;border:1px solid #1e1e3a;border-radius:10px;text-decoration:none;color:inherit;">
+        <strong style="color:#3b82f6;">Python</strong>
+        <p style="margin:8px 0 0;font-size:0.9rem;color:#8888a8;">PyTorch, TensorFlow, scikit-learn, LangChain, Hugging Face. What Regula detects and what findings mean.</p>
+    </a>
+    <a href="/guides/eu-ai-act-javascript.html" style="display:block;padding:20px;background:#0f0f1a;border:1px solid #1e1e3a;border-radius:10px;text-decoration:none;color:inherit;">
+        <strong style="color:#3b82f6;">JavaScript &amp; TypeScript</strong>
+        <p style="margin:8px 0 0;font-size:0.9rem;color:#8888a8;">TensorFlow.js, Brain.js, OpenAI SDK, Vercel AI SDK. Node.js and browser scanning.</p>
+    </a>
+</div>
+
+<h2>By EU AI Act article</h2>
+
+<div style="display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-bottom:32px;">
+    <a href="/guides/article-5-prohibited-practices.html" style="display:block;padding:20px;background:#0f0f1a;border:1px solid #1e1e3a;border-radius:10px;text-decoration:none;color:inherit;">
+        <strong style="color:#e74c3c;">Article 5: Prohibited Practices</strong>
+        <p style="margin:8px 0 0;font-size:0.9rem;color:#8888a8;">The 10 AI practices banned under Article 5, including the Omnibus additions. Enforceable since 2 February 2025.</p>
+    </a>
+    <a href="/guides/article-9-risk-management.html" style="display:block;padding:20px;background:#0f0f1a;border:1px solid #1e1e3a;border-radius:10px;text-decoration:none;color:inherit;">
+        <strong style="color:#f39c12;">Article 9: Risk Management</strong>
+        <p style="margin:8px 0 0;font-size:0.9rem;color:#8888a8;">What a continuous risk management system looks like in practice. What code scanning can and cannot verify.</p>
+    </a>
+    <a href="/guides/article-14-human-oversight.html" style="display:block;padding:20px;background:#0f0f1a;border:1px solid #1e1e3a;border-radius:10px;text-decoration:none;color:inherit;">
+        <strong style="color:#f39c12;">Article 14: Human Oversight</strong>
+        <p style="margin:8px 0 0;font-size:0.9rem;color:#8888a8;">Override and stop capabilities. What Regula detects in code vs what needs process documentation.</p>
+    </a>
+    <a href="/guides/article-50-transparency.html" style="display:block;padding:20px;background:#0f0f1a;border:1px solid #1e1e3a;border-radius:10px;text-decoration:none;color:inherit;">
+        <strong style="color:#3b82f6;">Article 50: Transparency</strong>
+        <p style="margin:8px 0 0;font-size:0.9rem;color:#8888a8;">AI interaction disclosure and content labelling. Deadline: 2 August 2026.</p>
+    </a>
+</div>
+
+<h2>By industry</h2>
+
+<div style="display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-bottom:32px;">
+    <a href="/guides/eu-ai-act-healthcare.html" style="display:block;padding:20px;background:#0f0f1a;border:1px solid #1e1e3a;border-radius:10px;text-decoration:none;color:inherit;">
+        <strong style="color:#27ae60;">Healthcare AI</strong>
+        <p style="margin:8px 0 0;font-size:0.9rem;color:#8888a8;">Medical devices, clinical decision support, MDR/IVDR intersection. Annex III and Annex I obligations.</p>
+    </a>
+    <a href="/guides/eu-ai-act-recruitment-hiring.html" style="display:block;padding:20px;background:#0f0f1a;border:1px solid #1e1e3a;border-radius:10px;text-decoration:none;color:inherit;">
+        <strong style="color:#27ae60;">Recruitment &amp; Hiring AI</strong>
+        <p style="margin:8px 0 0;font-size:0.9rem;color:#8888a8;">CV screening, candidate ranking, interview scheduling. Annex III Category 4 obligations.</p>
+    </a>
+</div>
+
+<p style="margin-top:24px;font-size:0.85rem;color:#7a7a92;">These guides explain what the EU AI Act requires and show how Regula detects relevant patterns in code. They are not legal advice. Consult a qualified legal professional for compliance decisions.</p>
+
+</div>
+</article>
+</main>
+
+<footer style="padding:32px 20px;border-top:1px solid #1e1e3a;margin-top:48px;">
+    <div style="max-width:680px;margin:0 auto;text-align:center;font-size:0.8rem;color:#7a7a92;">
+        <a href="/" style="color:#8888a8;">Regula</a> &middot;
+        <a href="/assess/" style="color:#8888a8;">Assess</a> &middot;
+        <a href="https://github.com/kuzivaai/getregula" style="color:#8888a8;">GitHub</a> &middot;
+        <a href="/blog/writing.html" style="color:#8888a8;">Blog</a>
+        <p style="margin-top:12px;">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; Not legal advice.</p>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -21,7 +21,7 @@ Regula's detection engine is a static analysis system that classifies source cod
 
 ## Intended Use
 
-**Primary use case:** Combine code scanning with governance questionnaires to assess compliance across 3 jurisdictions: EU AI Act (Regulation (EU) 2024/1689), South Korea AI Basic Act (Act No. 20556), and Colorado SB 26-189. Scan source code for risk patterns, run structured self-assessments for organisational obligations code cannot verify (Articles 9, 17, 27, 72), and generate compliance documentation scaffolds.
+**Primary use case:** Combine code scanning with governance questionnaires to assess compliance across 3 jurisdictions: EU AI Act (Regulation (EU) 2024/1689), South Korea AI Basic Act (Act No. 20676), and Colorado SB 26-189. Scan source code for risk patterns, run structured self-assessments for organisational obligations code cannot verify (Articles 9, 17, 27, 72), and generate compliance documentation scaffolds.
 
 **Intended users:**
 

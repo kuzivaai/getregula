@@ -11,7 +11,7 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 - **Multi-jurisdiction support** — pattern-based risk indication now covers
   3 jurisdictions: EU AI Act (Regulation (EU) 2024/1689), South Korea AI
-  Basic Act (Act No. 20556, in force 22 January 2026), and Colorado
+  Basic Act (Act No. 20676, in force 22 January 2026), and Colorado
   SB 26-189 (disclosure-only, effective 1 January 2027).
 - **`scripts/regulation_map.py`** — new module mapping jurisdictions to
   their regulation configs, risk patterns, and questionnaire flows.

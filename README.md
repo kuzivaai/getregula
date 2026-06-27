@@ -34,7 +34,7 @@
 
 ## What it does
 
-If you ship an AI product to EU users, the EU AI Act applies to you -- regardless of where you are based or how small your team is. Regula combines code scanning with governance questionnaires: it scans your codebase for risk indicators, classifies your system into one of the Act's four risk tiers, and tells you which obligations apply. Multi-jurisdiction support covers the EU AI Act, South Korea's AI Basic Act (Act No. 20556), and Colorado SB 26-189 -- pattern-based risk indication across 3 jurisdictions, each with its own YAML config and tailored questionnaire. For the obligations code can't verify (risk management systems, quality management, fundamental rights impact assessments), it provides structured self-assessment questionnaires. It runs in your terminal, in CI/CD, or as a pre-commit hook. No external dependencies, no API calls, no data leaves your machine. Unlike cloud-based scanners, Regula makes zero network calls during scanning — no DPA required, no vendor data breach risk, no GDPR processor relationship.
+If you ship an AI product to EU users, the EU AI Act applies to you -- regardless of where you are based or how small your team is. Regula combines code scanning with governance questionnaires: it scans your codebase for risk indicators, classifies your system into one of the Act's four risk tiers, and tells you which obligations apply. Multi-jurisdiction support covers the EU AI Act, South Korea's AI Basic Act (Act No. 20676), and Colorado SB 26-189 -- pattern-based risk indication across 3 jurisdictions, each with its own YAML config and tailored questionnaire. For the obligations code can't verify (risk management systems, quality management, fundamental rights impact assessments), it provides structured self-assessment questionnaires. It runs in your terminal, in CI/CD, or as a pre-commit hook. No external dependencies, no API calls, no data leaves your machine. Unlike cloud-based scanners, Regula makes zero network calls during scanning — no DPA required, no vendor data breach risk, no GDPR processor relationship.
 
 ## Quick start
 
@@ -128,7 +128,17 @@ The EU AI Act defines four risk tiers. Regula maps code patterns to each:
 
 Every finding includes the relevant Article reference and explains when exceptions may apply. Regula flags patterns -- it does not make legal determinations.
 
-**Multi-jurisdiction support.** Beyond the EU AI Act, Regula maps risk patterns to South Korea's AI Basic Act (Act No. 20556, in force 22 January 2026) and Colorado SB 26-189 (disclosure-only, effective 1 January 2027). Use `--jurisdictions eu,korea,colorado` on `regula check` or `--jurisdiction korea` on `regula assess` to apply the relevant framework. Each jurisdiction has its own YAML config (`references/jurisdictions/`) and tailored web questionnaire.
+**Multi-jurisdiction support.** Beyond the EU AI Act, Regula maps risk patterns to South Korea's AI Basic Act (Act No. 20676, in force 22 January 2026) and Colorado SB 26-189 (disclosure-only, effective 1 January 2027). Use `--jurisdictions eu,korea,colorado` on `regula check` or `--jurisdiction korea` on `regula assess` to apply the relevant framework. Each jurisdiction has its own YAML config (`references/jurisdictions/`) and tailored web questionnaire.
+
+**Developer guides** on getregula.com:
+[Python](https://getregula.com/guides/eu-ai-act-python.html) |
+[JavaScript](https://getregula.com/guides/eu-ai-act-javascript.html) |
+[Healthcare](https://getregula.com/guides/eu-ai-act-healthcare.html) |
+[Recruitment](https://getregula.com/guides/eu-ai-act-recruitment-hiring.html) |
+[Article 5](https://getregula.com/guides/article-5-prohibited-practices.html) |
+[Article 9](https://getregula.com/guides/article-9-risk-management.html) |
+[Article 14](https://getregula.com/guides/article-14-human-oversight.html) |
+[Article 50](https://getregula.com/guides/article-50-transparency.html)
 
 ## Key commands
 
