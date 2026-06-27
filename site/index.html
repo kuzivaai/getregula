@@ -225,6 +225,7 @@
     <link rel="alternate" hreflang="pt-BR" href="https://getregula.com/locales/pt-br.html">
     <link rel="alternate" hreflang="x-default" href="https://getregula.com/">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="alternate" type="text/markdown" title="LLM-friendly version" href="/llms.txt">
     <!-- Stylesheets loaded via media="print" + onload swap so they don't block
          first paint. The inline critical CSS above already establishes the dark
          theme; these sheets layer on the full design system once they arrive.
@@ -776,8 +777,31 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 
 <!-- BLOG -->
 <div class="sec reveal">
-    <h2 class="sec-head">Latest from the blog</h2>
-    <p class="sec-sub">Analysis of AI regulation and compliance patterns.</p>
+    <h2 class="sec-head">Guides &amp; analysis</h2>
+    <p class="sec-sub">Technical guides for developers and analysis of AI regulation.</p>
+    <div class="art-grid" style="margin-bottom:32px;">
+        <a href="/guides/eu-ai-act-python.html" class="card-base art-card">
+            <div class="tag tag-blue">Guide</div>
+            <h3>EU AI Act for Python Developers</h3>
+            <p>Scan Python AI code for risk patterns. PyTorch, TensorFlow, scikit-learn, LangChain.</p>
+        </a>
+        <a href="/guides/article-9-risk-management.html" class="card-base art-card">
+            <div class="tag tag-blue">Guide</div>
+            <h3>Article 9: Risk Management System</h3>
+            <p>What the regulation requires, what code scanning can detect, and what needs human review.</p>
+        </a>
+        <a href="/guides/eu-ai-act-healthcare.html" class="card-base art-card">
+            <div class="tag tag-blue">Guide</div>
+            <h3>EU AI Act for Healthcare AI</h3>
+            <p>Medical devices, clinical decision support, and the MDR/IVDR intersection.</p>
+        </a>
+        <a href="/guides/article-5-prohibited-practices.html" class="card-base art-card">
+            <div class="tag tag-blue">Guide</div>
+            <h3>Article 5: Prohibited Practices</h3>
+            <p>The 10 practices banned under Article 5, including the Omnibus additions.</p>
+        </a>
+    </div>
+    <p style="text-align:center;margin-bottom:32px;font-size:13px;"><a href="/blog/writing.html" style="color:#8888aa;">All 8 guides &amp; 14 articles &rarr;</a></p>
     <div class="art-grid">
         <a href="/blog/blog-omnibus-trilogue-failed.html" class="card-base art-card">
             <div class="tag tag-purple">Trilogue</div>
@@ -906,8 +930,9 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
                     <a href="/blog/blog-classify-ai-system.html">How to classify your AI system <span class="muted">Article 6 routes, risk tiers, what Regula can and cannot tell you</span></a>
                     <a href="/blog/blog-art50-code-of-practice.html">Art 50 Code of Practice mapping <span class="muted">What the 10 June 2026 final code means for your codebase</span></a>
                     <a href="/blog/blog-aicdi-governance-gaps.html">AICDI corporate governance gaps <span class="muted">How Regula maps to the 2026 UNESCO/TRF report</span></a>
-                    <a href="/regions/south-africa-ai-policy.html">South Africa draft AI policy <span class="muted">Withdrawn ~26 Apr 2026 &middot; tracker</span></a>
-                    <a href="https://theimplementationlayer.substack.com/p/when-ai-systems-dont-see-you">From the founder's newsletter <span class="muted">Bias testing gaps &middot; AI governance &middot; The Implementation Layer</span></a>
+                    <a href="/guides/eu-ai-act-python.html">EU AI Act for Python developers <span class="muted">Scan Python AI code for risk patterns</span></a>
+                    <a href="/guides/eu-ai-act-javascript.html">EU AI Act for JavaScript developers <span class="muted">Node.js, browser, TypeScript</span></a>
+                    <a href="/guides/eu-ai-act-recruitment-hiring.html">EU AI Act for recruitment AI <span class="muted">Annex III Category 4 hiring obligations</span></a>
                 </div>
             </div>
             <div class="foot-right">
