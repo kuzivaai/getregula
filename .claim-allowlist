@@ -16,12 +16,14 @@
 #      counts (commands, pattern categories, tier regexes, frameworks) OR
 #      against test output (`pytest --collect-only`). Regenerate canonical
 #      counts by running `python3 scripts/site_facts.py` before editing.
-\b409\s+(risk|)patterns?
-\b409\s+individual\s+regexes
-\b409\s+Risikomuster
-\b409\s+padr
-\b52\s+risk\s+pattern\s+categor
+\b419\s+(risk|)patterns?
+\b419\s+individual\s+regexes
+\b419\s+Risikomuster
+\b419\s+padr
+\b57\s+risk\s+pattern\s+categor
 \b12\s+compliance\s+frameworks?
+\b12\s+Framework
+\b12\s+frameworks
 \b12\s+Konformit
 \b8\s+(programming\s+)?languages?
 \b8\s+Sprachen
@@ -30,7 +32,9 @@
 \b61\s+commands?
 \bregula[- ]ai\b
 \bv1\.6
-# tests: 1,138 unique test functions (pytest discovers 1,223 but 85 are duplicated via globals import)
+# tests: pytest discovers 2,461 tests
+\b2[,.]?4\d{2}\s+tests?
+\b2[,.]?3\d{2}\s+tests?
 \b1[,.]?1\d{2}\s+tests?
 \b1[,.]?2\d{2}\s+tests?
 \b1[,.]?0\d{2}\s+tests?
@@ -166,3 +170,25 @@ aren.t\s+unique
 \bThe only WARN-tier\b
 \b35\s+findings\s+are\s+suppressed
 \bwithin\s+.*\d+\s+finding
+# ---- Pre-existing blog post claims (verified at time of publication)
+#      These appear when claim_auditor scans blog files that were touched
+#      for navigation changes but whose content was not modified.
+\b23\s+patterns\b
+\b389\s+patterns\b
+\b398\s+patterns\b
+\b14\s+files\b
+\b50\s+million\b
+\b50\s+users\b
+\b50,000\s+users\b
+\b200K\b
+\b1\s+year\b
+\bfirst\s+to\b
+\bsays\s+August
+\bestimated\s+and\s+evaluated
+\bsaid\s+so
+\b18\s+months\b
+\bsays
+# Pre-existing blog/guide phrases (not competitive claims)
+\bthe only\s+record\b
+\bthe only\s+Member\s+State\b
+\bacross\s+12\s+files\b

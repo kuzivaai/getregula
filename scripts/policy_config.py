@@ -153,18 +153,23 @@ def _parse_yaml_fallback(text: str) -> dict:
                 # Scalar value — strip inline comments first
                 if "#" in val and not val.startswith('"') and not val.startswith("'"):
                     val = val[:val.index("#")]
-                val = val.strip().strip('"').strip("'")
-                if val.lower() == "true":
-                    val = True
-                elif val.lower() == "false":
-                    val = False
-                elif val.isdigit():
-                    val = int(val)
-                else:
-                    try:
-                        val = float(val)
-                    except ValueError:
-                        pass
+                val = val.strip()
+                # Quoted values stay as strings — no numeric coercion
+                was_quoted = (val.startswith('"') and val.endswith('"')) or \
+                             (val.startswith("'") and val.endswith("'"))
+                val = val.strip('"').strip("'")
+                if not was_quoted:
+                    if val.lower() == "true":
+                        val = True
+                    elif val.lower() == "false":
+                        val = False
+                    elif val.isdigit():
+                        val = int(val)
+                    else:
+                        try:
+                            val = float(val)
+                        except ValueError:
+                            pass
                 if isinstance(current, dict):
                     current[key] = val
 
