@@ -31,7 +31,7 @@ ast = ["tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescr
 # pytest pinned to the 9.x major (current stable). Dev-only extra —
 # contributors install this, end users never do. CI installs latest
 # pytest, which resolves to 9.x under this constraint.
-test = ["pytest~=9.0"]
+test = ["pytest~=9.1"]
 # weasyprint bounded across 6 majors (62-68). The lower bound stays at 62
 # because that is the oldest major the PDF rendering has been validated
 # against; the upper bound of 69 was introduced by dependabot (commit
