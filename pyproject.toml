@@ -44,7 +44,7 @@ sentry = ["sentry-sdk~=2.8"]
 telemetry = ["sentry-sdk~=2.8"]
 # Flask 3.x is the current stable major; 4.x will break. Tightened from
 # >=3.0 to bound the major.
-web = ["flask~=3.0"]
+web = ["flask~=3.1"]
 # Ed25519 manifest signing (v1.1 §4.5) and RFC 3161 TSA timestamping
 # (v1.1 §4.6). `cryptography`'s Ed25519 API has been stable since v2.6
 # (2019). `asn1crypto` is pure-Python with no native deps and powers the
