@@ -126,6 +126,7 @@
         font-family: var(--font); font-size: 0.95rem; font-weight: 500;
         cursor: pointer; transition: all 0.15s;
         display: flex; align-items: center; justify-content: center; gap: 6px;
+        min-height: 44px;
       }
       .ans-btn:hover { background: var(--bg-hover); border-color: var(--text-dim); }
       .ans-btn.selected { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
@@ -207,7 +208,7 @@
 
       /* Next steps */
       .next-steps { margin-top: 24px; }
-      .next-steps h3 { font-size: 1rem; margin-bottom: 12px; }
+      .next-steps h2 { font-size: 1rem; margin-bottom: 12px; }
       .step-item {
         display: flex; gap: 12px; padding: 12px 0;
         border-bottom: 1px solid rgba(255,255,255,0.04);
@@ -295,6 +296,7 @@
 <nav class="nav-bar" aria-label="Hauptnavigation">
   <a href="/" class="nav-brand">Regula</a>
   <div class="nav-links">
+    <a href="/guides/">Guides</a>
     <a href="https://github.com/kuzivaai/getregula">GitHub</a>
     <a href="/blog/writing.html">Blog</a>
     <a href="/regions/regulations.html">Regulierung</a>
@@ -1202,7 +1204,7 @@ function showResults() {
 
   // Obligations
   if (results.obligations.length > 0) {
-    let oblHtml = `<h3 style="margin-bottom:12px;">Anwendbare Pflichten</h3><div class="obligations">`;
+    let oblHtml = `<h2 style="margin-bottom:12px;">Anwendbare Pflichten</h2><div class="obligations">`;
     for (const o of results.obligations) {
       const gapScore = results.gapScores[o.article] || 0;
       const gapColor = gapScore >= 50 ? "var(--green)" : gapScore >= 30 ? "var(--amber)" : "var(--red)";
@@ -1236,7 +1238,7 @@ function showResults() {
   }
 
   // Next steps
-  let stepsHtml = `<div class="next-steps"><h3>Nächste Schritte</h3>`;
+  let stepsHtml = `<div class="next-steps"><h2>Nächste Schritte</h2>`;
   const steps = getNextSteps(results);
   steps.forEach((s, i) => {
     stepsHtml += `
@@ -1253,7 +1255,7 @@ function showResults() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 
   // Analytics
-  if (window.plausible) plausible("Assessment Complete", { props: { tier: results.tier, score: results.score } });
+  if (window.plausible) plausible("Assessment Complete", { props: { tier: results.tier, score: results.score, jurisdiction: activeJurisdiction } });
 }
 
 function getNextSteps(results) {
@@ -1689,7 +1691,7 @@ function renderScanResults(result) {
   `;
 
   // Next steps
-  html += `<div class="next-steps" style="margin-top:24px;"><h3>Nächste Schritte</h3>`;
+  html += `<div class="next-steps" style="margin-top:24px;"><h2>Nächste Schritte</h2>`;
   const steps = getScanNextSteps(c.tier);
   steps.forEach(function(s, i) {
     html += `<div class="step-item">

@@ -131,6 +131,7 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -172,6 +173,7 @@
     <section id="intro">
         <p>I wanted to know: what does compliance actually look like in real codebases? Not in theory documents. Not in consultancy slide decks. In the code that developers are shipping right now.</p>
 
+        <a href="/guides/">Guides</a>
         <p>So I ran <a href="https://github.com/kuzivaai/getregula">Regula</a>, an open-source static analysis tool for AI Act compliance, against 10 popular open-source AI projects. Combined, these projects have over 219,000 GitHub stars and represent the kinds of tools developers are building with today &mdash; coding agents, research assistants, chatbot platforms, LLM gateways.</p>
     </section>
 
@@ -428,6 +430,7 @@ regula check /path/to/your/project</code></pre>
         <div class="foot-left">
             <div class="foot-brand">Regula</div>
             <div class="foot-links">
+        <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
                 <a href="https://pypi.org/project/regula-ai/">PyPI</a>
                 <a href="/blog/writing.html">Blog</a>
