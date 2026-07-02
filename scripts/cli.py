@@ -782,6 +782,8 @@ def cmd_demo(args):
     args.min_tier = None
     args.diff = None
     args.jurisdictions = None
+    args.domain = "employment"  # demo IS a hiring system; declare its domain
+    args.scope = "all"  # demo dir is examples/, which scope=production excludes
     args.explain = False
     args.name = None
     args.framework = None

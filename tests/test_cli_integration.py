@@ -312,3 +312,21 @@ def test_generator_commands_do_not_mutate_tracked_files(tmp_path):
         f"before:\n{before}\n"
         f"after:\n{after}"
     )
+
+
+def test_demo_verdict_shows_high_risk():
+    """Demo must show HIGH-RISK for the bundled hiring system, not NO AI DETECTED.
+
+    Regression test for the domain-gating + scope-filtering bug where the demo's
+    cv-screening-app was suppressed to 'NO AI DETECTED' because: (1) employment
+    patterns are domain-gated and the demo didn't declare --domain, and (2) the
+    examples/ directory was excluded by --scope production. Fixed by setting
+    args.domain='employment' and args.scope='all' in cmd_demo.
+    """
+    rc, out, err = run_cli("demo")
+    assert "HIGH-RISK" in out, (
+        f"Demo should show HIGH-RISK verdict but got:\n{out[:500]}"
+    )
+    assert "NO AI DETECTED" not in out, (
+        f"Demo must not show NO AI DETECTED:\n{out[:500]}"
+    )
