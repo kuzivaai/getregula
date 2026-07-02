@@ -7,6 +7,14 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.7.3] — 2026-07-02
+
+Multi-jurisdiction expansion, security hardening, and demo fix. Adds
+South Korea and Colorado alongside the EU AI Act. Fixes `regula register`
+crash, eliminates ReDoS vulnerabilities, redacts secrets from output,
+hardens the MCP server against SSRF, and fixes `regula demo` so it
+correctly shows HIGH-RISK for the bundled hiring-system example.
+
 ### Added
 
 - **Multi-jurisdiction support** — pattern-based risk indication now covers
@@ -41,26 +49,15 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **`regula demo` verdict** — the bundled cv-screening-app was showing
+  "NO AI DETECTED" because employment patterns are domain-gated and the
+  examples/ directory was excluded by `--scope production`. Demo now
+  declares `--domain employment` and `--scope all` so the HIGH-RISK
+  verdict appears correctly. Normal scans are unaffected.
 - **YAML fallback parser** enhanced for flow mappings (`{key: value}`)
   used in jurisdiction config files.
 - **Path traversal protection** on jurisdiction loading — prevents
   loading configs from outside `references/jurisdictions/`.
-
-### Changed
-
-- **WCAG accessibility fixes** — contrast improvements, `focus-visible`
-  rules, and `aria-pressed` attributes on jurisdiction selector buttons
-  in the web assess tool.
-
-## [1.7.3] — 2026-06-17
-
-Security hardening and correctness release. Fixes `regula register`
-crash in pip-installed environments (#8), eliminates two ReDoS
-vulnerabilities in risk patterns, redacts secrets from scan output,
-and hardens the MCP server and timestamp paths against SSRF.
-
-### Fixed
-
 - **Packaging: `regula register` crash on pip-install** — `references/annex_viii_sections.json`
   was missing from package-data; added `*.json` glob to `pyproject.toml`.
 - **ReDoS in `rag_poisoning` and `no_grounding` patterns** — negative lookahead inside
@@ -76,6 +73,12 @@ and hardens the MCP server and timestamp paths against SSRF.
 - **SSRF via `REGULA_TSA_URL`** — `_require_http_url()` now rejects private/internal IPs
   (loopback, RFC 1918, link-local, AWS metadata).
 - **SSRF via `--repos` git clone** — `_validate_clone_url()` rejects non-https schemes.
+
+### Changed
+
+- **WCAG accessibility fixes** — contrast improvements, `focus-visible`
+  rules, and `aria-pressed` attributes on jurisdiction selector buttons
+  in the web assess tool.
 
 ## [1.7.2] — 2026-06-15
 
