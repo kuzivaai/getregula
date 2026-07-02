@@ -77,7 +77,7 @@ your lawyer's job, not Regula's.
 > Every number Regula publishes can be reproduced by anyone with a checkout
 > of the repo. The commands below run in under 30 seconds total on a laptop.
 
-### 3.1 Internal test suite — 2,468 unique / 2,468 pytest-collected, all green
+### 3.1 Internal test suite — 2,468 [unique](../tests/) / 2,468 pytest-collected, all green
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
