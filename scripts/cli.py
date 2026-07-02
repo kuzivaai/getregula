@@ -758,15 +758,19 @@ from cli_monitor import (
 def cmd_demo(args):
     """Run Regula against the bundled example project to show real output."""
     import os
-    example_dir = os.path.join(
+    # Bundled demo data ships inside the wheel at scripts/demos/
+    bundled_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "demos")
+    # Dev fallback: examples/cv-screening-app/ at the repo root
+    repo_dir = os.path.join(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
         "examples", "cv-screening-app",
     )
-    if not os.path.isdir(example_dir):
-        print("Demo requires the examples/ directory (available in the git repo).")
-        print("Try: git clone https://github.com/kuzivaai/getregula && cd getregula")
-        print("     regula demo")
-        print()
+    if os.path.isdir(bundled_dir) and os.path.isfile(os.path.join(bundled_dir, "cv_screening_app.py")):
+        example_dir = bundled_dir
+    elif os.path.isdir(repo_dir):
+        example_dir = repo_dir
+    else:
+        print("Demo data not found. Reinstall: pipx install regula-ai")
         print("Or scan your own project: regula check .")
         return
     print("=" * 60)
