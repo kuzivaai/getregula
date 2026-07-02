@@ -359,3 +359,55 @@ def test_demo_data_in_sync():
         "examples/cv-screening-app/app.py and scripts/demos/cv_screening_app.py "
         "have diverged — update the copy to match the source"
     )
+
+
+def test_suppressed_counter_matches_domain_gated_hint():
+    """Suppressed: N in the stats block must equal the domain-gated count in the INFO hint."""
+    rc, out, err = run_cli("check", "examples/cv-screening-app", "--scope", "all")
+    import re
+    suppressed_m = re.search(r"Suppressed:\s+(\d+)", out)
+    hint_m = re.search(r"(\d+) high-risk finding\(s\) suppressed by domain gating", out)
+    assert suppressed_m, f"Suppressed line not found in output:\n{out[:400]}"
+    assert hint_m, f"Domain gating hint not found in output:\n{out[:400]}"
+    assert suppressed_m.group(1) == hint_m.group(1), (
+        f"Suppressed counter ({suppressed_m.group(1)}) != hint count ({hint_m.group(1)})"
+    )
+
+
+def test_no_ai_detected_acknowledges_domain_gated():
+    """When domain-gated findings exist, the verdict line must not say 'No AI components'."""
+    rc, out, err = run_cli("check", "examples/cv-screening-app", "--scope", "all")
+    assert "No AI components" not in out, (
+        f"Verdict should acknowledge domain-gated findings:\n{out[:400]}"
+    )
+    assert "suppressed by domain gating" in out, (
+        f"Verdict should mention domain gating:\n{out[:400]}"
+    )
+
+
+def test_demo_banner_matches_scanned_path():
+    """Demo banner path must match the directory actually scanned."""
+    rc, out, err = run_cli("demo")
+    # The banner says "scanning <dirname>" and the scan header says "Regula Scan: <path>"
+    import re
+    banner_m = re.search(r"Regula Demo .+ scanning (\S+)", out)
+    assert banner_m, f"Demo banner not found in output:\n{out[:300]}"
+    banner_name = banner_m.group(1)
+    scan_m = re.search(r"Regula Scan: (.+)", out)
+    assert scan_m, f"Scan header not found in output:\n{out[:300]}"
+    scanned_path = scan_m.group(1).strip()
+    assert scanned_path.endswith(banner_name), (
+        f"Banner says '{banner_name}' but scan path is '{scanned_path}'"
+    )
+
+
+def test_demo_file_count_excludes_init():
+    """Demo file count should not include the empty __init__.py package marker."""
+    rc, out, err = run_cli("demo")
+    import re
+    m = re.search(r"Files scanned:\s+(\d+)", out)
+    assert m, f"Files scanned line not found:\n{out[:300]}"
+    count = int(m.group(1))
+    assert count == 1, (
+        f"Demo should scan 1 file (cv_screening_app.py), got {count}"
+    )

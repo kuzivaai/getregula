@@ -641,6 +641,11 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 content = "\n".join(lines)
             rel_path = str(filepath.relative_to(project))
 
+            # Empty __init__.py files are package markers, not scannable code
+            if filepath.name == "__init__.py" and not content.strip():
+                _scanned_files -= 1
+                continue
+
             # Build AST context map for Python files (used for precision gating)
             _ast_context = {}
             if filepath.suffix == '.py':

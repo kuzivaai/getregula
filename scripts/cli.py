@@ -773,8 +773,9 @@ def cmd_demo(args):
         print("Demo data not found. Reinstall: pipx install regula-ai")
         print("Or scan your own project: regula check .")
         return
+    demo_label = os.path.basename(example_dir)
     print("=" * 60)
-    print("  Regula Demo \u2014 scanning examples/cv-screening-app")
+    print(f"  Regula Demo \u2014 scanning {demo_label}")
     print("  (a hiring system that triggers Annex III high-risk)")
     print("=" * 60)
     print()
