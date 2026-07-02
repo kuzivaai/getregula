@@ -671,7 +671,14 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                             cached = [f for f in cached
                                       if _TIER_ORDER.get(f.get("tier", ""), 0) >= min_tier_level]
                         # Apply domain gating to cached findings too
+                        _cached_before = len(cached)
                         cached = [f for f in cached if not _check_domain_gated(f, _domain_activated, OPT_IN_CATEGORIES)]
+                        _cached_gated = _cached_before - len(cached)
+                        if _cached_gated > 0:
+                            _domain_gated_count += _cached_gated
+                            for cf in [f for f in cache.get(rel_path, content) or []
+                                       if _check_domain_gated(f, _domain_activated, OPT_IN_CATEGORIES)]:
+                                _domain_gated_categories.update(cf.get("indicators", []))
                         findings.extend(cached)
                         # Maintain AI file counter for stats even on cache hits
                         if not cached and _is_ai:

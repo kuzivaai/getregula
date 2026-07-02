@@ -330,3 +330,32 @@ def test_demo_verdict_shows_high_risk():
     assert "NO AI DETECTED" not in out, (
         f"Demo must not show NO AI DETECTED:\n{out[:500]}"
     )
+
+
+def test_domain_gating_hint_shown_for_suppressed_findings():
+    """When domain-gated findings are suppressed, the INFO hint must appear.
+
+    Regression test for a cache-path bug where domain_gated_count was not
+    incremented for cached findings, hiding the hint from subsequent scans.
+    """
+    rc, out, err = run_cli("check", "examples/cv-screening-app", "--scope", "all")
+    assert "domain gating" in out.lower() or "domain gating" in err.lower(), (
+        f"Expected domain gating hint in output:\nstdout: {out[:300]}\nstderr: {err[:300]}"
+    )
+
+
+def test_demo_data_in_sync():
+    """Bundled demo data must be byte-identical to the source example.
+
+    scripts/demos/cv_screening_app.py is a copy of examples/cv-screening-app/app.py.
+    If either is updated, the other must match — this test catches drift.
+    """
+    repo = __import__("pathlib").Path(__file__).resolve().parents[1]
+    source = repo / "examples" / "cv-screening-app" / "app.py"
+    bundled = repo / "scripts" / "demos" / "cv_screening_app.py"
+    assert source.exists(), f"Source not found: {source}"
+    assert bundled.exists(), f"Bundled not found: {bundled}"
+    assert source.read_bytes() == bundled.read_bytes(), (
+        "examples/cv-screening-app/app.py and scripts/demos/cv_screening_app.py "
+        "have diverged — update the copy to match the source"
+    )
