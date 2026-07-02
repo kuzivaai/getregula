@@ -333,9 +333,19 @@ def cmd_check(args) -> None:
             verdict_action = "No mandatory requirements, but good governance is recommended."
             verdict_color = lambda x: x  # identity function — no color applied
         else:
+            _pre_stats = getattr(scan_files, "last_stats", {}) or {}
+            _pre_gated = _pre_stats.get("domain_gated_count", 0)
             verdict_tier = "NO AI DETECTED"
-            verdict_desc = "No AI components or risk indicators found in your project."
-            verdict_action = "The EU AI Act likely does not apply to this project."
+            if _pre_gated > 0:
+                _pre_cats = ", ".join(_pre_stats.get("domain_gated_categories", []))
+                verdict_desc = (
+                    f"No active findings. {_pre_gated} high-risk finding(s) "
+                    f"suppressed by domain gating (see below)."
+                )
+                verdict_action = f"Use --domain <domain> to activate ({_pre_cats})."
+            else:
+                verdict_desc = "No AI components or risk indicators found in your project."
+                verdict_action = "The EU AI Act likely does not apply to this project."
             verdict_color = lambda x: x  # identity function — no color applied
 
         print(f"\n  {verdict_color('Verdict')}: {verdict_color(verdict_tier)}")
@@ -380,7 +390,9 @@ def cmd_check(args) -> None:
         print(f"  {t('high_risk'):<20}{len(high_risk)}")
         print(f"  {t('agent_autonomy'):<20}{len(autonomy)}")
         print(f"  {t('limited_risk'):<20}{len(limited)}")
-        print(f"  {t('suppressed'):<20}{len(suppressed)}")
+        _gated_for_display = stats.get("domain_gated_count", 0)
+        _suppressed_total = len(suppressed) + _gated_for_display
+        print(f"  {t('suppressed'):<20}{_suppressed_total}")
         if accepted:
             overdue = [f for f in accepted if f.get("risk_decision", {}).get("overdue")]
             print(f"  {'Accepted risks:':<20}{len(accepted)}  ({len(overdue)} overdue)")
