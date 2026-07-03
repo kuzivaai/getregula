@@ -2,7 +2,7 @@
 
 You built an AI-powered app. Maybe with Claude, ChatGPT, Cursor, Lovable, or Bolt. It works. Now what?
 
-If your app is used by anyone in the EU — or you plan to sell it there — the **EU AI Act** applies to you. Violations carry fines up to **EUR 35 million or 7% of global turnover**. Art 50 transparency obligations apply from **2 August 2026**. Annex III high-risk obligations are deferred to **2 December 2027** under the Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026 (pending Council adoption and OJ publication — until OJ publication, the original 2 August 2026 deadline remains legally binding).
+If your app is used by anyone in the EU — or you plan to sell it there — the **EU AI Act** applies to you. Violations carry fines up to **EUR 35 million or 7% of global turnover**. Art 50 transparency obligations apply from **2 August 2026**. Annex III high-risk obligations are deferred to **2 December 2027** under the Digital Omnibus (agreed 7 May 2026, EP approved 16 June 2026, Council approved 29 June 2026; pending OJ publication — until OJ publication, the original 2 August 2026 deadline remains legally binding).
 
 Regula tells you where you stand in 10 seconds.
 

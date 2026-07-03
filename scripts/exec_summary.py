@@ -29,7 +29,7 @@ TIER_DESCRIPTIONS = {
         "This project contains indicators associated with HIGH-RISK AI "
         "systems under EU AI Act Annex III. Articles 9\u201315 obligations "
         "may apply (effective 2 December 2027 under the Digital Omnibus, "
-        "approved by EP 16 Jun 2026; pending Council adoption)."
+        "EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)."
     ),
     "limited_risk": (
         "This project contains indicators associated with LIMITED-RISK AI "

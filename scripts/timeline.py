@@ -70,10 +70,9 @@ TIMELINE = [
             "deferred to 2 December 2027; Annex I to 2 August 2028; new "
             "Article 5 prohibition on CSAM/NCII generation (2 December 2026); "
             "watermarking for existing systems deferred to 2 December 2026; "
-            "sandboxes deferred to 2 August 2027. PENDING FORMAL ADOPTION: "
-            "EP plenary, Council endorsement, and Official Journal publication "
-            "expected before 2 August 2026. Until OJ publication, original "
-            "deadlines remain legally binding."
+            "sandboxes deferred to 2 August 2027. EP approved 16 Jun 2026; "
+            "Council approved 29 Jun 2026. Pending OJ publication. Until OJ "
+            "publication, original deadlines remain legally binding."
         ),
     },
     {

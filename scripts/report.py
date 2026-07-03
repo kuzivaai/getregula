@@ -54,6 +54,21 @@ DEADLINE_OMNIBUS_ANNEX_III = "2027-12-02"  # Omnibus agreed extension for Annex 
 DEADLINE_OMNIBUS_ANNEX_I   = "2028-08-02"  # Omnibus agreed extension for Annex I / sectoral
 DEADLINE_OMNIBUS_LIMITED   = "2026-12-02"  # Omnibus agreed extension for limited-risk watermarking
 
+# ---------------------------------------------------------------------------
+# Digital Omnibus enactment status — single source of truth.
+# Update OMNIBUS_OJ_DATE when published in the Official Journal.
+# ---------------------------------------------------------------------------
+# Legislative history: provisional agreement 7 May 2026; EP plenary approved
+# 16 June 2026; Council approved 29 June 2026; OJ publication pending as of
+# 2026-07-02. Entry into force is 3 days after OJ publication.
+OMNIBUS_OJ_DATE = None  # Set to "YYYY-MM-DD" when published in the OJ
+OMNIBUS_ENACTED = OMNIBUS_OJ_DATE is not None
+OMNIBUS_STATUS = (
+    f"Published in OJ {OMNIBUS_OJ_DATE}; in force"
+    if OMNIBUS_ENACTED
+    else "EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication"
+)
+
 # Generic indicator names that don't convey specific risk — used to gate
 # WARN-tier visibility. If a finding's only indicators are in this set,
 # it gets demoted to INFO.
@@ -1047,10 +1062,20 @@ def _enrich_deadlines(findings: list) -> None:
     """Add deadline and deadline_note to each finding based on Omnibus status.
 
     The Digital Omnibus reached provisional agreement on 7 May 2026.
-    Formal adoption (EP plenary + Council + OJ publication) is expected
-    before 2 August 2026. Until OJ publication, original deadlines remain
-    legally binding. We tag each finding with both deadlines.
+    EP approved 16 Jun 2026; Council approved 29 Jun 2026. OJ publication
+    is pending as of 2026-07-02. Until OJ publication, original deadlines
+    remain legally binding. We tag each finding with both deadlines.
+
+    When OMNIBUS_ENACTED becomes True (set OMNIBUS_OJ_DATE), the copy
+    switches from provisional to enacted wording automatically.
     """
+    # Build the adoption qualifier once — driven by OMNIBUS_ENACTED.
+    _adoption_note = (
+        f"in force (OJ {OMNIBUS_OJ_DATE})"
+        if OMNIBUS_ENACTED
+        else f"pending OJ publication ({OMNIBUS_STATUS})"
+    )
+
     for f in findings:
         tier = f.get("tier", "")
         category = f.get("category", "")
@@ -1066,12 +1091,12 @@ def _enrich_deadlines(findings: list) -> None:
             if any(kw.lower() in category.lower() for kw in annex_i_keywords):
                 f["deadline"] = DEADLINE_CURRENT_LAW
                 f["deadline_status"] = "current_law"
-                f["deadline_note"] = f"Current law: 2 Aug 2026. Omnibus agreed: 2 Aug 2028 (Annex I / sectoral). Pending formal adoption."
+                f["deadline_note"] = f"Current law: 2 Aug 2026. Omnibus agreed: 2 Aug 2028 (Annex I / sectoral). Omnibus {_adoption_note}."
                 f["omnibus_deadline"] = DEADLINE_OMNIBUS_ANNEX_I
             else:
                 f["deadline"] = DEADLINE_CURRENT_LAW
                 f["deadline_status"] = "current_law"
-                f["deadline_note"] = f"Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Pending formal adoption."
+                f["deadline_note"] = f"Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus {_adoption_note}."
                 f["omnibus_deadline"] = DEADLINE_OMNIBUS_ANNEX_III
         elif tier == "credential_exposure":
             f["deadline"] = DEADLINE_CURRENT_LAW
@@ -1080,12 +1105,12 @@ def _enrich_deadlines(findings: list) -> None:
         elif tier == "limited_risk":
             f["deadline"] = DEADLINE_CURRENT_LAW
             f["deadline_status"] = "current_law"
-            f["deadline_note"] = f"Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus, EP approved 16 Jun 2026; pending Council adoption)."
+            f["deadline_note"] = f"Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus {_adoption_note})."
             f["omnibus_deadline"] = DEADLINE_OMNIBUS_LIMITED
         elif tier == "agent_autonomy":
             f["deadline"] = DEADLINE_CURRENT_LAW
             f["deadline_status"] = "current_law"
-            f["deadline_note"] = f"Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Pending formal adoption."
+            f["deadline_note"] = f"Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus {_adoption_note}."
             f["omnibus_deadline"] = DEADLINE_OMNIBUS_ANNEX_III
         else:
             f["deadline"] = None

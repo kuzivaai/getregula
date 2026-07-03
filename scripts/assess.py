@@ -16,7 +16,7 @@ Regulatory basis:
 - Article 5: prohibited practices (in force Feb 2025)
 - Article 6 + Annex III: high-risk classification
 - Article 50: transparency obligations (Aug 2026)
-- Digital Omnibus: Annex III deadline proposed Dec 2027, not yet law
+- Digital Omnibus: Annex III deadline Dec 2027; EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication
 """
 
 import sys
