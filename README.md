@@ -164,7 +164,8 @@ Every finding includes the relevant Article reference and explains when exceptio
 | `regula owasp-agentic` | OWASP Top 10 for Agentic Applications assessment |
 | `regula monitor` | Runtime monitoring for AI applications (Article 12) |
 | `regula gdpr` | GDPR dual-compliance scan ([14 patterns](scripts/gdpr_scan.py), 4 AI Act/GDPR hotspots) |
-| `regula mcp-server` | MCP server for Claude Code, Cursor, and other MCP clients |
+| `regula bias` | CrowS-Pairs bias evaluation (1,508 sentence pairs) with optional BBQ benchmark. Aligned with Digital Omnibus Article 10a bias-testing safeguards. |
+| `regula mcp-server` | MCP server (JSON-RPC stdio) exposing three tools — `regula_check`, `regula_classify`, `regula_gap` — for Claude Code, Cursor, and other MCP clients |
 | `regula install <platform>` | Set up pre-commit hooks, git hooks, or Claude Code/Copilot/Windsurf integration |
 
 Regula has 61 commands in total. Run `regula --help-all` for the full list, or see [`docs/cli-reference.md`](docs/cli-reference.md).
