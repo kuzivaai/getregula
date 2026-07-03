@@ -15,6 +15,9 @@
       }
     </style>
     <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
     <title>EU AI Act Article 5: Prohibited AI Practices — What Developers Must Avoid</title>
     <meta name="description" content="Article 5 of the EU AI Act bans specific AI practices outright, with fines up to EUR 35 million or 7% of global turnover. A developer's guide to the eight prohibited categories and how to check your code.">
@@ -144,11 +147,13 @@
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
-        <a href="/regions/regulations.html">Regulations</a>
-        <a href="/blog/writing.html">Blog</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
         <a href="/">EN</a>
         <a href="/locales/de.html">DE</a>
         <a href="/locales/pt-br.html">BR</a>
@@ -249,7 +254,7 @@ PROHIBITED: Social scoring by public authorities or on their behalf</code></pre>
 
 <h3>5(1)(i): NCII and CSAM generation (Omnibus addition)</h3>
 
-<p>The Digital Omnibus (provisional agreement 7 May 2026, EP approved 16 June 2026; pending Council adoption) adds a ninth prohibited category: AI systems designed to generate non-consensual intimate imagery (NCII) or child sexual abuse material (CSAM). This takes effect on 2 December 2026. The obligation is on the design of the system, not just its use &mdash; image generation systems need technical safeguards to prevent generation of this material.</p>
+<p>The Digital Omnibus (provisional agreement 7 May 2026, EP approved 16 June 2026, Council approved 29 June 2026; pending OJ publication) adds a ninth prohibited category: AI systems designed to generate non-consensual intimate imagery (NCII) or child sexual abuse material (CSAM). This takes effect on 2 December 2026. The obligation is on the design of the system, not just its use &mdash; image generation systems need technical safeguards to prevent generation of this material.</p>
 
 <h2>Timeline: what is already in force</h2>
 
@@ -337,11 +342,13 @@ PROHIBITED: Social scoring by public authorities or on their behalf</code></pre>
         <div class="foot-left">
             <div class="foot-brand">Regula</div>
             <div class="foot-links">
-        <a href="/guides/">Guides</a>
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
                 <a href="https://pypi.org/project/regula-ai/">PyPI</a>
                 <a href="/blog/writing.html">Blog</a>
                 <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
             </div>
             <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
         </div>

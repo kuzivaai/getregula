@@ -1,30 +1,7 @@
 [
   {
     "file": "libs/partners/openai/langchain_openai/chat_models/base.py",
-    "line": 1643,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/openai/langchain_openai/chat_models/base.py",
-    "line": 1,
+    "line": 194,
     "tier": "limited_risk",
     "category": "Limited Risk (Article 50)",
     "description": "Synthetic content generation",
@@ -52,15 +29,16 @@
       "develop",
       "deploy"
     ],
+    "detected_domains": [],
     "open_question": false,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
-    "omnibus_deadline": "2026-11-02"
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
   },
   {
     "file": "libs/partners/openai/langchain_openai/chat_models/_compat.py",
-    "line": 1,
+    "line": 105,
     "tier": "limited_risk",
     "category": "Limited Risk (Article 50)",
     "description": "Synthetic content generation",
@@ -81,34 +59,12 @@
       "develop",
       "deploy"
     ],
+    "detected_domains": [],
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
-    "omnibus_deadline": "2026-11-02"
-  },
-  {
-    "file": "libs/partners/openai/langchain_openai/llms/base.py",
-    "line": 620,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
   },
   {
     "file": "libs/partners/openai/tests/integration_tests/chat_models/test_azure.py",
@@ -129,12 +85,12 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/partners/openai/tests/integration_tests/chat_models/test_base.py",
-    "line": 242,
+    "line": 248,
     "tier": "ai_security",
     "category": "AI Security (LLM06)",
     "description": "AI API call detected \u2014 verify error handling is in place",
@@ -151,12 +107,12 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/partners/openai/tests/integration_tests/chat_models/test_responses_api.py",
-    "line": 97,
+    "line": 115,
     "tier": "ai_security",
     "category": "AI Security (LLM06)",
     "description": "AI API call detected \u2014 verify error handling is in place",
@@ -173,12 +129,12 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/partners/openai/tests/integration_tests/chat_models/test_responses_api.py",
-    "line": 1,
+    "line": 1057,
     "tier": "limited_risk",
     "category": "Limited Risk (Article 50)",
     "description": "Synthetic content generation",
@@ -206,77 +162,33 @@
       "develop",
       "deploy"
     ],
+    "detected_domains": [],
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
-    "omnibus_deadline": "2026-11-02"
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
   },
   {
-    "file": "libs/partners/openai/tests/integration_tests/chat_models/test_responses_standard.py",
-    "line": 89,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
+    "file": "libs/partners/openai/tests/integration_tests/chat_models/conftest.py",
+    "line": 87,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Move credentials to environment variables or a secrets manager.",
     "indicators": [
-      "no_error_handling_ai_call"
+      "generic_api_key"
     ],
-    "confidence_score": 10,
+    "confidence_score": 20,
     "suppressed": false,
     "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
     "lifecycle_phases": [
-      "develop"
+      "develop",
+      "deploy"
     ],
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/openai/tests/integration_tests/chat_models/test_base_standard.py",
-    "line": 94,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/openai/tests/integration_tests/llms/test_azure.py",
-    "line": 50,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
   },
   {
     "file": "libs/partners/openai/tests/integration_tests/llms/test_base.py",
@@ -297,72 +209,21 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
-    "file": "libs/partners/openai/tests/unit_tests/test_load.py",
-    "line": 110,
-    "tier": "ai_security",
-    "category": "AI Security (LLM09)",
-    "description": "LLM output used as factual information without grounding or verification \u2014 misinformation risk",
+    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_codex.py",
+    "line": 150,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "OpenAI API key detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable OPENAI_API_KEY instead of hardcoding.",
     "indicators": [
-      "no_grounding"
+      "openai_api_key"
     ],
-    "confidence_score": 20,
+    "confidence_score": 55,
     "suppressed": false,
     "provenance": "test",
-    "remediation": "Implement retrieval-augmented generation (RAG) for factual tasks. Require citations and source attribution. Add fact-checking or grounding verification before presenting LLM output as fact. OWASP LLM09:2025.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_responses_stream.py",
-    "line": 62,
-    "tier": "ai_security",
-    "category": "AI Security (LLM09)",
-    "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
-    "indicators": [
-      "missing_temperature_control"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_responses_stream.py",
-    "line": 1,
-    "tier": "limited_risk",
-    "category": "Limited Risk (Article 50)",
-    "description": "Synthetic content generation",
-    "indicators": [
-      "synthetic_content"
-    ],
-    "articles": [
-      "50"
-    ],
-    "exceptions": null,
-    "confidence_score": 13,
-    "suppressed": false,
-    "provenance": "test",
-    "risk_decision": null,
-    "observations": [],
-    "domain_boost": null,
     "lifecycle_phases": [
       "develop",
       "deploy"
@@ -370,57 +231,11 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
-    "omnibus_deadline": "2026-11-02"
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
   },
   {
-    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_base.py",
-    "line": 670,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_base.py",
-    "line": 404,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 40,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_base.py",
-    "line": 1,
+    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_codex.py",
+    "line": 340,
     "tier": "limited_risk",
     "category": "Limited Risk (Article 50)",
     "description": "Synthetic content generation",
@@ -447,15 +262,68 @@
       "develop",
       "deploy"
     ],
+    "detected_domains": [],
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
-    "omnibus_deadline": "2026-11-02"
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
   },
   {
-    "file": "libs/partners/ollama/tests/integration_tests/test_llms.py",
-    "line": 19,
+    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_responses_stream.py",
+    "line": 66,
+    "tier": "ai_security",
+    "category": "AI Security (LLM09)",
+    "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+    "indicators": [
+      "missing_temperature_control"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_responses_stream.py",
+    "line": 823,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 13,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_base.py",
+    "line": 696,
     "tier": "ai_security",
     "category": "AI Security (LLM06)",
     "description": "AI API call detected \u2014 verify error handling is in place",
@@ -472,78 +340,48 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
-    "file": "libs/partners/ollama/tests/integration_tests/chat_models/test_chat_models_reasoning.py",
-    "line": 136,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
+    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_base.py",
+    "line": 3489,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
     "indicators": [
-      "no_error_handling_ai_call"
+      "synthetic_content"
     ],
-    "confidence_score": 10,
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 25,
     "suppressed": false,
     "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
     "lifecycle_phases": [
-      "develop"
+      "develop",
+      "deploy"
     ],
+    "detected_domains": [],
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/ollama/tests/integration_tests/chat_models/test_chat_models.py",
-    "line": 78,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/ollama/tests/unit_tests/test_chat_models.py",
-    "line": 125,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
   },
   {
     "file": "libs/partners/groq/tests/integration_tests/test_chat_models.py",
-    "line": 694,
+    "line": 691,
     "tier": "ai_security",
     "category": "AI Security (LLM06)",
     "description": "AI API call detected \u2014 verify error handling is in place",
@@ -560,119 +398,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/groq/tests/unit_tests/test_chat_models.py",
-    "line": 189,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/groq/tests/unit_tests/test_chat_models.py",
-    "line": 181,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 40,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/groq/langchain_groq/chat_models.py",
-    "line": 808,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/fireworks/langchain_fireworks/llms.py",
-    "line": 157,
-    "tier": "agent_autonomy",
-    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
-    "description": "AI output may flow to HTTP mutation request \u2014 no human gate detected",
-    "indicators": [
-      "HTTP mutation request"
-    ],
-    "confidence_score": 70,
-    "suppressed": false,
-    "provenance": "production",
-    "lifecycle_phases": [
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/fireworks/langchain_fireworks/chat_models.py",
-    "line": 578,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -694,187 +420,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/fireworks/tests/integration_tests/test_chat_models.py",
-    "line": 120,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/openrouter/tests/integration_tests/test_standard.py",
-    "line": 120,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/openrouter/langchain_openrouter/chat_models.py",
-    "line": 783,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/mistralai/langchain_mistralai/chat_models.py",
-    "line": 238,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/mistralai/tests/integration_tests/test_chat_models.py",
-    "line": 84,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py",
-    "line": 719,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/huggingface/langchain_huggingface/llms/huggingface_endpoint.py",
-    "line": 365,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/anthropic/tests/integration_tests/test_standard.py",
-    "line": 158,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -896,12 +442,12 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/partners/anthropic/tests/integration_tests/test_chat_models.py",
-    "line": 136,
+    "line": 145,
     "tier": "ai_security",
     "category": "AI Security (LLM06)",
     "description": "AI API call detected \u2014 verify error handling is in place",
@@ -918,12 +464,12 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/partners/anthropic/tests/unit_tests/test_chat_models.py",
-    "line": 1699,
+    "line": 1872,
     "tier": "ai_security",
     "category": "AI Security (LLM06)",
     "description": "AI API call detected \u2014 verify error handling is in place",
@@ -940,12 +486,12 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/partners/anthropic/langchain_anthropic/llms.py",
-    "line": 291,
+    "line": 280,
     "tier": "ai_security",
     "category": "AI Security (LLM06)",
     "description": "AI API call detected \u2014 verify error handling is in place",
@@ -962,35 +508,12 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/anthropic/langchain_anthropic/llms.py",
-    "line": 283,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/partners/anthropic/langchain_anthropic/chat_models.py",
-    "line": 1228,
+    "line": 1432,
     "tier": "ai_security",
     "category": "AI Security (LLM06)",
     "description": "AI API call detected \u2014 verify error handling is in place",
@@ -1007,19 +530,19 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/partners/anthropic/langchain_anthropic/middleware/anthropic_tools.py",
-    "line": 1018,
+    "line": 1040,
     "tier": "agent_autonomy",
     "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
-    "description": "AI output may flow to File system modification \u2014 no human gate detected",
+    "description": "Agent tool infrastructure: File system modification \u2014 no human gate detected",
     "indicators": [
       "File system modification"
     ],
-    "confidence_score": 70,
+    "confidence_score": 60,
     "suppressed": false,
     "provenance": "production",
     "lifecycle_phases": [
@@ -1028,130 +551,12 @@
     "open_question": false,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/perplexity/langchain_perplexity/chat_models.py",
-    "line": 424,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 40,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/perplexity/langchain_perplexity/chat_models.py",
-    "line": 600,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/perplexity/langchain_perplexity/chat_models.py",
-    "line": 1,
-    "tier": "limited_risk",
-    "category": "Limited Risk (Article 50)",
-    "description": "Chatbots and conversational AI",
-    "indicators": [
-      "chatbots"
-    ],
-    "articles": [
-      "50"
-    ],
-    "exceptions": null,
-    "confidence_score": 53,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [],
-    "domain_boost": null,
-    "lifecycle_phases": [
-      "develop",
-      "deploy"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
-    "omnibus_deadline": "2026-11-02"
-  },
-  {
-    "file": "libs/partners/perplexity/tests/unit_tests/test_chat_models.py",
-    "line": 203,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/partners/xai/tests/integration_tests/test_chat_models.py",
-    "line": 104,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/langchain_v1/tests/unit_tests/agents/test_create_agent_tool_validation.py",
-    "line": 256,
+    "line": 294,
     "tier": "credential_exposure",
     "category": "AI Credential Governance (Article 15)",
     "description": "OpenAI API key detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable OPENAI_API_KEY instead of hardcoding.",
@@ -1189,12 +594,12 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_pii.py",
-    "line": 527,
+    "line": 540,
     "tier": "credential_exposure",
     "category": "AI Credential Governance (Article 15)",
     "description": "OpenAI API key detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable OPENAI_API_KEY instead of hardcoding.",
@@ -1231,7 +636,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1252,7 +657,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1273,7 +678,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1294,7 +699,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1315,7 +720,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1336,7 +741,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1357,7 +762,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1378,7 +783,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1399,7 +804,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1420,7 +825,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1441,7 +846,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1462,12 +867,12 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_tool_selection.py",
-    "line": 45,
+    "line": 46,
     "tier": "agent_autonomy",
     "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
     "description": "Agent tool infrastructure: Message/email sending \u2014 no human gate detected",
@@ -1483,12 +888,33 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_provider_tool_search.py",
+    "line": 36,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Message/email sending \u2014 no human gate detected",
+    "indicators": [
+      "Message/email sending"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_file_search.py",
-    "line": 50,
+    "line": 52,
     "tier": "agent_autonomy",
     "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
     "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
@@ -1504,12 +930,12 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/core/test_decorators.py",
-    "line": 651,
+    "line": 655,
     "tier": "ai_security",
     "category": "AI Security (LLM07)",
     "description": "System prompt exposed in client code, API response, or logs \u2014 prompt leakage risk",
@@ -1527,7 +953,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1548,7 +974,7 @@
     "open_question": false,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1569,7 +995,7 @@
     "open_question": false,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1590,7 +1016,7 @@
     "open_question": false,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1611,7 +1037,7 @@
     "open_question": false,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1632,7 +1058,7 @@
     "open_question": false,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1653,7 +1079,7 @@
     "open_question": false,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1674,12 +1100,12 @@
     "open_question": false,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/langchain_v1/langchain/agents/middleware/file_search.py",
-    "line": 281,
+    "line": 313,
     "tier": "agent_autonomy",
     "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
     "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
@@ -1695,7 +1121,7 @@
     "open_question": false,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1716,7 +1142,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1737,7 +1163,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
@@ -1758,12 +1184,12 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/langchain_v1/langchain/agents/middleware/shell_tool.py",
-    "line": 788,
+    "line": 806,
     "tier": "agent_autonomy",
     "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
     "description": "Agent tool infrastructure: Database query execution \u2014 human gate pattern detected nearby",
@@ -1779,117 +1205,12 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/core/langchain_core/output_parsers/pydantic.py",
-    "line": 43,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/core/langchain_core/output_parsers/base.py",
-    "line": 328,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/core/langchain_core/language_models/llms.py",
-    "line": 257,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/core/langchain_core/language_models/chat_models.py",
-    "line": 1,
-    "tier": "limited_risk",
-    "category": "Limited Risk (Article 50)",
-    "description": "Chatbots and conversational AI",
-    "indicators": [
-      "chatbots"
-    ],
-    "articles": [
-      "50"
-    ],
-    "exceptions": null,
-    "confidence_score": 68,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [],
-    "domain_boost": {
-      "boost": 15,
-      "domains_matched": [
-        "employment",
-        "education"
-      ],
-      "detail": "Domain keywords detected: employment, education"
-    },
-    "lifecycle_phases": [
-      "develop",
-      "deploy"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
-    "omnibus_deadline": "2026-11-02"
   },
   {
     "file": "libs/core/langchain_core/utils/function_calling.py",
-    "line": 1,
+    "line": 508,
     "tier": "limited_risk",
     "category": "Limited Risk (Article 50)",
     "description": "Synthetic content generation",
@@ -1916,114 +1237,16 @@
       "develop",
       "deploy"
     ],
+    "detected_domains": [],
     "open_question": false,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
-    "omnibus_deadline": "2026-11-02"
-  },
-  {
-    "file": "libs/core/langchain_core/tracers/base.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 3",
-    "description": "Education and vocational training",
-    "indicators": [
-      "education"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 73,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [],
-    "domain_boost": null,
-    "lifecycle_phases": [
-      "plan",
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/core/langchain_core/tracers/langchain.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 3",
-    "description": "Education and vocational training",
-    "indicators": [
-      "education"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 85,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [],
-    "domain_boost": {
-      "boost": 12,
-      "domains_matched": [
-        "education"
-      ],
-      "detail": "Domain keywords detected: education"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
   },
   {
     "file": "libs/core/langchain_core/messages/block_translators/openai.py",
-    "line": 1054,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/core/langchain_core/messages/block_translators/openai.py",
-    "line": 1,
+    "line": 322,
     "tier": "limited_risk",
     "category": "Limited Risk (Article 50)",
     "description": "Synthetic content generation",
@@ -2044,103 +1267,38 @@
       "develop",
       "deploy"
     ],
+    "detected_domains": [],
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
-    "omnibus_deadline": "2026-11-02"
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
   },
   {
-    "file": "libs/core/tests/unit_tests/language_models/chat_models/test_base.py",
-    "line": 122,
+    "file": "libs/core/tests/unit_tests/test_tools.py",
+    "line": 3986,
     "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
     "indicators": [
-      "no_error_handling_ai_call"
+      "unsafe_deserialization"
     ],
-    "confidence_score": 10,
+    "confidence_score": 40,
     "suppressed": false,
     "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
     "lifecycle_phases": [
       "develop"
     ],
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/core/tests/unit_tests/language_models/llms/test_base.py",
-    "line": 58,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/core/tests/unit_tests/callbacks/test_usage_callback.py",
-    "line": 67,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/core/tests/unit_tests/runnables/test_runnable.py",
-    "line": 745,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 10,
-    "suppressed": false,
-    "provenance": "test",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/core/tests/unit_tests/runnables/test_runnable.py",
-    "line": 1,
+    "line": 2834,
     "tier": "limited_risk",
     "category": "Limited Risk (Article 50)",
     "description": "Chatbots and conversational AI",
@@ -2167,15 +1325,16 @@
       "develop",
       "deploy"
     ],
+    "detected_domains": [],
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
-    "omnibus_deadline": "2026-11-02"
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
   },
   {
     "file": "libs/core/tests/unit_tests/messages/block_translators/test_openai.py",
-    "line": 1,
+    "line": 53,
     "tier": "limited_risk",
     "category": "Limited Risk (Article 50)",
     "description": "Synthetic content generation",
@@ -2202,15 +1361,16 @@
       "develop",
       "deploy"
     ],
+    "detected_domains": [],
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
-    "omnibus_deadline": "2026-11-02"
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
   },
   {
     "file": "libs/langchain/tests/unit_tests/evaluation/qa/test_eval_chain.py",
-    "line": 1,
+    "line": 109,
     "tier": "high_risk",
     "category": "Annex III, Category 3",
     "description": "Education and vocational training",
@@ -2248,15 +1408,18 @@
       "plan",
       "develop"
     ],
+    "detected_domains": [
+      "education"
+    ],
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/langchain/langchain_classic/evaluation/qa/eval_prompt.py",
-    "line": 1,
+    "line": 4,
     "tier": "high_risk",
     "category": "Annex III, Category 3",
     "description": "Education and vocational training",
@@ -2294,152 +1457,18 @@
       "plan",
       "develop"
     ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/langchain/langchain_classic/evaluation/criteria/eval_chain.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 8",
-    "description": "Justice and democratic processes",
-    "indicators": [
-      "justice"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 68,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "12",
-        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
-      }
-    ],
-    "domain_boost": {
-      "boost": 15,
-      "domains_matched": [
-        "education",
-        "law_enforcement"
-      ],
-      "detail": "Domain keywords detected: education, law_enforcement"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
+    "detected_domains": [
+      "education"
     ],
     "open_question": false,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/langchain/langchain_classic/output_parsers/fix.py",
-    "line": 75,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/langchain/langchain_classic/output_parsers/retry.py",
-    "line": 111,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/langchain/langchain_classic/agents/openai_functions_multi_agent/base.py",
-    "line": 228,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 40,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/langchain/langchain_classic/agents/openai_functions_agent/base.py",
-    "line": 125,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 40,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/langchain/langchain_classic/tools/steamship_image_generation/tool.py",
-    "line": 1,
+    "line": 7,
     "tier": "limited_risk",
     "category": "Limited Risk (Article 50)",
     "description": "Synthetic content generation",
@@ -2460,151 +1489,16 @@
       "develop",
       "deploy"
     ],
+    "detected_domains": [],
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
-    "omnibus_deadline": "2026-11-02"
-  },
-  {
-    "file": "libs/langchain/langchain_classic/embeddings/cache.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Safety Components",
-    "description": "Safety components under Union harmonisation legislation",
-    "indicators": [
-      "safety_components"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 85,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [
-      {
-        "article": "12",
-        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
-      },
-      {
-        "article": "10",
-        "observation": "RAG (retrieval-augmented generation) pipeline detected \u2014 external data is injected at inference time. Article 10 data governance requirements apply to retrieved data, not only training data. Consider: data source provenance, freshness, access controls, and bias in the retrieval corpus."
-      }
-    ],
-    "domain_boost": {
-      "boost": 12,
-      "domains_matched": [
-        "education"
-      ],
-      "detail": "Domain keywords detected: education"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Aug 2028 (Annex I / sectoral). Trilogue in progress.",
-    "omnibus_deadline": "2028-08-02"
-  },
-  {
-    "file": "libs/langchain/langchain_classic/smith/evaluation/runner_utils.py",
-    "line": 894,
-    "tier": "ai_security",
-    "category": "AI Security (LLM06)",
-    "description": "AI API call detected \u2014 verify error handling is in place",
-    "indicators": [
-      "no_error_handling_ai_call"
-    ],
-    "confidence_score": 40,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
-    "lifecycle_phases": [
-      "develop"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/langchain/langchain_classic/smith/evaluation/runner_utils.py",
-    "line": 764,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
-  },
-  {
-    "file": "libs/langchain/langchain_classic/smith/evaluation/runner_utils.py",
-    "line": 1,
-    "tier": "high_risk",
-    "category": "Annex III, Category 4(b)",
-    "description": "Worker monitoring and task allocation",
-    "indicators": [
-      "high_risk__worker_management"
-    ],
-    "articles": [
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15"
-    ],
-    "exceptions": null,
-    "confidence_score": 90,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [],
-    "domain_boost": {
-      "boost": 17,
-      "domains_matched": [
-        "education"
-      ],
-      "detail": "Domain keywords detected: education + automated decision logic"
-    },
-    "lifecycle_phases": [
-      "plan",
-      "develop"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
   },
   {
     "file": "libs/langchain/langchain_classic/utilities/dalle_image_generator.py",
-    "line": 1,
+    "line": 6,
     "tier": "limited_risk",
     "category": "Limited Risk (Article 50)",
     "description": "Synthetic content generation",
@@ -2625,34 +1519,12 @@
       "develop",
       "deploy"
     ],
+    "detected_domains": [],
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
-    "omnibus_deadline": "2026-11-02"
-  },
-  {
-    "file": "libs/langchain/langchain_classic/chains/llm_math/base.py",
-    "line": 280,
-    "tier": "ai_security",
-    "category": "AI Security (LLM02)",
-    "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
-    "indicators": [
-      "sensitive_info_disclosure"
-    ],
-    "confidence_score": 80,
-    "suppressed": false,
-    "provenance": "production",
-    "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
-    "lifecycle_phases": [
-      "develop",
-      "operate"
-    ],
-    "open_question": false,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
-    "omnibus_deadline": "2027-12-02"
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
   },
   {
     "file": "libs/langchain/langchain_classic/chains/llm_math/base.py",
@@ -2673,47 +1545,12 @@
     "open_question": false,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
-    "file": "libs/langchain/langchain_classic/chains/conversation/base.py",
-    "line": 1,
-    "tier": "limited_risk",
-    "category": "Limited Risk (Article 50)",
-    "description": "Chatbots and conversational AI",
-    "indicators": [
-      "chatbots"
-    ],
-    "articles": [
-      "50"
-    ],
-    "exceptions": null,
-    "confidence_score": 45,
-    "suppressed": false,
-    "provenance": "production",
-    "risk_decision": null,
-    "observations": [],
-    "domain_boost": {
-      "boost": 12,
-      "domains_matched": [
-        "education"
-      ],
-      "detail": "Domain keywords detected: education"
-    },
-    "lifecycle_phases": [
-      "develop",
-      "deploy"
-    ],
-    "open_question": true,
-    "deadline": "2026-08-02",
-    "deadline_status": "current_law",
-    "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
-    "omnibus_deadline": "2026-11-02"
-  },
-  {
     "file": "libs/standard-tests/langchain_tests/integration_tests/sandboxes.py",
-    "line": 1191,
+    "line": 1280,
     "tier": "agent_autonomy",
     "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
     "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
@@ -2729,12 +1566,12 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   },
   {
     "file": "libs/standard-tests/langchain_tests/integration_tests/sandboxes.py",
-    "line": 1203,
+    "line": 1292,
     "tier": "agent_autonomy",
     "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
     "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
@@ -2750,7 +1587,7 @@
     "open_question": true,
     "deadline": "2026-08-02",
     "deadline_status": "current_law",
-    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027.",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
     "omnibus_deadline": "2027-12-02"
   }
 ]

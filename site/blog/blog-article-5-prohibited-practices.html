@@ -22,6 +22,9 @@
       }
     </style>
     <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Article 5 Prohibited AI Practices &mdash; Regula</title>
     <meta name="description" content="Article 5 prohibited AI practices are enforceable since Feb 2025, with fines up to EUR 35M or 7% of turnover. How to scan your codebase.">
     <meta name="robots" content="index, follow, max-image-preview:large">
@@ -45,7 +48,7 @@
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "Article",
+        "@type": "BlogPosting",
         "headline": "Article 5 Prohibited AI Practices — Regula",
         "description": "Article 5 prohibited AI practices have been enforceable since 2 February 2025, with fines up to EUR 35 million or 7% of turnover. Here's how to scan your codebase for them.",
         "url": "https://getregula.com/blog/blog-article-5-prohibited-practices.html",
@@ -193,7 +196,8 @@
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
-        <span class="active">Blog</span>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
         <a href="/">EN</a>
         <a href="/locales/de.html">DE</a>
         <a href="/locales/pt-br.html">BR</a>
@@ -222,7 +226,7 @@
 <div class="blog-sep"></div>
 
 <aside style="background:rgba(59,130,246,0.08);border-left:3px solid var(--accent);padding:12px 16px;margin:0 0 24px;border-radius:4px;font-size:0.9rem;color:var(--text-2);">
-<strong>Editor's note (June 2026):</strong> The Digital Omnibus reached provisional agreement on 7 May 2026 and was approved by the European Parliament on 16 June 2026 (423 for, 57 against, 174 abstentions). Annex III high-risk deadlines are deferred to 2 December 2027 (pending Council adoption and OJ publication). The Omnibus adds 2 new Article 5 prohibitions (non-consensual intimate imagery and CSAM generation), bringing the total to 10; these take effect 2 December 2026. The original 8 prohibitions described below remain unchanged and have been in force since 2 February 2025. See <a href="/blog/writing.html" style="color:var(--accent);">the blog index</a> for current coverage.
+<strong>Editor's note (June 2026):</strong> The Digital Omnibus reached provisional agreement on 7 May 2026 and was approved by the European Parliament on 16 June 2026 (423 for, 57 against, 174 abstentions). Annex III high-risk deadlines are deferred to 2 December 2027 (approved by Council on 29 June 2026; pending OJ publication). The Omnibus adds 2 new Article 5 prohibitions (non-consensual intimate imagery and CSAM generation), bringing the total to 10; these take effect 2 December 2026. The original 8 prohibitions described below remain unchanged and have been in force since 2 February 2025. See <a href="/blog/writing.html" style="color:var(--accent);">the blog index</a> for current coverage.
 </aside>
 
 <div class="blog-body">
@@ -392,7 +396,7 @@ user_social_score = calculate_engagement_points(activity_log)</code></pre>
 
     <h2>The Omnibus doesn't change this</h2>
 
-    <p>The Digital Omnibus on AI, which reached provisional agreement on 7 May 2026 and was approved by the European Parliament on 16 June 2026, defers Annex III high-risk deadlines to 2 December 2027 (pending Council adoption and OJ publication). It does not modify the original 8 Article 5 prohibitions or their 2 February 2025 application date. The Omnibus does add 2 new prohibitions (non-consensual intimate imagery and CSAM generation), which take effect on 2 December 2026. The 8 categories described in this article remain fully enforceable now.</p>
+    <p>The Digital Omnibus on AI, which reached provisional agreement on 7 May 2026 and was approved by the European Parliament on 16 June 2026, defers Annex III high-risk deadlines to 2 December 2027 (approved by Council on 29 June 2026; pending OJ publication). It does not modify the original 8 Article 5 prohibitions or their 2 February 2025 application date. The Omnibus does add 2 new prohibitions (non-consensual intimate imagery and CSAM generation), which take effect on 2 December 2026. The 8 categories described in this article remain fully enforceable now.</p>
 
     <p>I keep seeing this cause confusion, so I want to be direct. The <a href="/blog/blog-omnibus-delay.html">Digital Omnibus on AI</a>, currently in trilogue negotiations, proposes delaying the deadlines for <strong>high-risk AI systems</strong>. It doesn't touch Article 5.</p>
 
@@ -458,11 +462,13 @@ user_social_score = calculate_engagement_points(activity_log)</code></pre>
         <div class="foot-left">
             <div class="foot-brand">Regula</div>
             <div class="foot-links">
-        <a href="/guides/">Guides</a>
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
                 <a href="https://pypi.org/project/regula-ai/">PyPI</a>
                 <a href="/blog/writing.html">Blog</a>
                 <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
             </div>
             <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
         </div>

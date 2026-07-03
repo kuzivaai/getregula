@@ -9,6 +9,12 @@ Disallow: /blog-risk-tiers-in-code.html
 Disallow: /de.html
 Disallow: /pt-br.html
 Disallow: /writing.html
+Disallow: /regulations.html
+Disallow: /south-africa-ai-policy.html
+Disallow: /south-korea-ai-regulation.html
+Disallow: /colorado-ai-regulation.html
+Disallow: /uae.html
+Disallow: /uk-ai-regulation.html
 
 # AI search and assistant crawlers (updated 14 June 2026)
 # Sources: ai-robots-txt/ai.robots.txt repo (3 Jun 2026), vendor docs

@@ -15,6 +15,9 @@
       }
     </style>
     <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
     <title>EU AI Act Compliance for JavaScript and TypeScript Developers</title>
     <meta name="description" content="JavaScript and TypeScript AI libraries like OpenAI SDK, LangChain, TensorFlow.js, and Vercel AI SDK trigger EU AI Act risk patterns. How to scan your JS/TS code and what the findings mean.">
@@ -145,11 +148,13 @@
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
-        <a href="/regions/regulations.html">Regulations</a>
-        <a href="/blog/writing.html">Blog</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
         <a href="/">EN</a>
         <a href="/locales/de.html">DE</a>
         <a href="/locales/pt-br.html">BR</a>
@@ -385,7 +390,7 @@ jobs:
 
 <h2>Omnibus amendment and enforcement timeline</h2>
 
-<p>The EU AI Act entered into force on 1 August 2024. Article 5 (prohibited practices) became enforceable on 2 February 2025. However, the EU Omnibus simplification package has changed the timeline for Annex III high-risk categories: the provisional agreement was reached on 7 May 2026, and the European Parliament approved it on 16 June 2026. Pending Council adoption, Annex III high-risk obligations (Articles 9-15) are deferred to <strong>2 December 2027</strong>.</p>
+<p>The EU AI Act entered into force on 1 August 2024. Article 5 (prohibited practices) became enforceable on 2 February 2025. However, the EU Omnibus simplification package has changed the timeline for Annex III high-risk categories: the provisional agreement was reached on 7 May 2026, and the European Parliament approved it on 16 June 2026. The Council approved it on 29 June 2026; pending OJ publication, Annex III high-risk obligations (Articles 9-15) are deferred to <strong>2 December 2027</strong>.</p>
 
 <p>That deferral is not a reason to ignore compliance. Building <a href="/guides/article-9-risk-management.html">risk management</a>, <a href="/guides/article-14-human-oversight.html">human oversight</a>, and logging into your JavaScript applications now means less rework when the deadline arrives. Retrofitting compliance into a production system is harder than building it in from the start.</p>
 
@@ -435,11 +440,13 @@ jobs:
         <div class="foot-left">
             <div class="foot-brand">Regula</div>
             <div class="foot-links">
-        <a href="/guides/">Guides</a>
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
                 <a href="https://pypi.org/project/regula-ai/">PyPI</a>
                 <a href="/blog/writing.html">Blog</a>
                 <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
             </div>
             <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
         </div>

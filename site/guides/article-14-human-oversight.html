@@ -15,6 +15,9 @@
       }
     </style>
     <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
     <title>EU AI Act Article 14: Human Oversight Requirements for AI Systems</title>
     <meta name="description" content="Article 14 requires high-risk AI systems to have human oversight gates. How to check your codebase for review-before-action patterns with cross-file flow analysis.">
@@ -123,7 +126,7 @@
           "name": "When do Article 14 obligations take effect?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Article 14 applies to high-risk AI systems. The Digital Omnibus (EP approved 16 June 2026; pending Council adoption) defers Annex III high-risk obligations to 2 December 2027. Until OJ publication, the original 2 August 2026 deadline remains legally binding."
+            "text": "Article 14 applies to high-risk AI systems. The Digital Omnibus (EP approved 16 June 2026, Council approved 29 June 2026; pending OJ publication) defers Annex III high-risk obligations to 2 December 2027. Until OJ publication, the original 2 August 2026 deadline remains legally binding."
           }
         }
       ]
@@ -148,8 +151,9 @@
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
-        <a href="/regions/regulations.html">Regulations</a>
-        <a href="/blog/writing.html">Blog</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
         <a href="/">EN</a>
         <a href="/locales/de.html">DE</a>
         <a href="/locales/pt-br.html">BR</a>
@@ -277,7 +281,7 @@ Article 14 — Human oversight
 
 <h2>Deadline</h2>
 
-<p>Article 14 applies to high-risk AI systems. The Digital Omnibus (provisional agreement 7 May 2026, approved by European Parliament 16 June 2026) defers Annex III high-risk obligations to 2 December 2027. Annex I product-embedded AI is deferred to 2 August 2028. Council adoption is expected before 2 August 2026. Until Official Journal publication, the original 2 August 2026 deadline remains legally binding.</p>
+<p>Article 14 applies to high-risk AI systems. The Digital Omnibus (provisional agreement 7 May 2026, approved by European Parliament 16 June 2026) defers Annex III high-risk obligations to 2 December 2027. Annex I product-embedded AI is deferred to 2 August 2028. The Council approved it on 29 June 2026; publication in the Official Journal is expected before 2 August 2026. Until Official Journal publication, the original 2 August 2026 deadline remains legally binding.</p>
 
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
@@ -309,11 +313,13 @@ Article 14 — Human oversight
         <div class="foot-left">
             <div class="foot-brand">Regula</div>
             <div class="foot-links">
-        <a href="/guides/">Guides</a>
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
                 <a href="https://pypi.org/project/regula-ai/">PyPI</a>
                 <a href="/blog/writing.html">Blog</a>
                 <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
             </div>
             <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
         </div>
