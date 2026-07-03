@@ -1,0 +1,185 @@
+name: Release
+
+# Triggered when a version tag is pushed (e.g. v1.7.4, v2.0.0).
+# The three jobs run in sequence: build → publish → verify.
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # build — compile a source distribution and wheel, then verify their
+  # contents before anything is uploaded to PyPI.
+  # ──────────────────────────────────────────────────────────────────────────
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Fetch the full repository so pyproject.toml and all package data
+      # are available to the build backend.
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      # Pin to 3.12 — the same version used by lint and claim-audit in CI.
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      # The `build` front-end drives setuptools via pyproject.toml.
+      # No other build-time deps are needed: setuptools is bundled.
+      - name: Install build dependencies
+        run: pip install build
+
+      # Produces dist/regula_ai-*.tar.gz (sdist) and dist/regula_ai-*.whl.
+      # The wheel is what end-users install; the sdist satisfies PyPI policy.
+      - name: Build sdist and wheel
+        run: python3 -m build
+
+      # Unpack the wheel (it's a ZIP archive) and confirm that the three
+      # jurisdiction YAML files and the CV-screening demo script are present.
+      # These are the most commonly missing assets when package-data globs
+      # are misconfigured; catching it here avoids a broken published release.
+      - name: Verify wheel contents
+        run: |
+          set -euo pipefail
+
+          WHEEL=$(ls dist/regula_ai-*.whl)
+          echo "Inspecting: $WHEEL"
+
+          # Extract the wheel's file list without unpacking to disk
+          CONTENTS=$(python3 -c "import zipfile, sys; zf=zipfile.ZipFile(sys.argv[1]); print('\n'.join(zf.namelist()))" "$WHEEL")
+
+          MISSING=0
+
+          check() {
+            local pattern="$1"
+            if echo "$CONTENTS" | grep -q "$pattern"; then
+              echo "  PRESENT  $pattern"
+            else
+              echo "  MISSING  $pattern"
+              MISSING=1
+            fi
+          }
+
+          # CV-screening demo (scripts/demos/)
+          check "scripts/demos/cv_screening_app.py"
+
+          # Jurisdiction YAML reference files (references/jurisdictions/)
+          check "references/jurisdictions/eu_ai_act.yaml"
+          check "references/jurisdictions/south_korea.yaml"
+          check "references/jurisdictions/colorado.yaml"
+
+          if [ "$MISSING" -eq 1 ]; then
+            echo ""
+            echo "::error::One or more required files are missing from the wheel."
+            echo "Check [tool.setuptools.package-data] in pyproject.toml."
+            exit 1
+          fi
+
+          echo ""
+          echo "All required files are present in the wheel."
+
+      # Upload dist/ so the publish job can download it without rebuilding.
+      # Artifacts are retained for 1 day (releases are immutable via the tag).
+      - name: Upload dist/ as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # publish — upload the verified distribution to PyPI using OIDC trusted
+  # publishing (no API token stored in secrets).
+  # ──────────────────────────────────────────────────────────────────────────
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+
+    # The `pypi` environment gates this job behind PyPI's trusted-publisher
+    # configuration.  Configure it at:
+    # https://pypi.org/manage/project/regula-ai/settings/publishing/
+    environment: pypi
+
+    # id-token: write is required for the OIDC exchange that lets
+    # pypa/gh-action-pypi-publish authenticate without a stored API token.
+    permissions:
+      id-token: write
+
+    steps:
+      # Download the dist/ artifact produced by the build job.
+      # The publish action expects to find .whl and .tar.gz files here.
+      - name: Download dist/ artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      # Publish to PyPI using OIDC (no PYPI_API_TOKEN secret needed).
+      # Trusted publishing must be configured on the PyPI project first.
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # verify — install the freshly published package from PyPI and run a
+  # smoke-test to confirm the release is functional end-to-end.
+  # ──────────────────────────────────────────────────────────────────────────
+  verify:
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      # Strip the leading "v" from the tag (v1.7.4 → 1.7.4) so it matches
+      # the PEP 440 version on PyPI.
+      - name: Derive PyPI version from tag
+        id: version
+        run: |
+          RAW="${{ github.ref_name }}"
+          VERSION="${RAW#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      # PyPI CDN propagation typically takes 30–90 s after the upload
+      # completes.  60 s is the conservative minimum before pip can resolve
+      # the new version.
+      - name: Wait 60 s for PyPI propagation
+        run: sleep 60
+
+      # Set up a clean Python environment to simulate a fresh user install.
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      # Install the exact version that was just published.
+      # The == pin ensures we test the tag's release, not a cached older build.
+      - name: Install regula-ai from PyPI
+        run: pip install "regula-ai==${{ steps.version.outputs.version }}"
+
+      # Confirm the installed version string matches the tag.
+      - name: "Smoke-test: regula --version"
+        run: regula --version
+
+      # Run the built-in self-test suite (covers core classification logic).
+      - name: "Smoke-test: regula self-test"
+        run: regula self-test
+
+      # Run the packaged demo to confirm scripts/demos/ is present and
+      # executable after install.
+      - name: "Smoke-test: regula demo"
+        run: regula demo
+
+      # Print attestation verification instructions so release notes and
+      # security-conscious users know how to validate the provenance of
+      # the published wheel.
+      - name: Print attestation verification instructions
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          echo ""
+          echo "Attestation can be verified at:"
+          echo "  https://pypi.org/project/regula-ai/#files"
+          echo "  (click the attestation badge next to the wheel)"
+          echo ""
+          echo "Or via the CLI:"
+          echo "  python3 -m pip download regula-ai==${VERSION} --no-deps -d /tmp"
+          echo "  python3 -m pip install pypi-attestation-models"
+          echo "  python3 -m pypi_attestations verify /tmp/regula_ai-*.whl"
