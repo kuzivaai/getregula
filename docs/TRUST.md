@@ -176,7 +176,27 @@ injection scanner on psycopg2 itself. Discovering this 36.8% figure is
 not a contradiction of the 83.5% headline — it is a different corpus
 measuring a different thing.
 
+**Development corpus per-tier precision (v1.7.3, `benchmarks/label.py score --breakdown`):**
+
+| Tier | TP | FP | Precision |
+|------|-----|-----|-----------|
+| ai_security | 33 | 11 | 75.0% |
+| agent_autonomy | 47 | 20 | 70.1% |
+| limited_risk | 5 | 3 | 62.5% |
+| high_risk | 38 | 38 | 50.0% |
+| credential_exposure | 2 | 5 | 28.6% |
+| minimal_risk | 39 | 205 | 16.0% |
+
+**By corpus type:** application code 66.1% (125 TP, 64 FP); library source code 15.2% (39 TP, 218 FP).
+
+**By language:** Python 36.7% (160 TP, 276 FP); TypeScript 0.0% (0 TP, 6 FP); Jupyter/YAML/PKL 100% (3 TP, 0 FP; N too small for significance).
+
 Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
+
+### 3.5 Known limitations
+
+- **TypeScript precision is 0% on the current benchmark** (0 TP, 6 FP). All six TypeScript false positives are domain-keyword matches (biometrics, employment) in UI components, type definitions, and configuration files where no AI inference occurs. Regula has no TypeScript-specific AST gating — regex patterns match across all languages without language-aware filtering. TypeScript findings should be treated as advisory until language-specific precision improvements are implemented.
+- **Library source code** triggers a high false-positive rate (15.2% precision on library corpora). This is structural: AI frameworks implement the same APIs that Regula's patterns flag. Running Regula on framework source code (e.g., scikit-learn, langchain) is analogous to running an SQL injection scanner on a database driver. Use `--scope production` (default) and `--skip-tests` (default) to focus on application code, where precision is 66.1%.
 
 ### 3.6 Security posture — bandit, semgrep, pip-audit
 
