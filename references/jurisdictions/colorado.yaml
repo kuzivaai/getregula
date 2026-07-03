@@ -4,6 +4,17 @@ law_reference: "C.R.S. Title 6, Article 1, Part 17"
 effective_date: "2027-01-01"
 status: "Enacted, not yet effective"
 
+definitions:
+  admt:
+    term: "Automated Decision-Making Technology"
+    citation: "C.R.S. § 6-1-1701(1)"
+    text: "Any system that uses computation to make or be a substantial factor in making a consequential decision concerning a consumer, including the use of machine learning, artificial intelligence, or other statistical or computational techniques."
+
+ag_rulemaking:
+  deadline: "2027-01-01"
+  citation: "C.R.S. § 6-1-1706"
+  description: "The Colorado Attorney General must adopt rules implementing the Act by 1 January 2027."
+
 penalties:
   per_violation: "$20,000"
   enforcement: "Colorado Attorney General only"
