@@ -15,6 +15,9 @@
       }
     </style>
     <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
     <title>EU AI Act and Healthcare: What AI in Medicine Must Comply With | Regula</title>
     <meta name="description" content="Medical device AI is high-risk under Annex I (MDR/IVDR). Healthcare triage AI falls under Annex III Category 5. What Articles 9-15 require and how to scan your code.">
@@ -105,7 +108,7 @@
           "name": "Is AI used in medical devices high-risk under the EU AI Act?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Article 6(1) cross-references Annex I Section A, which lists Regulation (EU) 2017/745 (Medical Devices Regulation) and Regulation (EU) 2017/746 (In Vitro Diagnostic Medical Devices Regulation). If your AI system is itself a medical device, or is a safety component of a medical device, it is classified as high-risk. This applies regardless of whether the device is Class IIa, IIb, or III under the MDR. The compliance deadline for Annex I high-risk systems has been deferred to 2 August 2028 under the Digital Omnibus (European Parliament approved 16 June 2026, pending Council adoption)."
+            "text": "Yes. Article 6(1) cross-references Annex I Section A, which lists Regulation (EU) 2017/745 (Medical Devices Regulation) and Regulation (EU) 2017/746 (In Vitro Diagnostic Medical Devices Regulation). If your AI system is itself a medical device, or is a safety component of a medical device, it is classified as high-risk. This applies regardless of whether the device is Class IIa, IIb, or III under the MDR. The compliance deadline for Annex I high-risk systems has been deferred to 2 August 2028 under the Digital Omnibus (European Parliament approved 16 June 2026, approved by Council 29 June 2026, pending OJ publication)."
           }
         },
         {
@@ -113,7 +116,7 @@
           "name": "Does the EU AI Act cover AI used in emergency triage or healthcare access?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Annex III Category 5 covers AI systems intended for use in access to and enjoyment of essential public and private services. Emergency dispatch systems, triage tools, and AI that determines patient priority for healthcare services fall under this category. These systems are high-risk and must comply with Articles 9 through 15. The compliance deadline for Annex III high-risk systems has been deferred to 2 December 2027 under the Digital Omnibus (European Parliament approved 16 June 2026, pending Council adoption)."
+            "text": "Yes. Annex III Category 5 covers AI systems intended for use in access to and enjoyment of essential public and private services. Emergency dispatch systems, triage tools, and AI that determines patient priority for healthcare services fall under this category. These systems are high-risk and must comply with Articles 9 through 15. The compliance deadline for Annex III high-risk systems has been deferred to 2 December 2027 under the Digital Omnibus (European Parliament approved 16 June 2026, approved by Council 29 June 2026, pending OJ publication)."
           }
         },
         {
@@ -140,11 +143,13 @@
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
-        <a href="/regions/regulations.html">Regulations</a>
-        <a href="/blog/writing.html">Blog</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
         <a href="/">EN</a>
         <a href="/locales/de.html">DE</a>
         <a href="/locales/pt-br.html">BR</a>
@@ -174,7 +179,7 @@
 
 <p>This covers a wide range of software: diagnostic imaging AI, pathology analysis tools, AI-assisted surgical planning, clinical decision support systems that are classified as medical devices under the MDR, and AI components embedded in physical medical devices. The classification follows the MDR/IVDR classification, not the AI Act&rsquo;s own risk categories.</p>
 
-<p>The compliance deadline for Annex I high-risk systems has been deferred to <strong>2 August 2028</strong> under the <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442">Digital Omnibus</a> (provisional agreement 7 May 2026, European Parliament approved 16 June 2026, pending Council adoption).</p>
+<p>The compliance deadline for Annex I high-risk systems has been deferred to <strong>2 August 2028</strong> under the <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442">Digital Omnibus</a> (provisional agreement 7 May 2026, European Parliament approved 16 June 2026, approved by Council 29 June 2026, pending OJ publication).</p>
 
 <p>If your system falls under Annex I, the conformity assessment follows the MDR/IVDR procedures. This typically involves a notified body. You do not get to self-assess.</p>
 
@@ -317,7 +322,7 @@ Regula Scan: sample_medical.py
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
-    <strong>Omnibus caveat:</strong> All dates referencing the Digital Omnibus are based on the provisional political agreement of 7 May 2026, approved by the European Parliament on 16 June 2026. Council adoption is expected before 2 August 2026. Until Council adoption and OJ publication, the original EU AI Act deadlines technically remain in force.
+    <strong>Omnibus caveat:</strong> All dates referencing the Digital Omnibus are based on the provisional political agreement of 7 May 2026, approved by the European Parliament on 16 June 2026. The Council approved it on 29 June 2026; publication in the Official Journal is expected before 2 August 2026. Until OJ publication, the original EU AI Act deadlines technically remain in force.
 </p>
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
@@ -349,11 +354,13 @@ Regula Scan: sample_medical.py
         <div class="foot-left">
             <div class="foot-brand">Regula</div>
             <div class="foot-links">
-        <a href="/guides/">Guides</a>
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
                 <a href="https://pypi.org/project/regula-ai/">PyPI</a>
                 <a href="/blog/writing.html">Blog</a>
                 <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
             </div>
             <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
         </div>

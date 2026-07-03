@@ -22,6 +22,9 @@
       }
     </style>
     <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Regula — EU AI Act Compliance for UAE & GCC Companies</title>
     <meta name="description" content="EU AI Act compliance for UAE and GCC companies. If your AI features touch EU users, you need to comply. Free CLI that audits your codebase.">
     <meta name="robots" content="index, follow, max-image-preview:large">
@@ -273,27 +276,28 @@
 <a href="#main" class="skip-link">Skip to content</a>
 
 <nav class="nav" id="nav" aria-label="Main navigation">
-    <a href="/" class="nav-brand">Regula</a>
-    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
-        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
-        <a href="/guides/">Guides</a>
-        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
-        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
-        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
-        <a href="/">EN</a>
-        <a href="/locales/de.html">DE</a>
-        <a href="/locales/pt-br.html">BR</a>
-    </dialog>
-</nav>
+        <a href="/" class="nav-brand">Regula</a>
+        <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+        <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+            <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+            <a href="/guides/">Guides</a>
+            <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+            <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+            <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+            <a href="/about.html">About</a>
+            <a href="/">EN</a>
+            <a href="/locales/de.html">DE</a>
+            <a href="/locales/pt-br.html">BR</a>
+        </dialog>
+    </nav>
 
 <!-- HERO -->
 <main id="main">
 <section class="hero">
     <div class="badge">For DIFC, ADGM &amp; GCC AI teams selling into Europe</div>
     <h1>If your AI features touch EU users, you&rsquo;re <span class="hl">already liable</span>.</h1>
-    <p class="sub">The EU AI Act applies <strong>extraterritorially</strong>. A UAE-licensed company that ships AI to EU customers is a &ldquo;provider&rdquo; or &ldquo;deployer&rdquo; under Article&nbsp;2(1)(c) — and on the hook for fines up to <strong>&euro;35M or 7% of global turnover</strong>. Art&nbsp;50 transparency applies from <strong>2 August 2026</strong>; Annex&nbsp;III high-risk from <strong>2 December 2027</strong> (Omnibus agreed, approved by European Parliament on 16 June 2026; pending Council adoption and OJ publication). Regula audits your codebase locally in one command. Free, open-source, no consultants.</p>
+    <p class="sub">The EU AI Act applies <strong>extraterritorially</strong>. A UAE-licensed company that ships AI to EU customers is a &ldquo;provider&rdquo; or &ldquo;deployer&rdquo; under Article&nbsp;2(1)(c) — and on the hook for fines up to <strong>&euro;35M or 7% of global turnover</strong>. Art&nbsp;50 transparency applies from <strong>2 August 2026</strong>; Annex&nbsp;III high-risk from <strong>2 December 2027</strong> (Omnibus agreed, approved by European Parliament on 16 June 2026; approved by Council on 29 June 2026; pending OJ publication). Regula audits your codebase locally in one command. Free, open-source, no consultants.</p>
 
     <button type="button" class="cta-pill" onclick="copyCmd(this, 'pipx install regula-ai \u0026\u0026 regula quickstart')">
         <span>&#9654;</span>
@@ -310,7 +314,7 @@
         <span class="sp-sep" aria-hidden="true">&middot;</span>
         <span>zero runtime dependencies</span>
         <span class="sp-sep" aria-hidden="true">&middot;</span>
-        <span>2,468 tests</span>
+        <span>2,484 tests</span>
         <span class="sp-sep" aria-hidden="true">&middot;</span>
         <span>0 known security findings</span>
     </div>
@@ -339,7 +343,7 @@
         </div>
         <div class="card-base liab-card">
             <h3>High-risk deadline: 2 December 2027 (Omnibus)</h3>
-            <p>The Digital Omnibus provisional agreement of 7 May 2026 defers Annex III high-risk obligations from 2 August 2026 to 2 December 2027. The European Parliament approved the Omnibus on 16 June 2026 (423 for, 57 against, 174 abstentions). Council adoption is expected before 2 August 2026. Until OJ publication, the original August 2026 deadline remains legally binding. Article 50 transparency obligations still apply from 2 August 2026.</p>
+            <p>The Digital Omnibus provisional agreement of 7 May 2026 defers Annex III high-risk obligations from 2 August 2026 to 2 December 2027. The European Parliament approved the Omnibus on 16 June 2026 (423 for, 57 against, 174 abstentions). The Council approved it on 29 June 2026; publication in the Official Journal is expected before 2 August 2026. Until OJ publication, the original August 2026 deadline remains legally binding. Article 50 transparency obligations still apply from 2 August 2026.</p>
             <p class="ref">Source: Council press release, 7 May 2026; Regulation (EU) 2024/1689 Article 113</p>
         </div>
     </div>
@@ -437,11 +441,26 @@ Regula Quickstart
 </main>
 
 <footer>
-    <p style="margin-bottom: 16px; padding: 12px; background: #fff8e7; border-left: 3px solid #d4a017; font-size: 13px; color: #3f3a26;"><strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions.</p>
-    <p>Regula is an open-source project. The maintainer is happy to take an introduction call from any DIFC, ADGM, Hub71, or NEOM-portfolio team that wants a structured walk-through. Email <a href="mailto:support@getregula.com">support@getregula.com</a> or open a discussion on <a href="https://github.com/kuzivaai/getregula/issues">GitHub</a>.</p>
-    <p style="margin-top: 12px;">Sources for the legal claims on this page: <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Regulation (EU) 2024/1689</a>, <a href="https://www.afriwise.com/blog/extraterritorial-application-of-the-eu-ai-act-what-non-eu-companies-should-know">Afriwise — Extraterritorial Application of the EU AI Act</a>, <a href="https://www.twobirds.com/en/insights/2025/united-arab-emirates/gcc-navigating-ai-regulations---the-current-landscape">Bird &amp; Bird — GCC AI Regulations Tracker</a>.</p>
-        <a href="/guides/">Guides</a>
-    <p style="margin-top: 16px; font-size: 12px; color: #9898b4;">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula &middot; <a href="/" style="color:#9898b4;">Global page</a> &middot; <a href="https://github.com/kuzivaai/getregula" style="color:#9898b4;">GitHub</a> &middot; <a href="https://github.com/kuzivaai/getregula/blob/main/SECURITY.md" style="color:#9898b4;">Security</a></p>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
 </footer>
 
 <script>

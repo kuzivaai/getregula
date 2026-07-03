@@ -15,6 +15,9 @@
       }
     </style>
     <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
     <title>How to Classify Your AI System Under the EU AI Act | Regula</title>
     <meta name="description" content="Classification depends on intended purpose and deployment context, not just code. A guide to Article 6, risk tiers, and what code scanning can tell you.">
@@ -53,7 +56,7 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Article",
+      "@type": "BlogPosting",
       "headline": "How to Classify Your AI System Under the EU AI Act",
       "description": "Classification depends on intended purpose and deployment context. A developer guide to Article 6, the four risk tiers, and what code scanning can and cannot tell you.",
       "image": "https://getregula.com/assets/og-image.png",
@@ -118,7 +121,7 @@
           "name": "When do the high-risk obligations start applying?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Under the Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026, Annex III (use-based) high-risk obligations are postponed to 2 December 2027. Annex I (product-embedded) obligations apply from 2 August 2028. Council adoption is expected before 2 August 2026. Until Council adoption and OJ publication, the original 2 August 2026 deadline remains technically in force."
+            "text": "Under the Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026, Annex III (use-based) high-risk obligations are postponed to 2 December 2027. Annex I (product-embedded) obligations apply from 2 August 2028. The Council approved it on 29 June 2026; publication in the Official Journal is expected before 2 August 2026. Until OJ publication, the original 2 August 2026 deadline remains technically in force."
           }
         },
         {
@@ -134,7 +137,7 @@
           "name": "What are the Article 5 prohibitions under the EU AI Act?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Article 5 defines practices not permitted under the Act. The original 8 categories have been enforceable since 2 February 2025. The Digital Omnibus (provisional agreement 7 May 2026, approved by European Parliament 16 June 2026) adds 2 further categories (CSAM and NCII generation), bringing the total to 10; these 2 new prohibitions take effect on 2 December 2026 (pending Council adoption and OJ publication). The specific categories are listed in Article 5(1)(a) through (h) of the original text plus the Omnibus additions. If your system falls into any of these categories, it may not be placed on the EU market."
+            "text": "Article 5 defines practices not permitted under the Act. The original 8 categories have been enforceable since 2 February 2025. The Digital Omnibus (provisional agreement 7 May 2026, approved by European Parliament 16 June 2026) adds 2 further categories (CSAM and NCII generation), bringing the total to 10; these 2 new prohibitions take effect on 2 December 2026 (approved by Council on 29 June 2026; pending OJ publication). The specific categories are listed in Article 5(1)(a) through (h) of the original text plus the Omnibus additions. If your system falls into any of these categories, it may not be placed on the EU market."
           }
         }
       ]
@@ -149,7 +152,7 @@
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
-<nav class="nav" id="nav" aria-label="Primary">
+<nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
@@ -157,8 +160,9 @@
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
-        <a href="/regions/regulations.html">Regulations</a>
-        <a href="/blog/writing.html">Blog</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
         <a href="/">EN</a>
         <a href="/locales/de.html">DE</a>
         <a href="/locales/pt-br.html">BR</a>
@@ -177,10 +181,10 @@
 <p>The EU AI Act classifies AI systems into four tiers: practices not permitted (Article 5), high-risk (Annex III use-based or Annex I product-embedded), limited risk (Article 50 transparency obligations), and minimal risk (no specific obligations). Your compliance obligations, deadlines, and conformity assessment requirements depend entirely on which tier your system falls into.</p>
 <p>The EU AI Act sorts AI systems into four tiers. Your obligations depend entirely on which tier applies.</p>
 <h3>Practices not permitted (Article&nbsp;5)</h3>
-<p>Article&nbsp;5 defines 10 categories of AI practices not permitted under the Act &mdash; 8 in the original text (in force since 2&nbsp;February&nbsp;2025) plus 2 additions from the <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442">Digital Omnibus</a> provisional agreement, approved by European Parliament on 16&nbsp;June&nbsp;2026 (the 2 new prohibitions take effect 2&nbsp;December&nbsp;2026, pending Council adoption and OJ publication). If your system falls into any of these categories, it may not be placed on the EU market. See <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Article&nbsp;5(1) of Regulation&nbsp;(EU)&nbsp;2024/1689</a> for the full list.</p>
+<p>Article&nbsp;5 defines 10 categories of AI practices not permitted under the Act &mdash; 8 in the original text (in force since 2&nbsp;February&nbsp;2025) plus 2 additions from the <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442">Digital Omnibus</a> provisional agreement, approved by European Parliament on 16&nbsp;June&nbsp;2026 (the 2 new prohibitions take effect 2&nbsp;December&nbsp;2026, approved by Council on 29 June 2026; pending OJ publication). If your system falls into any of these categories, it may not be placed on the EU market. See <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Article&nbsp;5(1) of Regulation&nbsp;(EU)&nbsp;2024/1689</a> for the full list.</p>
 
 <h3>High-risk: use-based (Annex&nbsp;III)</h3>
-<p>Systems whose intended purpose falls into one of eight domains: biometrics, critical infrastructure, education and vocational training, employment, access to essential services, law enforcement, migration and border control, and administration of justice. Classification is determined by what the system is <em>used for</em>, not what libraries it imports. Compliance deadline: <strong>2&nbsp;December&nbsp;2027</strong> (Digital Omnibus provisional agreement of 7&nbsp;May&nbsp;2026, approved by European Parliament on 16&nbsp;June&nbsp;2026; pending Council adoption and OJ publication; original deadline was 2&nbsp;August&nbsp;2026).</p>
+<p>Systems whose intended purpose falls into one of eight domains: biometrics, critical infrastructure, education and vocational training, employment, access to essential services, law enforcement, migration and border control, and administration of justice. Classification is determined by what the system is <em>used for</em>, not what libraries it imports. Compliance deadline: <strong>2&nbsp;December&nbsp;2027</strong> (Digital Omnibus provisional agreement of 7&nbsp;May&nbsp;2026, approved by European Parliament on 16&nbsp;June&nbsp;2026; approved by Council on 29 June 2026; pending OJ publication; original deadline was 2&nbsp;August&nbsp;2026).</p>
 
 <h3>High-risk: product-embedded (Annex&nbsp;I)</h3>
 <p>AI systems that are safety components of, or are themselves, products covered by EU harmonisation legislation listed in Annex&nbsp;I &mdash; including medical devices, machinery, toys, lifts, and radio equipment. These follow the existing CE marking framework. Compliance deadline: <strong>2&nbsp;August&nbsp;2028</strong> (Digital Omnibus).</p>
@@ -256,7 +260,7 @@ regula gap .</code></pre>
 
 <h2>Omnibus caveat</h2>
 
-<p>All dates referencing the Digital Omnibus are based on the provisional political agreement of <strong>7&nbsp;May&nbsp;2026</strong>, approved by the European Parliament on <strong>16&nbsp;June&nbsp;2026</strong> (423 for, 57 against, 174 abstentions). Council adoption is expected before 2&nbsp;August&nbsp;2026. Until Council adoption and OJ publication, the original EU AI Act deadlines technically remain in force. We will update this post when the Omnibus is formally adopted.</p>
+<p>All dates referencing the Digital Omnibus are based on the provisional political agreement of <strong>7&nbsp;May&nbsp;2026</strong>, approved by the European Parliament on <strong>16&nbsp;June&nbsp;2026</strong> (423 for, 57 against, 174 abstentions). The Council approved it on 29&nbsp;June&nbsp;2026; publication in the Official Journal is expected before 2&nbsp;August&nbsp;2026. Until OJ publication, the original EU AI Act deadlines technically remain in force. We will update this post when the Omnibus is formally adopted.</p>
 
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
@@ -284,17 +288,19 @@ regula gap .</code></pre>
         <div class="foot-left">
             <div class="foot-brand">Regula</div>
             <div class="foot-links">
-        <a href="/guides/">Guides</a>
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
                 <a href="https://pypi.org/project/regula-ai/">PyPI</a>
                 <a href="/blog/writing.html">Blog</a>
                 <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
             </div>
             <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
         </div>
         <div class="foot-right">
             <div class="foot-legal">
-                <strong>Not legal advice.</strong> Content on this site is for developer education. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
             </div>
         </div>
     </div>

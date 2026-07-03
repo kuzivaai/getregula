@@ -15,6 +15,9 @@
       }
     </style>
     <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
     <title>EU AI Act Article 50: Transparency Requirements for AI Systems</title>
     <meta name="description" content="Article 50 requires AI systems that interact with people to disclose that fact. How to check your codebase for transparency obligations including chatbots, deepfakes, and synthetic content.">
@@ -144,11 +147,13 @@
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
-        <a href="/regions/regulations.html">Regulations</a>
-        <a href="/blog/writing.html">Blog</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
         <a href="/">EN</a>
         <a href="/locales/de.html">DE</a>
         <a href="/locales/pt-br.html">BR</a>
@@ -332,7 +337,7 @@ def generate_image(prompt):
 
 <h2>Deadline</h2>
 
-<p>Article 50 transparency obligations take effect on 2 August 2026, per Article 113 of Regulation (EU) 2024/1689. Unlike the Annex III high-risk obligations, Article 50 was not deferred by the Digital Omnibus (provisional agreement 7 May 2026, approved by European Parliament 16 June 2026, pending Council adoption). The Omnibus defers Annex III high-risk obligations to 2 December 2027 and Annex I product-embedded AI to 2 August 2028, but transparency obligations under Chapter IV remain on the original timeline.</p>
+<p>Article 50 transparency obligations take effect on 2 August 2026, per Article 113 of Regulation (EU) 2024/1689. Unlike the Annex III high-risk obligations, Article 50 was not deferred by the Digital Omnibus (provisional agreement 7 May 2026, approved by European Parliament 16 June 2026 and by the Council 29 June 2026, pending OJ publication). The Omnibus defers Annex III high-risk obligations to 2 December 2027 and Annex I product-embedded AI to 2 August 2028, but transparency obligations under Chapter IV remain on the original timeline.</p>
 
 <p>This means Article 50 is among the earliest substantive obligations to become enforceable, alongside the <a href="/guides/article-5-prohibited-practices.html">prohibited practices in Article 5</a> (which took effect 2 February 2025).</p>
 
@@ -370,11 +375,13 @@ def generate_image(prompt):
         <div class="foot-left">
             <div class="foot-brand">Regula</div>
             <div class="foot-links">
-        <a href="/guides/">Guides</a>
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
                 <a href="https://pypi.org/project/regula-ai/">PyPI</a>
                 <a href="/blog/writing.html">Blog</a>
                 <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
             </div>
             <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
         </div>

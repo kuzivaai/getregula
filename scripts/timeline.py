@@ -199,7 +199,7 @@ def format_timeline_text() -> str:
         "    [WIP]  = in progress       [LATE] = deadline missed",
         "",
         "  IMPORTANT: The Digital Omnibus (agreed 7 May 2026) was approved by",
-        "  EP on 16 Jun 2026. Council adoption expected before 2 Aug 2026.",
+        "  EP on 16 Jun 2026 and by the Council on 29 Jun 2026.",
         "  Until publication in the Official Journal, original deadlines",
         "  remain legally binding.",
         "",

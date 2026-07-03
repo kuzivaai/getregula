@@ -15,6 +15,9 @@
       }
     </style>
     <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
     <title>EU AI Act for Recruitment and Hiring AI: What Developers Need | Regula</title>
     <meta name="description" content="Recruitment AI is high-risk under Annex III Category 4. What code patterns trigger classification, what Articles 9-15 require, and how to scan your code.">
@@ -105,7 +108,7 @@
           "name": "Is my recruitment AI system high-risk under the EU AI Act?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "If your software screens CVs, ranks candidates, scores interviews, or automates any part of hiring decisions, it falls under Annex III, Category 4 (point (a)) of the EU AI Act. That category covers AI systems intended for recruitment or selection of natural persons, including placing targeted job advertisements, screening or filtering applications, and evaluating candidates. This makes it high-risk, which means Articles 9 through 15 apply. The compliance deadline is 2 December 2027 under the Digital Omnibus (approved by European Parliament 16 June 2026, pending Council adoption)."
+            "text": "If your software screens CVs, ranks candidates, scores interviews, or automates any part of hiring decisions, it falls under Annex III, Category 4 (point (a)) of the EU AI Act. That category covers AI systems intended for recruitment or selection of natural persons, including placing targeted job advertisements, screening or filtering applications, and evaluating candidates. This makes it high-risk, which means Articles 9 through 15 apply. The compliance deadline is 2 December 2027 under the Digital Omnibus (approved by European Parliament 16 June 2026 and by the Council 29 June 2026, pending OJ publication)."
           }
         },
         {
@@ -144,8 +147,9 @@
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
-        <a href="/regions/regulations.html">Regulations</a>
-        <a href="/blog/writing.html">Blog</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
         <a href="/">EN</a>
         <a href="/locales/de.html">DE</a>
         <a href="/locales/pt-br.html">BR</a>
@@ -168,7 +172,7 @@
 
 <p>The classification is broad. It does not matter whether your system uses a logistic regression or a large language model. What matters is the intended purpose. If the software is designed to influence who gets hired, shortlisted, or rejected, it falls here.</p>
 
-<p>The <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442">Digital Omnibus</a> (provisional agreement 7 May 2026, approved by European Parliament on 16 June 2026) defers the compliance deadline for Annex III high-risk systems to <strong>2 December 2027</strong>. Council adoption is expected before 2 August 2026. Until then, the original deadline of 2 August 2026 technically remains in force.</p>
+<p>The <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442">Digital Omnibus</a> (provisional agreement 7 May 2026, approved by European Parliament on 16 June 2026) defers the compliance deadline for Annex III high-risk systems to <strong>2 December 2027</strong>. The Council approved it on 29 June 2026; publication in the Official Journal is expected before 2 August 2026. Until then, the original deadline of 2 August 2026 technically remains in force.</p>
 
 <p>One thing that is already enforceable: Article 5 prohibitions, in force since 2 February 2025. If your recruitment tool uses subliminal manipulation, exploits vulnerabilities, or implements social scoring, that is banned now, not in 2027.</p>
 
@@ -324,7 +328,7 @@ Article 15  Accuracy, Robustness, Cybersecurity [ 40%] PARTIAL
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
-    <strong>Omnibus caveat:</strong> All dates referencing the Digital Omnibus are based on the provisional political agreement of 7 May 2026, approved by the European Parliament on 16 June 2026. Council adoption is expected before 2 August 2026. Until Council adoption and OJ publication, the original EU AI Act deadlines technically remain in force.
+    <strong>Omnibus caveat:</strong> All dates referencing the Digital Omnibus are based on the provisional political agreement of 7 May 2026, approved by the European Parliament on 16 June 2026. The Council approved it on 29 June 2026; publication in the Official Journal is expected before 2 August 2026. Until OJ publication, the original EU AI Act deadlines technically remain in force.
 </p>
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
@@ -355,17 +359,19 @@ Article 15  Accuracy, Robustness, Cybersecurity [ 40%] PARTIAL
         <div class="foot-left">
             <div class="foot-brand">Regula</div>
             <div class="foot-links">
-        <a href="/guides/">Guides</a>
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
                 <a href="https://pypi.org/project/regula-ai/">PyPI</a>
                 <a href="/blog/writing.html">Blog</a>
                 <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
             </div>
             <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
         </div>
         <div class="foot-right">
             <div class="foot-legal">
-                <strong>Not legal advice.</strong> Content on this site is for developer education. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
             </div>
         </div>
     </div>

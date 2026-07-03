@@ -169,8 +169,9 @@ def format_result(tier: str, non_eu_provider: bool) -> str:
             "  Deadlines:",
             "  - Legally binding: 2 August 2026.",
             "  - The EU Digital Omnibus (agreed 7 May 2026, EP approved 16 Jun",
-            "    2026) defers Annex III to 2 Dec 2027. Pending Council adoption",
-            "    and OJ publication; original deadline in force until then.",
+            "    2026, Council approved 29 Jun 2026) defers Annex III to",
+            "    2 Dec 2027. Pending OJ publication; original deadline in",
+            "    force until then.",
             "",
         ]
         if non_eu_provider:

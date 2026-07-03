@@ -22,6 +22,9 @@
       }
     </style>
     <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>EU AI Act Omnibus Delay: What Happened and What Applies Now</title>
     <meta name="description" content="Trilogue failed 28 Apr 2026 after 12 hours. The Aug 2026 high-risk deadline still stands. Current Omnibus status and what it means for AI providers.">
     <meta name="robots" content="index, follow, max-image-preview:large">
@@ -45,7 +48,7 @@
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "Article",
+        "@type": "BlogPosting",
         "headline": "EU AI Act Omnibus Delay — Regula",
         "description": "The Digital Omnibus on AI proposes to delay EU AI Act high-risk deadlines from August 2026 to late 2027. First trilogue failed 28 April 2026 after 12 hours. Original Aug 2026 deadline remains binding.",
         "url": "https://getregula.com/blog/blog-omnibus-delay.html",
@@ -222,7 +225,8 @@
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
-        <span class="active">Blog</span>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
         <a href="/">EN</a>
         <a href="/locales/de.html">DE</a>
         <a href="/locales/pt-br.html">BR</a>
@@ -234,7 +238,7 @@
 <article>
 
 <aside style="background:rgba(16,185,129,0.08);border-left:3px solid #10b981;padding:16px 20px;margin:0 0 16px;border-radius:0 8px 8px 0;">
-  <strong>Editor's note (June 2026):</strong> The Digital Omnibus reached provisional political agreement on 7 May 2026. Annex III high-risk obligations are now deferred to 2 December 2027 (EP approved 16 Jun 2026; pending Council adoption). The analysis below was written before this agreement and references earlier uncertainty. The core technical guidance remains valid.
+  <strong>Editor's note (June 2026):</strong> The Digital Omnibus reached provisional political agreement on 7 May 2026. Annex III high-risk obligations are now deferred to 2 December 2027 (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication). The analysis below was written before this agreement and references earlier uncertainty. The core technical guidance remains valid.
   <br><small>Source: <a href="https://www.consilium.europa.eu/en/press/press-releases/2026/05/07/artificial-intelligence-council-and-parliament-agree-to-simplify-and-streamline-rules/">Council press release, 7 May 2026</a></small>
 </aside>
 
@@ -278,7 +282,7 @@
 
     <h2>What the deadlines look like now</h2>
 
-    <p>Article 5 prohibitions and GPAI obligations are already in force. Article 50 transparency remains on its 2 August 2026 deadline. The Omnibus proposes deferring standalone high-risk (Annex III) to 2 December 2027 and product-embedded high-risk (Annex I) to 2 August 2028. These dates were approved by the European Parliament on 16 June 2026 and are pending Council adoption.</p>
+    <p>Article 5 prohibitions and GPAI obligations are already in force. Article 50 transparency remains on its 2 August 2026 deadline. The Omnibus proposes deferring standalone high-risk (Annex III) to 2 December 2027 and product-embedded high-risk (Annex I) to 2 August 2028. These dates were approved by the European Parliament on 16 June 2026 and by the Council on 29 June 2026, and are pending OJ publication.</p>
 
     <p>Here is the current state of play. The left column is the law as it stands today. The right column is what the Omnibus proposes. The proposed dates are <em>not yet in force</em>.</p>
 
@@ -437,11 +441,13 @@
         <div class="foot-left">
             <div class="foot-brand">Regula</div>
             <div class="foot-links">
-        <a href="/guides/">Guides</a>
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
                 <a href="https://pypi.org/project/regula-ai/">PyPI</a>
                 <a href="/blog/writing.html">Blog</a>
                 <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
             </div>
             <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
         </div>

@@ -8,8 +8,11 @@
       html, body { background: #070711; color: #e2e2f0; margin: 0; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
     </style>
     <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>AI Regulation Assessment: EU AI Act, South Korea, Colorado | Regula</title>
-    <meta name="description" content="Free AI regulation risk assessment. Check your obligations under the EU AI Act, South Korea AI Basic Act, or Colorado SB 26-189. Answer questions to find your risk tier and what to do next. No signup, no install.">
+    <meta name="description" content="Free AI regulation risk assessment. Check your risk tier under the EU AI Act, South Korea AI Basic Act, or Colorado SB 26-189. No signup.">
     <meta name="author" content="Kuziva Muzondo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://getregula.com/assess/">
@@ -30,6 +33,8 @@
     <meta name="twitter:description" content="Free AI regulation risk assessment. Check your obligations under the EU AI Act, South Korea AI Basic Act, or Colorado SB 26-189.">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
     <noscript><link rel="stylesheet" href="/assets/fonts.css"></noscript>
 
@@ -39,7 +44,7 @@
       "@type": "WebApplication",
       "name": "Regula AI Regulation Assessment",
       "url": "https://getregula.com/assess/",
-      "description": "Free AI regulation risk assessment. Check your obligations under the EU AI Act, South Korea AI Basic Act, or Colorado SB 26-189. Scan code against 620+ detection patterns.",
+      "description": "Free AI regulation risk assessment. Check your obligations under the EU AI Act, South Korea AI Basic Act, or Colorado SB 26-189. Scan code against 648 detection patterns.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Any (web browser)",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
@@ -73,16 +78,55 @@
       a { color: var(--accent); text-decoration: none; }
       a:hover { text-decoration: underline; }
 
+      /* Nav — matching main site pattern */
+      .nav {
+          position: sticky; top: 0; z-index: 100;
+          height: 56px; padding: 0 24px;
+          display: flex; align-items: center; justify-content: space-between;
+          border-bottom: 1px solid transparent;
+          transition: background 0.2s, border-color 0.2s;
+      }
+      .nav.scrolled {
+          background: rgba(7,7,17,0.92);
+          backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+          border-color: var(--border);
+      }
+      .nav-brand { font-weight: 700; font-size: 1rem; color: var(--text); text-decoration: none; }
+      dialog.nav-right {
+          display: flex; gap: 16px; font-size: 0.85rem; align-items: center;
+          border: none; background: none; padding: 0; margin: 0;
+          position: static; inset: unset; max-width: none; max-height: none;
+          width: auto; height: auto; color: inherit;
+      }
+      .nav-right a { color: var(--text-dim); text-decoration: none; }
+      .nav-right a:hover { color: var(--text); text-decoration: none; }
+      .nav-right .active { color: var(--text); font-weight: 600; }
+      .nav-toggle {
+          display: none; background: none; border: none;
+          color: var(--text-dim); font-size: 1.25rem; cursor: pointer;
+          padding: 4px; line-height: 1;
+          min-width: 44px; min-height: 44px;
+          align-items: center; justify-content: center;
+      }
+      @media (max-width: 768px) {
+          .nav-toggle { display: flex; }
+          dialog.nav-right {
+              display: none; position: fixed;
+              top: 52px; right: 0; left: 0; bottom: 0;
+              flex-direction: column; gap: 0;
+              background: rgba(7,7,17,0.97);
+              backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+              border: none; border-top: 1px solid rgba(255,255,255,0.07);
+              padding: 12px 32px 16px;
+              max-width: 100%; max-height: 100%;
+          }
+          dialog.nav-right[open] { display: flex; }
+          dialog.nav-right::backdrop { background: transparent; }
+          .nav-right a, .nav-right .active { padding: 8px 0; font-size: 0.875rem; }
+      }
+
       /* Layout */
       .shell { max-width: 680px; margin: 0 auto; padding: 24px 20px 80px; }
-      .nav-bar {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 12px 20px; border-bottom: 1px solid var(--border);
-        max-width: 680px; margin: 0 auto;
-      }
-      .nav-brand { color: var(--text); font-weight: 700; font-size: 1.1rem; }
-      .nav-links { display: flex; gap: 16px; font-size: 0.85rem; }
-      .nav-links a { color: var(--text-dim); }
 
       /* Hero */
       .hero { padding: 48px 0 32px; text-align: center; }
@@ -224,19 +268,11 @@
       .step-text strong { display: block; margin-bottom: 2px; }
       .step-text span { color: var(--text-dim); font-size: 0.85rem; }
 
-      /* Footer */
-      .foot {
-        margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
-        font-size: 0.8rem; color: var(--text-muted); text-align: center;
-      }
-      .foot a { color: var(--text-dim); }
-
       /* Responsive */
       @media (max-width: 520px) {
         .hero h1 { font-size: 1.4rem; }
         .answers { flex-direction: column; }
         .hero-stats { flex-direction: column; gap: 4px; }
-        .nav-links { gap: 10px; font-size: 0.8rem; }
       }
 
       /* Scanner findings */
@@ -280,10 +316,38 @@
       .scan-stat-value { font-size: 1.4rem; font-weight: 700; }
       .scan-stat-label { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
 
+      /* Footer */
+      footer {
+          border-top: 1px solid var(--border);
+          padding: 32px 24px 24px;
+          background: #04040b;
+          margin-top: 40px;
+      }
+      .foot-inner {
+          max-width: 680px; margin: 0 auto;
+          display: flex; justify-content: space-between; align-items: flex-start;
+          gap: 24px; flex-wrap: wrap;
+      }
+      .foot-brand { font-weight: 700; font-size: 1rem; color: var(--text); margin-bottom: 6px; }
+      .foot-links { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+      .foot-links a { color: var(--text-dim); font-size: 0.85rem; text-decoration: none; }
+      .foot-links a:hover { color: var(--text); }
+      .foot-copy { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; }
+      .foot-right { text-align: right; max-width: 400px; }
+      .foot-legal {
+          font-size: 0.75rem; color: var(--text-muted); line-height: 1.6;
+          padding: 10px 14px; background: rgba(255,255,255,0.02);
+          border: 1px solid var(--border); border-radius: 6px;
+      }
+      @media (max-width: 600px) {
+          .foot-inner { flex-direction: column; }
+          .foot-right { text-align: left; max-width: 100%; }
+      }
+
       /* Print */
       @media print {
         body { background: #fff; color: #111; }
-        .nav-bar, .progress-wrap, .nav-buttons, .export-section, .share-section, .foot { display: none; }
+        .nav, .progress-wrap, .nav-buttons, .export-section, .share-section, footer { display: none; }
         .q-card, .obl-card, .result-tier, .export-section { border-color: #ccc; background: #f9f9f9; }
         .q-card.hidden { display: none; }
       }
@@ -294,15 +358,21 @@
 <a href="#main" class="skip-link" style="position:absolute;top:-40px;left:0;background:var(--accent);color:#fff;padding:8px 16px;z-index:100;font-size:0.9rem;transition:top 0.2s;">Skip to content</a>
 <style>.skip-link:focus{top:0;}</style>
 
-<nav class="nav-bar" aria-label="Main navigation">
-  <a href="/" class="nav-brand">Regula</a>
-  <div class="nav-links">
-    <a href="/guides/">Guides</a>
-    <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-    <a href="/blog/writing.html">Blog</a>
-    <a href="/regions/regulations.html">Regulations</a>
-    <a href="/about.html">About</a>
-  </div>
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+        <a href="/assess/" class="active">Assess</a>
+        <a href="/guides/">Guides</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html">Regulations</a>
+        <a href="/blog/writing.html">Blog</a>
+        <a href="/about.html">About</a>
+        <span class="active">EN</span>
+        <a href="/assess/de.html">DE</a>
+        <a href="/assess/pt-br.html">BR</a>
+    </dialog>
 </nav>
 
 <main class="shell" role="main" id="main">
@@ -434,17 +504,28 @@
   </div>
 </main>
 
-  <!-- FOOTER -->
-  <div class="foot">
-    <p><strong>Not legal advice.</strong> This tool identifies regulatory risk indicators for review. It does not determine compliance. Consult a qualified legal professional for legal questions.</p>
-    <p style="margin-top:8px;">
-      <a href="/">Regula</a> &middot;
-      <a href="https://github.com/kuzivaai/getregula">GitHub</a> &middot;
-      <a href="https://pypi.org/project/regula-ai/">PyPI</a> &middot;
-      Open source (Apache 2.0 / EUPL 1.2)
-    </p>
-    <p style="margin-top:4px;">Not affiliated with <a href="https://regulaforensics.com">Regula Forensics</a> (identity verification).</p>
-  </div>
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> This tool identifies regulatory risk indicators for review. It does not determine compliance. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
 
 <script src="scanner.js"></script>
 <script>
@@ -775,7 +856,7 @@ const OBLIGATIONS = [
     desc: "Establish, implement, document, and maintain a continuous risk management system covering the entire AI lifecycle. Identify and analyse known and foreseeable risks. Adopt appropriate mitigation measures. Communicate residual risks to deployers (Article 9(5)).",
     plain: "You need a living document that lists what could go wrong with your AI system, what you have done about each risk, and what risks remain. It must be kept up to date.",
     effort: "40-80 hours (team)",
-    deadline: "2 Dec 2027 (Omnibus; EP approved 16 Jun 2026)"
+    deadline: "2 Dec 2027 (Omnibus; EP 16 Jun, Council 29 Jun 2026)"
   },
   {
     article: 10, name: "Data governance",
@@ -1052,7 +1133,7 @@ function calculateResultsEU() {
   } else if (score >= 65 && exemptionSignals.length === 0) {
     tier = "high_risk";
     tierName = "High-risk AI system";
-    tierDesc = "Your system likely falls into a category the EU AI Act considers high-risk. You must meet requirements for risk management, data governance, documentation, logging, transparency, human oversight, and cybersecurity. The compliance deadline has been extended to 2 December 2027, pending final adoption of the Omnibus amendment.";
+    tierDesc = "Your system likely falls into a category the EU AI Act considers high-risk. You must meet requirements for risk management, data governance, documentation, logging, transparency, human oversight, and cybersecurity. The compliance deadline has been extended to 2 December 2027, pending publication of the Omnibus amendment in the Official Journal.";
     tierClass = "tier-high";
     obligations = OBLIGATIONS;
   } else if (score >= 65 && exemptionSignals.length > 0) {
@@ -1798,6 +1879,13 @@ function exportScanJSON() {
   // Restore in-progress assessment from sessionStorage
   loadProgress();
 })();
+</script>
+<script>
+// Nav scroll effect
+function updateNav() {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+}
+window.addEventListener('scroll', updateNav, { passive: true });
 </script>
 </body>
 </html>
