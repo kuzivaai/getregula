@@ -183,10 +183,10 @@ def generate_roadmap(
 
     # Omnibus caveat
     omnibus_note = (
-        "Note: The EU Digital Omnibus (agreed 7 May 2026, EP approved 16 Jun 2026; "
-        "pending Council adoption) extends Annex III high-risk deadlines to "
-        "2 December 2027. The roadmap uses the current legal baseline. "
-        "Use --target-date to adjust."
+        "Note: The EU Digital Omnibus (agreed 7 May 2026, EP approved 16 Jun 2026, "
+        "Council approved 29 Jun 2026; pending OJ publication) extends Annex III "
+        "high-risk deadlines to 2 December 2027. The roadmap uses the current legal "
+        "baseline. Use --target-date to adjust."
     )
 
     return {
