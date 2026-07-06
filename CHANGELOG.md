@@ -7,6 +7,32 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.7.4] — 2026-07-06
+
+Regulatory-status correction and release-pipeline hardening. Updates the
+Digital Omnibus adoption status in CLI output and jurisdiction metadata to
+reflect the Council's approval on 29 June 2026, and ships the first release
+published via PyPI trusted publishing (OIDC) rather than a manual token
+upload.
+
+### Changed
+
+- **Digital Omnibus status copy** in `regula assess` and `regula timeline`
+  output, and in the EU AI Act jurisdiction metadata
+  (`references/jurisdictions/eu_ai_act.yaml`), now states that the Council
+  approved the Omnibus on 29 June 2026 (previously "pending Council
+  adoption"). Deadlines are unchanged — Annex III remains 2 December 2027,
+  Annex I remains 2 August 2028; only the adoption-status wording is
+  updated. `OMNIBUS_OJ_DATE` stays unset pending Official Journal
+  publication, so the original 2 August 2026 deadline remains the legally
+  binding baseline until then.
+
+### Release process
+
+- First release published through GitHub Actions with PyPI **trusted
+  publishing** (OIDC, no stored API token). Distributions carry PEP 740
+  provenance attestations.
+
 ## [1.7.3] — 2026-07-02
 
 Multi-jurisdiction expansion, security hardening, and demo fix. Adds
