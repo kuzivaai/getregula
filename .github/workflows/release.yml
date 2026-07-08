@@ -1,11 +1,18 @@
 name: Release
 
-# Triggered when a version tag is pushed (e.g. v1.7.4, v2.0.0).
-# The three jobs run in sequence: build → publish → verify.
+# Triggered when a FULL SEMVER tag is pushed (e.g. v1.7.4, v2.0.0,
+# v2.0.0-rc1). The three jobs run in sequence: build → publish → verify.
+#
+# Deliberately NOT "v*": the floating major tag `v1` (which README's
+# `uses: kuzivaai/getregula@v1` consumers track, and which moves on every
+# release) matched that glob and fired this workflow — on 8 Jul 2026 it
+# attempted to republish 1.7.4 (PyPI's duplicate-file rejection was the
+# only thing that stopped it). A moving alias tag must never trigger a
+# publish.
 on:
   push:
     tags:
-      - "v*"
+      - "v[0-9]+.[0-9]+.[0-9]+*"
 
 # Least-privilege default; jobs that need more declare it at job level
 # (release.yml's publish job declares id-token: write itself).
@@ -30,6 +37,23 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+
+      # Defence-in-depth behind the trigger glob: the tag must equal the
+      # version being built. Whatever tag reaches this workflow, nothing
+      # gets built (let alone published) unless it names exactly the
+      # version in pyproject.toml — a moving alias like `v1`, a typo'd
+      # tag, or a tag pushed before the version bump all fail HERE with
+      # a clear message instead of reaching PyPI.
+      - name: Assert tag matches pyproject version
+        run: |
+          set -euo pipefail
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PYPROJECT_VERSION=$(python3 -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          echo "tag: ${TAG_VERSION}  pyproject: ${PYPROJECT_VERSION}"
+          if [ "${TAG_VERSION}" != "${PYPROJECT_VERSION}" ]; then
+            echo "::error::Tag v${TAG_VERSION} does not match pyproject.toml version ${PYPROJECT_VERSION}. Refusing to build/publish."
+            exit 1
+          fi
 
       # The `build` front-end drives setuptools via pyproject.toml.
       # No other build-time deps are needed: setuptools is bundled.
