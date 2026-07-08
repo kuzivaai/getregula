@@ -182,7 +182,16 @@ def cmd_docs(args) -> None:
     print(f"Found {ai_count} AI-related files, {model_count} model files")
     print(f"Highest risk tier: {highest.upper().replace('_', '-')}")
 
-    output_dir = Path(args.output)
+    # "docs" is the argparse default sentinel, not a user choice. Resolve it
+    # against the PROJECT, not the CWD — otherwise running the docs command
+    # (or any test that exercises it) from the Regula repo root writes
+    # <cwd>/docs/<project>_annex_iv.md into this repo. 56 junk
+    # docs/tmp*_annex_iv.md files accumulated exactly this way, and the
+    # pdf branch below already resolves the sentinel per-project.
+    if getattr(args, "output", None) and args.output != "docs":
+        output_dir = Path(args.output)
+    else:
+        output_dir = Path(project_path) / "docs"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     fmt = getattr(args, "format", "markdown")

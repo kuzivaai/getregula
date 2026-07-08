@@ -9,7 +9,10 @@ Rule file locations (checked in order):
   2. ./regula-rules.yaml (project root)
   3. ~/.regula/regula-rules.yaml (user home)
 """
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
 
 try:
     import yaml

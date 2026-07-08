@@ -228,14 +228,41 @@ def test_options_returns_200():
     assert status == 200
 
 
-def test_cors_headers_in_json_response():
-    """JSON responses include CORS headers."""
+def test_no_cors_headers_by_default():
+    """No CORS headers by default — the server has no auth, so a wildcard
+    ACAO would let any website read local scan results via fetch() to
+    localhost (drive-by CSRF-via-CORS)."""
+    import os
+    os.environ.pop("REGULA_API_ALLOW_ORIGIN", None)
     handler, wfile = _make_handler("GET", "/health")
     handler.do_GET()
     raw = wfile.getvalue().decode("utf-8")
-    assert "Access-Control-Allow-Origin: *" in raw
-    assert "Access-Control-Allow-Methods" in raw
-    assert "Access-Control-Allow-Headers" in raw
+    assert "Access-Control-Allow-Origin" not in raw
+
+
+def test_cors_headers_opt_in_via_env():
+    """Setting REGULA_API_ALLOW_ORIGIN to an explicit origin enables CORS
+    for that origin only; a literal * is refused."""
+    import os
+    os.environ["REGULA_API_ALLOW_ORIGIN"] = "http://localhost:3000"
+    try:
+        handler, wfile = _make_handler("GET", "/health")
+        handler.do_GET()
+        raw = wfile.getvalue().decode("utf-8")
+        assert "Access-Control-Allow-Origin: http://localhost:3000" in raw
+        assert "Access-Control-Allow-Methods" in raw
+        assert "Access-Control-Allow-Headers" in raw
+    finally:
+        os.environ.pop("REGULA_API_ALLOW_ORIGIN", None)
+
+    os.environ["REGULA_API_ALLOW_ORIGIN"] = "*"
+    try:
+        handler, wfile = _make_handler("GET", "/health")
+        handler.do_GET()
+        raw = wfile.getvalue().decode("utf-8")
+        assert "Access-Control-Allow-Origin" not in raw
+    finally:
+        os.environ.pop("REGULA_API_ALLOW_ORIGIN", None)
 
 
 # ===================================================================

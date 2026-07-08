@@ -45,28 +45,21 @@ from constants import CODE_EXTENSIONS, SKIP_DIRS, MODEL_EXTENSIONS, VERSION
 CONFIG_FILES = {".env", ".env.production", ".env.local", "docker-compose.yml", "docker-compose.yaml", "Dockerfile"}
 
 # ---------------------------------------------------------------------------
-# EU AI Act enforcement deadlines — canonical source of truth.
-# Update these when the Omnibus is formally adopted (OJ publication).
+# EU AI Act enforcement deadlines + Digital Omnibus status.
+# THE single source of truth is scripts/omnibus.py — when the Omnibus is
+# published in the Official Journal, set OMNIBUS_OJ_DATE there (one line).
+# These re-exports keep report.py's public API stable for existing
+# importers and tests.
 # ---------------------------------------------------------------------------
-DEADLINE_PROHIBITED        = "2025-02-02"  # Article 5 — not affected by Omnibus
-DEADLINE_CURRENT_LAW       = "2026-08-02"  # General high-risk / current law
-DEADLINE_OMNIBUS_ANNEX_III = "2027-12-02"  # Omnibus agreed extension for Annex III
-DEADLINE_OMNIBUS_ANNEX_I   = "2028-08-02"  # Omnibus agreed extension for Annex I / sectoral
-DEADLINE_OMNIBUS_LIMITED   = "2026-12-02"  # Omnibus agreed extension for limited-risk watermarking
-
-# ---------------------------------------------------------------------------
-# Digital Omnibus enactment status — single source of truth.
-# Update OMNIBUS_OJ_DATE when published in the Official Journal.
-# ---------------------------------------------------------------------------
-# Legislative history: provisional agreement 7 May 2026; EP plenary approved
-# 16 June 2026; Council approved 29 June 2026; OJ publication pending as of
-# 2026-07-02. Entry into force is 3 days after OJ publication.
-OMNIBUS_OJ_DATE = None  # Set to "YYYY-MM-DD" when published in the OJ
-OMNIBUS_ENACTED = OMNIBUS_OJ_DATE is not None
-OMNIBUS_STATUS = (
-    f"Published in OJ {OMNIBUS_OJ_DATE}; in force"
-    if OMNIBUS_ENACTED
-    else "EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication"
+from omnibus import (  # noqa: F401  (re-exported)
+    DEADLINE_PROHIBITED,
+    DEADLINE_CURRENT_LAW,
+    DEADLINE_OMNIBUS_ANNEX_III,
+    DEADLINE_OMNIBUS_ANNEX_I,
+    DEADLINE_OMNIBUS_LIMITED,
+    OMNIBUS_OJ_DATE,
+    OMNIBUS_ENACTED,
+    OMNIBUS_STATUS,
 )
 
 # Generic indicator names that don't convey specific risk — used to gate

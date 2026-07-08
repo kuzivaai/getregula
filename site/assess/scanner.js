@@ -1,5 +1,5 @@
 // scanner.js — Regula client-side EU AI Act detection pattern scanner
-// regula-ignore: this file defines compliance detection rules, not prohibited AI practices
+// regula-ignore — this file defines compliance detection rules, not prohibited AI practices
 // Ported from scripts/risk_patterns.py + scripts/classify_risk.py (648 detection patterns)
 // All logic runs client-side. Nothing leaves the browser.
 // Licensed under the Detection Rule License (DRL) 1.1.

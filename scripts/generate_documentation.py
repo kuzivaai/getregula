@@ -1628,7 +1628,14 @@ def main():
     print(f"Found {ai_count} AI-related files, {model_count} model files")
     print(f"Highest risk tier: {highest.upper().replace('_', '-')}")
 
-    output_dir = Path(args.output)
+    # "docs" is the argparse default sentinel — resolve it against the
+    # PROJECT, not the CWD, or invocations from another directory (or the
+    # test suite) write <cwd>/docs/<project>_annex_iv.md junk. Mirrors
+    # cli_analysis.cmd_docs.
+    if args.output and args.output != "docs":
+        output_dir = Path(args.output)
+    else:
+        output_dir = Path(project_path) / "docs"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if args.format == "json":

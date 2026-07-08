@@ -14,6 +14,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Least-privilege default; jobs that need more declare it at job level
+# (release.yml's publish job declares id-token: write itself).
+permissions:
+  contents: read
+
 jobs:
   precision-check:
     name: Precision regression check

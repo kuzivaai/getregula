@@ -6,9 +6,13 @@ the Regula engine and its consumers.
 """
 
 import json
+import sys
 from dataclasses import dataclass, field, asdict
 from enum import Enum
+from pathlib import Path
 from typing import Optional
+
+sys.path.insert(0, str(Path(__file__).parent))
 
 __all__ = [
     "RiskTier", "Classification", "Finding",

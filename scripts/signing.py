@@ -99,6 +99,10 @@ def load_or_create_keypair(
 
     # Generate new keypair
     path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        os.chmod(path.parent, stat.S_IRWXU)  # 0700 — key dir is private
+    except OSError:
+        pass  # directory perms are defence-in-depth; the key file is the gate
     private_key = ed25519.Ed25519PrivateKey.generate()
     public_key = private_key.public_key()
 
@@ -112,18 +116,22 @@ def load_or_create_keypair(
         format=serialization.PublicFormat.SubjectPublicKeyInfo,
     )
 
-    path.write_bytes(private_pem)
-    # Restrict private key permissions on POSIX systems
+    # Create the key file 0600 ATOMICALLY (O_CREAT|O_EXCL). The previous
+    # write-then-chmod left a umask-default (often world-readable) window,
+    # and a failed chmod only warned — silently defeating the key's
+    # confidentiality guarantee. A permissions failure is now fatal.
     try:
-        os.chmod(path, stat.S_IRUSR | stat.S_IWUSR)
-    except OSError:
-        import warnings
-        warnings.warn(
-            f"Could not restrict permissions on {path} — the private key "
-            f"may be readable by other users on this system. Consider "
-            f"moving it to a secure location with restricted permissions.",
-            stacklevel=2,
-        )
+        fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY,
+                     stat.S_IRUSR | stat.S_IWUSR)
+        try:
+            os.write(fd, private_pem)
+        finally:
+            os.close(fd)
+    except OSError as exc:
+        raise SigningError(
+            f"Cannot create private key at {path} with owner-only "
+            f"permissions: {exc}. Refusing to write the key insecurely."
+        ) from exc
 
     pub_path.write_bytes(public_pem)
     return private_key, public_key

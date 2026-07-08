@@ -19,6 +19,10 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
+sys.path.insert(0, str(Path(__file__).parent))
+
+from constants import SKIP_DIRS
+
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
@@ -943,8 +947,7 @@ def build_import_map(project_path: str) -> Dict[str, str]:
     root = Path(project_path).resolve()
     import_map: Dict[str, str] = {}
 
-    skip_dirs = {".git", "node_modules", "__pycache__", "venv", ".venv",
-                 "dist", "build", ".next", ".tox"}
+    skip_dirs = SKIP_DIRS
 
     for py_file in root.rglob("*.py"):
         if any(d in py_file.relative_to(root).parts for d in skip_dirs):
@@ -987,8 +990,9 @@ def resolve_cross_file_ai_flows(project_path: str) -> List[Dict]:
     root = Path(project_path).resolve()
     import_map = build_import_map(project_path)
 
-    skip_dirs = {".git", "node_modules", "__pycache__", "venv", ".venv",
-                 "dist", "build", ".next", ".tox", "tests"}
+    # Cross-file AI-flow analysis also skips tests: flows through test
+    # doubles are not production data paths.
+    skip_dirs = SKIP_DIRS | {"tests"}
 
     # First pass: determine which files have AI code
     file_ai_status: Dict[str, bool] = {}

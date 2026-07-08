@@ -17,6 +17,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from constants import VERSION
+from omnibus import ANNEX_III_PROSE, OMNIBUS_STATUS
 
 
 # Plain-English tier descriptions
@@ -28,8 +29,8 @@ TIER_DESCRIPTIONS = {
     "high_risk": (
         "This project contains indicators associated with HIGH-RISK AI "
         "systems under EU AI Act Annex III. Articles 9\u201315 obligations "
-        "may apply (effective 2 December 2027 under the Digital Omnibus, "
-        "EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)."
+        f"may apply (effective {ANNEX_III_PROSE} under the Digital Omnibus, "
+        f"{OMNIBUS_STATUS})."
     ),
     "limited_risk": (
         "This project contains indicators associated with LIMITED-RISK AI "

@@ -47,6 +47,12 @@ SKIP_DIRS = {
     # CI/CD infrastructure is not application code. Same rationale as
     # Semgrep's default .semgrepignore which excludes .github/.
     ".github", ".gitlab", ".circleci",
+    # Tool caches and generated output — never production code. Folded in
+    # from per-module copies during the July 2026 SKIP_DIRS consolidation;
+    # every scanner path must import THIS set (plus explicit local unions),
+    # never define its own. Six independently-drifted copies shipped once.
+    "env", ".env", ".nuxt", "coverage", ".nyc_output", ".mypy_cache",
+    ".ruff_cache", ".pytest_cache", ".nox", "site-packages",
 }
 
 # Model file extensions (binary ML model files).

@@ -1768,12 +1768,8 @@ def analyse_project(project_path: str) -> List[dict]:
     root = Path(project_path)
 
     # Directories to skip
-    skip_dirs = {
-        "node_modules", ".git", "__pycache__", ".venv", "venv",
-        "env", ".env", "dist", "build", ".next", ".nuxt",
-        "coverage", ".nyc_output", ".tox", ".mypy_cache",
-        ".pytest_cache", ".ruff_cache",
-    }
+    from constants import SKIP_DIRS
+    skip_dirs = SKIP_DIRS
 
     for dirpath, dirnames, filenames in os.walk(root):
         # Prune skipped directories in-place

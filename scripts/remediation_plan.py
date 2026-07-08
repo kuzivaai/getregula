@@ -50,7 +50,8 @@ ARTICLE_EFFORT = {
 }
 
 DEADLINE_HIGH_RISK = "2 August 2026"
-DEADLINE_OMNIBUS = "2 December 2027 (Omnibus agreed 7 May 2026, EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)"
+from omnibus import ANNEX_III_PROSE as _ANNEX_III_PROSE, status_parenthetical as _omnibus_status_paren
+DEADLINE_OMNIBUS = f"{_ANNEX_III_PROSE} {_omnibus_status_paren()}"
 
 
 # ---------------------------------------------------------------------------

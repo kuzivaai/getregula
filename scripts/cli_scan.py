@@ -302,7 +302,15 @@ def cmd_check(args) -> None:
     elif args.format == "sarif":
         from report import generate_sarif
         name = args.name or Path(project).name
-        print(json.dumps(generate_sarif(findings, name), indent=2))
+        sarif_text = json.dumps(generate_sarif(findings, name), indent=2)
+        output_file = getattr(args, "output", None)
+        if output_file:
+            out_path = Path(output_file)
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            out_path.write_text(sarif_text, encoding="utf-8")
+            print(f"SARIF written to {out_path}", file=sys.stderr)
+        else:
+            print(sarif_text)
     else:
         # Human-readable output
         from i18n import t

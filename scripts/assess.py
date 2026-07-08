@@ -16,7 +16,8 @@ Regulatory basis:
 - Article 5: prohibited practices (in force Feb 2025)
 - Article 6 + Annex III: high-risk classification
 - Article 50: transparency obligations (Aug 2026)
-- Digital Omnibus: Annex III deadline Dec 2027; EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication
+- Digital Omnibus: Annex III deadline Dec 2027; enactment status derives
+  from scripts/omnibus.py (the single source of truth for the OJ flip)
 """
 
 import sys
@@ -24,6 +25,8 @@ from pathlib import Path
 from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
+
+from omnibus import ANNEX_III_PROSE, ADOPTION_HISTORY, BINDING_NOTE, OMNIBUS_ENACTED, OMNIBUS_OJ_DATE
 
 
 # ---------------------------------------------------------------------------
@@ -111,6 +114,22 @@ def _header() -> str:
     return f"\n{_SEP}\n  Regula -- EU AI Act Applicability Check\n{_SEP}\n"
 
 
+def _omnibus_deadline_lines() -> list:
+    """High-risk deadline copy, derived from omnibus.py so the OJ flip
+    is a one-line change there rather than a hand-edit here."""
+    if OMNIBUS_ENACTED:
+        return [
+            f"  - The Digital Omnibus is in force (OJ {OMNIBUS_OJ_DATE}).",
+            f"    Annex III obligations apply from {ANNEX_III_PROSE}.",
+        ]
+    return [
+        "  - Legally binding: 2 August 2026.",
+        f"  - The EU Digital Omnibus ({ADOPTION_HISTORY})",
+        f"    defers Annex III to {ANNEX_III_PROSE}.",
+        f"    {BINDING_NOTE}",
+    ]
+
+
 def format_result(tier: str, non_eu_provider: bool) -> str:
     lines = [_header()]
 
@@ -167,11 +186,7 @@ def format_result(tier: str, non_eu_provider: bool) -> str:
             "  Art. 15 -- Accuracy, robustness, and cybersecurity",
             "",
             "  Deadlines:",
-            "  - Legally binding: 2 August 2026.",
-            "  - The EU Digital Omnibus (agreed 7 May 2026, EP approved 16 Jun",
-            "    2026, Council approved 29 Jun 2026) defers Annex III to",
-            "    2 Dec 2027. Pending OJ publication; original deadline in",
-            "    force until then.",
+        ] + _omnibus_deadline_lines() + [
             "",
         ]
         if non_eu_provider:

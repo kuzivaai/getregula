@@ -7,6 +7,11 @@ on:
     tags:
       - "v*"
 
+# Least-privilege default; jobs that need more declare it at job level
+# (release.yml's publish job declares id-token: write itself).
+permissions:
+  contents: read
+
 jobs:
   # ──────────────────────────────────────────────────────────────────────────
   # build — compile a source distribution and wheel, then verify their
