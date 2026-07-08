@@ -5,6 +5,11 @@ on:
   pull_request:
     branches: [main]
 
+# Least-privilege default; jobs that need more declare it at job level
+# (release.yml's publish job declares id-token: write itself).
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest

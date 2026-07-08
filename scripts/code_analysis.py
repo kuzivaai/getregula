@@ -7,7 +7,12 @@ marked as [AUTO-DETECTED — VERIFY] in generated documentation.
 """
 
 import re
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+from constants import SKIP_DIRS
 
 
 # Architecture detection: import patterns → architecture description
@@ -256,8 +261,8 @@ def analyse_project_code(project_path: str) -> dict:
     Returns aggregated results with deduplicated findings.
     """
     project = Path(project_path).resolve()
-    skip_dirs = {".git", "node_modules", "__pycache__", "venv", ".venv",
-                 "dist", "build", ".next", ".tox", "tests"}
+    # Generated Article-11 docs describe production code only — skip tests.
+    skip_dirs = SKIP_DIRS | {"tests"}
     code_extensions = {".py", ".js", ".ts", ".jsx", ".tsx"}
 
     all_architectures = set()

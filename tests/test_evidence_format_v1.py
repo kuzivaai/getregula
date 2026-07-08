@@ -162,6 +162,31 @@ def test_verify_catches_modified_file(tmp_path):
     assert "integrity compromised" in result.stdout.lower() or "do not submit" in result.stdout.lower()
 
 
+def test_verify_rejects_traversal_and_absolute_manifest_paths(tmp_path):
+    """A third-party manifest with ../ or absolute filenames MUST NOT cause
+    reads outside the pack directory — entries are reported INVALID_PATH and
+    the pack fails verification (exit 1)."""
+    pack_dir, _ = _generate_pack(tmp_path)
+    # A real file outside the pack that a malicious manifest points at.
+    secret = tmp_path / "outside-secret.txt"
+    secret.write_text("do not hash me", encoding="utf-8")
+
+    manifest_file = pack_dir / "manifest.json"
+    manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+    manifest["files"].append({"filename": "../outside-secret.txt", "sha256": "0" * 64})
+    manifest["files"].append({"filename": str(secret.resolve()), "sha256": "0" * 64})
+    manifest_file.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+
+    result = _run("verify", str(pack_dir))
+    assert result.returncode == 1, f"expected exit 1, got {result.returncode}: {result.stdout}"
+    assert "INVALID_PATH" in result.stdout
+    # Neither entry may be reported as OK/MODIFIED — that would prove the
+    # file outside the pack was actually read and hashed.
+    for line in result.stdout.splitlines():
+        if "outside-secret" in line:
+            assert "INVALID_PATH" in line, f"outside file was accessed: {line}"
+
+
 def test_verify_catches_missing_file(tmp_path):
     """Deleting a pack file MUST cause verify to return MISSING + exit 1."""
     pack_dir, _ = _generate_pack(tmp_path)

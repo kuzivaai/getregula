@@ -50,15 +50,10 @@ def _is_tty():
 
 
 def _build_envelope(command: str, data, exit_code: int = 0) -> dict:
-    """Build the standard JSON envelope dict."""
-    return {
-        "format_version": "1.0",
-        "regula_version": VERSION,
-        "command": command,
-        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-        "exit_code": exit_code,
-        "data": data,
-    }
+    """Build the standard JSON envelope dict (delegates to envelope.py —
+    the single source of truth shared with api_server.py)."""
+    from envelope import build_envelope
+    return build_envelope(command, data, exit_code)
 
 
 def json_output(command: str, data, exit_code: int = 0, deterministic: bool = False) -> None:
@@ -1057,6 +1052,8 @@ def _build_subparsers(subparsers):
     # --- docs ---
     p_docs = subparsers.add_parser("docs", help="Generate documentation scaffolds (Annex IV, QMS)")
     p_docs.add_argument("--project", "-p", default=".")
+    p_docs.add_argument("project_path_positional", nargs="?", default=None,
+                       metavar="path", help="Project path (same as --project)")
     p_docs.add_argument("--output", "-o", default="docs", help="Output directory")
     p_docs.add_argument("--name", "-n", help="Project name")
     p_docs.add_argument("--format", "-f", choices=["markdown", "model-card", "pdf", "conformity-declaration"], default="markdown")
@@ -1077,6 +1074,8 @@ def _build_subparsers(subparsers):
     # --- gap ---
     p_gap = subparsers.add_parser("gap", help="Compliance gap assessment (Articles 9-15)")
     p_gap.add_argument("--project", "-p", default=".")
+    p_gap.add_argument("project_path_positional", nargs="?", default=None,
+                       metavar="path", help="Project path (same as --project)")
     p_gap.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_gap.add_argument("--article", "-a", help="Check specific article only (e.g., 14)")
     p_gap.add_argument("--strict", action="store_true", help="Exit 1 if overall score < 50")
@@ -1098,6 +1097,8 @@ def _build_subparsers(subparsers):
     # --- plan ---
     p_plan = subparsers.add_parser("plan", help="Generate prioritised remediation plan")
     p_plan.add_argument("--project", "-p", default=".")
+    p_plan.add_argument("project_path_positional", nargs="?", default=None,
+                       metavar="path", help="Project path (same as --project)")
     p_plan.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_plan.add_argument("--output", "-o", help="Write plan to file")
     p_plan.add_argument("--name", "-n", help="Project name")
@@ -1109,6 +1110,8 @@ def _build_subparsers(subparsers):
     p_roadmap = subparsers.add_parser("roadmap",
                                        help="Generate week-by-week compliance roadmap")
     p_roadmap.add_argument("--project", "-p", default=".")
+    p_roadmap.add_argument("project_path_positional", nargs="?", default=None,
+                       metavar="path", help="Project path (same as --project)")
     p_roadmap.add_argument("--target-date", "-t", default="2 August 2026",
                            help="Compliance deadline (default: 2 August 2026)")
     p_roadmap.add_argument("--format", "-f", choices=["text", "json"], default="text")
@@ -1118,6 +1121,8 @@ def _build_subparsers(subparsers):
 
     # --- disclose ---
     p_disclose = subparsers.add_parser("disclose", help="Generate Article 50 transparency disclosures")
+    p_disclose.add_argument("project_path_positional", nargs="?", default=None,
+                            metavar="path", help="Accepted for consistency; disclosures are template-based")
     p_disclose.add_argument("--type", "-t", choices=["chatbot", "synthetic_text", "emotion_recognition", "deepfake", "all"],
                             default="all", help="Disclosure type (default: all)")
     p_disclose.add_argument("--template-format", choices=["text", "html", "code", "all"], default="all",
@@ -1179,6 +1184,8 @@ def _build_subparsers(subparsers):
     # --- evidence-pack ---
     p_evidence = subparsers.add_parser("evidence-pack", help="Generate compliance evidence pack for auditors")
     p_evidence.add_argument("--project", "-p", default=".")
+    p_evidence.add_argument("project_path_positional", nargs="?", default=None,
+                       metavar="path", help="Project path (same as --project)")
     p_evidence.add_argument("--output", "-o", default=".", help="Output directory for the pack folder")
     p_evidence.add_argument("--name", "-n", help="Project name")
     p_evidence.add_argument("--format", "-f", choices=["text", "json"], default="text")
@@ -1726,6 +1733,13 @@ def main(args=None):
     parser.print_help = _print_progressive_help
 
     args = parser.parse_args(args)
+
+    # Commands that take --project also accept a positional path
+    # (`regula gap .` == `regula gap --project .`) — every published
+    # quickstart teaches the positional form, and `regula check .`
+    # already works that way.
+    if getattr(args, "project_path_positional", None) is not None and hasattr(args, "project"):
+        args.project = args.project_path_positional
 
     # --help-all: show the original argparse help with all 52 commands
     if getattr(args, 'help_all', False):

@@ -215,6 +215,9 @@ def _generate_summary(name, now, findings, gap, plan):
         if isinstance(t.get("effort_hours"), (list, tuple))
     )
 
+    from omnibus import annex_iii_deadline_line
+    omnibus_primary_deadline = annex_iii_deadline_line()
+
     return f"""# Evidence Pack — Executive Summary
 
 **Project:** {name}
@@ -246,7 +249,7 @@ def _generate_summary(name, now, findings, gap, plan):
 
 **Total tasks:** {plan_total}
 **Estimated effort:** ~{effort_low}-{effort_high} hours
-**Primary deadline:** 2 August 2026 (Omnibus: 2 Dec 2027 for Annex III, EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)
+**Primary deadline:** {omnibus_primary_deadline}
 
 ## Pack Contents
 
@@ -344,7 +347,7 @@ def main():
     for entry in files:
         filename = entry["filename"]
         expected_sha = entry["sha256"]
-        if ".." in Path(filename).parts:
+        if Path(filename).is_absolute() or ".." in Path(filename).parts:
             print(f"  SKIP (invalid path): {filename}", file=sys.stderr)
             continue
         fpath = Path(filename)

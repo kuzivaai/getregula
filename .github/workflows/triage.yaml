@@ -17,22 +17,21 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           REPO: ${{ github.repository }}
+          # Untrusted user content must ONLY enter via env vars. A ${{ }}
+          # expression inside `run:` is substituted into the script text
+          # before bash parses it, so a crafted issue title/body can break
+          # out of any quoting (including quoted heredocs) and execute
+          # arbitrary shell with the secrets above in scope.
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
         run: |
-          # Write issue content to temp files to avoid shell injection
-          cat > /tmp/issue_title.txt << 'ISSUE_TITLE_EOF'
-          ${{ github.event.issue.title }}
-          ISSUE_TITLE_EOF
-
-          cat > /tmp/issue_body.txt << 'ISSUE_BODY_EOF'
-          ${{ github.event.issue.body }}
-          ISSUE_BODY_EOF
-
-          # Build JSON payload safely using Python — no shell variable expansion in content
+          # Read issue content from the environment — never interpolated
+          # into the script body.
           python3 - <<'PYEOF'
           import json, os, subprocess
 
-          title = open("/tmp/issue_title.txt").read().strip()
-          body = open("/tmp/issue_body.txt").read().strip()
+          title = os.environ.get("ISSUE_TITLE", "").strip()
+          body = os.environ.get("ISSUE_BODY", "").strip()
 
           prompt = f"""You are a triage bot for Regula, an EU AI Act compliance CLI tool.
           Classify this GitHub issue into EXACTLY ONE of these labels:

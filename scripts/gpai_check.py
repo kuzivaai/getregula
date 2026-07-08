@@ -29,8 +29,11 @@ Stdlib only. PyYAML is optional — if absent, the reference metadata fields
 from __future__ import annotations
 
 import re
+import sys
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).parent))
 
 # ---------------------------------------------------------------------------
 # Signal patterns — compiled once
@@ -91,11 +94,7 @@ _ROBOTS_COMPLIANCE_SIGNALS = [(re.compile(p), label) for p, label in _ROBOTS_COM
 _ROBOTS_BYPASS_SIGNALS = [(re.compile(p), label) for p, label in _ROBOTS_BYPASS_SOURCES]
 
 # Directories to skip during walk
-_SKIP_DIRS = {
-    '.venv', 'venv', 'env', '.env', '__pycache__', '.git', '.mypy_cache',
-    '.pytest_cache', '.ruff_cache', 'node_modules', 'dist', 'build',
-    '.tox', '.nox', 'site-packages',
-}
+from constants import SKIP_DIRS as _SKIP_DIRS
 
 # Directories considered test/fixture code — their training signals do
 # not create GPAI provider obligations (they are self-contained examples).

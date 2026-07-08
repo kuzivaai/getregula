@@ -109,6 +109,8 @@ runs:
           DIFF_FLAG="--diff ${BASE_REF}"
         fi
 
+        # Exit code 1 just means findings were detected — the SARIF file is
+        # still written. The fail-on-* gates live in the count step below.
         python3 "${{ github.action_path }}/scripts/cli.py" check "${{ inputs.path }}" \
           --format sarif \
           --framework "${{ inputs.framework }}" \
@@ -116,13 +118,34 @@ runs:
           --output "${SARIF_FILE}" \
           || true
 
-        # If cli.py wrote to stdout instead of file, capture it
-        if [ ! -f "${SARIF_FILE}" ]; then
+        # Fallback for older CLI versions where --output only supported HTML
+        # and SARIF went to stdout. CRITICAL: the redirect must NOT be
+        # ||-chained to a stub write — `check` exits 1 when findings exist,
+        # and a || stub would overwrite the real SARIF with an empty one,
+        # silently disarming fail-on-prohibited (this exact bug shipped).
+        if [ ! -s "${SARIF_FILE}" ]; then
           python3 "${{ github.action_path }}/scripts/cli.py" check "${{ inputs.path }}" \
             --format sarif \
             --framework "${{ inputs.framework }}" \
             ${DIFF_FLAG} \
-            > "${SARIF_FILE}" 2>/dev/null || echo '{"runs":[{"results":[]}]}' > "${SARIF_FILE}"
+            > "${SARIF_FILE}" 2>/dev/null || true
+        fi
+
+        # Last resort: emit a schema-VALID empty SARIF (version + tool are
+        # required properties — an invalid stub breaks the SARIF upload).
+        if [ ! -s "${SARIF_FILE}" ] || ! python3 -c "import json,sys; json.load(open('${SARIF_FILE}'))" 2>/dev/null; then
+          cat > "${SARIF_FILE}" <<'STUB'
+        {
+          "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+          "version": "2.1.0",
+          "runs": [
+            {
+              "tool": {"driver": {"name": "regula", "informationUri": "https://github.com/kuzivaai/getregula"}},
+              "results": []
+            }
+          ]
+        }
+        STUB
         fi
 
     - name: Emit GitHub workflow-command annotations

@@ -10,7 +10,10 @@ The self-check is a sanity pass: it verifies scan_files runs without error and p
 structured output. Any truly unexpected prohibited content would require manual review.
 """
 
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
 
 
 KNOWN_ACCEPTABLE = [

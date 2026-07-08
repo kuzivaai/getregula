@@ -25,7 +25,27 @@ Regulatory baseline (verified sources):
 """
 
 import json
+import sys
 from datetime import date
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+from omnibus import (
+    BINDING_NOTE,
+    OMNIBUS_ENACTED,
+    OMNIBUS_OJ_DATE,
+    OMNIBUS_STATUS,
+)
+
+# Enactment-dependent suffix for every Omnibus timeline note. Derives from
+# omnibus.py so the OJ flip is a one-line change there; the previous
+# hardcoded suffix went stale the day the Council approved.
+_OMNIBUS_NOTE_STATUS = (
+    f"IN FORCE (published in OJ {OMNIBUS_OJ_DATE})."
+    if OMNIBUS_ENACTED
+    else "Adopted by EP (16 Jun) and Council (29 Jun 2026); pending OJ publication."
+)
 
 
 # ---------------------------------------------------------------------------
@@ -70,9 +90,8 @@ TIMELINE = [
             "deferred to 2 December 2027; Annex I to 2 August 2028; new "
             "Article 5 prohibition on CSAM/NCII generation (2 December 2026); "
             "watermarking for existing systems deferred to 2 December 2026; "
-            "sandboxes deferred to 2 August 2027. EP approved 16 Jun 2026; "
-            "Council approved 29 Jun 2026. Pending OJ publication. Until OJ "
-            "publication, original deadlines remain legally binding."
+            "sandboxes deferred to 2 August 2027. "
+            + _OMNIBUS_NOTE_STATUS
         ),
     },
     {
@@ -110,7 +129,7 @@ TIMELINE = [
             "on the market before 2 August 2026. (2) New Art 5 prohibition "
             "on AI systems that generate child sexual abuse material or "
             "non-consensual intimate imagery of identifiable persons. "
-            "PENDING FORMAL ADOPTION."
+            + _OMNIBUS_NOTE_STATUS
         ),
     },
     {
@@ -133,7 +152,7 @@ TIMELINE = [
         "note": (
             "Member States must establish national AI regulatory sandboxes "
             "by this date. Original deadline was 2 August 2026; deferred "
-            "by 12 months under the Omnibus. PENDING FORMAL ADOPTION."
+            "by 12 months under the Omnibus. " + _OMNIBUS_NOTE_STATUS
         ),
     },
     {
@@ -146,7 +165,7 @@ TIMELINE = [
             "AI systems under Annex III: biometrics, employment, education, "
             "credit scoring, law enforcement, migration, etc. Original "
             "deadline was 2 August 2026; deferred 16 months under the "
-            "Omnibus. PENDING FORMAL ADOPTION. Multiple law firms (Bird & "
+            "Omnibus. " + _OMNIBUS_NOTE_STATUS + " Multiple law firms (Bird & "
             "Bird, Travers Smith, Modulos) advise planning against this "
             "date as the baseline."
         ),
@@ -161,7 +180,7 @@ TIMELINE = [
             "regulated under EU harmonisation legislation (Annex I): "
             "medical devices, machinery, toys, lifts, radio equipment. "
             "Original deadline was 2 August 2027; deferred 12 months under "
-            "the Omnibus. PENDING FORMAL ADOPTION."
+            "the Omnibus. " + _OMNIBUS_NOTE_STATUS
         ),
     },
 ]
@@ -195,13 +214,11 @@ def format_timeline_text() -> str:
         "",
         "  Status key:",
         "    [LIVE] = enforceable now   [LAW] = legally binding date",
-        "    [AGR]  = agreed in Omnibus (EP approved 16 Jun 2026)",
+        "    [AGR]  = agreed in Omnibus" + (" (in force)" if OMNIBUS_ENACTED else " (pending OJ publication)"),
         "    [WIP]  = in progress       [LATE] = deadline missed",
         "",
-        "  IMPORTANT: The Digital Omnibus (agreed 7 May 2026) was approved by",
-        "  EP on 16 Jun 2026 and by the Council on 29 Jun 2026.",
-        "  Until publication in the Official Journal, original deadlines",
-        "  remain legally binding.",
+        f"  IMPORTANT: Digital Omnibus status: {OMNIBUS_STATUS}.",
+        f"  {BINDING_NOTE}",
         "",
     ]
 
@@ -250,11 +267,7 @@ def main():
     if args.format == "json":
         print(json.dumps({
             "as_of": date.today().isoformat(),
-            "omnibus_status": (
-                "Provisional agreement reached 7 May 2026. "
-                "Formal adoption pending. Until OJ publication, "
-                "original deadlines remain legally binding."
-            ),
+            "omnibus_status": f"{OMNIBUS_STATUS}. {BINDING_NOTE}",
             "timeline": TIMELINE,
         }, indent=2))
     else:

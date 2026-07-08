@@ -26,14 +26,21 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 # ── Patterns ───────────────────────────────────────────────────────
 
+# Comment leaders across the 8 scanned languages: # (Python/shell),
+# // (JS/TS/Java/Go/Rust/C/C++), /* and * (C-style block comments).
+# Requiring only "#" would make regula-ignore silently dead in 7 of the
+# 8 languages Regula scans — that exact bug shipped and let scanner.js
+# flag this repo's own pattern definitions as prohibited.
+_COMMENT_LEADER = r"(?:#|//|/\*|\*)"
+
 _IGNORE_RE = re.compile(
-    r"#\s*regula-ignore\s*(?::\s*(?P<pattern>[^—\-\n]+?))?\s*"
-    r"(?:(?:—|--)\s*(?P<rationale>.+?))?\s*$"
+    _COMMENT_LEADER + r"\s*regula-ignore\s*(?::\s*(?P<pattern>[^—\-\n]+?))?\s*"
+    r"(?:(?:—|--)\s*(?P<rationale>.+?))?\s*(?:\*/)?\s*$"
 )
 
 _ACCEPT_RE = re.compile(
-    r"#\s*regula-accept\s*:\s*(?P<pattern>[^—\-\n]+?)\s*"
-    r"(?:(?:—|--)\s*(?P<rest>.+?))?\s*$"
+    _COMMENT_LEADER + r"\s*regula-accept\s*:\s*(?P<pattern>[^—\-\n]+?)\s*"
+    r"(?:(?:—|--)\s*(?P<rest>.+?))?\s*(?:\*/)?\s*$"
 )
 
 _OWNER_RE = re.compile(r"\|\s*owner\s*=\s*(?P<owner>\S+)")

@@ -314,6 +314,38 @@ def test_generator_commands_do_not_mutate_tracked_files(tmp_path):
     )
 
 
+def test_docs_default_output_goes_to_project_not_cwd(tmp_path):
+    """`regula docs <project>` with NO --output must write into
+    <project>/docs/, never <cwd>/docs/.
+
+    Regression for the sentinel bug: the argparse default "docs" was
+    resolved against the CWD, so every default-output invocation from the
+    repo root (including test runs) dropped <cwd>/docs/tmp*_annex_iv.md
+    junk into this repo — 56 such files accumulated before the July 2026
+    audit caught it. git-status snapshots alone missed it because the
+    junk was untracked and earlier tests always passed explicit --output.
+    """
+    import pathlib
+    repo = pathlib.Path(__file__).resolve().parents[1]
+
+    project = tmp_path / "proj"
+    project.mkdir()
+    (project / "app.py").write_text("import openai\n", encoding="utf-8")
+
+    junk = repo / "docs" / f"{project.name}_annex_iv.md"
+    assert not junk.exists()
+
+    rc, _, err = run_cli("docs", str(project))
+    assert rc == 0, f"docs failed: {err[:200]}"
+
+    assert not junk.exists(), (
+        f"default-output docs run polluted the repo: {junk} — the 'docs' "
+        "sentinel must resolve against the project, not the CWD"
+    )
+    expected = project / "docs" / f"{project.name}_annex_iv.md"
+    assert expected.exists(), f"output not written to project docs/: {expected}"
+
+
 def test_demo_verdict_shows_high_risk():
     """Demo must show HIGH-RISK for the bundled hiring system, not NO AI DETECTED.
 

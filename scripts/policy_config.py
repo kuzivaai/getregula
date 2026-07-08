@@ -15,6 +15,9 @@ import os
 import re
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
 from degradation import check_optional
 
 # Set to (path_str, error_str) when a policy file is found but fails to parse.

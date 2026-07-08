@@ -17,7 +17,12 @@ conclusions. Article 53 obligations have been in force since 2 August 2025.
 
 import json
 import re
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+from constants import SKIP_DIRS
 # ---------------------------------------------------------------------------
 # Known-models catalogue
 # ---------------------------------------------------------------------------
@@ -120,7 +125,7 @@ _SCAN_EXTENSIONS = {
     ".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs",
     ".yaml", ".yml", ".json", ".toml", ".env", ".cfg", ".ini",
 }
-_SKIP_DIRS = {".git", "node_modules", "__pycache__", "venv", ".venv", "dist", "build"}
+_SKIP_DIRS = SKIP_DIRS
 
 
 def scan_for_models(project_path: str) -> dict:

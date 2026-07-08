@@ -235,8 +235,25 @@ def cmd_verify(args) -> None:
         import tempfile
         import zipfile
         extracted_tmpdir = tempfile.TemporaryDirectory(prefix="regula-verify-")
+        # Decompression-bomb guard: bundles come from third parties, and
+        # a small .zip can declare gigabytes of expansion. Evidence packs
+        # are megabytes; 500 MB is far above any legitimate pack.
+        _MAX_EXTRACT_BYTES = 500 * 1024 * 1024
+        _MAX_EXTRACT_MEMBERS = 10_000
         try:
             with zipfile.ZipFile(pack_path) as zf:
+                infos = zf.infolist()
+                if len(infos) > _MAX_EXTRACT_MEMBERS:
+                    print(f"Refusing to extract {pack_path}: {len(infos)} members "
+                          f"(limit {_MAX_EXTRACT_MEMBERS})")
+                    sys.exit(2)
+                declared = sum(zi.file_size for zi in infos)
+                if declared > _MAX_EXTRACT_BYTES:
+                    print(f"Refusing to extract {pack_path}: declares "
+                          f"{declared / 1_048_576:.0f} MB uncompressed "
+                          f"(limit {_MAX_EXTRACT_BYTES // 1_048_576} MB) — "
+                          "possible decompression bomb")
+                    sys.exit(2)
                 zf.extractall(extracted_tmpdir.name)
         except zipfile.BadZipFile as exc:
             print(f"Cannot read zip bundle {pack_path}: {exc}")
@@ -399,10 +416,27 @@ def cmd_verify(args) -> None:
     failed = 0
     results = []
 
+    resolved_pack_dir = pack_dir.resolve()
     for entry in files:
         filename = entry.get("filename", entry.get("name", entry.get("path", "")))
         expected_hash = entry.get("sha256", "")
+
+        # Manifests come from third parties: an absolute or ../-crafted
+        # filename must not escape the pack directory (arbitrary-file-read
+        # oracle, or an indefinite hang hashing a special file).
+        if Path(filename).is_absolute() or ".." in Path(filename).parts:
+            results.append({"filename": filename, "status": "INVALID_PATH", "expected": expected_hash})
+            failed += 1
+            continue
         filepath = pack_dir / filename
+        try:
+            inside = filepath.resolve().is_relative_to(resolved_pack_dir)
+        except OSError:
+            inside = False
+        if not inside or (filepath.exists() and not filepath.is_file()):
+            results.append({"filename": filename, "status": "INVALID_PATH", "expected": expected_hash})
+            failed += 1
+            continue
 
         if not filepath.exists():
             results.append({"filename": filename, "status": "MISSING", "expected": expected_hash})

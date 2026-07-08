@@ -182,10 +182,10 @@ def generate_roadmap(
     weekly_plan.sort(key=lambda w: w["week"])
 
     # Omnibus caveat
+    from omnibus import status_parenthetical, ANNEX_III_PROSE
     omnibus_note = (
-        "Note: The EU Digital Omnibus (agreed 7 May 2026, EP approved 16 Jun 2026, "
-        "Council approved 29 Jun 2026; pending OJ publication) extends Annex III "
-        "high-risk deadlines to 2 December 2027. The roadmap uses the current legal "
+        f"Note: The EU Digital Omnibus {status_parenthetical()[1:-1]} extends Annex III "
+        f"high-risk deadlines to {ANNEX_III_PROSE}. The roadmap uses the current legal "
         "baseline. Use --target-date to adjust."
     )
 

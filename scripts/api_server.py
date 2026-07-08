@@ -24,6 +24,7 @@ Usage:
 
 import argparse
 import json
+import os
 import sys
 import traceback
 from datetime import datetime, timezone
@@ -41,19 +42,10 @@ MAX_REQUEST_SIZE = 10 * 1024 * 1024
 
 
 # ---------------------------------------------------------------------------
-# JSON envelope — mirrors cli.py _build_envelope / json_output
+# JSON envelope — single source of truth in envelope.py (shared with cli.py)
 # ---------------------------------------------------------------------------
 
-def _build_envelope(command: str, data, exit_code: int = 0) -> dict:
-    """Build the standard JSON envelope dict."""
-    return {
-        "format_version": "1.0",
-        "regula_version": VERSION,
-        "command": command,
-        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-        "exit_code": exit_code,
-        "data": data,
-    }
+from envelope import build_envelope as _build_envelope
 
 
 def _json_bytes(obj: dict) -> bytes:
@@ -76,9 +68,17 @@ class RegulaHandler(BaseHTTPRequestHandler):
     # ---- CORS ----
 
     def _set_cors_headers(self):
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        # No wildcard: this server has no authentication, so
+        # Access-Control-Allow-Origin: * would let any website the
+        # developer visits read local scan results via fetch() to
+        # localhost (drive-by CSRF-via-CORS). Browser access is opt-in
+        # via REGULA_API_ALLOW_ORIGIN; non-browser clients (curl, CI)
+        # never need CORS headers.
+        allowed = os.environ.get("REGULA_API_ALLOW_ORIGIN", "")
+        if allowed and allowed != "*":
+            self.send_header("Access-Control-Allow-Origin", allowed)
+            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+            self.send_header("Access-Control-Allow-Headers", "Content-Type")
 
     def do_OPTIONS(self):
         """Handle CORS preflight requests."""

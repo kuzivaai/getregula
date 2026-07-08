@@ -129,11 +129,8 @@ def _scan_model_files(project_path: str) -> list[dict]:
     root = Path(project_path)
     models = []
 
-    skip_dirs = {
-        "node_modules", ".git", "__pycache__", ".venv", "venv",
-        "env", ".env", "dist", "build", ".next", ".nuxt",
-        "coverage", ".tox", ".mypy_cache",
-    }
+    from constants import SKIP_DIRS
+    skip_dirs = SKIP_DIRS
 
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = [d for d in dirnames if d not in skip_dirs]
@@ -190,11 +187,7 @@ _DATASET_PATTERNS = [
 
 _DATASET_SCAN_EXTENSIONS = {".py", ".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"}
 _DATASET_FILE_EXTENSIONS = {".csv", ".jsonl", ".parquet", ".tfrecord", ".arrow", ".h5"}
-_DATASET_SKIP_DIRS = {
-    "node_modules", ".git", "__pycache__", ".venv", "venv",
-    "env", ".env", "dist", "build", ".next", ".nuxt",
-    "coverage", ".tox", ".mypy_cache",
-}
+from constants import SKIP_DIRS as _DATASET_SKIP_DIRS
 
 # ── GPAI provider detection ─────────────────────────────────────
 

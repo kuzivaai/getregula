@@ -127,3 +127,13 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+# ── pytest entry point ─────────────────────────────────────────────
+# Without a test_* function this file silently contributes nothing to
+# `python3 -m pytest tests/` — the Python↔scanner.js drift check the
+# quality rules require would only run when invoked by hand.
+
+def test_scanner_js_in_sync_with_risk_patterns():
+    """site/assess/scanner.js pattern counts must match risk_patterns.py."""
+    assert main() == 0, "scanner.js has drifted from risk_patterns.py — see stdout"

@@ -7,6 +7,69 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+Deep-audit remediation (8 July 2026). Full findings and evidence in the
+maintainer's audit report; every fix below was verified by test.
+
+### Security
+
+- **GitHub Actions script injection fixed** in the issue-triage workflow:
+  issue title/body now reach the script only via environment variables. A
+  crafted issue title could previously execute shell in a step holding
+  repository secrets.
+- **`regula verify` path traversal fixed**: manifest filenames that are
+  absolute or contain `..` are rejected (`INVALID_PATH`) instead of being
+  read from outside the pack directory; symlink escapes are also blocked
+  and special files are refused. The bundled standalone verifier now
+  rejects absolute paths too.
+- **Zip decompression-bomb guard** on `regula verify <pack>.zip`:
+  bundles declaring more than 500 MB uncompressed or 10,000 members are
+  refused before extraction.
+- **Ed25519 signing key hardening**: the private key file is now created
+  `0600` atomically (`O_CREAT|O_EXCL`); a permissions failure aborts key
+  generation instead of warning and continuing; the key directory is
+  created `0700`.
+- **BREAKING: API server no longer sends `Access-Control-Allow-Origin: *`.**
+  The server has no authentication, so wildcard CORS let any website a
+  developer visited read local scan results via requests to localhost.
+  Browser access is now opt-in: set `REGULA_API_ALLOW_ORIGIN` to an
+  explicit origin (a literal `*` is refused). Non-browser clients (curl,
+  CI) are unaffected.
+- Least-privilege `permissions: contents: read` added to the CI,
+  benchmark, release, and test-action workflows.
+
+### Fixed
+
+- **`fail-on-prohibited` in the GitHub Action now actually works.**
+  `regula check --format sarif --output FILE` previously never wrote the
+  file (only HTML honoured `--output`), so the action's fallback
+  overwrote real results with an empty, schema-invalid SARIF stub —
+  the gate always counted zero findings, and the invalid stub broke
+  SARIF upload. `--output` now writes SARIF, the fallback no longer
+  destroys real output, and the last-resort stub is valid SARIF 2.1.0.
+- **`regula-ignore` / `regula-accept` now work in all scanned languages.**
+  The annotation parser only recognised `#` comments, so suppressions
+  were silently dead in JS/TS/Java/Go/Rust/C/C++ — 7 of the 8 languages
+  Regula scans. `//`, `/*` and `*` comment leaders are now recognised.
+- **`regula gap|plan|roadmap|docs|evidence-pack|disclose` accept a
+  positional path** (`regula gap .`), matching `regula check` and every
+  published quickstart — these commands previously exited 2 on the
+  documented form.
+- **`regula docs` default output** now resolves against the project
+  directory, not the current working directory, so invocations from
+  another directory no longer drop generated files into it.
+- `regula gap` no longer counts Regula-generated draft scaffolds or
+  hidden tool directories as compliance evidence, and its output states
+  that the score measures documentation presence, not code risk.
+
+### Changed
+
+- Digital Omnibus enactment status now derives from a single module
+  (`scripts/omnibus.py`) across every command that prints deadline copy;
+  a regression test simulates OJ publication and verifies all consumers
+  flip. Scanner skip-directory lists and the JSON output envelope were
+  likewise consolidated to single sources of truth with enforcement
+  tests.
+
 ## [1.7.4] — 2026-07-06
 
 Regulatory-status correction and release-pipeline hardening. Updates the
