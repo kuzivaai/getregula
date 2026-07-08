@@ -561,7 +561,6 @@ def _run_organisational_questionnaire(args):
     structured evidence document, NOT a compliance certificate.
     """
     import json as _json
-    from datetime import datetime, timezone
 
     fmt = getattr(args, "format", "text")
     project_name = getattr(args, "name", None) or "unnamed-system"

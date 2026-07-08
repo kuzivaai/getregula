@@ -252,3 +252,44 @@ def test_regression_evidence_format_spec_passes():
     assert len(report.findings) == 0, (
         f"Unexpected findings: {[f.claim.snippet for f in report.findings]}"
     )
+
+
+# ---------------------------------------------------------------------------
+# Regression: backticked file references must count as sources
+# ---------------------------------------------------------------------------
+
+def test_backticked_file_reference_counts_as_source(tmp_path, monkeypatch):
+    """strip_noise blanks inline code spans, which used to erase
+    `scripts/foo.py`-style citations before paragraph_has_source() ran —
+    a numeric claim sourced by a backticked repo path was reported
+    unsourced (CI break on the 8 Jul 2026 audit CHANGELOG entry). A code
+    span that is purely a resolving repo-file reference must survive."""
+    # The cited file must exist relative to the (repointed) repo root.
+    (tmp_path / "scripts").mkdir()
+    (tmp_path / "scripts" / "cli_evidence.py").write_text("# x\n", encoding="utf-8")
+    path = _write(
+        tmp_path, "note.md",
+        "- Bundles over 500 MB are refused before extraction "
+        "(limits defined in `scripts/cli_evidence.py`).\n",
+        monkeypatch,
+    )
+    report = claim_auditor.scan_file(path, allowlist=[])
+    assert len(report.findings) == 0, (
+        f"backticked file ref not honoured as source: "
+        f"{[f.claim.snippet for f in report.findings]}"
+    )
+
+
+def test_backticked_non_file_code_is_still_noise(tmp_path, monkeypatch):
+    """Ordinary inline code (`--flag`, `some_function()`) must NOT count
+    as a source — only spans that are purely a resolving repo file path."""
+    path = _write(
+        tmp_path, "note.md",
+        "- Bundles over 500 MB are refused when you pass `--strict`.\n",
+        monkeypatch,
+    )
+    report = claim_auditor.scan_file(path, allowlist=[])
+    assert len(report.findings) == 1, (
+        f"expected the unsourced claim to be flagged, got: "
+        f"{[f.claim.snippet for f in report.findings]}"
+    )

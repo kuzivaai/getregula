@@ -23,7 +23,8 @@ maintainer's audit report; every fix below was verified by test.
   rejects absolute paths too.
 - **Zip decompression-bomb guard** on `regula verify <pack>.zip`:
   bundles declaring more than 500 MB uncompressed or 10,000 members are
-  refused before extraction.
+  refused before extraction (limits defined in `scripts/cli_evidence.py`,
+  `_MAX_EXTRACT_BYTES` / `_MAX_EXTRACT_MEMBERS`).
 - **Ed25519 signing key hardening**: the private key file is now created
   `0600` atomically (`O_CREAT|O_EXCL`); a permissions failure aborts key
   generation instead of warning and continuing; the key directory is
