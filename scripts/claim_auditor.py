@@ -235,7 +235,19 @@ def strip_noise(text: str, suffix: str) -> str:
                   flags=re.DOTALL | re.IGNORECASE)
     if suffix in (".md", ".markdown"):
         text = re.sub(r"```.*?```", _blank, text, flags=re.DOTALL)
-        text = re.sub(r"`[^`]*`", lambda m: " " * len(m.group(0)), text)
+
+        def _blank_inline(m: re.Match[str]) -> str:
+            # Inline code is noise EXCEPT when the span is purely a
+            # repo-file reference (`scripts/foo.py`) that resolves on
+            # disk — backticks are this repo's idiomatic way of citing a
+            # source file, and erasing them made such citations
+            # invisible to paragraph_has_source().
+            inner = m.group(0)[1:-1]
+            if FILE_REF_RE.fullmatch(inner) and (REPO_ROOT / inner).exists():
+                return f" {inner} "
+            return " " * len(m.group(0))
+
+        text = re.sub(r"`[^`]*`", _blank_inline, text)
         # Skip historical release sections in Keep-a-Changelog files.
         # Match from a `## [1.2.3]` heading (or any non-Unreleased
         # bracketed version) up to the next `## ` heading at the same
