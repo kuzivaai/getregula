@@ -75,6 +75,16 @@ maintainer's audit report; every fix below was verified by test.
   the site index, UAE page, and both locale pages (still 1.7.3 after the
   1.7.4 release); an enforcement test now pins every site
   `softwareVersion` to `scripts/constants.py` VERSION.
+- **`regula evidence-pack --sign` was taught but never existed** — the
+  `--sign` flag belongs to `regula conform`. The homepage copy-pill
+  (EN/DE/PT-BR), the pricing page, llms-full.txt, and the CLI's own
+  evidence-pack hint all taught the broken form; every instance now
+  shows `regula conform --sign .` (verified end-to-end: Ed25519
+  signature embedded and `regula verify` passes).
+- **Evidence-pack pricing page is now linked and indexable**
+  (`/pricing.html`): noindex removed, added to the sitemap, linked from
+  the homepage evidence-pack card and the EN/DE/PT-BR footers. Copy
+  unchanged and explicit that paid tiers are not yet purchasable.
 - **Claim auditor now verifies precision figures** (`--verify-facts`):
   every "N% … precision" claim in published copy must be derivable from
   the benchmark artifacts (`benchmarks/results/*/PRECISION.json`,
