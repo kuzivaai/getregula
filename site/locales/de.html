@@ -706,9 +706,10 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     <div role="region" aria-label="Vergleich von EU-KI-Gesetz-Compliance-Tools" style="overflow-x:auto;margin-top:32px;-webkit-overflow-scrolling:touch;">
     <p class="scroll-hint" style="display:none;font-size:11px;color:var(--text-dim);margin-bottom:8px;text-align:right;">Scrollen &rarr;</p>
     <table class="cmp-table" style="width:100%;border-collapse:collapse;font-size:13px;color:#b0b0cc;">
+        <caption class="sr-only">Funktionsvergleich von EU-AI-Act-Compliance-Tools: Regula, AIR Blackbox, Systima Comply, EuConform und Enterprise-SaaS</caption>
         <thead>
             <tr style="border-bottom:1px solid #23234a;text-align:left;">
-                <th scope="col" style="padding:8px 12px;"></th>
+                <th scope="col" style="padding:8px 12px;"><span class="sr-only">Feature</span></th>
                 <th scope="col" style="padding:8px 12px;">Regula</th>
                 <th scope="col" style="padding:8px 12px;">AIR Blackbox</th>
                 <th scope="col" style="padding:8px 12px;">Systima Comply</th>
@@ -717,16 +718,16 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             </tr>
         </thead>
         <tbody>
-            <tr><td style="padding:6px 12px;color:#e0e0f0;">Ansatz</td><td>Statischer Code-Scan</td><td>Scan + Runtime-Trust-Layer</td><td>AST-basierter Scan</td><td>Fragebogen + Bias-Evaluierung</td><td>Plattform / Dashboard</td></tr>
-            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Sprachen</td><td>8 Familien</td><td>Python</td><td>JS/TS/Python</td><td>Kein Code-Scanner</td><td>Kein Code-Scanner</td></tr>
-            <tr><td style="padding:6px 12px;color:#e0e0f0;">Erkennungsmuster</td><td>419</td><td>51 Pr&uuml;fungen</td><td>37+ Frameworks</td><td>Fragebogen</td><td>Variiert</td></tr>
-            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Abh&auml;ngigkeiten</td><td>Null (stdlib)</td><td>Mehrere</td><td>npm</td><td>Next.js + Ollama</td><td>SaaS</td></tr>
-            <tr><td style="padding:6px 12px;color:#e0e0f0;">Offline</td><td>Vollst&auml;ndig offline</td><td>Lokal</td><td>Lokal</td><td>Lokal + Ollama</td><td>Cloud</td></tr>
-            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Evidenzsignierung</td><td>Ed25519 + RFC 3161</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>Variiert</td></tr>
-            <tr><td style="padding:6px 12px;color:#e0e0f0;">Framework-Zuordnungen</td><td>12</td><td>3</td><td>EU AI Act</td><td>EU AI Act</td><td>Mehrere</td></tr>
-            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">CI/CD-Integration</td><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>&mdash;</td><td>Nativ</td></tr>
-            <tr><td style="padding:6px 12px;color:#e0e0f0;">Anhang-IV-Doku</td><td>Kostenlos</td><td>&mdash;</td><td>&mdash;</td><td>PDF-Berichte</td><td>Integriert</td></tr>
-            <tr style="background:#0d0d1a;"><td style="padding:6px 12px;color:#e0e0f0;">Preis</td><td>Kostenlos (Apache 2.0 / EUPL 1.2)</td><td>Kostenlos (Apache 2.0)</td><td>Kostenlos (Apache 2.0)</td><td>Kostenlos (MIT)</td><td>Typischerweise nicht ver&ouml;ffentlicht</td></tr>
+            <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Ansatz</th><td>Statischer Code-Scan</td><td>Scan + Runtime-Trust-Layer</td><td>AST-basierter Scan</td><td>Fragebogen + Bias-Evaluierung</td><td>Plattform / Dashboard</td></tr>
+            <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Sprachen</th><td>8 Familien</td><td>Python</td><td>JS/TS/Python</td><td>Kein Code-Scanner</td><td>Kein Code-Scanner</td></tr>
+            <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Erkennungsmuster</th><td>419</td><td>51 Pr&uuml;fungen</td><td>37+ Frameworks</td><td>Fragebogen</td><td>Variiert</td></tr>
+            <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Abh&auml;ngigkeiten</th><td>Null (stdlib)</td><td>Mehrere</td><td>npm</td><td>Next.js + Ollama</td><td>SaaS</td></tr>
+            <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Offline</th><td>Vollst&auml;ndig offline</td><td>Lokal</td><td>Lokal</td><td>Lokal + Ollama</td><td>Cloud</td></tr>
+            <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Evidenzsignierung</th><td>Ed25519 + RFC 3161</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>Variiert</td></tr>
+            <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Framework-Zuordnungen</th><td>12</td><td>3</td><td>EU AI Act</td><td>EU AI Act</td><td>Mehrere</td></tr>
+            <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">CI/CD-Integration</th><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>&mdash;</td><td>Nativ</td></tr>
+            <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Anhang-IV-Doku</th><td>Kostenlos</td><td>&mdash;</td><td>&mdash;</td><td>PDF-Berichte</td><td>Integriert</td></tr>
+            <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Preis</th><td>Kostenlos (Apache 2.0 / EUPL 1.2)</td><td>Kostenlos (Apache 2.0)</td><td>Kostenlos (Apache 2.0)</td><td>Kostenlos (MIT)</td><td>Typischerweise nicht ver&ouml;ffentlicht</td></tr>
         </tbody>
     </table>
     </div>
