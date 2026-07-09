@@ -293,3 +293,48 @@ def test_backticked_non_file_code_is_still_noise(tmp_path, monkeypatch):
         f"expected the unsourced claim to be flagged, got: "
         f"{[f.claim.snippet for f in report.findings]}"
     )
+
+
+# ---------------------------------------------------------------------------
+# Precision-claim enforcement (T3c)
+# ---------------------------------------------------------------------------
+
+def test_known_precision_values_include_published_figures():
+    """Every precision figure published in README/TRUST/site copy must be
+    derivable from the benchmark artifacts. If this fails after a
+    benchmark re-run, the published copy needs a sweep, not this test."""
+    known = claim_auditor.known_precision_values()
+    for figure in ("83.5", "36.8", "15.2", "66.1", "36.7", "0.0", "60.6"):
+        assert figure in known, f"published figure {figure}% not derivable"
+
+
+def test_precision_guard_flags_fabricated_figure():
+    """Mutation test: a planted precision claim that matches no benchmark
+    value must be flagged (this is the guard's entire purpose)."""
+    known = claim_auditor.known_precision_values()
+    text = "Our scanner achieves 97.3% precision on production code.\n"
+    problems = claim_auditor.check_precision_claims(text, known)
+    assert problems == [(1, "97.3%")]
+
+
+def test_precision_guard_passes_derivable_figures_all_locales():
+    """Published figures pass in EN, DE (&auml; entity), and PT-BR
+    (comma decimal) phrasings; percentages with no precision context
+    are ignored entirely."""
+    known = claim_auditor.known_precision_values()
+    text = (
+        "83.5% precision on production code (N=115).\n"
+        "83,5% Pr&auml;zision auf Produktionscode.\n"
+        "83,5% de precisao em codigo de producao.\n"
+        "CPU usage stayed under 97.3% during the scan.\n"
+    )
+    assert claim_auditor.check_precision_claims(text, known) == []
+
+
+def test_precision_guard_flags_stale_figure_in_locale_phrasing():
+    """A drifted figure is caught in DE phrasing too — the guard must not
+    be EN-only (locale-parity rule)."""
+    known = claim_auditor.known_precision_values()
+    text = "97,3% Pr&auml;zision auf Produktionscode.\n"
+    problems = claim_auditor.check_precision_claims(text, known)
+    assert len(problems) == 1

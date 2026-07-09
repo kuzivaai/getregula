@@ -1,20 +1,10 @@
 User-agent: *
 Allow: /
 
-# Old redirect URLs — speed deindexing of legacy paths
-# These pages have noindex + canonical pointing to /blog/ and /locales/ versions
-Disallow: /blog-omnibus-delay.html
-Disallow: /blog-does-ai-act-apply.html
-Disallow: /blog-risk-tiers-in-code.html
-Disallow: /de.html
-Disallow: /pt-br.html
-Disallow: /writing.html
-Disallow: /regulations.html
-Disallow: /south-africa-ai-policy.html
-Disallow: /south-korea-ai-regulation.html
-Disallow: /colorado-ai-regulation.html
-Disallow: /uae.html
-Disallow: /uk-ai-regulation.html
+# Legacy paths are redirect stubs (noindex + canonical + meta refresh) and
+# must stay CRAWLABLE: a robots.txt block would stop crawlers from ever
+# seeing those signals, leaving the old URLs stranded in the index instead
+# of consolidating to the /blog/ and /locales/ versions.
 
 # AI search and assistant crawlers (updated 14 June 2026)
 # Sources: ai-robots-txt/ai.robots.txt repo (3 Jun 2026), vendor docs

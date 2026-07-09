@@ -1,4 +1,5 @@
 """CLI integration tests — exercise top commands via subprocess."""
+import json
 import os
 import subprocess
 import sys
@@ -31,6 +32,34 @@ def test_assess_auto():
     rc, out, err = run_cli("assess", "--answers", "yes,yes,no,yes,no")
     assert rc == 0
     assert "high" in out.lower() or "risk" in out.lower()
+
+
+def test_assess_json_uses_standard_envelope():
+    """`assess --format json` must emit the standard envelope, not a bare
+    object. Regression for the July 2026 UX-audit Critical: assess was the
+    one JSON surface that bypassed the envelope contract, so machine
+    consumers got a different schema than every other command."""
+    rc, out, err = run_cli("assess", "--answers", "yes,yes,no,yes,no", "--format", "json")
+    assert rc == 0, f"assess failed: {err[:200]}"
+    payload = json.loads(out)
+    assert set(payload) == {
+        "format_version", "regula_version", "command",
+        "timestamp", "exit_code", "data",
+    }, f"envelope keys wrong: {sorted(payload)}"
+    assert payload["command"] == "assess"
+    assert payload["exit_code"] == 0
+    assert payload["data"]["tier"] == "high_risk"
+    assert payload["data"]["answers"]["uses_ai"] == "yes"
+
+
+def test_assess_json_prohibited_exit_code_in_envelope():
+    """Envelope exit_code must match the process exit code on the
+    prohibited path (both are 1)."""
+    rc, out, err = run_cli("assess", "--answers", "yes,yes,yes", "--format", "json")
+    assert rc == 1, f"expected rc=1 for prohibited tier, got {rc}: {err[:200]}"
+    payload = json.loads(out)
+    assert payload["exit_code"] == 1
+    assert payload["data"]["tier"] == "prohibited"
 
 
 def test_plan():

@@ -73,9 +73,9 @@ AI-generated outputs in Regula carry specific risks. These are documented honest
 
 ## Detection Pattern Curation Methodology
 
-### How the 330 patterns were selected
+### How the initial pattern set was selected
 
-The 330-pattern count corresponds to the `historical_330_bucket` computation in `scripts/site_facts.py`: tiered risk regexes (279) + architecture detectors (38) + credential detectors (9) + oversight detectors (4).
+The original curation covered 330 patterns — the `historical_330_bucket` computation in `scripts/site_facts.py` at the time: tiered risk regexes (279) + architecture detectors (38) + credential detectors (9) + oversight detectors (4). The same bucket computes 479 on the current codebase (419 + 38 + 18 + 4); regenerate with `python3 scripts/site_facts.py`. The selection methodology below applies to every pattern added since.
 
 Pattern sources:
 
@@ -86,7 +86,7 @@ Pattern sources:
 ### How patterns are validated
 
 - **Synthetic corpus** (13 hand-crafted files): Tests recall — does Regula find what it should find? Result: 100% recall on prohibited and high-risk patterns.
-- **OSS corpus** (257 hand-labelled findings from 5 projects): Tests precision — when Regula flags something, is it actually relevant? Result: 15.2% overall precision; 0 false positives at BLOCK tier.
+- **OSS corpus** (257 hand-labelled findings from 5 projects): Tests precision — when Regula flags something, is it actually relevant? Result: 15.2% overall precision.
 
 ### What 15.2% precision means
 
@@ -95,7 +95,7 @@ Pattern sources:
 This is honest but requires context:
 
 - **The 15.2% applies to INFO tier** — findings surfaced for manual review, not findings that fail CI builds.
-- **BLOCK tier precision is effectively 100%** — 0 false positives across the entire OSS corpus. A team using Regula in CI with default settings gets zero false alarms.
+- **No OSS-corpus finding reached the BLOCK tier** — 0 findings scored at or above the CI-failing threshold, so BLOCK-tier precision is unmeasurable on this corpus (0 TP, 0 FP). BLOCK-tier false positives do occur on other code: Regula's own repository scanned falsely PROHIBITED before the July 2026 suppression-parsing fix.
 - **WARN tier precision is 25%** — 2 true positives, 6 false positives.
 - **The OSS corpus is deliberately adversarial** — these are mature AI libraries, not AI applications. They import AI frameworks extensively but are not themselves regulated AI systems. High false-positive rates on these projects are expected.
 

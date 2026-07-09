@@ -406,10 +406,14 @@ def run_assess(output_format: str = "text", answers: Optional[str] = None) -> in
     tier = result["tier"]
     non_eu = result["non_eu_provider"]
 
+    exit_code = 1 if tier == TIER_PROHIBITED else 0
+
     if output_format == "json":
         import json
-        print(json.dumps(result, indent=2))
-        return 1 if tier == TIER_PROHIBITED else 0
+        from envelope import build_envelope
+        print(json.dumps(build_envelope("assess", result, exit_code),
+                         indent=2, sort_keys=True, default=str))
+        return exit_code
 
     print(format_result(tier, non_eu))
-    return 1 if tier == TIER_PROHIBITED else 0
+    return exit_code
