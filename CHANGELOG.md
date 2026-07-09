@@ -61,6 +61,25 @@ maintainer's audit report; every fix below was verified by test.
 - `regula gap` no longer counts Regula-generated draft scaffolds or
   hidden tool directories as compliance evidence, and its output states
   that the score measures documentation presence, not code risk.
+- **Remaining "zero false positives at BLOCK tier" claims removed**
+  (site index EN/DE/PT-BR, UAE page, model card, governance doc, and the
+  `regula exec-summary` template). The 8 July audit removed one instance;
+  these parallel copies survived. The underlying figure was a 0-findings
+  cell presented as 100% precision; a correction note now scopes it in
+  the April 2026 benchmark report.
+- **robots.txt no longer blocks the legacy redirect stubs** — a
+  robots.txt Disallow stopped crawlers from ever seeing the stubs'
+  noindex/canonical signals, stranding the old URLs in search indexes
+  instead of consolidating them.
+- **schema.org `softwareVersion` corrected to the released version** on
+  the site index, UAE page, and both locale pages (still 1.7.3 after the
+  1.7.4 release); an enforcement test now pins every site
+  `softwareVersion` to `scripts/constants.py` VERSION.
+- **Claim auditor now verifies precision figures** (`--verify-facts`):
+  every "N% … precision" claim in published copy must be derivable from
+  the benchmark artifacts (`benchmarks/results/*/PRECISION.json`,
+  `benchmarks/labels.json`) — fabricated or drifted precision numbers
+  fail CI.
 
 ### Changed
 
@@ -70,6 +89,12 @@ maintainer's audit report; every fix below was verified by test.
   flip. Scanner skip-directory lists and the JSON output envelope were
   likewise consolidated to single sources of truth with enforcement
   tests.
+- **BREAKING: `regula assess --format json` now emits the standard JSON
+  envelope** (`format_version`, `regula_version`, `command`, `timestamp`,
+  `exit_code`, `data`) used by every other `--format json` command. It
+  previously printed a bare `{tier, non_eu_provider, answers}` object with
+  no version marker. Consumers should read the old fields under `data`;
+  the presence of `format_version` distinguishes new output from old.
 
 ## [1.7.4] — 2026-07-06
 

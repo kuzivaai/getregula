@@ -157,3 +157,26 @@ def test_no_stale_omnibus_literal_anywhere():
         if "PENDING FORMAL ADOPTION" in f.read_text(encoding="utf-8"):
             offenders.append(f.name)
     assert not offenders, f"stale Omnibus copy hardcoded in: {offenders}"
+
+
+def test_site_schema_softwareversion_matches_cli_version():
+    """Every schema.org softwareVersion on the site must equal
+    constants.VERSION. The 6 July 2026 release bumped about.html but
+    missed index.html, regions/uae.html, and both locale pages — they
+    served 1.7.3 until 9 July. Mutation-tested: planting 1.0.0 in any
+    site page fails this test."""
+    from constants import VERSION
+    site_dir = Path(__file__).parent.parent / "site"
+    pattern = re.compile(r'"softwareVersion":\s*"([^"]+)"')
+    offenders = []
+    seen = 0
+    for page in sorted(site_dir.rglob("*.html")):
+        for m in pattern.finditer(page.read_text(encoding="utf-8", errors="replace")):
+            seen += 1
+            if m.group(1) != VERSION:
+                offenders.append(f"{page.relative_to(site_dir)}: {m.group(1)}")
+    assert seen >= 5, f"expected >=5 softwareVersion declarations, found {seen}"
+    assert not offenders, (
+        f"schema.org softwareVersion drifted from constants.VERSION "
+        f"({VERSION}): {offenders}"
+    )

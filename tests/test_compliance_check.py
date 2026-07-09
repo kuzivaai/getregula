@@ -937,3 +937,36 @@ def test_model_card_required_sections_structure():
         assert_true(isinstance(keywords, list), f"{name} keywords is a list")
         assert_true(len(keywords) > 0, f"{name} has at least one keyword")
     print("  PASS  MODEL_CARD_REQUIRED_SECTIONS structure")
+
+
+def test_highest_risk_honours_suppressions_like_check():
+    """gap's header tier must come from the same pipeline as `regula
+    check`. Regression for the July 2026 drift where
+    _determine_highest_risk classified raw file content — no
+    regula-ignore handling — and reported a risk tier on a project
+    whose check verdict was NO AI DETECTED (this repo)."""
+    from compliance_check import _determine_highest_risk
+
+    ai_snippet = (
+        "import openai\nimport langchain\n"
+        "from langchain.chat_models import ChatOpenAI\n"
+        "chatbot = ChatOpenAI(model='gpt-4')\n"
+        "response = chatbot.predict('hello user')\n"
+    )
+
+    with tempfile.TemporaryDirectory() as tmp:
+        app = Path(tmp) / "app.py"
+        app.write_text("# regula-ignore\n" + ai_snippet, encoding="utf-8")
+        tier = _determine_highest_risk(tmp)
+        assert_eq(tier, "not_ai",
+                  "file-level regula-ignore must suppress the gap tier")
+
+    # And without the suppression, a genuinely flagged project must NOT
+    # come back not_ai — the pipeline must still surface real findings.
+    with tempfile.TemporaryDirectory() as tmp:
+        app = Path(tmp) / "app.py"
+        app.write_text(ai_snippet, encoding="utf-8")
+        tier = _determine_highest_risk(tmp)
+        assert_true(tier != "not_ai",
+                    f"unsuppressed AI findings must surface a tier, got {tier}")
+    print("  PASS  _determine_highest_risk honours suppressions like check")

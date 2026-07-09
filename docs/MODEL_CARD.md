@@ -140,11 +140,11 @@ Regula is explicitly **NOT** intended for:
 
 50 randomly selected Python AI repos (from 276 candidates, seed=42), scanned with Regula v1.7.0. 201 findings stratified-sampled and blind-labelled (labeller saw only file path, code context, and finding description — no project name, README, or purpose, see `benchmarks/labels.json`).
 
-**Result:** 83.5% precision on production code (N=115, measured on Regula v1.7.0); 0 false positives at BLOCK tier. Previous baseline was 70.0% before domain gating and LLM import gating. Figures re-measured per release where corpus permits; v1.7.1+ additions not yet reflected. Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
+**Result:** 83.5% precision on production code (N=115, measured on Regula v1.7.0). Previous baseline was 70.0% before domain gating and LLM import gating. Figures re-measured per release where corpus permits; v1.7.1+ additions not yet reflected. Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
 
 ### Continuous validation
 
-- 2,501 pytest-collected tests (2,501 [unique](tests/); no duplication detected as of 2026-07-08)
+- 2,511 pytest-collected tests (2,511 [unique](tests/); no duplication detected as of 2026-07-09)
 - 11 CLI integration tests
 - 6 self-test assertions (`regula self-test`)
 - 12 health checks (`regula doctor`)

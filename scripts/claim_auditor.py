@@ -537,6 +537,115 @@ def backtest(n: int, allowlist: list[re.Pattern[str]]) -> int:
 # CLI
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Precision-claim enforcement (T3c)
+# ---------------------------------------------------------------------------
+
+# A percentage is treated as a precision claim when one of these word stems
+# appears on the same line. Same-line (not a char window) so an unrelated
+# percentage on an adjacent line can't inherit the context. Covers EN
+# "precision", DE "Präzision" (raw or the &auml; entity), PT-BR
+# "precisão"/"precisao".
+_PRECISION_CONTEXT_RE = re.compile(r"(?i)(precis|pr&auml;z|präz)")
+_PCT_RE = re.compile(r"(?<![\d.,])(\d{1,3}(?:[.,]\d)?)\s*%")
+
+
+def known_precision_values() -> set[str]:
+    """Every precision figure derivable from the benchmark artifacts.
+
+    Sources (never a hardcoded copy — the data-copy-drift rule):
+      - benchmarks/results/PRECISION.json           (dev corpus, N=446)
+      - benchmarks/results/random_corpus/PRECISION.json (random corpus, N=115)
+      - benchmarks/labels.json                       (per-corpus and
+        per-severity figures, computed the same way benchmarks/label.py
+        and the published PRECISION_RECALL report compute them)
+
+    Returns string representations at 1-decimal and integer rounding
+    (e.g. 0.835 -> {"83.5", "84"}), since published copy uses both.
+    """
+    values: set[float] = set()
+
+    def _walk(obj) -> None:
+        if isinstance(obj, dict):
+            for key, val in obj.items():
+                if isinstance(val, (int, float)) and "precision" in key:
+                    values.add(float(val))
+                elif isinstance(val, str):
+                    # Notes/methodology prose inside the artifact also states
+                    # figures (e.g. "Including test code: 60.6%").
+                    for m in re.finditer(r"(\d{1,3}(?:\.\d)?)%", val):
+                        values.add(float(m.group(1)) / 100)
+                else:
+                    _walk(val)
+        elif isinstance(obj, list):
+            for val in obj:
+                _walk(val)
+
+    for rel in ("benchmarks/results/PRECISION.json",
+                "benchmarks/results/random_corpus/PRECISION.json"):
+        path = REPO_ROOT / rel
+        if path.exists():
+            _walk(json.loads(path.read_text(encoding="utf-8")))
+
+    labels_path = REPO_ROOT / "benchmarks" / "labels.json"
+    if labels_path.exists():
+        sys.path.insert(0, str(REPO_ROOT / "scripts"))
+        from risk_types import compute_finding_tier
+
+        labelled = [entry for entry in
+                    json.loads(labels_path.read_text(encoding="utf-8"))
+                    if entry.get("label") in ("tp", "fp")]
+        groups: dict[str, list[int]] = {}
+        for entry in labelled:
+            # Same corpus convention as benchmarks/label.py _classify_corpus.
+            corpus = ("app" if entry.get("project", "").startswith("app_")
+                      else "library")
+            severity = compute_finding_tier(entry.get("tier", ""),
+                                            entry.get("confidence_score", 0))
+            for key in (corpus, "all", f"{corpus}:{severity}", f"all:{severity}"):
+                bucket = groups.setdefault(key, [0, 0])
+                bucket[0 if entry["label"] == "tp" else 1] += 1
+        for tp, fp in groups.values():
+            if tp + fp:
+                values.add(tp / (tp + fp))
+
+    reps: set[str] = set()
+    for val in values:
+        pct = val * 100
+        reps.add(f"{pct:.1f}")
+        reps.add(str(int(round(pct))))
+    return reps
+
+
+def check_precision_claims(text: str, known: set[str]) -> list[tuple[int, str]]:
+    """Return (line, claim) for each precision percentage in `text` that does
+    not match any figure derivable from the benchmark data."""
+    problems: list[tuple[int, str]] = []
+    for line_num, line in enumerate(text.splitlines(), start=1):
+        if not _PRECISION_CONTEXT_RE.search(line):
+            continue
+        for m in _PCT_RE.finditer(line):
+            raw = m.group(1).replace(",", ".")
+            val = float(raw)
+            candidates = {raw, f"{val:.1f}", str(int(round(val)))}
+            if candidates & known:
+                continue
+            problems.append((line_num, m.group(0)))
+    return problems
+
+
+# Files carrying precision claims, beyond the count-check list.
+PRECISION_EXTRA_FILES = [
+    "site/about.html",
+    "site/regions/uae.html",
+    "site/llms.txt",
+    "site/llms-full.txt",
+    "docs/AI_GOVERNANCE.md",
+    "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+    "docs/examples/exec-summary-sample.html",
+]
+
+
 def verify_facts() -> int:
     """Cross-reference published numbers against canonical counts from site_facts.
 
@@ -648,8 +757,29 @@ def verify_facts() -> int:
                 f"(context: {m.group(0)[:60]!r})"
             )
 
+    # Precision-figure enforcement (T3c): every "<N>% ...precision" claim in
+    # published copy must be derivable from the benchmark artifacts.
+    known = known_precision_values()
+    precision_files = list(dict.fromkeys(check_files + PRECISION_EXTRA_FILES))
+    if not known:
+        print("claim-auditor --verify-facts: WARNING — benchmark artifacts "
+              "not found, precision claims not checked", file=sys.stderr)
+    else:
+        for rel_path in precision_files:
+            fpath = REPO_ROOT / rel_path
+            if not fpath.exists():
+                continue
+            text = fpath.read_text(encoding="utf-8", errors="replace")
+            for line_num, claim in check_precision_claims(text, known):
+                mismatches.append(
+                    f"  {rel_path}:L{line_num} — "
+                    f"precision figure {claim!r} does not match any value "
+                    f"derivable from benchmarks/ data"
+                )
+            checked += 1
+
     print(f"claim-auditor --verify-facts: checked {checked} fact references "
-          f"across {len(check_files)} files")
+          f"across {len(precision_files)} files")
 
     if mismatches:
         print(f"\n  FAIL — {len(mismatches)} mismatch(es):\n")

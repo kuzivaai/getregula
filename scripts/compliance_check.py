@@ -162,36 +162,34 @@ def _is_in_directory(rel_path: str, dir_names: list) -> bool:
 
 
 def _determine_highest_risk(project_path: str) -> str:
-    """Determine the highest risk tier found in the project."""
+    """Determine the highest ACTIVE risk tier found in the project.
+
+    Routes through the same scan pipeline as `regula check`
+    (report.scan_files: regula-ignore suppressions, domain gating,
+    test-file skipping) so the gap header can never contradict the
+    check verdict. The previous implementation ran raw classify() per
+    file — no suppression handling, no gating — and reported
+    "prohibited" on projects whose check verdict was clean.
+    """
     if not _classify_available:
         return "unknown"
+    try:
+        from report import scan_files as _scan_files
+    except ImportError:
+        return "unknown"
 
-    highest = RiskTier.NOT_AI
     priority = {
-        RiskTier.NOT_AI: 0,
-        RiskTier.MINIMAL_RISK: 1,
-        RiskTier.LIMITED_RISK: 2,
-        RiskTier.HIGH_RISK: 3,
-        RiskTier.PROHIBITED: 4,
+        RiskTier.MINIMAL_RISK.value: 1,
+        RiskTier.LIMITED_RISK.value: 2,
+        RiskTier.HIGH_RISK.value: 3,
+        RiskTier.PROHIBITED.value: 4,
     }
-
-    project = Path(project_path).resolve()
-    for root, dirs, files in os.walk(project):
-        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
-        for filename in files:
-            filepath = Path(root) / filename
-            if filepath.suffix.lower() not in CODE_EXTENSIONS:
-                continue
-            content = _read_file(str(filepath))
-            if content is None:
-                continue
-            result = classify(content)
-            if priority.get(result.tier, 0) > priority.get(highest, 0):
-                highest = result.tier
-                if highest == RiskTier.PROHIBITED:
-                    return highest.value
-
-    return highest.value
+    findings = _scan_files(str(Path(project_path).resolve()), skip_tests=True)
+    active_tiers = [f.get("tier") for f in findings
+                    if not f.get("suppressed") and f.get("tier") in priority]
+    if not active_tiers:
+        return RiskTier.NOT_AI.value
+    return max(active_tiers, key=lambda t: priority[t])
 
 
 # ---------------------------------------------------------------------------

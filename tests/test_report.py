@@ -10,7 +10,27 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 
-from report import scan_files
+import report
+
+
+def scan_files(*args, **kwargs):
+    """Resolve report.scan_files at CALL time, not import time.
+
+    The omnibus-flip enforcement test (bound into test_classification's
+    globals) reloads the `report` module mid-suite. A top-level
+    `from report import scan_files` would keep the pre-reload function
+    object: calling it still works, but it publishes `last_stats` onto
+    the post-reload object (the assignment resolves the global name),
+    so reading `.last_stats` off the stale reference returns nothing —
+    an order-dependent failure that only appears in full-suite runs.
+    Every other consumer (cli.py, cli_scan.py) already imports at call
+    time; this shim gives the tests the same semantics.
+    """
+    return report.scan_files(*args, **kwargs)
+
+
+def _last_stats() -> dict:
+    return getattr(report.scan_files, "last_stats", {}) or {}
 
 
 class TestScanFilesEmpty:
@@ -28,7 +48,7 @@ class TestScanFilesDetection:
             f = Path(td) / "model.py"
             f.write_text("import tensorflow as tf\nmodel = tf.keras.Sequential()\nmodel.fit(x_train, y_train)\n")
             findings = scan_files(td)
-            stats = getattr(scan_files, "last_stats", {})
+            stats = _last_stats()
             ai_count = stats.get("ai_files_no_indicators", 0)
             # Either produces a finding with specific indicators OR counted as AI file
             assert len(findings) >= 1 or ai_count >= 1, \

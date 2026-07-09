@@ -32,8 +32,19 @@
 
 **The most important row is the third one.** Regula's CI default gate
 is BLOCK tier. **0 BLOCK findings fired across 257 sampled findings on
-five mature OSS projects.** That means a Python team installing Regula
-on a comparable codebase gets **0 false positives in CI by default**.
+five mature OSS projects** — so BLOCK-tier precision is unmeasurable on
+this corpus (0 TP, 0 FP), and this result says nothing about BLOCK-tier
+behaviour on other codebases.
+
+> **Correction (July 2026):** an earlier version of this paragraph
+> concluded that teams get "0 false positives in CI by default". That
+> generalised an empty cell (0 BLOCK findings) into a precision claim.
+> Later measurement contradicts it: on the v1.7.0 blind-labelled random
+> corpus (201 labelled findings incl. test/example code,
+> `benchmarks/results/random_corpus/BLIND_LABELS.json`), 24 of 62
+> BLOCK-severity findings were false positives, and Regula's own
+> repository scanned falsely PROHIBITED before the July 2026
+> suppression-parsing fix.
 
 The 15.2% headline is real but applies to a tier — INFO — that does
 not fail CI builds by default. INFO findings are surfaced for manual
