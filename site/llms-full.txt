@@ -60,7 +60,8 @@ regula check .              # 419 patterns, 8 languages, 30 seconds
 
 **Need documentation for auditors?**
 ```bash
-regula evidence-pack --sign .   # signed, timestamped, SHA-256 verified
+regula evidence-pack --project .   # Annex IV docs + evidence pack
+regula conform --sign --timestamp  # signed + timestamped (requires regula[signing])
 ```
 
 **Just want to see it work?**

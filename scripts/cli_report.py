@@ -100,7 +100,7 @@ def cmd_evidence_pack(args) -> None:
         print(f"Start with: {pack_path}/00-summary.md")
         if not getattr(args, "sign", False):
             print("\n  For a signed, timestamped evidence pack suitable for auditors,")
-            print("  see: regula evidence-pack --sign . or visit getregula.com/pricing")
+            print("  see: regula conform --sign . or visit getregula.com/pricing")
 
 
 def cmd_sbom(args) -> None:
