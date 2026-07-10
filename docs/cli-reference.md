@@ -39,6 +39,11 @@ regula roadmap --project . --format json
 # Generate reports
 regula report --format html -o report.html --include-audit
 regula report --format sarif -o results.sarif.json
+# Domain-gated projects (employment, medical, ...) need the domain
+# declared or the report shows zero findings — same flag as `check`:
+regula report . --domain employment -f html -o report.html
+# Exclude test/example/tooling files like `check` does by default:
+regula report . --scope production
 
 # Score compliance document quality (0-100)
 regula doc-audit --project .

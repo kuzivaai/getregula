@@ -83,7 +83,7 @@ your lawyer's job, not Regula's.
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ -q
-# Expected: 2531 passed (~12 minutes on a laptop — verified 2026-07-10)
+# Expected: 2531 passed (~25 minutes on a laptop — verified 2026-07-10)
 # 2,531 unique tests (sort -u of test IDs equals collected count).
 ```
 
