@@ -95,10 +95,32 @@ def cmd_evidence_pack(args) -> None:
             timestamp=timestamp_requested,
             tsa_url=getattr(args, "tsa_url", None),
         )
+    except ImportError as exc:
+        # Malformed install where signing.py or timestamp.py is absent.
+        print(
+            f"Signing/timestamping unavailable: {exc}\n\n"
+            f"Install the signing extra:\n"
+            f"  pipx install \"regula-ai[signing]\"\n"
+            f"  # or: pip install \"regula-ai[signing]\"",
+            file=sys.stderr,
+        )
+        sys.exit(2)
     except Exception as exc:
-        # Missing regula[signing] extra or invalid flag combination must
-        # produce an actionable one-liner, not a stack trace.
-        if type(exc).__name__ == "SigningUnavailable" or isinstance(exc, ValueError):
+        # SigningUnavailable, SigningError, TimestampUnavailable,
+        # TimestampError, or an invalid flag combination (ValueError) —
+        # actionable one-liner, not a stack trace. Same handling as
+        # `regula conform` (cli_compliance.cmd_conform); class names are
+        # matched by string so the core CLI stays stdlib-only when the
+        # optional extras are not installed.
+        name = exc.__class__.__name__
+        if name in (
+            "SigningUnavailable", "SigningError",
+            "TimestampUnavailable", "TimestampError",
+        ):
+            kind = "Timestamping" if name.startswith("Timestamp") else "Signing"
+            print(f"{kind} failed: {exc}", file=sys.stderr)
+            sys.exit(2)
+        if isinstance(exc, ValueError):
             print(f"Error: {exc}", file=sys.stderr)
             sys.exit(2)
         raise

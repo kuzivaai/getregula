@@ -22,27 +22,33 @@ PAIRS = [("site.css", "site.min.css"), ("fonts.css", "fonts.min.css")]
 def minify(css: str) -> str:
     """Conservative CSS minifier: strings are preserved verbatim.
 
-    Comments are stripped FIRST: apostrophes inside prose comments
-    ("don't", "it's") would otherwise pair up across comment boundaries
-    and swallow real rules into a fake string token. CSS comments cannot
-    nest and this stylesheet contains no string with an embedded "/*"
-    (asserted below), so comment-first is safe. Quoted strings are then
-    tokenised so whitespace collapsing can never corrupt
-    `content: "..."` or url("...") values.
-    """
-    assert not re.search(r'"[^"\n]*/\*', css), \
-        "string containing /* found — comment-first stripping unsafe"
-    out = re.sub(r"/\*.*?\*/", "", css, flags=re.S)           # comments
+    Strings and comments are handled in ONE pass: the alternation matches
+    whichever opens first, so an apostrophe inside a prose comment
+    ("don't") can never pair up across comment boundaries, and a "/*"
+    inside a quoted string can never start a comment. Matched strings are
+    stashed so whitespace collapsing can never corrupt `content: "..."`
+    or url("...") values; matched comments are dropped.
 
+    Punctuation collapsing deliberately excludes `+` and `~` (spaces
+    around them are REQUIRED inside calc() expressions) and never removes
+    a space BEFORE `:` (that space is a descendant combinator, as in
+    `.card :hover` — collapsing it changes which elements match).
+    """
     strings: list[str] = []
 
-    def _stash(m: re.Match) -> str:
-        strings.append(m.group(0))
+    def _stash_or_drop(m: re.Match) -> str:
+        if m.group(1) is None:          # a comment — drop it
+            return ""
+        strings.append(m.group(1))      # a string — preserve verbatim
         return f"\x00{len(strings) - 1}\x00"
 
-    out = re.sub(r'"(?:[^"\\]|\\.)*"|\'(?:[^\'\\]|\\.)*\'', _stash, out)
+    out = re.sub(
+        r'("(?:[^"\\]|\\.)*"|\'(?:[^\'\\]|\\.)*\')|/\*.*?\*/',
+        _stash_or_drop, css, flags=re.S,
+    )
     out = re.sub(r"\s+", " ", out)                            # collapse ws
-    out = re.sub(r"\s*([{};:,>~+])\s*", r"\1", out)           # around punct
+    out = re.sub(r"\s*([{};,>])\s*", r"\1", out)              # around punct
+    out = re.sub(r":\s+", ":", out)                           # after colon only
     out = out.replace(";}", "}")                              # last ;
     out = out.strip()
     return re.sub(r"\x00(\d+)\x00", lambda m: strings[int(m.group(1))], out)

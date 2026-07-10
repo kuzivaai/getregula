@@ -142,6 +142,40 @@ def test_minified_css_in_sync_with_source():
         )
 
 
+def test_minifier_preserves_hazardous_constructs():
+    """Correctness guard for minify() itself (10 Jul 2026 audit).
+
+    The sync test above proves min == minify(source) but says nothing
+    about minify being CORRECT — an earlier version destroyed 250 of 378
+    rules. These cases pin the constructs a naive minifier corrupts:
+    spaces inside calc() are syntactically required, a space before ':'
+    is a descendant combinator, and comment/string delimiters must not
+    interact.
+    """
+    import sys
+    from pathlib import Path
+    repo = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(repo / "scripts"))
+    from minify_css import minify
+
+    cases = [
+        # (input, expected) — spaces around + inside calc() must survive
+        ("a{width:calc(100% + 10px)}", "a{width:calc(100% + 10px)}"),
+        # space before : is a descendant combinator, not collapsible
+        (".card :hover { color: red }", ".card :hover{color:red}"),
+        # apostrophes in prose comments must not pair into fake strings
+        ("/* don't */ a { color: blue } /* it's */ b { color: red }",
+         "a{color:blue}b{color:red}"),
+        # comment delimiters inside a string are content, not a comment
+        ('a { content: "/* keep */" }', 'a{content:"/* keep */"}'),
+        # closed string followed by a comment on the same line (crashed
+        # the pre-10-Jul safety assert)
+        ('a::before { content: "x"; } /* note */', 'a::before{content:"x"}'),
+    ]
+    for css, expected in cases:
+        assert minify(css) == expected, f"minify({css!r}) = {minify(css)!r}"
+
+
 def test_pages_reference_minified_css():
     """Site pages must load the .min.css files, not the readable source
     (which stays in the repo as the source of truth)."""

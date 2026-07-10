@@ -319,7 +319,7 @@
             <h1>Seu app de IA e de <span class="hl">alto risco</span> na Europa?</h1>
             <p class="sub">Um comando mostra em qual nivel de risco da Lei de IA da UE seu codigo se encontra, por que, e o que corrigir. <strong>30 segundos, gratis, sem conta.</strong></p>
 
-            <button type="button" class="cta-pill" id="install-pill" onclick="copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
+            <button type="button" class="cta-pill" id="install-pill" aria-live="polite" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'install'}});copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
                 Teste gratis em 30 segundos
             </button>
@@ -330,7 +330,7 @@
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2.521</strong> testes
+                <strong style="color:var(--text);">2.531</strong> testes
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> vulnerabilidades inesperadas
                 <span class="sp-sep" aria-hidden="true">&middot;</span> zero depend&ecirc;ncias
                 <span class="sp-sep" aria-hidden="true">&middot;</span> seu c&oacute;digo nunca sai da sua m&aacute;quina
@@ -784,7 +784,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <a href="/blog/blog-omnibus-trilogue-failed.html" class="card-base art-card">
             <div class="tag tag-purple">Trilogo</div>
             <h3>O Trilogo do Omnibus fracassou. O prazo de agosto de 2026 esta de volta.</h3>
-            <p>O primeiro trilogo politico terminou sem acordo em 28 de abril apos 12 horas. O prazo original de agosto de 2026 e agora a unica base segura de planejamento.</p>
+            <p>O primeiro trilogo politico terminou sem acordo em 28 de abril apos 12 horas. O trilogo seguinte teve exito em 7 de maio; Parlamento e Conselho aprovaram o adiamento para dezembro de 2027 em junho de 2026.</p>
         </a>
         <a href="/blog/blog-code-scanning-vs-questionnaires.html" class="card-base art-card">
             <div class="tag tag-purple">Analise</div>
@@ -1028,6 +1028,9 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 <script>
     window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
     formspree('initForm', { formElement: '#notify-form', formId: 'xjgppkkn' });
+    document.getElementById('notify-form').addEventListener('submit', function() {
+        if (window.plausible) plausible('CTA Click', { props: { type: 'notify' } });
+    });
 </script>
 <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 </body>

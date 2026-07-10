@@ -180,3 +180,23 @@ def test_site_schema_softwareversion_matches_cli_version():
         f"schema.org softwareVersion drifted from constants.VERSION "
         f"({VERSION}): {offenders}"
     )
+
+
+def test_pack_writers_pin_lf_newlines():
+    """Every write_text in the evidence/conformity pack writers must pass
+    newline="\\n". The recorded SHA-256 hashes are computed on the LF
+    content string; without the pin, write_text translates \\n to
+    os.linesep on Windows and `regula verify` reports every pack file
+    MODIFIED (10 Jul 2026 audit finding)."""
+    import re
+    for script in ("evidence_pack.py", "conform.py"):
+        src = (SCRIPTS_DIR / script).read_text(encoding="utf-8")
+        offenders = []
+        for m in re.finditer(r"write_text\(([^)]*)\)", src):
+            if "newline=" not in m.group(1):
+                line = src[:m.start()].count("\n") + 1
+                offenders.append(f"scripts/{script}:{line}")
+        assert not offenders, (
+            f"write_text without newline pin (breaks pack hashes on "
+            f"Windows): {offenders}"
+        )

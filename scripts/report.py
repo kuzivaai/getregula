@@ -699,8 +699,9 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # Check scan cache — if content unchanged, reuse cached findings
             try:
                 if cache is not None:
-                    cached = cache.get(rel_path, content, context=_cache_ctx)
-                    if cached is not None:
+                    cached_raw = cache.get(rel_path, content, context=_cache_ctx)
+                    if cached_raw is not None:
+                        cached = cached_raw
                         if min_tier_level > 0:
                             cached = [f for f in cached
                                       if _TIER_ORDER.get(f.get("tier", ""), 0) >= min_tier_level]
@@ -710,12 +711,16 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         _cached_gated = _cached_before - len(cached)
                         if _cached_gated > 0:
                             _domain_gated_count += _cached_gated
-                            for cf in [f for f in cache.get(rel_path, content, context=_cache_ctx) or []
-                                       if _check_domain_gated(f, _domain_activated, OPT_IN_CATEGORIES)]:
-                                _domain_gated_categories.update(cf.get("indicators", []))
+                            for cf in cached_raw:
+                                if _check_domain_gated(cf, _domain_activated, OPT_IN_CATEGORIES):
+                                    _domain_gated_categories.update(cf.get("indicators", []))
                         findings.extend(cached)
-                        # Maintain AI file counter for stats even on cache hits
-                        if not cached and _is_ai:
+                        # Maintain AI file counter for stats even on cache
+                        # hits. Raw emptiness, not post-filter emptiness: the
+                        # cold path only counts files whose FULL scan produced
+                        # nothing — findings merely hidden by --min-tier or
+                        # domain gating must not inflate the summary line.
+                        if not cached_raw and _is_ai:
                             _ai_files_no_indicators += 1
                         continue
             except Exception:

@@ -472,3 +472,43 @@ def test_demo_file_count_excludes_init():
     assert count == 1, (
         f"Demo should scan 1 file (cv_screening_app.py), got {count}"
     )
+
+
+def test_every_project_subcommand_accepts_positional_path():
+    """Every subcommand that takes --project must also accept the natural
+    positional form (`regula <cmd> .`) — published docs and site copy
+    teach it, and six commands taught this way exited 2 until 8 Jul 2026;
+    six MORE (conform, oversight, discover, guardrails, sbom, report)
+    until 10 Jul 2026. This locks the whole class.
+
+    `install` and `baseline` are exempt: they already have a different
+    positional argument, and adding a second optional positional would
+    make parses ambiguous.
+    """
+    import argparse
+    from pathlib import Path as _P
+
+    sys.path.insert(0, str(_P(__file__).resolve().parents[1] / "scripts"))
+    import cli as cli_mod
+
+    parser = argparse.ArgumentParser()
+    sub = parser.add_subparsers(dest="command")
+    cli_mod._build_subparsers(sub)
+
+    exempt = {"install", "baseline"}
+    checked = 0
+    for name, sp in sub.choices.items():
+        option_strings = {s for a in sp._actions for s in a.option_strings}
+        if "--project" not in option_strings or name in exempt:
+            continue
+        try:
+            args = parser.parse_args([name, "/tmp/some-project"])
+        except SystemExit:
+            raise AssertionError(
+                f"`regula {name} <path>` exits 2 — the positional path "
+                f"argument is missing from the {name!r} subparser"
+            )
+        # And the generic hook in main() maps it onto --project:
+        assert getattr(args, "project_path_positional", None) == "/tmp/some-project", name
+        checked += 1
+    assert checked >= 25, f"only {checked} subcommands checked — glob regression?"
