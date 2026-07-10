@@ -547,7 +547,17 @@ def backtest(n: int, allowlist: list[re.Pattern[str]]) -> int:
 # "precision", DE "Präzision" (raw or the &auml; entity), PT-BR
 # "precisão"/"precisao".
 _PRECISION_CONTEXT_RE = re.compile(r"(?i)(precis|pr&auml;z|präz)")
-_PCT_RE = re.compile(r"(?<![\d.,])(\d{1,3}(?:[.,]\d)?)\s*%")
+# Up to 2 decimals: a fabricated "83.52%" must be MATCHED (then rejected
+# against the known set) rather than silently skipped by the regex.
+_PCT_RE = re.compile(r"(?<![\d.,])(\d{1,3}(?:[.,]\d{1,2})?)\s*%")
+
+# Phrases banned from published site copy: the "zero false positives"
+# claim was disproven by the July 2026 audit (24 BLOCK-severity FPs of 62
+# on the v1.7.0 blind corpus) and purged from 8 locations across two
+# sessions. This check stops it returning. docs/MODEL_CARD.md's scoped
+# synthetic-corpus statement and llms-full.txt's correction block are
+# deliberately NOT covered (site HTML only).
+_BANNED_CLAIM_RE = re.compile(r"(?i)\b(?:zero|0)\s+false\s+positives?\b")
 
 
 def known_precision_values() -> set[str]:
@@ -613,6 +623,7 @@ def known_precision_values() -> set[str]:
     for val in values:
         pct = val * 100
         reps.add(f"{pct:.1f}")
+        reps.add(f"{pct:.2f}")
         reps.add(str(int(round(pct))))
     return reps
 
@@ -627,7 +638,14 @@ def check_precision_claims(text: str, known: set[str]) -> list[tuple[int, str]]:
         for m in _PCT_RE.finditer(line):
             raw = m.group(1).replace(",", ".")
             val = float(raw)
-            candidates = {raw, f"{val:.1f}", str(int(round(val)))}
+            if re.search(r"\.\d\d$", raw):
+                # A 2-decimal claim asserts more precision than published
+                # copy ever legitimately uses — require an exact 2-decimal
+                # match, never a 1-decimal rounding (else fabricated
+                # "83.52%" would pass because it rounds to the real 83.5).
+                candidates = {raw}
+            else:
+                candidates = {raw, f"{val:.1f}", str(int(round(val)))}
             if candidates & known:
                 continue
             problems.append((line_num, m.group(0)))
@@ -777,6 +795,19 @@ def verify_facts() -> int:
                     f"derivable from benchmarks/ data"
                 )
             checked += 1
+
+    # Banned-claim sweep: every HTML page under site/ (the purged
+    # "zero false positives" claim must not return anywhere published).
+    for fpath in sorted((REPO_ROOT / "site").rglob("*.html")):
+        text = fpath.read_text(encoding="utf-8", errors="replace")
+        for m in _BANNED_CLAIM_RE.finditer(text):
+            line_num = text[:m.start()].count("\n") + 1
+            mismatches.append(
+                f"  {fpath.relative_to(REPO_ROOT)}:L{line_num} — "
+                f"BANNED CLAIM {m.group(0)!r}: disproven by the July 2026 "
+                f"audit; do not republish"
+            )
+        checked += 1
 
     print(f"claim-auditor --verify-facts: checked {checked} fact references "
           f"across {len(precision_files)} files")

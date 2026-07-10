@@ -211,7 +211,10 @@ def generate_evidence_pack(
             tsa_url=tsa_url,
         )
     manifest_json = json.dumps(manifest, indent=2)
-    (pack_dir / "manifest.json").write_text(manifest_json, encoding="utf-8")
+    # newline="\n": write_text defaults to os.linesep translation, which
+    # would break the recorded SHA-256 hashes on Windows (hashes are
+    # computed on the LF content).
+    (pack_dir / "manifest.json").write_text(manifest_json, encoding="utf-8", newline="\n")
 
     return {
         "pack_dirname": pack_name,
@@ -222,7 +225,7 @@ def generate_evidence_pack(
 
 def _write_and_record(pack_dir: Path, filename: str, content: str, records: list):
     """Write a file and record its hash."""
-    (pack_dir / filename).write_text(content, encoding="utf-8")
+    (pack_dir / filename).write_text(content, encoding="utf-8", newline="\n")
     records.append({
         "filename": filename,
         "sha256": _sha256(content),

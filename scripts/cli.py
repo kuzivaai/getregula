@@ -862,6 +862,8 @@ def _build_subparsers(subparsers):
         ),
     )
     p_init.add_argument("--project", "-p", default=".", help="Project directory")
+    p_init.add_argument("project_path_positional", nargs="?", default=None,
+                        metavar="path", help="Project path (same as --project)")
     p_init.add_argument("--interactive", "-i", action="store_true", help="Interactive mode")
     p_init.add_argument("--dry-run", action="store_true", help="Show analysis without creating files")
     p_init.set_defaults(func=cmd_init)
@@ -921,6 +923,8 @@ def _build_subparsers(subparsers):
     p_comply = subparsers.add_parser("comply",
                                      help="EU AI Act obligation checklist with status")
     p_comply.add_argument("--project", "-p", default=".", help="Project directory")
+    p_comply.add_argument("project_path_positional", nargs="?", default=None,
+                          metavar="path", help="Project path (same as --project)")
     p_comply.add_argument("--article", "-a", help="Deep-dive into a specific article (e.g. 9, 14)")
     p_comply.add_argument("--all", action="store_true",
                           help="Show full Articles 9-15 assessment regardless of detected risk tier")
@@ -938,6 +942,8 @@ def _build_subparsers(subparsers):
     p_gdpr = subparsers.add_parser("gdpr",
                                     help="Scan for GDPR code patterns with dual-compliance hotspot detection")
     p_gdpr.add_argument("--project", "-p", default=".")
+    p_gdpr.add_argument("project_path_positional", nargs="?", default=None,
+                        metavar="path", help="Project path (same as --project)")
     p_gdpr.add_argument("--scope", choices=["all", "production"], default="all")
     p_gdpr.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_gdpr.set_defaults(func=cmd_gdpr)
@@ -945,6 +951,8 @@ def _build_subparsers(subparsers):
     # --- report ---
     p_report = subparsers.add_parser("report", help="Generate reports (HTML, SARIF, JSON)")
     p_report.add_argument("--project", "-p", default=".")
+    p_report.add_argument("project_path_positional", nargs="?", default=None,
+                          metavar="path", help="Project path (same as --project)")
     p_report.add_argument("--format", "-f", choices=["html", "sarif", "json", "sales", "exec-summary"], default="html")
     p_report.add_argument("--output", "-o", help="Output file")
     p_report.add_argument("--name", "-n", help="Project name")
@@ -996,6 +1004,8 @@ def _build_subparsers(subparsers):
     # --- discover ---
     p_discover = subparsers.add_parser("discover", help="Discover AI systems in a project")
     p_discover.add_argument("--project", "-p", default=".")
+    p_discover.add_argument("project_path_positional", nargs="?", default=None,
+                            metavar="path", help="Project path (same as --project)")
     p_discover.add_argument("--register", "-r", action="store_true")
     p_discover.add_argument("--org", action="store_true", help="Scan all projects in directory (org-level inventory)")
     p_discover.add_argument("--csv", action="store_true", help="Export registry as CSV")
@@ -1176,6 +1186,8 @@ def _build_subparsers(subparsers):
     # --- fix ---
     p_fix = subparsers.add_parser("fix", help="Generate compliance fix scaffolds for findings")
     p_fix.add_argument("--project", "-p", default=".")
+    p_fix.add_argument("project_path_positional", nargs="?", default=None,
+                       metavar="path", help="Project path (same as --project)")
     p_fix.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_fix.add_argument("--output", "-o", help="Write fix scaffolds to file")
     p_fix.set_defaults(func=cmd_fix)
@@ -1228,6 +1240,8 @@ def _build_subparsers(subparsers):
     p_doc_audit = subparsers.add_parser("doc-audit",
                                          help="Score compliance document quality (0-100 per article)")
     p_doc_audit.add_argument("--project", "-p", default=".")
+    p_doc_audit.add_argument("project_path_positional", nargs="?", default=None,
+                             metavar="path", help="Project path (same as --project)")
     p_doc_audit.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_doc_audit.set_defaults(func=cmd_doc_audit)
 
@@ -1239,6 +1253,8 @@ def _build_subparsers(subparsers):
              "compliance questionnaire (Articles 9/17/27/72)",
     )
     p_conform.add_argument("--project", "-p", default=".")
+    p_conform.add_argument("project_path_positional", nargs="?", default=None,
+                           metavar="path", help="Project path (same as --project)")
     p_conform.add_argument("--output", "-o", default=".", help="Output directory for the pack folder")
     p_conform.add_argument("--name", "-n", help="Project name")
     p_conform.add_argument("--sme", action="store_true",
@@ -1293,6 +1309,8 @@ def _build_subparsers(subparsers):
     # --- governance ---
     p_governance = subparsers.add_parser("governance", help="Generate AI governance scaffold (Article 4, ISO 42001)")
     p_governance.add_argument("--project", "-p", default=".")
+    p_governance.add_argument("project_path_positional", nargs="?", default=None,
+                              metavar="path", help="Project path (same as --project)")
     p_governance.add_argument("--output", "-o", default="AI_GOVERNANCE.md")
     p_governance.add_argument("--name", "-n", help="Project name")
     p_governance.add_argument("--format", "-f", choices=["text", "json"], default="text")
@@ -1301,6 +1319,8 @@ def _build_subparsers(subparsers):
     # --- model-card ---
     p_model_card = subparsers.add_parser("model-card", help="Generate model card scaffold (Annex IV, ISO 42001 Annex B)")
     p_model_card.add_argument("--project", "-p", default=".")
+    p_model_card.add_argument("project_path_positional", nargs="?", default=None,
+                              metavar="path", help="Project path (same as --project)")
     p_model_card.add_argument("--output", "-o", default="MODEL_CARD.md")
     p_model_card.add_argument("--name", "-n", help="Project name")
     p_model_card.add_argument("--format", "-f", choices=["text", "json"], default="text")
@@ -1309,6 +1329,8 @@ def _build_subparsers(subparsers):
     # --- benchmark ---
     p_bench = subparsers.add_parser("benchmark", help="Real-world validation benchmark")
     p_bench.add_argument("--project", "-p", default=".")
+    p_bench.add_argument("project_path_positional", nargs="?", default=None,
+                         metavar="path", help="Project path (same as --project)")
     p_bench.add_argument("--manifest", "-m", help="JSON manifest of projects to scan")
     p_bench.add_argument("--metrics", help="Calculate metrics from labelled CSV/JSON")
     p_bench.add_argument("--format", "-f", choices=["text", "json", "csv"], default="text")
@@ -1323,6 +1345,8 @@ def _build_subparsers(subparsers):
     # --- deps ---
     p_deps = subparsers.add_parser("deps", help="AI dependency supply chain analysis")
     p_deps.add_argument("--project", "-p", default=".")
+    p_deps.add_argument("project_path_positional", nargs="?", default=None,
+                        metavar="path", help="Project path (same as --project)")
     p_deps.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_deps.add_argument("--strict", action="store_true", help="Exit 1 if pinning score < 50")
     p_deps.set_defaults(func=cmd_deps)
@@ -1371,6 +1395,8 @@ def _build_subparsers(subparsers):
     # --- sbom ---
     p_sbom = subparsers.add_parser("sbom", help="Generate AI Software Bill of Materials (CycloneDX 1.7)")
     p_sbom.add_argument("--project", "-p", default=".")
+    p_sbom.add_argument("project_path_positional", nargs="?", default=None,
+                        metavar="path", help="Project path (same as --project)")
     p_sbom.add_argument("--format", "-f", choices=["json", "text"], default="json")
     p_sbom.add_argument("--output", "-o", help="Output file path")
     p_sbom.add_argument("--name", "-n", help="Project name")
@@ -1381,6 +1407,8 @@ def _build_subparsers(subparsers):
     p_aibom = subparsers.add_parser("aibom",
                                      help="Generate AI Bill of Materials (component inventory)")
     p_aibom.add_argument("--project", "-p", default=".")
+    p_aibom.add_argument("project_path_positional", nargs="?", default=None,
+                         metavar="path", help="Project path (same as --project)")
     p_aibom.add_argument("--format", "-f", choices=["text", "json", "cyclonedx", "markdown"], default="text")
     p_aibom.set_defaults(func=cmd_aibom)
 
@@ -1436,6 +1464,8 @@ def _build_subparsers(subparsers):
     # --- quickstart ---
     p_qs = subparsers.add_parser("quickstart", help="60-second onboarding (create policy + first scan)")
     p_qs.add_argument("--project", "-p", default=".", help="Project directory")
+    p_qs.add_argument("project_path_positional", nargs="?", default=None,
+                      metavar="path", help="Project path (same as --project)")
     p_qs.add_argument("--org", default="My Organisation", help="Organisation name for policy file")
     p_qs.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_qs.set_defaults(func=cmd_quickstart)
@@ -1451,6 +1481,8 @@ def _build_subparsers(subparsers):
         help="Risk register summary \u2014 active findings, accepted risks, suppressed FPs (ISO 42001 6.1.2)",
     )
     p_risks.add_argument("--project", "-p", default=".", help="Project directory")
+    p_risks.add_argument("project_path_positional", nargs="?", default=None,
+                         metavar="path", help="Project path (same as --project)")
     p_risks.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_risks.set_defaults(func=cmd_risks)
 
@@ -1509,6 +1541,8 @@ def _build_subparsers(subparsers):
         help="Article 14 human oversight analysis (cross-file)",
     )
     p_oversight.add_argument("--project", "-p", default=".", help="Project directory to analyse")
+    p_oversight.add_argument("project_path_positional", nargs="?", default=None,
+                             metavar="path", help="Project path (same as --project)")
     p_oversight.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_oversight.set_defaults(func=cmd_oversight)
 
@@ -1518,6 +1552,8 @@ def _build_subparsers(subparsers):
         help="OWASP Top 10 for Agentic Applications assessment",
     )
     p_owasp.add_argument("--project", "-p", default=".", help="Project directory to assess")
+    p_owasp.add_argument("project_path_positional", nargs="?", default=None,
+                         metavar="path", help="Project path (same as --project)")
     p_owasp.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_owasp.add_argument("--strict", action="store_true", help="Exit 1 if any risk is at_risk")
     p_owasp.set_defaults(func=cmd_owasp_agentic)
@@ -1528,6 +1564,8 @@ def _build_subparsers(subparsers):
         help="Detect guardrail implementation coverage (Art 15)",
     )
     p_guardrails.add_argument("--project", "-p", default=".", help="Project directory to scan")
+    p_guardrails.add_argument("project_path_positional", nargs="?", default=None,
+                              metavar="path", help="Project path (same as --project)")
     p_guardrails.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_guardrails.add_argument("--strict", action="store_true", help="Exit 1 if coverage < 50%%")
     p_guardrails.set_defaults(func=cmd_guardrails)
@@ -1538,6 +1576,8 @@ def _build_subparsers(subparsers):
         help="AI-generated code governance scanner (Art 50/52)",
     )
     p_codegen.add_argument("--project", "-p", default=".", help="Project directory to scan")
+    p_codegen.add_argument("project_path_positional", nargs="?", default=None,
+                           metavar="path", help="Project path (same as --project)")
     p_codegen.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_codegen.add_argument("--no-git", action="store_true", help="Skip git log scanning")
     p_codegen.add_argument("--strict", action="store_true",

@@ -151,7 +151,9 @@ def _sha256(content: str) -> str:
 def _write_and_record(path: Path, content: str, records: list, pack_dir: Path = None):
     """Write a file, record its hash with path relative to pack root."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(content, encoding="utf-8")
+    # newline="\n": keep on-disk bytes identical to the hashed content
+    # on every platform (Windows os.linesep translation breaks verify).
+    path.write_text(content, encoding="utf-8", newline="\n")
     # Store relative path if pack_dir provided, else filename only
     rel = str(path.resolve().relative_to(pack_dir.resolve())) if pack_dir else path.name
     records.append({
@@ -209,7 +211,7 @@ def generate_sme_simplified_pack(
 
     doc_findings = scan_project(str(project))
     doc = generate_sme_simplified_annex_iv(doc_findings, name, str(project))
-    out_path.write_text(doc, encoding="utf-8")
+    out_path.write_text(doc, encoding="utf-8", newline="\n")
 
     sha256 = hashlib.sha256(doc.encode("utf-8")).hexdigest()
     file_record = {
@@ -634,7 +636,7 @@ def generate_conformity_pack(
         )
 
     manifest_json = json.dumps(manifest, indent=2)
-    (pack_dir / "manifest.json").write_text(manifest_json, encoding="utf-8")
+    (pack_dir / "manifest.json").write_text(manifest_json, encoding="utf-8", newline="\n")
 
     return {
         "pack_dirname": pack_name,

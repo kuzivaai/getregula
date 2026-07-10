@@ -310,7 +310,7 @@
             <h1>Ist Ihre KI-App in Europa <span class="hl">hochriskant</span>?</h1>
             <p class="sub">Ein Befehl zeigt Ihnen, in welche EU-KI-Gesetz-Risikostufe Ihr Code f&auml;llt, warum, und was zu beheben ist. <strong>30 Sekunden, kostenlos, kein Konto.</strong></p>
 
-            <button type="button" class="cta-pill" id="install-pill" onclick="copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
+            <button type="button" class="cta-pill" id="install-pill" aria-live="polite" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'install'}});copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
                 Jetzt kostenlos testen
             </button>
@@ -321,7 +321,7 @@
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2.521</strong> Tests
+                <strong style="color:var(--text);">2.531</strong> Tests
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> unerwartete Sicherheitsbefunde
                 <span class="sp-sep" aria-hidden="true">&middot;</span> null Abh&auml;ngigkeiten
                 <span class="sp-sep" aria-hidden="true">&middot;</span> Ihr Code verl&auml;sst nie Ihren Rechner
@@ -767,7 +767,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <a href="/blog/blog-omnibus-trilogue-failed.html" class="card-base art-card">
             <div class="tag tag-purple">Trilog</div>
             <h3>Der Omnibus-Trilog ist gescheitert. Die Frist August 2026 gilt wieder.</h3>
-            <p>Der erste politische Trilog endete am 28. April nach 12 Stunden ohne Einigung. Die urspr&uuml;ngliche Frist August 2026 ist nun die einzig sichere Planungsgrundlage.</p>
+            <p>Der erste politische Trilog endete am 28. April nach 12 Stunden ohne Einigung. Der Folgetrilog war am 7. Mai erfolgreich; Parlament und Rat billigten die Verschiebung auf Dezember 2027 im Juni 2026.</p>
         </a>
         <a href="/blog/blog-code-scanning-vs-questionnaires.html" class="card-base art-card">
             <div class="tag tag-purple">Analyse</div>
@@ -1011,6 +1011,9 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 <script>
     window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
     formspree('initForm', { formElement: '#notify-form', formId: 'xjgppkkn' });
+    document.getElementById('notify-form').addEventListener('submit', function() {
+        if (window.plausible) plausible('CTA Click', { props: { type: 'notify' } });
+    });
 </script>
 <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 </body>

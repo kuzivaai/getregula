@@ -338,3 +338,67 @@ def test_precision_guard_flags_stale_figure_in_locale_phrasing():
     text = "97,3% Pr&auml;zision auf Produktionscode.\n"
     problems = claim_auditor.check_precision_claims(text, known)
     assert len(problems) == 1
+
+
+def test_precision_guard_flags_overprecise_two_decimal_figure():
+    """A 2-decimal claim must match a benchmark value EXACTLY at two
+    decimals — "83.52%" must not pass merely because it rounds to the
+    real 83.5 (10 Jul 2026 audit finding: the old regex skipped
+    2-decimal figures entirely)."""
+    known = claim_auditor.known_precision_values()
+    problems = claim_auditor.check_precision_claims(
+        "achieves 83.52% precision on production code.\n", known)
+    assert problems == [(1, "83.52%")]
+
+
+def test_precision_guard_passes_exact_two_decimal_figure():
+    """A 2-decimal figure that IS derivable passes. The artifact stores
+    overall_precision already rounded (0.835), so its 2-decimal
+    representation is 83.50."""
+    known = claim_auditor.known_precision_values()
+    assert "83.50" in known
+    assert claim_auditor.check_precision_claims(
+        "measured at 83.50% precision.\n", known) == []
+
+
+def test_banned_claim_regex_matches_purged_phrasings():
+    """The "zero false positives" claim (disproven July 2026) must be
+    caught in every phrasing that previously appeared in published copy."""
+    for phrase in ("zero false positives", "Zero False Positives",
+                   "0 false positives", "0 False Positive"):
+        assert claim_auditor._BANNED_CLAIM_RE.search(phrase), phrase
+    # ...but ordinary FP discussion is not banned:
+    for phrase in ("24 false positives", "reduces false positives",
+                   "false-positive rate"):
+        assert not claim_auditor._BANNED_CLAIM_RE.search(phrase), phrase
+
+
+def test_banned_claim_absent_from_all_site_html():
+    """No published site page may carry the banned claim. Mirrors the
+    sweep inside verify_facts so the check also runs standalone."""
+    site = REPO_ROOT / "site"
+    offenders = []
+    for page in sorted(site.rglob("*.html")):
+        text = page.read_text(encoding="utf-8", errors="replace")
+        if claim_auditor._BANNED_CLAIM_RE.search(text):
+            offenders.append(str(page.relative_to(REPO_ROOT)))
+    assert not offenders, f"banned claim republished in: {offenders}"
+
+
+def test_corpus_classification_matches_label_py_convention():
+    """claim_auditor.known_precision_values() re-implements label.py's
+    app/library split (it cannot import benchmarks/ directly). This sync
+    check fails if the conventions ever drift (data-copy-drift rule)."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "label", REPO_ROOT / "benchmarks" / "label.py")
+    label = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(label)
+    for name in ("app_demo", "app_", "scikit-learn", "langchain",
+                 "application", "apps"):
+        expected = label._classify_corpus(name)
+        actual = "app" if name.startswith("app_") else "library"
+        assert actual == expected, (
+            f"corpus convention drifted for {name!r}: claim_auditor says "
+            f"{actual}, benchmarks/label.py says {expected}"
+        )
