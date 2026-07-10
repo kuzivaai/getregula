@@ -572,6 +572,11 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     # definition — every file matches. Apply a heavy confidence penalty.
     _is_ai_library_self_scan = _detect_ai_library_project(project)
 
+    # Cache context token: cached findings embed confidence scores that
+    # depend on project-level state (the AI-library self-scan cap), so
+    # entries from one context must never be served to the other.
+    _cache_ctx = "lib" if _is_ai_library_self_scan else "app"
+
     # Tier ordering for --min-tier filtering
     _TIER_ORDER = {
         "prohibited": 4, "credential_exposure": 3, "high_risk": 3,
@@ -579,6 +584,22 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         "limited_risk": 2, "minimal_risk": 1,
     }
     min_tier_level = _TIER_ORDER.get(min_tier, 0)
+
+    def _cache_put(rel_path: str, content: str, file_findings: list) -> None:
+        """Write a per-file cache entry — full scans only.
+
+        A --min-tier scan skips whole detector passes (credentials,
+        ai_security) and drops classify findings below the threshold, so
+        an entry written under min_tier would be silently incomplete for
+        every later full scan of the same content. Partial scans read
+        the cache but never populate it.
+        """
+        if cache is None or min_tier_level > 0:
+            return
+        try:
+            cache.put(rel_path, content, file_findings, context=_cache_ctx)
+        except Exception:
+            pass  # Cache write is best-effort
 
     # Single-file mode: synthesise a walk-compatible structure for one file
     if project.is_file():
@@ -678,7 +699,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # Check scan cache — if content unchanged, reuse cached findings
             try:
                 if cache is not None:
-                    cached = cache.get(rel_path, content)
+                    cached = cache.get(rel_path, content, context=_cache_ctx)
                     if cached is not None:
                         if min_tier_level > 0:
                             cached = [f for f in cached
@@ -689,7 +710,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         _cached_gated = _cached_before - len(cached)
                         if _cached_gated > 0:
                             _domain_gated_count += _cached_gated
-                            for cf in [f for f in cache.get(rel_path, content) or []
+                            for cf in [f for f in cache.get(rel_path, content, context=_cache_ctx) or []
                                        if _check_domain_gated(f, _domain_activated, OPT_IN_CATEGORIES)]:
                                 _domain_gated_categories.update(cf.get("indicators", []))
                         findings.extend(cached)
@@ -744,11 +765,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         }
                         finding["open_question"] = _is_open_question(finding)
                         findings.append(finding)
-                        try:
-                            if cache is not None:
-                                cache.put(rel_path, content, findings[file_findings_start:])
-                        except Exception:
-                            pass  # Cache write is best-effort
+                        _cache_put(rel_path, content, findings[file_findings_start:])
                         continue
 
             if not _is_ai:
@@ -770,11 +787,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                             "provenance": provenance,
                             "lifecycle_phases": ["develop"],
                         })
-                try:
-                    if cache is not None:
-                        cache.put(rel_path, content, findings[file_findings_start:])
-                except Exception:
-                    pass  # Cache write is best-effort
+                _cache_put(rel_path, content, findings[file_findings_start:])
                 continue
 
             suppressed_rules, file_decisions = _parse_suppression_rules(lines, respect_ignores, rel_path)
@@ -796,21 +809,13 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 # count these files for a single summary line. This
                 # eliminates 94% of false positives from the corpus.
                 _ai_files_no_indicators += 1
-                try:
-                    if cache is not None:
-                        cache.put(rel_path, content, findings[file_findings_start:])
-                except Exception:
-                    pass  # Cache write is best-effort
+                _cache_put(rel_path, content, findings[file_findings_start:])
                 continue
 
             # Skip findings below min_tier threshold
             tier_level = _TIER_ORDER.get(result.tier.value, 0)
             if tier_level < min_tier_level:
-                try:
-                    if cache is not None:
-                        cache.put(rel_path, content, findings[file_findings_start:])
-                except Exception:
-                    pass  # Cache write is best-effort
+                _cache_put(rel_path, content, findings[file_findings_start:])
                 continue
 
             is_suppressed = "*" in suppressed_rules
@@ -916,7 +921,9 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 from ast_context import is_in_string as _is_in_str
                 _lines_in_strings = sum(1 for ln in result.match_lines if _is_in_str(_ast_context, ln))
                 if _lines_in_strings == len(result.match_lines):
-                    # Every match was inside a string literal — skip entirely
+                    # Every match was inside a string literal — skip entirely.
+                    # Deterministic given content, so the cache entry is safe.
+                    _cache_put(rel_path, content, findings[file_findings_start:])
                     continue
                 elif _lines_in_strings > 0:
                     # Some matches in strings — penalise confidence
@@ -969,6 +976,8 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # Base minimal_risk score is 15; anything below 20 has no corroborating
             # evidence and is noise (205 FPs at 16% precision in dev benchmark).
             if result.tier.value == "minimal_risk" and confidence_score < 20:
+                # Deterministic given content — safe to cache the exclusion.
+                _cache_put(rel_path, content, findings[file_findings_start:])
                 continue
 
             # Domain gating: suppress opt-in high_risk findings unless
@@ -982,17 +991,22 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 if _opt_in_matched and not _has_non_opt_in and not (_opt_in_matched & _domain_activated):
                     _domain_gated_categories.update(_opt_in_matched)
                     _domain_gated_count += 1
+                    # Suppressed from THIS scan's results, but stored in the
+                    # cache UNGATED: the cache read path re-applies gating
+                    # per scan context, so a later scan with the domain
+                    # activated (--domain / fingerprint) must find it on a
+                    # cache hit. Skipping the write here would just leave
+                    # gated files permanently uncached.
+                    finding["open_question"] = _is_open_question(finding)
+                    _cache_put(rel_path, content,
+                               findings[file_findings_start:] + [finding])
                     continue  # suppress: all indicators are opt-in without activation
 
             finding["open_question"] = _is_open_question(finding)
             findings.append(finding)
 
             # Cache findings collected for this file
-            try:
-                if cache is not None:
-                    cache.put(rel_path, content, findings[file_findings_start:])
-            except Exception:
-                pass  # Cache write is best-effort
+            _cache_put(rel_path, content, findings[file_findings_start:])
 
     # Flush cache to disk
     try:

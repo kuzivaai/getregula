@@ -1617,6 +1617,22 @@ class TestFormatVersionBump:
                     "public_key": "mock_pub_key",
                     "signature": "mock_signature",
                 }),
+                # conform calls signing.apply_manifest_security (the shared
+                # sign→timestamp sequence); the mock must honour its
+                # contract of mutating the manifest, not just return a Mock.
+                apply_manifest_security=MagicMock(
+                    side_effect=lambda manifest, *, sign=False,
+                    signing_key_path=None, timestamp=False, tsa_url=None: (
+                        manifest.update({
+                            "format_version": "1.1",
+                            "signing": {
+                                "algorithm": "ed25519",
+                                "public_key": "mock_pub_key",
+                                "signature": "mock_signature",
+                            },
+                        }) or manifest
+                    ) if sign else manifest
+                ),
             ),
         }
 

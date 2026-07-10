@@ -490,3 +490,67 @@ def test_cli_verify_signed_zip_bundle_round_trip(tmp_path):
     assert report["signature_status"] == "VERIFIED"
     assert report["failed"] == 0
     assert report["passed"] == report["total"]
+
+
+def test_cli_evidence_pack_sign_and_verify_round_trip_json(tmp_path):
+    """`evidence-pack --sign --format json` produces a signed, spec-
+    declaring pack that `regula verify` accepts. Regression for the July
+    2026 finding that the site and the CLI itself taught
+    `evidence-pack --sign` while the flag did not exist."""
+    key_path = tmp_path / "signing.key"
+    out_dir = tmp_path / "pack-out"
+    env = {"REGULA_SIGNING_KEY": str(key_path)}
+
+    rc, out, err = _run_regula(
+        "evidence-pack",
+        "--project", "examples/code-completion-tool",
+        "--output", str(out_dir),
+        "--sign",
+        "--format", "json",
+        env=env,
+    )
+    assert rc == 0, f"evidence-pack failed: rc={rc}\nstdout={out}\nstderr={err}"
+    data = json.loads(out)
+    assert data["command"] == "evidence-pack"
+    manifest = data["data"]["manifest"]
+    assert manifest["format"] == "regula.evidence.v1"
+    assert manifest["format_version"] == "1.1"
+    assert manifest["schema_version"] == "1.0"  # legacy field kept
+    assert manifest["signing"]["algorithm"] == "ed25519"
+
+    rc2, out2, err2 = _run_regula(
+        "verify", data["data"]["pack_path"], "--format", "json", env=env,
+    )
+    assert rc2 == 0, f"verify failed: rc={rc2}\nstdout={out2}\nstderr={err2}"
+    verify_data = json.loads(out2)
+    assert verify_data["data"]["signature_status"] == "VERIFIED"
+
+
+def test_cli_evidence_pack_unsigned_manifest_encoding_unchanged(tmp_path):
+    """Without --sign, the evidence-pack manifest keeps its pre-1.7.5
+    encoding exactly — no format fields, no signing block (the
+    stateless-encoding rule: existing consumers must be unaffected)."""
+    out_dir = tmp_path / "pack-out"
+    rc, out, err = _run_regula(
+        "evidence-pack",
+        "--project", "examples/code-completion-tool",
+        "--output", str(out_dir),
+        "--format", "json",
+    )
+    assert rc == 0, f"evidence-pack failed: rc={rc}\nstderr={err}"
+    manifest = json.loads(out)["data"]["manifest"]
+    assert set(manifest) == {"schema_version", "regula_version",
+                             "generated_at", "project", "project_path",
+                             "files"}, sorted(manifest)
+
+
+def test_cli_evidence_pack_timestamp_requires_sign_is_implied(tmp_path):
+    """--timestamp implies --sign (same semantics as conform), so it
+    must not error out as an invalid combination."""
+    import evidence_pack as ep
+    try:
+        ep.generate_evidence_pack(".", timestamp=True, sign=False)
+    except ValueError as exc:
+        assert "--timestamp requires --sign" in str(exc)
+    else:
+        raise AssertionError("generator must reject timestamp without sign")

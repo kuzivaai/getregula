@@ -1192,6 +1192,36 @@ def _build_subparsers(subparsers):
                             help="Package output as a self-verifying .regula-evidence.zip")
     p_evidence.add_argument("--runtime", metavar="SYSTEM_ID",
                             help="Include runtime monitoring logs for SYSTEM_ID")
+    p_evidence.add_argument(
+        "--sign",
+        action="store_true",
+        help="Sign the pack manifest with your Ed25519 key (Regula Evidence "
+             "Format v1.1, §4.5). Generates a keypair at ~/.regula/signing.key "
+             "on first use. Requires the regula[signing] optional extra.",
+    )
+    p_evidence.add_argument(
+        "--signing-key",
+        dest="signing_key",
+        metavar="PATH",
+        help="Path to an Ed25519 private key (PEM, PKCS8). Overrides the "
+             "default ~/.regula/signing.key and the REGULA_SIGNING_KEY env "
+             "variable. Implies --sign.",
+    )
+    p_evidence.add_argument(
+        "--timestamp",
+        action="store_true",
+        help="Request an RFC 3161 timestamp from a TSA over the signed "
+             "canonical manifest form and embed it as timestamp_authority "
+             "(Regula Evidence Format v1.1, §4.6). Implies --sign and "
+             "requires network access to the TSA.",
+    )
+    p_evidence.add_argument(
+        "--tsa-url",
+        dest="tsa_url",
+        metavar="URL",
+        help="TSA endpoint URL (default: https://freetsa.org/tsr). Any "
+             "RFC 3161-compliant TSA works.",
+    )
     p_evidence.set_defaults(func=cmd_evidence_pack)
 
     # --- doc-audit ---

@@ -32,6 +32,10 @@ def generate_evidence_pack(
     project_path: str,
     output_dir: str = ".",
     project_name: str = None,
+    sign: bool = False,
+    signing_key_path=None,
+    timestamp: bool = False,
+    tsa_url: str = None,
     **kwargs,
 ) -> dict:
     """Generate a complete evidence pack for a project.
@@ -40,10 +44,27 @@ def generate_evidence_pack(
         project_path: Path to the project to scan.
         output_dir: Parent directory for the pack folder.
         project_name: Human-readable name (defaults to directory name).
+        sign: Sign the manifest with an Ed25519 key (Regula Evidence
+            Format v1.1 §4.5). When any security option is active the
+            manifest additionally declares the Evidence Format v1 fields
+            (`format`, `format_version`, `schema_uri`, `hash_algorithm`)
+            so `regula verify` accepts the pack; the legacy
+            `schema_version` field is kept for older consumers.
+        signing_key_path: Optional Ed25519 key location override
+            (default ~/.regula/signing.key or REGULA_SIGNING_KEY).
+        timestamp: Request an RFC 3161 timestamp over the signed
+            canonical manifest form (§4.6). Implies sign.
+        tsa_url: TSA endpoint (default FreeTSA).
 
     Returns:
         Dict with pack_dirname, pack_path, and manifest.
     """
+    # Reject invalid combinations before writing any files.
+    if timestamp and not sign:
+        raise ValueError(
+            "--timestamp requires --sign (timestamp covers the signed "
+            "canonical manifest form per spec §4.6)."
+        )
     from report import scan_files
     from compliance_check import assess_compliance
     from generate_documentation import scan_project, generate_annex_iv
@@ -168,6 +189,27 @@ def generate_evidence_pack(
         "project_path": str(project),
         "files": file_records,
     }
+    if sign:
+        # Signed packs must be consumable by `regula verify`, which
+        # strictly requires the Evidence Format v1 declaration. These
+        # fields are added ONLY on the signing path so the unsigned
+        # manifest encoding is byte-compatible with previous releases
+        # (stateless-encoding rule: no silent format changes).
+        manifest = {
+            "format": "regula.evidence.v1",
+            "format_version": "1.0",  # bumped to 1.1 by apply_manifest_security
+            "schema_uri": "https://getregula.com/spec/regula.manifest.v1.schema.json",
+            "hash_algorithm": "sha256",
+            **manifest,
+        }
+        from signing import apply_manifest_security
+        apply_manifest_security(
+            manifest,
+            sign=sign,
+            signing_key_path=signing_key_path,
+            timestamp=timestamp,
+            tsa_url=tsa_url,
+        )
     manifest_json = json.dumps(manifest, indent=2)
     (pack_dir / "manifest.json").write_text(manifest_json, encoding="utf-8")
 

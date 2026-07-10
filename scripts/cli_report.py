@@ -71,13 +71,37 @@ def cmd_evidence_pack(args) -> None:
 
     from evidence_pack import generate_evidence_pack
 
-    print(f"Generating evidence pack for {project_path}...", file=sys.stderr)
-    result = generate_evidence_pack(
-        project_path,
-        output_dir=args.output,
-        project_name=project_name,
-        runtime_system_id=getattr(args, "runtime", None),
+    # Same flag semantics as `regula conform`: --signing-key and
+    # --timestamp both imply --sign.
+    timestamp_requested = bool(getattr(args, "timestamp", False))
+    sign_requested = bool(
+        getattr(args, "sign", False)
+        or getattr(args, "signing_key", None)
+        or timestamp_requested
     )
+    signing_key_path = None
+    if getattr(args, "signing_key", None):
+        signing_key_path = Path(args.signing_key).expanduser().resolve()
+
+    print(f"Generating evidence pack for {project_path}...", file=sys.stderr)
+    try:
+        result = generate_evidence_pack(
+            project_path,
+            output_dir=args.output,
+            project_name=project_name,
+            runtime_system_id=getattr(args, "runtime", None),
+            sign=sign_requested,
+            signing_key_path=signing_key_path,
+            timestamp=timestamp_requested,
+            tsa_url=getattr(args, "tsa_url", None),
+        )
+    except Exception as exc:
+        # Missing regula[signing] extra or invalid flag combination must
+        # produce an actionable one-liner, not a stack trace.
+        if type(exc).__name__ == "SigningUnavailable" or isinstance(exc, ValueError):
+            print(f"Error: {exc}", file=sys.stderr)
+            sys.exit(2)
+        raise
 
     if getattr(args, "bundle", False):
         from evidence_pack import generate_bundle
@@ -98,9 +122,13 @@ def cmd_evidence_pack(args) -> None:
         print(f"Evidence pack written to: {pack_path}")
         print(f"Contains {file_count} files with SHA-256 integrity hashes.")
         print(f"Start with: {pack_path}/00-summary.md")
-        if not getattr(args, "sign", False):
+        if sign_requested:
+            ts_note = " + RFC 3161 timestamp" if timestamp_requested else ""
+            print(f"Signed: Ed25519 signature embedded{ts_note} "
+                  f"(verify with `regula verify {pack_path}`).")
+        else:
             print("\n  For a signed, timestamped evidence pack suitable for auditors,")
-            print("  see: regula conform --sign . or visit getregula.com/pricing")
+            print("  run: regula evidence-pack --sign . (or visit getregula.com/pricing)")
 
 
 def cmd_sbom(args) -> None:

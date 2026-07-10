@@ -35,7 +35,12 @@ def _patterns_fingerprint() -> str:
         return "unknown"
 
 
-_CACHE_SCHEMA = f"v3:{_REGULA_VERSION}:{_patterns_fingerprint()}"
+# v4: cache keys carry a scan-context token (see ScanCache.get/put) so
+# entries written under one project context (e.g. AI-library self-scan,
+# which caps confidence scores) can never be served to a different one.
+# The bump also invalidates v3 entries, which could be incomplete when
+# written by a --min-tier scan.
+_CACHE_SCHEMA = f"v4:{_REGULA_VERSION}:{_patterns_fingerprint()}"
 
 
 class ScanCache:
@@ -60,12 +65,12 @@ class ScanCache:
     def _hash(content: str) -> str:
         return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
-    def get(self, path: str, content: str) -> Optional[list]:
-        key = f"{path}:{_CACHE_SCHEMA}:{self._hash(content)}"
+    def get(self, path: str, content: str, context: str = "") -> Optional[list]:
+        key = f"{path}:{_CACHE_SCHEMA}:{context}:{self._hash(content)}"
         return self._memory.get(key)
 
-    def put(self, path: str, content: str, findings: list) -> None:
-        key = f"{path}:{_CACHE_SCHEMA}:{self._hash(content)}"
+    def put(self, path: str, content: str, findings: list, context: str = "") -> None:
+        key = f"{path}:{_CACHE_SCHEMA}:{context}:{self._hash(content)}"
         self._memory[key] = findings
 
     def flush(self) -> None:
