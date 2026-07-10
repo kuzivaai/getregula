@@ -32,8 +32,11 @@ import base64
 import json
 import os
 import stat
+import sys
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).parent))
 
 
 class SigningUnavailable(RuntimeError):
@@ -268,3 +271,47 @@ def is_signing_available() -> bool:
         return True
     except SigningUnavailable:
         return False
+
+
+def apply_manifest_security(
+    manifest: dict,
+    *,
+    sign: bool = False,
+    signing_key_path=None,
+    timestamp: bool = False,
+    tsa_url: str = None,
+) -> dict:
+    """Apply the Evidence Format v1.1 security blocks to a manifest.
+
+    Single source of truth for the sign→timestamp sequence used by every
+    pack generator (`regula conform`, `regula evidence-pack`). Mutates
+    and returns `manifest`:
+
+      1. Bumps ``format_version`` to "1.1" (any v1.1 optional block
+         requires the bump, and the signature covers the bumped value).
+      2. Appends the ``signing`` block (spec §4.3/§4.5).
+      3. Appends the ``timestamp_authority`` block over the signed
+         canonical form (spec §4.6). Requires ``sign``.
+
+    Raises ValueError if ``timestamp`` is requested without ``sign``,
+    and SigningUnavailable if the `regula[signing]` extra is missing.
+    """
+    if timestamp and not sign:
+        raise ValueError(
+            "--timestamp requires --sign (timestamp covers the signed "
+            "canonical manifest form per spec §4.6)."
+        )
+    if not sign:
+        return manifest
+
+    manifest["format_version"] = "1.1"
+    manifest["signing"] = sign_manifest(manifest, key_path=signing_key_path)
+
+    if timestamp:
+        from timestamp import request_manifest_timestamp, DEFAULT_TSA_URL
+        canonical = canonicalize_manifest_for_signing(manifest)
+        manifest["timestamp_authority"] = request_manifest_timestamp(
+            canonical,
+            tsa_url=tsa_url or DEFAULT_TSA_URL,
+        )
+    return manifest

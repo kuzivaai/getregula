@@ -33,10 +33,10 @@
     <meta name="twitter:description" content="Avaliação gratuita de risco de regulamentação de IA. Verifique suas obrigações sob a Lei de IA da UE, Lei Básica de IA da Coreia do Sul, ou Colorado SB 26-189.">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
-    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
-    <noscript><link rel="stylesheet" href="/assets/fonts.css"></noscript>
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript><link rel="stylesheet" href="/assets/fonts.min.css"></noscript>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -485,7 +485,7 @@
     <div class="export-section">
       <h3>Exportar seus resultados</h3>
       <div class="export-buttons">
-        <button type="button" class="btn btn-secondary" onclick="window.print()">Imprimir / Salvar como PDF</button>
+        <button type="button" class="btn btn-secondary" onclick="if(window.plausible)plausible('Assess Export',{props:{type:'print'}});window.print()">Imprimir / Salvar como PDF</button>
         <button type="button" class="btn btn-secondary" onclick="copyShareLink()">Copiar link compartilhável</button>
         <button type="button" class="btn btn-secondary" onclick="exportJSON()">Baixar JSON</button>
       </div>
@@ -548,6 +548,7 @@ const JURISDICTION_INFO = {
 
 function selectJurisdiction(jur) {
   activeJurisdiction = jur;
+  if (window.plausible) plausible("Assess Jurisdiction", { props: { jurisdiction: jur } });
   document.querySelectorAll(".jurisdiction-btn").forEach(b => {
     b.style.border = "1px solid var(--border)";
     b.style.background = "transparent";
@@ -1063,6 +1064,7 @@ function answer(value, btn) {
 }
 
 function nextQuestion() {
+  if (window.plausible) plausible("Assess Question", { props: { step: currentQuestion + 1, jurisdiction: activeJurisdiction } });
   if (currentQuestion < getActiveDisplayOrder().length - 1) {
     currentQuestion++;
     renderQuestion();
@@ -1442,6 +1444,7 @@ function decodeAnswers(code) {
 }
 
 function copyShareLink() {
+  if (window.plausible) plausible("Assess Export", { props: { type: "share-link" } });
   const code = encodeAnswers();
   const jurParam = activeJurisdiction !== "eu" ? "&j=" + activeJurisdiction : "";
   const url = window.location.origin + window.location.pathname + "?r=" + code + jurParam;
@@ -1453,6 +1456,7 @@ function copyShareLink() {
 }
 
 function exportJSON() {
+  if (window.plausible) plausible("Assess Export", { props: { type: "json" } });
   const results = calculateResults();
   const data = {
     tool: "Regula Web Assessment",
@@ -1500,6 +1504,14 @@ function resetAssessment() {
 
 let scanResult = null;
 let uploadedFileName = null;
+
+// Results CLI commands: click-to-copy with measurement (funnel: install intent)
+document.addEventListener("click", function (e) {
+  const codeEl = e.target.closest("#resultsSection code");
+  if (!codeEl) return;
+  navigator.clipboard.writeText(codeEl.textContent).catch(() => {});
+  if (window.plausible) plausible("Results CLI Copy", { props: { command: codeEl.textContent.slice(0, 60) } });
+});
 
 function startScanner() {
   document.getElementById("heroSection").style.display = "none";

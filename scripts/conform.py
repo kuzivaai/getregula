@@ -621,25 +621,17 @@ def generate_conformity_pack(
 
     if sign:
         # Import lazily so the core CLI remains importable even when the
-        # optional `cryptography` extra is not installed.
-        from signing import sign_manifest
-        manifest["signing"] = sign_manifest(manifest, key_path=signing_key_path)
-
-    if timestamp:
-        # Invariant (sign required) already checked at function entry.
-        from signing import canonicalize_manifest_for_signing
-        from timestamp import request_manifest_timestamp, DEFAULT_TSA_URL
-        canonical = canonicalize_manifest_for_signing(manifest)
-        # The signing block is excluded from the canonical form, so the
-        # timestamp witnesses the *unsigned* canonical state. Re-verify
-        # order (sign → timestamp) at consumer time: a valid signature
-        # plus a matching timestamp gives "this content existed at T and
-        # was signed by K".
-        ts_block = request_manifest_timestamp(
-            canonical,
-            tsa_url=tsa_url or DEFAULT_TSA_URL,
+        # optional `cryptography` extra is not installed. The sign →
+        # timestamp sequence lives in signing.apply_manifest_security —
+        # the single source shared with `regula evidence-pack --sign`.
+        from signing import apply_manifest_security
+        apply_manifest_security(
+            manifest,
+            sign=sign,
+            signing_key_path=signing_key_path,
+            timestamp=timestamp,
+            tsa_url=tsa_url,
         )
-        manifest["timestamp_authority"] = ts_block
 
     manifest_json = json.dumps(manifest, indent=2)
     (pack_dir / "manifest.json").write_text(manifest_json, encoding="utf-8")

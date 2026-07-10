@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Critical inline CSS + non-render-blocking stylesheet loading.
-         Why: /assets/site.css is render-blocking, so Chrome shows a WHITE canvas
+         Why: /assets/site.min.css is render-blocking, so Chrome shows a WHITE canvas
          (the browser default) for the entire duration of the CSS fetch on cold
          loads — measured at ~600ms on simulated 3G, worse on real slow networks.
          That white→dark snap is what users reported as "the demo flashing": the
@@ -222,18 +222,18 @@
          <noscript> fallback ensures JS-disabled clients still get full styling. -->
     <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
          If adding a Content Security Policy, migrate to a hashed <script> block. -->
-    <link rel="stylesheet" href="/assets/fonts.css" media="print" onload="this.media='all';this.onload=null">
-    <link rel="stylesheet" href="/assets/site.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
     <noscript>
-        <link rel="stylesheet" href="/assets/fonts.css">
-        <link rel="stylesheet" href="/assets/site.css">
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
     </noscript>
-    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
     <!-- JetBrains Mono is used only inside the hero terminal demo. Preload
          eliminates the font-swap reflow that otherwise reads as a flash
          when the woff2 arrives late. -->
-    <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
     <style>
         /* pt-br.html overrides — values that intentionally differ from site.css */
         body { line-height: 1.6; }
@@ -330,7 +330,7 @@
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2.511</strong> testes
+                <strong style="color:var(--text);">2.521</strong> testes
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> vulnerabilidades inesperadas
                 <span class="sp-sep" aria-hidden="true">&middot;</span> zero depend&ecirc;ncias
                 <span class="sp-sep" aria-hidden="true">&middot;</span> seu c&oacute;digo nunca sai da sua m&aacute;quina
@@ -476,7 +476,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="audience-card audience-audit">
             <div class="audience-label">Se voce audita conformidade</div>
             <h3>Evidencia verificavel, nao autoatestacao.</h3>
-            <p>O Regula gera pacotes de evidencias assinados e com marca temporal, com manifestos de integridade SHA-256. Cada descoberta e rastreavel ate um arquivo e linha. Verifique a cadeia voce mesmo.</p>
+            <p>O Regula gera pacotes de evidencias assinados e com marca temporal, com manifestos de integridade SHA-256. Cada descoberta e rastreavel ate um arquivo e linha. Verifique a cadeia voce mesmo. <a href="/sample-report.html" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'sample-report'}})">Ver um relatorio de exemplo &rarr;</a></p>
             <button type="button" class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula conform --sign .')">
                 <span class="fwd-icon">&#9654;</span>
                 <span class="fwd-txt">regula conform --sign .</span>

@@ -192,3 +192,8 @@ aren.t\s+unique
 \bthe only\s+record\b
 \bthe only\s+Member\s+State\b
 \bacross\s+12\s+files\b
+# ---- Sample-report artifacts (site/examples/): VERBATIM `regula report`
+#      output from scanning examples/cv-screening-app — the numbers ARE the
+#      verified tool output (regenerate: see site/sample-report.html
+#      provenance note). Scoped to the scan-stats line format.
+Scanned \d+ file\(s\) &middot; \d+ prohibited &middot; \d+ high-risk

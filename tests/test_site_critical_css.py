@@ -44,10 +44,16 @@ TERMINAL_MARKERS = (".term-panel {", ".term-panel.active", ".term-body {")
 
 
 def _fouc_fixed_pages():
-    """Yield every HTML file under site/ that is NOT a redirect stub."""
+    """Yield every HTML file under site/ that is NOT a redirect stub.
+
+    site/examples/ is exempt: those files are VERBATIM `regula report`
+    output published as the sample-report bridge (July 2026, UX-audit
+    finding #2) — adding site chrome to them would defeat the point of
+    showing real tool output.
+    """
     for path in sorted(SITE.rglob("*.html")):
         rel = path.relative_to(ROOT).as_posix()
-        if rel in REDIRECT_STUBS:
+        if rel in REDIRECT_STUBS or rel.startswith("site/examples/"):
             continue
         yield path, rel
 
@@ -115,3 +121,35 @@ def test_critical_css_style_block_is_in_head():
             f"{rel}: critical-CSS appears AFTER </head>. Move the <style>\n"
             "block into <head> — otherwise it doesn't apply on first paint."
         )
+
+
+def test_minified_css_in_sync_with_source():
+    """site.min.css / fonts.min.css (what pages actually load) must be
+    exactly minify(source). A CSS edit without re-running
+    scripts/minify_css.py fails here instead of silently serving stale
+    styles. Regenerate with: python3 scripts/minify_css.py"""
+    import sys
+    from pathlib import Path
+    repo = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(repo / "scripts"))
+    from minify_css import minify, PAIRS, SITE_ASSETS
+    for src_name, min_name in PAIRS:
+        expected = minify((SITE_ASSETS / src_name).read_text(encoding="utf-8")) + "\n"
+        actual = (SITE_ASSETS / min_name).read_text(encoding="utf-8")
+        assert actual == expected, (
+            f"{min_name} is stale — run python3 scripts/minify_css.py "
+            f"after editing {src_name}"
+        )
+
+
+def test_pages_reference_minified_css():
+    """Site pages must load the .min.css files, not the readable source
+    (which stays in the repo as the source of truth)."""
+    from pathlib import Path
+    site = Path(__file__).resolve().parent.parent / "site"
+    offenders = []
+    for page in sorted(site.rglob("*.html")):
+        text = page.read_text(encoding="utf-8", errors="replace")
+        if "/assets/site.css" in text or "/assets/fonts.css" in text:
+            offenders.append(str(page.relative_to(site)))
+    assert not offenders, f"pages loading unminified CSS: {offenders}"
