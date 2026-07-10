@@ -16,7 +16,6 @@ sys.path.insert(0, str(Path(__file__).parent))
 from risk_types import RiskTier, Classification
 from risk_patterns import (
     PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS,
-    AI_INDICATORS,
 )
 from classify_risk import strip_comments
 

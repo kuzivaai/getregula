@@ -199,7 +199,6 @@ def test_owasp_top_10_has_10_entries():
 
 # --- Runner ---
 if __name__ == "__main__":
-    import inspect
 
     test_funcs = [
         obj

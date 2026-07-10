@@ -957,6 +957,16 @@ def _build_subparsers(subparsers):
     p_report.add_argument("--output", "-o", help="Output file")
     p_report.add_argument("--name", "-n", help="Project name")
     p_report.add_argument("--include-audit", action="store_true", help="Include audit trail data")
+    p_report.add_argument("--domain", metavar="DOMAIN",
+                          help="Declare project domain(s) to activate relevant high-risk "
+                               "patterns, same as `regula check --domain`. Without it, a "
+                               "domain-gated project reports zero findings. Comma-separated: "
+                               "employment,medical,finance,biometrics,education,"
+                               "law_enforcement,infrastructure,migration")
+    p_report.add_argument("--scope", choices=["all", "production"], default="all",
+                          help="Scan scope. Default 'all' (reports are a full inventory); "
+                               "'production' excludes test/example/tooling files the same "
+                               "way `regula check` does by default.")
     p_report.set_defaults(func=cmd_report)
 
     # --- audit ---

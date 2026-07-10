@@ -2,7 +2,6 @@
 # regula-ignore
 """Tests for guardrail_scanner module."""
 
-import os
 import sys
 import tempfile
 import shutil
@@ -11,7 +10,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 
 from guardrail_scanner import scan_for_guardrails, format_guardrails_text
-from constants import CODE_EXTENSIONS
 
 import helpers
 from helpers import assert_eq, assert_true, assert_in, assert_gte, assert_lte

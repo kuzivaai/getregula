@@ -15,7 +15,6 @@ import os
 import subprocess
 import sys
 import tempfile
-import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
@@ -434,9 +433,6 @@ def test_stop_hook_produces_summary():
     env["PYTHONPATH"] = str(SCRIPTS_DIR)
 
     # Write a few fake events directly
-    from log_event import get_audit_file, compute_hash, AuditEvent
-    import uuid
-    from datetime import datetime, timezone
 
     orig_env = os.environ.get("REGULA_AUDIT_DIR")
     os.environ["REGULA_AUDIT_DIR"] = tmp_audit
@@ -522,7 +518,7 @@ def test_stop_hook_invalid_json_graceful():
 
 def test_log_event_creates_file():
     """log_event creates audit file and writes valid JSONL"""
-    from log_event import log_event as _log_event, get_audit_dir
+    from log_event import log_event as _log_event
 
     tmp_audit = tempfile.mkdtemp(prefix="regula_test_log_")
     orig = os.environ.get("REGULA_AUDIT_DIR")

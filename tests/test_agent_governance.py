@@ -11,7 +11,6 @@ EU AI Act Article 14 (human oversight), OWASP LLM08 (excessive agency).
 """
 
 import json
-import os
 import sys
 import tempfile
 from pathlib import Path

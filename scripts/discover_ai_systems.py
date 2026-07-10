@@ -15,7 +15,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from degradation import check_optional
 
 from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS
 
@@ -369,7 +368,8 @@ def generate_eu_registration(project_name: str) -> dict:
 
 def format_registry_csv(registry: dict = None) -> str:
     """Export the full registry as CSV for DPO inventory management."""
-    import csv, io
+    import csv
+    import io
 
     if registry is None:
         registry = load_registry()

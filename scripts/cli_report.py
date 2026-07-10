@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 def cmd_report(args) -> None:
     """Generate reports."""
-    from cli import json_output, _validate_path, _build_envelope
+    from cli import _validate_path, _build_envelope
     from report import scan_files, generate_html_report, generate_sarif, generate_sales_report
     from exec_summary import generate_exec_summary
 
@@ -24,8 +24,20 @@ def cmd_report(args) -> None:
     project_path = str(Path(args.project).resolve())
     project_name = args.name or Path(project_path).name
 
+    declared_domains = set()
+    if getattr(args, "domain", None):
+        declared_domains = {d.strip().lower() for d in args.domain.split(",")}
+
     print(f"Scanning {project_path}...", file=sys.stderr)
-    findings = scan_files(project_path)
+    findings = scan_files(project_path, declared_domains=declared_domains)
+    if getattr(args, "scope", "all") == "production":
+        # Same tier-aware exclusion `regula check` uses (single source).
+        from cli_scan import _should_exclude_for_production_scope
+        excluded = [f for f in findings if _should_exclude_for_production_scope(f)]
+        if excluded:
+            print(f"  Scope: {len(excluded)} non-production finding(s) excluded "
+                  f"(--scope all to include)", file=sys.stderr)
+            findings = [f for f in findings if not _should_exclude_for_production_scope(f)]
     print(f"Found {len(findings)} findings in {len(set(f['file'] for f in findings))} files", file=sys.stderr)
 
     audit_events = None
@@ -155,7 +167,7 @@ def cmd_evidence_pack(args) -> None:
 
 def cmd_sbom(args) -> None:
     """Generate AI Software Bill of Materials (CycloneDX 1.7)."""
-    from cli import json_output, _validate_path
+    from cli import _validate_path
 
     if args.project != ".":
         _validate_path(args.project)
@@ -281,7 +293,7 @@ def cmd_inventory(args) -> None:
 
 def cmd_badge(args) -> None:
     """Generate compliance badge from scan results."""
-    from cli import json_output, _validate_path
+    from cli import _validate_path
     from report import scan_files
     from findings_view import partition_findings
 

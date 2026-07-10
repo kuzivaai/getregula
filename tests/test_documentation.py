@@ -8,8 +8,6 @@ architecture detection, data source detection, human oversight,
 logging, risk register, and model card format.
 """
 
-import json
-import os
 import subprocess
 import sys
 import tempfile

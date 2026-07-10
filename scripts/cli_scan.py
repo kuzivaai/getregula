@@ -134,10 +134,10 @@ def _emit_github_annotations(args, display_view) -> None:
 def cmd_check(args) -> None:
     """Scan files for risk indicators."""
     from cli import (
-        json_output, _validate_path, _is_tty, _get_changed_files,
+        json_output, _validate_path, _get_changed_files,
         _resolve_jurisdictions, _enrich_findings_with_jurisdictions,
         _enrich_findings_with_domain_obligations,
-        _print_remediation, JURISDICTION_MAP,
+        _print_remediation,
     )
     from report import scan_files
 
@@ -435,8 +435,8 @@ def cmd_check(args) -> None:
             cats_str = ", ".join(gated_cats)
             print(f"\n  INFO: {gated_count} high-risk finding(s) suppressed by domain gating")
             print(f"        Categories: {cats_str}")
-            print(f"        To activate, use: regula check --domain <domain>")
-            print(f"        Or add domain-specific imports to your project.")
+            print("        To activate, use: regula check --domain <domain>")
+            print("        Or add domain-specific imports to your project.")
 
         if prohibited:
             print(f"\n  {red('PROHIBITED INDICATORS')}:")

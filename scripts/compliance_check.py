@@ -45,7 +45,7 @@ except ImportError:
 
 _classify_available = check_optional("classify_risk", "risk classification", "included with regula")
 if _classify_available:
-    from classify_risk import classify, RiskTier
+    from classify_risk import RiskTier
 
 _report_available = check_optional("report", "file scanning", "included with regula")
 if _report_available:

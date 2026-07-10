@@ -1,7 +1,6 @@
 # regula-ignore
 """Tests for scripts/policy_config.py — malformed policy file handling."""
 
-import os
 import sys
 from pathlib import Path
 
@@ -16,7 +15,6 @@ def test_malformed_yaml_policy_prints_warning_and_returns_empty(tmp_path, capsys
     """A policy file that exists but contains invalid YAML prints a clear warning
     to stderr and causes get_policy_parse_error() to return a non-None tuple.
     The tool must not crash and must return an empty dict."""
-    import importlib
     import policy_config
 
     # Write a deliberately malformed YAML file

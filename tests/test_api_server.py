@@ -19,7 +19,7 @@ import tempfile
 import os
 from datetime import datetime, timezone
 from pathlib import Path
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 
 # Bare import convention — scripts dir on path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
@@ -472,7 +472,6 @@ def test_classify_input_too_large():
 def test_classify_success():
     """POST /v1/classify returns envelope with classification data."""
     import types
-    from dataclasses import dataclass
 
     # Create a mock Classification result
     mock_result = MagicMock()

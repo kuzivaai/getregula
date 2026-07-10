@@ -25,7 +25,6 @@ from build_regulations import (  # noqa: E402
     _render_sources_block,
     _render_tracker_block,
     _validate_region,
-    build,
     render_region,
 )
 

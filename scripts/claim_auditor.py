@@ -37,7 +37,6 @@ import subprocess
 import sys
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
-from typing import Iterable
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ALLOWLIST_PATH = REPO_ROOT / ".claim-allowlist"

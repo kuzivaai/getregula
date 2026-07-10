@@ -10,7 +10,7 @@ from datetime import date, timedelta
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from risk_decisions import parse_annotations, build_suppression_set, RiskDecision, record_feedback, load_feedback
+from risk_decisions import parse_annotations, build_suppression_set, record_feedback, load_feedback
 
 
 # ── 1. Bare ignore ─────────────────────────────────────────────────

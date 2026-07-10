@@ -43,8 +43,7 @@ from cross_file_flow import (
     _JS_TS_EXTENSIONS,
 )
 
-import helpers
-from helpers import assert_eq, assert_true, assert_false, assert_in, assert_gte, assert_lte
+from helpers import assert_eq, assert_true, assert_false, assert_in, assert_gte
 
 
 # ---------------------------------------------------------------------------

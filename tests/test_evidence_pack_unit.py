@@ -15,7 +15,6 @@ Tests cover:
 
 import hashlib
 import json
-import os
 import sys
 import zipfile
 from datetime import datetime, timezone

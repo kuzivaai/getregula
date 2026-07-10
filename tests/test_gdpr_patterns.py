@@ -3,7 +3,6 @@
 """Tests for GDPR pattern definitions and dual-compliance scanning."""
 
 import contextlib
-import os
 import sys
 import tempfile
 from pathlib import Path

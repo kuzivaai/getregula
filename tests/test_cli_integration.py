@@ -5,7 +5,6 @@ import subprocess
 import sys
 import tempfile
 
-import pytest
 
 
 def run_cli(*args, env_overrides=None):
@@ -166,7 +165,6 @@ def test_github_annotations_emitted_under_github_actions():
     Uses a tempdir with a real AI finding to avoid path-dependent scope issues
     (examples/ is in SKIP_DIRS; tests/ has test provenance).
     """
-    import shutil
     with tempfile.TemporaryDirectory() as tmp:
         app = os.path.join(tmp, "app.py")
         with open(app, "w") as f:
@@ -512,3 +510,22 @@ def test_every_project_subcommand_accepts_positional_path():
         assert getattr(args, "project_path_positional", None) == "/tmp/some-project", name
         checked += 1
     assert checked >= 25, f"only {checked} subcommands checked — glob regression?"
+
+
+def test_report_domain_flag_activates_gated_findings():
+    """`regula report` on a domain-gated project yields zero findings
+    without --domain and real findings with it (10 Jul 2026 audit: the
+    flag didn't exist, so domain-gated projects silently reported
+    nothing). Uses the bundled cv-screening example (employment domain,
+    same project `regula demo` scans)."""
+    rc, out, _ = run_cli("report", "examples/cv-screening-app", "-f", "json")
+    assert rc == 0
+    gated = json.loads(out)["data"]
+    rc, out, _ = run_cli("report", "examples/cv-screening-app", "-f", "json",
+                         "--domain", "employment")
+    assert rc == 0
+    activated = json.loads(out)["data"]
+    assert len(activated) > len(gated), (
+        f"--domain employment should surface gated findings: "
+        f"{len(gated)} without vs {len(activated)} with"
+    )

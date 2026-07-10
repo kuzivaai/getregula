@@ -7,7 +7,6 @@ Detects the development environment, installs appropriate hooks,
 creates a default policy file, and runs an initial scan.
 """
 
-import json
 import sys
 from pathlib import Path
 

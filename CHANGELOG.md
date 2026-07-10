@@ -7,8 +7,33 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-Deep-audit remediation (8 July 2026). Full findings and evidence in the
-maintainer's audit report; every fix below was verified by test.
+Deep-audit remediation (8 July 2026), extended by the 10 July follow-up
+audit. Full findings and evidence in the maintainer's audit report;
+every fix below was verified by test.
+
+### Added (10 July)
+
+- **Positional project path on 20 more subcommands** — `regula conform
+  --sign .`, `regula oversight .`, `regula discover .`, `regula
+  guardrails .`, `regula sbom --ai-bom .`, `regula report . -f html`
+  and every other `--project` subcommand now accept the natural
+  positional form the docs and site teach (the 8 July fix covered six
+  commands; this closes the whole class — `install` and `baseline`
+  keep their existing positional arguments).
+
+### Fixed (10 July)
+
+- **Evidence/conformity pack files are byte-stable on Windows** — pack
+  writers now pin `newline="\n"`, so the SHA-256 hashes recorded in the
+  manifest match the on-disk bytes on every platform. Previously
+  `regula verify` reported every file MODIFIED for packs generated on
+  Windows.
+- **`regula evidence-pack --sign --timestamp`** prints an actionable
+  error (exit 2) when the TSA is unreachable or the key is invalid,
+  matching `regula conform`, instead of a raw traceback.
+- **Atomic AI-system registry writes** — parallel `regula discover
+  --register` runs can no longer corrupt the registry JSON
+  (temp file + `os.replace`).
 
 ### Added
 

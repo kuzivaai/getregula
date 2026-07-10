@@ -1,17 +1,14 @@
 # regula-ignore
 """Tests for AI-generated code governance scanner."""
 
-import os
 import sys
 import tempfile
 from pathlib import Path
 
-import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 
 from ai_code_governance import (
-    EXPLICIT_MARKERS,
     _assess_governance,
     _detect_tool_configs,
     _parse_git_output,
