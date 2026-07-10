@@ -8,7 +8,6 @@ back to a render-blocking <link rel="stylesheet"> for site.css will fail.
 
 Stdlib only.
 """
-import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]

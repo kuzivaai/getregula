@@ -17,7 +17,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 from classify_risk import (
-    classify, RiskTier, is_ai_related, check_ai_security,
+    classify, RiskTier, check_ai_security,
     generate_observations, _compute_confidence_score, is_training_activity,
 )
 
@@ -604,7 +604,7 @@ def test_no_redos_classify_risk():
 
     assert_true(
         len(violations) == 0,
-        f"ReDoS-prone patterns found:\n" + "\n".join(violations) if violations else ""
+        "ReDoS-prone patterns found:\n" + "\n".join(violations) if violations else ""
     )
 
     # Layer 2: timing backup — genuine ReDoS on 10k chars takes 60+ seconds.
@@ -636,7 +636,7 @@ def test_no_redos_ai_security():
             if issue and not any(m in pattern for m in _REDOS_KNOWN_SAFE):
                 violations.append(f"  {cat}: {issue} in {pattern[:60]}...")
     assert_true(len(violations) == 0,
-                f"ReDoS-prone AI security patterns:\n" + "\n".join(violations) if violations else "")
+                "ReDoS-prone AI security patterns:\n" + "\n".join(violations) if violations else "")
 
     # Timing layer
     pathological = "pickle.loads(" + "a" * 10000 + ")\n" + "eval(" + "b" * 10000 + " response)\n"

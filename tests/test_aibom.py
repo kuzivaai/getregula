@@ -1,7 +1,6 @@
 """Tests for the AI Bill of Materials generator (scripts/aibom.py)."""
 
 import json
-import os
 import sys
 import tempfile
 from pathlib import Path

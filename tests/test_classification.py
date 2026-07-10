@@ -915,7 +915,7 @@ def test_audit_hash_chain():
     """Audit trail maintains hash chain integrity"""
     import tempfile
     import os
-    from log_event import log_event, verify_chain, get_audit_dir
+    from log_event import log_event, verify_chain
 
     # Use temp directory
     temp_dir = tempfile.mkdtemp()
@@ -1003,7 +1003,7 @@ def test_multiple_indicators_increase_score():
 def test_sarif_output_structure():
     """SARIF output follows v2.1.0 schema structure"""
     from report import generate_sarif, scan_files
-    import tempfile, os
+    import tempfile
 
     # Create a temp dir with a test file
     temp_dir = tempfile.mkdtemp()
@@ -1132,7 +1132,8 @@ def test_session_aggregation():
 
 def test_baseline_save_and_compare():
     """Baseline save and compare works correctly"""
-    import tempfile, shutil
+    import tempfile
+    import shutil
     from baseline import save_baseline, compare_to_baseline
 
     temp_dir = tempfile.mkdtemp()
@@ -1321,7 +1322,8 @@ def test_hook_clean_pass():
 def test_file_credential_governance():
     """File scan detects AI credentials in AI-related files as governance finding"""
     from report import scan_files
-    import tempfile, shutil
+    import tempfile
+    import shutil
 
     temp_dir = tempfile.mkdtemp()
     test_file = Path(temp_dir) / "ai_service.py"
@@ -1347,7 +1349,8 @@ def test_file_credential_governance():
 
 def test_registry_scan_organization():
     """Org scan finds AI projects in subdirectories"""
-    import tempfile, shutil
+    import tempfile
+    import shutil
     from discover_ai_systems import scan_organization
     temp_dir = tempfile.mkdtemp()
     # Create two "projects"
@@ -1409,9 +1412,10 @@ def test_compliance_workflow_transitions():
 
 def test_compliance_status_update():
     """Compliance status updates and records history"""
-    import tempfile, shutil
+    import tempfile
+    import shutil
     from discover_ai_systems import (
-        load_registry, save_registry, update_compliance_status,
+        save_registry, update_compliance_status,
         REGISTRY_PATH,
     )
 
@@ -1469,7 +1473,8 @@ def test_governance_contacts():
 
 def test_qms_scaffold_generation():
     """QMS scaffold generates with all Article 17 sections"""
-    import tempfile, shutil
+    import tempfile
+    import shutil
     from generate_documentation import scan_project, generate_qms_scaffold
 
     temp_dir = tempfile.mkdtemp()
@@ -1639,7 +1644,8 @@ def predict(data):
 
 def test_compliance_gap_assessment():
     """Compliance gap assessment produces valid structure"""
-    import tempfile, shutil
+    import tempfile
+    import shutil
     from compliance_check import assess_compliance
 
     temp_dir = tempfile.mkdtemp()
@@ -1672,7 +1678,8 @@ def test_compliance_gap_assessment():
 
 def test_compliance_gap_article_15_tests():
     """Article 15 detects test files as accuracy evidence"""
-    import tempfile, shutil
+    import tempfile
+    import shutil
     from compliance_check import assess_compliance
 
     temp_dir = tempfile.mkdtemp()
@@ -1705,7 +1712,8 @@ def test_regulatory_basis():
 
 def test_cross_platform_locking():
     """File locking functions exist and are callable"""
-    import tempfile, os
+    import tempfile
+    import os
     from log_event import _lock_file, _unlock_file
     with tempfile.NamedTemporaryFile(delete=False) as tf:
         path = tf.name
@@ -1875,7 +1883,8 @@ def test_dep_scan_pinning_score():
 
 def test_dep_scan_lockfile_detection():
     """Detects lockfile presence"""
-    import tempfile, shutil
+    import tempfile
+    import shutil
     from dependency_scan import detect_lockfiles
     temp_dir = tempfile.mkdtemp()
     Path(temp_dir, "requirements.txt").write_text("openai==1.0\n")
@@ -2145,7 +2154,8 @@ def test_dep_scan_vcpkg_json():
 
 def test_gap_article_15_dependency_pinning():
     """Article 15 gap assessment includes dependency pinning analysis"""
-    import tempfile, shutil
+    import tempfile
+    import shutil
     from compliance_check import assess_compliance
     temp_dir = tempfile.mkdtemp()
     Path(temp_dir, "app.py").write_text("import openai\nclient = openai.Client()\n")
@@ -2554,7 +2564,8 @@ def test_ast_engine_rust_non_ai():
 
 def test_sbom_cyclonedx_structure():
     """SBOM generates valid CycloneDX 1.7 structure (Oct 2025, ECMA-424 2nd Ed.)"""
-    import tempfile, shutil
+    import tempfile
+    import shutil
     from sbom import generate_sbom
     temp_dir = tempfile.mkdtemp()
     Path(temp_dir, "app.py").write_text("import openai\nclient = openai.Client()\n")
@@ -2573,7 +2584,8 @@ def test_sbom_cyclonedx_structure():
 
 def test_sbom_ai_library_detection():
     """SBOM marks AI libraries with regula properties"""
-    import tempfile, shutil
+    import tempfile
+    import shutil
     from sbom import generate_sbom
     temp_dir = tempfile.mkdtemp()
     Path(temp_dir, "app.py").write_text("import torch\nimport flask\n")
@@ -2593,7 +2605,8 @@ def test_sbom_ai_library_detection():
 
 def test_sbom_model_file_detection():
     """SBOM detects ML model files"""
-    import tempfile, shutil
+    import tempfile
+    import shutil
     from sbom import generate_sbom
     temp_dir = tempfile.mkdtemp()
     Path(temp_dir, "model.onnx").write_text("fake model content")
@@ -2736,7 +2749,9 @@ This model is for text classification.
 
 def test_diff_mode_changed_files():
     """Diff mode filters to changed files only"""
-    import tempfile, shutil, subprocess
+    import tempfile
+    import shutil
+    import subprocess
     temp_dir = tempfile.mkdtemp()
     try:
         # Create a git repo with two commits
@@ -3255,7 +3270,9 @@ def test_graceful_degradation():
 
 def test_init_dry_run():
     """Test regula init --dry-run shows analysis without creating files."""
-    import subprocess, tempfile, os
+    import subprocess
+    import tempfile
+    import os
     with tempfile.TemporaryDirectory() as tmpdir:
         r = subprocess.run(["python3", "scripts/cli.py", "init", "--dry-run", "--project", tmpdir],
                            capture_output=True, text=True)
@@ -3286,7 +3303,9 @@ def test_json_output_envelope():
 
 def test_exit_code_warn_tier():
     """Test exit code 1 when WARN-tier findings exist (confidence >= 50)."""
-    import subprocess, tempfile, os
+    import subprocess
+    import tempfile
+    import os
     # Create fixture OUTSIDE tests/ to avoid test-file deprioritisation (-40 penalty)
     with tempfile.TemporaryDirectory() as tmpdir:
         # Employment AI code — high_risk base(65) + 1 match(+8) = 73 = WARN tier
@@ -3324,7 +3343,9 @@ def test_ci_flag_compliant_exits_0():
 
 def test_ci_flag_warn_tier_exits_1():
     """--ci flag on WARN-tier code exits 1 (implies --strict)."""
-    import subprocess, tempfile, os
+    import subprocess
+    import tempfile
+    import os
     with tempfile.TemporaryDirectory() as tmpdir:
         code = (
             "import torch\n"
@@ -3466,7 +3487,8 @@ def test_smoke_baseline():
 
 def test_smoke_docs():
     """Smoke test: regula docs --project <path> runs and exits 0."""
-    import tempfile, os
+    import tempfile
+    import os
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create a minimal Python file so docs has something to scan
         with open(os.path.join(tmpdir, "app.py"), "w") as f:
@@ -3584,7 +3606,8 @@ def test_github_action_structure():
 
 def test_pdf_export_html_fallback():
     """pdf_export returns HTML bytes when weasyprint is not available."""
-    import sys, unittest.mock
+    import sys
+    import unittest.mock
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
     # Simulate weasyprint not installed
@@ -3604,7 +3627,7 @@ def test_pdf_export_html_content_valid():
     import sys
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from pdf_export import generate_annex_iv_html
-    import tempfile, os
+    import tempfile
     with tempfile.TemporaryDirectory() as tmpdir:
         html = generate_annex_iv_html(tmpdir, "Test System")
         assert "<html" in html.lower()
@@ -3780,7 +3803,8 @@ def test_timestamp_parse_response_invalid():
 
 def test_log_event_tst_field():
     """log_event stores tst_hex when external_timestamp=True (mocked)."""
-    import sys, unittest.mock
+    import sys
+    import unittest.mock
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     import log_event as le
 
@@ -3793,7 +3817,9 @@ def test_log_event_tst_field():
 
 def test_compliance_check_js_ts_article14():
     """Article 14 gap check returns score > 0 for a JS file with review function."""
-    import sys, tempfile, os
+    import sys
+    import tempfile
+    import os
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from compliance_check import assess_compliance as check_compliance
 
@@ -3829,7 +3855,8 @@ async function main() {
 
 def test_conformity_declaration_structure():
     """Declaration of Conformity contains all Annex XIII required fields."""
-    import sys, tempfile
+    import sys
+    import tempfile
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from generate_documentation import generate_conformity_declaration
 
@@ -3875,7 +3902,8 @@ def test_benchmark_corpus_structure():
 
 def test_metrics_record_and_get():
     """record_scan increments counts; get_stats returns correct structure."""
-    import tempfile, os
+    import tempfile
+    import os
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     import metrics as m
 
@@ -3908,7 +3936,8 @@ def test_metrics_record_and_get():
 
 def test_metrics_reset():
     """reset_stats clears all data."""
-    import tempfile, os
+    import tempfile
+    import os
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     import metrics as m
 
@@ -3929,7 +3958,8 @@ def test_metrics_reset():
 
 def test_metrics_empty():
     """get_stats returns zeros when no metrics file exists."""
-    import tempfile, os
+    import tempfile
+    import os
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     import metrics as m
 
@@ -4013,7 +4043,9 @@ def test_config_validate_valid_file():
 
 def test_config_validate_invalid_thresholds():
     """validate_config returns valid=False when warn_above >= block_above."""
-    import sys, tempfile, os
+    import sys
+    import tempfile
+    import os
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from config_validator import validate_config
     bad_config = """
@@ -4052,7 +4084,9 @@ def test_config_validate_no_file():
 
 def test_quickstart_creates_policy():
     """quickstart creates a policy file in a clean directory."""
-    import sys, tempfile, shutil
+    import sys
+    import tempfile
+    import shutil
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from quickstart import run_quickstart
     tmp = Path(tempfile.mkdtemp())
@@ -4069,7 +4103,9 @@ def test_quickstart_creates_policy():
 
 def test_quickstart_skips_existing_policy():
     """quickstart does not overwrite an existing policy file."""
-    import sys, tempfile, shutil
+    import sys
+    import tempfile
+    import shutil
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from quickstart import run_quickstart
     tmp = Path(tempfile.mkdtemp())
@@ -4086,7 +4122,9 @@ def test_quickstart_skips_existing_policy():
 
 def test_quickstart_result_structure():
     """quickstart returns expected keys."""
-    import sys, tempfile, shutil
+    import sys
+    import tempfile
+    import shutil
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from quickstart import run_quickstart
     tmp = Path(tempfile.mkdtemp())
@@ -4178,7 +4216,9 @@ def test_all_articles_have_lgpd_mapping():
 
 def test_check_accepts_single_file():
     """scan_files must accept a single .py file path, not just directories."""
-    import sys, tempfile, os
+    import sys
+    import tempfile
+    import os
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from report import scan_files
     code = "from transformers import pipeline\nclassifier = pipeline('text-classification')\n"
@@ -4195,7 +4235,10 @@ def test_check_accepts_single_file():
 
 def test_check_cli_single_file():
     """regula check CLI must not raise PathError for a single .py file."""
-    import sys, subprocess, tempfile, os
+    import sys
+    import subprocess
+    import tempfile
+    import os
     tmp = tempfile.NamedTemporaryFile(suffix=".py", mode="w", delete=False, dir="/tmp")
     tmp.write("from transformers import pipeline\n")
     tmp.close()
@@ -4220,7 +4263,9 @@ def test_check_cli_single_file():
 
 def test_metrics_normalises_raw_tiers():
     """get_stats must normalise raw classification tiers to BLOCK/WARN/INFO."""
-    import sys, tempfile, os
+    import sys
+    import tempfile
+    import os
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     import metrics as m
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -4248,7 +4293,9 @@ def test_metrics_normalises_raw_tiers():
 
 def test_metrics_normalises_prohibited():
     """PROHIBITED tier must normalise to BLOCK."""
-    import sys, tempfile, os
+    import sys
+    import tempfile
+    import os
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     import metrics as m
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -4497,7 +4544,9 @@ def test_i18n_german():
 
 def test_custom_rules_loads_yaml():
     """load_custom_rules returns correct structure from a YAML file."""
-    import sys, tempfile, os
+    import sys
+    import tempfile
+    import os
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from custom_rules import load_custom_rules
 
@@ -4546,7 +4595,9 @@ def test_custom_rules_no_file():
 
 def test_custom_prohibited_rule_detected():
     """Custom prohibited rule triggers classification."""
-    import sys, tempfile, os
+    import sys
+    import tempfile
+    import os
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     import classify_risk
     from custom_rules import load_custom_rules
@@ -4804,7 +4855,8 @@ def predict_risk(features: list) -> float:
 def test_dependency_extraction():
     """Dependency extraction parses AI libraries from requirements.txt."""
     from generate_documentation import extract_ai_dependencies
-    import tempfile, os
+    import tempfile
+    import os
     with tempfile.TemporaryDirectory() as tmpdir:
         req_path = os.path.join(tmpdir, "requirements.txt")
         with open(req_path, "w") as f:
@@ -4823,7 +4875,8 @@ def test_dependency_extraction():
 def test_docs_function_table_in_output():
     """When AI functions exist, Annex IV includes a function table."""
     from generate_documentation import generate_annex_iv, scan_project
-    import tempfile, os
+    import tempfile
+    import os
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create a minimal AI file
         ai_file = os.path.join(tmpdir, "model.py")
@@ -5012,7 +5065,8 @@ def test_context_penalty_combined():
 
 def test_cross_file_import_map():
     """Import map resolves module names to file paths."""
-    import tempfile, os
+    import tempfile
+    import os
     from ast_analysis import build_import_map
     with tempfile.TemporaryDirectory() as d:
         os.makedirs(os.path.join(d, "ml"))
@@ -5031,7 +5085,8 @@ def test_cross_file_import_map():
 
 def test_cross_file_ai_flow_detection():
     """Cross-file resolution detects AI data flowing between files."""
-    import tempfile, os
+    import tempfile
+    import os
     from ast_analysis import resolve_cross_file_ai_flows
     with tempfile.TemporaryDirectory() as d:
         # utils.py has AI code
@@ -5050,7 +5105,8 @@ def test_cross_file_ai_flow_detection():
 
 def test_cross_file_no_false_positive():
     """Non-AI imports don't generate cross-file flows."""
-    import tempfile, os
+    import tempfile
+    import os
     from ast_analysis import resolve_cross_file_ai_flows
     with tempfile.TemporaryDirectory() as d:
         with open(os.path.join(d, "utils.py"), "w") as f:
@@ -5288,7 +5344,8 @@ def test_evidence_pack_summary_contains_risk_tier():
 
 def test_evidence_pack_cli_integration():
     """CLI evidence-pack command runs and produces output directory."""
-    import subprocess, tempfile
+    import subprocess
+    import tempfile
     with tempfile.TemporaryDirectory() as tmpdir:
         result = subprocess.run(
             [sys.executable, "-m", "scripts.cli", "evidence-pack",
@@ -5304,7 +5361,8 @@ def test_evidence_pack_cli_integration():
 
 def test_evidence_pack_sha256_integrity():
     """SHA-256 hashes in manifest match actual file contents."""
-    import tempfile, hashlib
+    import tempfile
+    import hashlib
     from evidence_pack import generate_evidence_pack
     with tempfile.TemporaryDirectory() as tmpdir:
         result = generate_evidence_pack(".", output_dir=tmpdir, project_name="test-sha")
@@ -5490,7 +5548,8 @@ def test_framework_detection_litellm():
 
 def test_framework_detection_crewai():
     """CrewAI (multi-agent) detected by import."""
-    import sys, re
+    import sys
+    import re
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from code_analysis import ARCHITECTURE_PATTERNS
     patterns = ARCHITECTURE_PATTERNS.get("CrewAI (multi-agent orchestration)", [])
@@ -5501,7 +5560,8 @@ def test_framework_detection_crewai():
 
 def test_framework_detection_autogen():
     """AutoGen (Microsoft multi-agent) detected by import."""
-    import sys, re
+    import sys
+    import re
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from code_analysis import ARCHITECTURE_PATTERNS
     patterns = ARCHITECTURE_PATTERNS.get("AutoGen (multi-agent conversation)", [])
@@ -5512,7 +5572,8 @@ def test_framework_detection_autogen():
 
 def test_framework_detection_haystack():
     """Haystack (RAG pipeline) detected by import."""
-    import sys, re
+    import sys
+    import re
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from code_analysis import ARCHITECTURE_PATTERNS
     patterns = ARCHITECTURE_PATTERNS.get("Haystack (RAG / document pipeline)", [])
@@ -5523,7 +5584,8 @@ def test_framework_detection_haystack():
 
 def test_framework_detection_smolagents():
     """smolagents (HuggingFace) detected by import."""
-    import sys, re
+    import sys
+    import re
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from code_analysis import ARCHITECTURE_PATTERNS
     patterns = ARCHITECTURE_PATTERNS.get("smolagents (HuggingFace lightweight agents)", [])
@@ -5534,7 +5596,8 @@ def test_framework_detection_smolagents():
 
 def test_framework_detection_ollama():
     """Ollama (local inference) detected by import."""
-    import sys, re
+    import sys
+    import re
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from code_analysis import ARCHITECTURE_PATTERNS
     patterns = ARCHITECTURE_PATTERNS.get("Ollama (local model inference)", [])
@@ -5559,7 +5622,8 @@ def test_framework_count_expanded():
 
 def test_model_inventory_detects_gpt4o():
     """Detects gpt-4o string in Python source file."""
-    import sys, tempfile, os
+    import sys
+    import tempfile
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from model_inventory import scan_for_models
     with tempfile.TemporaryDirectory() as tmp:
@@ -5572,7 +5636,8 @@ def test_model_inventory_detects_gpt4o():
 
 def test_model_inventory_detects_from_pretrained():
     """Detects model name in from_pretrained() call."""
-    import sys, tempfile
+    import sys
+    import tempfile
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from model_inventory import scan_for_models
     with tempfile.TemporaryDirectory() as tmp:
@@ -5585,7 +5650,8 @@ def test_model_inventory_detects_from_pretrained():
 
 def test_model_inventory_json_schema():
     """Output matches expected schema: models list + summary dict."""
-    import sys, tempfile
+    import sys
+    import tempfile
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from model_inventory import scan_for_models
     with tempfile.TemporaryDirectory() as tmp:
@@ -5608,7 +5674,8 @@ def test_model_inventory_json_schema():
 
 def test_model_inventory_empty_project():
     """Returns empty models list for a project with no AI model references."""
-    import sys, tempfile
+    import sys
+    import tempfile
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from model_inventory import scan_for_models
     with tempfile.TemporaryDirectory() as tmp:
@@ -5621,7 +5688,8 @@ def test_model_inventory_empty_project():
 
 def test_model_inventory_gpai_tiers():
     """Frontier and open-weight models get correct gpai_tier values."""
-    import sys, tempfile
+    import sys
+    import tempfile
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from model_inventory import scan_for_models
     with tempfile.TemporaryDirectory() as tmp:
@@ -5739,7 +5807,8 @@ def test_html_report_risk_badge_prohibited():
 
 def test_html_report_self_contained():
     """HTML report has no external <script src=> or <link href=> (only @import for fonts is allowed)."""
-    import sys, re
+    import sys
+    import re
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from pdf_export import generate_compliance_html_report
     html = generate_compliance_html_report([], "test-project")
@@ -5768,7 +5837,8 @@ def test_html_report_model_inventory_section():
 
 def test_smoke_check_html():
     """regula check --format html exits 0 or 1 and produces valid HTML."""
-    import subprocess, sys
+    import subprocess
+    import sys
     result = subprocess.run(
         [sys.executable, "scripts/cli.py", "check", ".", "--format", "html"],
         capture_output=True, text=True, cwd=str(Path(__file__).parent.parent)
@@ -5782,7 +5852,10 @@ def test_smoke_check_html():
 
 def test_smoke_check_html_output_file():
     """regula check --format html -o /tmp/test_report.html writes file."""
-    import subprocess, sys, os, tempfile
+    import subprocess
+    import sys
+    import os
+    import tempfile
     with tempfile.NamedTemporaryFile(suffix=".html", delete=False) as tmp:
         tmp_path = tmp.name
     try:
@@ -5952,7 +6025,7 @@ def test_scan_files_exposes_files_scanned_count():
     was the first thing a user saw after `regula quickstart`.
     """
     from report import scan_files
-    import tempfile, os
+    import tempfile
     with tempfile.TemporaryDirectory() as tmp:
         for name, body in [
             ("a.py", "x = 1\n"),                            # no AI, still counted
@@ -6104,7 +6177,8 @@ def test_text_classify_clinical_decision():
 
 def test_discover_respects_regula_ignore():
     """discover skips files with # regula-ignore directive."""
-    import tempfile, os
+    import tempfile
+    import os
     tmpdir = tempfile.mkdtemp()
     # File WITH regula-ignore — should be skipped
     with open(os.path.join(tmpdir, "ignored.py"), "w") as f:
@@ -6264,7 +6338,8 @@ def test_deadline_credential_exposure():
 
 def test_conform_end_to_end():
     """generate_conformity_pack produces correct folder structure and manifest."""
-    import tempfile, shutil
+    import tempfile
+    import shutil
     from conform import generate_conformity_pack
     tmpdir = tempfile.mkdtemp()
     tmpproject = tempfile.mkdtemp()
@@ -6297,7 +6372,9 @@ def test_conform_end_to_end():
 
 def test_oversight_end_to_end():
     """analyse_project_oversight detects AI sources and oversight across files."""
-    import tempfile, shutil, os
+    import tempfile
+    import shutil
+    import os
     from cross_file_flow import analyse_project_oversight
     tmpdir = tempfile.mkdtemp()
     try:
@@ -6319,7 +6396,9 @@ def test_oversight_end_to_end():
 
 def test_ai_bom_model_detection():
     """AI-BOM mode detects models and datasets from code."""
-    import tempfile, shutil, os
+    import tempfile
+    import shutil
+    import os
     from sbom import generate_sbom
     tmpdir = tempfile.mkdtemp()
     try:
@@ -6413,7 +6492,9 @@ def test_js_ts_function_declaration_detected():
 
 def test_notebook_extract_code_cells():
     """extract_code returns only code cells, joined with blank lines."""
-    import tempfile, os, json
+    import tempfile
+    import os
+    import json
     from notebook import extract_code
     nb = {
         "cells": [
@@ -6440,7 +6521,8 @@ def test_notebook_extract_code_cells():
 
 def test_notebook_corrupt_returns_empty():
     """Corrupt or non-JSON .ipynb files return empty string, never raise."""
-    import tempfile, os
+    import tempfile
+    import os
     from notebook import extract_code
     with tempfile.NamedTemporaryFile("w", suffix=".ipynb", delete=False) as f:
         f.write("this is not valid json {{")
@@ -6454,7 +6536,10 @@ def test_notebook_corrupt_returns_empty():
 
 def test_notebook_scan_end_to_end():
     """scan_files picks up .ipynb files and classifies them via existing pipeline."""
-    import tempfile, shutil, os, json
+    import tempfile
+    import shutil
+    import os
+    import json
     from report import scan_files
     tmpdir = tempfile.mkdtemp()
     try:
@@ -6576,7 +6661,9 @@ def test_published_precision_matches_labels():
 
 def test_sbom_uses_cyclonedx_1_7():
     """generate_sbom must emit specVersion 1.7 to align with the current standard."""
-    import tempfile, shutil, os
+    import tempfile
+    import shutil
+    import os
     from sbom import generate_sbom
     tmpdir = tempfile.mkdtemp()
     try:
@@ -6616,7 +6703,9 @@ def test_gpai_signatories_file_loads():
 
 def test_sbom_annotates_openai_with_gpai_signed():
     """When openai is detected, the BOM should include regula:gpai-code-signed=true."""
-    import tempfile, shutil, os
+    import tempfile
+    import shutil
+    import os
     from sbom import generate_sbom
     tmpdir = tempfile.mkdtemp()
     try:
@@ -6770,7 +6859,9 @@ def test_action_yml_has_inline_pr_comment_step():
 
 def test_domain_boost_surfaces_in_finding():
     """Findings include domain_boost when domain keywords co-occur with AI on the high-risk path."""
-    import tempfile, shutil, os
+    import tempfile
+    import shutil
+    import os
     from report import scan_files
     tmpdir = tempfile.mkdtemp()
     try:
@@ -6801,7 +6892,9 @@ def test_domain_boost_surfaces_in_finding():
 
 def test_mcp_server_initialize_and_list_tools():
     """MCP server responds to initialize and tools/list per the documented protocol."""
-    import subprocess, json, sys
+    import subprocess
+    import json
+    import sys
     from pathlib import Path as _P
     server = _P(__file__).parent.parent / "scripts" / "mcp_server.py"
 
@@ -6837,7 +6930,8 @@ def test_mcp_server_initialize_and_list_tools():
 
 def test_scan_benchmarks_self_mode():
     """benchmark_path returns timing + counts for a local directory."""
-    import tempfile, os
+    import tempfile
+    import os
     from scan_benchmarks import benchmark_path
     from pathlib import Path as _P
     tmp = tempfile.mkdtemp()

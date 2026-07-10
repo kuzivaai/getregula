@@ -1879,6 +1879,10 @@ function exportScanJSON() {
 
   const code = params.get("r");
   if (code) {
+    // Strip the encoded answers from the address bar once decoded: the
+    // analytics script reads location.href for pageviews, and the r=
+    // payload is user-derived data that should not leave the browser.
+    try { history.replaceState(null, "", location.pathname); } catch (e) {}
     const decoded = decodeAnswers(code);
     if (decoded) {
       answers = decoded;

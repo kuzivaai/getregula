@@ -522,7 +522,6 @@ def test_evidence_pack_runtime_section():
         assert len(events) == 4  # 3 inferences + 1 summary
 
 
-import importlib
 
 
 def test_monitor_no_external_imports():

@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Tests for scan caching."""
-import sys, tempfile, shutil, time
+import sys
+import tempfile
+import shutil
+import time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 

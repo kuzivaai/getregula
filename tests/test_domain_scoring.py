@@ -12,7 +12,6 @@ from domain_scoring import (
     DOMAIN_KEYWORDS,
     REGULATED_DOMAINS,
     INFORMATIONAL_DOMAINS,
-    get_declared_domain,
     _DECISION_PATTERNS,
     _DOMAIN_COMPILED,
 )

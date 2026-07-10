@@ -6,7 +6,6 @@ Regula Doctor — Installation health checks.
 Validates environment, dependencies, policy, and security configuration.
 """
 
-import json
 import os
 import sys
 from pathlib import Path

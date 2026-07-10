@@ -6,14 +6,16 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 def test_consent_default_is_none(monkeypatch, tmp_path):
     """Fresh install: consent is None (not asked yet)."""
     monkeypatch.setenv("REGULA_CONFIG_DIR", str(tmp_path))
-    import importlib, telemetry
+    import importlib
+    import telemetry
     importlib.reload(telemetry)
     assert telemetry.get_consent() is None
 
 
 def test_consent_set_true(monkeypatch, tmp_path):
     monkeypatch.setenv("REGULA_CONFIG_DIR", str(tmp_path))
-    import importlib, telemetry
+    import importlib
+    import telemetry
     importlib.reload(telemetry)
     telemetry.set_consent(True)
     assert telemetry.get_consent() is True
@@ -21,7 +23,8 @@ def test_consent_set_true(monkeypatch, tmp_path):
 
 def test_consent_set_false(monkeypatch, tmp_path):
     monkeypatch.setenv("REGULA_CONFIG_DIR", str(tmp_path))
-    import importlib, telemetry
+    import importlib
+    import telemetry
     importlib.reload(telemetry)
     telemetry.set_consent(False)
     assert telemetry.get_consent() is False
@@ -30,14 +33,16 @@ def test_consent_set_false(monkeypatch, tmp_path):
 def test_no_sentry_init_without_consent(monkeypatch, tmp_path):
     """init_sentry() must be a no-op when consent is False."""
     monkeypatch.setenv("REGULA_CONFIG_DIR", str(tmp_path))
-    import importlib, telemetry
+    import importlib
+    import telemetry
     importlib.reload(telemetry)
     telemetry.set_consent(False)
     telemetry.init_sentry()  # must not raise
 
 
 def test_build_feedback_url_false_positive(monkeypatch, tmp_path):
-    import importlib, telemetry
+    import importlib
+    import telemetry
     importlib.reload(telemetry)
     url = telemetry.build_feedback_url(
         kind="false-positive",
@@ -53,7 +58,8 @@ def test_build_feedback_url_false_positive(monkeypatch, tmp_path):
 
 
 def test_build_feedback_url_false_negative(monkeypatch, tmp_path):
-    import importlib, telemetry
+    import importlib
+    import telemetry
     importlib.reload(telemetry)
     url = telemetry.build_feedback_url(
         kind="false-negative",
@@ -68,7 +74,8 @@ def test_build_feedback_url_false_negative(monkeypatch, tmp_path):
 
 
 def test_build_feedback_url_bug(monkeypatch, tmp_path):
-    import importlib, telemetry
+    import importlib
+    import telemetry
     importlib.reload(telemetry)
     url = telemetry.build_feedback_url(
         kind="bug",
@@ -83,7 +90,8 @@ def test_build_feedback_url_bug(monkeypatch, tmp_path):
 
 
 def test_feedback_command_false_positive(capsys, monkeypatch, tmp_path):
-    import argparse, importlib
+    import argparse
+    import importlib
     monkeypatch.setenv("REGULA_CONFIG_DIR", str(tmp_path))
     monkeypatch.setenv("CI", "true")
     import cli
@@ -103,7 +111,9 @@ def test_feedback_command_false_positive(capsys, monkeypatch, tmp_path):
 
 
 def test_telemetry_status_enabled(capsys, monkeypatch, tmp_path):
-    import argparse, importlib, telemetry
+    import argparse
+    import importlib
+    import telemetry
     monkeypatch.setenv("REGULA_CONFIG_DIR", str(tmp_path))
     importlib.reload(telemetry)
     telemetry.set_consent(True)

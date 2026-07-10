@@ -80,7 +80,8 @@ def test_envelope_single_source_of_truth():
     Two byte-for-byte copies shipped once, making the 'never change the
     envelope format' rule unenforceable."""
     from envelope import build_envelope
-    import cli, api_server
+    import cli
+    import api_server
 
     a = cli._build_envelope("x", {"k": 1}, 0)
     b = api_server._build_envelope("x", {"k": 1}, 0)
@@ -127,7 +128,10 @@ def test_omnibus_flip_propagates_to_all_consumers():
         for mod_name in ("remediation_plan", "exec_summary", "assess", "timeline", "roadmap"):
             mod = importlib.reload(importlib.import_module(mod_name))
             outputs[mod_name] = ""
-        import remediation_plan, exec_summary, assess, timeline, roadmap
+        import remediation_plan
+        import exec_summary
+        import assess
+        import timeline
         outputs["remediation_plan"] = remediation_plan.DEADLINE_OMNIBUS
         outputs["exec_summary"] = exec_summary.TIER_DESCRIPTIONS["high_risk"]
         outputs["assess"] = "\n".join(assess._omnibus_deadline_lines())

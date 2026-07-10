@@ -6,7 +6,6 @@ cli.py imports this module at module level, creating a circular dependency.
 All imports from cli must stay inside function bodies.
 """
 
-import json
 import sys
 from pathlib import Path
 

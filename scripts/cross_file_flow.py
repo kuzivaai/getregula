@@ -17,16 +17,13 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Set, Tuple
 
 sys.path.insert(0, str(Path(__file__).parent))
 
 from ast_analysis import (
     trace_ai_data_flow,
     detect_human_oversight,
-    parse_python_file,
-    AI_LIBRARIES,
-    HUMAN_OVERSIGHT_KEYWORDS,
 )
 from ast_engine import analyse_file as ast_engine_analyse_file
 from constants import SKIP_DIRS

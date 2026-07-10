@@ -7,7 +7,6 @@ Validates pattern detection for all 10 OWASP Agentic risks,
 coverage scoring, and text formatting.
 """
 
-import os
 import sys
 import tempfile
 from pathlib import Path

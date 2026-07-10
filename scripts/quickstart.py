@@ -7,7 +7,6 @@ Non-interactive by default. Designed to get a developer from zero to first scan
 in under a minute.
 """
 
-import json
 import sys
 import time
 from pathlib import Path

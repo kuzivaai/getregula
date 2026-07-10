@@ -1,7 +1,6 @@
 """Tests for AI-BOM enrichment and NIST AI RMF YAML deepening."""
 
 import json
-import os
 import sys
 import tempfile
 from pathlib import Path

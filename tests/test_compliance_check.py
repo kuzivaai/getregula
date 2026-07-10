@@ -4,7 +4,6 @@
 Tests the helper functions, article-specific checkers, scoring logic,
 model card validation, regulation overlap, and output formatters.
 """
-import os
 import sys
 import tempfile
 import shutil

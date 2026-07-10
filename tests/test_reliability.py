@@ -9,11 +9,9 @@ error path structured messages, and concurrent access.
 """
 
 import json
-import os
 import subprocess
 import sys
 import tempfile
-import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
@@ -166,7 +164,6 @@ def test_deeply_nested_json_in_hook():
 
 def test_concurrent_registry_writes():
     """Parallel registry writes don't corrupt the file."""
-    from discover_ai_systems import load_registry, save_registry, REGISTRY_PATH
 
     with tempfile.TemporaryDirectory() as tmp:
         reg_path = Path(tmp) / "registry.json"

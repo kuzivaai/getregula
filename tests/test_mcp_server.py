@@ -7,7 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
-from mcp_server import handle_request, TOOLS, SERVER_INFO, PROTOCOL_VERSION
+from mcp_server import handle_request, SERVER_INFO, PROTOCOL_VERSION
 
 import helpers
 from helpers import assert_eq, assert_true, assert_in
