@@ -23,6 +23,11 @@ every fix below was verified by test.
 
 ### Fixed (10 July)
 
+- **`regula report --domain` / `--scope`** — `report` on a domain-gated
+  project silently produced zero findings because there was no way to
+  declare the domain; both flags now work exactly like `regula check`'s.
+  `--scope` defaults to `all` (reports are a full inventory), so
+  existing report output is unchanged.
 - **Evidence/conformity pack files are byte-stable on Windows** — pack
   writers now pin `newline="\n"`, so the SHA-256 hashes recorded in the
   manifest match the on-disk bytes on every platform. Previously

@@ -33,7 +33,7 @@ def load_new_findings():
     """Load all findings from the v2 re-scan."""
     all_findings = []
     for f in sorted(NEW_RESULTS_DIR.glob("*.json")):
-        if f.name in ("SUMMARY.json", "PRECISION_COMPARISON.json"):
+        if f.name in ("SUMMARY.json", "PRECISION_COMPARISON.json", "LABELLING_WORKSHEET.json"):
             continue
         data = json.loads(f.read_text())
         if not isinstance(data, list):
