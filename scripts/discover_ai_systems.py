@@ -70,9 +70,18 @@ def load_registry() -> dict:
 
 
 def save_registry(registry: dict) -> None:
-    """Save the persistent registry."""
+    """Save the persistent registry.
+
+    Atomic: written to a same-directory temp file then os.replace'd, so a
+    concurrent writer can never leave a torn/interleaved file (last writer
+    wins cleanly). A plain write_text intermittently corrupted the file
+    under parallel `discover --register` runs — caught by CI's
+    test_concurrent_registry_writes on 10 Jul 2026.
+    """
     REGISTRY_PATH.parent.mkdir(parents=True, exist_ok=True)
-    REGISTRY_PATH.write_text(json.dumps(registry, indent=2, default=str), encoding="utf-8")
+    tmp = REGISTRY_PATH.parent / f".{REGISTRY_PATH.name}.tmp.{os.getpid()}"
+    tmp.write_text(json.dumps(registry, indent=2, default=str), encoding="utf-8")
+    os.replace(tmp, REGISTRY_PATH)
 
 
 def scan_dependencies(project_path: Path) -> dict:
