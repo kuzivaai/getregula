@@ -56,6 +56,14 @@ inputs:
     description: Upload SARIF results to GitHub Code Scanning
     required: false
     default: "true"
+  allow-partial-scan:
+    description: >-
+      Accept a scan that skipped unreadable/unparseable files
+      (completion_status="completed_with_skips"). Default "false" fails the
+      gate closed, because "0 findings" cannot cover files that were not
+      analysed. Set "true" only if you understand the risk.
+    required: false
+    default: "false"
   annotations:
     description: >-
       Emit GitHub workflow command annotations (::error, ::warning, ::notice)
@@ -80,6 +88,9 @@ outputs:
   sarif-file:
     description: Path to the generated SARIF file
     value: ${{ steps.run-check.outputs.sarif_file }}
+  manifest-file:
+    description: Path to the AnalysisManifest proving scan completion (DEF-004)
+    value: ${{ steps.run-check.outputs.manifest_file }}
 
 runs:
   using: composite
@@ -100,7 +111,12 @@ runs:
       shell: bash
       run: |
         SARIF_FILE="${{ runner.temp }}/regula-results.sarif.json"
+        MANIFEST_FILE="${{ runner.temp }}/regula-manifest.json"
         echo "sarif_file=${SARIF_FILE}" >> "$GITHUB_OUTPUT"
+        echo "manifest_file=${MANIFEST_FILE}" >> "$GITHUB_OUTPUT"
+
+        # Ensure no stale artifacts from a previous step survive.
+        rm -f "${SARIF_FILE}" "${MANIFEST_FILE}"
 
         # Build diff flag if diff-mode is enabled
         DIFF_FLAG=""
@@ -109,43 +125,49 @@ runs:
           DIFF_FLAG="--diff ${BASE_REF}"
         fi
 
-        # Exit code 1 just means findings were detected — the SARIF file is
-        # still written. The fail-on-* gates live in the count step below.
+        # DEF-004 fix: the CLI writes the manifest ONLY on successful
+        # completion (after the SARIF write). Its presence + completed status
+        # is the proof-of-scan the gate requires. Exit code 1 just means
+        # findings were detected; the SARIF is still written. We capture the
+        # real exit code instead of swallowing it with `|| true`.
+        set +e
         python3 "${{ github.action_path }}/scripts/cli.py" check "${{ inputs.path }}" \
           --format sarif \
           --framework "${{ inputs.framework }}" \
           ${DIFF_FLAG} \
           --output "${SARIF_FILE}" \
-          || true
+          --manifest "${MANIFEST_FILE}"
+        CLI_EXIT=$?
+        set -e
+        echo "cli_exit=${CLI_EXIT}" >> "$GITHUB_OUTPUT"
 
-        # Fallback for older CLI versions where --output only supported HTML
-        # and SARIF went to stdout. CRITICAL: the redirect must NOT be
-        # ||-chained to a stub write — `check` exits 1 when findings exist,
-        # and a || stub would overwrite the real SARIF with an empty one,
-        # silently disarming fail-on-prohibited (this exact bug shipped).
-        if [ ! -s "${SARIF_FILE}" ]; then
-          python3 "${{ github.action_path }}/scripts/cli.py" check "${{ inputs.path }}" \
-            --format sarif \
-            --framework "${{ inputs.framework }}" \
-            ${DIFF_FLAG} \
-            > "${SARIF_FILE}" 2>/dev/null || true
+        # Fail closed: a clean scan MUST leave a manifest whose
+        # completion_status is "completed". Anything else is treated as a scan
+        # FAILURE and never a clean pass. We do NOT manufacture an empty SARIF
+        # to paper over a failed scan (the old behaviour that could silently
+        # disarm fail-on-prohibited). Two failure classes are distinguished:
+        #   - missing/unparseable/failed manifest -> scan did not complete
+        #   - completion_status="completed_with_skips" -> PARTIAL scan: one or
+        #     more eligible files could not be read/parsed, so "0 findings" is
+        #     not trustworthy. By default this fails closed; set
+        #     allow-partial-scan: 'true' to accept it (NOT recommended for a
+        #     prohibited-practice gate).
+        STATUS=""
+        if [ -s "${MANIFEST_FILE}" ]; then
+          STATUS=$(python3 -c "import json; print(json.load(open('${MANIFEST_FILE}')).get('completion_status',''))" 2>/dev/null || echo "")
         fi
+        echo "completion_status=${STATUS}" >> "$GITHUB_OUTPUT"
 
-        # Last resort: emit a schema-VALID empty SARIF (version + tool are
-        # required properties — an invalid stub breaks the SARIF upload).
-        if [ ! -s "${SARIF_FILE}" ] || ! python3 -c "import json,sys; json.load(open('${SARIF_FILE}'))" 2>/dev/null; then
-          cat > "${SARIF_FILE}" <<'STUB'
-        {
-          "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
-          "version": "2.1.0",
-          "runs": [
-            {
-              "tool": {"driver": {"name": "regula", "informationUri": "https://github.com/kuzivaai/getregula"}},
-              "results": []
-            }
-          ]
-        }
-        STUB
+        if [ "${STATUS}" = "completed" ]; then
+          :  # clean, full scan — proceed
+        elif [ "${STATUS}" = "completed_with_skips" ] && [ "${{ inputs.allow-partial-scan }}" = "true" ]; then
+          echo "::warning::Regula scan completed but SKIPPED one or more unreadable/unparseable files. Proceeding because allow-partial-scan=true. '0 findings' does not cover skipped files."
+        elif [ "${STATUS}" = "completed_with_skips" ]; then
+          echo "::error::Regula scan was PARTIAL — one or more eligible files could not be read/parsed (see manifest ${MANIFEST_FILE}). Failing closed: a compliance gate must not treat a partial scan as clean. Fix the file(s) or set allow-partial-scan: 'true' to override."
+          exit 1
+        else
+          echo "::error::Regula scan did not complete successfully (no valid completion manifest at ${MANIFEST_FILE}, CLI exit ${CLI_EXIT}). Failing closed — a failed scan must not report a green compliance gate."
+          exit 1
         fi
 
     - name: Emit GitHub workflow-command annotations
@@ -168,46 +190,38 @@ runs:
           ${DIFF_FLAG} \
           || true
 
-    - name: Count findings from SARIF
+    - name: Count findings
       id: count-findings
       shell: bash
       run: |
-        SARIF_FILE="${{ runner.temp }}/regula-results.sarif.json"
-
         python3 - <<'EOF'
         import json, os, sys
 
+        manifest_file = os.environ.get("MANIFEST_FILE", "")
         sarif_file = os.environ.get("SARIF_FILE", "")
         output_file = os.environ.get("GITHUB_OUTPUT", "")
 
+        # DEF-004 fix: prefer the AUTHORITATIVE counts from the completion
+        # manifest. The run step already failed the job if the manifest was
+        # absent or non-completed, so by here it exists and is trustworthy.
+        # SARIF re-derivation is kept only as a defensive fallback and is
+        # never allowed to silently substitute a failed scan for a clean one.
+        findings_count = prohibited_count = high_risk_count = None
         try:
-            with open(sarif_file) as f:
-                data = json.load(f)
+            with open(manifest_file) as f:
+                manifest = json.load(f)
+            counts = manifest.get("counts", {})
+            findings_count = counts.get("findings_total")
+            prohibited_count = counts.get("prohibited")
+            high_risk_count = counts.get("high_risk")
         except Exception as e:
-            print(f"Warning: could not parse SARIF: {e}", file=sys.stderr)
-            data = {"runs": [{"results": []}]}
+            print(f"::error::Could not read completion manifest: {e}", file=sys.stderr)
+            sys.exit(1)  # fail closed — do not guess from SARIF
 
-        results = []
-        for run in data.get("runs", []):
-            results.extend(run.get("results", []))
-
-        findings_count = len(results)
-        prohibited_count = 0
-        high_risk_count = 0
-
-        for r in results:
-            level = r.get("level", "").lower()
-            rule_id = r.get("ruleId", "").lower()
-            tags = []
-            # Check properties for category tags
-            props = r.get("properties", {})
-            if isinstance(props, dict):
-                tags = [t.lower() for t in props.get("tags", [])]
-
-            if "prohibited" in rule_id or "prohibited" in tags:
-                prohibited_count += 1
-            elif level == "error" or "high-risk" in rule_id or "high_risk" in rule_id or "high-risk" in tags:
-                high_risk_count += 1
+        # Sanity: the manifest counts must be present integers.
+        if None in (findings_count, prohibited_count, high_risk_count):
+            print("::error::Completion manifest missing required counts. Failing closed.", file=sys.stderr)
+            sys.exit(1)
 
         with open(output_file, "a") as f:
             f.write(f"findings_count={findings_count}\n")
@@ -219,6 +233,7 @@ runs:
         print(f"high_risk_count={high_risk_count}")
         EOF
       env:
+        MANIFEST_FILE: ${{ runner.temp }}/regula-manifest.json
         SARIF_FILE: ${{ runner.temp }}/regula-results.sarif.json
 
     - name: Run regula deps

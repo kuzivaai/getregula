@@ -684,6 +684,7 @@ def verify_facts() -> int:
         "61": ("commands", facts["counts"]["commands"]),
         "12": ("frameworks", facts["counts"]["frameworks"]),
         "8": ("languages", facts["counts"]["languages"]),
+        "2543": ("tests", facts["counts"]["tests"]["total_collected"]),
     }
 
     # Files to check (relative to repo root) — includes deployed site pages
@@ -693,6 +694,8 @@ def verify_facts() -> int:
         "docs/MODEL_CARD.md",
         "site/index.html",
         "site/pricing.html",
+        "site/about.html",
+        "site/regions/uae.html",
         "site/regions/regulations.html",
         "site/locales/de.html",
         "site/locales/pt-br.html",
@@ -727,6 +730,7 @@ def verify_facts() -> int:
                 "commands": rf"(?<!\d){actual_str}\s+(?:commands?\b|CLI\s+commands?)",
                 "frameworks": rf"(?<!\d){actual_str}\s+(?:compliance\s+)?frameworks?",
                 "languages": rf"(?<!\d){actual_str}\s+(?:programming\s+)?languages?",
+                "tests": rf"(?<!\d)(?:{actual_str}|{int(actual_str):,})(?:\s*|%20)(?:unique\s+)?(?:pytest-collected\s+)?(?:tests?(?:\s+passing)?|passing|automated\s+tests?)",
             }
             pat = unit_patterns.get(fact_name)
             if not pat:
@@ -740,7 +744,23 @@ def verify_facts() -> int:
             if not re.search(actual_pat, text, re.IGNORECASE):
                 # Canonical number not found in expected context — check if
                 # a WRONG number is present instead
-                wrong_pat = re.sub(r"\d+", r"\\d+", pat, count=1)
+                wrong_pat = pat.replace(actual_str, r"\d+").replace(f"{int(actual_str):,}", r"[\d,]+")
+                wrong_matches = list(re.finditer(wrong_pat, text, re.IGNORECASE))
+                for wm in wrong_matches:
+                    found_num = re.search(r"[\d,]+", wm.group(0))
+                    if found_num and found_num.group(0).replace(",", "") != actual_str:
+                        found_val = int(found_num.group(0).replace(",", ""))
+                        if found_val < int(actual_str) * 0.5:
+                            continue
+
+            # Check for the canonical number in context
+            if not re.search(pat, text, re.IGNORECASE):
+                # Canonical number not found in expected context — check if
+                # a WRONG number is present instead
+                # Safely construct wrong_pat by replacing {actual_str} and {int(actual_str):,} with a generic number matcher
+                wrong_pat = pat.replace(actual_str, r"\d+(?:,\d+)*")
+                if f"{int(actual_str):,}" != actual_str:
+                    wrong_pat = wrong_pat.replace(f"{int(actual_str):,}", r"\d+(?:,\d+)*")
                 wrong_matches = list(re.finditer(wrong_pat, text, re.IGNORECASE))
                 for wm in wrong_matches:
                     found_num = re.search(r"\d+", wm.group(0))

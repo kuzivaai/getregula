@@ -185,11 +185,44 @@ def count_languages() -> int:
     return 8  # Python, JS, TS, Java, Go, Rust, C, C++
 
 
+def count_tests_collected() -> int:
+    """Return the true number of executable tests via pytest --collect-only.
+    This replaces the old naive regex approach which missed parametrizations."""
+    import subprocess
+    try:
+        proc = subprocess.run(
+            ["python3", "-m", "pytest", "tests/", "--collect-only", "-q"],
+            capture_output=True, text=True, cwd=str(REPO)
+        )
+        if proc.returncode != 0:
+            return 0
+        match = re.search(r"(\d+)\s+tests?\s+collected", proc.stdout)
+        return int(match.group(1)) if match else 0
+    except (OSError, ValueError):
+        return 0
+
 def count_tests() -> dict:
     """Return a breakdown of test functions and per-file counts."""
+    # Use actual pytest collection to get the truthful executable count,
+    # handling parametrization and the custom test runner properly, rather
+    # than just grepping for 'def test_'.
+    import subprocess
     tests_dir = REPO / "tests"
     if not tests_dir.exists():
-        return {"total_functions": 0, "per_file": {}}
+        return {"total_collected": 0, "total_functions": 0, "per_file": {}}
+    
+    total_collected = 0
+    try:
+        proc = subprocess.run(
+            [sys.executable, "-m", "pytest", str(tests_dir), "--collect-only", "-q"],
+            capture_output=True, text=True, check=False, timeout=60
+        )
+        # Parse '2543 tests collected in 0.32s'
+        if match := re.search(r'^(\d+) tests? collected', proc.stdout, re.MULTILINE):
+            total_collected = int(match.group(1))
+    except (OSError, subprocess.TimeoutExpired):
+        pass
+
     per_file: dict[str, int] = {}
     for path in sorted(tests_dir.glob("test_*.py")):
         text = path.read_text(encoding="utf-8")
@@ -197,6 +230,7 @@ def count_tests() -> dict:
             re.findall(r"^def (test_\w+)", text, re.MULTILINE)
         )
     return {
+        "total_collected": total_collected,
         "total_functions": sum(per_file.values()),
         "per_file": per_file,
     }

@@ -263,3 +263,65 @@ jobs:
         run: |
           echo "findings-count: ${{ steps.regula.outputs.findings-count }}"
           [ -n "${{ steps.regula.outputs.findings-count }}" ] || { echo "::error::No output"; exit 1; }
+
+  # ── Job 9: Fail closed on scan failure (DEF-004) ──────────────────
+  # A scan that cannot run (nonexistent path) must FAIL the action, not
+  # report a green pass via an empty-SARIF fallback.
+  test-fail-closed-bad-path:
+    name: Fail closed on failed scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run Regula against a nonexistent path
+        id: regula
+        uses: ./
+        continue-on-error: true
+        with:
+          path: this/path/does/not/exist
+          fail-on-prohibited: "true"
+          upload-sarif: "false"
+
+      - name: Assert the action failed closed
+        run: |
+          OUTCOME="${{ steps.regula.outcome }}"
+          echo "Regula outcome: ${OUTCOME}"
+          if [ "${OUTCOME}" != "failure" ]; then
+            echo "::error::A failed scan reported outcome='${OUTCOME}'. It MUST fail closed (DEF-004)."
+            exit 1
+          fi
+          echo "OK: failed scan correctly failed the gate."
+
+  # ── Job 10: Completion manifest is produced on a real scan ────────
+  test-manifest-present:
+    name: Completion manifest present
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run Regula on a compliant fixture
+        id: regula
+        uses: ./
+        with:
+          path: tests/fixtures/sample_compliant/
+          format: sarif
+          fail-on-prohibited: "true"
+          upload-sarif: "false"
+
+      - name: Assert manifest exists and reports completion
+        run: |
+          MANIFEST="${{ steps.regula.outputs.manifest-file }}"
+          echo "manifest-file: ${MANIFEST}"
+          if [ ! -s "${MANIFEST}" ]; then
+            echo "::error::No completion manifest produced by a successful scan"
+            exit 1
+          fi
+          python3 -c "
+          import json, sys
+          m = json.load(open('${MANIFEST}'))
+          assert m['completion_status'] in ('completed', 'completed_with_skips'), m['completion_status']
+          assert m['manifest_version'] == '3', m['manifest_version']
+          assert 'findings_total' in m['counts']
+          assert 'skipped_total' in m['counts']
+          print('Manifest OK:', m['completion_status'], m['counts'])
+          "
