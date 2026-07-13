@@ -196,7 +196,21 @@ def _write_analysis_manifest(
     # PARTIAL scan — "0 findings" cannot be trusted to cover it.
     completion_status = "completed_with_skips" if skipped_total > 0 else "completed"
 
+    # maint-F5: Derive manifest tier counts programmatically instead of hardcoding.
+    tier_counts: dict[str, int] = {
+        "prohibited": 0,
+        "high_risk": 0,
+        "credential_exposure": 0,
+        "limited_risk": 0,
+        "minimal_risk": 0,
+        "agent_autonomy": 0,
+        "ai_security": 0,
+    }
     active = view.get("active", [])
+    for f in active:
+        t = f.get("tier", "unknown")
+        tier_counts[t] = tier_counts.get(t, 0) + 1
+
     manifest = {
         "manifest_version": "3",
         "regula_version": VERSION,
@@ -216,10 +230,8 @@ def _write_analysis_manifest(
             "unsupported": None,
             # Exact, from the findings partition.
             "findings_total": len(active),
-            "prohibited": len(view.get("prohibited", [])),
-            "high_risk": len(view.get("high_risk", [])),
-            "credential_exposure": len(view.get("credentials", [])),
             "suppressed": len(view.get("suppressed", [])),
+            **tier_counts,
         },
         # Bounded so a pathological repo cannot bloat the manifest.
         "skipped_files": sorted(

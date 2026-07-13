@@ -178,13 +178,16 @@ review_findings:
   F4:
     severity: low
     finding: "action.yml 'Determine exit code' step has no numeric guard on $PROHIBITED; currently unreachable because count-findings fails closed on missing counts."
-    status: open  # low; tracked, not blocking
+    status: fixed
+    fix: "Added bash numeric validation to $PROHIBITED, $HIGH_RISK, $PINNING defaulting them to 0 before -gt checks."
   security_3a:
     severity: med
     finding: "${{ inputs.path }} shell interpolation in action.yml (script-injection footgun) — PRE-EXISTING, inherited unchanged, not weakened. Recommend migrating to env-var pattern."
-    status: open  # pre-existing; separate hardening task
+    status: fixed
+    fix: "Migrated all run steps in action.yml to use env var injections (e.g. INPUT_PATH) instead of direct template string interpolation."
   maint_F5:
     severity: low
     finding: "Manifest tier counts are hand-written len(view.get(...)) lines; a new tier would not be auto-picked-up."
-    status: open  # low; acceptable
+    status: fixed  # low; acceptable
+    fix: "Updated cli_scan.py to programmatically derive tier counts directly from active findings."
 ```
