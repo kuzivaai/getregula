@@ -553,6 +553,27 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     # Instead of creating a low-confidence finding per file (94% of FPs),
     # we aggregate into a single summary counter.
     _ai_files_no_indicators = 0
+    # Track eligible code files that could NOT be fully analysed, so a partial
+    # scan can never masquerade as a clean one (DEF-004 / review F1-F5). An
+    # "eligible code file" is one that passed the extension/model/stub filters
+    # and would otherwise have been scanned. Legitimate exclusions (non-code
+    # extensions, type stubs, test files under skip_tests, empty-but-valid
+    # files) are NOT skips. Categories:
+    #   unreadable        — read raised (permission/OS error)
+    #   undecodable       — bytes are not valid UTF-8 (would be silently
+    #                        mangled by errors="ignore" and mis-scanned)
+    #   notebook_corrupt  — .ipynb could not be parsed as a notebook
+    #   notebook_partial  — .ipynb parsed but some code cells were undropped-
+    #                        able (non-string source) and were not scanned
+    # Each dangerous skip records a (path, reason) pair.
+    _skipped: list = []  # list[tuple[str, str]] of (relpath, reason)
+
+    def _record_skip(fp, reason):
+        try:
+            rel = str(fp.relative_to(project))
+        except ValueError:
+            rel = str(fp)
+        _skipped.append((rel, reason))
     # Track how many findings were suppressed by domain gating and which
     # opt-in categories were involved. Used by cmd_check to show an
     # INFO message explaining the --domain flag.
@@ -657,20 +678,51 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # Line numbers in findings refer to the joined-source position,
             # not the original notebook cell — see scripts/notebook.py.
             if filepath.suffix.lower() == ".ipynb":
-                from notebook import extract_code
-                content = extract_code(filepath)
-                if not content:
+                from notebook import extract_code_status
+                _nb = extract_code_status(filepath)
+                if _nb["status"] == "parse_error":
+                    # Corrupt / unreadable notebook — could hide a prohibited
+                    # pattern. Dangerous skip; do not count as scanned (F1/F3).
+                    _record_skip(filepath, "notebook_corrupt")
+                    _scanned_files -= 1
                     continue
+                if _nb["dropped_cells"] > 0:
+                    # Parsed, but some code cells had unusable source and were
+                    # not scanned — a PARTIAL extraction (F3). We still scan
+                    # what we could extract, but flag the file as skipped so the
+                    # gate treats the scan as partial.
+                    _record_skip(filepath, "notebook_partial")
+                # A valid notebook with zero code cells (markdown-only, freshly
+                # created) is NOT a skip — it is a complete scan of a file with
+                # no scannable code (F4). Fall through with empty content.
+                content = _nb["code"]
                 lines = content.split("\n")
             else:
                 try:
-                    lines = filepath.read_text(encoding="utf-8", errors="ignore").split("\n")
+                    raw_bytes = filepath.read_bytes()
                 except (PermissionError, OSError):
-                    continue  # unreadable file; skip
-                content = "\n".join(lines)
+                    # Unreadable eligible file — dangerous skip (F1).
+                    _record_skip(filepath, "unreadable")
+                    _scanned_files -= 1
+                    continue
+                try:
+                    content = raw_bytes.decode("utf-8")
+                except UnicodeDecodeError:
+                    # Not valid UTF-8. The old code used errors="ignore", which
+                    # silently mangled the content and scanned garbage (F2), so
+                    # a prohibited pattern in e.g. a UTF-16 file was lost while
+                    # the file counted as cleanly scanned. Treat as a dangerous
+                    # skip instead of pretending we analysed it.
+                    _record_skip(filepath, "undecodable")
+                    _scanned_files -= 1
+                    continue
+                lines = content.split("\n")
             rel_path = str(filepath.relative_to(project))
 
-            # Empty __init__.py files are package markers, not scannable code
+            # Empty __init__.py files are package markers, not scannable code.
+            # This is a LEGITIMATE exclusion (no code to scan), not a dangerous
+            # skip — do not record it as a skip, but keep it out of the scanned
+            # count for an honest "files scanned" figure.
             if filepath.name == "__init__.py" and not content.strip():
                 _scanned_files -= 1
                 continue
@@ -684,12 +736,24 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # Skip annotation-only Python files (pure re-exports and type
             # aliases with no definitions, assignments, or calls).
             # These produce 12% of FPs from type stubs and parameter definitions.
+            #
+            # CRITICAL (review F1): this precision filter must NEVER bypass the
+            # Article 5 prohibited check. A prohibited practice is detected on
+            # the PHRASE (e.g. "predictive policing"), which can appear in a
+            # file with none of def/class/call/assignment tokens. Before
+            # skipping, run the one-shot prohibited check; if it matches, do
+            # not skip — fall through to the full scan so the finding is
+            # emitted. This keeps the FP reduction for genuinely benign files
+            # while closing the silent-drop of a prohibited pattern.
             if filepath.suffix == ".py" and filepath.name != "__init__.py":
                 if (not re.search(r'^def\s', content, re.MULTILINE)
                         and not re.search(r'^class\s', content, re.MULTILINE)
                         and not re.search(r'\w+\(', content)
                         and not re.search(r'^[A-Za-z_]\w*\s*=', content, re.MULTILINE)):
-                    continue
+                    from classify_risk import check_prohibited, strip_comments as _strip_c
+                    if check_prohibited(content, stripped_text=_strip_c(content)) is None:
+                        continue
+                    # else: prohibited indicator present — do not skip.
 
             # Cache is_ai_related result once per file — it is called up to 3×
             # (cache stats path, non-AI gate, domain boost) so computing it
@@ -1065,6 +1129,13 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         "ai_files_no_indicators": _ai_files_no_indicators,
         "domain_gated_count": _domain_gated_count,
         "domain_gated_categories": sorted(_domain_gated_categories),
+        # Eligible code files that could NOT be fully analysed (unreadable,
+        # undecodable, corrupt/partial notebook). A non-empty list means the
+        # scan is PARTIAL: cmd_check downgrades the manifest completion_status
+        # so the CI gate can fail closed (review F1-F5). Each entry is
+        # {"path", "reason"}. Legitimate exclusions are NOT listed here.
+        "skipped_files": [{"path": p, "reason": r} for p, r in _skipped],
+        "skipped_total": len(_skipped),
     }
 
     return findings

@@ -131,8 +131,117 @@ def _emit_github_annotations(args, display_view) -> None:
             print(f"::{level} file={file_path},line={line}::{msg}")
 
 
+def _write_analysis_manifest(
+    manifest_path: str,
+    *,
+    scan_target: str,
+    started_at: str,
+    view: dict,
+    scan_stats: dict | None,
+    sarif_path: str | None,
+    exit_code: int,
+) -> None:
+    """Write an AnalysisManifest JSON proving the scan completed.
+
+    Rationale (DEF-004): a CI gate cannot safely treat "0 findings" as PASS
+    unless it can independently confirm the scan actually ran to completion.
+    This manifest is the completion signal. It is written ONLY here, after the
+    scan and any artifact write succeeded; if the scan raises earlier, the file
+    is never created, and its ABSENCE is the failure signal for the action.
+
+    Completion is TWO-tier (review findings F1-F5):
+      - "completed"            : every eligible code file was fully analysed.
+      - "completed_with_skips" : the scan finished, but one or more eligible
+                                 code files could not be fully analysed —
+                                 unreadable, undecodable (non-UTF-8), a corrupt
+                                 notebook, or a notebook with undropped-able
+                                 code cells. A prohibited pattern could hide in
+                                 such a file, so a strict CI gate MUST treat
+                                 this as not-clean and fail closed rather than
+                                 trust "0 findings". Legitimate exclusions
+                                 (non-code files, type stubs, empty-but-valid
+                                 files, test files under skip_tests) are NOT
+                                 skips and do not downgrade the status.
+
+    Counts sourced from the findings partition are exact. Per-file counts come
+    from scan_files.last_stats where available; anything genuinely unmeasured
+    is recorded as null (explicitly unknown) rather than fabricated.
+    """
+    from datetime import datetime, timezone
+    from constants import VERSION
+
+    sarif_sha256 = None
+    if sarif_path:
+        try:
+            import hashlib
+            sarif_sha256 = hashlib.sha256(
+                Path(sarif_path).read_bytes()
+            ).hexdigest()
+        except OSError:
+            sarif_sha256 = None  # SARIF unreadable — leave null, do not guess
+
+    stats = scan_stats or {}
+    scanned = stats.get("files_scanned")
+    skipped_files = stats.get("skipped_files", []) or []
+    skipped_total = stats.get("skipped_total", len(skipped_files)) or 0
+
+    # Break the skip reasons down so the gate/report can explain WHY a scan is
+    # partial (unreadable / undecodable / notebook_corrupt / notebook_partial).
+    skip_reasons: dict = {}
+    for entry in skipped_files:
+        reason = entry.get("reason", "unknown") if isinstance(entry, dict) else "unknown"
+        skip_reasons[reason] = skip_reasons.get(reason, 0) + 1
+
+    # F1: any eligible code file that could not be fully analysed makes this a
+    # PARTIAL scan — "0 findings" cannot be trusted to cover it.
+    completion_status = "completed_with_skips" if skipped_total > 0 else "completed"
+
+    active = view.get("active", [])
+    manifest = {
+        "manifest_version": "3",
+        "regula_version": VERSION,
+        "scan_target": scan_target,
+        "started_at": started_at,
+        "completed_at": datetime.now(timezone.utc).isoformat(),
+        "completion_status": completion_status,
+        "exit_code": exit_code,
+        "counts": {
+            # Measured by scan_files(); null only if stats were unavailable.
+            "scanned": scanned,
+            "skipped_total": skipped_total,
+            "skip_reasons": skip_reasons,
+            # Not yet measured — recorded null, never fabricated.
+            "discovered": None,
+            "eligible": None,
+            "unsupported": None,
+            # Exact, from the findings partition.
+            "findings_total": len(active),
+            "prohibited": len(view.get("prohibited", [])),
+            "high_risk": len(view.get("high_risk", [])),
+            "credential_exposure": len(view.get("credentials", [])),
+            "suppressed": len(view.get("suppressed", [])),
+        },
+        # Bounded so a pathological repo cannot bloat the manifest.
+        "skipped_files": sorted(
+            skipped_files,
+            key=lambda e: e.get("path", "") if isinstance(e, dict) else str(e),
+        )[:100],
+        "sarif_sha256": sarif_sha256,
+    }
+    out = Path(manifest_path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    print(f"Analysis manifest written to {out}", file=sys.stderr)
+
+
 def cmd_check(args) -> None:
     """Scan files for risk indicators."""
+    from datetime import datetime, timezone
+    _manifest_started_at = datetime.now(timezone.utc).isoformat()
+    _sarif_written_path = None
     from cli import (
         json_output, _validate_path, _get_changed_files,
         _resolve_jurisdictions, _enrich_findings_with_jurisdictions,
@@ -140,6 +249,19 @@ def cmd_check(args) -> None:
         _print_remediation,
     )
     from report import scan_files
+
+    # F2: --manifest is only honoured for scan-output formats. Warn loudly if
+    # combined with a mode that exits early and cannot produce one, so a CI
+    # author is never silently misled into a missing-manifest fail-closed loop.
+    if getattr(args, "manifest", None) and (
+        getattr(args, "audit_suppressions", False) or args.format == "html"
+    ):
+        _mode = "--audit-suppressions" if getattr(args, "audit_suppressions", False) else "--format html"
+        print(
+            f"Warning: --manifest is not written for {_mode}; use --format "
+            f"text/json/sarif to get a completion manifest.",
+            file=sys.stderr,
+        )
 
     _validate_path(args.path)
     project = str(Path(args.path).resolve())
@@ -153,6 +275,10 @@ def cmd_check(args) -> None:
         min_tier=getattr(args, "min_tier", "") or "",
         declared_domains=declared_domains,
     )
+    # Capture scan statistics immediately (side-channel on the function).
+    # Used to record honest scanned/skipped counts in the completion
+    # manifest so a PARTIAL scan cannot masquerade as clean (review F1).
+    _scan_stats = dict(getattr(scan_files, "last_stats", {}) or {})
 
     # Scope filtering: exclude non-production files when --scope production.
     # Tier-aware: prohibited and credential_exposure findings are NEVER
@@ -309,6 +435,7 @@ def cmd_check(args) -> None:
             out_path.parent.mkdir(parents=True, exist_ok=True)
             out_path.write_text(sarif_text, encoding="utf-8")
             print(f"SARIF written to {out_path}", file=sys.stderr)
+            _sarif_written_path = str(out_path)
         else:
             print(sarif_text)
     else:
@@ -622,10 +749,29 @@ def cmd_check(args) -> None:
     # Exit codes: 1 if any BLOCK-tier findings, 1 if WARN-tier and (--strict or --ci), 0 otherwise
     strict = args.strict or getattr(args, "ci", False)
     if block_findings:
-        sys.exit(1)
+        _exit_code = 1
     elif warn_findings and strict:
-        sys.exit(1)
-    sys.exit(0)
+        _exit_code = 1
+    else:
+        _exit_code = 0
+
+    # DEF-004: emit the completion manifest ONLY on successful completion,
+    # after all scanning and artifact writes have succeeded. Reaching this
+    # line means the scan did not raise. A failed scan exits earlier (e.g.
+    # _validate_path -> exit 2) and never writes the manifest — its absence
+    # is the failure signal the CI gate relies on.
+    if getattr(args, "manifest", None):
+        _write_analysis_manifest(
+            args.manifest,
+            scan_target=project,
+            started_at=_manifest_started_at,
+            view=_view,
+            scan_stats=_scan_stats,
+            sarif_path=_sarif_written_path,
+            exit_code=_exit_code,
+        )
+
+    sys.exit(_exit_code)
 
 
 def cmd_classify(args) -> None:

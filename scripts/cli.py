@@ -880,6 +880,18 @@ def _build_subparsers(subparsers):
              "nist-ai-rmf, iso-42001, nist-csf, soc2, iso-27001, owasp-llm-top10, mitre-atlas, all",
     )
     p_check.add_argument("--name", "-n", help="Project name for SARIF output")
+    p_check.add_argument(
+        "--manifest",
+        metavar="PATH",
+        help="Write an AnalysisManifest JSON on successful completion (records "
+             "completion status, exit code, scanned/skipped counts, finding "
+             "counts, and SARIF digest). completion_status is 'completed' when "
+             "every eligible file was analysed, or 'completed_with_skips' when "
+             "some file was unreadable/unparseable — CI gates should fail closed "
+             "on a missing manifest OR a 'completed_with_skips' status. Honoured "
+             "for --format text/json/sarif (not html or --audit-suppressions). "
+             "Optional; omit for legacy behaviour.",
+    )
     p_check.add_argument("--no-ignore", action="store_true", help="Don't respect regula-ignore comments")
     p_check.add_argument("--audit-suppressions", action="store_true",
                          help="List all regula-ignore and regula-accept annotations with status (ISO 42001 9.1)")
