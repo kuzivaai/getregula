@@ -109,6 +109,11 @@ runs:
     - name: Run regula check
       id: run-check
       shell: bash
+      env:
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_FRAMEWORK: ${{ inputs.framework }}
+        INPUT_DIFF_MODE: ${{ inputs.diff-mode }}
+        INPUT_ALLOW_PARTIAL_SCAN: ${{ inputs.allow-partial-scan }}
       run: |
         SARIF_FILE="${{ runner.temp }}/regula-results.sarif.json"
         MANIFEST_FILE="${{ runner.temp }}/regula-manifest.json"
@@ -120,7 +125,7 @@ runs:
 
         # Build diff flag if diff-mode is enabled
         DIFF_FLAG=""
-        if [ "${{ inputs.diff-mode }}" = "true" ]; then
+        if [ "${INPUT_DIFF_MODE}" = "true" ]; then
           BASE_REF="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
           DIFF_FLAG="--diff ${BASE_REF}"
         fi
@@ -131,9 +136,9 @@ runs:
         # findings were detected; the SARIF is still written. We capture the
         # real exit code instead of swallowing it with `|| true`.
         set +e
-        python3 "${{ github.action_path }}/scripts/cli.py" check "${{ inputs.path }}" \
+        python3 "${{ github.action_path }}/scripts/cli.py" check "${INPUT_PATH}" \
           --format sarif \
-          --framework "${{ inputs.framework }}" \
+          --framework "${INPUT_FRAMEWORK}" \
           ${DIFF_FLAG} \
           --output "${SARIF_FILE}" \
           --manifest "${MANIFEST_FILE}"
@@ -160,7 +165,7 @@ runs:
 
         if [ "${STATUS}" = "completed" ]; then
           :  # clean, full scan — proceed
-        elif [ "${STATUS}" = "completed_with_skips" ] && [ "${{ inputs.allow-partial-scan }}" = "true" ]; then
+        elif [ "${STATUS}" = "completed_with_skips" ] && [ "${INPUT_ALLOW_PARTIAL_SCAN}" = "true" ]; then
           echo "::warning::Regula scan completed but SKIPPED one or more unreadable/unparseable files. Proceeding because allow-partial-scan=true. '0 findings' does not cover skipped files."
         elif [ "${STATUS}" = "completed_with_skips" ]; then
           echo "::error::Regula scan was PARTIAL — one or more eligible files could not be read/parsed (see manifest ${MANIFEST_FILE}). Failing closed: a compliance gate must not treat a partial scan as clean. Fix the file(s) or set allow-partial-scan: 'true' to override."
@@ -173,6 +178,10 @@ runs:
     - name: Emit GitHub workflow-command annotations
       if: ${{ inputs.annotations == 'true' }}
       shell: bash
+      env:
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_FRAMEWORK: ${{ inputs.framework }}
+        INPUT_DIFF_MODE: ${{ inputs.diff-mode }}
       # Runs regula check in --ci mode so findings emit as ::error / ::warning /
       # ::notice on stdout. GitHub parses these and renders inline annotations
       # on the PR "Files changed" tab. Exit code is ignored here — the
@@ -180,13 +189,13 @@ runs:
       run: |
         # Build diff flag identical to the main scan
         DIFF_FLAG=""
-        if [ "${{ inputs.diff-mode }}" = "true" ]; then
+        if [ "${INPUT_DIFF_MODE}" = "true" ]; then
           BASE_REF="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
           DIFF_FLAG="--diff ${BASE_REF}"
         fi
-        python3 "${{ github.action_path }}/scripts/cli.py" check "${{ inputs.path }}" \
+        python3 "${{ github.action_path }}/scripts/cli.py" check "${INPUT_PATH}" \
           --ci \
-          --framework "${{ inputs.framework }}" \
+          --framework "${INPUT_FRAMEWORK}" \
           ${DIFF_FLAG} \
           || true
 
@@ -281,6 +290,9 @@ runs:
 
     - name: Write GitHub Step Summary
       shell: bash
+      env:
+        INPUT_FRAMEWORK: ${{ inputs.framework }}
+        FAIL_ON_HIGH_RISK: ${{ inputs.fail-on-high-risk }}
       run: |
         cat >> "$GITHUB_STEP_SUMMARY" <<EOF
         ## Regula AI Governance Report
@@ -291,7 +303,7 @@ runs:
         | Prohibited-Use Findings | ${{ steps.count-findings.outputs.prohibited_count }} |
         | High-Risk Findings | ${{ steps.count-findings.outputs.high_risk_count }} |
         | Dependency Pinning Score | ${{ steps.deps-scan.outputs.pinning_score }}/100 |
-        | Framework | ${{ inputs.framework }} |
+        | Framework | ${INPUT_FRAMEWORK} |
         | SARIF File | \`${{ steps.run-check.outputs.sarif_file }}\` |
 
         EOF
@@ -300,9 +312,12 @@ runs:
         PROHIBITED="${{ steps.count-findings.outputs.prohibited_count }}"
         HIGH_RISK="${{ steps.count-findings.outputs.high_risk_count }}"
 
+        if ! [[ "$PROHIBITED" =~ ^[0-9]+$ ]]; then PROHIBITED=0; fi
+        if ! [[ "$HIGH_RISK" =~ ^[0-9]+$ ]]; then HIGH_RISK=0; fi
+
         if [ "${PROHIBITED}" -gt "0" ]; then
           echo "### Status: FAIL — Prohibited-use issues detected" >> "$GITHUB_STEP_SUMMARY"
-        elif [ "${HIGH_RISK}" -gt "0" ] && [ "${{ inputs.fail-on-high-risk }}" = "true" ]; then
+        elif [ "${HIGH_RISK}" -gt "0" ] && [ "${FAIL_ON_HIGH_RISK}" = "true" ]; then
           echo "### Status: FAIL — High-risk issues detected" >> "$GITHUB_STEP_SUMMARY"
         else
           echo "### Status: PASS" >> "$GITHUB_STEP_SUMMARY"
@@ -572,25 +587,38 @@ runs:
 
     - name: Determine exit code
       shell: bash
+      env:
+        FAIL_ON_HIGH_RISK: ${{ inputs.fail-on-high-risk }}
+        FAIL_ON_PROHIBITED: ${{ inputs.fail-on-prohibited }}
+        MIN_PINNING: ${{ inputs.min-dependency-score }}
+        PROHIBITED_COUNT: ${{ steps.count-findings.outputs.prohibited_count }}
+        HIGH_RISK_COUNT: ${{ steps.count-findings.outputs.high_risk_count }}
+        PINNING_SCORE: ${{ steps.deps-scan.outputs.pinning_score }}
       run: |
         EXIT_CODE=0
 
-        PROHIBITED="${{ steps.count-findings.outputs.prohibited_count }}"
-        HIGH_RISK="${{ steps.count-findings.outputs.high_risk_count }}"
-        PINNING="${{ steps.deps-scan.outputs.pinning_score }}"
-        MIN_PINNING="${{ inputs.min-dependency-score }}"
+        # DEF-004 numeric guard / F4-action: Default values in case outputs are empty or non-numeric
+        PROHIBITED="${PROHIBITED_COUNT:-0}"
+        HIGH_RISK="${HIGH_RISK_COUNT:-0}"
+        PINNING="${PINNING_SCORE:-0}"
+        MIN_PIN="${MIN_PINNING:-0}"
+
+        if ! [[ "$PROHIBITED" =~ ^[0-9]+$ ]]; then PROHIBITED=0; fi
+        if ! [[ "$HIGH_RISK" =~ ^[0-9]+$ ]]; then HIGH_RISK=0; fi
+        if ! [[ "$PINNING" =~ ^[0-9]+$ ]]; then PINNING=0; fi
+        if ! [[ "$MIN_PIN" =~ ^[0-9]+$ ]]; then MIN_PIN=0; fi
 
         # Check high-risk and low pinning score first (exit 1)
-        if [ "${{ inputs.fail-on-high-risk }}" = "true" ] && [ "${HIGH_RISK}" -gt "0" ]; then
+        if [ "${FAIL_ON_HIGH_RISK}" = "true" ] && [ "${HIGH_RISK}" -gt "0" ]; then
           EXIT_CODE=1
         fi
 
-        if [ "${MIN_PINNING}" -gt "0" ] && [ "${PINNING}" -lt "${MIN_PINNING}" ]; then
+        if [ "${MIN_PIN}" -gt "0" ] && [ "${PINNING}" -lt "${MIN_PIN}" ]; then
           EXIT_CODE=1
         fi
 
         # Prohibited-use findings override to exit code 2
-        if [ "${{ inputs.fail-on-prohibited }}" = "true" ] && [ "${PROHIBITED}" -gt "0" ]; then
+        if [ "${FAIL_ON_PROHIBITED}" = "true" ] && [ "${PROHIBITED}" -gt "0" ]; then
           EXIT_CODE=2
         fi
 
@@ -598,7 +626,7 @@ runs:
           echo "::error::Regula found ${PROHIBITED} prohibited-use finding(s). Review and remediate before merging."
           exit 2
         elif [ "${EXIT_CODE}" -eq "1" ]; then
-          echo "::warning::Regula found ${HIGH_RISK} high-risk finding(s) or dependency pinning score ${PINNING} is below threshold ${MIN_PINNING}."
+          echo "::warning::Regula found ${HIGH_RISK} high-risk finding(s) or dependency pinning score ${PINNING} is below threshold ${MIN_PIN}."
           exit 1
         fi
 
