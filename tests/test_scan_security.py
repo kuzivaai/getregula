@@ -24,6 +24,28 @@ CI). Verified gaps closed in scripts/report.py and scripts/ast_context.py:
      adversarial or malformed .py file anywhere in a repo denied service
      to scanning every other file in it.
 
+The SAME MemoryError gap (item 4) was also present at 7 further ast.parse()
+call sites outside the main scan loop, found by grepping the whole codebase
+for every ast.parse() call after fixing build_context_map():
+  - scripts/ast_analysis.py (5 sites): parse_python_file, classify_context,
+    trace_ai_data_flow, detect_human_oversight, detect_logging_practices.
+    Reachable from `regula gap` (scripts/compliance_check.py) — reproduced
+    a silent failure: `regula gap` on a project containing one ~20KB
+    adversarial file exited 0 with a generic "Internal error" and NO real
+    gap-analysis output, rather than the genuine report it should produce.
+  - scripts/cross_file_flow.py (2 sites): _build_symbol_table,
+    build_import_map. Reachable from analyse_project_oversight(), which
+    report.py's --enrich-oversight path already wraps in a bare
+    `except Exception` (MemoryError/RecursionError both derive from
+    Exception, so that ONE call site was accidentally resilient already —
+    verified by direct reproduction — but the underlying ast.parse() calls
+    themselves were still unhardened, and analyse_project_oversight() is
+    also called directly/reachable from other contexts without that
+    wrapper, e.g. scripts/compliance_check.py).
+All 7 were fixed identically to build_context_map(): add
+(MemoryError, RecursionError) to each except clause, returning the same
+graceful-degradation value already used for SyntaxError.
+
 All are reproduced here exactly as they were reproduced manually before
 the fix, and asserted closed. A skipped file of any dangerous-skip kind
 must also mark the scan as partial (completion_status ==
@@ -221,3 +243,55 @@ def test_ast_parse_memory_error_does_not_crash_entire_scan():
         assert m["completion_status"] == "completed"
         assert m["counts"]["scanned"] == 2
         assert m["counts"]["prohibited"] >= 1
+
+
+def test_regula_gap_does_not_crash_on_pathological_file():
+    """The SAME MemoryError gap (DEF-007) was also present in
+    scripts/ast_analysis.py's 5 ast.parse() call sites, reachable from the
+    separate `regula gap` command (scripts/compliance_check.py) rather than
+    the main scan loop. Before the fix, `regula gap` on a project containing
+    one ~20 KB adversarial file exited 0 with a generic "Internal error" and
+    produced NO real gap-analysis output — silently failing while reporting
+    success. After the fix, it completes and produces its genuine report."""
+    with tempfile.TemporaryDirectory() as d:
+        proj = Path(d) / "proj"
+        proj.mkdir()
+        (proj / "tiny_crash.py").write_text("a " * 10000)
+
+        proc = subprocess.run(
+            [sys.executable, str(_CLI), "gap", str(proj)],
+            capture_output=True, text=True, timeout=60,
+        )
+
+        assert "Internal error" not in proc.stdout, (
+            "regula gap must not silently swallow the crash and print a "
+            "generic internal-error message instead of a real report"
+        )
+        # A genuine gap-analysis report contains this heading regardless of
+        # project content; its presence proves the command actually ran to
+        # completion rather than failing silently.
+        assert "Summary:" in proc.stdout or "Gap:" in proc.stdout, (
+            f"expected a real gap-analysis report, got: {proc.stdout[:300]!r}"
+        )
+
+
+def test_analyse_project_oversight_does_not_crash():
+    """The SAME MemoryError gap was also present in the 2 ast.parse() call
+    sites in scripts/cross_file_flow.py (_build_symbol_table,
+    build_import_map), reachable via analyse_project_oversight(). Direct
+    reproduction confirmed this crashed uncaught prior to the fix, even
+    though report.py's --enrich-oversight integration point happened to
+    already be protected by an unrelated bare `except Exception` (which
+    catches MemoryError/RecursionError as a side effect, not by design)."""
+    with tempfile.TemporaryDirectory() as d:
+        proj = Path(d) / "proj"
+        proj.mkdir()
+        (proj / "tiny_crash.py").write_text("a " * 10000)
+
+        sys.path.insert(0, str(_REPO / "scripts"))
+        from cross_file_flow import analyse_project_oversight
+        result = analyse_project_oversight(str(proj))
+
+        assert result.get("analysed") is True, (
+            f"expected a completed analysis, got: {result}"
+        )

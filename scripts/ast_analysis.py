@@ -220,7 +220,12 @@ def parse_python_file(content: str) -> dict:
     """
     try:
         tree = ast.parse(content, mode="exec")
-    except SyntaxError:
+    except (SyntaxError, MemoryError, RecursionError):
+        # DEF-007: ast.parse() can raise MemoryError on pathological (but
+        # tiny, ~10 KB) input, not just SyntaxError on invalid Python. A
+        # scanned repository is untrusted input; this must degrade
+        # gracefully like any other unparseable file, never propagate and
+        # abort the caller's scan of every other file.
         return {
             "imports": [],
             "ai_imports": [],
@@ -267,7 +272,8 @@ def classify_context(content: str) -> str:
     """
     try:
         tree = ast.parse(content, mode="exec")
-    except SyntaxError:
+    except (SyntaxError, MemoryError, RecursionError):
+        # DEF-007: see parse_python_file() above for rationale.
         return "not_python"
 
     analysis = parse_python_file(content)
@@ -661,7 +667,8 @@ def trace_ai_data_flow(content: str) -> List[Dict]:
     """
     try:
         tree = ast.parse(content, mode="exec")
-    except SyntaxError:
+    except (SyntaxError, MemoryError, RecursionError):
+        # DEF-007: see parse_python_file() above for rationale.
         return []
 
     analysis = parse_python_file(content)
@@ -754,7 +761,8 @@ def detect_human_oversight(content: str) -> dict:
     """
     try:
         tree = ast.parse(content, mode="exec")
-    except SyntaxError:
+    except (SyntaxError, MemoryError, RecursionError):
+        # DEF-007: see parse_python_file() above for rationale.
         return {
             "has_oversight": False,
             "oversight_patterns": [],
@@ -875,7 +883,8 @@ def detect_logging_practices(content: str) -> dict:
     """
     try:
         tree = ast.parse(content, mode="exec")
-    except SyntaxError:
+    except (SyntaxError, MemoryError, RecursionError):
+        # DEF-007: see parse_python_file() above for rationale.
         return {
             "has_logging": False,
             "logging_patterns": [],

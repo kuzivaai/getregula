@@ -102,7 +102,11 @@ def _build_symbol_table(
             continue
         try:
             tree = ast.parse(content, filename=str(fp))
-        except SyntaxError:
+        except (SyntaxError, MemoryError, RecursionError):
+            # DEF-007: ast.parse() can raise MemoryError on pathological
+            # (but tiny, ~10 KB) input, not just SyntaxError on invalid
+            # Python. A scanned repository is untrusted input; one bad file
+            # must not abort building the symbol table for every other file.
             continue
 
         rel = str(fp.relative_to(project_path))
@@ -222,7 +226,8 @@ def _resolve_imports(
         content = info["content"]
         try:
             tree = ast.parse(content)
-        except SyntaxError:
+        except (SyntaxError, MemoryError, RecursionError):
+            # DEF-007: see _build_symbol_table() above for rationale.
             continue  # unparseable; skip import analysis
 
         mapping: Dict[str, Tuple[str, str]] = {}
