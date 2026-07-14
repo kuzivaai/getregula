@@ -391,3 +391,61 @@ limitations:
   - "RecursionError is caught defensively based on general knowledge of CPython parser/compiler behavior on deeply-nested input; a specific minimal RecursionError reproduction (analogous to the MemoryError one) was not constructed for any of the 8 total call sites, since the primary verified defect in every case was MemoryError."
   - "The outer 'Internal error' handler in cli.py (which suppressed the raw traceback and produced exit code 2 for regula check / exit code 0 for regula gap) was not modified — it remains a reasonable last-resort safety net for genuinely unanticipated failures, but should not be relied upon as the primary defense; the root-cause fixes in build_context_map() and the 7 follow-up sites are what actually prevent the crashes."
 ```
+
+```yaml
+defect_id: DEF-008
+title: "`check --format json` envelope's exit_code field always hardcoded 0, contradicting the real process exit code on block/warn-tier findings; `--format html` had a narrower version of the same class of bug"
+severity: medium
+affected_users: [any automation/CI integration parsing the JSON response body rather than checking the shell exit code]
+affected_interfaces: [scripts/cli_scan.py:cmd_check, envelope.py (the frozen, documented envelope contract), --format html]
+reproduction:  # REPRODUCED 2026-07-14, found while investigating api_server.py/Phase 5 network-surface hardening
+  - "`regula check <project-with-prohibited-finding> --format json` -> process exit code 1 (correctly reflects the BLOCK-tier finding), but the JSON response body's own `exit_code` field read 0 -- a single JSON artifact asserted two contradictory outcomes depending on which signal was checked."
+  - "Traced root cause: json_output(\"check\", ...) at the two call sites in cmd_check() never passed an explicit exit_code, so envelope.py's build_envelope() default (0) was used unconditionally. The REAL exit code (_exit_code) was computed separately, much later in the same function, and only applied to the process's sys.exit() call -- never propagated back to the JSON body already printed earlier."
+  - "Found an existing, structurally identical, ALREADY-FIXED instance of this exact bug class for a DIFFERENT command: tests/test_cli_integration.py:test_assess_json_prohibited_exit_code_in_envelope (docstring: 'Envelope exit_code must match the process exit code'), attributed to a 'July 2026 UX-audit Critical' for the `assess` command. The identical fix was evidently never back-ported to `check`, meaning the same defect class persisted in a sibling command."
+  - "Also found --format html has its OWN narrower version: `sys.exit(1 if block_findings else 0)` computed independently and locally, ignoring warn_findings+(--strict/--ci) entirely -- unlike text/json/sarif, which correctly factor in warn-tier findings under --ci. Reproduced: a warn-tier-only finding with --ci --format html exited 0 (should be 1, matching every other format)."
+root_cause: >
+  Exit-code semantics for cmd_check() were computed twice in the same
+  function: once (correctly, factoring in block/warn/strict) at the very
+  end for the process's sys.exit() call, and effectively a second time
+  (incorrectly, as a hardcoded default) via the JSON envelope's unpassed
+  exit_code parameter, plus a THIRD, narrower, standalone computation
+  inline in the html branch. Three sources of truth for one piece of state
+  is exactly the kind of duplication this program has flagged before
+  (DEF-002/DEF-003's stale-duplicate-numbers pattern) — here manifesting as
+  logic duplication instead of data duplication, with the same root failure
+  mode: the copies drift out of sync.
+required_invariant: >
+  Every output format (text/json/sarif/html) for a single scan invocation
+  must report the IDENTICAL pass/fail verdict everywhere that verdict is
+  expressed — the process exit code, and any exit_code-shaped field in
+  machine-readable output — computed from a single source of truth, not
+  independently re-derived per format.
+regression_test: >
+  tests/test_cli_integration.py: test_check_json_exit_code_in_envelope_matches_process_exit_code,
+  test_check_json_exit_code_zero_on_clean_scan (false-positive/regression check),
+  test_check_html_exit_code_reflects_warn_tier_under_strict.
+status: resolved
+dependencies: []
+introduced_by: not_investigated  # present since --format json's exit_code parameter was added to json_output(); the assess-command sibling bug's fix was evidently never cross-checked against other commands using the same envelope
+resolved_by: >
+  scripts/cli_scan.py:cmd_check() now computes _exit_code ONCE, immediately
+  after block_findings/warn_findings are derived from the findings
+  partition (before any format branch runs), and every format reuses that
+  single value: both json_output("check", ...) call sites now pass
+  exit_code=_exit_code explicitly; the html branch's independent
+  `sys.exit(1 if block_findings else 0)` was replaced with
+  `sys.exit(_exit_code)`; the duplicate computation previously repeated
+  near the end of the function (for the final process sys.exit()) was
+  removed entirely, since it is now the same variable computed earlier.
+verification:
+  - "End-to-end reproduction re-run post-fix: prohibited finding -> process exit 1, envelope exit_code=1 (previously 0). Clean scan -> process exit 0, envelope exit_code=0 (unaffected, verified as a false-positive/regression check). Warn-tier finding + --ci + --format html -> process exit 1 (previously 0, now matches text/json/sarif); without --ci -> process exit 0 (unaffected)."
+  - "tests/test_cli_integration.py -k exit_code: 4/4 passed (the 3 new tests plus the pre-existing assess-command test, confirming no regression there)."
+  - "Full tests/test_cli_integration.py: 36/36 passed."
+  - "Full suite: pytest tests/ -q -> 2531 passed, 32 skipped, 0 failed."
+  - "Custom runner: 1362 passed, 0 failed (908 test functions — test_cli_integration.py uses subprocess and is pytest-only, not wired into the custom runner, consistent with its existing convention)."
+  - "self-test / doctor / security-self-check: PASS."
+limitations:
+  - "This was found opportunistically while investigating scripts/api_server.py for Phase 5 network-surface hardening (which turned out to already be well-hardened), rather than from a planned audit of every command's envelope contract. Other CLI commands beyond check/assess were not systematically re-checked for the same class of bug in this pass — a dedicated follow-up could grep for every json_output(...) call site and verify each passes an accurate exit_code where the command has failure semantics."
+  - "The --format sarif branch was checked and confirmed NOT to have this bug (SARIF's own schema does not embed a Regula-specific exit_code field; it falls through to the same shared sys.exit(_exit_code) at the end of the function)."
+  - "api_server.py's /v1/check endpoint calls scan_files() directly (not cmd_check()) and does not go through json_output()/build_envelope() with a computed exit_code at all — it always implicitly uses the envelope default of 0 regardless of findings. This was not changed in this pass since api_server.py's response model is a separate, REST-specific design (HTTP status codes could arguably carry this signal instead of the JSON body) and changing it was judged out of scope for a CLI-envelope consistency fix; flagged here for a future decision on whether/how the REST API should expose the same signal."
+```

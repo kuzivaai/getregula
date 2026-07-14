@@ -303,3 +303,57 @@ revisit_trigger: >
   is worth the reduced flexibility.
 approved_by: "user (objective/unbiased/best-practice mandate, 2026-07-14); not committed"
 ```
+
+```yaml
+decision_id: D-009
+problem: >
+  While investigating scripts/api_server.py for Phase 5 network-surface
+  hardening (found to already be well-designed), noticed `check --format
+  json`'s envelope always reports exit_code=0 regardless of findings.
+  Verified this contradicts the real process exit code (reproduced: a
+  prohibited finding gives process exit 1, but the JSON body's own
+  exit_code field said 0). Also found --format html independently
+  computes its own narrower exit condition, ignoring warn-tier+--ci.
+  Discovered an identical, already-fixed bug class for the sibling
+  `assess` command (test docstring cites a "July 2026 UX-audit Critical"),
+  which was evidently never cross-checked against other commands sharing
+  the same envelope contract.
+options_considered:
+  - "A: Compute the exit code ONCE early in cmd_check(), before any format branch, and have every format (json/html) reuse that single value; remove the later duplicate computation entirely (chosen)"
+  - "B: Leave the duplicate computations in place but manually keep them in sync (add a comment linking them)"
+  - "C: Fix only the json envelope (the more severe, machine-parsed case) and leave html's narrower bug as a separate lower-priority item"
+selected_option: A
+rejected_options:
+  - "B: Rejected — this program has repeatedly found that manually-synchronized duplicates drift (DEF-002/DEF-003's stale-number pattern; this defect ITSELF is a case of duplicated exit-code logic drifting). Adding a comment does not prevent a future edit to one copy forgetting the other; removing the duplication structurally does."
+  - "C: Rejected — the html bug is the same root cause (an independently re-derived verdict instead of one shared value) and the fix for A already naturally covers both with no extra cost; splitting it into a separate, deferred item would be arbitrary given the fix is a single, already-scoped diff."
+evidence:
+  - "Reproduced pre-fix: prohibited finding, --format json -> process exit 1, envelope exit_code=0 (contradiction). Clean scan -> process exit 0, envelope exit_code=0 (consistent, as a control)."
+  - "Reproduced pre-fix: warn-tier-only finding, --format html, --ci -> process exit 0 (should be 1, matching text/json/sarif under the same --ci flag)."
+  - "tests/test_cli_integration.py:test_assess_json_prohibited_exit_code_in_envelope already exists for `assess` and passes both before and after this fix (confirms this fix does not touch or regress the already-correct assess command)."
+tradeoffs: >
+  None identified beyond the fix itself — this is a strict simplification
+  (net removal of duplicated logic) with no behavior change for any
+  already-correct case (verified via a dedicated clean-scan regression test).
+security_impact: "Positive (Medium) — closes a data-integrity gap in the documented, frozen envelope contract that could cause CI/automation trusting the JSON body to silently treat a prohibited/high-risk finding as a pass."
+privacy_impact: none
+accessibility_impact: none
+compatibility_impact: >
+  The json_output() envelope SHAPE is unchanged (AGENTS.md constraint
+  honoured: still {format_version, regula_version, command, timestamp,
+  exit_code, data}) — only the VALUE of the pre-existing exit_code field
+  changes for cases that were previously wrong. Any consumer already
+  correctly checking the process exit code (the majority, and the only
+  documented/tested path prior to this fix) is unaffected. A consumer that
+  was relying on the buggy always-0 envelope value for a check command
+  specifically (not assess, which was already correct) would see a
+  behavior change — assessed as extremely unlikely and not a supported
+  use case, since it would mean deliberately ignoring the process exit
+  code in favour of a field this fix proves was unreliable.
+maintenance_cost: "Negative (reduces cost) — removes one of two duplicate exit-code computations."
+revisit_trigger: >
+  If a systematic audit of every json_output(...) call site across all CLI
+  commands is done (flagged as a limitation of this pass, scoped only to
+  check/assess), any further instances of this bug class found should be
+  fixed the same way: compute once, share the value across every format.
+approved_by: "user (objective/unbiased/best-practice mandate, 2026-07-14); not committed"
+```
