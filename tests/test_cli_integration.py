@@ -61,6 +61,77 @@ def test_assess_json_prohibited_exit_code_in_envelope():
     assert payload["data"]["tier"] == "prohibited"
 
 
+def test_check_json_exit_code_in_envelope_matches_process_exit_code():
+    """Same class of bug as test_assess_json_prohibited_exit_code_in_envelope
+    above, found independently in `check` (not just `assess`): --format
+    json's envelope previously hardcoded exit_code=0 unconditionally,
+    while the real process exit code correctly reflected block-tier
+    findings. A single JSON response could assert two contradictory
+    outcomes (exit_code=0 in the body, process exit 1) depending on which
+    signal a consumer checked. Verified end-to-end via subprocess so both
+    signals are compared exactly as a real caller would observe them."""
+    import tempfile
+    from pathlib import Path as _Path
+    with tempfile.TemporaryDirectory() as d:
+        proj = _Path(d) / "proj"
+        proj.mkdir()
+        (proj / "prohibited.py").write_text(
+            "def social_credit_score(citizen):\n"
+            "    return compute_social_score(citizen.behavior_history)\n"
+        )
+        rc, out, err = run_cli("check", str(proj), "--format", "json")
+        assert rc == 1, f"expected rc=1 for a prohibited finding, got {rc}: {err[:200]}"
+        payload = json.loads(out)
+        assert payload["exit_code"] == 1, (
+            "envelope exit_code must match the process exit code (both 1); "
+            f"got envelope exit_code={payload['exit_code']} with process rc={rc}"
+        )
+
+
+def test_check_json_exit_code_zero_on_clean_scan():
+    """False-positive/regression check: a clean scan must report exit_code=0
+    in both the process exit code and the envelope, unaffected by the fix
+    above."""
+    import tempfile
+    from pathlib import Path as _Path
+    with tempfile.TemporaryDirectory() as d:
+        proj = _Path(d) / "proj"
+        proj.mkdir()
+        (proj / "clean.py").write_text("x = 1\n")
+        rc, out, err = run_cli("check", str(proj), "--format", "json")
+        assert rc == 0, f"expected rc=0 for a clean scan, got {rc}: {err[:200]}"
+        payload = json.loads(out)
+        assert payload["exit_code"] == 0
+
+
+def test_check_html_exit_code_reflects_warn_tier_under_strict():
+    """The --format html branch had its OWN narrower version of the same
+    bug: it computed `sys.exit(1 if block_findings else 0)` locally,
+    ignoring warn-tier findings even when --ci/--strict was set — unlike
+    every other format (text/json/sarif), which correctly exit 1 for a
+    warn-tier finding under --ci. Verifies html now matches."""
+    import tempfile
+    from pathlib import Path as _Path
+    with tempfile.TemporaryDirectory() as d:
+        proj = _Path(d) / "proj"
+        proj.mkdir()
+        # A limited_risk (warn-tier) finding: a chatbot/conversational AI
+        # pattern, not a block-tier prohibited/high-risk one.
+        (proj / "warn.py").write_text(
+            "import openai\n"
+            "chatbot_response = openai.ChatCompletion.create(messages=msgs)\n"
+            "print(chatbot_response)\n"
+        )
+        rc_no_ci, _, _ = run_cli("check", str(proj), "--format", "html")
+        assert rc_no_ci == 0, "a warn-tier finding alone (no --ci) must not fail"
+
+        rc_ci, _, err = run_cli("check", str(proj), "--format", "html", "--ci")
+        assert rc_ci == 1, (
+            "a warn-tier finding under --ci must fail closed for html, "
+            f"matching text/json/sarif; got rc={rc_ci}: {err[:200]}"
+        )
+
+
 def test_plan():
     rc, out, err = run_cli("plan", "--project", "tests/fixtures/sample_high_risk")
     assert rc == 0

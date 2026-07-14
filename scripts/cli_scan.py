@@ -357,6 +357,25 @@ def cmd_check(args) -> None:
     warn_findings = _view["warn"]
     info_findings = _view["info"]
 
+    # Compute the exit code ONCE, here, before any output format branch, so
+    # every format (json/sarif/html/text) reports the SAME verdict via BOTH
+    # the process exit code AND any exit_code field embedded in machine-
+    # readable output. Previously, --format json's envelope always hardcoded
+    # exit_code=0 regardless of findings, while the real process exit code
+    # (computed separately, later) correctly reflected block/warn findings —
+    # a single JSON response could assert two contradictory outcomes
+    # depending on which field a consumer checked. Any automation reading
+    # the JSON body's exit_code field (a natural thing to do, since the
+    # field exists specifically for that purpose) would be silently misled
+    # into treating a prohibited/high-risk finding as a clean pass.
+    strict = args.strict or getattr(args, "ci", False)
+    if block_findings:
+        _exit_code = 1
+    elif warn_findings and strict:
+        _exit_code = 1
+    else:
+        _exit_code = 0
+
     # --audit-suppressions: list all annotations with status (ISO 42001 9.1)
     if getattr(args, "audit_suppressions", False):
         _print_suppression_audit(findings)
@@ -399,7 +418,11 @@ def cmd_check(args) -> None:
             print(f"Report written to {out_path}", file=sys.stderr)
         else:
             print(html_content)
-        sys.exit(1 if block_findings else 0)
+        # Reuse the shared _exit_code (computed once, above) rather than a
+        # narrower local check — this branch previously ignored
+        # warn_findings+--strict/--ci, exiting 0 in a case where every
+        # other format (text/json/sarif) correctly exits 1.
+        sys.exit(_exit_code)
     elif args.format == "json":
         if getattr(args, "explain", False):
             from explain import explain_classification
@@ -431,12 +454,12 @@ def cmd_check(args) -> None:
             # Sort findings for deterministic output
             findings.sort(key=lambda f: (f.get('file', ''), f.get('line', 0), f.get('pattern', '')))
             det = getattr(args, 'deterministic', False)
-            json_output("check", {"findings": findings, "explanations": explained}, deterministic=det)
+            json_output("check", {"findings": findings, "explanations": explained}, exit_code=_exit_code, deterministic=det)
         else:
             # Sort findings for deterministic output
             findings.sort(key=lambda f: (f.get('file', ''), f.get('line', 0), f.get('pattern', '')))
             det = getattr(args, 'deterministic', False)
-            json_output("check", findings, deterministic=det)
+            json_output("check", findings, exit_code=_exit_code, deterministic=det)
     elif args.format == "sarif":
         from report import generate_sarif
         name = args.name or Path(project).name
@@ -758,14 +781,13 @@ def cmd_check(args) -> None:
                       f"::Accepted risk '{pat}' is overdue for review"
                       f" (was due {rev}, owner {own})")
 
-    # Exit codes: 1 if any BLOCK-tier findings, 1 if WARN-tier and (--strict or --ci), 0 otherwise
-    strict = args.strict or getattr(args, "ci", False)
-    if block_findings:
-        _exit_code = 1
-    elif warn_findings and strict:
-        _exit_code = 1
-    else:
-        _exit_code = 0
+    # Exit code (1 if any BLOCK-tier findings, 1 if WARN-tier and
+    # (--strict or --ci), 0 otherwise) was already computed once, early,
+    # right after block_findings/warn_findings were derived from the
+    # findings partition — see _exit_code above. Reusing that same value
+    # here (rather than recomputing it) is what guarantees --format json's
+    # embedded exit_code field can never drift out of sync with the actual
+    # process exit code below.
 
     # DEF-004: emit the completion manifest ONLY on successful completion,
     # after all scanning and artifact writes have succeeded. Reaching this
