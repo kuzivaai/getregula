@@ -266,3 +266,40 @@ revisit_trigger: >
   reachable from the main scan loop.
 approved_by: "user (objective/unbiased/best-practice mandate, 2026-07-14); not committed"
 ```
+
+```yaml
+decision_id: D-008
+problem: >
+  D-007's own revisit_trigger explicitly flagged that other ast.parse()
+  call sites in the codebase should be reviewed for the same MemoryError
+  gap. Rather than leave this as an acknowledged-but-unaddressed limitation,
+  followed up immediately: grepped the whole codebase for every ast.parse()
+  call, found 7 more sites (5 in ast_analysis.py, 2 in cross_file_flow.py),
+  and independently verified reachability and a real, distinct failure mode
+  for each before deciding how to fix.
+options_considered:
+  - "A: Apply the identical (MemoryError, RecursionError) except-clause fix to all 7 sites, matching D-007's pattern exactly (chosen)"
+  - "B: Introduce a shared safe_ast_parse() wrapper function and migrate all 8 call sites to use it"
+  - "C: Leave the additional sites unfixed and only document them as a known limitation, since D-007's actual verified impact was on the main scan loop"
+selected_option: A
+rejected_options:
+  - "B: Rejected for THIS pass — a shared wrapper is a reasonable future refactor (would prevent a newly-added ast.parse() call from reintroducing the gap), but each of the 8 sites has a DIFFERENT graceful-degradation return shape (empty list, empty dict with specific keys, 'not_python' string, etc.), so a generic wrapper would need per-callsite default values passed in anyway, reducing the simplification benefit. Applying the same 2-exception-type addition inline at each site is smaller, more obviously correct by inspection, and matches the existing code style (each site already has its own bespoke except-and-return-default pattern for SyntaxError)."
+  - "C: Rejected — reproduction proved this is not a theoretical residual risk. `regula gap` genuinely exits 0 while silently producing no output on the exact same trivial trigger (~10-20 KB), which is arguably a WORSE failure mode than the originally-fixed site (that one at least exits 2). Documenting a reproduced, easily-triggered, silently-successful command failure as merely a 'limitation' rather than fixing it would contradict this program's truthfulness principles."
+evidence:
+  - "Direct reproduction: analyse_project_oversight() called directly raised MemoryError uncaught, pre-fix."
+  - "Direct reproduction: `regula gap <project-with-adversarial-file>` exited 0 with only 'Internal error' printed and no real report, pre-fix; produces genuine gap-analysis output, post-fix."
+  - "Verified report.py's existing --enrich-oversight `except Exception` block already caught this specific crash as an accidental side effect (MemoryError/RecursionError both derive from Exception, confirmed via .__mro__) — but this was not a designed contract and did not protect the same underlying function when called from compliance_check.py instead."
+tradeoffs: "Identical to D-007: no signature/behavior changes for any well-formed input; only the previously-uncaught-crash path now degrades gracefully."
+security_impact: "Positive — closes 2 more concretely-reproduced availability failures (regula gap silent failure; oversight analysis crash) using the exact same trivial (~10-20 KB) trigger as D-007's original finding."
+privacy_impact: none
+accessibility_impact: none
+compatibility_impact: "None — each site's return value on this new failure path is identical in shape to its existing SyntaxError-handling path."
+maintenance_cost: "Negligible per-site; slightly higher aggregate maintenance burden than a shared wrapper would have (see rejected option B), accepted as a reasonable trade for a smaller, more obviously-correct change in this pass."
+revisit_trigger: >
+  If a THIRD round of ast.parse() gaps is found (e.g. via a newly-added
+  call site elsewhere), consider promoting to a shared safe_ast_parse()
+  helper (option B) at that point, since three independent occurrences of
+  the same hand-applied fix would be a stronger signal that centralising it
+  is worth the reduced flexibility.
+approved_by: "user (objective/unbiased/best-practice mandate, 2026-07-14); not committed"
+```

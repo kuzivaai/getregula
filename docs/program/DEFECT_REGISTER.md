@@ -347,15 +347,47 @@ resolved_by: >
   exactly matching the function's pre-existing documented contract. No
   change to report.py's scan loop was needed — the fix is fully contained
   at the point where the crash actually originates.
+
+  FOLLOW-UP (2026-07-14, same day): per this defect's own limitations
+  section below, grepped the entire codebase for every other ast.parse()
+  call site and found 7 more with the identical gap: 5 in
+  scripts/ast_analysis.py (parse_python_file, classify_context,
+  trace_ai_data_flow, detect_human_oversight, detect_logging_practices)
+  and 2 in scripts/cross_file_flow.py (_build_symbol_table,
+  build_import_map). Verified reachability and reproduced real, distinct
+  user-facing failures for each before fixing:
+    - ast_analysis.py's 5 sites are reachable from the SEPARATE `regula gap`
+      command (scripts/compliance_check.py), NOT the main scan loop.
+      Reproduced: `regula gap` on a project containing one ~20 KB
+      adversarial file exited 0 with a generic "Internal error" and
+      produced NO real gap-analysis output — silently failing while
+      reporting success (arguably worse than the original DEF-007
+      behaviour, which at least exited 2).
+    - cross_file_flow.py's 2 sites are reachable via
+      analyse_project_oversight(). Direct reproduction confirmed this
+      crashes uncaught when called directly. report.py's
+      --enrich-oversight integration point happened to already be
+      protected by a pre-existing bare `except Exception` (MemoryError and
+      RecursionError both derive from Exception in Python, confirmed via
+      Exception.__mro__) — but this was accidental resilience at ONE call
+      site, not a designed contract, and did not protect
+      analyse_project_oversight() when reached from elsewhere (e.g.
+      scripts/compliance_check.py).
+  All 7 fixed identically: added (MemoryError, RecursionError) to each
+  except clause, preserving each function's existing distinct graceful-
+  degradation return value.
 verification:
   - "Direct unit reproduction: ast_context.build_context_map('a ' * 10000) raised MemoryError pre-fix; returns {} post-fix (no crash)."
   - "End-to-end CLI reproduction: `regula check` on the 2-file project exited 2 with no manifest pre-fix (entire scan lost, including the unrelated file's genuine finding); post-fix exits 1 (correct — the genuine prohibited finding IS detected), manifest is written with completion_status=completed, counts.scanned=2, counts.prohibited=1."
-  - "tests/test_scan_security.py::test_ast_parse_memory_error_does_not_crash_entire_scan: PASSED."
-  - "Full suite: pytest tests/ -q -> 2524 passed, 32 skipped, 0 failed."
-  - "Custom runner: 1362 passed, 0 failed (906 test functions)."
+  - "Follow-up reproduction: analyse_project_oversight() called directly raised MemoryError pre-fix; returns a completed result post-fix ('analysed': True)."
+  - "Follow-up reproduction: `regula gap` on a project with one adversarial file printed only 'Internal error' pre-fix; post-fix produces the genuine gap-analysis report (verified 'Summary:'/'Gap:' present in output, 'Internal error' absent)."
+  - "tests/test_scan_security.py: 8/8 passed, including test_ast_parse_memory_error_does_not_crash_entire_scan (original), test_regula_gap_does_not_crash_on_pathological_file and test_analyse_project_oversight_does_not_crash (follow-up)."
+  - "Full suite: pytest tests/ -q -> 2528 passed, 32 skipped, 0 failed."
+  - "Custom runner: 1362 passed, 0 failed (908 test functions, +2 from this follow-up)."
   - "self-test / doctor / security-self-check: PASS."
+  - "Existing test_cross_file_flow.py (165 tests incl. test_compliance_check.py) re-run: all pass, confirming no regression in the modified files' existing behaviour."
 limitations:
-  - "This was found as a side effect of testing DEF-006, not from a pre-planned test of ast.parse()'s failure modes — a reminder that CPython's own stdlib functions can have undocumented resource-exhaustion failure modes on adversarial input, and any code calling ast.parse()/compile() elsewhere in this codebase should be reviewed for the same gap (not exhaustively re-audited in this pass; scoped to build_context_map(), the only ast.parse() call reachable from the main scan loop)."
-  - "RecursionError is caught defensively based on general knowledge of CPython parser/compiler behavior on deeply-nested input; a specific minimal RecursionError reproduction (analogous to the MemoryError one) was not constructed, since the primary verified defect was MemoryError."
-  - "The outer 'Internal error' handler in cli.py (which suppressed the raw traceback and produced exit code 2) was not modified — it remains a reasonable last-resort safety net for genuinely unanticipated failures, but should not be relied upon as the primary defense; the root-cause fix in build_context_map() is what actually prevents the scan from aborting."
+  - "The follow-up grep-based audit for 'ast.parse(' / 'ast.compile(' across scripts/*.py is believed complete as of 2026-07-14, but was not cross-checked against a fully independent method (e.g. AST-based call-graph analysis of every dynamic import path); a new ast.parse() call added elsewhere in the future would need the same MemoryError/RecursionError handling applied manually — there is no shared wrapper enforcing this pattern."
+  - "RecursionError is caught defensively based on general knowledge of CPython parser/compiler behavior on deeply-nested input; a specific minimal RecursionError reproduction (analogous to the MemoryError one) was not constructed for any of the 8 total call sites, since the primary verified defect in every case was MemoryError."
+  - "The outer 'Internal error' handler in cli.py (which suppressed the raw traceback and produced exit code 2 for regula check / exit code 0 for regula gap) was not modified — it remains a reasonable last-resort safety net for genuinely unanticipated failures, but should not be relied upon as the primary defense; the root-cause fixes in build_context_map() and the 7 follow-up sites are what actually prevent the crashes."
 ```
