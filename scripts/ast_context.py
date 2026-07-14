@@ -25,10 +25,28 @@ def build_context_map(content: str) -> dict:
     Returns empty dict if parsing fails (non-Python, syntax errors).
     Graceful degradation: if AST parsing fails, pattern matching
     proceeds without context (no precision improvement, no breakage).
+
+    Security note (Phase 5 threat model, 2026-07-14): CPython's ast.parse()
+    can raise MemoryError on pathological (but tiny, e.g. ~10 KB) input —
+    reproduced with a file consisting of many bare word tokens with no
+    other structure (e.g. "score " repeated 5000+ times). Prior to this
+    fix, that MemoryError was uncaught here and propagated all the way
+    through scan_files(), aborting the ENTIRE scan of the whole repository
+    (not just this one file) with no manifest written. A scanned repository
+    is untrusted input; a single small adversarial or malformed file must
+    never deny service to scanning every other file. RecursionError is
+    caught defensively for the same reason (CPython's parser/compiler can
+    also raise it on deeply nested pathological input).
     """
     try:
         tree = ast.parse(content)
     except (SyntaxError, ValueError):
+        return {}
+    except (MemoryError, RecursionError):
+        # Pathological input crashed the parser itself. Graceful degradation
+        # applies exactly as it does for a SyntaxError: pattern matching
+        # proceeds without AST context (no precision improvement for THIS
+        # file), rather than crashing the scan of every other file.
         return {}
 
     context = {}  # line_number -> set of context strings

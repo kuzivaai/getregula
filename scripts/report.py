@@ -41,7 +41,7 @@ from scan_cache import ScanCache
 # File scanner (used by both HTML and SARIF generators)
 # ---------------------------------------------------------------------------
 
-from constants import CODE_EXTENSIONS, SKIP_DIRS, MODEL_EXTENSIONS, VERSION, MAX_FILE_SIZE_BYTES
+from constants import CODE_EXTENSIONS, SKIP_DIRS, MODEL_EXTENSIONS, VERSION, MAX_FILE_SIZE_BYTES, MAX_CLASSIFY_CHARS
 CONFIG_FILES = {".env", ".env.production", ".env.local", "docker-compose.yml", "docker-compose.yaml", "Dockerfile"}
 
 
@@ -769,6 +769,22 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     continue
                 lines = content.split("\n")
             rel_path = str(filepath.relative_to(project))
+
+            # Phase 5 threat model (continued): cap content passed to the
+            # regex classification engine. Several built-in patterns use a
+            # (?:word)[^"\n]{0,30}(?:word) shape that degrades near-linearly
+            # with content length under dense adversarial repetition of the
+            # trigger word (empirically measured: 27.8s worst-case on a
+            # MAX_FILE_SIZE_BYTES file). MAX_CLASSIFY_CHARS (1 MB) gives 10x+
+            # margin over the largest legitimate file in this codebase
+            # (~95 KB) while bounding worst-case per-file classification time
+            # to ~3s. Truncation is a dangerous skip — a pattern could be
+            # hiding past the cap — so the scan is honestly reported partial,
+            # never silently clean (same invariant as DEF-004/DEF-005).
+            if len(content) > MAX_CLASSIFY_CHARS:
+                _record_skip(filepath, "oversized_for_classification")
+                content = content[:MAX_CLASSIFY_CHARS]
+                lines = content.split("\n")
 
             # Empty __init__.py files are package markers, not scannable code.
             # This is a LEGITIMATE exclusion (no code to scan), not a dangerous

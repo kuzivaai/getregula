@@ -249,4 +249,113 @@ limitations:
   - "The size check uses Path.stat() before read, which has a theoretical TOCTOU race (file could grow between stat and read) — acceptable here because the consequence of a missed race is bounded (worst case reads up to the OS's actual delivered bytes for one file), not a security bypass of the control's intent."
   - "Verified on Python 3.11.8 / macOS only; symlink behavior on Windows (which has different symlink permission semantics) not verified. Both new tests defensively skip (return early) if symlink creation raises OSError, so they will not falsely fail on platforms without symlink support."
 ```
+
+```yaml
+defect_id: DEF-006
+title: "Built-in prohibited/high-risk regex patterns degrade near-linearly on dense adversarial trigger-word repetition (bounded CPU-exhaustion, not classical ReDoS)"
+severity: high
+affected_users: [CI users scanning untrusted/third-party PRs, any user scanning a repo they do not fully control]
+affected_interfaces: [scripts/classify_risk.py:_check_patterns, scripts/risk_patterns.py pattern set]
+reproduction:  # REPRODUCED 2026-07-14 (Phase 5 threat-model, continued investigation)
+  - "Systematically extracted all 432 unique built-in regex pattern strings via AST parsing of scripts/*.py and empirically fuzz-tested each against classic ReDoS attack strings with a 1s timeout: all 432 compiled cleanly, none exceeded 1s on standard attack strings."
+  - "Escalated to realistic file-scale adversarial input (up to the 10MB MAX_FILE_SIZE_BYTES ceiling established in DEF-005): found ~15 patterns sharing a (?:word1|word2|...)[^\"\\n]{0,30}(?:word3|...) shape (e.g. the 'justice', 'essential_services', 'high_risk__worker_management' pattern groups) take 2.2-2.7s EACH against a 10MB file densely saturated with the leading trigger keyword."
+  - "The real production entry point classify_risk.py:_check_patterns() applies re.search() against WHOLE-FILE lowercased content (not per-line, unlike check_ai_security() which is per-line). Measured the actual 4-call classification pipeline (check_prohibited/check_high_risk/check_limited_risk/check_bias_risk) as report.py invokes it: 27.862s worst-case on one 10MB adversarial file."
+  - "Isolated root cause precisely: the slowdown is specific to DENSE repetition of the leading alternation keyword (e.g. 'score' repeated hundreds of thousands of times), confirmed via a same-length control test with a non-trigger word (0.051s) and a realistic single-occurrence test (0.051s) — genuinely adversarial construction is required to trigger this, not realistic source code."
+root_cause: >
+  Several built-in patterns use a `(?:leading-word-alternation)[^"\n]{0,N}(?:trailing-word-alternation)`
+  shape. Applied via re.search() against an entire file's content as one
+  string (not per-line), dense repetition of the leading trigger word forces
+  the regex engine to attempt the bounded {0,N} lookahead at every one of the
+  many occurrence positions. This is near-linear in content length per
+  pattern (not exponential/classical ReDoS), but with ~15 such patterns
+  applied across a 10MB adversarial file, the aggregate cost is significant
+  and constitutes a genuine CPU-exhaustion vector against a scanner whose
+  primary input (a scanned repository) must be treated as untrusted.
+required_invariant: >
+  Content passed into the whole-file regex classification path must be
+  bounded to a size where even worst-case adversarial construction across
+  the full pattern set completes in a small, fixed time budget. Truncation
+  for classification purposes must be recorded as a dangerous skip (the
+  same class as unreadable/undecodable/symlink_escape/oversized) so the
+  scan is honestly reported as partial, never silently clean, since a
+  pattern could be hiding past the truncation point.
+regression_test: >
+  tests/test_scan_security.py: test_dense_trigger_content_is_capped_for_classification
+  (asserts wall-clock time bound + correct partial-scan skip accounting).
+status: resolved
+dependencies: [DEF-005]  # shares the _record_skip / completion_status machinery
+introduced_by: not_investigated  # present since the pattern set was authored; not previously load-tested against adversarial content
+resolved_by: >
+  Added scripts/constants.py:MAX_CLASSIFY_CHARS (1 MB — a 10x+ margin over
+  the largest legitimate source file in this codebase, ~95 KB) and applied
+  it as a single truncation choke point in scripts/report.py's scan loop,
+  immediately after content is finalised (post-decode/post-notebook-
+  extraction) and before ANY classification call, including the early-exit
+  check_prohibited() fast path. Truncation routes through the existing
+  _record_skip() mechanism with reason "oversized_for_classification".
+verification:
+  - "Full 9.7MB adversarial-content scan (scan_files() end-to-end, not just the isolated classify_risk call): 27.8s+ (pre-fix, isolated) -> 0.23s (post-fix, full scan_files() call), skip_reasons.oversized_for_classification=1, completion_status=completed_with_skips."
+  - "tests/test_scan_security.py::test_dense_trigger_content_is_capped_for_classification: PASSED (asserts <15s wall-clock, generously above the ~0.23s actually measured, to avoid environment-speed flakiness)."
+  - "Full suite: pytest tests/ -q -> 2524 passed, 32 skipped, 0 failed."
+  - "Custom runner: 1362 passed, 0 failed (906 test functions, +2)."
+  - "self-test / doctor / security-self-check: PASS."
+limitations:
+  - "MAX_CLASSIFY_CHARS (1 MB) is a fixed constant, not yet configurable. Chosen from empirical measurement (10x+ margin over the largest real file in this repo, ~95 KB) rather than a formal worst-case bound on the full pattern set; if the pattern library grows substantially, this budget should be re-measured."
+  - "The 15 root-cause patterns themselves were not individually rewritten to eliminate the shape (e.g. tightening the {0,30} gap or restructuring the alternation) — the chosen fix bounds the BLAST RADIUS via a content-length cap rather than eliminating the underlying per-pattern cost, which was assessed as lower-risk for a safety-critical detector (rewriting 15 legal-consequence-mapped patterns individually risks introducing false-negatives; the cap is content-agnostic and cannot weaken detection of any real, non-adversarial file)."
+  - "Did not measure or harden the JS/TS/Java/Go/Rust pattern paths (ast_engine.py) against the same class of input; this investigation was scoped to the Python-path prohibited/high-risk patterns where the vulnerability was found. A follow-up should verify the other language analyzers similarly."
+```
+
+```yaml
+defect_id: DEF-007
+title: "ast.parse() MemoryError on pathological ~10KB input crashes the ENTIRE scan (all files), not just the triggering file"
+severity: critical
+affected_users: [all users; any scanned repository containing one small adversarial or malformed .py file anywhere]
+affected_interfaces: [scripts/ast_context.py:build_context_map, scripts/report.py scan loop]
+reproduction:  # REPRODUCED 2026-07-14, discovered as a side effect of testing DEF-006's fix
+  - "ast.parse('a ' * n) for n in [1000, 5000, 10000, 30000, 50000, 100000]: n=1000 (2000 chars) raises SyntaxError (safely handled); n>=5000 (10000+ chars, ~10 KB) raises MemoryError instead."
+  - "scripts/ast_context.py:build_context_map() caught only (SyntaxError, ValueError), NOT MemoryError. The uncaught MemoryError propagated through report.py's scan loop and crashed cmd_check entirely."
+  - "End-to-end reproduction: a 2-file project (one ~20KB adversarial file, one normal file with a genuine prohibited-pattern finding) run through the real CLI (`regula check ... --format sarif --manifest ...`) exited with code 2, printed a generic 'Internal error' (existing outer handler suppressed the raw traceback), and wrote NO manifest — meaning the entire scan aborted and the genuine prohibited finding in the unrelated, legitimate file was never reported."
+root_cause: >
+  build_context_map()'s own docstring states its contract as 'graceful
+  degradation: if AST parsing fails, pattern matching proceeds without
+  context (no precision improvement, no breakage)' — but the except clause
+  only covered (SyntaxError, ValueError). CPython's ast.parse()/compile()
+  can raise MemoryError on certain pathological token sequences (many bare
+  word tokens with no other Python structure) at input sizes as small as
+  ~10 KB, far below any file-size limit that would otherwise catch this. A
+  scanned repository is untrusted input; a single small file (adversarial
+  OR simply malformed/corrupted) must never be able to deny service to
+  scanning every other file in the same run.
+required_invariant: >
+  build_context_map() must degrade gracefully (return {}) on ANY parser-
+  level failure of the underlying content, not just SyntaxError/ValueError.
+  A single file's AST-context analysis failing must never abort the scan
+  of any other file, and must never cause the loss of findings already
+  computed for other files in the same run.
+regression_test: >
+  tests/test_scan_security.py: test_ast_parse_memory_error_does_not_crash_entire_scan
+  (asserts the crash-triggering file and an adjacent legitimate file are
+  both correctly handled in a single scan; the genuine finding is not lost;
+  a manifest IS written with completion_status=completed).
+status: resolved
+dependencies: []
+introduced_by: not_investigated  # present since build_context_map() was introduced; MemoryError was never in scope of its original (SyntaxError, ValueError) contract
+resolved_by: >
+  scripts/ast_context.py:build_context_map() now also catches
+  (MemoryError, RecursionError) and returns {} (the same graceful-
+  degradation return value already used for SyntaxError/ValueError),
+  exactly matching the function's pre-existing documented contract. No
+  change to report.py's scan loop was needed — the fix is fully contained
+  at the point where the crash actually originates.
+verification:
+  - "Direct unit reproduction: ast_context.build_context_map('a ' * 10000) raised MemoryError pre-fix; returns {} post-fix (no crash)."
+  - "End-to-end CLI reproduction: `regula check` on the 2-file project exited 2 with no manifest pre-fix (entire scan lost, including the unrelated file's genuine finding); post-fix exits 1 (correct — the genuine prohibited finding IS detected), manifest is written with completion_status=completed, counts.scanned=2, counts.prohibited=1."
+  - "tests/test_scan_security.py::test_ast_parse_memory_error_does_not_crash_entire_scan: PASSED."
+  - "Full suite: pytest tests/ -q -> 2524 passed, 32 skipped, 0 failed."
+  - "Custom runner: 1362 passed, 0 failed (906 test functions)."
+  - "self-test / doctor / security-self-check: PASS."
+limitations:
+  - "This was found as a side effect of testing DEF-006, not from a pre-planned test of ast.parse()'s failure modes — a reminder that CPython's own stdlib functions can have undocumented resource-exhaustion failure modes on adversarial input, and any code calling ast.parse()/compile() elsewhere in this codebase should be reviewed for the same gap (not exhaustively re-audited in this pass; scoped to build_context_map(), the only ast.parse() call reachable from the main scan loop)."
+  - "RecursionError is caught defensively based on general knowledge of CPython parser/compiler behavior on deeply-nested input; a specific minimal RecursionError reproduction (analogous to the MemoryError one) was not constructed, since the primary verified defect was MemoryError."
+  - "The outer 'Internal error' handler in cli.py (which suppressed the raw traceback and produced exit code 2) was not modified — it remains a reasonable last-resort safety net for genuinely unanticipated failures, but should not be relied upon as the primary defense; the root-cause fix in build_context_map() is what actually prevents the scan from aborting."
 ```

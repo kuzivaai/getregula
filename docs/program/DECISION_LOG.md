@@ -182,3 +182,87 @@ revisit_trigger: >
   globally.
 approved_by: "user (objective/unbiased/best-practice mandate, 2026-07-14); not committed"
 ```
+
+```yaml
+decision_id: D-006
+problem: >
+  Continued Phase 5 investigation empirically fuzz-tested all 432 built-in
+  regex patterns against ReDoS attack strings (none failed) and then against
+  realistic file-scale adversarial content, finding ~15 patterns sharing a
+  (?:word)[^"\n]{0,30}(?:word) shape take 2.2-2.7s EACH on a 10MB file
+  densely saturated with their trigger keyword, applied whole-file (not
+  per-line) by classify_risk.py. Full classification pipeline measured at
+  27.8s worst-case on one file.
+options_considered:
+  - "A: Cap total content length passed to the whole-file classification path (MAX_CLASSIFY_CHARS), truncating and marking as a dangerous skip (chosen)"
+  - "B: Rewrite each of the ~15 vulnerable patterns to eliminate the gap-alternation shape (e.g. tighten {0,30} or restructure)"
+  - "C: Add a wall-clock timeout around the whole classification call (e.g. signal.alarm) and treat a timeout as a skip"
+  - "D: Switch whole-file matching to per-line matching for these tiers (matching check_ai_security's existing approach)"
+selected_option: A
+rejected_options:
+  - "B: Rejected for this pass — these are legal-consequence-mapped patterns (Article 5/Annex III triggers with specific `article`/`conditions`/`exceptions` metadata); hand-editing 15 of them individually risks introducing false-negatives in a safety-critical detector for comparatively small aggregate benefit, since a content-length cap already bounds the blast radius without touching detection semantics for any real file. Worth a dedicated future pass with proper before/after benchmark comparison (see revisit_trigger)."
+  - "C: Rejected — signal-based timeouts are not thread-safe/portable (SIGALRM is POSIX-only, complicating Windows support which the project's CI matrix does not explicitly exclude), and killing mid-classification could leave partial/inconsistent state harder to reason about than a simple, deterministic content cap applied up front."
+  - "D: Rejected as a blanket change — would alter match-line-number semantics and touch more code than necessary; per-line matching only works cleanly when a pattern's alternation halves are expected on the same line, which several of these are not guaranteed to be (see the credit_scoring/insurance/housing groups, which use generic language that can legitimately span short multi-line contexts). A future targeted redesign of this pattern shape could revisit this."
+evidence:
+  - "27.8s worst-case measured pre-fix (full 4-call pipeline, 10MB adversarial file) -> 0.23s post-fix (full scan_files() end-to-end)."
+  - "Largest legitimate source file in the codebase measured at ~95 KB; MAX_CLASSIFY_CHARS (1 MB) gives 10x+ margin."
+tradeoffs: >
+  A file with real, meaningful content beyond 1 MB (rare — no such file
+  exists in this codebase) would have content past that point excluded from
+  classification and the scan marked partial. This is a strictly safer
+  failure mode than either silently missing content (no signal) or crashing
+  (DEF-007's failure mode).
+security_impact: "Positive — bounds a real (if not catastrophic-exponential) CPU-exhaustion vector to a small, fixed per-file budget."
+privacy_impact: none
+accessibility_impact: none
+compatibility_impact: >
+  No signature/return-type changes anywhere. Reuses the DEF-004/DEF-005
+  skip-accounting and completion_status machinery unchanged; adds one new
+  skip_reasons value ("oversized_for_classification").
+maintenance_cost: "Low — one constant, one truncation point, no new dependency."
+revisit_trigger: >
+  If MAX_CLASSIFY_CHARS proves too tight for a real, legitimate large
+  generated/minified file class, OR if a dedicated benchmark-backed pass is
+  done to rewrite the ~15 root-cause patterns (option B) to eliminate the
+  underlying cost rather than bound its blast radius.
+approved_by: "user (objective/unbiased/best-practice mandate, 2026-07-14); not committed"
+```
+
+```yaml
+decision_id: D-007
+problem: >
+  While verifying D-006's fix end-to-end, discovered that ast.parse() raises
+  an uncaught MemoryError on pathological input as small as ~10 KB (many
+  bare word tokens, no other Python structure). build_context_map()'s
+  except clause covered only (SyntaxError, ValueError), so this crashed the
+  ENTIRE scan (all files, not just the triggering one) with exit code 2 and
+  no manifest written — silently discarding a genuine, already-detected
+  finding in an unrelated legitimate file in the same reproduction.
+options_considered:
+  - "A: Catch MemoryError (and defensively RecursionError) in build_context_map(), returning {} — the function's own pre-existing documented graceful-degradation contract (chosen)"
+  - "B: Wrap the entire per-file scan iteration in report.py in a try/except that logs and continues on any exception"
+  - "C: Run AST parsing in a subprocess with a resource limit, to fully sandbox against any CPython-internal resource exhaustion"
+selected_option: A
+rejected_options:
+  - "B: Rejected as the PRIMARY fix — a blanket per-file try/except in the scan loop would mask the specific, now-understood root cause behind generic exception-swallowing, making future similar bugs harder to diagnose (silent catch-all is explicitly against this program's truthfulness principles). The narrow fix at the actual failure point is both smaller and more diagnosable. (A general per-file safety net in report.py may still be worth adding in a future defence-in-depth pass — not rejected outright, just not the primary fix here.)"
+  - "C: Rejected as disproportionate — subprocess isolation for every file's AST parse would add meaningful performance overhead and complexity (process spawn per file) to defend against a failure mode now closed by a two-exception-type addition to an existing except clause. Revisit only if evidence emerges of OTHER CPython-internal resource-exhaustion bugs beyond ast.parse()."
+evidence:
+  - "Direct reproduction: ast.parse('a ' * 5000) raises MemoryError; ast.parse('a ' * 1000) raises SyntaxError (the already-handled case)."
+  - "End-to-end CLI reproduction: 2-file project, one crash-trigger file (~20KB) + one legitimate file with a real prohibited-pattern finding -> pre-fix: exit 2, generic 'Internal error', no manifest, finding lost. Post-fix: exit 1, manifest written, completion_status=completed, the genuine finding correctly reported."
+tradeoffs: >
+  None identified — this restores build_context_map()'s own pre-existing
+  documented contract ('graceful degradation... no breakage') rather than
+  introducing new behaviour or a new tradeoff.
+security_impact: "Positive — closes a full scan-availability failure reachable by a single small (~10 KB) adversarial or even accidentally-malformed file anywhere in a repository."
+privacy_impact: none
+accessibility_impact: none
+compatibility_impact: "None. No signature change; return value {} on this new failure path is identical in shape to the existing SyntaxError/ValueError path, and callers already handle an empty context map (that is the whole point of the function's graceful-degradation design)."
+maintenance_cost: "Negligible — two additional exception types in one existing except clause."
+revisit_trigger: >
+  If evidence emerges of other CPython stdlib calls in this codebase
+  (beyond ast.parse() in build_context_map()) that can raise MemoryError/
+  RecursionError on small adversarial input, each should be reviewed
+  individually — this fix was scoped to the one call site verified to be
+  reachable from the main scan loop.
+approved_by: "user (objective/unbiased/best-practice mandate, 2026-07-14); not committed"
+```
