@@ -191,3 +191,62 @@ review_findings:
     status: fixed  # low; acceptable
     fix: "Updated cli_scan.py to programmatically derive tier counts directly from active findings."
 ```
+
+```yaml
+defect_id: DEF-005
+title: "scan_files() follows symlinks outside the project root and has no per-file size limit"
+severity: high
+affected_users: [CI users scanning untrusted/third-party PRs, any user scanning a repo they do not fully control]
+affected_interfaces: [scripts/report.py:scan_files, scripts/constants.py]
+reproduction:  # REPRODUCED 2026-07-14 (Phase 5 threat-model investigation)
+  - "Created outside/secret.py with a prohibited-pattern trigger; created proj/linked.py as a symlink to it; scan_files('proj') read the symlink target and produced a finding for content OUTSIDE the scan root."
+  - "os.walk(dirs, followlinks=False) only prevents symlinked-DIRECTORY traversal; individual symlinked FILES are still listed and were opened via filepath.read_bytes() with no origin check."
+  - "Created an 11 MB sparse file inside a project; filepath.read_bytes() had no size ceiling and would read the entire file into memory unconditionally (10 MB+ files: no limit existed at all)."
+root_cause: >
+  A scanned repository must be treated as untrusted input (e.g. a third-party
+  PR scanned in CI, or any repo the user does not fully control). Two gaps
+  compounded: (1) no check that a file's resolved (symlink-following) path
+  stays within project_root before it is opened — a symlink could point
+  anywhere the scanning process can read (CI secrets, SSH keys, /etc/passwd);
+  (2) no MAX_FILE_SIZE_BYTES ceiling, so a single huge file (accidental or
+  adversarial) could be read fully into memory with no bound.
+required_invariant: >
+  Every file must be verified to resolve within the project root (via
+  Path.resolve() + relative_to()) and to be under a fixed size ceiling BEFORE
+  any read is attempted. A rejection for either reason must count as a
+  dangerous skip (same class as unreadable/undecodable/notebook_corrupt) so
+  the scan is honestly reported as partial (completion_status =
+  "completed_with_skips"), since a prohibited pattern could be hiding in the
+  excluded content.
+regression_test: >
+  tests/test_scan_security.py: test_symlink_escape_is_not_followed,
+  test_symlink_within_project_root_is_still_scanned (false-positive check),
+  test_oversized_file_is_rejected_before_reading,
+  test_file_under_size_limit_scans_normally (regression check).
+status: resolved
+dependencies: []
+introduced_by: not_investigated  # present since scan_files() was introduced; not previously threat-modelled
+resolved_by: >
+  Added scripts/constants.py:MAX_FILE_SIZE_BYTES (10 MB) and
+  scripts/report.py:_is_safe_to_scan(filepath, project_root), a single gate
+  applied to every file in the scan loop BEFORE any stat/read beyond a
+  resolve() + size check. Rejections route through the existing
+  _record_skip() mechanism (same one used by DEF-004's F1-F5 fixes), so
+  skip_reasons in the AnalysisManifest gained two new values:
+  "symlink_escape" and "oversized". No changes to scan_files()'s signature
+  or return type (zero blast radius across its 40+ callers, consistent with
+  the D-002/D-003 design principle).
+verification:
+  - "Manual reproduction of both exploits, re-run post-fix: symlink-escape -> 0 findings, completion_status=completed_with_skips, skip_reasons.symlink_escape=1 (was: content read and a real finding produced). Oversized file -> 0 findings, skip_reasons.oversized=1, file never read into memory (was: no limit at all)."
+  - "tests/test_scan_security.py: 4/4 passed (pytest)."
+  - "False-positive checks: an in-root symlink still scans normally; a normal-sized file is completely unaffected by the size check."
+  - "Full suite: pytest tests/ -q -> 2520 passed, 32 skipped, 0 failed."
+  - "Custom runner: 1362 passed, 0 failed (904 test functions, +4)."
+  - "self-test / doctor: PASS."
+  - "py_compile scripts/report.py scripts/constants.py: OK."
+limitations:
+  - "MAX_FILE_SIZE_BYTES (10 MB) is a fixed constant, not yet user-configurable via CLI flag or policy config. If a legitimate use case needs to scan larger files, this would need to become configurable in a future phase."
+  - "The size check uses Path.stat() before read, which has a theoretical TOCTOU race (file could grow between stat and read) — acceptable here because the consequence of a missed race is bounded (worst case reads up to the OS's actual delivered bytes for one file), not a security bypass of the control's intent."
+  - "Verified on Python 3.11.8 / macOS only; symlink behavior on Windows (which has different symlink permission semantics) not verified. Both new tests defensively skip (return early) if symlink creation raises OSError, so they will not falsely fail on platforms without symlink support."
+```
+```

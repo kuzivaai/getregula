@@ -10,9 +10,24 @@ report.py had 12 extensions while discover_ai_systems.py had 7, causing
 Regula to claim "8 languages" while actually scanning fewer.
 """
 
-__all__ = ["VERSION", "CODE_EXTENSIONS", "SKIP_DIRS", "MODEL_EXTENSIONS", "OPT_IN_CATEGORIES"]
+__all__ = ["VERSION", "CODE_EXTENSIONS", "SKIP_DIRS", "MODEL_EXTENSIONS", "OPT_IN_CATEGORIES",
+           "MAX_FILE_SIZE_BYTES"]
 
 VERSION = "1.7.4"
+
+# Threat model (Phase 5, 2026-07-13): a scanned repository is untrusted input
+# (e.g. a third-party PR scanned in CI). Two controls close verified gaps:
+#   1. File-size ceiling — filepath.read_bytes() previously had no limit, so
+#      a single huge file (accidental or adversarial) could exhaust memory.
+#      10 MB comfortably covers real-world source files (large minified
+#      bundles usually live under dist/build, already in SKIP_DIRS) while
+#      bounding worst-case memory use per file.
+#   2. Symlink-escape check (see report.py:_resolve_safe) — a symlink inside
+#      the scan root that points outside it let Regula read arbitrary files
+#      reachable by the scanning process (CI secrets, SSH keys, etc.).
+#      Verified via reproduction: a symlink to a file outside the project
+#      root was followed and its content scanned before this fix.
+MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024  # 10 MB per file
 
 # File extensions scanned for AI patterns and risk classification.
 # Covers: Python, JavaScript, TypeScript, Java, Go, Rust, C, C++, Jupyter notebooks
