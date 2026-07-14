@@ -209,6 +209,7 @@ class RegulaHandler(BaseHTTPRequestHandler):
         if min_tier not in valid_tiers:
             self._send_error(400, f"Invalid min_tier: {min_tier!r}")
             return
+        strict = bool(body.get("strict", False))
         skip_tests = bool(body.get("skip_tests", False))
 
         try:
@@ -223,7 +224,15 @@ class RegulaHandler(BaseHTTPRequestHandler):
             findings.sort(
                 key=lambda f: (f.get("file", ""), f.get("line", 0), f.get("pattern", ""))
             )
-            envelope = _build_envelope("check", findings)
+            
+            # DEF-008: Populate correct exit_code in envelope
+            _exit_code = 0
+            if any(f.get("tier") == "prohibited" for f in findings):
+                _exit_code = 1
+            elif strict and any(f.get("tier") == "high_risk" for f in findings):
+                _exit_code = 1
+                
+            envelope = _build_envelope("check", findings, _exit_code)
             self._send_json(200, envelope)
         except Exception as e:
             sys.stderr.write(f"Error in /v1/check: {traceback.format_exc()}\n")
@@ -254,7 +263,11 @@ class RegulaHandler(BaseHTTPRequestHandler):
         try:
             from classify_risk import classify
             result = classify(text)
-            envelope = _build_envelope("classify", result.to_dict())
+            
+            # DEF-008: Populate correct exit_code in envelope
+            _exit_code = 1 if result.tier.value == "prohibited" else 0
+            
+            envelope = _build_envelope("classify", result.to_dict(), _exit_code)
             self._send_json(200, envelope)
         except Exception as e:
             sys.stderr.write(f"Error in /v1/classify: {traceback.format_exc()}\n")
@@ -286,6 +299,7 @@ class RegulaHandler(BaseHTTPRequestHandler):
             self._send_error(403, "Path must be within the current working directory")
             return
 
+        strict = bool(body.get("strict", False))
         articles = body.get("articles")
         if articles is not None:
             if not isinstance(articles, list):
@@ -298,7 +312,13 @@ class RegulaHandler(BaseHTTPRequestHandler):
         try:
             from compliance_check import assess_compliance
             assessment = assess_compliance(str(target), articles=articles)
-            envelope = _build_envelope("gap", assessment)
+            
+            # DEF-008: Populate correct exit_code in envelope
+            _exit_code = 0
+            if strict and assessment.get("overall_score", 100) < 50:
+                _exit_code = 1
+                
+            envelope = _build_envelope("gap", assessment, _exit_code)
             self._send_json(200, envelope)
         except Exception as e:
             sys.stderr.write(f"Error in /v1/gap: {traceback.format_exc()}\n")

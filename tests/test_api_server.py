@@ -496,6 +496,58 @@ def test_classify_success():
     assert body["regula_version"] == VERSION
 
 
+def test_classify_prohibited_exit_code_in_envelope():
+    """DEF-008 class: POST /v1/classify's envelope exit_code must reflect a
+    prohibited classification (1), not always hardcode 0. Reproduced
+    pre-fix: the envelope always reported exit_code=0 even when
+    result.tier.value == "prohibited"."""
+    import types
+
+    mock_result = MagicMock()
+    mock_result.tier.value = "prohibited"
+    mock_result.to_dict.return_value = {
+        "tier": "prohibited",
+        "confidence": "high",
+        "action": "block",
+    }
+
+    mock_module = types.ModuleType("classify_risk")
+    mock_module.classify = MagicMock(return_value=mock_result)
+
+    with patch.dict("sys.modules", {"classify_risk": mock_module}):
+        status, body = _dispatch_request(
+            "POST", "/v1/classify",
+            json_body={"input": "social credit scoring system for citizens"},
+        )
+    assert status == 200
+    assert body["data"]["tier"] == "prohibited"
+    assert body["exit_code"] == 1, (
+        "envelope exit_code must be 1 for a prohibited classification, "
+        f"got {body['exit_code']}"
+    )
+
+
+def test_classify_non_prohibited_exit_code_zero():
+    """False-positive/regression check: a non-prohibited classification
+    must still report exit_code=0, unaffected by the fix above."""
+    import types
+
+    mock_result = MagicMock()
+    mock_result.tier.value = "minimal_risk"
+    mock_result.to_dict.return_value = {"tier": "minimal_risk"}
+
+    mock_module = types.ModuleType("classify_risk")
+    mock_module.classify = MagicMock(return_value=mock_result)
+
+    with patch.dict("sys.modules", {"classify_risk": mock_module}):
+        status, body = _dispatch_request(
+            "POST", "/v1/classify",
+            json_body={"input": "a simple calculator function"},
+        )
+    assert status == 200
+    assert body["exit_code"] == 0
+
+
 def test_classify_internal_error():
     """POST /v1/classify returns 500 when classify() raises."""
     import types
@@ -609,6 +661,81 @@ def test_check_success():
     assert len(data) == 3
     assert data[0]["file"] == "a.py"
     assert data[0]["line"] == 3
+
+
+def test_check_prohibited_exit_code_in_envelope():
+    """DEF-008 class: POST /v1/check's envelope exit_code must reflect a
+    prohibited-tier finding (1), not always hardcode 0. Reproduced pre-fix:
+    the envelope always reported exit_code=0 regardless of findings."""
+    import types
+
+    mock_findings = [
+        {"file": "a.py", "line": 1, "pattern": "social_scoring", "tier": "prohibited"},
+    ]
+    mock_module = types.ModuleType("report")
+    mock_module.scan_files = MagicMock(return_value=list(mock_findings))
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        target = Path(tmpdir).resolve()
+        with patch("pathlib.Path.cwd", return_value=target.parent), \
+             patch.dict("sys.modules", {"report": mock_module}):
+            status, body = _dispatch_request(
+                "POST", "/v1/check",
+                json_body={"path": tmpdir},
+            )
+    assert status == 200
+    assert body["exit_code"] == 1, (
+        "envelope exit_code must be 1 when a prohibited-tier finding is "
+        f"present, got {body['exit_code']}"
+    )
+
+
+def test_check_clean_exit_code_zero():
+    """False-positive/regression check: no findings must still report
+    exit_code=0, unaffected by the fix above."""
+    import types
+
+    mock_module = types.ModuleType("report")
+    mock_module.scan_files = MagicMock(return_value=[])
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        target = Path(tmpdir).resolve()
+        with patch("pathlib.Path.cwd", return_value=target.parent), \
+             patch.dict("sys.modules", {"report": mock_module}):
+            status, body = _dispatch_request(
+                "POST", "/v1/check",
+                json_body={"path": tmpdir},
+            )
+    assert status == 200
+    assert body["exit_code"] == 0
+
+
+def test_check_high_risk_strict_exit_code():
+    """A high_risk-tier finding (not prohibited) only triggers exit_code=1
+    when strict=True is passed in the request body -- mirroring the CLI's
+    --strict/--ci semantics."""
+    import types
+
+    mock_findings = [
+        {"file": "a.py", "line": 1, "pattern": "credit_scoring", "tier": "high_risk"},
+    ]
+    mock_module = types.ModuleType("report")
+    mock_module.scan_files = MagicMock(return_value=list(mock_findings))
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        target = Path(tmpdir).resolve()
+        with patch("pathlib.Path.cwd", return_value=target.parent), \
+             patch.dict("sys.modules", {"report": mock_module}):
+            status_lenient, body_lenient = _dispatch_request(
+                "POST", "/v1/check",
+                json_body={"path": tmpdir},
+            )
+            status_strict, body_strict = _dispatch_request(
+                "POST", "/v1/check",
+                json_body={"path": tmpdir, "strict": True},
+            )
+    assert body_lenient["exit_code"] == 0, "high_risk alone (no strict) must not fail"
+    assert body_strict["exit_code"] == 1, "high_risk + strict=True must fail"
 
 
 def test_check_skip_tests_flag():
@@ -731,6 +858,54 @@ def test_gap_success():
     # Verify articles were passed through
     call_kwargs = mock_module.assess_compliance.call_args
     assert call_kwargs[1]["articles"] == [9, "10"]
+
+
+def test_gap_strict_low_score_exit_code_in_envelope():
+    """DEF-008 class: POST /v1/gap's envelope exit_code must reflect
+    strict=True + a low overall_score (1), not always hardcode 0.
+    Reproduced pre-fix: the envelope always reported exit_code=0 even when
+    the CLI's equivalent (`gap --strict`) would exit 1."""
+    import types
+
+    mock_assessment = {"status": "gaps_found", "overall_score": 2, "gaps": ["..."]}
+    mock_module = types.ModuleType("compliance_check")
+    mock_module.assess_compliance = MagicMock(return_value=mock_assessment)
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        target = Path(tmpdir).resolve()
+        with patch("pathlib.Path.cwd", return_value=target.parent), \
+             patch.dict("sys.modules", {"compliance_check": mock_module}):
+            status, body = _dispatch_request(
+                "POST", "/v1/gap",
+                json_body={"path": tmpdir, "strict": True},
+            )
+    assert status == 200
+    assert body["exit_code"] == 1, (
+        "envelope exit_code must be 1 for strict=True + overall_score<50, "
+        f"got {body['exit_code']}"
+    )
+
+
+def test_gap_low_score_without_strict_exit_code_zero():
+    """False-positive/regression check: a low overall_score WITHOUT
+    strict=True must still report exit_code=0, matching CLI semantics
+    (--strict is required to turn a low score into a failure)."""
+    import types
+
+    mock_assessment = {"status": "gaps_found", "overall_score": 2, "gaps": ["..."]}
+    mock_module = types.ModuleType("compliance_check")
+    mock_module.assess_compliance = MagicMock(return_value=mock_assessment)
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        target = Path(tmpdir).resolve()
+        with patch("pathlib.Path.cwd", return_value=target.parent), \
+             patch.dict("sys.modules", {"compliance_check": mock_module}):
+            status, body = _dispatch_request(
+                "POST", "/v1/gap",
+                json_body={"path": tmpdir},
+            )
+    assert status == 200
+    assert body["exit_code"] == 0
 
 
 def test_gap_articles_none_omitted():

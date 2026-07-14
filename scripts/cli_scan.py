@@ -826,20 +826,27 @@ def cmd_classify(args) -> None:
 
     result = classify(text)
 
+    # Compute the verdict exit code ONCE so json and text modes agree (DEF-008
+    # class: previously the json branch returned with a hardcoded envelope
+    # exit_code=0 AND skipped the sys.exit below, so `classify --format json`
+    # on prohibited content reported "clear" via BOTH the envelope field and
+    # the process exit code, while text mode correctly exited 1).
+    _classify_exit = 1 if result.tier.value == "prohibited" else 0
+
     if args.format == "json":
         import json as _json
         try:
             data = _json.loads(result.to_json())
         except (ValueError, TypeError, AttributeError):
             data = result.to_json()
-        json_output("classify", data)
-        return
+        json_output("classify", data, exit_code=_classify_exit)
+        sys.exit(_classify_exit)
     else:
         print(result.message)
         if result.exceptions:
             print(f"  Exceptions: {result.exceptions}")
 
-    sys.exit(1 if result.tier.value == "prohibited" else 0)
+    sys.exit(_classify_exit)
 
 
 def cmd_discover(args) -> None:
@@ -919,13 +926,19 @@ def cmd_guardrails(args) -> None:
         _validate_path(args.project)
     result = scan_for_guardrails(args.project)
     fmt = getattr(args, "format", "text")
+    # Compute the verdict exit code ONCE so json and text modes agree
+    # (DEF-008 class: json_output("guardrails", ...) previously always
+    # hardcoded envelope exit_code=0, contradicting the real process exit
+    # code under --strict/--ci with a low overall_score).
+    _guardrails_exit = 0
+    if (getattr(args, "strict", False) or getattr(args, "ci", False)) and result.get("overall_score", 0) < 50:
+        _guardrails_exit = 1
     if fmt == "json":
-        json_output("guardrails", result)
+        json_output("guardrails", result, exit_code=_guardrails_exit)
     else:
         print(format_guardrails_text(result))
-    if getattr(args, "strict", False) or getattr(args, "ci", False):
-        if result.get("overall_score", 0) < 50:
-            sys.exit(1)
+    if _guardrails_exit:
+        sys.exit(_guardrails_exit)
 
 
 def _print_suppression_audit(findings: list) -> None:
