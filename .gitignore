@@ -126,3 +126,6 @@ references/*.pdf
 # Chromium/Lighthouse temp profiles occasionally dumped into the repo root
 # by lighthouse runs under WSL (literal "C:\Users\..." directory names).
 C:*
+vscode-extension/.vscode-test/
+vscode-extension/out/
+vscode-extension/*.vsix

@@ -92,10 +92,6 @@
         "command": "regula.scanWorkspace",
         "title": "Regula: Scan Workspace",
         "icon": "$(refresh)"
-      },
-      {
-        "command": "regula.fixAll",
-        "title": "Regula: Fix All (add regula-ignore to all findings)"
       }
     ],
     "menus": {
@@ -185,8 +181,9 @@
   "scripts": {
     "vscode:prepublish": "node esbuild.js --production",
     "compile": "node esbuild.js",
+    "typecheck": "tsc --noEmit",
     "watch": "node esbuild.js --watch",
-    "typecheck": "tsc --noEmit"
+    "test": "tsc -p . && vscode-test"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
