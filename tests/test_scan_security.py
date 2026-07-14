@@ -1,20 +1,34 @@
-"""Tests for scan-time path-safety controls (Phase 5 threat model, 2026-07-13).
+"""Tests for scan-time path-safety and CPU/memory-exhaustion controls
+(Phase 5 threat model, 2026-07-13 and 2026-07-14).
 
 A scanned repository is untrusted input (e.g. a third-party PR scanned in
-CI). Two verified gaps were closed in scripts/report.py:_is_safe_to_scan:
+CI). Verified gaps closed in scripts/report.py and scripts/ast_context.py:
 
-  1. symlink_escape — a symlink inside the scan root that resolves outside
-     project_root was previously followed and its content scanned. This
-     let a malicious repository read arbitrary files reachable by the
+  1. symlink_escape             — a symlink inside the scan root resolving
+     outside project_root was previously followed and its content scanned.
+     Let a malicious repository read arbitrary files reachable by the
      scanning process (CI secrets, SSH keys, /etc/passwd, etc).
-  2. oversized       — filepath.read_bytes() had no size limit, so a single
-     huge file (accidental or adversarial) could exhaust memory.
+  2. oversized                  — filepath.read_bytes() had no size limit,
+     so a single huge file (accidental or adversarial) could exhaust memory.
+  3. oversized_for_classification — several built-in prohibited/high-risk
+     regex patterns use a (?:word)[^"\n]{0,30}(?:word) shape applied via
+     re.search() against WHOLE-FILE content. Dense adversarial repetition
+     of the leading trigger word degrades near-linearly with length:
+     measured 27.8s worst-case on a 10MB adversarial file across the full
+     4-call classification pipeline. MAX_CLASSIFY_CHARS bounds this.
+  4. ast.parse() MemoryError    — CPython's own parser can raise MemoryError
+     on pathological (but TINY, ~10-20 KB) input consisting of many bare
+     word tokens with no other structure. This was uncaught in
+     build_context_map() and crashed the scan of the ENTIRE repository
+     (not just the one file) with no manifest written — a single small
+     adversarial or malformed .py file anywhere in a repo denied service
+     to scanning every other file in it.
 
-Both are reproduced here exactly as they were reproduced manually before
-the fix, and asserted closed. A skipped file of either kind must also mark
-the scan as partial (completion_status == "completed_with_skips"), since a
-prohibited pattern could be hiding in the excluded content — the same
-invariant as the F1-F5 skip-accounting fixes.
+All are reproduced here exactly as they were reproduced manually before
+the fix, and asserted closed. A skipped file of any dangerous-skip kind
+must also mark the scan as partial (completion_status ==
+"completed_with_skips"), since a prohibited pattern could be hiding in the
+excluded content — the same invariant as the F1-F5 skip-accounting fixes.
 
 These tests run under both the custom runner (tests/test_classification.py)
 and pytest, following the tests/test_analysis_manifest.py convention.
@@ -141,3 +155,69 @@ def test_file_under_size_limit_scans_normally():
         assert m["completion_status"] == "completed"
         assert m["counts"]["skipped_total"] == 0
         assert m["counts"]["findings_total"] >= 1
+
+
+def test_dense_trigger_content_is_capped_for_classification():
+    """A file saturated with a regex trigger keyword (dense repetition of
+    e.g. "score ") must not cause pathological classification slowdown.
+    Reproduces the verified pre-fix cost: a single such pattern took 2.48s
+    on a 10MB file, and the full classification pipeline took 27.8s.
+    Content beyond MAX_CLASSIFY_CHARS is truncated for classification and
+    the file is marked as a dangerous (partial-scan) skip."""
+    import time
+    with tempfile.TemporaryDirectory() as d:
+        proj = Path(d) / "proj"
+        proj.mkdir()
+        # ~2.9 MB of dense trigger-word repetition — well over
+        # MAX_CLASSIFY_CHARS (1 MB) but under MAX_FILE_SIZE_BYTES (10 MB),
+        # so it reaches the classification cap specifically.
+        (proj / "adversarial.py").write_text("score " * 500_000)
+
+        start = time.perf_counter()
+        exit_code, m = _run_check(proj, d)
+        elapsed = time.perf_counter() - start
+
+        assert elapsed < 15.0, (
+            f"classification took {elapsed:.1f}s on adversarial content; "
+            "expected the MAX_CLASSIFY_CHARS cap to bound this well under "
+            "the un-capped worst case (27.8s measured pre-fix on 10MB)"
+        )
+        assert exit_code == 0
+        assert m["completion_status"] == "completed_with_skips", m["completion_status"]
+        assert m["counts"]["skip_reasons"].get("oversized_for_classification", 0) >= 1
+
+
+def test_ast_parse_memory_error_does_not_crash_entire_scan():
+    """A tiny (~20 KB) file consisting of many bare word tokens with no
+    other Python structure can make CPython's own ast.parse() raise
+    MemoryError. Before the fix, this was uncaught in
+    ast_context.build_context_map() and crashed the scan of the ENTIRE
+    project — including losing findings in unrelated, legitimate files —
+    with exit code 2 and no manifest written. After the fix, the crashing
+    file degrades gracefully (same as a SyntaxError) and every other file
+    in the project is still scanned and reported correctly."""
+    with tempfile.TemporaryDirectory() as d:
+        proj = Path(d) / "proj"
+        proj.mkdir()
+        # Reproduces the exact minimal trigger verified during investigation:
+        # ast.parse("a " * 5000) raises MemoryError in CPython 3.11.
+        (proj / "tiny_crash.py").write_text("a " * 10000)
+        (proj / "normal.py").write_text(
+            "def social_credit_score(citizen):\n"
+            "    return compute_social_score(citizen.behavior_history)\n"
+        )
+
+        exit_code, m = _run_check(proj, d)
+
+        assert exit_code == 1, (
+            "the legitimate prohibited finding in normal.py must still be "
+            "detected and reported even though tiny_crash.py would have "
+            "crashed ast.parse() prior to the fix"
+        )
+        assert m is not None, (
+            "a manifest must be written — the crash must not abort the "
+            "whole scan before completion"
+        )
+        assert m["completion_status"] == "completed"
+        assert m["counts"]["scanned"] == 2
+        assert m["counts"]["prohibited"] >= 1

@@ -11,7 +11,7 @@ Regula to claim "8 languages" while actually scanning fewer.
 """
 
 __all__ = ["VERSION", "CODE_EXTENSIONS", "SKIP_DIRS", "MODEL_EXTENSIONS", "OPT_IN_CATEGORIES",
-           "MAX_FILE_SIZE_BYTES"]
+           "MAX_FILE_SIZE_BYTES", "MAX_CLASSIFY_CHARS"]
 
 VERSION = "1.7.4"
 
@@ -28,6 +28,28 @@ VERSION = "1.7.4"
 #      Verified via reproduction: a symlink to a file outside the project
 #      root was followed and its content scanned before this fix.
 MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024  # 10 MB per file
+
+# Classification-time content cap (Phase 5 threat model, continued 2026-07-14).
+# Empirically measured: several built-in prohibited/high-risk patterns use a
+# `(?:word1|word2)[^"\n]{0,30}(?:word3|word4)` shape. Applied via re.search()
+# against WHOLE-FILE content (not per-line), dense adversarial repetition of
+# the leading trigger word degrades near-linearly with content length: a
+# single such pattern took 2.48s against a 10MB file saturated with a
+# trigger word, and the full 4-call classification pipeline
+# (check_prohibited/check_high_risk/check_limited_risk/check_bias_risk) took
+# 27.8s at MAX_FILE_SIZE_BYTES on adversarial content. This is bounded
+# (not exponential ReDoS) but is a real CPU-exhaustion vector on a scanned
+# repository, which must be treated as untrusted input.
+#
+# The largest legitimate source file in this codebase is ~95 KB. 1 MB is a
+# generous ceiling for real code (10x+ margin) while keeping worst-case
+# adversarial classification time to ~3s per file (empirically measured).
+# Content beyond this cap is truncated for CLASSIFICATION PURPOSES ONLY
+# (the file is still fully readable/hashable elsewhere); the truncation is
+# recorded as a dangerous skip so the scan is honestly reported as partial —
+# a pattern could be hiding past the cap, consistent with the DEF-004/DEF-005
+# principle that partial analysis must never present as a clean completion.
+MAX_CLASSIFY_CHARS = 1 * 1024 * 1024  # 1 MB
 
 # File extensions scanned for AI patterns and risk classification.
 # Covers: Python, JavaScript, TypeScript, Java, Go, Rust, C, C++, Jupyter notebooks
