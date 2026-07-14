@@ -50,14 +50,22 @@ def cmd_deps(args) -> None:
         _validate_path(args.project)
     from dependency_scan import scan_dependencies, format_dep_text
     results = scan_dependencies(args.project)
+    # Compute the verdict exit code ONCE so json and text modes agree
+    # (DEF-008 class: json_output("deps", ...) previously always hardcoded
+    # envelope exit_code=0, contradicting the real process exit code when
+    # compromised dependencies are found — unconditionally, not even
+    # gated behind --strict — or when --strict + low pinning_score applies).
+    _deps_exit = 0
+    if results.get("compromised_count", 0) > 0:
+        _deps_exit = 1
+    elif args.strict and results.get("pinning_score", 100) < 50:
+        _deps_exit = 1
     if args.format == "json":
-        json_output("deps", results)
+        json_output("deps", results, exit_code=_deps_exit)
     else:
         print(format_dep_text(results))
-    if results.get("compromised_count", 0) > 0:
-        sys.exit(1)
-    elif args.strict and results.get("pinning_score", 100) < 50:
-        sys.exit(1)
+    if _deps_exit:
+        sys.exit(_deps_exit)
 
 
 def cmd_bias(args) -> None:
@@ -261,15 +269,21 @@ def cmd_owasp_agentic(args) -> None:
         _validate_path(args.project)
     result = assess_owasp_agentic(args.project)
     fmt = getattr(args, "format", "text")
-    if fmt == "json":
-        json_output("owasp-agentic", result)
-    else:
-        print(format_owasp_agentic_text(result))
-    # CI mode: exit 1 if any risk is at_risk
+    # Compute the verdict exit code ONCE so json and text modes agree
+    # (DEF-008 class: json_output("owasp-agentic", ...) previously always
+    # hardcoded envelope exit_code=0, contradicting the real process exit
+    # code under --strict/--ci with an at_risk finding).
+    _owasp_exit = 0
     if getattr(args, "strict", False) or getattr(args, "ci", False):
         at_risk = [r for r in result.get("risks", []) if r.get("status") == "at_risk"]
         if at_risk:
-            sys.exit(1)
+            _owasp_exit = 1
+    if fmt == "json":
+        json_output("owasp-agentic", result, exit_code=_owasp_exit)
+    else:
+        print(format_owasp_agentic_text(result))
+    if _owasp_exit:
+        sys.exit(_owasp_exit)
 
 
 def cmd_ai_codegen(args) -> None:
@@ -284,10 +298,17 @@ def cmd_ai_codegen(args) -> None:
         include_git=not getattr(args, "no_git", False),
     )
     fmt = getattr(args, "format", "text")
-    if fmt == "json":
-        json_output("ai-codegen", result)
-    else:
-        print(format_ai_codegen_text(result))
+    # Compute the verdict exit code ONCE so json and text modes agree
+    # (DEF-008 class: json_output("ai-codegen", ...) previously always
+    # hardcoded envelope exit_code=0, contradicting the real process exit
+    # code under --strict/--ci when transparency_compliant is False).
+    _codegen_exit = 0
     if getattr(args, "strict", False) or getattr(args, "ci", False):
         if not result.get("summary", {}).get("transparency_compliant", False):
-            sys.exit(1)
+            _codegen_exit = 1
+    if fmt == "json":
+        json_output("ai-codegen", result, exit_code=_codegen_exit)
+    else:
+        print(format_ai_codegen_text(result))
+    if _codegen_exit:
+        sys.exit(_codegen_exit)

@@ -132,6 +132,186 @@ def test_check_html_exit_code_reflects_warn_tier_under_strict():
         )
 
 
+def test_classify_json_exit_code_matches_process_exit_code():
+    """DEF-008 class, found in `classify` (not just `check`/`assess`):
+    `classify --format json` previously RETURNED before reaching its own
+    sys.exit(), so a prohibited classification reported exit_code=0 in the
+    envelope AND process exit 0 in json mode, while text mode correctly
+    exited 1 for the identical input."""
+    rc_text, _, _ = run_cli(
+        "classify", "--input", "social credit scoring system for citizens"
+    )
+    assert rc_text == 1, f"expected text mode rc=1, got {rc_text}"
+
+    rc_json, out_json, err = run_cli(
+        "classify", "--input", "social credit scoring system for citizens",
+        "--format", "json",
+    )
+    assert rc_json == 1, f"expected json mode rc=1 (matching text), got {rc_json}: {err[:200]}"
+    payload = json.loads(out_json)
+    assert payload["exit_code"] == 1, (
+        f"envelope exit_code must match process exit code; got {payload['exit_code']}"
+    )
+    assert payload["data"]["tier"] == "prohibited"
+
+
+def test_classify_json_exit_code_zero_on_benign_input():
+    """False-positive/regression check for the classify fix above."""
+    rc, out, err = run_cli(
+        "classify", "--input", "a simple calculator function",
+        "--format", "json",
+    )
+    assert rc == 0, f"expected rc=0 for benign input, got {rc}: {err[:200]}"
+    payload = json.loads(out)
+    assert payload["exit_code"] == 0
+
+
+def test_gap_strict_json_exit_code_matches_process_exit_code():
+    """DEF-008 class, found in `gap`: json_output("gap", ...) previously
+    always hardcoded envelope exit_code=0, contradicting the real process
+    exit code under --strict with a low overall_score."""
+    import tempfile
+    from pathlib import Path as _Path
+    with tempfile.TemporaryDirectory() as d:
+        proj = _Path(d) / "proj"
+        proj.mkdir()
+        (proj / "empty.py").write_text("x = 1\n")
+
+        rc, out, err = run_cli(
+            "gap", "--project", str(proj), "--strict", "--format", "json"
+        )
+        assert rc == 1, f"expected rc=1 for a low-score project under --strict, got {rc}: {err[:200]}"
+        payload = json.loads(out)
+        assert payload["exit_code"] == 1, (
+            f"envelope exit_code must match process exit code; got {payload['exit_code']}"
+        )
+
+
+def test_gap_low_score_without_strict_exit_code_zero():
+    """False-positive/regression check: the same low-scoring project
+    WITHOUT --strict must report exit_code=0 in both signals."""
+    import tempfile
+    from pathlib import Path as _Path
+    with tempfile.TemporaryDirectory() as d:
+        proj = _Path(d) / "proj"
+        proj.mkdir()
+        (proj / "empty.py").write_text("x = 1\n")
+
+        rc, out, err = run_cli("gap", "--project", str(proj), "--format", "json")
+        assert rc == 0, f"expected rc=0 without --strict, got {rc}: {err[:200]}"
+        payload = json.loads(out)
+        assert payload["exit_code"] == 0
+
+
+def test_gpai_check_strict_json_exit_code_matches_process_exit_code():
+    """DEF-008 class, found in `gpai-check`: json_output("gpai-check", ...)
+    previously always hardcoded envelope exit_code=0, contradicting the
+    real process exit code under --strict with a FAIL in the summary."""
+    import tempfile
+    from pathlib import Path as _Path
+    with tempfile.TemporaryDirectory() as d:
+        proj = _Path(d) / "proj"
+        proj.mkdir()
+        (proj / "empty.py").write_text("x = 1\n")
+
+        rc, out, err = run_cli(
+            "gpai-check", str(proj), "--strict", "--format", "json"
+        )
+        assert rc == 1, f"expected rc=1 (FAIL present) under --strict, got {rc}: {err[:200]}"
+        payload = json.loads(out)
+        assert payload["exit_code"] == 1, (
+            f"envelope exit_code must match process exit code; got {payload['exit_code']}"
+        )
+        assert payload["data"]["summary"]["FAIL"] > 0
+
+
+def test_guardrails_strict_json_exit_code_matches_process_exit_code():
+    """DEF-008 class, found in `guardrails`: json_output("guardrails", ...)
+    previously always hardcoded envelope exit_code=0, contradicting the
+    real process exit code under --strict/--ci with a low overall_score."""
+    import tempfile
+    from pathlib import Path as _Path
+    with tempfile.TemporaryDirectory() as d:
+        proj = _Path(d) / "proj"
+        proj.mkdir()
+        (proj / "empty.py").write_text("x = 1\n")
+
+        rc, out, err = run_cli(
+            "guardrails", str(proj), "--strict", "--format", "json"
+        )
+        assert rc == 1, f"expected rc=1 (low score) under --strict, got {rc}: {err[:200]}"
+        payload = json.loads(out)
+        assert payload["exit_code"] == 1, (
+            f"envelope exit_code must match process exit code; got {payload['exit_code']}"
+        )
+
+
+def test_deps_strict_json_exit_code_matches_process_exit_code():
+    """DEF-008 class, found in `deps`: json_output("deps", ...) previously
+    always hardcoded envelope exit_code=0, contradicting the real process
+    exit code when compromised deps are found (unconditionally) or under
+    --strict with a low pinning_score. Uses the existing
+    tests/fixtures/sample_unpinned fixture, which is already known to
+    produce a low pinning_score."""
+    rc, out, err = run_cli(
+        "deps", "tests/fixtures/sample_unpinned", "--strict", "--format", "json"
+    )
+    assert rc == 1, f"expected rc=1 (low pinning_score) under --strict, got {rc}: {err[:200]}"
+    payload = json.loads(out)
+    assert payload["exit_code"] == 1, (
+        f"envelope exit_code must match process exit code; got {payload['exit_code']}"
+    )
+    assert payload["data"]["pinning_score"] < 50
+
+
+def test_owasp_agentic_strict_json_exit_code_matches_process_exit_code():
+    """DEF-008 class, found in `owasp-agentic`: json_output("owasp-agentic",
+    ...) previously always hardcoded envelope exit_code=0, contradicting the
+    real process exit code under --strict/--ci with an at_risk finding."""
+    import tempfile
+    from pathlib import Path as _Path
+    with tempfile.TemporaryDirectory() as d:
+        proj = _Path(d) / "proj"
+        proj.mkdir()
+        # ASI01 vuln pattern (agent goal hijack): user_input concatenated
+        # directly into a system prompt, with no matching control pattern.
+        (proj / "agent.py").write_text("system_prompt = base + user_input\n")
+
+        rc, out, err = run_cli(
+            "owasp-agentic", str(proj), "--strict", "--format", "json"
+        )
+        assert rc == 1, f"expected rc=1 (at_risk finding) under --strict, got {rc}: {err[:200]}"
+        payload = json.loads(out)
+        assert payload["exit_code"] == 1, (
+            f"envelope exit_code must match process exit code; got {payload['exit_code']}"
+        )
+        at_risk = [r for r in payload["data"]["risks"] if r["status"] == "at_risk"]
+        assert at_risk, "expected at least one at_risk finding"
+
+
+def test_ai_codegen_strict_json_exit_code_matches_process_exit_code():
+    """DEF-008 class, found in `ai-codegen`: json_output("ai-codegen", ...)
+    previously always hardcoded envelope exit_code=0, contradicting the
+    real process exit code under --strict/--ci when transparency_compliant
+    is False (naturally the case for a project with no AI-disclosure
+    markers at all, such as an empty project)."""
+    import tempfile
+    from pathlib import Path as _Path
+    with tempfile.TemporaryDirectory() as d:
+        proj = _Path(d) / "proj"
+        proj.mkdir()
+        (proj / "empty.py").write_text("x = 1\n")
+
+        rc, out, err = run_cli(
+            "ai-codegen", str(proj), "--strict", "--format", "json"
+        )
+        assert rc == 1, f"expected rc=1 under --strict, got {rc}: {err[:200]}"
+        payload = json.loads(out)
+        assert payload["exit_code"] == 1, (
+            f"envelope exit_code must match process exit code; got {payload['exit_code']}"
+        )
+
+
 def test_plan():
     rc, out, err = run_cli("plan", "--project", "tests/fixtures/sample_high_risk")
     assert rc == 0

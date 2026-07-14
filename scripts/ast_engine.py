@@ -22,6 +22,7 @@ from typing import Dict, List, Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
 from degradation import check_optional
+from constants import MAX_CLASSIFY_CHARS
 
 # Import existing Python AST analysis module
 sys.path.insert(0, str(Path(__file__).parent))
@@ -1563,6 +1564,21 @@ def analyse_file(content: str, filename: str, language: Optional[str] = None) ->
     """
     if language is None:
         language = detect_language(filename)
+
+    # Phase 5 threat model (DEF-006 follow-up): bound content BEFORE any
+    # language analyzer runs its whole-file regexes. The main scan path
+    # (report.py:scan_files) already truncates at MAX_CLASSIFY_CHARS, but
+    # analyse_file() is ALSO reached directly from cross_file_flow.py and
+    # compliance_check.py (the `regula gap` / oversight commands), which
+    # read files with no size cap. Empirically, the non-Python analyzers
+    # (js/ts/java/go/rust/cpp) degrade on dense adversarial input the same
+    # way the Python classification path did (Java measured ~2.2s on a 5MB
+    # trigger-saturated file). Capping here — the single choke point every
+    # analyzer flows through — protects all of them, and any future one,
+    # uniformly. Truncation only affects analysis of pathologically large
+    # inputs; the largest real source file in this codebase is ~95 KB.
+    if content is not None and len(content) > MAX_CLASSIFY_CHARS:
+        content = content[:MAX_CLASSIFY_CHARS]
 
     if language is None:
         return {

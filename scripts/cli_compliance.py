@@ -515,15 +515,19 @@ def cmd_gap(args) -> None:
         assessment["stamped_pattern_version"] = pv
     else:
         assessment["pattern_version"] = _current_pattern_version()
+    # Compute the verdict exit code ONCE so json and text modes agree
+    # (DEF-008 class: json_output("gap", ...) previously always hardcoded
+    # envelope exit_code=0, contradicting the real process exit code under
+    # --strict with a low overall_score).
+    _gap_exit = 1 if (args.strict and assessment.get("overall_score", 0) < 50) else 0
     if args.format == "json":
-        json_output("gap", assessment)
+        json_output("gap", assessment, exit_code=_gap_exit)
     else:
         print(format_gap_text(assessment))
         if pv:
             print(f"\n[stamped against pattern version: {pv}]")
-    # Exit 1 if overall score < 50 and --strict
-    if args.strict and assessment.get("overall_score", 0) < 50:
-        sys.exit(1)
+    if _gap_exit:
+        sys.exit(_gap_exit)
 
 
 def cmd_exempt(args) -> None:
@@ -550,13 +554,17 @@ def cmd_gpai_check(args) -> None:
         _validate_path(args.path)
     from gpai_check import run_gpai_check, format_gpai_check_text
     result = run_gpai_check(args.path, systemic_risk=getattr(args, "systemic_risk", False))
+    # Compute the verdict exit code ONCE so json and text modes agree
+    # (DEF-008 class: json_output("gpai-check", ...) previously always
+    # hardcoded envelope exit_code=0, contradicting the real process exit
+    # code under --strict with a FAIL present).
+    _gpai_exit = 1 if (getattr(args, "strict", False) and result["summary"].get("FAIL", 0) > 0) else 0
     if args.format == "json":
-        json_output("gpai-check", result)
+        json_output("gpai-check", result, exit_code=_gpai_exit)
     else:
         print(format_gpai_check_text(result))
-    # Exit code: 1 only if --strict and there is at least one FAIL.
-    if getattr(args, "strict", False) and result["summary"].get("FAIL", 0) > 0:
-        sys.exit(1)
+    if _gpai_exit:
+        sys.exit(_gpai_exit)
 
 
 def cmd_plan(args) -> None:
