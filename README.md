@@ -186,6 +186,7 @@ Seven endpoints: `/health`, `/v1/check`, `/v1/classify`, `/v1/gap`, `/v1/questio
 - **Solo founders and indie hackers** building AI products (with Claude Code, Cursor, or similar) who have EU users and need to know what the EU AI Act means for their code.
 - **Small teams** who want to understand their compliance exposure before it becomes a sales blocker. Enterprise procurement is already asking for AI Act evidence.
 - **Engineering teams** who want EU AI Act scanning in CI/CD to catch high-risk or prohibited patterns before they ship.
+- **AI governance consultants and advisors** — run Regula on a client's codebase to produce verifiable, reproducible compliance evidence (findings, gap analysis, auditor-ready documentation packs, signed audit trails) as part of a broader governance engagement. Every metric is CI-enforced and generated from source, so your client gets a trustworthy baseline that can be independently verified.
 
 ## What Regula is (and isn't)
 
