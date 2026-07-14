@@ -131,3 +131,54 @@ maintenance_cost: "Low. Enforced by CI."
 revisit_trigger: "None currently."
 approved_by: "user (objective/comprehensive mandate, 2026-07-13); not committed"
 ```
+
+```yaml
+decision_id: D-005
+problem: >
+  Phase 5 threat-model investigation of scan_files() (report.py) found two
+  concrete, reproduced gaps: (1) a symlinked file inside a scanned repo
+  resolving outside the project root was followed and its content scanned
+  with no origin check; (2) no per-file size ceiling existed before
+  filepath.read_bytes(), so a single huge file could exhaust memory. A
+  scanned repository must be treated as untrusted input (e.g. a third-party
+  PR scanned in CI).
+options_considered:
+  - "A: Add a single path-safety+size gate (_is_safe_to_scan) applied once per file before any read, reusing the existing _record_skip/skip_reasons/completion_status machinery from DEF-004."
+  - "B: Reject the entire scan (hard error) if any unsafe file is encountered."
+  - "C: Silently exclude unsafe files with no manifest signal (matches historical behaviour for other skip types before DEF-004)."
+selected_option: A
+rejected_options:
+  - "B: Rejected — too disruptive; a single stray symlink or one oversized generated file (e.g. a committed binary-ish artifact) would hard-fail the entire scan instead of being reported as a bounded, explainable partial scan. Inconsistent with how DEF-004 already handles other per-file skip reasons."
+  - "C: Rejected — this is exactly the DEF-004 anti-pattern (silent skip -> false-clean completion). Would reintroduce the same class of fail-open bug this program has been closing."
+evidence:
+  - "Reproduced: symlink to a file outside the scan root, containing a prohibited-pattern trigger, was read and a finding was produced BEFORE the fix; after the fix, 0 findings + skip_reasons.symlink_escape=1."
+  - "Reproduced: an 11 MB file was read into memory with no limit before the fix; after the fix (MAX_FILE_SIZE_BYTES=10MB), the file is stat()'d and rejected before any read."
+  - "False-positive checks confirm no regression: an in-root symlink still scans normally; a normal-sized file is unaffected."
+tradeoffs: >
+  Adds one new constant (MAX_FILE_SIZE_BYTES) and one new ~35-line function
+  (_is_safe_to_scan), called once per file. No change to scan_files()'s
+  signature, return type, or the 40+ existing call sites. Two new skip_reasons
+  values ("symlink_escape", "oversized") flow through the existing
+  AnalysisManifest without a schema version bump (the shape was already a
+  free-form dict of reason -> count).
+security_impact: >
+  Positive. Closes an arbitrary-file-read vector (a scanned repo's symlink
+  could previously read anything the scanning process could access — CI
+  secrets, SSH keys, /etc/passwd) and a memory-exhaustion vector (unbounded
+  single-file read).
+privacy_impact: "Positive — prevents a hostile repo from causing Regula to read and potentially surface file content the user did not intend to scan."
+accessibility_impact: none
+compatibility_impact: >
+  A file that was previously silently followed via symlink-escape (extremely
+  unlikely to be intentional/legitimate) will now be skipped and the scan
+  marked completed_with_skips. A file over 10 MB (a large but real scenario
+  for e.g. a committed lockfile or generated bundle) will likewise be
+  skipped rather than scanned. Both are surfaced explicitly in the manifest
+  (skipped_files + skip_reasons), not silent.
+maintenance_cost: "Low — one function, one constant, reuses existing skip-accounting/manifest machinery."
+revisit_trigger: >
+  If a legitimate use case needs a file size >10MB scanned, MAX_FILE_SIZE_BYTES
+  should become configurable (CLI flag or policy config) rather than raised
+  globally.
+approved_by: "user (objective/unbiased/best-practice mandate, 2026-07-14); not committed"
+```

@@ -41,8 +41,50 @@ from scan_cache import ScanCache
 # File scanner (used by both HTML and SARIF generators)
 # ---------------------------------------------------------------------------
 
-from constants import CODE_EXTENSIONS, SKIP_DIRS, MODEL_EXTENSIONS, VERSION
+from constants import CODE_EXTENSIONS, SKIP_DIRS, MODEL_EXTENSIONS, VERSION, MAX_FILE_SIZE_BYTES
 CONFIG_FILES = {".env", ".env.production", ".env.local", "docker-compose.yml", "docker-compose.yaml", "Dockerfile"}
+
+
+def _is_safe_to_scan(filepath: Path, project_root: Path) -> "tuple[bool, str]":
+    """Path-safety gate applied before any file is opened (Phase 5 threat model).
+
+    Returns (safe, reason). reason is "" when safe, otherwise one of:
+      "symlink_escape" — the file (or a symlinked ancestor directory) resolves
+                         outside project_root. A scanned repository is
+                         untrusted input; a symlink inside it must not let
+                         the scanner read arbitrary files reachable by the
+                         process (CI secrets, SSH keys, /etc/passwd, etc).
+                         Verified via reproduction: prior to this check, a
+                         symlink inside the scan root pointing outside it was
+                         silently followed and its content scanned.
+      "oversized"      — file size exceeds MAX_FILE_SIZE_BYTES. Prevents a
+                         single huge file (accidental or adversarial) from
+                         exhausting memory; there was previously no limit.
+      "stat_failed"    — could not stat the file (race, permissions, etc).
+
+    This does not replace os.walk's directory-level followlinks=False
+    default (which already prevents symlinked-directory traversal loops);
+    it closes the remaining gap where an individual *file* is a symlink.
+    """
+    try:
+        resolved = filepath.resolve()
+    except OSError:
+        return False, "stat_failed"
+
+    try:
+        resolved.relative_to(project_root)
+    except ValueError:
+        return False, "symlink_escape"
+
+    try:
+        size = filepath.stat().st_size
+    except OSError:
+        return False, "stat_failed"
+
+    if size > MAX_FILE_SIZE_BYTES:
+        return False, "oversized"
+
+    return True, ""
 
 # ---------------------------------------------------------------------------
 # EU AI Act enforcement deadlines + Digital Omnibus status.
@@ -633,6 +675,15 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             filepath = Path(root) / filename
+
+            # Phase 5 threat model: reject symlink-escapes and oversized
+            # files before any stat/read beyond this point. A scanned
+            # repository is untrusted input (e.g. a third-party PR in CI).
+            _safe, _unsafe_reason = _is_safe_to_scan(filepath, project)
+            if not _safe:
+                _record_skip(filepath, _unsafe_reason)
+                continue
+
             is_test = _is_test_file(filepath)
             provenance = classify_provenance(filepath)
 
