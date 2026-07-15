@@ -31,7 +31,10 @@ The demo target is a literal `classify_resume()` function — the
 canonical motivating example for the Annex III recall expansion shipped
 in v1.6.0. Before v1.6.0, this exact code returned "minimal-risk" (a
 documented false negative). After v1.6.0, it correctly categorises as
-high-risk Annex III Category 4.
+high-risk Annex III Category 4. As of v1.7.0+, domain gating correctly
+suppresses this finding in `regula check` unless the employment domain is 
+activated, but `regula classify` continues to identify the high-risk nature 
+of the code.
 
 ## Replay locally
 
@@ -65,12 +68,12 @@ $ pipx install regula-ai
 ## Recording new versions
 
 The current cast was hand-authored to match the actual output of
-Regula 1.6.0 against the canonical `demo.py` fixture. To re-record from
+Regula against the canonical `demo.py` fixture. To re-record from
 a real session:
 
 ```bash
 asciinema rec demos/regula-cli.cast --overwrite \
-  --title "Regula 1.6.0 — value-first quickstart on a real hiring AI script"
+  --title "Regula 1.7.4 — value-first quickstart on a real hiring AI script"
 # ... run the same commands ...
 exit
 ```

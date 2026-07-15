@@ -6,8 +6,16 @@ const PAGES = [
   '/regions/uae.html', '/regions/regulations.html',
   '/regions/colorado-ai-regulation.html', '/regions/south-africa-ai-policy.html',
   '/regions/south-korea-ai-regulation.html', '/regions/uk-ai-regulation.html',
+  '/regions/brazil-ai-regulation.html',
   '/blog/writing.html', '/blog/blog-does-ai-act-apply.html',
   '/blog/blog-omnibus-delay.html', '/blog/blog-risk-tiers-in-code.html',
+  '/blog/blog-omnibus-trilogue-failed.html', '/blog/blog-omnibus-decision-framework.html',
+  '/blog/blog-startups-ignoring-ai-act.html', '/blog/blog-code-scanning-vs-questionnaires.html',
+  '/blog/blog-article-5-prohibited-practices.html', '/blog/blog-scanning-10-ai-apps.html',
+  '/blog/blog-scanning-5-frameworks.html', '/blog/blog-classify-ai-system.html',
+  '/blog/blog-static-analysis-ai-compliance.html', '/blog/blog-en-standards-mapping.html',
+  '/blog/blog-art50-code-of-practice.html', '/blog/blog-aicdi-governance-gaps.html',
+  '/pricing.html',
   '/assess/', '/assess/de.html', '/assess/pt-br.html',
   '/guides/article-5-prohibited-practices.html',
   '/guides/article-50-transparency.html',
@@ -21,12 +29,14 @@ const PAGES = [
   const results = [];
   for (const p of PAGES) {
     const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 } });
+    await ctx.route('**/*plausible*', route => route.abort());
     const page = await ctx.newPage();
     try {
+      console.error(`Testing ${p}`);
       await page.goto('http://127.0.0.1:8790' + p, { waitUntil: 'load', timeout: 30000 });
       // Wait for the media="print" → "all" swap AND stylesheet fully parsed
       await page.waitForFunction(() => {
-        const sheets = Array.from(document.styleSheets).filter(s => s.href && s.href.includes('site.css'));
+        const sheets = Array.from(document.styleSheets).filter(s => s.href && (s.href.includes('site.css') || s.href.includes('site.min.css')));
         return sheets.length > 0 && sheets.every(s =>
           (s.media.mediaText === 'all' || s.media.mediaText === '')
           && s.cssRules

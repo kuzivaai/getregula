@@ -1535,6 +1535,7 @@ button.audience-fwd {
    excluded: nav anchors, CTA buttons, art-card entry links, region-card
    CTAs — these have their own visual affordance (background fill,
    border, or nav-row context) and are not 'in a text block'. */
+aside a,
 main p a,
 main li a,
 .hero-text .sub a,
@@ -1551,6 +1552,7 @@ footer p a {
     text-underline-offset: 3px;
     text-decoration-color: currentColor;
 }
+aside a:hover,
 main p a:hover,
 main li a:hover,
 .blog-body a:hover,

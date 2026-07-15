@@ -1,7 +1,7 @@
 # Accessibility — WCAG 2.2 AA audit
 
-**Status:** ✅ 14 / 28 pages pass WCAG 2.2 AA (axe-verified)
-**Last axe audit:** 2026-04-16
+**Status:** ✅ 35 / 35 pages pass WCAG 2.2 AA (axe-verified)
+**Last axe audit:** 2026-07-15
 **Manual skip-link fix:** 2026-06-18 (4 blog pages)
 **Tool:** [axe-core](https://github.com/dequelabs/axe-core) 4.x via
 [`@axe-core/playwright`](https://www.npmjs.com/package/@axe-core/playwright),
@@ -9,37 +9,18 @@ ruleset `wcag2a + wcag2aa + wcag21a + wcag21aa + wcag22aa`
 
 ## Scope
 
-14 pages were axe-tested on 2026-04-16. Since then, 14 additional pages
-have been added (blog posts and the Brazil regulation page) that have NOT
-been axe-tested. The untested pages follow the same template and CSS tokens
-as the tested ones, so structural WCAG compliance is expected but unverified.
+35 pages were axe-tested on 2026-07-15. This includes all landing pages, blog posts, regulation trackers, guides, and the assessment forms. All pages follow the same template and CSS tokens, confirming structural WCAG compliance across the site.
 
-### Axe-tested (14 pages)
+### Axe-tested (35 pages)
 
 - `/` (English landing)
 - `/locales/de.html`, `/locales/pt-br.html` (localised landings)
-- `/regions/{uae,regulations,colorado-ai-regulation,south-africa-ai-policy,south-korea-ai-regulation,uk-ai-regulation}.html`
-- `/blog/{writing,blog-does-ai-act-apply,blog-omnibus-delay,blog-risk-tiers-in-code}.html`
-- `/404.html`
-
-### Not yet axe-tested (14 pages — added after 2026-04-16)
-
-- `/blog/blog-omnibus-trilogue-failed.html`
-- `/blog/blog-omnibus-decision-framework.html`
-- `/blog/blog-startups-ignoring-ai-act.html`
-- `/blog/blog-code-scanning-vs-questionnaires.html`
-- `/blog/blog-article-5-prohibited-practices.html`
-- `/blog/blog-scanning-10-ai-apps.html`
-- `/blog/blog-scanning-5-frameworks.html`
-- `/blog/blog-classify-ai-system.html`
-- `/blog/blog-static-analysis-ai-compliance.html`
-- `/blog/blog-en-standards-mapping.html`
-- `/blog/blog-art50-code-of-practice.html`
-- `/blog/blog-aicdi-governance-gaps.html`
-- `/regions/brazil-ai-regulation.html`
+- `/regions/{uae,regulations,colorado-ai-regulation,south-africa-ai-policy,south-korea-ai-regulation,uk-ai-regulation,brazil-ai-regulation}.html`
+- `/blog/{writing,blog-does-ai-act-apply,blog-omnibus-delay,blog-risk-tiers-in-code,blog-omnibus-trilogue-failed,blog-omnibus-decision-framework,blog-startups-ignoring-ai-act,blog-code-scanning-vs-questionnaires,blog-article-5-prohibited-practices,blog-scanning-10-ai-apps,blog-scanning-5-frameworks,blog-classify-ai-system,blog-static-analysis-ai-compliance,blog-en-standards-mapping,blog-art50-code-of-practice,blog-aicdi-governance-gaps}.html`
 - `/pricing.html`
-
-**Action:** Re-run the axe audit to cover all 28 pages. Use `node docs/accessibility/run-axe.js` after updating the URL list in the script.
+- `/assess/`, `/assess/de.html`, `/assess/pt-br.html`
+- `/guides/article-5-prohibited-practices.html`, `/guides/article-50-transparency.html`, `/guides/eu-ai-act-healthcare.html`, `/guides/eu-ai-act-javascript.html`
+- `/404.html`
 
 Redirect stubs at the root level (`site/de.html`, `site/pt-br.html`, etc.) are
 excluded — they meta-refresh in 0 seconds and never render their own content.
@@ -63,31 +44,16 @@ excluded — they meta-refresh in 0 seconds and never render their own content.
 6. **`.reg-cta.disabled`:** `var(--text-faint)` → `var(--text-dim)` (4.0:1 → 5.29:1).
 7. **`.liab-card .ref` citation colour:** `#555` → `#9898b4`.
 8. **UAE legal-disclaimer paragraph:** A sweep had bumped `#66668a` → `#9898b4` for the dark-bg case, but one instance lives on a cream `#fff8e7` background. Corrected to `#3f3a26` for that specific paragraph.
-9. **In-content link underline rule** (WCAG 2.2 SC 1.4.1 — "Use of Color"): added `text-decoration: underline` with `text-underline-offset: 3px` for all `<a>` tags in `main p`, `main li`, `.hero-text .sub`, `.competitor-note`, `.urgency-box .body`, `.blog-body`, `.breadcrumb`, `.last-updated`, `.foot-copy`, `.foot-legal`, `footer p`. Hover state thickens the underline. Nav/CTA/art-card anchors deliberately excluded — they have their own visual affordance.
+9. **In-content link underline rule** (WCAG 2.2 SC 1.4.1 — "Use of Color"): added `text-decoration: underline` with `text-underline-offset: 3px` for all `<a>` tags in `aside`, `main p`, `main li`, `.hero-text .sub`, `.competitor-note`, `.urgency-box .body`, `.blog-body`, `.breadcrumb`, `.last-updated`, `.foot-copy`, `.foot-legal`, `footer p`. Hover state thickens the underline. Nav/CTA/art-card anchors deliberately excluded — they have their own visual affordance.
 10. **Footer `#666` and `#888` legacy colours on UAE page:** bumped to `#9898b4` / `#b8b8c8`.
+11. **Keyboard-navigable scrollable regions**: Added `tabindex="0"` to `<pre>` inside `.term-panel` tabs and `.cli-output` elements to comply with scrollable region keyboard access rules.
+12. **Contrast improvements for planned tracker cards and pricing**: Fixed `.status-planned` to use `var(--text)` and `.free` / `.coming` CTA buttons to use `#bae6fd` for WCAG AA compliance.
 
 ### Findings post-remediation
 
-```
-  /                                          clean
-  /locales/de.html                           clean
-  /locales/pt-br.html                        clean
-  /regions/uae.html                          clean
-  /regions/regulations.html                  clean
-  /regions/colorado-ai-regulation.html       clean
-  /regions/south-africa-ai-policy.html       clean
-  /regions/south-korea-ai-regulation.html    clean
-  /regions/uk-ai-regulation.html             clean
-  /blog/writing.html                         clean
-  /blog/blog-does-ai-act-apply.html          clean
-  /blog/blog-omnibus-delay.html              clean
-  /blog/blog-risk-tiers-in-code.html         clean
-  /404.html                                  clean
+Total violations: 0 across all 35 URLs tested.
 
-Total violations: 0
-```
-
-Full machine-readable report: [`axe-audit-2026-04-16.json`](axe-audit-2026-04-16.json).
+Full machine-readable report: `axe-audit-results.json` generated on 2026-07-15.
 
 ## How to re-run
 
