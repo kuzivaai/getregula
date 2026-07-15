@@ -1,5 +1,5 @@
 $ pip install regula-ai
-Successfully installed regula-ai-1.6.0
+Successfully installed regula-ai-1.7.4
 
 $ cat demo.py
 import openai
@@ -18,22 +18,17 @@ Regula Quickstart
 
   First scan complete (0.0s)
   Files scanned:      1
-  BLOCK findings:     1
+  BLOCK findings:     0
   WARN findings:      0
-  INFO findings:      0
-
-  Top findings:
-    [BLOCK] [ 88] demo.py
-          Annex III, Category 4
-          Employment and workers management
+  INFO findings:      1
 
   Next steps:
     1. Edit regula-policy.yaml — set your organisation name and AI officer
-    2. Run 'regula check .' to scan your project
+    2. Run 'regula check .' for the full detailed scan (every finding, not just the top 3)
     3. Run 'regula doctor' to verify your setup
-    4. Review 1 BLOCK finding(s) — these would fail CI
-    5. Run 'regula install claude-code' to add pre-commit hooks
-    6. Run 'regula gap --project .' for compliance gap analysis
+    4. Run 'regula install claude-code' to add pre-commit hooks
+    5. Run 'regula gap --project .' for compliance gap analysis
+    6. Run 'regula bias' to evaluate model stereotype bias (requires Ollama)
 
 $ regula classify --file demo.py
 HIGH-RISK: Employment and workers management - Articles 9, 10, 11, 12, 13, 14, 15
