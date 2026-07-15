@@ -74,7 +74,7 @@ Published benchmark against 50 randomly selected Python AI repos (from 276 candi
 | `high_risk` | 2 | 4 | 33.3% |
 | **Overall** | **96** | **19** | **83.5%** |
 
-**Improvement from v1.7.0:** Domain-gated high-risk findings, LLM import
+**Improvement from v1.7.4:** Domain-gated high-risk findings, LLM import
 gating, and justice opt-in reduced FP from 42 to 19 on the same labelled
 corpus, improving production precision from 70.0% to 83.5%. 3 borderline
 ai_security TPs were lost (LLM02 findings in files without LLM library imports).
@@ -138,9 +138,9 @@ Regula is explicitly **NOT** intended for:
 
 ### Random corpus (headline precision measurement)
 
-50 randomly selected Python AI repos (from 276 candidates, seed=42), scanned with Regula v1.7.0. 201 findings stratified-sampled and blind-labelled (labeller saw only file path, code context, and finding description — no project name, README, or purpose, see `benchmarks/labels.json`).
+50 randomly selected Python AI repos (from 276 candidates, seed=42), scanned with Regula v1.7.4. 201 findings stratified-sampled and blind-labelled (labeller saw only file path, code context, and finding description — no project name, README, or purpose, see `benchmarks/labels.json`).
 
-**Result:** 83.5% precision on production code (N=115, measured on Regula v1.7.0). Previous baseline was 70.0% before domain gating and LLM import gating. Figures re-measured per release where corpus permits; v1.7.1+ additions not yet reflected. Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
+**Result:** 83.5% precision on production code (N=115, measured on Regula v1.7.4). Previous baseline was 70.0% before domain gating and LLM import gating. Figures re-measured per release where corpus permits; v1.7.1+ additions not yet reflected. Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
 
 ### Continuous validation
 

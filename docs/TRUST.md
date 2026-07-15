@@ -151,7 +151,7 @@ python3 benchmarks/label.py score
 ```
 
 **Two corpora, two numbers — both honest, different scopes.** The
-headline precision is **83.5%** (N=115, **measured on Regula v1.7.0**),
+headline precision is **83.5%** (N=115, **measured on Regula v1.7.4**),
 on production code from a random corpus of 50 Python AI repos selected
 via GitHub API (pool of 276, random seed 42) and blind-labelled
 (labeller saw only file path, code context, and finding description —
