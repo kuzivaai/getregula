@@ -39,7 +39,7 @@ behaviour on other codebases.
 > **Correction (July 2026):** an earlier version of this paragraph
 > concluded that teams get "0 false positives in CI by default". That
 > generalised an empty cell (0 BLOCK findings) into a precision claim.
-> Later measurement contradicts it: on the v1.7.0 blind-labelled random
+> Later measurement contradicts it: on the v1.7.4 blind-labelled random
 > corpus (201 labelled findings incl. test/example code,
 > `benchmarks/results/random_corpus/BLIND_LABELS.json`), 24 of 62
 > BLOCK-severity findings were false positives, and Regula's own
@@ -289,7 +289,7 @@ audit report, the recommended format is:
 > Synthetic corpus: 100% precision, 100% recall (5 prohibited + 5 high-risk fixtures, 0 FP, 0 FN).
 > OSS corpus: 15.2% precision overall (39 TP / 218 FP / n=257), 0% on BLOCK tier (0 findings),
 > 25.0% on WARN tier (n=8), 14.9% on INFO tier (n=249).
-> Reproducible from `github.com/kuzivaai/getregula` at v1.6.0 via
+> Reproducible from `github.com/kuzivaai/getregula` at v1.7.4 via
 > `python3 benchmarks/label.py score`.
 
 If anything in this document is unclear, ambiguous, or unverifiable —
