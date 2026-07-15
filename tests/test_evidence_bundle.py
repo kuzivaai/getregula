@@ -15,7 +15,7 @@ def test_bundle_creates_zip(tmp_path):
     pack_dir.mkdir()
     (pack_dir / "00-summary.md").write_text("# Summary\nTest.")
     manifest = {
-        "regula_version": "1.7.0",
+        "regula_version": "1.7.4",
         "generated_at": "2026-04-18T00:00:00Z",
         "project": "test",
         "project_path": "/tmp/test",
@@ -33,7 +33,7 @@ def test_bundle_contains_verify_script(tmp_path):
     pack_dir.mkdir()
     (pack_dir / "00-summary.md").write_text("# Summary\nTest.")
     manifest = {
-        "regula_version": "1.7.0",
+        "regula_version": "1.7.4",
         "generated_at": "2026-04-18T00:00:00Z",
         "project": "test",
         "project_path": "/tmp/test",
@@ -52,7 +52,7 @@ def test_bundle_contains_all_pack_files(tmp_path):
     (pack_dir / "00-summary.md").write_text("# Summary")
     (pack_dir / "01-scan-results.json").write_text("{}")
     manifest = {
-        "regula_version": "1.7.0",
+        "regula_version": "1.7.4",
         "generated_at": "2026-04-18T00:00:00Z",
         "project": "test",
         "project_path": "/tmp/test",
@@ -78,7 +78,7 @@ def test_bundle_verify_script_runs(tmp_path):
     sha = hashlib.sha256(content.encode("utf-8")).hexdigest()
     (pack_dir / "00-summary.md").write_text(content)
     manifest = {
-        "regula_version": "1.7.0",
+        "regula_version": "1.7.4",
         "generated_at": "2026-04-18T00:00:00Z",
         "project": "test",
         "project_path": "/tmp/test",
