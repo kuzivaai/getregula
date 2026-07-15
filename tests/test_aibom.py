@@ -251,7 +251,7 @@ def test_cyclonedx_structure():
     """CycloneDX output must have required top-level fields."""
     aibom = {
         "project": "/tmp/test",
-        "regula_version": "1.7.0",
+        "regula_version": "1.7.4",
         "generated_at": "2026-04-18T00:00:00Z",
         "components": [
             {"name": "openai", "version": "1.30.0", "kind": "inference-provider",
@@ -273,7 +273,7 @@ def test_cyclonedx_component_types():
     """CycloneDX should use correct component types based on kind."""
     aibom = {
         "project": "/tmp/test",
-        "regula_version": "1.7.0",
+        "regula_version": "1.7.4",
         "generated_at": "2026-04-18T00:00:00Z",
         "components": [
             {"name": "openai", "version": "1.0", "kind": "inference-provider",
@@ -296,7 +296,7 @@ def test_cyclonedx_custom_properties():
     """Each CycloneDX component should have regula:ai:kind property."""
     aibom = {
         "project": "/tmp/test",
-        "regula_version": "1.7.0",
+        "regula_version": "1.7.4",
         "generated_at": "2026-04-18T00:00:00Z",
         "components": [
             {"name": "langchain", "version": "0.1.0", "kind": "orchestration",
@@ -316,7 +316,7 @@ def test_cyclonedx_tools_metadata():
     """CycloneDX metadata should include Regula tool info in v1.5+ format."""
     aibom = {
         "project": "/tmp/test",
-        "regula_version": "1.7.0",
+        "regula_version": "1.7.4",
         "generated_at": "2026-04-18T00:00:00Z",
         "components": [],
         "summary": {"total_components": 0, "kinds": {}},
@@ -337,7 +337,7 @@ def test_markdown_empty():
     """Empty project should produce 'No AI components detected' message."""
     aibom = {
         "project": "/tmp/test",
-        "regula_version": "1.7.0",
+        "regula_version": "1.7.4",
         "generated_at": "2026-04-18T00:00:00Z",
         "components": [],
         "summary": {"total_components": 0, "kinds": {}},
@@ -350,7 +350,7 @@ def test_markdown_table_format():
     """Markdown output should include a table header."""
     aibom = {
         "project": "/tmp/test",
-        "regula_version": "1.7.0",
+        "regula_version": "1.7.4",
         "generated_at": "2026-04-18T00:00:00Z",
         "components": [
             {"name": "openai", "version": "1.30.0", "kind": "inference-provider",
@@ -368,7 +368,7 @@ def test_markdown_includes_note():
     """Markdown output should include the Annex IV/XI note."""
     aibom = {
         "project": "/tmp/test",
-        "regula_version": "1.7.0",
+        "regula_version": "1.7.4",
         "generated_at": "2026-04-18T00:00:00Z",
         "components": [
             {"name": "torch", "version": "2.0", "kind": "ai-framework",
