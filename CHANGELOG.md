@@ -76,7 +76,7 @@ every fix below was verified by test.
   re-injection of the original defect (3 targeted failures) and pass on
   the fixed tree.
 
-### Fixed (16 July, evening — walkthrough P2–P6 + deadline single-sourcing)
+### Fixed (16 July, morning — walkthrough P2–P6 + deadline single-sourcing)
 
 - **`system.domain` in regula-policy.yaml now actually activates
   domain-gated patterns** — doctor and the consultant guide documented
