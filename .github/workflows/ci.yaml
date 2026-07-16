@@ -96,6 +96,10 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+      # site_facts measures total_collected via pytest --collect-only, and
+      # collection imports the test modules — install the same deps as the
+      # test matrix or the count is unmeasurable (site_facts then exits 1).
+      - run: pip install pyyaml "pytest~=9.0" "cryptography>=41,<47" "asn1crypto>=1.5,<2"
       - name: Scan modified Markdown/HTML for unverified claims
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -103,20 +107,12 @@ jobs:
           else
             python3 scripts/claim_auditor.py --diff-base HEAD~1
           fi
-      - name: Verify site_facts.json is up-to-date
+      - name: Verify site_facts artifacts are up-to-date
         run: |
           python3 -m scripts.site_facts
           git diff --exit-code data/site_facts.json data/site_facts.md
       - name: Verify published numbers match canonical counts
         run: python3 scripts/claim_auditor.py --verify-facts
-      - name: Verify site_facts.json is up-to-date
-        run: |
-          python3 -m scripts.site_facts
-          git diff --exit-code data/site_facts.json data/site_facts.md
-      - name: Verify site_facts artifacts are up-to-date
-        run: |
-          python3 -m scripts.site_facts
-          git diff --exit-code data/site_facts.json data/site_facts.md
 
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
