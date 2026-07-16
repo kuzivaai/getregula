@@ -105,11 +105,19 @@ def project_slug(project_path) -> str:
     return f"{name.lower()}-{digest}"
 
 
-def get_audit_dir(project_path=None) -> Path:
-    """Audit directory: machine-wide root, or a project's chain directory."""
+def get_audit_dir(project_path=None, create: bool = True) -> Path:
+    """Audit directory: machine-wide root, or a project's chain directory.
+
+    Pass create=False on read paths (query/verify/collect): reading a
+    chain that does not exist must not create directories in the store.
+    Before this guard, every query or verification against a project
+    with no chain left an empty projects/<slug>/ directory behind in
+    the operator's real store.
+    """
     root = Path(os.environ.get("REGULA_AUDIT_DIR", Path.home() / ".regula" / "audit"))
     audit_dir = root / "projects" / project_slug(project_path) if project_path else root
-    audit_dir.mkdir(parents=True, exist_ok=True)
+    if create:
+        audit_dir.mkdir(parents=True, exist_ok=True)
     return audit_dir
 
 
@@ -310,10 +318,10 @@ def query_events(
     merged in timestamp order.
     """
     if project_path is not None:
-        files = sorted(get_audit_dir(project_path).glob("audit_*.jsonl"))
+        files = sorted(get_audit_dir(project_path, create=False).glob("audit_*.jsonl"))
         return _read_events_from_files(files, event_type, after, before, limit)
 
-    root = get_audit_dir()
+    root = get_audit_dir(create=False)
     project_dirs = _project_chain_dirs(root)
     root_files = sorted(root.glob("audit_*.jsonl"))
     if not project_dirs:
@@ -388,9 +396,9 @@ def verify_chain(project_path: Optional[str] = None) -> tuple:
     with reported legacy restarts, (False, error_message) if broken.
     """
     if project_path is not None:
-        return verify_chain_dir(get_audit_dir(project_path))
+        return verify_chain_dir(get_audit_dir(project_path, create=False))
 
-    root = get_audit_dir()
+    root = get_audit_dir(create=False)
     problems = []
     notes = []
     valid, msg = verify_chain_dir(root)
