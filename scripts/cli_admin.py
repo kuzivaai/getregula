@@ -151,11 +151,15 @@ def cmd_audit(args) -> None:
     from log_event import log_event as _log, query_events, verify_chain, export_csv
 
     subcommand = args.subcommand or "verify"
+    # --project scopes to one project's audit chain; default is the
+    # whole machine (machine store + every project chain).
+    project = getattr(args, "audit_project", None)
 
     if subcommand == "log":
         data = json.loads(args.data) if getattr(args, "data", None) else {}
         ext_ts = getattr(args, "external_timestamp", False)
-        event = _log(args.event_type, data, external_timestamp=ext_ts)
+        event = _log(args.event_type, data, external_timestamp=ext_ts,
+                     project_path=project)
         json_output("audit log", {"status": "logged", "event_id": event.event_id})
     elif subcommand == "query":
         events = query_events(
@@ -163,6 +167,7 @@ def cmd_audit(args) -> None:
             getattr(args, "after", None),
             getattr(args, "before", None),
             getattr(args, "limit", 100),
+            project_path=project,
         )
         json_output("audit query", events)
     elif subcommand == "export":
@@ -171,6 +176,7 @@ def cmd_audit(args) -> None:
             getattr(args, "after", None),
             getattr(args, "before", None),
             limit=100000,
+            project_path=project,
         )
         fmt = getattr(args, "audit_format", "json") or "json"
         content = export_csv(events) if fmt == "csv" else json.dumps(events, indent=2)
@@ -182,7 +188,7 @@ def cmd_audit(args) -> None:
         else:
             print(content)
     elif subcommand == "verify":
-        valid, error = verify_chain()
+        valid, error = verify_chain(project_path=project)
         json_output("audit verify", {"status": "valid" if valid else "invalid", "error": error},
                     exit_code=0 if valid else 1)
         if not valid:

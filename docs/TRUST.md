@@ -248,6 +248,27 @@ will report the exact entry where the chain breaks. The user can verify
 this themselves by editing one character of `~/.regula/audit/*.jsonl` and
 re-running the verify command.
 
+### Project scoping
+
+Audit events are attributed to the project they were recorded in and
+stored in per-project chains (`~/.regula/audit/projects/<slug>/`).
+Deliverables — evidence packs, conformity packs, HTML reports — embed
+only the scanned project's own chain, never events from other projects
+on the same machine. `regula audit verify --project <path>` verifies a
+single project's chain; without `--project` it verifies the machine
+store and every project chain.
+
+Two honesty notes. First, log files rotate monthly, and versions before
+v1.7.5 started each new monthly file from the genesis hash instead of
+continuing the chain. Verification therefore reports a genesis seed at
+the start of a file as a "legacy restart" rather than failing; the
+consequence is that truncating a *legacy* store exactly at a month
+boundary is not detectable by the chain alone. Chains written by
+current versions are continuous across files, so this forgiveness does
+not extend to new data. Second, events recorded by versions without
+project scoping live unattributed in the machine-wide store; they are
+excluded from deliverables and each deliverable's audit section says so.
+
 ### Optional: third-party RFC 3161 timestamping
 
 ```bash

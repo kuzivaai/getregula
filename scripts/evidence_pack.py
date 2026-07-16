@@ -112,16 +112,12 @@ def generate_evidence_pack(
         pass  # optional section; skip if module missing or data error
 
     # --- 05: Audit trail ---
+    # Strictly project-scoped: collect_audit_trail reads only this
+    # project's own chain. A client pack must never contain audit events
+    # from other projects on the consultant's machine.
     try:
-        from log_event import query_events, verify_chain
-        events = query_events(limit=10000)
-        chain_valid, chain_msg = verify_chain()
-        audit_data = {
-            "chain_valid": chain_valid,
-            "chain_message": chain_msg,
-            "event_count": len(events),
-            "events": events,
-        }
+        from log_event import collect_audit_trail
+        audit_data = collect_audit_trail(str(project))
         audit_json = json.dumps(audit_data, indent=2, default=str)
         _write_and_record(pack_dir, "05-audit-trail.json", audit_json, file_records)
     except (ImportError, OSError, ValueError):
@@ -157,9 +153,9 @@ def generate_evidence_pack(
     runtime_system = kwargs.get("runtime_system_id")
     if runtime_system:
         try:
-            from cli_monitor import _read_all_events, _verify_chain
+            from cli_monitor import _read_all_events, verify_monitor_chain
             rt_events = _read_all_events(runtime_system)
-            rt_valid, rt_msg = _verify_chain(rt_events)
+            rt_valid, rt_msg = verify_monitor_chain(runtime_system)
             inferences = [e for e in rt_events if e.get("event_type") == "inference"]
             errors = [e for e in rt_events if e.get("status") == "error"]
             summaries = [e for e in rt_events if e.get("event_type") == "session_summary"]

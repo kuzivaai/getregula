@@ -363,7 +363,8 @@ def test_post_hook_logs_tool_use():
     })
     assert_eq(rc, 0, "post hook exits 0")
     # Check that an audit event was written
-    audit_files = list(Path(tmpdir).glob("audit_*.jsonl"))
+    # events are project-scoped (hook cwd) — they live under projects/<slug>/
+    audit_files = list(Path(tmpdir).rglob("audit_*.jsonl"))
     assert_true(len(audit_files) > 0, "audit file should be created")
     content = audit_files[0].read_text()
     assert_true(len(content.strip()) > 0, "audit event written")
@@ -379,7 +380,8 @@ def test_post_hook_includes_ai_indicators():
         "file_path": "/tmp/hiring.py",
         "content": "import sklearn\ncv_screening = pipeline('classifier')"
     })
-    audit_files = list(Path(tmpdir).glob("audit_*.jsonl"))
+    # events are project-scoped (hook cwd) — they live under projects/<slug>/
+    audit_files = list(Path(tmpdir).rglob("audit_*.jsonl"))
     assert_true(len(audit_files) > 0, "audit file should be created")
     content = audit_files[0].read_text()
     event = json.loads(content.strip().split("\n")[-1])
@@ -396,7 +398,8 @@ def test_post_hook_includes_tool_response():
         "file_path": "/tmp/test.py",
         "content": "print('hello')"
     }, extra_fields={"tool_response": {"status": "success"}})
-    audit_files = list(Path(tmpdir).glob("audit_*.jsonl"))
+    # events are project-scoped (hook cwd) — they live under projects/<slug>/
+    audit_files = list(Path(tmpdir).rglob("audit_*.jsonl"))
     assert_true(len(audit_files) > 0, "audit file should be created")
     content = audit_files[0].read_text()
     event = json.loads(content.strip().split("\n")[-1])
@@ -439,9 +442,14 @@ def test_stop_hook_produces_summary():
 
     try:
         from log_event import log_event
-        log_event("classification", {"tier": "high_risk", "category": "Employment"})
-        log_event("blocked", {"tier": "prohibited", "description": "Social scoring"})
-        log_event("tool_use", {"tier": "not_ai"})
+        # Seed into the project chain the hook will query (it scopes to
+        # its cwd — the repo root here).
+        repo_root = str(Path(__file__).parent.parent)
+        log_event("classification", {"tier": "high_risk", "category": "Employment"},
+                  project_path=repo_root)
+        log_event("blocked", {"tier": "prohibited", "description": "Social scoring"},
+                  project_path=repo_root)
+        log_event("tool_use", {"tier": "not_ai"}, project_path=repo_root)
     finally:
         if orig_env:
             os.environ["REGULA_AUDIT_DIR"] = orig_env

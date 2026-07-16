@@ -30,7 +30,7 @@ from classify_risk import classify, RiskTier, is_ai_related, PROHIBITED_PATTERNS
 from risk_patterns import CATEGORY_LIFECYCLE_PHASES
 from domain_scoring import compute_domain_boost
 from ast_engine import detect_language
-from log_event import query_events, verify_chain
+from log_event import collect_audit_trail
 from credential_check import check_secrets
 from remediation import get_remediation
 from agent_monitor import detect_autonomous_actions
@@ -2037,8 +2037,10 @@ def main():
     chain_valid = None
     if args.include_audit:
         try:
-            audit_events = query_events(limit=10000)
-            chain_valid, _ = verify_chain()
+            # Project-scoped: never embed other projects' audit events
+            _audit = collect_audit_trail(project_path)
+            audit_events = _audit["events"]
+            chain_valid = _audit["chain_valid"]
         except (OSError, ValueError, KeyError):
             pass  # audit trail is optional; continue without it
 

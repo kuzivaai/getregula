@@ -333,18 +333,13 @@ def generate_conformity_pack(
     except Exception as e:
         print(f"Warning: SBOM generation failed: {e}", file=sys.stderr)
 
-    # Audit trail (optional)
+    # Audit trail (optional). Strictly project-scoped: a conformity pack
+    # must never contain audit events from other projects on the same
+    # machine (client confidentiality).
     audit_data = None
     try:
-        from log_event import query_events, verify_chain
-        events = query_events(limit=10000)
-        chain_valid, chain_msg = verify_chain()
-        audit_data = {
-            "chain_valid": chain_valid,
-            "chain_message": chain_msg,
-            "event_count": len(events),
-            "events": events,
-        }
+        from log_event import collect_audit_trail
+        audit_data = collect_audit_trail(str(project))
     except ImportError:
         pass  # log_event module not available; optional feature
     except (OSError, ValueError) as e:

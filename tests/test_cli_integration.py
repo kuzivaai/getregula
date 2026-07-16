@@ -730,9 +730,9 @@ def test_every_project_subcommand_accepts_positional_path():
     six MORE (conform, oversight, discover, guardrails, sbom, report)
     until 10 Jul 2026. This locks the whole class.
 
-    `install` and `baseline` are exempt: they already have a different
-    positional argument, and adding a second optional positional would
-    make parses ambiguous.
+    `install`, `baseline`, and `audit` are exempt: they already have a
+    different positional argument (audit: verify/export/query), and
+    adding a second optional positional would make parses ambiguous.
     """
     import argparse
     from pathlib import Path as _P
@@ -744,7 +744,7 @@ def test_every_project_subcommand_accepts_positional_path():
     sub = parser.add_subparsers(dest="command")
     cli_mod._build_subparsers(sub)
 
-    exempt = {"install", "baseline"}
+    exempt = {"install", "baseline", "audit"}
     checked = 0
     for name, sp in sub.choices.items():
         option_strings = {s for a in sp._actions for s in a.option_strings}

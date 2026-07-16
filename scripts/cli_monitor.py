@@ -40,7 +40,12 @@ def _read_all_events(system_id: str, monitor_dir: str = None) -> list:
 
 
 def _verify_chain(events: list) -> tuple:
-    """Verify hash chain integrity. Returns (valid, message)."""
+    """Verify hash chain integrity of a single contiguous event list.
+
+    NOTE: this flat-list check cannot see file boundaries, so it fails
+    on stores whose monthly files were seeded with the genesis hash by
+    pre-v1.7.5 writers. Use verify_monitor_chain for on-disk stores.
+    """
     if not events:
         return True, "No events to verify"
     prev = "0" * 64
@@ -54,10 +59,24 @@ def _verify_chain(events: list) -> tuple:
     return True, f"Chain valid: {len(events)} events verified"
 
 
+def verify_monitor_chain(system_id: str, monitor_dir: str = None) -> tuple:
+    """File-boundary-aware chain verification for a system's monitor logs.
+
+    Delegates to log_event.verify_chain_dir, which tolerates (and
+    reports) genesis seeds at monthly-file boundaries written by
+    pre-v1.7.5 versions, while still failing on tampering.
+    """
+    from log_event import verify_chain_dir
+    log_dir = _get_monitor_dir(system_id, monitor_dir)
+    return verify_chain_dir(log_dir, "monitor_*.jsonl")
+
+
 def cmd_monitor_verify(args) -> dict:
     """Verify hash chain integrity for a system's monitor logs."""
     events = _read_all_events(args.system_id, getattr(args, "monitor_dir", None))
-    valid, message = _verify_chain(events)
+    valid, message = verify_monitor_chain(args.system_id, getattr(args, "monitor_dir", None))
+    if valid and message is None:
+        message = f"Chain valid: {len(events)} events verified"
     result = {
         "system_id": args.system_id,
         "chain_valid": valid,

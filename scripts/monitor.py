@@ -24,7 +24,7 @@ from typing import Any, Dict, List, Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from log_event import compute_hash, _read_last_hash, _lock_file, _unlock_file
+from log_event import compute_hash, _read_seed_hash, _lock_file, _unlock_file
 
 
 def _extract_response(response) -> dict:
@@ -271,7 +271,8 @@ class MonitorSession:
             with open(log_file, "a", encoding="utf-8") as f:
                 _lock_file(f)
                 try:
-                    previous_hash = _read_last_hash(log_file)
+                    # Seed continues the chain across monthly rotation
+                    previous_hash = _read_seed_hash(log_file, "monitor_*.jsonl")
                     event["previous_hash"] = previous_hash
                     event["current_hash"] = compute_hash(event, previous_hash)
                     f.write(json.dumps(event, sort_keys=True) + "\n")
