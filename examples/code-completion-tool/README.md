@@ -10,11 +10,15 @@ to see what a "clean" scan looks like.
 regula check examples/code-completion-tool
 ```
 
-Expected output (verified against Regula v1.7.0 on 2026-04-16):
+Expected output (verified against Regula v1.7.5 on 2026-07-16):
 
 ```
 Regula Scan: examples/code-completion-tool
 ============================================================
+
+  Verdict: NO AI DETECTED
+  No AI components or risk indicators found in your project.
+  The EU AI Act likely does not apply to this project.
   Files scanned:      1
   Prohibited:         0
   Credentials:        0

@@ -7,6 +7,29 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- `regula plan` task and footer deadline lines carry the adopted-Omnibus
+  context again ("2 August 2026 (Omnibus: 2 December 2027 for Annex III,
+  …; pending OJ publication)") instead of the bare baseline date. 1.7.5
+  rendered the bare date because the contextual constant had no
+  production consumer; both now derive from
+  `omnibus.annex_iii_deadline_line()` and flip automatically at OJ
+  publication.
+- The `cv-screening-app` reference project declares
+  `system.domain: employment` in its own `regula-policy.yaml`, so the
+  documented evaluation journey reproduces under the v1.7.5 domain
+  gating (with `--scope all` to include example-provenance findings).
+
+### Security
+- All GitHub Actions are pinned to full commit SHAs (with version
+  comments); Dependabot maintains the pins. CodeQL analysis added for
+  the Python source.
+
+### Changed
+- Dependency ranges refreshed: setuptools <84, cryptography <50,
+  asn1crypto >=1.5.1, flask ~=3.1, weasyprint <70 (from the
+  corresponding Dependabot proposals, applied together).
+
 ## [1.7.5] - 2026-07-16
 
 Deep-audit remediation (8 July 2026), extended by the 10 July follow-up

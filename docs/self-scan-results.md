@@ -1,102 +1,105 @@
 # Regula Self-Scan Results
 
-**Date:** 16 April 2026
-**Version:** 1.7.0
-**Command:** `regula check .`
-**Commit:** `d47bccd` (main)
+**Date:** 16 July 2026
+**Version:** 1.7.5 (installed from PyPI)
+**Command:** `regula check .` and `regula check . --domain employment`
+**Commit:** `497905b` (main)
 
 This file is a transparency artefact — Regula run against its own
-codebase. Reproduce any time with the command above. If the results
+codebase. Reproduce any time with the commands above. If the results
 change materially between releases, this file is refreshed with the
 new findings and an explanation of what changed.
 
 ---
 
-## Summary
+## Summary — default scan (`regula check .`)
 
 | Metric | Value |
 |---|---|
-| Files scanned | 97 |
+| Files scanned | 129 |
 | Prohibited findings | 0 |
 | Credential findings | 0 |
-| High-risk findings | 1 |
+| High-risk findings (active) | 0 |
+| High-risk findings (domain-gated, inactive) | 5 |
 | Agent autonomy findings | 0 |
-| Limited-risk findings | 1 |
-| Suppressed findings | 35 |
+| Limited-risk findings | 0 |
+| Suppressed findings (`# regula-ignore`) | 27 |
 | BLOCK tier | 0 |
-| WARN tier | 1 |
-| INFO tier | 1 |
+| WARN tier | 0 |
+| INFO tier | 0 |
+
+Verdict: **NO AI DETECTED**. The scan also prints a warning that 19
+suppressions carry no rationale comment — an honest gap in our own
+hygiene, reproducible with `regula check --audit-suppressions`.
+
+## Summary — employment domain activated (`--domain employment`)
+
+| Metric | Value |
+|---|---|
+| High-risk findings (active) | 1 |
+| BLOCK tier | 1 |
+
+| Tier | Score | File | Category | Assessment |
+|---|---|---|---|---|
+| BLOCK | — | `scripts/cli.py:764` | Employment and workers management | `cmd_demo` — the `regula demo` launcher refers to the bundled `cv-screening-app` example by name. Engine/demo plumbing, not an employment AI system: the same "a scanner contains its own patterns' vocabulary" class as the `# regula-ignore` sites. Left visible rather than suppressed because a file-wide ignore on the CLI module would be far too broad. |
 
 ---
 
-## Findings
+## What changed since the 16 April 2026 scan (v1.7.0)
 
-### High-risk indicators
+The April scan reported 1 active WARN (`examples/cv-screening-app/`)
+and 1 active INFO (`examples/customer-chatbot/`) — see this file's own
+history at commit `a75d688` (16 April 2026). Both are gone from
+the default scan, for two deliberate reasons — not because detection
+weakened:
 
-| Tier | Score | File | Category | Detail |
-|---|---|---|---|---|
-| WARN | 68 | `examples/cv-screening-app/app.py` | Employment and workers management | Add human oversight before automated hiring/employment decisions |
+1. **Domain gating shipped** (the April–July precision work,
+   15.2% → 85.9% measured precision). High-risk patterns in the
+   employment, essential-services, worker-management, and justice
+   domains no longer fire unless the project declares that domain
+   (`--domain` or `system.domain` in `regula-policy.yaml`). The
+   default self-scan therefore reports these as "5 high-risk
+   finding(s) suppressed by domain gating" instead of active findings.
+   Activating the domain shows detection still works (table above).
+2. **`examples/`, `demos/`, and `benchmarks/` joined the canonical
+   skip set** (`constants.SKIP_DIRS`) during false-positive tuning, so
+   the deliberate fixtures no longer appear in the repo scan at all.
+   To see them, scan them directly:
+   `regula check examples/cv-screening-app --domain employment`.
 
-**Assessment:** The only WARN-tier finding is in a deliberately
-high-risk example fixture (`examples/cv-screening-app/`). The fixture
-is designed to trigger this pattern so the repo can demonstrate
-Regula's high-risk detection on a runnable project. It is not
-production code.
-
-### Limited-risk (Article 50)
-
-| Tier | Score | File | Category |
-|---|---|---|---|
-| INFO | 45 | `examples/customer-chatbot/app.py:1` | Chatbots and conversational AI |
-
-**Assessment:** Another intentional fixture — `examples/customer-chatbot/`
-is the Article 50 transparency-obligation example.
-
-### Suppressed findings
-
-35 findings are suppressed via `# regula-ignore` comments. These cover:
-
-- The detection engine itself (files that must contain the patterns
-  they scan for — `scripts/classify_risk.py`, `scripts/credential_check.py`,
-  `scripts/ai_code_governance.py`).
-- Documentation-as-code that names Article 5 prohibited practices
-  (`scripts/explain_articles.py` explains Article 5 vocabulary).
-- Test helpers that construct synthetic credentials for hook testing
-  (via char-code construction; see CLAUDE.md "Hook Awareness").
+Suppression count moved 35 → 27 over the same period (pattern and
+skip-set evolution).
 
 ---
 
 ## Interpretation
 
-Regula scanning its own codebase produces:
-
 - **0 prohibited findings** — Regula does not implement any Article 5
   practice in production code.
 - **0 credential exposures** — no hardcoded API keys or secrets.
-- **0 BLOCK-tier findings** — nothing that would fail a CI gate.
-- **1 WARN-tier finding** — the deliberate `cv-screening-app` example.
-- **1 INFO-tier finding** — the deliberate `customer-chatbot` example.
-
-Both active findings are **intentional test fixtures** included so
-users can run `regula check examples/cv-screening-app` and
-`regula check examples/customer-chatbot` and see representative
-output for each risk tier.
-
-The suppressed count (35) is dominated by the detection engine itself
-— a Regula-style scanner necessarily contains the patterns it looks
-for. Those sites use `# regula-ignore` so the engine does not flag its
-own source.
+- **0 BLOCK-tier findings on the default scan** — nothing that would
+  fail a CI gate.
+- The single domain-activated BLOCK finding is the demo launcher's
+  reference to the bundled high-risk example (see assessment above).
+- The suppressed count (27) is dominated by the detection engine
+  itself — a scanner necessarily contains the patterns it looks for.
+  19 of those suppressions lack a rationale comment; fixing that is
+  tracked work, and the warning the tool prints about it applies to
+  us like anyone else.
 
 ---
 
 ## How to reproduce
 
 ```bash
+pipx install regula-ai   # 1.7.5 or newer
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 regula check .
+regula check . --domain employment
+regula check --audit-suppressions
 ```
 
-Output should match the counts above to within ±1 finding across
-minor commits. The suppressed count shifts most often (as patterns
-evolve); the BLOCK/WARN totals are the stable headline numbers.
+Counts drift slightly across minor commits (the suppressed count moves
+most often). The stable headline numbers are the prohibited /
+credential / BLOCK-tier zeros on the default scan.

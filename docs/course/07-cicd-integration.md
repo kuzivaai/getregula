@@ -21,8 +21,8 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: kuzivaai/getregula@main
+      - uses: actions/checkout@v6
+      - uses: kuzivaai/getregula@v1
         with:
           path: '.'
           fail-on-prohibited: 'true'

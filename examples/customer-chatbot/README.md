@@ -6,14 +6,21 @@ classification (Article 50 transparency obligation) when scanned with Regula.
 ## Run the scan
 
 ```
-regula check examples/customer-chatbot
+regula check examples/customer-chatbot --scope all
 ```
 
-Expected output (captured against Regula v1.7.0 on 2026-04-16):
+(`--scope all` includes example-provenance findings, which the default
+production scope deliberately excludes — see `examples/README.md`.)
+
+Expected output (captured against Regula v1.7.5 on 2026-07-16):
 
 ```
 Regula Scan: examples/customer-chatbot
 ============================================================
+
+  Verdict: LIMITED-RISK
+  Your project has indicators of limited-risk AI components (Article 50 transparency).
+  If confirmed, Article 50 requires disclosing AI usage to users.
   Files scanned:      1
   Prohibited:         0
   Credentials:        0
@@ -23,10 +30,17 @@ Regula Scan: examples/customer-chatbot
   Suppressed:         0
   BLOCK tier:         0
   WARN tier:          0
-  INFO tier:          1
+  INFO tier:          2
+  Lifecycle:          deploy: 1, develop: 2
 
   LIMITED-RISK (Article 50):
-    [INFO] [ 45] app.py:1 — Chatbots and conversational AI
+    [INFO] [ 20] app.py:29 — Chatbots and conversational AI [develop]
+
+  Questions for human review (2):
+    ? app.py:66 — AI Security (LLM06)
+      AI API call detected — verify error handling is in place (confidence: 40%)
+    ? app.py:29 — Limited Risk (Article 50)
+      Chatbots and conversational AI (confidence: 20%)
 ============================================================
 ```
 

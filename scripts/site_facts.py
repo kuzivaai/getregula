@@ -185,22 +185,6 @@ def count_languages() -> int:
     return 8  # Python, JS, TS, Java, Go, Rust, C, C++
 
 
-def count_tests_collected() -> int:
-    """Return the true number of executable tests via pytest --collect-only.
-    This replaces the old naive regex approach which missed parametrizations."""
-    import subprocess
-    try:
-        proc = subprocess.run(
-            ["python3", "-m", "pytest", "tests/", "--collect-only", "-q"],
-            capture_output=True, text=True, cwd=str(REPO)
-        )
-        if proc.returncode != 0:
-            return 0
-        match = re.search(r"(\d+)\s+tests?\s+collected", proc.stdout)
-        return int(match.group(1)) if match else 0
-    except (OSError, ValueError):
-        return 0
-
 def count_tests() -> dict:
     """Return a breakdown of test functions and per-file counts."""
     # Use actual pytest collection to get the truthful executable count,
