@@ -562,8 +562,15 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     # Domain gating: scan project imports for domain fingerprinting
     from project_fingerprint import scan_project_imports
     from constants import OPT_IN_CATEGORIES
+    from domain_scoring import project_declared_domains
     _fingerprint = scan_project_imports(str(project))
-    _declared = declared_domains or set()
+    # Explicit --domain arguments union with the project's own policy
+    # declaration (system.domain in regula-policy.yaml) — the policy
+    # syntax doctor and the consultant guide document. Applied here, at
+    # the single scan chokepoint, so check/report/gap/packs/init all
+    # agree on what is activated for a given project.
+    _declared = (set(declared_domains or set())
+                 | project_declared_domains(project))
 
     # Build the set of activated high_risk subcategories.
     # A subcategory is active if: declared by user OR detected by fingerprint.

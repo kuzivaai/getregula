@@ -73,10 +73,19 @@ rules:
 
 
 def _run_quick_scan(project_dir: Path) -> dict:
-    """Run a quick scan and return summary."""
+    """Run a quick scan and return summary.
+
+    scan_files itself activates the project's declared system.domain
+    (domain_scoring.project_declared_domains), so init's summary can
+    never contradict a subsequent check on the same project
+    (walkthrough P5: init reported "0 AI files" on a project check
+    called HIGH-RISK). Domain-gated potential findings are reported
+    explicitly instead of silently counted as zero.
+    """
     try:
         from report import scan_files
         findings = scan_files(str(project_dir))
+        stats = dict(getattr(scan_files, "last_stats", {}) or {})
         active = [f for f in findings if not f.get("suppressed")]
         return {
             "total_files": len(set(f["file"] for f in findings)),
@@ -84,6 +93,8 @@ def _run_quick_scan(project_dir: Path) -> dict:
             "high_risk": sum(1 for f in active if f["tier"] == "high_risk"),
             "limited_risk": sum(1 for f in active if f["tier"] == "limited_risk"),
             "minimal_risk": sum(1 for f in active if f["tier"] == "minimal_risk"),
+            "domain_gated": stats.get("domain_gated_count", 0),
+            "domain_gated_categories": stats.get("domain_gated_categories", []),
         }
     except (OSError, ImportError) as e:
         return {"error": str(e)}
@@ -112,8 +123,13 @@ def run_init(project_dir: Path, interactive: bool = False, dry_run: bool = False
             prohibited = scan.get("prohibited", 0)
             high_risk = scan.get("high_risk", 0)
             limited = scan.get("limited_risk", 0)
-            print(f"  AI files:  {total}")
+            print(f"  Files with findings:  {total}")
             print(f"  Findings:  {prohibited} prohibited, {high_risk} high-risk, {limited} limited-risk")
+            if scan.get("domain_gated", 0):
+                cats = ", ".join(scan.get("domain_gated_categories", []))
+                print(f"  Domain-gated: {scan['domain_gated']} potential finding(s) "
+                      f"inactive ({cats}) — declare your domain via --domain or "
+                      f"system.domain in regula-policy.yaml")
         print()
         print("  Recommended next steps:")
         if not has_policy:
@@ -158,7 +174,12 @@ def run_init(project_dir: Path, interactive: bool = False, dry_run: bool = False
         print("  Policy file already exists.")
     print()
 
-    # 4. Install hooks for detected platform
+    # 4. Install hooks for detected platform — ONLY with explicit consent.
+    # Hooks modify tool configuration outside the policy file
+    # (.claude/settings.local.json, .github/hooks, git hooks), so they
+    # are never written unprompted: non-interactive runs print the
+    # manual command instead, and an unanswerable prompt (EOF — piped
+    # stdin, CI) counts as a decline, not a yes (walkthrough P4).
     if platforms:
         primary = platforms[0]
         if interactive:
@@ -168,11 +189,18 @@ def run_init(project_dir: Path, interactive: bool = False, dry_run: bool = False
             try:
                 choice = input(f"  Install hooks for {primary}? [Y/n/number] ").strip().lower()
             except EOFError:
-                choice = "y"
+                choice = "n"
+                print("  (no interactive input available — skipping hook installation)")
             if choice.isdigit() and 1 <= int(choice) <= len(platforms):
                 primary = platforms[int(choice) - 1]
             elif choice in ("n", "no"):
                 primary = None
+        else:
+            print(f"  Detected platform(s): {', '.join(platforms)}")
+            print("  Hooks not installed (requires consent). To install:")
+            print(f"    regula install {primary}")
+            print("  or re-run interactively: regula init --interactive")
+            primary = None
 
         if primary:
             try:
@@ -199,11 +227,17 @@ def run_init(project_dir: Path, interactive: bool = False, dry_run: bool = False
     if "error" in summary:
         print(f"  Scan error: {summary['error']}")
     else:
-        print(f"  AI files found:    {summary['total_files']}")
-        print(f"  Prohibited:        {summary['prohibited']}")
-        print(f"  High-risk:         {summary['high_risk']}")
-        print(f"  Limited-risk:      {summary['limited_risk']}")
-        print(f"  Minimal-risk:      {summary['minimal_risk']}")
+        print(f"  Files with findings: {summary['total_files']}")
+        print(f"  Prohibited:          {summary['prohibited']}")
+        print(f"  High-risk:           {summary['high_risk']}")
+        print(f"  Limited-risk:        {summary['limited_risk']}")
+        print(f"  Minimal-risk:        {summary['minimal_risk']}")
+        if summary.get("domain_gated", 0):
+            cats = ", ".join(summary.get("domain_gated_categories", []))
+            print(f"  Domain-gated:        {summary['domain_gated']} potential "
+                  f"finding(s) inactive ({cats})")
+            print("                       Declare your domain (--domain or "
+                  "system.domain in regula-policy.yaml) to activate them.")
     print()
 
     # 6. Next steps
