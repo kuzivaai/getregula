@@ -250,6 +250,28 @@ def has_high_confidence_secret(text: str) -> bool:
     return False
 
 
+def redact_secrets(text: str) -> str:
+    """Replace every occurrence of every known secret pattern with a
+    [REDACTED:<pattern>] placeholder.
+
+    Used by the audit hooks before tool payloads are persisted: the
+    audit trail is embedded in client-facing deliverables (evidence
+    packs, conformity packs, reports with --include-audit), so raw
+    secret values must never reach it. The pre-tool hook only BLOCKS
+    high-confidence findings — medium/low-confidence secrets still
+    execute and would otherwise be logged verbatim.
+
+    Callers must redact BEFORE truncating: truncation can split a value
+    so the pattern no longer matches while most of the secret survives.
+    """
+    if not text:
+        return text
+    compiled = _get_compiled()
+    for name in SECRET_PATTERNS:
+        text = compiled[name].sub(f"[REDACTED:{name}]", text)
+    return text
+
+
 def format_secret_warning(findings: list[SecretFinding]) -> str:
     """Format secret findings as a warning message for hooks."""
     if not findings:
