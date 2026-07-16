@@ -211,17 +211,26 @@ def count_tests() -> dict:
     if not tests_dir.exists():
         return {"total_collected": 0, "total_functions": 0, "per_file": {}}
     
-    total_collected = 0
+    # A count we cannot measure must never be published as fact: if pytest
+    # collection is unavailable or fails, raise instead of writing 0 into
+    # the canonical artifacts (which downstream pages cite verbatim).
     try:
         proc = subprocess.run(
             [sys.executable, "-m", "pytest", str(tests_dir), "--collect-only", "-q"],
-            capture_output=True, text=True, check=False, timeout=60
+            capture_output=True, text=True, check=False, timeout=120
         )
-        # Parse '2543 tests collected in 0.32s'
-        if match := re.search(r'^(\d+) tests? collected', proc.stdout, re.MULTILINE):
-            total_collected = int(match.group(1))
-    except (OSError, subprocess.TimeoutExpired):
-        pass
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise RuntimeError(f"pytest collection did not run: {e}") from e
+    # Parse '2543 tests collected in 0.32s'
+    match = re.search(r'^(\d+) tests? collected', proc.stdout, re.MULTILINE)
+    if proc.returncode != 0 or not match:
+        tail = (proc.stderr or proc.stdout).strip().splitlines()
+        detail = tail[-1] if tail else "no output"
+        raise RuntimeError(
+            "pytest collection failed — refusing to publish an unmeasured "
+            f"test count (rc={proc.returncode}: {detail})"
+        )
+    total_collected = int(match.group(1))
 
     per_file: dict[str, int] = {}
     for path in sorted(tests_dir.glob("test_*.py")):
@@ -325,7 +334,11 @@ def render_markdown(data: dict) -> str:
 
 
 def main() -> int:
-    data = compute()
+    try:
+        data = compute()
+    except RuntimeError as e:
+        print(f"site_facts: ERROR — {e}", file=sys.stderr)
+        return 1
     OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
     # Keep the previous generated_at when the facts themselves are unchanged,
     # so regeneration is idempotent and CI's `git diff --exit-code` on the
