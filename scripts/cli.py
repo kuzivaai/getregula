@@ -346,15 +346,6 @@ def _extract_jurisdiction_label(short_name, internal_key, data, finding):
     elif internal_key == "south_korea_ai":
         reqs = data.get("requirements", [])
         return f"South Korea: {reqs[0]}" if reqs else "South Korea: High-impact AI"
-    elif internal_key == "canada_aida":
-        reqs = data.get("requirements", [])
-        return f"Canada AIDA: {reqs[0]}" if reqs else "Canada AIDA"
-    elif internal_key == "singapore_ai":
-        principles = data.get("principles", [])
-        return f"Singapore: {principles[0]}" if principles else "Singapore AI Governance"
-    elif internal_key == "oecd_ai":
-        principles = data.get("principles", [])
-        return f"OECD: {principles[0]}" if principles else "OECD AI Principles"
     elif internal_key == "ico_ai":
         principles = data.get("principles", [])
         return f"UK ICO: {principles[0]}" if principles else "UK ICO AI Guidance"

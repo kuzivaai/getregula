@@ -228,31 +228,10 @@ def format_mapping_text(mapping: dict) -> str:
             if colorado.get("notes"):
                 lines.append(f"    Note: {colorado['notes']}")
 
-        aida = frameworks.get("canada_aida", {})
-        if aida:
-            status = aida.get("status", "Proposed")
-            lines.append(f"  Canada AIDA — {status}")
-            for req in aida.get("requirements", []):
-                lines.append(f"    • {req}")
-            if aida.get("notes"):
-                lines.append(f"    Note: {aida['notes']}")
-
-        sg = frameworks.get("singapore_ai", {})
-        if sg:
-            source = sg.get("source", "Singapore Model AI Governance Framework 2.0 + FEAT Principles")
-            lines.append(f"  {source}")
-            for principle in sg.get("principles", []):
-                lines.append(f"    • {principle}")
-            if sg.get("notes"):
-                lines.append(f"    Note: {sg['notes']}")
-
-        oecd = frameworks.get("oecd_ai", {})
-        if oecd:
-            lines.append("  OECD AI Principles (2024 update)")
-            for principle in oecd.get("principles", []):
-                lines.append(f"    • {principle}")
-            if oecd.get("notes"):
-                lines.append(f"    Note: {oecd['notes']}")
+        # canada_aida / singapore_ai / oecd_ai display handlers removed
+        # 16 Jul 2026 (DQ-3): no crosswalk data has ever populated those
+        # keys, their jurisdiction options were removed from cli.py, and
+        # AIDA died on prorogation 6 Jan 2025 (LEGISinfo).
 
         korea = frameworks.get("south_korea_ai", {})
         if korea:
