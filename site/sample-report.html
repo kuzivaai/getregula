@@ -78,7 +78,7 @@
 
 <div class="sample-section">
     <h2>1. The terminal verdict</h2>
-    <p>What a developer sees when they run <code>regula check</code> against the bundled hiring-system example (an intentionally high-risk fixture under EU AI Act Annex III, Category 4 &mdash; employment):</p>
+    <p>What a developer sees when they run <code>regula check examples/cv-screening-app --scope all</code> against the bundled hiring-system example (an intentionally high-risk fixture under EU AI Act Annex III, Category 4 &mdash; employment; output from Regula v1.7.5, 16 July 2026):</p>
     <div class="term">
         <div class="term-bar">
             <span class="term-dot td-r"></span>
@@ -90,12 +90,8 @@ Regula Scan: /home/USER/getregula/examples/cv-screening-app
 ============================================================
 
   Verdict: HIGH-RISK
-  Your project is classified as high-risk under EU AI Act Annex III.
-  You must comply with Articles 9-15 before the enforcement deadline.
-
-  Why:
-    1. app.py:1 — Employment and workers management
-       (Art. 9, Art. 10)
+  Your project shows indicators of high-risk AI under EU AI Act Annex III.
+  If confirmed high-risk (Article 6), Articles 9-15 obligations apply before the enforcement deadline.
   Files scanned:      1
   Prohibited:         0
   Credentials:        0
@@ -104,13 +100,16 @@ Regula Scan: /home/USER/getregula/examples/cv-screening-app
   Limited-risk:       0
   Suppressed:         0
   BLOCK tier:         0
-  WARN tier:          1
-  INFO tier:          0
+  WARN tier:          0
+  INFO tier:          1
   Lifecycle:          develop: 1, plan: 1
 
   HIGH-RISK INDICATORS:
-    [WARN] [ 63] app.py — Employment and workers management [plan]
-      Add human oversight before automated hiring/employment decisions
+    [INFO] [ 43] app.py — Employment and workers management [plan]
+
+  Questions for human review (1):
+    ? app.py:1 — Annex III, Category 4
+      Employment and workers management (confidence: 43%)
 ============================================================
   Confidence scores: 0-100 (higher = more indicators matched)
   Tiers: BLOCK (&gt;=80 or prohibited), WARN (50-79), INFO (&lt;50)

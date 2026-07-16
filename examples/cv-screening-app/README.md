@@ -19,7 +19,7 @@ no registrations — every command below runs locally.
 
 ```bash
 pipx install regula-ai    # or: uvx --from regula-ai regula
-regula --version           # expect regula 1.7.0 or newer
+regula --version           # expect regula 1.7.5 or newer
 ```
 
 Clone the repo to get this example:
@@ -34,14 +34,18 @@ cd getregula
 ## Step 1 — scan (`regula check`) — 30 seconds
 
 ```bash
-regula check examples/cv-screening-app
+regula check examples/cv-screening-app --scope all
 ```
 
-Expected output (verified against Regula v1.7.0 on 2026-04-16):
+Expected output (verified against Regula v1.7.5 on 2026-07-16):
 
 ```
 Regula Scan: /home/you/getregula/examples/cv-screening-app
 ============================================================
+
+  Verdict: HIGH-RISK
+  Your project shows indicators of high-risk AI under EU AI Act Annex III.
+  If confirmed high-risk (Article 6), Articles 9-15 obligations apply before the enforcement deadline.
   Files scanned:      1
   Prohibited:         0
   Credentials:        0
@@ -50,20 +54,39 @@ Regula Scan: /home/you/getregula/examples/cv-screening-app
   Limited-risk:       0
   Suppressed:         0
   BLOCK tier:         0
-  WARN tier:          1
-  INFO tier:          0
+  WARN tier:          0
+  INFO tier:          1
+  Lifecycle:          develop: 1, plan: 1
 
   HIGH-RISK INDICATORS:
-    [WARN] [ 68] app.py — Employment and workers management
-      Add human oversight before automated hiring/employment decisions
+    [INFO] [ 43] app.py — Employment and workers management [plan]
+
+  Questions for human review (1):
+    ? app.py:1 — Annex III, Category 4
+      Employment and workers management (confidence: 43%)
 ============================================================
 ```
 
-**What to notice:** Regula matched the employment vocabulary in `app.py`
-(`hire_probability`, `applicants`, `job`) and classified the project as
-**high-risk, Annex III Category 4**. That is an indication, not a legal
-determination — Article 6 + Article 6(3) still govern the applicability
-decision for your real system.
+**What to notice — three things, and two of them are precision features:**
+
+1. Regula matched the employment vocabulary in `app.py`
+   (`hire_probability`, `applicants`, `job`) and classified the project
+   as **high-risk, Annex III Category 4**. That is an indication, not a
+   legal determination — Article 6 + Article 6(3) still govern the
+   applicability decision for your real system.
+2. The employment pattern only fired because this project **declares its
+   domain**: `regula-policy.yaml` here contains `system.domain:
+   employment`. Since v1.7.5, domain-gated high-risk patterns stay
+   silent unless the project declares the domain (or you pass
+   `--domain`) — employment vocabulary in generic code was the largest
+   false-positive source. Delete the policy file and re-run to see the
+   finding reported as "suppressed by domain gating".
+3. `--scope all` is needed because Regula classifies files under
+   `examples/` as example-provenance and, by default (`--scope
+   production`), excludes their non-minimal findings from the verdict.
+   On your real project you run plain `regula check .` — both
+   precision features exist so that *that* scan is quiet unless it
+   should not be.
 
 ---
 
@@ -73,58 +96,68 @@ decision for your real system.
 regula plan --project examples/cv-screening-app
 ```
 
-Expected output (abbreviated — full plan is 8 tasks):
+Expected output (abbreviated — full plan is 9 tasks; verified against
+Regula v1.7.5 on 2026-07-16):
 
 ```
 # Remediation Plan — cv-screening-app
-Generated: 2026-04-16T…
-Tasks: 8
+Generated: 2026-07-16T…
+Tasks: 9
 
 ## Priority: HIGH
 
 TASK-001 [HIGH] Article 12 — Record-Keeping
-  Action: Address compliance gaps for Article 12:
-    - No logging framework detected in code files
-    - No structured or auditable logging format detected
+  Article: 12
+  Action: Address compliance gaps for Article 12 (Record-Keeping):
+            - No logging framework detected in code files
+            - No structured or auditable logging format detected
   Effort: ~5-11h
-  Deadline: 2 August 2026 (Omnibus agreed: 2 December 2027 for Annex III employment systems, EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)
+  Deadline: 2 August 2026
+  Status: [ ] Not Started
 
-TASK-002 [HIGH] Article 13 — Transparency
+TASK-002 [HIGH] Article 17 — Quality Management System
   …
 
-TASK-003 [HIGH] Article 14 — Human Oversight
-  Action: No evidence that AI outputs are reviewed by humans before action
-  Effort: ~4-8h
-…
+TASK-003 [HIGH] Article 13 — Transparency
+  …
 ```
 
 **What to notice:** Regula converted the scan findings into a prioritised
-remediation list mapped to EU AI Act Articles 9 through 15. Use this to
-populate your own JIRA / Linear backlog.
+remediation list mapped to EU AI Act Articles 9 through 15 (plus the
+Article 17 QMS gap). Use this to populate your own JIRA / Linear backlog.
+
+> Known nit in 1.7.5: the `Deadline:` line prints the binding baseline
+> date without the adopted-Omnibus context ("2 December 2027 for
+> Annex III … pending OJ publication"). Releases after 1.7.5 restore
+> the contextual line.
 
 ---
 
 ## Step 3 — gap assessment (`regula gap`) — 15 seconds
 
 ```bash
-regula gap
+regula gap --project examples/cv-screening-app
 ```
 
-(Yes — `gap` has no path argument. It reads the policy file and
-cross-references framework mappings.)
-
-Expected output (excerpt):
+Expected output (excerpt; verified against Regula v1.7.5 on 2026-07-16):
 
 ```
-GAP REPORT — 6 of 7 articles have strong evidence. 1 have moderate.
+EU AI Act Compliance Gap Assessment: cv-screening-app
+Highest risk tier: high_risk
+Overall score:     29%
 
-Article 9   Risk management           [OK ] …
-Article 10  Data governance           [OK ] …
-Article 11  Technical documentation   [WARN] …
-Article 12  Record-keeping            [OK ] …
-Article 13  Transparency              [WARN] …
-Article 14  Human oversight           [OK ] …
-Article 15  Accuracy/robustness       [OK ] …
+  NOTE: This score measures the PRESENCE of compliance
+  documentation and infrastructure — it does not assess code
+  risk and cannot offset scan findings.
+
+Article 9   Risk Management                     [ 60%] MODERATE
+Article 10  Data Governance                     [ 30%] PARTIAL
+Article 11  Technical Documentation             [  0%] NOT FOUND
+Article 12  Record-Keeping                      [ 30%] PARTIAL
+Article 13  Transparency                        [  0%] NOT FOUND
+Article 14  Human Oversight                     [ 45%] PARTIAL
+Article 15  Accuracy, Robustness, Cybersecurity [ 40%] PARTIAL
+Article 17  Quality Management System           [ 30%] PARTIAL
 ```
 
 **What to notice:** the cross-framework mapping (ISO 42001, NIST AI RMF,
@@ -144,22 +177,29 @@ regula conform \
   --zip
 ```
 
-Expected terminal output:
+Expected terminal output (verified against Regula v1.7.5 on 2026-07-16;
+`<date>` is your run date):
 
 ```
 Generating conformity assessment evidence pack for examples/cv-screening-app...
-Conformity evidence pack written to: /tmp/regula-demo/conformity-evidence-cv-screening-app-2026-04-16
+Conformity evidence pack written to: /tmp/regula-demo/conformity-evidence-cv-screening-app-<date>
+Format: regula.evidence.v1 (format_version 1.0)
 Contains 26 files with SHA-256 integrity hashes.
-Overall readiness: 21%
-Bundle written to:      /tmp/regula-demo/conformity-evidence-cv-screening-app-2026-04-16.regula.zip
-Verify bundle with:     regula verify /tmp/regula-demo/conformity-evidence-cv-screening-app-2026-04-16.regula.zip
-Start with: /tmp/regula-demo/conformity-evidence-cv-screening-app-2026-04-16/00-assessment-summary.json
+Overall readiness: 29%
+Bundle written to:      /tmp/regula-demo/conformity-evidence-cv-screening-app-<date>.regula.zip
+Verify bundle with:     regula verify /tmp/regula-demo/conformity-evidence-cv-screening-app-<date>.regula.zip
+Start with: /tmp/regula-demo/conformity-evidence-cv-screening-app-<date>/00-assessment-summary.json
 ```
+
+> Known nit in 1.7.5: a line `regula: BBQ eval failed: BBQ sample not
+> found …` appears before the output above — the bias-eval sample file
+> was missing from the 1.7.5 wheel. Harmless (the pack still generates
+> and verifies); fixed in releases after 1.7.5.
 
 **What was generated:**
 
 ```
-conformity-evidence-cv-screening-app-2026-04-16/
+conformity-evidence-cv-screening-app-<date>/
 ├── 00-assessment-summary.json          ← start here
 ├── README.md
 ├── manifest.json                       ← SHA-256 integrity, declares regula.evidence.v1
@@ -191,7 +231,7 @@ conformity-evidence-cv-screening-app-2026-04-16/
 └── 11-remediation/
     └── remediation-plan.md
 
-+ conformity-evidence-cv-screening-app-2026-04-16.regula.zip    ← portable bundle
++ conformity-evidence-cv-screening-app-<date>.regula.zip    ← portable bundle
 ```
 
 Open `00-assessment-summary.json` for the top-level readiness score and
@@ -218,14 +258,14 @@ The manifest binds every file to a SHA-256 hash. Anyone can verify the
 pack has not been tampered with, **without re-running Regula**:
 
 ```bash
-regula verify /tmp/regula-demo/conformity-evidence-cv-screening-app-2026-04-16
+regula verify /tmp/regula-demo/conformity-evidence-cv-screening-app-<date>
 ```
 
 Expected output:
 
 ```
-Verifying: /tmp/regula-demo/conformity-evidence-cv-screening-app-2026-04-16
-  Format: regula.evidence.v1 v1.0 (generated by Regula 1.7.0)
+Verifying: /tmp/regula-demo/conformity-evidence-cv-screening-app-<date>
+  Format: regula.evidence.v1 v1.0 (generated by Regula 1.7.5)
 ============================================================
   ✓ 01-risk-classification/findings.json — OK
   ✓ 01-risk-classification/coverage.json — OK
@@ -240,14 +280,14 @@ Verify the `.regula.zip` bundle directly (useful for transporting evidence
 to a reviewer):
 
 ```bash
-regula verify /tmp/regula-demo/conformity-evidence-cv-screening-app-2026-04-16.regula.zip
+regula verify /tmp/regula-demo/conformity-evidence-cv-screening-app-<date>.regula.zip
 ```
 
 Write a machine-readable verification report (for audit trails):
 
 ```bash
 regula verify \
-  /tmp/regula-demo/conformity-evidence-cv-screening-app-2026-04-16 \
+  /tmp/regula-demo/conformity-evidence-cv-screening-app-<date> \
   --strict \
   --format json \
   --report /tmp/regula-demo/verify-report.json
@@ -295,7 +335,7 @@ Expected output additions:
 Format: regula.evidence.v1 (format_version 1.1)
 …
 Signed: Ed25519 signature embedded (verify with `regula verify …`).
-Timestamped: RFC 3161 token from https://freetsa.org/tsr at 2026-04-16T16:02:28+00:00.
+Timestamped: RFC 3161 token from https://freetsa.org/tsr at <your run time>.
 ```
 
 Verify the signed + timestamped pack:
@@ -307,7 +347,7 @@ regula verify /tmp/regula-demo-signed/conformity-evidence-cv-screening-app-*
 Expected new lines:
 
 ```
-Format: regula.evidence.v1 v1.1 (generated by Regula 1.7.0)
+Format: regula.evidence.v1 v1.1 (generated by Regula 1.7.5)
 Signature: VERIFIED (ed25519 signature verified)
 Timestamp: VERIFIED (timestamp hash matches manifest; gen_time=… (signer-chain NOT independently verified))
 ============================================================
@@ -356,7 +396,7 @@ scan:
   threshold: 0.2
 regula_handoff:
   version: 1
-  generated_at: "2026-04-16T…"
+  generated_at: "2026-07-16T…"
   entrypoint_count: 0
 ```
 

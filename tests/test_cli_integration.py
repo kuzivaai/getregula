@@ -21,6 +21,32 @@ def run_cli(*args, env_overrides=None):
     return result.returncode, result.stdout, result.stderr
 
 
+import contextlib
+
+
+@contextlib.contextmanager
+def _domain_gated_project():
+    """A copy of the cv-screening example's app.py WITHOUT a policy file.
+
+    The example itself declares `system.domain: employment` in its
+    regula-policy.yaml (16 Jul 2026), so scanning it directly ACTIVATES
+    the employment patterns. The domain-gating UX tests need the
+    UNDECLARED state — employment vocabulary present, no domain declared
+    — so they materialise a policy-less copy instead of depending on the
+    documentation example's configuration.
+
+    Uses tempfile rather than pytest's tmp_path: tmp_path's directory
+    names contain the test name ("test_…"), which Regula's path
+    screening treats as test provenance and skips entirely."""
+    from pathlib import Path
+    src = Path(__file__).resolve().parents[1] / "examples" / "cv-screening-app" / "app.py"
+    with tempfile.TemporaryDirectory(prefix="gated-cv-app-") as td:
+        proj = Path(td) / "hiring-service"
+        proj.mkdir()
+        (proj / "app.py").write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
+        yield str(proj)
+
+
 def test_check_sample_high_risk():
     rc, out, err = run_cli("check", "tests/fixtures/sample_high_risk")
     assert rc == 0
@@ -648,7 +674,8 @@ def test_domain_gating_hint_shown_for_suppressed_findings():
     Regression test for a cache-path bug where domain_gated_count was not
     incremented for cached findings, hiding the hint from subsequent scans.
     """
-    rc, out, err = run_cli("check", "examples/cv-screening-app", "--scope", "all")
+    with _domain_gated_project() as proj:
+        rc, out, err = run_cli("check", proj, "--scope", "all")
     assert "domain gating" in out.lower() or "domain gating" in err.lower(), (
         f"Expected domain gating hint in output:\nstdout: {out[:300]}\nstderr: {err[:300]}"
     )
@@ -673,7 +700,8 @@ def test_demo_data_in_sync():
 
 def test_suppressed_counter_matches_domain_gated_hint():
     """Suppressed: N in the stats block must equal the domain-gated count in the INFO hint."""
-    rc, out, err = run_cli("check", "examples/cv-screening-app", "--scope", "all")
+    with _domain_gated_project() as proj:
+        rc, out, err = run_cli("check", proj, "--scope", "all")
     import re
     suppressed_m = re.search(r"Suppressed:\s+(\d+)", out)
     hint_m = re.search(r"(\d+) high-risk finding\(s\) suppressed by domain gating", out)
@@ -686,7 +714,8 @@ def test_suppressed_counter_matches_domain_gated_hint():
 
 def test_no_ai_detected_acknowledges_domain_gated():
     """When domain-gated findings exist, the verdict line must not say 'No AI components'."""
-    rc, out, err = run_cli("check", "examples/cv-screening-app", "--scope", "all")
+    with _domain_gated_project() as proj:
+        rc, out, err = run_cli("check", proj, "--scope", "all")
     assert "No AI components" not in out, (
         f"Verdict should acknowledge domain-gated findings:\n{out[:400]}"
     )
@@ -767,13 +796,14 @@ def test_report_domain_flag_activates_gated_findings():
     """`regula report` on a domain-gated project yields zero findings
     without --domain and real findings with it (10 Jul 2026 audit: the
     flag didn't exist, so domain-gated projects silently reported
-    nothing). Uses the bundled cv-screening example (employment domain,
-    same project `regula demo` scans)."""
-    rc, out, _ = run_cli("report", "examples/cv-screening-app", "-f", "json")
-    assert rc == 0
-    gated = json.loads(out)["data"]
-    rc, out, _ = run_cli("report", "examples/cv-screening-app", "-f", "json",
-                         "--domain", "employment")
+    nothing). Uses a policy-less copy of the cv-screening example
+    (employment vocabulary, no domain declared)."""
+    with _domain_gated_project() as proj:
+        rc, out, _ = run_cli("report", proj, "-f", "json")
+        assert rc == 0
+        gated = json.loads(out)["data"]
+        rc, out, _ = run_cli("report", proj, "-f", "json",
+                             "--domain", "employment")
     assert rc == 0
     activated = json.loads(out)["data"]
     assert len(activated) > len(gated), (

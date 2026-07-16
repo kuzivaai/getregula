@@ -5,23 +5,31 @@ Regula flags without needing their own codebase. Each directory has its own
 README with the exact output of `regula check` verified against the current
 release.
 
-| Directory                    | EU AI Act tier             | Expected finding              |
-| ---------------------------- | -------------------------- | ----------------------------- |
-| `cv-screening-app/`          | High-risk (Annex III, 4)   | 1 WARN — employment pattern   |
-| `customer-chatbot/`          | Limited-risk (Article 50)  | 1 INFO — chatbot transparency |
-| `code-completion-tool/`      | Minimal-risk               | clean scan, 0 findings        |
+| Directory                    | EU AI Act tier             | Expected finding (with `--scope all`)   |
+| ---------------------------- | -------------------------- | --------------------------------------- |
+| `cv-screening-app/`          | High-risk (Annex III, 4)   | HIGH-RISK verdict — employment pattern  |
+| `customer-chatbot/`          | Limited-risk (Article 50)  | LIMITED-RISK verdict — chatbot transparency |
+| `code-completion-tool/`      | Minimal-risk               | clean scan, 0 findings                  |
 
 ## Quick start
 
 ```
-pipx install regula-ai
+pipx install regula-ai   # 1.7.5 or newer
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 
-regula check examples/cv-screening-app       # high-risk → 1 WARN
-regula check examples/customer-chatbot       # limited-risk → 1 INFO (use --verbose to see file:line)
-regula check examples/code-completion-tool   # minimal-risk → clean
+regula check examples/cv-screening-app --scope all    # high-risk verdict
+regula check examples/customer-chatbot --scope all    # limited-risk verdict
+regula check examples/code-completion-tool            # minimal-risk → clean
 ```
+
+`--scope all` is needed because files under `examples/` carry example
+provenance, and the default `--scope production` excludes their
+non-minimal findings — a deliberate precision feature (your real scans
+stay quiet about vendored demo code). The cv-screening project also
+declares `system.domain: employment` in its `regula-policy.yaml`; since
+v1.7.5 that declaration is what activates the domain-gated employment
+patterns (verified 16 Jul 2026 against the released 1.7.5).
 
 ## Try Regula end-to-end in 10 minutes
 
