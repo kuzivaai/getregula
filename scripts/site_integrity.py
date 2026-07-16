@@ -155,6 +155,36 @@ def check_links(root: Path) -> list:
     return dead
 
 
+def check_version(root: Path) -> list:
+    """Homepage version badges must match scripts/constants.py VERSION.
+
+    The badge went stale silently at the 1.7.4 release (all three
+    locales still said v1.7.3 three weeks later); this makes the drift
+    a guard failure so every release flips it or fails.
+    """
+    import re as _re
+    failures = []
+    version_file = (root / "scripts" / "constants.py").read_text(encoding="utf-8")
+    m = _re.search(r'^VERSION\s*=\s*"([^"]+)"', version_file, _re.M)
+    if not m:
+        return ["FAIL version: could not read VERSION from scripts/constants.py"]
+    version = m.group(1)
+    pages = [root / "site" / "index.html",
+             root / "site" / "locales" / "de.html",
+             root / "site" / "locales" / "pt-br.html"]
+    for page in pages:
+        text = page.read_text(encoding="utf-8")
+        badges = _re.findall(r"v(\d+\.\d+\.\d+)\s*&middot;", text)
+        stale = [b for b in badges if b != version]
+        if stale:
+            failures.append(
+                f"FAIL version: {page.relative_to(root)} badge says "
+                f"v{stale[0]} but scripts/constants.py VERSION is {version}")
+        else:
+            print(f"  OK   version {page.name}: badge matches v{version}")
+    return failures
+
+
 def check_claims(root: Path) -> list:
     """Run the claim auditor across every site page."""
     pages = [str(p) for p in sorted((root / "site").rglob("*.html"))]
@@ -171,8 +201,8 @@ def main() -> int:
     parser.add_argument("--root", default=str(ROOT),
                         help="Repo root to check (default: this repo). "
                              "Use a copy for sandbox/seeded-drift testing.")
-    parser.add_argument("--check", default="regen,sources,links,claims",
-                        help="Comma-separated subset: regen,sources,links,claims")
+    parser.add_argument("--check", default="regen,sources,links,claims,version",
+                        help="Comma-separated subset: regen,sources,links,claims,version")
     parser.add_argument("--fingerprint", action="store_true",
                         help="Print drift fingerprints for KNOWN_DRIFT entries instead of judging")
     args = parser.parse_args()
@@ -193,6 +223,8 @@ def main() -> int:
         failures += check_links(root)
     if "claims" in wanted:
         failures += check_claims(root)
+    if "version" in wanted:
+        failures += check_version(root)
 
     print("=" * 60)
     if failures:
