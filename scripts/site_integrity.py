@@ -49,12 +49,11 @@ EXEMPT_NO_SOURCE = {
 # Sourced pages with known, reviewed drift between source and shipped
 # HTML. Value = sha256 of the unified diff at the time the drift was
 # reviewed. If the diff changes (new drift on top), the check FAILS.
-# Reconciliation tracked in DQ-6; Korea folds into the 21 Jul 2026 pass.
-KNOWN_DRIFT = {
-    # Reviewed 16 Jul 2026 (day report): bidirectional drift — shipped
-    # pages carry hand-tuned metas; sources carry newer copy. DQ-6.
-    "south-korea": "5e2595a6a7b11e7a",     # reconcile in the 21 Jul Korea pass
-}
+# DQ-6 (Korea) reconciled 16 Jul 2026: shipped content ported into
+# content/regulations/south-korea.py, page rebuilt through the
+# pipeline. The 21 Jul pass now only re-verifies the amendment against
+# primary text.
+KNOWN_DRIFT = {}
 
 
 def _diff_fingerprint(shipped: str, rendered: str) -> str:
