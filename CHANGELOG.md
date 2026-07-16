@@ -7,6 +7,8 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.7.5] - 2026-07-16
+
 Deep-audit remediation (8 July 2026), extended by the 10 July follow-up
 audit. Full findings and evidence in the maintainer's audit report;
 every fix below was verified by test.
