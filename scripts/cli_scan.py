@@ -482,20 +482,24 @@ def cmd_check(args) -> None:
 
         # === First-run verdict: answer "Am I affected?" ===
         # Placed at the TOP so it's the first thing users see.
+        # Indication framing, not legal determination: Regula reports
+        # pattern-based indicators; Article 6 classification depends on
+        # intended purpose and context (positioning rule — the tool must
+        # never present itself as issuing a legal classification).
         if prohibited:
             verdict_tier = "PROHIBITED"
-            verdict_desc = "Your project contains AI practices prohibited under EU AI Act Article 5."
-            verdict_action = "These must be removed before deployment in the EU."
+            verdict_desc = "Your project contains indicators of AI practices prohibited under EU AI Act Article 5."
+            verdict_action = "Review these findings — confirmed prohibited practices must be removed before deployment in the EU."
             verdict_color = red
         elif high_risk or credentials:
             verdict_tier = "HIGH-RISK"
-            verdict_desc = "Your project is classified as high-risk under EU AI Act Annex III."
-            verdict_action = "You must comply with Articles 9-15 before the enforcement deadline."
+            verdict_desc = "Your project shows indicators of high-risk AI under EU AI Act Annex III."
+            verdict_action = "If confirmed high-risk (Article 6), Articles 9-15 obligations apply before the enforcement deadline."
             verdict_color = yellow
         elif limited:
             verdict_tier = "LIMITED-RISK"
-            verdict_desc = "Your project has limited-risk AI components (Article 50 transparency)."
-            verdict_action = "You must disclose AI usage to users."
+            verdict_desc = "Your project has indicators of limited-risk AI components (Article 50 transparency)."
+            verdict_action = "If confirmed, Article 50 requires disclosing AI usage to users."
             verdict_color = blue
         elif active:
             verdict_tier = "MINIMAL-RISK"
