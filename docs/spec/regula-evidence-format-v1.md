@@ -129,6 +129,13 @@ manifest if they are absent or unrecognised:
 - `interim_format_disclosure` (string) — free text disclosure
 - `signing` (object) — Ed25519 signature over the canonical manifest (§4.5, added in v1.1)
 - `timestamp_authority` (object) — RFC 3161 timestamp token (reserved; lands in v1.1 alongside signing)
+- `engagement` (object) — consultant engagement metadata: `client`,
+  `prepared_by`, `reference` (all strings, all optional, each ≤200
+  characters). Present only when the producer configured engagement
+  metadata (via the `engagement:` section of `regula-policy.yaml` or
+  the `--client`/`--prepared-by`/`--engagement-ref` flags). Because the
+  block sits inside the manifest, signatures and timestamps cover it.
+  It does not affect `format_version`: a v1.0 manifest MAY carry it.
 
 A manifest that uses any of the v1.1 fields MUST set `format_version` to
 `"1.1"`. v1.0 manifests carry only the v1.0-defined fields and omit the

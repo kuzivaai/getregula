@@ -53,7 +53,11 @@ def cmd_report(args) -> None:
     if args.format == "html":
         content = generate_html_report(findings, project_name, audit_events, chain_valid)
     elif args.format == "exec-summary":
-        content = generate_exec_summary(findings, project_name)
+        from engagement import load_engagement, engagement_from_args
+        engagement = load_engagement(overrides=engagement_from_args(args),
+                                     project_path=project_path)
+        content = generate_exec_summary(findings, project_name,
+                                        engagement=engagement)
     elif args.format == "sales":
         content = generate_sales_report(findings, project_name)
     elif args.format == "sarif":
@@ -95,6 +99,10 @@ def cmd_evidence_pack(args) -> None:
     if getattr(args, "signing_key", None):
         signing_key_path = Path(args.signing_key).expanduser().resolve()
 
+    from engagement import load_engagement, engagement_from_args
+    engagement = load_engagement(overrides=engagement_from_args(args),
+                                 project_path=project_path)
+
     print(f"Generating evidence pack for {project_path}...", file=sys.stderr)
     try:
         result = generate_evidence_pack(
@@ -106,6 +114,7 @@ def cmd_evidence_pack(args) -> None:
             signing_key_path=signing_key_path,
             timestamp=timestamp_requested,
             tsa_url=getattr(args, "tsa_url", None),
+            engagement=engagement,
         )
     except ImportError as exc:
         # Malformed install where signing.py or timestamp.py is absent.

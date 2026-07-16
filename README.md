@@ -128,7 +128,7 @@ The EU AI Act defines four risk tiers. Regula maps code patterns to each:
 
 Every finding includes the relevant Article reference and explains when exceptions may apply. Regula flags patterns -- it does not make legal determinations.
 
-**Multi-jurisdiction support.** Beyond the EU AI Act, Regula maps risk patterns to South Korea's AI Basic Act (Act No. 20676, in force 22 January 2026) and Colorado SB 26-189 (disclosure-only, effective 1 January 2027). Use `--jurisdictions eu,korea,colorado` on `regula check` or `--jurisdiction korea` on `regula assess` to apply the relevant framework. Each jurisdiction has its own YAML config (`references/jurisdictions/`) and tailored web questionnaire.
+**Multi-jurisdiction support.** Beyond the EU AI Act, Regula maps risk patterns to South Korea's AI Basic Act (Act No. 20676, in force 22 January 2026) and Colorado SB 26-189 (disclosure-focused, plus consumer correction and human-review rights, duties from 1 January 2027). Use `--jurisdictions eu,korea,colorado` on `regula check` or `--jurisdiction korea` on `regula assess` to apply the relevant framework. Each jurisdiction has its own YAML config (`references/jurisdictions/`) and tailored web questionnaire.
 
 **Developer guides** on getregula.com:
 [Python](https://getregula.com/guides/eu-ai-act-python.html) |
@@ -186,7 +186,7 @@ Seven endpoints: `/health`, `/v1/check`, `/v1/classify`, `/v1/gap`, `/v1/questio
 - **Solo founders and indie hackers** building AI products (with Claude Code, Cursor, or similar) who have EU users and need to know what the EU AI Act means for their code.
 - **Small teams** who want to understand their compliance exposure before it becomes a sales blocker. Enterprise procurement is already asking for AI Act evidence.
 - **Engineering teams** who want EU AI Act scanning in CI/CD to catch high-risk or prohibited patterns before they ship.
-- **AI governance consultants and advisors** — run Regula on a client's codebase to produce verifiable, reproducible compliance evidence (findings, gap analysis, auditor-ready documentation packs, signed audit trails) as part of a broader governance engagement. Every metric is CI-enforced and generated from source, so your client gets a trustworthy baseline that can be independently verified.
+- **AI governance consultants and advisors** — run Regula on a client's codebase to produce verifiable, reproducible compliance evidence (findings, gap analysis, auditor-ready documentation packs, signed audit trails) as part of a broader governance engagement. Every metric is CI-enforced and generated from source, so your client gets a trustworthy baseline that can be independently verified. Deliverables can carry engagement metadata (client, preparer, reference) via the `engagement:` policy section or `--client`/`--prepared-by`/`--engagement-ref` flags. See the [consultant guide](docs/consultant-guide.md) for the full engagement workflow.
 
 ## What Regula is (and isn't)
 

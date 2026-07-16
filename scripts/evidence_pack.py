@@ -36,6 +36,7 @@ def generate_evidence_pack(
     signing_key_path=None,
     timestamp: bool = False,
     tsa_url: str = None,
+    engagement: dict = None,
     **kwargs,
 ) -> dict:
     """Generate a complete evidence pack for a project.
@@ -44,6 +45,11 @@ def generate_evidence_pack(
         project_path: Path to the project to scan.
         output_dir: Parent directory for the pack folder.
         project_name: Human-readable name (defaults to directory name).
+        engagement: Optional consultant engagement metadata (see
+            engagement.py: client / prepared_by / reference). When
+            present, an `engagement` object is added to the manifest
+            (inside the signed content, so it is tamper-evident). When
+            absent, the manifest is byte-identical to previous releases.
         sign: Sign the manifest with an Ed25519 key (Regula Evidence
             Format v1.1 §4.5). When any security option is active the
             manifest additionally declares the Evidence Format v1 fields
@@ -189,6 +195,11 @@ def generate_evidence_pack(
         "project_path": str(project),
         "files": file_records,
     }
+    # Optional consultant engagement block. Added before signing so the
+    # signature and any RFC 3161 timestamp cover it. Omitted entirely
+    # when not configured — unsigned manifests stay byte-compatible.
+    if engagement:
+        manifest["engagement"] = dict(engagement)
     if sign:
         # Signed packs must be consumable by `regula verify`, which
         # strictly requires the Evidence Format v1 declaration. These
