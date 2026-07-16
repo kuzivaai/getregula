@@ -326,7 +326,7 @@
         <div class="hero-text">
             <div class="badge"><span class="badge-dot"></span> Open-source CLI &middot; v1.7.3 &middot; Apache 2.0</div>
             <h1>Is your AI app <span class="hl">high-risk</span> in Europe?</h1>
-            <p class="sub">One command tells you which EU AI Act risk tier your code is in, why, and what to fix. <strong>30 seconds, free, no account.</strong></p>
+            <p class="sub">One command tells you which EU AI Act risk tier your code is in, why, and what to fix &mdash; with the same scan mapped to South Korea's AI Basic Act and Colorado SB 26-189. <strong>30 seconds, free, no account.</strong></p>
 
             <button type="button" class="cta-pill" id="install-pill" aria-live="polite" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'install'}});copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
@@ -638,6 +638,12 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 
     <div class="feature-category">Integrate</div>
     <div class="art-grid">
+        <div class="card-base art-card">
+            <div class="tag tag-blue">Multi-jurisdiction</div>
+            <h3>3 jurisdictions, one scan</h3>
+            <p>Beyond the EU AI Act: the same scan maps findings to South Korea's AI Basic Act (Act No. 20676, in force 22 January 2026) and Colorado SB 26-189 (disclosure-focused, duties from 1 January 2027), each with its own domain-to-obligation mapping and questionnaire.</p>
+            <code style="font-size:11px;color:#9898b4;">regula check . --jurisdictions eu,korea,colorado</code>
+        </div>
         <div class="card-base art-card">
             <div class="tag tag-blue">Cross-regulation</div>
             <h3>12 framework mappings</h3>

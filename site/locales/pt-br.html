@@ -317,7 +317,7 @@
         <div class="hero-text">
             <div class="badge"><span class="badge-dot"></span> CLI open-source &middot; v1.7.3 &middot; Apache 2.0</div>
             <h1>Seu app de IA e de <span class="hl">alto risco</span> na Europa?</h1>
-            <p class="sub">Um comando mostra em qual nivel de risco da Lei de IA da UE seu codigo se encontra, por que, e o que corrigir. <strong>30 segundos, gratis, sem conta.</strong></p>
+            <p class="sub">Um comando mostra em qual nivel de risco da Lei de IA da UE seu codigo se encontra, por que, e o que corrigir &mdash; a mesma varredura tambem e mapeada para a Lei Basica de IA da Coreia do Sul e a Colorado SB 26-189. <strong>30 segundos, gratis, sem conta.</strong></p>
 
             <button type="button" class="cta-pill" id="install-pill" aria-live="polite" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'install'}});copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
@@ -637,6 +637,12 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 
     <div class="feature-category">Integrar</div>
     <div class="art-grid">
+        <div class="card-base art-card">
+            <div class="tag tag-blue">Multijurisdicional</div>
+            <h3>3 jurisdicoes, uma varredura</h3>
+            <p>Alem da Lei de IA da UE: a mesma varredura mapeia achados para a Lei Basica de IA da Coreia do Sul (Lei n. 20676, em vigor desde 22 de janeiro de 2026) e para a Colorado SB 26-189 (focada em divulgacao, obrigacoes a partir de 1 de janeiro de 2027), cada uma com seu proprio mapeamento de dominios para obrigacoes e questionario.</p>
+            <code style="font-size:11px;color:#9898b4;">regula check . --jurisdictions eu,korea,colorado</code>
+        </div>
         <div class="card-base art-card">
             <div class="tag tag-blue">Regulacao cruzada</div>
             <h3>12 mapeamentos de frameworks</h3>

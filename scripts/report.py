@@ -581,7 +581,6 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     for d in _declared:
         _domain_activated.update(_domain_to_subcats.get(d, set()))
     _domain_activated.update(_fingerprint.get("activate", set()))
-    _domain_suppressed = _fingerprint.get("suppress", set()) - _domain_activated
 
     # Side-channel counters so cmd_check can show an honest "files scanned"
     # number without refactoring every caller. Exposed on scan_files.last_stats.

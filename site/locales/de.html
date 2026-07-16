@@ -308,7 +308,7 @@
         <div class="hero-text">
             <div class="badge"><span class="badge-dot"></span> Open-Source-CLI &middot; v1.7.3 &middot; Apache 2.0</div>
             <h1>Ist Ihre KI-App in Europa <span class="hl">hochriskant</span>?</h1>
-            <p class="sub">Ein Befehl zeigt Ihnen, in welche EU-KI-Gesetz-Risikostufe Ihr Code f&auml;llt, warum, und was zu beheben ist. <strong>30 Sekunden, kostenlos, kein Konto.</strong></p>
+            <p class="sub">Ein Befehl zeigt Ihnen, in welche EU-KI-Gesetz-Risikostufe Ihr Code f&auml;llt, warum, und was zu beheben ist &ndash; derselbe Scan wird auch dem s&uuml;dkoreanischen KI-Basisgesetz und Colorado SB 26-189 zugeordnet. <strong>30 Sekunden, kostenlos, kein Konto.</strong></p>
 
             <button type="button" class="cta-pill" id="install-pill" aria-live="polite" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'install'}});copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
@@ -620,6 +620,12 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 
     <div class="feature-category">Integration</div>
     <div class="art-grid">
+        <div class="card-base art-card">
+            <div class="tag tag-blue">Multi-Jurisdiktion</div>
+            <h3>3 Rechtsr&auml;ume, ein Scan</h3>
+            <p>&Uuml;ber das EU-KI-Gesetz hinaus: Derselbe Scan ordnet Befunde dem s&uuml;dkoreanischen KI-Basisgesetz (Gesetz Nr. 20676, in Kraft seit 22. Januar 2026) und Colorado SB 26-189 (offenlegungsorientiert, Pflichten ab 1. Januar 2027) zu &ndash; jeweils mit eigener Zuordnung von Dom&auml;nen zu Pflichten und eigenem Fragebogen.</p>
+            <code style="font-size:11px;color:#9898b4;">regula check . --jurisdictions eu,korea,colorado</code>
+        </div>
         <div class="card-base art-card">
             <div class="tag tag-blue">Regulierungs&uuml;bergreifend</div>
             <h3>12 Framework-Zuordnungen</h3>
