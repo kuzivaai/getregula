@@ -760,7 +760,7 @@ wheels = [
 
 [[package]]
 name = "regula-ai"
-version = "1.7.4"
+version = "1.7.5"
 source = { editable = "." }
 
 [package.optional-dependencies]
@@ -804,11 +804,11 @@ yaml = [
 
 [package.metadata]
 requires-dist = [
-    { name = "asn1crypto", marker = "extra == 'all'", specifier = ">=1.5,<2" },
-    { name = "asn1crypto", marker = "extra == 'signing'", specifier = ">=1.5,<2" },
-    { name = "cryptography", marker = "extra == 'all'", specifier = ">=41,<47" },
-    { name = "cryptography", marker = "extra == 'signing'", specifier = ">=41,<47" },
-    { name = "flask", marker = "extra == 'web'", specifier = "~=3.0" },
+    { name = "asn1crypto", marker = "extra == 'all'", specifier = ">=1.5.1,<2" },
+    { name = "asn1crypto", marker = "extra == 'signing'", specifier = ">=1.5.1,<2" },
+    { name = "cryptography", marker = "extra == 'all'", specifier = ">=41,<50" },
+    { name = "cryptography", marker = "extra == 'signing'", specifier = ">=41,<50" },
+    { name = "flask", marker = "extra == 'web'", specifier = "~=3.1" },
     { name = "pytest", marker = "extra == 'test'", specifier = "~=9.0" },
     { name = "pyyaml", marker = "extra == 'all'", specifier = "~=6.0" },
     { name = "pyyaml", marker = "extra == 'yaml'", specifier = "~=6.0" },
@@ -821,8 +821,8 @@ requires-dist = [
     { name = "tree-sitter-javascript", marker = "extra == 'ast'", specifier = "~=0.23" },
     { name = "tree-sitter-typescript", marker = "extra == 'all'", specifier = "~=0.23" },
     { name = "tree-sitter-typescript", marker = "extra == 'ast'", specifier = "~=0.23" },
-    { name = "weasyprint", marker = "extra == 'all'", specifier = ">=62,<69" },
-    { name = "weasyprint", marker = "extra == 'pdf'", specifier = ">=62,<69" },
+    { name = "weasyprint", marker = "extra == 'all'", specifier = ">=62,<70" },
+    { name = "weasyprint", marker = "extra == 'pdf'", specifier = ">=62,<70" },
 ]
 provides-extras = ["yaml", "ast", "test", "pdf", "sentry", "telemetry", "web", "signing", "all"]
 

@@ -30,11 +30,11 @@ jobs:
       # Fetch the full repository so pyproject.toml and all package data
       # are available to the build backend.
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
       # Pin to 3.12 — the same version used by lint and claim-audit in CI.
       - name: Set up Python 3.12
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.12"
 
@@ -94,6 +94,11 @@ jobs:
           # CV-screening demo (scripts/demos/)
           check "scripts/demos/cv_screening_app.py"
 
+          # BBQ bias-eval sample (scripts/bias_data/) — missing from the
+          # 1.7.5 wheel; `regula conform` printed "BBQ eval failed" on
+          # installed contexts until this was added to package-data.
+          check "scripts/bias_data/bbq_sample.json"
+
           # Jurisdiction YAML reference files (references/jurisdictions/)
           check "references/jurisdictions/eu_ai_act.yaml"
           check "references/jurisdictions/south_korea.yaml"
@@ -112,7 +117,7 @@ jobs:
       # Upload dist/ so the publish job can download it without rebuilding.
       # Artifacts are retained for 1 day (releases are immutable via the tag).
       - name: Upload dist/ as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: dist
           path: dist/
@@ -140,7 +145,7 @@ jobs:
       # Download the dist/ artifact produced by the build job.
       # The publish action expects to find .whl and .tar.gz files here.
       - name: Download dist/ artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: dist
           path: dist/
@@ -148,7 +153,7 @@ jobs:
       # Publish to PyPI using OIDC (no PYPI_API_TOKEN secret needed).
       # Trusted publishing must be configured on the PyPI project first.
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
 
   # ──────────────────────────────────────────────────────────────────────────
   # verify — install the freshly published package from PyPI and run a
@@ -175,7 +180,7 @@ jobs:
 
       # Set up a clean Python environment to simulate a fresh user install.
       - name: Set up Python 3.12
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.12"
 
