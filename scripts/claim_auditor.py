@@ -684,7 +684,7 @@ def verify_facts() -> int:
         "61": ("commands", facts["counts"]["commands"]),
         "12": ("frameworks", facts["counts"]["frameworks"]),
         "8": ("languages", facts["counts"]["languages"]),
-        "2543": ("tests", facts["counts"]["tests"]["total_collected"]),
+        "2678": ("tests", facts["counts"]["tests"]["total_collected"]),
     }
 
     # Files to check (relative to repo root) — includes deployed site pages
