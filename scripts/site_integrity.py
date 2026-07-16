@@ -54,7 +54,6 @@ KNOWN_DRIFT = {
     # Reviewed 16 Jul 2026 (day report): bidirectional drift — shipped
     # pages carry hand-tuned metas; sources carry newer copy. DQ-6.
     "south-korea": "5e2595a6a7b11e7a",     # reconcile in the 21 Jul Korea pass
-    "united-kingdom": "853b851c0eae4af8",  # reconcile after content review
 }
 
 
