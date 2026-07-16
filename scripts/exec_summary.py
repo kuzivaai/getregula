@@ -16,6 +16,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+from html import escape as html_escape
+
 from constants import VERSION
 from omnibus import ANNEX_III_PROSE, OMNIBUS_STATUS
 
@@ -74,12 +76,36 @@ def _plain_description(finding: dict) -> str:
     return f"Risk indicator detected: {cat}"
 
 
-def generate_exec_summary(findings: list[dict], project_name: str) -> str:
-    """Generate a standalone print-optimised HTML executive summary."""
+def generate_exec_summary(findings: list[dict], project_name: str,
+                          engagement: dict = None) -> str:
+    """Generate a standalone print-optimised HTML executive summary.
+
+    Args:
+        findings: Scan findings.
+        project_name: Display name for the scanned project.
+        engagement: Optional engagement metadata (see engagement.py).
+            When present, the header carries client / prepared-by /
+            reference lines so consultants can hand the document to a
+            client as-is. When absent, output is unchanged.
+    """
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     hostname = socket.gethostname()
     tier = _highest_tier(findings)
     tier_desc = TIER_DESCRIPTIONS.get(tier, TIER_DESCRIPTIONS["minimal_risk"])
+
+    # Engagement header lines (all values are untrusted display text —
+    # escape before embedding in HTML).
+    engagement = engagement or {}
+    engagement_meta = ""
+    if engagement.get("client"):
+        engagement_meta += (f"\n  <span><strong>Prepared for:</strong> "
+                            f"{html_escape(engagement['client'])}</span>")
+    if engagement.get("prepared_by"):
+        engagement_meta += (f"\n  <span><strong>Prepared by:</strong> "
+                            f"{html_escape(engagement['prepared_by'])}</span>")
+    if engagement.get("reference"):
+        engagement_meta += (f"\n  <span><strong>Engagement ref:</strong> "
+                            f"{html_escape(engagement['reference'])}</span>")
 
     # Top 5 findings by confidence, highest tier first
     sorted_findings = sorted(
@@ -99,12 +125,14 @@ def generate_exec_summary(findings: list[dict], project_name: str) -> str:
             articles = ", ".join(str(a) for a in articles)
         file_line = f"{f.get('file', '?')}:{f.get('line', '?')}"
         desc = _plain_description(f)
+        # File paths come from the scanned repository — third-party
+        # input in a consultant engagement. Escape every cell.
         findings_rows += f"""
             <tr>
-                <td>{cat}</td>
-                <td>{articles}</td>
-                <td><code>{file_line}</code></td>
-                <td>{desc}</td>
+                <td>{html_escape(str(cat))}</td>
+                <td>{html_escape(str(articles))}</td>
+                <td><code>{html_escape(file_line)}</code></td>
+                <td>{html_escape(desc)}</td>
             </tr>"""
 
     tier_upper = tier.replace("_", " ").upper()
@@ -114,7 +142,7 @@ def generate_exec_summary(findings: list[dict], project_name: str) -> str:
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Act Risk Indicator Summary \u2014 {project_name}</title>
+<title>AI Act Risk Indicator Summary \u2014 {html_escape(project_name)}</title>
 <style>
   * {{ margin: 0; padding: 0; box-sizing: border-box; }}
   body {{
@@ -162,9 +190,9 @@ def generate_exec_summary(findings: list[dict], project_name: str) -> str:
 <p class="subtitle">Technical scan results for review \u2014 not a legal determination</p>
 
 <div class="meta">
-  <span><strong>Project:</strong> {project_name}</span>
+  <span><strong>Project:</strong> {html_escape(project_name)}</span>
   <span><strong>Scanned:</strong> {now}</span>
-  <span><strong>Regula:</strong> v{VERSION}</span>
+  <span><strong>Regula:</strong> v{VERSION}</span>{engagement_meta}
 </div>
 
 <div class="tier-box">
