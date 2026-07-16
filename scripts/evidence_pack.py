@@ -183,32 +183,34 @@ def generate_evidence_pack(
     _write_and_record(pack_dir, "README.md", readme, file_records)
 
     # --- Manifest (written last) ---
+    # Every manifest declares the Evidence Format v1 fields (spec §4.1
+    # lists `format` as REQUIRED). Until this change the declaration was
+    # added only on the signing path, so every fresh UNSIGNED pack failed
+    # spec conformance and `regula verify` hedged with "v0 best-effort
+    # semantics" on packs Regula itself had just generated (walkthrough
+    # P6). The change is versioned by the `format_version` field itself;
+    # consumers MUST ignore unrecognised fields (spec §4.3), and `regula
+    # verify` retains the v0 path for packs from older releases. The
+    # legacy `schema_version` field is kept for older consumers.
     manifest = {
+        "format": "regula.evidence.v1",
+        "format_version": "1.0",  # bumped to 1.1 by apply_manifest_security
+        "schema_uri": "https://getregula.com/spec/regula.manifest.v1.schema.json",
+        "hash_algorithm": "sha256",
         "schema_version": "1.0",
         "regula_version": VERSION,
         "generated_at": now.isoformat(),
         "project": name,
+        "project_directory": project.name,
         "project_path": str(project),
         "files": file_records,
     }
     # Optional consultant engagement block. Added before signing so the
     # signature and any RFC 3161 timestamp cover it. Omitted entirely
-    # when not configured — unsigned manifests stay byte-compatible.
+    # when not configured.
     if engagement:
         manifest["engagement"] = dict(engagement)
     if sign:
-        # Signed packs must be consumable by `regula verify`, which
-        # strictly requires the Evidence Format v1 declaration. These
-        # fields are added ONLY on the signing path so the unsigned
-        # manifest encoding is byte-compatible with previous releases
-        # (stateless-encoding rule: no silent format changes).
-        manifest = {
-            "format": "regula.evidence.v1",
-            "format_version": "1.0",  # bumped to 1.1 by apply_manifest_security
-            "schema_uri": "https://getregula.com/spec/regula.manifest.v1.schema.json",
-            "hash_algorithm": "sha256",
-            **manifest,
-        }
         from signing import apply_manifest_security
         apply_manifest_security(
             manifest,
