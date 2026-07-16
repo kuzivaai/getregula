@@ -524,10 +524,15 @@ def test_cli_evidence_pack_sign_and_verify_round_trip_json(tmp_path):
     assert verify_data["data"]["signature_status"] == "VERIFIED"
 
 
-def test_cli_evidence_pack_unsigned_manifest_encoding_unchanged(tmp_path):
-    """Without --sign, the evidence-pack manifest keeps its pre-1.7.5
-    encoding exactly — no format fields, no signing block (the
-    stateless-encoding rule: existing consumers must be unaffected)."""
+def test_cli_evidence_pack_unsigned_manifest_declares_v1(tmp_path):
+    """Without --sign, the manifest declares Evidence Format v1 (spec
+    §4.1 lists `format` as REQUIRED) but carries NO signing block.
+    Versioned change (16 Jul 2026, walkthrough P6): previously the
+    declaration was signing-path-only, so every fresh unsigned pack
+    failed spec conformance and `regula verify` hedged with "v0
+    best-effort semantics". The version marker is the format_version
+    field itself; legacy `schema_version` is kept for old consumers,
+    and verify retains the v0 path for packs from older releases."""
     out_dir = tmp_path / "pack-out"
     rc, out, err = _run_regula(
         "evidence-pack",
@@ -537,9 +542,14 @@ def test_cli_evidence_pack_unsigned_manifest_encoding_unchanged(tmp_path):
     )
     assert rc == 0, f"evidence-pack failed: rc={rc}\nstderr={err}"
     manifest = json.loads(out)["data"]["manifest"]
-    assert set(manifest) == {"schema_version", "regula_version",
-                             "generated_at", "project", "project_path",
+    assert set(manifest) == {"format", "format_version", "schema_uri",
+                             "hash_algorithm", "schema_version",
+                             "regula_version", "generated_at", "project",
+                             "project_directory", "project_path",
                              "files"}, sorted(manifest)
+    assert manifest["format"] == "regula.evidence.v1"
+    assert manifest["format_version"] == "1.0"
+    assert "signing" not in manifest
 
 
 def test_cli_evidence_pack_timestamp_requires_sign_is_implied(tmp_path):
