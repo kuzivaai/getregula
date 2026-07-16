@@ -83,7 +83,39 @@ def generate_evidence_pack(
     date_str = now.strftime("%Y-%m-%d")
     pack_name = f"evidence-pack-{name}-{date_str}"
     pack_dir = Path(output_dir) / pack_name
+    # Fail-closed: if generation aborts after files are written but before
+    # manifest.json exists (e.g. --sign without the [signing] extra), a
+    # half-pack that `regula verify` rejects must not be left on disk —
+    # an evidence artefact either completes with its manifest or does not
+    # exist. Only a directory WE created is removed on failure; a
+    # pre-existing same-day directory is left in place and the error
+    # message from the CLI layer still explains the failure.
+    _pack_dir_pre_existing = pack_dir.exists()
     pack_dir.mkdir(parents=True, exist_ok=True)
+
+    try:
+        return _generate_pack_contents(
+            project, name, now, date_str, pack_name, pack_dir,
+            sign=sign, signing_key_path=signing_key_path,
+            timestamp=timestamp, tsa_url=tsa_url,
+            engagement=engagement, **kwargs,
+        )
+    except BaseException:
+        if not _pack_dir_pre_existing:
+            import shutil
+            shutil.rmtree(pack_dir, ignore_errors=True)
+        raise
+
+
+def _generate_pack_contents(
+    project, name, now, date_str, pack_name, pack_dir,
+    *, sign, signing_key_path, timestamp, tsa_url, engagement, **kwargs,
+):
+    """Write every pack artefact and the manifest. See generate_evidence_pack."""
+    from report import scan_files
+    from compliance_check import assess_compliance
+    from generate_documentation import scan_project, generate_annex_iv
+    from remediation_plan import generate_plan, format_plan_text
 
     file_records = []
 
