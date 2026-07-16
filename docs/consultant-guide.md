@@ -13,6 +13,22 @@ entirely in the browser and nothing leaves the client's machine.
 
 ---
 
+## 0. Install and check your version (do this first)
+
+```bash
+pipx install regula-ai     # or: pip install regula-ai
+regula --version
+```
+
+The package name is `regula-ai`; the command it installs is `regula`.
+
+**Version matters.** This guide describes the current development line
+(newer than v1.7.4). On v1.7.4 or older: positional paths do not work on
+most commands (use `--project .` instead of `.`), `evidence-pack --sign`,
+the engagement branding fields, and the `kr`/`co` aliases do not exist
+yet. When any command in this guide is rejected, run
+`regula <command> -h` and prefer what the installed version prints.
+
 ## 1. What Regula gives an engagement
 
 Consultancy deliverables in this space are usually interviews and
@@ -79,6 +95,10 @@ Engagement ref** lines in its header, and the evidence-pack manifest
 records the same block — inside the signed content, so the signature
 covers it.
 
+On versions where the engagement fields are not supported, the
+`engagement:` block is ignored silently — check the generated summary
+header before sending anything to a client.
+
 One-off overrides are available as flags on `regula report` and
 `regula evidence-pack`:
 
@@ -105,8 +125,17 @@ cd /path/to/client/codebase
 regula init          # guided policy setup
 ```
 
-Add the `engagement:` block (§3) and, if the client declared a domain,
-set it in the policy or plan to pass `--domain` on each scan.
+Note: `init` also writes editor hooks into the client repo (a
+`.claude/` directory). On a read-only or NDA-bound engagement, review
+what it created before committing anything, or delete the hooks.
+
+Add the `engagement:` block (§3) and declare the client's domain in
+`regula-policy.yaml` so every later command sees it:
+
+```yaml
+system:
+  domain: employment   # or medical, finance, biometrics, education, ...
+```
 
 ### Step 2 — Scan
 
@@ -133,6 +162,13 @@ regula gap . --framework iso-42001    # cross-reference other frameworks
 regula plan .                         # prioritised remediation plan
 ```
 
+**Carry the domain through every step.** If the domain lives only on
+your `check` command and not in the policy file, later commands run
+domain-blind and can produce a minimal-risk summary or an empty
+evidence pack that contradicts your scan. Declaring `system.domain` in
+the policy (Step 1) prevents this whole class of self-contradicting
+deliverable.
+
 `gap` checks whether compliance *documentation* exists; it does not
 verify the documentation is any good. Say so in your report — that
 verification is your job, and clients should hear the distinction from
@@ -145,9 +181,12 @@ regula report . -f exec-summary -o exec-summary.html
 regula evidence-pack --sign .
 ```
 
-The evidence pack contains the scan findings, gap assessment,
-remediation plan, generated Annex IV scaffolding, and a signed
-`manifest.json` with SHA-256 hashes of every file. The client (or
+Both commands write into the current directory: the exec summary
+where `-o` points, and the pack as an `evidence-pack-<name>-<date>/`
+folder. The pack contains a summary, scan findings, gap assessment,
+dependency report, audit trail, remediation plan, Annex IV scaffolding,
+risk decisions, a README, and a `manifest.json` with SHA-256 hashes of
+every file (signed when `--sign` is used). The client (or
 their auditor, or a successor consultant) can re-verify integrity at
 any time with `regula verify <pack-dir>` — no trust in you or in
 Regula required. That reproducibility is the point: your deliverable
@@ -156,14 +195,15 @@ survives scrutiny you are not in the room for.
 ### Step 5 — Re-scan on a cadence
 
 Codebases move. A quarterly re-scan against the baseline
-(`regula baseline`, then `regula check --diff`) turns a one-off
+(`regula baseline save`, then `regula check --diff` — diff mode
+needs the client codebase to be a git repository) turns a one-off
 assessment into a monitoring engagement, and the evidence packs
 accumulate into an audit trail.
 
 ## 5. Choosing jurisdictions
 
 Regula ships domain-to-obligation mappings for three jurisdictions
-(each defined in `references/jurisdictions/*.yaml`):
+(defined in the project's [`references/jurisdictions/`](https://github.com/kuzivaai/getregula/tree/main/references/jurisdictions) configs):
 
 | Jurisdiction | Instrument | Status |
 |---|---|---|
@@ -171,7 +211,7 @@ Regula ships domain-to-obligation mappings for three jurisdictions
 | `korea` | South Korea AI Basic Act (Act No. 20676) | In force 22 January 2026 |
 | `colorado` | Colorado SB 26-189 | Disclosure-focused, plus consumer correction and human-review rights; duties from 1 January 2027 |
 
-`kr` and `co` are accepted as aliases for `korea` and `colorado`.
+`kr` and `co` are accepted as aliases for `korea` and `colorado` on the current development line (not in v1.7.4 or older — use the full names there).
 
 Additional crosswalk-level mappings (`uk`, `brazil`, `nist`, `iso`)
 label findings with the corresponding framework references but do not
