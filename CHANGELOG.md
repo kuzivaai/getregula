@@ -27,6 +27,12 @@ every fix below was verified by test.
   and are never embedded in deliverables. `05-audit-trail.json` gains
   `scope`, `project`, `project_slug`, `limit_reached`, and `scope_note`
   fields alongside the existing keys (additive).
+  **Action for existing users**: any evidence pack, conformity pack, or
+  `--include-audit` report generated with v1.7.4 or earlier may contain
+  audit events from other projects on the machine that generated it
+  (including tool inputs/outputs). Regenerate such artefacts with the
+  fixed version before sharing them, and review anything already shared
+  from a machine used for more than one project.
 - **Audit-chain verification no longer fails structurally at month
   boundaries.** The writer seeded each new monthly log file with the
   genesis hash while `verify_chain` required cross-file continuity, so
