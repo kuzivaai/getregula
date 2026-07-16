@@ -327,6 +327,20 @@ def render_markdown(data: dict) -> str:
 def main() -> int:
     data = compute()
     OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
+    # Keep the previous generated_at when the facts themselves are unchanged,
+    # so regeneration is idempotent and CI's `git diff --exit-code` on the
+    # artifacts fails only on genuine drift. The timestamp therefore reads
+    # "when the facts last changed", not "when the script last ran".
+    if OUT_JSON.exists():
+        try:
+            prev = json.loads(OUT_JSON.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            prev = None
+        if isinstance(prev, dict) and "generated_at" in prev:
+            def strip(d: dict) -> dict:
+                return {k: v for k, v in d.items() if k != "generated_at"}
+            if strip(prev) == strip(data):
+                data["generated_at"] = prev["generated_at"]
     OUT_JSON.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     OUT_MD.write_text(render_markdown(data), encoding="utf-8")
     c = data["counts"]
