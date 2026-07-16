@@ -52,7 +52,7 @@
     <meta name="twitter:title" content="$twitter_title">
     <meta name="twitter:description" content="$twitter_description">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
-
+$head_extra
     <link rel="alternate" hreflang="$hreflang_self" href="https://getregula.com/regions/$slug.html">
     <link rel="alternate" hreflang="x-default" href="https://getregula.com/regions/$slug.html">
 
@@ -119,6 +119,7 @@ $tracker_block
     </header>
 
     <main id="main" class="tracker-content">
+
 $sections
 $faq_block
 $sources_block
@@ -159,5 +160,6 @@ $extra_html
         }
         window.addEventListener('scroll', onScroll, { passive: true });
     </script>
+$body_end_html
 </body>
 </html>

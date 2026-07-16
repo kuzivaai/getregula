@@ -1349,6 +1349,32 @@ button.audience-fwd {
     .tracker-content { padding: 0 24px 60px; }
 }
 
+/* ===== REGION PAGE COMPONENTS =====
+   Shared by the generated region tracker pages (brazil, south-africa,
+   colorado, south-korea, united-kingdom). Promoted from per-page
+   <style> blocks so content/regulations/*.py sources carry data only. */
+.tracker-row .val .est { color: var(--text-dim); font-family: var(--font-mono); font-size: var(--fs-xs); }
+.tracker-ts { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--text-faint); text-transform: none; letter-spacing: 0; font-weight: 400; }
+.tracker-ts.live { color: var(--success); }
+.tracker-content pre { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-md); padding: 20px 24px; overflow-x: auto; font-family: var(--font-mono); font-size: var(--fs-sm); line-height: 1.75; color: var(--text-2); margin: 20px 0; }
+.tracker-content pre code { background: none; padding: 0; color: inherit; font-size: var(--fs-sm); }
+.term-comment { color: var(--text-faint); }
+.term-cmd { color: var(--cyan); }
+.note-inline { font-size: var(--fs-sm) !important; color: var(--text-dim) !important; background: rgba(59,130,246,0.04); border-left: 2px solid var(--accent); padding: 10px 14px; border-radius: 0 6px 6px 0; margin: 16px 0 !important; font-style: italic; }
+.cta-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 32px 0; }
+.cta-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-md); padding: 22px 24px; transition: border-color 0.2s, transform 0.2s; }
+.cta-card:hover { border-color: rgba(59,130,246,0.3); transform: translateY(-2px); }
+.cta-card h3 { font-size: var(--fs-base); font-weight: 600; color: var(--text); margin: 0 0 6px; font-family: var(--font-body); }
+.cta-card p { font-size: var(--fs-sm); color: var(--text-dim); margin: 0 0 12px; }
+.cta-card a { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--accent); }
+.gaps-box { background: linear-gradient(180deg, rgba(124,58,237,0.05), rgba(124,58,237,0.02)); border: 1px solid rgba(124,58,237,0.25); border-radius: var(--r-lg); padding: 24px 28px; margin: 32px 0; }
+.gaps-box h3 { font-size: 0.875rem; font-family: var(--font-mono); color: #a78bfa; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 14px; font-weight: 500; }
+.gaps-box ol { margin-left: 20px; }
+.gaps-box li { font-size: 0.875rem; color: var(--text-2); margin-bottom: 10px; }
+@media (max-width: 700px) {
+    .cta-row { grid-template-columns: 1fr; }
+}
+
 /* =============================================================
    BLOG ARTICLE TYPOGRAPHY
    Shared by: blog-does-ai-act-apply, blog-omnibus-delay,
