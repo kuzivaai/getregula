@@ -1,0 +1,29 @@
+# Site integrity guard — regen-drift, source invariant, links, claims.
+# Authored 16 Jul 2026 (day session v3). INERT until pushed; activation
+# is an owner decision. Runs read-only; no deploy steps.
+name: Site Integrity
+
+on:
+  pull_request:
+    paths:
+      - "site/**"
+      - "content/regulations/**"
+      - "scripts/build_regulations.py"
+      - "scripts/site_integrity.py"
+      - "scripts/claim_auditor.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  site-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Site integrity (regen drift, sources, links, claims)
+        run: python3 scripts/site_integrity.py

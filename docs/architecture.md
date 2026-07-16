@@ -87,3 +87,23 @@ regula/
 - **Cross-platform.** Unix/macOS (`fcntl`) and Windows (`msvcrt`) file locking. No platform restrictions.
 - **Multi-framework mapping.** 12 frameworks with full crosswalk data (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO) mapped via [references/framework_crosswalk.yaml](../references/framework_crosswalk.yaml). 5 additional frameworks have display handlers but no crosswalk data and no filter keys (Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI) — filter keys removed in commit 7d93fed to prevent silent empty results.
 
+
+## Site integrity guard
+
+Region pages under `site/regions/` are generated from `content/regulations/*.py`
+by `scripts/build_regulations.py`. Hand-editing the shipped HTML is what caused
+the July 2026 Colorado drift — never do it; edit the source and rebuild.
+
+`python3 scripts/site_integrity.py` enforces this:
+
+- **regen** — re-renders every sourced page in memory and compares with the
+  shipped file. Identical → OK; drift matching a reviewed fingerprint in
+  `KNOWN_DRIFT` → WARN (ticketed); any other drift → FAIL.
+- **sources** — every `site/regions/*.html` needs a content source or an
+  explicit `EXEMPT_NO_SOURCE` entry.
+- **links** — every internal href/src across `site/**/*.html` resolves.
+- **claims** — `scripts/claim_auditor.py` over all site pages.
+
+`--root DIR` runs against a copy (sandbox testing), `--fingerprint` prints
+drift fingerprints when reviewing a known drift, `--check` selects subsets.
+CI: `.github/workflows/site-integrity.yml` (inert until pushed).
