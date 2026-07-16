@@ -17,11 +17,11 @@ jobs:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install pyyaml "pytest~=9.0" "cryptography>=41,<47" "asn1crypto>=1.5,<2"
+      - run: pip install pyyaml "pytest~=9.0" "cryptography>=41,<50" "asn1crypto>=1.5.1,<2"
       - name: Custom test runner (manual list — asserts every test is registered)
         run: python3 tests/test_classification.py
       - name: pytest discovery (catches anything not in the manual list)
@@ -37,8 +37,8 @@ jobs:
     name: Lint (ruff)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.12"
       - run: pip install ruff
@@ -49,8 +49,8 @@ jobs:
     name: HTML well-formedness (landing pages)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.12"
       - name: Check all *.html parse with zero mismatched tags
@@ -90,16 +90,16 @@ jobs:
     name: Claim auditor (docs & landing pages)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.12"
       # site_facts measures total_collected via pytest --collect-only, and
       # collection imports the test modules — install the same deps as the
       # test matrix or the count is unmeasurable (site_facts then exits 1).
-      - run: pip install pyyaml "pytest~=9.0" "cryptography>=41,<47" "asn1crypto>=1.5,<2"
+      - run: pip install pyyaml "pytest~=9.0" "cryptography>=41,<50" "asn1crypto>=1.5.1,<2"
       - name: Scan modified Markdown/HTML for unverified claims
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -128,14 +128,14 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/configure-pages@v6
-      - uses: actions/upload-pages-artifact@v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
           # Site sources live under ./site/ after the IA restructure.
           # The artifact's contents become the root of the deployed site
           # (e.g. site/index.html → https://getregula.com/,
           #       site/regions/uae.html → https://getregula.com/regions/uae.html).
           path: './site'
-      - uses: actions/deploy-pages@v5
+      - uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5
         id: deployment
