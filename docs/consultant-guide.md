@@ -216,7 +216,7 @@ Regula ships domain-to-obligation mappings for three jurisdictions
 | `korea` | South Korea AI Basic Act (Act No. 20676) | In force 22 January 2026 |
 | `colorado` | Colorado SB 26-189 | Disclosure-focused, plus consumer correction and human-review rights; duties from 1 January 2027 |
 
-`kr` and `co` are accepted as aliases for `korea` and `colorado` on the current development line (not in v1.7.4 or older — use the full names there).
+`kr` and `co` are accepted as aliases for `korea` and `colorado` from v1.7.5 (not in v1.7.4 or older — use the full names there).
 
 Additional crosswalk-level mappings (`uk`, `brazil`, `nist`, `iso`)
 label findings with the corresponding framework references but do not
