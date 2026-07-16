@@ -49,18 +49,13 @@ ARTICLE_EFFORT = {
     "15": (16, 32),    # Accuracy, robustness, cybersecurity
 }
 
-from omnibus import (
-    ANNEX_III_PROSE as _ANNEX_III_PROSE,
-    ORIGINAL_PROSE as _ORIGINAL_PROSE,
-    OMNIBUS_ENACTED as _OMNIBUS_ENACTED,
-    status_parenthetical as _omnibus_status_paren,
-)
-# Derived from omnibus.py (single source of truth for the OJ flip):
-# until OJ publication the original Annex III deadline is the legally
-# binding baseline; once OMNIBUS_OJ_DATE is set the plan deadline flips
-# automatically (was a hardcoded date literal — walkthrough P3 / H8).
-DEADLINE_HIGH_RISK = _ANNEX_III_PROSE if _OMNIBUS_ENACTED else _ORIGINAL_PROSE
-DEADLINE_OMNIBUS = f"{_ANNEX_III_PROSE} {_omnibus_status_paren()}"
+from omnibus import annex_iii_deadline_line as _annex_iii_deadline_line
+# Derived from omnibus.py (single source of truth for the OJ flip).
+# Task deadline lines carry BOTH the legally binding baseline and the
+# adopted-Omnibus context — pre-OJ the bare baseline date is accurate
+# but materially incomplete for anyone planning remediation work. The
+# line flips automatically when OMNIBUS_OJ_DATE is set (P3 / H8).
+DEADLINE_HIGH_RISK = _annex_iii_deadline_line()
 
 
 # ---------------------------------------------------------------------------

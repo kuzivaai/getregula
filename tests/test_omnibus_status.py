@@ -109,11 +109,13 @@ def test_enrich_deadlines_prohibited_unaffected():
 # ---------------------------------------------------------------------------
 
 def test_remediation_plan_deadline_derived():
+    """Plan deadline lines carry the binding baseline PLUS the adopted-
+    Omnibus context (16 Jul 2026 revision — the earlier gate pinned the
+    bare baseline date, which was accurate but materially incomplete;
+    every other consumer already rendered the status context)."""
     import omnibus
     import remediation_plan
-    expected = (omnibus.ANNEX_III_PROSE if omnibus.OMNIBUS_ENACTED
-                else omnibus.ORIGINAL_PROSE)
-    assert remediation_plan.DEADLINE_HIGH_RISK == expected
+    assert remediation_plan.DEADLINE_HIGH_RISK == omnibus.annex_iii_deadline_line()
 
 
 def test_exec_summary_limited_uses_original_prose():
