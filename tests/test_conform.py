@@ -1036,8 +1036,17 @@ class TestWithOptionalModulesPresent:
                 generate_sbom=MagicMock(return_value=mock_sbom_data),
             ),
             "log_event": MagicMock(
-                query_events=MagicMock(return_value=mock_audit_events),
-                verify_chain=MagicMock(return_value=(True, "Chain valid")),
+                collect_audit_trail=MagicMock(return_value={
+                    "scope": "project",
+                    "project": "test",
+                    "project_slug": "test-00000000",
+                    "chain_valid": True,
+                    "chain_message": "Chain valid",
+                    "event_count": len(mock_audit_events),
+                    "limit_reached": False,
+                    "scope_note": "test",
+                    "events": mock_audit_events,
+                }),
             ),
             "dependency_scan": MagicMock(
                 scan_dependencies=MagicMock(return_value=mock_dep_report),

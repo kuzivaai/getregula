@@ -480,7 +480,8 @@ def update_compliance_status(project_name: str, new_status: str, note: str = "")
             "from_status": current,
             "to_status": new_status,
             "note": note,
-        })
+        }, project=project_name,
+            project_path=systems[project_name].get("project_path"))
     except (OSError,):
         pass  # audit log write failed; non-critical
 

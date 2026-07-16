@@ -11,6 +11,38 @@ Deep-audit remediation (8 July 2026), extended by the 10 July follow-up
 audit. Full findings and evidence in the maintainer's audit report;
 every fix below was verified by test.
 
+### Fixed (16 July, evening)
+
+- **Deliverables no longer embed the machine-wide audit trail**
+  (client-confidentiality defect). Evidence packs, conformity packs,
+  and HTML reports with `--include-audit` embedded every audit event
+  on the machine — including tool inputs/outputs and secret-detection
+  events from unrelated projects and other clients. All four surfaces
+  now read exclusively from the scanned project's own audit chain via
+  a single scoped collector (`log_event.collect_audit_trail`). Events
+  are attributed to a project at write time (hooks use the session's
+  working directory; CLI commands pass the project path) and stored in
+  per-project chains under `~/.regula/audit/projects/<slug>/`.
+  Machine-wide events recorded by earlier versions stay on the machine
+  and are never embedded in deliverables. `05-audit-trail.json` gains
+  `scope`, `project`, `project_slug`, `limit_reached`, and `scope_note`
+  fields alongside the existing keys (additive).
+- **Audit-chain verification no longer fails structurally at month
+  boundaries.** The writer seeded each new monthly log file with the
+  genesis hash while `verify_chain` required cross-file continuity, so
+  `chain_valid` was false on any store spanning two or more months —
+  in both the audit trail and the runtime monitor. New events now
+  continue the chain across monthly rotation; verification tolerates
+  and *reports* pre-fix genesis seeds at file boundaries as "legacy
+  restarts" instead of failing, and still fails on tampering or any
+  non-genesis mismatch.
+
+### Added (16 July, evening)
+
+- **`--project` on `regula audit query/export/verify`** — scope the
+  audit CLI to one project's chain. Default remains the whole machine
+  (machine store plus every project chain, merged by timestamp).
+
 ### Added (16 July)
 
 - **Consultant engagement metadata** — client-facing deliverables can

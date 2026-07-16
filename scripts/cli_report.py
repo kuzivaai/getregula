@@ -44,9 +44,11 @@ def cmd_report(args) -> None:
     chain_valid = None
     if args.include_audit:
         try:
-            from log_event import query_events as _qe, verify_chain as _vc
-            audit_events = _qe(limit=10000)
-            chain_valid, _ = _vc()
+            # Project-scoped: never embed other projects' audit events
+            from log_event import collect_audit_trail
+            _audit = collect_audit_trail(project_path)
+            audit_events = _audit["events"]
+            chain_valid = _audit["chain_valid"]
         except (OSError, ValueError, KeyError):
             pass  # audit trail unavailable; continue without it
 

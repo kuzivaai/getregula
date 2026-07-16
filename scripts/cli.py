@@ -1012,6 +1012,11 @@ def _build_subparsers(subparsers):
     p_audit.add_argument("--event-type", "-t")
     p_audit.add_argument("--limit", type=int)
     p_audit.add_argument(
+        "--project", "-p", dest="audit_project", metavar="PATH",
+        help="Scope to one project's audit chain (default: whole machine — "
+             "machine store plus every project chain)"
+    )
+    p_audit.add_argument(
         "--external-timestamp", action="store_true",
         help="Attach RFC 3161 timestamp from FreeTSA to new audit events (requires network)"
     )

@@ -186,7 +186,11 @@ where `-o` points, and the pack as an `evidence-pack-<name>-<date>/`
 folder. The pack contains a summary, scan findings, gap assessment,
 dependency report, audit trail, remediation plan, Annex IV scaffolding,
 risk decisions, a README, and a `manifest.json` with SHA-256 hashes of
-every file (signed when `--sign` is used). The client (or
+every file (signed when `--sign` is used). The audit trail is
+project-scoped: it contains only events from the client project's own
+audit chain, never activity from other projects or engagements on your
+machine — the pack's `05-audit-trail.json` carries a `scope` field
+stating the guarantee. The client (or
 their auditor, or a successor consultant) can re-verify integrity at
 any time with `regula verify <pack-dir>` — no trust in you or in
 Regula required. That reproducibility is the point: your deliverable

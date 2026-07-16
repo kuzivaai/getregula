@@ -889,8 +889,7 @@ class TestOptionalSections:
 
         mocks = self._base_mocks()
         log_mod = MagicMock()
-        log_mod.query_events = MagicMock(side_effect=ValueError("bad data"))
-        log_mod.verify_chain = MagicMock(return_value=(True, "OK"))
+        log_mod.collect_audit_trail = MagicMock(side_effect=ValueError("bad data"))
         mocks["log_event"] = log_mod
         with patch.dict("sys.modules", mocks):
             result = generate_evidence_pack(
@@ -944,8 +943,17 @@ class TestOptionalSections:
 
         mocks = self._base_mocks()
         mocks["log_event"] = MagicMock(
-            query_events=lambda **kw: [{"event": "test"}],
-            verify_chain=lambda: (True, "Chain valid"),
+            collect_audit_trail=lambda project_path, **kw: {
+                "scope": "project",
+                "project": "test",
+                "project_slug": "test-00000000",
+                "chain_valid": True,
+                "chain_message": "Chain valid",
+                "event_count": 1,
+                "limit_reached": False,
+                "scope_note": "test",
+                "events": [{"event": "test"}],
+            },
         )
         with patch.dict("sys.modules", mocks):
             result = generate_evidence_pack(

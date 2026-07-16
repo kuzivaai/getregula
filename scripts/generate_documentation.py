@@ -1663,7 +1663,7 @@ def main():
             "project": project_name, "highest_risk": highest,
             "ai_files": ai_count, "model_files": model_count,
             "types": ["annex_iv"] + (["qms"] if args.qms or getattr(args, "all", False) else []),
-        })
+        }, project_path=project_path)
     except (OSError,):
         pass  # audit logging is best-effort
 

@@ -78,6 +78,11 @@ Each per-article sub-directory MUST contain at least `evidence.json` and
 `audit-trail.json`, `sbom.json`, `oversight-analysis.json`) are
 article-specific and described in their section's `evidence.json`.
 
+`audit-trail.json` MUST be project-scoped: generators MUST NOT embed
+audit events from any project other than the packed one. Generators
+SHOULD declare the scope with a `scope: "project"` field alongside the
+event payload; consumers MUST ignore fields they do not recognise.
+
 ### 3.1 SME simplified form
 
 Where `regula conform --sme` is used (Article 11(1) second subparagraph),
