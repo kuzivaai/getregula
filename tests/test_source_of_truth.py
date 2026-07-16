@@ -132,7 +132,7 @@ def test_omnibus_flip_propagates_to_all_consumers():
         import exec_summary
         import assess
         import timeline
-        outputs["remediation_plan"] = remediation_plan.DEADLINE_OMNIBUS
+        outputs["remediation_plan"] = remediation_plan.DEADLINE_HIGH_RISK
         outputs["exec_summary"] = exec_summary.TIER_DESCRIPTIONS["high_risk"]
         outputs["assess"] = "\n".join(assess._omnibus_deadline_lines())
         outputs["timeline"] = timeline._OMNIBUS_NOTE_STATUS + " " + json.dumps(timeline.TIMELINE)
