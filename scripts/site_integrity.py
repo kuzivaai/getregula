@@ -36,14 +36,17 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# Hand-maintained pages with no generator source. Each entry is explicit,
-# dated debt — conversion or deprecation is tracked in the Decision Queue
-# (DQ-7, 16 Jul 2026). Adding a page here requires the same review.
+# Pages with no generator source. Each entry is explicit and reviewed;
+# adding a page here requires the same review. DQ-7 resolved 16 Jul
+# 2026: brazil and south-africa converted to content/regulations/
+# sources; uae formally exempted (see reason).
 EXEMPT_NO_SOURCE = {
     "regulations.html": "hub index page, hand-maintained",
-    "brazil-ai-regulation.html": "hand-maintained; conversion queued DQ-7",
-    "south-africa-ai-policy.html": "hand-maintained; conversion queued DQ-7",
-    "uae.html": "hand-maintained; conversion queued DQ-7",
+    "uae.html": "conversion LANDING page (hero CTA, copy buttons, demo "
+                "terminal, sector cards) — a different information "
+                "architecture from the tracker template; forcing it "
+                "through the tracker schema would destroy it. Formally "
+                "exempted by DQ-7 decision, 16 Jul 2026.",
 }
 
 # Sourced pages with known, reviewed drift between source and shipped

@@ -11,7 +11,7 @@ Deep-audit remediation (8 July 2026), extended by the 10 July follow-up
 audit. Full findings and evidence in the maintainer's audit report;
 every fix below was verified by test.
 
-### Fixed (16 July, evening)
+### Fixed (16 July, morning)
 
 - **Deliverables no longer embed the machine-wide audit trail**
   (client-confidentiality defect). Evidence packs, conformity packs,
@@ -36,15 +36,61 @@ every fix below was verified by test.
   and *reports* pre-fix genesis seeds at file boundaries as "legacy
   restarts" instead of failing, and still fails on tampering or any
   non-genesis mismatch.
+- **Reading an absent audit chain no longer creates store directories.**
+  `get_audit_dir` unconditionally created directories, so every query or
+  verification against a project with no chain left an empty
+  `projects/<slug>/` directory in the operator's real store (27 were
+  found there after the first scoped test runs). Read paths now pass
+  `create=False`; an absent chain reads as an empty valid chain. A new
+  suite-wide `tests/conftest.py` fixture also isolates
+  `REGULA_AUDIT_DIR` for every test, so the test suite can no longer
+  write to (or read from) the operator's real store.
+- **Secret values are redacted from audit payloads before they are
+  persisted.** The pre-tool hook only blocks HIGH-confidence secret
+  findings; medium/low-confidence values executed and were logged
+  verbatim into `tool_input`/`tool_response` — and the audit trail is
+  embedded in client-facing deliverables. New
+  `credential_check.redact_secrets()` replaces every known secret
+  pattern with `[REDACTED:<pattern>]`; hooks redact before truncating
+  (truncation could split a value so the pattern no longer matches
+  while most of the secret survives).
 
-### Added (16 July, evening)
+### Added (16 July, morning)
 
 - **`--project` on `regula audit query/export/verify`** — scope the
   audit CLI to one project's chain. Default remains the whole machine
   (machine store plus every project chain, merged by timestamp).
+- **Walking conformance guard for the audit-scoping class**
+  (`tests/test_audit_surface_conformance.py`) — discovers every
+  `query_events`/`log_event` call site and every pack-writing module by
+  walking `scripts/` and `hooks/` (never a hardcoded file list), and
+  fails if a deliverable surface bypasses `collect_audit_trail`, a hook
+  drops project attribution, a read path creates store directories, or
+  a secret value survives into a logged payload. Verified to fail on a
+  re-injection of the original defect (3 targeted failures) and pass on
+  the fixed tree.
 
-### Fixed (16 July, evening — site)
+### Fixed (16 July, morning — site)
 
+- **Residual Brazil legal error**: the page tracker's "Entry into
+  force" row still asserted "1 year after publication per Art. 45" —
+  the 16 July vacatio correction fixed the body, FAQ, and gaps
+  sections but missed this row. Now states the verified 730/180-day
+  phasing (Senado Notícias, 10 Dec 2024).
+- **Brazil and South Africa pages converted to generator sources
+  (DQ-7)**: `content/regulations/{brazil,south-africa}.py` now drive
+  the pages through the builder and drift guard; content carried
+  verbatim (parser-verified) apart from the tracker fix above, stale
+  "Last updated" dates refreshed to 16 July, two stray "Guides" link
+  artifacts removed per page, and SA card headings h4→h3 (WCAG
+  heading hierarchy). `uae.html` formally exempted: it is a conversion
+  landing page, not a tracker — forcing it through the tracker schema
+  would destroy it. Builder gains optional per-page extension fields
+  (head_extra, tracker_html, jsonld_article_override, body_end_html,
+  structured-data-only FAQ entries); shared region-page component
+  styles promoted from per-page `<style>` blocks into site.css (also
+  fixes previously unstyled `<pre>` blocks on the Colorado/Korea/UK
+  pages).
 - **False licence claim on region pages**: the region-page template's
   footer said "MIT licence"; the project is Apache 2.0 / EUPL 1.2
   (pyproject.toml). Template corrected; Colorado and UK pages

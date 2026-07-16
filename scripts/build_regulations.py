@@ -52,12 +52,28 @@ def _validate_region(region: dict, source: Path) -> None:
     if missing:
         raise ValueError(f"{source.name}: missing required keys: {sorted(missing)}")
 
-    if not isinstance(region["tracker_rows"], list) or not region["tracker_rows"]:
-        raise ValueError(f"{source.name}: tracker_rows must be a non-empty list")
+    # tracker_html (optional) replaces the generated tracker block for
+    # pages with a bespoke tracker (e.g. south-africa's JS-driven tracker
+    # with static fallback). When present, tracker_rows may be empty.
+    if region.get("tracker_html"):
+        if not isinstance(region["tracker_html"], str):
+            raise ValueError(f"{source.name}: tracker_html must be a string")
+        if not isinstance(region["tracker_rows"], list):
+            raise ValueError(f"{source.name}: tracker_rows must be a list")
+    else:
+        if not isinstance(region["tracker_rows"], list) or not region["tracker_rows"]:
+            raise ValueError(f"{source.name}: tracker_rows must be a non-empty list")
     for i, row in enumerate(region["tracker_rows"]):
         for key in ("label", "value"):
             if key not in row:
                 raise ValueError(f"{source.name}: tracker_rows[{i}] missing '{key}'")
+
+    if "jsonld_article_override" in region and not isinstance(
+            region["jsonld_article_override"], dict):
+        raise ValueError(f"{source.name}: jsonld_article_override must be a dict")
+    for key in ("head_extra", "extra_html", "body_end_html"):
+        if key in region and not isinstance(region[key], str):
+            raise ValueError(f"{source.name}: {key} must be a string")
 
     if not isinstance(region["sections_html"], list) or not region["sections_html"]:
         raise ValueError(f"{source.name}: sections_html must be a non-empty list")
@@ -122,13 +138,20 @@ def _render_sections(sections: list) -> str:
 
 
 def _render_faq_block(faq: list) -> str:
-    """Render the FAQ details/summary block."""
-    if not faq:
+    """Render the FAQ details/summary block.
+
+    Entries flagged `jsonld_only` appear in the FAQPage structured data
+    but not in the visible accordion — used when a page carries its
+    visible FAQ inside sections_html (bespoke markup) or offers
+    additional-language Q&A pairs for search engines only.
+    """
+    visible = [qa for qa in faq if not qa.get("jsonld_only")]
+    if not visible:
         return ""
     html = ['        <section id="faq">',
             '            <h2>Frequently asked questions</h2>',
             '            <div class="faq">']
-    for qa in faq:
+    for qa in visible:
         html.append('                <details>')
         html.append(f'                    <summary>{qa["q"]}</summary>')
         html.append(f'                    <p>{qa["a"]}</p>')
@@ -158,7 +181,14 @@ def _render_sources_block(sources: list) -> str:
 
 
 def _render_jsonld_article(region: dict) -> str:
-    """Article schema — canonical SEO block for every region page."""
+    """Article schema — canonical SEO block for every region page.
+
+    A page may carry a richer hand-authored schema (e.g. isBasedOn
+    Legislation entries) via `jsonld_article_override`; it is emitted
+    verbatim instead of the generated block.
+    """
+    if region.get("jsonld_article_override"):
+        return json.dumps(region["jsonld_article_override"], indent=4, ensure_ascii=False)
     data = {
         "@context": "https://schema.org",
         "@type": "Article",
@@ -235,16 +265,24 @@ def render_region(region: dict) -> str:
     substitutions = {
         **{k: region[k] for k in REGION_SCHEMA
            if k not in ("tracker_rows", "sections_html", "faq", "sources")},
-        "tracker_block": _render_tracker_block(region["tracker_rows"]),
+        "tracker_block": (region.get("tracker_html")
+                          or _render_tracker_block(region["tracker_rows"])),
         "sections": _render_sections(region["sections_html"]),
         "faq_block": _render_faq_block(region["faq"]),
         "sources_block": _render_sources_block(region["sources"]),
         "jsonld_article": _render_jsonld_article(region),
         "jsonld_breadcrumb": _render_jsonld_breadcrumb(region),
         "jsonld_faq": _render_jsonld_faq(region),
-        # Optional free-form HTML rendered between </main> and the footer
-        # (e.g. a "Related reading" block). Empty when absent.
+        # Optional raw-HTML extension points, empty when absent:
+        #   head_extra    — extra <head> tags (geo ICBM, article:tag,
+        #                   additional hreflang alternates)
+        #   extra_html    — block between </main> and the footer
+        #                   (e.g. "Related reading")
+        #   body_end_html — scripts after the standard scroll handler
+        #                   (e.g. south-africa's live-tracker fetch)
+        "head_extra": region.get("head_extra", ""),
         "extra_html": region.get("extra_html", ""),
+        "body_end_html": region.get("body_end_html", ""),
     }
     return template.safe_substitute(substitutions)
 
