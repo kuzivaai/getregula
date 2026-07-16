@@ -43,6 +43,22 @@ every fix below was verified by test.
   audit CLI to one project's chain. Default remains the whole machine
   (machine store plus every project chain, merged by timestamp).
 
+### Fixed (16 July, evening — site)
+
+- **False licence claim on region pages**: the region-page template's
+  footer said "MIT licence"; the project is Apache 2.0 / EUPL 1.2
+  (pyproject.toml). Template corrected; Colorado and UK pages
+  regenerated. The template also gained the current site chrome
+  (mobile nav, Assess/Guides/About links, Plausible analytics — which
+  Colorado and UK pages previously lacked entirely) and the site-wide
+  disclaimer wording.
+- **Korea page reconciled with its generator source (DQ-6)**: shipped
+  content ported into `content/regulations/south-korea.py` and the
+  page rebuilt through the pipeline — zero visible-content change,
+  drift-guard KNOWN_DRIFT entry removed. The page's meta description
+  now matches the verified on-page claims (the old one referenced
+  "PIPC enforcement", which the page never substantiated).
+
 ### Added (16 July)
 
 - **Consultant engagement metadata** — client-facing deliverables can

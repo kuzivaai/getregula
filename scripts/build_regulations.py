@@ -242,6 +242,9 @@ def render_region(region: dict) -> str:
         "jsonld_article": _render_jsonld_article(region),
         "jsonld_breadcrumb": _render_jsonld_breadcrumb(region),
         "jsonld_faq": _render_jsonld_faq(region),
+        # Optional free-form HTML rendered between </main> and the footer
+        # (e.g. a "Related reading" block). Empty when absent.
+        "extra_html": region.get("extra_html", ""),
     }
     return template.safe_substitute(substitutions)
 
