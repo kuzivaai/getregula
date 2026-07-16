@@ -183,7 +183,7 @@ def _render_jsonld_article(region: dict) -> str:
         },
         "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": f"https://getregula.com/{region['slug']}.html",
+            "@id": f"https://getregula.com/regions/{region['slug']}.html",
         },
         "about": [
             {"@type": "Thing", "name": f"{region['geo_placename']} AI regulation"},
@@ -267,7 +267,7 @@ def build(region_name: str | None = None, check_only: bool = False) -> list:
             continue
 
         html = render_region(region)
-        out_path = ROOT / f"{region['slug']}.html"
+        out_path = ROOT / "site" / "regions" / f"{region['slug']}.html"
         out_path.write_text(html, encoding="utf-8")
         size_kb = len(html) / 1024
         print(f"  [build] {path.name} → {out_path.name} ({size_kb:.1f} KB)")

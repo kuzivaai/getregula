@@ -3,6 +3,14 @@ name: Colorado SB 26-189
 law_reference: "C.R.S. Title 6, Article 1, Part 17"
 effective_date: "2027-01-01"
 status: "Enacted, not yet effective"
+# Signed 14 May 2026; repeals and reenacts SB 24-205's Part 17. Substantive
+# duties apply on and after 1 Jan 2027 (§ 6-1-1702(1), signed act text).
+litigation_note: >-
+  xAI LLC v. Weiser (D. Colo., filed Apr 2026; DOJ intervened) led to an
+  agreed suspension of enforcement of the original SB 24-205 in April 2026.
+  Whether that stay reaches the reenacted SB 26-189 is publicly unresolved
+  (Norton Rose Fulbright, June 2026). Watch item; does not change the
+  1 Jan 2027 duty date as enacted.
 
 definitions:
   admt:
@@ -12,15 +20,15 @@ definitions:
 
 ag_rulemaking:
   deadline: "2027-01-01"
-  citation: "C.R.S. § 6-1-1706"
-  description: "The Colorado Attorney General must adopt rules implementing the Act by 1 January 2027."
+  citation: "C.R.S. § 6-1-1705(3); § 6-1-1706(5)"
+  description: "Mandatory rules for post-adverse-outcome disclosures and consumer-rights procedures are due on or before 1 January 2027 (§ 6-1-1705(3)); broader clarifying rulemaking is discretionary (§ 6-1-1706(5))."
 
 penalties:
-  per_violation: "$20,000"
-  enforcement: "Colorado Attorney General only"
+  per_violation: "$20,000 (via Colorado Consumer Protection Act, C.R.S. § 6-1-112)"
+  enforcement: "Colorado Attorney General only, through the CCPA (§ 6-1-1706)"
   private_action: "Explicitly excluded"
-  cure_period: "60 days (sunsets 1 January 2030)"
-  range: "Up to $20,000 per violation"
+  cure_period: "60 days (cure provision sunsets 1 January 2030)"
+  range: "Up to $20,000 per violation under the CCPA"
 
 deadlines:
   default: "2027-01-01"
@@ -37,7 +45,7 @@ domain_mappings:
     category: "Employment"
     obligations:
       - {article: "6-1-1702", name: "Developer documentation", who: "developer"}
-      - {article: "6-1-1703", name: "Record retention (3 years)", who: "both"}
+      - {article: "6-1-1702(4), 6-1-1703", name: "Record retention (3 years)", who: "both"}
       - {article: "6-1-1704", name: "Pre-use consumer notice", who: "deployer"}
       - {article: "6-1-1704", name: "Post-adverse disclosure (30 days)", who: "deployer"}
       - {article: "6-1-1705", name: "Consumer rights (access, correction, human review)", who: "deployer"}
@@ -47,7 +55,7 @@ domain_mappings:
     category: "Education"
     obligations:
       - {article: "6-1-1702", name: "Developer documentation", who: "developer"}
-      - {article: "6-1-1703", name: "Record retention (3 years)", who: "both"}
+      - {article: "6-1-1702(4), 6-1-1703", name: "Record retention (3 years)", who: "both"}
       - {article: "6-1-1704", name: "Pre-use consumer notice", who: "deployer"}
       - {article: "6-1-1704", name: "Post-adverse disclosure (30 days)", who: "deployer"}
       - {article: "6-1-1705", name: "Consumer rights (access, correction, human review)", who: "deployer"}
@@ -57,7 +65,7 @@ domain_mappings:
     category: "Financial/lending services"
     obligations:
       - {article: "6-1-1702", name: "Developer documentation", who: "developer"}
-      - {article: "6-1-1703", name: "Record retention (3 years)", who: "both"}
+      - {article: "6-1-1702(4), 6-1-1703", name: "Record retention (3 years)", who: "both"}
       - {article: "6-1-1704", name: "Pre-use consumer notice", who: "deployer"}
       - {article: "6-1-1704", name: "Post-adverse disclosure (30 days)", who: "deployer"}
       - {article: "6-1-1705", name: "Consumer rights (access, correction, human review)", who: "deployer"}
@@ -67,7 +75,7 @@ domain_mappings:
     category: "Healthcare"
     obligations:
       - {article: "6-1-1702", name: "Developer documentation", who: "developer"}
-      - {article: "6-1-1703", name: "Record retention (3 years)", who: "both"}
+      - {article: "6-1-1702(4), 6-1-1703", name: "Record retention (3 years)", who: "both"}
       - {article: "6-1-1704", name: "Pre-use consumer notice", who: "deployer"}
       - {article: "6-1-1704", name: "Post-adverse disclosure (30 days)", who: "deployer"}
       - {article: "6-1-1705", name: "Consumer rights (access, correction, human review)", who: "deployer"}
@@ -77,7 +85,7 @@ domain_mappings:
     category: "Insurance"
     obligations:
       - {article: "6-1-1702", name: "Developer documentation", who: "developer"}
-      - {article: "6-1-1703", name: "Record retention (3 years)", who: "both"}
+      - {article: "6-1-1702(4), 6-1-1703", name: "Record retention (3 years)", who: "both"}
       - {article: "6-1-1704", name: "Pre-use consumer notice", who: "deployer"}
       - {article: "6-1-1704", name: "Post-adverse disclosure (30 days)", who: "deployer"}
       - {article: "6-1-1705", name: "Consumer rights (access, correction, human review)", who: "deployer"}
@@ -87,7 +95,7 @@ domain_mappings:
     category: "Essential government services"
     obligations:
       - {article: "6-1-1702", name: "Developer documentation", who: "developer"}
-      - {article: "6-1-1703", name: "Record retention (3 years)", who: "both"}
+      - {article: "6-1-1702(4), 6-1-1703", name: "Record retention (3 years)", who: "both"}
       - {article: "6-1-1704", name: "Pre-use consumer notice", who: "deployer"}
       - {article: "6-1-1704", name: "Post-adverse disclosure (30 days)", who: "deployer"}
       - {article: "6-1-1705", name: "Consumer rights (access, correction, human review)", who: "deployer"}
@@ -98,7 +106,7 @@ domain_mappings:
     note: "Detection patterns added: tenant screening, rental decisions, eviction, property valuation, fair housing"
     obligations:
       - {article: "6-1-1702", name: "Developer documentation", who: "developer"}
-      - {article: "6-1-1703", name: "Record retention (3 years)", who: "both"}
+      - {article: "6-1-1702(4), 6-1-1703", name: "Record retention (3 years)", who: "both"}
       - {article: "6-1-1704", name: "Pre-use consumer notice", who: "deployer"}
       - {article: "6-1-1704", name: "Post-adverse disclosure (30 days)", who: "deployer"}
       - {article: "6-1-1705", name: "Consumer rights (access, correction, human review)", who: "deployer"}
