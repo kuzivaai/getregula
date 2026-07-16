@@ -186,6 +186,43 @@ def test_site_schema_softwareversion_matches_cli_version():
     )
 
 
+def test_current_version_declared_consistently_everywhere():
+    """Every file that declares Regula's CURRENT version must equal
+    constants.VERSION. The v1.7.5 release (16 Jul 2026) shipped with six
+    stale 1.7.4 declarations — CITATION.cff (version + title),
+    mcp-server.json, site/llms.txt, references/annex_iv_template.md and
+    the MODEL_CARD header — because only pyproject/constants/badges/
+    schema.org were enforced. Historical references ("measured on
+    v1.7.4", demo recordings, spec examples) are deliberately NOT
+    checked: they are provenance, not current-version claims."""
+    from constants import VERSION
+    root = Path(__file__).parent.parent
+
+    # (file, regex with one capture group for the declared version)
+    semver = r"([0-9]+(?:\.[0-9]+)*)"
+    declarations = [
+        ("pyproject.toml", r'^version\s*=\s*"([^"]+)"'),
+        ("CITATION.cff", r'^version:\s*"([^"]+)"'),
+        ("CITATION.cff", rf'compliance scanner for code \(v{semver}\)'),
+        ("mcp-server.json", r'"version":\s*"([^"]+)"'),
+        ("site/llms.txt", rf'^- Version:\s*{semver}'),
+        ("references/annex_iv_template.md", rf'_For use with Regula v{semver}_'),
+        ("docs/MODEL_CARD.md", rf'^\| Version \| {semver}'),
+        ("docs/MODEL_CARD.md", rf'This model card describes Regula v{semver}'),
+    ]
+    offenders = []
+    for rel_path, pattern in declarations:
+        text = (root / rel_path).read_text(encoding="utf-8")
+        m = re.search(pattern, text, re.M)
+        assert m, f"{rel_path}: current-version declaration not found ({pattern})"
+        if m.group(1) != VERSION:
+            offenders.append(f"{rel_path}: declares {m.group(1)}")
+    assert not offenders, (
+        f"current-version declarations drifted from constants.VERSION "
+        f"({VERSION}): {offenders}"
+    )
+
+
 def test_pack_writers_pin_lf_newlines():
     """Every write_text in the evidence/conformity pack writers must pass
     newline="\\n". The recorded SHA-256 hashes are computed on the LF
