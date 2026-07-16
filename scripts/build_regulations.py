@@ -164,7 +164,7 @@ def _render_jsonld_article(region: dict) -> str:
         "@type": "Article",
         "headline": region["og_title"],
         "description": region["meta_description"],
-        "image": "https://getregula.com/og-image.png",
+        "image": "https://getregula.com/assets/og-image.png",
         "datePublished": region["published_time"],
         "dateModified": region["modified_time"],
         "author": {
@@ -178,7 +178,7 @@ def _render_jsonld_article(region: dict) -> str:
             "url": "https://getregula.com",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://getregula.com/og-image.png",
+                "url": "https://getregula.com/assets/og-image.png",
             },
         },
         "mainEntityOfPage": {
