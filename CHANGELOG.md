@@ -44,7 +44,13 @@ every fix below was verified by test.
   `create=False`; an absent chain reads as an empty valid chain. A new
   suite-wide `tests/conftest.py` fixture also isolates
   `REGULA_AUDIT_DIR` for every test, so the test suite can no longer
-  write to (or read from) the operator's real store.
+  write to (or read from) the operator's real store. The custom runner
+  (`tests/test_classification.py`, which pytest fixtures cannot cover)
+  gets the same guarantee via process-level isolation in its `__main__`
+  block, and `test_audit_hash_chain` now restores the prior
+  `REGULA_AUDIT_DIR` instead of popping it (the pop silently disabled
+  isolation for every test that ran after it). Verified live: a full
+  custom-runner pass leaves the real store byte-identical.
 - **Secret values are redacted from audit payloads before they are
   persisted.** The pre-tool hook only blocks HIGH-confidence secret
   findings; medium/low-confidence values executed and were logged
@@ -69,6 +75,53 @@ every fix below was verified by test.
   a secret value survives into a logged payload. Verified to fail on a
   re-injection of the original defect (3 targeted failures) and pass on
   the fixed tree.
+
+### Fixed (16 July, evening — walkthrough P2–P6 + deadline single-sourcing)
+
+- **`system.domain` in regula-policy.yaml now actually activates
+  domain-gated patterns** — doctor and the consultant guide documented
+  the syntax, but only the `--domain` flag activated anything (the
+  policy declaration fed the confidence-boost path only). Activation
+  now happens inside `scan_files` itself, reading the TARGET project's
+  policy file, so check, report, gap, evidence packs, conformity packs,
+  and init all agree on what is active for a given project — including
+  when scanning a directory other than the CWD.
+- **`regula init` no longer writes hooks without consent (P4)**:
+  non-interactive runs print the manual `regula install <platform>`
+  command instead of silently writing `.claude/settings.local.json`;
+  an unanswerable prompt (piped stdin, CI) counts as a decline, not a
+  yes.
+- **`regula init`'s scan can no longer contradict `regula check`
+  (P5)**: the quick scan uses the same domain activation, reports
+  domain-gated potential findings explicitly, and its "AI files" label
+  (which read as an authoritative zero) is now "Files with findings".
+- **Verdict copy is indication-framed (P2)**: `regula check` no longer
+  prints "is classified as high-risk … you must comply" — findings are
+  indicators; Article 6 classification depends on context. New copy:
+  "shows indicators of high-risk AI … If confirmed high-risk
+  (Article 6), Articles 9-15 obligations apply."
+- **Fresh unsigned evidence packs verify cleanly (P6)**: unsigned
+  manifests now carry the Evidence Format v1 declaration the spec lists
+  as REQUIRED (plus `project_directory`), so `regula verify` no longer
+  hedges "v0 best-effort semantics" on packs Regula itself just
+  generated. Versioned via the `format_version` field; the v0 path
+  remains for packs from older releases.
+- **Every deadline-copy consumer now derives from `omnibus.py` (P3,
+  closes audit finding H8)**: remediation plan, exec summary, assess,
+  explain, explain-articles, register packets, and the roadmap default
+  all single-source the binding deadline, so the OJ flip is one line
+  plus the enumerated site sweep. `test_omnibus_status.py` asserts the
+  wiring pre- and post-flip and guards against new hardcoded
+  binding-deadline literals in scripts/. Stale "provisional agreement /
+  may defer / if Omnibus passes" phrasing corrected to the adopted
+  state (EP 16 Jun, Council 29 Jun 2026; pending OJ publication) in
+  assess, explain, explain-articles, registration packet status
+  values, and references data.
+- **Homepage version badge said v1.7.3 in all three locales** (stale
+  since the 1.7.4 release); corrected, and `site_integrity.py` gains a
+  `version` check comparing the badges against
+  `scripts/constants.py::VERSION` so the badge can never silently lag
+  a release again.
 
 ### Fixed (16 July, morning — site)
 
