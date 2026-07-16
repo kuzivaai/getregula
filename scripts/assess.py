@@ -26,7 +26,7 @@ from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from omnibus import ANNEX_III_PROSE, ADOPTION_HISTORY, BINDING_NOTE, OMNIBUS_ENACTED, OMNIBUS_OJ_DATE
+from omnibus import ANNEX_III_PROSE, ADOPTION_HISTORY, BINDING_NOTE, OMNIBUS_ENACTED, OMNIBUS_OJ_DATE, ORIGINAL_PROSE
 
 
 # ---------------------------------------------------------------------------
@@ -123,7 +123,7 @@ def _omnibus_deadline_lines() -> list:
             f"    Annex III obligations apply from {ANNEX_III_PROSE}.",
         ]
     return [
-        "  - Legally binding: 2 August 2026.",
+        f"  - Legally binding: {ORIGINAL_PROSE}.",
         f"  - The EU Digital Omnibus ({ADOPTION_HISTORY})",
         f"    defers Annex III to {ANNEX_III_PROSE}.",
         f"    {BINDING_NOTE}",
@@ -221,8 +221,8 @@ def format_result(tier: str, non_eu_provider: bool) -> str:
             "    machine-readable format.",
             "  - Biometric categorisation: inform affected persons.",
             "",
-            "  Deadline: 2 August 2026.",
-            "  This deadline is NOT proposed for delay by the Digital Omnibus.",
+            f"  Deadline: {ORIGINAL_PROSE}.",
+            "  This deadline is unchanged by the Digital Omnibus.",
             "",
             "  Next steps:",
             "  1. regula disclose .    -- generate compliant disclosure text",

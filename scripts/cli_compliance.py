@@ -680,7 +680,11 @@ def cmd_roadmap(args) -> None:
 
     print("Scanning project...", file=sys.stderr)
     gap = assess_compliance(project_path)
-    target = getattr(args, "target_date", "2 August 2026")
+    target = getattr(args, "target_date", None)
+    if not target:
+        # Currently binding Annex III deadline, single-sourced for the OJ flip
+        from omnibus import ANNEX_III_PROSE, ORIGINAL_PROSE, OMNIBUS_ENACTED
+        target = ANNEX_III_PROSE if OMNIBUS_ENACTED else ORIGINAL_PROSE
 
     roadmap = generate_roadmap(
         gap,

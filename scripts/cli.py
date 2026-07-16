@@ -1171,8 +1171,9 @@ def _build_subparsers(subparsers):
     p_roadmap.add_argument("--project", "-p", default=".")
     p_roadmap.add_argument("project_path_positional", nargs="?", default=None,
                        metavar="path", help="Project path (same as --project)")
-    p_roadmap.add_argument("--target-date", "-t", default="2 August 2026",
-                           help="Compliance deadline (default: 2 August 2026)")
+    p_roadmap.add_argument("--target-date", "-t", default=None,
+                           help="Compliance deadline (default: the currently "
+                                "binding Annex III deadline from omnibus.py)")
     p_roadmap.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_roadmap.add_argument("--no-actionable", dest="actionable", action="store_false",
                            default=True, help="Hide remediation commands from output")

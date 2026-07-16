@@ -90,7 +90,8 @@ def generate_roadmap(
 
     Args:
         gap_assessment: Dict from compliance_check.assess_compliance().
-        target_date: Deadline string (default: "2 August 2026").
+        target_date: Deadline string (default: the currently binding
+            Annex III deadline derived from omnibus.py).
         project_name: Human-readable project name.
 
     Returns:

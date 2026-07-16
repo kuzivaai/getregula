@@ -255,6 +255,27 @@ def _gap_reason(source) -> str:
 
 
 
+def _current_deadlines(schema_deadlines: dict) -> dict:
+    """Registration-packet deadline block, current as of packet build.
+
+    The static values in annex_viii_sections.json go stale (they still
+    said "provisional_agreement pending formal adoption" after the EP
+    and Council had both approved); status and dates are injected from
+    omnibus.py — the single source of truth for the OJ flip.
+    """
+    from omnibus import (DEADLINE_CURRENT_LAW, DEADLINE_OMNIBUS_ANNEX_III,
+                         OMNIBUS_ENACTED, OMNIBUS_OJ_DATE)
+    d = dict(schema_deadlines)
+    d["applicable_deadline"] = (DEADLINE_OMNIBUS_ANNEX_III if OMNIBUS_ENACTED
+                                else DEADLINE_CURRENT_LAW)
+    d["omnibus_proposed_deadline"] = DEADLINE_OMNIBUS_ANNEX_III
+    d["omnibus_status"] = (
+        f"in_force_oj_{OMNIBUS_OJ_DATE}" if OMNIBUS_ENACTED
+        else "adopted_ep_2026-06-16_council_2026-06-29_pending_oj_publication"
+    )
+    return d
+
+
 def build_packet(discovery: dict, role: str, annex_iii_point,
                  deployer_type: str = "none", art_6_3_exempted: bool = False) -> dict:
     """Build the full Annex VIII packet `data` block (the inside of json_output's envelope).
@@ -294,7 +315,7 @@ def build_packet(discovery: dict, role: str, annex_iii_point,
             "reason": f"Project classified as {highest_risk}; Annex VIII registration does not apply.",
             "redirects": build_redirects("no_registration_required"),
             "schema_provenance": _provenance(schema),
-            "deadlines": schema["deadlines"],
+            "deadlines": _current_deadlines(schema["deadlines"]),
         }
 
     if decision["kind"] == "not_applicable":
@@ -306,7 +327,7 @@ def build_packet(discovery: dict, role: str, annex_iii_point,
                       "Article 26 obligations still apply.",
             "redirects": build_redirects("not_applicable"),
             "schema_provenance": _provenance(schema),
-            "deadlines": schema["deadlines"],
+            "deadlines": _current_deadlines(schema["deadlines"]),
         }
 
     section = decision["section"]
@@ -336,7 +357,7 @@ def build_packet(discovery: dict, role: str, annex_iii_point,
             "total": total,
             "percentage": int(round(100 * filled_count / total)) if total else 0,
         },
-        "deadlines": schema["deadlines"],
+        "deadlines": _current_deadlines(schema["deadlines"]),
         "schema_provenance": _provenance(schema),
         "kind": "registration_required",
     }

@@ -5939,11 +5939,13 @@ def test_assess_format_result_not_in_scope():
 def test_assess_format_result_limited_risk():
     """format_result returns Article 50 obligations for limited-risk tier."""
     from assess import format_result, TIER_LIMITED
+    from omnibus import ORIGINAL_PROSE
     result = format_result(TIER_LIMITED, False)
     assert "LIMITED-RISK" in result
     assert "Article 50" in result
-    assert "2 August 2026" in result
-    assert "NOT proposed for delay" in result
+    # Art 50's applicability date is statutory and derives from omnibus.py
+    assert ORIGINAL_PROSE in result
+    assert "unchanged by the Digital Omnibus" in result
     print("✓ assess: limited-risk result includes Article 50 and correct deadline")
 
 

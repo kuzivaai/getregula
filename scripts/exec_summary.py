@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from html import escape as html_escape
 
 from constants import VERSION
-from omnibus import ANNEX_III_PROSE, OMNIBUS_STATUS
+from omnibus import ANNEX_III_PROSE, OMNIBUS_STATUS, ORIGINAL_PROSE
 
 
 # Plain-English tier descriptions
@@ -37,7 +37,10 @@ TIER_DESCRIPTIONS = {
     "limited_risk": (
         "This project contains indicators associated with LIMITED-RISK AI "
         "systems under EU AI Act Article 50. Transparency obligations apply "
-        "from 2 August 2026."
+        # Art 50's general applicability date is statutory (Article 113)
+        # and unchanged by the Omnibus; the string is still sourced from
+        # omnibus.py so no deadline literal lives outside it.
+        f"from {ORIGINAL_PROSE}."
     ),
     "minimal_risk": (
         "This project contains indicators associated with MINIMAL-RISK AI "

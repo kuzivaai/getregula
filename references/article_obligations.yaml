@@ -160,7 +160,9 @@ deployer_indicators:
   - "Inference-only code (model.predict, model.generate, no .fit/.train)"
   - "Third-party model wrapper usage (langchain, litellm)"
 
-# Omnibus timeline context (updated 12 May 2026)
+# Omnibus timeline context (updated 16 Jul 2026). Documentation only:
+# consumers derive deadline copy from scripts/omnibus.py, the single
+# source of truth for the OJ flip.
 timeline:
   original_law: "2 August 2026"
   omnibus_agreed:
@@ -169,5 +171,5 @@ timeline:
     art_5_csam: "2 December 2026"
     watermarking_existing: "2 December 2026"
     sandboxes: "2 August 2027"
-  omnibus_status: "Provisional agreement 7 May 2026; awaiting formal adoption before 2 Aug 2026"
-  guidance: "Plan against 2 Dec 2027 for Annex III (subject to formal adoption)"
+  omnibus_status: "EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication"
+  guidance: "Plan against 2 Dec 2027 for Annex III (in force 3 days after OJ publication; until then 2 Aug 2026 remains legally binding)"
