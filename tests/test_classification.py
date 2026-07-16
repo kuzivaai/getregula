@@ -919,7 +919,10 @@ def test_audit_hash_chain():
     import os
     from log_event import log_event, verify_chain
 
-    # Use temp directory
+    # Use temp directory. Save/RESTORE the previous value — popping it
+    # unconditionally destroyed the runner-wide store isolation set in
+    # __main__, leaving every later test writing to the real store.
+    prior_audit_dir = os.environ.get("REGULA_AUDIT_DIR")
     temp_dir = tempfile.mkdtemp()
     os.environ["REGULA_AUDIT_DIR"] = temp_dir
 
@@ -931,7 +934,10 @@ def test_audit_hash_chain():
         valid, error = verify_chain()
         assert_true(valid, f"hash chain valid: {error}")
     finally:
-        os.environ.pop("REGULA_AUDIT_DIR", None)
+        if prior_audit_dir is None:
+            os.environ.pop("REGULA_AUDIT_DIR", None)
+        else:
+            os.environ["REGULA_AUDIT_DIR"] = prior_audit_dir
         import shutil
         shutil.rmtree(temp_dir, ignore_errors=True)
 
@@ -7138,6 +7144,18 @@ def test_justice_opt_in_suppressed_without_domain():
 
 
 if __name__ == "__main__":
+    # Isolate the audit store for the WHOLE run (mirrors tests/conftest.py,
+    # which only covers pytest): several tests exercise CLI paths that
+    # append real audit events, and without this the custom runner wrote
+    # test chains into the operator's real ~/.regula/audit store (observed
+    # live, 2026-07-16). An explicitly pre-set REGULA_AUDIT_DIR still wins.
+    import os as _os
+    import tempfile as _tempfile
+    _os.environ.setdefault(
+        "REGULA_AUDIT_DIR", _tempfile.mkdtemp(prefix="regula-test-audit-"))
+    _os.environ.pop("REGULA_PROJECT_DIR", None)
+    _os.environ.pop("REGULA_PROJECT", None)
+
     # Auto-discover every top-level function whose name starts with `test_`.
     # Eliminates the manual-list maintenance burden that was the actual
     # long-term degradation behind tech debt finding T1: previously every
