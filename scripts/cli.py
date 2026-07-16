@@ -33,14 +33,29 @@ JURISDICTION_MAP = {
     'eu': 'eu-ai-act',
     'colorado': 'colorado-sb205',
     'korea': 'south-korea-ai',
-    'canada': 'canada-aida',
-    'singapore': 'singapore-ai',
-    'oecd': 'oecd-ai',
     'uk': 'ico-ai-guidance',
     'brazil': 'lgpd',
     'nist': 'nist-ai-rmf',
     'iso': 'iso-42001',
+    # Removed (16 Jul 2026): 'canada' (AIDA/Bill C-27 died on prorogation
+    # 6 Jan 2025 — verified via LEGISinfo; no successor bill), 'singapore'
+    # and 'oecd' (voluntary frameworks, no crosswalk data — the keys
+    # produced zero enrichment). Re-add only with real crosswalk data.
 }
+
+# The web assess tool identifies jurisdictions by ISO-style code (?j=kr,
+# ?j=co). Accept those codes on the CLI too, normalised to the canonical
+# short names above, so both surfaces share one vocabulary.
+JURISDICTION_ALIASES = {
+    'kr': 'korea',
+    'co': 'colorado',
+}
+
+
+def _normalise_jurisdiction(value):
+    """argparse type hook: lowercase and resolve aliases before validation."""
+    value = value.strip().lower()
+    return JURISDICTION_ALIASES.get(value, value)
 
 
 def _is_tty():
@@ -271,6 +286,7 @@ def _resolve_jurisdictions(jurisdictions_arg):
         j = j.strip().lower()
         if not j:
             continue
+        j = JURISDICTION_ALIASES.get(j, j)
         fw_key = JURISDICTION_MAP.get(j)
         if fw_key:
             resolved.append((j, fw_key))
@@ -326,7 +342,7 @@ def _extract_jurisdiction_label(short_name, internal_key, data, finding):
         return f"EU AI Act: {title}" if title else "EU AI Act"
     elif internal_key == "colorado_sb205":
         reqs = data.get("requirements", [])
-        return f"Colorado SB-189 (replaces SB-205): {reqs[0]}" if reqs else "Colorado SB-189 (disclosure-only, replaces SB-205)"
+        return f"Colorado SB-189 (replaces SB-205): {reqs[0]}" if reqs else "Colorado SB-189 (disclosure-focused, replaces SB-205)"
     elif internal_key == "south_korea_ai":
         reqs = data.get("requirements", [])
         return f"South Korea: {reqs[0]}" if reqs else "South Korea: High-impact AI"
@@ -924,7 +940,8 @@ def _build_subparsers(subparsers):
     p_check.add_argument("--jurisdictions",
                          help="Comma-separated jurisdictions (e.g. eu,colorado,korea). "
                               "Applies all relevant framework mappings simultaneously. "
-                              "Valid: " + ", ".join(sorted(JURISDICTION_MAP)))
+                              "Valid: " + ", ".join(sorted(JURISDICTION_MAP))
+                              + ". Aliases: kr=korea, co=colorado")
     p_check.add_argument("--include-gdpr", action="store_true",
                          help="Include GDPR pattern findings in scan results")
     p_check.add_argument("--lifecycle", choices=["plan", "design", "develop", "deploy", "operate", "retire"],
@@ -961,6 +978,20 @@ def _build_subparsers(subparsers):
     p_gdpr.set_defaults(func=cmd_gdpr)
 
     # --- report ---
+    def _add_engagement_args(parser):
+        """Consultant engagement metadata flags, shared by every command
+        that produces a client-facing deliverable. Values can also come
+        from the `engagement:` section of regula-policy.yaml; flags win.
+        """
+        parser.add_argument("--client", metavar="NAME",
+                            help="Client name shown on the deliverable "
+                                 "(engagement metadata; also settable via "
+                                 "the engagement: section of regula-policy.yaml)")
+        parser.add_argument("--prepared-by", dest="prepared_by", metavar="NAME",
+                            help="Consultant or firm name shown as preparer")
+        parser.add_argument("--engagement-ref", dest="engagement_ref", metavar="REF",
+                            help="Engagement reference shown on the deliverable")
+
     p_report = subparsers.add_parser("report", help="Generate reports (HTML, SARIF, JSON)")
     p_report.add_argument("--project", "-p", default=".")
     p_report.add_argument("project_path_positional", nargs="?", default=None,
@@ -979,6 +1010,7 @@ def _build_subparsers(subparsers):
                           help="Scan scope. Default 'all' (reports are a full inventory); "
                                "'production' excludes test/example/tooling files the same "
                                "way `regula check` does by default.")
+    _add_engagement_args(p_report)
     p_report.set_defaults(func=cmd_report)
 
     # --- audit ---
@@ -1256,6 +1288,7 @@ def _build_subparsers(subparsers):
         help="TSA endpoint URL (default: https://freetsa.org/tsr). Any "
              "RFC 3161-compliant TSA works.",
     )
+    _add_engagement_args(p_evidence)
     p_evidence.set_defaults(func=cmd_evidence_pack)
 
     # --- doc-audit ---
@@ -1476,8 +1509,10 @@ def _build_subparsers(subparsers):
         ),
     )
     p_assess.add_argument(
-        "--jurisdiction", choices=["eu", "korea", "colorado"], default="eu",
+        "--jurisdiction", type=_normalise_jurisdiction,
+        choices=["eu", "korea", "colorado"], default="eu",
         help="Jurisdiction to assess against (default: eu). "
+             "Aliases: kr=korea, co=colorado. "
              "Korea and Colorado assessments are available via the web tool at "
              "https://getregula.com/assess/?j=kr or ?j=co",
     )

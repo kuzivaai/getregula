@@ -308,3 +308,26 @@ def test_eu_insurance_category_is_5c():
     assert "5(c)" in insurance.get("category", ""), (
         f"EU insurance category should be 5(c), got: {insurance.get('category')}"
     )
+
+
+# ---------------------------------------------------------------------------
+# CLI jurisdiction aliases (web assess uses kr/co; CLI canonical is korea/colorado)
+# ---------------------------------------------------------------------------
+
+def test_jurisdiction_aliases_resolve_to_canonical():
+    from cli import JURISDICTION_ALIASES, JURISDICTION_MAP, _resolve_jurisdictions
+    # Every alias must point at a canonical short name that actually exists
+    for alias, canonical in JURISDICTION_ALIASES.items():
+        assert canonical in JURISDICTION_MAP, (
+            f"Alias '{alias}' points at unknown jurisdiction '{canonical}'"
+        )
+    resolved = _resolve_jurisdictions("kr,co")
+    assert ("korea", JURISDICTION_MAP["korea"]) in resolved
+    assert ("colorado", JURISDICTION_MAP["colorado"]) in resolved
+
+def test_jurisdiction_alias_normaliser():
+    from cli import _normalise_jurisdiction
+    assert _normalise_jurisdiction("kr") == "korea"
+    assert _normalise_jurisdiction("CO") == "colorado"
+    assert _normalise_jurisdiction(" korea ") == "korea"
+    assert _normalise_jurisdiction("eu") == "eu"
