@@ -177,6 +177,32 @@ INFORMATIONAL_DOMAINS = {
 }
 
 
+def project_declared_domains(project_dir) -> set:
+    """system.domain declared in the TARGET project's own policy file.
+
+    Reads regula-policy.yaml/.json inside project_dir explicitly — not
+    the CWD-based policy cache — so scanning another directory sees that
+    project's declaration. This is what makes `system.domain` activate
+    domain-gated patterns everywhere a project is scanned: doctor and
+    the consultant guide have documented that behaviour, but until
+    16 Jul 2026 only the `--domain` flag actually activated anything
+    (the policy declaration fed the confidence boost path only).
+    """
+    from pathlib import Path as _Path
+    try:
+        from policy_config import get_policy
+        for name in ("regula-policy.yaml", "regula-policy.json"):
+            p = _Path(project_dir) / name
+            if p.exists():
+                system = get_policy(str(p)).get("system", {})
+                if isinstance(system, dict) and system.get("domain"):
+                    return {str(system["domain"]).strip().lower()}
+                break
+    except Exception:
+        pass
+    return set()
+
+
 def get_declared_domain() -> dict:
     """Read domain declaration from regula-policy.yaml.
 

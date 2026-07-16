@@ -125,9 +125,10 @@ cd /path/to/client/codebase
 regula init          # guided policy setup
 ```
 
-Note: `init` also writes editor hooks into the client repo (a
-`.claude/` directory). On a read-only or NDA-bound engagement, review
-what it created before committing anything, or delete the hooks.
+Note: `init` never installs editor hooks without asking. Non-interactive
+runs only print the install command; interactive runs prompt before
+writing anything outside `regula-policy.yaml`. On a read-only or
+NDA-bound engagement, simply decline the hook prompt.
 
 Add the `engagement:` block (§3) and declare the client's domain in
 `regula-policy.yaml` so every later command sees it:
