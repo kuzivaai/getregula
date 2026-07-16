@@ -32,7 +32,7 @@ REGION = {
     "status_cls": "live",
     "status_text": "In force \u00b7 effective 22 January 2026",
 
-    "title_tag": "South Korea AI Basic Act Tracker \u2014 in force 22 Jan 2026 | Regula",
+    "title_tag": "South Korea AI Basic Act Tracker \u2014 Regula",
     "title_html": 'South Korea \u2014 <span class="hl">AI Basic Act</span> tracker',
     "meta_description": (
         "Live tracker of South Korea's Act on the Development of Artificial "
@@ -202,8 +202,8 @@ REGION = {
             "id": "where-regula-fits",
             "heading": "Where Regula fits for Korean operators and foreign providers",
             "body": """
-<p>Regula was built primarily against the EU AI Act, but much of its output is also useful for Korean AI Basic Act compliance. Practical starting commands:</p>
-<pre><code>pip install regula-ai
+<p>Regula supports the Korean AI Basic Act directly. You can <a href="/assess/?j=kr">take the Korea assessment</a> (9 questions, no signup) or scan your codebase:</p>
+<pre><code>pipx install regula-ai
 
 regula discover .              # AI systems present in the project
 regula check .                 # Risk indicators across all frameworks
@@ -324,4 +324,14 @@ regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.7)
             "url": "https://www.msit.go.kr/eng/",
         },
     ],
+
+    # Optional block rendered between </main> and the footer.
+    "extra_html": """
+    <div style="max-width:760px;margin:var(--s7) auto var(--s5);padding:0 var(--s5);">
+        <h3 style="font-size:18px;color:var(--text);margin-bottom:var(--s3);">Related reading</h3>
+        <ul style="list-style:none;padding:0;margin:0;">
+            <li style="margin-bottom:var(--s2);"><a href="/blog/blog-does-ai-act-apply.html" style="color:var(--accent);">Does the EU AI Act Apply to Your AI App?</a> <span style="color:var(--text-dim);font-size:14px;">— Extraterritorial reach and cross-border applicability</span></li>
+        </ul>
+    </div>
+""",
 }
