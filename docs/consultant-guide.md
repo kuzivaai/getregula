@@ -23,7 +23,7 @@ regula --version
 The package name is `regula-ai`; the command it installs is `regula`.
 
 **Version matters.** This guide describes the current development line
-(newer than v1.7.4). On v1.7.4 or older: positional paths do not work on
+(v1.7.5 or newer). On v1.7.4 or older: positional paths do not work on
 most commands (use `--project .` instead of `.`), `evidence-pack --sign`,
 the engagement branding fields, and the `kr`/`co` aliases do not exist
 yet. When any command in this guide is rejected, run
