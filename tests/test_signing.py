@@ -562,3 +562,46 @@ def test_cli_evidence_pack_timestamp_requires_sign_is_implied(tmp_path):
         assert "--timestamp requires --sign" in str(exc)
     else:
         raise AssertionError("generator must reject timestamp without sign")
+
+
+def test_failed_sign_leaves_no_half_pack(tmp_path):
+    """Fail-closed (R2, 16 Jul 2026): if signing aborts before
+    manifest.json is written (e.g. missing [signing] extra), the partial
+    pack directory must be removed — an evidence artefact either
+    completes with its manifest or does not exist. A clean venv without
+    the extra previously kept a manifest-less half-pack that
+    `regula verify` rejected as not-a-pack."""
+    from unittest.mock import patch
+    import evidence_pack
+
+    proj = tmp_path / "proj"
+    proj.mkdir()
+    (proj / "a.py").write_text("print(1)\n", encoding="utf-8")
+    out = tmp_path / "out"
+
+    with patch("signing.apply_manifest_security",
+               side_effect=RuntimeError("SigningUnavailable: no crypto")):
+        try:
+            evidence_pack.generate_evidence_pack(
+                str(proj), output_dir=str(out), sign=True)
+            raise AssertionError("signing failure must propagate")
+        except RuntimeError:
+            pass
+    assert list(out.glob("evidence-pack-*")) == [], \
+        "failed --sign left a partial pack directory"
+
+    # pre-existing same-day directory is NOT deleted on failure
+    import datetime
+    stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+    pre = out / f"evidence-pack-proj-{stamp}"
+    pre.mkdir(parents=True)
+    (pre / "keep.txt").write_text("prior artefact", encoding="utf-8")
+    with patch("signing.apply_manifest_security",
+               side_effect=RuntimeError("SigningUnavailable: no crypto")):
+        try:
+            evidence_pack.generate_evidence_pack(
+                str(proj), output_dir=str(out), sign=True)
+        except RuntimeError:
+            pass
+    assert (pre / "keep.txt").exists(), \
+        "pre-existing directory must survive a failed run"
