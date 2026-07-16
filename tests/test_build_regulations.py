@@ -161,7 +161,7 @@ def test_build_regulations_jsonld_article_is_valid_schema_org():
     assert data["@context"] == "https://schema.org"
     assert data["@type"] == "Article"
     assert data["headline"] == "Test OG title"
-    assert data["mainEntityOfPage"]["@id"] == "https://getregula.com/test-region.html"
+    assert data["mainEntityOfPage"]["@id"] == "https://getregula.com/regions/test-region.html"
     print("✓ build_regulations: Article JSON-LD valid")
 
 
@@ -193,7 +193,7 @@ def test_build_regulations_render_region_produces_valid_html():
 
     # SEO metadata
     assert "<title>Test title tag</title>" in html
-    assert 'rel="canonical" href="https://getregula.com/test-region.html"' in html
+    assert 'rel="canonical" href="https://getregula.com/regions/test-region.html"' in html
     assert 'content="Test meta description.' in html
     assert 'property="og:title" content="Test OG title"' in html
     assert 'content="en_US"' in html  # og:locale

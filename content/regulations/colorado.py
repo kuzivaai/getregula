@@ -1,21 +1,33 @@
 # regula-ignore
-"""Colorado (US) — Colorado AI Act coverage page.
+"""Colorado (US) — Colorado ADMT law (SB 26-189) coverage page.
 
 Data file consumed by scripts/build_regulations.py to generate
 colorado-ai-regulation.html. Every claim is traceable to primary or
 primary-adjacent sources cited in the `sources` list at the bottom.
 
-Key verified facts (2026-04-08):
-- Senate Bill 24-205 ("Colorado Artificial Intelligence Act") was signed in 2024.
-- Senate Bill 25B-004 ("Increase Transparency for Algorithmic Systems Act") was
-  signed by Governor Polis on 28 August 2025, delaying the effective date from
-  1 February 2026 to 30 June 2026. Substance of the 2024 Act was not altered.
-- Developers: reasonable-care duty to prevent algorithmic discrimination,
-  technical documentation, public statements, regulator + deployer notices.
-- Deployers: risk management policy, initial + annual impact assessments,
-  pre-decision and adverse-decision consumer notices, website disclosures.
-- Attorney General enforcement; rebuttable presumptions and affirmative
-  defences take effect 30 June 2026.
+Key verified facts (2026-07-16, verified against the signed bill text at
+leg.colorado.gov/bill_files/116489/download and the bill page at
+leg.colorado.gov/bills/sb26-189):
+- SB 24-205 ("Colorado Artificial Intelligence Act", 2024) never took
+  effect: SB 25B-004 (28 Aug 2025) delayed it to 30 June 2026, and
+  SB 26-189 (signed 14 May 2026) repealed and reenacted C.R.S. Title 6,
+  Article 1, Part 17 before that date arrived.
+- SB 26-189 regulates "covered automated decision-making technology"
+  (ADMT) used in consequential decisions. Substantive developer and
+  deployer duties apply on and after 1 January 2027 (section 6-1-1702(1)).
+- Duties: developer documentation to deployers (6-1-1702), three-year
+  record retention by developers (6-1-1702(4)) and deployers (6-1-1703),
+  consumer notice and post-adverse-outcome disclosure (6-1-1704),
+  consumer correction and meaningful human review and reconsideration
+  rights (6-1-1705), AG-only enforcement through the Colorado Consumer
+  Protection Act with a 60-day cure period that sunsets 1 Jan 2030 and
+  no private right of action (6-1-1706).
+- The algorithmic-discrimination duty of care and impact-assessment
+  regime of SB 24-205 was NOT reenacted.
+- Litigation context: xAI LLC v. Weiser (filed April 2026); DOJ
+  intervened; enforcement of the original Act was suspended by
+  agreement in April 2026. Whether that stay reaches SB 26-189 is
+  publicly unresolved (Norton Rose Fulbright, June 2026).
 """
 
 REGION = {
@@ -29,150 +41,150 @@ REGION = {
     "geo_placename": "Colorado",
 
     "status_cls": "replaced",
-    "status_text": "Replaced — SB 189 signed 14 May 2026",
+    "status_text": "Replaced — SB 26-189 signed 14 May 2026, duties from 1 Jan 2027",
 
-    "title_tag": "Colorado AI Regulation — SB 205 Repealed, SB 189 (Disclosure-Only) | Regula",
-    "title_html": 'Colorado — <span class="hl">Colorado AI Act</span> tracker',
+    "title_tag": "Colorado AI Regulation — SB 24-205 Repealed, SB 26-189 ADMT Law | Regula",
+    "title_html": 'Colorado — <span class="hl">ADMT law (SB 26-189)</span> tracker',
     "meta_description": (
-        "Colorado SB 24-205 (Colorado Artificial Intelligence Act) has been "
-        "repealed and replaced by SB 26-189, a disclosure-only measure signed "
-        "14 May 2026, effective 1 January 2027. Historical tracker preserved."
+        "Colorado SB 24-205 (Colorado Artificial Intelligence Act) was "
+        "repealed and replaced by SB 26-189, a disclosure-focused ADMT law "
+        "signed 14 May 2026 with duties from 1 January 2027, plus consumer "
+        "correction and human-review rights. Tracker and history."
     ),
     "meta_keywords": (
-        "Colorado AI Act, SB 24-205, SB 26-189, algorithmic discrimination, "
-        "disclosure AI, consequential decision, Colorado AG"
+        "Colorado AI Act, SB 24-205, SB 26-189, automated decision-making "
+        "technology, ADMT, consequential decision, Colorado AG, human review"
     ),
-    "og_title": "Colorado AI Regulation — SB 205 Repealed | Regula",
+    "og_title": "Colorado AI Regulation — SB 24-205 Repealed, SB 26-189 ADMT Law | Regula",
     "og_description": (
-        "SB 24-205 repealed and replaced by SB 26-189 (disclosure-only, "
-        "effective 1 January 2027). Historical content preserved."
+        "SB 24-205 repealed and replaced by SB 26-189: developer "
+        "documentation, consumer notice, correction and human-review "
+        "rights. Duties apply from 1 January 2027."
     ),
-    "twitter_title": "Colorado AI Regulation — SB 205 Repealed | Regula",
+    "twitter_title": "Colorado AI Regulation — SB 26-189 ADMT Law | Regula",
     "twitter_description": (
-        "SB 24-205 repealed. SB 26-189 is disclosure-only (1 Jan 2027)."
+        "SB 24-205 repealed. SB 26-189: disclosure-focused ADMT duties plus "
+        "consumer correction and human-review rights, from 1 Jan 2027."
     ),
 
-    "last_updated": "2026-06-11",
+    "last_updated": "2026-07-16",
     "published_time": "2026-04-08T00:00:00+00:00",
-    "modified_time": "2026-04-08T00:00:00+00:00",
+    "modified_time": "2026-07-16T00:00:00+00:00",
 
     "lede": (
         "Colorado was the first US state to pass a comprehensive, horizontal "
-        "AI statute. Senate Bill 24-205 — the Colorado Artificial Intelligence "
-        "Act — imposes duties on both developers and deployers of <em>high-risk "
-        "artificial intelligence systems</em> used to make <em>consequential "
-        "decisions</em>. After a special legislative session failed to reach a "
-        "broader compromise, Governor Polis signed SB 25B-004 on 28 August "
-        "2025, pushing the effective date from 1 February 2026 to <strong>30 "
-        "June 2026</strong>. The substance of the 2024 Act was not otherwise "
-        "amended. This page tracks what the statute actually requires, what "
-        "'reasonable care' looks like in practice, and what Regula can tell "
-        "you about your codebase today."
+        "AI statute — and the first to repeal one. Senate Bill 24-205, the "
+        "Colorado Artificial Intelligence Act, never took effect: its start "
+        "date was delayed to 30 June 2026 by SB 25B-004, and in May 2026 the "
+        "General Assembly <strong>repealed and reenacted</strong> the entire "
+        "framework as <strong>SB 26-189</strong>, a narrower law governing "
+        "<em>automated decision-making technology</em> (ADMT) used in "
+        "consequential decisions. Substantive duties apply on and after "
+        "<strong>1 January 2027</strong>. This page tracks what SB 26-189 "
+        "actually requires, the litigation that reshaped it, and what Regula "
+        "can tell you about your codebase today."
     ),
 
     "tracker_rows": [
         {
             "label": "Statute",
-            "value": "SB 24-205 (Colorado Artificial Intelligence Act), as amended by SB 25B-004",
+            "value": "SB 26-189 (Automated Decision-Making Technology), C.R.S. Title 6, Article 1, Part 17 — repeals and reenacts SB 24-205",
             "state": "verified",
         },
         {
-            "label": "Effective date",
-            "value": "30 June 2026 (delayed from 1 February 2026 by SB 25B-004)",
+            "label": "Signed",
+            "value": "14 May 2026 (Governor Polis)",
+            "state": "verified",
+        },
+        {
+            "label": "Duties apply",
+            "value": "On and after 1 January 2027 (section 6-1-1702(1))",
             "state": "verified",
         },
         {
             "label": "Scope",
-            "value": "High-risk AI systems used to make consequential decisions affecting Colorado consumers",
+            "value": "Covered ADMT that makes, or is a substantial factor in making, consequential decisions (education, employment, housing, financial services, insurance, healthcare, government services)",
             "state": "verified",
         },
         {
             "label": "Developer duties",
-            "value": "Reasonable care · technical documentation · public statement · notices to AG and deployers",
+            "value": "Documentation to deployers (intended uses, training-data categories, limitations, risks) · notice of material modifications · 3-year record retention (section 6-1-1702)",
             "state": "verified",
         },
         {
             "label": "Deployer duties",
-            "value": "Risk management policy · initial + annual impact assessments · consumer notices · website disclosure",
+            "value": "Consumer notice · post-adverse-outcome disclosure within 30 days · correction and human-review process · 3-year record retention (sections 6-1-1703 to 6-1-1705)",
+            "state": "verified",
+        },
+        {
+            "label": "Consumer rights",
+            "value": "Correction of inaccurate personal data · meaningful human review and reconsideration after adverse outcomes (section 6-1-1705)",
             "state": "verified",
         },
         {
             "label": "Enforcement",
-            "value": "Colorado Attorney General — exclusive civil enforcement, no private right of action",
+            "value": "Colorado Attorney General only, via the Colorado Consumer Protection Act · 60-day cure period (cure provision sunsets 1 Jan 2030) · no private right of action (section 6-1-1706)",
             "state": "verified",
         },
         {
-            "label": "Rebuttable presumption / affirmative defence",
-            "value": "Available to parties demonstrating compliance with a recognised AI risk management framework",
+            "label": "Not reenacted",
+            "value": "SB 24-205's algorithmic-discrimination duty of care, impact assessments, and risk management programme mandates",
             "state": "verified",
         },
         {
-            "label": "Implementing regulations",
-            "value": "Colorado AG rulemaking in progress — no final rules published as of 2026-04-08",
+            "label": "AG implementing rules",
+            "value": "Mandatory rules due on or before 1 January 2027 (post-adverse-outcome disclosures and section 6-1-1705 consumer-rights procedures); broader rulemaking discretionary (section 6-1-1706(5))",
+            "state": "pending",
+        },
+        {
+            "label": "Litigation",
+            "value": "xAI LLC v. Weiser (filed Apr 2026; DOJ intervened): enforcement of the original Act suspended by agreement in Apr 2026. Whether the stay reaches SB 26-189 is publicly unresolved",
             "state": "pending",
         },
     ],
 
     "sections_html": [
         {
-            "id": "what-the-statute-does",
-            "heading": "What the Colorado AI Act actually does",
+            "id": "what-happened",
+            "heading": "What happened to the Colorado AI Act",
             "body": """
-<p>The Colorado AI Act is the first US state statute to impose horizontal, sector-agnostic duties on developers and deployers of AI systems used in consequential decisions. It borrows structure from the EU AI Act but is narrower in two important ways: it applies only to <em>high-risk</em> systems (defined by consequential-decision use, not by Annex III category), and it enforces only through the Colorado Attorney General with no private right of action.</p>
-<p>The statute's core concepts:</p>
+<p>The short version: the first comprehensive US state AI law was repealed before it ever applied to anyone.</p>
+<ol>
+    <li><strong>May 2024</strong> — SB 24-205 signed: a horizontal statute imposing a reasonable-care duty against algorithmic discrimination, technical documentation, impact assessments, and consumer notices on developers and deployers of high-risk AI systems, effective 1 February 2026.</li>
+    <li><strong>28 August 2025</strong> — SB 25B-004 delayed the effective date to 30 June 2026 after a special session failed to reach a broader compromise.</li>
+    <li><strong>April 2026</strong> — xAI sued the Colorado Attorney General (<em>xAI LLC v. Weiser</em>) challenging the Act on First Amendment, due-process, and Commerce Clause grounds; the US Department of Justice intervened in support — the first time the federal government joined a challenge to a state AI law. Enforcement of the Act was suspended by agreement pending the litigation and any legislative amendment.</li>
+    <li><strong>14 May 2026</strong> — Governor Polis signed SB 26-189, which <strong>repeals and reenacts</strong> C.R.S. Title 6, Article 1, Part 17. The algorithmic-discrimination duty of care and the impact-assessment regime are gone; what remains is a notice, documentation, and consumer-rights framework for <em>automated decision-making technology</em> (ADMT), with duties applying on and after 1 January 2027.</li>
+</ol>
+<p>Whether the April 2026 enforcement stay carries over to SB 26-189 has not been publicly resolved; the passage of SB 26-189 mooted the core claims aimed at the discrimination provisions. We track this below.</p>
+""",
+        },
+        {
+            "id": "what-sb-189-requires",
+            "heading": "What SB 26-189 actually requires",
+            "body": """
+<p>SB 26-189 is disclosure-focused, but not disclosure-only: alongside notice and documentation duties it gives consumers enforceable correction and human-review rights. The framework, by section of the reenacted Part 17:</p>
 <ul>
-    <li><strong>High-risk artificial intelligence system</strong> — an AI system that, when deployed, makes or is a substantial factor in making a consequential decision. Narrow carve-outs exist for anti-fraud, cybersecurity, and certain generative AI uses.</li>
-    <li><strong>Consequential decision</strong> — a decision that has a material legal or similarly significant effect on access to, or the cost or terms of, one of the listed domains: education enrollment or opportunity, employment or employment opportunity, a financial or lending service, an essential government service, healthcare services, housing, insurance, or a legal service.</li>
-    <li><strong>Algorithmic discrimination</strong> — unlawful differential treatment or disparate impact on a protected class basis, as informed by existing federal and state civil rights law.</li>
-    <li><strong>Developer</strong> — a person doing business in Colorado that develops or intentionally and substantially modifies a high-risk AI system.</li>
-    <li><strong>Deployer</strong> — a person doing business in Colorado that uses a high-risk AI system to make a consequential decision.</li>
+    <li><strong>Section 6-1-1701 — Definitions.</strong> "Covered ADMT" is technology that uses computation to make, or be a substantial factor in making, a <em>consequential decision</em> concerning a consumer — a decision materially affecting education, employment, housing, financial services, insurance, healthcare, or government services.</li>
+    <li><strong>Section 6-1-1702 — Developer duties (on and after 1 January 2027).</strong> Developers must give deployers reasonably understandable documentation covering intended uses, categories of training data, known limitations, and risks; notify deployers of material modifications; and retain required records for at least three years (6-1-1702(4)).</li>
+    <li><strong>Section 6-1-1703 — Deployer record-keeping.</strong> Deployers must retain records demonstrating compliance for at least three years after each consequential decision.</li>
+    <li><strong>Section 6-1-1704 — Consumer notice.</strong> Deployers must give clear and conspicuous notice that ADMT is being used, and after an adverse outcome must provide a plain-language description of the ADMT's role within 30 days.</li>
+    <li><strong>Section 6-1-1705 — Consumer rights.</strong> Consumers can correct inaccurate personal data and request <em>meaningful human review and reconsideration</em> of adverse outcomes; deployers must designate trained individuals with authority to override ADMT decisions. The Attorney General must adopt implementing rules for these procedures on or before 1 January 2027.</li>
+    <li><strong>Section 6-1-1706 — Enforcement.</strong> Exclusive enforcement by the Colorado Attorney General through the Colorado Consumer Protection Act (civil penalties under the CCPA, C.R.S. section 6-1-112). A 60-day right-to-cure applies (the cure provision sunsets 1 January 2030). No new private right of action.</li>
 </ul>
-<p>The Act's design choice is important: <em>consequential-decision use</em>, not technical category, triggers coverage. A model trained for credit underwriting is only covered when actually deployed to make lending decisions for Colorado consumers. A general-purpose model is not itself in scope unless and until a deployer puts it to a consequential-decision use.</p>
-""",
-        },
-        {
-            "id": "developer-duties",
-            "heading": "Developer duties under SB 24-205",
-            "body": """
-<p>A developer of a high-risk AI system doing business in Colorado must, on and after 30 June 2026:</p>
-<ol>
-    <li><strong>Use reasonable care</strong> to protect consumers from any known or reasonably foreseeable risks of algorithmic discrimination arising from the intended and contracted uses of the system.</li>
-    <li><strong>Provide a statement disclosing</strong> the types of high-risk AI systems the developer has developed or substantially modified, and how the developer manages known or reasonably foreseeable risks of algorithmic discrimination.</li>
-    <li><strong>Make technical documentation available</strong> to deployers — including a general description of the system, its intended uses and benefits, reasonably foreseeable uses, and harmful or inappropriate uses; the type of data used to train the system and the limitations of the data; the purpose of the system, intended outputs, and how the outputs should be interpreted and used; measures taken to mitigate risks of algorithmic discrimination; and how the system should be used, not be used, and monitored when used to make a consequential decision.</li>
-    <li><strong>Notify the Colorado Attorney General and known deployers</strong> within 90 days of discovering that the developer's system has caused, or is reasonably likely to have caused, algorithmic discrimination.</li>
-    <li><strong>Publish a public statement</strong> summarising the types of high-risk systems the developer has developed or substantially modified that are currently available to deployers.</li>
-</ol>
-<p>Reasonable-care compliance is evidenced by following a recognised AI risk management framework (the statute explicitly references the NIST AI RMF and ISO/IEC 42001 as examples). Developers who document their adherence to such a framework qualify for a <strong>rebuttable presumption</strong> of reasonable care.</p>
-""",
-        },
-        {
-            "id": "deployer-duties",
-            "heading": "Deployer duties under SB 24-205",
-            "body": """
-<p>A deployer of a high-risk AI system doing business in Colorado must, on and after 30 June 2026:</p>
-<ol>
-    <li><strong>Implement a risk management policy and program</strong> to govern the deployer's use of the high-risk system. The policy must be reasonable considering the deployer's size and complexity and the nature of the system's use. Adherence to a recognised risk management framework (NIST AI RMF, ISO/IEC 42001) is again evidence of reasonableness.</li>
-    <li><strong>Complete an impact assessment</strong> before deploying the system, and annually thereafter, and within 90 days of any intentional and substantial modification. The assessment must cover the purpose and intended use, the categories of data used, the benefits, the known or reasonably foreseeable risks of algorithmic discrimination, the steps taken to mitigate those risks, and the post-deployment monitoring and safeguards.</li>
-    <li><strong>Notify consumers</strong> before a high-risk AI system is used to make a consequential decision about them, and provide a statement of the purpose of the system, the nature of the decision, and the deployer's contact information.</li>
-    <li><strong>Provide an adverse-decision notice</strong> where a consequential decision is adverse to the consumer, including the principal reasons for the decision, an opportunity to correct incorrect personal data, and an opportunity to appeal for human review.</li>
-    <li><strong>Publish a website disclosure</strong> summarising the types of high-risk AI systems the deployer currently deploys, how the deployer manages known or reasonably foreseeable risks of algorithmic discrimination, and the nature and source of information collected and used.</li>
-    <li><strong>Notify the Colorado Attorney General</strong> within 90 days of discovering algorithmic discrimination caused by the deployed system.</li>
-</ol>
-<p>Small deployers (those with fewer than 50 employees who do not use their own data to train the system) have a narrower set of obligations.</p>
+<p>What is <em>not</em> in SB 26-189 matters as much: the reasonable-care duty against algorithmic discrimination, mandatory impact assessments, and risk management programme requirements of SB 24-205 were not reenacted.</p>
 """,
         },
         {
             "id": "what-to-do-today",
             "heading": "What Colorado developers and deployers should do today",
             "body": """
-<p>The 30 June 2026 effective date gives organisations a short runway. The practical sequence:</p>
+<p>The 1 January 2027 date gives organisations a real runway, but the documentation duties reward starting early. The practical sequence:</p>
 <ol>
-    <li><strong>Map your Colorado exposure.</strong> If your system is used — or is contracted to be used — to make consequential decisions affecting Colorado consumers, you are in scope regardless of where you are headquartered. Enumerate each such deployment path.</li>
-    <li><strong>Adopt a recognised AI risk management framework.</strong> NIST AI RMF 1.0 and ISO/IEC 42001:2023 are explicitly referenced by the statute. Pick one and document your implementation. This is how you earn the rebuttable presumption of reasonable care.</li>
-    <li><strong>Produce developer technical documentation</strong> for every high-risk system. Regula's <code>regula docs</code> and <code>regula conform</code> commands generate Annex IV-style scaffolds that cover most of the Colorado disclosure categories — training data description, intended use, foreseeable misuse, mitigation measures, monitoring. The EU template goes further than Colorado requires, which is fine.</li>
-    <li><strong>Run the Article 14 oversight trace.</strong> Colorado's consumer adverse-decision notice requires an opportunity to appeal for human review. Regula's <code>regula oversight</code> command traces AI model outputs through call chains cross-file and flags where a human review gate is absent. This is the exact control Colorado expects.</li>
-    <li><strong>Stand up a deployer impact assessment process.</strong> The initial assessment must be complete before deployment on 30 June 2026. Annual thereafter. Regula's <code>regula gap</code> and <code>regula evidence-pack</code> commands provide inputs that map onto the statute's assessment categories.</li>
-    <li><strong>Monitor the Colorado Attorney General's rulemaking.</strong> The AG is empowered to issue implementing regulations. As of 2026-04-08 no final rules have been published. This page will update when they are.</li>
+    <li><strong>Map your Colorado exposure.</strong> If your system makes or substantially influences consequential decisions affecting Colorado consumers, you are in scope regardless of where you are headquartered. Enumerate each deployment path.</li>
+    <li><strong>Produce developer documentation.</strong> Section 6-1-1702's categories — intended uses, training-data categories, limitations, risks — overlap heavily with EU AI Act Annex IV technical documentation. Regula's <code>regula docs</code> and <code>regula conform</code> commands generate scaffolds covering most of them.</li>
+    <li><strong>Trace your human-review path.</strong> Section 6-1-1705's meaningful human review and reconsideration right requires a working override path. Regula's <code>regula oversight</code> command traces AI model outputs through call chains cross-file and flags where a human review gate is absent.</li>
+    <li><strong>Stand up record retention.</strong> Both developers and deployers face three-year retention duties. Decide now what "records reasonably necessary to demonstrate compliance" means for your stack.</li>
+    <li><strong>Watch the AG rulemaking.</strong> Mandatory implementing rules for post-adverse-outcome disclosures and consumer-rights procedures are due on or before 1 January 2027, and will define the notice formats that count.</li>
 </ol>
 """,
         },
@@ -180,19 +192,27 @@ REGION = {
             "id": "where-regula-fits",
             "heading": "Where Regula fits for Colorado teams",
             "body": """
-<p>Regula was built primarily against the EU AI Act, but the Colorado AI Act's developer and deployer categories map cleanly onto work Regula already does. Practical starting commands:</p>
+<p>Regula was built primarily against the EU AI Act, but SB 26-189's documentation and human-review concepts map onto work Regula already does. Practical starting commands:</p>
 <pre><code>pip install regula-ai
 
 regula discover .              # AI systems present in the project
-regula check .                 # Risk indicators across all frameworks
-regula gap --project .         # Gap assessment (reuses Art 9-15 structure)
-regula oversight .              # Cross-file human-review gate detection
+regula check . --jurisdictions eu,colorado   # Risk indicators + Colorado obligation mapping
+regula gap --project .         # Gap assessment (documentation coverage)
+regula oversight .             # Cross-file human-review gate detection
 regula docs .                  # Technical documentation scaffold
-regula conform .               # Evidence pack — maps to deployer impact assessment
+regula conform .               # Evidence pack
 regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.7)
 </code></pre>
-<p>The NIST AI RMF mapping that gets you the Colorado rebuttable presumption is already shipped in Regula's <code>references/framework_crosswalk.yaml</code>. A single <code>regula check</code> run reports findings against the EU AI Act, NIST AI RMF, ISO/IEC 42001, OWASP LLM Top 10, and the other frameworks Regula supports.</p>
-<p>What Regula does <em>not</em> do for Colorado: issue your consumer notices, track your deployer impact assessment history, or act as a compliance certificate. The statute is enforced by the Colorado AG against real organisations — Regula helps you produce the evidence, not the legal conclusion.</p>
+<p>Regula's Colorado jurisdiction config (<code>references/jurisdictions/colorado.yaml</code>) maps detected domain concepts (employment, credit, housing, insurance and others) to the specific Part 17 sections above.</p>
+<p>What Regula does <em>not</em> do for Colorado: issue your consumer notices, operate your human-review process, or act as a compliance certificate. The statute is enforced by the Colorado AG against real organisations — Regula helps you produce the evidence, not the legal conclusion.</p>
+""",
+        },
+        {
+            "id": "historical-sb-24-205",
+            "heading": "Historical: what SB 24-205 would have required",
+            "body": """
+<p><strong>The duties in this section were repealed by SB 26-189 before taking effect and do not apply.</strong> They are preserved because SB 24-205 shaped every subsequent US state AI bill, and because a future General Assembly could revisit the model.</p>
+<p>SB 24-205 would have required developers to use reasonable care to prevent algorithmic discrimination, publish statements about their high-risk systems, provide technical documentation, and notify the AG of discovered discrimination within 90 days. Deployers would have needed a risk management programme, pre-deployment and annual impact assessments, consumer notices, and website disclosures — with a rebuttable presumption of reasonable care for documented adherence to the NIST AI RMF or ISO/IEC 42001.</p>
 """,
         },
         {
@@ -201,10 +221,10 @@ regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.7)
             "body": """
 <p>This page will be updated as the Colorado landscape moves. Specifically we are watching for:</p>
 <ol>
-    <li><strong>Colorado Attorney General implementing rules</strong> under SB 24-205. The AG is empowered to issue regulations defining documentation formats, notice content, and risk management framework criteria. No final rules as of 2026-04-08.</li>
-    <li><strong>Further legislative amendments.</strong> SB 25B-004 was intended to be one of multiple corrective bills. Further amendment is expected before the 30 June 2026 effective date.</li>
-    <li><strong>Enforcement signals</strong> — the first AG complaint, consent decree, or public enforcement action under the Act.</li>
-    <li><strong>Other US state statutes</strong> following Colorado's lead. Texas (TRAIGA), California (SB 53 successors), and Connecticut have active AI legislation. We will add state pages where statutes are enacted.</li>
+    <li><strong>Colorado Attorney General implementing rules</strong> — mandatory rules for post-adverse-outcome disclosures and section 6-1-1705 consumer-rights procedures are due on or before 1 January 2027; broader clarifying rules are discretionary under section 6-1-1706(5). No rules published as of 2026-07-16.</li>
+    <li><strong><em>xAI LLC v. Weiser</em></strong> — whether the April 2026 enforcement stay is treated as reaching SB 26-189, and any ruling that affects the 1 January 2027 date.</li>
+    <li><strong>Federal preemption pressure</strong> — the DOJ AI Litigation Task Force's posture toward state AI laws generally.</li>
+    <li><strong>Enforcement signals</strong> — the first AG action under the reenacted Part 17.</li>
 </ol>
 <p>If you spot something we have missed, please <a href="https://github.com/kuzivaai/getregula/issues">open an issue</a>.</p>
 """,
@@ -213,97 +233,110 @@ regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.7)
 
     "faq": [
         {
-            "q": "When does the Colorado AI Act take effect?",
+            "q": "Is the Colorado AI Act (SB 24-205) in force?",
             "a": (
-                "30 June 2026. The original effective date of 1 February 2026 was "
-                "delayed by SB 25B-004, signed by Governor Polis on 28 August 2025. "
-                "The substance of the 2024 Act was not otherwise amended."
+                "No. SB 24-205 was repealed before it ever took effect. Its start "
+                "date was delayed to 30 June 2026 by SB 25B-004, and on 14 May 2026 "
+                "Governor Polis signed SB 26-189, which repealed and reenacted the "
+                "framework as a narrower ADMT law with duties applying on and after "
+                "1 January 2027."
             ),
         },
         {
-            "q": "Who does the Colorado AI Act apply to?",
+            "q": "What does SB 26-189 require?",
             "a": (
-                "Developers and deployers of high-risk AI systems doing business in "
-                "Colorado. 'High-risk' is defined by use — systems that make or are a "
-                "substantial factor in making a consequential decision affecting "
-                "Colorado consumers in education, employment, finance, essential "
-                "government services, healthcare, housing, insurance, or legal services."
+                "Developer documentation to deployers (intended uses, training-data "
+                "categories, limitations, risks), consumer notice that ADMT is used, "
+                "a plain-language explanation within 30 days after an adverse "
+                "outcome, consumer rights to correct inaccurate data and request "
+                "meaningful human review and reconsideration, and three-year record "
+                "retention for both developers and deployers. It is "
+                "disclosure-focused, but the human-review right is a substantive "
+                "process obligation, not just a notice."
             ),
         },
         {
-            "q": "What is a 'consequential decision' under the statute?",
+            "q": "What did SB 26-189 remove from Colorado law?",
             "a": (
-                "A decision that has a material legal or similarly significant effect "
-                "on access to, or the cost or terms of, education enrollment or "
-                "opportunity, employment or employment opportunity, a financial or "
-                "lending service, an essential government service, healthcare services, "
-                "housing, insurance, or a legal service. Narrow carve-outs exist for "
-                "anti-fraud, cybersecurity, and certain generative AI uses."
+                "The algorithmic-discrimination duty of care, mandatory impact "
+                "assessments, and risk management programme requirements of "
+                "SB 24-205 were not reenacted. The NIST AI RMF / ISO 42001 "
+                "rebuttable-presumption mechanism went with them."
             ),
         },
         {
-            "q": "Is there a private right of action under the Colorado AI Act?",
+            "q": "Who is covered by SB 26-189?",
             "a": (
-                "No. Enforcement is exclusive to the Colorado Attorney General. "
-                "Individuals harmed by algorithmic discrimination retain their rights "
-                "under existing federal and state civil rights statutes, but they "
-                "cannot sue under SB 24-205 directly."
+                "Developers and deployers of covered automated decision-making "
+                "technology — computation that makes, or is a substantial factor in "
+                "making, consequential decisions affecting Colorado consumers in "
+                "education, employment, housing, financial services, insurance, "
+                "healthcare, or government services (C.R.S. section 6-1-1701)."
             ),
         },
         {
-            "q": "Does the Colorado AI Act recognise a compliance safe harbour?",
+            "q": "Is there a private right of action under SB 26-189?",
             "a": (
-                "Yes — a rebuttable presumption of reasonable care is available to "
-                "parties who document adherence to a recognised AI risk management "
-                "framework. The statute explicitly references the NIST AI RMF and "
-                "ISO/IEC 42001 as examples. This is not an absolute defence; the "
-                "Attorney General can rebut it with evidence of actual algorithmic "
-                "discrimination."
+                "No. Enforcement is exclusive to the Colorado Attorney General "
+                "through the Colorado Consumer Protection Act, with a 60-day "
+                "right-to-cure that sunsets on 1 January 2030 (section 6-1-1706). "
+                "Consumers retain rights under other applicable law."
             ),
         },
         {
-            "q": "Does Regula cover Colorado AI Act obligations?",
+            "q": "Does the xAI lawsuit affect SB 26-189?",
             "a": (
-                "Partially. Regula's NIST AI RMF mapping, Article 14 cross-file "
-                "oversight trace, technical documentation generator, and gap "
-                "assessment all produce evidence that maps onto Colorado's developer "
-                "and deployer duties. Regula does not generate consumer notices, "
-                "track impact assessment history over time, or replace legal advice. "
-                "See the 'Where Regula fits' section above for practical commands."
+                "Partly unresolved. xAI LLC v. Weiser challenged the original "
+                "SB 24-205; the Department of Justice intervened and enforcement "
+                "of that Act was suspended by agreement in April 2026. SB 26-189's "
+                "passage mooted the claims aimed at the discrimination provisions, "
+                "but whether the stay reaches the reenacted law has not been "
+                "publicly resolved. We track this on this page."
+            ),
+        },
+        {
+            "q": "Does Regula cover SB 26-189 obligations?",
+            "a": (
+                "Partially. regula check --jurisdictions colorado maps detected "
+                "domain concepts to the Part 17 sections; the documentation "
+                "generator covers most section 6-1-1702 categories; and regula "
+                "oversight traces whether a human-review gate exists — the control "
+                "section 6-1-1705 expects. Regula does not generate consumer "
+                "notices, operate review processes, or replace legal advice."
             ),
         },
     ],
 
     "sources": [
         {
+            "title": "SB26-189 — Automated Decision-Making Technology (Colorado General Assembly)",
+            "note": "Bill page: signed 14 May 2026; repeals and reenacts the 2024 Act's provisions.",
+            "url": "https://leg.colorado.gov/bills/sb26-189",
+        },
+        {
+            "title": "SB 26-189 — signed act text",
+            "note": "The enacted text of C.R.S. Title 6, Article 1, Part 17 as reenacted (sections 6-1-1701 to 6-1-1706 cited on this page).",
+            "url": "https://leg.colorado.gov/bill_files/116489/download",
+        },
+        {
             "title": "SB 24-205 — Consumer Protections for Artificial Intelligence (Colorado General Assembly)",
-            "note": "The enacted text of the Colorado Artificial Intelligence Act.",
+            "note": "The repealed 2024 Colorado Artificial Intelligence Act (historical).",
             "url": "https://leg.colorado.gov/bills/sb24-205",
         },
         {
             "title": "SB 25B-004 — Increase Transparency for Algorithmic Systems Act",
-            "note": "The 2025 special-session amendment that delayed the effective date to 30 June 2026.",
+            "note": "The 2025 special-session amendment that delayed SB 24-205 to 30 June 2026 (historical).",
             "url": "https://leg.colorado.gov/bills/sb25b-004",
         },
         {
+            "title": "Colorado enacts revised AI law — Norton Rose Fulbright",
+            "note": "Legal summary of SB 26-189 and the xAI LLC v. Weiser enforcement-suspension agreement.",
+            "url": "https://www.nortonrosefulbright.com/en-us/knowledge/publications/18733d31/colorado-enacts-revised-ai-law",
+        },
+        {
             "title": "Colorado Attorney General — Office of the Attorney General",
-            "note": "Enforcement authority under the Colorado AI Act. Rulemaking portal and guidance will appear here.",
+            "note": "Enforcement authority under Part 17. Implementing rules due on or before 1 January 2027.",
             "url": "https://coag.gov/",
-        },
-        {
-            "title": "Enforcement of Colorado AI Act Delayed Until June 2026 — Hunton Andrews Kurth",
-            "note": "Primary-adjacent legal summary of SB 25B-004 and the substantive scope of the 2024 Act.",
-            "url": "https://www.hunton.com/privacy-and-cybersecurity-law-blog/enforcement-of-colorado-ai-act-delayed-until-june-2026",
-        },
-        {
-            "title": "NIST AI Risk Management Framework 1.0",
-            "note": "Explicitly referenced by SB 24-205 as a recognised framework for the reasonable-care rebuttable presumption.",
-            "url": "https://www.nist.gov/itl/ai-risk-management-framework",
-        },
-        {
-            "title": "ISO/IEC 42001:2023 — Artificial intelligence management system",
-            "note": "Also explicitly referenced by SB 24-205 as a recognised framework.",
-            "url": "https://www.iso.org/standard/81230.html",
         },
     ],
 }

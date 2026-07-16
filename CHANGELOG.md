@@ -11,6 +11,67 @@ Deep-audit remediation (8 July 2026), extended by the 10 July follow-up
 audit. Full findings and evidence in the maintainer's audit report;
 every fix below was verified by test.
 
+### Added (16 July)
+
+- **Consultant engagement metadata** — client-facing deliverables can
+  now carry engagement context (client, preparer, engagement
+  reference). Configure once per client project via the `engagement:`
+  section of `regula-policy.yaml`, or per run with `--client`,
+  `--prepared-by`, `--engagement-ref` on `regula report` and
+  `regula evidence-pack`. The executive summary renders the fields in
+  its header; the evidence-pack manifest records them inside the
+  signed content (optional block, spec §4.3 — unsigned manifests stay
+  byte-compatible when unconfigured). New `scripts/engagement.py` is
+  the single source of truth; 18 tests in `tests/test_engagement.py`.
+- **Consultant workflow guide** (`docs/consultant-guide.md`) —
+  engagement methodology from scoping through signed evidence pack,
+  including honest-positioning guidance and jurisdiction selection.
+- **Jurisdiction aliases `kr`/`co`** on `regula check --jurisdictions`
+  and `regula assess --jurisdiction`, matching the web assess tool's
+  `?j=kr`/`?j=co` codes so both surfaces share one vocabulary.
+- **Multi-jurisdiction card on the homepage** (EN/DE/PT-BR) — the
+  Korea + Colorado coverage shipped earlier was absent from the main
+  marketing surface.
+
+### Fixed (16 July)
+
+- **Colorado SB 26-189 characterisation corrected across every surface** —
+  "disclosure-only" overstated the law's narrowness: the signed act also
+  grants consumers correction and meaningful human-review rights
+  (§ 6-1-1705) and imposes 3-year record retention on developers and
+  deployers (§§ 6-1-1702(4), 6-1-1703). Reworded to "disclosure-focused"
+  with the rights named, in README, homepage cards (EN/DE/PT-BR),
+  llms.txt, consultant guide, regulations index, framework crosswalk,
+  CLI/framework-mapper fallback strings, and the regenerated Colorado
+  region page. Verified against the signed act text
+  (leg.colorado.gov/bill_files/116489/download).
+- **Region-page builder wrote to the repo root** — `build_regulations.py`
+  was never updated for the site/ IA restructure: output landed at the
+  repo root and generated canonicals/og:url/JSON-LD pointed at
+  pre-restructure URLs, so the shipped Colorado page had drifted from its
+  generator source (which still described repealed SB 24-205 duties as
+  live law). Builder now writes to `site/regions/`, emits `/regions/`
+  URLs, and `content/regulations/colorado.py` was rewritten for the
+  SB 26-189 world with §-level citations and the xAI v. Weiser
+  litigation watch note.
+- Colorado jurisdiction YAML precision: AG-rulemaking citation now points
+  at the mandatory-rules provisions (§ 6-1-1705(3)) rather than the
+  discretionary § 6-1-1706(5) power alone; the $20,000 penalty is
+  attributed to the CCPA (C.R.S. § 6-1-112); record retention cites both
+  § 6-1-1702(4) (developer) and § 6-1-1703 (deployer).
+- Homepage hero sub-line (EN/DE/PT-BR) no longer implies EU-only
+  coverage — it names the South Korea and Colorado mappings the scan
+  already performs.
+- `site/llms.txt` taught `--jurisdictions kr` before `kr` existed as an
+  alias; now documents the canonical names and aliases.
+- Removed dead `--jurisdictions` options `canada`, `singapore`, `oecd`:
+  they carried no crosswalk or domain data and produced a misleading
+  "has article-level crosswalk mapping" note. Canada's AIDA (Bill
+  C-27) died on prorogation on 6 January 2025 (verified against
+  LEGISinfo) with no successor bill.
+- Executive summary now HTML-escapes project names, finding fields,
+  and engagement values (scanned repositories are third-party input).
+
 ### Added (10 July)
 
 - **Positional project path on 20 more subcommands** — `regula conform

@@ -3,19 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets — see commit
+         0da1226 on site/index.html for the full diagnosis. TL;DR: external
+         CSS is render-blocking, so the browser's default white canvas shows
+         for hundreds of ms on cold loads. Inline critical CSS establishes the
+         dark theme immediately; `color-scheme: dark` hints the canvas colour
+         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         so they don't block first paint. <noscript> fallback for JS off. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
     <title>$title_tag</title>
     <meta name="description" content="$meta_description">
     <meta name="keywords" content="$meta_keywords">
     <meta name="author" content="Regula">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-    <link rel="canonical" href="https://getregula.com/$slug.html">
+    <link rel="canonical" href="https://getregula.com/regions/$slug.html">
 
     <meta name="geo.region" content="$geo_region">
     <meta name="geo.placename" content="$geo_placename">
 
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://getregula.com/$slug.html">
+    <meta property="og:url" content="https://getregula.com/regions/$slug.html">
     <meta property="og:title" content="$og_title">
     <meta property="og:description" content="$og_description">
     <meta property="og:image" content="https://getregula.com/og-image.png">
@@ -31,7 +53,7 @@
     <meta name="twitter:image" content="https://getregula.com/og-image.png">
 
     <link rel="alternate" hreflang="en" href="https://getregula.com/">
-    <link rel="alternate" hreflang="$hreflang_self" href="https://getregula.com/$slug.html">
+    <link rel="alternate" hreflang="$hreflang_self" href="https://getregula.com/regions/$slug.html">
     <link rel="alternate" hreflang="x-default" href="https://getregula.com/">
 
     <script type="application/ld+json">
@@ -45,9 +67,14 @@ $jsonld_faq
     </script>
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
-    <link rel="stylesheet" href="assets/fonts.css">
-    <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="assets/site.css">
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
+    </noscript>
     <style>
         .hub-hero { max-width: 880px; margin: 0 auto; padding: 80px 32px 48px; }
         .breadcrumb { font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin-bottom: 24px; }
