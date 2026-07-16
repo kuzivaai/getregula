@@ -387,11 +387,16 @@ def explain_classification(text: str, filepath: str = "<stdin>",
 
     # Timeline from obligations data
     obligations_data = _load_obligations()
-    timeline = obligations_data.get("timeline", {
-        "current_law": "2 August 2026",
-        "omnibus_proposed": {"annex_iii": "2 December 2027", "annex_i": "2 August 2028"},
-        "guidance": "Plan for August 2026 until Omnibus is formally enacted",
-    })
+    # Timeline derives from omnibus.py (single source for the OJ flip);
+    # the YAML reference's timeline block is documentation, not data —
+    # its keys never matched this consumer, so the old hardcoded
+    # fallback was silently always used.
+    from omnibus import ANNEX_III_PROSE, ANNEX_I_PROSE, ORIGINAL_PROSE, OMNIBUS_STATUS
+    timeline = {
+        "current_law": ORIGINAL_PROSE,
+        "omnibus_proposed": {"annex_iii": ANNEX_III_PROSE, "annex_i": ANNEX_I_PROSE},
+        "guidance": f"Omnibus status: {OMNIBUS_STATUS}",
+    }
 
     return {
         "classification": classification,
@@ -465,10 +470,14 @@ def format_explanation(result: dict, filepath: str = "<stdin>") -> str:
 
         # Timeline
         timeline = result.get("timeline", {})
-        current = timeline.get("current_law", "2 August 2026")
+        from omnibus import ANNEX_III_PROSE as _a3, ORIGINAL_PROSE as _orig, OMNIBUS_ENACTED as _enacted
+        current = timeline.get("current_law", _orig)
         omnibus = timeline.get("omnibus_proposed", {})
-        annex_iii = omnibus.get("annex_iii", "2 December 2027") if isinstance(omnibus, dict) else "2 December 2027"
-        lines.append(f"  Deadline: {current} (or {annex_iii} if Omnibus passes)")
+        annex_iii = omnibus.get("annex_iii", _a3) if isinstance(omnibus, dict) else _a3
+        if _enacted:
+            lines.append(f"  Deadline: {annex_iii} for Annex III (Omnibus in force)")
+        else:
+            lines.append(f"  Deadline: {current} (Annex III: {annex_iii} under the adopted Omnibus, pending OJ publication)")
         lines.append("")
 
     # Disclaimer
