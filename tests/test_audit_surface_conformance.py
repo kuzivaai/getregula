@@ -174,3 +174,88 @@ class TestProducersTagEvents:
             "script log_event() call without project_path= and without an "
             "allowlist justification:\n  " + "\n  ".join(offenders)
         )
+
+
+class TestReadPathsDoNotCreateDirectories:
+    """Reading a chain that does not exist must not create directories.
+    Before this guard, every query/verify against a project with no
+    chain left an empty projects/<slug>/ directory in the operator's
+    REAL store (27 were found there on 2026-07-16)."""
+
+    def test_query_and_verify_leave_no_trace(self, tmp_path, monkeypatch):
+        import sys as _sys
+        _sys.path.insert(0, str(SCRIPTS))
+        root = tmp_path / "pristine-store"
+        monkeypatch.setenv("REGULA_AUDIT_DIR", str(root))
+        from log_event import query_events, verify_chain, collect_audit_trail
+        ghost = tmp_path / "ghost_project"
+        ghost.mkdir()
+        assert query_events(project_path=str(ghost)) == []
+        valid, _ = verify_chain(project_path=str(ghost))
+        assert valid is True, "an absent chain is an empty valid chain"
+        data = collect_audit_trail(str(ghost))
+        assert data["event_count"] == 0
+        assert not root.exists(), (
+            "read-only audit access created directories in the store"
+        )
+
+
+class TestSecretRedaction:
+    """Secret values must never be persisted to the audit trail — it is
+    embedded in client-facing deliverables. The pre-tool hook only blocks
+    HIGH-confidence findings; anything else executes and is logged, so
+    the hooks must redact tool payloads before log_event.
+
+    NOTE: fake keys below are synthetic test fixtures (AGENTS.md)."""
+
+    def test_redact_secrets_replaces_known_pattern(self):
+        import sys as _sys
+        _sys.path.insert(0, str(SCRIPTS))
+        from credential_check import redact_secrets
+        fake_key = "sk-" + "a" * 30
+        text = f"api_client = OpenAI(api_key='{fake_key}')"
+        out = redact_secrets(text)
+        assert fake_key not in out
+        assert "[REDACTED:openai_api_key]" in out
+
+    def test_redact_secrets_handles_empty_and_clean_text(self):
+        import sys as _sys
+        _sys.path.insert(0, str(SCRIPTS))
+        from credential_check import redact_secrets
+        assert redact_secrets("") == ""
+        clean = "def add(a, b): return a + b"
+        assert redact_secrets(clean) == clean
+
+    def test_post_hook_never_persists_secret_values(self, tmp_path):
+        import json
+        import os
+        import subprocess
+        import sys as _sys
+        if not (HOOKS / "post_tool_use.py").exists():
+            import pytest
+            pytest.skip("hooks/ not present (local dev file, not tracked in git)")
+        audit_dir = tmp_path / "audit"
+        proj = tmp_path / "redactproj"
+        proj.mkdir()
+        fake_key = "sk-" + "b" * 30
+        payload = {
+            "tool_name": "Bash",
+            "tool_input": {"command": f"export OPENAI_API_KEY={fake_key}"},
+            "tool_response": {"stdout": f"key was {fake_key}"},
+            "session_id": "s-redact",
+            "cwd": str(proj),
+        }
+        env = os.environ.copy()
+        env["REGULA_AUDIT_DIR"] = str(audit_dir)
+        env.pop("REGULA_PROJECT_DIR", None)
+        r = subprocess.run(
+            [_sys.executable, str(HOOKS / "post_tool_use.py")],
+            input=json.dumps(payload), capture_output=True, text=True,
+            env=env, timeout=30, cwd=str(tmp_path),
+        )
+        assert r.returncode == 0
+        chain_files = list(audit_dir.rglob("audit_*.jsonl"))
+        assert chain_files, "hook should have logged an event"
+        logged = "\n".join(f.read_text(encoding="utf-8") for f in chain_files)
+        assert fake_key not in logged, "raw secret value reached the audit trail"
+        assert "[REDACTED:openai_api_key]" in logged

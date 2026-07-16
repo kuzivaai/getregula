@@ -312,7 +312,7 @@ def _generate_summary(name, now, findings, gap, plan):
 | 02-gap-assessment.json | Per-article compliance gap scores and evidence |
 | 03-annex-iv-draft.md | Auto-generated Annex IV technical documentation |
 | 04-dependency-report.json | AI dependency pinning scores and supply chain analysis |
-| 05-audit-trail.json | Hash-chained audit events with integrity verification |
+| 05-audit-trail.json | Hash-chained audit events for this project only (project-scoped) with integrity verification |
 | 06-remediation-plan.md | Prioritised action items with effort estimates |
 | manifest.json | SHA-256 hashes of all files for tamper detection |
 
