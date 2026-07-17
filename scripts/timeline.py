@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — enforcement-date prose names prohibited and high-risk obligations per deadline
 #!/usr/bin/env python3
 """
 Regula Timeline — EU AI Act Enforcement Dates

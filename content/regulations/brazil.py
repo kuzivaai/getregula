@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — sourced regulatory prose for the Brazil page quotes the law's own risk vocabulary
 """Brazil — LGPD & Marco Legal da IA coverage page.
 
 Data file consumed by scripts/build_regulations.py to generate

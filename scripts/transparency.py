@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# regula-ignore
+# regula-ignore — Article 50 disclosure generator carries chatbot and deepfake vocabulary as template copy
 """
 Regula Transparency Disclosure Generator (Article 50)
 

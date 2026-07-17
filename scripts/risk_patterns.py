@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — the pattern definitions necessarily contain every expression they detect
 """EU AI Act risk pattern definitions for Regula.
 
 Pure configuration — no functions, no logic. Contains all regex patterns

@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — article explanations quote Article 5 and Annex III practice descriptions verbatim from the Regulation
 """EU AI Act article explanations - verified against Regulation (EU) 2024/1689.
 
 This file documents Article 5's prohibited-practice vocabulary (e.g.

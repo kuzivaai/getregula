@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — sourced regulatory prose for the Korea page quotes the Act's own risk vocabulary
 """South Korea — AI Basic Act coverage page.
 
 Data file consumed by scripts/build_regulations.py to generate

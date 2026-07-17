@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — domain gating keyword lists ARE the employment, justice, and other domain vocabulary being gated
 """
 Domain-Aware Confidence Scoring for Regula.
 

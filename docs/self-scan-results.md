@@ -1,9 +1,10 @@
 # Regula Self-Scan Results
 
-**Date:** 16 July 2026
+**Date:** 17 July 2026 (first refreshed 16 July; re-run after the
+suppression-rationale fixes landed)
 **Version:** 1.7.5 (installed from PyPI)
 **Command:** `regula check .` and `regula check . --domain employment`
-**Commit:** `b142fe2` (main)
+**Commit:** main, 17 July 2026 (16 Jul scan basis was `b142fe2`)
 
 This file is a transparency artefact — Regula run against its own
 codebase. Reproduce any time with the commands above. If the results
@@ -28,9 +29,11 @@ new findings and an explanation of what changed.
 | WARN tier | 0 |
 | INFO tier | 0 |
 
-Verdict: **NO AI DETECTED**. The scan also prints a warning that 19
-suppressions carry no rationale comment — an honest gap in our own
-hygiene, reproducible with `regula check --audit-suppressions`.
+Verdict: **NO AI DETECTED**. When this file was first refreshed on
+16 July the scan also warned that 19 suppressions carried no rationale
+comment; all 27 now carry one (fixed 17 July 2026 — verify with
+`regula check --audit-suppressions`, which reports zero
+"NO RATIONALE" rows).
 
 ## Summary — employment domain activated (`--domain employment`)
 
@@ -83,9 +86,9 @@ skip-set evolution).
   reference to the bundled high-risk example (see assessment above).
 - The suppressed count (27) is dominated by the detection engine
   itself — a scanner necessarily contains the patterns it looks for.
-  19 of those suppressions lack a rationale comment; fixing that is
-  tracked work, and the warning the tool prints about it applies to
-  us like anyone else.
+  Every suppression carries a same-line rationale
+  (`# regula-ignore — <reason>`), auditable with
+  `regula check --audit-suppressions`.
 
 ---
 

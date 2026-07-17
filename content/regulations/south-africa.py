@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — sourced regulatory prose for the SA page quotes the draft policy's own risk vocabulary
 """South Africa — draft National AI Policy coverage page.
 
 Data file consumed by scripts/build_regulations.py to generate

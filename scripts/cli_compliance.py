@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — compliance command copy names articles and risk categories in help text and headings
 """Compliance commands for Regula CLI.
 
 NOTE: Do NOT add 'from cli import ...' at module level.

@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — explainable-classification engine maps findings to article explanations containing practice vocabulary
 """
 Regula Explainable Classification Engine
 

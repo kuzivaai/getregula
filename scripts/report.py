@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# regula-ignore
+# regula-ignore — report copy names the tiers, articles, and practices it reports on
 """
 Regula Report Generator
 

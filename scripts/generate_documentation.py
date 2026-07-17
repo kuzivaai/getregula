@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# regula-ignore
+# regula-ignore — Annex IV documentation templates embed article and risk-domain vocabulary as generated prose, not AI practice
 """
 Regula Documentation Generator
 
