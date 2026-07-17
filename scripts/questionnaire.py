@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — risk questionnaire prose describes risk domains to elicit context from the user
 #!/usr/bin/env python3
 """
 Regula Questionnaire — Context-Driven Risk Assessment

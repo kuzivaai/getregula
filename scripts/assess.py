@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — applicability questionnaire prose describes Annex III use cases to ask the user about
 #!/usr/bin/env python3
 """
 Regula Assess -- EU AI Act Applicability Check

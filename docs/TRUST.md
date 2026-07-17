@@ -334,6 +334,7 @@ are tracked in a public delta log (`content/regulations/delta-log/`).
 | Pre-commit hook source | `hooks/pre_tool_use.py` |
 | MCP server source | `scripts/mcp_server.py` |
 | Benchmark corpus | `benchmarks/labels.json` |
+| Self-scan (Regula run on its own repo) | [`docs/self-scan-results.md`](self-scan-results.md) |
 | Primary research citations | `references/FETCH.md` |
 | Changelog | `CHANGELOG.md` |
 | Known gaps and limitations | `docs/what-regula-does-not-do.md` |

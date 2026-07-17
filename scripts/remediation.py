@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# regula-ignore
+# regula-ignore — fix suggestions describe the risky practices they remediate
 """
 Regula Remediation Engine - Generates specific fix suggestions for findings.
 

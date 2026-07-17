@@ -7,6 +7,12 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Governance
+- Every `# regula-ignore` suppression in the codebase (27) now carries a
+  same-line rationale; `regula check --audit-suppressions` reports zero
+  "NO RATIONALE" rows on the repo itself (was 19). The self-scan
+  transparency document is updated accordingly.
+
 ### Fixed
 - `regula plan` task and footer deadline lines carry the adopted-Omnibus
   context again ("2 August 2026 (Omnibus: 2 December 2027 for Annex III,

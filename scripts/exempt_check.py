@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — Article 6(3) decision tree describes the high-risk use cases it screens for
 #!/usr/bin/env python3
 """
 Regula Exempt — Article 6(3) self-assessment decision tree

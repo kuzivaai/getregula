@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — governance news aggregator keyword lists name AI-risk topics to filter feeds, not to implement them
 #!/usr/bin/env python3
 """
 Regula Governance Feed — AI Governance News Aggregator

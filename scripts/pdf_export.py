@@ -189,7 +189,7 @@ def render_to_pdf(html_content: str, fallback_to_html: bool = True) -> bytes:
         )
 
 
-# regula-ignore
+# regula-ignore — HTML report template embeds tier and category copy, same class as report.py
 # ---------------------------------------------------------------------------
 # Compliance HTML Report — editorial/institutional aesthetic for DPOs/auditors
 # ---------------------------------------------------------------------------

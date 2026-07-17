@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — domain auto-detection maps import names to risk domains, so the domain vocabulary is the lookup data
 """
 Project-level import fingerprinting for domain auto-detection.
 
