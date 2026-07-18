@@ -35,11 +35,9 @@ REGION = {
     "title_tag": "South Korea AI Basic Act Tracker \u2014 Regula",
     "title_html": 'South Korea \u2014 <span class="hl">AI Basic Act</span> tracker',
     "meta_description": (
-        "Live tracker of South Korea's Act on the Development of Artificial "
-        "Intelligence and Establishment of Trust (AI Basic Act). In force since "
-        "22 January 2026. High-impact AI, high-performance AI (10^26 FLOPs), "
-        "generative AI watermarking, and what Regula can tell you about your "
-        "codebase today."
+        "Live tracker of South Korea's AI Basic Act, in force since "
+        "22 January 2026: high-impact AI duties, the 10^26 FLOPs threshold, "
+        "and watermarking rules."
     ),
     "meta_keywords": (
         "South Korea AI Basic Act, AI Framework Act Korea, high-impact AI, "

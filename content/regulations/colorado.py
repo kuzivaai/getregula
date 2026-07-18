@@ -43,13 +43,12 @@ REGION = {
     "status_cls": "replaced",
     "status_text": "Replaced — SB 26-189 signed 14 May 2026, duties from 1 Jan 2027",
 
-    "title_tag": "Colorado AI Regulation — SB 24-205 Repealed, SB 26-189 ADMT Law | Regula",
+    "title_tag": "Colorado AI Regulation: SB 26-189 ADMT Law Tracker | Regula",
     "title_html": 'Colorado — <span class="hl">ADMT law (SB 26-189)</span> tracker',
     "meta_description": (
-        "Colorado SB 24-205 (Colorado Artificial Intelligence Act) was "
-        "repealed and replaced by SB 26-189, a disclosure-focused ADMT law "
-        "signed 14 May 2026 with duties from 1 January 2027, plus consumer "
-        "correction and human-review rights. Tracker and history."
+        "Colorado repealed SB 24-205; SB 26-189, signed 14 May 2026, takes "
+        "over with duties from 1 January 2027. Tracker: ADMT duties, "
+        "consumer rights, full history."
     ),
     "meta_keywords": (
         "Colorado AI Act, SB 24-205, SB 26-189, automated decision-making "
