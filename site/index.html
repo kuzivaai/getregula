@@ -632,12 +632,6 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <p>SHA-256 manifest + Ed25519 signing + RFC 3161 timestamps. Prove when the assessment was produced and that it has not been altered.</p>
             <code style="font-size:11px;color:#9898b4;">regula conform --sign --timestamp .</code>
         </div>
-        <div class="card-base art-card">
-            <div class="tag tag-purple">AI BOM</div>
-            <h3>AI Bill of Materials</h3>
-            <p>CycloneDX 1.7 AI-BOMs with model provenance, GPAI tier annotations per Art 51&ndash;55, and detected training datasets.</p>
-            <code style="font-size:11px;color:#9898b4;">regula sbom --ai-bom .</code>
-        </div>
     </div>
 
     <div class="feature-category">Integrate</div>
@@ -653,18 +647,6 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <h3>12 framework mappings</h3>
             <p>Each AI Act article is mapped to ISO 42001, NIST AI RMF, SOC 2, OWASP, and 8 other framework obligations. One scan surfaces requirements across all 12 frameworks.</p>
             <code style="font-size:11px;color:#9898b4;">regula gap .</code>
-        </div>
-        <div class="card-base art-card">
-            <div class="tag tag-purple">API</div>
-            <h3>REST API for GRC tools</h3>
-            <p>Seven HTTP endpoints that return the same JSON envelope as the CLI. Plug Regula into ServiceNow, Jira, or your own GRC platform.</p>
-            <code style="font-size:11px;color:#9898b4;">regula api-server --port 8487</code>
-        </div>
-        <div class="card-base art-card">
-            <div class="tag tag-blue">Dashboard</div>
-            <h3>Web dashboard</h3>
-            <p>Governance posture at a glance. Risk distribution, compliance gaps per article, interactive self-assessment, and export to JSON/SARIF/HTML. No terminal needed.</p>
-            <code style="font-size:11px;color:#9898b4;">localhost:8487/v1/dashboard</code>
         </div>
     </div>
 
