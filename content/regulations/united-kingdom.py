@@ -23,10 +23,8 @@ REGION = {
     "title_tag": "UK AI Regulation Tracker — ICO, DSIT, principles-based | Regula",
     "title_html": 'United Kingdom — <span class="hl">AI regulation</span> tracker',
     "meta_description": (
-        "Live tracker of the UK's principles-based, sector-specific AI regulation. "
-        "ICO data protection guidance, DSIT AI policy, Regula's framework crosswalk "
-        "to UK DSIT/ICO principles, and what UK organisations should do today — "
-        "regardless of whether a dedicated AI Act materialises."
+        "Live tracker of the UK's principles-based AI regulation: ICO "
+        "guidance, DSIT policy, and Regula's crosswalk to UK principles."
     ),
     "meta_keywords": (
         "UK AI regulation, ICO AI guidance, DSIT AI policy, UK AI Bill, "
