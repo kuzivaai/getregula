@@ -7,6 +7,24 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- Version is single-sourced from `scripts/constants.py` (R1): pyproject
+  declares `dynamic = ["version"]` and reads the same attribute at
+  build time; the release workflow's tag assertion reads it too. The
+  two-place bump that produced a mis-versioned rehearsal wheel on
+  16 July 2026 is no longer possible, and the source-of-truth test now
+  fails if a literal version reappears in pyproject.
+- Site metadata pass (18 Jul 2026): every page title ≤65 and meta
+  description ≤165 rendered characters (trims on 3 region sources,
+  4 guides, 2 blog posts, both PT-BR pages); pricing and sample-report
+  gained Open Graph/Twitter cards and WebPage+Breadcrumb JSON-LD they
+  lacked.
+- Homepage motion choreography (shared CSS, all locales): revealed
+  sections stagger their children's entrance and the hero plays a
+  one-time load sequence. No copy changes; noscript/JS-failure
+  behaviour unchanged (children are only animated after the existing
+  reveal fires) and prefers-reduced-motion disables all of it.
+
 ### Governance
 - Every `# regula-ignore` suppression in the codebase (27) now carries a
   same-line rationale; `regula check --audit-suppressions` reports zero

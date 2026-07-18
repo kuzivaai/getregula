@@ -1216,6 +1216,27 @@ button.audience-fwd {
     opacity: 1;
     transform: translateY(0);
 }
+/* Staggered children: once a section is revealed, its direct children rise
+   in sequence instead of arriving as one block. Children are never hidden
+   before .visible (the parent's opacity handles that), so the JS-failure
+   and noscript behaviour is unchanged. `backwards` keeps each child at the
+   keyframe start during its delay. */
+@keyframes reveal-rise {
+    from { opacity: 0; transform: translateY(12px); }
+}
+.reveal.visible > * { animation: reveal-rise 0.45s ease backwards; }
+.reveal.visible > *:nth-child(2) { animation-delay: 0.07s; }
+.reveal.visible > *:nth-child(3) { animation-delay: 0.14s; }
+.reveal.visible > *:nth-child(4) { animation-delay: 0.21s; }
+.reveal.visible > *:nth-child(5) { animation-delay: 0.28s; }
+.reveal.visible > *:nth-child(n+6) { animation-delay: 0.34s; }
+/* One-time hero entrance on load — same rise, no JS involved. */
+.hero-text > * { animation: reveal-rise 0.5s ease backwards; }
+.hero-text > *:nth-child(2) { animation-delay: 0.08s; }
+.hero-text > *:nth-child(3) { animation-delay: 0.16s; }
+.hero-text > *:nth-child(4) { animation-delay: 0.24s; }
+.hero-text > *:nth-child(n+5) { animation-delay: 0.3s; }
+.hero .term-wrap { animation: reveal-rise 0.55s ease 0.2s backwards; }
 /* Fallback: if JS fails, don't hide content */
 @media (scripting: none) {
     .reveal { opacity: 1; transform: none; }
@@ -1223,6 +1244,7 @@ button.audience-fwd {
 /* Also show for prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
     .reveal { opacity: 1; transform: none; transition: none; }
+    .reveal.visible > *, .hero-text > *, .hero .term-wrap { animation: none; }
 }
 
 /* ===== FOOT LEGAL STRONG ===== */
