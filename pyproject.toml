@@ -4,7 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "regula-ai"
-version = "1.7.5"
+# Version is single-sourced from scripts/constants.py (R1: the 16 Jul 2026
+# release rehearsal built a mis-versioned wheel because pyproject and
+# constants had to be bumped in lockstep and only one was).
+dynamic = ["version"]
 description = "AI governance risk indication for code — EU AI Act, South Korea, Colorado. Multi-jurisdiction compliance at the point of creation"
 readme = "README.md"
 license = "(Apache-2.0 OR EUPL-1.2) AND LicenseRef-DRL-1.1"
@@ -64,6 +67,9 @@ Changelog = "https://github.com/kuzivaai/getregula/blob/main/CHANGELOG.md"
 
 [project.scripts]
 regula = "scripts.cli:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "scripts.constants.VERSION"}
 
 [tool.setuptools.packages.find]
 # Explicitly include only packages that are part of the public CLI surface.

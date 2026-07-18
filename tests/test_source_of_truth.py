@@ -199,9 +199,20 @@ def test_current_version_declared_consistently_everywhere():
     root = Path(__file__).parent.parent
 
     # (file, regex with one capture group for the declared version)
+    # pyproject must NOT declare a literal version: it is dynamic, read
+    # from scripts/constants.py at build time (R1 single-sourcing).
+    pyproject = (root / "pyproject.toml").read_text(encoding="utf-8")
+    assert 'dynamic = ["version"]' in pyproject, (
+        "pyproject.toml must declare version as dynamic (single-sourced "
+        "from scripts/constants.py)"
+    )
+    assert not re.search(r'^version\s*=\s*"', pyproject, re.M), (
+        "pyproject.toml must not carry a literal [project] version — "
+        "scripts/constants.py is the single source"
+    )
+
     semver = r"([0-9]+(?:\.[0-9]+)*)"
     declarations = [
-        ("pyproject.toml", r'^version\s*=\s*"([^"]+)"'),
         ("CITATION.cff", r'^version:\s*"([^"]+)"'),
         ("CITATION.cff", rf'compliance scanner for code \(v{semver}\)'),
         ("mcp-server.json", r'"version":\s*"([^"]+)"'),
