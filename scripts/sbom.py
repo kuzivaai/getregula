@@ -751,10 +751,10 @@ def generate_sbom(project_path: str, project_name: str | None = None,
 
     # ── Assemble BOM ──────────────────────────────────────────────
     # CycloneDX 1.7 (October 2025, ECMA-424 2nd Edition) is the current
-    # standard. v1.7 adds AI/ML-specific fields including model card
-    # extensions for packaging, serialization behaviour, structural
-    # modifications (quantization, adapters), and runtime probes — see
-    # https://cyclonedx.org/capabilities/mlbom/
+    # standard. ML-BOM / model-card support was introduced in v1.5
+    # (June 2023); v1.7 headlines CBOM, citations, and IP fields. We emit
+    # specVersion 1.7 (the current schema) and use the ML-BOM model-card
+    # fields it inherits — see https://cyclonedx.org/capabilities/mlbom/
     # Regula's existing field set is a subset of v1.7's allowed schema,
     # so the spec bump is additive: existing consumers continue to work,
     # and v1.7-aware tooling sees the correct version string.
