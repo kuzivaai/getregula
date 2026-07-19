@@ -1,8 +1,9 @@
 # Support Service Level Agreement
 
-> **Document version:** 1.0
-> **Last reviewed:** 2026-04-24
-> **Regula version:** 1.7.1
+> **Document version:** 1.1
+> **Last reviewed:** 2026-07-19
+> **Regula version:** 1.7.5
+> **See also:** [`CONTINUITY.md`](CONTINUITY.md) — key-person / bus-factor risk
 > **Maintainer:** Kuziva AI Ltd
 
 Regula is an open-source EU AI Act compliance CLI tool maintained by a
