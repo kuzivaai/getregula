@@ -111,7 +111,7 @@ than assert a nearest concept:
 
 - **No fabricated IRIs, structurally.** `scripts/dpv_export.py` references DPV
   concepts by name and resolves them through a checked-in vocabulary snapshot
-  (`data/dpv_aiact_terms.json`, 170 terms). At import it validates that every
+  (`scripts/dpv_data/dpv_aiact_terms.json`, 170 terms). At import it validates that every
   concept it can emit exists in that snapshot and raises otherwise — so the
   module cannot emit an IRI that is not in the real vocabulary.
 - **No drift.** Tests (`tests/test_dpv_export.py`) pin the mapping to two

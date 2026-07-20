@@ -15,7 +15,7 @@ Honesty guards baked into this module (do not remove):
   never as "the AI Act standard" or "standards-compliant".
 - **Every emitted IRI is a real vocabulary term.** The mapping tables below
   reference term identifiers by name; `_validate_mappings()` checks each one
-  against the checked-in vocabulary snapshot (`data/dpv_aiact_terms.json`) at
+  against the checked-in vocabulary snapshot (`scripts/dpv_data/dpv_aiact_terms.json`) at
   import time and raises if any name is not in the vocabulary. It is therefore
   structurally impossible for this module to emit a fabricated IRI.
 - **Gaps are stated, never invented.** Where Regula detects something the
@@ -62,7 +62,7 @@ DPV_AIACT_VOCAB_IRI = "https://w3id.org/dpv/legal/eu/aiact"
 REGULA_NS = "https://getregula.com/ns/dpv/"
 REGULA_PREFIX = "regula"
 
-_VOCAB_PATH = Path(__file__).parent.parent / "data" / "dpv_aiact_terms.json"
+_VOCAB_PATH = Path(__file__).parent / "dpv_data" / "dpv_aiact_terms.json"
 
 
 # ---------------------------------------------------------------------------
@@ -75,7 +75,7 @@ _VOCAB_CACHE = None
 def load_vocabulary() -> dict:
     """Load the checked-in authoritative DPV-AIAct term snapshot.
 
-    Returns the parsed data/dpv_aiact_terms.json. Cached after first read.
+    Returns the parsed scripts/dpv_data/dpv_aiact_terms.json. Cached after first read.
     """
     global _VOCAB_CACHE
     if _VOCAB_CACHE is None:
@@ -110,7 +110,7 @@ def term_label(term: str) -> str:
 #
 # Each mapping is verified against the DPV term DEFINITION (not just its name)
 # — see analysis/research/2026-07/tech-frontier.md and the definitions in
-# data/dpv_aiact_terms.json. Term NAMES only; term_iri() resolves and validates
+# scripts/dpv_data/dpv_aiact_terms.json. Term NAMES only; term_iri() resolves and validates
 # them against the snapshot.
 # ---------------------------------------------------------------------------
 
@@ -178,7 +178,7 @@ _A5_LETTER_RE = re.compile(r"5\(1\)\(([a-z])\)")
 #   precision "non_eu"    -> a non-EU classification (Korea / Colorado). No
 #                            DPV-AIAct (EU) concept applies; reported honestly
 #                            as out-of-scope for this vocabulary.
-# Verified DPV definitions (data/dpv_aiact_terms.json):
+# Verified DPV definitions (scripts/dpv_data/dpv_aiact_terms.json):
 #   AnnexIII-2  critical infrastructure (single point, no sub-letter)
 #   AnnexIII-4-b decisions affecting terms of work (worker management)
 #   AnnexIII-5-b creditworthiness / credit score

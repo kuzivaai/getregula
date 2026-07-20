@@ -9,7 +9,7 @@ authors:
 repository-code: "https://github.com/kuzivaai/getregula"
 url: "https://getregula.com"
 license: Apache-2.0
-version: "1.7.6"
+version: "1.7.7"
 date-released: "2026-07-16"
 keywords:
   - eu-ai-act
@@ -38,7 +38,7 @@ abstract: >-
   reproducible methodology; see docs/benchmarks/PRECISION_RECALL_2026_04.md.
 preferred-citation:
   type: software
-  title: "Regula: EU AI Act compliance scanner for code (v1.7.6)"
+  title: "Regula: EU AI Act compliance scanner for code (v1.7.7)"
   authors:
     - family-names: Muzondo
       given-names: Kuziva

@@ -5,7 +5,7 @@ Two classes of test here:
 
 1. Unit/behaviour tests of the mapping and serialisation.
 2. ANTI-DRIFT tests that pin the exporter to two sources of truth:
-   - the checked-in vocabulary snapshot (data/dpv_aiact_terms.json): every IRI
+   - the checked-in vocabulary snapshot (scripts/dpv_data/dpv_aiact_terms.json): every IRI
      the exporter can emit must exist in the real vocabulary; and
    - scripts/risk_patterns.py: every high-risk category string and every
      prohibited-practice article code the classifier can emit must have a

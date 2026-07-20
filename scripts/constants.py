@@ -13,7 +13,7 @@ Regula to claim "8 languages" while actually scanning fewer.
 __all__ = ["VERSION", "CODE_EXTENSIONS", "SKIP_DIRS", "MODEL_EXTENSIONS", "OPT_IN_CATEGORIES",
            "MAX_FILE_SIZE_BYTES", "MAX_CLASSIFY_CHARS"]
 
-VERSION = "1.7.6"
+VERSION = "1.7.7"
 
 # Threat model (Phase 5, 2026-07-13): a scanned repository is untrusted input
 # (e.g. a third-party PR scanned in CI). Two controls close verified gaps:

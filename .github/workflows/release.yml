@@ -204,6 +204,14 @@ jobs:
       - name: "Smoke-test: regula demo"
         run: regula demo
 
+      # Confirm scripts/dpv_data/dpv_aiact_terms.json is packaged: `regula dpv`
+      # loads it at import and fails closed without it. 1.7.6 shipped this file
+      # unpackaged (repo-root data/), breaking `regula dpv` on install.
+      - name: "Smoke-test: regula dpv"
+        run: |
+          mkdir -p /tmp/dpvsmoke && printf 'x = 1\n' > /tmp/dpvsmoke/a.py
+          regula dpv --project /tmp/dpvsmoke -n smoke | python3 -c "import json,sys; json.load(sys.stdin)['@graph']; print('regula dpv OK')"
+
       # Print attestation verification instructions so release notes and
       # security-conscious users know how to validate the provenance of
       # the published wheel.

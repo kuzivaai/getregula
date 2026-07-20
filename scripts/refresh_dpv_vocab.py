@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # regula-ignore
 """
-Refresh the checked-in DPV-AIAct vocabulary snapshot (data/dpv_aiact_terms.json)
+Refresh the checked-in DPV-AIAct vocabulary snapshot (scripts/dpv_data/dpv_aiact_terms.json)
 from the upstream DPVCG source, and report term drift.
 
 This is a DEVELOPER tool, run manually — it is NOT part of any scan path and
@@ -33,7 +33,7 @@ SOURCE_CSV = (
 )
 CANONICAL_URL = "https://w3c-cg.github.io/dpv/2.3/legal/eu/aiact/"
 NAMESPACE = "https://w3id.org/dpv/legal/eu/aiact#"
-SNAPSHOT_PATH = Path(__file__).parent.parent / "data" / "dpv_aiact_terms.json"
+SNAPSHOT_PATH = Path(__file__).parent / "dpv_data" / "dpv_aiact_terms.json"
 
 
 def fetch_terms(url: str = SOURCE_CSV) -> dict:
