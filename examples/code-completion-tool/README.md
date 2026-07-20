@@ -10,7 +10,7 @@ to see what a "clean" scan looks like.
 regula check examples/code-completion-tool
 ```
 
-Expected output (verified against Regula v1.7.5 on 2026-07-16):
+Expected output (verified against Regula v1.7.6 on 2026-07-20):
 
 ```
 Regula Scan: examples/code-completion-tool

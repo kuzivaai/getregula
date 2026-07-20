@@ -7,6 +7,8 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.7.6] - 2026-07-20
+
 ### Added
 - **DPV-AIAct machine-readable export** (`regula dpv`, and
   `regula evidence-pack --dpv`). Emits the risk indication as JSON-LD tagged
@@ -31,6 +33,19 @@ This project uses [Semantic Versioning](https://semver.org/).
   classification.
 
 ### Changed
+- **Homepage cognitive-load reduction (all locales):** the dense
+  market-comparison section (3-card grid + 10-row table) is now progressive
+  disclosure — a native `<details>` collapsed by default, reusing the existing
+  translated heading as its summary (zero new prose; content stays in the DOM,
+  SEO-safe; language-neutral `+`/`−` affordance). Grounded in the July 2026
+  UX/IA research (NN/g cognitive load + scanning; move dense, non-decision
+  content off the main scroll). Verified in-browser across EN/DE/PT-BR.
+- **Documentation index (`docs/README.md`):** the tracked user-facing docs are
+  now signposted by the four Diátaxis types (tutorials / how-to / reference /
+  explanation), linked from the top-level README.
+- **Accessibility (WCAG 2.2 AA):** `scroll-padding-top` on `html` so the sticky
+  nav no longer obscures keyboard-focused or anchor-linked content
+  (SC 2.4.11 Focus Not Obscured).
 - Version is single-sourced from `scripts/constants.py` (R1): pyproject
   declares `dynamic = ["version"]` and reads the same attribute at
   build time; the release workflow's tag assertion reads it too. The

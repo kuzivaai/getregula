@@ -99,4 +99,4 @@ Use this template to generate EU AI Act compliant technical documentation for hi
 ---
 
 _Template based on EU AI Act (Regulation 2024/1689) Annex IV_
-_For use with Regula v1.7.5_
+_For use with Regula v1.7.6_
