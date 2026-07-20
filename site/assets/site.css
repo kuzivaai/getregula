@@ -1356,6 +1356,21 @@ button.audience-fwd {
 .faq details[open] summary::after { content: '\2212'; }
 .faq details p { margin: 14px 0 0; font-size: 0.875rem; color: var(--text-2); line-height: 1.7; }
 
+/* ===== COLLAPSIBLE DEPTH SECTION (progressive disclosure) =====
+   Dense, non-decision-critical sections (market comparison, guides index)
+   collapse by default to cut first-visit cognitive load
+   (analysis/research/2026-07/ux-ia.md rec #1). Content stays in the DOM
+   (SEO-safe); native <details> = keyboard-operable, no JS. The +/- marker is
+   language-neutral so the shared stylesheet works across all locales. */
+.sec-disclose { max-width: 1200px; margin: 0 auto; padding: var(--s10) var(--s7); }
+.sec-disclose > summary { cursor: pointer; list-style: none; display: flex; align-items: baseline; gap: var(--s4); }
+.sec-disclose > summary::-webkit-details-marker { display: none; }
+.sec-disclose > summary .sec-head { margin-bottom: 0; }
+.sec-disclose > summary::after { content: '+'; margin-left: auto; align-self: center; color: var(--text-faint); font-size: 1.5rem; font-weight: 400; line-height: 1; }
+.sec-disclose[open] > summary::after { content: '\2212'; }
+.sec-disclose > summary:hover .sec-head { color: var(--accent); }
+.sec-disclose-body { margin-top: var(--s6); }
+
 /* ===== SOURCES BOX ===== */
 .sources { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 24px 28px; }
 .sources h3 { font-size: var(--fs-md); margin-top: 0; margin-bottom: 14px; }
