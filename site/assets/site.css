@@ -15,7 +15,10 @@
 
 /* ===== RESET ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; overflow-x: hidden; }
+/* scroll-padding-top clears the 56px sticky .nav so anchor targets and
+   keyboard-focused elements are never hidden behind it (WCAG 2.2 AA 2.4.11
+   Focus Not Obscured; also fixes in-page anchor jumps landing under the nav). */
+html { scroll-behavior: smooth; overflow-x: hidden; scroll-padding-top: 72px; }
 
 /* ===== DESIGN TOKENS (CSS custom properties) ===== */
 :root {
