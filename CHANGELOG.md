@@ -7,6 +7,29 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- **DPV-AIAct machine-readable export** (`regula dpv`, and
+  `regula evidence-pack --dpv`). Emits the risk indication as JSON-LD tagged
+  with concept IRIs from the **DPVCG EU-AIAct vocabulary** (the W3C Data
+  Privacy Vocabularies and Controls Community Group's "EU-AIAct" extension,
+  namespace `https://w3id.org/dpv/legal/eu/aiact#`), so RDF/GRC tooling can
+  ingest a scan result without Regula. Risk tiers map to `RiskLevel*`
+  concepts, Article 5 practices to `ProhibitedAISystem-A5-1-*`, and Annex III
+  categories to `HighRiskAISystem-AnnexIII-*` / `-A6-1`. Honesty is enforced
+  in code: the vocabulary is a W3C **Community Group report, not a ratified
+  Standard** (the output says "aligned to", never "standard"); every emitted
+  IRI is validated at load against a checked-in vocabulary snapshot
+  (`data/dpv_aiact_terms.json`, 170 terms) so a fabricated IRI cannot ship;
+  and genuine gaps are stated, not invented — Article 5(1)(i) (the Digital
+  Omnibus CSAM/NCII prohibition, absent from the vocabulary) and non-EU
+  findings (Korea AI Basic Act, Colorado SB 26-189) are reported as
+  out-of-scope rather than forced into an EU concept. The evidence-pack
+  artefact (`09-dpv-aiact.jsonld`) is off by default, keeping the manifest
+  byte-identical to prior releases. Anti-drift tests pin the mapping to both
+  the vocabulary snapshot and `scripts/risk_patterns.py`. Refresh the snapshot
+  with `scripts/refresh_dpv_vocab.py`. This is risk indication, not
+  classification.
+
 ### Changed
 - Version is single-sourced from `scripts/constants.py` (R1): pyproject
   declares `dynamic = ["version"]` and reads the same attribute at

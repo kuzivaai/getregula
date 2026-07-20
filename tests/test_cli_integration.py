@@ -366,6 +366,19 @@ def test_sbom():
     assert rc == 0
 
 
+def test_dpv():
+    """regula dpv — emits valid DPV-AIAct JSON-LD with the honest disclaimer."""
+    import json as _json
+    rc, out, err = run_cli("dpv", "--project", "tests/fixtures/sample_high_risk",
+                           "-n", "SampleHR")
+    assert rc == 0
+    doc = _json.loads(out)
+    assert doc["@context"]["eu-aiact"] == "https://w3id.org/dpv/legal/eu/aiact#"
+    scan = doc["@graph"][0]
+    assert scan["type"] == "regula:ScanResult"
+    assert "Community Group" in _json.dumps(scan)
+
+
 def test_handoff_garak(tmp_path):
     """regula handoff garak — write to tmp --output so we do not mutate
     the committed fixture directory. `regula handoff` defaults to
