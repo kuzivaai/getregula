@@ -2,7 +2,7 @@
 
 > **Document version:** 1.1
 > **Last reviewed:** 2026-07-19
-> **Regula version:** 1.7.6
+> **Regula version:** 1.7.7
 > **See also:** [`CONTINUITY.md`](CONTINUITY.md) — key-person / bus-factor risk
 > **Maintainer:** Kuziva AI Ltd
 

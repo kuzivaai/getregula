@@ -7,6 +7,18 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.7.7] - 2026-07-20
+
+### Fixed
+- **`regula dpv` failed on `pip install` (packaging).** The DPV vocabulary
+  snapshot lived at repo-root `data/`, which is not included in the wheel, so
+  `regula dpv` raised `FileNotFoundError` for every installed user (the 1.7.6
+  release CI smoke-tested `self-test`/`demo` but not `dpv`). The snapshot moved
+  to `scripts/dpv_data/dpv_aiact_terms.json` (packaged like `scripts/bias_data`)
+  and is now declared in `[tool.setuptools.package-data]`. Verified by building
+  the wheel, confirming the file is inside it, and running `regula dpv` in a
+  clean-room install. The release workflow now also smoke-tests `regula dpv`.
+
 ## [1.7.6] - 2026-07-20
 
 ### Added
@@ -21,7 +33,7 @@ This project uses [Semantic Versioning](https://semver.org/).
   in code: the vocabulary is a W3C **Community Group report, not a ratified
   Standard** (the output says "aligned to", never "standard"); every emitted
   IRI is validated at load against a checked-in vocabulary snapshot
-  (`data/dpv_aiact_terms.json`, 170 terms) so a fabricated IRI cannot ship;
+  (`scripts/dpv_data/dpv_aiact_terms.json`, 170 terms) so a fabricated IRI cannot ship;
   and genuine gaps are stated, not invented — Article 5(1)(i) (the Digital
   Omnibus CSAM/NCII prohibition, absent from the vocabulary) and non-EU
   findings (Korea AI Basic Act, Colorado SB 26-189) are reported as
