@@ -12,7 +12,7 @@ regula check examples/customer-chatbot --scope all
 (`--scope all` includes example-provenance findings, which the default
 production scope deliberately excludes — see `examples/README.md`.)
 
-Expected output (captured against Regula v1.7.5 on 2026-07-16):
+Expected output (captured against Regula v1.7.6 on 2026-07-20):
 
 ```
 Regula Scan: examples/customer-chatbot
