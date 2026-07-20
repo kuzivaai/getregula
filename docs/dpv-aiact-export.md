@@ -122,6 +122,11 @@ than assert a nearest concept:
   the upstream vocabulary and reports term drift; `--write` updates the
   snapshot. This is the only networked part of the subsystem and is a manual
   developer step — the scanner and exporter are zero-network.
+- **Valid, offline-expandable JSON-LD.** The `@context` is fully inline (no
+  remote context reference), so any conformant JSON-LD processor can expand the
+  document and convert it to RDF triples with no network access — the concept
+  and predicate IRIs resolve into the `https://w3id.org/dpv/legal/eu/aiact#`
+  namespace.
 
 ## The `regula:` namespace
 

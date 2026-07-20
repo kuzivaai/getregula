@@ -723,7 +723,7 @@ def verify_facts() -> int:
             # Check that the canonical number appears in the file in the
             # expected context (near the fact name or unit word).
             # This catches cases where someone changes the code but not the docs.
-            # We search for common patterns like "419 patterns", "61 commands",
+            # We search for common patterns like "419 patterns", "62 commands",
             # "12 frameworks", "8 languages".
             unit_patterns = {
                 "tier_regexes": rf"(?<!\d){actual_str}\s*(?:pattern|regex|risk\s+pattern)",
