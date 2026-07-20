@@ -95,7 +95,7 @@ The `--scope all` flag is needed because Regula's default scope (`production`) s
 
 See [`examples/`](examples/) for runnable reference projects covering each EU AI Act risk tier, or walk through the full 10-minute evaluation journey in [`examples/cv-screening-app/`](examples/cv-screening-app/) — install, scan, plan, gap, conform, verify, handoff to red-team tooling.
 
-For a deeper first-time-user walk-through (policy tuning, CI integration, baselining) see [`docs/QUICKSTART.md`](docs/QUICKSTART.md).
+For a deeper first-time-user walk-through (policy tuning, CI integration, baselining) see [`docs/QUICKSTART.md`](docs/QUICKSTART.md). The full documentation is indexed by type (tutorials / how-to / reference / explanation) in [`docs/README.md`](docs/README.md).
 
 ### CI/CD
 

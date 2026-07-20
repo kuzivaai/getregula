@@ -62,5 +62,5 @@ Background, context, and trade-offs.
 
 ---
 
-*Internal review and research notes live under [`../analysis/`](../analysis/),
-outside this user-facing docs tree.*
+*Internal review, research, and planning notes are kept outside this
+user-facing docs tree and are not part of the published repository.*
