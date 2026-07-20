@@ -681,10 +681,10 @@ def verify_facts() -> int:
 
     canonical = {
         "419": ("tier_regexes", facts["counts"]["patterns"]["tier_regexes"]),
-        "61": ("commands", facts["counts"]["commands"]),
+        "62": ("commands", facts["counts"]["commands"]),
         "12": ("frameworks", facts["counts"]["frameworks"]),
         "8": ("languages", facts["counts"]["languages"]),
-        "2686": ("tests", facts["counts"]["tests"]["total_collected"]),
+        "2725": ("tests", facts["counts"]["tests"]["total_collected"]),
     }
 
     # Files to check (relative to repo root) — includes deployed site pages

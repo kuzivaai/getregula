@@ -112,6 +112,7 @@ def cmd_evidence_pack(args) -> None:
             output_dir=args.output,
             project_name=project_name,
             runtime_system_id=getattr(args, "runtime", None),
+            include_dpv=getattr(args, "dpv", False),
             sign=sign_requested,
             signing_key_path=signing_key_path,
             timestamp=timestamp_requested,
@@ -192,6 +193,28 @@ def cmd_sbom(args) -> None:
         Path(args.output).parent.mkdir(parents=True, exist_ok=True)
         Path(args.output).write_text(content, encoding="utf-8")
         print(f"SBOM written to {args.output}", file=sys.stderr)
+    else:
+        print(content)
+
+
+def cmd_dpv(args) -> None:
+    """Export risk indication as DPV-AIAct JSON-LD.
+
+    Aligned to the DPVCG EU-AIAct vocabulary (a W3C Community Group report,
+    not a ratified W3C Standard). This is risk indication, not classification.
+    """
+    from cli import _validate_path
+
+    project = getattr(args, "project_path_positional", None) or args.project
+    if project != ".":
+        _validate_path(project)
+    from dpv_export import generate_dpv_export, format_dpv_jsonld
+    doc = generate_dpv_export(project, project_name=getattr(args, "name", None))
+    content = format_dpv_jsonld(doc)
+    if args.output:
+        Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.output).write_text(content, encoding="utf-8")
+        print(f"DPV-AIAct export written to {args.output}", file=sys.stderr)
     else:
         print(content)
 

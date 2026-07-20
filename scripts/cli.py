@@ -730,7 +730,7 @@ Environment variables (override defaults when CLI flag not provided):
 from cli_scan import cmd_check, cmd_classify, cmd_discover, cmd_guardrails, cmd_gdpr
 from cli_report import (
     cmd_report, cmd_evidence_pack, cmd_sbom, cmd_benchmark,
-    cmd_inventory, cmd_badge, cmd_doc_audit, cmd_aibom,
+    cmd_inventory, cmd_badge, cmd_doc_audit, cmd_aibom, cmd_dpv,
 )
 from cli_compliance import (
     cmd_comply, cmd_compliance, cmd_conform, cmd_gap, cmd_exempt,
@@ -1255,6 +1255,11 @@ def _build_subparsers(subparsers):
                             help="Package output as a self-verifying .regula-evidence.zip")
     p_evidence.add_argument("--runtime", metavar="SYSTEM_ID",
                             help="Include runtime monitoring logs for SYSTEM_ID")
+    p_evidence.add_argument("--dpv", action="store_true",
+                            help="Include an optional 09-dpv-aiact.jsonld artifact: "
+                                 "the risk indication as JSON-LD tagged with DPVCG "
+                                 "EU-AIAct vocabulary IRIs. Off by default (keeps the "
+                                 "manifest byte-identical to prior releases).")
     p_evidence.add_argument(
         "--sign",
         action="store_true",
@@ -1463,6 +1468,19 @@ def _build_subparsers(subparsers):
                          metavar="path", help="Project path (same as --project)")
     p_aibom.add_argument("--format", "-f", choices=["text", "json", "cyclonedx", "markdown"], default="text")
     p_aibom.set_defaults(func=cmd_aibom)
+
+    # --- dpv ---
+    p_dpv = subparsers.add_parser(
+        "dpv",
+        help="Export risk indication as DPV-AIAct JSON-LD (aligned to the "
+             "DPVCG EU-AIAct vocabulary — a W3C Community Group report, not a "
+             "ratified standard)")
+    p_dpv.add_argument("--project", "-p", default=".")
+    p_dpv.add_argument("project_path_positional", nargs="?", default=None,
+                       metavar="path", help="Project path (same as --project)")
+    p_dpv.add_argument("--name", "-n", help="Name for the scanned system")
+    p_dpv.add_argument("--output", "-o", help="Output file path (default: stdout)")
+    p_dpv.set_defaults(func=cmd_dpv)
 
     # --- agent ---
     p_agent = subparsers.add_parser("agent", help="Monitor agentic AI sessions for risk patterns — analyses Claude Code audit logs or MCP config files")

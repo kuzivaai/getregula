@@ -1,0 +1,864 @@
+{
+  "_comment": "Authoritative snapshot of the DPVCG EU-AIAct vocabulary term set. Used by scripts/dpv_export.py (via load_vocabulary) and by tests/test_dpv_export.py to guarantee every IRI Regula emits exists in the real vocabulary. This is a W3C Community Group report, NOT a ratified W3C Standard. Regenerate with scripts/refresh_dpv_vocab.py.",
+  "vocabulary": "DPVCG EU-AIAct extension",
+  "standard_status": "W3C Community Group report (not a ratified W3C Standard)",
+  "dpv_version": "2.3",
+  "namespace": "https://w3id.org/dpv/legal/eu/aiact#",
+  "namespace_prefix": "eu-aiact",
+  "canonical_url": "https://w3c-cg.github.io/dpv/2.3/legal/eu/aiact/",
+  "source_serialisation": "https://raw.githubusercontent.com/w3c/dpv/master/2.3/legal/eu/aiact/eu-aiact.csv",
+  "retrieved": "2026-07-20",
+  "term_count": 170,
+  "terms": {
+    "AIActComplianceUnknown": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AIActComplianceUnknown",
+      "type": "class",
+      "label": "AI Act Compliance Unknown"
+    },
+    "AIActCompliant": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AIActCompliant",
+      "type": "class",
+      "label": "AI Act Compliant"
+    },
+    "AIActLawfulness": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AIActLawfulness",
+      "type": "class",
+      "label": "AI Act Lawfulness"
+    },
+    "AIActNonCompliant": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AIActNonCompliant",
+      "type": "class",
+      "label": "AI Act Non-compliant"
+    },
+    "AIDeployer": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AIDeployer",
+      "type": "class",
+      "label": "AI Deployer"
+    },
+    "AIDistributor": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AIDistributor",
+      "type": "class",
+      "label": "AI Distributor"
+    },
+    "AIImporter": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AIImporter",
+      "type": "class",
+      "label": "AI Importer"
+    },
+    "AILiteracy": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AILiteracy",
+      "type": "class",
+      "label": "AI Literacy"
+    },
+    "AIOffice": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AIOffice",
+      "type": "class",
+      "label": "Artificial Intelligence Office"
+    },
+    "AIOperator": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AIOperator",
+      "type": "class",
+      "label": "AI Operator"
+    },
+    "AIProductManufacturer": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AIProductManufacturer",
+      "type": "class",
+      "label": "AI Product Manufacturer"
+    },
+    "AIProvider": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AIProvider",
+      "type": "class",
+      "label": "AI Provider"
+    },
+    "AIRegulatorySandbox": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AIRegulatorySandbox",
+      "type": "class",
+      "label": "AI Regulatory Sandbox"
+    },
+    "AISystem": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AISystem",
+      "type": "class",
+      "label": "AI System"
+    },
+    "AISystemPerformance": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AISystemPerformance",
+      "type": "class",
+      "label": "AI System Performance"
+    },
+    "AsylumSector": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AsylumSector",
+      "type": "class",
+      "label": "Asylum Sector"
+    },
+    "AuthorisedRepresentative": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AuthorisedRepresentative",
+      "type": "class",
+      "label": "Authorised Representative"
+    },
+    "AvailableOnEUMarket": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AvailableOnEUMarket",
+      "type": "class",
+      "label": "Available on EU Market"
+    },
+    "AvailableOnMarket": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AvailableOnMarket",
+      "type": "class",
+      "label": "Available on Market"
+    },
+    "AvailableOnNonEUMarket": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#AvailableOnNonEUMarket",
+      "type": "class",
+      "label": "Available on Non-EU Market"
+    },
+    "BiometricCategorisation": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#BiometricCategorisation",
+      "type": "class",
+      "label": "Biometric Categorisation"
+    },
+    "BiometricCategorisationSystem": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#BiometricCategorisationSystem",
+      "type": "class",
+      "label": "Biometric Categorisation System"
+    },
+    "BiometricData": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#BiometricData",
+      "type": "class",
+      "label": "Biometric Data"
+    },
+    "BiometricIdentification": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#BiometricIdentification",
+      "type": "class",
+      "label": "Biometric Identification"
+    },
+    "BiometricVerification": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#BiometricVerification",
+      "type": "class",
+      "label": "Biometric Verification"
+    },
+    "BorderControlSector": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#BorderControlSector",
+      "type": "class",
+      "label": "Border Control Sector"
+    },
+    "CEMarking": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#CEMarking",
+      "type": "class",
+      "label": "CE Marking"
+    },
+    "ChangeCategory": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ChangeCategory",
+      "type": "class",
+      "label": "Change Category"
+    },
+    "ChangeDescription": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ChangeDescription",
+      "type": "class",
+      "label": "Change Description"
+    },
+    "CommonSpecification": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#CommonSpecification",
+      "type": "class",
+      "label": "Common Specification"
+    },
+    "ConformityAssessment": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ConformityAssessment",
+      "type": "class",
+      "label": "Conformity Assessment"
+    },
+    "ConformityAssessmentBody": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ConformityAssessmentBody",
+      "type": "class",
+      "label": "Conformity Assessment Body"
+    },
+    "CriticalInfrastructureSector": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#CriticalInfrastructureSector",
+      "type": "class",
+      "label": "Critical Infrastructure Sector"
+    },
+    "DeepFakeGeneration": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#DeepFakeGeneration",
+      "type": "class",
+      "label": "Deep Fake Generation"
+    },
+    "DemocraticProcessSector": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#DemocraticProcessSector",
+      "type": "class",
+      "label": "Democratic Process Sector"
+    },
+    "DeployerHumanOversightMeasure": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#DeployerHumanOversightMeasure",
+      "type": "class",
+      "label": "Human Oversight Measure by Deployer"
+    },
+    "DownstreamAIProvider": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#DownstreamAIProvider",
+      "type": "class",
+      "label": "Downstream AI Provider"
+    },
+    "EUDeclarationOfConformity": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#EUDeclarationOfConformity",
+      "type": "class",
+      "label": "EU Declaration Of Conformity"
+    },
+    "EducationSector": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#EducationSector",
+      "type": "class",
+      "label": "Education Sector"
+    },
+    "EmotionRecognition": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#EmotionRecognition",
+      "type": "class",
+      "label": "Emotion Recognition"
+    },
+    "EmotionRecognitionSystem": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#EmotionRecognitionSystem",
+      "type": "class",
+      "label": "Emotion Recognition System"
+    },
+    "EmploymentSector": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#EmploymentSector",
+      "type": "class",
+      "label": "Employment Sector"
+    },
+    "FRIA": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#FRIA",
+      "type": "class",
+      "label": "Fundamental Rights Impact Assessment"
+    },
+    "GPAIModel": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#GPAIModel",
+      "type": "class",
+      "label": "General Purpose AI Model"
+    },
+    "GPAISystem": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#GPAISystem",
+      "type": "class",
+      "label": "General Purpose AI System"
+    },
+    "HighImpactCapabilityGPAIModel": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighImpactCapabilityGPAIModel",
+      "type": "class",
+      "label": "High-Impact Capability in General Purpose AI Models"
+    },
+    "HighRiskAIAssessment": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAIAssessment",
+      "type": "class",
+      "label": "High Risk AI Assessment"
+    },
+    "HighRiskAISystem": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem",
+      "type": "class",
+      "label": "High Risk AI System"
+    },
+    "HighRiskAISystem-A6-1": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-A6-1",
+      "type": "class",
+      "label": "High Risk AI System per Article 6(1)"
+    },
+    "HighRiskAISystem-A6-2": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-A6-2",
+      "type": "class",
+      "label": "High Risk AI System per Article 6(2)"
+    },
+    "HighRiskAISystem-AnnexI-1": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-1",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(1)"
+    },
+    "HighRiskAISystem-AnnexI-10": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-10",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(10)"
+    },
+    "HighRiskAISystem-AnnexI-11": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-11",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(11)"
+    },
+    "HighRiskAISystem-AnnexI-12": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-12",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(12)"
+    },
+    "HighRiskAISystem-AnnexI-13": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-13",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(13)"
+    },
+    "HighRiskAISystem-AnnexI-14": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-14",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(14)"
+    },
+    "HighRiskAISystem-AnnexI-15": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-15",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(15)"
+    },
+    "HighRiskAISystem-AnnexI-16": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-16",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(16)"
+    },
+    "HighRiskAISystem-AnnexI-17": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-17",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(17)"
+    },
+    "HighRiskAISystem-AnnexI-18": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-18",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(18)"
+    },
+    "HighRiskAISystem-AnnexI-19": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-19",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(19)"
+    },
+    "HighRiskAISystem-AnnexI-2": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-2",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(2)"
+    },
+    "HighRiskAISystem-AnnexI-20": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-20",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(20)"
+    },
+    "HighRiskAISystem-AnnexI-3": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-3",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(3)"
+    },
+    "HighRiskAISystem-AnnexI-4": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-4",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(4)"
+    },
+    "HighRiskAISystem-AnnexI-5": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-5",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(5)"
+    },
+    "HighRiskAISystem-AnnexI-6": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-6",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(6)"
+    },
+    "HighRiskAISystem-AnnexI-7": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-7",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(7)"
+    },
+    "HighRiskAISystem-AnnexI-8": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-8",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(8)"
+    },
+    "HighRiskAISystem-AnnexI-9": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexI-9",
+      "type": "class",
+      "label": "High-Risk AI System - Annex I(9)"
+    },
+    "HighRiskAISystem-AnnexIII-1-a": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-1-a",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(1a)"
+    },
+    "HighRiskAISystem-AnnexIII-1-b": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-1-b",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(1b)"
+    },
+    "HighRiskAISystem-AnnexIII-1-c": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-1-c",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(1c)"
+    },
+    "HighRiskAISystem-AnnexIII-2": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-2",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(2)"
+    },
+    "HighRiskAISystem-AnnexIII-3-a": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-3-a",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(3a)"
+    },
+    "HighRiskAISystem-AnnexIII-3-b": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-3-b",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(3b)"
+    },
+    "HighRiskAISystem-AnnexIII-3-c": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-3-c",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(3c)"
+    },
+    "HighRiskAISystem-AnnexIII-3-d": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-3-d",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(3d)"
+    },
+    "HighRiskAISystem-AnnexIII-4-a": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-4-a",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(4a)"
+    },
+    "HighRiskAISystem-AnnexIII-4-b": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-4-b",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(4b)"
+    },
+    "HighRiskAISystem-AnnexIII-5-a": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-5-a",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(5a)"
+    },
+    "HighRiskAISystem-AnnexIII-5-b": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-5-b",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(5b)"
+    },
+    "HighRiskAISystem-AnnexIII-5-c": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-5-c",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(5c)"
+    },
+    "HighRiskAISystem-AnnexIII-5-d": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-5-d",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(5d)"
+    },
+    "HighRiskAISystem-AnnexIII-6-a": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-6-a",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(6a)"
+    },
+    "HighRiskAISystem-AnnexIII-6-b": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-6-b",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(6b)"
+    },
+    "HighRiskAISystem-AnnexIII-6-c": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-6-c",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(6c)"
+    },
+    "HighRiskAISystem-AnnexIII-6-d": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-6-d",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(6d)"
+    },
+    "HighRiskAISystem-AnnexIII-6-e": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-6-e",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(6e)"
+    },
+    "HighRiskAISystem-AnnexIII-7-a": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-7-a",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(7a)"
+    },
+    "HighRiskAISystem-AnnexIII-7-b": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-7-b",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(7b)"
+    },
+    "HighRiskAISystem-AnnexIII-7-c": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-7-c",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(7c)"
+    },
+    "HighRiskAISystem-AnnexIII-7-d": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-7-d",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(7d)"
+    },
+    "HighRiskAISystem-AnnexIII-8-a": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-8-a",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(8a)"
+    },
+    "HighRiskAISystem-AnnexIII-8-b": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HighRiskAISystem-AnnexIII-8-b",
+      "type": "class",
+      "label": "High-Risk AI System - Annex III(8b)"
+    },
+    "HumanOverseer": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#HumanOverseer",
+      "type": "class",
+      "label": "Human Overseer"
+    },
+    "InformedConsent": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#InformedConsent",
+      "type": "class",
+      "label": "Informed Consent"
+    },
+    "InstructionForUse": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#InstructionForUse",
+      "type": "class",
+      "label": "Instruction For Use"
+    },
+    "IntendedPurpose": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#IntendedPurpose",
+      "type": "class",
+      "label": "Intended Purpose"
+    },
+    "JusticeSector": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#JusticeSector",
+      "type": "class",
+      "label": "Justice Sector"
+    },
+    "LawEnforcementSector": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#LawEnforcementSector",
+      "type": "class",
+      "label": "Law Enforcement Sector"
+    },
+    "MarketAvailabilityStatus": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#MarketAvailabilityStatus",
+      "type": "class",
+      "label": "Market Availability Status"
+    },
+    "MarketPlacementStatus": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#MarketPlacementStatus",
+      "type": "class",
+      "label": "Market Placement Status"
+    },
+    "MarketSurveillanceAuthority": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#MarketSurveillanceAuthority",
+      "type": "class",
+      "label": "Market Surveillance Authority"
+    },
+    "MigrationSector": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#MigrationSector",
+      "type": "class",
+      "label": "Migration Sector"
+    },
+    "NationalCompetentAuthority": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#NationalCompetentAuthority",
+      "type": "class",
+      "label": "National Competent Authority"
+    },
+    "NonpredeterminedChange": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#NonpredeterminedChange",
+      "type": "class",
+      "label": "Non-Predetermined Change"
+    },
+    "NotAvailableOnMarket": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#NotAvailableOnMarket",
+      "type": "class",
+      "label": "Not Available on Market"
+    },
+    "NotPutIntoService": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#NotPutIntoService",
+      "type": "class",
+      "label": "Not Put in to Service"
+    },
+    "NotifiedBody": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#NotifiedBody",
+      "type": "class",
+      "label": "Notified Body"
+    },
+    "NotifyingAuthority": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#NotifyingAuthority",
+      "type": "class",
+      "label": "Notifying Authority"
+    },
+    "PlacedOnEUMarket": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#PlacedOnEUMarket",
+      "type": "class",
+      "label": "Placed on EU Market"
+    },
+    "PlacedOnMarket": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#PlacedOnMarket",
+      "type": "class",
+      "label": "Placed on Market"
+    },
+    "PostMarketMonitoringPlan": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#PostMarketMonitoringPlan",
+      "type": "class",
+      "label": "Post-market Monitoring Plan"
+    },
+    "PostMarketMonitoringSystem": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#PostMarketMonitoringSystem",
+      "type": "class",
+      "label": "Post-Market Monitoring System"
+    },
+    "PostMarketMonitoringSystemDocumentation": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#PostMarketMonitoringSystemDocumentation",
+      "type": "class",
+      "label": "Post-market Monitoring System Documentation"
+    },
+    "PostRemoteBiometricIdentificationSystem": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#PostRemoteBiometricIdentificationSystem",
+      "type": "class",
+      "label": "Post Remote Biometric Identification System"
+    },
+    "PredeterminedChange": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#PredeterminedChange",
+      "type": "class",
+      "label": "Predetermined Change"
+    },
+    "PrivateSector": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#PrivateSector",
+      "type": "class",
+      "label": "Private Sector"
+    },
+    "ProhibitedAISystem": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ProhibitedAISystem",
+      "type": "class",
+      "label": "Prohibited AI System"
+    },
+    "ProhibitedAISystem-A5-1-a": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ProhibitedAISystem-A5-1-a",
+      "type": "class",
+      "label": "Prohibited AI System - Article 5(1a)"
+    },
+    "ProhibitedAISystem-A5-1-b": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ProhibitedAISystem-A5-1-b",
+      "type": "class",
+      "label": "Prohibited AI System - Article 5(1b)"
+    },
+    "ProhibitedAISystem-A5-1-c": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ProhibitedAISystem-A5-1-c",
+      "type": "class",
+      "label": "Prohibited AI System - Article 5(1c)"
+    },
+    "ProhibitedAISystem-A5-1-d": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ProhibitedAISystem-A5-1-d",
+      "type": "class",
+      "label": "Prohibited AI System - Article 5(1d)"
+    },
+    "ProhibitedAISystem-A5-1-e": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ProhibitedAISystem-A5-1-e",
+      "type": "class",
+      "label": "Prohibited AI System - Article 5(1e)"
+    },
+    "ProhibitedAISystem-A5-1-f": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ProhibitedAISystem-A5-1-f",
+      "type": "class",
+      "label": "Prohibited AI System - Article 5(1f)"
+    },
+    "ProhibitedAISystem-A5-1-g": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ProhibitedAISystem-A5-1-g",
+      "type": "class",
+      "label": "Prohibited AI System - Article 5(1g)"
+    },
+    "ProhibitedAISystem-A5-1-h": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ProhibitedAISystem-A5-1-h",
+      "type": "class",
+      "label": "Prohibited AI System - Article 5(1h)"
+    },
+    "ProviderHumanOversightMeasure": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ProviderHumanOversightMeasure",
+      "type": "class",
+      "label": "Human Oversight Measure by Provider"
+    },
+    "PublicSector": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#PublicSector",
+      "type": "class",
+      "label": "Public Sector"
+    },
+    "PubliclyAccessibleSpace": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#PubliclyAccessibleSpace",
+      "type": "class",
+      "label": "Publicly Accessible Space"
+    },
+    "PutIntoService": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#PutIntoService",
+      "type": "class",
+      "label": "Put in to Service"
+    },
+    "PutIntoServiceInEU": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#PutIntoServiceInEU",
+      "type": "class",
+      "label": "Put in to Service In EU"
+    },
+    "QualityManagementSystem": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#QualityManagementSystem",
+      "type": "class",
+      "label": "Quality Management System"
+    },
+    "RealWorldTestSubject": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#RealWorldTestSubject",
+      "type": "class",
+      "label": "Real World Test Subject"
+    },
+    "RealWorldTestingPlan": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#RealWorldTestingPlan",
+      "type": "class",
+      "label": "Real World Testing Plan"
+    },
+    "RealtimeRemoteBiometricIdentificationSystem": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#RealtimeRemoteBiometricIdentificationSystem",
+      "type": "class",
+      "label": "Real-time Remote Biometric Identification System"
+    },
+    "ReasonablyForeseeableMisuse": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ReasonablyForeseeableMisuse",
+      "type": "class",
+      "label": "Reasonably Foreseeable Misuse"
+    },
+    "RecalledFromService": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#RecalledFromService",
+      "type": "class",
+      "label": "Recalled from Service"
+    },
+    "RemoteBiometricIdentificationSystem": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#RemoteBiometricIdentificationSystem",
+      "type": "class",
+      "label": "Remote Biometric Identification System"
+    },
+    "Risk": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#Risk",
+      "type": "class",
+      "label": "Risk"
+    },
+    "RiskLevel": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#RiskLevel",
+      "type": "class",
+      "label": "Risk Level"
+    },
+    "RiskLevelHigh": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#RiskLevelHigh",
+      "type": "class",
+      "label": "Risk Level - High"
+    },
+    "RiskLevelHigh-A6-1": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#RiskLevelHigh-A6-1",
+      "type": "class",
+      "label": "Risk Level - High per Article 6(1)"
+    },
+    "RiskLevelHigh-A6-2": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#RiskLevelHigh-A6-2",
+      "type": "class",
+      "label": "Risk Level - High per Article 6(2)"
+    },
+    "RiskLevelMinimal": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#RiskLevelMinimal",
+      "type": "class",
+      "label": "Risk Level - Minimal"
+    },
+    "RiskLevelNotHigh": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#RiskLevelNotHigh",
+      "type": "class",
+      "label": "Risk Level - Not High"
+    },
+    "RiskLevelPermitted": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#RiskLevelPermitted",
+      "type": "class",
+      "label": "Risk Level - Permitted"
+    },
+    "RiskLevelProhibited": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#RiskLevelProhibited",
+      "type": "class",
+      "label": "Risk Level - Prohibited"
+    },
+    "RiskLevelTransparencyRequired": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#RiskLevelTransparencyRequired",
+      "type": "class",
+      "label": "Risk Level - Transparency Required"
+    },
+    "RiskManagementSystem": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#RiskManagementSystem",
+      "type": "class",
+      "label": "Risk Management System"
+    },
+    "SafetyComponent": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#SafetyComponent",
+      "type": "class",
+      "label": "Safety Component"
+    },
+    "SandboxPlan": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#SandboxPlan",
+      "type": "class",
+      "label": "Sandbox Plan"
+    },
+    "SeriousIncident": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#SeriousIncident",
+      "type": "class",
+      "label": "Serious Incident"
+    },
+    "ServiceSupplyStatus": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ServiceSupplyStatus",
+      "type": "class",
+      "label": "Service Supply Status"
+    },
+    "SubliminalCapability": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#SubliminalCapability",
+      "type": "class",
+      "label": "Subliminal Capability"
+    },
+    "SubstantialModification": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#SubstantialModification",
+      "type": "class",
+      "label": "Substantial Modification"
+    },
+    "SystemArchitectureDescription": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#SystemArchitectureDescription",
+      "type": "class",
+      "label": "System Architecture Description"
+    },
+    "SystemicRisk": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#SystemicRisk",
+      "type": "class",
+      "label": "Systemic Risk"
+    },
+    "TechnicalDocumentation": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#TechnicalDocumentation",
+      "type": "class",
+      "label": "Technical Documentation"
+    },
+    "TestLog": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#TestLog",
+      "type": "class",
+      "label": "Test Log"
+    },
+    "TestReport": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#TestReport",
+      "type": "class",
+      "label": "Test Report"
+    },
+    "TestingData": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#TestingData",
+      "type": "class",
+      "label": "Testing Data"
+    },
+    "TestingRealWorldConditions": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#TestingRealWorldConditions",
+      "type": "class",
+      "label": "Testing In Real World Conditions"
+    },
+    "TrainingData": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#TrainingData",
+      "type": "class",
+      "label": "Training Data"
+    },
+    "ValidationData": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#ValidationData",
+      "type": "class",
+      "label": "Validation Data"
+    },
+    "WithdrawnFromService": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#WithdrawnFromService",
+      "type": "class",
+      "label": "Withdrawn from Service"
+    },
+    "hasChangeCategory": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#hasChangeCategory",
+      "type": "property",
+      "label": "has change category"
+    },
+    "hasChangeDescription": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#hasChangeDescription",
+      "type": "property",
+      "label": "has change description"
+    },
+    "hasRiskLevel": {
+      "iri": "https://w3id.org/dpv/legal/eu/aiact#hasRiskLevel",
+      "type": "property",
+      "label": "has risk level"
+    }
+  }
+}

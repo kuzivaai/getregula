@@ -206,12 +206,34 @@ def _generate_pack_contents(
         except (ImportError, OSError, ValueError):
             pass
 
+    # --- 09: DPV-AIAct machine-readable export (optional) ---
+    # Off by default so the manifest stays byte-identical to prior releases
+    # (backward-compat rule); `regula evidence-pack --dpv` opts in. Reuses the
+    # findings already scanned above — no second scan. Aligned to the DPVCG
+    # EU-AIAct vocabulary (a W3C Community Group report, not a ratified
+    # standard); risk indication, not classification.
+    include_dpv = bool(kwargs.get("include_dpv"))
+    if include_dpv:
+        try:
+            from dpv_export import build_dpv_jsonld, format_dpv_jsonld
+            dpv_meta = {
+                "findingsScanned": len(findings),
+                "activeFindings": sum(1 for f in findings if not f.get("suppressed")),
+            }
+            dpv_doc = build_dpv_jsonld(
+                findings, project_name=name, scan_meta=dpv_meta,
+                created=now.strftime("%Y-%m-%dT%H:%M:%SZ"))
+            dpv_json = format_dpv_jsonld(dpv_doc)
+            _write_and_record(pack_dir, "09-dpv-aiact.jsonld", dpv_json, file_records)
+        except (ImportError, OSError, ValueError, KeyError):
+            include_dpv = False  # section absent; README must not advertise it
+
     # --- 00: Executive summary (written last, uses data from above) ---
     summary = _generate_summary(name, now, findings, gap, plan)
     _write_and_record(pack_dir, "00-summary.md", summary, file_records)
 
     # --- README ---
-    readme = _generate_readme(name, date_str)
+    readme = _generate_readme(name, date_str, include_dpv=include_dpv)
     _write_and_record(pack_dir, "README.md", readme, file_records)
 
     # --- Manifest (written last) ---
@@ -357,8 +379,22 @@ determination. All findings should be reviewed by qualified personnel._
 """
 
 
-def _generate_readme(name, date_str):
-    """Generate the README for the evidence pack."""
+def _generate_readme(name, date_str, include_dpv=False):
+    """Generate the README for the evidence pack.
+
+    include_dpv adds a line documenting the optional 09-dpv-aiact.jsonld
+    artifact. It is False by default so the README (and therefore the manifest
+    that hashes it) stays byte-identical to prior releases unless the DPV
+    export was actually written.
+    """
+    dpv_line = (
+        "\n**Machine-readable (optional):**\n"
+        "- `09-dpv-aiact.jsonld` — the risk indication as JSON-LD tagged with "
+        "DPVCG EU-AIAct vocabulary IRIs, for ingestion by RDF/GRC tooling. "
+        "Aligned to a W3C Community Group vocabulary (not a ratified standard); "
+        "risk indication, not classification.\n"
+        if include_dpv else ""
+    )
     return f"""# Evidence Pack: {name}
 
 Generated on {date_str} by Regula v{VERSION}.
@@ -377,6 +413,7 @@ of the AI system "{name}" under the EU AI Act (Regulation 2024/1689).
 **For developers:**
 1. Read `06-remediation-plan.md` and work through tasks in order
 2. Re-run `regula evidence-pack` after completing tasks to update scores
+{dpv_line}
 
 ## Integrity verification
 

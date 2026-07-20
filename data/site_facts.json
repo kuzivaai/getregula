@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-16T13:05:17.078468+00:00",
+  "generated_at": "2026-07-19T23:57:46.358144+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -8,7 +8,7 @@
     "tests": "tests/test_classification.py (grep '^def test_')"
   },
   "counts": {
-    "commands": 61,
+    "commands": 62,
     "patterns": {
       "tier_groups": 57,
       "tier_regexes": 419,
@@ -27,8 +27,8 @@
     "frameworks": 12,
     "languages": 8,
     "tests": {
-      "total_collected": 2686,
-      "total_functions": 1647,
+      "total_collected": 2725,
+      "total_functions": 1667,
       "per_file": {
         "test_agent_governance.py": 28,
         "test_ai_codegen.py": 0,
@@ -44,7 +44,7 @@
         "test_claim_auditor.py": 35,
         "test_classification.py": 437,
         "test_classify_risk.py": 0,
-        "test_cli_integration.py": 45,
+        "test_cli_integration.py": 46,
         "test_compliance_check.py": 62,
         "test_conform.py": 0,
         "test_coverage_critical.py": 46,
@@ -54,6 +54,7 @@
         "test_doc_audit.py": 10,
         "test_documentation.py": 16,
         "test_domain_scoring.py": 52,
+        "test_dpv_export.py": 19,
         "test_engagement.py": 19,
         "test_evidence_bundle.py": 4,
         "test_evidence_format_v1.py": 14,

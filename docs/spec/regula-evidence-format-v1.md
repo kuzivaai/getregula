@@ -96,6 +96,34 @@ When a pack is distributed as an archive, it is a ZIP file with extension
 `.regula.zip` containing the pack directory at the root. Consumers MUST
 support both unzipped and zipped input to `regula verify`.
 
+### 3.3 Optional DPV-AIAct machine-readable export (informative)
+
+A pack MAY include an optional `09-dpv-aiact.jsonld` artefact: the risk
+indication serialised as **JSON-LD** and tagged with concept IRIs from the
+**DPVCG EU-AIAct vocabulary** (the W3C Data Privacy Vocabularies and Controls
+Community Group's "EU-AIAct" extension, namespace
+`https://w3id.org/dpv/legal/eu/aiact#`). It lets RDF/GRC tooling ingest the
+result without Regula.
+
+This artefact is **off by default** (`regula evidence-pack --dpv` opts in), so
+its presence never changes a default pack's `manifest.json` byte-for-byte. When
+present it is listed in the manifest `files[]` array and hashed like any other
+file; per §4.3, consumers MUST ignore artefacts they do not recognise.
+
+Honesty constraints on this artefact (normative for Regula generators):
+
+- The vocabulary is a **W3C Community Group report, NOT a ratified W3C
+  Standard.** The artefact MUST describe itself as *aligned to* the DPVCG
+  EU-AIAct vocabulary, never as "the AI Act standard" or "standards-compliant".
+- Every emitted concept IRI MUST be a real term in the referenced vocabulary
+  version. Generators MUST NOT invent IRIs; where no vocabulary concept exists
+  (e.g. Article 5(1)(i), added by the Digital Omnibus after the vocabulary
+  version, or non-EU regimes such as the Korea AI Basic Act / Colorado
+  SB 26-189), the artefact MUST state the gap rather than assert a nearest EU
+  concept.
+- The artefact is risk **indication**, not classification or conformity
+  determination, and MUST carry that disclaimer.
+
 ## 4. Manifest schema (normative)
 
 `manifest.json` is the canonical integrity record. Consumers MUST NOT trust
