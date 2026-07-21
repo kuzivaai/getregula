@@ -61,5 +61,5 @@ Regula combines two approaches: (1) static code analysis for risk patterns, depe
 - PyPI: https://pypi.org/project/regula-ai/
 - GitHub: https://github.com/kuzivaai/getregula
 - License: Apache-2.0 OR EUPL-1.2
-- Version: 1.7.7
+- Version: 1.7.8
 - Maintainer: Kuziva Muzondo

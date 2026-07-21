@@ -9,7 +9,7 @@ Regula's detection engine is a static analysis system that classifies source cod
 | Field | Value |
 |---|---|
 | Name | Regula Detection Engine |
-| Version | 1.7.7 (this doc updated 2026-07-20) |
+| Version | 1.7.8 (this doc updated 2026-07-21) |
 | Type | Rule-based static analysis (regex + AST pattern matching) |
 | Training data | None — not a machine learning model |
 | Detection patterns | 419 tiered risk regexes across 57 categories (10 prohibited + 18 high-risk + 4 limited-risk + 17 AI security + 2 bias + 6 governance observations) + 17 GPAI training regexes. Includes housing (Colorado SB 26-189), transportation (Korea AI Basic Act Art 33), and emotion inference split categories. Regenerate with `python3 scripts/site_facts.py`. |
@@ -154,7 +154,7 @@ Regula is explicitly **NOT** intended for:
 
 ## Versioning
 
-This model card describes Regula v1.7.7. If the detection patterns, classification logic, or evaluation methodology change, this document should be updated in the same commit.
+This model card describes Regula v1.7.8. If the detection patterns, classification logic, or evaluation methodology change, this document should be updated in the same commit.
 
 ---
 

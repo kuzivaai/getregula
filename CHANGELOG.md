@@ -7,6 +7,8 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.7.8] - 2026-07-21
+
 ### Security
 - **`regula handoff` hung indefinitely on a named pipe, read files outside
   the scan root, and walked into `.git`.** Four defects in one command, each
