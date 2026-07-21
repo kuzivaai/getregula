@@ -130,3 +130,10 @@ C:*
 vscode-extension/.vscode-test/
 vscode-extension/out/
 vscode-extension/*.vsix
+
+# Command output written into the CWD. Running `regula governance` or
+# `regula model-card` inside this repo drops these at the root, where
+# `git add -A` will happily stage a scaffold full of [TO BE COMPLETED]
+# placeholders. Root-anchored so docs/MODEL_CARD.md stays tracked.
+/AI_GOVERNANCE.md
+/MODEL_CARD.md

@@ -21,7 +21,7 @@ from pathlib import Path
 from constants import VERSION as REGULA_VERSION
 # Shared symlink-escape + size-cap gate (same guard report.py uses) so the
 # AI-BOM walkers never read a file that resolves outside the scanned project.
-from scan_safety import is_safe_to_scan
+from scan_safety import is_safe_to_scan, read_bytes_if_safe
 
 # ── Import existing Regula modules with fallbacks ─────────────────
 
@@ -308,20 +308,23 @@ def _extract_model_metadata(project_path: str) -> list[dict]:
                 continue
 
             fpath = Path(dirpath, fname)
-            safe, _reason = is_safe_to_scan(fpath, root_resolved)
-            if not safe:
-                continue  # symlink escaping the project, or oversized
+            # Binary model files are recorded by name only; metadata files
+            # are parsed, so both go through the guard and the parse reads
+            # from the guarded descriptor (issue #31).
+            raw, _reason = read_bytes_if_safe(fpath, root_resolved)
+            if raw is None:
+                continue  # escaping symlink, oversized, or unreadable
             rel = str(fpath.relative_to(root))
             fmt = "binary" if is_binary else Path(fname).suffix.lstrip(".")
 
             fields_found: list[str] = []
             if is_metadata and fmt == "json":
                 try:
-                    data = json.loads(fpath.read_text(encoding="utf-8", errors="ignore"))
+                    data = json.loads(raw.decode("utf-8", errors="ignore"))
                     if isinstance(data, dict):
                         fields_found = list(data.keys())[:20]
-                except (json.JSONDecodeError, OSError):
-                    pass  # metadata file unreadable; skip field extraction
+                except json.JSONDecodeError:
+                    pass  # metadata file unparseable; skip field extraction
 
             results.append({
                 "path": rel,
@@ -345,13 +348,12 @@ def _scan_datasets(project_path: str) -> list[dict]:
             if ext not in _DATASET_SCAN_EXTENSIONS:
                 continue
             fpath = Path(dirpath, fname)
-            safe, _reason = is_safe_to_scan(fpath, root_resolved)
-            if not safe:
-                continue  # symlink escaping the project, or oversized
-            try:
-                content = fpath.read_text(encoding="utf-8", errors="ignore")
-            except OSError:
-                continue  # file unreadable; skip to next
+            # Read through the guard rather than re-opening the validated
+            # name — see scan_safety.open_if_safe and issue #31.
+            raw, _reason = read_bytes_if_safe(fpath, root_resolved)
+            if raw is None:
+                continue  # escaping symlink, oversized, or unreadable
+            content = raw.decode("utf-8", errors="ignore")
             rel = str(fpath.relative_to(root))
             for lineno, line in enumerate(content.splitlines(), 1):
                 for pattern, source_label in _DATASET_PATTERNS:
@@ -469,12 +471,16 @@ def _enrich_ai_bom(project_path: str, components: list[dict],
         real_occurrences = []
         for occ in occurrences:
             occ_path = root / occ.get("file", "")
-            try:
-                first_lines = "\n".join(occ_path.read_text(encoding="utf-8", errors="ignore").split("\n")[:10])
+            # occ_path is built from a relative path produced by an UNGUARDED
+            # model walk, so it can name a symlink escaping the project
+            # (issue #32). Read it through the guard like every other read in
+            # this module — a bypass here would defeat the walkers above it.
+            _raw, _ = read_bytes_if_safe(occ_path, root.resolve())
+            if _raw is not None:
+                first_lines = "\n".join(
+                    _raw.decode("utf-8", errors="ignore").split("\n")[:10])
                 if "regula-ignore" in first_lines and "regula-ignore:" not in first_lines:
                     continue  # This occurrence is in a catalogue/config file
-            except (OSError, PermissionError):
-                pass  # can't read file; keep occurrence as-is
             real_occurrences.append(occ)
 
         if not real_occurrences:

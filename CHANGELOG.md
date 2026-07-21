@@ -8,6 +8,50 @@ This project uses [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Security
+- **Dependency manifests were read from outside the scanned project
+  (issue #32).** `scan_dependencies()` loaded all nine manifest types
+  (`requirements.txt`, `pyproject.toml`, `package.json`, `Pipfile`,
+  `Cargo.toml`, `CMakeLists.txt`, `vcpkg.json`, `go.mod`, `build.gradle`)
+  with a bare `read_text()`, so a symlinked manifest pointing outside the
+  scan root was followed and its packages reported in the output.
+  Reproduced against both `regula deps` and `regula sbom` — the latter
+  reaches the same function via `sbom.py`, so guarding sbom's own four
+  walkers did not protect it, which is exactly the trap of applying a guard
+  per-walker rather than at the read. All nine now read through
+  `scan_safety.read_bytes_if_safe`. Verified by sweeping all 28 commands
+  that accept a project path against an escaping-symlink fixture: no
+  command leaks out-of-root content.
+- **TOCTOU race between the path guard and the file read (issue #31).**
+  `is_safe_to_scan` validated a *name*, and every caller then re-opened that
+  name. An attacker with write access to a scanned tree could replace the
+  approved file with a symlink between the two resolutions and have the
+  scanner read a file the guard had rejected — defeating the symlink-escape
+  protection entirely. New `scan_safety.open_if_safe` / `read_bytes_if_safe`
+  resolve once and derive every decision from the descriptor: `O_NOFOLLOW`
+  makes the kernel refuse the swapped symlink outright, `fstat` measures the
+  file actually held so the size capped is the size read, and `S_ISREG`
+  rejects non-regular files. `report.py` and `sbom.py`'s content-reading
+  walkers now read through it. Residual gaps are documented in the module
+  docstring rather than implied away: hardlink swaps are not prevented (they
+  confer no privilege), and Windows lacks `O_NOFOLLOW` so it degrades to the
+  name check plus `fstat`.
+- **Denial of service via a named pipe in a scanned repository.** Found while
+  testing the above: `open(fifo, O_RDONLY)` blocks until a writer appears,
+  and the `S_ISREG` check runs only after `open()` returns. A single FIFO
+  committed to a repository would hang a scan indefinitely. `O_NONBLOCK` is
+  now set so the open returns and the file is rejected.
+- **Audit store was world-readable.** `mkdir()` and `open(..., "a")` created
+  the store 0755/0644 under a default umask. It records full tool inputs and
+  responses — under the Claude Code hook that includes command output and
+  file contents from the user's project — so every other local account could
+  read it, on any shared workstation, build agent, or multi-tenant CI runner.
+  Now created 0700/0600 atomically at creation (not by a later `chmod`, which
+  would leave an exposure window), and stores created before this change are
+  tightened on next use, including per-project chains under `projects/<slug>/`.
+- **`regula doctor` asserted a check it never performed.** Its Security check
+  reported "no world-readable policy files" while never inspecting a file
+  mode. It now actually inspects the audit store and warns, naming the
+  exposed paths.
 - **Crash-reporting endpoint no longer shipped in published builds.** From
   `2c9829d` (10 Apr 2026) through v1.7.7, `scripts/telemetry.py` hardcoded a
   live Sentry DSN while `docs/TRUST.md` §8.2 stated published builds ship an
