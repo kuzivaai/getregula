@@ -19,11 +19,18 @@ runs with the target tool — Regula does not execute the tool itself.
 """
 from __future__ import annotations
 
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).parent))
+
+# Shared path guard: never read a tree we do not control with a bare
+# read_text — a FIFO blocks forever and a symlink escapes the project.
+from scan_safety import read_bytes_if_safe, walk_project_files
+
+from constants import SKIP_DIRS
 
 GARAK_PROBE_GROUPS = [
     "promptinject",        # direct prompt injection
@@ -68,31 +75,42 @@ def _detect_llm_entrypoints(project_path: Path) -> list[dict[str, Any]]:
         (r"ChatOpenAI\(", "langchain-openai"),
         (r"ChatAnthropic\(", "langchain-anthropic"),
     ]
-    py_files: list[Path] = []
-    if project_path.is_dir():
-        for p in project_path.rglob("*.py"):
-            # Skip obvious noise
-            parts = set(p.parts)
-            if any(s in parts for s in (
-                "__pycache__", ".venv", "venv", "node_modules",
-                "dist", "build", "site-packages",
-            )):
-                continue
-            py_files.append(p)
-    else:
-        py_files = [project_path]
+    root = Path(project_path).resolve()
 
-    for py in py_files[:500]:  # safety cap
+    # walk_project_files is guarded by construction: it prunes the shared
+    # SKIP_DIRS, refuses symlinks escaping the root, rejects FIFOs, caps
+    # size, and pins each directory inode via os.fwalk so an ancestor
+    # cannot be swapped mid-walk. The rglob + bare read_text this replaces
+    # did none of those — all three were reproduced against this function:
+    # it read /etc/passwd through a symlinked `.py`, hung forever on a
+    # pipe named `*.py`, and walked into `.git` because its private skip
+    # list omitted 21 of the 28 entries in SKIP_DIRS.
+    if root.is_dir():
+        source = walk_project_files(root, extensions={".py"},
+                                    skip_dirs=SKIP_DIRS)
+    else:
+        # Single-file target. Contain against the parent rather than the
+        # file itself; the guard still refuses a FIFO or an oversized file.
+        raw, _reason = read_bytes_if_safe(root, root.parent)
+        source = [] if raw is None else [(root, raw)]
+
+    for count, (py, raw) in enumerate(source):
+        if count >= 500:  # safety cap
+            break
+        text = raw.decode("utf-8", errors="replace")
+        # Report paths relative to the SCANNED project. This used to be
+        # relative_to(REPO_ROOT) — Regula's own install directory — which
+        # raised ValueError for every project outside that tree, i.e. every
+        # real invocation with an absolute path.
         try:
-            text = py.read_text(encoding="utf-8", errors="replace")
-        except OSError:
-            continue  # unreadable file; skip
+            rel = str(py.relative_to(root)) if py != root else py.name
+        except ValueError:
+            rel = str(py)
         for pat, kind in patterns:
             for m in _re.finditer(pat, text):
                 line = text[:m.start()].count("\n") + 1
                 entrypoints.append({
-                    "file": str(py.relative_to(REPO_ROOT)
-                                if py.is_absolute() else py),
+                    "file": rel,
                     "line": line,
                     "kind": kind,
                 })
