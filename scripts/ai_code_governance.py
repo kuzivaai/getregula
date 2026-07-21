@@ -19,19 +19,17 @@ Relevant EU AI Act articles:
 No external dependencies — stdlib only.
 """
 
-import os
 import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Optional
 
 _scripts_dir = str(Path(__file__).parent)
 if _scripts_dir not in sys.path:
     sys.path.insert(0, _scripts_dir)
 
 from constants import CODE_EXTENSIONS, SKIP_DIRS
-from scan_safety import read_text_if_safe  # shared path guard
+from scan_safety import walk_project_files  # shared path guard
 
 
 # ---------------------------------------------------------------------------
@@ -165,36 +163,28 @@ TOOL_INVENTORY_FILES = [
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _read_file(filepath: str) -> Optional[str]:
-    """Read file content, returning None on failure.
-
-    The guard returns None when it refuses (missing file, escaping symlink,
-    FIFO, oversized). That maps exactly onto this function's existing
-    contract, so it is returned as-is. An earlier version used `or ""`,
-    which turned a refusal into an empty string and broke the documented
-    "None on failure" behaviour callers rely on.
-    """
-    return read_text_if_safe(Path(filepath), errors="ignore")
-
-
 def _walk_code_files(project_path: str):
-    """Yield (relative_path, absolute_path) for code files."""
+    """Yield (relative_path, absolute_path, content) for code files.
+
+    Content is read during the walk rather than handed back as a path for
+    the caller to reopen. Collecting a path and reading it later re-resolves
+    it from scratch, and between those two moments an ancestor directory can
+    be swapped for a symlink — a race O_NOFOLLOW cannot close, because it
+    guards only the final component. walk_project_files reads through a
+    descriptor held on the parent directory, so the inode is pinned (#33).
+
+    It also supplies the shared SKIP_DIRS pruning, symlink-escape
+    containment, FIFO refusal and size capping that this walker previously
+    had to remember to ask for separately.
+    """
     project = Path(project_path).resolve()
-    # os.fwalk yields a dir descriptor; opening relative to it pins the
-    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
-    # (it guards only the final component). Absent on Windows.
-    _walk = (os.fwalk(project) if hasattr(os, 'fwalk')
-             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(project)))
-    for root, dirs, files, _dirfd in _walk:
-        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
-        for filename in files:
-            filepath = Path(root) / filename
-            if filepath.suffix.lower() in CODE_EXTENSIONS:
-                try:
-                    rel = str(filepath.relative_to(project))
-                except ValueError:
-                    rel = str(filepath)
-                yield rel, str(filepath)
+    for filepath, raw in walk_project_files(
+            project, extensions=CODE_EXTENSIONS, skip_dirs=SKIP_DIRS):
+        try:
+            rel = str(filepath.relative_to(project))
+        except ValueError:
+            rel = str(filepath)
+        yield rel, str(filepath), raw.decode("utf-8", errors="ignore")
 
 
 def _scan_file_for_markers(content: str, rel_path: str):
@@ -316,11 +306,12 @@ def scan_ai_generated_code(project_path: str, include_git: bool = True) -> dict:
     markers_found = []
     total_files = 0
 
-    for rel_path, abs_path in _walk_code_files(project_path):
+    # total_files now counts files actually read. It previously counted
+    # every code file yielded, including ones the read then refused, so a
+    # tree with an unreadable file reported it as scanned. Identical on any
+    # well-formed tree.
+    for rel_path, _abs_path, content in _walk_code_files(project_path):
         total_files += 1
-        content = _read_file(abs_path)
-        if content is None:
-            continue
         markers_found.extend(_scan_file_for_markers(content, rel_path))
 
     tool_configs = _detect_tool_configs(project_path)
