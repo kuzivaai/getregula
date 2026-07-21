@@ -264,13 +264,6 @@ def verify_manifest_signature(manifest: dict) -> tuple[bool, str]:
     return True, "ed25519 signature verified"
 
 
-def is_signing_available() -> bool:
-    """Return True if `cryptography` is importable."""
-    try:
-        _require_cryptography()
-        return True
-    except SigningUnavailable:
-        return False
 
 
 def apply_manifest_security(

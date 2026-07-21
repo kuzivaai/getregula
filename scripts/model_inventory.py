@@ -22,6 +22,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Shared path guard: never read a tree we do not control with a bare
+# read_text — a FIFO blocks forever and a symlink escapes the project.
+from scan_safety import read_text_if_safe
+
 from constants import SKIP_DIRS
 # ---------------------------------------------------------------------------
 # Known-models catalogue
@@ -151,7 +155,9 @@ def scan_for_models(project_path: str) -> dict:
 
     for filepath in _walk_project(project):
         try:
-            content = filepath.read_text(encoding="utf-8", errors="ignore")
+            content = read_text_if_safe(filepath, errors="ignore")
+            if content is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
         except OSError:
             continue  # unreadable file; skip
         rel = str(filepath.relative_to(project))

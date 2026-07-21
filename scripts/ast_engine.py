@@ -21,6 +21,10 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
+
+# Shared path guard: never read a tree we do not control with a bare
+# read_text — a FIFO blocks forever and a symlink escapes the project.
+from scan_safety import read_text_if_safe
 from degradation import check_optional
 from constants import MAX_CLASSIFY_CHARS
 
@@ -1798,7 +1802,9 @@ def analyse_project(project_path: str) -> List[dict]:
 
             filepath = Path(dirpath) / fname
             try:
-                content = filepath.read_text(encoding="utf-8", errors="replace")
+                content = read_text_if_safe(filepath, errors="replace")
+                if content is None:
+                    raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
             except (OSError, PermissionError):
                 continue  # unreadable file; skip
 
@@ -1874,7 +1880,9 @@ def main() -> None:
         if not filepath.is_file():
             print(f"Error: file not found: {args.file}", file=sys.stderr)
             sys.exit(1)
-        content = filepath.read_text(encoding="utf-8", errors="replace")
+        content = read_text_if_safe(filepath, errors="replace")
+        if content is None:
+            raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
         result = analyse_file(content, filepath.name, language=args.language)
         result["file"] = str(filepath)
 

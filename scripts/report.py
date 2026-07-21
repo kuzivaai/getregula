@@ -642,14 +642,25 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         except Exception:
             pass  # Cache write is best-effort
 
-    # Single-file mode: synthesise a walk-compatible structure for one file
+    # os.fwalk yields a descriptor for each directory it visits. Opening a
+    # file relative to that descriptor pins the directory inode, so an
+    # ancestor directory swapped for a symlink mid-scan cannot be
+    # re-traversed — the one escape O_NOFOLLOW alone does not stop, since
+    # it guards only the final path component. os.fwalk needs dir_fd
+    # support and is absent on Windows; there we fall back to os.walk and
+    # the guard degrades to final-component protection (documented on
+    # scan_safety.open_if_safe).
+    _use_fwalk = hasattr(os, "fwalk") and not project.is_file()
     if project.is_file():
-        walk_iter = [(str(project.parent), [], [project.name])]
+        # Single-file mode: synthesise a walk-compatible structure.
+        walk_iter = [(str(project.parent), [], [project.name], None)]
         project = project.parent
+    elif _use_fwalk:
+        walk_iter = os.fwalk(project)
     else:
-        walk_iter = os.walk(project)
+        walk_iter = ((r, d, f, None) for r, d, f in os.walk(project))
 
-    for root, dirs, files in walk_iter:
+    for root, dirs, files, _dirfd in walk_iter:
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             filepath = Path(root) / filename
@@ -734,7 +745,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 # resolutions and have us read a file the guard rejected
                 # (issue #31). read_bytes_if_safe opens once with O_NOFOLLOW
                 # and returns bytes from that exact descriptor.
-                raw_bytes, _read_reason = _read_bytes_if_safe(filepath, project)
+                raw_bytes, _read_reason = _read_bytes_if_safe(filepath, project, dir_fd=_dirfd)
                 if raw_bytes is None:
                     # Unreadable eligible file — dangerous skip (F1). A
                     # symlink_escape here means the race was caught in the act.

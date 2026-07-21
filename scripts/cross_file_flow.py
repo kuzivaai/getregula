@@ -21,6 +21,10 @@ from typing import Dict, List, Set, Tuple
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Shared path guard: never read a tree we do not control with a bare
+# read_text — a FIFO blocks forever and a symlink escapes the project.
+from scan_safety import read_text_if_safe
+
 from ast_analysis import (
     trace_ai_data_flow,
     detect_human_oversight,
@@ -61,7 +65,12 @@ def _should_skip(path: Path) -> bool:
 def _collect_python_files(project_path: Path) -> List[Path]:
     """Walk project and return all .py files, respecting SKIP_DIRS."""
     files = []
-    for root, dirs, filenames in os.walk(project_path):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+    # (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(project_path) if hasattr(os, 'fwalk')
+             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(project_path)))
+    for root, dirs, filenames, _dirfd in _walk:
         root_path = Path(root)
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for fn in filenames:
@@ -75,7 +84,12 @@ def _collect_python_files(project_path: Path) -> List[Path]:
 def _collect_js_ts_files(project_path: Path) -> List[Path]:
     """Walk project and return all JS/TS files, respecting SKIP_DIRS."""
     files = []
-    for root, dirs, filenames in os.walk(project_path):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+    # (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(project_path) if hasattr(os, 'fwalk')
+             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(project_path)))
+    for root, dirs, filenames, _dirfd in _walk:
         root_path = Path(root)
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for fn in filenames:
@@ -97,7 +111,9 @@ def _build_symbol_table(
     table: Dict[str, Dict] = {}
     for fp in py_files:
         try:
-            content = fp.read_text(encoding="utf-8", errors="replace")
+            content = read_text_if_safe(fp, errors="replace")
+            if content is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
         except (OSError, PermissionError):
             continue
         try:
@@ -136,7 +152,9 @@ def _build_js_ts_symbol_table(
     table: Dict[str, Dict] = {}
     for fp in js_files:
         try:
-            content = fp.read_text(encoding="utf-8", errors="replace")
+            content = read_text_if_safe(fp, errors="replace")
+            if content is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
         except (OSError, PermissionError):
             continue
 

@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
+from scan_safety import read_text_if_safe
 
 from constants import CODE_EXTENSIONS, SKIP_DIRS
 
@@ -246,7 +247,12 @@ LIBRARY_CATEGORY_MAP = {
 def _walk_project(project_path: str):
     """Yield (relative_path, absolute_path) for scannable code files."""
     project = Path(project_path).resolve()
-    for root, dirs, files in os.walk(project):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+    # (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(project) if hasattr(os, 'fwalk')
+             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(project)))
+    for root, dirs, files, _dirfd in _walk:
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             filepath = Path(root) / filename
@@ -259,11 +265,15 @@ def _walk_project(project_path: str):
 
 
 def _read_file(filepath: str) -> Optional[str]:
-    """Read file content, returning None on failure."""
-    try:
-        return Path(filepath).read_text(encoding="utf-8", errors="ignore")
-    except (PermissionError, OSError):
-        return None
+    """Read file content, returning None on failure.
+
+    The guard returns None when it refuses (missing file, escaping symlink,
+    FIFO, oversized). That maps exactly onto this function's existing
+    contract, so it is returned as-is. An earlier version used `or ""`,
+    which turned a refusal into an empty string and broke the documented
+    "None on failure" behaviour callers rely on.
+    """
+    return read_text_if_safe(Path(filepath), errors="ignore")
 
 
 # ---------------------------------------------------------------------------

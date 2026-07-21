@@ -136,7 +136,12 @@ def _scan_model_files(project_path: str) -> list[dict]:
     from constants import SKIP_DIRS
     skip_dirs = SKIP_DIRS
 
-    for dirpath, dirnames, filenames in os.walk(root):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode and closes the ancestor-swap race that O_NOFOLLOW
+    # cannot (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(root) if hasattr(os, 'fwalk')
+             else ((r, d, f, None) for r, d, f in os.walk(root)))
+    for dirpath, dirnames, filenames, _dirfd in _walk:
         dirnames[:] = [d for d in dirnames if d not in skip_dirs]
         for fname in filenames:
             ext = Path(fname).suffix.lower()
@@ -257,7 +262,12 @@ def _detect_dataset_files(project_path: str) -> list[dict]:
     root_resolved = root.resolve()
     results: list[dict] = []
 
-    for dirpath, dirnames, filenames in os.walk(root):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode and closes the ancestor-swap race that O_NOFOLLOW
+    # cannot (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(root) if hasattr(os, 'fwalk')
+             else ((r, d, f, None) for r, d, f in os.walk(root)))
+    for dirpath, dirnames, filenames, _dirfd in _walk:
         dirnames[:] = [d for d in dirnames if d not in _DATASET_SKIP_DIRS]
         for fname in filenames:
             ext = Path(fname).suffix.lower()
@@ -299,7 +309,12 @@ def _extract_model_metadata(project_path: str) -> list[dict]:
     root_resolved = root.resolve()
     results: list[dict] = []
 
-    for dirpath, dirnames, filenames in os.walk(root):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode and closes the ancestor-swap race that O_NOFOLLOW
+    # cannot (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(root) if hasattr(os, 'fwalk')
+             else ((r, d, f, None) for r, d, f in os.walk(root)))
+    for dirpath, dirnames, filenames, _dirfd in _walk:
         dirnames[:] = [d for d in dirnames if d not in _DATASET_SKIP_DIRS]
         for fname in filenames:
             is_metadata = fname in _MODEL_METADATA_FILES
@@ -311,7 +326,7 @@ def _extract_model_metadata(project_path: str) -> list[dict]:
             # Binary model files are recorded by name only; metadata files
             # are parsed, so both go through the guard and the parse reads
             # from the guarded descriptor (issue #31).
-            raw, _reason = read_bytes_if_safe(fpath, root_resolved)
+            raw, _reason = read_bytes_if_safe(fpath, root_resolved, dir_fd=_dirfd)
             if raw is None:
                 continue  # escaping symlink, oversized, or unreadable
             rel = str(fpath.relative_to(root))
@@ -341,7 +356,12 @@ def _scan_datasets(project_path: str) -> list[dict]:
     datasets: list[dict] = []
     seen: set[str] = set()
 
-    for dirpath, dirnames, filenames in os.walk(root):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode and closes the ancestor-swap race that O_NOFOLLOW
+    # cannot (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(root) if hasattr(os, 'fwalk')
+             else ((r, d, f, None) for r, d, f in os.walk(root)))
+    for dirpath, dirnames, filenames, _dirfd in _walk:
         dirnames[:] = [d for d in dirnames if d not in _DATASET_SKIP_DIRS]
         for fname in filenames:
             ext = Path(fname).suffix.lower()
@@ -350,7 +370,7 @@ def _scan_datasets(project_path: str) -> list[dict]:
             fpath = Path(dirpath, fname)
             # Read through the guard rather than re-opening the validated
             # name — see scan_safety.open_if_safe and issue #31.
-            raw, _reason = read_bytes_if_safe(fpath, root_resolved)
+            raw, _reason = read_bytes_if_safe(fpath, root_resolved, dir_fd=_dirfd)
             if raw is None:
                 continue  # escaping symlink, oversized, or unreadable
             content = raw.decode("utf-8", errors="ignore")

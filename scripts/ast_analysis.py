@@ -21,6 +21,10 @@ from typing import Dict, List, Optional, Set, Tuple
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Shared path guard: never read a tree we do not control with a bare
+# read_text — a FIFO blocks forever and a symlink escapes the project.
+from scan_safety import read_text_if_safe
+
 from constants import SKIP_DIRS
 
 # ---------------------------------------------------------------------------
@@ -1001,7 +1005,9 @@ def resolve_cross_file_ai_flows(project_path: str) -> List[Dict]:
         if any(d in py_file.relative_to(root).parts for d in skip_dirs):
             continue
         try:
-            content = py_file.read_text(encoding="utf-8", errors="ignore")
+            content = read_text_if_safe(py_file, errors="ignore")
+            if content is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
         except OSError:
             continue  # unreadable file; skip
 
@@ -1021,7 +1027,9 @@ def resolve_cross_file_ai_flows(project_path: str) -> List[Dict]:
         if any(d in py_file.relative_to(root).parts for d in skip_dirs):
             continue
         try:
-            content = py_file.read_text(encoding="utf-8", errors="ignore")
+            content = read_text_if_safe(py_file, errors="ignore")
+            if content is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
         except OSError:
             continue  # unreadable file; skip
 
