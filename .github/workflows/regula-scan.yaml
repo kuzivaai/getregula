@@ -8,6 +8,16 @@ on:
 permissions:
   security-events: write
   contents: read
+  # The action's comment-on-pr input defaults to "true", and this workflow
+  # runs on pull_request — posting that summary needs issue-comment write.
+  # Without it the step fails with "Resource not accessible by integration"
+  # (first hit on PR #30; every prior commit went straight to main, so no
+  # pull_request event ever exercised this path).
+  #
+  # Note for forks: PRs from forks receive a read-only token regardless of
+  # what is declared here, so the comment step will still fail for them.
+  # That is a GitHub security boundary, not a misconfiguration.
+  pull-requests: write
 
 jobs:
   regula-scan:
