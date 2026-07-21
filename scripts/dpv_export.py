@@ -99,10 +99,6 @@ def term_iri(term: str) -> str:
     return vocab["terms"][term]["iri"]
 
 
-def term_label(term: str) -> str:
-    """Return the rdfs:label for a vocabulary term (for human-readable notes)."""
-    vocab = load_vocabulary()
-    return vocab["terms"].get(term, {}).get("label", term)
 
 
 # ---------------------------------------------------------------------------

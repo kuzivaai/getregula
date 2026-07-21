@@ -19,6 +19,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Shared path guard: never read a tree we do not control with a bare
+# read_text — a FIFO blocks forever and a symlink escapes the project.
+from scan_safety import read_text_if_safe
+
 from classify_risk import classify, RiskTier, is_ai_related, get_governance_contacts, check_ai_security
 from constants import VERSION
 from log_event import log_event
@@ -45,7 +49,9 @@ def extract_ai_dependencies(project_path: str) -> list:
         if not path.exists():
             continue
         try:
-            content = path.read_text(encoding="utf-8", errors="ignore")
+            content = read_text_if_safe(path, errors="ignore")
+            if content is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
             deps = parser(content)
             for d in deps:
                 if d["is_ai"] and d["name"] not in seen:
@@ -77,7 +83,12 @@ def scan_project(project_path: str) -> dict:
         RiskTier.LIMITED_RISK: 2, RiskTier.HIGH_RISK: 3, RiskTier.PROHIBITED: 4,
     }
 
-    for root, dirs, files in os.walk(project):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+    # (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(project) if hasattr(os, 'fwalk')
+             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(project)))
+    for root, dirs, files, _dirfd in _walk:
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             filepath = Path(root) / filename
@@ -89,7 +100,9 @@ def scan_project(project_path: str) -> dict:
 
             if filepath.suffix in CODE_EXTENSIONS:
                 try:
-                    content = filepath.read_text(encoding="utf-8", errors="ignore")
+                    content = read_text_if_safe(filepath, errors="ignore", dir_fd=_dirfd)
+                    if content is None:
+                        raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
                 except (PermissionError, OSError):
                     continue  # unreadable file; skip
 
@@ -138,7 +151,9 @@ def ast_analyse_project(project_path: str) -> dict:
         if any(d in filepath.relative_to(project).parts for d in SKIP_DIRS):
             continue
         try:
-            content = filepath.read_text(encoding="utf-8", errors="ignore")
+            content = read_text_if_safe(filepath, errors="ignore")
+            if content is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
         except OSError:
             continue  # unreadable file; skip
 
@@ -536,7 +551,9 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
         filepath = Path(project_path) / c["file"]
         if filepath.exists():
             try:
-                text = filepath.read_text(encoding="utf-8", errors="ignore")
+                text = read_text_if_safe(filepath, errors="ignore")
+                if text is None:
+                    raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
                 sf = check_ai_security(text)
                 for f in sf:
                     f["file"] = c["file"]
@@ -624,7 +641,9 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
         policy_path = Path(project_path) / "regula-policy.yml"
     if policy_path.exists():
         try:
-            content = policy_path.read_text(encoding="utf-8", errors="ignore")
+            content = read_text_if_safe(policy_path, errors="ignore")
+            if content is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
             in_frameworks = False
             for line in content.split("\n"):
                 stripped = line.strip()
@@ -660,13 +679,21 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
     }
     detected_standards = set()
     resolved_project = str(Path(project_path).resolve())
-    for root, dirs, files in os.walk(resolved_project):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+    # (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(resolved_project) if hasattr(os, 'fwalk')
+             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(resolved_project)))
+    for root, dirs, files, _dirfd in _walk:
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             fp = Path(root) / filename
             if fp.suffix in {".md", ".txt", ".rst", ".yaml", ".yml", ".py", ".js", ".ts"}:
                 try:
-                    text = fp.read_text(encoding="utf-8", errors="ignore")[:5000]
+                    text = read_text_if_safe(fp, errors="ignore", dir_fd=_dirfd)
+                    if text is None:
+                        raise OSError("refused by scan_safety")
+                    text = text[:5000]
                     for std_name, pattern in standards_keywords.items():
                         if _re.search(pattern, text, _re.IGNORECASE):
                             detected_standards.add(std_name)
@@ -694,7 +721,9 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
     pyproject_path = Path(project_path) / "pyproject.toml"
     if pyproject_path.exists():
         try:
-            pyproject_text = pyproject_path.read_text(encoding="utf-8", errors="ignore")
+            pyproject_text = read_text_if_safe(pyproject_path, errors="ignore")
+            if pyproject_text is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
             name_match = _re.search(r'name\s*=\s*"([^"]+)"', pyproject_text)
             author_match = _re.search(r'authors\s*=\s*\[\s*\{[^}]*name\s*=\s*"([^"]+)"', pyproject_text)
             if not author_match:
@@ -738,7 +767,10 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
             fp = Path(root) / filename
             if fp.suffix in CODE_EXTENSIONS | {".yaml", ".yml", ".md", ".txt"}:
                 try:
-                    text = fp.read_text(encoding="utf-8", errors="ignore")[:5000]
+                    text = read_text_if_safe(fp, errors="ignore")
+                    if text is None:
+                        raise OSError("refused by scan_safety")
+                    text = text[:5000]
                     for pattern, label in monitoring_patterns_re:
                         if _re.search(pattern, text, _re.IGNORECASE):
                             rel_p = str(fp.relative_to(resolved_project_9))
@@ -774,7 +806,9 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
         readme_path = Path(project_path) / readme_name
         if readme_path.exists():
             try:
-                readme_content = readme_path.read_text(encoding="utf-8", errors="ignore")
+                readme_content = read_text_if_safe(readme_path, errors="ignore")
+                if readme_content is None:
+                    raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
                 break
             except OSError:
                 continue  # unreadable README; try next candidate

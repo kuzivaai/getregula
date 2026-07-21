@@ -19,6 +19,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Shared path guard: never read a tree we do not control with a bare
+# read_text — a FIFO blocks forever and a symlink escapes the project.
+from scan_safety import read_text_if_safe
+
 from constants import VERSION, MODEL_EXTENSIONS, SKIP_DIRS, CODE_EXTENSIONS
 # Shared symlink-escape + size gate (same guard sbom.py uses). Must be
 # imported AFTER the sys.path.insert above — bare sibling imports only.
@@ -222,7 +226,12 @@ def _scan_model_files(project_path: str) -> list[dict]:
     root = Path(project_path)
     root_resolved = root.resolve()
 
-    for dirpath, dirs, files in os.walk(root):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+    # (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(root) if hasattr(os, 'fwalk')
+             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(root)))
+    for dirpath, dirs, files, _dirfd in _walk:
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             filepath = Path(dirpath) / filename
@@ -293,14 +302,21 @@ def generate_aibom(project_path: str) -> dict:
             r"^\s*(?:from|import)\s+([\w.]+)", re.MULTILINE
         )
         _normalised_ai = {lib.replace("-", "_").lower() for lib in AI_LIBRARIES}
-        for dirpath, dirs, files in os.walk(root):
+        # os.fwalk yields a dir descriptor; opening relative to it pins the
+        # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+        # (it guards only the final component). Absent on Windows.
+        _walk = (os.fwalk(root) if hasattr(os, 'fwalk')
+                 else ((_r, _d, _f, None) for _r, _d, _f in os.walk(root)))
+        for dirpath, dirs, files, _dirfd in _walk:
             dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
             for filename in files:
                 filepath = Path(dirpath) / filename
                 if filepath.suffix.lower() not in CODE_EXTENSIONS:
                     continue
                 try:
-                    content = filepath.read_text(encoding="utf-8", errors="ignore")
+                    content = read_text_if_safe(filepath, errors="ignore", dir_fd=_dirfd)
+                    if content is None:
+                        raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
                 except OSError:
                     continue
                 for match in _AI_IMPORT_RE.finditer(content):

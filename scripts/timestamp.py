@@ -919,20 +919,3 @@ def verify_timestamp_token_signature(
     )
 
 
-def is_manifest_timestamp_available() -> bool:
-    """Return True iff asn1crypto is importable."""
-    try:
-        _require_asn1crypto()
-        return True
-    except TimestampUnavailable:
-        return False
-
-
-def is_timestamp_signature_verifiable() -> bool:
-    """Return True iff both asn1crypto and cryptography are importable."""
-    try:
-        _require_asn1crypto()
-        _require_cryptography()
-        return True
-    except TimestampUnavailable:
-        return False

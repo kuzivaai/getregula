@@ -445,3 +445,115 @@ def test_descriptor_is_closed_on_every_path():
         assert after is not None and after - before < 10, (
             f"descriptors leaked: {before} -> {after}"
         )
+
+
+# ── walk_project_files: guarded by construction ───────────────────
+#
+# The opt-in guard is the root cause behind four separate July 2026
+# defects. This helper exists so a new walker is safe by USING it, rather
+# than by remembering four separate checks. These tests pin all four.
+
+def test_walker_skips_escaping_symlink_but_keeps_local_files():
+    from scan_safety import walk_project_files
+
+    with tempfile.TemporaryDirectory() as outside_td, \
+            tempfile.TemporaryDirectory() as td:
+        outside, root = Path(outside_td).resolve(), Path(td).resolve()
+        (outside / "secret.py").write_text("SECRET = 1")
+        if not _symlinks_supported(root):
+            return
+        (root / "link.py").symlink_to(outside / "secret.py")
+        (root / "local.py").write_text("y = 2")
+
+        found = {p.name for p, _ in walk_project_files(root, extensions={".py"})}
+        assert "local.py" in found
+        assert "link.py" not in found
+
+
+def test_walker_does_not_hang_on_a_fifo():
+    """A bare walker blocks forever here; this must return."""
+    from scan_safety import walk_project_files
+
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td).resolve()
+        try:
+            os.mkfifo(root / "pipe.py")
+        except (AttributeError, OSError):
+            return
+        (root / "ok.py").write_text("x = 1")
+
+        found = {p.name for p, _ in walk_project_files(root, extensions={".py"})}
+        assert "ok.py" in found
+        assert "pipe.py" not in found
+
+
+def test_walker_refuses_an_ancestor_directory_swapped_mid_walk():
+    """The race O_NOFOLLOW cannot stop: it guards only the final component.
+
+    Deterministic rather than timing-based — the swap is injected at the
+    guard boundary. That proves the descriptor is pinned; it is not
+    evidence about exploitability under real contention.
+    """
+    import scan_safety
+    from scan_safety import walk_project_files
+
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td).resolve()
+        root = base / "root"
+        (root / "sub").mkdir(parents=True)
+        (root / "sub" / "f.py").write_text("benign")
+        outside = base / "outside"
+        outside.mkdir()
+        (outside / "f.py").write_text("SECRET-OUTSIDE-ROOT")
+        if not _symlinks_supported(base):
+            return
+
+        real = scan_safety.read_bytes_if_safe
+        fired = {"once": False}
+
+        def racing(fp, pr=None, dir_fd=None):
+            if not fired["once"]:
+                fired["once"] = True
+                try:
+                    (root / "sub").rename(base / "moved")
+                    (root / "sub").symlink_to(outside)
+                except OSError:
+                    pass
+            return real(fp, pr, dir_fd=dir_fd)
+
+        scan_safety.read_bytes_if_safe = racing
+        try:
+            contents = [c for _, c in walk_project_files(root, extensions={".py"})]
+        finally:
+            scan_safety.read_bytes_if_safe = real
+
+        assert not any(b"SECRET-OUTSIDE-ROOT" in c for c in contents), \
+            "ancestor-directory swap escaped the scan root"
+
+
+def test_walker_prunes_skip_dirs_and_filters_extensions():
+    from scan_safety import walk_project_files
+
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td).resolve()
+        (root / "src").mkdir()
+        (root / "src" / "a.py").write_text("a = 1")
+        (root / "src" / "notes.md").write_text("# notes")
+        (root / "node_modules").mkdir()
+        (root / "node_modules" / "dep.py").write_text("dep = 1")
+
+        found = {p.name for p, _ in walk_project_files(
+            root, extensions={".py"}, skip_dirs={"node_modules"})}
+        assert found == {"a.py"}, found
+
+
+def test_walker_returns_the_bytes_that_passed_the_guard():
+    from scan_safety import walk_project_files
+
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td).resolve()
+        payload = b"import openai\n" * 10
+        (root / "app.py").write_bytes(payload)
+
+        got = dict((p.name, c) for p, c in walk_project_files(root, extensions={".py"}))
+        assert got["app.py"] == payload

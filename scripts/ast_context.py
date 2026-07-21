@@ -131,9 +131,6 @@ def _mark_range(start, end, context, flag):
         context[line].add(flag)
 
 
-def get_line_context(context_map: dict, line: int) -> set:
-    """Get the context flags for a specific line. Returns empty set if no context."""
-    return context_map.get(line, set())
 
 
 def is_in_try(context_map: dict, line: int) -> bool:
@@ -146,6 +143,3 @@ def is_in_string(context_map: dict, line: int) -> bool:
     return 'string' in context_map.get(line, set())
 
 
-def is_in_test_assert(context_map: dict, line: int) -> bool:
-    """Check if a line is inside a test assertion."""
-    return 'test_assert' in context_map.get(line, set())

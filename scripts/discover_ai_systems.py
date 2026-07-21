@@ -16,6 +16,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Shared path guard: never read a tree we do not control with a bare
+# read_text — a FIFO blocks forever and a symlink escapes the project.
+from scan_safety import read_text_if_safe
+
 from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS
 
 
@@ -92,10 +96,14 @@ def scan_dependencies(project_path: Path) -> dict:
         if not filepath.exists():
             continue
 
-        try:
-            content = filepath.read_text(encoding="utf-8", errors="ignore").lower()
-        except (PermissionError, OSError):
-            continue  # dep file unreadable; skip
+        # A refused read (escaping symlink, FIFO, oversized) must SKIP the
+        # file, matching the original `except OSError: continue`. Coercing
+        # it to "" instead would silently treat a rejected dependency file
+        # as an empty one — the same content, a different meaning.
+        _content = read_text_if_safe(filepath, errors="ignore")
+        if _content is None:
+            continue  # dep file unreadable or refused by the guard; skip
+        content = _content.lower()
 
         for lib in AI_DEPENDENCY_PATTERNS.get(language, []):
             if lib.lower() in content:
@@ -108,7 +116,12 @@ def scan_dependencies(project_path: Path) -> dict:
 def scan_model_files(project_path: Path) -> list:
     """Find model files in the project."""
     model_files = []
-    for root, dirs, files in os.walk(project_path):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+    # (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(project_path) if hasattr(os, 'fwalk')
+             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(project_path)))
+    for root, dirs, files, _dirfd in _walk:
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             filepath = Path(root) / filename
@@ -131,7 +144,12 @@ def scan_code_files(project_path: Path) -> dict:
         "risk_classifications": [],
     }
 
-    for root, dirs, files in os.walk(project_path):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+    # (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(project_path) if hasattr(os, 'fwalk')
+             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(project_path)))
+    for root, dirs, files, _dirfd in _walk:
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             filepath = Path(root) / filename
@@ -139,7 +157,9 @@ def scan_code_files(project_path: Path) -> dict:
                 continue
 
             try:
-                content = filepath.read_text(encoding="utf-8", errors="ignore")
+                content = read_text_if_safe(filepath, errors="ignore", dir_fd=_dirfd)
+                if content is None:
+                    raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
             except (PermissionError, OSError):
                 continue  # source file unreadable; skip
 

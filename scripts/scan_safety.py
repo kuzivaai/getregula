@@ -77,7 +77,7 @@ def is_safe_to_scan(filepath: Path, project_root: Path) -> "tuple[bool, str]":
     return True, ""
 
 
-def open_if_safe(filepath: Path, project_root: Path,
+def open_if_safe(filepath: Path, project_root: "Optional[Path]" = None,
                  dir_fd: "Optional[int]" = None) -> "tuple[Optional[int], str]":
     """Open `filepath` for reading, enforcing the guard on the OPENED FILE.
 
@@ -135,9 +135,16 @@ def open_if_safe(filepath: Path, project_root: Path,
     # Fast, cheap rejection on the name. This is not the security boundary —
     # the flags below are — but it yields the precise "symlink_escape"
     # reason for reporting, and avoids an open() for the common case.
-    safe, reason = is_safe_to_scan(filepath, project_root)
-    if not safe:
-        return None, reason
+    # project_root is optional. With it we also enforce containment; without
+    # it we still get every descriptor-level protection — no symlink follow,
+    # no FIFO block, regular files only, size capped. That matters because
+    # the FIFO denial-of-service is reachable from any walker, including
+    # ones with no project root in scope, and "I cannot do the containment
+    # check" is no reason to also skip the ones I can do.
+    if project_root is not None:
+        safe, reason = is_safe_to_scan(filepath, project_root)
+        if not safe:
+            return None, reason
 
     flags = os.O_RDONLY
     if _HAS_NOFOLLOW:
@@ -192,7 +199,7 @@ def open_if_safe(filepath: Path, project_root: Path,
     return fd, ""
 
 
-def read_bytes_if_safe(filepath: Path, project_root: Path,
+def read_bytes_if_safe(filepath: Path, project_root: "Optional[Path]" = None,
                        dir_fd: "Optional[int]" = None) -> "tuple[Optional[bytes], str]":
     """Read `filepath` in full, or return (None, reason).
 
@@ -221,3 +228,73 @@ def read_bytes_if_safe(filepath: Path, project_root: Path,
         return None, "unreadable"
     finally:
         os.close(fd)
+
+
+def read_text_if_safe(filepath: Path, project_root: "Optional[Path]" = None,
+                      encoding: str = "utf-8", errors: str = "ignore",
+                      dir_fd: "Optional[int]" = None) -> "Optional[str]":
+    """Text convenience over `read_bytes_if_safe`. Returns None if refused.
+
+    The drop-in replacement for `path.read_text(...)` anywhere a scanner
+    reads from a tree it does not control. A bare `read_text` on a named
+    pipe blocks until a writer appears — forever — so a single FIFO
+    committed to a repository hung 15+ commands even after the main scan
+    loop had been hardened. Pass `project_root` where it is in scope to get
+    symlink-escape containment as well.
+    """
+    raw, _reason = read_bytes_if_safe(filepath, project_root, dir_fd=dir_fd)
+    if raw is None:
+        return None
+    return raw.decode(encoding, errors=errors)
+
+
+def walk_project_files(project_root: Path, extensions=None, skip_dirs=None):
+    """Yield (path, content_bytes) for every file under `project_root` that
+    passes the guard. Unsafe files are skipped silently.
+
+    This exists because the guard was OPT-IN, and that is the single root
+    cause behind four separate defects found in July 2026: a FIFO hung 15+
+    commands, `regula deps`/`sbom` read an out-of-root requirements.txt,
+    `report.py` read an escaping `.env`, and `aibom.py` shipped a clone of
+    `sbom.py`'s walker with the guard quietly missing. Each was fixed at
+    the call site; each recurred somewhere else, because every new walker
+    had to REMEMBER to be safe. A helper that is safe by construction is
+    the only version of this fix that stays fixed.
+
+    It also closes the ancestor-directory race that `open_if_safe` alone
+    cannot: `os.fwalk` hands back a descriptor for each directory it
+    visits, and opening the basename relative to that descriptor pins the
+    directory inode, so an ancestor swapped for a symlink mid-scan is never
+    re-traversed. `os.fwalk` is POSIX-only (it needs dir_fd support); on
+    Windows we fall back to `os.walk` and the guard degrades to protecting
+    the final component only, which is documented on `open_if_safe`.
+
+    Args:
+        project_root: scan root. Resolved once; containment is checked
+            against this.
+        extensions: optional set of suffixes to yield (e.g. {".py"}).
+            Compared lowercased. None means every file.
+        skip_dirs: directory names to prune. Pass `constants.SKIP_DIRS`.
+    """
+    root = Path(project_root).resolve()
+    skip = set(skip_dirs or ())
+    exts = {e.lower() for e in extensions} if extensions else None
+
+    use_fwalk = hasattr(os, "fwalk")
+    walker = os.fwalk(root) if use_fwalk else os.walk(root)
+
+    for entry in walker:
+        if use_fwalk:
+            dirpath, dirnames, filenames, dirfd = entry
+        else:
+            dirpath, dirnames, filenames = entry
+            dirfd = None
+        dirnames[:] = [d for d in dirnames if d not in skip]
+        for filename in filenames:
+            if exts is not None and Path(filename).suffix.lower() not in exts:
+                continue
+            fpath = Path(dirpath) / filename
+            raw, _reason = read_bytes_if_safe(fpath, root, dir_fd=dirfd)
+            if raw is None:
+                continue
+            yield fpath, raw

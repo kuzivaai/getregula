@@ -17,8 +17,16 @@ Limitations (v1):
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Union
+
+# Sibling imports need the path seeded first, per
+# .claude/rules/python-scripts.md — otherwise this module only imports when
+# a caller happens to have seeded sys.path already.
+sys.path.insert(0, str(Path(__file__).parent))
+
+from scan_safety import read_text_if_safe  # shared path guard
 
 __all__ = ["extract_code", "extract_code_status", "is_notebook"]
 
@@ -49,7 +57,9 @@ def extract_code_status(path: Union[str, Path]) -> dict:
     """
     p = Path(path)
     try:
-        raw = p.read_text(encoding="utf-8", errors="ignore")
+        raw = read_text_if_safe(p, errors="ignore")
+        if raw is None:
+            raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
     except (OSError, PermissionError):
         return {"status": "parse_error", "code": "", "has_code_cells": False, "dropped_cells": 0}
 
