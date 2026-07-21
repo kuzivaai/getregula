@@ -57,8 +57,6 @@ and pytest, following the tests/test_analysis_manifest.py convention.
 """
 
 import json
-import os
-import stat
 import subprocess
 import sys
 import tempfile

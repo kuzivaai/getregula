@@ -20,6 +20,14 @@ def _check_article_50(project_path: str) -> list:
     EC AI Act Service Desk (ai-act-service-desk.ec.europa.eu).
     """
     import os
+    # Canonical skip set + shared path guard. constants.py states the
+    # invariant explicitly: every scanner path must import THIS set and
+    # never define its own ("six independently-drifted copies shipped
+    # once"). This module had drifted — its inline set omitted 12 entries
+    # including examples/, benchmarks/ and site-packages/, so `regula
+    # comply` walked directories every other scanner skips.
+    from constants import SKIP_DIRS
+    from scan_safety import read_bytes_if_safe
     import re
 
     project = Path(project_path).resolve()
@@ -28,23 +36,19 @@ def _check_article_50(project_path: str) -> list:
     # Gather all code content
     code_content = ""
     doc_content = ""
+    _root_resolved = Path(project).resolve()
     for root, dirs, files in os.walk(project):
-        dirs[:] = [d for d in dirs if d not in {
-            ".git", "__pycache__", "node_modules", ".venv", "venv",
-            ".tox", ".mypy_cache", "dist", "build", ".egg-info",
-        }]
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for fn in files:
             fp = Path(root) / fn
             if fp.suffix.lower() in (".py", ".js", ".ts", ".java", ".go", ".rs"):
-                try:
-                    code_content += fp.read_text(encoding="utf-8", errors="ignore")
-                except (PermissionError, OSError):
-                    pass
+                _raw, _ = read_bytes_if_safe(fp, _root_resolved)
+                if _raw is not None:
+                    code_content += _raw.decode("utf-8", errors="ignore")
             elif fp.suffix.lower() in (".md", ".txt", ".html", ".yaml", ".yml"):
-                try:
-                    doc_content += fp.read_text(encoding="utf-8", errors="ignore")
-                except (PermissionError, OSError):
-                    pass
+                _raw, _ = read_bytes_if_safe(fp, _root_resolved)
+                if _raw is not None:
+                    doc_content += _raw.decode("utf-8", errors="ignore")
 
     all_content = (code_content + doc_content).lower()
 
@@ -299,7 +303,7 @@ def cmd_compliance(args) -> None:
 
     if args.subcommand == "update":
         try:
-            entry = update_compliance_status(args.system, args.status, args.note or "")
+            update_compliance_status(args.system, args.status, args.note or "")
             print(f"Updated '{args.system}' to '{args.status}'")
         except ValueError as e:
             print(f"Error: {e}", file=sys.stderr)

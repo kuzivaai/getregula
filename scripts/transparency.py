@@ -13,6 +13,7 @@ Output is copy-paste-ready text for integration into AI applications.
 """
 import sys
 from datetime import datetime, timezone
+from html import escape as html_escape
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -182,7 +183,11 @@ def generate_disclosure(
     if output_format in ("text", "all"):
         result["text"] = d["template_text"]
     if output_format in ("html", "all"):
-        result["html"] = d["template_html"].replace("{system_name}", system_name).replace("{timestamp}", timestamp)
+        # Escape user-supplied name before it lands in an HTML template
+        # (attribute + text contexts) — a name containing quotes or angle
+        # brackets must not break out of the generated snippet.
+        safe_name = html_escape(system_name, quote=True)
+        result["html"] = d["template_html"].replace("{system_name}", safe_name).replace("{timestamp}", timestamp)
     if output_format in ("code", "all"):
         result["code"] = d["template_code_python"]
 
@@ -193,9 +198,19 @@ def format_disclosure_text(disclosures: dict) -> str:
     """Format disclosures as human-readable output."""
     lines = ["# Article 50 — Transparency Disclosures", ""]
 
+    # A raw top-level error dict ({"error": ...} with no per-type structure,
+    # e.g. the "Unknown type" return of generate_disclosure) must not be
+    # iterated as if its keys were disclosure types.
+    if isinstance(disclosures, dict) and "error" in disclosures and "type" not in disclosures:
+        lines.append(f"Error: {disclosures['error']}")
+        return "\n".join(lines)
+
     items = disclosures.items() if isinstance(disclosures, dict) and "type" not in disclosures else [(disclosures.get("type", "?"), disclosures)]
 
     for dtype, d in items:
+        if not isinstance(d, dict):
+            lines.append(f"{dtype}: {d}")
+            continue
         if "error" in d:
             lines.append(f"Error: {d['error']}")
             continue

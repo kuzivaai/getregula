@@ -21,6 +21,10 @@ from typing import Dict, List, Optional, Set, Tuple
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Shared path guard: never read a tree we do not control with a bare
+# read_text — a FIFO blocks forever and a symlink escapes the project.
+from scan_safety import read_text_if_safe
+
 from constants import SKIP_DIRS
 
 # ---------------------------------------------------------------------------
@@ -293,7 +297,6 @@ def classify_context(content: str) -> str:
         "prompt", "system_prompt", "deployment", "model_name",
         "model_id", "engine", "provider",
     }
-    string_literals = _extract_string_literals(tree)
     assignment_names = _extract_assignment_names(tree)
     config_hits = assignment_names & ai_config_keywords
     if config_hits and not analysis["has_ai_code"]:
@@ -313,15 +316,6 @@ def classify_context(content: str) -> str:
     # Default: implementation (even if no AI — the caller should combine
     # this with has_ai_code to decide relevance).
     return "implementation"
-
-
-def _extract_string_literals(tree: ast.Module) -> List[str]:
-    """Return all string literal values in the AST."""
-    strings: List[str] = []
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Constant) and isinstance(node.value, str):
-            strings.append(node.value)
-    return strings
 
 
 def _extract_assignment_names(tree: ast.Module) -> Set[str]:
@@ -1011,7 +1005,9 @@ def resolve_cross_file_ai_flows(project_path: str) -> List[Dict]:
         if any(d in py_file.relative_to(root).parts for d in skip_dirs):
             continue
         try:
-            content = py_file.read_text(encoding="utf-8", errors="ignore")
+            content = read_text_if_safe(py_file, errors="ignore")
+            if content is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
         except OSError:
             continue  # unreadable file; skip
 
@@ -1031,7 +1027,9 @@ def resolve_cross_file_ai_flows(project_path: str) -> List[Dict]:
         if any(d in py_file.relative_to(root).parts for d in skip_dirs):
             continue
         try:
-            content = py_file.read_text(encoding="utf-8", errors="ignore")
+            content = read_text_if_safe(py_file, errors="ignore")
+            if content is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
         except OSError:
             continue  # unreadable file; skip
 

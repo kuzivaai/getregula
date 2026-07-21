@@ -119,7 +119,7 @@
     },
     "timestamp_authority": {
       "type": "object",
-      "description": "Optional in v1.1+. Carries an RFC 3161 TimeStampToken witnessing that the canonical manifest form existed at a given time. The TSA signer-cert chain is NOT verified by the reference verifier; consumers requiring chain trust can extract the token and run it through a dedicated tool.",
+      "description": "Optional in v1.1+. Carries an RFC 3161 TimeStampToken over the canonical manifest form. The reference verifier checks the messageImprint hash and, where it can, the token's PKCS#7 SignedData signature, reporting the strongest status actually proven: 'HASH_MATCHED' (imprint only — gen_time NOT authenticated), 'SIGNATURE_VERIFIED' (signature valid against the certificate embedded in the token and the critical id-kp-timeStamping EKU present, but the signer's identity is self-asserted), or 'CHAIN_VERIFIED' (additionally chained to a caller-supplied --tsa-trust-anchor, both certs valid at gen_time). It never reports a plain 'VERIFIED'. No revocation (CRL/OCSP) is ever consulted and no full RFC 5280 path validation is performed — see spec section 4.6.4.",
       "required": ["format", "hash_algorithm", "message_imprint", "token"],
       "additionalProperties": true,
       "properties": {

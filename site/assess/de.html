@@ -1623,6 +1623,14 @@ function renderScanResults(result) {
   const container = document.getElementById("scanResults");
   let html = "";
 
+  // Jurisdiction-scope notice: the code scanner currently ships EU AI Act
+  // patterns only. Don't silently return an EU verdict when a user picked
+  // Korea or Colorado on the jurisdiction toggle.
+  if (typeof activeJurisdiction !== 'undefined' && activeJurisdiction !== 'eu') {
+    const jurName = activeJurisdiction === 'kr' ? 'Südkorea' : 'Colorado';
+    html += `<div class="scan-jur-notice" style="margin-bottom:16px;padding:12px 14px;border:1px solid var(--border-active);border-radius:var(--radius);background:var(--accent-dim);font-size:0.85rem;line-height:1.45;">Hinweis: Der Code-Scanner deckt derzeit Muster der <strong>EU-KI-Verordnung</strong> ab. Sie haben <strong>${jurName}</strong> ausgewählt — für eine ${jurName}-spezifische Prüfung nutzen Sie den Fragebogen oder die vollständige CLI.</div>`;
+  }
+
   // Tier card (reuse existing styles)
   const tierStyles = {
     prohibited: "tier-prohibited",
@@ -1644,6 +1652,7 @@ function renderScanResults(result) {
       <div class="tier-label">CODE-SCAN-ERGEBNIS</div>
       <div class="tier-name">${tierNames[c.tier] || c.tier}</div>
       <div class="tier-desc">${c.message}</div>
+      ${(c.tier === 'prohibited' || c.tier === 'high_risk') ? '<div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">Dies ist ein <strong>Mustertreffer, keine Feststellung</strong> — prüfen Sie, ob der markierte Code die beschriebene Praktik tatsächlich umsetzt. Fehlalarme sind möglich; dies ist keine Rechtsberatung.</div>' : ''}
       <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">
         Konfidenz: ${c.confidence_score}/100 &middot; Sprache: ${result.language}
         ${c.indicators_matched.length ? ' &middot; Indikatoren: ' + c.indicators_matched.join(', ') : ''}

@@ -17,6 +17,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+from scan_safety import read_bytes_if_safe
 from constants import CODE_EXTENSIONS, SKIP_DIRS
 
 __all__ = ["scan_project_imports"]
@@ -152,7 +153,10 @@ def _get_project_name(project_path):
     for candidate in (p / "pyproject.toml", p / "setup.py", p / "setup.cfg"):
         if candidate.exists():
             try:
-                content = candidate.read_text(encoding="utf-8", errors="replace")
+                _raw, _ = read_bytes_if_safe(candidate, Path(candidate).parent.resolve())
+                if _raw is None:
+                    continue
+                content = _raw.decode("utf-8", errors="replace")
                 m = _PYPROJECT_NAME_RE.search(content)
                 if m:
                     return m.group(1).lower().replace("-", "_")
@@ -161,11 +165,25 @@ def _get_project_name(project_path):
     return None
 
 
-def _extract_imports(filepath):
-    """Extract top-level module names from import statements."""
+def _extract_imports(filepath, project_root=None):
+    """Extract top-level module names from import statements.
+
+    Reads through the shared guard. This function runs BEFORE the main scan
+    loop (report.py calls scan_project_imports at the top of scan_files), so
+    an unguarded read here defeats every downstream protection: a FIFO
+    committed to a repository hung the whole scan indefinitely here even
+    after the scan loop itself was hardened, and a symlink escaping the
+    project was read for fingerprinting. Found by an end-to-end test on a
+    clean clone, not by unit tests — the unit under test was already correct.
+    """
+    if project_root is None:
+        project_root = Path(filepath).parent.resolve()
+    raw, _reason = read_bytes_if_safe(Path(filepath), project_root)
+    if raw is None:
+        return set()
     try:
-        content = filepath.read_text(encoding="utf-8", errors="replace")
-    except (OSError, UnicodeDecodeError):
+        content = raw.decode("utf-8", errors="replace")
+    except UnicodeDecodeError:
         return set()
 
     modules = set()
@@ -196,13 +214,16 @@ def scan_project_imports(project_path):
             # Skip directories we always skip
             if any(skip in filepath.parts for skip in SKIP_DIRS):
                 continue
-            all_imports.update(_extract_imports(filepath))
+            all_imports.update(_extract_imports(filepath, project))
 
     # JS/TS: read package.json dependencies for fingerprinting
     pkg_json_path = project / "package.json"
     if pkg_json_path.exists():
         try:
-            pkg = json.loads(pkg_json_path.read_text(encoding="utf-8"))
+            _raw, _ = read_bytes_if_safe(pkg_json_path, project)
+            if _raw is None:
+                raise ValueError("package.json not readable within project")
+            pkg = json.loads(_raw.decode("utf-8", errors="replace"))
             for dep_key in ("dependencies", "devDependencies", "peerDependencies"):
                 for dep_name in pkg.get(dep_key, {}):
                     # Handle scoped packages: @scope/name → name

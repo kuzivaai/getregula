@@ -59,14 +59,20 @@ def count_commands() -> int:
     """
     scripts_dir = REPO / "scripts"
     total = 0
+    has_monitor = False
     for path in sorted(scripts_dir.glob("cli*.py")):
         text = path.read_text(encoding="utf-8")
         funcs = re.findall(r"^def cmd_(\w+)", text, re.MULTILINE)
         for f in funcs:
-            if not f.startswith("monitor_") and f != "feedback_summary":
+            if f.startswith("monitor_"):
+                has_monitor = True  # 'monitor' dispatches to cmd_monitor_* subs
+            elif f != "feedback_summary":
                 total += 1
-    # Add the top-level 'monitor' command which uses sub-commands instead of a single cmd_ function
-    return total + 1
+    # The top-level 'monitor' command uses sub-commands (cmd_monitor_*) rather
+    # than a single cmd_ function; count it ONCE, but derive its presence rather
+    # than hardcoding +1 — so if monitor is ever removed the count doesn't
+    # silently overcount by one.
+    return total + (1 if has_monitor else 0)
 
 
 def count_patterns() -> dict:
@@ -132,10 +138,13 @@ def count_patterns() -> dict:
     except OSError:
         pass  # source file unreadable; counts stay at zero
         
-    # agent_monitor.py — agentic categories (e.g. "regula-ASI01")
+    # agent_monitor.py — agentic categories (e.g. "regula-ASI01"). Count the
+    # DISTINCT category ids, not textual occurrences: each id appears multiple
+    # times in agent_monitor.py (definition + references), and the field means
+    # "number of OWASP Agentic categories" (there are 10, ASI01–ASI10).
     try:
         text = (REPO / "scripts" / "agent_monitor.py").read_text(encoding="utf-8")
-        out["agentic_categories"] = len(re.findall(r'"regula-ASI\d+"', text))
+        out["agentic_categories"] = len(set(re.findall(r'"regula-ASI\d+"', text)))
     except OSError:
         out["agentic_categories"] = 0
 
@@ -144,8 +153,12 @@ def count_patterns() -> dict:
         + out["architecture"] + out["data_source"] + out["logging"]
         + out["oversight"] + out["credential"]
     )
-    # Composite metric: tier_regexes + credential + agentic (computed, not hardcoded)
-    out["marketing_409"] = out["tier_regexes"] + out["credential"] + out["agentic_categories"]
+    # Composite metric: tier_regexes + credential + agentic (computed, not
+    # hardcoded). Value-neutral name — an earlier "marketing_409" label was
+    # both stale (it no longer equals 409) and misleading.
+    out["composite_tier_cred_agentic"] = (
+        out["tier_regexes"] + out["credential"] + out["agentic_categories"]
+    )
     
     # Historical bucketing (tiered + arch + cred + oversight):
     out["historical_330_bucket"] = (
@@ -297,7 +310,7 @@ def render_markdown(data: dict) -> str:
         f"| Tiered risk regexes (prohibited, high-risk, limited-risk, AI security, bias) | `risk_patterns.py` | {p['tier_regexes']} |\n"
         f"| Credential detectors | `credential_check.py` | {p['credential']} |\n"
         f"| OWASP Agentic categories | `agent_monitor.py` | {p['agentic_categories']} |\n"
-        f"| **Marketing claim (tier + cred + agentic)** | composite | **{p['marketing_409']}** |\n"
+        f"| **Composite (tier + cred + agentic)** | composite | **{p['composite_tier_cred_agentic']}** |\n"
         f"| AI_INDICATORS (libraries, model files, API endpoints, ML patterns, domain keywords) | `risk_patterns.py` | {p['ai_indicators']} |\n"
         f"| GPAI training code detectors | `risk_patterns.py` | {p['gpai_training']} |\n"
         f"| Architecture detectors | `code_analysis.py` | {p['architecture']} |\n"

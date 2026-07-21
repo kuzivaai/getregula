@@ -35,14 +35,17 @@ from omnibus import (
     BINDING_NOTE,
     OMNIBUS_ENACTED,
     OMNIBUS_OJ_DATE,
+    OMNIBUS_IN_FORCE_DATE,
     OMNIBUS_STATUS,
 )
 
 # Enactment-dependent suffix for every Omnibus timeline note. Derives from
 # omnibus.py so the OJ flip is a one-line change there; the previous
-# hardcoded suffix went stale the day the Council approved.
+# hardcoded suffix went stale the day the Council approved. Entry into force is
+# 3 days after OJ publication, so the note keys off OMNIBUS_IN_FORCE_DATE, not
+# the OJ date (asserting "in force" on the OJ date would be up to 3 days early).
 _OMNIBUS_NOTE_STATUS = (
-    f"IN FORCE (published in OJ {OMNIBUS_OJ_DATE})."
+    f"In force from {OMNIBUS_IN_FORCE_DATE} (published in OJ {OMNIBUS_OJ_DATE})."
     if OMNIBUS_ENACTED
     else "Adopted by EP (16 Jun) and Council (29 Jun 2026); pending OJ publication."
 )
@@ -214,7 +217,7 @@ def format_timeline_text() -> str:
         "",
         "  Status key:",
         "    [LIVE] = enforceable now   [LAW] = legally binding date",
-        "    [AGR]  = agreed in Omnibus" + (" (in force)" if OMNIBUS_ENACTED else " (pending OJ publication)"),
+        "    [AGR]  = agreed in Omnibus" + (f" (in force from {OMNIBUS_IN_FORCE_DATE})" if OMNIBUS_ENACTED else " (pending OJ publication)"),
         "    [WIP]  = in progress       [LATE] = deadline missed",
         "",
         f"  IMPORTANT: Digital Omnibus status: {OMNIBUS_STATUS}.",

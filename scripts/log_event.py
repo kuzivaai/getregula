@@ -42,6 +42,7 @@ import hashlib
 import io
 import json
 import os
+import stat as _stat
 import re
 import sys
 import uuid
@@ -117,8 +118,75 @@ def get_audit_dir(project_path=None, create: bool = True) -> Path:
     root = Path(os.environ.get("REGULA_AUDIT_DIR", Path.home() / ".regula" / "audit"))
     audit_dir = root / "projects" / project_slug(project_path) if project_path else root
     if create:
-        audit_dir.mkdir(parents=True, exist_ok=True)
+        # 0700, not the 0755 that mkdir's default would give under a typical
+        # 022 umask. The audit trail records full tool inputs and responses,
+        # which for the Claude Code hook includes command output and file
+        # contents from the user's project. That is the operator's data and
+        # has no business being readable by other local accounts — an issue
+        # on any shared workstation, build agent, or multi-tenant CI runner.
+        # mode= is applied by mkdir itself rather than by a later chmod, so
+        # there is no window in which the directory exists world-readable.
+        audit_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
+        _harden_existing_permissions(audit_dir, root)
     return audit_dir
+
+
+def _harden_existing_permissions(audit_dir: Path, root: Path) -> None:
+    """Tighten permissions on a store created before this was enforced.
+
+    `mkdir(mode=...)` only applies to directories it actually creates, so
+    stores that already exist keep whatever mode they were made with —
+    0755 for anyone who ran Regula before this change, with 0644 log files
+    inside. Silently leaving those world-readable would mean the fix only
+    ever protected new users. Best-effort: a store on a filesystem without
+    POSIX modes, or owned by another user, must not break logging.
+    """
+    if os.name != "posix":
+        return  # Windows ACLs are not modelled by these bits
+
+    # Walk the WHOLE store, not just the directory being opened. Per-project
+    # chains live in <root>/projects/<slug>/, so hardening only `audit_dir`
+    # would leave every previously-created project chain world-readable —
+    # which is most of a real store. `regula doctor` rglobs the same tree,
+    # so anything missed here shows up there as a standing warning.
+    def _tighten(path: Path, mode: int, want_dir: bool) -> None:
+        """chmod `path` only if it is a real file/dir we own — never a symlink.
+
+        `Path.chmod` and `Path.is_dir` both FOLLOW symlinks, and `rglob`
+        yields them. Without an lstat check, anyone able to write inside the
+        audit root (the shared-CI case this hardening exists for) could plant
+        `audit_root/x -> /somebody/elses/file` and have the next Regula run
+        chmod THEIR file. A permission-hardening pass must not become a
+        permission-changing primitive aimed wherever an attacker points it.
+        """
+        try:
+            st = os.lstat(path)          # lstat: never follows the link
+        except OSError:
+            return
+        if _stat.S_ISLNK(st.st_mode):
+            return                        # symlink — refuse, do not chmod
+        if want_dir != _stat.S_ISDIR(st.st_mode):
+            return
+        if st.st_mode & 0o077:
+            try:
+                os.chmod(path, mode, follow_symlinks=False) \
+                    if os.chmod in os.supports_follow_symlinks \
+                    else os.chmod(path, mode)
+            except (OSError, NotImplementedError):
+                pass  # not ours to change — keep logging
+
+    targets: "set[Path]" = {audit_dir, root}
+    try:
+        targets.update(p for p in root.rglob("*"))
+    except OSError:
+        pass
+    for path in targets:
+        _tighten(path, 0o700, want_dir=True)
+    try:
+        for entry in root.rglob("audit_*.jsonl"):
+            _tighten(entry, 0o600, want_dir=False)
+    except OSError:
+        pass
 
 
 def get_audit_file(project_path=None) -> Path:
@@ -226,8 +294,24 @@ def log_event(
 
     audit_file = get_audit_file(project_path)
 
+    # Create the log 0600 if it does not exist yet. Opening with a plain
+    # open(..., "a") would create it 0666 & ~umask — 0644 on a default
+    # system — leaving the audit trail world-readable. os.open with an
+    # explicit mode sets the permissions atomically at creation, so the
+    # contents are never briefly exposed the way a post-hoc chmod would
+    # allow. An existing file keeps its mode; _harden_existing_permissions
+    # tightens those.
+    # O_NOFOLLOW: refuse to append through a symlink. Without it, anyone able
+    # to write in the audit root could pre-plant a symlink at this month's
+    # audit path and have Regula append the audit trail into their chosen
+    # file. O_NOFOLLOW is POSIX-only; on Windows we accept the narrower risk
+    # rather than lose logging.
+    _open_flags = os.O_WRONLY | os.O_CREAT | os.O_APPEND
+    if hasattr(os, "O_NOFOLLOW"):
+        _open_flags |= os.O_NOFOLLOW
+    _fd = os.open(audit_file, _open_flags, 0o600)
     # Open in append mode and acquire exclusive lock
-    with open(audit_file, "a", encoding="utf-8") as f:
+    with os.fdopen(_fd, "a", encoding="utf-8") as f:
         _lock_file(f)
         try:
             # Read seed hash while holding lock (continues the chain

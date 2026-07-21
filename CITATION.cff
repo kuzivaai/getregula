@@ -8,7 +8,10 @@ authors:
     affiliation: "The Implementation Layer"
 repository-code: "https://github.com/kuzivaai/getregula"
 url: "https://getregula.com"
-license: Apache-2.0
+# SPDX expression, kept identical to pyproject.toml [project].license.
+# CFF permits a string here; an understated licence is worse than a
+# verbose one when a buyer's legal review diffs the two artefacts.
+license: "(Apache-2.0 OR EUPL-1.2) AND LicenseRef-DRL-1.1"
 version: "1.7.7"
 date-released: "2026-07-16"
 keywords:

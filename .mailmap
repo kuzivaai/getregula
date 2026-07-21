@@ -1,0 +1,12 @@
+# Canonical identity for the commit history.
+#
+# The history carries three addresses for one person: two personal
+# addresses (a typo variant), and an employer address on 15 commits from
+# 13-15 Jul 2026. An employer address in the public history of a
+# commercially-licensed project is the kind of thing IP diligence asks
+# about, and rewriting published history would break every existing
+# clone, fork, and signature. A .mailmap is the non-destructive fix:
+# `git log`, `git shortlog` and `git blame` all honour it.
+Kuziva Muzondo <mkuziv@gmail.com>
+Kuziva Muzondo <mkuziv@gmail.com> <mkuziva@gmail.com>
+Kuziva Muzondo <mkuziv@gmail.com> <kmuzondo@ford.com>

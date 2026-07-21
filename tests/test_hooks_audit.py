@@ -744,7 +744,7 @@ def test_query_events_time_filtering():
     os.environ["REGULA_AUDIT_DIR"] = tmp_audit
 
     try:
-        e1 = _log_event("event", {"seq": 1})
+        _log_event("event", {"seq": 1})
         # Use a future timestamp to test 'before' filter
         future = "2099-01-01T00:00:00"
         past = "2000-01-01T00:00:00"

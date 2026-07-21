@@ -207,7 +207,6 @@ def _parse_feed(xml_bytes: bytes, source_name: str) -> list:
         return []
 
     # Detect feed type and extract items
-    ns = {"atom": "http://www.w3.org/2005/Atom"}
 
     # RSS 2.0
     for item in root.iter("item"):

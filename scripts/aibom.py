@@ -19,7 +19,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Shared path guard: never read a tree we do not control with a bare
+# read_text — a FIFO blocks forever and a symlink escapes the project.
+from scan_safety import read_text_if_safe
+
 from constants import VERSION, MODEL_EXTENSIONS, SKIP_DIRS, CODE_EXTENSIONS
+# Shared symlink-escape + size gate (same guard sbom.py uses). Must be
+# imported AFTER the sys.path.insert above — bare sibling imports only.
+from scan_safety import is_safe_to_scan
 from dependency_scan import scan_dependencies, AI_LIBRARIES
 
 # ── Component Kind Taxonomy ──────────────────────────────────────
@@ -217,12 +224,26 @@ def _scan_model_files(project_path: str) -> list[dict]:
     """Find model files in a project directory."""
     model_files: list[dict] = []
     root = Path(project_path)
+    root_resolved = root.resolve()
 
-    for dirpath, dirs, files in os.walk(root):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+    # (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(root) if hasattr(os, 'fwalk')
+             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(root)))
+    for dirpath, dirs, files, _dirfd in _walk:
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             filepath = Path(dirpath) / filename
             if filepath.suffix.lower() in MODEL_EXTENSIONS:
+                # This function is a drifted copy of sbom._scan_model_files,
+                # which HAS this guard — the copy silently did not, so a
+                # symlinked model file escaping the project was reported here
+                # while being rejected there. Same walk, same threat, so the
+                # same gate applies.
+                safe, _reason = is_safe_to_scan(filepath, root_resolved)
+                if not safe:
+                    continue
                 rel_path = str(filepath.relative_to(root))
                 try:
                     size_bytes = filepath.stat().st_size
@@ -281,14 +302,21 @@ def generate_aibom(project_path: str) -> dict:
             r"^\s*(?:from|import)\s+([\w.]+)", re.MULTILINE
         )
         _normalised_ai = {lib.replace("-", "_").lower() for lib in AI_LIBRARIES}
-        for dirpath, dirs, files in os.walk(root):
+        # os.fwalk yields a dir descriptor; opening relative to it pins the
+        # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+        # (it guards only the final component). Absent on Windows.
+        _walk = (os.fwalk(root) if hasattr(os, 'fwalk')
+                 else ((_r, _d, _f, None) for _r, _d, _f in os.walk(root)))
+        for dirpath, dirs, files, _dirfd in _walk:
             dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
             for filename in files:
                 filepath = Path(dirpath) / filename
                 if filepath.suffix.lower() not in CODE_EXTENSIONS:
                     continue
                 try:
-                    content = filepath.read_text(encoding="utf-8", errors="ignore")
+                    content = read_text_if_safe(filepath, errors="ignore", dir_fd=_dirfd)
+                    if content is None:
+                        raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
                 except OSError:
                     continue
                 for match in _AI_IMPORT_RE.finditer(content):

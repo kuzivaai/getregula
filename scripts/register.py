@@ -264,13 +264,15 @@ def _current_deadlines(schema_deadlines: dict) -> dict:
     omnibus.py — the single source of truth for the OJ flip.
     """
     from omnibus import (DEADLINE_CURRENT_LAW, DEADLINE_OMNIBUS_ANNEX_III,
-                         OMNIBUS_ENACTED, OMNIBUS_OJ_DATE)
+                         OMNIBUS_ENACTED, OMNIBUS_IN_FORCE_DATE)
     d = dict(schema_deadlines)
     d["applicable_deadline"] = (DEADLINE_OMNIBUS_ANNEX_III if OMNIBUS_ENACTED
                                 else DEADLINE_CURRENT_LAW)
     d["omnibus_proposed_deadline"] = DEADLINE_OMNIBUS_ANNEX_III
+    # Entry into force is 3 days after OJ publication — key the token off the
+    # derived in-force date, not the OJ date (see omnibus.OMNIBUS_IN_FORCE_DATE).
     d["omnibus_status"] = (
-        f"in_force_oj_{OMNIBUS_OJ_DATE}" if OMNIBUS_ENACTED
+        f"in_force_from_{OMNIBUS_IN_FORCE_DATE}" if OMNIBUS_ENACTED
         else "adopted_ep_2026-06-16_council_2026-06-29_pending_oj_publication"
     )
     return d

@@ -60,7 +60,7 @@ def test_detect_nemo_guardrails():
     proj = _make_project({"app.py": "from nemoguardrails import RailsConfig\n"})
     try:
         result = scan_for_guardrails(proj)
-        lib_names = [l["name"] for l in result["libraries_detected"]]
+        lib_names = [lib["name"] for lib in result["libraries_detected"]]
         assert_in("NeMo Guardrails (NVIDIA)", lib_names, "detect NeMo")
         assert_eq(result["libraries_detected"][0]["type"], "open-source", "NeMo is open-source")
     finally:
@@ -71,7 +71,7 @@ def test_detect_guardrails_ai():
     proj = _make_project({"guard.py": "from guardrails import Guard\n"})
     try:
         result = scan_for_guardrails(proj)
-        lib_names = [l["name"] for l in result["libraries_detected"]]
+        lib_names = [lib["name"] for lib in result["libraries_detected"]]
         assert_in("Guardrails AI", lib_names, "detect Guardrails AI")
     finally:
         _cleanup(proj)
@@ -81,7 +81,7 @@ def test_detect_llm_guard():
     proj = _make_project({"scan.py": "from llm_guard import scan_prompt\n"})
     try:
         result = scan_for_guardrails(proj)
-        lib_names = [l["name"] for l in result["libraries_detected"]]
+        lib_names = [lib["name"] for lib in result["libraries_detected"]]
         assert_in("LLM Guard (Protect AI)", lib_names, "detect LLM Guard")
     finally:
         _cleanup(proj)
@@ -91,7 +91,7 @@ def test_detect_lakera():
     proj = _make_project({"sec.py": "import lakera_guard\n"})
     try:
         result = scan_for_guardrails(proj)
-        lib_names = [l["name"] for l in result["libraries_detected"]]
+        lib_names = [lib["name"] for lib in result["libraries_detected"]]
         assert_in("Lakera Guard", lib_names, "detect Lakera")
         assert_eq(result["libraries_detected"][0]["type"], "commercial", "Lakera is commercial")
     finally:
@@ -102,7 +102,7 @@ def test_detect_presidio():
     proj = _make_project({"pii.py": "from presidio_analyzer import AnalyzerEngine\n"})
     try:
         result = scan_for_guardrails(proj)
-        lib_names = [l["name"] for l in result["libraries_detected"]]
+        lib_names = [lib["name"] for lib in result["libraries_detected"]]
         assert_in("Presidio (Microsoft)", lib_names, "detect Presidio")
     finally:
         _cleanup(proj)
@@ -112,7 +112,7 @@ def test_detect_whylabs():
     proj = _make_project({"monitor.py": "import whylogs\n"})
     try:
         result = scan_for_guardrails(proj)
-        lib_names = [l["name"] for l in result["libraries_detected"]]
+        lib_names = [lib["name"] for lib in result["libraries_detected"]]
         assert_in("WhyLabs", lib_names, "detect WhyLabs")
     finally:
         _cleanup(proj)
@@ -122,7 +122,7 @@ def test_detect_rebuff():
     proj = _make_project({"defend.py": "from rebuff import Rebuff\n"})
     try:
         result = scan_for_guardrails(proj)
-        lib_names = [l["name"] for l in result["libraries_detected"]]
+        lib_names = [lib["name"] for lib in result["libraries_detected"]]
         assert_in("Rebuff", lib_names, "detect Rebuff")
     finally:
         _cleanup(proj)
@@ -132,7 +132,7 @@ def test_detect_fiddler():
     proj = _make_project({"observe.py": "import fiddler\n"})
     try:
         result = scan_for_guardrails(proj)
-        lib_names = [l["name"] for l in result["libraries_detected"]]
+        lib_names = [lib["name"] for lib in result["libraries_detected"]]
         assert_in("Fiddler", lib_names, "detect Fiddler")
         assert_eq(result["libraries_detected"][0]["type"], "commercial", "Fiddler is commercial")
     finally:

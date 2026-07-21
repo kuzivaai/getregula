@@ -7,6 +7,150 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Security
+- **`regula handoff` hung indefinitely on a named pipe, read files outside
+  the scan root, and walked into `.git`.** Four defects in one command, each
+  reproduced before and after the fix. It used `rglob` — which follows
+  symlinks, unlike `os.walk(followlinks=False)` — with a bare `read_text()`,
+  and carried a private skip list holding 7 entries against the shared
+  `SKIP_DIRS`' 28, omitting `.git` and `.env` among 21 others. A symlinked
+  `.py` escaping the root was read and reported in the output. A fourth
+  defect masked the other three: paths were reported relative to Regula's
+  own installation directory rather than the scanned project, so every
+  invocation naming a project outside the Regula checkout raised
+  `ValueError` and exited before reaching the pipe. The command was missed
+  by the previous sweep of "all 28 commands that accept a project path"
+  because its path is its *second* positional (`handoff <tool> <project>`).
+  All four are closed by reading through `scan_safety.walk_project_files`.
+- **Ancestor-directory race closed in `cross_file_flow`,
+  `ai_code_governance` and `guardrail_scanner`.** These collected paths
+  during the walk and reopened them by name afterwards; between the two
+  resolutions an ancestor directory can be swapped for a symlink, which
+  `O_NOFOLLOW` cannot prevent because it guards only the final component.
+  Content is now read inside the walk, through a descriptor held on the
+  parent directory. `compliance_check` is deliberately excluded: its file
+  index is consumed by eight Article checker functions across ten iteration
+  sites, so reading content into it would hold the entire scanned project
+  in memory (ceiling 578 files x 10.5 MB = 6.1 GB on this repository alone),
+  trading a race the attacker must win for a memory exhaustion any large
+  repository triggers. Closing it properly requires inverting control so a
+  single walk feeds all eight checkers; tracked in #33.
+- **Added a hostile-fixture sweep to the test suite**
+  (`tests/test_hostile_sweep.py`). Runs every path-taking command as a
+  subprocess against a tree containing a named pipe, a symlink escaping the
+  scan root, a symlinked directory and a `.git` holding bait, asserting that
+  no command hangs, crashes, reads out-of-root content, or walks a skipped
+  directory. The command list is derived from the argument parser rather
+  than hardcoded — a hardcoded list would have missed `handoff`, the one
+  command carrying a real defect.
+- **Dependency manifests were read from outside the scanned project
+  (issue #32).** `scan_dependencies()` loaded all nine manifest types
+  (`requirements.txt`, `pyproject.toml`, `package.json`, `Pipfile`,
+  `Cargo.toml`, `CMakeLists.txt`, `vcpkg.json`, `go.mod`, `build.gradle`)
+  with a bare `read_text()`, so a symlinked manifest pointing outside the
+  scan root was followed and its packages reported in the output.
+  Reproduced against both `regula deps` and `regula sbom` — the latter
+  reaches the same function via `sbom.py`, so guarding sbom's own four
+  walkers did not protect it, which is exactly the trap of applying a guard
+  per-walker rather than at the read. All nine now read through
+  `scan_safety.read_bytes_if_safe`. Verified by sweeping all 28 commands
+  that accept a project path against an escaping-symlink fixture: no
+  command leaks out-of-root content.
+- **TOCTOU race between the path guard and the file read (issue #31).**
+  `is_safe_to_scan` validated a *name*, and every caller then re-opened that
+  name. An attacker with write access to a scanned tree could replace the
+  approved file with a symlink between the two resolutions and have the
+  scanner read a file the guard had rejected — defeating the symlink-escape
+  protection entirely. New `scan_safety.open_if_safe` / `read_bytes_if_safe`
+  resolve once and derive every decision from the descriptor: `O_NOFOLLOW`
+  makes the kernel refuse the swapped symlink outright, `fstat` measures the
+  file actually held so the size capped is the size read, and `S_ISREG`
+  rejects non-regular files. `report.py` and `sbom.py`'s content-reading
+  walkers now read through it. Residual gaps are documented in the module
+  docstring rather than implied away: hardlink swaps are not prevented (they
+  confer no privilege), and Windows lacks `O_NOFOLLOW` so it degrades to the
+  name check plus `fstat`.
+- **Denial of service via a named pipe in a scanned repository.** Found while
+  testing the above: `open(fifo, O_RDONLY)` blocks until a writer appears,
+  and the `S_ISREG` check runs only after `open()` returns. A single FIFO
+  committed to a repository would hang a scan indefinitely. `O_NONBLOCK` is
+  now set so the open returns and the file is rejected.
+- **Audit store was world-readable.** `mkdir()` and `open(..., "a")` created
+  the store 0755/0644 under a default umask. It records full tool inputs and
+  responses — under the Claude Code hook that includes command output and
+  file contents from the user's project — so every other local account could
+  read it, on any shared workstation, build agent, or multi-tenant CI runner.
+  Now created 0700/0600 atomically at creation (not by a later `chmod`, which
+  would leave an exposure window), and stores created before this change are
+  tightened on next use, including per-project chains under `projects/<slug>/`.
+- **`regula doctor` asserted a check it never performed.** Its Security check
+  reported "no world-readable policy files" while never inspecting a file
+  mode. It now actually inspects the audit store and warns, naming the
+  exposed paths.
+- **Crash-reporting endpoint no longer shipped in published builds.** From
+  `43da24c` (10 Apr 2026) through v1.7.7, `scripts/telemetry.py` hardcoded a
+  live Sentry DSN while `docs/TRUST.md` §8.2 stated published builds ship an
+  empty one — verified by downloading `regula-ai==1.7.7` from PyPI and
+  inspecting the shipped file. The DSN is now read from the
+  `REGULA_SENTRY_DSN` environment variable and defaults to empty, restoring
+  the documented behaviour. Reaching the endpoint always required the
+  optional `sentry-sdk` extra **and** explicit opt-in, so default installs
+  were never affected.
+- **Stack-frame locals excluded from crash reports**
+  (`include_local_variables=False`). sentry-sdk defaults this to `True`, and
+  Regula's scan frames hold an entire scanned file in `content`, so an
+  opted-in user's crash could have transmitted their source. The
+  auto-detected hostname is now reported as `redacted`.
+- **`REGULA_NO_TELEMETRY` now suppresses sending, not just the first-run
+  prompt.** It was previously checked only when prompting, so a user who had
+  consented once and later set the variable kept transmitting.
+- **`DO_NOT_TRACK` is now honoured** (<https://consoledonottrack.com>),
+  alongside `REGULA_NO_TELEMETRY` and `CI`. Values of `0`/`false`/`no`/empty
+  are correctly treated as unset.
+- **Path-safety guard extended to the AI-BOM walkers.** `scan_safety.py`
+  centralises the symlink-escape and file-size checks that previously lived
+  only in `report.py`; `sbom.py`'s four walkers now apply them, so a symlink
+  inside a scanned repository can no longer pull an out-of-repo file's name,
+  contents, or JSON keys into a generated BOM.
+
+### Added
+- **RFC 3161 TimeStampToken signature verification.** `regula verify` now
+  verifies the PKCS#7 SignedData signature (RFC 5652 §5.4) over a
+  timestamp token, checks that the signed attributes bind it to that exact
+  TSTInfo, and requires the critical `id-kp-timeStamping` EKU (RFC 3161
+  §2.3). Reports the strongest status actually proven — `HASH_MATCHED`,
+  `SIGNATURE_VERIFIED`, or `CHAIN_VERIFIED` — and never a bare `VERIFIED`.
+- **`--tsa-trust-anchor`** chains the signer certificate to a caller-supplied
+  anchor, yielding `CHAIN_VERIFIED`. Documented as a LIMITED check: no
+  revocation (CRL/OCSP), no name constraints, no intermediate chain
+  building.
+
+### Fixed
+- **Unimplemented signature algorithms are no longer reported as tampering.**
+  Algorithm-dispatch failures and genuine verification failures shared one
+  error channel, so both surfaced as `INVALID`. A conforming TSA using
+  Ed25519 (or any algorithm not implemented here) would have hard-failed a
+  valid pack. Such tokens now degrade to `UNSUPPORTED` and retain the
+  hash-only verdict, as `docs/spec/regula-evidence-format-v1.md` §4.6.3
+  already required. Provably-bad signatures still return `INVALID`.
+- **`regula doctor` telemetry check** now recognises an endpoint configured
+  via `REGULA_SENTRY_DSN`, and its guidance points at the environment
+  variable rather than editing `scripts/telemetry.py`.
+- Removed dead code in `claim_auditor.py` that could raise `ValueError` on a
+  genuine count mismatch, turning an actionable audit failure into a
+  traceback. Removed an orphaned helper in `ast_analysis.py`.
+- Corrected stale figures in `docs/TRUST.md`: the legacy runner's result
+  (was `1373 passed, 4 skipped, 888 functions`; measured
+  `1381 passed, 0 skipped, 942 functions`) and `regula doctor`'s expected
+  split (was `9 passed, 3 info`; actual `8 passed, 4 info`). `README.md`
+  also documented `regula telemetry --enable`, which is not a valid command.
+
+### Changed
+- German and Brazilian Portuguese pages gained the jurisdiction-scope notice
+  and pattern-match caveat that the English pages already carried, and their
+  navigation now links to the localised assessor rather than the English
+  one. Translations reviewed and signed off by the maintainer.
+
 ## [1.7.7] - 2026-07-20
 
 ### Fixed

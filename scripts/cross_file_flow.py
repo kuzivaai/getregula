@@ -21,6 +21,10 @@ from typing import Dict, List, Set, Tuple
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Shared path guard: never read a tree we do not control with a bare
+# read_text — a FIFO blocks forever and a symlink escapes the project.
+from scan_safety import read_text_if_safe
+
 from ast_analysis import (
     trace_ai_data_flow,
     detect_human_oversight,
@@ -58,48 +62,80 @@ def _should_skip(path: Path) -> bool:
     return False
 
 
-def _collect_python_files(project_path: Path) -> List[Path]:
-    """Walk project and return all .py files, respecting SKIP_DIRS."""
+def _collect_python_files(project_path: Path) -> "List[Tuple[Path, str]]":
+    """Walk project and return (path, content) for every readable .py file.
+
+    Content is read during the walk so it comes from the descriptor that
+    passed the guard — see the note at the read site."""
     files = []
-    for root, dirs, filenames in os.walk(project_path):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+    # (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(project_path) if hasattr(os, 'fwalk')
+             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(project_path)))
+    for root, dirs, filenames, _dirfd in _walk:
         root_path = Path(root)
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for fn in filenames:
             if fn.endswith(".py"):
                 fp = root_path / fn
-                if not _should_skip(fp.relative_to(project_path)):
-                    files.append(fp)
+                if _should_skip(fp.relative_to(project_path)):
+                    continue
+                # Read HERE, while _dirfd is still open on this directory.
+                # Collecting paths and reading them later re-resolves the
+                # path from scratch, which is what leaves the
+                # ancestor-directory race open (#33): between the walk and
+                # the read, an ancestor can be swapped for a symlink. With
+                # dir_fd the directory inode is pinned, so it cannot be.
+                content = read_text_if_safe(
+                    fp, project_path, errors="replace", dir_fd=_dirfd)
+                if content is None:
+                    continue  # escaping symlink, FIFO, oversized, unreadable
+                files.append((fp, content))
     return files
 
 
-def _collect_js_ts_files(project_path: Path) -> List[Path]:
-    """Walk project and return all JS/TS files, respecting SKIP_DIRS."""
+def _collect_js_ts_files(project_path: Path) -> "List[Tuple[Path, str]]":
+    """Walk project and return (path, content) for readable JS/TS files."""
     files = []
-    for root, dirs, filenames in os.walk(project_path):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+    # (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(project_path) if hasattr(os, 'fwalk')
+             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(project_path)))
+    for root, dirs, filenames, _dirfd in _walk:
         root_path = Path(root)
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for fn in filenames:
             ext = os.path.splitext(fn)[1]
             if ext in _JS_TS_EXTENSIONS:
                 fp = root_path / fn
-                if not _should_skip(fp.relative_to(project_path)):
-                    files.append(fp)
+                if _should_skip(fp.relative_to(project_path)):
+                    continue
+                # Read while _dirfd is live — same reason as the Python
+                # collector above (#33).
+                content = read_text_if_safe(
+                    fp, project_path, errors="replace", dir_fd=_dirfd)
+                if content is None:
+                    continue
+                files.append((fp, content))
     return files
 
 
 def _build_symbol_table(
-    project_path: Path, py_files: List[Path]
+    project_path: Path, py_files: "List[Tuple[Path, str]]"
 ) -> Dict[str, Dict]:
-    """Build a project-wide symbol table from Python files.
+    """Build a project-wide symbol table from already-read Python files.
+
+    Takes (path, content) pairs rather than paths: the content was read
+    during the walk, while a descriptor on the parent directory was still
+    open. Re-reading by path here would reopen the ancestor-race window
+    the collector closes (#33).
 
     Returns: {relative_path: {"functions": {name: line}, "classes": {name: line}, "content": str}}
     """
     table: Dict[str, Dict] = {}
-    for fp in py_files:
-        try:
-            content = fp.read_text(encoding="utf-8", errors="replace")
-        except (OSError, PermissionError):
-            continue
+    for fp, content in py_files:
         try:
             tree = ast.parse(content, filename=str(fp))
         except (SyntaxError, MemoryError, RecursionError):
@@ -127,19 +163,14 @@ def _build_symbol_table(
 
 
 def _build_js_ts_symbol_table(
-    project_path: Path, js_files: List[Path]
+    project_path: Path, js_files: "List[Tuple[Path, str]]"
 ) -> Dict[str, Dict]:
     """Build a project-wide symbol table from JS/TS files using ast_engine.
 
     Returns same shape as _build_symbol_table so both can be merged.
     """
     table: Dict[str, Dict] = {}
-    for fp in js_files:
-        try:
-            content = fp.read_text(encoding="utf-8", errors="replace")
-        except (OSError, PermissionError):
-            continue
-
+    for fp, content in js_files:
         rel = str(fp.relative_to(project_path))
         analysis = ast_engine_analyse_file(content, fp.name)
 
@@ -512,7 +543,6 @@ def _trace_cross_file_paths(
     for src in ai_sources:
         file_rel = src["file"]
         has_same_file_oversight = False
-        same_file_confidence = "high"
 
         # Check destinations within the same file
         for dest in src["destinations"]:

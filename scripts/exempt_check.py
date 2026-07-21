@@ -46,7 +46,14 @@ from __future__ import annotations
 import json
 import sys
 from datetime import date
+from pathlib import Path
 from typing import Any
+
+# Self-protect the sibling-import path: _guidelines_status_block() imports
+# ARTICLE_6_GUIDELINES_STATUS from compliance_check (the single source of
+# truth), so this module must seed sys.path like every other script that
+# bare-imports a sibling (enforced by test_source_of_truth).
+sys.path.insert(0, str(Path(__file__).parent))
 
 # ---------------------------------------------------------------------------
 # Result tiers
@@ -132,16 +139,33 @@ def _header() -> str:
 
 
 def _guidelines_status_block() -> list[str]:
-    return [
+    # Rendered from the single source of truth (compliance_check.
+    # ARTICLE_6_GUIDELINES_STATUS) so this block cannot drift from the gap
+    # report / JSON when the Commission publishes the guidelines. Function-local
+    # import keeps exempt_check loadable standalone and avoids any import cycle.
+    from compliance_check import ARTICLE_6_GUIDELINES_STATUS as s, _uk_date
+    lines = [
         f"  {_LINE}",
-        "  REGULATORY STATUS (verified 2026-04-08):",
-        "  The European Commission missed its 2 February 2026 deadline",
-        "  for publishing guidelines on Article 6 classification (Art 6(5)).",
-        "  A draft was promised by end-February 2026 and has not been",
-        "  finalised. Self-assessment under Article 6(3) is currently",
-        "  UNGUIDED. Re-evaluate when the guidelines publish.",
-        f"  {_LINE}",
+        f"  REGULATORY STATUS (verified {s['verified_on']}):",
     ]
+    if s.get("missed") and s.get("current_status") != "finalised":
+        promised = s.get("draft_promised_by")
+        lines += [
+            f"  The European Commission missed its {_uk_date(s['deadline'])} deadline",
+            "  for publishing guidelines on Article 6 classification (Art 6(5)).",
+            (f"  A draft was promised by {_uk_date(promised)} and has not been"
+             if promised else "  A draft was promised and has not been"),
+            "  finalised. Self-assessment under Article 6(3) is currently",
+            "  UNGUIDED. Re-evaluate when the guidelines publish.",
+        ]
+    else:
+        lines += [
+            "  The European Commission has PUBLISHED its Article 6(5) guidelines",
+            f"  on high-risk classification (deadline was {_uk_date(s['deadline'])}).",
+            "  Self-assessment under Article 6(3) can now follow that guidance.",
+        ]
+    lines.append(f"  {_LINE}")
+    return lines
 
 
 def format_result(result: dict) -> str:

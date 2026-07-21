@@ -145,7 +145,6 @@ def _run_bare_scan() -> None:
     # Scan
     findings = scan_files(project)
     view = partition_findings(findings)
-    active = view["active"]
     blocks = view["block"]
     warns = view["warn"]
     infos = view["info"]
@@ -1715,6 +1714,31 @@ def _build_subparsers(subparsers):
         "--report",
         metavar="PATH",
         help="Write a regula.verify.v1.json report to PATH",
+    )
+    p_verify.add_argument(
+        "--expect-public-key",
+        metavar="KEY",
+        help="Pin the expected Ed25519 signing public key (base64, exactly as "
+             "stored in the manifest's signing.public_key). When set, "
+             "verification ALSO fails if a signed manifest's key does not match, "
+             "or if the pack is unsigned — a trust-on-first-use / continuity "
+             "check binding the pack to a signer whose key you received "
+             "out-of-band. Without it, a valid signature proves only internal "
+             "self-consistency, not signer identity.",
+    )
+    p_verify.add_argument(
+        "--tsa-trust-anchor",
+        metavar="PATH",
+        help="PEM file holding the TSA root certificate that issued the "
+             "timestamp signer. When set, the RFC 3161 token's signature is "
+             "additionally chained to this anchor and both certificates must "
+             "have been valid at gen_time (timestamp_status CHAIN_VERIFIED). "
+             "This is a LIMITED chain check: no revocation (CRL/OCSP), no "
+             "name-constraint or policy validation, and no intermediate chain "
+             "building — the anchor must be the direct issuer. Without it, the "
+             "token signature is still verified against the certificate "
+             "embedded in the token (SIGNATURE_VERIFIED), which authenticates "
+             "the token but not the signer's identity.",
     )
     p_verify.set_defaults(func=cmd_verify)
 

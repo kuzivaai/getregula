@@ -16,7 +16,38 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from constants import VERSION
 
-_SENTRY_DSN = "https://7ac96f66fc31c43edd6072c3a0d0c9b2@o4511163062353920.ingest.de.sentry.io/4511196620914768"
+# Published builds ship NO endpoint. Regula's audience is compliance and
+# security teams, many of whom cannot lawfully send anything to a third
+# party — shipping a live endpoint in the wheel would contradict the
+# posture documented in docs/TRUST.md §8. Operators who want crash reports
+# set REGULA_SENTRY_DSN to a Sentry instance of their own choosing.
+#
+# Do NOT hardcode a DSN here. Doing so silently makes docs/TRUST.md false
+# for every installed user (it happened once, in 43da24c, and went
+# unnoticed from 10 Apr to 20 Jul 2026).
+_SENTRY_DSN = ""
+
+
+def _resolve_dsn() -> str:
+    """Return the configured Sentry DSN, or "" when none is set."""
+    return os.environ.get("REGULA_SENTRY_DSN", _SENTRY_DSN).strip()
+
+
+def telemetry_suppressed() -> bool:
+    """True when the environment forbids telemetry, regardless of consent.
+
+    `DO_NOT_TRACK` is the cross-tool convention (consoledonottrack.com);
+    `REGULA_NO_TELEMETRY` is our own kill switch; `CI` covers unattended
+    runs. All three are checked here so they suppress *sending*, not merely
+    the first-run prompt — the earlier code checked them only at the prompt,
+    so a user who had consented once and later set REGULA_NO_TELEMETRY was
+    still transmitting.
+    """
+    for var in ("DO_NOT_TRACK", "REGULA_NO_TELEMETRY", "CI"):
+        val = os.environ.get(var)
+        if val is not None and val.strip().lower() not in ("", "0", "false", "no"):
+            return True
+    return False
 
 
 def _config_dir() -> Path:
@@ -53,7 +84,7 @@ def set_consent(value: bool) -> None:
     d.mkdir(parents=True, exist_ok=True)
     p = _config_path()
     existing = p.read_text().splitlines() if p.exists() else []
-    lines = [l for l in existing if not l.strip().startswith("telemetry")]
+    lines = [ln for ln in existing if not ln.strip().startswith("telemetry")]
     lines.append(f'telemetry = {"true" if value else "false"}')
     p.write_text("\n".join(lines) + "\n")
 
@@ -68,14 +99,23 @@ def prompt_consent_if_needed() -> None:
     """
     if not sys.stdin.isatty():
         return
-    if os.environ.get("CI") or os.environ.get("REGULA_NO_TELEMETRY"):
+    if telemetry_suppressed():
         return
     if get_consent() is not None:
         return
+    # Nothing to consent TO when no endpoint is configured — asking would
+    # imply data leaves the machine when it cannot.
+    if not _resolve_dsn():
+        return
 
     print()
-    print("  Regula can send anonymous crash reports to help fix bugs faster.")
-    print("  No source code, file paths, or personal data are ever sent.")
+    print("  Regula can send crash reports to help fix bugs faster.")
+    print("  Sent on an uncaught error: the exception type and message, a")
+    print("  stack trace through Regula's own code, and the Regula, OS and")
+    print("  Python versions.")
+    print("  Not sent: your source code, the contents of scanned files,")
+    print("  local variables, or your hostname. Note that an error message")
+    print("  can itself contain a file path (e.g. a permission error).")
     print("  Change this at any time: regula telemetry enable|disable")
     print()
     try:
@@ -91,23 +131,37 @@ def init_sentry() -> None:
     """Initialise Sentry if consent=True, DSN is set, and sentry-sdk is installed."""
     if get_consent() is not True:
         return
-    if not _SENTRY_DSN:
+    if telemetry_suppressed():
+        return
+    dsn = _resolve_dsn()
+    if not dsn:
         return
     try:
         import sentry_sdk
         sentry_sdk.init(
-            dsn=_SENTRY_DSN,
+            dsn=dsn,
             release=f"regula@{VERSION}",
             traces_sample_rate=0.0,  # errors only — no performance tracing
             send_default_pii=False,
+            # Data minimisation (UK/EU GDPR Art. 5(1)(c)). sentry-sdk
+            # defaults this to True, which would attach every stack frame's
+            # locals — and Regula's scan frames hold whole scanned files in
+            # `content`, so a crash would ship a user's proprietary source
+            # to the endpoint. This is the decisive setting, not a nicety.
+            include_local_variables=False,
+            # Suppress the auto-detected hostname, which is often a person's
+            # name or an internal machine identifier.
+            server_name="redacted",
         )
     except ImportError:
         pass  # sentry-sdk not installed — silent no-op
 
 
 def dsn_is_configured() -> bool:
-    """Return True if a Sentry DSN has been set in this file."""
-    return bool(_SENTRY_DSN)
+    """Return True if a Sentry DSN is configured (env var or, historically,
+    this module). Must go through `_resolve_dsn` so `regula doctor` reflects
+    an endpoint set via REGULA_SENTRY_DSN."""
+    return bool(_resolve_dsn())
 
 
 def build_feedback_url(
