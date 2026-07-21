@@ -29,6 +29,12 @@ jobs:
         id: regula
         uses: ./
         with:
+          # Action tests exercise scan behaviour, not the PR-comment feature.
+          # Left at its "true" default, every job here would post a comment and
+          # fail on a read-only token (as it did on PR #30). Disabling keeps this
+          # workflow least-privilege and green for fork PRs, whose tokens are
+          # always read-only.
+          comment-on-pr: "false"
           path: tests/fixtures/sample_compliant/
           format: sarif
           fail-on-prohibited: "true"
@@ -62,6 +68,12 @@ jobs:
         id: regula
         uses: ./
         with:
+          # Action tests exercise scan behaviour, not the PR-comment feature.
+          # Left at its "true" default, every job here would post a comment and
+          # fail on a read-only token (as it did on PR #30). Disabling keeps this
+          # workflow least-privilege and green for fork PRs, whose tokens are
+          # always read-only.
+          comment-on-pr: "false"
           path: tests/fixtures/sample_high_risk/
           fail-on-high-risk: "false"
           fail-on-prohibited: "true"
@@ -90,6 +102,8 @@ jobs:
         uses: ./
         continue-on-error: true
         with:
+          # See note above: action tests do not exercise the PR-comment feature.
+          comment-on-pr: "false"
           path: tests/fixtures/sample_high_risk/
           fail-on-high-risk: "true"
           fail-on-prohibited: "true"
@@ -115,6 +129,12 @@ jobs:
         id: regula
         uses: ./
         with:
+          # Action tests exercise scan behaviour, not the PR-comment feature.
+          # Left at its "true" default, every job here would post a comment and
+          # fail on a read-only token (as it did on PR #30). Disabling keeps this
+          # workflow least-privilege and green for fork PRs, whose tokens are
+          # always read-only.
+          comment-on-pr: "false"
           path: tests/fixtures/sample_high_risk/
           format: sarif
           fail-on-high-risk: "false"
@@ -154,6 +174,12 @@ jobs:
         id: regula
         uses: ./
         with:
+          # Action tests exercise scan behaviour, not the PR-comment feature.
+          # Left at its "true" default, every job here would post a comment and
+          # fail on a read-only token (as it did on PR #30). Disabling keeps this
+          # workflow least-privilege and green for fork PRs, whose tokens are
+          # always read-only.
+          comment-on-pr: "false"
           path: tests/fixtures/sample_high_risk/
           fail-on-high-risk: "false"
           upload-sarif: "false"
@@ -204,6 +230,8 @@ jobs:
         uses: ./
         continue-on-error: true
         with:
+          # See note above: action tests do not exercise the PR-comment feature.
+          comment-on-pr: "false"
           path: tests/fixtures/sample_unpinned/
           min-dependency-score: "80"
           fail-on-high-risk: "false"
@@ -234,6 +262,12 @@ jobs:
         id: regula
         uses: ./
         with:
+          # Action tests exercise scan behaviour, not the PR-comment feature.
+          # Left at its "true" default, every job here would post a comment and
+          # fail on a read-only token (as it did on PR #30). Disabling keeps this
+          # workflow least-privilege and green for fork PRs, whose tokens are
+          # always read-only.
+          comment-on-pr: "false"
           path: tests/fixtures/sample_warn_tier/
           fail-on-high-risk: "false"
           upload-sarif: "false"
@@ -254,6 +288,12 @@ jobs:
         id: regula
         uses: ./
         with:
+          # Action tests exercise scan behaviour, not the PR-comment feature.
+          # Left at its "true" default, every job here would post a comment and
+          # fail on a read-only token (as it did on PR #30). Disabling keeps this
+          # workflow least-privilege and green for fork PRs, whose tokens are
+          # always read-only.
+          comment-on-pr: "false"
           fail-on-high-risk: "false"
           fail-on-prohibited: "false"
           upload-sarif: "false"
@@ -278,6 +318,8 @@ jobs:
         uses: ./
         continue-on-error: true
         with:
+          # See note above: action tests do not exercise the PR-comment feature.
+          comment-on-pr: "false"
           path: this/path/does/not/exist
           fail-on-prohibited: "true"
           upload-sarif: "false"
@@ -303,6 +345,12 @@ jobs:
         id: regula
         uses: ./
         with:
+          # Action tests exercise scan behaviour, not the PR-comment feature.
+          # Left at its "true" default, every job here would post a comment and
+          # fail on a read-only token (as it did on PR #30). Disabling keeps this
+          # workflow least-privilege and green for fork PRs, whose tokens are
+          # always read-only.
+          comment-on-pr: "false"
           path: tests/fixtures/sample_compliant/
           format: sarif
           fail-on-prohibited: "true"
