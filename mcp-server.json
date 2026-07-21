@@ -2,7 +2,7 @@
   "name": "regula",
   "display_name": "Regula — EU AI Act Compliance Scanner",
   "description": "Scan codebases for EU AI Act compliance issues. Classifies AI systems into risk tiers, maps findings to 12 compliance frameworks, generates gap assessments. 419 detection patterns across 8 languages. Fully offline, zero runtime dependencies.",
-  "version": "1.7.7",
+  "version": "1.7.8",
   "repository": "https://github.com/kuzivaai/getregula",
   "homepage": "https://getregula.com",
   "license": "Apache-2.0",
