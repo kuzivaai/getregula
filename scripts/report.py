@@ -41,50 +41,14 @@ from scan_cache import ScanCache
 # File scanner (used by both HTML and SARIF generators)
 # ---------------------------------------------------------------------------
 
-from constants import CODE_EXTENSIONS, SKIP_DIRS, MODEL_EXTENSIONS, VERSION, MAX_FILE_SIZE_BYTES, MAX_CLASSIFY_CHARS
+from constants import CODE_EXTENSIONS, SKIP_DIRS, MODEL_EXTENSIONS, VERSION, MAX_CLASSIFY_CHARS
 CONFIG_FILES = {".env", ".env.production", ".env.local", "docker-compose.yml", "docker-compose.yaml", "Dockerfile"}
 
 
-def _is_safe_to_scan(filepath: Path, project_root: Path) -> "tuple[bool, str]":
-    """Path-safety gate applied before any file is opened (Phase 5 threat model).
-
-    Returns (safe, reason). reason is "" when safe, otherwise one of:
-      "symlink_escape" — the file (or a symlinked ancestor directory) resolves
-                         outside project_root. A scanned repository is
-                         untrusted input; a symlink inside it must not let
-                         the scanner read arbitrary files reachable by the
-                         process (CI secrets, SSH keys, /etc/passwd, etc).
-                         Verified via reproduction: prior to this check, a
-                         symlink inside the scan root pointing outside it was
-                         silently followed and its content scanned.
-      "oversized"      — file size exceeds MAX_FILE_SIZE_BYTES. Prevents a
-                         single huge file (accidental or adversarial) from
-                         exhausting memory; there was previously no limit.
-      "stat_failed"    — could not stat the file (race, permissions, etc).
-
-    This does not replace os.walk's directory-level followlinks=False
-    default (which already prevents symlinked-directory traversal loops);
-    it closes the remaining gap where an individual *file* is a symlink.
-    """
-    try:
-        resolved = filepath.resolve()
-    except OSError:
-        return False, "stat_failed"
-
-    try:
-        resolved.relative_to(project_root)
-    except ValueError:
-        return False, "symlink_escape"
-
-    try:
-        size = filepath.stat().st_size
-    except OSError:
-        return False, "stat_failed"
-
-    if size > MAX_FILE_SIZE_BYTES:
-        return False, "oversized"
-
-    return True, ""
+# The path-safety gate (symlink-escape + size cap) lives in scan_safety so
+# report.py and sbom.py share ONE implementation and cannot drift. Imported
+# under the original private name to keep this module's call sites unchanged.
+from scan_safety import is_safe_to_scan as _is_safe_to_scan
 
 # ---------------------------------------------------------------------------
 # EU AI Act enforcement deadlines + Digital Omnibus status.
@@ -1043,8 +1007,8 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # or wrapped error handling, not actual unguarded usage.
             if _ast_context and result.tier.value != "prohibited":
                 from ast_context import is_in_string, is_in_try
-                _ai_lines = [i for i, l in enumerate(lines, 1)
-                             if re.search(r'(?:import|from)\s+\w*(?:ai|ml|openai|torch|sklearn|tensorflow)', l)]
+                _ai_lines = [i for i, ln in enumerate(lines, 1)
+                             if re.search(r'(?:import|from)\s+\w*(?:ai|ml|openai|torch|sklearn|tensorflow)', ln)]
                 if _ai_lines:
                     _in_string_count = sum(1 for ln in _ai_lines if is_in_string(_ast_context, ln))
                     _in_try_count = sum(1 for ln in _ai_lines if is_in_try(_ast_context, ln))
@@ -1368,7 +1332,6 @@ def generate_html_report(
     prohibited_count = sum(1 for f in active if f["tier"] == "prohibited")
     high_risk_count = sum(1 for f in active if f["tier"] == "high_risk")
     limited_count = sum(1 for f in active if f["tier"] == "limited_risk")
-    minimal_count = sum(1 for f in active if f["tier"] == "minimal_risk")
     credential_count = sum(1 for f in active if f["tier"] == "credential_exposure")
     suppressed_count = sum(1 for f in findings if f.get("suppressed"))
     total_files = len(set(f["file"] for f in findings))
@@ -1442,7 +1405,6 @@ personnel. This is not legal advice.
 """
 
     # Executive summary — plain-English block for non-technical readers
-    scanned_files = len(set(f["file"] for f in findings if not f.get("suppressed")))
     if total_files == 0:
         exec_verdict = "No AI-related files detected"
         exec_colour = "#6b7280"
@@ -2053,13 +2015,10 @@ def main():
 
     if args.format == "html":
         content = generate_html_report(findings, project_name, audit_events, chain_valid)
-        suffix = ".html"
     elif args.format == "sarif":
         content = json.dumps(generate_sarif(findings, project_name), indent=2)
-        suffix = ".sarif.json"
     else:
         content = json.dumps(findings, indent=2)
-        suffix = ".json"
 
     if args.output:
         out_path = Path(args.output)

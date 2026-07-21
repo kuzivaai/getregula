@@ -575,7 +575,7 @@ def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> s
             capture_output=True, text=True, cwd=project_path, timeout=5,
         )
         if result.returncode == 0:
-            git_log_lines = [l.strip() for l in result.stdout.strip().split("\n") if l.strip()]
+            git_log_lines = [ln.strip() for ln in result.stdout.strip().split("\n") if ln.strip()]
     except (OSError, _sp.TimeoutExpired):
         pass  # git not available or slow; skip commit history
 
@@ -854,6 +854,23 @@ def generate_sme_simplified_annex_iv(findings: dict, project_name: str, project_
     ai_deps = extract_ai_dependencies(project_path)
     ast_data = ast_analyse_project(project_path)
 
+    # Article 6(5) guidance status rendered from the single source of truth
+    # (compliance_check.ARTICLE_6_GUIDELINES_STATUS) so this generated doc
+    # cannot drift when the Commission publishes the guidelines.
+    from compliance_check import ARTICLE_6_GUIDELINES_STATUS as _a6, _uk_date
+    if _a6.get("missed") and _a6.get("current_status") != "finalised":
+        _art6_note = (
+            f"The Commission missed its {_uk_date(_a6['deadline'])} deadline for "
+            "publishing the\nguidelines on Article 6 (Article 6(5)). "
+            "Self-assessment is currently\nunguided — document the rationale thoroughly."
+        )
+    else:
+        _art6_note = (
+            "The Commission has published its Article 6(5) guidelines on "
+            f"high-risk\nclassification (deadline was {_uk_date(_a6['deadline'])}). "
+            "Self-assessment\nunder Article 6(3) can now follow the published guidance."
+        )
+
     doc = f"""# Annex IV (SME Simplified) — Technical Documentation
 
 > **INTERIM FORMAT.** Article 11(1) of the EU AI Act allows SMEs and
@@ -997,9 +1014,7 @@ applies, run:
 regula exempt --format json > exempt-self-assessment.json
 ```
 
-The Commission missed its 2 February 2026 deadline for publishing the
-guidelines on Article 6 (Article 6(5)). Self-assessment is currently
-unguided — document the rationale thoroughly.
+""" + _art6_note + """
 
 ---
 

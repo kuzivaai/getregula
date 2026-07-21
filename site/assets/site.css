@@ -567,7 +567,10 @@ button.install-box {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: linear-gradient(135deg, #10b981, #059669);
+    /* Darkened for WCAG 2.2 AA: white on #10b981 was 2.54:1 (fail). Both
+       stops now pass 4.5:1 (#047857 = 5.48:1, #065f46 = 7.68:1) — same
+       remediation approach as the notify button (#3b82f6 -> #1d4ed8). */
+    background: linear-gradient(135deg, #047857, #065f46);
     color: #ffffff;
     font-size: var(--fs-base);
     font-weight: 600;
@@ -584,7 +587,7 @@ button.install-box {
     transform: translateY(-2px);
     box-shadow: 0 8px 32px rgba(16,185,129,0.4);
 }
-.cta-pill.copied { background: linear-gradient(135deg, #059669, #047857); }
+.cta-pill.copied { background: linear-gradient(135deg, #065f46, #064e3b); }
 /* Tag colour brightened to accent-hover (#60a5fa) for WCAG AA 4.5:1. */
 .tag-blue { background: rgba(59,130,246,0.18); color: var(--accent-hover); }
 

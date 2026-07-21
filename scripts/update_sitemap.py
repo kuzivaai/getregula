@@ -33,11 +33,26 @@ SOURCE_MAP = {
 
 
 def git_date(*paths: str) -> str | None:
-    out = subprocess.run(
-        ["git", "log", "-1", "--format=%cs", "--", *paths],
-        capture_output=True, text=True, cwd=REPO,
-    ).stdout.strip()
-    return out or None
+    """Last commit date (YYYY-MM-DD) touching any of ``paths``, or None if the
+    file has no commit history.
+
+    Raises RuntimeError on an actual git failure (not a repo, git binary
+    missing, locked/corrupt repo). Without this, such a failure returned empty
+    stdout -> None, which main() treated identically to "no history": it kept
+    the STALE date and still printed success — defeating the file's whole
+    "accuracy or nothing" premise. sbom.py guards its git call the same way.
+    """
+    try:
+        proc = subprocess.run(
+            ["git", "log", "-1", "--format=%cs", "--", *paths],
+            capture_output=True, text=True, cwd=REPO,
+        )
+    except (OSError, subprocess.SubprocessError) as e:
+        raise RuntimeError(f"git unavailable: {e}") from e
+    if proc.returncode != 0:
+        detail = proc.stderr.strip() or f"exit {proc.returncode}"
+        raise RuntimeError(f"git log failed: {detail}")
+    return proc.stdout.strip() or None
 
 
 def url_to_path(url: str) -> str:
@@ -50,10 +65,12 @@ def url_to_path(url: str) -> str:
 def main() -> int:
     text = SITEMAP.read_text(encoding="utf-8")
     changed = 0
+    matched = 0
     missing = []
 
     def repl(m: re.Match) -> str:
-        nonlocal changed
+        nonlocal changed, matched
+        matched += 1
         url, old = m.group(1), m.group(2)
         rel = url_to_path(url)
         paths = [rel] + ([SOURCE_MAP[rel]] if rel in SOURCE_MAP else [])
@@ -67,9 +84,26 @@ def main() -> int:
         return m.group(0).replace(f"<lastmod>{old}</lastmod>",
                                   f"<lastmod>{date}</lastmod>")
 
-    new = re.sub(
-        r"<loc>([^<]+)</loc>\s*<lastmod>([^<]+)</lastmod>",
-        repl, text)
+    try:
+        new = re.sub(
+            r"<loc>([^<]+)</loc>\s*<lastmod>([^<]+)</lastmod>",
+            repl, text)
+    except RuntimeError as e:
+        # A git failure means we cannot derive accurate dates — error out
+        # rather than silently keep stale ones and report success.
+        print(f"sitemap: ERROR — {e}", file=sys.stderr)
+        return 1
+
+    # Parity guard: every <loc> must have been processed. A URL whose
+    # <loc>/<lastmod> tags are not adjacent would otherwise be silently skipped
+    # (neither updated nor reported), quietly eroding the accuracy guarantee.
+    total_locs = text.count("<loc>")
+    if matched != total_locs:
+        print(f"sitemap: ERROR — matched {matched} of {total_locs} <loc> "
+              "entries (loc/lastmod not adjacent?); refusing to write a "
+              "partial update", file=sys.stderr)
+        return 1
+
     if missing:
         print(f"sitemap: ERROR — {len(missing)} URLs have no file: {missing}",
               file=sys.stderr)

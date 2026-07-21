@@ -7,6 +7,7 @@ cli.py imports this module (via cli_util) at module level, creating a
 circular dependency. All imports from cli must stay inside function bodies.
 """
 
+import base64
 import hashlib
 import json
 import sys
@@ -247,14 +248,39 @@ def cmd_verify(args) -> None:
                     print(f"Refusing to extract {pack_path}: {len(infos)} members "
                           f"(limit {_MAX_EXTRACT_MEMBERS})")
                     sys.exit(2)
-                declared = sum(zi.file_size for zi in infos)
-                if declared > _MAX_EXTRACT_BYTES:
-                    print(f"Refusing to extract {pack_path}: declares "
-                          f"{declared / 1_048_576:.0f} MB uncompressed "
-                          f"(limit {_MAX_EXTRACT_BYTES // 1_048_576} MB) — "
-                          "possible decompression bomb")
-                    sys.exit(2)
-                zf.extractall(extracted_tmpdir.name)
+                # Do NOT trust the declared `zi.file_size` — a crafted bundle
+                # can under-declare it while the real stream is far larger.
+                # Extract member-by-member, counting the ACTUAL decompressed
+                # bytes written, and abort the moment the cap is exceeded.
+                dest_root = Path(extracted_tmpdir.name).resolve()
+                written = 0
+                for zi in infos:
+                    # Contain every member inside the extraction dir (defense in
+                    # depth; also rejects absolute paths and `..` traversal).
+                    target = (dest_root / zi.filename).resolve()
+                    try:
+                        target.relative_to(dest_root)
+                    except ValueError:
+                        print(f"Refusing to extract {pack_path}: member "
+                              f"{zi.filename!r} escapes the extraction directory")
+                        sys.exit(2)
+                    if zi.is_dir():
+                        target.mkdir(parents=True, exist_ok=True)
+                        continue
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    with zf.open(zi) as src, open(target, "wb") as dst:
+                        while True:
+                            chunk = src.read(65536)
+                            if not chunk:
+                                break
+                            written += len(chunk)
+                            if written > _MAX_EXTRACT_BYTES:
+                                print(f"Refusing to extract {pack_path}: "
+                                      "decompressed output exceeds "
+                                      f"{_MAX_EXTRACT_BYTES // 1_048_576} MB "
+                                      "— possible decompression bomb")
+                                sys.exit(2)
+                            dst.write(chunk)
         except zipfile.BadZipFile as exc:
             print(f"Cannot read zip bundle {pack_path}: {exc}")
             sys.exit(2)
@@ -331,7 +357,7 @@ def cmd_verify(args) -> None:
 
     if signing_block_present:
         try:
-            from signing import verify_manifest_signature, SigningUnavailable
+            from signing import verify_manifest_signature
             try:
                 ok, detail = verify_manifest_signature(manifest_data)
                 if ok:
@@ -364,6 +390,29 @@ def cmd_verify(args) -> None:
                 "block is optional; no authenticated provenance claim)"
             )
 
+    # --- Signer key pinning (--expect-public-key): TOFU / continuity check ---
+    # A valid signature only proves the pack is internally self-consistent; it
+    # does not bind the pack to a known signer (the public key is embedded in
+    # the manifest itself). Pinning the expected key — received out-of-band —
+    # closes that gap. This is a pure string comparison, so it works even
+    # without the [signing] extra installed.
+    expected_key = getattr(args, "expect_public_key", None)
+    if expected_key:
+        if not signing_block_present:
+            print("ERROR (--expect-public-key): pack is unsigned — cannot match "
+                  "the pinned signer key.")
+            sys.exit(1)
+        actual_key = (manifest_data.get("signing") or {}).get("public_key", "")
+        if actual_key.strip() != expected_key.strip():
+            print("ERROR (--expect-public-key): manifest signing key does NOT "
+                  "match the pinned key — this pack was not signed by the "
+                  "expected signer.")
+            sys.exit(1)
+        signature_detail = (
+            (signature_detail + "; " if signature_detail else "")
+            + "signer public key matches the pinned --expect-public-key"
+        )
+
     # --- Timestamp verification (spec §4.6 / §7.1 v1.1 addition) ---
     timestamp_status = None
     timestamp_detail = ""
@@ -372,13 +421,58 @@ def cmd_verify(args) -> None:
     if timestamp_block_present:
         try:
             from signing import canonicalize_manifest_for_signing
-            from timestamp import verify_manifest_timestamp, TimestampUnavailable
+            from timestamp import verify_manifest_timestamp
             try:
                 canonical = canonicalize_manifest_for_signing(manifest_data)
                 ok, detail = verify_manifest_timestamp(manifest_data, canonical)
                 if ok:
-                    timestamp_status = "VERIFIED"
+                    # The imprint binds the token to THIS manifest. That alone
+                    # does not authenticate gen_time — anyone who knows the
+                    # public canonicalisation can mint a token with a matching
+                    # imprint — so we now also verify the RFC 3161 token's
+                    # PKCS#7 signature and escalate the status to reflect
+                    # exactly what was proven, never more.
+                    timestamp_status = "HASH_MATCHED"
                     timestamp_detail = detail
+
+                    anchor_bytes = None
+                    anchor_path = getattr(args, "tsa_trust_anchor", None)
+                    if anchor_path:
+                        try:
+                            anchor_bytes = Path(anchor_path).read_bytes()
+                        except OSError as exc:
+                            print(f"ERROR (--tsa-trust-anchor): cannot read "
+                                  f"{anchor_path}: {exc}")
+                            sys.exit(1)
+
+                    from timestamp import verify_timestamp_token_signature
+                    token_b64 = manifest_data["timestamp_authority"].get("token")
+                    sig_status, sig_detail = verify_timestamp_token_signature(
+                        base64.b64decode(token_b64), anchor_bytes
+                    )
+                    if sig_status == "INVALID":
+                        # A present-but-unverifiable token is worse than none:
+                        # it asserts provenance it cannot back. Always fail.
+                        timestamp_status = "INVALID"
+                        timestamp_detail = sig_detail
+                        print(f"ERROR: manifest timestamp token signature did "
+                              f"not verify: {sig_detail}")
+                        sys.exit(1)
+                    elif sig_status in ("UNVERIFIABLE", "UNSUPPORTED"):
+                        # Not evidence of tampering — we simply could not
+                        # evaluate the signature. Stay at HASH_MATCHED and say
+                        # exactly why, rather than failing a pack that may be
+                        # perfectly valid.
+                        timestamp_detail = (
+                            detail + f"; token signature NOT checked "
+                            f"({sig_detail})"
+                        )
+                        warnings.append(
+                            f"timestamp signature not checked: {sig_detail}"
+                        )
+                    else:
+                        timestamp_status = sig_status
+                        timestamp_detail = sig_detail
                 else:
                     timestamp_status = "INVALID"
                     timestamp_detail = detail
@@ -494,8 +588,14 @@ def cmd_verify(args) -> None:
             print(f"  Signature: VERIFIED ({signature_detail})")
         elif signature_status == "UNVERIFIABLE":
             print(f"  Signature: UNVERIFIABLE ({signature_detail})")
-        if timestamp_status == "VERIFIED":
-            print(f"  Timestamp: VERIFIED ({timestamp_detail})")
+        if timestamp_status == "CHAIN_VERIFIED":
+            print(f"  Timestamp: CHAIN VERIFIED — signature valid and chained "
+                  f"to the supplied anchor ({timestamp_detail})")
+        elif timestamp_status == "SIGNATURE_VERIFIED":
+            print(f"  Timestamp: SIGNATURE VERIFIED — signer identity NOT "
+                  f"anchored ({timestamp_detail})")
+        elif timestamp_status == "HASH_MATCHED":
+            print(f"  Timestamp: HASH MATCHED — not signature-authenticated ({timestamp_detail})")
         elif timestamp_status == "UNVERIFIABLE":
             print(f"  Timestamp: UNVERIFIABLE ({timestamp_detail})")
         for w in warnings:
@@ -509,8 +609,16 @@ def cmd_verify(args) -> None:
         if failed > 0:
             print("  WARNING: Pack integrity compromised. Do not submit to auditor.")
             sys.exit(1)
+        elif signature_status == "VERIFIED":
+            print("  All files match manifest. Pack integrity confirmed (authenticated).")
         else:
-            print("  All files match manifest. Pack integrity confirmed.")
+            # Matching hashes prove only that the files are internally
+            # consistent with the manifest. Without a verified signature an
+            # editor can recompute the manifest, so this is NOT tamper-evidence.
+            print("  All files match manifest. Pack integrity confirmed")
+            print("  (internally consistent). NOTE: this pack is unsigned, so the")
+            print("  hashes are not tamper-evident on their own — run")
+            print("  `regula evidence-pack --sign` for authenticated provenance.")
 
 
 def _regula_version() -> str:

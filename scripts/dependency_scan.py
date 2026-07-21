@@ -299,17 +299,6 @@ def parse_requirements_txt(content: str) -> list[dict]:
 def parse_pyproject_toml(content: str) -> list[dict]:
     """Parse dependencies from pyproject.toml using regex (no tomllib)."""
     deps: list[dict] = []
-    line_num = 0
-
-    # Find [project.dependencies] array
-    dep_pattern = re.compile(
-        r'\[project\].*?dependencies\s*=\s*\[(.*?)\]',
-        re.DOTALL
-    )
-    # Also try [project.dependencies] directly
-    dep_pattern2 = re.compile(
-        r'\[project\.dependencies\]',
-    )
 
     # Strategy: find dependencies = [...] in [project] section
     # and [project.optional-dependencies.*] sections
@@ -589,7 +578,6 @@ def parse_cmake(content: str) -> list[dict]:
     """Parse AI-relevant packages from a CMakeLists.txt file."""
     deps: list[dict] = []
     seen: set[str] = set()
-    line_num = 0
 
     lines = content.splitlines()
 

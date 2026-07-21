@@ -7,6 +7,71 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Security
+- **Crash-reporting endpoint no longer shipped in published builds.** From
+  `43da24c` (10 Apr 2026) through v1.7.7, `scripts/telemetry.py` hardcoded a
+  live Sentry DSN while `docs/TRUST.md` §8.2 stated published builds ship an
+  empty one — verified by downloading `regula-ai==1.7.7` from PyPI and
+  inspecting the shipped file. The DSN is now read from the
+  `REGULA_SENTRY_DSN` environment variable and defaults to empty, restoring
+  the documented behaviour. Reaching the endpoint always required the
+  optional `sentry-sdk` extra **and** explicit opt-in, so default installs
+  were never affected.
+- **Stack-frame locals excluded from crash reports**
+  (`include_local_variables=False`). sentry-sdk defaults this to `True`, and
+  Regula's scan frames hold an entire scanned file in `content`, so an
+  opted-in user's crash could have transmitted their source. The
+  auto-detected hostname is now reported as `redacted`.
+- **`REGULA_NO_TELEMETRY` now suppresses sending, not just the first-run
+  prompt.** It was previously checked only when prompting, so a user who had
+  consented once and later set the variable kept transmitting.
+- **`DO_NOT_TRACK` is now honoured** (<https://consoledonottrack.com>),
+  alongside `REGULA_NO_TELEMETRY` and `CI`. Values of `0`/`false`/`no`/empty
+  are correctly treated as unset.
+- **Path-safety guard extended to the AI-BOM walkers.** `scan_safety.py`
+  centralises the symlink-escape and file-size checks that previously lived
+  only in `report.py`; `sbom.py`'s four walkers now apply them, so a symlink
+  inside a scanned repository can no longer pull an out-of-repo file's name,
+  contents, or JSON keys into a generated BOM.
+
+### Added
+- **RFC 3161 TimeStampToken signature verification.** `regula verify` now
+  verifies the PKCS#7 SignedData signature (RFC 5652 §5.4) over a
+  timestamp token, checks that the signed attributes bind it to that exact
+  TSTInfo, and requires the critical `id-kp-timeStamping` EKU (RFC 3161
+  §2.3). Reports the strongest status actually proven — `HASH_MATCHED`,
+  `SIGNATURE_VERIFIED`, or `CHAIN_VERIFIED` — and never a bare `VERIFIED`.
+- **`--tsa-trust-anchor`** chains the signer certificate to a caller-supplied
+  anchor, yielding `CHAIN_VERIFIED`. Documented as a LIMITED check: no
+  revocation (CRL/OCSP), no name constraints, no intermediate chain
+  building.
+
+### Fixed
+- **Unimplemented signature algorithms are no longer reported as tampering.**
+  Algorithm-dispatch failures and genuine verification failures shared one
+  error channel, so both surfaced as `INVALID`. A conforming TSA using
+  Ed25519 (or any algorithm not implemented here) would have hard-failed a
+  valid pack. Such tokens now degrade to `UNSUPPORTED` and retain the
+  hash-only verdict, as `docs/spec/regula-evidence-format-v1.md` §4.6.3
+  already required. Provably-bad signatures still return `INVALID`.
+- **`regula doctor` telemetry check** now recognises an endpoint configured
+  via `REGULA_SENTRY_DSN`, and its guidance points at the environment
+  variable rather than editing `scripts/telemetry.py`.
+- Removed dead code in `claim_auditor.py` that could raise `ValueError` on a
+  genuine count mismatch, turning an actionable audit failure into a
+  traceback. Removed an orphaned helper in `ast_analysis.py`.
+- Corrected stale figures in `docs/TRUST.md`: the legacy runner's result
+  (was `1373 passed, 4 skipped, 888 functions`; measured
+  `1381 passed, 0 skipped, 942 functions`) and `regula doctor`'s expected
+  split (was `9 passed, 3 info`; actual `8 passed, 4 info`). `README.md`
+  also documented `regula telemetry --enable`, which is not a valid command.
+
+### Changed
+- German and Brazilian Portuguese pages gained the jurisdiction-scope notice
+  and pattern-match caveat that the English pages already carried, and their
+  navigation now links to the localised assessor rather than the English
+  one. Translations reviewed and signed off by the maintainer.
+
 ## [1.7.7] - 2026-07-20
 
 ### Fixed

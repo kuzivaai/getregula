@@ -156,9 +156,15 @@ def test_agent_owasp_excessive_agency():
          "env": {}},
     ]
     risks = assess_mcp_risk(servers)
-    owasp_mapped = [r for r in risks if "owasp" in r or "agentic" in str(r).lower()]
-    # At minimum, the tool should flag unknown/broad servers
+    # The tool should flag the broad-access server AND map it to an OWASP
+    # Agentic category \u2014 the actual point of this test. (Previously the mapping
+    # was computed into a local and never asserted, so a regression that
+    # dropped the OWASP mapping would have gone undetected.)
     assert_true(len(risks) > 0, "broad-access server should have risk flags")
+    assert_true(
+        any(r.get("owasp_agentic") for r in risks),
+        "broad-access server should map to an OWASP Agentic category",
+    )
     print("\u2713 Agent: broad-access MCP server flagged")
 
 

@@ -232,6 +232,24 @@ def _validate_mappings() -> None:
             "dpv_export mapping references DPV-AIAct terms not present in "
             f"{_VOCAB_PATH.name}: {missing}. Refusing to emit unverified IRIs."
         )
+    # Existence is not enough. The emit path builds compact IRIs by string-
+    # concatenation — f"{DPV_AIACT_PREFIX}:{term}" — which a JSON-LD processor
+    # expands via the @context to DPV_AIACT_NS + term. Assert that this equals
+    # the term's AUTHORITATIVE `iri` in the snapshot, so a term whose real IRI
+    # lives in a different sub-namespace (e.g. .../aiact/annex#Foo) can never be
+    # emitted as `eu-aiact:Foo` -> .../aiact#Foo, a fabricated IRI that does not
+    # resolve. This makes the "impossible to emit a fabricated IRI" claim hold
+    # at the byte level, not just at the name level.
+    fabricated = sorted(
+        term for term in referenced
+        if vocab["terms"][term]["iri"] != DPV_AIACT_NS + term
+    )
+    if fabricated:
+        raise RuntimeError(
+            "dpv_export would emit compact IRIs that do not match the snapshot's "
+            f"authoritative IRI for: {fabricated} (expected namespace "
+            f"{DPV_AIACT_NS}). Refusing to emit fabricated IRIs."
+        )
 
 
 _validate_mappings()

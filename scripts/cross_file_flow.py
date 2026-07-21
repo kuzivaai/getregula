@@ -512,7 +512,6 @@ def _trace_cross_file_paths(
     for src in ai_sources:
         file_rel = src["file"]
         has_same_file_oversight = False
-        same_file_confidence = "high"
 
         # Check destinations within the same file
         for dest in src["destinations"]:

@@ -15,6 +15,7 @@ Supported platforms:
 
 import argparse
 import json
+import shlex
 import stat
 import sys
 from pathlib import Path
@@ -43,6 +44,18 @@ def _find_python() -> str:
     return sys.executable or "python3"
 
 
+def _hook_cmd(python: str, script: Path) -> str:
+    """A shell-safe ``<python> <script>`` command string.
+
+    The interpreter and script paths can contain spaces or shell
+    metacharacters (common on Windows-mounted `/mnt/c/Users/...` paths under
+    WSL). These strings are executed by a harness/shell, so quote both parts
+    to avoid a broken command — or, if the path were ever attacker-influenced,
+    a command-injection primitive.
+    """
+    return f"{shlex.quote(python)} {shlex.quote(str(script))}"
+
+
 def install_claude_code(regula_root: Path, project_dir: Path) -> None:
     """Generate Claude Code hooks configuration."""
     hooks_dir = regula_root / "hooks"
@@ -54,14 +67,14 @@ def install_claude_code(regula_root: Path, project_dir: Path) -> None:
                 "matcher": "Bash|Write|Edit|MultiEdit",
                 "hooks": [{
                     "type": "command",
-                    "command": f"{python} {hooks_dir / 'pre_tool_use.py'}",
+                    "command": _hook_cmd(python, hooks_dir / 'pre_tool_use.py'),
                 }],
             }],
             "PostToolUse": [{
                 "matcher": "Bash|Write|Edit|MultiEdit",
                 "hooks": [{
                     "type": "command",
-                    "command": f"{python} {hooks_dir / 'post_tool_use.py'}",
+                    "command": _hook_cmd(python, hooks_dir / 'post_tool_use.py'),
                 }],
             }],
         }
@@ -86,7 +99,6 @@ def install_claude_code(regula_root: Path, project_dir: Path) -> None:
                         # Check if regula hooks already present
                         existing_cmds = [h.get("hooks", [{}])[0].get("command", "") for h in existing["hooks"][event]]
                         for hook in hook_list:
-                            cmd = hook.get("hooks", [{}])[0].get("command", "")
                             if not any("regula" in ec for ec in existing_cmds):
                                 existing["hooks"][event].append(hook)
                 config = existing
@@ -106,11 +118,11 @@ def install_copilot_cli(regula_root: Path, project_dir: Path) -> None:
         "version": 1,
         "hooks": {
             "preToolUse": {
-                "command": f"{python} {hooks_dir / 'pre_tool_use.py'}",
+                "command": _hook_cmd(python, hooks_dir / 'pre_tool_use.py'),
                 "description": "Regula AI governance risk indication",
             },
             "postToolUse": {
-                "command": f"{python} {hooks_dir / 'post_tool_use.py'}",
+                "command": _hook_cmd(python, hooks_dir / 'post_tool_use.py'),
                 "description": "Regula audit trail logging",
             },
         },
@@ -135,14 +147,14 @@ def install_windsurf(regula_root: Path, project_dir: Path) -> None:
                 "matcher": "Bash|Write|Edit",
                 "hooks": [{
                     "type": "command",
-                    "command": f"{python} {hooks_dir / 'pre_tool_use.py'}",
+                    "command": _hook_cmd(python, hooks_dir / 'pre_tool_use.py'),
                 }],
             }],
             "PostToolUse": [{
                 "matcher": "Bash|Write|Edit",
                 "hooks": [{
                     "type": "command",
-                    "command": f"{python} {hooks_dir / 'post_tool_use.py'}",
+                    "command": _hook_cmd(python, hooks_dir / 'post_tool_use.py'),
                 }],
             }],
         },
@@ -168,7 +180,7 @@ repos:
     hooks:
       - id: regula-check
         name: Regula AI Governance Check
-        entry: {python} {check_script} --format json --project .
+        entry: {shlex.quote(python)} {shlex.quote(str(check_script))} --format json --project .
         language: system
         always_run: true
         pass_filenames: false
@@ -196,10 +208,10 @@ def install_git_hooks(regula_root: Path, project_dir: Path) -> None:
 
 echo "Regula: Scanning for AI governance risk indicators..."
 
-result=$({python} {report_script} --project . --format json 2>/dev/null)
+result=$({shlex.quote(python)} {shlex.quote(str(report_script))} --project . --format json 2>/dev/null)
 
 # Check for prohibited findings
-prohibited=$(echo "$result" | {python} -c "
+prohibited=$(echo "$result" | {shlex.quote(python)} -c "
 import sys, json
 findings = json.load(sys.stdin)
 blocked = [f for f in findings if f.get('tier') == 'prohibited' and not f.get('suppressed')]

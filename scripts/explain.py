@@ -80,7 +80,6 @@ def find_pattern_matches(text: str, language: str = "python") -> list:
         false_positive_if, description
     """
     stripped = strip_comments(text, language)
-    stripped_lower = stripped.lower()
     lines = stripped.split("\n")
     matches = []
 
@@ -385,8 +384,9 @@ def explain_classification(text: str, filepath: str = "<stdin>",
     total_min = sum(o["effort_hours"][0] for o in roadmap)
     total_max = sum(o["effort_hours"][1] for o in roadmap)
 
-    # Timeline from obligations data
-    obligations_data = _load_obligations()
+    # Timeline from obligations data (loaded only to warm the module cache;
+    # the timeline itself derives from omnibus.py, not these keys)
+    _load_obligations()
     # Timeline derives from omnibus.py (single source for the OJ flip);
     # the YAML reference's timeline block is documentation, not data —
     # its keys never matched this consumer, so the old hardcoded

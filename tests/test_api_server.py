@@ -332,7 +332,7 @@ def test_get_questionnaire():
         "version": "1.0",
         "questions": [{"id": "q1", "text": "Is this AI?"}],
     }
-    with patch("api_server.generate_questionnaire", return_value=mock_questionnaire, create=True) as mock_gen:
+    with patch("api_server.generate_questionnaire", return_value=mock_questionnaire, create=True):
         # Need to patch at import time within the handler
         with patch.dict("sys.modules", {}):
             # Patch the import inside the handler
@@ -1080,7 +1080,7 @@ def test_log_message_format():
 def test_main_default_args():
     """main() uses default host=localhost and port=8487."""
     with patch("argparse.ArgumentParser.parse_args") as mock_parse, \
-         patch("api_server.HTTPServer") as mock_server_cls, \
+         patch("api_server.ThreadingHTTPServer") as mock_server_cls, \
          patch("sys.stderr", io.StringIO()):
 
         mock_args = MagicMock()
@@ -1103,7 +1103,7 @@ def test_main_default_args():
 def test_main_custom_args():
     """main() respects custom --host and --port."""
     with patch("argparse.ArgumentParser.parse_args") as mock_parse, \
-         patch("api_server.HTTPServer") as mock_server_cls, \
+         patch("api_server.ThreadingHTTPServer") as mock_server_cls, \
          patch("sys.stderr", io.StringIO()):
 
         mock_args = MagicMock()
@@ -1125,7 +1125,7 @@ def test_main_startup_banner():
     """main() prints a startup banner with version and endpoints."""
     stderr_buf = io.StringIO()
     with patch("argparse.ArgumentParser.parse_args") as mock_parse, \
-         patch("api_server.HTTPServer") as mock_server_cls, \
+         patch("api_server.ThreadingHTTPServer") as mock_server_cls, \
          patch("sys.stderr", stderr_buf):
 
         mock_args = MagicMock()

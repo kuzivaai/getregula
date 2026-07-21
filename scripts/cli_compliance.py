@@ -299,7 +299,7 @@ def cmd_compliance(args) -> None:
 
     if args.subcommand == "update":
         try:
-            entry = update_compliance_status(args.system, args.status, args.note or "")
+            update_compliance_status(args.system, args.status, args.note or "")
             print(f"Updated '{args.system}' to '{args.status}'")
         except ValueError as e:
             print(f"Error: {e}", file=sys.stderr)

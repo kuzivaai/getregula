@@ -425,9 +425,16 @@ def verify_manifest_timestamp(
     an RFC 3161 TimeStampToken, the messageImprint uses SHA-256, and
     its hash matches SHA-256(expected_message).
 
-    The TSA's PKCS#7 signer-cert chain is NOT independently verified in
-    v1.1. A consumer that needs strong TSA trust can extract the token
-    and run it through a dedicated tool. We warn; we do not fail.
+    IMPORTANT — scope of this check: it verifies the messageImprint HASH
+    only. It does NOT verify the token's PKCS#7 SignedData signature at
+    all (neither the signature itself nor the signer-cert chain). A hash
+    match therefore proves the imprint corresponds to this manifest, but
+    does NOT cryptographically authenticate the `gen_time`: a party who
+    knows the (public) canonicalisation can craft a token with an
+    arbitrary gen_time and a matching imprint. A consumer that needs a
+    trustworthy time attestation must extract the token and validate its
+    signature and signer chain with a dedicated RFC 3161 tool. We warn;
+    we do not fail.
 
     If no timestamp block is present, returns (False, "no timestamp block").
     """
@@ -479,7 +486,436 @@ def verify_manifest_timestamp(
     return True, (
         f"timestamp hash matches manifest; gen_time="
         f"{tst_info['gen_time'].native.isoformat()} "
-        f"(signer-chain NOT independently verified)"
+        f"(hash match only — token signature NOT independently verified, "
+        f"so gen_time is not cryptographically authenticated)"
+    )
+
+
+# --- RFC 3161 token signature verification -----------------------------
+#
+# `verify_manifest_timestamp` above checks the messageImprint hash ONLY.
+# That proves the token's imprint corresponds to this manifest, but not
+# that a real TSA issued it: anyone who knows the (public) canonicalisation
+# can mint a token with an arbitrary gen_time and a matching imprint. The
+# functions below close that gap — they verify the token's PKCS#7
+# SignedData signature (RFC 5652 §5.4) against the signer certificate
+# carried in the token, and require the RFC 3161 §2.3 critical
+# timestamping EKU.
+#
+# What this deliberately does NOT do (stated here, in the returned detail
+# string, and in spec §4.6.4 so no caller can mistake the guarantee):
+#   - Revocation (CRL/OCSP). Regula's core is zero-network by design; a
+#     revocation check cannot be performed offline. Out of scope.
+#   - Full RFC 5280 path validation (name constraints, policy mapping,
+#     policy qualifiers). The optional trust-anchor check below is a
+#     LIMITED chain check: issuer signature, CA basicConstraints, and
+#     validity window at gen_time.
+#
+# The crypto itself is done by `cryptography` (already a `[signing]`
+# dependency). We do not hand-roll any primitive.
+
+_OID_CONTENT_TYPE = "1.2.840.113549.1.9.3"
+_OID_MESSAGE_DIGEST = "1.2.840.113549.1.9.4"
+_OID_TST_INFO = "1.2.840.113549.1.9.16.1.4"
+_OID_EKU_TIMESTAMPING = "1.3.6.1.5.5.7.3.8"
+
+# Digests we will accept for a signature we are willing to call verified.
+# md5/sha1 are collision-broken; reporting a SHA-1 signature as verified in
+# a compliance tool would overstate the guarantee, so they are refused
+# rather than silently accepted.
+_ACCEPTED_SIG_DIGESTS = frozenset({"sha256", "sha384", "sha512"})
+
+
+def _require_cryptography():
+    """Return the cryptography primitives needed, or raise TimestampUnavailable."""
+    try:
+        from cryptography import x509
+        from cryptography.hazmat.primitives import hashes
+        from cryptography.hazmat.primitives.asymmetric import ec, padding
+    except ImportError as exc:
+        raise TimestampUnavailable(
+            "RFC 3161 signature verification requires the `cryptography` "
+            "package. Install it with: pip install regula-ai[signing]"
+        ) from exc
+    return x509, hashes, padding, ec
+
+
+def _hash_for(name: str):
+    """Map an asn1crypto digest name to a cryptography hash instance."""
+    _, hashes, _, _ = _require_cryptography()
+    table = {
+        "sha256": hashes.SHA256,
+        "sha384": hashes.SHA384,
+        "sha512": hashes.SHA512,
+    }
+    cls = table.get(name)
+    return cls() if cls else None
+
+
+def _find_signer_cert(signed_data, signer_info):
+    """Locate the signer's certificate inside the token, or return None.
+
+    Handles both SignerIdentifier choices (issuerAndSerialNumber and
+    subjectKeyIdentifier). Comparison is on DER bytes, not `.native`, so
+    equivalent-but-differently-encoded names cannot produce a false match.
+    """
+    sid = signer_info["sid"]
+    certs = signed_data["certificates"]
+    if certs is None:
+        return None
+
+    if sid.name == "issuer_and_serial_number":
+        want_issuer = sid.chosen["issuer"].dump()
+        want_serial = sid.chosen["serial_number"].native
+        for choice in certs:
+            if choice.name != "certificate":
+                continue
+            cert = choice.chosen
+            tbs = cert["tbs_certificate"]
+            if (tbs["issuer"].dump() == want_issuer
+                    and tbs["serial_number"].native == want_serial):
+                return cert
+    elif sid.name == "subject_key_identifier":
+        want_ski = sid.chosen.native
+        for choice in certs:
+            if choice.name != "certificate":
+                continue
+            cert = choice.chosen
+            if cert.key_identifier == want_ski:
+                return cert
+    return None
+
+
+def _get_signed_attr(signed_attrs, oid: str):
+    """Return the values of the signed attribute with `oid`, or None."""
+    for attr in signed_attrs:
+        if attr["type"].dotted == oid:
+            return attr["values"]
+    return None
+
+
+def _check_timestamping_eku(cert_der: bytes) -> Optional[str]:
+    """Return an error string if the cert is not a valid TSA signer cert.
+
+    RFC 3161 §2.3: the TSA signing certificate MUST contain an
+    extendedKeyUsage extension with exactly the id-kp-timeStamping value,
+    and that extension MUST be marked critical.
+    """
+    x509, _, _, _ = _require_cryptography()
+    cert = x509.load_der_x509_certificate(cert_der)
+    try:
+        ext = cert.extensions.get_extension_for_class(x509.ExtendedKeyUsage)
+    except x509.ExtensionNotFound:
+        return ("signer certificate has no extendedKeyUsage extension "
+                "(RFC 3161 §2.3 requires id-kp-timeStamping)")
+    oids = [oid.dotted_string for oid in ext.value]
+    if _OID_EKU_TIMESTAMPING not in oids:
+        return (f"signer certificate extendedKeyUsage {oids} does not include "
+                f"id-kp-timeStamping ({_OID_EKU_TIMESTAMPING})")
+    if len(oids) != 1:
+        return (f"signer certificate extendedKeyUsage must contain ONLY "
+                f"id-kp-timeStamping (RFC 3161 §2.3), found {oids}")
+    if not ext.critical:
+        return ("signer certificate extendedKeyUsage is not marked critical "
+                "(RFC 3161 §2.3 requires it)")
+    return None
+
+
+def _verify_signature(cert_der: bytes, sig_algo: str, digest_name: str,
+                      signature: bytes, signed_bytes: bytes,
+                      sig_params) -> Optional[tuple[str, str]]:
+    """Verify `signature` over `signed_bytes`.
+
+    Returns None on success, else a (status, message) pair where status is
+    "INVALID" or "UNSUPPORTED". The two MUST NOT be collapsed: "I cannot
+    evaluate this algorithm" is not evidence of tampering, and reporting it
+    as INVALID would hard-fail packs from a conforming TSA whose algorithms
+    this implementation simply does not cover (spec §4.6.3 item 3).
+    """
+    x509, hashes, padding, ec = _require_cryptography()
+    cert = x509.load_der_x509_certificate(cert_der)
+    public_key = cert.public_key()
+    hash_obj = _hash_for(digest_name)
+    if hash_obj is None:
+        return "UNSUPPORTED", f"unsupported signature digest {digest_name!r}"
+
+    from cryptography.exceptions import InvalidSignature
+    try:
+        if sig_algo == "rsassa_pkcs1v15":
+            public_key.verify(signature, signed_bytes,
+                              padding.PKCS1v15(), hash_obj)
+        elif sig_algo == "rsassa_pss":
+            # Salt length and MGF digest come from the algorithm parameters;
+            # defaulting them would let a mismatched token verify.
+            try:
+                salt_len = sig_params["salt_length"].native
+                mgf_hash = sig_params["mask_gen_algorithm"]["parameters"]["algorithm"].native
+            except Exception as exc:
+                # Declared RSASSA-PSS but the parameters are unreadable:
+                # that is a malformed token, not an unimplemented algorithm.
+                return "INVALID", f"cannot read RSASSA-PSS parameters: {exc}"
+            mgf_hash_obj = _hash_for(mgf_hash)
+            if mgf_hash_obj is None:
+                return "UNSUPPORTED", f"unsupported RSASSA-PSS MGF digest {mgf_hash!r}"
+            public_key.verify(
+                signature, signed_bytes,
+                padding.PSS(mgf=padding.MGF1(mgf_hash_obj), salt_length=salt_len),
+                hash_obj,
+            )
+        elif sig_algo == "ecdsa":
+            public_key.verify(signature, signed_bytes, ec.ECDSA(hash_obj))
+        else:
+            # e.g. Ed25519/Ed448/DSA — asn1crypto names them, we have not
+            # implemented them. Degrade, do not allege tampering.
+            return "UNSUPPORTED", (
+                f"token is signed with {sig_algo!r}, which this implementation "
+                f"does not verify (supported: RSA PKCS#1 v1.5, RSASSA-PSS, "
+                f"ECDSA), so the signature was not evaluated"
+            )
+    except InvalidSignature:
+        return "INVALID", "token signature does not verify against the signer certificate"
+    except Exception as exc:
+        return "INVALID", f"signature verification error: {exc.__class__.__name__}: {exc}"
+    return None
+
+
+def _limited_chain_check(cert_der: bytes, anchor_pem: bytes,
+                         gen_time) -> Optional[str]:
+    """LIMITED chain check: anchor signed the signer cert, and both were
+    within their validity window at `gen_time`.
+
+    This is NOT full RFC 5280 path validation. No revocation, no name
+    constraints, no policy processing, and no intermediate chain building
+    (the anchor must be the direct issuer). Callers must not present the
+    result as full PKI validation — see spec §4.6.4.
+    """
+    x509, hashes, padding, ec = _require_cryptography()
+    from cryptography.exceptions import InvalidSignature
+
+    cert = x509.load_der_x509_certificate(cert_der)
+    try:
+        anchor = x509.load_pem_x509_certificate(anchor_pem)
+    except Exception as exc:
+        return f"cannot parse trust anchor PEM: {exc.__class__.__name__}: {exc}"
+
+    if cert.issuer != anchor.subject:
+        return ("trust anchor subject does not match the signer certificate's "
+                "issuer (no intermediate chain building is performed)")
+
+    try:
+        basic = anchor.extensions.get_extension_for_class(x509.BasicConstraints)
+        if not basic.value.ca:
+            return "trust anchor is not a CA certificate (basicConstraints CA=false)"
+    except x509.ExtensionNotFound:
+        return "trust anchor has no basicConstraints extension"
+
+    # Validity window must cover the asserted signing time, not "now".
+    gen = gen_time
+    if gen.tzinfo is None:
+        gen = gen.replace(tzinfo=timezone.utc)
+    for label, c in (("signer certificate", cert), ("trust anchor", anchor)):
+        not_before = c.not_valid_before_utc
+        not_after = c.not_valid_after_utc
+        if not (not_before <= gen <= not_after):
+            return (f"{label} was not valid at gen_time {gen.isoformat()} "
+                    f"(valid {not_before.isoformat()} .. {not_after.isoformat()})")
+
+    try:
+        anchor_key = anchor.public_key()
+        if isinstance(anchor_key, ec.EllipticCurvePublicKey):
+            anchor_key.verify(cert.signature, cert.tbs_certificate_bytes,
+                              ec.ECDSA(cert.signature_hash_algorithm))
+        else:
+            anchor_key.verify(cert.signature, cert.tbs_certificate_bytes,
+                              padding.PKCS1v15(), cert.signature_hash_algorithm)
+    except InvalidSignature:
+        return "signer certificate was not signed by the supplied trust anchor"
+    except Exception as exc:
+        return f"chain check error: {exc.__class__.__name__}: {exc}"
+    return None
+
+
+def verify_timestamp_token_signature(
+    token_bytes: bytes,
+    trust_anchor_pem: Optional[bytes] = None,
+) -> tuple[str, str]:
+    """Verify the PKCS#7 SignedData signature of an RFC 3161 TimeStampToken.
+
+    Returns (status, detail) where status is one of:
+      - "SIGNATURE_VERIFIED" — the signature verifies against the signer
+        certificate embedded in the token, the signed attributes bind that
+        signature to this exact TSTInfo, and the certificate carries the
+        critical id-kp-timeStamping EKU. The signer's *identity* is only as
+        trustworthy as the embedded certificate: nothing anchors it yet.
+      - "CHAIN_VERIFIED"     — as above, plus the signer certificate chains
+        directly to the caller-supplied trust anchor and both certificates
+        were valid at gen_time. Still no revocation checking.
+      - "INVALID"            — the signature is provably bad, or the token
+        violates RFC 3161 in a way a conforming TSA never would. Callers
+        SHOULD fail on this.
+      - "UNSUPPORTED"        — the token cannot be evaluated by this
+        implementation (algorithm we do not support, no embedded signer
+        certificate, no signed attributes, weak digest). This is NOT
+        evidence of tampering, so callers should degrade to the hash-only
+        verdict and say so rather than failing a previously-valid pack.
+      - "UNVERIFIABLE"       — asn1crypto/cryptography not installed.
+
+    The INVALID/UNSUPPORTED split matters: hard-failing on everything we
+    cannot parse would break packs from a conforming TSA that happens to
+    use an algorithm we have not implemented. We only fail when we can
+    actually prove something is wrong.
+
+    This function does not look at the messageImprint; pair it with
+    `verify_manifest_timestamp`, which binds the token to the manifest.
+    """
+    try:
+        _require_asn1crypto()
+        _require_cryptography()
+        from asn1crypto import cms
+    except TimestampUnavailable as exc:
+        return "UNVERIFIABLE", str(exc)
+    except ImportError as exc:
+        return "UNVERIFIABLE", f"asn1crypto is missing the cms module: {exc}"
+
+    try:
+        content_info = cms.ContentInfo.load(token_bytes)
+        if content_info["content_type"].native != "signed_data":
+            return "INVALID", (
+                f"token is {content_info['content_type'].native!r}, "
+                f"expected a PKCS#7 signed_data structure"
+            )
+        signed_data = content_info["content"]
+        signer_infos = signed_data["signer_infos"]
+    except Exception as exc:
+        return "INVALID", f"cannot parse SignedData: {exc.__class__.__name__}: {exc}"
+
+    # More than one signer makes "the" signature ambiguous — a token where
+    # one of two signatures verifies must not read as verified.
+    if len(signer_infos) != 1:
+        return "UNSUPPORTED", (
+            f"token has {len(signer_infos)} SignerInfos; exactly 1 is required "
+            f"for an unambiguous verdict, so the signature was not evaluated"
+        )
+    signer_info = signer_infos[0]
+
+    signer_cert = _find_signer_cert(signed_data, signer_info)
+    if signer_cert is None:
+        return "UNSUPPORTED", (
+            "token does not embed the signer's certificate, so the signature "
+            "cannot be verified from the token alone"
+        )
+    cert_der = signer_cert.dump()
+
+    eku_error = _check_timestamping_eku(cert_der)
+    if eku_error:
+        return "INVALID", eku_error
+
+    signed_attrs = signer_info["signed_attrs"]
+    if signed_attrs is None or len(signed_attrs) == 0:
+        return "UNSUPPORTED", (
+            "token has no signed attributes, so there is nothing binding a "
+            "signature to this TSTInfo to evaluate"
+        )
+
+    try:
+        encap = signed_data["encap_content_info"]
+        econtent = encap["content"]
+        tst_der = econtent.contents if hasattr(econtent, "contents") else bytes(econtent)
+        digest_name = signer_info["digest_algorithm"]["algorithm"].native
+    except Exception as exc:
+        return "INVALID", f"cannot read encapContentInfo: {exc.__class__.__name__}: {exc}"
+
+    if digest_name not in _ACCEPTED_SIG_DIGESTS:
+        return "UNSUPPORTED", (
+            f"token is signed with {digest_name!r}, which is not collision "
+            f"resistant; refusing to report it as verified "
+            f"(accepted: {sorted(_ACCEPTED_SIG_DIGESTS)})"
+        )
+
+    # contentType signed attr must say this is a TSTInfo.
+    ct_values = _get_signed_attr(signed_attrs, _OID_CONTENT_TYPE)
+    if ct_values is None or len(ct_values) != 1:
+        return "INVALID", "token is missing a single contentType signed attribute"
+    if ct_values[0].dotted != _OID_TST_INFO:
+        return "INVALID", (
+            f"signed contentType is {ct_values[0].dotted}, expected id-ct-TSTInfo "
+            f"({_OID_TST_INFO})"
+        )
+
+    # messageDigest signed attr must equal the digest of the encapsulated
+    # TSTInfo — this is what binds the signature to the timestamp content.
+    md_values = _get_signed_attr(signed_attrs, _OID_MESSAGE_DIGEST)
+    if md_values is None or len(md_values) != 1:
+        return "INVALID", "token is missing a single messageDigest signed attribute"
+    declared_digest = md_values[0].native
+    actual_digest = hashlib.new(digest_name, tst_der).digest()
+    if declared_digest != actual_digest:
+        return "INVALID", (
+            "signed messageDigest attribute does not match the encapsulated "
+            "TSTInfo — the signature does not cover this timestamp content"
+        )
+
+    # RFC 5652 §5.4: the signature is computed over the DER encoding of the
+    # signed attributes as a SET OF, not over the implicit [0] tagged form
+    # that appears in the message.
+    try:
+        signed_bytes = signed_attrs.untag().dump(force=True)
+    except Exception as exc:
+        return "INVALID", f"cannot re-encode signed attributes: {exc}"
+
+    try:
+        sig_algo = signer_info["signature_algorithm"].signature_algo
+        sig_params = signer_info["signature_algorithm"]["parameters"]
+    except Exception as exc:
+        # asn1crypto raises ValueError for a signature-algorithm OID it does
+        # not know. An algorithm we cannot name is one we cannot evaluate —
+        # degrade rather than allege tampering. The messageImprint check is
+        # independent of this and still stands.
+        try:
+            raw_oid = signer_info["signature_algorithm"]["algorithm"].dotted
+        except Exception:
+            raw_oid = "unreadable"
+        return "UNSUPPORTED", (
+            f"token uses signature algorithm OID {raw_oid}, which this "
+            f"implementation does not recognise ({exc.__class__.__name__}), "
+            f"so the signature was not evaluated"
+        )
+    signature = signer_info["signature"].native
+
+    sig_problem = _verify_signature(cert_der, sig_algo, digest_name,
+                                    signature, signed_bytes, sig_params)
+    if sig_problem:
+        return sig_problem  # (status, detail) — INVALID or UNSUPPORTED
+
+    base_detail = (
+        f"RFC 3161 token signature verified ({sig_algo}/{digest_name}) against "
+        f"the embedded signer certificate; signed attributes bind it to this "
+        f"TSTInfo; certificate carries the critical id-kp-timeStamping EKU"
+    )
+
+    if trust_anchor_pem is None:
+        return "SIGNATURE_VERIFIED", (
+            base_detail + ". No trust anchor supplied, so the signer's IDENTITY "
+            "is unverified — the certificate is self-asserted by the token. "
+            "Pass --tsa-trust-anchor to chain it. No revocation checking."
+        )
+
+    try:
+        tsp, _, _ = _require_asn1crypto()
+        tst_info = tsp.TSTInfo.load(tst_der)
+        gen_time = tst_info["gen_time"].native
+    except Exception as exc:
+        return "INVALID", f"cannot read gen_time for the chain check: {exc}"
+
+    chain_error = _limited_chain_check(cert_der, trust_anchor_pem, gen_time)
+    if chain_error:
+        return "INVALID", f"chain check failed: {chain_error}"
+
+    return "CHAIN_VERIFIED", (
+        base_detail + f"; signer certificate chains to the supplied trust anchor "
+        f"and both were valid at gen_time {gen_time.isoformat()}. LIMITED chain "
+        f"check only — no revocation (CRL/OCSP), no name-constraint or policy "
+        f"validation, no intermediate chain building."
     )
 
 
@@ -487,6 +923,16 @@ def is_manifest_timestamp_available() -> bool:
     """Return True iff asn1crypto is importable."""
     try:
         _require_asn1crypto()
+        return True
+    except TimestampUnavailable:
+        return False
+
+
+def is_timestamp_signature_verifiable() -> bool:
+    """Return True iff both asn1crypto and cryptography are importable."""
+    try:
+        _require_asn1crypto()
+        _require_cryptography()
         return True
     except TimestampUnavailable:
         return False

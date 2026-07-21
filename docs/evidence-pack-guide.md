@@ -171,3 +171,30 @@ RFC 3161-compliant TSA.
 ```bash
 regula conform . --sign --timestamp
 ```
+
+#### What `regula verify` proves about a timestamp
+
+`verify` reports the strongest level it can actually prove, and never
+plain "VERIFIED":
+
+| `timestamp_status` | Meaning |
+|---|---|
+| `HASH_MATCHED` | The token's imprint matches this manifest, but its signature was not evaluated — `gen_time` is **not** authenticated. |
+| `SIGNATURE_VERIFIED` | The token's RFC 3161 signature verifies against the certificate embedded in it, and that certificate carries the critical timestamping EKU. The signer's **identity** is still self-asserted. |
+| `CHAIN_VERIFIED` | As above, plus the signer chains to the anchor you supplied and both certificates were valid at `gen_time`. |
+| `INVALID` | The signature is provably bad, or the token violates RFC 3161. `verify` fails. |
+| `UNVERIFIABLE` | No ASN.1 library installed — install `regula[signing]`. |
+
+To reach `CHAIN_VERIFIED`, pass the TSA's root certificate:
+
+```bash
+regula verify ./pack-dir --tsa-trust-anchor /path/to/tsa-root.pem
+```
+
+**Limits, stated plainly.** No revocation is ever checked — Regula's core
+is zero-network, so CRL/OCSP cannot be consulted offline, and a revoked
+TSA certificate will still reach `CHAIN_VERIFIED`. The chain check is not
+full RFC 5280 path validation: no name constraints, no policy processing,
+and no intermediate chain building (the anchor must be the direct
+issuer). If you need guarantees beyond this, validate the token with a
+dedicated RFC 3161 tool against a maintained trust store.

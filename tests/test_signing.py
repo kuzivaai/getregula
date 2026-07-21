@@ -324,6 +324,22 @@ def test_cli_conform_sign_and_verify_round_trip_json(tmp_path):
     assert report["failed"] == 0
     assert report["passed"] == report["total"]
 
+    # Signer key pinning (--expect-public-key, TOFU/continuity check):
+    # the correct pinned key passes; a wrong key fails closed (rc 1).
+    pinned = manifest["signing"]["public_key"]
+    rc3, out3, err3 = _run_regula(
+        "verify", pack_path, "--format", "json", "--expect-public-key", pinned, env=env,
+    )
+    assert rc3 == 0, f"verify --expect-public-key (correct) failed: rc={rc3}\n{out3}\n{err3}"
+
+    rc4, out4, err4 = _run_regula(
+        "verify", pack_path, "--expect-public-key", "not-the-signers-key", env=env,
+    )
+    assert rc4 == 1, (
+        f"verify --expect-public-key (wrong key) must fail rc=1, got {rc4}\n{out4}\n{err4}"
+    )
+    assert "does NOT match" in out4 or "does NOT match" in err4
+
 
 def test_cli_conform_sign_and_verify_round_trip_text_smoke(tmp_path):
     """Smoke test: human-readable text output mentions signing and verification.

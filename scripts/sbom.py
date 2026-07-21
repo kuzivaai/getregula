@@ -19,6 +19,9 @@ from pathlib import Path
 
 # ── Regula version (imported from single source of truth) ─────────
 from constants import VERSION as REGULA_VERSION
+# Shared symlink-escape + size-cap gate (same guard report.py uses) so the
+# AI-BOM walkers never read a file that resolves outside the scanned project.
+from scan_safety import is_safe_to_scan
 
 # ── Import existing Regula modules with fallbacks ─────────────────
 
@@ -127,6 +130,7 @@ def _make_purl(name: str, version: str | None, purl_type: str) -> str | None:
 def _scan_model_files(project_path: str) -> list[dict]:
     """Scan project for ML model files."""
     root = Path(project_path)
+    root_resolved = root.resolve()
     models = []
 
     from constants import SKIP_DIRS
@@ -137,7 +141,11 @@ def _scan_model_files(project_path: str) -> list[dict]:
         for fname in filenames:
             ext = Path(fname).suffix.lower()
             if ext in MODEL_EXTENSIONS:
-                rel_path = str(Path(dirpath, fname).relative_to(root))
+                fpath = Path(dirpath, fname)
+                safe, _reason = is_safe_to_scan(fpath, root_resolved)
+                if not safe:
+                    continue  # symlink escaping the project, or oversized
+                rel_path = str(fpath.relative_to(root))
                 models.append({
                     "name": fname,
                     "file_path": rel_path,
@@ -246,6 +254,7 @@ def _detect_dataset_files(project_path: str) -> list[dict]:
     Returns list of dicts with path, format, size_bytes, purpose_hint.
     """
     root = Path(project_path)
+    root_resolved = root.resolve()
     results: list[dict] = []
 
     for dirpath, dirnames, filenames in os.walk(root):
@@ -255,6 +264,9 @@ def _detect_dataset_files(project_path: str) -> list[dict]:
             if ext not in _DATASET_FILE_EXTENSIONS:
                 continue
             fpath = Path(dirpath, fname)
+            safe, _reason = is_safe_to_scan(fpath, root_resolved)
+            if not safe:
+                continue  # symlink escaping the project, or oversized
             rel = str(fpath.relative_to(root))
             try:
                 size = fpath.stat().st_size
@@ -284,6 +296,7 @@ def _extract_model_metadata(project_path: str) -> list[dict]:
     Returns list of dicts with path, format, fields_found.
     """
     root = Path(project_path)
+    root_resolved = root.resolve()
     results: list[dict] = []
 
     for dirpath, dirnames, filenames in os.walk(root):
@@ -295,6 +308,9 @@ def _extract_model_metadata(project_path: str) -> list[dict]:
                 continue
 
             fpath = Path(dirpath, fname)
+            safe, _reason = is_safe_to_scan(fpath, root_resolved)
+            if not safe:
+                continue  # symlink escaping the project, or oversized
             rel = str(fpath.relative_to(root))
             fmt = "binary" if is_binary else Path(fname).suffix.lstrip(".")
 
@@ -318,6 +334,7 @@ def _extract_model_metadata(project_path: str) -> list[dict]:
 def _scan_datasets(project_path: str) -> list[dict]:
     """Scan project for dataset loading patterns."""
     root = Path(project_path)
+    root_resolved = root.resolve()
     datasets: list[dict] = []
     seen: set[str] = set()
 
@@ -328,6 +345,9 @@ def _scan_datasets(project_path: str) -> list[dict]:
             if ext not in _DATASET_SCAN_EXTENSIONS:
                 continue
             fpath = Path(dirpath, fname)
+            safe, _reason = is_safe_to_scan(fpath, root_resolved)
+            if not safe:
+                continue  # symlink escaping the project, or oversized
             try:
                 content = fpath.read_text(encoding="utf-8", errors="ignore")
             except OSError:
@@ -400,9 +420,14 @@ def _gpai_status_for_provider(provider: str) -> dict:
     key = provider.lower().strip()
     entry = _GPAI_SIGNATORIES["by_alias"].get(key)
     if not entry:
-        # Try a partial match (e.g. "OpenAI" vs "openai")
+        # Near-miss fallback (e.g. "openai-python" vs "openai"). Require the
+        # overlapping part to be at least 4 chars so a short fragment (e.g.
+        # "ai") cannot cross-bind an unrelated signatory — this stamps a
+        # legal-adjacent `regula:gpai-code-signed` fact (Article 53 presumption
+        # of conformity), so a wrong bind misstates a compliance-relevant claim.
         for alias, e in _GPAI_SIGNATORIES["by_alias"].items():
-            if key in alias or alias in key:
+            shorter = key if len(key) <= len(alias) else alias
+            if len(shorter) >= 4 and (key in alias or alias in key):
                 entry = e
                 break
     if not entry:

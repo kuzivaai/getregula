@@ -548,7 +548,7 @@ def main():
             return
 
         try:
-            entry = update_compliance_status(name, status, note)
+            update_compliance_status(name, status, note)
             print(f"Updated '{name}' compliance status to '{status}'")
             if note:
                 print(f"Note: {note}")
