@@ -169,8 +169,11 @@ jobs:
       # the PEP 440 version on PyPI.
       - name: Derive PyPI version from tag
         id: version
+        env:
+          # Same reason as ci.yaml: keep tag names out of shell expansion.
+          RAW_REF: ${{ github.ref_name }}
         run: |
-          RAW="${{ github.ref_name }}"
+          RAW="$RAW_REF"
           VERSION="${RAW#v}"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 

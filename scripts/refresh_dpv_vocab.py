@@ -81,6 +81,48 @@ def load_current() -> dict:
     return {"terms": {}}
 
 
+# Top-level concepts the EU-AIAct vocabulary would never legitimately drop.
+# Their absence means a broken/partial upstream parse, not a real vocab change.
+_REQUIRED_ANCHORS = (
+    "AISystem", "HighRiskAISystem", "ProhibitedAISystem", "RiskLevelHigh",
+)
+
+
+def _validate_upstream(upstream: dict, current: dict) -> list:
+    """Return a list of hard errors that must block a --write.
+
+    The snapshot is a TRUST ANCHOR: dpv_export validates every emittable IRI
+    against it, so a degenerate upstream response (an upstream CSV schema change
+    that renames the `term`/`iri` columns, a partial fetch) must not silently
+    overwrite a good snapshot with zero/garbage terms. These checks catch the
+    catastrophic cases without blocking legitimate term-level drift.
+    """
+    errors = []
+    if not upstream:
+        return ["upstream returned 0 terms (schema change or partial fetch?)"]
+    bad_iri = sorted(
+        t for t, v in upstream.items()
+        if not (v.get("iri") or "").startswith(NAMESPACE)
+    )
+    if bad_iri:
+        shown = bad_iri[:5] + (["..."] if len(bad_iri) > 5 else [])
+        errors.append(
+            f"{len(bad_iri)} term(s) have an IRI outside {NAMESPACE}: {shown}"
+        )
+    missing_anchors = [a for a in _REQUIRED_ANCHORS if a not in upstream]
+    if missing_anchors:
+        errors.append(f"required anchor term(s) absent upstream: {missing_anchors}")
+    cur = set(current.get("terms", {}))
+    if cur:
+        removed_frac = len(cur - set(upstream)) / len(cur)
+        if removed_frac > 0.5:
+            errors.append(
+                f"{removed_frac:.0%} of current terms would be removed (>50%) — "
+                "refusing; almost certainly an upstream schema change"
+            )
+    return errors
+
+
 def main() -> int:
     write = "--write" in sys.argv
     retrieved = None
@@ -117,6 +159,17 @@ def main() -> int:
             return 1
         print("\nNo drift. Snapshot is current.")
         return 0
+
+    errors = _validate_upstream(upstream, current)
+    if errors:
+        print("\nrefresh_dpv_vocab: REFUSING to write — the upstream response "
+              "failed sanity checks (the snapshot is a trust anchor):",
+              file=sys.stderr)
+        for e in errors:
+            print(f"  - {e}", file=sys.stderr)
+        print("If this reflects a genuine upstream change, review it and update "
+              "the checks or the snapshot manually.", file=sys.stderr)
+        return 2
 
     snapshot = build_snapshot(upstream, retrieved or current.get("retrieved") or "")
     SNAPSHOT_PATH.write_text(

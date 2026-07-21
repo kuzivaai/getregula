@@ -26,7 +26,6 @@ import json
 import os
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -39,7 +38,6 @@ from log_event import (  # noqa: E402
     collect_audit_trail,
     compute_hash,
     get_audit_dir,
-    get_audit_file,
     log_event,
     project_slug,
     query_events,
@@ -557,3 +555,117 @@ class TestMonitorRotation:
         valid, msg = verify_monitor_chain("legacy-test", str(mdir))
         assert valid is True
         assert "restart" in (msg or "").lower()
+
+
+# ── Audit store confidentiality (21 Jul 2026) ─────────────────────
+#
+# The audit trail records full tool inputs and responses. Under the Claude
+# Code hook that includes command output and file contents from the user's
+# project. Before this, mkdir() and open(..., "a") created the store 0755 /
+# 0644 under a default umask, so every other local account could read it —
+# an exposure on any shared workstation, build agent, or CI runner.
+
+def _modes(root):
+    import os
+    from pathlib import Path
+    dirs = [p for p in Path(root).rglob("*") if p.is_dir()] + [Path(root)]
+    files = list(Path(root).rglob("audit_*.jsonl"))
+    return (
+        [oct(p.stat().st_mode & 0o777) for p in dirs],
+        [oct(p.stat().st_mode & 0o777) for p in files],
+    )
+
+
+def test_new_audit_store_is_not_readable_by_other_users(tmp_path, monkeypatch):
+    import os
+    if os.name != "posix":
+        return
+    store = tmp_path / "store"
+    monkeypatch.setenv("REGULA_AUDIT_DIR", str(store))
+    import importlib
+    import log_event
+    importlib.reload(log_event)
+
+    log_event.log_event("tool_use", data={"secret": "file contents"})
+
+    dir_modes, file_modes = _modes(store)
+    assert all(m == "0o700" for m in dir_modes), dir_modes
+    assert all(m == "0o600" for m in file_modes), file_modes
+
+
+def test_per_project_chains_are_also_private(tmp_path, monkeypatch):
+    """Project chains live under projects/<slug>/ — hardening only the root
+    would leave most of a real store exposed."""
+    import os
+    if os.name != "posix":
+        return
+    store = tmp_path / "store"
+    monkeypatch.setenv("REGULA_AUDIT_DIR", str(store))
+    import importlib
+    import log_event
+    importlib.reload(log_event)
+
+    proj = tmp_path / "myproject"
+    proj.mkdir()
+    log_event.log_event("tool_use", data={"x": 1}, project_path=str(proj))
+
+    dir_modes, file_modes = _modes(store)
+    assert any("projects" in str(p) for p in store.rglob("*"))
+    assert all(m == "0o700" for m in dir_modes), dir_modes
+    assert all(m == "0o600" for m in file_modes), file_modes
+
+
+def test_legacy_world_readable_store_is_tightened_on_next_use(tmp_path, monkeypatch):
+    """Stores created before this change keep their old mode until touched.
+    Leaving them would mean the fix only ever protected new users."""
+    import os
+    if os.name != "posix":
+        return
+    store = tmp_path / "legacy"
+    (store / "projects" / "old-1234").mkdir(parents=True)
+    (store / "audit_2026-01.jsonl").write_text("{}\n")
+    (store / "projects" / "old-1234" / "audit_2026-01.jsonl").write_text("{}\n")
+    for p in (store, store / "projects", store / "projects" / "old-1234"):
+        p.chmod(0o755)
+    for p in store.rglob("audit_*.jsonl"):
+        p.chmod(0o644)
+
+    monkeypatch.setenv("REGULA_AUDIT_DIR", str(store))
+    import importlib
+    import log_event
+    importlib.reload(log_event)
+
+    log_event.log_event("tool_use", data={"x": 1})
+
+    dir_modes, file_modes = _modes(store)
+    assert all(m == "0o700" for m in dir_modes), dir_modes
+    assert all(m == "0o600" for m in file_modes), file_modes
+
+
+def test_doctor_reports_an_exposed_store(tmp_path, monkeypatch):
+    """The Security check used to claim 'no world-readable policy files'
+    while never inspecting a single file mode."""
+    import os
+    if os.name != "posix":
+        return
+    store = tmp_path / "exposed"
+    store.mkdir()
+    (store / "audit_2026-01.jsonl").write_text("{}\n")
+    store.chmod(0o755)
+    (store / "audit_2026-01.jsonl").chmod(0o644)
+
+    monkeypatch.setenv("REGULA_AUDIT_DIR", str(store))
+    import importlib
+    import log_event, doctor
+    importlib.reload(log_event)
+    importlib.reload(doctor)
+
+    result = doctor._check_security() if hasattr(doctor, "_check_security") else None
+    if result is None:
+        cands = [getattr(doctor, n) for n in dir(doctor)
+                 if n.startswith("_check") and "sec" in n.lower()]
+        if not cands:
+            return
+        result = cands[0]()
+    assert result["status"] == "WARN", result
+    assert "readable by other local users" in result["detail"], result

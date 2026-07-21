@@ -19,6 +19,9 @@ from pathlib import Path
 
 # ── Regula version (imported from single source of truth) ─────────
 from constants import VERSION as REGULA_VERSION
+# Shared symlink-escape + size-cap gate (same guard report.py uses) so the
+# AI-BOM walkers never read a file that resolves outside the scanned project.
+from scan_safety import is_safe_to_scan, read_bytes_if_safe
 
 # ── Import existing Regula modules with fallbacks ─────────────────
 
@@ -127,17 +130,27 @@ def _make_purl(name: str, version: str | None, purl_type: str) -> str | None:
 def _scan_model_files(project_path: str) -> list[dict]:
     """Scan project for ML model files."""
     root = Path(project_path)
+    root_resolved = root.resolve()
     models = []
 
     from constants import SKIP_DIRS
     skip_dirs = SKIP_DIRS
 
-    for dirpath, dirnames, filenames in os.walk(root):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode and closes the ancestor-swap race that O_NOFOLLOW
+    # cannot (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(root) if hasattr(os, 'fwalk')
+             else ((r, d, f, None) for r, d, f in os.walk(root)))
+    for dirpath, dirnames, filenames, _dirfd in _walk:
         dirnames[:] = [d for d in dirnames if d not in skip_dirs]
         for fname in filenames:
             ext = Path(fname).suffix.lower()
             if ext in MODEL_EXTENSIONS:
-                rel_path = str(Path(dirpath, fname).relative_to(root))
+                fpath = Path(dirpath, fname)
+                safe, _reason = is_safe_to_scan(fpath, root_resolved)
+                if not safe:
+                    continue  # symlink escaping the project, or oversized
+                rel_path = str(fpath.relative_to(root))
                 models.append({
                     "name": fname,
                     "file_path": rel_path,
@@ -246,15 +259,24 @@ def _detect_dataset_files(project_path: str) -> list[dict]:
     Returns list of dicts with path, format, size_bytes, purpose_hint.
     """
     root = Path(project_path)
+    root_resolved = root.resolve()
     results: list[dict] = []
 
-    for dirpath, dirnames, filenames in os.walk(root):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode and closes the ancestor-swap race that O_NOFOLLOW
+    # cannot (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(root) if hasattr(os, 'fwalk')
+             else ((r, d, f, None) for r, d, f in os.walk(root)))
+    for dirpath, dirnames, filenames, _dirfd in _walk:
         dirnames[:] = [d for d in dirnames if d not in _DATASET_SKIP_DIRS]
         for fname in filenames:
             ext = Path(fname).suffix.lower()
             if ext not in _DATASET_FILE_EXTENSIONS:
                 continue
             fpath = Path(dirpath, fname)
+            safe, _reason = is_safe_to_scan(fpath, root_resolved)
+            if not safe:
+                continue  # symlink escaping the project, or oversized
             rel = str(fpath.relative_to(root))
             try:
                 size = fpath.stat().st_size
@@ -284,9 +306,15 @@ def _extract_model_metadata(project_path: str) -> list[dict]:
     Returns list of dicts with path, format, fields_found.
     """
     root = Path(project_path)
+    root_resolved = root.resolve()
     results: list[dict] = []
 
-    for dirpath, dirnames, filenames in os.walk(root):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode and closes the ancestor-swap race that O_NOFOLLOW
+    # cannot (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(root) if hasattr(os, 'fwalk')
+             else ((r, d, f, None) for r, d, f in os.walk(root)))
+    for dirpath, dirnames, filenames, _dirfd in _walk:
         dirnames[:] = [d for d in dirnames if d not in _DATASET_SKIP_DIRS]
         for fname in filenames:
             is_metadata = fname in _MODEL_METADATA_FILES
@@ -295,17 +323,23 @@ def _extract_model_metadata(project_path: str) -> list[dict]:
                 continue
 
             fpath = Path(dirpath, fname)
+            # Binary model files are recorded by name only; metadata files
+            # are parsed, so both go through the guard and the parse reads
+            # from the guarded descriptor (issue #31).
+            raw, _reason = read_bytes_if_safe(fpath, root_resolved, dir_fd=_dirfd)
+            if raw is None:
+                continue  # escaping symlink, oversized, or unreadable
             rel = str(fpath.relative_to(root))
             fmt = "binary" if is_binary else Path(fname).suffix.lstrip(".")
 
             fields_found: list[str] = []
             if is_metadata and fmt == "json":
                 try:
-                    data = json.loads(fpath.read_text(encoding="utf-8", errors="ignore"))
+                    data = json.loads(raw.decode("utf-8", errors="ignore"))
                     if isinstance(data, dict):
                         fields_found = list(data.keys())[:20]
-                except (json.JSONDecodeError, OSError):
-                    pass  # metadata file unreadable; skip field extraction
+                except json.JSONDecodeError:
+                    pass  # metadata file unparseable; skip field extraction
 
             results.append({
                 "path": rel,
@@ -318,20 +352,28 @@ def _extract_model_metadata(project_path: str) -> list[dict]:
 def _scan_datasets(project_path: str) -> list[dict]:
     """Scan project for dataset loading patterns."""
     root = Path(project_path)
+    root_resolved = root.resolve()
     datasets: list[dict] = []
     seen: set[str] = set()
 
-    for dirpath, dirnames, filenames in os.walk(root):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode and closes the ancestor-swap race that O_NOFOLLOW
+    # cannot (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(root) if hasattr(os, 'fwalk')
+             else ((r, d, f, None) for r, d, f in os.walk(root)))
+    for dirpath, dirnames, filenames, _dirfd in _walk:
         dirnames[:] = [d for d in dirnames if d not in _DATASET_SKIP_DIRS]
         for fname in filenames:
             ext = Path(fname).suffix.lower()
             if ext not in _DATASET_SCAN_EXTENSIONS:
                 continue
             fpath = Path(dirpath, fname)
-            try:
-                content = fpath.read_text(encoding="utf-8", errors="ignore")
-            except OSError:
-                continue  # file unreadable; skip to next
+            # Read through the guard rather than re-opening the validated
+            # name — see scan_safety.open_if_safe and issue #31.
+            raw, _reason = read_bytes_if_safe(fpath, root_resolved, dir_fd=_dirfd)
+            if raw is None:
+                continue  # escaping symlink, oversized, or unreadable
+            content = raw.decode("utf-8", errors="ignore")
             rel = str(fpath.relative_to(root))
             for lineno, line in enumerate(content.splitlines(), 1):
                 for pattern, source_label in _DATASET_PATTERNS:
@@ -400,9 +442,14 @@ def _gpai_status_for_provider(provider: str) -> dict:
     key = provider.lower().strip()
     entry = _GPAI_SIGNATORIES["by_alias"].get(key)
     if not entry:
-        # Try a partial match (e.g. "OpenAI" vs "openai")
+        # Near-miss fallback (e.g. "openai-python" vs "openai"). Require the
+        # overlapping part to be at least 4 chars so a short fragment (e.g.
+        # "ai") cannot cross-bind an unrelated signatory — this stamps a
+        # legal-adjacent `regula:gpai-code-signed` fact (Article 53 presumption
+        # of conformity), so a wrong bind misstates a compliance-relevant claim.
         for alias, e in _GPAI_SIGNATORIES["by_alias"].items():
-            if key in alias or alias in key:
+            shorter = key if len(key) <= len(alias) else alias
+            if len(shorter) >= 4 and (key in alias or alias in key):
                 entry = e
                 break
     if not entry:
@@ -444,12 +491,16 @@ def _enrich_ai_bom(project_path: str, components: list[dict],
         real_occurrences = []
         for occ in occurrences:
             occ_path = root / occ.get("file", "")
-            try:
-                first_lines = "\n".join(occ_path.read_text(encoding="utf-8", errors="ignore").split("\n")[:10])
+            # occ_path is built from a relative path produced by an UNGUARDED
+            # model walk, so it can name a symlink escaping the project
+            # (issue #32). Read it through the guard like every other read in
+            # this module — a bypass here would defeat the walkers above it.
+            _raw, _ = read_bytes_if_safe(occ_path, root.resolve())
+            if _raw is not None:
+                first_lines = "\n".join(
+                    _raw.decode("utf-8", errors="ignore").split("\n")[:10])
                 if "regula-ignore" in first_lines and "regula-ignore:" not in first_lines:
                     continue  # This occurrence is in a catalogue/config file
-            except (OSError, PermissionError):
-                pass  # can't read file; keep occurrence as-is
             real_occurrences.append(occ)
 
         if not real_occurrences:

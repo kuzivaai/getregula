@@ -32,6 +32,7 @@ import test_analysis_manifest as _test_analysis_manifest  # noqa: F401
 import test_scan_security as _test_scan_security  # noqa: F401
 import test_site_facts as _test_site_facts  # noqa: F401
 import test_dpv_export as _test_dpv_export  # noqa: F401
+import test_hostile_sweep as _test_hostile_sweep  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
@@ -43,7 +44,7 @@ from helpers import assert_eq, assert_true, assert_false
 # with proper fixture injection.
 import inspect as _inspect
 _PYTEST_FIXTURES = {"monkeypatch", "tmp_path", "capsys", "tmpdir", "request"}
-for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export):
+for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
             continue
@@ -57,7 +58,7 @@ for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_ne
         if _params & _PYTEST_FIXTURES:
             continue
         globals()[_name] = _fn
-del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export
+del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:
@@ -1460,7 +1461,6 @@ def test_compliance_status_update():
             update_compliance_status("test-app", "compliant")
             assert_true(False, "should have raised ValueError for invalid transition")
         except ValueError:
-            passed_local = True
             assert_true(True, "raises ValueError for invalid transition")
 
     finally:
@@ -2830,7 +2830,8 @@ def test_agent_mcp_config_check():
     temp.write(config_content)
     temp.close()
     findings = check_mcp_config(temp.name)
-    import os; os.unlink(temp.name)
+    import os
+    os.unlink(temp.name)
     assert_true(len(findings) > 0, "finds credential in MCP config")
     print("✓ Agent monitor: MCP config credential detection")
 
@@ -3483,7 +3484,7 @@ def test_smoke_session():
     """Smoke test: regula session --format json runs and exits 0."""
     r = _run_cli("session", "--format", "json")
     assert_eq(r.returncode, 0, f"session exit {r.returncode}: {r.stderr[:200]}")
-    data = _assert_json_envelope(r.stdout, "session")
+    _assert_json_envelope(r.stdout, "session")
     print("\u2713 Smoke: session --format json exits 0 with envelope")
 
 
@@ -3565,7 +3566,7 @@ def test_smoke_agent():
     """Smoke test: regula agent --format json runs and exits 0."""
     r = _run_cli("agent", "--format", "json")
     assert_eq(r.returncode, 0, f"agent exit {r.returncode}: {r.stderr[:200]}")
-    data = _assert_json_envelope(r.stdout, "agent")
+    _assert_json_envelope(r.stdout, "agent")
     print("\u2713 Smoke: agent --format json exits 0 with envelope")
 
 
@@ -7042,7 +7043,7 @@ def test_fingerprint_auto_activates_medical():
         )
         (Path(tmp) / "diagnosis.py").write_text(code)
         # Without explicit --domain, fingerprinting should detect medical
-        findings = scan_files(tmp)
+        scan_files(tmp)  # exercise the scan path; fingerprint asserted below
         # The fingerprint should activate medical_devices subcategory
         # Even if no medical-specific high_risk pattern fires, the fingerprint
         # should NOT suppress medical domain findings

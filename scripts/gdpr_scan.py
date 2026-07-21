@@ -7,6 +7,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Shared path guard: never read a tree we do not control with a bare
+# read_text — a FIFO blocks forever and a symlink escapes the project.
+from scan_safety import read_text_if_safe
+
 from gdpr_patterns import GDPR_PATTERNS, DUAL_COMPLIANCE_HOTSPOTS, GDPR_LIFECYCLE_PHASES
 from constants import CODE_EXTENSIONS, SKIP_DIRS
 from report import classify_provenance, _is_open_question
@@ -21,7 +25,12 @@ def scan_gdpr(project_path: str, scope: str = "all") -> dict:
     findings = []
     hotspot_files = {}  # file -> list of hotspot categories
 
-    for root, dirs, files in os.walk(project):
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+    # (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(project) if hasattr(os, 'fwalk')
+             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(project)))
+    for root, dirs, files, _dirfd in _walk:
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             filepath = Path(root) / filename
@@ -33,7 +42,9 @@ def scan_gdpr(project_path: str, scope: str = "all") -> dict:
                 continue
 
             try:
-                content = filepath.read_text(encoding="utf-8", errors="ignore")
+                content = read_text_if_safe(filepath, errors="ignore", dir_fd=_dirfd)
+                if content is None:
+                    raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
             except (PermissionError, OSError):
                 continue
 

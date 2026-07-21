@@ -12,6 +12,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Shared path guard: never read a tree we do not control with a bare
+# read_text — a FIFO blocks forever and a symlink escapes the project.
+from scan_safety import read_text_if_safe
+
 from constants import SKIP_DIRS
 
 
@@ -276,7 +280,9 @@ def analyse_project_code(project_path: str) -> dict:
         if filepath.suffix not in code_extensions:
             continue
         try:
-            text = filepath.read_text(encoding="utf-8", errors="ignore")
+            text = read_text_if_safe(filepath, errors="ignore")
+            if text is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
         except OSError:
             continue  # unreadable file; skip
 

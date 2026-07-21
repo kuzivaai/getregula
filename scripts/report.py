@@ -41,50 +41,15 @@ from scan_cache import ScanCache
 # File scanner (used by both HTML and SARIF generators)
 # ---------------------------------------------------------------------------
 
-from constants import CODE_EXTENSIONS, SKIP_DIRS, MODEL_EXTENSIONS, VERSION, MAX_FILE_SIZE_BYTES, MAX_CLASSIFY_CHARS
+from constants import CODE_EXTENSIONS, SKIP_DIRS, MODEL_EXTENSIONS, VERSION, MAX_CLASSIFY_CHARS
 CONFIG_FILES = {".env", ".env.production", ".env.local", "docker-compose.yml", "docker-compose.yaml", "Dockerfile"}
 
 
-def _is_safe_to_scan(filepath: Path, project_root: Path) -> "tuple[bool, str]":
-    """Path-safety gate applied before any file is opened (Phase 5 threat model).
-
-    Returns (safe, reason). reason is "" when safe, otherwise one of:
-      "symlink_escape" — the file (or a symlinked ancestor directory) resolves
-                         outside project_root. A scanned repository is
-                         untrusted input; a symlink inside it must not let
-                         the scanner read arbitrary files reachable by the
-                         process (CI secrets, SSH keys, /etc/passwd, etc).
-                         Verified via reproduction: prior to this check, a
-                         symlink inside the scan root pointing outside it was
-                         silently followed and its content scanned.
-      "oversized"      — file size exceeds MAX_FILE_SIZE_BYTES. Prevents a
-                         single huge file (accidental or adversarial) from
-                         exhausting memory; there was previously no limit.
-      "stat_failed"    — could not stat the file (race, permissions, etc).
-
-    This does not replace os.walk's directory-level followlinks=False
-    default (which already prevents symlinked-directory traversal loops);
-    it closes the remaining gap where an individual *file* is a symlink.
-    """
-    try:
-        resolved = filepath.resolve()
-    except OSError:
-        return False, "stat_failed"
-
-    try:
-        resolved.relative_to(project_root)
-    except ValueError:
-        return False, "symlink_escape"
-
-    try:
-        size = filepath.stat().st_size
-    except OSError:
-        return False, "stat_failed"
-
-    if size > MAX_FILE_SIZE_BYTES:
-        return False, "oversized"
-
-    return True, ""
+# The path-safety gate (symlink-escape + size cap) lives in scan_safety so
+# report.py and sbom.py share ONE implementation and cannot drift. Imported
+# under the original private name to keep this module's call sites unchanged.
+from scan_safety import is_safe_to_scan as _is_safe_to_scan
+from scan_safety import read_bytes_if_safe as _read_bytes_if_safe
 
 # ---------------------------------------------------------------------------
 # EU AI Act enforcement deadlines + Digital Omnibus status.
@@ -141,10 +106,13 @@ def scan_config_files(project_path: str) -> list:
             if filename not in CONFIG_FILES:
                 continue
             filepath = Path(root) / filename
-            try:
-                content = filepath.read_text(encoding="utf-8", errors="ignore")
-            except (PermissionError, OSError):
-                continue  # unreadable file; skip
+            # Same guard as the main scan loop. Without it a repository can
+            # ship `.env` as a symlink to ~/.ssh/id_rsa or a CI secrets file
+            # and have it read and pattern-matched (verified).
+            _raw, _ = _read_bytes_if_safe(filepath, project)
+            if _raw is None:
+                continue  # escaping symlink, oversized, or unreadable
+            content = _raw.decode("utf-8", errors="ignore")
 
             rel_path = str(filepath.relative_to(project))
             for rx, description in _AI_CONFIG_PATTERNS:
@@ -342,7 +310,11 @@ def _detect_ai_library_project(project: Path) -> bool:
         if not cfg_path.exists():
             continue
         try:
-            content = cfg_path.read_text(encoding="utf-8", errors="ignore")[:4096]
+            # Guarded: this file can be a symlink escaping the project.
+            _raw, _ = _read_bytes_if_safe(cfg_path, project)
+            if _raw is None:
+                continue
+            content = _raw.decode("utf-8", errors="ignore")[:4096]
             lower = content.lower()
             for pkg in _AI_LIBRARY_PACKAGES:
                 # Match: name = "openai" or name = 'openai' or name=openai
@@ -670,14 +642,25 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         except Exception:
             pass  # Cache write is best-effort
 
-    # Single-file mode: synthesise a walk-compatible structure for one file
+    # os.fwalk yields a descriptor for each directory it visits. Opening a
+    # file relative to that descriptor pins the directory inode, so an
+    # ancestor directory swapped for a symlink mid-scan cannot be
+    # re-traversed — the one escape O_NOFOLLOW alone does not stop, since
+    # it guards only the final path component. os.fwalk needs dir_fd
+    # support and is absent on Windows; there we fall back to os.walk and
+    # the guard degrades to final-component protection (documented on
+    # scan_safety.open_if_safe).
+    _use_fwalk = hasattr(os, "fwalk") and not project.is_file()
     if project.is_file():
-        walk_iter = [(str(project.parent), [], [project.name])]
+        # Single-file mode: synthesise a walk-compatible structure.
+        walk_iter = [(str(project.parent), [], [project.name], None)]
         project = project.parent
+    elif _use_fwalk:
+        walk_iter = os.fwalk(project)
     else:
-        walk_iter = os.walk(project)
+        walk_iter = ((r, d, f, None) for r, d, f in os.walk(project))
 
-    for root, dirs, files in walk_iter:
+    for root, dirs, files, _dirfd in walk_iter:
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             filepath = Path(root) / filename
@@ -755,11 +738,18 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 content = _nb["code"]
                 lines = content.split("\n")
             else:
-                try:
-                    raw_bytes = filepath.read_bytes()
-                except (PermissionError, OSError):
-                    # Unreadable eligible file — dangerous skip (F1).
-                    _record_skip(filepath, "unreadable")
+                # Read through the guard, NOT by re-opening the name. The
+                # earlier _is_safe_to_scan() call validated a path; opening
+                # that path again would let an attacker with write access to
+                # the scanned tree swap in a symlink between the two
+                # resolutions and have us read a file the guard rejected
+                # (issue #31). read_bytes_if_safe opens once with O_NOFOLLOW
+                # and returns bytes from that exact descriptor.
+                raw_bytes, _read_reason = _read_bytes_if_safe(filepath, project, dir_fd=_dirfd)
+                if raw_bytes is None:
+                    # Unreadable eligible file — dangerous skip (F1). A
+                    # symlink_escape here means the race was caught in the act.
+                    _record_skip(filepath, _read_reason or "unreadable")
                     _scanned_files -= 1
                     continue
                 try:
@@ -1043,8 +1033,8 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # or wrapped error handling, not actual unguarded usage.
             if _ast_context and result.tier.value != "prohibited":
                 from ast_context import is_in_string, is_in_try
-                _ai_lines = [i for i, l in enumerate(lines, 1)
-                             if re.search(r'(?:import|from)\s+\w*(?:ai|ml|openai|torch|sklearn|tensorflow)', l)]
+                _ai_lines = [i for i, ln in enumerate(lines, 1)
+                             if re.search(r'(?:import|from)\s+\w*(?:ai|ml|openai|torch|sklearn|tensorflow)', ln)]
                 if _ai_lines:
                     _in_string_count = sum(1 for ln in _ai_lines if is_in_string(_ast_context, ln))
                     _in_try_count = sum(1 for ln in _ai_lines if is_in_try(_ast_context, ln))
@@ -1368,7 +1358,6 @@ def generate_html_report(
     prohibited_count = sum(1 for f in active if f["tier"] == "prohibited")
     high_risk_count = sum(1 for f in active if f["tier"] == "high_risk")
     limited_count = sum(1 for f in active if f["tier"] == "limited_risk")
-    minimal_count = sum(1 for f in active if f["tier"] == "minimal_risk")
     credential_count = sum(1 for f in active if f["tier"] == "credential_exposure")
     suppressed_count = sum(1 for f in findings if f.get("suppressed"))
     total_files = len(set(f["file"] for f in findings))
@@ -1442,7 +1431,6 @@ personnel. This is not legal advice.
 """
 
     # Executive summary — plain-English block for non-technical readers
-    scanned_files = len(set(f["file"] for f in findings if not f.get("suppressed")))
     if total_files == 0:
         exec_verdict = "No AI-related files detected"
         exec_colour = "#6b7280"
@@ -2053,13 +2041,10 @@ def main():
 
     if args.format == "html":
         content = generate_html_report(findings, project_name, audit_events, chain_valid)
-        suffix = ".html"
     elif args.format == "sarif":
         content = json.dumps(generate_sarif(findings, project_name), indent=2)
-        suffix = ".sarif.json"
     else:
         content = json.dumps(findings, indent=2)
-        suffix = ".json"
 
     if args.output:
         out_path = Path(args.output)

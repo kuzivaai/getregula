@@ -329,10 +329,12 @@ is identical to what the signature covers).
   the base64 and parse with any RFC 3161-aware library.
 - `gen_time` is the TSA's own timestamp from inside the token, copied
   out of the TSTInfo for quick reading without an ASN.1 decode.
-- `chain_verified` indicates whether the TSA signer-cert chain was
-  validated against a trust store. v1.1 verifiers set this to `false`
-  and warn — full PKI validation is out of scope for the reference
-  implementation.
+- `chain_verified` records whether the **producer** validated the TSA
+  signer-cert chain when the token was obtained. Producers set this to
+  `false`: chain validation is a verify-time concern that depends on the
+  consumer's trust anchor, not the producer's. A verifier MUST NOT treat
+  this field as an assertion about the chain — see §4.6.3
+  (`CHAIN_VERIFIED`) for the verify-time check and §4.6.4 for its limits.
 
 #### 4.6.3 Verifier behaviour
 
@@ -349,23 +351,68 @@ A conforming verifier MUST:
      the `messageImprint.hashedMessage`.
    - If the extracted imprint ≠ SHA-256(canonical form) → FAIL regardless
      of `--strict`.
-   - Otherwise, record `timestamp_status: "VERIFIED"` in the verify
-     report. The verifier SHOULD note that the TSA signer-cert chain was
-     NOT independently verified.
-3. If the verifier cannot parse the token (no ASN.1 library installed),
-   it MUST warn with `timestamp_status: "UNVERIFIABLE"` and MUST NOT
-   claim the pack is or is not timestamped. Under `--strict`, treat as
-   failure.
+   - Otherwise, verify the token's PKCS#7 SignedData signature (RFC 5652
+     §5.4) and record the **strongest status actually proven**, never more:
+
+     | `timestamp_status` | What has been proven |
+     |---|---|
+     | `HASH_MATCHED` | The `messageImprint` matches the canonical form. The token binds to THIS manifest, but its signature was not evaluated, so `gen_time` is **not** authenticated. |
+     | `SIGNATURE_VERIFIED` | The above, plus the SignedData signature verifies against the certificate embedded in the token, the signed attributes (`contentType`, `messageDigest`) bind that signature to this exact TSTInfo, and the certificate carries the critical `id-kp-timeStamping` EKU (RFC 3161 §2.3). The signer's **identity** remains self-asserted — nothing anchors that certificate. |
+     | `CHAIN_VERIFIED` | The above, plus the signer certificate chains to a **caller-supplied** trust anchor and both certificates were valid at `gen_time`. |
+
+     A verifier MUST NOT report a plain `"VERIFIED"` for timestamps. Each
+     status MUST be accompanied by a `timestamp_detail` stating what was
+     **not** checked (see §4.6.4).
+   - If the imprint matches but the signature is **provably bad** —
+     it fails to verify, the `messageDigest` signed attribute does not
+     match the encapsulated TSTInfo, the `contentType` is not
+     `id-ct-TSTInfo`, or the EKU requirement is violated — the verifier
+     MUST record `timestamp_status: "INVALID"` and FAIL. A token that
+     asserts provenance it cannot back is worse than no token.
+3. If the verifier cannot **evaluate** the signature — no ASN.1 or crypto
+   library installed, no embedded signer certificate, no signed
+   attributes, an unimplemented signature algorithm, or a digest the
+   verifier declines to vouch for (e.g. SHA-1) — it MUST NOT fail on that
+   basis alone. Absence of evaluation is not evidence of tampering, and
+   failing here would reject packs from a conforming TSA whose algorithms
+   the verifier simply does not implement. It MUST instead retain the
+   hash-only verdict (`HASH_MATCHED`), state the reason in
+   `timestamp_detail`, and emit a warning. If no ASN.1 library is present
+   at all it MUST report `timestamp_status: "UNVERIFIABLE"` and MUST NOT
+   claim the pack is or is not timestamped. Under `--strict`, treat
+   `UNVERIFIABLE` as failure.
 
 #### 4.6.4 Trust boundaries (informative)
 
-The v1.1 verifier checks that the TSA's embedded hash matches what we
-claim to have submitted. It does NOT check:
+The verifier checks that the TSA's embedded hash matches what we claim to
+have submitted, and — where it can — that the token's own signature
+verifies. What it does **not** check depends on the status reached:
 
-- Whether the TSA signer certificate is trusted.
-- Whether the certificate was valid at the time in `gen_time`.
-- Whether the token's own signature cryptographically verifies against
-  the TSA public key.
+At `HASH_MATCHED`, none of the following are checked:
+
+- Whether the token's signature cryptographically verifies.
+- Whether the TSA signer certificate is trusted or was valid at `gen_time`.
+
+At `SIGNATURE_VERIFIED`, the signature and the `id-kp-timeStamping` EKU
+have been checked, but:
+
+- The signer certificate is **self-asserted by the token**. Anyone can
+  mint a certificate, sign a token with it, and reach this status. It
+  proves the token is internally consistent and untampered — not that a
+  TSA you trust issued it. Supply `--tsa-trust-anchor` to bind identity.
+
+At `CHAIN_VERIFIED`, additionally the signer chains to the supplied
+anchor and both certs were valid at `gen_time`, but **still not**:
+
+- **Revocation.** No CRL or OCSP is consulted. Regula's core is
+  zero-network by design, so a revocation check cannot be performed
+  offline. A revoked TSA certificate will still reach `CHAIN_VERIFIED`.
+- **Full RFC 5280 path validation.** No name constraints, no policy
+  mapping or policy qualifiers, and no intermediate chain building — the
+  supplied anchor must be the signer's direct issuer.
+
+A consumer needing guarantees beyond these MUST validate the token with a
+dedicated RFC 3161 tool against a maintained trust store.
 
 Consumers with a higher trust bar (e.g. notified-body audit submission)
 SHOULD run the raw `token` bytes through a dedicated RFC 3161 verifier

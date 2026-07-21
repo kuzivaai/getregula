@@ -297,7 +297,7 @@ def test_hash_chain_integrity():
             prev = event["current_hash"]
 
         # Tamper with event 5
-        events = [json.loads(l) for l in lines]
+        events = [json.loads(ln) for ln in lines]
         events[4]["model"] = "TAMPERED"
         log_file.write_text(
             "\n".join(json.dumps(e, sort_keys=True) for e in events) + "\n"

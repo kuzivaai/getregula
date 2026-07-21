@@ -96,7 +96,7 @@ runs:
   using: composite
   steps:
     - name: Set up Python 3.12
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
       with:
         python-version: "3.12"
 
@@ -428,7 +428,7 @@ runs:
 
     - name: Create or update PR comment
       if: inputs.comment-on-pr == 'true' && github.event_name == 'pull_request'
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553 # v9
       with:
         script: |
           const fs = require('fs');
@@ -437,32 +437,48 @@ runs:
           const fullBody = marker + '\n' + body;
 
           // Find existing comment to update (avoid spam)
-          const { data: comments } = await github.rest.issues.listComments({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: context.issue.number,
-          });
-          const existing = comments.find(c => c.body.includes(marker));
-
-          if (existing) {
-            await github.rest.issues.updateComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              comment_id: existing.id,
-              body: fullBody,
-            });
-          } else {
-            await github.rest.issues.createComment({
+          // Posting the summary is a convenience, NOT the compliance gate.
+          // The gate is the scan result and its completion manifest, which
+          // have already been evaluated by this point. A workflow without
+          // `pull-requests: write` — which includes every PR from a fork,
+          // since GitHub always issues those a read-only token — must not
+          // turn a clean scan into a red check because a comment could not
+          // be written. Warn and continue instead.
+          try {
+            const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: fullBody,
             });
+            const existing = comments.find(c => c.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: fullBody,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: fullBody,
+              });
+            }
+          } catch (err) {
+            core.warning(
+              `Could not post the Regula PR comment: ${err.message}. ` +
+              `This does not affect the compliance result. Grant the workflow ` +
+              `\`permissions: pull-requests: write\`, or set \`comment-on-pr: 'false'\` ` +
+              `to silence this. PRs from forks always receive a read-only token.`
+            );
           }
 
     - name: Post inline PR review comments
       if: inputs.inline-pr-comments == 'true' && github.event_name == 'pull_request'
-      uses: actions/github-script@v9
+      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553 # v9
       env:
         SARIF_FILE: ${{ runner.temp }}/regula-results.sarif.json
         MAX_COMMENTS: ${{ inputs.inline-comment-max }}
@@ -483,13 +499,28 @@ runs:
           const minLevel = tierOrder[process.env.MIN_TIER] || 3;
           const maxComments = parseInt(process.env.MAX_COMMENTS, 10) || 20;
 
-          // Fetch the changed files in this PR with their diff hunks
-          const { data: prFiles } = await github.rest.pulls.listFiles({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            pull_number: context.issue.number,
-            per_page: 300,
-          });
+          // Fetch the changed files in this PR with their diff hunks.
+          // Guarded for the same reason as the summary comment below: this
+          // is a convenience, not the gate. An explicit `permissions:` block
+          // that omits pull-requests access makes this throw, and a clean
+          // scan must not go red because of it.
+          let prFiles;
+          try {
+            ({ data: prFiles } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              per_page: 300,
+            }));
+          } catch (err) {
+            core.warning(
+              `Could not read the PR diff for inline comments: ${err.message}. ` +
+              `This does not affect the compliance result. The workflow needs ` +
+              `\`permissions: pull-requests: write\`; PRs from forks always ` +
+              `receive a read-only token.`
+            );
+            return;
+          }
 
           // Build a map: filename -> Set of changed line numbers (RIGHT side of diff)
           const changedLines = new Map();
@@ -580,7 +611,7 @@ runs:
     - name: Upload SARIF to GitHub Code Scanning
       if: inputs.upload-sarif == 'true' && always()
       continue-on-error: true
-      uses: github/codeql-action/upload-sarif@v4
+      uses: github/codeql-action/upload-sarif@eec0bff2f6c15bf3f1e8a0152f94d17664a06a06 # v4
       with:
         sarif_file: ${{ steps.run-check.outputs.sarif_file }}
         category: regula-ai-governance

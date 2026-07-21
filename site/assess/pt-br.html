@@ -1625,6 +1625,14 @@ function renderScanResults(result) {
   const container = document.getElementById("scanResults");
   let html = "";
 
+  // Jurisdiction-scope notice: the code scanner currently ships EU AI Act
+  // patterns only. Don't silently return an EU verdict when a user picked
+  // Korea or Colorado on the jurisdiction toggle.
+  if (typeof activeJurisdiction !== 'undefined' && activeJurisdiction !== 'eu') {
+    const jurName = activeJurisdiction === 'kr' ? 'Coreia do Sul' : 'Colorado';
+    html += `<div class="scan-jur-notice" style="margin-bottom:16px;padding:12px 14px;border:1px solid var(--border-active);border-radius:var(--radius);background:var(--accent-dim);font-size:0.85rem;line-height:1.45;">Atenção: o scanner de código cobre atualmente padrões da <strong>Lei de IA da UE</strong>. Você selecionou <strong>${jurName}</strong> — para uma triagem específica de ${jurName}, use o questionário ou execute a CLI completa.</div>`;
+  }
+
   // Tier card (reuse existing styles)
   const tierStyles = {
     prohibited: "tier-prohibited",
@@ -1646,6 +1654,7 @@ function renderScanResults(result) {
       <div class="tier-label">RESULTADO DA ANÁLISE DE CÓDIGO</div>
       <div class="tier-name">${tierNames[c.tier] || c.tier}</div>
       <div class="tier-desc">${c.message}</div>
+      ${(c.tier === 'prohibited' || c.tier === 'high_risk') ? '<div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">Isto é uma <strong>correspondência de padrão, não uma determinação</strong> — verifique se o código sinalizado realmente implementa a prática descrita. Falsos positivos são possíveis; isto não é aconselhamento jurídico.</div>' : ''}
       <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">
         Confiança: ${c.confidence_score}/100 &middot; Linguagem: ${result.language}
         ${c.indicators_matched.length ? ' &middot; Indicadores: ' + c.indicators_matched.join(', ') : ''}

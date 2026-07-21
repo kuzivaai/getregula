@@ -25,6 +25,22 @@ OMNIBUS_OJ_DATE = None  # Set to "YYYY-MM-DD" when published in the OJ
 
 OMNIBUS_ENACTED = OMNIBUS_OJ_DATE is not None
 
+# Entry into force is 3 days after OJ publication (see the module docstring /
+# legislative history). "In force" copy must key off this DERIVED date, not the
+# OJ date itself — otherwise the tool asserts the amendment is legally in force
+# up to 3 days early, which is a legal-status overstatement in a compliance
+# tool. If the flip date is malformed this raises at import (a loud failure the
+# maintainer catches immediately, better than silently wrong deadline copy).
+_ENTRY_INTO_FORCE_DELAY_DAYS = 3
+if OMNIBUS_OJ_DATE is not None:
+    from datetime import datetime as _dt, timedelta as _td
+    OMNIBUS_IN_FORCE_DATE = (
+        _dt.strptime(OMNIBUS_OJ_DATE, "%Y-%m-%d")
+        + _td(days=_ENTRY_INTO_FORCE_DELAY_DAYS)
+    ).strftime("%Y-%m-%d")
+else:
+    OMNIBUS_IN_FORCE_DATE = None
+
 # ---------------------------------------------------------------------------
 # Canonical deadline dates (ISO) — machine-readable
 # ---------------------------------------------------------------------------
@@ -46,14 +62,15 @@ ORIGINAL_PROSE  = "2 August 2026"
 ADOPTION_HISTORY = "agreed 7 May 2026, EP approved 16 Jun 2026, Council approved 29 Jun 2026"
 
 OMNIBUS_STATUS = (
-    f"Published in OJ {OMNIBUS_OJ_DATE}; in force"
+    f"Published in OJ {OMNIBUS_OJ_DATE}; in force from {OMNIBUS_IN_FORCE_DATE}"
     if OMNIBUS_ENACTED
     else "EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication"
 )
 
 # One-line qualifier for deadline copy: what is legally binding right now.
 BINDING_NOTE = (
-    f"In force since OJ publication ({OMNIBUS_OJ_DATE})."
+    f"Published in OJ {OMNIBUS_OJ_DATE}; in force from {OMNIBUS_IN_FORCE_DATE} "
+    "(3 days after publication)."
     if OMNIBUS_ENACTED
     else "Until publication in the Official Journal, original deadlines remain legally binding."
 )
@@ -64,14 +81,20 @@ def status_parenthetical() -> str:
     '(Omnibus agreed 7 May 2026, EP approved 16 Jun 2026, Council approved
     29 Jun 2026; pending OJ publication)'."""
     if OMNIBUS_ENACTED:
-        return f"(Omnibus {ADOPTION_HISTORY}; published in OJ {OMNIBUS_OJ_DATE}, in force)"
+        return (
+            f"(Omnibus {ADOPTION_HISTORY}; published in OJ {OMNIBUS_OJ_DATE}, "
+            f"in force from {OMNIBUS_IN_FORCE_DATE})"
+        )
     return f"(Omnibus {ADOPTION_HISTORY}; pending OJ publication)"
 
 
 def annex_iii_deadline_line() -> str:
     """Primary-deadline sentence fragment for Annex III systems."""
     if OMNIBUS_ENACTED:
-        return f"{ANNEX_III_PROSE} for Annex III (Omnibus in force, OJ {OMNIBUS_OJ_DATE})"
+        return (
+            f"{ANNEX_III_PROSE} for Annex III (Omnibus published in OJ "
+            f"{OMNIBUS_OJ_DATE}, in force from {OMNIBUS_IN_FORCE_DATE})"
+        )
     return (
         f"{ORIGINAL_PROSE} (Omnibus: {ANNEX_III_PROSE} for Annex III, "
         "EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)"

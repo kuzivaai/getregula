@@ -28,7 +28,7 @@ import os
 import sys
 import traceback
 from datetime import datetime, timezone
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -39,6 +39,44 @@ from constants import VERSION
 
 # Maximum request body size: 10 MB
 MAX_REQUEST_SIZE = 10 * 1024 * 1024
+
+# Maximum JSON nesting depth accepted in a request body. CPython's C JSON
+# decoder recurses on the C stack per nesting level; a body that is millions
+# of open brackets deep can crash the process (a Python try/except cannot catch
+# a C stack overflow). 100 is far above any legitimate Regula request.
+MAX_JSON_DEPTH = 100
+
+
+def _reject_deep_json(raw: str, max_depth: int = MAX_JSON_DEPTH) -> None:
+    """Raise ValueError if `raw` nests deeper than max_depth.
+
+    Scans once, tracking bracket depth while skipping bracket characters that
+    appear inside JSON strings. Early-exits as soon as the limit is exceeded,
+    so a nesting bomb is rejected in O(max_depth), before json.loads recurses.
+    """
+    depth = 0
+    in_string = False
+    escaped = False
+    for ch in raw:
+        if in_string:
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == '"':
+                in_string = False
+            continue
+        if ch == '"':
+            in_string = True
+        elif ch == "[" or ch == "{":
+            depth += 1
+            if depth > max_depth:
+                raise ValueError(
+                    f"JSON nesting too deep (>{max_depth} levels)"
+                )
+        elif ch == "]" or ch == "}":
+            if depth > 0:
+                depth -= 1
 
 
 # ---------------------------------------------------------------------------
@@ -59,6 +97,12 @@ def _json_bytes(obj: dict) -> bytes:
 
 class RegulaHandler(BaseHTTPRequestHandler):
     """HTTP request handler for the Regula REST API."""
+
+    # Per-connection socket timeout. Without it, a client that sends headers
+    # with a large Content-Length then stalls (Slowloris) keeps rfile.read()
+    # blocked indefinitely. With ThreadingHTTPServer the stalled read aborts
+    # only its own connection instead of freezing the whole server.
+    timeout = 30
 
     # Silence default stderr logging per request — we do our own logging
     def log_message(self, fmt, *args):
@@ -136,7 +180,9 @@ class RegulaHandler(BaseHTTPRequestHandler):
         if not raw:
             raise ValueError("Empty request body")
 
-        return json.loads(raw.decode("utf-8"))
+        text = raw.decode("utf-8")
+        _reject_deep_json(text)  # guard C-stack overflow before json.loads
+        return json.loads(text)
 
     # ---- Routing ----
 
@@ -234,7 +280,7 @@ class RegulaHandler(BaseHTTPRequestHandler):
                 
             envelope = _build_envelope("check", findings, _exit_code)
             self._send_json(200, envelope)
-        except Exception as e:
+        except Exception:
             sys.stderr.write(f"Error in /v1/check: {traceback.format_exc()}\n")
             self._send_error(500, "Scan failed. Check server logs for details.")
 
@@ -269,7 +315,7 @@ class RegulaHandler(BaseHTTPRequestHandler):
             
             envelope = _build_envelope("classify", result.to_dict(), _exit_code)
             self._send_json(200, envelope)
-        except Exception as e:
+        except Exception:
             sys.stderr.write(f"Error in /v1/classify: {traceback.format_exc()}\n")
             self._send_error(500, "Classification failed. Check server logs for details.")
 
@@ -320,7 +366,7 @@ class RegulaHandler(BaseHTTPRequestHandler):
                 
             envelope = _build_envelope("gap", assessment, _exit_code)
             self._send_json(200, envelope)
-        except Exception as e:
+        except Exception:
             sys.stderr.write(f"Error in /v1/gap: {traceback.format_exc()}\n")
             self._send_error(500, "Gap analysis failed. Check server logs for details.")
 
@@ -331,7 +377,7 @@ class RegulaHandler(BaseHTTPRequestHandler):
             questionnaire = generate_questionnaire()
             envelope = _build_envelope("questionnaire", questionnaire)
             self._send_json(200, envelope)
-        except Exception as e:
+        except Exception:
             sys.stderr.write(f"Error in /v1/questionnaire: {traceback.format_exc()}\n")
             self._send_error(500, "Questionnaire generation failed. Check server logs for details.")
 
@@ -360,7 +406,7 @@ class RegulaHandler(BaseHTTPRequestHandler):
             result = evaluate_questionnaire(answers)
             envelope = _build_envelope("questionnaire/evaluate", result.to_dict())
             self._send_json(200, envelope)
-        except Exception as e:
+        except Exception:
             sys.stderr.write(f"Error in /v1/questionnaire/evaluate: {traceback.format_exc()}\n")
             self._send_error(500, "Questionnaire evaluation failed. Check server logs for details.")
 
@@ -413,7 +459,10 @@ def main():
     )
     args = parser.parse_args()
 
-    server = HTTPServer((args.host, args.port), RegulaHandler)
+    # ThreadingHTTPServer so one slow/stalled connection cannot block the rest
+    # (defends the RegulaHandler.timeout against Slowloris). daemon_threads is
+    # True by default on ThreadingHTTPServer, so workers don't block shutdown.
+    server = ThreadingHTTPServer((args.host, args.port), RegulaHandler)
     sys.stderr.write(
         f"Regula API v{VERSION} listening on http://{args.host}:{args.port}\n"
         f"Security: No authentication — do NOT expose on public networks.\n"

@@ -22,6 +22,10 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Shared path guard: never read a tree we do not control with a bare
+# read_text — a FIFO blocks forever and a symlink escapes the project.
+from scan_safety import read_text_if_safe
+
 from log_event import query_events
 
 
@@ -204,7 +208,9 @@ def check_mcp_config(config_path: str = None) -> list:
         if not path.exists():
             continue
         try:
-            content = path.read_text(encoding="utf-8")
+            content = read_text_if_safe(path, errors="ignore")
+            if content is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
             secrets = check_secrets(content)
             for secret in secrets:
                 findings.append({
@@ -750,7 +756,9 @@ def _scan_files_for_patterns(project_path: str) -> dict:
         if any(part.startswith(".") or part == "node_modules" for part in f.parts):
             continue
         try:
-            content = f.read_text(encoding="utf-8", errors="ignore")
+            content = read_text_if_safe(f, errors="ignore")
+            if content is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
         except (PermissionError, OSError):
             continue  # unreadable file; skip
         files_scanned += 1

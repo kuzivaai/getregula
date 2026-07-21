@@ -1,0 +1,22 @@
+# Auto-requests review from the maintainer on every change.
+#
+# With one maintainer this does little today — it requests review from the
+# person opening the PR. It is here so that adding a second contributor is
+# a one-line change rather than a thing someone has to remember, and so
+# security-sensitive paths carry an explicit owner from the start.
+#
+# This is routing, not a security control. It does not enforce review;
+# branch protection does that.
+
+* @kuzivaai
+
+# Paths where an unreviewed change would be most costly.
+/scripts/scan_safety.py    @kuzivaai
+/scripts/timestamp.py      @kuzivaai
+/scripts/signing.py        @kuzivaai
+/scripts/telemetry.py      @kuzivaai
+/scripts/log_event.py      @kuzivaai
+/.github/workflows/        @kuzivaai
+/action.yml                @kuzivaai
+/SECURITY.md               @kuzivaai
+/pyproject.toml            @kuzivaai
