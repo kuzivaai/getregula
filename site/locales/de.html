@@ -287,7 +287,7 @@
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Men&uuml;" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
-        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/assess/de.html" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
@@ -314,6 +314,10 @@
                 <span>&#9654;</span>
                 Jetzt kostenlos testen
             </button>
+
+            <div style="margin-top:14px;">
+                <a href="/assess/de.html" style="color:var(--accent);font-size:0.9rem;text-decoration:underline;text-underline-offset:3px;" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'assess-hero'}})">Lieber ohne Terminal? Im Browser bewerten &rarr;</a>
+            </div>
 
             <div class="cta-secondary">
                 kein Konto, kein API-Schl&uuml;ssel &middot; vollst&auml;ndig offline &middot;
@@ -448,10 +452,10 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
                 <span class="fwd-icon">&#8599;</span>
                 <span class="fwd-txt">Link kopieren und an Ihren Entwickler senden</span>
             </button>
-            <button type="button" class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula assess')">
-                <span class="fwd-icon">&#9654;</span>
-                <span class="fwd-txt">regula assess ausf&uuml;hren (kein Code n&ouml;tig)</span>
-            </button>
+            <a class="audience-fwd" href="/assess/de.html" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'assess-biz'}})">
+                <span class="fwd-icon">&#8594;</span>
+                <span class="fwd-txt">Im Browser bewerten (keine Installation, kein Terminal)</span>
+            </a>
         </div>
         <div class="audience-card audience-dev">
             <div class="audience-label">Wenn Sie den Code schreiben</div>

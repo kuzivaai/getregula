@@ -26,7 +26,6 @@ import json
 import os
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -39,7 +38,6 @@ from log_event import (  # noqa: E402
     collect_audit_trail,
     compute_hash,
     get_audit_dir,
-    get_audit_file,
     log_event,
     project_slug,
     query_events,

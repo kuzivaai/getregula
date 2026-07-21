@@ -684,7 +684,7 @@ def verify_facts() -> int:
         "62": ("commands", facts["counts"]["commands"]),
         "12": ("frameworks", facts["counts"]["frameworks"]),
         "8": ("languages", facts["counts"]["languages"]),
-        "2725": ("tests", facts["counts"]["tests"]["total_collected"]),
+        "2756": ("tests", facts["counts"]["tests"]["total_collected"]),
     }
 
     # Files to check (relative to repo root) — includes deployed site pages
@@ -736,22 +736,14 @@ def verify_facts() -> int:
             if not pat:
                 continue
 
-            actual_pat = pat.replace(published_str, actual_str)
-            if actual_str != published_str:
-                actual_pat = re.sub(r"\d+", actual_str, pat, count=1)
-
-            # Search for the canonical number in context
-            if not re.search(actual_pat, text, re.IGNORECASE):
-                # Canonical number not found in expected context — check if
-                # a WRONG number is present instead
-                wrong_pat = pat.replace(actual_str, r"\d+").replace(f"{int(actual_str):,}", r"[\d,]+")
-                wrong_matches = list(re.finditer(wrong_pat, text, re.IGNORECASE))
-                for wm in wrong_matches:
-                    found_num = re.search(r"[\d,]+", wm.group(0))
-                    if found_num and found_num.group(0).replace(",", "") != actual_str:
-                        found_val = int(found_num.group(0).replace(",", ""))
-                        if found_val < int(actual_str) * 0.5:
-                            continue
+            # NOTE: a near-identical block used to sit here, searching an
+            # `actual_pat` variant and computing `found_val` — but it never
+            # appended to `mismatches`, so its only reachable effect was to
+            # raise ValueError when its `[\d,]+` sub-pattern matched a lone
+            # comma (e.g. the text ", test counts") and `int("")` was called.
+            # The block below performs the real check correctly. Removed
+            # rather than patched: dead code that can only crash is not worth
+            # keeping.
 
             # Check for the canonical number in context
             if not re.search(pat, text, re.IGNORECASE):

@@ -838,7 +838,6 @@ def _check_article_15(project_path: str, files_index: list) -> tuple:
         r"password\s*=\s*['\"][^'\"]{8,}['\"]",
     ]
 
-    has_test_dir = False
     test_file_count = 0
 
     for rel_path, abs_path in files_index:
@@ -850,7 +849,6 @@ def _check_article_15(project_path: str, files_index: list) -> tuple:
                 component_scores["tests"] = 1
 
         if _is_in_directory(rel_path, test_dir_names):
-            has_test_dir = True
             test_file_count += 1
             if component_scores["tests"] == 0:
                 evidence.append(f"Test directory with files: {rel_path}")
@@ -1115,6 +1113,55 @@ ARTICLE_6_GUIDELINES_STATUS = {
 }
 
 
+def _uk_date(iso: str) -> str:
+    """'2026-02-02' -> '2 February 2026' (no leading zero on the day)."""
+    try:
+        dt = datetime.strptime(iso, "%Y-%m-%d")
+    except (ValueError, TypeError):
+        return str(iso)
+    return f"{dt.day} {dt.strftime('%B %Y')}"
+
+
+def _format_article_6_status_lines() -> list:
+    """Render the Article 6(5) guidance-status block from the single source of
+    truth (``ARTICLE_6_GUIDELINES_STATUS``) so the human-readable text and the
+    JSON field ``article_6_guidelines_status`` can never drift.
+
+    When the Commission publishes the guidelines, update the dict only
+    (``missed`` -> False, ``current_status`` -> "finalised", revise
+    ``implication``); this block updates in lockstep. See the TODO above the
+    dict.
+    """
+    s = ARTICLE_6_GUIDELINES_STATUS
+    deadline_uk = _uk_date(s["deadline"])
+    lines = [f"Article 6 guidance status (verified {s['verified_on']}):"]
+    if s.get("missed") and s.get("current_status") != "finalised":
+        promised = s.get("draft_promised_by")
+        promised_clause = (
+            f"  (Article 6(5)). A draft was promised by {_uk_date(promised)} and"
+            if promised
+            else "  (Article 6(5)). A draft was promised and"
+        )
+        lines.extend([
+            f"  The European Commission MISSED its {deadline_uk} deadline",
+            "  for publishing guidelines on Article 6 high-risk classification",
+            promised_clause,
+            "  has not been finalised. Self-assessment under Article 6(3) is",
+            "  currently UNGUIDED. If you are considering the exemption, run:",
+        ])
+    else:
+        lines.extend([
+            "  The European Commission has PUBLISHED its Article 6(5) guidelines",
+            "  on high-risk classification (deadline was "
+            f"{deadline_uk}). Self-assessment under Article 6(3) can now follow",
+            "  the published guidance. To structure your decision, run:",
+        ])
+    for step in s.get("next_steps", []):
+        lines.append(f"    {step}")
+    lines.append("")
+    return lines
+
+
 def assess_compliance(
     project_path: str,
     articles: Optional[list] = None,
@@ -1174,7 +1221,6 @@ def assess_compliance(
 
     parts = []
     total_articles = len(article_results)
-    found = total_articles - status_counts["not_found"]
 
     if status_counts["strong"] > 0:
         parts.append(f"{status_counts['strong']} of {total_articles} articles have strong evidence")
@@ -1366,14 +1412,9 @@ def format_gap_text(assessment: dict) -> str:
 
     lines.append(f"Summary: {assessment['summary']}")
     lines.append("")
-    lines.append("Article 6 guidance status (verified 2026-04-08):")
-    lines.append("  The European Commission MISSED its 2 February 2026 deadline")
-    lines.append("  for publishing guidelines on Article 6 high-risk classification")
-    lines.append("  (Article 6(5)). A draft was promised by end-February 2026 and")
-    lines.append("  has not been finalised. Self-assessment under Article 6(3) is")
-    lines.append("  currently UNGUIDED. If you are considering the exemption, run:")
-    lines.append("    regula exempt    - structured Article 6(3) decision tree")
-    lines.append("")
+    # Rendered from ARTICLE_6_GUIDELINES_STATUS (single source of truth) so the
+    # text can never drift from the JSON `article_6_guidelines_status` field.
+    lines.extend(_format_article_6_status_lines())
     return "\n".join(lines)
 
 

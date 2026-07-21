@@ -293,7 +293,6 @@ def classify_context(content: str) -> str:
         "prompt", "system_prompt", "deployment", "model_name",
         "model_id", "engine", "provider",
     }
-    string_literals = _extract_string_literals(tree)
     assignment_names = _extract_assignment_names(tree)
     config_hits = assignment_names & ai_config_keywords
     if config_hits and not analysis["has_ai_code"]:
@@ -313,15 +312,6 @@ def classify_context(content: str) -> str:
     # Default: implementation (even if no AI — the caller should combine
     # this with has_ai_code to decide relevance).
     return "implementation"
-
-
-def _extract_string_literals(tree: ast.Module) -> List[str]:
-    """Return all string literal values in the AST."""
-    strings: List[str] = []
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Constant) and isinstance(node.value, str):
-            strings.append(node.value)
-    return strings
 
 
 def _extract_assignment_names(tree: ast.Module) -> Set[str]:

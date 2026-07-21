@@ -208,7 +208,7 @@ def _check_telemetry():
         if consent and not dsn_ok:
             return {"name": "Telemetry", "status": "INFO",
                     "detail": "Consent is enabled, no crash-reporting backend configured (self-hosted deployment). "
-                              "Optional: set _SENTRY_DSN in scripts/telemetry.py to receive crash reports."}
+                              "Optional: set the REGULA_SENTRY_DSN environment variable to receive crash reports."}
         if consent and dsn_ok:
             return {"name": "Telemetry", "status": "PASS",
                     "detail": "Enabled — anonymous crash reports active"}

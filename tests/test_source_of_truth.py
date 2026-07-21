@@ -126,7 +126,7 @@ def test_omnibus_flip_propagates_to_all_consumers():
 
         outputs = {}
         for mod_name in ("remediation_plan", "exec_summary", "assess", "timeline", "roadmap"):
-            mod = importlib.reload(importlib.import_module(mod_name))
+            importlib.reload(importlib.import_module(mod_name))
             outputs[mod_name] = ""
         import remediation_plan
         import exec_summary

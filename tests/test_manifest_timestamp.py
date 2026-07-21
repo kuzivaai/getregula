@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import base64
 import datetime
+import functools
 import hashlib
 import json
 import os
@@ -36,13 +37,96 @@ from asn1crypto import tsp, algos, cms, core  # noqa: E402
 # ── Mock TSA fixture ───────────────────────────────────────────────
 
 
+@functools.lru_cache(maxsize=1)
+def _mock_tsa_identity():
+    """Ephemeral TSA CA + signer, generated once per test run.
+
+    Uses EC P-256 (fast keygen, and exercises the same ECDSA verification
+    path that the real FreeTSA token uses). Returns
+    (ca_pem, signer_key, signer_cert_der).
+    """
+    from cryptography import x509
+    from cryptography.x509.oid import NameOID, ExtendedKeyUsageOID
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric import ec
+
+    now = datetime.datetime.now(datetime.timezone.utc)
+    ca_key = ec.generate_private_key(ec.SECP256R1())
+    ca_name = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "Regula Test TSA Root")])
+    ca_cert = (x509.CertificateBuilder()
+               .subject_name(ca_name).issuer_name(ca_name)
+               .public_key(ca_key.public_key())
+               .serial_number(x509.random_serial_number())
+               .not_valid_before(now - datetime.timedelta(days=1))
+               .not_valid_after(now + datetime.timedelta(days=365))
+               .add_extension(x509.BasicConstraints(ca=True, path_length=None),
+                              critical=True)
+               .sign(ca_key, hashes.SHA256()))
+
+    signer_key = ec.generate_private_key(ec.SECP256R1())
+    signer_cert = (x509.CertificateBuilder()
+                   .subject_name(x509.Name([
+                       x509.NameAttribute(NameOID.COMMON_NAME, "Regula Test TSA Signer")]))
+                   .issuer_name(ca_cert.subject)
+                   .public_key(signer_key.public_key())
+                   .serial_number(x509.random_serial_number())
+                   .not_valid_before(now - datetime.timedelta(days=1))
+                   .not_valid_after(now + datetime.timedelta(days=365))
+                   .add_extension(
+                       x509.ExtendedKeyUsage([ExtendedKeyUsageOID.TIME_STAMPING]),
+                       critical=True)
+                   .sign(ca_key, hashes.SHA256()))
+
+    return (ca_cert.public_bytes(serialization.Encoding.PEM),
+            signer_key,
+            signer_cert.public_bytes(serialization.Encoding.DER))
+
+
+def _sign_token(tst_der: bytes):
+    """Build a properly signed SignerInfo + certificate set over `tst_der`."""
+    from asn1crypto import x509 as a_x509
+    from cryptography.hazmat.primitives import hashes
+    from cryptography.hazmat.primitives.asymmetric import ec
+
+    _, signer_key, signer_cert_der = _mock_tsa_identity()
+    a_cert = a_x509.Certificate.load(signer_cert_der)
+
+    signed_attrs = cms.CMSAttributes([
+        cms.CMSAttribute({"type": "content_type", "values": ["tst_info"]}),
+        cms.CMSAttribute({"type": "message_digest",
+                          "values": [hashlib.sha256(tst_der).digest()]}),
+    ])
+    signature = signer_key.sign(
+        signed_attrs.untag().dump(force=True), ec.ECDSA(hashes.SHA256()))
+
+    signer_info = cms.SignerInfo({
+        "version": 1,
+        "sid": cms.SignerIdentifier({
+            "issuer_and_serial_number": cms.IssuerAndSerialNumber({
+                "issuer": a_cert["tbs_certificate"]["issuer"],
+                "serial_number": a_cert["tbs_certificate"]["serial_number"].native,
+            })
+        }),
+        "digest_algorithm": algos.DigestAlgorithm({"algorithm": "sha256"}),
+        "signed_attrs": signed_attrs,
+        "signature_algorithm": algos.SignedDigestAlgorithm(
+            {"algorithm": "sha256_ecdsa"}),
+        "signature": signature,
+    })
+    return [a_cert], [signer_info]
+
+
 def _build_mock_tsr(message: bytes, imprint_hash_algo: str = "sha256",
-                    override_imprint: bytes | None = None) -> bytes:
+                    override_imprint: bytes | None = None,
+                    sign: bool = True) -> bytes:
     """Build a DER-encoded TimeStampResp carrying a token over `message`.
 
-    Uses an empty SignerInfos set — good enough for our verifier, which
-    only checks the messageImprint. Real TSAs sign the token; our mock
-    doesn't need to (we don't validate the chain).
+    By default the token is genuinely signed by an ephemeral test TSA
+    (see `_mock_tsa_identity`), so the RFC 3161 signature-verification path
+    in `timestamp.verify_timestamp_token_signature` is actually exercised
+    rather than mocked away. Pass `sign=False` to emit the legacy unsigned
+    token (empty SignerInfos), which the verifier must report as
+    UNSUPPORTED — not INVALID — and degrade to a hash-only verdict.
 
     If `override_imprint` is provided, use it instead of sha256(message)
     — simulates a TSA replacing the imprint or a tampered response.
@@ -63,15 +147,18 @@ def _build_mock_tsr(message: bytes, imprint_hash_algo: str = "sha256",
         "gen_time": datetime.datetime.now(datetime.timezone.utc),
     })
 
+    tst_der = tst_info.dump()
     encap = cms.EncapsulatedContentInfo({
         "content_type": "tst_info",
-        "content": core.ParsableOctetString(tst_info.dump()),
+        "content": core.ParsableOctetString(tst_der),
     })
+    certificates, signer_infos = _sign_token(tst_der) if sign else ([], [])
     signed_data = cms.SignedData({
         "version": "v3",
         "digest_algorithms": [algos.DigestAlgorithm({"algorithm": "sha256"})],
         "encap_content_info": encap,
-        "signer_infos": [],
+        "certificates": certificates,
+        "signer_infos": signer_infos,
     })
     token = cms.ContentInfo({
         "content_type": "signed_data",
@@ -357,7 +444,11 @@ def test_cli_conform_sign_timestamp_verify_round_trip_json(tmp_path, mock_tsa):
     assert verify_data["command"] == "verify"
     report = verify_data["data"]
     assert report["signature_status"] == "VERIFIED"
-    assert report["timestamp_status"] == "VERIFIED"
+    # The mock TSA signs its tokens, so the verifier proves the RFC 3161
+    # SignedData signature as well as the imprint. It must still NOT say plain
+    # "VERIFIED": with no trust anchor the signer's identity is self-asserted
+    # by the token, which is exactly what SIGNATURE_VERIFIED claims and no more.
+    assert report["timestamp_status"] == "SIGNATURE_VERIFIED"
     assert report["failed"] == 0
     assert report["passed"] == report["total"]
 
@@ -516,3 +607,193 @@ def test_cli_rejects_timestamp_without_sign(tmp_path):
     assert rc != 0
     combined = (out + err).lower()
     assert "timestamping failed" in combined or "tsa" in combined
+
+
+# ── RFC 3161 token signature verification ──────────────────────────
+#
+# These cover the layered timestamp_status model. The point of the layering
+# is that each status claims exactly what was proven and nothing beyond it,
+# so the negative cases below matter as much as the happy ones.
+
+
+def _token_bytes(message: bytes, **kw) -> bytes:
+    """Extract the raw TimeStampToken DER from a mock TSR."""
+    resp = tsp.TimeStampResp.load(_build_mock_tsr(message, **kw))
+    return resp["time_stamp_token"].dump()
+
+
+def _tamper_signature(token_bytes: bytes) -> bytes:
+    """Flip a byte of the SignerInfo signature, leaving everything else."""
+    ci = cms.ContentInfo.load(token_bytes)
+    si = ci["content"]["signer_infos"][0]
+    sig = bytearray(si["signature"].native)
+    sig[0] ^= 0xFF
+    si["signature"] = core.OctetString(bytes(sig))
+    return ci.dump(force=True)
+
+
+def test_token_signature_verified_without_anchor():
+    """A properly signed token verifies, but must not claim signer identity."""
+    from timestamp import verify_timestamp_token_signature
+
+    status, detail = verify_timestamp_token_signature(_token_bytes(b"hello"))
+    assert status == "SIGNATURE_VERIFIED", detail
+    # Must be explicit that identity is NOT established without an anchor.
+    assert "identity" in detail.lower()
+    assert "no revocation" in detail.lower()
+
+
+def test_token_chain_verified_with_trust_anchor():
+    """With the issuing anchor supplied, the status escalates to CHAIN_VERIFIED."""
+    from timestamp import verify_timestamp_token_signature
+
+    ca_pem, _, _ = _mock_tsa_identity()
+    status, detail = verify_timestamp_token_signature(_token_bytes(b"hello"), ca_pem)
+    assert status == "CHAIN_VERIFIED", detail
+    # Even at the strongest level it must disclose what it did NOT check.
+    assert "limited" in detail.lower()
+    assert "revocation" in detail.lower()
+
+
+def test_unsigned_token_is_unsupported_not_invalid():
+    """An unsigned token cannot be evaluated — that is not proof of tampering.
+
+    Regression guard: hard-failing here would break every previously-valid
+    pack produced against a TSA whose tokens we cannot parse.
+    """
+    from timestamp import verify_timestamp_token_signature
+
+    status, detail = verify_timestamp_token_signature(
+        _token_bytes(b"hello", sign=False))
+    assert status == "UNSUPPORTED", detail
+    assert status != "INVALID"
+
+
+def test_tampered_token_signature_is_invalid():
+    """A corrupted signature is provably bad and must be INVALID, not degraded."""
+    from timestamp import verify_timestamp_token_signature
+
+    tampered = _tamper_signature(_token_bytes(b"hello"))
+    status, detail = verify_timestamp_token_signature(tampered)
+    assert status == "INVALID", detail
+    assert "does not verify" in detail.lower()
+
+
+def test_wrong_trust_anchor_is_invalid():
+    """An anchor that did not issue the signer must fail, not silently pass."""
+    from timestamp import verify_timestamp_token_signature
+    from cryptography import x509
+    from cryptography.x509.oid import NameOID
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric import ec
+
+    now = datetime.datetime.now(datetime.timezone.utc)
+    key = ec.generate_private_key(ec.SECP256R1())
+    name = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "Unrelated Root")])
+    other = (x509.CertificateBuilder()
+             .subject_name(name).issuer_name(name)
+             .public_key(key.public_key())
+             .serial_number(x509.random_serial_number())
+             .not_valid_before(now - datetime.timedelta(days=1))
+             .not_valid_after(now + datetime.timedelta(days=365))
+             .add_extension(x509.BasicConstraints(ca=True, path_length=None),
+                            critical=True)
+             .sign(key, hashes.SHA256()))
+
+    status, detail = verify_timestamp_token_signature(
+        _token_bytes(b"hello"), other.public_bytes(serialization.Encoding.PEM))
+    assert status == "INVALID", detail
+    assert "anchor" in detail.lower()
+
+
+def test_cli_verify_chain_verified_with_anchor(tmp_path, mock_tsa):
+    """End-to-end: --tsa-trust-anchor escalates the CLI verdict to CHAIN_VERIFIED."""
+    key_path = tmp_path / "signing.key"
+    out_dir = tmp_path / "pack-out"
+    env = {"REGULA_SIGNING_KEY": str(key_path)}
+
+    rc, out, err = _run_regula(
+        "conform",
+        "--project", "examples/code-completion-tool",
+        "--output", str(out_dir),
+        "--sign",
+        "--timestamp",
+        "--tsa-url", mock_tsa["url"],
+        "--format", "json",
+        env=env,
+    )
+    assert rc == 0, f"conform failed: rc={rc}\nstdout={out}\nstderr={err}"
+    pack_dir = json.loads(out)["data"]["pack_path"]
+
+    ca_pem, _, _ = _mock_tsa_identity()
+    anchor = tmp_path / "anchor.pem"
+    anchor.write_bytes(ca_pem)
+
+    rc2, out2, err2 = _run_regula(
+        "verify", pack_dir, "--format", "json",
+        "--tsa-trust-anchor", str(anchor), env=env,
+    )
+    assert rc2 == 0, f"verify failed: rc={rc2}\nstdout={out2}\nstderr={err2}"
+    report = json.loads(out2)["data"]
+    assert report["timestamp_status"] == "CHAIN_VERIFIED", report
+
+
+def _retag_signature_algorithm(token_bytes: bytes, oid: str) -> bytes:
+    """Rewrite the SignerInfo's signatureAlgorithm OID, changing nothing else.
+
+    Produces a token that a conforming TSA using that algorithm would emit,
+    as far as our algorithm dispatch is concerned. The signature bytes no
+    longer correspond to the declared algorithm, which is precisely the
+    point: we must decline to evaluate it rather than pass judgement.
+    """
+    ci = cms.ContentInfo.load(token_bytes)
+    si = ci["content"]["signer_infos"][0]
+    si["signature_algorithm"] = algos.SignedDigestAlgorithm({"algorithm": oid})
+    return ci.dump(force=True)
+
+
+def test_unknown_signature_algorithm_oid_is_unsupported_not_invalid():
+    """An OID we cannot even name is one we cannot evaluate.
+
+    Regression guard for a real defect: the algorithm-dispatch error and the
+    bad-signature error used to share one channel, so BOTH were reported as
+    INVALID. That hard-fails a pack from a conforming TSA over an algorithm
+    we simply have not implemented — the exact outcome spec §4.6.3 item 3
+    forbids.
+    """
+    from timestamp import verify_timestamp_token_signature
+
+    token = _retag_signature_algorithm(_token_bytes(b"hello"), "1.2.3.4.5.6.7.8.9")
+    status, detail = verify_timestamp_token_signature(token)
+    assert status == "UNSUPPORTED", f"got {status}: {detail}"
+    assert "1.2.3.4.5.6.7.8.9" in detail
+
+
+def test_known_but_unimplemented_algorithm_is_unsupported_not_invalid():
+    """Ed25519 is named by asn1crypto but not implemented by our verifier.
+
+    Distinct from the unknown-OID case above: this one reaches the algorithm
+    dispatch with a valid `signature_algo` string and falls through to the
+    else branch, which used to return INVALID.
+    """
+    from timestamp import verify_timestamp_token_signature
+
+    # 1.3.101.112 = id-Ed25519. asn1crypto resolves it to 'ed25519'.
+    token = _retag_signature_algorithm(_token_bytes(b"hello"), "1.3.101.112")
+    status, detail = verify_timestamp_token_signature(token)
+    assert status == "UNSUPPORTED", f"got {status}: {detail}"
+    assert "ed25519" in detail.lower()
+
+
+def test_unsupported_algorithm_does_not_mask_a_bad_signature():
+    """The degrade path must not become a way to launder a broken signature.
+
+    A token whose algorithm we DO implement and whose signature is corrupt
+    must still be INVALID — pinned here so a future widening of the
+    UNSUPPORTED branch cannot silently swallow real tampering.
+    """
+    from timestamp import verify_timestamp_token_signature
+
+    status, detail = verify_timestamp_token_signature(
+        _tamper_signature(_token_bytes(b"hello")))
+    assert status == "INVALID", f"got {status}: {detail}"

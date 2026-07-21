@@ -2,7 +2,7 @@
 
 *Canonical source of truth for every numeric claim on the landing pages. Regenerate by running `python3 scripts/site_facts.py`.*
 
-Generated: `2026-07-19T23:57:46.358144+00:00`
+Generated: `2026-07-20T23:31:06.112893+00:00`
 
 ## Top-line counts
 
@@ -14,7 +14,7 @@ Generated: `2026-07-19T23:57:46.358144+00:00`
 | Tiered risk pattern groups | 57 | `scripts/risk_patterns.py` |
 | Compliance frameworks | **12** | `references/framework_crosswalk.yaml` + EU AI Act |
 | Programming languages | 8 | `scripts/ast_engine.py` |
-| Test functions (all files) | 1667 | `tests/test_*.py` |
+| Test functions (all files) | 1698 | `tests/test_*.py` |
 
 ## Detection pattern breakdown
 
@@ -24,8 +24,8 @@ Regula ships detection patterns across three source files. The landing page risk
 |---|---|---|
 | Tiered risk regexes (prohibited, high-risk, limited-risk, AI security, bias) | `risk_patterns.py` | 419 |
 | Credential detectors | `credential_check.py` | 18 |
-| OWASP Agentic categories | `agent_monitor.py` | 30 |
-| **Marketing claim (tier + cred + agentic)** | composite | **467** |
+| OWASP Agentic categories | `agent_monitor.py` | 10 |
+| **Composite (tier + cred + agentic)** | composite | **447** |
 | AI_INDICATORS (libraries, model files, API endpoints, ML patterns, domain keywords) | `risk_patterns.py` | 212 |
 | GPAI training code detectors | `risk_patterns.py` | 17 |
 | Architecture detectors | `code_analysis.py` | 38 |

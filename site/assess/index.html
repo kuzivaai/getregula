@@ -1626,6 +1626,14 @@ function renderScanResults(result) {
   const container = document.getElementById("scanResults");
   let html = "";
 
+  // Jurisdiction-scope notice: the code scanner currently ships EU AI Act
+  // patterns only. Don't silently return an EU verdict when a user picked
+  // Korea or Colorado on the jurisdiction toggle.
+  if (typeof activeJurisdiction !== 'undefined' && activeJurisdiction !== 'eu') {
+    const jurName = activeJurisdiction === 'kr' ? 'South Korea' : 'Colorado';
+    html += `<div class="scan-jur-notice" style="margin-bottom:16px;padding:12px 14px;border:1px solid var(--border-active);border-radius:var(--radius);background:var(--accent-dim);font-size:0.85rem;line-height:1.45;">Heads up: the code scanner currently covers <strong>EU AI Act</strong> patterns. You selected <strong>${jurName}</strong> — for ${jurName}-specific screening use the questionnaire, or run the full CLI.</div>`;
+  }
+
   // Tier card (reuse existing styles)
   const tierStyles = {
     prohibited: "tier-prohibited",
@@ -1647,6 +1655,7 @@ function renderScanResults(result) {
       <div class="tier-label">CODE SCAN RESULT</div>
       <div class="tier-name">${tierNames[c.tier] || c.tier}</div>
       <div class="tier-desc">${c.message}</div>
+      ${(c.tier === 'prohibited' || c.tier === 'high_risk') ? '<div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">This is a <strong>pattern match, not a determination</strong> — verify the flagged code actually implements the practice described. False positives are possible; this is not legal advice.</div>' : ''}
       <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">
         Confidence: ${c.confidence_score}/100 &middot; Language: ${result.language}
         ${c.indicators_matched.length ? ' &middot; Indicators: ' + c.indicators_matched.join(', ') : ''}

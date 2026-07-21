@@ -92,7 +92,7 @@ def _markdown_to_html_body(md_content: str) -> str:
             cells = [c.strip() for c in line.strip().strip("|").split("|")]
             if all(re.match(r'^-+$', c) for c in cells):
                 continue  # Skip separator row
-            if not any("<td>" in l for l in html_lines[-5:]):
+            if not any("<td>" in ln for ln in html_lines[-5:]):
                 tag = "th"
             else:
                 tag = "td"

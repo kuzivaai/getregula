@@ -1460,7 +1460,6 @@ def test_compliance_status_update():
             update_compliance_status("test-app", "compliant")
             assert_true(False, "should have raised ValueError for invalid transition")
         except ValueError:
-            passed_local = True
             assert_true(True, "raises ValueError for invalid transition")
 
     finally:
@@ -2830,7 +2829,8 @@ def test_agent_mcp_config_check():
     temp.write(config_content)
     temp.close()
     findings = check_mcp_config(temp.name)
-    import os; os.unlink(temp.name)
+    import os
+    os.unlink(temp.name)
     assert_true(len(findings) > 0, "finds credential in MCP config")
     print("✓ Agent monitor: MCP config credential detection")
 
@@ -3483,7 +3483,7 @@ def test_smoke_session():
     """Smoke test: regula session --format json runs and exits 0."""
     r = _run_cli("session", "--format", "json")
     assert_eq(r.returncode, 0, f"session exit {r.returncode}: {r.stderr[:200]}")
-    data = _assert_json_envelope(r.stdout, "session")
+    _assert_json_envelope(r.stdout, "session")
     print("\u2713 Smoke: session --format json exits 0 with envelope")
 
 
@@ -3565,7 +3565,7 @@ def test_smoke_agent():
     """Smoke test: regula agent --format json runs and exits 0."""
     r = _run_cli("agent", "--format", "json")
     assert_eq(r.returncode, 0, f"agent exit {r.returncode}: {r.stderr[:200]}")
-    data = _assert_json_envelope(r.stdout, "agent")
+    _assert_json_envelope(r.stdout, "agent")
     print("\u2713 Smoke: agent --format json exits 0 with envelope")
 
 
@@ -7042,7 +7042,7 @@ def test_fingerprint_auto_activates_medical():
         )
         (Path(tmp) / "diagnosis.py").write_text(code)
         # Without explicit --domain, fingerprinting should detect medical
-        findings = scan_files(tmp)
+        scan_files(tmp)  # exercise the scan path; fingerprint asserted below
         # The fingerprint should activate medical_devices subcategory
         # Even if no medical-specific high_risk pattern fires, the fingerprint
         # should NOT suppress medical domain findings

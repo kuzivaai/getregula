@@ -130,7 +130,6 @@ def test_dpv_high_risk_specific_mappings_match_definitions():
         "HighRiskAISystem-AnnexIII-2": ("infrastructure",),
     }
     for term, needles in checks.items():
-        label = vocab["terms"][term]["label"].lower()
         # label may be terse; fall back to asserting the term exists + right area
         assert term in vocab["terms"], f"{term} missing"
     print("  PASS  specific Annex III mappings reference existing DPV concepts")

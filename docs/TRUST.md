@@ -61,7 +61,7 @@ your lawyer's job, not Regula's.
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | Machine-readable risk indication as JSON-LD, *aligned to* (not certified against) the DPVCG EU-AIAct vocabulary — a W3C Community Group report, **not a ratified W3C Standard** | `regula dpv .` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 2,725 unique tests (2,725 pytest-collected), 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
+| 2,756 unique tests (2,756 pytest-collected), 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -78,20 +78,20 @@ your lawyer's job, not Regula's.
 > Every number Regula publishes can be reproduced by anyone with a checkout
 > of the repo. The commands below run in under 30 seconds total on a laptop.
 
-### 3.1 Internal test suite — 2,725 [unique](../tests/) / 2,725 pytest-collected, all green
+### 3.1 Internal test suite — 2,756 [unique](../tests/) / 2,756 pytest-collected, all green
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ -q
-# Expected: 2725 passed (~15 minutes on a laptop — verified 2026-07-20)
-# 2,725 unique tests (sort -u of test IDs equals collected count).
+# Expected: 2756 passed (~11 minutes on a laptop — verified 2026-07-21)
+# 2,756 unique tests (sort -u of test IDs equals collected count).
 ```
 
 Regula also ships a legacy auto-discovery runner for the classification
 suite — run `python3 tests/test_classification.py` for its output
-(`Results: 1373 passed, 0 failed, 4 skipped (888 test functions)` — verified
-2026-07-10). It walks `globals()` of `tests/test_classification.py`,
+(`Results: 1381 passed, 0 failed, 0 skipped (942 test functions)` — verified
+2026-07-21). It walks `globals()` of `tests/test_classification.py`,
 finds every `test_*` function, and executes it; 437 of those functions
 are defined in the file itself, the rest are aliased in from other test
 modules. The pytest total above covers this suite
@@ -113,10 +113,12 @@ detection, framework mapping, limited-risk classification.
 
 ```bash
 python3 -m scripts.cli doctor
-# Expected (inside a git repo): 9 passed, 3 info, 0 warn
-# Expected (outside a git repo): 9 passed, 3 info, 1 warn
-#   The 3 info messages cover: no hooks installed, no ai_officer in policy,
-#   and no domain declared. The 1 warn (outside git) is ".gitignore not found".
+# Expected on a fresh install (inside a git repo): 8 passed, 4 info, 0 warn
+# Expected on a fresh install (outside a git repo): 8 passed, 4 info, 1 warn
+#   The 4 info messages cover: no hooks installed, no ai_officer in policy,
+#   telemetry not configured, and no domain declared. The 1 warn (outside
+#   git) is ".gitignore not found". Telemetry moves from INFO to PASS only
+#   if you both opt in and set REGULA_SENTRY_DSN; 12 checks run either way.
 ```
 
 Lists every optional dependency, hook installation status, audit
@@ -329,7 +331,7 @@ are tracked in a public delta log (`content/regulations/delta-log/`).
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (2,725 unique tests, 2,725 pytest-collected; the legacy `tests/test_classification.py` runner executes 942 functions, 437 defined in-file) |
+| Test suite | `tests/` (2,756 unique tests, 2,756 pytest-collected; the legacy `tests/test_classification.py` runner executes 942 functions, 437 defined in-file) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit hook source | `hooks/pre_tool_use.py` |
@@ -516,22 +518,47 @@ opening a GitHub Security Advisory at
 
 ### 8.2 What Regula collects if telemetry is opted in
 
-If the user runs `regula telemetry enable`, AND the operator has set
-`_SENTRY_DSN` in `scripts/telemetry.py` to a Sentry endpoint of their
-choice, anonymous Python crash reports (stack trace + Regula version +
-OS string) will be sent to the configured DSN on uncaught exceptions.
+Crash reporting requires **both** of the following. Neither is the default:
 
-The published PyPI build has `_SENTRY_DSN = ""` (empty). This means
-**even if the user opts in, no data is sent unless they self-host a
-Sentry DSN.** This is by design: Regula is a tool for compliance teams,
-many of whom cannot legally exfiltrate any data to a third party.
+1. the user runs `regula telemetry enable`, and
+2. a Sentry endpoint is configured, via the `REGULA_SENTRY_DSN`
+   environment variable.
+
+The published PyPI build ships `_SENTRY_DSN = ""` (empty) and reads the
+endpoint from the environment, so **even if the user opts in, nothing is
+sent unless they point Regula at a Sentry instance themselves.** This is
+by design: Regula is a tool for compliance teams, many of whom cannot
+legally exfiltrate any data to a third party.
 
 Verify with:
 
 ```bash
-grep -n "_SENTRY_DSN" $(pip show regula-ai | grep Location | cut -d: -f2)/scripts/telemetry.py
+grep -n "^_SENTRY_DSN" $(pip show regula-ai | grep Location | cut -d: -f2)/scripts/telemetry.py
 # Expected: _SENTRY_DSN = ""
 ```
+
+When an endpoint *is* configured and consent given, an uncaught exception
+sends: the exception type and message, a stack trace through Regula's own
+code, and the Regula, OS and Python versions. Stack-frame local variables
+are explicitly disabled (`include_local_variables=False`) because Regula's
+scan frames hold whole scanned files in memory, and the auto-detected
+hostname is replaced with `redacted`. One residual caveat, stated because
+it cannot be fully prevented: an exception *message* can itself contain a
+file path (for example a permission error naming the file).
+
+Sending is suppressed regardless of stored consent when any of
+`DO_NOT_TRACK`, `REGULA_NO_TELEMETRY`, or `CI` is set to a value other
+than `0`/`false`/`no`. `DO_NOT_TRACK` follows the cross-tool CLI
+convention (<https://consoledonottrack.com>).
+
+> **Correction (21 Jul 2026).** Between commit `2c9829d` (10 Apr 2026) and
+> this change, `_SENTRY_DSN` was hardcoded to a live endpoint while this
+> section continued to state it was empty — so the claim above was false
+> for releases in that window, including v1.7.7 on PyPI. Reaching the
+> endpoint still required the optional `sentry-sdk` extra to be installed
+> *and* explicit opt-in, so the default-install posture was unaffected.
+> The DSN is now read from the environment and defaults to empty, which
+> restores the documented behaviour.
 
 ### 8.3 What Regula sends over the network
 
@@ -641,7 +668,7 @@ in this repository. Every row links to a verifiable artefact.
 | Precision and recall benchmark | [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md) | Labelled corpus, methodology, per-tier and per-project breakdown |
 | Framework crosswalk data | [`references/framework_crosswalk.yaml`](../references/framework_crosswalk.yaml) | EU AI Act ↔ ISO 42001 / NIST AI RMF / SOC 2 / etc. mappings |
 | Pattern definitions | [`scripts/risk_patterns.py`](../scripts/risk_patterns.py) | All detection regexes, grouped by risk tier and category |
-| Test suite | `tests/` | 2,725 unique tests (2,725 pytest-collected) |
+| Test suite | `tests/` | 2,756 unique tests (2,756 pytest-collected) |
 | Self-test | `regula self-test` | 6 round-trip assertions |
 | Environment health | `regula doctor` | 12 checks (pass/info split varies by environment) |
 | SBOM | `regula sbom --ai-bom` | CycloneDX 1.7 ML-BOM from any checkout |

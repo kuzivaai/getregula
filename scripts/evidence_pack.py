@@ -71,10 +71,6 @@ def generate_evidence_pack(
             "--timestamp requires --sign (timestamp covers the signed "
             "canonical manifest form per spec §4.6)."
         )
-    from report import scan_files
-    from compliance_check import assess_compliance
-    from generate_documentation import scan_project, generate_annex_iv
-    from remediation_plan import generate_plan, format_plan_text
 
     project = Path(project_path).resolve()
     # Sanitise project name to prevent path traversal (OWASP input validation)
@@ -225,7 +221,11 @@ def _generate_pack_contents(
                 created=now.strftime("%Y-%m-%dT%H:%M:%SZ"))
             dpv_json = format_dpv_jsonld(dpv_doc)
             _write_and_record(pack_dir, "09-dpv-aiact.jsonld", dpv_json, file_records)
-        except (ImportError, OSError, ValueError, KeyError):
+        except (ImportError, OSError, ValueError, KeyError, RuntimeError):
+            # RuntimeError covers dpv_export._validate_mappings() firing on a
+            # drifted vocab snapshot at import. The DPV section is OPTIONAL —
+            # a vocab problem must only drop this one artifact, never abort (and
+            # via the fail-closed handler, delete) the whole evidence pack.
             include_dpv = False  # section absent; README must not advertise it
 
     # --- 00: Executive summary (written last, uses data from above) ---
@@ -256,7 +256,12 @@ def _generate_pack_contents(
         "generated_at": now.isoformat(),
         "project": name,
         "project_directory": project.name,
-        "project_path": str(project),
+        # Record the project BASENAME, not the absolute host path. Evidence
+        # packs are shared with clients/auditors; the full resolved path
+        # (str(project)) leaks the consultant's local directory layout and
+        # usually the OS username, with no value to a recipient who cannot use
+        # a path on someone else's machine.
+        "project_path": project.name,
         "files": file_records,
     }
     # Optional consultant engagement block. Added before signing so the
@@ -401,7 +406,7 @@ Generated on {date_str} by Regula v{VERSION}.
 
 ## How to use this pack
 
-This folder contains everything needed for a compliance readiness review
+This folder contains the core artifacts for a compliance readiness review
 of the AI system "{name}" under the EU AI Act (Regulation 2024/1689).
 
 **For consultants / auditors:**

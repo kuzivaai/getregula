@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-19T23:57:46.358144+00:00",
+  "generated_at": "2026-07-20T23:31:06.112893+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -19,16 +19,16 @@
       "logging": 4,
       "oversight": 4,
       "credential": 18,
-      "agentic_categories": 30,
+      "agentic_categories": 10,
       "grand_total": 722,
-      "marketing_409": 467,
+      "composite_tier_cred_agentic": 447,
       "historical_330_bucket": 479
     },
     "frameworks": 12,
     "languages": 8,
     "tests": {
-      "total_collected": 2725,
-      "total_functions": 1667,
+      "total_collected": 2756,
+      "total_functions": 1698,
       "per_file": {
         "test_agent_governance.py": 28,
         "test_ai_codegen.py": 0,
@@ -68,7 +68,7 @@
         "test_hooks_audit.py": 50,
         "test_lifecycle_phases.py": 13,
         "test_lifecycle_visibility.py": 5,
-        "test_manifest_timestamp.py": 13,
+        "test_manifest_timestamp.py": 22,
         "test_mcp_server.py": 6,
         "test_monitor.py": 24,
         "test_multi_jurisdiction.py": 35,
@@ -88,6 +88,7 @@
         "test_roadmap.py": 16,
         "test_sbom_enrichment.py": 25,
         "test_scan_cache.py": 6,
+        "test_scan_safety.py": 13,
         "test_scan_security.py": 8,
         "test_scope_exclusion.py": 1,
         "test_security_hardening.py": 12,
@@ -96,7 +97,7 @@
         "test_site_critical_css.py": 6,
         "test_site_facts.py": 6,
         "test_source_of_truth.py": 8,
-        "test_telemetry.py": 9
+        "test_telemetry.py": 18
       }
     }
   },
