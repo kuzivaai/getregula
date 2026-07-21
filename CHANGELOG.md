@@ -8,6 +8,41 @@ This project uses [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Security
+- **`regula handoff` hung indefinitely on a named pipe, read files outside
+  the scan root, and walked into `.git`.** Four defects in one command, each
+  reproduced before and after the fix. It used `rglob` — which follows
+  symlinks, unlike `os.walk(followlinks=False)` — with a bare `read_text()`,
+  and carried a private skip list holding 7 entries against the shared
+  `SKIP_DIRS`' 28, omitting `.git` and `.env` among 21 others. A symlinked
+  `.py` escaping the root was read and reported in the output. A fourth
+  defect masked the other three: paths were reported relative to Regula's
+  own installation directory rather than the scanned project, so every
+  invocation naming a project outside the Regula checkout raised
+  `ValueError` and exited before reaching the pipe. The command was missed
+  by the previous sweep of "all 28 commands that accept a project path"
+  because its path is its *second* positional (`handoff <tool> <project>`).
+  All four are closed by reading through `scan_safety.walk_project_files`.
+- **Ancestor-directory race closed in `cross_file_flow`,
+  `ai_code_governance` and `guardrail_scanner`.** These collected paths
+  during the walk and reopened them by name afterwards; between the two
+  resolutions an ancestor directory can be swapped for a symlink, which
+  `O_NOFOLLOW` cannot prevent because it guards only the final component.
+  Content is now read inside the walk, through a descriptor held on the
+  parent directory. `compliance_check` is deliberately excluded: its file
+  index is consumed by eight Article checker functions across ten iteration
+  sites, so reading content into it would hold the entire scanned project
+  in memory (ceiling 578 files x 10.5 MB = 6.1 GB on this repository alone),
+  trading a race the attacker must win for a memory exhaustion any large
+  repository triggers. Closing it properly requires inverting control so a
+  single walk feeds all eight checkers; tracked in #33.
+- **Added a hostile-fixture sweep to the test suite**
+  (`tests/test_hostile_sweep.py`). Runs every path-taking command as a
+  subprocess against a tree containing a named pipe, a symlink escaping the
+  scan root, a symlinked directory and a `.git` holding bait, asserting that
+  no command hangs, crashes, reads out-of-root content, or walks a skipped
+  directory. The command list is derived from the argument parser rather
+  than hardcoded — a hardcoded list would have missed `handoff`, the one
+  command carrying a real defect.
 - **Dependency manifests were read from outside the scanned project
   (issue #32).** `scan_dependencies()` loaded all nine manifest types
   (`requirements.txt`, `pyproject.toml`, `package.json`, `Pipfile`,
