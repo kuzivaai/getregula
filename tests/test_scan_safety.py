@@ -21,6 +21,7 @@ the tests/test_manifest_timestamp.py convention, so the custom runner's
 executed-function count is unaffected.
 """
 
+import os
 import sys
 import tempfile
 from pathlib import Path
@@ -262,3 +263,185 @@ def test_sbom_model_metadata_extraction_ignores_escaping_symlink():
         assert "config.json" not in found
         assert "leaked_secret_field" not in all_fields
         assert "local_field" in all_fields
+
+
+# ── TOCTOU: the guard must validate the descriptor, not the name ──
+#
+# issue #31. `is_safe_to_scan` approves a NAME; every caller then re-opened
+# that name. An attacker with write access to the scanned tree can swap the
+# approved file for an escaping symlink in between, so the scanner reads a
+# file the guard rejected. These tests reproduce the swap deterministically
+# rather than by racing threads, so they cannot go flaky.
+
+def _swap_for_escaping_symlink(path: Path, target: Path):
+    """Replace `path` with a symlink to `target` — the attacker's move."""
+    path.unlink()
+    path.symlink_to(target)
+
+
+def test_open_if_safe_refuses_a_symlink_swapped_in_after_the_name_check():
+    """The exact race from issue #31, executed in order:
+
+    1. guard approves the real file (attacker has not acted yet)
+    2. attacker replaces it with a symlink pointing outside the root
+    3. the read must NOT return the out-of-root content
+    """
+    import scan_safety
+
+    with tempfile.TemporaryDirectory() as outside_td, \
+            tempfile.TemporaryDirectory() as td:
+        outside, root = Path(outside_td).resolve(), Path(td).resolve()
+        if not _symlinks_supported(root):
+            return
+        secret = outside / "id_rsa"
+        secret.write_text("PRIVATE KEY MATERIAL")
+
+        victim = root / "app.py"
+        victim.write_text("x = 1")
+
+        # 1. the name passes the guard
+        assert is_safe_to_scan(victim, root) == (True, "")
+
+        # 2. attacker swaps it
+        _swap_for_escaping_symlink(victim, secret)
+
+        # 3. opening through the guard must refuse
+        data, reason = scan_safety.read_bytes_if_safe(victim, root)
+        assert data is None, f"leaked out-of-root content: {data!r}"
+        assert reason == "symlink_escape", reason
+
+
+def test_name_check_alone_would_have_leaked_it():
+    """Proves the test above is testing something real.
+
+    Demonstrates the OLD behaviour — validate the name, then read the name —
+    leaking the out-of-root file. If this ever stops leaking, the threat
+    model has changed and the test above needs revisiting.
+    """
+    with tempfile.TemporaryDirectory() as outside_td, \
+            tempfile.TemporaryDirectory() as td:
+        outside, root = Path(outside_td).resolve(), Path(td).resolve()
+        if not _symlinks_supported(root):
+            return
+        secret = outside / "id_rsa"
+        secret.write_text("PRIVATE KEY MATERIAL")
+        victim = root / "app.py"
+        victim.write_text("x = 1")
+
+        assert is_safe_to_scan(victim, root) == (True, "")
+        _swap_for_escaping_symlink(victim, secret)
+
+        # The old code path: re-open the approved name.
+        leaked = victim.read_bytes()
+        assert b"PRIVATE KEY MATERIAL" in leaked, (
+            "the check-then-open pattern no longer leaks — re-evaluate #31"
+        )
+
+
+def test_open_if_safe_returns_a_usable_descriptor_for_a_legitimate_file():
+    import scan_safety
+
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td).resolve()
+        f = root / "app.py"
+        f.write_text("print('hello')")
+
+        fd, reason = scan_safety.open_if_safe(f, root)
+        assert fd is not None, reason
+        try:
+            assert os.read(fd, 100) == b"print('hello')"
+        finally:
+            os.close(fd)
+
+
+def test_read_bytes_if_safe_round_trips_content():
+    import scan_safety
+
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td).resolve()
+        f = root / "app.py"
+        payload = b"import openai\n" * 500
+        f.write_bytes(payload)
+
+        data, reason = scan_safety.read_bytes_if_safe(f, root)
+        assert reason == ""
+        assert data == payload
+
+
+def test_read_bytes_if_safe_is_bounded_by_the_size_cap():
+    """A file that grows after fstat must not make us read past the cap."""
+    import scan_safety
+
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td).resolve()
+        f = root / "big.py"
+        with open(f, "wb") as fh:
+            fh.truncate(MAX_FILE_SIZE_BYTES + 4096)
+
+        data, reason = scan_safety.read_bytes_if_safe(f, root)
+        assert data is None
+        assert reason == "oversized"
+
+
+def test_open_if_safe_rejects_a_fifo():
+    """A FIFO inside the tree would block the scanner forever on read()."""
+    import scan_safety
+
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td).resolve()
+        fifo = root / "pipe.py"
+        try:
+            os.mkfifo(fifo)
+        except (AttributeError, OSError):
+            return  # not supported on this platform
+        fd, reason = scan_safety.open_if_safe(fifo, root)
+        assert fd is None
+        assert reason in ("not_regular_file", "stat_failed"), reason
+
+
+def test_open_if_safe_still_rejects_a_plain_escaping_symlink():
+    """Regression cover for the non-racing case going through the new path."""
+    import scan_safety
+
+    with tempfile.TemporaryDirectory() as outside_td, \
+            tempfile.TemporaryDirectory() as td:
+        outside, root = Path(outside_td).resolve(), Path(td).resolve()
+        if not _symlinks_supported(root):
+            return
+        secret = outside / "secret.py"
+        secret.write_text("SECRET = 1")
+        (root / "link.py").symlink_to(secret)
+
+        data, reason = scan_safety.read_bytes_if_safe(root / "link.py", root)
+        assert data is None
+        assert reason == "symlink_escape"
+
+
+def test_descriptor_is_closed_on_every_path():
+    """A leaked fd per rejected file would exhaust the table on a big scan."""
+    import scan_safety
+
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td).resolve()
+        good = root / "ok.py"
+        good.write_text("x = 1")
+        big = root / "big.py"
+        with open(big, "wb") as fh:
+            fh.truncate(MAX_FILE_SIZE_BYTES + 1)
+
+        def _open_fd_count():
+            try:
+                return len(os.listdir(f"/proc/{os.getpid()}/fd"))
+            except OSError:
+                return None
+
+        before = _open_fd_count()
+        if before is None:
+            return  # no /proc on this platform
+        for _ in range(50):
+            scan_safety.read_bytes_if_safe(good, root)
+            scan_safety.read_bytes_if_safe(big, root)
+        after = _open_fd_count()
+        assert after is not None and after - before < 10, (
+            f"descriptors leaked: {before} -> {after}"
+        )

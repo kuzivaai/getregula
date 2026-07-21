@@ -81,7 +81,15 @@ def _check_policy_file():
 
 def _check_audit_directory():
     """Check if audit directory is writable."""
-    audit_dir = Path.home() / ".regula" / "audit"
+    # Go through log_event so REGULA_AUDIT_DIR is honoured (this used to
+    # hardcode ~/.regula/audit, unlike _check_security below, so the two
+    # checks could inspect different directories).
+    try:
+        import log_event
+        audit_dir = log_event.get_audit_dir(create=False)
+    except Exception:
+        audit_dir = Path(os.environ.get(
+            "REGULA_AUDIT_DIR", Path.home() / ".regula" / "audit"))
     if audit_dir.exists():
         if os.access(audit_dir, os.W_OK):
             return {"name": "Audit directory", "status": "PASS",
@@ -92,9 +100,14 @@ def _check_audit_directory():
     else:
         # Try to create it
         try:
-            audit_dir.mkdir(parents=True, exist_ok=True)
+            # mode=0o700 to match log_event.get_audit_dir. Without it, running
+            # `regula doctor` on a fresh install created the store with the
+            # default umask (0755) — and the Security check further down the
+            # same run then warned about the directory doctor had just made
+            # world-readable.
+            audit_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
             return {"name": "Audit directory", "status": "PASS",
-                    "detail": f"Created: {audit_dir}"}
+                    "detail": f"Created: {audit_dir} (0700)"}
         except OSError as e:
             return {"name": "Audit directory", "status": "FAIL",
                     "detail": f"Cannot create {audit_dir}: {e}"}
@@ -185,14 +198,51 @@ def _check_security():
         # Only complain if we're actually in a git repo.
         issues.append(".gitignore not found")
 
+    # Actually inspect permissions. Until this was added the PASS message
+    # below asserted "no world-readable policy files" while nothing here
+    # ever looked at a file mode — the tool was reporting a check it did
+    # not perform. The audit trail matters most: it records full tool
+    # inputs and responses, including file contents from the user's
+    # project, so a group- or world-readable store exposes that to every
+    # other account on a shared machine or CI runner.
+    exposed = []
+    if os.name == "posix":
+        try:
+            import log_event
+            audit_root = log_event.get_audit_dir(create=False)
+        except Exception:
+            audit_root = Path.home() / ".regula" / "audit"
+        targets = []
+        try:
+            if audit_root.is_dir():
+                targets.append(audit_root)
+                targets.extend(sorted(audit_root.rglob("audit_*.jsonl"))[:200])
+        except OSError:
+            pass
+        for p in targets:
+            try:
+                if p.stat().st_mode & 0o077:
+                    exposed.append(str(p))
+            except OSError:
+                continue
+    if exposed:
+        shown = ", ".join(exposed[:3])
+        more = f" (+{len(exposed) - 3} more)" if len(exposed) > 3 else ""
+        issues.append(
+            f"audit store readable by other local users: {shown}{more} — "
+            f"run any regula command to have it re-tightened to 0700/0600"
+        )
+
     if issues:
         return {"name": "Security", "status": "WARN",
                 "detail": "; ".join(issues)}
     if not in_git_repo:
         return {"name": "Security", "status": "INFO",
-                "detail": "Not inside a git repository — .gitignore check skipped"}
+                "detail": "Not inside a git repository — .gitignore check skipped; "
+                          "audit store permissions verified"}
     return {"name": "Security", "status": "PASS",
-            "detail": "Audit patterns in .gitignore, no world-readable policy files"}
+            "detail": "Audit patterns in .gitignore; audit store is 0700/0600 "
+                      "(not readable by other local users)"}
 
 
 def _check_telemetry():

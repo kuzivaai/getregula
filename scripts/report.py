@@ -49,6 +49,7 @@ CONFIG_FILES = {".env", ".env.production", ".env.local", "docker-compose.yml", "
 # report.py and sbom.py share ONE implementation and cannot drift. Imported
 # under the original private name to keep this module's call sites unchanged.
 from scan_safety import is_safe_to_scan as _is_safe_to_scan
+from scan_safety import read_bytes_if_safe as _read_bytes_if_safe
 
 # ---------------------------------------------------------------------------
 # EU AI Act enforcement deadlines + Digital Omnibus status.
@@ -105,10 +106,13 @@ def scan_config_files(project_path: str) -> list:
             if filename not in CONFIG_FILES:
                 continue
             filepath = Path(root) / filename
-            try:
-                content = filepath.read_text(encoding="utf-8", errors="ignore")
-            except (PermissionError, OSError):
-                continue  # unreadable file; skip
+            # Same guard as the main scan loop. Without it a repository can
+            # ship `.env` as a symlink to ~/.ssh/id_rsa or a CI secrets file
+            # and have it read and pattern-matched (verified).
+            _raw, _ = _read_bytes_if_safe(filepath, project)
+            if _raw is None:
+                continue  # escaping symlink, oversized, or unreadable
+            content = _raw.decode("utf-8", errors="ignore")
 
             rel_path = str(filepath.relative_to(project))
             for rx, description in _AI_CONFIG_PATTERNS:
@@ -306,7 +310,11 @@ def _detect_ai_library_project(project: Path) -> bool:
         if not cfg_path.exists():
             continue
         try:
-            content = cfg_path.read_text(encoding="utf-8", errors="ignore")[:4096]
+            # Guarded: this file can be a symlink escaping the project.
+            _raw, _ = _read_bytes_if_safe(cfg_path, project)
+            if _raw is None:
+                continue
+            content = _raw.decode("utf-8", errors="ignore")[:4096]
             lower = content.lower()
             for pkg in _AI_LIBRARY_PACKAGES:
                 # Match: name = "openai" or name = 'openai' or name=openai
@@ -719,11 +727,18 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 content = _nb["code"]
                 lines = content.split("\n")
             else:
-                try:
-                    raw_bytes = filepath.read_bytes()
-                except (PermissionError, OSError):
-                    # Unreadable eligible file — dangerous skip (F1).
-                    _record_skip(filepath, "unreadable")
+                # Read through the guard, NOT by re-opening the name. The
+                # earlier _is_safe_to_scan() call validated a path; opening
+                # that path again would let an attacker with write access to
+                # the scanned tree swap in a symlink between the two
+                # resolutions and have us read a file the guard rejected
+                # (issue #31). read_bytes_if_safe opens once with O_NOFOLLOW
+                # and returns bytes from that exact descriptor.
+                raw_bytes, _read_reason = _read_bytes_if_safe(filepath, project)
+                if raw_bytes is None:
+                    # Unreadable eligible file — dangerous skip (F1). A
+                    # symlink_escape here means the race was caught in the act.
+                    _record_skip(filepath, _read_reason or "unreadable")
                     _scanned_files -= 1
                     continue
                 try:

@@ -13,6 +13,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from scan_safety import read_bytes_if_safe
+
 sys.path.insert(0, str(Path(__file__).parent))
 from degradation import check_optional
 
@@ -969,56 +971,85 @@ def check_compromised(deps: list[dict]) -> list[dict]:
 
 # ── Orchestrator ───────────────────────────────────────────────────
 
+def _read_manifest(path: Path, project_root: Path) -> "str | None":
+    """Read a dependency manifest through the shared path-safety guard.
+
+    Returns None when the file is absent OR resolves outside project_root.
+
+    Dependency manifests were read with a bare `path.read_text()`, so a
+    symlinked `requirements.txt` pointing outside the scanned project was
+    followed and its packages reported — reproduced with `regula deps` and
+    `regula sbom`, which reach this same function (issue #32). The guard
+    also closes the check-then-open TOCTOU, since it validates the opened
+    descriptor rather than the name.
+    """
+    raw, _reason = read_bytes_if_safe(path, project_root)
+    if raw is None:
+        return None
+    return raw.decode("utf-8", errors="replace")
+
+
 def scan_dependencies(project_path: str) -> dict:
     """Scan a project for dependency pinning quality."""
     root = Path(project_path)
+    # Resolved once; every manifest read below is validated against it.
+    root_resolved = root.resolve()
     all_deps: list[dict] = []
 
     # requirements.txt
     req_txt = root / "requirements.txt"
-    if req_txt.exists():
-        all_deps.extend(parse_requirements_txt(req_txt.read_text(encoding="utf-8")))
+    _text = _read_manifest(req_txt, root_resolved)
+    if _text is not None:
+        all_deps.extend(parse_requirements_txt(_text))
 
     # pyproject.toml
     pyproject = root / "pyproject.toml"
-    if pyproject.exists():
-        all_deps.extend(parse_pyproject_toml(pyproject.read_text(encoding="utf-8")))
+    _text = _read_manifest(pyproject, root_resolved)
+    if _text is not None:
+        all_deps.extend(parse_pyproject_toml(_text))
 
     # package.json
     pkg_json = root / "package.json"
-    if pkg_json.exists():
-        all_deps.extend(parse_package_json(pkg_json.read_text(encoding="utf-8")))
+    _text = _read_manifest(pkg_json, root_resolved)
+    if _text is not None:
+        all_deps.extend(parse_package_json(_text))
 
     # Pipfile
     pipfile = root / "Pipfile"
-    if pipfile.exists():
-        all_deps.extend(parse_pipfile(pipfile.read_text(encoding="utf-8")))
+    _text = _read_manifest(pipfile, root_resolved)
+    if _text is not None:
+        all_deps.extend(parse_pipfile(_text))
 
     # Cargo.toml (Rust)
     cargo_toml = root / "Cargo.toml"
-    if cargo_toml.exists():
-        all_deps.extend(parse_cargo_toml(cargo_toml.read_text(encoding="utf-8")))
+    _text = _read_manifest(cargo_toml, root_resolved)
+    if _text is not None:
+        all_deps.extend(parse_cargo_toml(_text))
 
     # CMakeLists.txt (C/C++)
     cmake_lists = root / "CMakeLists.txt"
-    if cmake_lists.exists():
-        all_deps.extend(parse_cmake(cmake_lists.read_text(encoding="utf-8")))
+    _text = _read_manifest(cmake_lists, root_resolved)
+    if _text is not None:
+        all_deps.extend(parse_cmake(_text))
 
     # vcpkg.json (C/C++)
     vcpkg_json = root / "vcpkg.json"
-    if vcpkg_json.exists():
-        all_deps.extend(parse_vcpkg_json(vcpkg_json.read_text(encoding="utf-8")))
+    _text = _read_manifest(vcpkg_json, root_resolved)
+    if _text is not None:
+        all_deps.extend(parse_vcpkg_json(_text))
 
     # go.mod (Go)
     go_mod = root / "go.mod"
-    if go_mod.exists():
-        all_deps.extend(parse_go_mod(go_mod.read_text(encoding="utf-8")))
+    _text = _read_manifest(go_mod, root_resolved)
+    if _text is not None:
+        all_deps.extend(parse_go_mod(_text))
 
     # build.gradle / build.gradle.kts (Java/Kotlin)
     for gradle_file in ("build.gradle", "build.gradle.kts"):
         gradle_path = root / gradle_file
-        if gradle_path.exists():
-            all_deps.extend(parse_build_gradle(gradle_path.read_text(encoding="utf-8")))
+        _text = _read_manifest(gradle_path, root_resolved)
+        if _text is not None:
+            all_deps.extend(parse_build_gradle(_text))
             break  # only parse one (kts takes precedence if both exist)
 
     lockfiles = detect_lockfiles(project_path)

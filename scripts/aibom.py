@@ -20,6 +20,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from constants import VERSION, MODEL_EXTENSIONS, SKIP_DIRS, CODE_EXTENSIONS
+# Shared symlink-escape + size gate (same guard sbom.py uses). Must be
+# imported AFTER the sys.path.insert above — bare sibling imports only.
+from scan_safety import is_safe_to_scan
 from dependency_scan import scan_dependencies, AI_LIBRARIES
 
 # ── Component Kind Taxonomy ──────────────────────────────────────
@@ -217,12 +220,21 @@ def _scan_model_files(project_path: str) -> list[dict]:
     """Find model files in a project directory."""
     model_files: list[dict] = []
     root = Path(project_path)
+    root_resolved = root.resolve()
 
     for dirpath, dirs, files in os.walk(root):
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             filepath = Path(dirpath) / filename
             if filepath.suffix.lower() in MODEL_EXTENSIONS:
+                # This function is a drifted copy of sbom._scan_model_files,
+                # which HAS this guard — the copy silently did not, so a
+                # symlinked model file escaping the project was reported here
+                # while being rejected there. Same walk, same threat, so the
+                # same gate applies.
+                safe, _reason = is_safe_to_scan(filepath, root_resolved)
+                if not safe:
+                    continue
                 rel_path = str(filepath.relative_to(root))
                 try:
                     size_bytes = filepath.stat().st_size
