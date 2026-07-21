@@ -14,14 +14,12 @@ No external dependencies — stdlib only.
 """
 
 import bisect
-import os
 import re
 import sys
 from pathlib import Path
-from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
-from scan_safety import read_text_if_safe
+from scan_safety import walk_project_files
 
 from constants import CODE_EXTENSIONS, SKIP_DIRS
 
@@ -245,35 +243,28 @@ LIBRARY_CATEGORY_MAP = {
 # ---------------------------------------------------------------------------
 
 def _walk_project(project_path: str):
-    """Yield (relative_path, absolute_path) for scannable code files."""
-    project = Path(project_path).resolve()
-    # os.fwalk yields a dir descriptor; opening relative to it pins the
-    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
-    # (it guards only the final component). Absent on Windows.
-    _walk = (os.fwalk(project) if hasattr(os, 'fwalk')
-             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(project)))
-    for root, dirs, files, _dirfd in _walk:
-        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
-        for filename in files:
-            filepath = Path(root) / filename
-            if filepath.suffix.lower() in CODE_EXTENSIONS:
-                try:
-                    rel = str(filepath.relative_to(project))
-                except ValueError:
-                    rel = str(filepath)
-                yield rel, str(filepath)
+    """Yield (relative_path, absolute_path, content) for scannable files.
 
+    Content is read during the walk instead of being reopened by name
+    later. Reopening re-resolves the path, and in that window an ancestor
+    directory can be swapped for a symlink — the race O_NOFOLLOW cannot
+    close, since it guards only the final component. walk_project_files
+    reads through a descriptor held on the parent directory, pinning the
+    inode (#33).
 
-def _read_file(filepath: str) -> Optional[str]:
-    """Read file content, returning None on failure.
-
-    The guard returns None when it refuses (missing file, escaping symlink,
-    FIFO, oversized). That maps exactly onto this function's existing
-    contract, so it is returned as-is. An earlier version used `or ""`,
-    which turned a refusal into an empty string and broke the documented
-    "None on failure" behaviour callers rely on.
+    This stays a GENERATOR deliberately. Callers iterate it once and
+    discard each file's content as they go, so the whole project is never
+    resident at once; materialising it with list() would trade the memory
+    property for nothing.
     """
-    return read_text_if_safe(Path(filepath), errors="ignore")
+    project = Path(project_path).resolve()
+    for filepath, raw in walk_project_files(
+            project, extensions=CODE_EXTENSIONS, skip_dirs=SKIP_DIRS):
+        try:
+            rel = str(filepath.relative_to(project))
+        except ValueError:
+            rel = str(filepath)
+        yield rel, str(filepath), raw.decode("utf-8", errors="ignore")
 
 
 # ---------------------------------------------------------------------------
@@ -317,7 +308,7 @@ def scan_for_guardrails(project_path: str) -> dict:
     (O(log n)) rather than re-searching each line (O(lines × patterns)).
     """
     project_path = str(Path(project_path).resolve())
-    files_index = list(_walk_project(project_path))
+    files_index = _walk_project(project_path)
 
     # Accumulators for the single streaming pass.
     # per_subkey_detections preserves the original output order:
@@ -336,8 +327,7 @@ def scan_for_guardrails(project_path: str) -> dict:
     }
 
     # Single streaming pass — read one file, scan it, discard content.
-    for rel_path, abs_path in files_index:
-        content = _read_file(abs_path)
+    for rel_path, _abs_path, content in files_index:
         if not content:
             continue
 
@@ -551,11 +541,10 @@ def detect_guardrail_gaps(project_path: str) -> list:
     missing, present, article.
     """
     project_path = str(Path(project_path).resolve())
-    files_index = list(_walk_project(project_path))
+    files_index = _walk_project(project_path)
     gaps = []
 
-    for rel_path, abs_path in files_index:
-        content = _read_file(abs_path)
+    for rel_path, _abs_path, content in files_index:
         if not content:
             continue
 
