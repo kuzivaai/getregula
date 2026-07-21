@@ -8,7 +8,10 @@ list of members with access to sensitive resources, and their roles).
 ## Who maintains Regula
 
 **One person.** Kuziva Muzondo (`@kuzivaai`) is the sole maintainer and
-holds every sensitive credential:
+holds every sensitive credential. This is verifiable rather than asserted:
+every non-bot commit in the repository's history is his, which the
+[contributor list](https://github.com/kuzivaai/getregula/graphs/contributors)
+and `git log --format='%ae' | sort -u` both show.
 
 | Resource | Holder | Notes |
 |---|---|---|
@@ -17,7 +20,10 @@ holds every sensitive credential:
 | Domain `getregula.com` | `@kuzivaai` | |
 | Crash-reporting endpoint | none shipped | Published builds contain no endpoint; see `SECURITY.md` |
 
-There are no other maintainers, no organisation, and no foundation.
+There are no other maintainers, no organisation, and no foundation — see
+the [contributor list](https://github.com/kuzivaai/getregula/graphs/contributors)
+above. Automated accounts (`dependabot`, `github-actions`) appear there but
+hold no credentials and cannot approve or release.
 
 ## What that means for you — stated plainly
 
