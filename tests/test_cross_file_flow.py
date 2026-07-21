@@ -148,7 +148,7 @@ def test_collect_python_files_basic():
     try:
         pp = Path(proj).resolve()
         files = _collect_python_files(pp)
-        names = {str(f.relative_to(pp)) for f in files}
+        names = {str(f.relative_to(pp)) for f, _content in files}
         assert_in("main.py", names, "should find main.py")
         assert_in(os.path.join("utils", "helpers.py"), names, "should find utils/helpers.py")
         assert_eq(len(files), 2, "should find exactly 2 .py files")
@@ -165,7 +165,7 @@ def test_collect_python_files_skips_venv():
     try:
         pp = Path(proj).resolve()
         files = _collect_python_files(pp)
-        names = {str(f.relative_to(pp)) for f in files}
+        names = {str(f.relative_to(pp)) for f, _content in files}
         assert_in("app.py", names, "should find app.py")
         assert_eq(len(files), 1, "should only find 1 file (venv excluded)")
     finally:
@@ -1431,7 +1431,7 @@ def test_edge_case_deeply_nested_dirs():
     try:
         pp = Path(proj).resolve()
         files = _collect_python_files(pp)
-        names = {str(f.relative_to(pp)) for f in files}
+        names = {str(f.relative_to(pp)) for f, _content in files}
         expected = os.path.join("a", "b", "c", "d", "e", "deep.py")
         assert_in(expected, names, "should find deeply nested Python file")
     finally:
