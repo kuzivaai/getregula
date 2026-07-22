@@ -331,6 +331,31 @@ def test_coverage_score_full():
     assert_eq(result["coverage_score"], 100, "fully mitigated project should be 100%")
     print("\u2713 Coverage: fully mitigated = 100%")
 
+    # Drift guard: Regula's ASI catalog names must reflect the OFFICIAL OWASP
+    # Top 10 for Agentic Applications 2026 (genai.owasp.org, verified 2026-07-22).
+    # This guards against a real regression fixed on 2026-07-22 where ASI04 was
+    # mislabelled "Missing Guardrails" instead of "Agentic Supply Chain
+    # Vulnerabilities" and ASI01 as "control-flow hijacking". Sourced from the
+    # catalog itself (not a copy) per the quality rules.
+    from agent_monitor import OWASP_AGENTIC_RISKS
+    official_terms = {
+        "regula-ASI01": "goal hijack",
+        "regula-ASI02": "tool misuse",
+        "regula-ASI03": "identity",
+        "regula-ASI04": "supply chain",
+        "regula-ASI05": "code execution",
+        "regula-ASI06": "context poisoning",
+        "regula-ASI07": "inter-agent communication",
+        "regula-ASI08": "cascading failures",
+        "regula-ASI09": "trust exploitation",
+        "regula-ASI10": "rogue agents",
+    }
+    names_by_id = {r["id"]: r["name"].lower() for r in OWASP_AGENTIC_RISKS}
+    for rid, term in official_terms.items():
+        assert_true(term in names_by_id.get(rid, ""),
+                    f"{rid} name must reflect official OWASP ASI 2026 term '{term}'")
+    print("\u2713 Catalog: ASI01-ASI10 names match official OWASP ASI 2026")
+
 
 # ── Text Formatting ───────────────────────────────────────────────
 

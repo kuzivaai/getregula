@@ -219,7 +219,7 @@ def test_agent_risk_summary_format():
     print("\u2713 Agent: risk summary produces formatted output")
 
 
-# ── Contextual Agent Path Detection (ASI02/ASI04) ──────────────────
+# ── Contextual Agent Path Detection (ASI02 Tool Misuse) ────────────
 
 
 def test_agent_contextual_path_detection():

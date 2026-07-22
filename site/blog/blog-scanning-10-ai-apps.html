@@ -350,7 +350,7 @@
 
         <p>Three projects account for most of these: ChatGPT-on-WeChat (127), gptme (84), and LiteLLM (34). The pattern is consistent: LLM output is passed to <code>subprocess</code>, <code>os.system</code>, file write operations, or HTTP clients without a human confirmation step in the code path.</p>
 
-        <p>Under the EU AI Act, this matters if the system is classified as high-risk (Article 14 requires human oversight mechanisms). Under OWASP Agentic Security, it maps to ASI02 (Tool Misuse) and ASI04 (Missing Guardrails) regardless of risk classification.</p>
+        <p>Under the EU AI Act, this matters if the system is classified as high-risk (Article 14 requires human oversight mechanisms). Under OWASP Agentic Security, it maps to ASI02 (Tool Misuse) regardless of risk classification.</p>
 
         <p>Some projects handle this well. Aider, for example, has human confirmation prompts before executing commands &mdash; Regula detected the gate pattern and adjusted its confidence score accordingly. Open Computer Use runs everything inside sandboxed VMs, which is a different form of containment that Regula doesn&rsquo;t currently evaluate as a mitigating control (noted for future improvement).</p>
 
