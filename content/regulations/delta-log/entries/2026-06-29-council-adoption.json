@@ -1,0 +1,14 @@
+{
+  "id": "2026-06-29-council-adoption",
+  "date": "2026-06-29",
+  "type": "council-position",
+  "source_url": "https://www.consilium.europa.eu/en/press/press-releases/2026/06/29/artificial-intelligence-council-gives-final-green-light-to-simplify-and-streamline-rules/",
+  "source_title": "Artificial intelligence: Council gives final green light to simplify and streamline rules",
+  "affected_articles": ["6", "50", "51", "57", "113"],
+  "summary": "The Council of the EU gave its final approval to the Digital Omnibus on AI on 29 June 2026, completing the co-legislators' formal adoption after the European Parliament's 16 June plenary vote. This locks in the deferral of Annex III standalone high-risk obligations from 2 August 2026 to 2 December 2027, and Annex I product-embedded high-risk obligations to 2 August 2028, together with the new prohibitions and the Article 50(2) transition to 2 December 2026. The only remaining step is publication in the Official Journal of the European Union; the act enters into force on the third day after publication.",
+  "mechanical_change": "The amendment is now adopted by both co-legislators but is not yet in force: it takes legal effect three days after Official Journal publication, which is pending (expected before 2 August 2026). Until publication, the original 2 August 2026 deadline for Annex III high-risk obligations technically remains binding, though the deferral is now settled in substance.",
+  "confidence": "verified-primary",
+  "verified_by": "Council of the EU press release (29 June 2026); European Parliament Legislative Train Schedule",
+  "verified_on": "2026-07-22",
+  "supersedes": "2026-06-16-parliament-adoption"
+}

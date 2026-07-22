@@ -1,14 +1,63 @@
 {
-  "generated_at": "2026-05-01T20:00:00.000000+00:00",
-  "total_entries": 6,
-  "latest_date": "2026-04-29",
+  "generated_at": "2026-07-22T10:00:59.442080+00:00",
+  "total_entries": 9,
+  "latest_date": "2026-06-29",
   "types": [
     "amendment-proposal",
     "council-position",
     "parliament-position",
-    "regulation-adoption"
+    "regulation-adoption",
+    "trilogue-outcome"
   ],
   "entries": [
+    {
+      "id": "2026-06-29-council-adoption",
+      "date": "2026-06-29",
+      "type": "council-position",
+      "affected_articles": [
+        "6",
+        "50",
+        "51",
+        "57",
+        "113"
+      ],
+      "summary": "The Council of the EU gave its final approval to the Digital Omnibus on AI on 29 June 2026, completing the co-legislators' formal adoption after the European Parliament's 16 June plenary vote. This lo",
+      "confidence": "verified-primary",
+      "source_url": "https://www.consilium.europa.eu/en/press/press-releases/2026/06/29/artificial-intelligence-council-gives-final-green-light-to-simplify-and-streamline-rules/",
+      "file": "entries/2026-06-29-council-adoption.json"
+    },
+    {
+      "id": "2026-06-16-parliament-adoption",
+      "date": "2026-06-16",
+      "type": "parliament-position",
+      "affected_articles": [
+        "6",
+        "50",
+        "51",
+        "57",
+        "113"
+      ],
+      "summary": "The European Parliament's plenary approved the Digital Omnibus on AI on 16 June 2026 by 423 votes to 57, with 174 abstentions, endorsing the 7 May provisional agreement. This confirms Parliament's sid",
+      "confidence": "verified-primary",
+      "source_url": "https://www.europarl.europa.eu/news/en/press-room/20260611IPR45207/ai-act-ep-approves-simplification-measures-and-nudifier-app-ban",
+      "file": "entries/2026-06-16-parliament-adoption.json"
+    },
+    {
+      "id": "2026-05-07-trilogue-agreement",
+      "date": "2026-05-07",
+      "type": "trilogue-outcome",
+      "affected_articles": [
+        "6",
+        "50",
+        "51",
+        "57",
+        "113"
+      ],
+      "summary": "The follow-up political trilogue on the Digital Omnibus on AI succeeded on 7 May 2026, reaching a provisional agreement between the Council and the European Parliament after the 28-29 April round had ",
+      "confidence": "verified-primary",
+      "source_url": "https://www.consilium.europa.eu/en/press/press-releases/2026/05/07/artificial-intelligence-council-and-parliament-agree-to-simplify-and-streamline-rules/",
+      "file": "entries/2026-05-07-trilogue-agreement.json"
+    },
     {
       "id": "2026-04-29-trilogue-failed",
       "date": "2026-04-29",
@@ -21,7 +70,7 @@
         "50",
         "113"
       ],
-      "summary": "The first political trilogue on the Digital Omnibus on AI ended without agreement on 29 April 2026 after approximately 12 hours of negotiations. Sticking point: Annex I conformity-assessment architectu",
+      "summary": "The first political trilogue on the Digital Omnibus on AI ended without agreement on 29 April 2026 after approximately 12 hours of negotiations. The sticking point was the conformity-assessment archit",
       "confidence": "verified-primary",
       "source_url": "https://iapp.org/news/a/ai-act-omnibus-what-just-happened-and-what-comes-next",
       "file": "entries/2026-04-29-trilogue-failed.json"

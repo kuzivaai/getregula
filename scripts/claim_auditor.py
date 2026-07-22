@@ -684,7 +684,9 @@ def verify_facts() -> int:
         "62": ("commands", facts["counts"]["commands"]),
         "12": ("frameworks", facts["counts"]["frameworks"]),
         "8": ("languages", facts["counts"]["languages"]),
-        "2778": ("tests", facts["counts"]["tests"]["total_collected"]),
+        # The key is only a human-readable hint; the check compares the
+        # CURRENT value below. Kept in sync with the current count for clarity.
+        "2789": ("tests", facts["counts"]["tests"]["total_collected"]),
     }
 
     # Files to check (relative to repo root) — includes deployed site pages
@@ -699,6 +701,11 @@ def verify_facts() -> int:
         "site/regions/regulations.html",
         "site/locales/de.html",
         "site/locales/pt-br.html",
+        # llms.txt / llms-full.txt are published AI-discovery surfaces and
+        # carry the same numeric claims; they were previously unchecked, so
+        # a stale test badge sat in llms-full.txt undetected.
+        "site/llms.txt",
+        "site/llms-full.txt",
     ]
 
     mismatches: list[str] = []
@@ -755,9 +762,16 @@ def verify_facts() -> int:
                     wrong_pat = wrong_pat.replace(f"{int(actual_str):,}", r"\d+(?:,\d+)*")
                 wrong_matches = list(re.finditer(wrong_pat, text, re.IGNORECASE))
                 for wm in wrong_matches:
-                    found_num = re.search(r"\d+", wm.group(0))
-                    if found_num and found_num.group(0) != actual_str:
-                        found_val = int(found_num.group(0))
+                    # Capture the WHOLE number including thousands separators.
+                    # A bare \d+ stops at the comma, so "2,778" was read as
+                    # "2" — which then fell under the 50%% floor below and was
+                    # silently skipped. That single bug let every comma-
+                    # formatted stale count ("2,778 tests") pass unflagged
+                    # across README, TRUST.md, MODEL_CARD and the site pages.
+                    # Strip separators before int().
+                    found_num = re.search(r"\d[\d,]*\d|\d", wm.group(0))
+                    if found_num and found_num.group(0).replace(",", "") != actual_str:
+                        found_val = int(found_num.group(0).replace(",", ""))
                         # Skip small numbers that are clearly a different
                         # count (e.g. "14 GDPR patterns" vs "389 risk patterns").
                         # Only flag if the found number is >= 50% of canonical.

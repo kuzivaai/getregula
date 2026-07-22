@@ -5,7 +5,35 @@
     <link>https://getregula.com/content/regulations/delta-log/</link>
     <description>Primary-source-linked changelog for the EU AI Act. Every entry is article-keyed and machine-readable.</description>
     <language>en-GB</language>
-    <lastBuildDate>Thu, 09 Apr 2026 20:34:27 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 22 Jul 2026 10:00:59 +0000</lastBuildDate>
+    <item>
+      <title>[council-position] Art. 6, Art. 50, Art. 51, Art. 57, Art. 113: Artificial intelligence: Council gives final green light to simplify and streaml</title>
+      <link>https://www.consilium.europa.eu/en/press/press-releases/2026/06/29/artificial-intelligence-council-gives-final-green-light-to-simplify-and-streamline-rules/</link>
+      <guid isPermaLink="false">https://getregula.com/content/regulations/delta-log/entries/2026-06-29-council-adoption.json</guid>
+      <pubDate>Mon, 29 Jun 2026 00:00:00 +0000</pubDate>
+      <description>The Council of the EU gave its final approval to the Digital Omnibus on AI on 29 June 2026, completing the co-legislators&apos; formal adoption after the European Parliament&apos;s 16 June plenary vote. This locks in the deferral of Annex III standalone high-risk obligations from 2 August 2026 to 2 December 2027, and Annex I product-embedded high-risk obligations to 2 August 2028, together with the new prohibitions and the Article 50(2) transition to 2 December 2026. The only remaining step is publication in the Official Journal of the European Union; the act enters into force on the third day after publication. (confidence: verified-primary)</description>
+    </item>
+    <item>
+      <title>[parliament-position] Art. 6, Art. 50, Art. 51, Art. 57, Art. 113: AI Act: EP approves simplification measures and &quot;nudifier&quot; app ban</title>
+      <link>https://www.europarl.europa.eu/news/en/press-room/20260611IPR45207/ai-act-ep-approves-simplification-measures-and-nudifier-app-ban</link>
+      <guid isPermaLink="false">https://getregula.com/content/regulations/delta-log/entries/2026-06-16-parliament-adoption.json</guid>
+      <pubDate>Tue, 16 Jun 2026 00:00:00 +0000</pubDate>
+      <description>The European Parliament&apos;s plenary approved the Digital Omnibus on AI on 16 June 2026 by 423 votes to 57, with 174 abstentions, endorsing the 7 May provisional agreement. This confirms Parliament&apos;s side of the deferral of Annex III high-risk obligations to 2 December 2027 and Annex I product-embedded obligations to 2 August 2028, and the new prohibition on non-consensual intimate deepfakes. The IMCO and LIBE committees had approved the agreed text on 2 June 2026. Formal adoption still required the Council&apos;s final approval. (confidence: verified-primary)</description>
+    </item>
+    <item>
+      <title>[trilogue-outcome] Art. 6, Art. 50, Art. 51, Art. 57, Art. 113: Artificial intelligence: Council and Parliament agree to simplify and streamline</title>
+      <link>https://www.consilium.europa.eu/en/press/press-releases/2026/05/07/artificial-intelligence-council-and-parliament-agree-to-simplify-and-streamline-rules/</link>
+      <guid isPermaLink="false">https://getregula.com/content/regulations/delta-log/entries/2026-05-07-trilogue-agreement.json</guid>
+      <pubDate>Thu, 07 May 2026 00:00:00 +0000</pubDate>
+      <description>The follow-up political trilogue on the Digital Omnibus on AI succeeded on 7 May 2026, reaching a provisional agreement between the Council and the European Parliament after the 28-29 April round had ended without agreement. The agreement defers the application of obligations for standalone high-risk AI systems under Annex III from 2 August 2026 to 2 December 2027, and for high-risk AI embedded in regulated products under Annex I to 2 August 2028. It also introduces new prohibitions (non-consensual intimate deepfakes / CSAM) applying from 2 December 2026 and moves the Article 50(2) synthetic-content marking transition to 2 December 2026. The provisional agreement was approved by Member States&apos; ambassadors (Coreper) on 13 May 2026. (confidence: verified-primary)</description>
+    </item>
+    <item>
+      <title>[amendment-proposal] Art. 6, Art. 13, Art. 26, Art. 43, Art. 50, Art. 113: AI Act Omnibus: first political trilogue ends without agreement</title>
+      <link>https://iapp.org/news/a/ai-act-omnibus-what-just-happened-and-what-comes-next</link>
+      <guid isPermaLink="false">https://getregula.com/content/regulations/delta-log/entries/2026-04-29-trilogue-failed.json</guid>
+      <pubDate>Wed, 29 Apr 2026 00:00:00 +0000</pubDate>
+      <description>The first political trilogue on the Digital Omnibus on AI ended without agreement on 29 April 2026 after approximately 12 hours of negotiations. The sticking point was the conformity-assessment architecture for AI in regulated products under Annex I: Parliament pushed to move sectoral legislation (machinery, medical devices, toys) from Section A to Section B, effectively letting sectoral safety law handle those AI systems; the Council resisted, wanting to preserve AI Act oversight for sensitive sectors. A follow-up trilogue is scheduled for approximately 13 May 2026. The Cypriot Council Presidency must close the file before its term ends 30 June 2026; otherwise the Lithuanian Presidency takes over from 1 July. If the Omnibus is not formally adopted before 2 August 2026, the original AI Act obligations (Regulation 2024/1689, Article 113) apply as written on that date. Multiple advisory firms (IAPP, DLA Piper, Modulos) now recommend organisations prepare against the original 2 August 2026 deadline rather than relying on the proposed extensions. (confidence: verified-primary)</description>
+    </item>
     <item>
       <title>[amendment-proposal] Art. 6, Art. 13, Art. 26, Art. 43, Art. 50, Art. 113: Trilogue negotiations — Digital Omnibus on AI (target date)</title>
       <link>https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai</link>
