@@ -77,6 +77,10 @@ mappings:
         - "AML.T0031: Erode ML Model Integrity"
         - "AML.T0043: Craft Adversarial Data"
         - "AML.T0047: Evade ML Model"
+    owasp_agentic:
+      items:
+        - "ASI08: Cascading Failures"
+        - "ASI10: Rogue Agents"
     lgpd:
       articles:
         - "Art. 6 (prevenção): Sistema de prevenção de danos ao titular"
@@ -156,6 +160,10 @@ mappings:
         - "AML.T0019: Publish Poisoned Datasets"
         - "AML.T0020: Poison Training Data"
         - "AML.T0043: Craft Adversarial Data"
+    owasp_agentic:
+      items:
+        - "ASI04: Agentic Supply Chain Vulnerabilities"
+        - "ASI06: Memory & Context Poisoning"
     lgpd:
       articles:
         - "Art. 6 (qualidade): Dados devem ser exatos, claros, relevantes e atualizados"
@@ -363,6 +371,9 @@ mappings:
       techniques:
         - "AML.T0040: ML Model Inference API Access"
         - "AML.T0048: Prompt Injection"
+    owasp_agentic:
+      items:
+        - "ASI09: Human-Agent Trust Exploitation"
     lgpd:
       articles:
         - "Art. 6 (transparência): Informações claras e adequadas sobre o tratamento"
@@ -428,6 +439,12 @@ mappings:
         - "LLM06: Excessive Agency"
     mitre_atlas:
       techniques: []
+    owasp_agentic:
+      items:
+        - "ASI01: Agent Goal Hijack"
+        - "ASI02: Tool Misuse"
+        - "ASI09: Human-Agent Trust Exploitation"
+        - "ASI10: Rogue Agents"
     lgpd:
       articles:
         - "Art. 20: O titular tem direito a solicitar revisão de decisões tomadas unicamente com base em tratamento automatizado"
@@ -523,6 +540,22 @@ mappings:
         - "AML.T0043: Craft Adversarial Data"
         - "AML.T0047: Evade ML Model"
         - "AML.T0048: Prompt Injection"
+        - "AML.T0086: Exfiltration via AI Agent Tool Invocation"
+        - "AML.T0101: Data Destruction via AI Agent Tool Invocation"
+        - "AML.T0108: AI Agent Tool Poisoning"
+        - "AML.T0109: AI Supply Chain Rug Pull"
+        - "AML.T0054: LLM Jailbreak"
+        - "AML.T0112: Machine Compromise"
+    owasp_agentic:
+      items:
+        - "ASI01: Agent Goal Hijack"
+        - "ASI02: Tool Misuse"
+        - "ASI03: Identity & Privilege Abuse"
+        - "ASI04: Agentic Supply Chain Vulnerabilities"
+        - "ASI05: Unexpected Code Execution"
+        - "ASI06: Memory & Context Poisoning"
+        - "ASI07: Insecure Inter-Agent Communication"
+        - "ASI08: Cascading Failures"
     lgpd:
       articles:
         - "Art. 6 (qualidade): Dados utilizados devem ser exatos e atualizados"

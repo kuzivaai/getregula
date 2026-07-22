@@ -1,15 +1,14 @@
 # MITRE ATLAS — Adversarial Threat Landscape for AI Systems
 # Source: https://atlas.mitre.org/
 #
-# Re-verified 2026-07-22: the 9 technique IDs mapped below remain valid. ATLAS
-# itself has advanced to content release 2026.05 (16 tactics / 84 techniques),
-# adding many 2025-26 agentic-AI techniques (prompt-injection variants, RAG
-# poisoning, agent tool invocation) that this curated EU-AI-Act subset does not
-# yet carry. Expanding the agentic coverage is a roadmap item (see
-# .claude/handover.md §4c); the existing mappings are accurate, not stale.
+# Re-verified 2026-07-22: the 9 core technique IDs mapped below remain valid, and
+# a curated set of agentic-AI techniques from ATLAS release 2026.06 (30 Jun 2026)
+# has now been added — verified against the mitre-atlas/atlas-data CHANGELOG (the
+# authoritative source repo). Some may not yet be browsable on the live
+# atlas.mitre.org, which lags the data repo.
 schema_version: "1.0"
 last_updated: "2026-07-22"
-source: "MITRE Corporation, ATLAS 2026.05; subset re-verified 2026-07-22"
+source: "MITRE Corporation, ATLAS 2026.06; verified vs atlas-data CHANGELOG 2026-07-22"
 
 techniques:
   AML.T0010:
@@ -57,3 +56,38 @@ techniques:
     name: "Prompt Injection"
     description: "Adversary manipulates LLM via crafted prompts"
     eu_ai_act_articles: ["13", "15"]
+
+  # ── Agentic-AI techniques (ATLAS release 2026.06, 30 Jun 2026) ──────────────
+  # Verified against the mitre-atlas/atlas-data CHANGELOG: autonomous-agent
+  # attack surface (tool invocation, tool poisoning, supply chain, jailbreak,
+  # host compromise) added in 2025-26.
+  AML.T0054:
+    id: "AML.T0054"
+    name: "LLM Jailbreak"
+    description: "Adversary bypasses an LLM's safety controls to elicit restricted behaviour"
+    eu_ai_act_articles: ["15"]
+  AML.T0086:
+    id: "AML.T0086"
+    name: "Exfiltration via AI Agent Tool Invocation"
+    description: "Adversary exfiltrates data by invoking an AI agent's tools"
+    eu_ai_act_articles: ["15"]
+  AML.T0101:
+    id: "AML.T0101"
+    name: "Data Destruction via AI Agent Tool Invocation"
+    description: "Adversary destroys data by invoking an AI agent's tools"
+    eu_ai_act_articles: ["15"]
+  AML.T0108:
+    id: "AML.T0108"
+    name: "AI Agent Tool Poisoning"
+    description: "Adversary poisons the tools available to an AI agent"
+    eu_ai_act_articles: ["10", "15"]
+  AML.T0109:
+    id: "AML.T0109"
+    name: "AI Supply Chain Rug Pull"
+    description: "Adversary withdraws or swaps a trusted AI supply-chain component after adoption"
+    eu_ai_act_articles: ["15"]
+  AML.T0112:
+    id: "AML.T0112"
+    name: "Machine Compromise"
+    description: "Adversary compromises the machine hosting a local AI agent"
+    eu_ai_act_articles: ["15"]
