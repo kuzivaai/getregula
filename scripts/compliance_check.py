@@ -19,6 +19,7 @@ import json
 import os
 import re
 import sys
+import threading
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -33,6 +34,35 @@ if _scripts_dir not in sys.path:
     sys.path.insert(0, _scripts_dir)
 from degradation import check_optional
 from scan_safety import read_text_if_safe  # shared path guard
+
+# Per-scan content cache, closing the ancestor-directory race (#33).
+#
+# The eight Article checkers each iterate a shared file index and read files by
+# name via _read_file. Reopening by name re-resolves the path, and between the
+# walk and the read an ancestor directory can be swapped for a symlink, which
+# O_NOFOLLOW cannot stop because it guards only the final component. The other
+# scanners closed this by reading inside the walk through the os.fwalk
+# descriptor, but here the reads happen in eight separate functions after the
+# walk has finished, so no descriptor survives to the read.
+#
+# The fix without restructuring the scoring engine: read each file once during
+# the walk, through that descriptor (dir_fd pins the parent inode), and cache
+# the content for the checkers to consume. The content is byte-identical to
+# what _read_file would have returned, so no score changes.
+#
+# The cache is bounded. Holding every file at once would let a repository of
+# many large files exhaust memory (the per-file guard caps at 10.5 MB, so a
+# crafted tree could reach gigabytes). Past the budget, caching stops and reads
+# fall back to the by-name guard, which still refuses FIFOs, oversized files
+# and final-component symlink escapes; only the ancestor race reopens, and only
+# for a pathological large tree. Realistic projects are a few megabytes and are
+# fully covered.
+#
+# Thread-local because api_server may assess concurrently: one thread's scan
+# must never serve another thread's cached content.
+_CONTENT_CACHE_BUDGET_BYTES = 64 * 1024 * 1024  # 64 MiB
+_MISS = object()
+_scan = threading.local()
 
 _ast_analysis_available = check_optional("ast_analysis", "AST logging/oversight detection", "included with regula")
 if _ast_analysis_available:
@@ -129,11 +159,29 @@ def _walk_project(project_path: str):
                     rel = str(filepath.relative_to(project))
                 except ValueError:
                     rel = str(filepath)
-                yield rel, str(filepath)
+                abs_s = str(filepath)
+                # Read now, through _dirfd, so the content is guarded against
+                # the ancestor-swap race and cached for the checkers. Match
+                # _read_file's call exactly (no project_root, errors="ignore")
+                # so cached content is identical to a later by-name read; the
+                # dir_fd is the only addition and it just pins the inode.
+                cache = getattr(_scan, "content", None)
+                if cache is not None and getattr(_scan, "used", 0) < _CONTENT_CACHE_BUDGET_BYTES:
+                    content = read_text_if_safe(
+                        filepath, errors="ignore", dir_fd=_dirfd)
+                    if content is not None:
+                        cache[abs_s] = content
+                        _scan.used = getattr(_scan, "used", 0) + len(content)
+                yield rel, abs_s
 
 
 def _read_file(filepath: str) -> Optional[str]:
     """Read file content, returning None on failure.
+
+    Serves from the per-scan content cache when the file was read during the
+    walk (which closes the ancestor-directory race; see the cache note at the
+    top of the module). On a miss, or outside a scan, falls back to the shared
+    by-name guard.
 
     The guard returns None when it refuses (missing file, escaping symlink,
     FIFO, oversized). That maps exactly onto this function's existing
@@ -141,6 +189,11 @@ def _read_file(filepath: str) -> Optional[str]:
     which turned a refusal into an empty string and broke the documented
     "None on failure" behaviour callers rely on.
     """
+    cache = getattr(_scan, "content", None)
+    if cache is not None:
+        hit = cache.get(filepath, _MISS)
+        if hit is not _MISS:
+            return hit
     return read_text_if_safe(Path(filepath), errors="ignore")
 
 
@@ -1200,27 +1253,36 @@ def assess_compliance(
     project_name = project.name
     articles_to_check = articles if articles else ARTICLE_NUMBERS
 
-    # Build file index once (shared across all article checkers)
-    files_index = list(_walk_project(str(project)))
+    # Open a per-scan content cache for the duration of the walk and the
+    # checkers, then discard it. _walk_project fills it through the os.fwalk
+    # descriptor (race-closed); _read_file serves from it. See the module note.
+    _scan.content = {}
+    _scan.used = 0
+    try:
+        # Build file index once (shared across all article checkers)
+        files_index = list(_walk_project(str(project)))
 
-    # Determine highest risk tier in the project
-    highest_risk = _determine_highest_risk(str(project))
+        # Determine highest risk tier in the project
+        highest_risk = _determine_highest_risk(str(project))
 
-    # Run article checkers
-    article_results = {}
-    for article_num in articles_to_check:
-        if article_num not in ARTICLE_CHECKERS:
-            continue
-        checker = ARTICLE_CHECKERS[article_num]
-        score, evidence_list, gaps_list = checker(str(project), files_index)
-        status = _score_to_status(score)
-        article_results[article_num] = {
-            "title": ARTICLE_TITLES[article_num],
-            "status": status,
-            "score": score,
-            "evidence": evidence_list,
-            "gaps": gaps_list,
-        }
+        # Run article checkers
+        article_results = {}
+        for article_num in articles_to_check:
+            if article_num not in ARTICLE_CHECKERS:
+                continue
+            checker = ARTICLE_CHECKERS[article_num]
+            score, evidence_list, gaps_list = checker(str(project), files_index)
+            status = _score_to_status(score)
+            article_results[article_num] = {
+                "title": ARTICLE_TITLES[article_num],
+                "status": status,
+                "score": score,
+                "evidence": evidence_list,
+                "gaps": gaps_list,
+            }
+    finally:
+        _scan.content = None
+        _scan.used = 0
 
     # Compute overall score (weighted average)
     if article_results:
