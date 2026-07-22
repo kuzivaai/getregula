@@ -6708,9 +6708,18 @@ def test_gpai_signatories_file_loads():
     vendor_ids = {v["id"] for v in vendors}
     for required in ("openai", "anthropic", "mistral", "cohere", "huggingface"):
         assert required in vendor_ids, f"missing required vendor: {required}"
-    # All listed vendors must have signed: true (otherwise they belong in non_signatories)
+    # Each vendor carries a VERIFIED signed status (bool). The vendors list is
+    # not "signatories only": a detectable major vendor whose NON-signing is
+    # verified is kept here with signed:false, so the SBOM annotates it as a
+    # known non-signatory ("false") rather than "unknown". Currently that is
+    # Hugging Face (re-verified 2026-07-22 against the EC published list and the
+    # Wikipedia GPAI Code of Practice article; a prior signed:true was an error).
     for v in vendors:
-        assert v.get("signed") is True, f"vendor {v['id']} marked signed:false in vendors list"
+        assert isinstance(v.get("signed"), bool), f"vendor {v['id']} has no boolean signed field"
+    signed_map = {v["id"]: v["signed"] for v in vendors}
+    assert signed_map["huggingface"] is False, "Hugging Face is NOT a GPAI CoP signatory"
+    for signatory in ("openai", "anthropic", "mistral", "cohere"):
+        assert signed_map[signatory] is True, f"{signatory} is a verified GPAI CoP signatory"
     print(f"✓ gpai_signatories: {len(vendors)} curated vendors loaded")
 
 

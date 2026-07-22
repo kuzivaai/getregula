@@ -82,7 +82,9 @@ disclosure, etc.), include that in your initial report.
 | `semgrep --config p/security-audit --config p/python` | Each release | 0 findings on 200 rules / 129 files |
 | `pip-audit` | Each release | 0 vulnerabilities (zero runtime deps) |
 | `regula self-test` | Each commit | 6 / 6 |
-| Custom regression suite | Each commit | 2,468 unique / 2,468 pytest-collected |
+| Custom regression suite | Each commit | 2,789 pytest-collected tests |
+| PyPI provenance attestation (PEP 740, Trusted Publishing) | Each release | ✅ attached to wheel + sdist, Sigstore-backed |
+| CodeQL static analysis | Each push | workflow green; open alerts triaged below, never suppressed |
 
 The full posture is in [`docs/TRUST.md`](docs/TRUST.md), Section 7.
 
@@ -96,13 +98,42 @@ Honest list, also recorded in `docs/TRUST.md`:
 - **No third-party penetration test.** The attack surface is the user's
   local machine + opt-in network calls. Open for review at
   <https://github.com/kuzivaai/getregula>.
-- **Sigstore release signing — on the roadmap, not yet shipped.**
-  Current method: reproducible builds from `python3 -m build` against
-  the published commit hash. Sigstore-keyless signing via PyPI's
-  trusted publishing flow is planned but has not yet been implemented.
 - **No formal CVE program (yet).** The next public CVE we receive will
   also be the moment we register as a CNA. Until then, GitHub Security
   Advisory + email.
+
+## CodeQL static-analysis alerts (open, triaged, not suppressed)
+
+CodeQL runs on every push. As of 2026-07-22 it reports **42 open high-severity
+alerts** (live list: <https://github.com/kuzivaai/getregula/security/code-scanning>).
+They are listed here in full, with the reasoning for each, and left open in the
+GitHub Security tab. We do not dismiss or suppress security alerts:
+a compliance tool that clears its own dashboard by waving alerts away is not one
+you should trust. The CodeQL *workflow* passes; these alerts do not gate it.
+
+**37 × `py/path-injection` (across 8 files).** A code scanner's job is to read
+files from a folder the user points it at, so its file-reading paths are tainted
+by design. Every scanning command routes through `walk_project_files()` /
+`is_safe_to_scan()`, which reject named pipes, out-of-root symlinks and `.git`;
+the optional REST API (`api_server.py`) additionally rejects any path outside the
+current working directory (`Path.resolve().relative_to(cwd)`) and caps request
+bodies at 1 MB. CodeQL does not model these containment checks as sanitisers, so
+the taint path is reported even though the guard is present. `tests/test_hostile_sweep.py`
+exercises this whole class against a deliberately hostile directory tree.
+
+**5 × other rules, each reviewed individually:**
+
+| Alert | Location | Assessment |
+|---|---|---|
+| `py/polynomial-redos` | `classify_risk.py` | Reachable only via *user-supplied* custom-rule patterns, which already pass `_compile_custom_pattern` (rejects nested quantifiers and patterns over 500 chars; unit-tested). Polynomial, not exponential; self-inflicted. Low risk, mitigated. |
+| `py/bad-tag-filter` | `claim_auditor.py` | A genuine minor robustness gap in an internal docs-audit tool — **fixed**: the `<script>` / `<style>` blanking regex now tolerates whitespace and attributes in the closing tag. |
+| `py/clear-text-logging-sensitive-data` | `tests/helpers.py` | Test helper that prints an assertion failure; the "secret" is a synthetic, char-code-constructed test credential. Test-only false positive. |
+| `py/redos` | `tests/test_classification.py` | A regex inside the test that *asserts* ReDoS protection works. Test-only. |
+| `py/incomplete-url-substring-sanitization` | `tests/test_build_regulations.py` | A test asserting rendered HTML contains a URL substring, not a security check. Test-only false positive. |
+
+If you are evaluating Regula: its own scanner is held to the same standard it
+applies to your code. Every alert is visible, triaged in public, and either
+explained or fixed — never silenced.
 
 ## How to verify a release independently
 
@@ -117,6 +148,10 @@ sha256sum dist/regula_ai-1.7.3-py3-none-any.whl
 # Compare against the wheel served by PyPI
 pip download --no-deps -d /tmp/verify regula-ai==1.7.3
 sha256sum /tmp/verify/regula_ai-1.7.3-py3-none-any.whl
+
+# Verify PyPI provenance attestations (PEP 740, Sigstore-backed)
+python3 -m pip install pypi-attestation-models
+python3 -m pypi_attestations verify /tmp/verify/regula_ai-1.7.3-py3-none-any.whl
 ```
 
 The two SHA-256 hashes should match. If they do not, **stop and report

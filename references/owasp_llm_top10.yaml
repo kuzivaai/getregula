@@ -1,8 +1,14 @@
-# OWASP Top 10 for Large Language Model Applications (2025)
+# OWASP Top 10 for Large Language Model Applications (2025, v2.0)
 # Source: https://genai.owasp.org/llm-top-10/
+#
+# Re-verified 2026-07-22: the LLM Top 10 v2.0 (2025) remains the current list;
+# the 10 items below match it exactly. NOTE: OWASP has since published a
+# SEPARATE "OWASP Top 10 for Agentic Applications (2026)" for autonomous/agent
+# systems — it does not replace this list and is not yet mapped here (roadmap
+# item; see .claude/handover.md §4c).
 schema_version: "1.0"
-last_updated: "2026-03-27"
-source: "OWASP Foundation, 2025"
+last_updated: "2026-07-22"
+source: "OWASP Foundation, 2025 (LLM Top 10 v2.0); re-verified 2026-07-22"
 
 items:
   LLM01:
