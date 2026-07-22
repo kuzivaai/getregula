@@ -1454,6 +1454,7 @@ def format_gap_text(assessment: dict) -> str:
                 "nist_csf": "NIST CSF 2.0", "soc2": "SOC 2",
                 "iso_27001": "ISO 27001:2022", "owasp_llm_top10": "OWASP LLM Top 10",
                 "mitre_atlas": "MITRE ATLAS",
+                "owasp_agentic": "OWASP Top 10 for Agentic Applications",
             }
             for fw_key, fw_content in fw_data.items():
                 label = _FW_LABELS.get(fw_key, fw_key.upper())
