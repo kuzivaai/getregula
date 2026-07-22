@@ -1,0 +1,14 @@
+{
+  "id": "2026-05-07-trilogue-agreement",
+  "date": "2026-05-07",
+  "type": "trilogue-outcome",
+  "source_url": "https://www.consilium.europa.eu/en/press/press-releases/2026/05/07/artificial-intelligence-council-and-parliament-agree-to-simplify-and-streamline-rules/",
+  "source_title": "Artificial intelligence: Council and Parliament agree to simplify and streamline rules",
+  "affected_articles": ["6", "50", "51", "57", "113"],
+  "summary": "The follow-up political trilogue on the Digital Omnibus on AI succeeded on 7 May 2026, reaching a provisional agreement between the Council and the European Parliament after the 28-29 April round had ended without agreement. The agreement defers the application of obligations for standalone high-risk AI systems under Annex III from 2 August 2026 to 2 December 2027, and for high-risk AI embedded in regulated products under Annex I to 2 August 2028. It also introduces new prohibitions (non-consensual intimate deepfakes / CSAM) applying from 2 December 2026 and moves the Article 50(2) synthetic-content marking transition to 2 December 2026. The provisional agreement was approved by Member States' ambassadors (Coreper) on 13 May 2026.",
+  "mechanical_change": "Still a proposal at this stage: the provisional agreement changes no AI Act text until it is formally adopted by both institutions and published in the Official Journal. Original deadlines (including 2 August 2026 for Annex III) remained legally binding as at this date.",
+  "confidence": "verified-primary",
+  "verified_by": "Council of the EU press release (7 May 2026); European Parliament press release 20260427IPR42011; corroborated by White & Case, Inside Privacy, IAPP",
+  "verified_on": "2026-07-22",
+  "supersedes": "2026-04-29-trilogue-failed"
+}

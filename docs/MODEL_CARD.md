@@ -144,7 +144,7 @@ Regula is explicitly **NOT** intended for:
 
 ### Continuous validation
 
-- 2,778 pytest-collected tests (2,778 [unique](tests/) test IDs as of 2026-07-21)
+- 2,789 pytest-collected tests (2,789 [unique](tests/) test IDs as of 2026-07-22)
 - 45 CLI integration tests (`tests/test_cli_integration.py`)
 - 6 self-test assertions (`regula self-test`)
 - 12 health checks (`regula doctor`)
@@ -158,4 +158,4 @@ This model card describes Regula v1.7.9. If the detection patterns, classificati
 
 ---
 
-*Last updated: 26 June 2026.*
+*Last updated: 22 July 2026.*

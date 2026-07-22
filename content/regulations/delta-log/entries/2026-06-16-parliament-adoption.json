@@ -1,0 +1,14 @@
+{
+  "id": "2026-06-16-parliament-adoption",
+  "date": "2026-06-16",
+  "type": "parliament-position",
+  "source_url": "https://www.europarl.europa.eu/news/en/press-room/20260611IPR45207/ai-act-ep-approves-simplification-measures-and-nudifier-app-ban",
+  "source_title": "AI Act: EP approves simplification measures and \"nudifier\" app ban",
+  "affected_articles": ["6", "50", "51", "57", "113"],
+  "summary": "The European Parliament's plenary approved the Digital Omnibus on AI on 16 June 2026 by 423 votes to 57, with 174 abstentions, endorsing the 7 May provisional agreement. This confirms Parliament's side of the deferral of Annex III high-risk obligations to 2 December 2027 and Annex I product-embedded obligations to 2 August 2028, and the new prohibition on non-consensual intimate deepfakes. The IMCO and LIBE committees had approved the agreed text on 2 June 2026. Formal adoption still required the Council's final approval.",
+  "mechanical_change": "No change to the AI Act text yet: Parliament's approval is one of the two co-legislator adoption steps. The amendment does not take legal effect until the Council also adopts it and the act is published in the Official Journal. Original deadlines remained binding as at this date.",
+  "confidence": "verified-primary",
+  "verified_by": "European Parliament press release 20260611IPR45207 (16 June 2026); European Parliament Legislative Train Schedule (updated 20 June 2026)",
+  "verified_on": "2026-07-22",
+  "supersedes": "2026-05-07-trilogue-agreement"
+}
