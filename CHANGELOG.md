@@ -7,6 +7,8 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.7.9] - 2026-07-22
+
 ### Security
 - **Closed the ancestor-directory race in `regula gap` / `conform`
   (compliance scoring), the last module holding it (#33).** The eight Article
