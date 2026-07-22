@@ -5,7 +5,7 @@ Data file consumed by scripts/build_regulations.py to generate
 south-korea-ai-regulation.html. Every claim is traceable to primary or
 primary-adjacent sources cited in the `sources` list at the bottom.
 
-Key verified facts (2026-04-08):
+Key verified facts (published 2026-04-08; re-verified 2026-07-22):
 - The "Act on the Development of Artificial Intelligence and Establishment
   of Trust" (commonly the AI Basic Act) took effect on 22 January 2026.
 - The enforcement decree took effect the same day; detailed subordinate
@@ -54,9 +54,9 @@ REGION = {
         "Korea AI Basic Act \u2014 in force 22 Jan 2026. Regula's live coverage."
     ),
 
-    "last_updated": "2026-04-08",
+    "last_updated": "2026-07-22",
     "published_time": "2026-04-08T00:00:00+00:00",
-    "modified_time": "2026-04-08T00:00:00+00:00",
+    "modified_time": "2026-07-22T00:00:00+00:00",
 
     "lede": (
         "South Korea is the second major jurisdiction after the European Union "
@@ -130,7 +130,7 @@ REGION = {
     <li><strong>Generative AI</strong> \u2014 providers must clearly disclose to users that they are interacting with AI, and must apply watermarking or labelling to AI-generated content. The specific watermarking standard is delegated to MSIT subordinate regulation.</li>
     <li><strong>Extraterritoriality</strong> \u2014 the Act explicitly applies to foreign providers whose AI systems affect users in the Republic of Korea, similar in architecture to the EU AI Act's Article 2.</li>
 </ul>
-<p>Enforcement is administered by MSIT. The statute includes investigative powers, corrective orders, and administrative fines, with penalty levels to be specified in subordinate regulation. As of 2026-04-08, no enforcement action has been reported publicly.</p>
+<p>Enforcement is administered by MSIT. The statute includes investigative powers, corrective orders, and administrative fines, with penalty levels to be specified in subordinate regulation. As of 2026-07-22, no enforcement action has been reported publicly; the regime remains guidance- and readiness-oriented. In June 2026 MSIT consulted on an amendment to the Enforcement Decree defining AI-vulnerable groups and establishing an AI product/service verification system for public procurement.</p>
 """,
         },
         {

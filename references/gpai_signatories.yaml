@@ -9,7 +9,10 @@
 # Cross-reference: Bristows EU AI Act analysis (April 2026),
 #                  Nemko Digital coverage (July 2025).
 #
-# Last updated: 2026-04-07
+# Last updated: 2026-07-22 (re-verified the tracked SDK vendors against the
+# Commission list on 2026-07-22: Amazon, Google, Microsoft, Anthropic, OpenAI,
+# Mistral, Cohere all remain signatories. Hugging Face was not present on the
+# Commission's July 2026 published list — re-confirm before the next release.)
 # Maintenance: this list changes infrequently. Re-verify against the
 # Commission's published list before each Regula release.
 #
@@ -22,7 +25,7 @@
 # presumption and which does not.
 
 schema_version: "1.0"
-last_verified: "2026-04-07"
+last_verified: "2026-07-22"
 total_signatories: 26
 source_url: "https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai"
 
