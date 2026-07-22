@@ -11,8 +11,10 @@
 #
 # Last updated: 2026-07-22 (re-verified the tracked SDK vendors against the
 # Commission list on 2026-07-22: Amazon, Google, Microsoft, Anthropic, OpenAI,
-# Mistral, Cohere all remain signatories. Hugging Face was not present on the
-# Commission's July 2026 published list — re-confirm before the next release.)
+# Mistral, Cohere all remain signatories. Hugging Face is confirmed NOT a
+# signatory — verified against the Commission's published signatory list and
+# the Wikipedia GPAI Code of Practice article (edited 15 Jul 2026); its entry
+# below was corrected from signed:true to signed:false this pass.)
 # Maintenance: this list changes infrequently. Re-verify against the
 # Commission's published list before each Regula release.
 #
@@ -29,10 +31,13 @@ last_verified: "2026-07-22"
 total_signatories: 26
 source_url: "https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai"
 
-# Each entry maps Python/JS package names to the legal entity that signed
-# the GPAI Code of Practice. `signed: true` is the strict claim — only
-# include vendors with verifiable public sign-on. Anyone whose status is
-# uncertain or who has only signalled intent without signing is omitted.
+# Each entry maps Python/JS package names to the legal entity, with a VERIFIED
+# `signed` status. `signed: true` is the strict claim (verifiable public
+# sign-on). `signed: false` is used only for a detectable major vendor whose
+# NON-signing is verified against the Commission's published list (currently
+# Hugging Face); this lets the SBOM annotate it as a known non-signatory
+# rather than "unknown". Vendors whose status is uncertain, or who have only
+# signalled intent, are omitted entirely (the SBOM then reports "unknown").
 #
 # Format:
 #   - sdk_packages: list of import names that detect this vendor
@@ -102,10 +107,21 @@ vendors:
   - id: huggingface
     sdk_packages: ["transformers", "huggingface_hub", "datasets", "diffusers"]
     legal_entity: "Hugging Face, Inc."
-    signed: true
+    signed: false
     signed_date: null
     source: "https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai"
-    notes: "Hugging Face is a hub, not a model provider per se. Detection of `transformers` import does not necessarily mean a Hugging Face hosted model is being called — could be a locally-loaded model from any provider."
+    notes: >-
+      NOT a signatory of the GPAI Code of Practice. Re-verified 2026-07-22
+      against the European Commission's published signatory list (26 orgs,
+      1 Aug 2025 baseline: Amazon, Anthropic, Google, IBM, Microsoft, Mistral,
+      OpenAI, Cohere, Aleph Alpha, ServiceNow, Writer et al.; Meta and Chinese
+      providers are the other notable absences) and the Wikipedia GPAI Code of
+      Practice article (edited 15 Jul 2026) — Hugging Face appears on neither.
+      A prior version of this file marked it signed:true in error. Hugging Face
+      is a hub, not a model provider per se: a `transformers` import does not by
+      itself mean a Hugging Face hosted model is being called (it may be a
+      locally-loaded model from any provider), so signed:false annotates the
+      vendor's own status, not the model actually loaded.
 
 # Vendors NOT in the GPAI Code of Practice signatory list as of 2026-04-07.
 # Listed here for completeness so the absence is intentional, not an

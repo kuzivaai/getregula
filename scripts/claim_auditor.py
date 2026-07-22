@@ -228,9 +228,9 @@ def strip_noise(text: str, suffix: str) -> str:
         return "\n" * m.group(0).count("\n")
 
     text = re.sub(r"<!--.*?-->", _blank, text, flags=re.DOTALL)
-    text = re.sub(r"<script[^>]*>.*?</script>", _blank, text,
+    text = re.sub(r"<script[^>]*>.*?</script\s*>", _blank, text,
                   flags=re.DOTALL | re.IGNORECASE)
-    text = re.sub(r"<style[^>]*>.*?</style>", _blank, text,
+    text = re.sub(r"<style[^>]*>.*?</style\s*>", _blank, text,
                   flags=re.DOTALL | re.IGNORECASE)
     if suffix in (".md", ".markdown"):
         text = re.sub(r"```.*?```", _blank, text, flags=re.DOTALL)
@@ -692,6 +692,9 @@ def verify_facts() -> int:
     # Files to check (relative to repo root) — includes deployed site pages
     check_files = [
         "README.md",
+        # SECURITY.md carries the same numeric badges (test count etc.) and was
+        # previously unchecked, so a stale "2,468 tests" line drifted undetected.
+        "SECURITY.md",
         "docs/TRUST.md",
         "docs/MODEL_CARD.md",
         "site/index.html",

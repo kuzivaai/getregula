@@ -1,9 +1,15 @@
 # EU AI Act — Harmonised Standards Registry (CEN-CENELEC JTC 21)
 #
-# STATUS AS OF 2026-04-08: No harmonised standards under the AI Act have been
+# STATUS AS OF 2026-07-22: No harmonised standards under the AI Act have been
 # published in the Official Journal of the European Union yet. This file is a
 # pre-populated plumbing stub. When CEN-CENELEC JTC 21 publishes, flip each
 # entry's `status` from `in_progress` to `published` and fill `oj_reference`.
+#
+# Update 2026-07-22: CEN/CENELEC JTC 21 released EN 18228 (AI risk management,
+# presumption of conformity with Art 9) and EN 18282 (cybersecurity for AI,
+# Art 15(5)) for public enquiry in early May 2026. These map onto the
+# risk-mgmt-art9 and accuracy-robustness-art15 entries below, now stamped with
+# those EN numbers. First harmonised standards are still expected in Q4 2026.
 #
 # Accelerated delivery measures adopted by CEN-CENELEC in October 2025 target
 # Q4 2026 for the first wave of AI Act harmonised standards. The `regula conform`
@@ -20,7 +26,7 @@
 #   - https://jtc21.eu/
 
 schema_version: "1.0"
-last_verified: "2026-04-08"
+last_verified: "2026-07-22"
 publication_expected: "Q4 2026"
 oj_publication_confirmed: false
 
@@ -54,10 +60,11 @@ standards:
   - id: risk-mgmt-art9
     title: "AI Risk Management System"
     target_articles: [9]
-    draft_reference: "prEN on AI risk management (JTC 21)"
+    draft_reference: "prEN 18228 (AI risk management, JTC 21)"
     description: >-
       Risk management system for the entire AI lifecycle of high-risk systems.
-      Implements Article 9 obligations. Development ongoing under JTC 21 WG 4.
+      Implements Article 9 obligations. Entered CEN/CENELEC public enquiry
+      (JTC 21, early May 2026) as prEN 18228; publication expected Q4 2026.
     status: in_progress
     published_ref: null
     oj_reference: null
@@ -105,11 +112,13 @@ standards:
   - id: accuracy-robustness-art15
     title: "Accuracy, Robustness and Cybersecurity for AI"
     target_articles: [15]
-    draft_reference: "prEN on accuracy and robustness (JTC 21)"
+    draft_reference: "prEN 18282 (cybersecurity for AI, JTC 21) + accuracy/robustness work"
     description: >-
       Accuracy, robustness and cybersecurity requirements for high-risk AI
-      systems. Implements Article 15 obligations. Overlaps with CRA for
-      systems also in scope of the Cyber Resilience Act.
+      systems. Implements Article 15 obligations. The cybersecurity part (Art
+      15(5)) entered CEN/CENELEC public enquiry (JTC 21, early May 2026) as
+      prEN 18282. Overlaps with CRA for systems also in scope of the Cyber
+      Resilience Act.
     status: in_progress
     published_ref: null
     oj_reference: null
