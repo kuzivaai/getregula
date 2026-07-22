@@ -2270,14 +2270,17 @@ def test_framework_mapper_iso_27001():
 
 
 def test_framework_mapper_all_8_frameworks():
-    """Maps to all 8 frameworks simultaneously"""
+    """Maps Article 15 to the core frameworks simultaneously, incl. OWASP Agentic (ASI)."""
     from framework_mapper import map_to_frameworks
     mapping = map_to_frameworks(articles=["15"], frameworks=["all"])
     art15 = mapping.get("15", {})
-    expected_keys = ["eu_ai_act", "nist_ai_rmf", "iso_42001", "nist_csf", "soc2", "iso_27001", "owasp_llm_top10", "mitre_atlas"]
+    expected_keys = ["eu_ai_act", "nist_ai_rmf", "iso_42001", "nist_csf", "soc2",
+                     "iso_27001", "owasp_llm_top10", "mitre_atlas", "owasp_agentic"]
     for key in expected_keys:
         assert_true(key in art15, f"Art 15 has {key}")
-    print("✓ Framework mapper: all 8 frameworks mapped simultaneously")
+    # OWASP Agentic (ASI) is the 13th framework; Art 15 carries its security-relevant items.
+    assert_true(len(art15["owasp_agentic"].get("items", [])) >= 1, "Art 15 owasp_agentic has items")
+    print("✓ Framework mapper: core frameworks incl. OWASP Agentic mapped simultaneously")
 
 
 def test_policy_thresholds():

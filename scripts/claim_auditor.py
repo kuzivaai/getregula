@@ -682,7 +682,7 @@ def verify_facts() -> int:
     canonical = {
         "419": ("tier_regexes", facts["counts"]["patterns"]["tier_regexes"]),
         "62": ("commands", facts["counts"]["commands"]),
-        "12": ("frameworks", facts["counts"]["frameworks"]),
+        "13": ("frameworks", facts["counts"]["frameworks"]),
         "8": ("languages", facts["counts"]["languages"]),
         # The key is only a human-readable hint; the check compares the
         # CURRENT value below. Kept in sync with the current count for clarity.

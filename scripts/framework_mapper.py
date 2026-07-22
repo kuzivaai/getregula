@@ -57,6 +57,7 @@ _FRAMEWORK_KEYS = {
     "iso-27001": "iso_27001",
     "owasp-llm-top10": "owasp_llm_top10",
     "mitre-atlas": "mitre_atlas",
+    "owasp-agentic": "owasp_agentic",
     "lgpd": "lgpd",
     "marco-legal-ia": "marco_legal_ia",
     "cra": "cra",

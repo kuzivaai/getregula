@@ -1,0 +1,67 @@
+# OWASP Top 10 for Agentic Applications (2026)
+# Source: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
+#
+# The OWASP GenAI Security Project's Top 10 for autonomous / agentic AI systems,
+# distinct from the LLM Top 10 (see owasp_llm_top10.yaml). Verified against the
+# OWASP official list on 2026-07-22. Regula maps EU AI Act articles to these
+# items in framework_crosswalk.yaml, and assesses them per-project via
+# `regula owasp-agentic` (scripts/agent_monitor.py OWASP_AGENTIC_RISKS).
+schema_version: "1.0"
+last_updated: "2026-07-22"
+source: "OWASP GenAI Security Project, 2026"
+
+items:
+  ASI01:
+    id: "ASI01"
+    name: "Agent Goal Hijack"
+    description: "Manipulating an agent's goals or instructions (including via poisoned tool output) to redirect its behaviour"
+    eu_ai_act_articles: ["14", "15"]
+  ASI02:
+    id: "ASI02"
+    name: "Tool Misuse"
+    description: "Agents invoking or misusing tools without adequate constraint or authorisation"
+    eu_ai_act_articles: ["14", "15"]
+  ASI03:
+    id: "ASI03"
+    name: "Identity & Privilege Abuse"
+    description: "Agents operating with excessive, shared, or unscoped identities and privileges"
+    eu_ai_act_articles: ["15"]
+  ASI04:
+    id: "ASI04"
+    name: "Agentic Supply Chain Vulnerabilities"
+    description: "Compromised agent tools, plugins, or dependencies pulled from untrusted sources"
+    eu_ai_act_articles: ["10", "15"]
+  ASI05:
+    id: "ASI05"
+    name: "Unexpected Code Execution"
+    description: "Agent actions leading to arbitrary or unexpected code execution (RCE)"
+    eu_ai_act_articles: ["15"]
+  ASI06:
+    id: "ASI06"
+    name: "Memory & Context Poisoning"
+    description: "Corrupting an agent's memory or context store to persist malicious influence"
+    eu_ai_act_articles: ["10", "15"]
+  ASI07:
+    id: "ASI07"
+    name: "Insecure Inter-Agent Communication"
+    description: "Unauthenticated or unvalidated messages between agents in a multi-agent system"
+    eu_ai_act_articles: ["15"]
+  ASI08:
+    id: "ASI08"
+    name: "Cascading Failures"
+    description: "A failure or compromise in one agent propagating uncontrolled through the system"
+    eu_ai_act_articles: ["9", "15"]
+  ASI09:
+    id: "ASI09"
+    name: "Human-Agent Trust Exploitation"
+    description: "Exploiting human trust in the agent, including undisclosed AI identity or impersonation"
+    eu_ai_act_articles: ["13", "14"]
+  ASI10:
+    id: "ASI10"
+    name: "Rogue Agents"
+    description: "Agents operating outside intended boundaries without effective oversight or kill switch"
+    eu_ai_act_articles: ["9", "14"]
+
+# Regula's per-project assessment identifiers (regula-ASI01 ... regula-ASI10) in
+# scripts/agent_monitor.py mirror these official items; the drift guard in
+# tests/test_owasp_agentic.py asserts the catalog stays aligned with this list.
