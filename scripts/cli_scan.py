@@ -632,7 +632,7 @@ def cmd_check(args) -> None:
                 _print_remediation(f)
 
         if autonomy:
-            print(f"\n  {magenta('AGENT AUTONOMY')} (OWASP Agentic ASI02/ASI04):")
+            print(f"\n  {magenta('AGENT AUTONOMY')} (OWASP Agentic ASI02):")
             for f in autonomy:
                 score = f.get("confidence_score", 0)
                 tier_label = f.get("_finding_tier", "warn").upper()
