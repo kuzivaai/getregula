@@ -437,8 +437,9 @@ def detect_autonomous_actions(code: str, filepath: str = "") -> list:
     1. Direct: AI output patterns + external actions in same file
     2. Contextual: External actions in files whose path indicates agent/tool
        infrastructure (agent/, tool/, middleware/, plugin/, executor/).
-       Per OWASP Agentic Top 10 (2026) ASI02 & ASI04, agent tool code that
-       executes subprocess/system commands is a risk even when AI output
+       Per OWASP Agentic Top 10 (2026) ASI02 (Tool Misuse) and ASI05
+       (Unexpected Code Execution), agent tool code that executes
+       subprocess/system commands is a risk even when AI output
        is consumed in a different module.
 
     Returns list of findings, each with:
@@ -513,7 +514,7 @@ def detect_autonomous_actions(code: str, filepath: str = "") -> list:
                     "line": i,
                     "action_pattern": desc,
                     "description": detail,
-                    "owasp_ref": "OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails",
+                    "owasp_ref": "OWASP Agentic ASI02 Tool Misuse",
                     "has_human_gate": has_gate,
                     "detection_mode": "direct" if has_ai else "contextual",
                 })

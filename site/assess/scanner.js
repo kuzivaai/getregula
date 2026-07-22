@@ -874,7 +874,7 @@ const AI_SECURITY_PATTERNS = {
     ],
     "description": "Tool / agent / shell output passed to LLM without validation \u2014 agentic prompt injection risk",
     "severity": "high",
-    "remediation": "Treat tool outputs as untrusted user input. Validate structure (JSON schema), strip control tokens, apply a guardrails layer. Maps to OWASP Agentic ASI04 (control-flow hijacking). OWASP LLM01:2025.",
+    "remediation": "Treat tool outputs as untrusted user input. Validate structure (JSON schema), strip control tokens, apply a guardrails layer. Maps to OWASP Agentic ASI01 (Agent Goal Hijack). OWASP LLM01:2025.",
     "confidence": "medium",
     "likelihood": "high",
     "impact": "high"

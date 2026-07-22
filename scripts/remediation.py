@@ -409,7 +409,7 @@ _AI_SECURITY_REMEDIATIONS = {
     },
     "prompt_injection_agentic": {
         "summary": "Treat tool/agent output as untrusted input",
-        "article": "Article 15 (Cybersecurity) + OWASP LLM01 / ASI04",
+        "article": "Article 15 (Cybersecurity) + OWASP LLM01 / ASI01",
         "fix_code": (
             "# Suggested fix: Validate tool output before returning to LLM\n"
             "import json\n"
@@ -430,7 +430,7 @@ _AI_SECURITY_REMEDIATIONS = {
         "fix_command": "",
         "explanation": (
             "Tool and agent outputs can contain adversarial content that hijacks "
-            "the LLM control flow (OWASP ASI04). Validate structure and truncate "
+            "the LLM control flow (OWASP ASI01, Agent Goal Hijack). Validate structure and truncate "
             "outputs before returning them to the model."
         ),
     },
