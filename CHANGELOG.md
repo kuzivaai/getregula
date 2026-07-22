@@ -7,6 +7,29 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Security
+- **Closed the ancestor-directory race in `regula gap` / `conform`
+  (compliance scoring), the last module holding it (#33).** The eight Article
+  checkers read files by name after the walk, so an ancestor directory could
+  be swapped for a symlink between the walk and the read, which `O_NOFOLLOW`
+  cannot stop. Content is now read once during the walk through the `os.fwalk`
+  descriptor into a per-scan, memory-bounded (64 MiB) cache the checkers
+  consume. Scoring is byte-identical, verified by diffing full assessments on
+  real projects before and after. Past the budget, reads fall back to the
+  by-name guard, so a pathological multi-gigabyte tree bounds memory instead
+  of holding it all. This closes the scan-safety class across every scanning
+  command.
+- **Closed three loopback SSRF bypasses in the timestamp URL guard.**
+  `ipaddress.ip_address` accepts only canonical IPv4, so the guard refused
+  `127.0.0.1` but accepted `2130706433`, `127.1` and `0x7f000001`, all of
+  which `urlopen` resolves to loopback. The guard now parses the legacy forms
+  with `socket.inet_aton`, the way the resolver does. Operator-set input only,
+  so defence in depth, but a real bypass and now closed.
+- **`regula inventory` reads through the shared guarded walk.** It used
+  `rglob` plus a by-name read, leaving the ancestor race open; it now uses
+  `walk_project_files`, which reads through the walk descriptor and enforces
+  containment. No behaviour change (verified against the example projects).
+
 ## [1.7.8] - 2026-07-21
 
 ### Security

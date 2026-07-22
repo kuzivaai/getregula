@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 # Shared path guard: never read a tree we do not control with a bare
 # read_text — a FIFO blocks forever and a symlink escapes the project.
-from scan_safety import read_text_if_safe
+from scan_safety import walk_project_files
 
 from constants import SKIP_DIRS
 # ---------------------------------------------------------------------------
@@ -153,13 +153,7 @@ def scan_for_models(project_path: str) -> dict:
     # Map model_id -> {"entry": catalogue tuple, "occurrences": list}
     found: dict[str, dict] = {}
 
-    for filepath in _walk_project(project):
-        try:
-            content = read_text_if_safe(filepath, errors="ignore")
-            if content is None:
-                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
-        except OSError:
-            continue  # unreadable file; skip
+    for filepath, content in _walk_project(project):
         rel = str(filepath.relative_to(project))
         lines = content.splitlines()
         for i, line in enumerate(lines, 1):
@@ -191,14 +185,18 @@ def scan_for_models(project_path: str) -> dict:
 
 
 def _walk_project(project: Path):
-    """Yield scannable files, skipping common non-source directories."""
-    for filepath in project.rglob("*"):
-        if not filepath.is_file():
-            continue
-        if any(part in _SKIP_DIRS for part in filepath.parts):
-            continue
-        if filepath.suffix.lower() in _SCAN_EXTENSIONS:
-            yield filepath
+    """Yield (path, content) for scannable files, read safely during the walk.
+
+    Uses the shared walk_project_files: it prunes SKIP_DIRS, reads through the
+    os.fwalk descriptor so an ancestor directory cannot be swapped for a
+    symlink mid-scan, refuses FIFOs and oversized files, and enforces
+    containment against the project root. The previous rglob plus by-name
+    read left the ancestor-directory race open and relied on rglob happening
+    not to follow directory symlinks.
+    """
+    for filepath, raw in walk_project_files(
+            project, extensions=_SCAN_EXTENSIONS, skip_dirs=_SKIP_DIRS):
+        yield filepath, raw.decode("utf-8", errors="ignore")
 
 
 def format_table(result: dict) -> str:

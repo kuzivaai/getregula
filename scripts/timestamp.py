@@ -17,6 +17,7 @@ import hashlib
 import ipaddress
 import os
 import secrets
+import socket
 import struct
 import urllib.parse
 import urllib.request
@@ -71,8 +72,18 @@ def _require_http_url(url: str) -> None:
     try:
         addr = ipaddress.ip_address(hostname)
     except ValueError:
-        # Not a literal IP — accept the hostname (DNS lookup happens later).
-        return
+        # ipaddress.ip_address only accepts canonical dotted-quad and IPv6.
+        # It rejects the legacy IPv4 forms the C resolver still honours:
+        # decimal ("2130706433"), hex ("0x7f000001") and short dotted
+        # ("127.1") all reach 127.0.0.1 through urlopen, so refusing only the
+        # canonical form left three loopback bypasses open (verified).
+        # socket.inet_aton parses exactly the forms the resolver accepts.
+        try:
+            addr = ipaddress.IPv4Address(socket.inet_aton(hostname))
+        except (OSError, ipaddress.AddressValueError, UnicodeError):
+            # Not an IPv4 literal in any form — a genuine hostname. Accept;
+            # the DNS lookup happens later and is the operator's environment.
+            return
 
     for net in _BLOCKED_NETWORKS:
         if addr in net:

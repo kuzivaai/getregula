@@ -969,3 +969,45 @@ def test_highest_risk_honours_suppressions_like_check():
         assert_true(tier != "not_ai",
                     f"unsuppressed AI findings must surface a tier, got {tier}")
     print("  PASS  _determine_highest_risk honours suppressions like check")
+
+
+def test_read_file_serves_from_the_per_scan_cache():
+    """During a scan, _read_file must return cached content, and outside a
+    scan it must fall back to a safe by-name read.
+
+    This is the mechanism that closes the ancestor-directory race (#33): the
+    content is read once during the walk through the os.fwalk descriptor and
+    cached, so the eight checkers never reopen a path by name mid-scan. The
+    test pins that _read_file honours the cache and that the cache is
+    per-thread state that clears cleanly.
+    """
+    import compliance_check as cc
+
+    abs_path = "/anywhere/pinned.py"
+    # No scan in progress: cache is absent, so a real (missing) file is None.
+    cc._scan.content = None
+    assert cc._read_file("/does/not/exist/x.py") is None
+
+    # Simulate an in-progress scan: a hit is served verbatim, even for a path
+    # that does not exist on disk, proving the value came from the cache.
+    cc._scan.content = {abs_path: "CACHED-SENTINEL"}
+    try:
+        assert cc._read_file(abs_path) == "CACHED-SENTINEL"
+        # A miss inside a scan still falls back to the guard (None for a
+        # nonexistent file), not to an empty string.
+        assert cc._read_file("/does/not/exist/y.py") is None
+    finally:
+        cc._scan.content = None
+
+
+def test_compliance_scan_clears_its_cache_after_running():
+    """assess_compliance must not leak cached file content past the scan."""
+    import os
+    import compliance_check as cc
+
+    if not os.path.isdir("examples/cv-screening-app"):
+        return  # example not present in this checkout
+    cc.assess_compliance("examples/cv-screening-app")
+    assert getattr(cc._scan, "content", None) is None, (
+        "the per-scan content cache must be cleared once assess returns"
+    )

@@ -797,3 +797,35 @@ def test_unsupported_algorithm_does_not_mask_a_bad_signature():
     status, detail = verify_timestamp_token_signature(
         _tamper_signature(_token_bytes(b"hello")))
     assert status == "INVALID", f"got {status}: {detail}"
+
+
+def test_require_http_url_blocks_legacy_loopback_forms():
+    """The private-IP guard must reject the legacy IPv4 forms the resolver
+    honours, not only canonical dotted-quad.
+
+    ipaddress.ip_address accepts only canonical forms, so an earlier version
+    that relied on it alone let three loopback-equivalent spellings through
+    while refusing 127.0.0.1 (verified). urlopen resolves all of them to
+    127.0.0.1, so each was a live SSRF bypass of an operator-set TSA URL.
+    """
+    from timestamp import _require_http_url
+
+    must_refuse = [
+        "http://2130706433/x",     # decimal 32-bit form of 127.0.0.1
+        "http://127.1/x",          # short dotted form
+        "http://0x7f000001/x",     # hexadecimal form
+        "http://0177.0.0.1/x",     # octal first octet
+        "http://127.0.0.1/x",      # canonical loopback (control)
+        "http://169.254.169.254/x",  # cloud metadata
+        "http://10.0.0.1/x",       # RFC 1918
+    ]
+    for url in must_refuse:
+        try:
+            _require_http_url(url)
+            raise AssertionError(f"should have refused internal URL: {url}")
+        except ValueError:
+            pass
+
+    # Public TSA URLs must still be allowed, or timestamping breaks.
+    for url in ("https://freetsa.org/tsr", "http://example.com/tsa"):
+        _require_http_url(url)  # must not raise
