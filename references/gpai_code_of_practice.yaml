@@ -1,9 +1,11 @@
 # EU AI Act — General-Purpose AI Code of Practice (Chapter Mapping)
 #
-# STATUS AS OF 2026-04-08: The Code of Practice was published in its final form
-# on 10 July 2025 by the European AI Office, and endorsed by the Commission and
-# the AI Board on 1 August 2025 via adequacy decisions. GPAI rules took effect
-# on 2 August 2025. Commission enforcement actions begin 2 August 2026.
+# STATUS AS OF 2026-07-22 (re-verified; facts unchanged since publication): The
+# Code of Practice was published in its final form on 10 July 2025 by the
+# European AI Office, and endorsed by the Commission and the AI Board on
+# 1 August 2025 via adequacy decisions. GPAI rules took effect on 2 August 2025.
+# Commission enforcement actions begin 2 August 2026. The three-chapter
+# structure (Transparency, Copyright, Safety & Security) below is current.
 #
 # This file is a plumbing stub. It breaks the three Code of Practice chapters
 # into concrete, code-detectable obligations that future Regula commands can
@@ -19,7 +21,7 @@
 #   - EU AI Act Articles 53, 55
 
 schema_version: "1.0"
-last_verified: "2026-04-08"
+last_verified: "2026-07-22"
 code_status: "final"
 code_published_date: "2025-07-10"
 commission_endorsement_date: "2025-08-01"
