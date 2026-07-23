@@ -25,7 +25,7 @@ regula/
 │   ├── ast_engine.py              # Multi-language AST engine (Python + JS/TS tree-sitter + Java/Go/Rust/C/C++ regex)
 │   ├── compliance_check.py        # Compliance gap assessment (Articles 9-15)
 │   ├── dependency_scan.py         # AI dependency supply chain security
-│   ├── framework_mapper.py        # Cross-framework compliance mapping (12 frameworks)
+│   ├── framework_mapper.py        # Cross-framework compliance mapping (13 frameworks)
 │   ├── remediation.py             # Inline fix suggestions per Annex III category
 │   ├── agent_monitor.py           # Agentic AI governance (autonomy scoring, MCP config)
 │   ├── sbom.py                    # CycloneDX 1.7 AI SBOM generation
@@ -85,7 +85,7 @@ regula/
 - **Compliance gap assessment, not just risk flagging.** Checks whether Articles 9-15 compliance infrastructure actually exists in the codebase.
 - **AI-specific supply chain security.** Dependency pinning checks focus on AI libraries, not general packages.
 - **Cross-platform.** Unix/macOS (`fcntl`) and Windows (`msvcrt`) file locking. No platform restrictions.
-- **Multi-framework mapping.** 12 frameworks with full crosswalk data (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO) mapped via [references/framework_crosswalk.yaml](../references/framework_crosswalk.yaml). 5 additional frameworks have display handlers but no crosswalk data and no filter keys (Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI) — filter keys removed in commit 7d93fed to prevent silent empty results.
+- **Multi-framework mapping.** 13 frameworks with full crosswalk data (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, OWASP Top 10 for Agentic Applications, MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO) mapped via [references/framework_crosswalk.yaml](../references/framework_crosswalk.yaml). 5 additional frameworks have display handlers but no crosswalk data and no filter keys (Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI) — filter keys removed in commit 7d93fed to prevent silent empty results.
 
 
 ## Site integrity guard
