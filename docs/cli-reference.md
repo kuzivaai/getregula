@@ -276,7 +276,7 @@ Checks: pinning quality (hash > exact > range > unpinned), lockfile presence, AI
 
 ### Cross-Framework Compliance Mapping
 
-Regula maps findings to 12 compliance frameworks internally: EU AI Act, NIST AI RMF 1.0, ISO 42001:2023, NIST CSF 2.0, SOC 2, ISO 27001:2022, OWASP Top 10 for LLMs, MITRE ATLAS, LGPD (Brazil), Marco Legal da IA (Brazil), EU Cyber Resilience Act, and UK ICO AI Guidance. Framework mappings appear in check findings and gap assessments automatically.
+Regula maps findings to 13 compliance frameworks internally: EU AI Act, NIST AI RMF 1.0, ISO 42001:2023, NIST CSF 2.0, SOC 2, ISO 27001:2022, OWASP Top 10 for LLMs, OWASP Top 10 for Agentic Applications, MITRE ATLAS, LGPD (Brazil), Marco Legal da IA (Brazil), EU Cyber Resilience Act, and UK ICO AI Guidance. Framework mappings appear in check findings and gap assessments automatically.
 
 ### Real-World Validation Benchmark
 

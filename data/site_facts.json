@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-22T16:18:10.879602+00:00",
+  "generated_at": "2026-07-23T08:39:58.213240+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -105,6 +105,6 @@
   },
   "notes": {
     "pattern_count_methodology": "Regula's landing pages cite 'tier_regexes risk patterns'. That figure is the total individual regexes in risk_patterns.py across all tiered groups (prohibited, high-risk, limited-risk, AI security, bias, governance, GPAI training). The `historical_330_bucket` adds architecture, credential, and oversight patterns from code_analysis.py. The `grand_total` also includes AI_INDICATORS.",
-    "frameworks_vs_claim": "Regula's landing pages cite '12 compliance frameworks'. 12 have full crosswalk data; 5 additional frameworks (Colorado SB-189 [replaced SB-205], Canada AIDA, Singapore AI, OECD AI, South Korea AI) accepted as filter keys with partial coverage."
+    "frameworks_vs_claim": "Regula's landing pages cite '13 compliance frameworks'. All 13 are in _FRAMEWORK_KEYS with crosswalk data (OWASP ASI added 2026-07). Colorado SB-189, Canada AIDA, Singapore AI, OECD AI and South Korea AI have display handlers only (no filter keys, no crosswalk)."
   }
 }
