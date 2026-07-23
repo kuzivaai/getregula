@@ -228,7 +228,7 @@ regula doctor                  # Installation health check
             "a": (
                 "Yes. Regula's framework crosswalk includes the UK DSIT/ICO principles "
                 "alongside the EU AI Act, NIST AI RMF, NIST AI 600-1, ISO 42001, ISO 27001, "
-                "SOC 2, OWASP LLM Top 10, MITRE ATLAS, CRA, LGPD and Marco Legal IA. A "
+                "SOC 2, OWASP LLM Top 10, OWASP Top 10 for Agentic Applications, MITRE ATLAS, CRA, LGPD and Marco Legal IA. A "
                 "single regula check run reports findings against all of them."
             ),
         },
