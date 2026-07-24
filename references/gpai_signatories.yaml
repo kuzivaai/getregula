@@ -27,8 +27,14 @@
 # presumption and which does not.
 
 schema_version: "1.0"
-last_verified: "2026-07-22"
-total_signatories: 26
+last_verified: "2026-07-23"
+# Full signatories listed on the Commission's published page (verified
+# 2026-07-23): 23, plus xAI which signed the Safety and Security Chapter only.
+# The earlier "26" was the 1 Aug 2025 press-reported launch baseline; the page
+# composition has since changed in both directions, so this tracks the current
+# page, not the launch figure. Per-vendor `signed` booleans below are what the
+# SBOM annotation actually uses; this total is descriptive metadata.
+total_signatories: 23
 source_url: "https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai"
 
 # Each entry maps Python/JS package names to the legal entity, with a VERIFIED

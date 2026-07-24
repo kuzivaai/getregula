@@ -1159,21 +1159,26 @@ def _score_to_status(score: int) -> str:
 # ---------------------------------------------------------------------------
 
 # Article 6 guidance disclosure — embedded in every assessment dict.
-# TODO: Update when the Commission publishes Article 6(5) guidelines. The Feb 2026
-# deadline was missed; publication is expected but not confirmed as of April 2026.
-# When published, set "missed" to False, update "current_status", and revise the
-# "implication" text to reflect the actual guidance content.
+# The 2 Feb 2026 deadline was missed; the Commission published DRAFT Article 6
+# classification guidelines on 19 May 2026 with a targeted consultation to
+# 23 July 2026 (verified against digital-strategy.ec.europa.eu). They are not
+# yet finalised. TODO: when the FINAL guidelines are adopted, set
+# "current_status" to "finalised" (the renderer then flips to the PUBLISHED
+# branch), refresh "verified_on", and revise "implication" to the final text.
 ARTICLE_6_GUIDELINES_STATUS = {
     "deadline": "2026-02-02",
     "deadline_source": "EU AI Act Article 6(5)",
     "missed": True,
     "draft_promised_by": "2026-02-28",
-    "current_status": "not_finalised",
-    "verified_on": "2026-04-08",
+    "draft_published_on": "2026-05-19",
+    "consultation_until": "2026-07-23",
+    "current_status": "draft_published",
+    "verified_on": "2026-07-23",
     "implication": (
-        "Self-assessment under Article 6(3) is currently unguided. Providers "
-        "should err on the side of treating systems as high-risk and document "
-        "the rationale thoroughly. Re-evaluate when guidelines publish."
+        "The Commission published DRAFT Article 6 classification guidelines on "
+        "19 May 2026 (targeted consultation to 23 July 2026); they are not yet "
+        "finalised. Self-assessment under Article 6(3) can follow the draft, "
+        "which may change before formal adoption; document the rationale."
     ),
     "next_steps": [
         "regula exempt - structured Article 6(3) decision tree",
@@ -1204,19 +1209,35 @@ def _format_article_6_status_lines() -> list:
     deadline_uk = _uk_date(s["deadline"])
     lines = [f"Article 6 guidance status (verified {s['verified_on']}):"]
     if s.get("missed") and s.get("current_status") != "finalised":
-        promised = s.get("draft_promised_by")
-        promised_clause = (
-            f"  (Article 6(5)). A draft was promised by {_uk_date(promised)} and"
-            if promised
-            else "  (Article 6(5)). A draft was promised and"
-        )
         lines.extend([
             f"  The European Commission MISSED its {deadline_uk} deadline",
             "  for publishing guidelines on Article 6 high-risk classification",
-            promised_clause,
-            "  has not been finalised. Self-assessment under Article 6(3) is",
-            "  currently UNGUIDED. If you are considering the exemption, run:",
         ])
+        draft_pub = s.get("draft_published_on")
+        if draft_pub:
+            consult = s.get("consultation_until")
+            consult_clause = (
+                f" (targeted consultation to {_uk_date(consult)})"
+                if consult else ""
+            )
+            lines.extend([
+                f"  (Article 6(5)). DRAFT guidelines were published on "
+                f"{_uk_date(draft_pub)}{consult_clause}",
+                "  but are not yet finalised. Self-assessment under Article 6(3)",
+                "  can follow the draft, which may change before adoption. Run:",
+            ])
+        else:
+            promised = s.get("draft_promised_by")
+            promised_clause = (
+                f"  (Article 6(5)). A draft was promised by {_uk_date(promised)} and"
+                if promised
+                else "  (Article 6(5)). A draft was promised and"
+            )
+            lines.extend([
+                promised_clause,
+                "  has not been finalised. Self-assessment under Article 6(3) is",
+                "  currently UNGUIDED. If you are considering the exemption, run:",
+            ])
     else:
         lines.extend([
             "  The European Commission has PUBLISHED its Article 6(5) guidelines",
