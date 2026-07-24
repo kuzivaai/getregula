@@ -7,8 +7,13 @@ Validates environment, dependencies, policy, and security configuration.
 """
 
 import os
+import stat as _stat
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+from scan_safety import read_text_if_safe
 
 
 def _check_python_version():
@@ -68,6 +73,20 @@ def _check_policy_file():
 
     for p in candidates:
         if p.exists():
+            # policy_config refuses symlinked and non-regular policy files
+            # (a FIFO would hang every command at import). Reporting such a
+            # file as "found and readable" while the loader ignores it
+            # would be untrue, so surface the refusal instead.
+            try:
+                refused = p.is_symlink() or not _stat.S_ISREG(os.stat(p).st_mode)
+            except OSError:
+                refused = True
+            if refused:
+                return {"name": "Policy file", "status": "WARN",
+                        "detail": (f"Found but refused: {p} is a symlink or "
+                                   "not a regular file. Regula runs with "
+                                   "default settings; point REGULA_POLICY "
+                                   "at the real file.")}
             if os.access(p, os.R_OK):
                 return {"name": "Policy file", "status": "PASS",
                         "detail": f"Found and readable: {p}"}
@@ -187,13 +206,17 @@ def _check_security():
 
     gitignore = Path.cwd() / ".gitignore"
     if gitignore.exists():
-        try:
-            content = gitignore.read_text(encoding="utf-8", errors="ignore")
+        # cwd can be an untrusted repository; a FIFO .gitignore would hang
+        # doctor on a bare read. The guard refuses it and doctor reports
+        # the file unreadable instead.
+        content = read_text_if_safe(gitignore, errors="ignore")
+        if content is None:
+            issues.append("cannot read .gitignore (not a regular file, "
+                          "a symlink, or oversized)")
+        else:
             has_pattern = any(p in content for p in audit_patterns)
             if not has_pattern:
                 issues.append("audit patterns not in .gitignore")
-        except OSError:
-            issues.append("cannot read .gitignore")
     elif in_git_repo:
         # Only complain if we're actually in a git repo.
         issues.append(".gitignore not found")

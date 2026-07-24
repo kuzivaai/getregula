@@ -13,7 +13,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from scan_safety import read_bytes_if_safe
+from scan_safety import read_bytes_if_safe, read_text_if_safe
 
 sys.path.insert(0, str(Path(__file__).parent))
 from degradation import check_optional
@@ -904,7 +904,17 @@ def _load_advisories() -> list[dict]:
     advisories: list[dict] = []
     for yaml_file in advisories_dir.rglob("*.yaml"):
         try:
-            text = yaml_file.read_text(encoding="utf-8")
+            # advisories_dir can fall back to cwd, which may be an
+            # untrusted tree; a FIFO advisory would hang the scan on a
+            # bare read, so the guarded read refuses it and we skip.
+            text = read_text_if_safe(yaml_file, errors="strict")
+            if text is None:
+                print(
+                    f"regula: skipping advisory {yaml_file.name}: refused "
+                    "(not a regular file, a symlink, or oversized)",
+                    file=sys.stderr,
+                )
+                continue
             data = yaml_load(text)
             if isinstance(data, dict):
                 advisories.append(data)

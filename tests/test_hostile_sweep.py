@@ -98,6 +98,26 @@ def _build_hostile_tree(root: Path) -> bool:
 
     try:
         os.mkfifo(tree / "pipe.py")
+        # A FIFO named regula-policy.yaml. The scanner reads a scanned
+        # project's own policy file for system.domain; before scan_safety
+        # reached that read (policy_config/domain_scoring/engagement), this
+        # FIFO hung every path-taking command forever — the same DoS class
+        # pipe.py guards, recurring on the policy path.
+        os.mkfifo(tree / "regula-policy.yaml")
+        # The cwd-relative members of the same class: when Regula runs FROM
+        # inside a hostile tree (`cd repo && regula check .` is the
+        # documented usage), policy_config loads ./regula-policy.yaml at
+        # import time, config-validate discovers and reads it, and doctor
+        # reads ./.gitignore. Each was a bare read; each hang was
+        # reproduced per-vector against the unguarded code (2026-07-24).
+        # regula-rules.yaml is different: auto-discovery calls is_file(),
+        # which is False for a FIFO, so cwd discovery never hung — only an
+        # explicit `--rules` path reached the bare read. The FIFO below
+        # exercises that path and pins the discovery behaviour so a
+        # refactor that drops is_file() cannot silently reintroduce the
+        # hang.
+        os.mkfifo(tree / "regula-rules.yaml")
+        os.mkfifo(tree / ".gitignore")
     except (AttributeError, OSError):
         return False
     try:
@@ -215,6 +235,34 @@ def test_the_hostile_fixture_is_actually_hostile():
         assert _stat.S_ISFIFO(os.stat(tree / "pipe.py").st_mode), (
             "pipe.py is not a FIFO — the hang check cannot fire"
         )
+        assert _stat.S_ISFIFO(os.stat(tree / "regula-policy.yaml").st_mode), (
+            "regula-policy.yaml is not a FIFO — the policy-read hang check "
+            "cannot fire"
+        )
+        assert _stat.S_ISFIFO(os.stat(tree / "regula-rules.yaml").st_mode), (
+            "regula-rules.yaml is not a FIFO — the custom-rules hang check "
+            "cannot fire"
+        )
+        assert _stat.S_ISFIFO(os.stat(tree / ".gitignore").st_mode), (
+            ".gitignore is not a FIFO — the doctor hang check cannot fire"
+        )
+
+        # The other policy-read vector: a symlinked regula-policy.yaml that
+        # escapes the scan root must not be followed. domain_scoring reads it
+        # for system.domain; before the guard, this leaked an out-of-tree
+        # file's parsed contents. It must now come back empty.
+        sys.path.insert(0, str(REPO_ROOT / "scripts"))
+        from domain_scoring import project_declared_domains
+        sym_root = root / "sym_project"
+        sym_root.mkdir()
+        (root / "outside_policy.yaml").write_text(
+            "system:\n  domain: employment\n", encoding="utf-8")
+        (sym_root / "regula-policy.yaml").symlink_to(root / "outside_policy.yaml")
+        assert project_declared_domains(str(sym_root)) == set(), (
+            "a symlinked regula-policy.yaml escaping the project root was "
+            "followed — scan_safety containment is not applied to the policy "
+            "read"
+        )
 
 
 def test_no_command_hangs_or_escapes_on_a_hostile_tree():
@@ -318,6 +366,81 @@ def test_no_command_hangs_or_escapes_on_a_hostile_tree():
         )
 
 
+def test_no_command_hangs_when_cwd_is_hostile():
+    """Run Regula FROM INSIDE the hostile tree, not just against it.
+
+    The main sweep passes the hostile tree as an argument with cwd at the
+    repo root, which never exercises the cwd-relative reads: policy_config
+    loads ./regula-policy.yaml at module import, classify_risk loads
+    ./regula-rules.yaml, doctor reads ./.gitignore, and config-validate
+    auto-discovers ./regula-policy.yaml. Every one was a bare read_text,
+    so a FIFO by any of those names hung the command before the scan-path
+    guards could matter. `cd repo && regula check .` is the documented
+    quickstart, so cwd-is-the-untrusted-tree is the NORMAL case, not an
+    edge case.
+    """
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td).resolve()
+        if not _build_hostile_tree(root):
+            return  # platform cannot host a FIFO or symlinks
+        tree = root / "project"
+
+        env = {**os.environ, "PYTHONPATH": str(REPO_ROOT)}
+        env.pop("REGULA_POLICY", None)  # isolate discovery to the fixture
+
+        # One command per cwd-read vector: import-time policy load fires
+        # for all of them; doctor adds the .gitignore read; config validate
+        # adds the validator's own discovery+read; check adds the in-tree
+        # scan; check-rules adds the explicit --rules read, which is the
+        # one path that reaches custom_rules with an attacker-shaped file
+        # (auto-discovery filters FIFOs via is_file(), verified 2026-07-24).
+        sweep = {
+            "doctor": ["doctor"],
+            "config-validate": ["config", "validate"],
+            "check": ["check", "."],
+            "check-rules": ["check", ".", "--rules", "regula-rules.yaml"],
+        }
+
+        failures = []
+        for name, argv in sorted(sweep.items()):
+            try:
+                proc = subprocess.run(
+                    [sys.executable, "-m", "scripts.cli", *argv],
+                    cwd=str(tree),
+                    env=env,
+                    capture_output=True,
+                    text=True,
+                    timeout=TIMEOUT_SECONDS,
+                )
+            except subprocess.TimeoutExpired:
+                failures.append(
+                    f"{name}: HANG — no return in {TIMEOUT_SECONDS}s with a "
+                    f"FIFO regula-policy.yaml/regula-rules.yaml/.gitignore "
+                    f"in the working directory."
+                )
+                continue
+            blob = (proc.stdout or "") + (proc.stderr or "")
+            if "Traceback (most recent call last)" in (proc.stderr or ""):
+                first = next(
+                    (ln for ln in blob.splitlines()
+                     if "error" in ln.lower()), "no error line found")
+                failures.append(
+                    f"{name}: CRASH from a hostile cwd "
+                    f"({first.strip()[:90]})."
+                )
+            # Control: an argparse rejection returns fast without touching
+            # any FIFO, which would make this sweep pass vacuously. Exit
+            # codes cannot distinguish it (config validate exits 2 on an
+            # invalid config), but argparse always prints a usage block.
+            if "usage:" in (proc.stderr or ""):
+                failures.append(
+                    f"{name}: argparse rejected the invocation, so the "
+                    f"command exercised nothing."
+                )
+
+        assert not failures, "\n".join(["hostile-cwd sweep failures:", *failures])
+
+
 if __name__ == "__main__":
     test_every_path_taking_command_is_swept_or_excluded()
     print("PASS: every path-taking command is swept or explicitly excluded")
@@ -325,3 +448,5 @@ if __name__ == "__main__":
     print("PASS: the hostile fixture genuinely reaches outside the scan root")
     test_no_command_hangs_or_escapes_on_a_hostile_tree()
     print("PASS: no command hangs or escapes on a hostile tree")
+    test_no_command_hangs_when_cwd_is_hostile()
+    print("PASS: no command hangs when the working directory is hostile")

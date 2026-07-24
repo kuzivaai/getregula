@@ -14,6 +14,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+from scan_safety import read_text_if_safe
+
 try:
     import yaml
     _HAS_PYYAML = True
@@ -75,9 +77,21 @@ def load_custom_rules(path: str = None) -> dict:
     if path is None:
         return dict(_EMPTY_RULES)
 
-    try:
-        content = Path(path).read_text(encoding="utf-8")
-    except (OSError, IOError):
+    # ./regula-rules.yaml comes from the current working directory, which
+    # during `cd repo && regula check .` is the untrusted tree itself.
+    # Auto-discovery happens to filter FIFOs (is_file() is False for
+    # them), but an explicit --rules path reached the bare read directly:
+    # a FIFO there hung classification (reproduced 2026-07-24), and a
+    # symlink was followed wherever it pointed. The guard refuses both,
+    # plus oversized files, without depending on discovery's behaviour.
+    content = read_text_if_safe(Path(path), errors="strict")
+    if content is None:
+        print(
+            f"regula: WARNING: rules file {path} was not read "
+            "(missing, not a regular file, a symlink, or oversized). "
+            "Using built-in rules only.",
+            file=sys.stderr,
+        )
         return dict(_EMPTY_RULES)
 
     data = _parse_yaml(content)
