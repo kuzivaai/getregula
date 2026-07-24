@@ -6697,7 +6697,9 @@ def test_sbom_uses_cyclonedx_1_7():
 # ---------------------------------------------------------------------------
 
 def test_gpai_signatories_file_loads():
-    """references/gpai_signatories.yaml must load and have 26 signatories pledged."""
+    """references/gpai_signatories.yaml must load and track the current
+    Commission-published signatory total (23 full signatories as of
+    2026-07-23; xAI signed the Safety and Security Chapter only)."""
     if not _HAS_PYYAML:
         print("⊘ gpai_signatories: skipped (pyyaml not installed)")
         return
@@ -6705,7 +6707,7 @@ def test_gpai_signatories_file_loads():
     p = _P(__file__).parent.parent / "references" / "gpai_signatories.yaml"
     data = yaml.safe_load(p.read_text())
     assert data["schema_version"] == "1.0"
-    assert data["total_signatories"] == 26
+    assert data["total_signatories"] == 23
     vendors = data.get("vendors", [])
     # Sanity: at least the 8 vendors I curated must be present
     vendor_ids = {v["id"] for v in vendors}

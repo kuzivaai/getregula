@@ -27,13 +27,13 @@ If a provider self-assesses as exempt, Article 6(4) requires them to:
   - register the self-assessment in the EU database (Article 49(2))
     before placing the system on the market
 
-Status disclosure (verified 2026-04-08):
+Status disclosure (verified 2026-07-23):
   The European Commission MISSED its 2 February 2026 deadline for
-  publishing guidelines on Article 6 (Article 6(5)). A draft was
-  promised end-February 2026 and has not been finalised. Self-assessment
-  under Article 6(3) is currently unguided — providers should err on
-  the side of treating systems as high-risk, document the rationale
-  thoroughly, and re-evaluate when guidelines publish.
+  publishing guidelines on Article 6 (Article 6(5)). It published DRAFT
+  guidelines on 19 May 2026 (targeted consultation to 23 July 2026) that
+  are not yet finalised. Self-assessment under Article 6(3) can follow the
+  draft, which may change before adoption; providers should still err on
+  the side of treating systems as high-risk and document the rationale.
 
 This module is a structured walkthrough that produces a documented
 self-assessment record. It is NOT a legal determination. Providers
@@ -149,15 +149,30 @@ def _guidelines_status_block() -> list[str]:
         f"  REGULATORY STATUS (verified {s['verified_on']}):",
     ]
     if s.get("missed") and s.get("current_status") != "finalised":
-        promised = s.get("draft_promised_by")
         lines += [
             f"  The European Commission missed its {_uk_date(s['deadline'])} deadline",
             "  for publishing guidelines on Article 6 classification (Art 6(5)).",
-            (f"  A draft was promised by {_uk_date(promised)} and has not been"
-             if promised else "  A draft was promised and has not been"),
-            "  finalised. Self-assessment under Article 6(3) is currently",
-            "  UNGUIDED. Re-evaluate when the guidelines publish.",
         ]
+        draft_pub = s.get("draft_published_on")
+        if draft_pub:
+            consult = s.get("consultation_until")
+            consult_clause = (
+                f" (consultation to {_uk_date(consult)})" if consult else ""
+            )
+            lines += [
+                f"  DRAFT guidelines were published on {_uk_date(draft_pub)}"
+                f"{consult_clause}",
+                "  but are not yet finalised. Self-assessment under Article 6(3)",
+                "  can follow the draft, which may change before adoption.",
+            ]
+        else:
+            promised = s.get("draft_promised_by")
+            lines += [
+                (f"  A draft was promised by {_uk_date(promised)} and has not been"
+                 if promised else "  A draft was promised and has not been"),
+                "  finalised. Self-assessment under Article 6(3) is currently",
+                "  UNGUIDED. Re-evaluate when the guidelines publish.",
+            ]
     else:
         lines += [
             "  The European Commission has PUBLISHED its Article 6(5) guidelines",
