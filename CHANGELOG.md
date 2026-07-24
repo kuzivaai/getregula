@@ -7,6 +7,56 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Security
+- **A hostile working directory could hang every command at startup.**
+  `cd repo && regula check .` is the documented quickstart, and Regula read
+  four cwd-relative files bare: `policy_config` loaded `./regula-policy.yaml`
+  at module import, `config validate` auto-discovered and read the same file,
+  `doctor` read `./.gitignore`, and an explicit `--rules` path went straight
+  to `read_text`. A FIFO by any of those names blocked the command forever
+  (each hang reproduced per-vector against the unguarded code before the
+  fix, 2026-07-24). All four now read through the scan-safety guard, which
+  refuses FIFOs, symlinks and oversized files; refusals print a warning
+  naming the file and the reason instead of blocking. A new hostile-cwd
+  sweep in `tests/test_hostile_sweep.py` runs the CLI from inside the
+  malicious tree and pins the behaviour. Advisory YAML loading in
+  `dependency_scan` gets the same guard as defence in depth (its cwd
+  fallback cannot fire in a normal install, so that vector is not
+  independently testable in place).
+- **A scanned project's own `regula-policy.yaml` is read through the
+  scan-safety guard.** `domain_scoring` and `engagement` read the scanned
+  tree's policy file for `system.domain` and engagement config with a bare
+  read: a FIFO hung the scan and a symlink was followed out of the project
+  root (a symlinked policy escaping the root now comes back empty,
+  asserted in the hostile sweep). `get_policy` accepts a `project_root`
+  and routes untrusted reads through `read_text_if_safe`.
+- **VS Code extension: `regula.executablePath` is machine-scoped.**
+  With default scoping, a workspace `settings.json` in an untrusted
+  repository could point the extension at an arbitrary binary; the setting
+  is now `machine-overridable`, which workspace and folder settings cannot
+  set.
+
+### Changed
+- **Article 6 guidance status updated to the published draft.** The
+  Commission missed the 2 February 2026 deadline but published draft
+  Article 6 classification guidelines on 19 May 2026 (targeted
+  consultation to 23 July 2026, verified against
+  digital-strategy.ec.europa.eu on 2026-07-23). `regula check` and
+  `regula exempt` now say so instead of calling self-assessment
+  "unguided"; the renderer keeps the missed-deadline history and flips to
+  the published branch when the final guidelines are adopted.
+- **GPAI signatory total tracks the Commission's current page: 23 full
+  signatories** (plus xAI, Safety and Security Chapter only), replacing
+  the 26 from the 1 August 2025 launch-baseline press coverage. Per-vendor
+  `signed` booleans, which the SBOM annotation actually uses, are
+  unchanged.
+- **Doctor reports a refused policy file honestly.** A symlinked or
+  non-regular `regula-policy.yaml` now shows WARN with the refusal reason
+  instead of "Found and readable" while the loader ignores it.
+- Remaining current surfaces updated from 12 to 13 frameworks (README
+  stats table, `mcp-server.json`, UK region page rebuilt from source);
+  test count 2,791 across all locales.
+
 ## [1.7.9] - 2026-07-22
 
 ### Security
