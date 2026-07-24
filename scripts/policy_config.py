@@ -19,6 +19,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from degradation import check_optional
+from scan_safety import read_text_if_safe
 
 # Set to (path_str, error_str) when a policy file is found but fails to parse.
 # None means no parse error has occurred.
@@ -55,7 +56,22 @@ def _load_policy() -> dict:
         if not path.exists():
             continue
         try:
-            content = path.read_text(encoding="utf-8")
+            # This loader runs at module import, and the cwd candidates sit
+            # in whatever directory the user happens to run Regula from,
+            # which for `cd repo && regula check .` IS the untrusted tree.
+            # A FIFO regula-policy.yaml would block every command before it
+            # started; the guard refuses FIFOs, symlinks and oversized
+            # files instead (same class as the scan-path read above).
+            content = read_text_if_safe(path, errors="strict")
+            if content is None:
+                print(
+                    f"regula: WARNING: policy file {path} was not read "
+                    "(not a regular file, a symlink, or oversized). "
+                    "Running with default settings. Point REGULA_POLICY at "
+                    "the real file if this is your own config.",
+                    file=sys.stderr,
+                )
+                continue
             if path.suffix == ".json":
                 return json.loads(content)
             # YAML: try pyyaml first, then safe fallback
@@ -211,26 +227,46 @@ def _parse_flow_mapping(text: str) -> dict:
 _POLICY = _load_policy()
 
 
-def get_policy(path: str = None) -> dict:
+def get_policy(path: str = None, project_root=None) -> dict:
     """Return the cached policy, or load from a specific path if given.
 
     The path parameter exists for testability — callers can inject a
     different policy file without monkeypatching module state.
+
+    project_root must be supplied whenever `path` lives inside a tree
+    Regula does not control (a scanned project's own regula-policy file).
+    It routes the read through scan_safety, which rejects named pipes
+    (a FIFO regula-policy.yaml otherwise hangs the whole scan) and, given
+    the root, symlinks that escape the project. Reads of Regula's own
+    trusted policy (path=None, or an explicit test path) pass no root and
+    keep the plain read.
     """
     if path is not None:
-        return _load_policy_from(path)
+        return _load_policy_from(path, project_root=project_root)
     return _POLICY
 
 
-def _load_policy_from(path: str) -> dict:
-    """Load policy from a specific file path."""
+def _load_policy_from(path: str, project_root=None) -> dict:
+    """Load policy from a specific file path.
+
+    When project_root is given the file is read through scan_safety
+    (FIFO-safe, size-capped, symlink-escape contained); a refused read is
+    treated as no policy rather than a hang or an out-of-tree file read.
+    """
     global _POLICY_PARSE_ERROR
 
     p = Path(path)
     if not p.exists():
         return {}
     try:
-        content = p.read_text(encoding="utf-8")
+        if project_root is not None:
+            content = read_text_if_safe(p, project_root=Path(project_root))
+            if content is None:
+                # Named pipe, oversize, or a symlink escaping project_root:
+                # ignore the file and scan with defaults rather than block.
+                return {}
+        else:
+            content = p.read_text(encoding="utf-8")
         if p.suffix == ".json":
             return json.loads(content)
         if check_optional("yaml", "using fallback YAML parser", "pip install pyyaml"):

@@ -194,7 +194,10 @@ def project_declared_domains(project_dir) -> set:
         for name in ("regula-policy.yaml", "regula-policy.json"):
             p = _Path(project_dir) / name
             if p.exists():
-                system = get_policy(str(p)).get("system", {})
+                # project_dir is untrusted scan input: route the read through
+                # scan_safety so a FIFO policy file cannot hang the scan and a
+                # symlink cannot escape the project root (scan-safety class).
+                system = get_policy(str(p), project_root=project_dir).get("system", {})
                 if isinstance(system, dict) and system.get("domain"):
                     return {str(system["domain"]).strip().lower()}
                 break

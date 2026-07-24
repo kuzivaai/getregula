@@ -6,7 +6,12 @@ Validates structure, threshold logic, and governance completeness.
 
 import json
 import os
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+from scan_safety import read_text_if_safe
 
 
 VALID_FRAMEWORKS = {"eu_ai_act", "iso_42001", "nist_ai_rmf", "owasp_llm_top10", "iso_27001"}
@@ -30,7 +35,17 @@ def _discover_config_path() -> Path | None:
 
 def _parse_config(path: Path) -> tuple[dict | None, str | None]:
     """Parse YAML or JSON config. Returns (data, error_message)."""
-    content = path.read_text(encoding="utf-8")
+    # The auto-discovered candidates include the current working directory,
+    # which can be an untrusted repository. A bare read on a FIFO named
+    # regula-policy.yaml would hang `regula config validate` forever, so
+    # the guarded read refuses non-regular files, symlinks and oversized
+    # files and reports that as a validation error instead.
+    content = read_text_if_safe(path, errors="strict")
+    if content is None:
+        return None, (
+            f"config file {path} was not read: it is missing, not a regular "
+            "file, a symlink, or oversized"
+        )
     if path.suffix == ".json":
         try:
             return json.loads(content), None

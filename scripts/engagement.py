@@ -70,7 +70,9 @@ def load_engagement(policy: dict = None, overrides: dict = None,
             for candidate in (base / "regula-policy.yaml",
                               base / "regula-policy.json"):
                 if candidate.exists():
-                    policy = get_policy(path=str(candidate))
+                    # base is an untrusted scanned project: read through
+                    # scan_safety (FIFO-safe, symlink-escape contained).
+                    policy = get_policy(path=str(candidate), project_root=base)
                     break
         if policy is None:
             policy = get_policy()
