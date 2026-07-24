@@ -68,7 +68,8 @@
         "regula.executablePath": {
           "type": "string",
           "default": "regula",
-          "description": "Path to the regula executable"
+          "scope": "machine-overridable",
+          "description": "Path to the regula executable. Machine-scoped: a workspace or folder settings.json cannot override it, so opening an untrusted repository cannot point Regula at an arbitrary binary."
         },
         "regula.scanTrigger": {
           "type": "string",
