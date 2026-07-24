@@ -147,7 +147,7 @@ REGION = {
 <pre><code>pip install regula-ai
 
 regula discover .              # AI systems present in the project
-regula check .                 # Risk indicators against all twelve frameworks
+regula check .                 # Risk indicators against all thirteen frameworks
 regula gap --project .         # Principles-based gap assessment
 regula oversight .             # Cross-file human oversight detection (Arts 22A-22D / contestability)
 regula conform .               # Evidence pack — works for DPIA source material too

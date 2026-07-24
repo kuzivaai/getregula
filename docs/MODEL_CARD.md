@@ -144,7 +144,7 @@ Regula is explicitly **NOT** intended for:
 
 ### Continuous validation
 
-- 2,789 pytest-collected tests (2,789 [unique](tests/) test IDs as of 2026-07-22)
+- 2,791 pytest-collected tests (2,791 [unique](tests/) test IDs as of 2026-07-24)
 - 45 CLI integration tests (`tests/test_cli_integration.py`)
 - 6 self-test assertions (`regula self-test`)
 - 12 health checks (`regula doctor`)
