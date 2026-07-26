@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-07-22T10:00:59.442080+00:00",
-  "total_entries": 9,
-  "latest_date": "2026-06-29",
+  "generated_at": "2026-07-26T22:20:17.580029+00:00",
+  "total_entries": 10,
+  "latest_date": "2026-07-24",
   "types": [
     "amendment-proposal",
     "council-position",
@@ -10,6 +10,21 @@
     "trilogue-outcome"
   ],
   "entries": [
+    {
+      "id": "2026-07-24-oj-publication",
+      "date": "2026-07-24",
+      "type": "regulation-adoption",
+      "affected_articles": [
+        "5",
+        "6",
+        "50",
+        "113"
+      ],
+      "summary": "The Digital Omnibus on AI was published in the Official Journal of the European Union on 24 July 2026 as Regulation (EU) 2026/1744, amending Regulation (EU) 2024/1689 (the AI Act) together with Regula",
+      "confidence": "verified-secondary",
+      "source_url": "https://eur-lex.europa.eu/eli/reg/2026/1744/oj",
+      "file": "entries/2026-07-24-oj-publication.json"
+    },
     {
       "id": "2026-06-29-council-adoption",
       "date": "2026-06-29",

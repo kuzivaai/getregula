@@ -1173,10 +1173,11 @@ def test_timeline_data():
     assert_true("2026-08-02" in dates, "Art 50 transparency date present")
     assert_true("2027-12-02" in dates, "Omnibus Annex III date present")
 
-    # Verify Omnibus Annex III entry has 'agreed' status (not 'proposed' —
-    # EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)
+    # Verify Omnibus Annex III entry has 'enacted' status: Regulation (EU)
+    # 2026/1744 published in the OJ 24 Jul 2026, in force from 27 Jul 2026.
     omnibus = [e for e in TIMELINE if e["date"] == "2027-12-02"][0]
-    assert_eq(omnibus["status"], "agreed", "Omnibus Annex III is 'agreed' not 'proposed'")
+    assert_eq(omnibus["status"], "enacted", "Omnibus Annex III is 'enacted'")
+    assert_true("2026/1744" in omnibus["source"], "source cites Regulation (EU) 2026/1744")
     print("✓ Timeline: verified enforcement dates present and accurate")
 
 
@@ -5962,7 +5963,10 @@ def test_assess_format_result_high_risk_eu():
     assert "HIGH-RISK" in result
     assert "Art. 9" in result
     assert "Art. 14" in result
-    assert "2 August 2026" in result
+    # Omnibus enacted (OJ 24 Jul 2026): the deferred Annex III date is the
+    # applicable one, date-qualified so it never overstates in-force status.
+    assert "2 December 2027" in result
+    assert "in force from 2026-07-27" in result
     assert "Omnibus" in result
     # EU provider: no AR requirement
     assert "Authorised Representative" not in result
@@ -6227,13 +6231,16 @@ def test_deadline_prohibited_finding():
     print("✓ deadline: prohibited → 2025-02-02, no omnibus")
 
 def test_deadline_high_risk_annex_iii():
-    """High-risk Annex III findings get Dec 2027 omnibus deadline."""
+    """High-risk Annex III findings carry the enacted 2 Dec 2027 deadline
+    (Omnibus in the OJ 24 Jul 2026, in force from 27 Jul 2026)."""
     from report import _enrich_deadlines
     findings = [{"tier": "high_risk", "category": "Annex III, Category 4"}]
     _enrich_deadlines(findings)
-    assert_eq(findings[0]["deadline"], "2026-08-02", "high-risk current law")
+    assert_eq(findings[0]["deadline"], "2027-12-02", "high-risk applicable (Omnibus enacted)")
     assert_eq(findings[0]["omnibus_deadline"], "2027-12-02", "high-risk omnibus Annex III")
-    print("✓ deadline: high-risk Annex III → omnibus 2027-12-02")
+    assert_true("in force from 2026-07-27" in findings[0]["deadline_note"],
+                "note is date-qualified, not flat 'in force'")
+    print("✓ deadline: high-risk Annex III → 2027-12-02 (Omnibus enacted)")
 
 def test_deadline_high_risk_annex_i():
     """High-risk safety/medical findings get Aug 2028 omnibus deadline."""
@@ -6343,13 +6350,18 @@ def test_timeline_has_omnibus_entries():
 
 
 def test_deadline_credential_exposure():
-    """Credential exposure findings get Art 15 deadline, no omnibus."""
+    """Credential exposure follows Article 15 (Chapter III high-risk)
+    timing, deferred by the enacted Omnibus, but the note must keep the
+    exploitable-immediately warning so the deferral never reads as
+    permission to leave credentials exposed."""
     from report import _enrich_deadlines
     findings = [{"tier": "credential_exposure", "category": "Secret"}]
     _enrich_deadlines(findings)
-    assert_eq(findings[0]["deadline"], "2026-08-02", "credential deadline")
-    assert_eq("omnibus_deadline" in findings[0], False, "credential no omnibus")
-    print("✓ deadline: credential_exposure → 2026-08-02, no omnibus")
+    assert_eq(findings[0]["deadline"], "2027-12-02", "credential Art 15 deferred deadline")
+    assert_eq("omnibus_deadline" in findings[0], False, "credential no omnibus field")
+    assert_true("exploitable immediately" in findings[0]["deadline_note"],
+                "deferral must not soften the security urgency")
+    print("✓ deadline: credential_exposure → 2027-12-02, urgency note kept")
 
 
 def test_conform_end_to_end():

@@ -66,6 +66,7 @@ from omnibus import (  # noqa: F401  (re-exported)
     DEADLINE_OMNIBUS_LIMITED,
     OMNIBUS_OJ_DATE,
     OMNIBUS_ENACTED,
+    OMNIBUS_IN_FORCE_DATE,
     OMNIBUS_STATUS,
 )
 
@@ -1207,17 +1208,29 @@ def scan_files(project_path: str, respect_ignores: bool = True,
 def _enrich_deadlines(findings: list) -> None:
     """Add deadline and deadline_note to each finding based on Omnibus status.
 
-    The Digital Omnibus reached provisional agreement on 7 May 2026.
-    EP approved 16 Jun 2026; Council approved 29 Jun 2026. OJ publication
-    is pending as of 2026-07-02. Until OJ publication, original deadlines
-    remain legally binding. We tag each finding with both deadlines.
+    The Digital Omnibus (Regulation (EU) 2026/1744) was published in the
+    Official Journal on 24 July 2026 and is in force from 27 July 2026
+    (three days after publication). From that date the deferred high-risk
+    dates ARE the applicable law: Annex III standalone systems move to
+    DEADLINE_OMNIBUS_ANNEX_III, Annex I product-embedded systems to
+    DEADLINE_OMNIBUS_ANNEX_I. Article 50 transparency for NEW systems
+    keeps the original DEADLINE_CURRENT_LAW date (unchanged by the
+    Omnibus); the existing-system watermarking transition is
+    DEADLINE_OMNIBUS_LIMITED. The `deadline` field carries the applicable
+    date (mirroring register.py's applicable_deadline flip); the note
+    keeps the pre-Omnibus date as history. Dates are named by constant
+    here deliberately: test_no_binding_deadline_literals_outside_omnibus
+    polices date literals in this file.
 
-    When OMNIBUS_ENACTED becomes True (set OMNIBUS_OJ_DATE), the copy
-    switches from provisional to enacted wording automatically.
+    Driven entirely by omnibus.py constants: the unenacted branches below
+    rendered the pending wording until the OJ flip and are kept so the
+    contract stays readable and reversible.
     """
-    # Build the adoption qualifier once — driven by OMNIBUS_ENACTED.
+    # Date-qualified: "in force from <date>" is truthful before, on and
+    # after the entry-into-force date; a flat "in force" overstates legal
+    # status during the 3 days between OJ publication and effect.
     _adoption_note = (
-        f"in force (OJ {OMNIBUS_OJ_DATE})"
+        f"in force from {OMNIBUS_IN_FORCE_DATE} (OJ {OMNIBUS_OJ_DATE})"
         if OMNIBUS_ENACTED
         else f"pending OJ publication ({OMNIBUS_STATUS})"
     )
@@ -1235,28 +1248,51 @@ def _enrich_deadlines(findings: list) -> None:
             annex_i_keywords = ("Safety Component", "Medical Device", "Machinery",
                                 "harmonisation", "sectoral")
             if any(kw.lower() in category.lower() for kw in annex_i_keywords):
-                f["deadline"] = DEADLINE_CURRENT_LAW
+                if OMNIBUS_ENACTED:
+                    f["deadline"] = DEADLINE_OMNIBUS_ANNEX_I
+                    f["deadline_note"] = f"2 Aug 2028 (Annex I / sectoral; Omnibus {_adoption_note}). Pre-Omnibus date: 2 Aug 2026."
+                else:
+                    f["deadline"] = DEADLINE_CURRENT_LAW
+                    f["deadline_note"] = f"Current law: 2 Aug 2026. Omnibus agreed: 2 Aug 2028 (Annex I / sectoral). Omnibus {_adoption_note}."
                 f["deadline_status"] = "current_law"
-                f["deadline_note"] = f"Current law: 2 Aug 2026. Omnibus agreed: 2 Aug 2028 (Annex I / sectoral). Omnibus {_adoption_note}."
                 f["omnibus_deadline"] = DEADLINE_OMNIBUS_ANNEX_I
             else:
-                f["deadline"] = DEADLINE_CURRENT_LAW
+                if OMNIBUS_ENACTED:
+                    f["deadline"] = DEADLINE_OMNIBUS_ANNEX_III
+                    f["deadline_note"] = f"2 Dec 2027 (Annex III; Omnibus {_adoption_note}). Pre-Omnibus date: 2 Aug 2026."
+                else:
+                    f["deadline"] = DEADLINE_CURRENT_LAW
+                    f["deadline_note"] = f"Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus {_adoption_note}."
                 f["deadline_status"] = "current_law"
-                f["deadline_note"] = f"Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus {_adoption_note}."
                 f["omnibus_deadline"] = DEADLINE_OMNIBUS_ANNEX_III
         elif tier == "credential_exposure":
-            f["deadline"] = DEADLINE_CURRENT_LAW
+            # Article 15 is a Chapter III high-risk obligation, so its
+            # timing follows the (deferred) high-risk dates. The security
+            # reality does not: exposed credentials are exploitable the
+            # moment they ship, so the note says both.
+            if OMNIBUS_ENACTED:
+                f["deadline"] = DEADLINE_OMNIBUS_ANNEX_III
+                f["deadline_note"] = (
+                    f"Article 15 cybersecurity requirements: 2 Dec 2027 for standalone high-risk (Omnibus {_adoption_note}). "
+                    "Exposed credentials are exploitable immediately; remediate now regardless of deadline."
+                )
+            else:
+                f["deadline"] = DEADLINE_CURRENT_LAW
+                f["deadline_note"] = "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
             f["deadline_status"] = "current_law"
-            f["deadline_note"] = "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
         elif tier == "limited_risk":
             f["deadline"] = DEADLINE_CURRENT_LAW
             f["deadline_status"] = "current_law"
             f["deadline_note"] = f"Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus {_adoption_note})."
             f["omnibus_deadline"] = DEADLINE_OMNIBUS_LIMITED
         elif tier == "agent_autonomy":
-            f["deadline"] = DEADLINE_CURRENT_LAW
+            if OMNIBUS_ENACTED:
+                f["deadline"] = DEADLINE_OMNIBUS_ANNEX_III
+                f["deadline_note"] = f"Article 14 human oversight: 2 Dec 2027 (Omnibus {_adoption_note}). Pre-Omnibus date: 2 Aug 2026."
+            else:
+                f["deadline"] = DEADLINE_CURRENT_LAW
+                f["deadline_note"] = f"Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus {_adoption_note}."
             f["deadline_status"] = "current_law"
-            f["deadline_note"] = f"Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus {_adoption_note}."
             f["omnibus_deadline"] = DEADLINE_OMNIBUS_ANNEX_III
         else:
             f["deadline"] = None

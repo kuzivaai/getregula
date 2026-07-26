@@ -15,13 +15,18 @@ anywhere — import from here.
 
 Legislative history: provisional agreement 7 May 2026; European
 Parliament approved 16 June 2026 (423/57/174); Council approved
-29 June 2026. Entry into force is 3 days after OJ publication.
+29 June 2026; signed 8 July 2026; published in the Official Journal
+24 July 2026 as Regulation (EU) 2026/1744 (amending 2024/1689,
+2018/1139 and 2023/1230); in force 27 July 2026 (third day after
+publication).
 """
 
 # ---------------------------------------------------------------------------
 # THE flip switch
 # ---------------------------------------------------------------------------
-OMNIBUS_OJ_DATE = None  # Set to "YYYY-MM-DD" when published in the OJ
+# Regulation (EU) 2026/1744, OJ L, 24 July 2026. ELI:
+# https://eur-lex.europa.eu/eli/reg/2026/1744/oj
+OMNIBUS_OJ_DATE = "2026-07-24"
 
 OMNIBUS_ENACTED = OMNIBUS_OJ_DATE is not None
 

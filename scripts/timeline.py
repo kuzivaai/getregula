@@ -4,14 +4,15 @@
 Regula Timeline — EU AI Act Enforcement Dates
 
 Displays current enforcement dates, including the Digital Omnibus
-provisional agreement of 7 May 2026.
+(Regulation (EU) 2026/1744, OJ 24 July 2026, in force from 27 July 2026).
 
-Updated: 11 June 2026.
+Updated: 26 July 2026.
 
 Regulatory baseline (verified sources):
 - Regulation (EU) 2024/1689 (eur-lex.europa.eu/eli/reg/2024/1689/oj)
-- Digital Omnibus provisional agreement, 7 May 2026
-  (consilium.europa.eu/en/press/press-releases/2026/05/07/
+- Regulation (EU) 2026/1744, Digital Omnibus on AI, OJ 24 July 2026
+  (eur-lex.europa.eu/eli/reg/2026/1744/oj); provisional agreement
+  7 May 2026 (consilium.europa.eu/en/press/press-releases/2026/05/07/
    artificial-intelligence-council-and-parliament-agree-to-
    simplify-and-streamline-rules/)
 - Gibson Dunn analysis, May 2026
@@ -48,6 +49,16 @@ _OMNIBUS_NOTE_STATUS = (
     f"In force from {OMNIBUS_IN_FORCE_DATE} (published in OJ {OMNIBUS_OJ_DATE})."
     if OMNIBUS_ENACTED
     else "Adopted by EP (16 Jun) and Council (29 Jun 2026); pending OJ publication."
+)
+
+# Row status and source for Omnibus-created milestones, likewise derived:
+# "agreed" was accurate between the 7 May trilogue and OJ publication, but
+# understates enacted law once the regulation is in the OJ.
+_OMNIBUS_ROW_STATUS = "enacted" if OMNIBUS_ENACTED else "agreed"
+_OMNIBUS_SOURCE = (
+    "Regulation (EU) 2026/1744 (Digital Omnibus), OJ 24 Jul 2026"
+    if OMNIBUS_ENACTED
+    else "Omnibus provisional agreement, 7 May 2026"
 )
 
 
@@ -124,8 +135,8 @@ TIMELINE = [
     {
         "date": "2026-12-02",
         "event": "Omnibus: watermarking for EXISTING systems + Art 5 CSAM/NCII",
-        "status": "agreed",
-        "source": "Omnibus provisional agreement, 7 May 2026",
+        "status": _OMNIBUS_ROW_STATUS,
+        "source": _OMNIBUS_SOURCE,
         "note": (
             "Two obligations take effect on this date under the Omnibus: "
             "(1) Art 50(2) watermarking obligations for AI systems already "
@@ -150,8 +161,8 @@ TIMELINE = [
     {
         "date": "2027-08-02",
         "event": "Omnibus: AI regulatory sandbox establishment deadline",
-        "status": "agreed",
-        "source": "Omnibus provisional agreement, 7 May 2026",
+        "status": _OMNIBUS_ROW_STATUS,
+        "source": _OMNIBUS_SOURCE,
         "note": (
             "Member States must establish national AI regulatory sandboxes "
             "by this date. Original deadline was 2 August 2026; deferred "
@@ -161,8 +172,8 @@ TIMELINE = [
     {
         "date": "2027-12-02",
         "event": "Omnibus: Annex III standalone high-risk AI obligations",
-        "status": "agreed",
-        "source": "Omnibus provisional agreement, 7 May 2026",
+        "status": _OMNIBUS_ROW_STATUS,
+        "source": _OMNIBUS_SOURCE,
         "note": (
             "High-risk obligations (Articles 9-15) for standalone use-based "
             "AI systems under Annex III: biometrics, employment, education, "
@@ -176,8 +187,8 @@ TIMELINE = [
     {
         "date": "2028-08-02",
         "event": "Omnibus: Annex I product-embedded high-risk AI obligations",
-        "status": "agreed",
-        "source": "Omnibus provisional agreement, 7 May 2026",
+        "status": _OMNIBUS_ROW_STATUS,
+        "source": _OMNIBUS_SOURCE,
         "note": (
             "High-risk obligations for AI systems embedded in products "
             "regulated under EU harmonisation legislation (Annex I): "
@@ -195,6 +206,7 @@ STATUS_LABELS = {
     "current_law": "CURRENT LAW",
     "in_progress": "IN PROGRESS",
     "agreed": "AGREED (pending adoption)",
+    "enacted": "ENACTED (future application date)",
 }
 
 STATUS_INDICATORS = {
@@ -203,6 +215,7 @@ STATUS_INDICATORS = {
     "current_law": "[LAW]",
     "in_progress": "[WIP]",
     "agreed": "[AGR]",
+    "enacted": "[ENA]",
 }
 
 
@@ -217,11 +230,16 @@ def format_timeline_text() -> str:
         "",
         "  Status key:",
         "    [LIVE] = enforceable now   [LAW] = legally binding date",
-        "    [AGR]  = agreed in Omnibus" + (f" (in force from {OMNIBUS_IN_FORCE_DATE})" if OMNIBUS_ENACTED else " (pending OJ publication)"),
+        (f"    [ENA]  = enacted by the Omnibus (in force from {OMNIBUS_IN_FORCE_DATE}), future application date"
+         if OMNIBUS_ENACTED
+         else "    [AGR]  = agreed in Omnibus (pending OJ publication)"),
         "    [WIP]  = in progress       [LATE] = deadline missed",
         "",
-        f"  IMPORTANT: Digital Omnibus status: {OMNIBUS_STATUS}.",
-        f"  {BINDING_NOTE}",
+        # Enacted, BINDING_NOTE already contains the full status; printing
+        # OMNIBUS_STATUS as well would repeat the same sentence twice.
+        f"  IMPORTANT: Digital Omnibus status: {BINDING_NOTE}"
+        if OMNIBUS_ENACTED
+        else f"  IMPORTANT: Digital Omnibus status: {OMNIBUS_STATUS}.\n  {BINDING_NOTE}",
         "",
     ]
 
@@ -240,16 +258,30 @@ def format_timeline_text() -> str:
                 note = note[len(chunk):].strip()
         lines.append("")
 
+    if OMNIBUS_ENACTED:
+        footer_note = [
+            "  " + "-" * 64,
+            "  The Omnibus completed the full legislative process: EP plenary",
+            "  (16 Jun 2026), Council (29 Jun 2026), signature (8 Jul 2026),",
+            f"  Official Journal publication ({OMNIBUS_OJ_DATE}). The deferred",
+            f"  deadlines are enacted law, in force from {OMNIBUS_IN_FORCE_DATE}.",
+            "  " + "-" * 64,
+        ]
+    else:
+        footer_note = [
+            "  " + "-" * 64,
+            "  Provisional agreement ≠ formal adoption. The Omnibus must",
+            "  pass EP plenary, Council endorsement, and be published in",
+            "  the Official Journal before new deadlines become binding.",
+            "  " + "-" * 64,
+        ]
     lines.extend([
-        "  " + "-" * 64,
-        "  Provisional agreement ≠ formal adoption. The Omnibus must",
-        "  pass EP plenary, Council endorsement, and be published in",
-        "  the Official Journal before new deadlines become binding.",
-        "  " + "-" * 64,
+        *footer_note,
         "",
-        "  Sources: EU Council press release (7 May 2026), Gibson Dunn,",
-        "  Latham & Watkins, Bird & Bird, Travers Smith, White & Case,",
-        "  EC Code of Practice on AI content marking (10 June 2026)",
+        "  Sources: Regulation (EU) 2026/1744 (OJ, 24 Jul 2026), EU Council",
+        "  press release (7 May 2026), Gibson Dunn, Latham & Watkins,",
+        "  Bird & Bird, Travers Smith, White & Case, EC Code of Practice",
+        "  on AI content marking (10 June 2026)",
         "",
     ])
 
@@ -270,7 +302,10 @@ def main():
     if args.format == "json":
         print(json.dumps({
             "as_of": date.today().isoformat(),
-            "omnibus_status": f"{OMNIBUS_STATUS}. {BINDING_NOTE}",
+            # Enacted, BINDING_NOTE already contains the full status; the
+            # concatenation would print the same sentence twice.
+            "omnibus_status": (BINDING_NOTE if OMNIBUS_ENACTED
+                               else f"{OMNIBUS_STATUS}. {BINDING_NOTE}"),
             "timeline": TIMELINE,
         }, indent=2))
     else:

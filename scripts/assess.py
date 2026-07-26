@@ -26,7 +26,7 @@ from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from omnibus import ANNEX_III_PROSE, ADOPTION_HISTORY, BINDING_NOTE, OMNIBUS_ENACTED, OMNIBUS_OJ_DATE, ORIGINAL_PROSE
+from omnibus import ANNEX_III_PROSE, ADOPTION_HISTORY, BINDING_NOTE, OMNIBUS_ENACTED, OMNIBUS_IN_FORCE_DATE, OMNIBUS_OJ_DATE, ORIGINAL_PROSE
 
 
 # ---------------------------------------------------------------------------
@@ -119,7 +119,11 @@ def _omnibus_deadline_lines() -> list:
     is a one-line change there rather than a hand-edit here."""
     if OMNIBUS_ENACTED:
         return [
-            f"  - The Digital Omnibus is in force (OJ {OMNIBUS_OJ_DATE}).",
+            # "in force from <date>" is truthful before, on and after the
+            # entry-into-force date; a flat "is in force" overstates legal
+            # status during the 3 days between OJ publication and effect.
+            f"  - The Digital Omnibus is in force from {OMNIBUS_IN_FORCE_DATE} "
+            f"(OJ {OMNIBUS_OJ_DATE}).",
             f"    Annex III obligations apply from {ANNEX_III_PROSE}.",
         ]
     return [

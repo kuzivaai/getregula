@@ -5,7 +5,14 @@
     <link>https://getregula.com/content/regulations/delta-log/</link>
     <description>Primary-source-linked changelog for the EU AI Act. Every entry is article-keyed and machine-readable.</description>
     <language>en-GB</language>
-    <lastBuildDate>Wed, 22 Jul 2026 10:00:59 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 26 Jul 2026 22:20:17 +0000</lastBuildDate>
+    <item>
+      <title>[regulation-adoption] Art. 5, Art. 6, Art. 50, Art. 113: Regulation (EU) 2026/1744 of the European Parliament and of the Council of 8 Jul</title>
+      <link>https://eur-lex.europa.eu/eli/reg/2026/1744/oj</link>
+      <guid isPermaLink="false">https://getregula.com/content/regulations/delta-log/entries/2026-07-24-oj-publication.json</guid>
+      <pubDate>Fri, 24 Jul 2026 00:00:00 +0000</pubDate>
+      <description>The Digital Omnibus on AI was published in the Official Journal of the European Union on 24 July 2026 as Regulation (EU) 2026/1744, amending Regulation (EU) 2024/1689 (the AI Act) together with Regulation (EU) 2018/1139 (civil aviation) and Regulation (EU) 2023/1230 (machinery). It enters into force on 27 July 2026, the third day following publication. From that date the deferred deadlines are enacted law: Annex III standalone high-risk obligations apply from 2 December 2027, Annex I product-embedded high-risk obligations from 2 August 2028, Article 50(2) watermarking for existing systems from 2 December 2026, and the new Article 5 prohibition on AI-generated CSAM and non-consensual intimate imagery from 2 December 2026. Article 50 transparency duties for new systems keep their 2 August 2026 date, unchanged. (confidence: verified-secondary)</description>
+    </item>
     <item>
       <title>[council-position] Art. 6, Art. 50, Art. 51, Art. 57, Art. 113: Artificial intelligence: Council gives final green light to simplify and streaml</title>
       <link>https://www.consilium.europa.eu/en/press/press-releases/2026/06/29/artificial-intelligence-council-gives-final-green-light-to-simplify-and-streamline-rules/</link>

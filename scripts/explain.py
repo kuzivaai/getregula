@@ -470,12 +470,14 @@ def format_explanation(result: dict, filepath: str = "<stdin>") -> str:
 
         # Timeline
         timeline = result.get("timeline", {})
-        from omnibus import ANNEX_III_PROSE as _a3, ORIGINAL_PROSE as _orig, OMNIBUS_ENACTED as _enacted
+        from omnibus import ANNEX_III_PROSE as _a3, ORIGINAL_PROSE as _orig, OMNIBUS_ENACTED as _enacted, OMNIBUS_IN_FORCE_DATE as _in_force
         current = timeline.get("current_law", _orig)
         omnibus = timeline.get("omnibus_proposed", {})
         annex_iii = omnibus.get("annex_iii", _a3) if isinstance(omnibus, dict) else _a3
         if _enacted:
-            lines.append(f"  Deadline: {annex_iii} for Annex III (Omnibus in force)")
+            # Date-qualified: flat "in force" would overstate legal status
+            # during the 3 days between OJ publication and effect.
+            lines.append(f"  Deadline: {annex_iii} for Annex III (Omnibus in force from {_in_force})")
         else:
             lines.append(f"  Deadline: {current} (Annex III: {annex_iii} under the adopted Omnibus, pending OJ publication)")
         lines.append("")
