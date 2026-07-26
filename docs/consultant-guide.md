@@ -212,7 +212,7 @@ Regula ships domain-to-obligation mappings for three jurisdictions
 
 | Jurisdiction | Instrument | Status |
 |---|---|---|
-| `eu` | EU AI Act (Regulation (EU) 2024/1689) | In force, phased enforcement; Annex III high-risk obligations deferred to 2 Dec 2027 under the Digital Omnibus (adopted June 2026, pending OJ publication) |
+| `eu` | EU AI Act (Regulation (EU) 2024/1689) | In force, phased enforcement; Annex III high-risk obligations deferred to 2 Dec 2027 under the Digital Omnibus (Regulation (EU) 2026/1744, OJ 24 Jul 2026, in force from 27 Jul 2026) |
 | `korea` | South Korea AI Basic Act (Act No. 20676) | In force 22 January 2026 |
 | `colorado` | Colorado SB 26-189 | Disclosure-focused, plus consumer correction and human-review rights; duties from 1 January 2027 |
 
