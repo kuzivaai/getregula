@@ -228,7 +228,10 @@ class TestGenerateSummary:
     def test_deadline_present(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
         summary = _generate_summary("proj", now, [], self._make_gap(), self._make_plan([]))
-        assert "2 August 2026" in summary
+        # Omnibus enacted (OJ 24 Jul 2026): the summary carries the deferred
+        # Annex III deadline as the applicable one.
+        assert "2 December 2027" in summary
+        assert "in force from 2026-07-27" in summary
 
     def test_disclaimer_present(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)

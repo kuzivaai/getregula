@@ -35,7 +35,7 @@
       "article": "49(2)",
       "obligated_party": "provider_self_exempted",
       "submission_status": "mandatory",
-      "omnibus_field_simplification": "adopted_ep_2026-06-16_council_2026-06-29_pending_oj_publication",
+      "omnibus_field_simplification": "regulation_eu_2026-1744_oj_2026-07-24_in_force_2026-07-27",
       "heading": "Information to be submitted by providers of high-risk AI systems in accordance with Article 49(2)",
       "fields": [
         {"point": 1, "key": "provider_identity",                  "label": "Provider name, address and contact details",                                  "autofill_source": "policy_config", "excluded_under_49_4": false},
@@ -65,6 +65,6 @@
   "deadlines": {
     "applicable_deadline": "2026-08-02",
     "omnibus_proposed_deadline": "2027-12-02",
-    "omnibus_status": "adopted_ep_2026-06-16_council_2026-06-29_pending_oj_publication"
+    "omnibus_status": "regulation_eu_2026-1744_oj_2026-07-24_in_force_2026-07-27"
   }
 }

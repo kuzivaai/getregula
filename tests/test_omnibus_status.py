@@ -1,10 +1,11 @@
 """Tests for the Omnibus enactment single source of truth in report.py.
 
 These tests verify that:
-- OMNIBUS_OJ_DATE is None (OJ publication not yet happened as of 2026-07-02)
-- OMNIBUS_ENACTED is False when OMNIBUS_OJ_DATE is None
-- OMNIBUS_STATUS contains the correct pending wording
-- _enrich_deadlines produces "pending OJ publication" copy while unenacted
+- OMNIBUS_OJ_DATE is "2026-07-24" (Regulation (EU) 2026/1744, published in
+  the Official Journal 24 July 2026; in force from 27 July 2026)
+- OMNIBUS_ENACTED is True now the OJ date is set
+- OMNIBUS_STATUS carries the published/in-force wording, date-qualified
+- _enrich_deadlines produces in-force copy, never "pending OJ publication"
 """
 import sys
 from pathlib import Path
@@ -12,82 +13,98 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 
-def test_omnibus_oj_date_is_none():
-    """OMNIBUS_OJ_DATE must be None until the OJ is published."""
+def test_omnibus_oj_date_is_set():
+    """OMNIBUS_OJ_DATE records the actual OJ publication date."""
     from report import OMNIBUS_OJ_DATE
-    assert OMNIBUS_OJ_DATE is None, (
-        f"OMNIBUS_OJ_DATE should be None until the OJ is published; got {OMNIBUS_OJ_DATE!r}"
+    assert OMNIBUS_OJ_DATE == "2026-07-24", (
+        f"OMNIBUS_OJ_DATE should be 2026-07-24 (Regulation (EU) 2026/1744); "
+        f"got {OMNIBUS_OJ_DATE!r}"
     )
 
 
-def test_omnibus_enacted_is_false():
-    """OMNIBUS_ENACTED must be False while OJ date is unset."""
+def test_omnibus_enacted_is_true():
+    """OMNIBUS_ENACTED must be True now the OJ date is set, and the derived
+    in-force date must be publication + 3 days."""
     from report import OMNIBUS_ENACTED
-    assert OMNIBUS_ENACTED is False, (
-        f"OMNIBUS_ENACTED should be False when OMNIBUS_OJ_DATE is None; got {OMNIBUS_ENACTED!r}"
+    from omnibus import OMNIBUS_IN_FORCE_DATE
+    assert OMNIBUS_ENACTED is True, (
+        f"OMNIBUS_ENACTED should be True with OMNIBUS_OJ_DATE set; got {OMNIBUS_ENACTED!r}"
+    )
+    assert OMNIBUS_IN_FORCE_DATE == "2026-07-27", (
+        f"in-force date must derive as OJ + 3 days = 2026-07-27; got {OMNIBUS_IN_FORCE_DATE!r}"
     )
 
 
-def test_omnibus_status_contains_pending_oj_publication():
-    """OMNIBUS_STATUS should reference pending OJ publication (not 'pending Council adoption')."""
+def test_omnibus_status_contains_published_wording():
+    """OMNIBUS_STATUS must carry the published + date-qualified in-force
+    wording and never the pending copy."""
     from report import OMNIBUS_STATUS
-    assert "pending OJ publication" in OMNIBUS_STATUS, (
-        f"OMNIBUS_STATUS should say 'pending OJ publication'; got: {OMNIBUS_STATUS!r}"
+    assert "Published in OJ 2026-07-24" in OMNIBUS_STATUS, (
+        f"OMNIBUS_STATUS should say 'Published in OJ 2026-07-24'; got: {OMNIBUS_STATUS!r}"
     )
-    # Council has approved — must NOT claim it is pending Council adoption
-    assert "pending Council adoption" not in OMNIBUS_STATUS, (
-        f"OMNIBUS_STATUS must not say 'pending Council adoption' — Council approved 29 Jun 2026; "
+    assert "in force from 2026-07-27" in OMNIBUS_STATUS, (
+        f"OMNIBUS_STATUS should be date-qualified ('in force from 2026-07-27'), "
+        f"which stays truthful before, on and after the date; got: {OMNIBUS_STATUS!r}"
+    )
+    assert "pending OJ publication" not in OMNIBUS_STATUS, (
+        f"OMNIBUS_STATUS must not say pending — the OJ published 24 Jul 2026; "
         f"got: {OMNIBUS_STATUS!r}"
     )
 
 
-def test_omnibus_status_records_ep_and_council_approval():
-    """OMNIBUS_STATUS must record both EP and Council approval dates."""
-    from report import OMNIBUS_STATUS
-    assert "16 Jun 2026" in OMNIBUS_STATUS or "Jun 2026" in OMNIBUS_STATUS, (
-        f"OMNIBUS_STATUS should mention EP approval (16 Jun 2026); got: {OMNIBUS_STATUS!r}"
+def test_omnibus_status_parenthetical_records_adoption_history():
+    """The deadline parenthetical must keep the adoption history AND the
+    publication record (history is not erased by enactment)."""
+    from omnibus import status_parenthetical
+    paren = status_parenthetical()
+    assert "16 Jun 2026" in paren, (
+        f"parenthetical should keep EP approval (16 Jun 2026); got: {paren!r}"
     )
-    assert "29 Jun 2026" in OMNIBUS_STATUS or "Council approved" in OMNIBUS_STATUS, (
-        f"OMNIBUS_STATUS should mention Council approval (29 Jun 2026); got: {OMNIBUS_STATUS!r}"
+    assert "29 Jun 2026" in paren, (
+        f"parenthetical should keep Council approval (29 Jun 2026); got: {paren!r}"
+    )
+    assert "published in OJ 2026-07-24" in paren, (
+        f"parenthetical should record OJ publication; got: {paren!r}"
     )
 
 
-def test_enrich_deadlines_pending_wording_high_risk():
-    """While unenacted, high-risk deadline notes reference pending OJ publication."""
+def test_enrich_deadlines_enacted_wording_high_risk():
+    """High-risk deadline notes carry the deferred date and the OJ record,
+    never the pending copy."""
     from report import _enrich_deadlines
     findings = [{"tier": "high_risk", "category": "Employment and Workers Management"}]
     _enrich_deadlines(findings)
     note = findings[0]["deadline_note"]
-    assert "pending OJ publication" in note, (
-        f"high_risk deadline_note should say 'pending OJ publication'; got: {note!r}"
+    assert "pending OJ publication" not in note, (
+        f"high_risk deadline_note must not say pending after OJ publication; got: {note!r}"
     )
-    assert "pending Council adoption" not in note, (
-        f"high_risk deadline_note must not say 'pending Council adoption'; got: {note!r}"
+    assert "2 Dec 2027" in note or "2027-12-02" in note, (
+        f"high_risk deadline_note should carry the deferred Annex III date; got: {note!r}"
+    )
+    assert "in force from 2026-07-27" in note, (
+        f"high_risk deadline_note must be date-qualified; got: {note!r}"
     )
 
 
-def test_enrich_deadlines_pending_wording_limited_risk():
-    """While unenacted, limited-risk deadline notes reference pending OJ publication."""
+def test_enrich_deadlines_enacted_wording_limited_risk():
+    """Limited-risk deadline notes drop the pending copy after OJ publication."""
     from report import _enrich_deadlines
     findings = [{"tier": "limited_risk", "category": "Article 50 Transparency"}]
     _enrich_deadlines(findings)
     note = findings[0]["deadline_note"]
-    assert "pending OJ publication" in note, (
-        f"limited_risk deadline_note should say 'pending OJ publication'; got: {note!r}"
-    )
-    assert "pending Council adoption" not in note, (
-        f"limited_risk deadline_note must not say 'pending Council adoption'; got: {note!r}"
+    assert "pending OJ publication" not in note, (
+        f"limited_risk deadline_note must not say pending after OJ publication; got: {note!r}"
     )
 
 
-def test_enrich_deadlines_pending_wording_agent_autonomy():
-    """While unenacted, agent_autonomy deadline notes reference pending OJ publication."""
+def test_enrich_deadlines_enacted_wording_agent_autonomy():
+    """Agent-autonomy deadline notes drop the pending copy after OJ publication."""
     from report import _enrich_deadlines
     findings = [{"tier": "agent_autonomy", "category": "Article 14 Human Oversight"}]
     _enrich_deadlines(findings)
     note = findings[0]["deadline_note"]
-    assert "pending OJ publication" in note, (
-        f"agent_autonomy deadline_note should say 'pending OJ publication'; got: {note!r}"
+    assert "pending OJ publication" not in note, (
+        f"agent_autonomy deadline_note must not say pending after OJ publication; got: {note!r}"
     )
 
 

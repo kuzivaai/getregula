@@ -125,7 +125,9 @@ def test_register_section_b_for_provider_with_art_6_3_self_exemption():
     assert decision["target"] == "eu_database_public"
     schema_b = load_schema()["sections"]["B"]
     assert schema_b["submission_status"] == "mandatory"
-    assert "pending_oj_publication" in schema_b["omnibus_field_simplification"]
+    # Enacted: the schema token records the regulation and its OJ dates.
+    assert "in_force_2026-07-27" in schema_b["omnibus_field_simplification"]
+    assert "pending_oj_publication" not in schema_b["omnibus_field_simplification"]
     print("✓ register: Art 6(3) exemption → B mandatory")
 
 
@@ -250,10 +252,12 @@ def test_register_build_packet_dual_timeline_present(monkeypatch):
     packet = build_packet(discovery=discovery, role="provider", annex_iii_point=4,
                           deployer_type="none", art_6_3_exempted=False)
     d = packet["deadlines"]
-    assert d["applicable_deadline"] == "2026-08-02"
+    # Omnibus enacted (OJ 24 Jul 2026): the applicable deadline is the
+    # deferred Annex III date and the status token is date-qualified.
+    assert d["applicable_deadline"] == "2027-12-02"
     assert d["omnibus_proposed_deadline"] == "2027-12-02"
-    assert "pending_oj_publication" in d["omnibus_status"]
-    print("✓ register: dual timeline present")
+    assert d["omnibus_status"] == "in_force_from_2026-07-27"
+    print("✓ register: dual timeline present (enacted)")
 
 
 def test_register_build_packet_schema_provenance_present(monkeypatch):
