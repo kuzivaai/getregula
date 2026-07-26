@@ -7,6 +7,38 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- **Digital Omnibus enacted: OMNIBUS_OJ_DATE flipped to 2026-07-24.** The
+  Digital Omnibus on AI was published in the Official Journal on 24 July
+  2026 as Regulation (EU) 2026/1744 and is in force from 27 July 2026
+  (verified via the EUR-Lex ELI record, corroborated by two independent
+  legal publishers; the delta-log entry carries the honest
+  verified-secondary label because EUR-Lex blocks automated retrieval).
+  The one-line flip propagates the enacted status to every consumer:
+  reports, registration packets, timelines, article explanations,
+  assessments and remediation plans now present the deferred dates
+  (Annex III 2 Dec 2027, Annex I 2 Aug 2028) as applicable law, with the
+  pre-Omnibus dates kept as history. The applicable-deadline field in
+  report findings and register packets flips accordingly.
+- **Every enacted-status string is date-qualified.** Four consumers
+  (assess, report, explain, explain_articles) rendered a flat "in force"
+  on enactment, which would have overstated legal status during the
+  three days between OJ publication and effect; all now say "in force
+  from 2026-07-27". Timeline Omnibus rows moved from status "agreed" to
+  "enacted" with Regulation (EU) 2026/1744 as the source.
+- **Corrected Article 50's application date in `regula explain`:** the
+  article catalogue said "2 August 2025 (already in force)"; Article 50
+  transparency applies from 2 August 2026, unchanged by the Omnibus (the
+  repo's own timeline and site already said so; the catalogue entry now
+  derives the date from omnibus.py, enforced by the date-literal guard).
+- **Site, docs and locale copy swept for the enactment** (~30 files,
+  EN/DE/PT-BR): all "pending OJ publication" and "expected before
+  2 August 2026" status copy replaced with the publication record; dated
+  editor's notes updated where they stated pending status as current;
+  genuinely historical dated records (1 May trilogue updates, archived
+  plans) left intact. The delta-log gains the 2026-07-24-oj-publication
+  entry superseding the Council-adoption entry.
+
 ### Security
 - **A hostile working directory could hang every command at startup.**
   `cd repo && regula check .` is the documented quickstart, and Regula read
