@@ -86,13 +86,24 @@ Two independent retrievals of Regulation (EU) 2026/1744 (the ELI
 
 ## IN PROGRESS
 
-- **Phase 1 exhaustive code review.** Done so far: the FP taxonomy
-  (`docs/improvement/fp_taxonomy.json`, commit `1356f97`) — all 24
-  high-risk false positives traced to causal patterns and classified.
-  Remaining Phase 1 sections: architecture/call-graph map, per-language
-  regex-quality audit, crosswalk audit, evidence-output spec validation,
-  test-suite audit, corpus audit, security pass, repo hygiene.
-- Phase 0 coverage measurement (background run, still in flight).
+**Phase 1 exhaustive code review** — `docs/improvement/CODE_REVIEW.md`.
+
+Sections COMPLETE (committed):
+- §1 FP taxonomy + `fp_taxonomy.json` (`1356f97`)
+- §2 Evidence-output spec validation (`81ffab8`)
+- §3 Methodology note (instrument error)
+- §4 Crosswalk audit (`088aded`)
+- §5 Detection-layer reach + `measure_pattern_reach.py` (`6dfc1a9`)
+- §6 Security pass (`ed83760`)
+- Phase 0 §9 coverage recorded (`0d8424c`)
+
+Sections OUTSTANDING (two audit subagents dispatched, results pending):
+- Architecture / call-graph map
+- Repo hygiene (dead code, packaging, CI, licence headers, docs-vs-behaviour)
+- Test-suite audit (tautological tests, data-copy drift, claim-auditor
+  blind spots, coverage gaps that matter)
+
+### Phase 1 findings so far (cumulative)
 
 ### Phase 1 findings so far
 
@@ -113,6 +124,32 @@ Two independent retrievals of Regulation (EU) 2026/1744 (the ELI
   domain classification, co-occurrence requirements, path scoping, or an
   optional semantic verification tier). This is direct evidence for
   Phase 3 item 3 and against a naive "improve the regexes" plan.
+- **HIGH: CycloneDX ML-BOM fails official schema validation.**
+  `sbom.py:550` emits `modelCard.modelParameters.owner`; that object sets
+  `additionalProperties: false` and permits only approach,
+  architectureFamily, datasets, inputs, modelArchitecture, outputs, task.
+  Never valid in 1.6 either, so it is a long-standing defect not a
+  migration regression. SARIF, the pack manifest, pack tamper detection
+  and all vocabulary IRIs pass. **No test validates any generated
+  artefact against a published schema** — the structural reason this
+  survived.
+- **HIGH: 183 of 391 tier regexes (46.8%) are exercised by no test
+  input.** They are unguarded rather than broken (the Article 5 NCII
+  pattern is among them and works on a live scan), so a typo would ship
+  with all 2,849 tests passing. Worst-exposed are the newest, highest-
+  stakes prohibitions. Pattern *quality* is good (no compile failures, no
+  catastrophic backtracking), which again points away from "better
+  regexes" as the detection lever.
+- **MEDIUM: crosswalk is 108 days old and does not consume the
+  delta-log.** `article_11` still omits the Omnibus simplified-
+  documentation route; `owasp_agentic` is missing from articles 11 and
+  12; five reference files carry no verification stamp.
+- **Security pass: no defects found.** No `shell=True`, no `eval`/`exec`,
+  HTML filename escaping proven correct by live control.
+- **Two instrument errors made and recorded** (piped exit code; filename
+  tests that never created their file). Both were absent signals nearly
+  read as clean results. Countermeasure adopted: require positive proof
+  the code path executed.
 
 ## NEXT
 
