@@ -69,14 +69,14 @@ is the 28 tests added by the 27 Jul moat work committed at `d4180e3`).
 
 | Gate | Result | Method |
 |---|---|---|
-| `claim_auditor --verify-facts` | OK — 137 fact references across **16 files**, all match canonical | MEASURED |
+| `claim_auditor --verify-facts` (see [`scripts/claim_auditor.py`](../../scripts/claim_auditor.py)) | OK — 137 fact references across **16 files**, all match canonical | MEASURED |
 | `site_integrity.py` | OK | MEASURED |
 | `verify_seo.py` | passed, 4 pre-existing warnings (title lengths) | MEASURED |
 | `cli self-test` | 6/6 passed, rc=0 | MEASURED |
 | `cli doctor` | 8 passed, 4 info, rc=0 | MEASURED |
 | `cli security-self-check` | rc=0 | MEASURED |
 | ruff F821/F811 on `scripts/`, `tests/` | All checks passed | MEASURED |
-| ruff F821 on `benchmarks/synthetic/fixtures/` | 21 findings — **intentional**: fixtures are deliberately non-runnable samples of risky code; pre-existing (commit `1f731a8`) | MEASURED |
+| ruff F821 on [`benchmarks/synthetic/fixtures/`](../../benchmarks/synthetic/fixtures) | 21 findings — **intentional**: fixtures are deliberately non-runnable samples of risky code; pre-existing (commit `1f731a8`) | MEASURED |
 
 ## 3. Detection patterns (measured, not claimed)
 
@@ -131,6 +131,7 @@ a claim-auditor blind spot (§7).
 ## 5. CLI surface
 
 **62 commands** — MEASURED via `regula --help-all` (62 command entries),
+reconciled against [`data/site_facts.json`](../../data/site_facts.json),
 matching `site_facts.count_commands()` which greps `^def cmd_` across
 `scripts/cli*.py`. The rubric's "62 CLI commands" is confirmed.
 
@@ -164,7 +165,8 @@ Source artefacts: `benchmarks/results/random_corpus/METHODOLOGY.json`,
 | `docs/**/*.md` | 58 | Only 4 in the 16-set | **No** — docs markdown is not swept by any gate |
 | `README.md`, `SECURITY.md` | 2 | Yes | Yes |
 
-**Finding:** number-drift protection covers 16 files; unsourced-claim
+**Finding** (set enumerated from [`scripts/claim_auditor.py`](../../scripts/claim_auditor.py)):
+number-drift protection covers 16 files; unsourced-claim
 detection covers all site HTML but **no `docs/*.md` outside the 16-set**.
 Two blind spots already known from the handover are confirmed present:
 numbers separated from their unit by markup, and German/Portuguese
@@ -176,7 +178,7 @@ cascade and required a manual sweep.
 | Target | Files | Wall time | Per file |
 |---|---|---|---|
 | `benchmarks/synthetic/fixtures` (default install) | 13 | **0.576 s** | 44 ms |
-| this repo, `regula check . --format json` | 136 reported | **38.0 s / 40.9 s** (two runs) | ~280 ms |
+| this repo, `regula check . --format json` (see [`scripts/cli_scan.py`](../../scripts/cli_scan.py)) | 136 reported | **38.0 s / 40.9 s** (two runs) | ~280 ms |
 | this repo, `report.scan_files('.')` direct | 222 scanned | **66.3 s** | 299 ms |
 
 Per-file cost rises ~6.7x between the 13-file and 222-file targets. This
