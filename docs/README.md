@@ -59,6 +59,7 @@ Background, context, and trade-offs.
 - [Trust](TRUST.md) — what's verified, reproducibility, security and privacy posture.
 - [Continuity](CONTINUITY.md) — key-person risk, honestly stated.
 - [Support SLA](SUPPORT_SLA.md) — what support to expect.
+- [Versioning and deprecation policy](VERSIONING.md) — what version numbers promise, the public API they cover, and the 1.9.0 realignment record.
 
 ---
 
