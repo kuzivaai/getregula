@@ -268,7 +268,46 @@ The measurement in §5.1 is reproducible from the repo root; the script is
 committed alongside this review as the basis for the Phase 4 generated
 test, so the figure can be re-measured rather than trusted.
 
-## 6. Sections pending
+## 6. Security pass
+
+MEASURED, with live controls rather than code reading alone.
+
+| Surface | Result |
+|---|---|
+| `shell=True` anywhere in `scripts/` | **None.** No shell-interpolation command-injection surface |
+| `os.system` / `eval(` / `exec(` | **None in executable code.** The single grep hit (`scripts/remediation.py:460`) is *advice text* warning users against `eval`/`exec` on model output |
+| HTML report escaping, user-controlled **filename** | **Correctly escaped.** Control: a file literally named `evil"><img src=x onerror=alert(1)>.py` was scanned and reported; the raw payload appears **0** times in the HTML, escaped forms appear 4 times, and the filename is present, proving the path was exercised rather than dropped |
+| HTML report echoing **source text** | Source content is not echoed into the report at all — finding descriptions come from the pattern catalogue, not the matched line. Removes that vector by design |
+| PDF export escaping | `scripts/pdf_export.py` applies `html.escape` at lines 84, 127 and throughout the header block |
+| Path traversal / hostile trees | Already covered by `scripts/scan_safety.py` (87.9% coverage) and `tests/test_hostile_sweep.py`, which guards both tree-as-argument and cwd-inside-tree; no new gap found this pass |
+
+**No security defects found in this pass.** That is a genuine, if
+unglamorous, result: the areas most likely to be weak in a report-generating
+tool are sound.
+
+### 6.1 Two instrument errors, recorded not deleted
+
+Both would have produced false conclusions and were caught by insisting a
+control prove the code path ran:
+
+1. **False positive risk.** I first measured `verify` as returning exit
+   code 0 on a tampered pack (a HIGH finding). Wrong: the command was
+   piped into `tail`, so `$?` was `tail`'s status. Unpiped, it returns
+   **1**, correctly.
+2. **False negative risk.** My first two filename-XSS attempts silently
+   never created the file — first shell quoting, then a payload
+   containing `/` inside `</script>`, which cannot exist in a Linux
+   filename. Both runs "found no vulnerability" while testing nothing.
+   Only the third attempt, which asserted the filename was actually
+   present in the output, was evidence of anything.
+
+The pattern in both: an absent signal was nearly read as a clean result.
+The countermeasure that worked was requiring positive proof the path
+executed — the escaped-form count and the `'evil' in html` assertion.
+Phase 6's anti-gaming audit inherits this: **a blank gate is not a green
+gate**.
+
+## 7. Sections pending
 
 Architecture / call-graph map, per-language regex-quality audit,
 crosswalk audit, test-suite audit, security pass and repo hygiene are in
