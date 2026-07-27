@@ -128,5 +128,15 @@
     "action_needed": false,
     "eurlex_ai_act_status": 202,
     "ai_office_status": 200
+  },
+  {
+    "date": "2026-07-27",
+    "check": "weekly-automated",
+    "eurlex_search_url": "https://eur-lex.europa.eu/search.html?scope=EURLEX&text=%22artificial+intelligence+act%22&DTS_SUBDOM=LEGISLATION&type=advanced&DD_FREE_DATE_FROM=2026-07-13&DD_FREE_DATE_TO=2026-07-27&page=1&sortOne=DD_FREE_DATE&sortOneOrder=desc",
+    "ai_office_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+    "note": "Automated reachability check only. EUR-Lex has no public JSON API. Review the search URL manually for new AI Act documents: https://eur-lex.europa.eu/search.html?scope=EURLEX&text=%22artificial+intelligence+act%22&DTS_SUBDOM=LEGISLATION&type=advanced&DD_FREE_DATE_FROM=2026-07-13&DD_FREE_DATE_TO=2026-07-27&page=1&sortOne=DD_FREE_DATE&sortOneOrder=desc",
+    "action_needed": false,
+    "eurlex_ai_act_status": 202,
+    "ai_office_status": 200
   }
 ]
