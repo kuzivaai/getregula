@@ -145,10 +145,60 @@ scope/skip rules differ between them.
 
 ## 9. Coverage
 
-MEASURED via `pytest --cov=scripts --cov-report=json`. **Run pending at
-time of writing** (the instrumented suite runs materially slower than the
-896 s uninstrumented baseline). Recorded in the follow-up checkpoint;
-this row is deliberately left as an honest gap rather than estimated.
+MEASURED `python3 -m pytest tests/ -q --cov=scripts`:
+**57.3% overall** (11,687 / 20,401 statements; 8,714 missing).
+2,849 passed in **1,298 s** under instrumentation (vs 896 s clean — a
+45% instrumentation overhead, worth knowing before wiring coverage into CI).
+
+The headline number is misleading in both directions, so the split matters:
+
+**Core detection / evidence modules — healthy:**
+
+| Module | Coverage | Statements |
+|---|---|---|
+| conform | 91.2% | 215 |
+| scan_safety | 87.9% | 107 |
+| compliance_check | 86.8% | 778 |
+| ast_analysis | 86.7% | 540 |
+| dpv_export | 83.2% | 190 |
+| report | 76.5% | 823 |
+| signing | 75.2% | 117 |
+| timestamp | 73.5% | 388 |
+| ast_engine | 73.2% | 813 |
+| sbom | 63.8% | 517 |
+
+**Integrity apparatus — the finding.** The tools that enforce Regula's
+honesty guarantees are themselves largely untested:
+
+| Gate module | Coverage | Statements |
+|---|---|---|
+| `site_integrity.py` | **0.0%** | 143 |
+| `verify_seo.py` | **0.0%** | 130 |
+| `build_delta_log.py` | **0.0%** | 108 |
+| `claim_auditor.py` | 57.7% | 402 |
+| `release_gate.py` | 58.2% | 110 |
+| `site_facts.py` | 78.9% | 147 |
+| `build_delta_dataset.py` | 81.1% | 90 |
+
+`site_integrity` and `verify_seo` run in CI and gate merges, but no test
+exercises them: a regression that made either silently pass would not be
+caught. This is a **Trust & integrity** finding and reinforces the §11
+downgrade of that dimension. (`build_delta_dataset.py`, added 27 Jul,
+ships with tests — the pattern to extend to the older gates.)
+
+Two further 0% modules are expected and not defects: `self_test.py` (63
+stmts) is exercised through the CLI rather than pytest, and the
+operational scripts (`gsc_fetch`, `indexnow`, `adoption_pulse`,
+`dev_sentiment`, `install`, `extract_patterns`, `planning_consistency`,
+`refresh_dpv_vocab`) are manually-run developer tooling. Their coverage
+should be judged separately from shipped library code, not folded into a
+single percentage.
+
+**Anchor note:** 57.3% overall coverage alongside 2,849 passing tests is
+a reminder that test *count* is not test *reach*. It does not by itself
+move Engineering craft off 90 — the core paths are well covered and the
+suite is genuinely load-bearing — but the untested gates do contribute to
+the Trust downgrade in §11.
 
 ## 10. UX baseline — fresh venv, default install
 
