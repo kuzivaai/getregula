@@ -86,14 +86,40 @@ Two independent retrievals of Regulation (EU) 2026/1744 (the ELI
 
 ## IN PROGRESS
 
-- Phase 0 coverage measurement (background run).
+- **Phase 1 exhaustive code review.** Done so far: the FP taxonomy
+  (`docs/improvement/fp_taxonomy.json`, commit `7a0e1c0`) — all 24
+  high-risk false positives traced to causal patterns and classified.
+  Remaining Phase 1 sections: architecture/call-graph map, per-language
+  regex-quality audit, crosswalk audit, evidence-output spec validation,
+  test-suite audit, corpus audit, security pass, repo hygiene.
+- Phase 0 coverage measurement (background run, still in flight).
+
+### Phase 1 findings so far
+
+- **Corpus scope confusion resolved.** `PRECISION.json` high_risk n=6
+  (tp=2, fp=4) is the post-domain-gating PRODUCTION subset of N=115. The
+  full 201-entry labelled set contains **24** high-risk false positives
+  and 98 FPs overall. The programme's "trace >=10 high-risk FPs" is
+  therefore satisfiable; it would not have been from the N=115 subset
+  alone. Both figures must always carry their scope.
+- **The high-risk FPs are semantic, not lexical.** Five classes:
+  generative-model infra read as critical infrastructure (7),
+  non-production paths (6), domain-word collision (4), compute-vs-human
+  homonyms (4), modality confusion (3). The firing patterns use genuine
+  Annex III vocabulary (for example "task allocation", which is Annex III
+  4(b) language) that carries an unrelated ordinary meaning in ML code.
+  **Consequence for Phase 3:** regex tightening cannot fix this class
+  without destroying recall; the fix space is context (package-level
+  domain classification, co-occurrence requirements, path scoping, or an
+  optional semantic verification tier). This is direct evidence for
+  Phase 3 item 3 and against a naive "improve the regexes" plan.
 
 ## NEXT
 
 1. Record coverage in BASELINE §9 when the run lands.
-2. Phase 1 exhaustive code review -> `CODE_REVIEW.md` + `fp_taxonomy.json`.
-3. Phase 2 research validation (note: cards inherit the completed
-   27 Jul primary-source verification where applicable, and say so).
+2. Finish Phase 1 sections listed above -> `CODE_REVIEW.md`.
+3. Phase 2 research validation (cards inherit the completed 27 Jul
+   primary-source verification where applicable, and say so).
 
 ## OPEN QUESTIONS
 
