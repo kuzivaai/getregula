@@ -23,10 +23,15 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # init and analyze MUST move in lockstep: mixing majors hard-fails
+      # with "Loaded a configuration file for version X, but running
+      # version Y" (reproduced on Dependabot PRs #25/#28, which each
+      # bumped one of the pair). The SHA is the v4.37.3 annotated tag's
+      # commit, verified by dereferencing the tag via the GitHub API.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@02c5e83432fe5497fd85b873b6c9f16a8578e1d9 # v3
+        uses: github/codeql-action/init@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3
         with:
           languages: python
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@02c5e83432fe5497fd85b873b6c9f16a8578e1d9 # v3
+        uses: github/codeql-action/analyze@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3
