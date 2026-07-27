@@ -7,6 +7,43 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-07-27
+
+Version realignment release. The 1.7.x line shipped new functionality in
+PATCH releases six times (1.7.2, 1.7.3, 1.7.5, 1.7.6, 1.7.8, 1.7.10)
+while this changelog claimed Semantic Versioning; SemVer requires a
+MINOR bump for new backward-compatible functionality. Released versions
+are immutable, so per SemVer's own remediation rule this corrective
+release resets the number instead of renaming history. 1.8.0 is
+intentionally skipped: this release absorbs the un-bumped minors of the
+1.7.x line, and the jump marks the reset visibly. Full analysis,
+alternatives considered and the public API declaration:
+`docs/VERSIONING.md`. There are **no breaking changes**: 1.9.0 is
+functionally identical to 1.7.10 plus the additions below.
+
+### Added
+- **`docs/VERSIONING.md`:** the versioning and deprecation policy SemVer
+  has required all along (item 1: a declared public API). Defines
+  exactly which surfaces version numbers cover (CLI commands and flags,
+  exit codes, the JSON envelope, SARIF, Evidence Format v1, the config
+  file contracts, the delta-log schema), the bump rules, a 90-day/one-
+  minor-release deprecation window, and the criteria a future 2.0.0
+  must meet.
+- **`scripts/release_gate.py` + release.yml wiring:** the enforcement
+  that makes recurrence impossible. Before every build, the gate derives
+  the minimum required bump from conventional-commit subjects since the
+  previous tag AND the target's changelog section (Added/Deprecated
+  require minor, Removed/BREAKING require major), and fails the release
+  if the version understates the content. A regression test proves the
+  gate would have failed the misnumbered v1.7.10. Over-bumping stays
+  legal; that is how this release ships.
+
+### Changed
+- Stale pin comments on `actions/checkout` corrected across 10 workflow
+  files: the SHA was already v7.0.1 (verified against the upstream tag)
+  but 22 comments still read "# v6". Comments on security-relevant pins
+  now match what the pin resolves to.
+
 ## [1.7.10] - 2026-07-27
 
 ### Changed

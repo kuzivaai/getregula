@@ -11,9 +11,9 @@
 
 | Version | Supported |
 |---|---|
-| 1.7.x | ✅ Receives security fixes |
-| 1.6.x | ⚠️ Critical security fixes only |
-| < 1.6 | ❌ Unsupported — please upgrade |
+| 1.9.x | ✅ Receives security fixes |
+| 1.7.x | ⚠️ Critical security fixes only; upgrade — 1.9.0 is a drop-in replacement (see `docs/VERSIONING.md`: the jump is a version realignment, not a breaking change) |
+| < 1.7 | ❌ Unsupported — please upgrade |
 
 The latest release is on PyPI at <https://pypi.org/project/regula-ai/>.
 
@@ -82,7 +82,7 @@ disclosure, etc.), include that in your initial report.
 | `semgrep --config p/security-audit --config p/python` | Each release | 0 findings on 200 rules / 129 files |
 | `pip-audit` | Each release | 0 vulnerabilities (zero runtime deps) |
 | `regula self-test` | Each commit | 6 / 6 |
-| Custom regression suite | Each commit | 2,791 pytest-collected tests |
+| Custom regression suite | Each commit | 2,821 pytest-collected tests |
 | PyPI provenance attestation (PEP 740, Trusted Publishing) | Each release | ✅ attached to wheel + sdist, Sigstore-backed |
 | CodeQL static analysis | Each push | workflow green; open alerts triaged below, never suppressed |
 
