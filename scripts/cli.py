@@ -179,6 +179,15 @@ def _run_bare_scan() -> None:
     if highest_risk and highest_risk != "unknown":
         print(f"  {'Highest risk tier:':<24}{highest_risk}")
     print(f"  {'Scan time:':<24}{elapsed:.1f}s")
+    # A high score or not_ai tier next to BLOCK findings reads as a
+    # contradiction unless the relationship is stated: the score reflects
+    # applicable obligations for the project's classification, while the
+    # finding counts are raw pattern hits (often tests or fixtures).
+    if blocks and (highest_risk == "not_ai" or gap_score == 100):
+        print("\n  Note: the score reflects obligations applicable to this "
+              "project's classification;\n  the findings above are raw "
+              "pattern hits (often in tests or fixtures).\n  Run 'regula "
+              "check .' to see each finding in context.")
 
     # Top findings (up to 3)
     # Deduplicate by file+description for concise output
