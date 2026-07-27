@@ -30,7 +30,7 @@ jobs:
       # Fetch the full repository so pyproject.toml and all package data
       # are available to the build backend.
       - name: Check out repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
       # Pin to 3.12 — the same version used by lint and claim-audit in CI.
       - name: Set up Python 3.12
