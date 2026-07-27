@@ -9,12 +9,12 @@ Regula's detection engine is a static analysis system that classifies source cod
 | Field | Value |
 |---|---|
 | Name | Regula Detection Engine |
-| Version | 1.7.9 (this doc updated 2026-07-22) |
+| Version | 1.7.10 (this doc updated 2026-07-27) |
 | Type | Rule-based static analysis (regex + AST pattern matching) |
 | Training data | None — not a machine learning model |
 | Detection patterns | 419 tiered risk regexes across 57 categories (10 prohibited + 18 high-risk + 4 limited-risk + 17 AI security + 2 bias + 6 governance observations) + 17 GPAI training regexes. Includes housing (Colorado SB 26-189), transportation (Korea AI Basic Act Art 33), and emotion inference split categories. Regenerate with `python3 scripts/site_facts.py`. |
 | Languages supported | Python, JavaScript, TypeScript, Java, Go, Rust, C, C++ |
-| Compliance frameworks | 12 with full crosswalk data (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO) |
+| Compliance frameworks | 13 with full crosswalk data (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, OWASP Agentic (ASI), MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO) |
 | Dependencies | Zero runtime (Python 3.10+ stdlib only); `regula[signing]` extra adds `cryptography` + `asn1crypto` for optional Ed25519 + RFC 3161 manifest signing. |
 
 ---
@@ -154,7 +154,7 @@ Regula is explicitly **NOT** intended for:
 
 ## Versioning
 
-This model card describes Regula v1.7.9. If the detection patterns, classification logic, or evaluation methodology change, this document should be updated in the same commit.
+This model card describes Regula v1.7.10. If the detection patterns, classification logic, or evaluation methodology change, this document should be updated in the same commit.
 
 ---
 
