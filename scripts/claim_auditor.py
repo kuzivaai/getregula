@@ -686,7 +686,7 @@ def verify_facts() -> int:
         "8": ("languages", facts["counts"]["languages"]),
         # The key is only a human-readable hint; the check compares the
         # CURRENT value below. Kept in sync with the current count for clarity.
-        "2849": ("tests", facts["counts"]["tests"]["total_collected"]),
+        "2821": ("tests", facts["counts"]["tests"]["total_collected"]),
     }
 
     # Files to check (relative to repo root) — includes deployed site pages
