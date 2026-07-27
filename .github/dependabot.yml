@@ -32,3 +32,11 @@ updates:
     commit-message:
       prefix: "ci"
     open-pull-requests-limit: 5
+    # Deliver all action bumps in ONE PR. Ungrouped, codeql-action's
+    # init and analyze arrived as separate PRs (#25/#28) that could
+    # never pass individually: each created a v3/v4 major mix that
+    # fails with a config version mismatch. Grouping closes the class.
+    groups:
+      github-actions:
+        patterns:
+          - "*"
