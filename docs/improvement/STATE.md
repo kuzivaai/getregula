@@ -97,11 +97,15 @@ Sections COMPLETE (committed):
 - §6 Security pass (`e1175e5`)
 - Phase 0 §9 coverage recorded (`88decee`)
 
-Sections OUTSTANDING (two audit subagents dispatched, results pending):
-- Architecture / call-graph map
-- Repo hygiene (dead code, packaging, CI, licence headers, docs-vs-behaviour)
-- Test-suite audit (tautological tests, data-copy drift, claim-auditor
-  blind spots, coverage gaps that matter)
+- §7 Architecture + repo hygiene (`a6f7001`)
+- §8 Test-suite audit (`a6f7001`), §8.5.1 auditor line-attribution
+  defect found by dogfooding (`c82a51b`)
+- BASELINE corrections after independent verification (`40f26ae`)
+
+**PHASE 1 IS COMPLETE.** Both audit subagents returned; every load-bearing
+claim was re-verified before recording, and claims carried on the
+subagents' evidence are tagged REPORTED per the project rule that
+subagent output is not verified by default.
 
 ### Phase 1 findings so far (cumulative)
 
@@ -151,12 +155,45 @@ Sections OUTSTANDING (two audit subagents dispatched, results pending):
   read as clean results. Countermeasure adopted: require positive proof
   the code path executed.
 
-## NEXT
+## NEXT (start of next session)
 
-1. Record coverage in BASELINE §9 when the run lands.
-2. Finish Phase 1 sections listed above -> `CODE_REVIEW.md`.
-3. Phase 2 research validation (cards inherit the completed 27 Jul
-   primary-source verification where applicable, and say so).
+1. **Phase 2** research acquisition + validation. Note: `docs/research/`
+   does not exist; the seed corpus lives at
+   `.claude/research-sweep-2026-07.md` with a completed primary-source
+   verification at `.claude/phase0-verification-2026-07.md`. Cards
+   inherit that verification where applicable and must say so; the
+   RESEARCH VALIDATOR subagent gets the cards only.
+2. Then Phase 3 (instruments first), Phase 4 (plan + HOSTILE REVIEWER +
+   human gate).
+
+## PHASE 1 FINAL FINDING LIST (severity-ordered, for the Phase 4 plan)
+
+| # | Finding | Sev | Dimension | Verified |
+|---|---|---|---|---|
+| F1 | Published test count double-counts 18.5% (2,849 node IDs vs 2,322 unique); enforced as canonical by the auditor; published on 9 surfaces | CRITICAL | Trust, Craft | [V] me |
+| F2 | `doctor` tells users `pip install regula[ast]`; `regula` is a real unrelated PyPI package | HIGH | Trust | [V] me |
+| F3 | Default install silently downgrades JS/TS from AST to regex; docs claim full AST | HIGH | Detection, Trust | [V] me |
+| F4 | CycloneDX ML-BOM fails official schema (`modelParameters.owner`), never valid in 1.6 either | HIGH | Trust, Altitude | [V] me |
+| F5 | 183/391 tier regexes (46.8%) exercised by no test input, incl. the new Article 5 NCII prohibition | HIGH | Detection, Craft | [V] me |
+| F6 | Claim auditor cannot match a bare `%` at all (trailing `\b` at `:69`) | HIGH | Trust | REPORTED, mechanism traced |
+| F7 | Auditor reports wrong line numbers and wrong snippets | HIGH | Trust | [V] me |
+| F8 | `regula check` never uses the AST engine; two unreconciled detectors | HIGH | Detection, Trust | REPORTED |
+| F9 | Scan cache keys lack a project root; provenance replays across projects, defeating `--scope` | HIGH if reproduced | Detection, Trust | REPORTED — reproduce first |
+| F10 | No test validates any generated artefact against a published schema | HIGH | Trust | [V] me |
+| F11 | Precision corpus is Python-only; recall never measured | HIGH | Detection | [V] me |
+| F12 | `verify_facts()` and `main()` — the auditor's CI entry points — untested | HIGH | Trust | REPORTED |
+| F13 | `eli_data` and `dashboard/` missing from the wheel (F13a is my own defect) | MEDIUM | Craft, Trust | [V] me |
+| F14 | Crosswalk 108 days stale, does not consume the delta-log; `owasp_agentic` missing from 2 articles | MEDIUM | Currency | [V] me |
+| F15 | `test_questionnaire_scoring.js` is a full data copy, already drifted, never executed | MEDIUM | Craft | REPORTED |
+| F16 | Superlinear scan performance (44 ms/file at 13 files, 299 ms/file at 222) | MEDIUM | Craft, UX | [V] me |
+| F17 | README mismatches: `--ci` gives no SARIF; `demo` does not need the clone; jurisdiction crosswalk is EU-only | MEDIUM | Trust | REPORTED |
+| F18 | Zero SPDX headers despite a composite licence | LOW | Craft | REPORTED |
+| F19 | `ci_heal.py` (588 lines) and three other modules are dead | LOW | Craft | REPORTED |
+| F20 | Version attribution contradiction: PRECISION.json v1.7.0 vs README v1.7.4 | LOW | Trust | [V] me |
+
+Sequencing note for Phase 3/4: F1, F6 and F7 are all defects **in the
+integrity apparatus itself**. They should be fixed before any work that
+adds new public numbers, or the new numbers inherit a broken gate.
 
 ## OPEN QUESTIONS
 
