@@ -197,7 +197,78 @@ article N is the concrete, cheap form of the "temporally aware classifier"
 idea the programme asks to be assessed in Phase 3 item 6 — and this audit
 is the evidence that the gap is real rather than hypothetical.
 
-## 5. Sections pending
+## 5. Detection layer — regex quality and test reach
+
+### 5.1 HIGH — 46.8% of tier regexes are exercised by no test input
+
+MEASURED. Method: every regex in `PROHIBITED_PATTERNS`,
+`HIGH_RISK_PATTERNS`, `LIMITED_RISK_PATTERNS`, `AI_SECURITY_PATTERNS` and
+`BIAS_RISK_PATTERNS` was compiled and searched against the concatenated
+text of every file the test suite can feed the engine (103 files across
+`tests/` and `benchmarks/synthetic/fixtures/`, 1,534,257 characters).
+
+| Result | Count |
+|---|---|
+| Total tier regexes | 391 |
+| Fail to compile | **0** (good) |
+| **Never matched by any test input** | **183 (46.8%)** |
+
+By tier variable: HIGH_RISK 117, AI_SECURITY 35, PROHIBITED 17,
+LIMITED_RISK 8, BIAS_RISK 6. Full list:
+`scratchpad/unexercised.json` (regenerate with the snippet in §5.3).
+
+**The framing that matters: these patterns are not broken, they are
+unguarded.** Verified behaviourally — the Article 5 NCII pattern
+(`\bnudif`) is among the 183, and a live scan of a file containing
+`def nudify_image(...)` correctly returns `tier: prohibited, "AI systems
+generating non-consensual intimate imagery of identifiable…"`. The
+detection works. What does not exist is any test that would notice if it
+stopped working. A typo in that regex would ship, and all 2,849 tests
+would still pass.
+
+This is the sharpest available illustration of the Phase 0 point that
+test *count* is not test *reach*: 2,849 passing tests coexist with nearly
+half the detection surface having no behavioural guard.
+
+The exposure is worst exactly where the stakes are highest. Among the 183
+unexercised are the newest and most serious prohibitions:
+`ncii_generation` (`\bnudif`, `\bundress…`) — the Article 5 prohibition
+added by Regulation (EU) 2026/1744 — plus `social_scoring`
+(`\bscore.{0,5}citizen`), `criminal_prediction`,
+`emotion_inference_workplace`, `emotion_inference_education`,
+`biometric_categorisation_sensitive` and `realtime_biometric_public`.
+
+**Severity: HIGH. Dimension: Detection efficacy, Engineering craft.**
+
+**Fix shape (for Phase 4, not done here):** a generated table-driven test
+that, for every regex in the tier dictionaries, asserts at least one
+positive fixture string matches and at least one near-miss does not. It
+must be generated *from* the pattern dictionaries so it cannot drift, and
+it must fail when a new pattern is added without fixtures — otherwise it
+becomes exactly the kind of count-inflating test the programme forbids.
+
+### 5.2 Anchoring quality (JUDGEMENT, sampled)
+
+The patterns are better engineered than the false-positive rate suggests.
+Sampled groups use `\b` word boundaries, bounded gaps (`.{0,40}`) rather
+than unbounded `.*`, and non-capturing alternation — for example
+`\b(?:employee|worker|staff)[_\W]?(?:monitor|surveil|track|rank|…)`.
+Zero regexes fail to compile, and no catastrophic-backtracking construct
+(nested unbounded quantifiers) was found in the sampled set.
+
+This corroborates §1.2: the false positives are **not** caused by sloppy
+regex authorship. They are caused by the statute's vocabulary colliding
+with ordinary engineering vocabulary. Any plan that proposes "improve the
+regexes" as its detection-efficacy lever is mis-targeted and should be
+rejected at Phase 4.
+
+### 5.3 Reproduction
+
+The measurement in §5.1 is reproducible from the repo root; the script is
+committed alongside this review as the basis for the Phase 4 generated
+test, so the figure can be re-measured rather than trusted.
+
+## 6. Sections pending
 
 Architecture / call-graph map, per-language regex-quality audit,
 crosswalk audit, test-suite audit, security pass and repo hygiene are in
