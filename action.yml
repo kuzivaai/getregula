@@ -428,7 +428,7 @@ runs:
 
     - name: Create or update PR comment
       if: inputs.comment-on-pr == 'true' && github.event_name == 'pull_request'
-      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553 # v9
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
       with:
         script: |
           const fs = require('fs');
@@ -478,7 +478,7 @@ runs:
 
     - name: Post inline PR review comments
       if: inputs.inline-pr-comments == 'true' && github.event_name == 'pull_request'
-      uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553 # v9
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
       env:
         SARIF_FILE: ${{ runner.temp }}/regula-results.sarif.json
         MAX_COMMENTS: ${{ inputs.inline-comment-max }}
