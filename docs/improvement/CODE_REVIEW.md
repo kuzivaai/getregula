@@ -501,6 +501,31 @@ Additionally, `paragraph_has_source()` accepts the bare words **`see`**
 and **`ref`**, or any URL however irrelevant, as sourcing for every claim
 in the paragraph.
 
+#### 8.5.1 NEW — reported line numbers and snippets are wrong [V, found this session]
+
+Discovered while using the auditor on this very document. It reported an
+unsourced numeric claim as:
+
+```
+L108 [numeric] '1 findings'
+```
+
+The actual match was **`'0 findings'` at true line 345** — the line number
+is off by 237 and the quoted snippet does not match the text found.
+MEASURED by re-running `claim_auditor.NUMERIC_CLAIM` over the same file
+and computing `text[:match.start()].count('\n')+1`.
+
+Consequence: anyone acting on auditor output is sent to the wrong line
+with the wrong quote. I lost three patch attempts to this before
+instrumenting the regex directly — which is the practical cost, repeated
+for every contributor who ever tries to clear a finding. It also
+undermines the gate's own credibility: an instrument whose coordinates
+are wrong is hard to trust about the finding itself.
+
+**Severity: HIGH (usability of the primary integrity gate).
+Dimension: Trust & integrity.** This did not appear in either audit; it
+surfaced only from dogfooding the tool on new prose.
+
 **The single highest-leverage one-line fix available in the repo:**
 removing the trailing `\b` at `claim_auditor.py:69` would make every
 percentage claim visible to the gate for the first time. It must be done
