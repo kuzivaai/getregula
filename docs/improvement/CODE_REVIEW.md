@@ -141,7 +141,63 @@ count is precisely the kind of thing that must survive into the record.
 
 ---
 
-## 4. Sections pending
+## 4. Crosswalk audit
+
+**Storage.** `references/framework_crosswalk.yaml`, schema_version 2.3.
+Structure is `mappings[article_N][framework_key]` — keyed by AI Act
+article (articles 9-15, seven entries), with all framework keys nested
+inside each article. Twelve further reference YAMLs hold framework-specific
+detail (`iso_42001_mapping`, `owasp_llm_top10`, `mitre_atlas`,
+`owasp_agentic_top10`, `en18228_mapping`, `en18282_mapping`, and others).
+
+**Completeness against the 13 cited frameworks (MEASURED):**
+
+| Coverage | Frameworks |
+|---|---|
+| 7/7 articles | cra, eu_ai_act, ico_ai, iso_27001, iso_42001, lgpd, marco_legal_ia, mitre_atlas, nist_ai_rmf, nist_csf, owasp_llm_top10, soc2 (12 of 13) |
+| **5/7 articles** | **owasp_agentic** — absent from `article_11` and `article_12` |
+
+`owasp_agentic` was the 13th framework added on 23 Jul 2026 and its
+crosswalk rows for Articles 11 (technical documentation) and 12
+(record-keeping) were never written. The count claim of "13 frameworks"
+is true at the `_FRAMEWORK_KEYS` level (13 unique values, MEASURED) but
+the underlying data is not uniformly populated. **Severity: MEDIUM.
+Dimension: Problem altitude, Trust.**
+
+**Staleness (MEASURED):**
+
+| File | Stamp | Age at 28 Jul 2026 |
+|---|---|---|
+| `framework_crosswalk.yaml` | `last_updated: 2026-04-11` | **108 days** |
+| gpai_code_of_practice, gpai_signatories, harmonised_standards, mitre_atlas, owasp_llm_top10 | 2026-07-22 | 6 days |
+| en18228_mapping, en18282_mapping | 2026-06-11 | 47 days |
+| article_obligations, risk_indicators, iso_42001_mapping, owasp_agentic_top10, framework_crosswalk (per-entry) | **no `verified_on` stamp at all** | unknown |
+
+Two concrete staleness risks follow:
+
+1. **The crosswalk predates the Digital Omnibus by three months.**
+   Regulation (EU) 2026/1744 amended Article 11(1) to permit SMEs and
+   small mid-caps to supply Annex IV technical documentation in
+   simplified form (VERIFIED against the EUR-Lex text, 27 Jul 2026). The
+   crosswalk's `article_11.eu_ai_act` entry still reads only "Technical
+   documentation shall be drawn up before the system is placed on the
+   market", with no simplified-documentation route. The delta-log
+   correctly records the amendment; **the crosswalk does not consume the
+   delta-log**, so the two can diverge silently. **Severity: MEDIUM.
+   Dimension: Regulatory currency.**
+2. **Five reference files carry no verification stamp**, so the
+   re-verification cadence recorded in the handover cannot be enforced
+   for them by any automated check.
+
+**Design observation (JUDGEMENT).** The delta-log now knows, in
+machine-readable form, that Article 11 changed on 2026-07-24. The
+crosswalk records what Article 11 requires. Nothing connects them. Wiring
+the delta-log so that a change to article N flags every crosswalk row for
+article N is the concrete, cheap form of the "temporally aware classifier"
+idea the programme asks to be assessed in Phase 3 item 6 — and this audit
+is the evidence that the gap is real rather than hypothetical.
+
+## 5. Sections pending
 
 Architecture / call-graph map, per-language regex-quality audit,
 crosswalk audit, test-suite audit, security pass and repo hygiene are in
