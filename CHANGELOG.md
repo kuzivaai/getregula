@@ -7,6 +7,8 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.7.10] - 2026-07-27
+
 ### Changed
 - **Digital Omnibus enacted: OMNIBUS_OJ_DATE flipped to 2026-07-24.** The
   Digital Omnibus on AI was published in the Official Journal on 24 July

@@ -12,8 +12,8 @@ url: "https://getregula.com"
 # CFF permits a string here; an understated licence is worse than a
 # verbose one when a buyer's legal review diffs the two artefacts.
 license: "(Apache-2.0 OR EUPL-1.2) AND LicenseRef-DRL-1.1"
-version: "1.7.9"
-date-released: "2026-07-16"
+version: "1.7.10"
+date-released: "2026-07-27"
 keywords:
   - eu-ai-act
   - ai-governance
@@ -41,7 +41,7 @@ abstract: >-
   reproducible methodology; see docs/benchmarks/PRECISION_RECALL_2026_04.md.
 preferred-citation:
   type: software
-  title: "Regula: EU AI Act compliance scanner for code (v1.7.9)"
+  title: "Regula: EU AI Act compliance scanner for code (v1.7.10)"
   authors:
     - family-names: Muzondo
       given-names: Kuziva
