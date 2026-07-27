@@ -8,10 +8,10 @@
 
 ## 1. Why this document exists
 
-The CHANGELOG has claimed Semantic Versioning since 1.0.0, but the 1.7.x
-line shipped new functionality in PATCH releases six times (1.7.2, 1.7.3,
-1.7.5, 1.7.6, 1.7.8 and 1.7.10 all carry "Added" sections or feat
-commits). SemVer 2.0.0 item 7 requires a MINOR increment for new
+[`CHANGELOG.md`](../CHANGELOG.md) has claimed Semantic Versioning in its
+header since 1.0.0, but the 1.7.x line shipped new functionality in
+PATCH releases six times (its 1.7.2, 1.7.3, 1.7.5, 1.7.6, 1.7.8 and
+1.7.10 sections all carry "Added" entries or feat content). SemVer 2.0.0 item 7 requires a MINOR increment for new
 backward-compatible functionality, so those numbers understated what the
 releases contained. Nothing checked the bump against the content, so the
 drift went unnoticed until a user asked why the version was still 1.7.
