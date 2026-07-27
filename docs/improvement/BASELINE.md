@@ -13,14 +13,57 @@ date) / **JUDGEMENT** / **REPORTED-UNVERIFIED**.
 
 | Metric | Value | Method |
 |---|---|---|
-| pytest | **2,849 passed, 0 failed, 0 skipped** | MEASURED `python3 -m pytest tests/ -q` |
+| pytest node IDs collected | **2,849 passed, 0 failed, 0 skipped** | MEASURED `python3 -m pytest tests/ -q` |
+| **Unique test functions** | **2,322** — see the correction below | MEASURED (collect-only analysis) |
 | pytest duration | **896.15 s (14 min 56 s)** | MEASURED, same run |
 | Custom runner | **1,386 passed, 0 failed, 0 skipped (963 test functions)** | MEASURED `python3 tests/test_classification.py` |
 | Coverage | see §9 | MEASURED `pytest --cov=scripts` |
 
-Rubric anchor said 2,821 tests. **MEASURED 2,849.** Principle 2 applies:
-the anchor is corrected to 2,849 (the delta is the 28 tests added by the
-27 Jul moat work committed at `d0c08a4`).
+Rubric anchor said 2,821 tests. The collected count is **2,849** (the delta
+is the 28 tests added by the 27 Jul moat work committed at `d0c08a4`).
+
+> ### CORRECTION (28 Jul 2026) — the published test count is inflated by 18.5%
+>
+> MEASURED, verified independently of the audit that raised it:
+>
+> ```
+> total collected node IDs:                    2849
+> inside tests/test_classification.py:          963
+> ...whose function name also exists elsewhere:  527
+> => unique test functions actually exercised:  2322
+> ```
+>
+> Cause: `tests/test_classification.py:47-61` rebinds every fixture-less
+> `test_*` function from 22 imported modules into its own `globals()`, so
+> the **custom runner** (which walks `globals()`) can see them. pytest
+> collects module-level `test_*` names too, so each rebound function is
+> collected twice — once in its own file, once here. The mechanism is
+> deliberate and documented in the file's own comment; the double-count is
+> an unintended side effect of it.
+>
+> **Why this is the most serious finding in Phase 0.** The inflated figure
+> is published on nine surfaces (README, SECURITY.md, TRUST.md,
+> MODEL_CARD.md, six site pages) and is **enforced** by
+> `scripts/claim_auditor.py:689`, which treats `2849` as canonical. The
+> drift-protection apparatus is therefore actively defending a number that
+> over-states reality by 527. For a project whose stated differentiator is
+> anti-metric-gaming honesty, a headline metric that double-counts is the
+> worst available defect.
+>
+> **I made this worse today.** Earlier in this session I cascaded the
+> count from 2,821 to 2,849 across every surface and updated the auditor's
+> canonical hint, as routine count maintenance. That propagated the
+> inflation further. Recorded plainly rather than quietly fixed.
+>
+> **Not corrected on public surfaces in this phase.** Changing a
+> public-facing claim is a stop-and-ask gate (Principle 9). The finding is
+> carried to the Phase 4 plan and the Phase 8 gate with two candidate
+> remedies: publish 2,322 as "unique test functions", or give the custom
+> runner an explicit registry so the alias block can be deleted and the
+> two counts converge honestly.
+>
+> Anchor disposition: Engineering craft's basis line "2,821 tests" is
+> replaced by "**2,322 unique test functions (2,849 pytest node IDs)**".
 
 ## 2. Gate status (all green at baseline)
 
@@ -180,11 +223,29 @@ honesty guarantees are themselves largely untested:
 | `site_facts.py` | 78.9% | 147 |
 | `build_delta_dataset.py` | 81.1% | 90 |
 
-`site_integrity` and `verify_seo` run in CI and gate merges, but no test
-exercises them: a regression that made either silently pass would not be
-caught. This is a **Trust & integrity** finding and reinforces the §11
-downgrade of that dimension. (`build_delta_dataset.py`, added 27 Jul,
-ships with tests — the pattern to extend to the older gates.)
+> **CORRECTION (28 Jul 2026).** The sentence originally here — "`site_integrity`
+> and `verify_seo` run in CI and gate merges" — was **wrong about
+> `verify_seo`**, and I wrote it without checking. Corrected, MEASURED:
+>
+> - `scripts/verify_seo.py` is **not tracked by git** (`git ls-files` returns
+>   nothing; `.gitignore:110` names it explicitly) and appears in **no
+>   workflow**. It is a manual pre-merge checklist item, not an enforced
+>   gate. `scripts/gsc_fetch.py` is likewise untracked.
+> - `scripts/site_integrity.py` **is** wired, at
+>   `.github/workflows/site-integrity.yml:29`.
+>
+> The error came from trusting the handover's prose instead of grepping
+> `.github/`. It is left visible rather than silently rewritten because
+> Phase 6 requires an anti-gaming audit and this is exactly the class of
+> unchecked inheritance the programme exists to catch.
+
+`site_integrity.py` runs in CI and gates merges, but no test exercises it:
+a regression that made it silently pass would not be caught.
+`verify_seo.py` is untested *and* unenforced *and* untracked — a stronger
+finding than the original sentence claimed, in the sense that it protects
+nothing at all today. Both are **Trust & integrity** findings and reinforce
+the §11 downgrade. (`build_delta_dataset.py`, added 27 Jul, ships with
+tests — the pattern to extend to the older gates.)
 
 Two further 0% modules are expected and not defects: `self_test.py` (63
 stmts) is exercised through the CLI rather than pytest, and the
@@ -248,20 +309,31 @@ constraint.
 |---|---|---|---|
 | Detection efficacy | 42 — "33% high-risk precision; 83.5% on N=115 single-labeller; recall unquantified; 6/8 languages regex-only; no head-to-head" | 33% (n=6) ✓, 83.5% (N=115) ✓, single-labeller ✓, recall absent ✓, no head-to-head ✓. **But: 7/8 regex-only on a default install, not 6/8, and the 83.5% covers Python only** | **Lower to 38.** Two facts the anchor missed both cut against the tool: the default install has one AST language, and the precision figure generalises to none of the other seven. |
 | Engineering craft | 90 — "2,821 tests" | **2,849 tests** MEASURED; suite green; install 1.2 s | **Hold at 90**, test count corrected to 2,849. Superlinear scan performance (§8) is a real defect but is offset by the suite, packaging and gate discipline. |
-| Trust & integrity | 92 — "claim auditor fails CI on drift; published FP rates" | Both true. **But** number-drift verification covers 16 of ~116 surfaces, `docs/*.md` is unswept, a version attribution is internally contradictory (§6), and `doctor` misdirects users to a foreign package (§10.1) | **Lower to 84.** The apparatus is real and better than the segment norm; the coverage gap and the two integrity defects are not consistent with 92. |
+| Trust & integrity | 92 — "claim auditor fails CI on drift; published FP rates" | Both true. **But** number-drift verification covers 16 of ~116 surfaces, `docs/*.md` is unswept, a version attribution is internally contradictory (§6), `doctor` misdirects users to a foreign package (§10.1), the auditor **cannot detect a bare `%` percentage at all**, and the headline test count it enforces is **inflated 18.5%** | **Lower to 72.** The apparatus is real and its intent is genuine, but a drift gate that enforces an over-stated number, cannot see percentages, and leaves its own CI entry point (`verify_facts`, `main`) untested is not a 92. This is the largest single anchor movement in Phase 0 and it is downward. |
 | Regulatory currency | 85 | Omnibus flip test-gated ✓; Korea ✓; current Colorado statute + docket precision ✓; delta-log now verified-primary ✓ | **Hold at 85.** |
 | Problem altitude | 40 | Not independently re-measurable in Phase 0 (depends on the AICDI mapping, reviewed in Phase 1) | Hold pending Phase 1. |
 | Delivered-value | 8 | Not re-measured in Phase 0; unchanged artefacts | Hold at 8. |
 | Durability | 30 | Bus factor 1 confirmed (single committer in `git log`) | Hold at 30. |
 
-**Recomputed provisional aggregate:**
-0.25(38) + 0.20(40) + 0.15(90) + 0.15(84) + 0.10(85) + 0.10(8) + 0.05(30)
-= 9.5 + 8.0 + 13.5 + 12.6 + 8.5 + 0.8 + 1.5 = **54.4** (given: 57).
+**Recomputed provisional aggregate (revised 28 Jul after the Phase 1 audits):**
+0.25(38) + 0.20(40) + 0.15(88) + 0.15(72) + 0.10(85) + 0.10(8) + 0.05(30)
+= 9.5 + 8.0 + 13.2 + 10.8 + 8.5 + 0.8 + 1.5 = **52.3** (given: 57).
 
-The baseline is **worse than the programme assumed**, by 2.6 points, and
-the reasons are specific: the default-install detection mechanism, the
-Python-only precision corpus, and two claim-integrity defects. Recording
-this before any improvement work is the point of Phase 0.
+Engineering craft moves 90 → 88: the suite is genuinely load-bearing in
+its strongest files, but 46.8% of detection regexes have no behavioural
+guard and the headline count double-counts.
+
+The baseline is **worse than the programme assumed**, by 4.7 points, and
+the reasons are specific and verifiable: the default-install detection
+mechanism, the Python-only precision corpus, an ML-BOM that fails its
+published schema, half the detection surface unguarded, and a claim-drift
+gate that enforces an inflated number while unable to see percentages.
+
+None of this is a reason for discouragement and it is not framed as one.
+Phase 0 and Phase 1 exist precisely to find these before improvement
+work starts, and a starting point measured honestly at 52.3 is worth more
+than an assumed 57. Every item above is fixable in-repo, and several are
+cheap.
 
 ## 12. Public-surface census
 
