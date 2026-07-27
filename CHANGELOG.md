@@ -7,6 +7,57 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- **Machine-readable delta-log dataset (JSON-LD):**
+  `content/regulations/delta-log/dataset/regula-aiact-delta-log.jsonld`,
+  generated from the delta-log entries by
+  `scripts/build_delta_dataset.py`. Dataset metadata in W3C DCAT and
+  Dublin Core; legal acts identified by EUR-Lex ELI IRIs with the
+  amendment relation expressed via the ELI ontology's `eli:amends`;
+  every `eli:` term validated at build time against a checked-in
+  ontology snapshot (`scripts/eli_data/`, refreshed by
+  `scripts/refresh_eli_vocab.py`) so a fabricated IRI cannot ship.
+  Delta-log entries gain an optional `jurisdiction` field (default EU).
+- **Multi-annotator corpus tooling:** Fleiss' kappa for >= 3 raters
+  (`benchmarks/annotation_stats.py`, self-tested against a hand-computed
+  example), duplicate detection (`benchmarks/dedup_check.py`),
+  chronological project-level splitting (`benchmarks/temporal_split.py`),
+  the upgraded protocol (`benchmarks/MULTI_ANNOTATOR_PROTOCOL.md`) and a
+  dataset-paper skeleton (`benchmarks/PAPER_OUTLINE.md`). The dedup tool
+  found 2 exact-duplicate keys and 14 intra-project clusters in the
+  existing blind-label set, queued for adjudication in the corpus
+  upgrade.
+- **Head-to-head benchmark harness** (`benchmarks/headtohead/`):
+  FP-penalising scoring explicitly adapted from the CASTLE Score
+  (arXiv:2503.09433, Section 3.3; tier bonus replaces the MITRE-rank
+  bonus, difference stated), a working Regula adapter, refuse-to-guess
+  competitor adapter stubs, and a pre-registration document that locks
+  corpus and metric before any comparative run and gates the run on
+  multi-rater ground truth.
+
+### Changed
+- **Colorado page:** xAI v. Weiser docket precision added (D. Colo.
+  No. 1:26-cv-01515; complaint 9 Apr, DOJ intervention motion 24 Apr,
+  enforcement suspension granted 27 Apr 2026) with the Civil Rights
+  Litigation Clearinghouse case page as a source.
+- **South Korea page:** MSIT one-year enforcement grace period (fines up
+  to KRW 30 million deferred except serious-harm cases) and the
+  National AI Strategy Committee's 99-task action plan (Feb 2026),
+  verified against the US ITA market-intelligence summary.
+- **Delta-log OJ entry upgraded to verified-primary:** the EUR-Lex ELI
+  page for Regulation (EU) 2026/1744 was retrieved and its recitals
+  38/40/46 and amended articles corroborate every date the entry
+  carries; retrieval method recorded in the entry.
+- **Bare-run summary clarity:** when BLOCK findings coexist with a
+  `not_ai` classification or a 100/100 score, the summary now explains
+  the relationship (score = applicable obligations for the
+  classification; counts = raw pattern hits) instead of appearing
+  self-contradictory (docs/UX-REVIEW-2026-07.md, finding H1).
+- Test count 2,821 -> 2,849 cascaded across all claim-audited surfaces,
+  including the auditor-blind-spot surfaces (index.html number split
+  from its unit by markup; DE/PT-BR dot-format "2.821") caught by a
+  manual sweep per the known-blind-spots note in the handover.
+
 ## [1.9.0] - 2026-07-27
 
 Version realignment release. The 1.7.x line shipped new functionality in
