@@ -27,10 +27,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # Fetch the full repository so pyproject.toml and all package data
-      # are available to the build backend.
+      # Fetch the FULL history and tags: the release gate compares the
+      # tag being released against the previous release tag and the
+      # commit range between them, which a shallow clone cannot see.
       - name: Check out repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
 
       # Pin to 3.12 — the same version used by lint and claim-audit in CI.
       - name: Set up Python 3.12
@@ -56,6 +59,17 @@ jobs:
             echo "::error::Tag v${TAG_VERSION} does not match scripts/constants.py VERSION ${SOURCE_VERSION}. Refusing to build/publish."
             exit 1
           fi
+
+      # The bump must match the content: feat commits or an Added/
+      # Deprecated changelog section require at least MINOR; BREAKING
+      # or Removed require MAJOR. The 1.7.x line shipped features in
+      # patch releases six times because nothing checked this; see
+      # docs/VERSIONING.md. Under-bumped releases fail HERE, before
+      # anything is built or published.
+      - name: Release gate (version bump matches content)
+        run: |
+          set -euo pipefail
+          python3 scripts/release_gate.py --target "${GITHUB_REF_NAME}"
 
       # The `build` front-end drives setuptools via pyproject.toml.
       # No other build-time deps are needed: setuptools is bundled.
