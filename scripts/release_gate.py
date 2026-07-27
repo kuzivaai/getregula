@@ -79,9 +79,18 @@ def parse_version(text: str) -> "tuple[int, int, int]":
     return int(m.group(1)), int(m.group(2)), int(m.group(3))
 
 
+_BREAKING_FOOTER_RE = re.compile(r"^BREAKING[ -]CHANGE:", re.M)
+
+
 def classify_subject(subject: str) -> "tuple[int, bool]":
     """Return (required_bump, recognised) for one commit subject."""
-    if "BREAKING CHANGE" in subject or "BREAKING-CHANGE" in subject:
+    # Conventional Commits defines the breaking signal as a FOOTER line
+    # starting "BREAKING CHANGE:", not the phrase anywhere in prose. A
+    # substring match here read a commit body that DOCUMENTED the rule
+    # ("BREAKING CHANGE requires major") as invoking it and demanded a
+    # major bump for the 1.9.0 realignment; anchored matching fixes the
+    # class, and a regression test pins the prose case.
+    if _BREAKING_FOOTER_RE.match(subject):
         return MAJOR, True
     m = _SUBJECT_RE.match(subject)
     if not m:
@@ -192,7 +201,7 @@ def main(argv: "list[str] | None" = None) -> int:
     bodies = _git("log", "--format=%b", f"{prev_name}..HEAD")
 
     commit_bump, unrecognised = required_bump_from_subjects(subjects)
-    if "BREAKING CHANGE" in bodies or "BREAKING-CHANGE" in bodies:
+    if _BREAKING_FOOTER_RE.search(bodies):
         commit_bump = MAJOR
     changelog = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
     section_bump, section_types = required_bump_from_changelog(changelog, target)

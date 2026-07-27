@@ -55,9 +55,21 @@ def test_classify_fix_docs_ci_require_patch():
 
 
 def test_classify_breaking_markers_require_major():
+    """Also pins the footer-vs-prose distinction: a commit body that
+    DOCUMENTS the rule ('\"!\" or BREAKING CHANGE requires major') made
+    the gate demand a major bump for the 1.9.0 realignment. Only a
+    footer line starting \"BREAKING CHANGE:\" is the conventional
+    signal; prose mentions must not trigger."""
+    from release_gate import _BREAKING_FOOTER_RE
     assert classify_subject("feat!: drop the legacy envelope")[0] == MAJOR
     assert classify_subject("refactor(cli)!: remove regula classify")[0] == MAJOR
     assert classify_subject("BREAKING CHANGE: exit codes renumbered")[0] == MAJOR
+    prose = ('previous tag (feat requires minor, "!" or BREAKING CHANGE '
+             "requires major) and the changelog section")
+    assert _BREAKING_FOOTER_RE.search(prose) is None
+    assert classify_subject(prose)[0] != MAJOR
+    footer = "BREAKING CHANGE: the envelope field order changed"
+    assert _BREAKING_FOOTER_RE.search(footer) is not None
 
 
 def test_classify_unrecognised_counts_as_patch_but_is_flagged():
