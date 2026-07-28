@@ -321,6 +321,26 @@ constraint.
 0.25(38) + 0.20(40) + 0.15(88) + 0.15(72) + 0.10(85) + 0.10(8) + 0.05(30)
 = 9.5 + 8.0 + 13.2 + 10.8 + 8.5 + 0.8 + 1.5 = **52.3** (given: 57).
 
+> **TWO CORRECTIONS TO THIS SECTION, 28 July 2026.**
+>
+> **1. This arithmetic contradicts its own craft row.** The Engineering
+> craft row above says **"Hold at 90"**, but the contribution used here is
+> **13.2**, and 0.15 x 90 = **13.5**. The 13.2 implies a score of **88**.
+> Read one way the aggregate is **52.3**; read the other it is **52.6**.
+> **Not silently resolved.** Both readings are recorded, the discrepancy is
+> 0.3 points, and the Phase 7 independent scorer arbitrates. Anyone
+> quoting an aggregate must say which reading they used.
+>
+> **2. The craft row's evidence is stale.** It cites **"2,849 tests
+> MEASURED"**. That figure was the double-counted one: 527 functions were
+> collected twice, and finding F1 corrected the published count to
+> **2,349**, produced by collection rather than maintained by hand. The
+> craft judgement was formed against an inflated number. **Direction of any
+> re-judgement is not obvious** — a lower true test count is weaker
+> evidence for craft, but the correction itself, and the collection-integrity
+> guard that now enforces it, are evidence for craft. **Deliberately not
+> recomputed here**; Phase 7 owns it.
+
 Engineering craft moves 90 → 88: the suite is genuinely load-bearing in
 its strongest files, but 46.8% of detection regexes have no behavioural
 guard and the headline count double-counts.
