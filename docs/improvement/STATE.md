@@ -155,6 +155,73 @@ subagent output is not verified by default.
   read as clean results. Countermeasure adopted: require positive proof
   the code path executed.
 
+## PHASE 1.5 — INTEGRITY-APPARATUS REPAIR (in progress)
+
+Owner-approved scope fence: F1, F6, F7 and the `eli_data` packaging
+defect only. Tests first, one logical commit each, a regression test per
+defect. No AST reconciliation, no ML-BOM fix, no cache fix.
+
+### Deviation record (owner-directed, recorded honestly)
+
+- **The 2,821 -> 2,849 count cascade was a Phase 0 deviation.** Phase 0's
+  constraint is "measure everything, change nothing"; the cascade changed
+  ten published surfaces plus the auditor's canonical hint. It was not
+  routine maintenance. Reverted at `a9ad2e8`.
+- **The ELI snapshot / delta-dataset / benchmark harnesses were
+  pre-programme**, committed at `d4180e3` before the programme began, so
+  they are not a Phase 0/1 deviation. The packaging defect they
+  introduced (`scripts/eli_data/*.json` absent from `package-data`) is
+  mine regardless of when it landed, and is in the 1.5 scope.
+
+### Status
+
+| Item | State |
+|---|---|
+| Revert | **DONE** `a9ad2e8`. Ten surfaces byte-identical to pre-session; commit documents the intentional one-commit red gate. |
+| F1 AC3 (config exclusion) | **VERIFIED** `pyproject.toml:92` declares `python_functions = ["test_*"]`; `_runner_test_*` cannot match. Asserted in the regression test so widening the config fails loudly. |
+| F1 tests-first | **VERIFIED** `tests/test_collection_integrity.py` failed pre-fix with exactly 527 duplicates. |
+| F1 AC1 (collection) | **2,325** = 2,322 corrected baseline + 3 new guard tests. |
+| F1 AC2 (runner 1386/963) | **PENDING** — first post-fix run gave 1,380 passed / **1 failed** / 963 functions. Function discovery is intact (963 unchanged); one test fails. Not yet diagnosed; re-run in flight. **F1 will not land until this is green or shown unrelated.** |
+| F1 AC4 (site_facts) | Pending AC2. |
+| F6 | Regex candidate validated in isolation (catches `83.5%`, `40%`, `100% of`; ignores `version 1.7`, `Article 5`). Backlog re-measured — see below. |
+| F7 | Consumer grep **DONE**: four invocations (`ci.yaml:113,115,122`, `.pre-commit-config.yaml:15`) all use default text output and consume only the exit code. **No `--format json` invocation exists anywhere; nothing parses line numbers.** Consumer-safe. |
+| eli_data | Not started. |
+
+### F6 — the approved backlog number was wrong, and the plan needs a decision
+
+MEASURED through the auditor's own pipeline (patched copy, tracked files
+untouched), over the 56 site HTML pages `site_integrity` actually sweeps:
+
+| | claims | unsourced |
+|---|---|---|
+| current auditor | 182 | **0** |
+| with percentage detection | 411 | **185** |
+
+So the real quarantine backlog is **185 unsourced findings**, not the 341
+I reported. 341 was a raw-text count across surfaces the gate does not
+sweep, and it included CSS.
+
+**The design problem:** of 294 raw percentage occurrences in site HTML,
+**78 (27%) sit in CSS/layout contexts** (`style="width:100%"`,
+gradients, transforms). Quarantining those as "UNVERIFIED BACKLOG,
+NOT ENDORSED" would be a false label — they are not claims — and leaving
+them detectable permanently saddles the gate with 78 standing false
+positives, which degrades exactly the instrument this phase is repairing.
+
+Recommendation: pair the regex fix with noise-stripping for inline
+`style=` attributes so the surfaced set is genuinely claims, then
+quarantine the real remainder. This is making the fix correct rather than
+widening scope, but it changes the approved commit contents, so it is
+flagged rather than assumed.
+
+### F7 must precede the F6 burn-down (evidence, not preference)
+
+While triaging the percentage findings above, the auditor reported a
+finding at `L423`; the actual content at that line was unrelated markup.
+The wrong-coordinates defect **actively blocked triage** and forced a
+grep-based workaround. Burning down 185 items against wrong line numbers
+would multiply that cost 185 times. F7 lands before 1.5b starts.
+
 ## NEXT (start of next session)
 
 1. **Phase 2** research acquisition + validation. Note: `docs/research/`
