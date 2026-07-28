@@ -7,6 +7,34 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- **The published test count was overstated by 18.5%, and is corrected to
+  the figure pytest actually collects.** `2,821` — and briefly `2,849`,
+  published during the same session — both double-counted the **same 527
+  test functions**. `tests/test_classification.py` rebinds fixture-less
+  tests from 22 sibling modules into its own namespace so the custom
+  runner, which discovers tests by walking `globals()`, can execute them.
+  pytest also collects module-level `test_*` names, so every rebound
+  function was collected twice: once in its home module, once again here.
+  The count is now produced by collection rather than maintained by hand,
+  and reads **2,349** at the time of this correction.
+
+  Aliases are bound under a prefix pytest does not collect, so discovery
+  stays automatic and no manual list is reintroduced (one was deliberately
+  removed as tech debt because it drifted silently). Custom-runner
+  coverage is unchanged at 1,386 passed / 963 functions, verified across
+  ten consecutive captured runs. `tests/test_collection_integrity.py`
+  fails if any test function is ever collected twice again, whatever the
+  cause, and asserts the configured `python_functions` patterns cannot
+  match the alias prefix.
+
+  `data/published_count_manifest.json` now records every file permitted to
+  carry the number, and `tests/test_published_count_manifest.py` fails if
+  the literal appears anywhere else — in bare, comma-grouped or
+  dot-grouped form, the last being the locale variant that defeated a
+  manual sweep previously.
+
+
 ### Added
 - **Machine-readable delta-log dataset (JSON-LD):**
   `content/regulations/delta-log/dataset/regula-aiact-delta-log.jsonld`,
