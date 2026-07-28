@@ -64,9 +64,10 @@ NUMERIC_CLAIM = re.compile(
     (?<!\w)                                     # word boundary
     (?:[€$£¥]\s*)?                              # optional currency
     \d{1,3}(?:[,.\s]\d{3})*(?:\.\d+)?           # number with grouping
-    \s*                                         # optional space
-    (?:""" + _NUMERIC_UNITS + r""")             # unit
-    \b
+    (?:
+        \s*%                                    # percent IS the unit
+      | \s*(?:""" + _NUMERIC_UNITS + r""")\b    # or a word unit
+    )
     """,
     re.IGNORECASE | re.VERBOSE,
 )
@@ -232,6 +233,23 @@ def strip_noise(text: str, suffix: str) -> str:
                   flags=re.DOTALL | re.IGNORECASE)
     text = re.sub(r"<style[^>]*>.*?</style\s*>", _blank, text,
                   flags=re.DOTALL | re.IGNORECASE)
+
+    # Inline style attribute VALUES only. CSS lengths ("width:100%") are not
+    # claims, and once percentages became detectable they would otherwise
+    # have produced standing false positives forever — degrading the gate
+    # this is meant to sharpen. Deliberately narrow: only the value inside
+    # style="...", never the surrounding markup. Rendered-text attributes
+    # (alt, title, aria-label) are user-visible prose and stay in scope.
+    def _blank_style_value(m: re.Match[str]) -> str:
+        head, value, tail = m.group(1), m.group(2), m.group(3)
+        return head + "".join(
+            "\n" if ch == "\n" else " " for ch in value) + tail
+
+    text = re.sub(r'(\bstyle\s*=\s*")([^"]*)(")', _blank_style_value, text,
+                  flags=re.IGNORECASE)
+    text = re.sub(r"(\bstyle\s*=\s*')([^']*)(')", _blank_style_value, text,
+                  flags=re.IGNORECASE)
+
     if suffix in (".md", ".markdown"):
         text = re.sub(r"```.*?```", _blank, text, flags=re.DOTALL)
 
@@ -333,6 +351,48 @@ def paragraph_has_source(paragraph: str) -> tuple[bool, str]:
 # Scan a single file
 # ---------------------------------------------------------------------------
 
+QUARANTINE_PATH = REPO_ROOT / ".claim-quarantine.json"
+_QUARANTINE_CACHE: set | None = None
+
+
+def _normalise_claim(text: str) -> str:
+    """Whitespace-normalised claim text — the quarantine's key material."""
+    return " ".join(text.split())
+
+
+def load_quarantine() -> set:
+    """Load the pre-existing unverified backlog as {(file, claim)}.
+
+    Quarantine is NOT approval. These claims predate the auditor's ability
+    to see bare percentages; they are recorded so the gate can go green for
+    NEW claims immediately while the backlog is burned down. Entries key on
+    file plus normalised claim text, never line numbers: line-keyed entries
+    rot on every page edit.
+    """
+    global _QUARANTINE_CACHE
+    if _QUARANTINE_CACHE is not None:
+        return _QUARANTINE_CACHE
+    entries: set = set()
+    if QUARANTINE_PATH.exists():
+        try:
+            doc = json.loads(QUARANTINE_PATH.read_text(encoding="utf-8"))
+            for e in doc.get("entries", []):
+                entries.add((e["file"], _normalise_claim(e["claim"])))
+        except (OSError, ValueError, KeyError) as exc:
+            # Fail loud: a malformed quarantine must not silently become an
+            # empty one, which would look like a clean gate.
+            raise SystemExit(
+                f"claim-auditor: {QUARANTINE_PATH.name} is unreadable "
+                f"({exc}). Refusing to run with an unknown quarantine state."
+            ) from exc
+    _QUARANTINE_CACHE = entries
+    return entries
+
+
+def is_quarantined(file_path: str, snippet: str) -> bool:
+    return (file_path, _normalise_claim(snippet)) in load_quarantine()
+
+
 def scan_file(path: Path, allowlist: list[re.Pattern[str]]) -> FileReport:
     report = FileReport(path=str(path.relative_to(REPO_ROOT)
                                   if path.is_absolute() else path),
@@ -410,6 +470,8 @@ def scan_file(path: Path, allowlist: list[re.Pattern[str]]) -> FileReport:
                 or p.search(para)
                 for p in allowlist
             ):
+                continue
+            if is_quarantined(report.path, claim.snippet):
                 continue
             report.findings.append(Finding(
                 claim=claim, reason=src_reason,
