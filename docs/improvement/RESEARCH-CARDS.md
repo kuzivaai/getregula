@@ -111,6 +111,15 @@ Three measured gaps, from Phase 0/1:
 - **Offline:** NO for both.
 - **Verdict: ADOPT ZEROFALSE'S PER-PROVISION PROMPTING STRUCTURE.
   REJECT QASECCLAW'S NUMBERS as a forecast; the design is redundant with B1.**
+- > **VALIDATOR FAIL on B4, accepted.** ZeroFalse was adopted with **no
+  > falsifiable test and no domain-shift assessment** for the per-CWE to
+  > per-provision mapping, in a pack whose own pass criterion requires
+  > both. **Gate added:** build one per-provision prompt set and one
+  > generic prompt set, run both over the 24 measured high-risk FPs, and
+  > **adopt only if per-provision beats generic by ≥20% relative FP
+  > reduction at equal recall on the synthetic set.** Fails that, or ties,
+  > → reject. Also noted: B5's 560→64 baseline is **standalone Semgrep**,
+  > not a strong SAST, which my draft omitted.
 
 ### B6. IRIS — arXiv:2405.17238
 - **Status: PEER-REVIEWED**, ICLR 2025 (VERIFIED via iclr.cc). Not
@@ -123,11 +132,33 @@ Three measured gaps, from Phase 0/1:
   collision, not an unreachable sink. Adopting it would add a CodeQL-scale
   dependency to solve a problem the tool does not have.
 
-### **B-CROSS: the finding that matters most**
+### **B-CROSS: the finding that matters most (RESTATED after validator FAIL)**
 
-**None of the six addresses the actual measured failure.** All six reduce
-FPs in *vulnerability* detection, where a hard oracle (reachability,
-exploitability) exists. **Regulatory classification has no oracle.**
+> **CORRECTED 28 Jul 2026.** The validator returned FAIL on this section
+> for overstating the oracle claim, **and the overstatement ran in the
+> conservative direction** — it made the literature look less applicable
+> than it is. The original said all six operate where "a hard oracle
+> exists". **That is true only of the synthetic benchmarks.** B1's labels
+> came from Tencent's routine two-round human code review; C2's own thesis
+> is that the label cannot be made without further context, with human
+> experts reaching κ = 0.64; C4's reviewers reached κ = 0.453 and 0.424.
+> **Those are human-adjudicated oracles with measurable, imperfect
+> agreement — structurally the same situation as regulatory
+> classification, not different from it.**
+>
+> Also corrected: B-CROSS listed **88.6%** among "every figure above". It
+> appears nowhere above. It is QASecClaw's FP-reduction figure, equivalent
+> to the 560→64 that *is* stated. A traceability break, not an invention.
+
+**Restated claim.** The **synthetic** benchmarks (OWASP Benchmark v1.2,
+Juliet, CASTLE) have mechanical oracles and **their precision figures
+cannot transfer**. The **real-world** studies (B1 especially) do not have
+mechanical oracles, and **B1 transfers better than this pack originally
+credited.**
+
+**What still holds unchanged:** no figure from any of them is a prediction
+for a compliance corpus, and **no Phase 5 acceptance criterion may be
+written in terms of one.**
 
 What the literature supports: the **architecture** (cheap high-recall
 matcher + semantic adjudicator whose output is grounded rather than
@@ -146,7 +177,17 @@ architecture constraint doing its job.
 
 ## PART C — corpus and benchmark methodology
 
-### C1. PrimeVul — arXiv:2403.18624, ICSE 2025
+### C1. arXiv:2403.18624, ICSE 2025 — the paper is NOT titled "PrimeVul"
+> **FOURTH citation-identity defect, found by the validator in this
+> document.** Actual title: **"Vulnerability Detection with Code Language
+> Models: How Far Are We?"** (Ding et al.). **PrimeVul is the benchmark
+> inside it**, not the paper. My draft headed this card "PrimeVul" while
+> formally correcting exactly this error class at C4, and then wrote "the
+> third citation-identity error found in this corpus" — which was
+> incomplete by its own standard. Same defect at **B3** (AdaTaint; actual
+> title "LLM-Driven Adaptive Source-Sink Identification and False Positive
+> Mitigation for Static Analysis", Shiyin Lin), **B4** (ZeroFalse) and
+> **B5** (QASecClaw), all recorded by system name with no title or authors.
 - **Status: PEER-REVIEWED** (arXiv Comments states acceptance).
 - **Requirements it sets (REPORTED-UNVERIFIED):** normalise (strip
   whitespace) then MD5 dedup, discarding self-identical pre/post pairs;
@@ -233,22 +274,60 @@ values are **0.64, 0.96, 0.453, 0.424**. **No paper in the set prescribes a
 numeric threshold.** Two of the four reported values would fail a 0.7 bar,
 in papers accepted at ISSTA 2025 and ICSE 2026.
 
-**This is a PROGRAMME.md principle 2 case (measured-over-embedded).** The
-measurement contradicts a number embedded in the programme, so the
-measurement wins and the anchor is adjusted with a note. **Recommendation:
-retarget to two independent labellers with Cohen's κ reported and
-interpreted against Landis and Koch, disagreements resolved by discussion,
-and κ published whatever it is.** A κ below 0.6 is itself a publishable
-finding about task subjectivity, which is the pre-committed position
-already recorded. **Do not lower the bar quietly — this is a written
-disposition changing it, and Phase 7 may overrule it.**
+> ### CORRECTED 28 July 2026 after RESEARCH VALIDATOR review. Read this, not the draft below it.
+>
+> The validator returned **FAIL** on this section and was right on every
+> count. What it found, and what now stands:
+>
+> **1. A FALSIFIED CLAIM, now struck.** My draft asserted that "the ICSE
+> 2026 paper ran its initial full pass with a single annotator and sampled
+> for multi-reviewer validation afterwards", and used it to argue a
+> cheaper path to credibility. **Neither ICSE 2026 paper in this pack did
+> that.** C4's review used seven independent researchers each assigned a
+> random sample, on top of an LLM multi-agent construction pipeline; B1's
+> used two full rounds by different reviewers. **The claim was presented
+> as established fact, was untagged, and does not survive contact with
+> either source. It is struck entirely.** It came from a retrieval
+> subagent and I published it without verifying it — the exact failure the
+> standing rule about subagent output exists to prevent.
+>
+> **2. A miscount, and it ran against my own recommendation.** I wrote
+> "two of the four reported values would fail a 0.7 bar". It is **three of
+> four**: 0.64, 0.453 and 0.424. Only 0.96 clears it.
+>
+> **3. The 3-to-2 annotator reduction is NOT licensed by this
+> measurement**, and is contradicted by **C1 in this same document**.
+> PrimeVul (ICSE 2025) uses exactly three annotators with majority vote
+> and a senior expert leading discussion. What the literature omits is a
+> *kappa*, not the third annotator. My recommendation moved 3 → 2 on
+> evidence that only addressed the threshold.
+>
+> **4. An unflagged population transfer, of the type I police elsewhere.**
+> C4's κ = 0.453/0.424 measure agreement on a *validation audit of an
+> LLM-constructed dataset*, with the authors themselves attributing the
+> low values to the kappa paradox. Using them to set expectations for
+> *primary human labelling* is a cross-population transfer. I catch this
+> error in B1's 94-98% and committed it here.
+>
+> **WHAT NOW STANDS.** Dropping the **Fleiss κ ≥ 0.7 numeric threshold** is
+> earned: no paper in the corpus sets one, and three of four observed
+> values fall below it. Cohen rather than Fleiss follows mechanically from
+> two raters. **A floor of κ ≥ 0.6 is restored**, the Landis and Koch
+> "substantial" boundary this document already names as its interpretive
+> frame. **Three annotators are retained on C1's precedent.** If that is
+> later reduced, it must be recorded as a **resource decision, not a
+> measured one.**
+>
+> Validator's summary judgement, recorded verbatim in substance: this was
+> not a quiet bar-drop — it was declared, self-labelled a disposition, and
+> open to Phase 7 overrule — but good faith is not sufficiency, and two of
+> its three legs were unsupported with one falsified.
 
-Second-order note: the ICSE 2026 paper ran its **initial full pass with a
-single annotator** and sampled for multi-reviewer validation afterwards.
-So a single-reviewer first pass is not disqualifying at top venues
-**provided a sampled agreement check is reported** — which is a materially
-cheaper path to credibility than recruiting three full annotators, and it
-partially unblocks the rater-recruitment bottleneck.
+**~~Superseded draft, kept so the correction is visible:~~** *This is a
+PROGRAMME.md principle 2 case. Recommendation was: retarget to two
+independent labellers with Cohen's κ reported, no numeric floor.* **That
+recommendation is withdrawn as stated and replaced by the corrected
+position above.**
 
 **2. None of the six is Python.** All are C/C++ or Java. **F11's
 language-monoculture weakness cannot be closed by citing any of them.** It
