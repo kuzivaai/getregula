@@ -327,11 +327,22 @@ about 4.5; agent autonomy is overstated by about 24 points).
 **I have not determined the cause and will not guess.** Candidates, none
 verified: the post may have been written from a different scan run than
 the one committed; it may apply a dedup or filter the data does not
-record; or the figures may simply be wrong. **OWNER-INPUT: was this post
-written from a scan other than `blog_scan_2026_04`?** If yes, that run
-must be committed or the post must cite what actually exists. If no, the
-numbers are wrong and the post needs correcting to 665 / 32.5% / 23.3% /
-33.8%, with a visible correction note rather than a silent edit.
+record; or the figures may simply be wrong.
+
+**OWNER-INPUT: was this post written from a scan other than
+`blog_scan_2026_04`?** The two branches, clarified by the owner 28 Jul 2026:
+
+- **Branch A — drawn from an older or uncommitted run.** That run must be
+  committed, or the post must cite what actually exists. The note frames it
+  as a **version skew**: the figures were right for the run they came from.
+- **Branch B — wrong at publication.** This is the **correct-to-canonical**
+  branch. The post is corrected to **665 / 32.5% / 23.3% / 33.8%**, and the
+  note **must state the error was original, not a version skew.** Framing
+  an original error as a version difference would layer a second
+  misstatement on the first, and it is the more flattering of the two
+  stories, which is exactly why it must not be reached for by default.
+
+Either way the correction is **visible, not a silent edit.**
 
 **Until resolved, these 4 pairs stay quarantined.** Do not land a
 "verified-with-source" label on numbers that contradict the source.
@@ -405,6 +416,63 @@ liability, and the shrink-only quarantine plus honest prose may be
 sufficient. **Recommendation: reframe first, then build the exemption only
 if a real item survives that cannot be honestly reframed.** The design
 above is ready either way.
+
+---
+
+## §5b. PRE-LANDING GATE (owner amendment, 28 Jul 2026) — MANDATORY
+
+**Before the batch commit**, every paragraph the pack touches must be
+checked: **none may satisfy `paragraph_has_source()` solely via its page's
+own canonical URL** (the F21 mechanism). Any that would is either sourced
+properly within the batch or **held for 1.5c**. The check's output goes in
+the commit body.
+
+**Tool:** `scripts/check_selfref_sourcing.py --pack`. It reads the file
+list out of this pack, so the gate follows the pack rather than a
+hand-maintained list.
+
+**Control run first**, per measurement rule 4 (an absent signal is not a
+passing signal):
+
+```
+$ python3 scripts/check_selfref_sourcing.py site/blog/blog-scanning-5-frameworks.html
+paragraphs with numeric claims checked: 20
+RESULT: 1 PARAGRAPH(S) SOURCED ONLY BY A SELF-REFERENTIAL URL
+rc=1
+```
+
+The gate fires on a known case, so a clean result from it means something.
+
+**MEASURED against the pack's own surfaces, 28 Jul 2026:**
+
+```
+$ python3 scripts/check_selfref_sourcing.py --pack
+auditing 13 file(s) named in PACK-1.5b.md
+paragraphs with numeric claims checked: 101
+RESULT: 1 PARAGRAPH(S) SOURCED ONLY BY A SELF-REFERENTIAL URL
+
+  site/blog/blog-scanning-5-frameworks.html:23-30
+      claims : ['562 findings']
+      'source': https://getregula.com/blog/blog-scanning-5-frameworks.html
+rc=1
+```
+
+**One offender, and its disposition.** The `<head>` paragraph of
+`blog-scanning-5-frameworks.html` carries `562 findings` in its
+`<meta name="description">`, sourced only by the page's own canonical link.
+
+The number itself is **verified** — 562 reconciles exactly with tracked
+`framework_scan_2026_04` data (§4.1). The defect is provenance, not
+accuracy. A `<head>` cannot carry a citation without turning a meta
+description into something else.
+
+**Disposition: HELD FOR 1.5c.** The body-text corrections for this page may
+land; **the meta-description occurrence does not.** This is the amendment
+working as designed: it closes the hole for the surfaces being changed
+without serialising the whole batch behind 1.5c.
+
+**Re-run this gate immediately before the batch commit**, not once now.
+Files change between approval and landing.
 
 ---
 
