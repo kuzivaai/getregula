@@ -61,7 +61,7 @@ your lawyer's job, not Regula's.
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | Machine-readable risk indication as JSON-LD, *aligned to* (not certified against) the DPVCG EU-AIAct vocabulary — a W3C Community Group report, **not a ratified W3C Standard** | `regula dpv .` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 2,363 unique tests (2,363 pytest-collected), 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
+| 2,406 unique tests (2,406 pytest-collected), 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -78,14 +78,14 @@ your lawyer's job, not Regula's.
 > Every number Regula publishes can be reproduced by anyone with a checkout
 > of the repo. The commands below run in under 30 seconds total on a laptop.
 
-### 3.1 Internal test suite — 2,363 [unique](../tests/) / 2,363 pytest-collected, all green
+### 3.1 Internal test suite — 2,406 [unique](../tests/) / 2,406 pytest-collected, all green
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ -q
-# Expected: 2363 passed (~16 minutes on a laptop — verified 2026-07-27)
-# 2,363 unique tests (sort -u of test IDs equals collected count).
+# Expected: 2406 passed (14m03s measured on a laptop, verified 2026-07-28)
+# 2,406 unique tests (sort -u of test IDs equals collected count).
 ```
 
 Regula also ships a legacy auto-discovery runner for the classification
@@ -126,7 +126,7 @@ directory writability, and policy file presence. INFO entries for
 optional features are not warnings — they are reminders that
 `pipx install "regula-ai[yaml,ast]"` would unlock more features.
 
-### 3.4 Synthetic precision + recall — prohibited 5/5, high-risk 16 of 30
+### 3.4 Synthetic precision and recall: classifier path, all domains declared, prohibited 5/5, high-risk 16/30
 
 ```bash
 python3 benchmarks/synthetic/run.py
@@ -148,16 +148,32 @@ is the human-authored fixture set in `benchmarks/synthetic/fixtures/`.
 > to sample categories that pass. Corrected here rather than left
 > unreproducible.
 >
-> **Two paths, two numbers, and they are not interchangeable.** The 53%
-> above is the **classifier** path (`classify()`, what `run.py` measures).
-> The **scanner** path (`regula check`, what a user actually runs) gives
+> **Gate conditions change this number more than anything else does.** The
+> 53% above is the **classifier** path (`report.scan_files`, what `run.py`
+> measures) with all eight opt-in domains declared. The **scanner** path
+> (`regula check`, what a user actually runs) with **no flags** gives
 > **10 of 30** on the same corpus, because opt-in domain suppression and an
 > AI-library-indicator requirement gate findings the classifier assigns.
-> Full decomposition (10/30 default, 14/30 domain-declared, 19/30 with both gates
-> satisfied, and the 17-vs-3 gates-vs-patterns split) is in
+>
+> Every figure below is reproducible from `benchmarks/synthetic/RECALL.json`,
+> which `scripts/build_recall_artefact.py` produces from an actual run:
+> **scanner path, default scan 10/30**; **scanner path, all domains declared
+> 16/30**; **scanner path, domains declared with an AI import injected
+> 23/30**; **classifier path, all domains declared 16/30**. Prohibited
+> recall is **5/5** on every one of them.
+>
+> **No recall figure may be quoted without naming its path and its gate
+> condition** — `claim_auditor --verify-facts` now rejects one that is not.
+> The earlier "14/30 domain-declared" and "19/30 with both gates" figures
+> are WITHDRAWN as NOT REPRODUCIBLE: the conditions behind them were never
+> committed. Full decomposition, including the 17-vs-3
+> gates-vs-patterns split, is in
 > `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md`.
-> **Neither number may be quoted bare.** The divergence between the two
-> paths is finding F8.
+>
+> **Finding F8 (scanner and classifier disagree) is not supported by the
+> artefact.** Under the same gate condition the two paths miss the
+> identical 14 fixtures. The divergence previously recorded compared two
+> different gate conditions as well as two paths.
 
 ### 3.5 OSS precision benchmark — published, sliced, reproducible
 
@@ -357,7 +373,7 @@ are tracked in a public delta log (`content/regulations/delta-log/`).
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (2,363 unique tests, 2,363 pytest-collected; the legacy `tests/test_classification.py` runner executes 963 functions, 437 defined in-file) |
+| Test suite | `tests/` (2,406 unique tests, 2,406 pytest-collected; the legacy `tests/test_classification.py` runner executes 963 functions, 437 defined in-file) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit hook source | `hooks/pre_tool_use.py` |
@@ -694,7 +710,7 @@ in this repository. Every row links to a verifiable artefact.
 | Precision and recall benchmark | [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md) | Labelled corpus, methodology, per-tier and per-project breakdown |
 | Framework crosswalk data | [`references/framework_crosswalk.yaml`](../references/framework_crosswalk.yaml) | EU AI Act ↔ ISO 42001 / NIST AI RMF / SOC 2 / etc. mappings |
 | Pattern definitions | [`scripts/risk_patterns.py`](../scripts/risk_patterns.py) | All detection regexes, grouped by risk tier and category |
-| Test suite | `tests/` | 2,363 unique tests (2,363 pytest-collected) |
+| Test suite | `tests/` | 2,406 unique tests (2,406 pytest-collected) |
 | Self-test | `regula self-test` | 6 round-trip assertions |
 | Environment health | `regula doctor` | 12 checks (pass/info split varies by environment) |
 | SBOM | `regula sbom --ai-bom` | CycloneDX 1.7 ML-BOM from any checkout |

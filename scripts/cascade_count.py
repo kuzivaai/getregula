@@ -89,8 +89,39 @@ class RefusedError(RuntimeError):
 
 
 def canonical_count() -> int:
+    """The published count, from committed data, verified against reality.
+
+    `data/site_facts.json` is a CACHE. Reading it alone made `--check` a
+    blank gate: add tests without regenerating it and the tool compares
+    every surface against a stale canonical, finds them all in agreement,
+    and exits 0. MEASURED 2026-07-28 - the file said 2,363 while the suite
+    collected 2,404, and `--check` reported "all manifest surfaces already
+    carry the canonical value".
+
+    That matters beyond this tool. `docs/improvement/HANDOVER.md` lists
+    `cascade_count.py --check` in the block a fresh session runs to
+    establish that the tree is trustworthy, and rc=0 was being read as
+    proof the published counts were current.
+
+    The canonical value still comes from committed data, never from an
+    argument, so a typo cannot become the published number. It is now
+    cross-checked against a live computation, and a disagreement is a
+    refusal rather than a silent pass.
+    """
     facts = json.loads(CANONICAL.read_text(encoding="utf-8"))
-    return int(facts["counts"]["tests"]["total_collected"])
+    cached = int(facts["counts"]["tests"]["total_collected"])
+
+    import site_facts
+    live = int(site_facts.compute()["counts"]["tests"]["total_collected"])
+    if cached != live:
+        raise RefusedError(
+            f"data/site_facts.json is stale: it records {cached:,} collected "
+            f"tests, the suite currently collects {live:,}. Regenerate it "
+            f"with `python3 scripts/site_facts.py` and re-run. Refusing to "
+            f"cascade a cached number, and refusing to report a clean check "
+            f"against one."
+        )
+    return cached
 
 
 def manifest_surfaces() -> list[str]:
