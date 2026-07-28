@@ -180,5 +180,6 @@
       "claim": "43%"
     }
   ],
-  "_units": "entries are UNIQUE (file, normalised claim) pairs. The 42 entries correspond to 55 occurrence-level findings. The auditor's own 'claims' and 'unsourced' counters are occurrence-level; unsourced is a strict subset of claims."
+  "_units": "entries are UNIQUE (file, normalised claim) pairs. The 42 entries correspond to 55 occurrence-level findings. The auditor's own 'claims' and 'unsourced' counters are occurrence-level; unsourced is a strict subset of claims.",
+  "_reconciliation": "Measured in place over 56 site pages, occurrence-level: S1 pre-fix 182 claims/0 unsourced; S2 +percent 411/61; S3 +CSS fence 370/45; S4 +quarantine 370/0. unsourced is a subset of claims at every stage. Earlier figures of 185 and 168 were artefacts of running patched copies from a scratchpad directory, which moved REPO_ROOT and broke file-reference sourcing."
 }
