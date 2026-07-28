@@ -74,6 +74,51 @@ prose.** A hand-built list of "every location" of the 83.5% figure had
 other six in one run. Any number you assert in a document will drift; a
 number a test computes cannot.
 
+## 4c. Any completeness claim must be produced by enumeration, never by hand.
+
+"Every location", "all surfaces", "the full list" — if you are about to
+write one of those phrases, the set behind it must come from
+`git ls-files` plus a pattern match, executed. Not from reading. Not from
+grep-and-eyeball. Not from memory.
+
+**Hand enumeration has now failed twice in this programme:**
+
+- A pack table claimed to cover **every** location of the 83.5% figure and
+  listed **8**. The tracked total is **14**. The six it missed included
+  `site/index.html`, the landing page. The owner approved a disposition on
+  that table, so approval was granted on incomplete evidence.
+- A scope figure claimed **58** ungated docs files. The tracked,
+  publishable figure is **34**; the other 22 were untracked local scratch.
+
+Both were confident, both were wrong, and in both cases a five-line script
+produced the right answer immediately.
+
+**The rule:** a completeness claim is a measurement. Produce it the way you
+produce any other measurement, and let the enumeration be the source of the
+number in the document.
+
+## 4d. Enumeration picks the files. It does not license a blind replace.
+
+Corollary to 4c, learned by nearly shipping a corrupted lockfile.
+
+Cascading a test count from 2,353 to 2,354, I enumerated the affected
+files correctly with `git ls-files | xargs grep -l`, then ran a global
+string replace across every hit. One hit was `uv.lock`, where `2353`
+appeared inside a package download URL hash path and inside an integrity
+`size = 222353` field. Both were rewritten. That lockfile would have
+failed installs and integrity verification.
+
+**Enumeration answers "which files". It does not answer "which
+occurrences".** A digit sequence is not a claim just because it appears in
+a file that also contains claims.
+
+- Replace with context, not bare digits: match `2,353 tests`, a JSON key,
+  a known template, not `2353`.
+- **Never text-replace inside lockfiles, checksums, hashes, or generated
+  binaries.** Exclude them by extension before you start.
+- Read the diff of every file you touched before committing. `git diff`
+  caught this; nothing else would have.
+
 ## 5. Passing a gate is not evidence of meeting a standard when the gate tests something narrower.
 
 This is the one that keeps recurring, in two different instruments.

@@ -86,6 +86,9 @@ credit scoring, biometrics, etc.).
 
 ## Precision — Random Corpus, Blind-Labelled (83.5%)
 
+**N=115, labelled by a single reviewer; no inter-rater agreement
+measurement exists** (see "Limitations" below).
+
 **This is the headline number.** 50 randomly selected Python AI repos
 (from a pool of 276, seed=42), scanned with Regula v1.7.0, 201 findings
 stratified-sampled and blind-labelled (labeller saw only file path, code
@@ -177,7 +180,7 @@ non-random (hand-picked to match specific risk categories).
 
 | Metric | Status |
 |--------|--------|
-| Precision | **83.5%** on random corpus production code (blind-labelled, N=115) |
+| Precision | **83.5%** on random corpus production code (blind-labelled, N=115, single reviewer, no inter-rater agreement — see "Limitations") |
 | Recall | Measured on synthetic fixtures only (`benchmarks/synthetic/run.py`) |
 | F1 Score | Not computable (requires recall on same corpus as precision) |
 | Youden Index (J) | Not computable (requires TN count — OWASP standard) |

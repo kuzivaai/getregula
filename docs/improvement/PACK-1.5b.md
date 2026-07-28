@@ -23,15 +23,18 @@ Where a disposition needs information only the owner holds, it is marked
 
 | § | Item | Pairs | Disposition | Public surface? |
 |---|---|---|---|---|
-| 1 | 83.5% provenance | n/a (not quarantined) | correct 5 of 8 locations | YES |
+| 1 | 83.5% provenance | n/a (not quarantined) | correct 5 of **14** locations (this table said 8; see the approval-scope deviation in STATE.md) | YES |
 | 2 | F21 self-canonical URL as source | n/a (gate defect) | fix the auditor | no |
 | 3 | Class 1, progress-bar percentages | ~30 | DERIVE from real output | YES, landing page |
 | 4 | Class 2, blog statistics | 9 | 1 verified, 1 CORRECTION | YES |
 | 5 | Class 3, hypotheticals | 3 | reframe + typed exemption | YES |
 
-**The single most serious item in this pack is §4.** A published blog
-statistic does not reconcile with the repo's own tracked scan data. That
-is a correction to a public page, not a labelling exercise.
+> **CORRECTED 28 Jul 2026.** This said: "The single most serious item in
+> this pack is §4. A published blog statistic does not reconcile with the
+> repo's own tracked scan data." **That was wrong.** The branch test (§4.2)
+> found the post already discloses the 665 re-scan in its own methodology
+> note; its headline is a different, earlier scan it names explicitly.
+> There was never a discrepancy. The claim is struck, not softened.
 
 ---
 
@@ -48,8 +51,13 @@ the auditor's criterion, and it is satisfied. It is not the bar.
 Single-labeller is disclosed in **exactly one place repo-wide**:
 `benchmarks/README.md:198`.
 
-**All eight locations, passing and failing, so approval happens on full
-evidence:**
+> **THIS TABLE IS INCOMPLETE AND THE OWNER APPROVED ON IT.** It lists
+> **8**. The tracked total is **14**, found by enumeration once the guard
+> test existed. Logged as an approval-scope deviation in STATE.md; the
+> in-batch extension to the other six was ratified retroactively. The
+> completeness lesson is now `.claude/rules/measurement.md` §4c.
+
+**The eight locations as originally tabled, passing and failing:**
 
 | # | Location | N at point of use | Single-labeller reachable | Verdict |
 |---|---|---|---|---|
@@ -347,6 +355,62 @@ record; or the figures may simply be wrong.
   stories, which is exactly why it must not be reached for by default.
 
 Either way the correction is **visible, not a silent edit.**
+
+> # BRANCH TEST RUN 28 JULY 2026 — BRANCH A. MY FINDING WAS WRONG.
+>
+> The owner assigned me the branch test. The evidence settles it decisively,
+> and it settles it against me.
+>
+> **The post already discloses the 665 figure itself.** Its methodology
+> note reads, verbatim: *"A re-scan with Regula v1.7.0 (23 April 2026)
+> found 665 findings across the same 10 projects. The increase is primarily
+> due to expanded AI security patterns in v1.7.0."* A sub-heading at
+> line 165 reads *"Original scan with Regula v1.6.1 (330 patterns);
+> re-scan with v1.7.0 (389 patterns)."*
+>
+> **Dating confirms it.** Post first committed `457436b`, **20 Apr 2026**.
+> Scan data committed `d7f92af`, **23 Apr 2026**, every JSON stamped
+> `regula_version: 1.7.0`. The post predates its own committed data by
+> three days.
+>
+> **So there was never a discrepancy.** The post's headline 553 is its
+> **v1.6.1, 10 April** scan. The tracked `blog_scan_2026_04` data is the
+> **v1.7.0, 23 April** re-scan the post explicitly names. The category
+> shifts I computed (AI security 7.4% → 33.8%) are explained by the same
+> disclosed cause: the pattern set grew.
+>
+> **What I did wrong.** I compared the post's headline against a dataset
+> the post itself identifies as a different, later scan, and asserted a
+> contradiction **without reading the post's methodology section**. I then
+> called it "the single most serious item in this pack" and escalated it
+> for owner input. It was neither serious nor a discrepancy. This is the
+> same failure class the programme keeps recording: asserting a conflict
+> before reading the whole source.
+>
+> **DISPOSITION: VERIFIED-WITH-SOURCE.** The 4 pairs are released from
+> quarantine. No correction to the post is required and none should be
+> made.
+>
+> ## Two residual sub-findings, both real, both minor
+>
+> **R1. The post overstates its own artefact availability.** It says
+> *"Full JSON scan output for both versions is available in the
+> repository"*. MEASURED: only **v1.7.0** is committed (10 files, all
+> stamped 1.7.0). **The v1.6.1 run that produced the headline 553 is not
+> in the repo.** So the figure is honestly disclosed and correctly
+> version-attributed, but **not reproducible from the repo**. Under the
+> class-2 bar that is an annotation fix, not a correction: either commit
+> the v1.6.1 output or amend "both versions" to name what is actually
+> there.
+>
+> **R2. A number disagreement between the post and its own data README.**
+> The post says v1.7.0 had **389** patterns; `blog_scan_2026_04/README.md`
+> says **409**. Both are tracked. The v1.7.0 CHANGELOG section records no
+> pattern count, so **neither is derivable from a committed artefact** and
+> I could not settle it. **Genuine indeterminacy — this one comes back to
+> the owner.** Default per standing rule: correct to canonical with a note
+> stating the ambiguity, but there is no canonical historical count to
+> correct to, which is itself the finding.
 
 **Until resolved, these 4 pairs stay quarantined.** Do not land a
 "verified-with-source" label on numbers that contradict the source.
