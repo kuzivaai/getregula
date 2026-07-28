@@ -333,6 +333,74 @@ Every class-1 and class-3 item is a public-surface edit and therefore
 goes into the single batched approval, with the full per-item disposition
 list, before any of it lands.
 
+### RECONCILED CHAIN — closed, and 185 was never real
+
+All four stages re-measured **in place**, on the real file, with the real
+`REPO_ROOT`, over the same 56 site pages. Units are occurrence-level for
+both columns.
+
+| stage | claims | unsourced |
+|---|---|---|
+| S1 pre-F6, as landed at `59ac25b` | 182 | 0 |
+| S2 + percent detection, no fence | 411 | **61** |
+| S3 + CSS fence | 370 | **45** |
+| S4 + quarantine (current) | 370 | 0 |
+
+`unsourced <= claims` holds at every stage. Deltas: percent detection
+surfaces +229 claims and +61 findings; the fence removes 41 claims and
+**16** findings; quarantine holds the remaining 45.
+
+**Why the chain looked broken.** The 185 and 168 figures were produced by
+running *patched copies of the auditor from the scratchpad directory*.
+`REPO_ROOT` is derived from the module's own location, so those runs
+resolved repo-file citations against the scratchpad — every
+`paragraph_has_source()` check that depends on a file reference existing
+failed, and paragraphs that are genuinely sourced were counted unsourced.
+**185 was an artefact of the measuring rig, not a state the repo was ever
+in.** The earlier "17" correction was drawn from the same bad pair and is
+also wrong; the true fence delta is 16.
+
+Fourth instrument error of this phase, and the same root as the others:
+the rig was not identical to the thing being measured. The rule that
+would have caught all four: **measure in place, one variable at a time,
+and never trust a number produced by a copy.**
+
+### 83.5% — per-occurrence audit (owner-ordered, deferral overruled)
+
+**Auditor status: NOT allowlisted.** It is artefact-verified — 83.5 is in
+`known_precision_values()`, derived live from
+`benchmarks/results/random_corpus/PRECISION.json`. There is no excused
+flagship claim.
+
+**Provenance-at-point-of-use status: FAILS at three locations.** The bar
+is N=115 and single-labeller visible or one link away.
+
+Single-labeller is disclosed in exactly one place repo-wide:
+`benchmarks/README.md:198` ("Single reviewer. All labels are from one
+reviewer. No inter-rater...").
+
+| # | Location | N at point of use | Single-labeller reachable | Verdict |
+|---|---|---|---|---|
+| 1 | `README.md:246` | yes | yes — links `benchmarks/README.md`, which carries it at :198 | PASS |
+| 2 | `benchmarks/README.md` (:87,:105,:108,:132,:140,:180) | yes | yes — same file | PASS |
+| 3 | `docs/MODEL_CARD.md:75,:79` | via :143 same page | see #4 | PASS on N |
+| 4 | `docs/MODEL_CARD.md:143` | yes | **NO** — links `METHODOLOGY.json`, which contains corpus construction only (description, date, pool, sample, seed, queries, filters, repos) and no labeller field | **FAIL** |
+| 5 | `docs/TRUST.md:157` | yes | **NO** — no route to the labeller disclosure | **FAIL** |
+| 6 | `docs/examples/exec-summary-sample.html:89` | yes | **NO** — links TRUST.md, which per #5 does not carry it | **FAIL** |
+| 7 | `scripts/exec_summary.py:225` (generates #6) | yes | **NO** — same chain | **FAIL** |
+| 8 | **`site/about.html:132`** | **NO** | **NO** | **FAIL — bare "Published precision on a random corpus: 83.5%." with no N, no labeller, no link, on a public page** |
+
+**Also surfaced:** the version attribution splits across surfaces —
+`README.md` and `TRUST.md` say measured on v1.7.4; the exec summaries and
+`PRECISION.json` say v1.7.0. This is finding F20, previously logged, now
+confirmed to affect the flagship number's provenance directly.
+
+**Conclusion: the deferral was wrong.** The auditor's criterion (an
+annotation exists) and the bar (honest provenance at point of use) are
+different checks, and the second fails at five of eight locations —
+including a bare flagship number on `site/about.html`. Dispositioned
+first in the 1.5b batch as originally ordered.
+
 ### F7 must precede the F6 burn-down (evidence, not preference)
 
 While triaging the percentage findings above, the auditor reported a
