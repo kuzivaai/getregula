@@ -6622,13 +6622,29 @@ def test_self_scan_benchmark_runs():
 # Synthetic prohibited / high-risk fixture — regression guard
 # ---------------------------------------------------------------------------
 
-def test_synthetic_fixture_perfect_precision_recall():
-    """Pin the synthetic-fixture baseline: prohibited and high_risk tiers
-    must achieve 100% precision and 100% recall against the labelled
-    fixture in benchmarks/synthetic/. This guards against the bug fixed
-    by the early prohibited check in report.py — the scanner used to
-    short-circuit on non-AI-importing files and skip Article 5 entirely.
+def test_synthetic_fixture_precision_recall_matches_artefact():
+    """Pin the synthetic-fixture baseline against the committed artefact.
+
+    HISTORY, because it is the point of this test's current shape.
+
+    This assertion used to be `recall == 1.0` for both tiers. That was true
+    when the high-risk set held 5 fixtures. Commit a941321 expanded it to 30
+    and measured real recall at 16/30, and did not touch this test — so the
+    suite went red and STAYED red across six further commits, none of which
+    ran it. The number a test pins is a published claim like any other, and
+    this one had been falsified by the programme's own measurement.
+
+    It now reads its expectation from `benchmarks/synthetic/RECALL.json`,
+    which is produced by an actual run (F24). A corpus change moves the
+    artefact and this test with it; a DETECTION regression still fails it,
+    which is what the test was always for.
+
+    The original guard is kept explicitly: prohibited must stay 5/5 with no
+    false positives. That is the regression the early prohibited check in
+    report.py fixed - the scanner used to short-circuit on non-AI-importing
+    files and skip Article 5 entirely.
     """
+    import json
     import sys
     from pathlib import Path as _P
     sys.path.insert(0, str(_P(__file__).parent.parent / "benchmarks" / "synthetic"))
@@ -6641,14 +6657,37 @@ def test_synthetic_fixture_perfect_precision_recall():
     cache_dir = _P.home() / ".regula" / "cache"
     if cache_dir.exists():
         shutil.rmtree(cache_dir, ignore_errors=True)
+
+    artefact_path = (_P(__file__).parent.parent
+                     / "benchmarks" / "synthetic" / "RECALL.json")
+    artefact = json.loads(artefact_path.read_text(encoding="utf-8"))
+    # run.py IS the classifier path with all domains declared.
+    expected = artefact["conditions"]["classifier/domains-declared"]["tiers"]
+
     metrics = metrics_dict()
     for tier in ("prohibited", "high_risk"):
         m = metrics[tier]
-        assert m["precision"] == 1.0, f"{tier} precision regression: got {m['precision']}, expected 1.0. tp={m['tp']} fp={m['fp']}"
-        assert m["recall"] == 1.0, f"{tier} recall regression: got {m['recall']}, expected 1.0. tp={m['tp']} fn={m['fn']}"
+        want = expected[tier]
+        assert m["tp"] == want["hits"], (
+            f"{tier} recall moved: {m['tp']}/{want['total']} measured, "
+            f"artefact says {want['fraction']}. If the corpus or the "
+            f"detector changed on purpose, re-run "
+            f"scripts/build_recall_artefact.py and commit the artefact in "
+            f"the same change. Do not edit this expectation by hand.")
+        assert m["fn"] == want["total"] - want["hits"], (
+            f"{tier} false negatives disagree with the artefact: {m}")
+        assert m["precision"] == 1.0, (
+            f"{tier} precision regression: got {m['precision']}, "
+            f"expected 1.0. tp={m['tp']} fp={m['fp']}")
         assert m["fp"] == 0, f"{tier} false positive on synthetic fixture: {m}"
-        assert m["fn"] == 0, f"{tier} false negative on synthetic fixture: {m}"
-    print("✓ synthetic: prohibited 100/100, high_risk 100/100 (5 TP each, 0 FP, 0 FN)")
+
+    # The original guard, stated on its own terms rather than folded into a
+    # blanket 100%: Article 5 detection must not regress.
+    assert metrics["prohibited"]["tp"] == 5, (
+        "prohibited recall is no longer 5/5 - the early prohibited check in "
+        "report.py is the thing this test exists to protect")
+    print(f"✓ synthetic: prohibited {expected['prohibited']['fraction']}, "
+          f"high_risk {expected['high_risk']['fraction']} (artefact-backed)")
 
 
 # ---------------------------------------------------------------------------
