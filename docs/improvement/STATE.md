@@ -214,6 +214,41 @@ quarantine the real remainder. This is making the fix correct rather than
 widening scope, but it changes the approved commit contents, so it is
 flagged rather than assumed.
 
+### Answers to two owner queries (closed)
+
+- **The tenth surface.** "Nine" was inherited from the test-suite audit's
+  own phrase — "nine surfaces (README, SECURITY.md, TRUST.md,
+  MODEL_CARD.md, six site pages)" — which itself enumerates to ten. I
+  repeated the label without summing its components. **The definitive
+  list, from the revert diff `f476af7`, is ten published surfaces:**
+  `README.md`, `SECURITY.md`, `docs/TRUST.md`, `docs/MODEL_CARD.md`,
+  `site/index.html`, `site/about.html`, `site/llms-full.txt`,
+  `site/regions/uae.html`, `site/locales/de.html`,
+  `site/locales/pt-br.html`. Two further files carried the number without
+  being published surfaces: `scripts/claim_auditor.py` (canonical hint)
+  and `data/site_facts.json` (generated artefact) — hence twelve files in
+  the revert. This is the list F6's reconciliation and the eventual
+  correction commit sweep.
+- **`# regula-ignore` in the new fixtures: pre-existing convention, not
+  introduced by me.** It first appears in commit `4b688eb` and is carried
+  by 139 files at `main`, including test files I did not write
+  (`tests/test_dpv_export.py` opens with it). It is a **scanner** pragma
+  parsed by `scripts/risk_decisions.py` to suppress Regula's own
+  false-positive findings on its own source; **the claim auditor does not
+  honour it at all** (the sole occurrence in `claim_auditor.py` is the
+  pragma on its own line 2). So it narrows no gate touched by this phase,
+  and following the file convention introduced no bypass.
+
+### Score-file annotation (owner-directed, 28 Jul)
+
+The Trust movement 92 -> 72 rested on three legs. Leg three (F7
+coordinates) has since been **corrected downward** from "wrong by
+hundreds of lines, snippets misquoted" to a 1-3 line cumulative drift
+with no misquote. Legs one (inflated count enforced as canonical) and two
+(percentages undetectable) stand. **Direction intact; level NOT
+recomputed.** Both score files now mark 72 as a WORKING NUMBER for the
+Phase 7 independent scorer to arbitrate, including over my own movement.
+
 ### F7 must precede the F6 burn-down (evidence, not preference)
 
 While triaging the percentage findings above, the auditor reported a
