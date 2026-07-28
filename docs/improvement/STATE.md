@@ -974,3 +974,239 @@ Two residual sub-findings: **R1** the v1.6.1 raw output is not committed
 though the post says both versions are (annotation fix); **R2** the post
 says v1.7.0 had 389 patterns, its data README says 409, and no committed
 artefact settles it (**genuine indeterminacy, owner call**).
+
+---
+
+# CHECKPOINT — 28 July 2026, session 4: PHASE 1.5c LANDED
+
+Session-protocol gates re-measured at session start, all as the handover
+records them: `main` at `b5ac95c8` (identical to `origin/main`), tree
+clean, `pytest --collect-only` 2,363, and `claim_auditor --verify-facts`,
+`site_integrity.py`, `cascade_count.py --check` all rc=0.
+
+**One of those greens was false, and finding out why is the main result of
+this session.** See F26 and F28 below.
+
+## Task A — the three defects, all landed with their regression pairs
+
+| Defect | Repair | Pair |
+|---|---|---|
+| **F21** self-citation | `paragraph_has_source()` no longer accepts a page's own address, machine-metadata URLs, fragment anchors or a document's own filename. Page identity is collected once per file by `page_identity()` and passed in by `scan_file`. | `tests/test_selfref_sourcing.py` — 17 tests. `test_pair_selfref_url_fails` / `test_pair_genuine_citation_passes` on one page. |
+| **F22** the 0.5 floor | Deleted. Replaced by `STALE_CHECK_EXEMPTIONS`, named per-file per-phrase data with a stated reason, and `stale_number_verdict()`. Magnitude decides nothing. | `tests/test_stale_number_floor.py` — 12 tests. Planted 1,100 against canonical 2,363 is caught; an exempted sub-count is not. |
+| **F24** recall underivability | `benchmarks/synthetic/RECALL.json`, produced by `scripts/build_recall_artefact.py` from an actual run, never hand-edited. `check_recall_claims()` verifies published fractions against it and requires each to name path AND gate condition. | `tests/test_recall_artefact.py` — 13 tests. Compliant labelled fraction passes; bare or mismatched fails. |
+
+**No auditor rewrite.** `paragraph_has_source` kept its signature with an
+optional second argument; `verify_facts` kept its shape; the changes are a
+source-view filter, one decision function, and one new check.
+
+### The 27 meta claims, reconciled by enumeration
+
+The handover's figure of 27 reproduces exactly under one definition:
+**numeric matches inside description-like `<meta>` tags across the 56
+tracked site pages, before exemptions**. With exemptions applied it is
+**24**; restricted to `name="description"` alone it is **8**. All three
+numbers are the same measurement under different units, and the unit was
+never stated. MEASURED 2026-07-28.
+
+Post-repair disposition of those 24: **9 allowlisted, 9 sourced, 6 fire.**
+The 6 are `553 findings` and `562 findings`, each appearing in
+`description`, `og:description` and `twitter:description` on the two scan
+blog posts. Because quarantine keys on (file, normalised claim), they need
+**2 entries**, not 6. The held meta-description offender on
+`blog-scanning-5-frameworks.html` is one of them.
+
+### Quarantine reconciliation, re-measured in place
+
+Whole-repo, real module, real locations, 170 tracked scanned files:
+
+| State | Claims | Findings |
+|---|---|---|
+| Before 1.5c | 1,244 | 352 |
+| After F21 | 1,244 | 360 |
+| After the attributed-in-tag fix | 1,247 | 356 |
+| After quarantine admission | 1,247 | **350** |
+
+**site/ findings: 0.** Quarantine **42 -> 44**.
+
+### The ratchet had to be extended, and how
+
+The ratchet forbids growth, which is what stops an entry being added
+instead of a claim being sourced. But an instrument repair that increases
+sensitivity uncovers claims that were always there. Refusing to record
+those would either leave the gate red on pre-existing text or create
+pressure to weaken the repair.
+
+So `.claim-quarantine.json` gained a `_sensitivity_admissions` block:
+tranches, each naming the finding that caused it, the instrument change,
+the base size before, and **the exact entries admitted**. The test ceiling
+is `QUARANTINE_BASE_CEILING + QUARANTINE_ADMITTED`, and two new tests
+require the file to itemise every admitted entry and every tranche to state
+its cause. **Anything not itemised is still forbidden.** Each tranche is
+shrink-only from its own opening size.
+
+**This is discretionary framing and goes for owner ratification.**
+
+## Four new findings, F25 to F28
+
+### F25 — `CITATION_WORDS` accepts ordinary prose. HIGH, Trust. NOT FIXED.
+
+MEASURED 2026-07-28: 94 paragraphs carrying numeric claims are sourced
+only by a citation-word. Enumerating all 46 where that word is "source"
+shows almost none are citations: "source files", "source code", "open
+source", "a significant source of their profits", "Version source of
+truth". **11 paragraphs across 7 tracked files are sourced by the phrase
+"open source" alone**, including `site/index.html`, `site/locales/de.html`,
+`site/locales/pt-br.html`, `site/regions/uae.html`, `docs/MODEL_CARD.md`,
+`docs/AI_GOVERNANCE.md`, `benchmarks/README.md`.
+
+**Consequence, stated plainly: F21 is closed for the URL mechanism, and the
+landing page's `<meta>` "13 frameworks" claim still passes anyway** — now
+via the words "Open Source" in its own `<title>`. This is
+`.claude/rules/measurement.md` rule 5 in live form: the gate is narrower
+than the standard, so passing it is not evidence.
+
+Not fixed because it is outside the 1.5c fence and tightening
+`CITATION_WORDS` would reclassify roughly 90 paragraphs repo-wide, which
+is an auditor behaviour change of a size the directive excluded.
+**ESCALATED for owner scoping.**
+
+### F26 — the branch has been red since `a941321`. MAJOR, process.
+
+MEASURED by worktree bisect, single test, three commits:
+
+| Commit | Result |
+|---|---|
+| `e30de41` "record the full suite green after the F1 rebind" | **1 passed** |
+| `a941321` corpus expansion 5 -> 30 | **1 failed** |
+| `eacc2b6` HEAD at session start | **1 failed** |
+
+`tests/test_classification.py::test_synthetic_fixture_perfect_precision_recall`
+asserted `recall == 1.0`. `a941321` expanded the high-risk corpus from 5
+fixtures to 30 and measured real recall at 16/30, and did not touch the
+test. **Six further commits landed on a red suite.** This violates
+programme Principle 6, "full test suite green per commit".
+
+It survived because the handover's own verification block runs
+`pytest --collect-only`, never the suite. A collect count proves tests
+exist, not that they pass.
+
+**FIXED.** The test now reads its expectation from `RECALL.json` and is
+renamed `test_synthetic_fixture_precision_recall_matches_artefact`. A
+corpus change moves the artefact and the test together; a detection
+regression still fails it, which is what it was always for. The original
+Article 5 guard is kept as its own explicit assertion.
+
+### F27 — F8 is not supported by a like-for-like comparison. MAJOR.
+
+MEASURED from `RECALL.json`: under the **same** gate condition (all eight
+opt-in domains declared) the scanner path and the classifier path miss the
+**identical 14 fixtures**. Not the same count with different members — the
+same set, symmetric difference zero.
+
+The recorded "six-fixture divergence" compared `scanner/default` against
+`classifier/all-domains`: **two paths and two gate conditions changed at
+once**. The six fixtures it named (`highrisk_employment`,
+`highrisk_judicial_support`, `highrisk_promotion_ranking`,
+`highrisk_traffic_control`, `highrisk_visa_triage`,
+`highrisk_water_supply`) are exactly the ones the domain gate unlocks.
+
+`.claude/rules/measurement.md` rule 2, one variable at a time, failing in
+the document written to establish the recall baseline. **F8 as stated does
+not survive.** Whether a narrower divergence exists is open, and Task C's
+traces should start from the artefact rather than from the withdrawn claim.
+
+### F28 — `cascade_count.py --check` was a blank gate. HIGH, Trust. FIXED.
+
+MEASURED 2026-07-28: `data/site_facts.json` recorded 2,363 collected tests
+while the suite collected 2,404. `canonical_count()` read only that cached
+file, so `--check` compared every surface against a stale canonical, found
+them all in agreement, and **exited 0**.
+
+This is load-bearing beyond the tool: `HANDOVER.md` §1 lists
+`cascade_count.py --check` in the block a fresh session runs to establish
+that the tree is trustworthy, and rc=0 was being read as proof the
+published counts were current. **I ran exactly that block at the start of
+this session and recorded it as green.**
+
+**FIXED.** `canonical_count()` cross-checks the cached value against a live
+`site_facts.compute()` and raises `RefusedError` on disagreement. The
+canonical value still comes from committed data, never from an argument.
+**Control fired:** with the cache forced to 1, rc=1 and an explicit
+refusal; with it fresh, rc=1 for genuine drift; after `--apply`, rc=0.
+
+## Recall: what reproduces and what does not
+
+`RECALL.json`, four conditions, all from actual runs:
+
+| Condition (path, gates) | High-risk | Prohibited |
+|---|---|---|
+| scanner, default scan, no flags | **10/30 = 33.3%** | 5/5 |
+| scanner, all eight domains declared | **16/30 = 53.3%** | 5/5 |
+| scanner, domains declared + `import torch` injected | **23/30 = 76.7%** | 5/5 |
+| classifier (`report.scan_files`), all domains | **16/30 = 53.3%** | 5/5 |
+
+**10/30 and 16/30 reproduce exactly.** **14/30 and 19/30 do not, and are
+WITHDRAWN as NOT REPRODUCIBLE** on both surfaces that published them
+(`docs/TRUST.md`, `RESULTS-synthetic-v2-2026-07-28.md`). The conditions
+behind them were never committed: "`--domain <matched>`" implies a
+per-fixture domain mapping that does not exist in `manifest.json`, and "an
+AI-library import present" names neither the import nor the fixtures.
+
+The reproducible neighbours are **different conditions** and are labelled
+as such rather than substituted for the withdrawn figures. Inventing the
+mapping now would be a new measurement wearing an old label.
+
+**The "8 fixtures that miss with both gates satisfied" is 7** under the
+reproducible condition, and they are named in the artefact:
+`highrisk_benefits_eligibility`, `highrisk_border_screening`,
+`highrisk_crime_forecast`, `highrisk_energy_grid`, `highrisk_exam_proctor`,
+`highrisk_recidivism`, `highrisk_voter_targeting`. The figure of 8 came
+from the unreproducible condition and is not comparable.
+
+## Also repaired, flagged as mid-landing expansion
+
+- **`scripts/check_selfref_sourcing.py` had become a blank gate.** Its
+  detection was subsumed by the F21 repair, so it reported CLEAN on every
+  input including its own known offender. Rewritten: it now runs a control
+  first (plants a self-referential-only paragraph, asserts rejection;
+  plants a sourced one, asserts acceptance) and exits 2 if the control does
+  not fire, then reports unsourced claims. Justification: rule 4, a blank
+  gate is not a green gate.
+- **Two `ATTRIBUTED_CLAIM` false positives on `site/pricing.html`**,
+  surfaced by the F21 repair. `<meta ... content="... Reports | Regula">`
+  read as an attribution verb followed by quoted text, because inside a
+  tag the quote characters are attribute syntax. Attribution matches
+  inside tags are now skipped; numeric claims inside tags still count,
+  since a meta description is published prose.
+- **Four `verify_facts` false positives**, surfaced by removing the F22
+  floor and fixed at the pattern rather than exempted: `(?<!\d)` became
+  `(?<!\w)` so `python3 tests/...` stops reading as "3 tests" (three
+  surfaces), and `tests?` became `tests` so "963 test functions" is no
+  longer swept up. This aligns the auditor with the shape list
+  `scripts/cascade_count.py` already uses. **`STALE_CHECK_EXEMPTIONS` is
+  empty, and that is the point.**
+
+## What is NOT green, stated rather than buried
+
+**`claim_auditor.py --diff-base` is red on `docs/TRUST.md` (14) and
+`docs/MODEL_CARD.md` (12) for pre-existing unsourced percentages.**
+MEASURED like-for-like in a HEAD worktree: those same three documents gave
+**67 claims / 36 unsourced at HEAD** and **72 claims / 34 unsourced now**,
+so this batch reduced it. The CI claim gate scans whole files, so any
+commit touching those two documents is red, including every cascade commit
+that has ever run. The branch is unpushed, so CI has never executed.
+
+**This is P0 territory and P0 stays parked.** Recorded here so nobody
+reports this batch as "all gates green" when one of them is not.
+
+## NEXT
+
+1. **Task B** — class 1 under the stale-crosswalk guard, plus the R1 and
+   330 residuals. Not started; it is the seam this session stops at.
+2. **Owner ratification** — the quarantine admissions mechanism (F21
+   tranche, +2), and scoping for **F25**.
+3. **Task C** — re-derivations, then traces. The trace target list is now
+   7 named fixtures from a committed artefact rather than 8 from prose.
+   **F27 changes what the traces are for:** the scanner/classifier
+   divergence is not there to be explained.
+4. Loop 3 in its own fresh session, unchanged.
