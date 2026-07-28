@@ -1,0 +1,183 @@
+{
+  "_status": "UNVERIFIED BACKLOG — QUARANTINED — NOT ENDORSED",
+  "_what_this_is": "Claims that existed BEFORE the claim auditor could detect bare percentages. They are NOT approved, NOT verified, and NOT endorsed. Quarantine exists so the gate can go green for NEW claims immediately while this backlog is burned down.",
+  "_keying": "Entries key on file + normalised claim text, never line numbers. Line-keyed entries rot on every page edit and would have broken the moment the coordinate fix landed.",
+  "_ratchet": "This list may only shrink. tests/test_claim_quarantine.py fails if the count rises. Burn-down records a per-item disposition: verified-with-source / corrected / removed.",
+  "_priority_order": [
+    "1. the 83.5% precision claim and anything else quoting precision",
+    "2. anything sharing a surface with the published test count",
+    "3. the remainder"
+  ],
+  "_created": "2026-07-28",
+  "_count": 42,
+  "entries": [
+    {
+      "file": "site/about.html",
+      "claim": "30%"
+    },
+    {
+      "file": "site/about.html",
+      "claim": "70%"
+    },
+    {
+      "file": "site/assess/de.html",
+      "claim": "0%"
+    },
+    {
+      "file": "site/assess/index.html",
+      "claim": "0%"
+    },
+    {
+      "file": "site/assess/pt-br.html",
+      "claim": "0%"
+    },
+    {
+      "file": "site/blog/blog-code-scanning-vs-questionnaires.html",
+      "claim": "30%"
+    },
+    {
+      "file": "site/blog/blog-code-scanning-vs-questionnaires.html",
+      "claim": "70%"
+    },
+    {
+      "file": "site/blog/blog-scanning-10-ai-apps.html",
+      "claim": "27.8%"
+    },
+    {
+      "file": "site/blog/blog-scanning-10-ai-apps.html",
+      "claim": "5.6%"
+    },
+    {
+      "file": "site/blog/blog-scanning-10-ai-apps.html",
+      "claim": "56.6%"
+    },
+    {
+      "file": "site/blog/blog-scanning-10-ai-apps.html",
+      "claim": "7.4%"
+    },
+    {
+      "file": "site/blog/blog-scanning-5-frameworks.html",
+      "claim": "41%"
+    },
+    {
+      "file": "site/blog/blog-scanning-5-frameworks.html",
+      "claim": "57%"
+    },
+    {
+      "file": "site/blog/blog-scanning-5-frameworks.html",
+      "claim": "65%"
+    },
+    {
+      "file": "site/blog/blog-scanning-5-frameworks.html",
+      "claim": "72%"
+    },
+    {
+      "file": "site/guides/article-9-risk-management.html",
+      "claim": "29%"
+    },
+    {
+      "file": "site/guides/eu-ai-act-healthcare.html",
+      "claim": "70%"
+    },
+    {
+      "file": "site/guides/eu-ai-act-healthcare.html",
+      "claim": "95%"
+    },
+    {
+      "file": "site/guides/eu-ai-act-recruitment-hiring.html",
+      "claim": "29%"
+    },
+    {
+      "file": "site/guides/eu-ai-act-recruitment-hiring.html",
+      "claim": "43%"
+    },
+    {
+      "file": "site/index.html",
+      "claim": "0%"
+    },
+    {
+      "file": "site/index.html",
+      "claim": "20%"
+    },
+    {
+      "file": "site/index.html",
+      "claim": "30%"
+    },
+    {
+      "file": "site/index.html",
+      "claim": "40%"
+    },
+    {
+      "file": "site/index.html",
+      "claim": "50%"
+    },
+    {
+      "file": "site/index.html",
+      "claim": "60%"
+    },
+    {
+      "file": "site/index.html",
+      "claim": "80%"
+    },
+    {
+      "file": "site/locales/de.html",
+      "claim": "0%"
+    },
+    {
+      "file": "site/locales/de.html",
+      "claim": "20%"
+    },
+    {
+      "file": "site/locales/de.html",
+      "claim": "30%"
+    },
+    {
+      "file": "site/locales/de.html",
+      "claim": "40%"
+    },
+    {
+      "file": "site/locales/de.html",
+      "claim": "50%"
+    },
+    {
+      "file": "site/locales/de.html",
+      "claim": "60%"
+    },
+    {
+      "file": "site/locales/de.html",
+      "claim": "80%"
+    },
+    {
+      "file": "site/locales/pt-br.html",
+      "claim": "0%"
+    },
+    {
+      "file": "site/locales/pt-br.html",
+      "claim": "20%"
+    },
+    {
+      "file": "site/locales/pt-br.html",
+      "claim": "30%"
+    },
+    {
+      "file": "site/locales/pt-br.html",
+      "claim": "40%"
+    },
+    {
+      "file": "site/locales/pt-br.html",
+      "claim": "50%"
+    },
+    {
+      "file": "site/locales/pt-br.html",
+      "claim": "60%"
+    },
+    {
+      "file": "site/locales/pt-br.html",
+      "claim": "80%"
+    },
+    {
+      "file": "site/sample-report.html",
+      "claim": "43%"
+    }
+  ]
+}
