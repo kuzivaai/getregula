@@ -144,7 +144,7 @@ Regula is explicitly **NOT** intended for:
 
 ### Continuous validation
 
-- 2,406 pytest-collected tests, produced by collection rather than
+- 2,416 pytest-collected tests, produced by collection rather than
   hand-maintained (measured 2026-07-28). See
   [`data/published_count_manifest.json`](../data/published_count_manifest.json).
 - 45 CLI integration tests (`tests/test_cli_integration.py`)
