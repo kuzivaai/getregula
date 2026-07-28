@@ -276,6 +276,25 @@ def strip_noise(text: str, suffix: str) -> str:
     text = re.sub(r"(\bstyle\s*=\s*')([^']*)(')", _blank_style_value, text,
                   flags=re.IGNORECASE)
 
+    # A <pre> block is ONE verbatim unit. split_paragraphs() breaks on blank
+    # lines, so a terminal transcript was being cut into stanzas, each an
+    # island the auditor demanded a source for. There is nowhere to put a
+    # citation inside verbatim command output without falsifying it, which
+    # left only bad options: allowlist real output as if unverified, or
+    # delete the blank lines the command actually prints.
+    #
+    # Each blank line inside a <pre> gets a zero-width space: the line count
+    # is untouched, so reported coordinates still map to the original file,
+    # but the block no longer splits. A plain space does NOT work, because
+    # split_paragraphs() tests `line.strip() == ""` and a space strips to
+    # empty; U+200B is not whitespace to str.strip(). Found landing the
+    # class 1 derivation, and again one step later by the control.
+    def _join_pre(m: re.Match[str]) -> str:
+        return re.sub(r"^[ \t]*$", "​", m.group(0), flags=re.MULTILINE)
+
+    text = re.sub(r"<pre\b[^>]*>.*?</pre\s*>", _join_pre, text,
+                  flags=re.DOTALL | re.IGNORECASE)
+
     if suffix in (".md", ".markdown"):
         text = re.sub(r"```.*?```", _blank, text, flags=re.DOTALL)
 
