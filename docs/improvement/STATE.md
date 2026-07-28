@@ -844,3 +844,77 @@ Mine (corrected): 53.7-57.2. **Reviewer's counter: 52.9-54.5, +0.6 to
 4. F1 watch item stays open. The green pytest run is not evidence about it.
 
 **Nothing public changed. `main` untouched. Tree clean.**
+
+---
+
+# CHECKPOINT — 28 July 2026, loop 2 (amendments executed)
+
+**Read `GATE-REVIEW.md` (incl. its loop-2 addendum) and
+`HOSTILE-REVIEW-LOOP2.md`.**
+
+## Owner amendments — all four executed
+
+| # | Amendment | State |
+|---|---|---|
+| 1 | 1.5b pre-landing self-ref check | **BUILT + RUN.** `scripts/check_selfref_sourcing.py`. Control fired first. 1 offender, held for 1.5c. |
+| 2 | Loop-2 reviewer inputs + closure verification | **RUN.** Verdict FAIL. |
+| 3 | Recall base expansion to >=25 | **DONE.** 5 -> 30 fixtures; recall **33%**, full diagnosis. |
+| 4 | `docs/*.md` coverage class | **ASSIGNED** as P0: extend coverage, named exclusions. Not floating. |
+
+## Loop 2: FAIL
+
+9 CLOSED, 12 PARTIALLY CLOSED, **3 COSMETIC**, **18 new MAJOR**.
+All three closures I pre-flagged as likely cosmetic **failed on merit**.
+
+**Verified personally, all confirmed:**
+- `claim_auditor.py:850` skips any stale number **below 50% of canonical**.
+  P0's own control clears that floor by a **2% margin**.
+- "58 ungated docs files" is really **34** tracked and publishable
+  (70 on disk, 48 tracked, 22 untracked).
+- `CHANGELOG.md` carries 3 `regula[` occurrences P4's list omitted.
+
+**Two errors I made twice:** a third wrong number for the same quantity
+(18 → 21 → really 23, with a list summing to 20), and the
+tracked-vs-untracked conflation I had just corrected in the reviewer.
+
+**The projection is WITHDRAWN** — computed from a Trust value the same
+document forbade using, quoting the favourable end of an unresolved
+baseline, while silently fixing craft at 88.
+
+## Recall, expanded (supersedes the n=5 figure)
+
+| Condition | Recall |
+|---|---|
+| Default scan | **10/30 = 33%** |
+| Domain declared | 14/30 = 47% |
+| Domain + AI import | 19/30 = 63% |
+
+**17 of 20 misses are pipeline gates, not patterns:** 13 opt-in domain
+suppression (9 of 17 domains suppressed by default), 4 AI-indicator gate,
+3 genuine pattern gaps. **8 remain unexplained with both gates satisfied —
+the most important open thread.**
+
+Consequence: pattern work addresses 3 of 20 misses. This independently
+supports cutting P8.
+
+## ESCALATION
+
+**Loop 2 of 3 failed. The last loop is NOT being spent in this session.**
+The defects are substantive design errors, and revising under context
+pressure then immediately re-reviewing is how the loop-1 and loop-2 errors
+were introduced. **Phase 4 remains NOT PASSED.**
+
+## NEXT
+
+1. **Owner decisions:** 1.5b pack (ready); the `blog-scanning-10-ai-apps`
+   branch A/B question; private remote.
+2. **Before loop 3** (`HOSTILE-REVIEW-LOOP2.md` §F): fix the auditor's 50%
+   floor and delete-a-claim hole **before** P0 widens scope; re-derive
+   Trust and Detection at HEAD; resolve the baseline; split P2 into three;
+   reorder Tier 0 and move P16 ahead of P8; inline F-number descriptions;
+   add items for CODE_REVIEW §8.4, §7.5, §4, §1.1.
+3. **Phase 2 loop 2**: per-item domain-shift notes, then re-run the
+   validator.
+4. F1 watch item stays open.
+
+**Nothing public changed. `main` untouched. Tree clean.**
