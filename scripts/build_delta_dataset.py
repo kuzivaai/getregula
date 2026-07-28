@@ -26,7 +26,7 @@ delta-log as a citable dataset:
   (scripts/dpv_export.py) emits its concepts; per-event DPV concepts are
   deliberately NOT asserted because the vocabulary has no
   regulatory-change-event concepts today. Proposing those concepts
-  upstream is tracked in .claude/dpvcg-contribution-draft.md.
+  upstream is tracked in docs/dpvcg-contribution-draft.md.
 
 Honesty guards (do not remove):
 - Article references are plain literals ("Article 5"), never invented

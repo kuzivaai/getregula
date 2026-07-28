@@ -10,7 +10,7 @@ judgment-labelled data asset and a citable artefact.
 ## Why upgrade (verified grounding)
 
 Every citation below was independently verified against its primary
-source on 27 Jul 2026 (see `.claude/phase0-verification-2026-07.md`).
+source on 27 Jul 2026 (see `docs/improvement/PHASE0_VERIFICATION.md`).
 Two earlier candidate citations for "kappa precedents in the security
 domain" (arXiv:2511.16123, arXiv:2604.04288) FAILED verification (wrong
 paper; unconfirmed figures) and must not be cited.
