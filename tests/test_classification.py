@@ -44,6 +44,17 @@ from helpers import assert_eq, assert_true, assert_false
 # pytest discovers them natively from tests/test_register.py and runs them
 # with proper fixture injection.
 import inspect as _inspect
+
+# Aliases are bound under this prefix, NOT under "test_", because pytest
+# collects every module-level name matching python_functions
+# (pyproject.toml: "test_*"). Binding them as "test_*" here made pytest
+# collect each one twice — once in its home module, once in this one —
+# which inflated the published test count by 527 (2,849 reported vs 2,322
+# real). The runner's globals() walk below accepts this prefix, so
+# discovery stays automatic and no manual list is reintroduced.
+# Guarded by tests/test_collection_integrity.py.
+RUNNER_ALIAS_PREFIX = "_runner_test_"
+
 _PYTEST_FIXTURES = {"monkeypatch", "tmp_path", "capsys", "tmpdir", "request"}
 for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate):
     for _name in dir(_mod):
@@ -58,7 +69,7 @@ for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_ne
             _params = set()
         if _params & _PYTEST_FIXTURES:
             continue
-        globals()[_name] = _fn
+        globals()[RUNNER_ALIAS_PREFIX + _name] = _fn
 del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
@@ -7194,9 +7205,14 @@ if __name__ == "__main__":
     # new test had to be added in two places (the def and the manual list)
     # and forgetting the second was undetectable until pytest ran. Now the
     # custom runner and pytest discovery use the same source of truth.
+    # Both this module's own test_* functions and the aliases rebound from
+    # sibling modules under RUNNER_ALIAS_PREFIX. The prefix exists so pytest
+    # does not collect the aliases twice; the runner must therefore look for
+    # both names. Still fully automatic — nothing is listed by hand.
     tests = sorted(
         (obj for name, obj in list(globals().items())
-         if name.startswith("test_") and callable(obj)),
+         if (name.startswith("test_") or name.startswith(RUNNER_ALIAS_PREFIX))
+         and callable(obj)),
         key=lambda f: f.__code__.co_firstlineno,
     )
 
