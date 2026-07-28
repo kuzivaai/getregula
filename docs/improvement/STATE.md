@@ -706,9 +706,17 @@ Quarantined items would fail the every-number-traces sweep regardless.
   Repro: `timeout 2400 python3 tests/test_classification.py > run.txt 2>&1`
   (redirect to a file; a pipe loses the failure line, which is how it was
   lost the first time).
-- **Full `pytest tests/ -q`** (~15 min) was last green before the F1
-  rebind. **Re-run it early next session** to confirm the corrected
-  collection executes clean end to end.
+- **Full `pytest tests/ -q`: DONE AND GREEN, 28 Jul 2026.** `2349 passed`
+  in 1406.51s (23:26), pytest's own exit code 0, zero `FAILED` or `ERROR`
+  lines in the log. The executed count **equals** the collect-only count
+  (2,349 = 2,349), which is the thing that needed confirming: the
+  corrected collection is not just counted correctly, it executes clean
+  end to end after the F1 rebind. This closes the carried-over re-run
+  item. Re-run it before any release, not every session.
+  **This does NOT bear on the F1 watch item.** That transient was in the
+  **custom runner** (`tests/test_classification.py`, 1386/0/963), a
+  different harness with different discovery. A green pytest run is not
+  evidence about it either way.
 - Owner decisions 3 (1.5b pack) and 4 (backup for `getregula-internal/`).
 - `OWNER_ACTIONS.md` items 1, 2, 3, 5, 7 and the new 8. Item 4 is closed.
 - **New, from the relocation:** does `claim_auditor` sweep `<meta>`
