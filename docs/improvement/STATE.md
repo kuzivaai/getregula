@@ -1210,3 +1210,177 @@ reports this batch as "all gates green" when one of them is not.
    **F27 changes what the traces are for:** the scanner/classifier
    divergence is not there to be explained.
 4. Loop 3 in its own fresh session, unchanged.
+
+---
+
+# CHECKPOINT — 28 July 2026, session 4: TASK B (CLASS 1) LANDED
+
+## Class 1 was three different things, not one class of ~30 pairs
+
+PACK-1.5b §3 grouped "~30 progress-bar percentage pairs" across 8 files.
+Reading the files shows three unrelated items:
+
+| Item | Where | What it actually is |
+|---|---|---|
+| **Terminal mock-up** | `site/index.html`, `site/locales/de.html`, `site/locales/pt-br.html` | Invented `regula gap` and `regula comply` output behind a `$` prompt. **The real class 1 defect.** DERIVED this session. |
+| **"roughly 30% / 70% of the EU AI Act"** | `site/about.html`, `site/blog/blog-code-scanning-vs-questionnaires.html` | Not a progress bar. A substantive modelling claim about the regulation's composition. Already quarantined. Belongs with class 2, not here. |
+| **`0%` in the assess widget** | `site/assess/{index,de,pt-br}.html` | Live UI state (`<span id="progressPct">0%</span>`), initialised at zero. Not a claim at all. |
+
+Only the first was actioned. The other two are named here so nobody
+reports class 1 as closed on the strength of this commit.
+
+## The terminal mock-up, derived
+
+`data/gap_demo.json` is produced by `scripts/build_gap_demo.py` from real
+runs against the committed fixture `tests/fixtures/sample_high_risk`.
+`tests/test_gap_demo.py` (10 tests) re-runs both commands, and binds every
+locale panel to the artefact in both directions: every artefact percentage
+must appear, and **no other percentage may appear**. The second half is
+the one that catches drift.
+
+What the real output changed on the page:
+
+- **20/40/60/80/0/30/50 became 0/0/25/0/0/45/0/0**, and the headline
+  **42/100 became 9/100**. The mock-up flattered.
+- **The NOTE the mock-up omitted is now on the page.** It says the score
+  measures presence of documentation and cannot offset scan findings.
+  That NOTE is the denominator disclosure, and its absence was the defect.
+- **Eight article rows, not seven.** The real output includes Article 17.
+- **`regula comply` needed `--all`.** Without it the command prints no
+  article table for this fixture, because the project classifies as
+  `not_ai`. The old panel did not depict stale output; it depicted output
+  the command does not produce.
+
+### Fixture choice, criterion fixed before any score was seen
+
+The criterion: committed, and scanned exactly as the page depicts it, no
+flags. Two candidates were rejected for reasons independent of their
+scores:
+
+- **`regula gap .` on the Regula repo scores 100%**, and that number is
+  computed partly over `conformity-evidence-project-*` directories which
+  are **untracked and gitignored**. No clone reproduces it. Measurement
+  rule 4b, caught before publishing.
+- **A purpose-built fixture** would be the shop window chosen by its
+  author. PROGRAMME.md principle 3.
+
+`sample_high_risk` scores 9%. That is not why it was chosen and is not a
+reason to change it.
+
+### The F14 stale-crosswalk guard: premise checked, does not apply
+
+The directive required Articles 11 and 12 to get tier-or-removal rather
+than a derived count, because F14 found the crosswalk 108 days stale.
+
+**MEASURED: the gap assessment never reads the crosswalk.**
+`scripts/compliance_check.py` and `scripts/cli_compliance.py` contain
+**zero** references to it. `assess_compliance()` scores each article
+through `ARTICLE_CHECKERS`, per-article functions that match filename
+patterns and document headings in the scanned project. Crosswalk staleness
+cannot reach these numbers.
+
+All eight rows are therefore derived. **Blanking rows 11 and 12 would have
+meant publishing altered command output**, which is the defect this task
+exists to remove, in the opposite direction.
+
+**This is a deviation from a literal instruction and goes for owner
+ratification.** The evidence is above; if the owner still wants those rows
+blanked, the fix is to stop showing verbatim output and show a table
+instead.
+
+### Locale handling
+
+The terminal block is English command output in all three files, so
+mirroring it is a numeric and structural change and lands now. **New
+DE/PT-BR prose is HELD.** The provenance line under each locale panel is
+deliberately not prose: `→ tests/test_gap_demo.py · tests/fixtures/sample_high_risk`.
+The English explanatory sentence, proposed for sign-off, is:
+
+> Real output, not a mock-up. Reproduce it from a clone with the command
+> shown; the fixture is committed at tests/fixtures/sample_high_risk and
+> this page is diffed against a fresh run by tests/test_gap_demo.py.
+
+## The two residuals, annotated not corrected
+
+**R1 — the v1.6.1 raw output is not committed.** CONFIRMED: 11 files in
+`benchmarks/results/blog_scan_2026_04`, none from v1.6.1, and its README
+describes the v1.7.0 scan only. The post's closing note says output for
+both versions is available. Annotated on the page.
+
+**The 330 figure — UNSETTLEABLE, and the attempt is recorded.**
+
+- No `v1.6.1` git tag (v1.6.0 and v1.6.2 exist).
+- **No 1.6.1 release on PyPI either.** MEASURED via the PyPI JSON API:
+  releases run 1.5.0, 1.5.1, 1.6.0, **1.6.2**, 1.7.0 onward. The sdist
+  derivation the directive asked for was attempted once; there is nothing
+  to derive from.
+- Bracketing at the tags that do exist, current counting script:
+  **v1.6.0 = 219**, **v1.6.2 = 386**. 330 sits between them, which is
+  consistency, not confirmation.
+- **The unit is not fixed either.** On the same v1.6.2 tree, that
+  version's own script gives **358** and the current one gives **386**. A
+  28-count gap on identical code means a bracket cannot settle a figure
+  whose definition moved.
+
+## NEW FINDING F29 — 387 does not reproduce; 386 does. MAJOR.
+
+STATE.md and HANDOVER §7.5 record R2 as settled at **387** by two
+independent methods. MEASURED at the `v1.7.0` tag by two methods, both
+give **386**: that version's own `site_facts.py`, and the current one run
+against the same tree.
+
+The blog page also carries **389** further down while saying 387 above.
+Those cannot both be right.
+
+**Annotated, not corrected.** The 387 on record came from two methods that
+have not been re-run, and replacing one unreproducible number with another
+is not a correction. **ESCALATED.**
+
+## NEW FINDING F30 — allowlist entries suppress whole paragraphs. HIGH.
+
+`scan_file` tests each allowlist regex against the claim's line, the
+claim's text, **and the entire paragraph**. One entry intended for one
+line therefore exempts every claim beside it. MEASURED: `\bArticles?\s+\d+.*\d+%`,
+written for per-article percentages, was suppressing the `9%` overall
+score and the NOTE's `100%` in the same panel.
+
+Repo-wide: **240 claims are allowlist-suppressed, and 63 of them ONLY by
+the whole-paragraph arm** across ~20 files, led by
+`references/tree_sitter_implementation_guide.md` (17) and
+`docs/benchmarks/PRECISION_RECALL_2026_04.md` (9).
+
+Line-scoping the allowlist would surface those 63 at once, which is an
+auditor behaviour change beyond this fence. **NOT FIXED. ESCALATED.**
+
+Consequence stated plainly: the class 1 panels initially passed the
+pre-landing gate through this over-reach. They now carry a resolvable
+file reference and are sourced on their own merits, **proven by stripping
+citation words and re-running**: all three return
+`file-ref:tests/test_gap_demo.py`.
+
+## Also repaired
+
+**A `<pre>` block is one verbatim unit.** `split_paragraphs` broke on
+blank lines, cutting a terminal transcript into stanzas and demanding a
+source for each. There is nowhere to put a citation inside verbatim
+command output without falsifying it. Blank lines inside a `<pre>` now
+get a zero-width space: line counts are untouched so coordinates still
+map, but the block no longer splits. A plain space does **not** work,
+because `line.strip() == ""` is true for it, and the control caught that
+one step later.
+
+## Gates
+
+pytest and the legacy runner both green; `verify-facts`, `site_integrity`,
+`cascade_count --check`, `build_recall_artefact --check`,
+`build_gap_demo --check` and the F21 pre-landing gate with its control all
+rc=0. Count cascaded 2,406 to 2,416 through `cascade_count.py --apply`.
+
+`claim_auditor --diff-base` remains red on `docs/TRUST.md` and
+`docs/MODEL_CARD.md` for pre-existing unsourced percentages. Unchanged by
+this task, still P0, still parked.
+
+## NEXT — the seam. Task B is done; this session stops here.
+
+Task C (re-derivations, then traces) runs next session. Task D follows.
+Loop 3 in its own fresh session. **F25, F29 and F30 are open escalations.**
