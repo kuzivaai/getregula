@@ -119,6 +119,24 @@ a file that also contains claims.
 - Read the diff of every file you touched before committing. `git diff`
   caught this; nothing else would have.
 
+## 4e. Before asserting two artefacts contradict, read both in full.
+
+**A discrepancy claim is a claim.** It carries the same evidence burden as
+the number it disputes, and an artefact's own methodology section is part
+of the artefact.
+
+I reported that a blog post's headline statistics "do not reconcile" with
+the repo's tracked scan data, called it the most serious item in an
+approval pack, and escalated it. The post's own methodology note disclosed
+the exact figure I was citing against it, named the version and date of
+both scans, and explained the difference. I had not read that far into the
+post.
+
+The cost was one escalation rather than a false correction to a correct
+post, and only because the finding was quarantined rather than acted on.
+**Quarantine-and-escalate is what absorbed the error. Do not skip it on a
+finding that feels obvious.**
+
 ## 5. Passing a gate is not evidence of meeting a standard when the gate tests something narrower.
 
 This is the one that keeps recurring, in two different instruments.
