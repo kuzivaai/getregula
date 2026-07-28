@@ -179,5 +179,6 @@
       "file": "site/sample-report.html",
       "claim": "43%"
     }
-  ]
+  ],
+  "_units": "entries are UNIQUE (file, normalised claim) pairs. The 42 entries correspond to 55 occurrence-level findings. The auditor's own 'claims' and 'unsourced' counters are occurrence-level; unsourced is a strict subset of claims."
 }
