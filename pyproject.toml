@@ -84,7 +84,7 @@ exclude = ["tools*", "benchmarks*", "tests*"]
 # BBQ bias-eval sample: without it, `regula conform` in an installed
 # context prints "BBQ eval failed" (found 16 Jul 2026 running the
 # evaluation journey against the published 1.7.5 wheel).
-"scripts" = ["bias_data/*.json", "dpv_data/*.json"]
+"scripts" = ["bias_data/*.json", "dpv_data/*.json", "eli_data/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
