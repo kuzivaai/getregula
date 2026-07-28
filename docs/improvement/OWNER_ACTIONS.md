@@ -75,7 +75,25 @@ verbatim at `getregula-internal/competitive-intelligence-2026-07.md`.
 All of it is a snapshot of fetches dated 27 Jul 2026 and needs
 re-verifying before any external use.
 
-## 8. Does the claim auditor sweep meta descriptions? (untested, carried over)
+## 9. Private remote for `getregula-internal/` (still open, owner call)
+A local-only git repo was authorised and created on 28 Jul 2026 (`git
+init`, commit `756fb43`, no remote, `pre-push` hook refusing pushes). That
+gives history but everything still lives on one disk. A **private** remote
+would close it properly. Owner call because it needs an account. Whatever
+is chosen must stay private: the directory holds competitive and
+commercial strategy deliberately kept out of the public repo.
+
+## 8. Does the claim auditor sweep meta descriptions? ANSWERED 28 Jul 2026
+**Yes it sweeps them, and that turned out not to be the problem.** It
+extracts 27 claims from numeric `<meta>` description lines across the 56
+site pages. The real defect is that all 27 pass, because the `<head>`
+parses as one paragraph containing `<link rel="canonical">` and a URL
+satisfies `paragraph_has_source()`. A page's own address is accepted as
+the source for every number in its head. Logged as **finding F21** (HIGH,
+Trust) with the full measurement in STATE.md; disposition goes in the 1.5b
+pack. **No owner action required** beyond approving that disposition.
+
+### Original note, kept for the record
 A search-index snippet for getregula.com seen on 27 Jul 2026 showed
 "398 risk patterns, 12 frameworks" against the canonical 419/13 in
 `data/site_facts.json`. The live pages are correct, so that specific
