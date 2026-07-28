@@ -769,3 +769,78 @@ Quarantined items would fail the every-number-traces sweep regardless.
 - `OWNER_ACTIONS.md` items 1, 2, 3, 5, 7 and the new 8. Item 4 is closed.
 - **New, from the relocation:** does `claim_auditor` sweep `<meta>`
   descriptions? Untested. `OWNER_ACTIONS.md` item 8.
+
+---
+
+# CHECKPOINT — 28 July 2026, end of session 3 (Phase 4 gate attempt)
+
+**Read `docs/improvement/GATE-REVIEW.md` first.** It consolidates both
+decisions.
+
+## Headline: both independent subagents returned FAIL, and both were right.
+
+| Charter | Verdict | Loop | Status |
+|---|---|---|---|
+| RESEARCH VALIDATOR (Phase 2) | **FAIL** | 1 of 3 | 2 of 4 pass criteria unmet |
+| HOSTILE REVIEWER (Phase 4) | **FAIL** | 1 of 3 | 16 MAJOR, all accepted |
+
+**Neither Phase 2 nor Phase 4 has passed. The Phase 4 plan must not be
+executed.** Loop 2 has not run for either. Dispositions are written up in
+`HOSTILE-REVIEW-DISPOSITIONS.md` and inline in `RESEARCH-CARDS.md`, per
+principle 7.
+
+## New artefacts
+
+`PACK-1.5b.md` (built, held, **nothing applied**) · `RESEARCH-CARDS.md` ·
+`PLAN-PHASE4.md` · `HOSTILE-REVIEW-DISPOSITIONS.md` · `GATE-REVIEW.md` ·
+`benchmarks/headtohead/RESULTS-synthetic-2026-07-28.md` + raw JSON ·
+`.claude/rules/measurement.md` · `.claude/rules/git.md` ·
+`COMMIT_ERRATA.md`.
+
+## Three defects of mine, in already-committed documents
+
+1. **A falsified research claim** ("ICSE 2026 ran a single-annotator first
+   pass") published to `RESEARCH-CARDS.md` from a retrieval subagent
+   without verification. It was the load-bearing leg of a recommendation to
+   relax the programme's own annotator bar. **Struck.** κ ≥ 0.6 floor
+   restored; three annotators retained.
+2. **P8's acceptance criterion was gameable.** MEASURED:
+   `measure_pattern_reach.py:85` counts a pattern guarded if its string
+   appears anywhere in the corpus tree, so the criterion needed no
+   assertion. My anti-gaming note policed plausibility, not assertions.
+3. **Craft anchor carried at 90 from PROGRAMME.md** instead of the measured
+   88. Caught by me and independently by the reviewer.
+
+## New findings
+
+- **F21 (HIGH):** a page's own canonical URL satisfies
+  `paragraph_has_source()`, so all 27 `<meta>` description claims pass
+  permanently. Disposition in PACK-1.5b §2.
+- **NEW, Tier 0:** `docs/architecture.md:53` (tracked) publishes
+  `1,223 tests`; canonical is **2,349**; the file is outside the auditor's
+  list; `--verify-facts` returns rc=0. Live claim-integrity defect.
+- **NEW, detection:** `highrisk_employment.py` classifies `ai_security`
+  only, not high risk. First measured high-risk recall: **4/5**.
+- **BASELINE §11 contradicts itself:** craft row says "Hold at 90", its
+  arithmetic uses 88 → aggregate is **52.3 or 52.6**. Unresolved by design;
+  Phase 7 arbitrates. Its craft evidence also cites the stale 2,849.
+
+## Projected movement
+
+Mine (corrected): 53.7-57.2. **Reviewer's counter: 52.9-54.5, +0.6 to
++2.2. I accept the counter as more defensible.**
+
+## NEXT
+
+1. **Owner decisions** — 1.5b pack; the `blog-scanning-10-ai-apps`
+   discrepancy (OWNER-INPUT); private remote.
+2. **Phase 4 loop 2**: revise the plan against the 24 accepted objections,
+   re-run HOSTILE REVIEWER fresh. Reprioritise per its ruling — Tier 0 is
+   right, **Tier 2 is where the disproportion is**; cut P8 to 17 prohibited
+   patterns; promote the `docs/*.md` gate gap, version attribution,
+   `.gitignore` scan handling, the 16 `_sha256` sites, and F9's repro.
+3. **Phase 2 loop 2**: add per-item domain-shift notes (B3, C1, C2, C3,
+   C4), then re-run RESEARCH VALIDATOR fresh.
+4. F1 watch item stays open. The green pytest run is not evidence about it.
+
+**Nothing public changed. `main` untouched. Tree clean.**
