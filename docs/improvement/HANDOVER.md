@@ -1,424 +1,313 @@
 # Regula Handover
 
-Written 28 July 2026, at the end of a long session that completed Phase
-1.5 of the improvement programme. Supersedes all earlier versions.
-`.claude/handover.md` is older, superseded history.
+Rewritten 28 July 2026, end of session 3. Supersedes all earlier versions of
+this file. Tracked (owner decision 1); `.claude/handover.md` is superseded
+history and remains untracked.
 
-**Read this sceptically.** This project has a documented history of
-confident-but-wrong statements, and this programme produced **four of
-them from me** in a single phase. All were caught; all are recorded in
-§6 rather than deleted. **Any number you did not personally measure is
-unverified.** Do not repeat a figure from prose; re-measure it.
-
-> **RELOCATED AND NOW TRACKED, 28 July 2026.** This file was
-> `.claude/regula-handover.md`. The warning that used to sit here was that
-> `.gitignore` excluded the whole `.claude/` directory, so one
-> `git clean -xdf` would destroy this handover with no history. The owner
-> resolved that (open decision 1, now closed): **relocate, do not track
-> `.claude/` wholesale.** This file is now
-> `docs/improvement/HANDOVER.md` and is under version control.
-> `docs/improvement/STATE.md` remains the resume file; this remains the
-> narrative.
->
-> **Two redactions were made on relocation**, because
-> `github.com/kuzivaai/getregula` is a **public** repository and this file
-> carried two pieces of owner personal data. Both are in §10 and both are
-> marked in place. Nothing else in this document was altered. See §12 for
-> where every relocated file now lives, and what was held back from the
-> public repo and why.
+**Read this sceptically.** This programme has a documented history of
+confident-but-wrong statements, and **session 3 produced five more of them
+from me**. All were caught, all are recorded in §7 rather than deleted.
+**Any number you did not personally measure is unverified.** Do not repeat a
+figure from prose; re-measure it.
 
 ---
 
 ## 1. START HERE
 
-**Branch: `improvement/2026-08-programme`. `main` is untouched** and still
-represents released v1.9.0. Everything below is **unreleased**. The branch
-is **not pushed**: it has no upstream and does not appear in
-`git ls-remote --heads origin` (checked 28 Jul 2026), so nothing here is
-public yet. The commit count was 25 when this file was first written and
-26 after the relocation commit; **that number goes stale every commit, so
-re-measure it rather than quoting this line**:
-`git log --oneline main..HEAD | wc -l`. Phase state is tracked in
-`docs/improvement/STATE.md`.
+**Branch `improvement/2026-08-programme`. NOT pushed** (no upstream; absent
+from `git ls-remote --heads origin`). **`main` untouched** at `b5ac95c8`,
+identical to `origin/main`. Nothing is public. Tree clean.
+
+Re-measure before trusting anything:
+
+```
+git log --oneline main..HEAD | wc -l          # 42 at time of writing
+git status --porcelain                         # expect empty
+python3 -m pytest tests/ -q --collect-only     # 2,363
+python3 scripts/claim_auditor.py --verify-facts # rc=0
+python3 scripts/site_integrity.py              # rc=0
+python3 scripts/cascade_count.py --check       # rc=0
+```
 
 A fresh session must, in order:
 
 1. Read `docs/improvement/PROGRAMME.md` — the commissioning contract,
-   committed verbatim. It is the specification this work is judged
-   against.
-2. Read `docs/improvement/STATE.md` — the resume file, with the full
-   finding table, triage and open decisions.
-3. Re-measure before trusting anything: `git log --oneline main..HEAD |
-   wc -l`, `git status`, and the gate commands in §9.
+   verbatim. It is the specification this work is judged against.
+2. Read `docs/improvement/STATE.md` — the resume file.
+3. Read `docs/improvement/GATE-REVIEW.md` including its loop-2 addendum.
+4. Re-measure per the block above.
 
-Do not start Phase 2 without doing the above. Do not commit to `main`.
+**Do not commit to `main`. Do not push. Nothing reaches a public surface
+without owner approval.**
 
-## 2. PROGRAMME STATUS
+## 2. WHERE THE PROGRAMME ACTUALLY IS
 
 | Phase | Status |
 |---|---|
-| Session protocol | DONE |
-| Phase 0 — baseline | DONE (`docs/improvement/BASELINE.md`) |
-| Phase 1 — exhaustive code review | DONE (`CODE_REVIEW.md`, `fp_taxonomy.json`) |
-| **Phase 1.5 — integrity-apparatus repair** | **DONE — all four items landed** |
-| **Phase 1.5b — quarantine burn-down** | **NEXT. Not started. Triage prepared.** |
-| Phases 2-8 | NOT STARTED |
+| Phase 0 baseline | DONE (`BASELINE.md`) |
+| Phase 1 code review | DONE (`CODE_REVIEW.md`, `fp_taxonomy.json`) |
+| Phase 1.5 apparatus repair | DONE |
+| **Phase 1.5b** | **LANDED** (`b2bb65a`, `ad1bfca`), partial — see §4 |
+| **Phase 1.5c** | **NEXT. Not started.** Three defects, §5 |
+| Phase 2 | **FAILED validation, loop 1 of 3** |
+| Phase 4 | **FAILED hostile review, loop 2 of 3** |
+| Phases 5-8 | NOT STARTED |
 
-Phase 1.5 was inserted by the owner after Phase 1 found that the tools
-guarding Regula's published claims were themselves defective. Fixing the
-gate had to precede publishing anything new through it.
+**Neither Phase 2 nor Phase 4 has passed its gate. The Phase 4 plan must not
+be executed.** Both stopped deliberately with loops remaining; see §8.
 
-## 3. WHAT PHASE 1.5 FIXED
+## 3. THE QUEUE (owner-confirmed, do not reorder)
 
-| Item | Commit | Evidence |
-|---|---|---|
-| **F7** auditor coordinate drift | `59ac25b` | fixture suite + line-count invariant |
-| **F6** percentage blindness, CSS fence, quarantine | `35fc763` | 3-case fence fixture + shrink-only ratchet |
-| **eli_data** packaging | `7383f33` | verified against a real wheel build |
-| **F1** test-count double-count | `fd212fb` | **10/10 captured runs at 1386/0/963** |
+1. **1.5c** — three defects, three regression pairs, no auditor rewrite.
+2. **Class 1** landing-page derivation, under the F14 guard in §6.
+3. **Re-derivations at HEAD** under one written rule (Trust and Detection).
+4. **The traces** — path-labelled, covering the 8 unexplained misses and the
+   6-fixture divergence set.
+5. **Plan revision** against `HOSTILE-REVIEW-LOOP2.md` §F and both loops'
+   dispositions.
+6. **Loop 3** in a fresh session with the closure-verification brief.
 
-**F1 — the headline.** `tests/test_classification.py` rebinds
-fixture-less tests from 22 sibling modules into its own namespace so the
-custom runner (which discovers by walking `globals()`) can execute them.
-pytest also collects module-level `test_*` names, so every rebound
-function was collected **twice**. The published count was overstated by
-18.5%: `2,821` and briefly `2,849` both double-counted the **same 527
-functions**. Fixed by binding aliases under `RUNNER_ALIAS_PREFIX =
-"_runner_test_"`, which pytest's configured `python_functions =
-["test_*"]` cannot match. **No manual registry** — one was deliberately
-removed as tech debt because it drifted silently.
-**Published count corrected 2,821 -> 2,349, produced by collection, never
-hand-maintained.**
+**P0 (docs/*.md gate coverage) stays parked behind 1.5c.** Extending a
+gate's reach before repairing its sensitivity multiplies false confidence.
 
-**F7.** `strip_noise` blanked inline-code spans with spaces, but
-`` `[^`]*` `` matches across line breaks, so a span wrapping a line lost
-its newline and every later coordinate shifted up by one, cumulatively.
+## 4. WHAT LANDED IN 1.5b, AND WHAT DID NOT
 
-**F6.** `NUMERIC_CLAIM` ended its unit alternation in `\b`; `%` is not a
-word character, so percentage claims were invisible while the docstring
-listed them first. Percent is now a unit. Paired with a narrow fence:
-inline `style=` **values** are blanked (CSS lengths are not claims) while
-`alt`, `title`, `aria-label` stay in scope as user-visible prose.
-`.claim-quarantine.json` holds the pre-existing backlog (**42 unique
-(file, claim) pairs = 45 occurrences**), labelled UNVERIFIED BACKLOG /
-QUARANTINED / NOT ENDORSED, keyed on file + normalised claim text, never
-line numbers. A malformed quarantine **raises** rather than becoming
-silently empty, because an empty quarantine is indistinguishable from a
-healthy gate.
+**Landed** (`b2bb65a`, `ad1bfca`): 83.5% provenance across **14** surfaces;
+F20 version attribution corrected v1.7.4 → **v1.7.0** to match
+`PRECISION.json`; the healthcare hypothetical reframed; **F23** two public
+surfaces claiming 100% synthetic recall corrected; a per-location provenance
+guard with two controls.
 
-**eli_data.** `pyproject.toml` declared `bias_data` and `dpv_data` but
-not `eli_data`, so the wheel omitted the ELI snapshot.
-**This defect was mine** (introduced 27 Jul, pre-programme commit).
+**Held, still open:**
 
-## 4. THE IMMEDIATE NEXT TASK — 1.5b batch pack
+- **§3 class 1** progress bars. Now unblocked by the owner; see §6.
+- **§4.1 `41%`** unverified; **§4.3** 4 pairs untraced. Both under the
+  class-2 bar: reproducible or externally cited, else annotate or correct.
+- **The meta-description occurrence** on `blog-scanning-5-frameworks.html`,
+  held for 1.5c by the pre-landing gate.
 
-**One batch, 42 pairs. Owner approval required before ANY public surface
-changes.** Full triage is in STATE.md. Owner-set disposition bars:
+**The blog 4 pairs are RELEASED, VERIFIED-WITH-SOURCE.** See §7.4 — that
+finding was mine and it was wrong.
 
-- **83.5% precision — first, and it FAILS the bar at five of eight
-  locations.** The auditor is clean (not allowlisted; artefact-verified
-  from `PRECISION.json`), but the bar is that **N=115 and single-labeller
-  provenance are visible or one link away at every point of use**.
-  Single-labeller is disclosed in exactly **one** place repo-wide:
-  `benchmarks/README.md:198`.
-  PASS: `README.md:246`, `benchmarks/README.md`.
-  **FAIL:** `docs/MODEL_CARD.md:143` (links `METHODOLOGY.json`, which has
-  no labeller field), `docs/TRUST.md:157`,
-  `docs/examples/exec-summary-sample.html:89`,
-  `scripts/exec_summary.py:225`, and worst — **`site/about.html:132`, a
-  bare "Published precision on a random corpus: 83.5%" with no N, no
-  labeller, no link, on a public page.**
-  **Do not strip the number**; its successor is Phase 3's corpus.
-  Also: version attribution splits, v1.7.4 on README/TRUST vs v1.7.0 on
-  the artefact and both exec summaries (finding F20).
-- **Class 1, progress-bar percentages (~30 pairs): DERIVE OR REMOVE.**
-  "Corrected" may **not** mean decorating an unmeasured number with a
-  citation. A percentage stays only with a defined numerator and
-  denominator generated from measured data (site_facts pattern,
-  test-backed). "30% of Article 14" has no honest denominator. Options:
-  derived counts ("4 of 7 requirements mapped", computed from crosswalk
-  data), qualitative tiers, or removal. **The approval pack must show the
-  proposed replacement rendering — this changes the landing page's face.**
-  Separately, log "unmeasured coverage percentages on the most public
-  surfaces" in the severity list: predates the programme, and the
-  repaired gate now catches the class (Phase 7 evidence both ways).
-- **Class 2, blog statistics (~9 pairs): verified = reproducible or
-  externally cited.** Methodology plus data or scripts sufficient to
-  reproduce, or an external primary source. **A post asserting its own
-  number is not a source for that number.** Where artefacts do not exist,
-  the honest disposition is an annotation saying so, or a correction.
-- **Class 3, hypotheticals (~3 pairs): rewrite so the framing is explicit
-  in the sentence itself.** If an exemption is still needed it must be
-  **typed (`ILLUSTRATIVE`)**, constrained to framed sentences, carry a
-  control proving a factual claim cannot ride it, and stay **distinct
-  from the shrink-only quarantine**. The constraint is non-negotiable;
-  the design is yours to propose in the pack.
+## 5. PHASE 1.5c — SCOPE IS FIXED AT THREE DEFECTS
 
-The quarantine must be **empty before Phase 6/8 publishes anything** —
-quarantined items would fail the every-number-traces sweep regardless.
+Owner: fence unchanged, three regression pairs, **no auditor rewrite**.
+Lands **before P0** and before anything in Phase 5/6 publishes.
 
-## 5. PHASE 1 FINDINGS (F1-F20)
-
-Full detail in `CODE_REVIEW.md`; severity table in `STATE.md`.
-**[V]** = I verified personally. **REPORTED** = carried on a subagent's
-evidence and **NOT independently verified** — verify before acting.
-
-**Resolved in 1.5:** F1 [V], F6, F7 [V], F13a `eli_data` [V].
-
-**Still open, HIGH:**
-- **F2** `doctor` prints `pip install regula[ast]`; the distribution is
-  `regula-ai`, and **`regula` is a real unrelated PyPI package** (Tkinter
-  wrapper, v0.1.2). Following Regula's own advice installs a stranger's
-  package. 18 occurrences repo-wide. [V]
-- **F3** Default install silently downgrades JS/TS from AST to regex
-  (tree-sitter is an optional extra) while `docs/TRUST.md` claims full
-  AST. On a default install **7 of 8 languages are regex-only**. [V]
-- **F4** CycloneDX ML-BOM **fails official schema validation** —
-  `modelCard.modelParameters.owner` is not permitted, and was never valid
-  in 1.6 either. `scripts/sbom.py:550`. [V]
-- **F5** **183 of 391 tier regexes (46.8%) are exercised by no test
-  input** — unguarded, not broken. Includes the new Article 5 NCII
-  prohibition. Re-measure with
-  `python3 docs/improvement/measure_pattern_reach.py`. [V]
-- **F8** `regula check` never uses the AST engine; two unreconciled
-  detectors over the same code. [REPORTED]
-- **F9** Scan cache keys lack a project root, so provenance may replay
-  across projects and defeat `--scope`. **[REPORTED — reproduce before
-  fixing; owner instruction: minimal failing case or downgrade.]**
-- **F10** No test validates any generated artefact against a published
-  schema. [V]
-- **F11** Precision corpus is **Python-only**; recall never measured. [V]
-- **F12** The auditor's own CI entry points (`verify_facts`, `main`) are
-  untested. [REPORTED]
-
-**Still open, MEDIUM/LOW:** F13b `scripts/dashboard/` missing from the
-wheel so `api-server` has no dashboard [V] · F14 crosswalk 108 days
-stale, does not consume the delta-log, `owasp_agentic` missing from
-articles 11 and 12 [V] · F15 `test_questionnaire_scoring.js` is a full
-data copy, already drifted, never executed [REPORTED] · F16 superlinear
-scan performance, 44ms/file at 13 files vs 299ms/file at 222 [V] · F17
-README mismatches: `--ci` gives no SARIF, `demo` does not need the clone,
-jurisdiction crosswalk is EU-only [REPORTED] · F18 zero SPDX headers
-despite a composite licence [REPORTED] · F19 `ci_heal.py` (588 lines)
-dead [REPORTED] · F20 version-attribution contradiction [V].
-
-**THE CENTRAL STRATEGIC FINDING.** All 24 high-risk false positives are
-**semantic, not lexical**. The firing patterns use the statute's own
-words — "task allocation" is Annex III 4(b) language that means compute
-scheduling in ML code. **Regex tightening cannot fix this class without
-destroying recall.** Any plan whose detection lever is "better regexes"
-should be rejected at Phase 4. The fix space is context: package-level
-domain classification, co-occurrence requirements, path scoping, or an
-optional semantic verification tier.
-
-## 6. MY OWN ERRORS — all four, with the rule that came out of them
-
-Recorded because the honesty requirement outranks how the record reads,
-and because Phase 6 requires an anti-gaming audit.
-
-1. **F7 overstated by two orders of magnitude.** I published a 237-line
-   coordinate error with a misquoted snippet. Real drift is **1-3 lines**
-   and nothing was misquoted. Cause: read multi-file auditor output and
-   attributed one file's finding to another. Caught by building the
-   fixture the fix required. Severity revised HIGH -> MEDIUM.
-2. **Claimed `verify_seo` gated CI.** It is untracked, in `.gitignore`,
-   and in no workflow. I trusted the prior handover's prose instead of
-   grepping `.github/`.
-3. **Cascaded the test count during Phase 0**, whose constraint is
-   "change nothing", and called it routine maintenance. Reverted at
-   `a9ad2e8`; logged as a deviation.
-4. **Measured the reconciliation chain on a broken rig.** Reported 185
-   and 168 unsourced findings from patched **copies** run out of the
-   scratchpad; `REPO_ROOT` derives from module location, so repo-file
-   citations failed and sourced paragraphs counted as unsourced.
-   **185 was never a state the repo was in.** A later "17" correction
-   drew on the same bad pair and is also wrong.
-
-**Common root:** the measuring rig was not identical to the thing
-measured. **Rule now in force: measure in place, one variable at a time,
-and never trust a number produced by a copy.**
-
-**Two process deviations, both from `git add -A`:**
-- The count manifest and its test landed in `140e7fb` instead of the
-  count-correction commit; that message does not mention them.
-- **The F1 code landed in `8a5888d`, a checkpoint commit whose message
-  states F1 was NOT landed** — the message contradicts its own contents.
-
-History is immutable; both are disclosed in `fd212fb` and STATE.md.
-**Do not use `git add -A` in this programme.** Stage explicitly.
-
-## 7. THE RECONCILED CHAIN (correct figures)
-
-Measured in place, real file, real `REPO_ROOT`, 56 site pages,
-occurrence-level in both columns:
-
-| stage | claims | unsourced |
-|---|---|---|
-| S1 pre-F6 (`59ac25b`) | 182 | 0 |
-| S2 + percent detection | 411 | 61 |
-| S3 + CSS fence | 370 | 45 |
-| S4 + quarantine (current) | 370 | 0 |
-
-`unsourced` is a subset of `claims` at every stage. Percent detection
-surfaces 61 findings; the fence removes 41 claims and **16** findings;
-quarantine holds 45 occurrences = 42 unique pairs.
-
-## 8. SCORING — working numbers only
-
-Phase 0 re-measured the rubric anchors (measured-over-embedded).
-**Provisional aggregate 52.3 against the programme's assumed 57**, driven
-by Detection 42 -> 38 and Trust 92 -> 72.
-
-**All mid-programme movements are WORKING NUMBERS.** The Phase 7
-independent scorer arbitrates, **including over my own 92 -> 72
-movement**. That movement rested on three legs; leg three (F7) has since
-been corrected downward, so direction is intact but **the level is
-deliberately not recomputed**. Annotated in both score locations.
-
-## 9. VERIFICATION STATE (measured at branch tip, 28 Jul)
-
-| Gate | Result |
+| Defect | Regression pair required |
 |---|---|
-| `python3 -m pytest tests/ -q --collect-only` | **2,349 collected** |
-| Custom runner `python3 tests/test_classification.py` | **1386 / 0 / 963**, ten consecutive captured runs |
-| `python3 scripts/claim_auditor.py --verify-facts` | **rc=0**, 137 refs across 16 files |
-| Auditor over 56 site pages | 370 claims, **0 unsourced** (45 quarantined) |
-| `python3 scripts/site_integrity.py` | OK |
-| `python3 -m scripts.cli self-test` | rc=0, 6/6 |
-| Phase 1.5 guard suites (27 tests) | all pass |
-| ruff F821/F811 on `scripts/`, `tests/` | clean |
+| **F21** self-citation: a page's own canonical URL satisfies `paragraph_has_source()` | a claim sourced only by its own URL **must fail**; one with a genuine citation must pass |
+| **F22** `claim_auditor.py:850` `if found_val < int(actual_str) * 0.5: continue` — any stale number below half canonical is silently skipped | a stale **1,100** against canonical **2,363** **must be caught** |
+| **F24** the auditor derives precision from `PRECISION.json` only and cannot derive a recall figure at all | fix shape is a **committed canonical recall artefact** (fractions with path and gate condition, produced by the benchmark run) that the auditor verifies published fractions against; a compliant matching fraction passes, a bare or mismatched one fails |
 
-Notes: `verify_seo.py` passes but is **untracked and gates nothing**. The
-21 ruff findings in `benchmarks/synthetic/fixtures/` are intentional and
-pre-existing. A full `pytest tests/ -q` run takes ~15 min and was last
-green before the F1 rebind; **re-run it early next session** to confirm
-the corrected collection executes clean end to end.
+`scripts/check_selfref_sourcing.py` already implements F21 detection and is
+in use as the 1.5b pre-landing gate.
 
-**F1 WATCH ITEM, OPEN.** An early post-fix run reported `1,380 passed, 1
-failed` with function count intact at 963. Did not reproduce across ten
-runs; **failure text never captured** (scrolled through a pipe), so the
-failing test is **unknown**. Classified as an unreproduced transient,
-**not a diagnosis**.
-Repro: `timeout 2400 python3 tests/test_classification.py > run.txt 2>&1`
-(redirect to a file; do not pipe, or the failure line is lost again).
+## 6. CLASS 1 — UNBLOCKED, WITH A GUARD
+
+Replacement rule, **in order of preference**:
+
+1. **Derived counts** computed from crosswalk data, site_facts pattern,
+   test-backed ("4 of 7 requirements mapped").
+2. **Qualitative tiers** where no honest denominator exists.
+3. **Removal** where neither works.
+
+**THE GUARD, and it is not optional.** F14 found the crosswalk **108 days
+stale** with named gaps (`article_11` missing its Omnibus route;
+`owasp_agentic` absent from articles 11 and 12). Therefore:
+
+- **Any article on F14's known-stale list gets tier-or-removal, not a
+  derived count**, until the crosswalk refresh lands.
+- **Every derived count that publishes carries the crosswalk version and the
+  date it was computed from.**
+- **The derivation is scripted and test-backed** on the site_facts pattern.
+  Never hand-computed.
+
+**Locales:** changes that are purely numeric or structural, mirroring the
+English disposition, land now. **Any new DE/PT-BR prose is held**, with
+exact diffs presented for competent-speaker sign-off.
+
+The real `regula gap` output is already captured in `PACK-1.5b.md` §3,
+including the NOTE the site omits, which is the denominator disclosure.
+
+## 7. MY OWN ERRORS THIS SESSION — all five
+
+Recorded because the honesty requirement outranks how the record reads.
+
+**7.1 The 8-of-14 table.** The pack claimed to cover *every* location of the
+83.5% figure and listed **8**. The tracked total is **14**. The owner
+approved a disposition on that table, so **approval was granted on
+incomplete evidence** — logged as an approval-scope deviation in STATE.md.
+The six missed included `site/index.html`, the landing page.
+
+**7.2 The 58-vs-34 scope figure.** I reported 58 ungated docs files; the
+tracked, publishable figure is **34**. I counted untracked local scratch —
+**one section after correcting a reviewer for exactly that conflation**.
+
+**7.3 A gate narrower than the standard, in the test written to close one.**
+My provenance guard enumerated correctly but checked at file level, so a
+bare figure passed if the disclosure sat far away. Upgraded to per-location;
+it immediately found 4 more real gaps, plus a 5th after the first fixes.
+
+**7.4 The blog "discrepancy" that never existed.** I reported that
+`blog-scanning-10-ai-apps.html` did not reconcile with tracked scan data,
+called it *the single most serious item in the pack*, and escalated it. **The
+post's own methodology note discloses the 665 figure**, names both scans with
+versions and dates, and explains the difference. I had not read that far into
+the post. Cost: one escalation instead of a false correction to a correct
+post — **because it was quarantined rather than acted on**.
+
+**7.5 R2 closed as indeterminate too early.** I said no committed artefact
+could settle 389 vs 409. The owner named two stores I had not checked. The
+v1.7.0 tag and the 23 April tree both settle it: **387**, by two independent
+methods. Neither published number was derivable under any unit.
+
+**Plus a near-miss that was not a claim error but a process one:** cascading
+a count by global text replace rewrote a package URL hash path and an
+integrity `size` field inside `uv.lock`. Reverted before commit. `git diff`
+caught it; nothing else would have.
+
+## 8. WHY BOTH GATES ARE STOPPED, DELIBERATELY
+
+**Phase 4, loop 2 of 3: FAIL.** 9 CLOSED, 12 PARTIALLY CLOSED, 3 COSMETIC,
+18 new MAJOR. All three closures I pre-flagged as likely cosmetic **failed on
+merit** — self-flagging is not self-correcting.
+
+**Phase 2, loop 1 of 3: FAIL.** Citation layer passed well; the failure is in
+inference. I published a **falsified claim** (an ICSE 2026 single-annotator
+first pass that neither ICSE 2026 paper performed) as the load-bearing leg of
+a recommendation to relax the programme's own annotator bar. Struck; κ ≥ 0.6
+floor restored; three annotators retained.
+
+**The last loop is not being spent under context pressure.** Revising and
+immediately re-reviewing is how the loop-1 and loop-2 errors were introduced.
+The cap is a ceiling, not a quota.
+
+## 9. MEASURED FACTS WORTH CARRYING FORWARD
+
+**Recall, and it must never be quoted bare.** Scanner path (`regula check`,
+what a user runs): **10/30 default, 14/30 domain-declared, 19/30 with both
+gates satisfied**. Classifier path (`classify()`, what
+`benchmarks/synthetic/run.py` measures): **16/30**. **The two disagree by six
+fixtures on the same corpus** — that is F8, quantified for the first time.
+**Every published recall fraction labels path and gate condition.**
+
+**The diagnosis is the durable output, not the number.** Of 20 default-scan
+misses: **13 opt-in domain suppression** (9 of 17 high-risk domains are
+suppressed by default), **4 AI-indicator gate**, **3 genuine pattern gaps**.
+**17 of 20 are gates, not patterns.** Pattern work addresses 3 of 20.
+
+**8 fixtures still miss with patterns matching and both gates satisfied.**
+Cause not determined, not guessed. These plus the 6-fixture divergence set
+are the trace targets, likely overlapping.
+
+**The projection is WITHDRAWN.** It was computed from a Trust value the same
+document forbade using, quoted the favourable end of an unresolved baseline,
+and silently fixed craft at 88 while claiming indeterminacy. **No movement
+figure until Trust and Detection are re-derived at HEAD under one written
+rule.**
+
+**BASELINE §11 contradicts itself:** craft row says "Hold at 90", arithmetic
+uses 88, so the baseline is **52.3 or 52.6**. Unresolved by design; Phase 7
+arbitrates.
 
 ## 10. STANDING RULES (owner-set, non-negotiable)
 
-- **Never suppress or dismiss a security alert.** Leave false positives
-  open and explain them. The red PR CodeQL check is accepted.
-- **No owner personal information in the repo, of any kind.** (REDACTED
-  ON RELOCATION, 28 Jul 2026. This rule was previously written naming one
-  specific personal category. Naming it put that detail into a public
-  repository, which is the thing the rule exists to prevent. The general
-  form above is the rule and is strictly stronger.)
+- **Never suppress or dismiss a security alert.** Leave false positives open
+  and explain them.
+- **No owner personal information in the repo, of any kind.**
 - **No em dashes** in repo copy, commits, docs or replies.
-- **All three locales (EN/DE/PT-BR) in the same change.** New DE/PT-BR
-  prose needs competent-speaker sign-off.
+- **All three locales in the same change**; new DE/PT-BR prose needs
+  competent-speaker sign-off.
 - **Region pages `site/regions/*.html` are GENERATED** from
-  `content/regulations/*.py`; never hand-edit (`uae.html` and
-  `regulations.html` are hand-maintained exceptions).
-- **Run the control before reporting a result.** A blank gate is not a
-  green gate; a piped exit code is not an exit code (use PIPESTATUS).
-- **Stdlib-only core, offline by default, no telemetry.** Optional
-  networked features are extras, off by default, with an ADR.
+  `content/regulations/*.py`. `uae.html` and `regulations.html` are
+  hand-maintained exceptions.
+- **Run the control before reporting a result.** A blank gate is not a green
+  gate; use `PIPESTATUS` or redirect to a file.
+- **Stdlib-only core, offline by default, no telemetry.** Optional networked
+  features are extras, off by default, with an ADR. Stdlib-only is a
+  **runtime-core** constraint, not a CI constraint.
 - **Never commit to `main`; no force-push; no history rewrite.**
-- **Stage explicitly; no `git add -A`** (see §6).
-- Owner deliverables go to the Downloads folder on the Windows side of
-  the WSL mount. (REDACTED ON RELOCATION, 28 Jul 2026: the literal path
-  was recorded here and contains a personal Windows username.)
-- Programme principles (evidence tags, loop caps of 3, stop-and-ask
-  gates, no metric gaming) are in `PROGRAMME.md` and bind all work.
+- **Stage explicitly; no `git add -A`** (`.claude/rules/git.md`).
+- **Count propagation uses `scripts/cascade_count.py` only.** A manual bulk
+  numeric edit is now a rule violation, not a risk.
+- **Mid-landing expansion** is permitted only when (a) it applies an
+  already-approved disposition class to newly discovered instances, or (b)
+  leaving it would publish a known-false claim through the same commit
+  window. Flag every expansion in the commit body and the report; anything
+  involving discretionary framing goes for ratification.
+- Owner deliverables go to the Downloads folder on the Windows side of the
+  WSL mount.
 
-## 11. OWNER DECISIONS
+## 11. LOADED RULES — read these, they are the compressed lessons
 
-**1. Should `.claude/` be tracked? CLOSED 28 Jul 2026: relocate, do not
-track wholesale.** Executed. Programme documents moved to
-`docs/improvement/`, the DPVCG draft to `docs/`, and `.claude/rules/` and
-`.claude/commands/` un-ignored by specific subpath while
-`settings.local.json`, `skills/`, `agents/` and all session scratch stay
-ignored. See §12.
-**The sensitivity carve-out was RATIFIED by the owner on 28 Jul 2026.**
-The three strategy documents stay at `getregula-internal/`, and the
-calibration (competitor names public, positioning private) is accepted as
-recorded. The deviation from the literal instruction is closed as
-approved, not merely disclosed.
+`.claude/rules/measurement.md` is the highest-value file in the repo for a
+new session. Nine rules, each paid for by a wrong number:
 
-**2. Do the two `git add -A` deviations need more than disclosure? CLOSED
-28 Jul 2026: disclosure stands, plus two additions.** No history rewrite.
-`docs/improvement/COMMIT_ERRATA.md` now carries both entries where a
-bisecting reader will look, and `.claude/rules/git.md` makes the staging
-rule structural rather than a promise that dies at the next context reset.
+1. Measure in place. 2. One variable at a time. 3. Never trust a number
+produced by a copy, including your own earlier one. 4. Require positive proof
+the code path executed. **4b.** Verify a file is tracked before calling it a
+published surface. **4c.** Any completeness claim must be produced by
+enumeration, never by hand. **4d.** Enumeration picks the files; it does not
+license a blind replace. **4e.** Before asserting two artefacts contradict,
+read both in full. 5. Passing a gate is not evidence of meeting a standard
+when the gate tests something narrower.
 
-**3. 1.5b batch pack. STILL OPEN.** Must be approved before any public
-surface changes, including the landing-page rendering replacements.
+Also `.claude/rules/git.md` (explicit staging, errata discipline) and
+`.claude/rules/tests.md`, `quality-standards.md`, `python-scripts.md`,
+`site-html.md`, `regulatory-content.md`.
 
-**4. Backup for internal-only material. STOPGAP AUTHORISED and executed
-28 Jul 2026.** `getregula-internal/` is now a **local-only git
-repository**: `git init`, initial commit `756fb43`, nine files tracked,
-**no remote and never to have one**. A `pre-push` hook in
-`.git/hooks/pre-push` refuses every push as a hard guard; do not remove
-it. `docs/moat-research.md` (32,911 bytes, previously gitignored and
-historyless) was moved into it. Grep before the move found only two
-references, both incidental (the `.gitignore` line excluding it, and a
-mention in §12 of this file as an example of the not-public class), so
-nothing broke and no pointer stub was needed.
-**The private-remote decision remains open and stays on
-`OWNER_ACTIONS.md`.** A local repo gives history but still lives on one
-disk. This is a stopgap, not the answer.
+## 12. OPEN OWNER ITEMS
 
-Also open from `docs/improvement/OWNER_ACTIONS.md`, none started: post the
-DPVCG comment (recommendation: include concrete concepts first); recruit
-annotators 2 and 3 (**the binding constraint on the corpus asset** — a
-multi-week social task, not reducible to one day); Zenodo account and
-dataset licence; BSI ART/1 enquiry (costs UNVERIFIED — ask BSI); GSC
-re-auth (`invalid_grant`). **Closed:** the EUR-Lex check — two
-independent retrievals confirmed Regulation (EU) 2026/1744 contains **no
-agentic-AI category and no 2030 date**, and Regula asserts neither.
+1. **1.5b residuals**: R1 — the v1.6.1 raw output is not committed though the
+   post says both versions are (annotation fix). **R2 sub-item still open** —
+   the **330** figure for v1.6.1 cannot be settled from a tag because **no
+   `v1.6.1` tag exists** (only v1.6.0 and v1.6.2).
+2. **Private remote for `getregula-internal/`** (`OWNER_ACTIONS.md` item 9).
+   It is a local-only git repo with a `pre-push` hook; history but one disk.
+3. `OWNER_ACTIONS.md` items 1, 2, 3, 5, 7 unstarted. Item 4 closed; item 8
+   answered as F21.
+4. **Rater recruitment** remains the binding constraint on the corpus, and
+   the validator's ruling means it **cannot** be relaxed to two raters on the
+   evidence offered.
 
-## 12. WHERE THINGS ARE (rewritten 28 Jul 2026 after the relocation)
+## 13. WHERE THINGS ARE
 
-**Tracked programme documents** in `docs/improvement/`:
-`PROGRAMME.md` (contract, verbatim) · `STATE.md` (**resume file**) ·
-`BASELINE.md` · `CODE_REVIEW.md` · **`HANDOVER.md` (this file)** ·
-**`PHASE0_VERIFICATION.md`** (§E redacted) ·
-**`OWNER_ACTIONS.md`** (§6 redacted) · **`COMMIT_ERRATA.md`** ·
-`fp_taxonomy.json` · `measure_pattern_reach.py`.
+**Tracked, `docs/improvement/`:** `PROGRAMME.md` (contract) · `STATE.md`
+(resume) · `BASELINE.md` · `CODE_REVIEW.md` · **`HANDOVER.md`** (this) ·
+`PHASE0_VERIFICATION.md` · `OWNER_ACTIONS.md` · `COMMIT_ERRATA.md` ·
+`PACK-1.5b.md` · `RESEARCH-CARDS.md` · `PLAN-PHASE4.md` ·
+`PLAN-PHASE4-v2.md` · `HOSTILE-REVIEW-DISPOSITIONS.md` ·
+`HOSTILE-REVIEW-LOOP2.md` · `GATE-REVIEW.md` · `fp_taxonomy.json` ·
+`measure_pattern_reach.py`.
 
-**Tracked elsewhere:** `docs/dpvcg-contribution-draft.md` (moved from
-`.claude/`, unredacted) · `.claim-quarantine.json` ·
-`data/published_count_manifest.json` · `docs/UX-REVIEW-2026-07.md` ·
-`.claude/rules/*.md` (five, plus the new `git.md`) ·
-`.claude/commands/*.md` (three) ·
-Phase 1.5 guards: `tests/test_collection_integrity.py`,
-`test_claim_auditor_coords.py`, `test_claim_auditor_percent.py`,
-`test_claim_quarantine.py`, `test_packaged_data.py`,
-`test_published_count_manifest.py`.
+**Tracked elsewhere:** `docs/dpvcg-contribution-draft.md` ·
+`benchmarks/headtohead/RESULTS-synthetic-2026-07-28.md` and
+`RESULTS-synthetic-v2-2026-07-28.md` + raw JSON ·
+`benchmarks/synthetic/` (manifest v2.0, 38 fixtures) ·
+`scripts/cascade_count.py` · `scripts/check_selfref_sourcing.py` ·
+`.claude/rules/*.md` · `.claude/commands/*.md` ·
+guards: `tests/test_precision_provenance.py`, `test_cascade_count.py`,
+`test_collection_integrity.py`, `test_claim_auditor_coords.py`,
+`test_claim_auditor_percent.py`, `test_claim_quarantine.py`,
+`test_packaged_data.py`, `test_published_count_manifest.py`.
 
-**Held OUTSIDE the repository, deliberately, at `getregula-internal/`:**
-`research-sweep-2026-07.md` · `moat-programme-2026-07.md` ·
-`competitive-intelligence-2026-07.md` (extracted from the two redacted
-files above) · `README.md` explaining the split.
-**Why:** `github.com/kuzivaai/getregula` is **public** (verified 28 Jul
-2026), these documents are competitive and commercial strategy, and the
-repo's own `.gitignore` already declares that class not-public
-(`docs/competitor-analysis.md`, `docs/moat-research.md`, `analysis/`,
-`planning/`). Note the calibration: competitor **names** were NOT
-redacted anywhere, because the repo already names its comparison set
-publicly in `benchmarks/headtohead/PREREGISTRATION.md` and `adapters.py`.
-What was held back is positioning work: pricing intel, star counts,
-Regula's absence from a competitor's comparison page, and the ranked
-commercial strategy. This directory has no version control and no backup
-(open decision 4, §11).
+**Outside the repo, deliberately, `getregula-internal/`** (local-only git
+repo, no remote, `pre-push` hook refuses): `research-sweep-2026-07.md` ·
+`moat-programme-2026-07.md` · `competitive-intelligence-2026-07.md` ·
+`moat-research.md` · `originals-pre-redaction/` · `README.md`.
+**Why:** the repo is public; these are competitive and commercial strategy.
+**Calibration: competitor names were NOT redacted** — the repo already names
+its comparison set publicly. What is held back is positioning work.
 
-**Still in `.claude/` and still ignored:** `handover.md` (old, superseded
-by this file) · `settings.local.json` · `skills/` · `agents/` ·
-`worktrees/` · pre-programme planning documents from June 2026. These
-remain one `git clean` from gone. That is a deliberate scope boundary,
-not an oversight: the owner's decision covered the programme's documents,
-and the June material is superseded. Flag if any of it should be kept.
+## 14. THE ONE THING TO UNDERSTAND
 
-**Already delivered to the owner** (Downloads folder, Windows side):
-`Regula-Phase0-Verification-2026-07-27.docx`,
-`Regula-Moat-Programme-Session-Report-2026-07-27.docx`,
-`Regula-Business-Dossier-2026-07-27.docx`. These are gitignored by
-`*.docx` and are not in the repo.
+The programme is further from the Phase 4 gate than it looked three sessions
+ago, and **that is the checks working**. Two independent subagents failed my
+work; a per-location guard failed my own guard; a cascade tool failed its own
+first three designs; and the single most serious finding I escalated turned
+out not to exist.
+
+Every one of those was caught by an instrument or a charter, not by
+confidence. **Keep the distance honest and keep the controls in front of the
+claims.**
