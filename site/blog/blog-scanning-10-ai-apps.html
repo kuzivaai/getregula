@@ -163,6 +163,16 @@
     </div>
     <h1>I scanned 10 open-source AI apps for EU AI Act compliance. Here&rsquo;s what I <span class="hl">found.</span></h1>
     <p style="font-style:italic;color:var(--text-dim);font-size:0.85rem;margin-bottom:12px;">Original scan with Regula v1.6.1 (330 patterns); re-scan with v1.7.0 (387 tier regexes). Current version has 419.</p>
+    <aside class="provenance-note" style="font-size:0.85rem;margin-bottom:16px;">
+      <strong>Provenance note, added 28 July 2026.</strong> Three figures on this page are annotated rather than corrected, because correcting them would mean substituting a number nobody can reproduce for another.
+      <ul>
+        <li><strong>330 patterns (v1.6.1) is UNSETTLEABLE.</strong> There is no <code>v1.6.1</code> git tag and no 1.6.1 release on PyPI, so no artefact records what that version counted. Measured at the tags that do exist, using the current counting script: v1.6.0 gives 219 and v1.6.2 gives 386, so 330 is arithmetically consistent with sitting between them, and that is the strongest statement the evidence supports. It is not confirmation.</li>
+        <li><strong>The unit is not fixed either.</strong> Run against the same v1.6.2 tree, that version&rsquo;s own counting script gives 358 and the current one gives 386. A 28-count gap on identical code means a bracket cannot settle a figure whose definition moved.</li>
+        <li><strong>387 does not reproduce at the v1.7.0 tag; 386 does.</strong> Both that version&rsquo;s own script and the current one give 386. This page also says 389 further down, and 387 and 389 cannot both be right. Flagged for the owner rather than changed here, because the 387 on record was reached by two methods that have not been re-run.</li>
+        <li><strong>The v1.6.1 raw scan output is NOT committed</strong>, although the closing note below says output for both versions is available. Only the v1.7.0 re-scan of 23 April 2026 is in <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/blog_scan_2026_04">benchmarks/results/blog_scan_2026_04</a>, and its README says so. The v1.6.1 files were never added.</li>
+      </ul>
+      Method and figures: benchmarks/results/blog_scan_2026_04/README.md and scripts/site_facts.py.
+    </aside>
     <p class="standfirst">The EU AI Act&rsquo;s high-risk obligations take effect in August 2026 &mdash; though the <a href="https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-regulation-proposal">Omnibus simplification proposal</a> (February 2026) may push certain deadlines to December 2027 if adopted. Either way, the regulation is law. It applies to AI systems deployed in or affecting the EU market.</p>
 </div>
 
