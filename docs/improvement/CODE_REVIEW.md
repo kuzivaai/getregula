@@ -501,30 +501,57 @@ Additionally, `paragraph_has_source()` accepts the bare words **`see`**
 and **`ref`**, or any URL however irrelevant, as sourcing for every claim
 in the paragraph.
 
-#### 8.5.1 NEW — reported line numbers and snippets are wrong [V, found this session]
+#### 8.5.1 CORRECTED — reported line numbers drift by a few lines [V]
 
-Discovered while using the auditor on this very document. It reported an
-unsourced numeric claim as:
+> **This section originally claimed a 237-line error and misquoted
+> snippet. That was wrong, and I published it. Retained in corrected form
+> rather than deleted.**
+>
+> **What I got wrong.** I ran the auditor over several files at once, saw
+> `L108 [numeric] '1 findings'`, searched only `CODE_REVIEW.md`, found
+> `'0 findings'` at line 345, and concluded the coordinates were off by
+> 237 with a mangled snippet. In fact I had attributed a finding from a
+> different file's section of the multi-file output to the wrong file.
+> The magnitude was overstated by roughly two orders of magnitude, and
+> the snippet was never misquoted at all.
+>
+> **How it was caught.** Building the fixture regression test the fix
+> required. A single-file probe with a claim planted at a known line
+> reported that line and that snippet exactly — which contradicted my own
+> finding and forced the re-check.
 
-```
-L108 [numeric] '1 findings'
-```
+**The real defect, MEASURED.** Reported coordinates drift *upward*, and
+the drift accumulates with depth in the file. Against `CODE_REVIEW.md` as
+of `a6f7001`:
 
-The actual match was **`'0 findings'` at true line 345** — the line number
-is off by 237 and the quoted snippet does not match the text found.
-MEASURED by re-running `claim_auditor.NUMERIC_CLAIM` over the same file
-and computing `text[:match.start()].count('\n')+1`.
+| claim | reported | true | drift |
+|---|---|---|---|
+| `103 files` | L208 | 209 | -1 |
+| `2,849 tests` | L226 | 228 | -2 |
+| `136 files` | L363 | 366 | -3 |
+| `190 lines` | L463 | 466 | -3 |
 
-Consequence: anyone acting on auditor output is sent to the wrong line
-with the wrong quote. I lost three patch attempts to this before
-instrumenting the regex directly — which is the practical cost, repeated
-for every contributor who ever tries to clear a finding. It also
-undermines the gate's own credibility: an instrument whose coordinates
-are wrong is hard to trust about the finding itself.
+**Root cause.** `strip_noise`'s `_blank_inline` replaced inline-code spans
+with `" " * len(span)`. The inline-code regex `` `[^`]*` `` matches across
+line breaks, so a span wrapping a line lost its newline — shifting every
+later coordinate up by one per wrapped span. Three such spans existed in
+this document, matching the observed drift exactly. Every other
+substitution in `strip_noise` already preserved newlines via `_blank`;
+this one branch did not.
 
-**Severity: HIGH (usability of the primary integrity gate).
-Dimension: Trust & integrity.** This did not appear in either audit; it
-surfaced only from dogfooding the tool on new prose.
+**Fixed** by preserving newlines inside blanked inline spans. Verified:
+line count now preserved (524 -> 524, previously 524 -> 521) and all four
+coordinates above report exactly. Guarded by
+`tests/test_claim_auditor_coords.py`, whose root-cause test asserts
+`strip_noise` never changes a file's line count — killing the class, not
+just the instance.
+
+**Severity: MEDIUM, revised down from HIGH.** A drift of one to three
+lines still misdirects whoever is clearing a finding, and still made
+triage harder during this session, but it is a nuisance rather than the
+credibility-destroying defect I first described. Dimension: Trust &
+integrity.
+
 
 **The single highest-leverage one-line fix available in the repo:**
 removing the trailing `\b` at `claim_auditor.py:69` would make every
