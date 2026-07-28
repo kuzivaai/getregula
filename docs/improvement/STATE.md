@@ -555,6 +555,54 @@ would multiply that cost 185 times. F7 lands before 1.5b starts.
 | F18 | Zero SPDX headers despite a composite licence | LOW | Craft | REPORTED |
 | F19 | `ci_heal.py` (588 lines) and three other modules are dead | LOW | Craft | REPORTED |
 | F20 | Version attribution contradiction: PRECISION.json v1.7.0 vs README v1.7.4 | LOW | Trust | [V] me |
+| **F21** | **A page's own canonical URL satisfies `paragraph_has_source()`, so every `<meta>` description number is auto-sourced and can never be flagged** | **HIGH** | **Trust** | **[V] me, MEASURED 28 Jul** |
+
+### F21 — the meta-description gap (OWNER_ACTIONS item 8, answered)
+
+The question was whether `claim_auditor` sweeps `<meta>` content. **It
+does** — the tags are not blanked by `strip_noise`, and the auditor
+extracts **27 claims** from numeric `<meta>` description lines across the
+56 site pages. So the feared gap ("meta is invisible to the gate") is not
+the real one.
+
+**The real gap is worse, because the gate looks green.** All 27 of those
+claims are suppressed with reason `url`. The `<head>` block parses as one
+paragraph, and it contains `<link rel="canonical"
+href="https://getregula.com/...">`. `paragraph_has_source()` returns True
+on its first check, `URL_RE.search(paragraph)`. **The page's own address
+is accepted as the source for every number in its own `<head>`.**
+
+MEASURED 28 Jul 2026, in place, real module, real `REPO_ROOT`, counting
+with `scan_file` semantics so the total reconciles to the gate's own 370:
+
+| source reason | claims |
+|---|---|
+| NOT sourced (then allowlist + quarantine) | 167 |
+| `url` | 92 |
+| `citation-word` | 88 |
+| `html-link` | 22 |
+| `file-ref:README.md` | 1 |
+| **total** | **370** (gate reports 370) |
+
+**16** of those claims sit in a paragraph whose URL context includes a
+self-canonical link. Real examples of numbers currently riding this:
+`site/blog/blog-scanning-5-frameworks.html:24` "562 findings",
+`site/blog/blog-article-5-prohibited-practices.html:29` "35M" and "7%".
+
+**Consequence.** The originating worry was a stale search-index snippet
+showing "398 risk patterns, 12 frameworks" against the canonical 419/13.
+If that drift existed in a `<meta>` description, **the gate would not
+catch it.** Every meta number is permanently pre-sourced.
+
+**Error class: the same one as 83.5%.** The gate tests "is there a URL in
+this paragraph", the standard is "does this number trace to something
+that supports it". A self-referential link satisfies the first and is
+worthless against the second. Now rule 5 in `.claude/rules/measurement.md`.
+
+**Scope discipline:** logged, not fixed. The disposition belongs in the
+1.5b pack because it is the same instrument. Note the fix is NOT "stop
+sweeping meta": the sweep is correct and should stay. The fix is that a
+self-referential URL must not count as provenance.
 
 Sequencing note for Phase 3/4: F1, F6 and F7 are all defects **in the
 integrity apparatus itself**. They should be fixed before any work that

@@ -337,6 +337,11 @@ track wholesale.** Executed. Programme documents moved to
 `.claude/commands/` un-ignored by specific subpath while
 `settings.local.json`, `skills/`, `agents/` and all session scratch stay
 ignored. See §12.
+**The sensitivity carve-out was RATIFIED by the owner on 28 Jul 2026.**
+The three strategy documents stay at `getregula-internal/`, and the
+calibration (competitor names public, positioning private) is accepted as
+recorded. The deviation from the literal instruction is closed as
+approved, not merely disclosed.
 
 **2. Do the two `git add -A` deviations need more than disclosure? CLOSED
 28 Jul 2026: disclosure stands, plus two additions.** No history rewrite.
@@ -347,13 +352,19 @@ rule structural rather than a promise that dies at the next context reset.
 **3. 1.5b batch pack. STILL OPEN.** Must be approved before any public
 surface changes, including the landing-page rendering replacements.
 
-**4. NEW, opened 28 Jul 2026: how should internal-only programme material
-be backed up?** The relocation moved competitive and commercial strategy
-to `getregula-internal/`, a plain directory outside the repository. That
-kills the `git clean` risk, which was the point, but it has **no version
-control and no backup**, so it trades one durability gap for a smaller
-one. A private git remote would close it properly. Owner call, because it
-means creating an account or a repo.
+**4. Backup for internal-only material. STOPGAP AUTHORISED and executed
+28 Jul 2026.** `getregula-internal/` is now a **local-only git
+repository**: `git init`, initial commit `756fb43`, nine files tracked,
+**no remote and never to have one**. A `pre-push` hook in
+`.git/hooks/pre-push` refuses every push as a hard guard; do not remove
+it. `docs/moat-research.md` (32,911 bytes, previously gitignored and
+historyless) was moved into it. Grep before the move found only two
+references, both incidental (the `.gitignore` line excluding it, and a
+mention in §12 of this file as an example of the not-public class), so
+nothing broke and no pointer stub was needed.
+**The private-remote decision remains open and stays on
+`OWNER_ACTIONS.md`.** A local repo gives history but still lives on one
+disk. This is a stopgap, not the answer.
 
 Also open from `docs/improvement/OWNER_ACTIONS.md`, none started: post the
 DPVCG comment (recommendation: include concrete concepts first); recruit
