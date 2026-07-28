@@ -244,7 +244,14 @@ def strip_noise(text: str, suffix: str) -> str:
             inner = m.group(0)[1:-1]
             if FILE_REF_RE.fullmatch(inner) and (REPO_ROOT / inner).exists():
                 return f" {inner} "
-            return " " * len(m.group(0))
+            # Blank the span but KEEP its newlines. `[^`]*` matches across
+            # line breaks, so a span that wraps lines used to be replaced by
+            # spaces alone — silently deleting those newlines and shifting
+            # every subsequent reported line number up by one per wrapped
+            # span. Reported coordinates then drift further the deeper into
+            # the file a claim sits, which sends anyone fixing a finding to
+            # the wrong line. Guarded by tests/test_claim_auditor_coords.py.
+            return "".join("\n" if ch == "\n" else " " for ch in m.group(0))
 
         text = re.sub(r"`[^`]*`", _blank_inline, text)
         # Skip historical release sections in Keep-a-Changelog files.
