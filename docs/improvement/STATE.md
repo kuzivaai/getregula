@@ -1,5 +1,12 @@
 # Improvement Programme — STATE
 
+> **HANDOVER POINTER.** A fuller narrative handover exists at
+> `.claude/regula-handover.md`, but **`.claude/` is gitignored**
+> (`.gitignore:35`) so that file is UNTRACKED and will not survive a
+> `git clean`. **This file is the tracked source of truth.** If the
+> handover is missing, everything needed to resume is here plus
+> `PROGRAMME.md`.
+
 Resume file. A fresh session reads PROGRAMME.md then this, and continues
 from "NEXT". Checkpointed after every phase and every ~20 significant
 actions.
