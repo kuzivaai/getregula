@@ -6,7 +6,7 @@ Indication in Source Code"
 Status: SKELETON. Nothing here is written prose yet; every number in the
 final paper must be measured at write-time and pass the repo's
 claim-auditing discipline. Citations restricted to the verified set in
-`.claude/phase0-verification-2026-07.md`.
+`docs/improvement/PHASE0_VERIFICATION.md`.
 
 ## Why this paper can exist (verified white space)
 
