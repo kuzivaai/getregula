@@ -1,11 +1,13 @@
 # Improvement Programme — STATE
 
-> **HANDOVER POINTER.** A fuller narrative handover exists at
-> `.claude/regula-handover.md`, but **`.claude/` is gitignored**
-> (`.gitignore:35`) so that file is UNTRACKED and will not survive a
-> `git clean`. **This file is the tracked source of truth.** If the
-> handover is missing, everything needed to resume is here plus
-> `PROGRAMME.md`.
+> **HANDOVER POINTER.** The fuller narrative handover is
+> `docs/improvement/HANDOVER.md`. **It is now tracked** (relocated from
+> `.claude/regula-handover.md` on 28 Jul 2026, owner decision 1), so the
+> old warning that it would not survive a `git clean` no longer applies.
+> **This file remains the resume file and the tracked source of truth for
+> programme state**; the handover carries the narrative. Also now tracked
+> alongside them: `PHASE0_VERIFICATION.md`, `OWNER_ACTIONS.md`,
+> `COMMIT_ERRATA.md`, and `docs/dpvcg-contribution-draft.md`.
 
 Resume file. A fresh session reads PROGRAMME.md then this, and continues
 from "NEXT". Checkpointed after every phase and every ~20 significant
@@ -28,12 +30,17 @@ actions.
   hoisting-regex-compiles, regula, regulatory-context, releasing-regula.
 - **`docs/research/` does NOT exist.** Per Phase 2 this is stated, not
   guessed. The seed corpus exists elsewhere and is richer than the
-  prompt assumes: `.claude/research-sweep-2026-07.md` (owner sweep,
-  condensed) plus `.claude/phase0-verification-2026-07.md` (a completed
-  primary-source verification of that sweep, 27 Jul 2026). Phase 2 will
-  build validation cards on top of the already-verified set rather than
+  prompt assumes. **Locations updated 28 Jul 2026 after the relocation:**
+  the owner sweep is now `getregula-internal/research-sweep-2026-07.md`,
+  held **outside the repository** because it is commercial strategy and
+  this repo is public (see HANDOVER §12); its primary-source verification
+  is now tracked at `docs/improvement/PHASE0_VERIFICATION.md`, with only
+  its competitive-intelligence section redacted. Phase 2 will build
+  validation cards on top of the already-verified set rather than
   re-verifying from zero, and will state which cards inherit prior
-  verification vs which are new.
+  verification vs which are new. **Note for Phase 2: the RESEARCH
+  VALIDATOR subagent gets the cards only, so the internal sweep's location
+  does not obstruct it.**
 
 ## DONE
 
@@ -70,6 +77,21 @@ actions.
 
 Provisional re-scored aggregate **54.4** vs the programme's 57, driven by
 Detection 42 -> 38 and Trust 92 -> 84. Full arithmetic in BASELINE §11.
+
+> **SUPERSEDED, flagged 28 Jul 2026. Do not quote 54.4 or 84.** Those were
+> the figures at the point Phase 0 first wrote this section. Trust was
+> subsequently lowered again to **72** on three legs (inflated count
+> enforced as canonical, percentages undetectable, coordinate drift),
+> giving an aggregate of **52.3**. `BASELINE.md` §11 is authoritative and
+> already carries 72 and 52.3; this paragraph had not been updated to
+> match, so the resume file and the baseline disagreed on the headline
+> score.
+>
+> **Both are WORKING NUMBERS.** The Phase 7 independent scorer arbitrates,
+> including over our own 92 -> 72 movement. Leg three (F7) has since been
+> corrected downward from "wrong by hundreds of lines" to a 1-3 line drift
+> with no misquote, so the **direction is intact but the level is
+> deliberately not recomputed**. Do not recompute it here either.
 
 ## EUR-LEX RE-VERIFICATION (closed, no longer an owner task)
 
@@ -269,9 +291,22 @@ Phase 7 independent scorer to arbitrate, including over my own movement.
 Under these definitions **unsourced is a strict subset of claims**, and
 the current state satisfies it: 370 claims, 0 unsourced, 42 quarantined
 entries (the quarantine deduplicates to unique `(file, claim)` pairs, so
-42 unique pairs correspond to 55 occurrences — the only place a
+42 unique pairs correspond to **45** occurrences — the only place a
 deduplicated unit appears, and it is labelled as such in the quarantine
 header).
+
+**CORRECTED 28 Jul 2026: this paragraph said 55 occurrences.** It was
+wrong, and it contradicted the 45 in the RECONCILED CHAIN section further
+down this same file, and the 45 in `_reconciliation` in the quarantine
+file whose `_units` field sat directly above it saying 55. Three
+statements of the same quantity, two of them right. Re-measured in place
+(real `scripts/claim_auditor.py`, correct `REPO_ROOT`, the same 56 pages
+`site_integrity.py` sweeps, tallying `is_quarantined` hits without
+patching the auditor): **370 claims, 0 unsourced, 45 suppressed
+occurrences across 42 unique pairs.** 45 is correct and is now in both
+places. The measurement also showed **0 quarantine entries matching
+nothing**, so there is no stale entry padding the count and the
+shrink-only ratchet is measuring something real.
 
 **CORRECTION — the reconciliation table in commit `35fc763` is not
 reliable.** It reported that the CSS fence removed "41 claims and 140
@@ -304,6 +339,20 @@ across instruments and crediting the change to whichever one I had just
 edited.
 
 ### 1.5b batch — triage prepared (execution pending F1 + count correction)
+
+> **SUPERSEDED AND WRONG. Do not act on the next paragraph.** It is kept
+> because deleting a wrong call hides that it was made. The substantive
+> per-occurrence audit is in "83.5% — per-occurrence audit" below, and it
+> **overturns this**: provenance fails at **five of eight** locations,
+> including a bare number on a public page. Read that section instead.
+>
+> **The error class, because it will recur.** The paragraph below checks
+> the wrong thing. "Not in the quarantine" is the *auditor's* criterion
+> (an annotation exists somewhere). The *bar the owner set* is honest
+> provenance at the point of use. A claim can satisfy the first and fail
+> the second at every location, which is exactly what happened. **Passing
+> a gate is not evidence of meeting a standard when the gate tests
+> something narrower than the standard.**
 
 **The priority item is already clean.** The 83.5% precision claim is
 **not in the quarantine** — its occurrences are already sourced or
@@ -393,6 +442,31 @@ failed, and paragraphs that are genuinely sourced were counted unsourced.
 in.** The earlier "17" correction was drawn from the same bad pair and is
 also wrong; the true fence delta is 16.
 
+**THE ~123 GAP, CLOSED EXPLICITLY.** This was the specific loose thread,
+so here is the arithmetic rather than a narrative. The old bogus pair was
+fence OFF 185, fence ON 168, implying the fence removed 17. The quarantine
+holds 45. That left `168 - 45 = 123` findings with no account of where
+they went. A 17-finding fence correction cannot explain 123 findings, and
+that mismatch was the correct thing to refuse to sign off.
+
+**The gap never existed.** It was manufactured entirely by the broken rig,
+at both ends of the subtraction. On the corrected in-place chain the same
+arithmetic closes to zero:
+
+| quantity | bogus rig | measured in place |
+|---|---|---|
+| unsourced, fence OFF | 185 | **61** |
+| unsourced, fence ON | 168 | **45** |
+| fence delta | 17 | **16** |
+| held by quarantine | 45 | **45** |
+| **unaccounted for** | **123** | **0** |
+
+`45 - 45 = 0`. Every finding the fence does not remove is held by the
+quarantine, and the quarantine holds nothing else: the in-place
+measurement of 28 Jul found 45 suppressed occurrences across 42 unique
+pairs with **zero entries matching nothing**. Nothing is unexplained and
+nothing is padding the count. Thread closed.
+
 Fourth instrument error of this phase, and the same root as the others:
 the rig was not identical to the thing being measured. The rule that
 would have caught all four: **measure in place, one variable at a time,
@@ -444,13 +518,17 @@ would multiply that cost 185 times. F7 lands before 1.5b starts.
 
 ## NEXT (start of next session)
 
-1. **Phase 2** research acquisition + validation. Note: `docs/research/`
+1. **1.5b batch pack** — build it, do not land it. Scope restated in the
+   checkpoint at the end of this file. **Nothing touches a public surface
+   before the owner approves the pack.**
+2. **Phase 2** research acquisition + validation. Note: `docs/research/`
    does not exist; the seed corpus lives at
-   `.claude/research-sweep-2026-07.md` with a completed primary-source
-   verification at `.claude/phase0-verification-2026-07.md`. Cards
-   inherit that verification where applicable and must say so; the
-   RESEARCH VALIDATOR subagent gets the cards only.
-2. Then Phase 3 (instruments first), Phase 4 (plan + HOSTILE REVIEWER +
+   `getregula-internal/research-sweep-2026-07.md` (outside the repo, see
+   HANDOVER §12) with a completed primary-source verification tracked at
+   `docs/improvement/PHASE0_VERIFICATION.md`. Cards inherit that
+   verification where applicable and must say so; the RESEARCH VALIDATOR
+   subagent gets the cards only.
+3. Then Phase 3 (instruments first), Phase 4 (plan + HOSTILE REVIEWER +
    human gate).
 
 ## PHASE 1 FINAL FINDING LIST (severity-ordered, for the Phase 4 plan)
@@ -501,3 +579,137 @@ ground truth true by construction and needs no annotators; it can and
 should run in Phase 3 as pre-registered, with the human-labelled
 real-world run added later. Gating everything on the slowest human
 dependency was self-inflicted drift.
+
+---
+
+# CHECKPOINT — 28 July 2026, end of session 2
+
+Phase 1.5 accepted as complete by the owner. Ten of ten captured greens
+satisfied the gate; 2,349 checks out as 2,322 + 27 Phase 1.5 guards; the
+MODEL_CARD "unique test IDs" fix was ratified as within the correction's
+scope, being the same conflation the correction exists to remove.
+
+**Phase 1.5b is NEXT and not started.** Next session opens on this file
+per the session protocol and builds the approval pack. **Nothing touches a
+public surface before the owner approves the pack.**
+
+## Owner decisions executed this session
+
+| Decision | Outcome |
+|---|---|
+| 1. `.claude/` | **Relocate, do not track wholesale.** DONE, with a sensitivity carve-out (below). |
+| 2. Premature commits | **Disclosure stands, no history rewrite.** `COMMIT_ERRATA.md` added; `.claude/rules/git.md` added and tracked. DONE. |
+| 3. Reconciled table | **Confirmed landed**, and a contradiction inside it was found and fixed. DONE. |
+| 4. 83.5% | Per-occurrence table required in the pack, covering passing and failing locations. Carried into the scope below. |
+
+### Decision 1, and where it was not followed literally
+
+The sensitivity check the owner ordered found that this repository is
+**public** (`gh repo view kuzivaai/getregula`: `isPrivate: false`,
+verified 28 Jul 2026) and that some relocation candidates are competitive
+and commercial strategy, a class this repo's own `.gitignore` already
+declares not-public.
+
+Tracked, as ordered: `HANDOVER.md`, `PHASE0_VERIFICATION.md`,
+`OWNER_ACTIONS.md`, `docs/dpvcg-contribution-draft.md`, plus
+`.claude/rules/` and `.claude/commands/` un-ignored by subpath.
+
+**Held outside the repository at `getregula-internal/`, contrary to the
+literal instruction and flagged for the owner:**
+`research-sweep-2026-07.md`, `moat-programme-2026-07.md`, and a
+`competitive-intelligence-2026-07.md` extracted from section E of the
+Phase 0 verification and section 6 of the owner-actions list. Two owner
+personal-data items were redacted from the handover's section 10.
+
+Calibration, so this is not over-applied later: **competitor names were
+NOT redacted**, because the repo already names its comparison set publicly
+in `benchmarks/headtohead/PREREGISTRATION.md` and `adapters.py`. What was
+held back is positioning work: pricing, star counts, Regula's absence from
+a competitor comparison page, and the ranked commercial strategy.
+
+This trades the `git clean` risk for a no-backup risk, since
+`getregula-internal/` has no version control. Logged as open owner
+decision 4 in HANDOVER §11.
+
+### Decision 3, confirmed and corrected
+
+The reconciled table **had** landed, in the STATE.md "RECONCILED CHAIN"
+section and in the quarantine's `_reconciliation` field. Reading them
+together surfaced a defect: the quarantine's `_units` field said the 42
+entries were **55** occurrences while `_reconciliation`, in the same file,
+said **45**. STATE.md carried both figures too.
+
+Re-measured in place, importing the real `scripts/claim_auditor.py` so
+`REPO_ROOT` is correct, tallying `is_quarantined` hits over the same 56
+pages `site_integrity.py` sweeps, without patching the auditor:
+
+```
+pages 56 | claims 370 | unsourced 0 | entries 42
+suppressed occurrences 45 | unique (file,claim) 42
+quarantine entries matching nothing: 0
+```
+
+**45 is correct; 55 was stale.** Fixed in both places. The ~123 gap is now
+closed with explicit arithmetic in the RECONCILED CHAIN section: it never
+existed, both ends of the subtraction came from the broken scratchpad rig,
+and on the corrected chain `45 - 45 = 0`. Zero stale quarantine entries
+means nothing is padding the ratchet.
+
+## 1.5b PACK SCOPE (build next session, do not land)
+
+One batch, 42 unique pairs / 45 occurrences. Owner approval required
+before ANY public surface change.
+
+1. **Five 83.5% provenance fixes.** `docs/MODEL_CARD.md:143`,
+   `docs/TRUST.md:157`, `docs/examples/exec-summary-sample.html:89`,
+   `scripts/exec_summary.py:225`, and `site/about.html:132`, the worst,
+   a bare "Published precision on a random corpus: 83.5%" with no N, no
+   labeller and no link on a public page. **The pack must present a
+   per-occurrence table covering every location, passing and failing, so
+   approval happens on full evidence.** Bar: N=115 and single-labeller
+   provenance visible or one link away at every point of use.
+   Single-labeller is disclosed in exactly one place repo-wide,
+   `benchmarks/README.md:198`. **Do not strip the number**; its successor
+   is Phase 3's corpus. Fold in F20, the v1.7.4 vs v1.7.0 attribution
+   split.
+2. **Class 1, progress-bar percentages (~30 pairs): DERIVE OR REMOVE.**
+   A citation on an unmeasured number is not a correction. A percentage
+   stays only with a defined numerator and denominator generated from
+   measured data (site_facts pattern, test-backed). "30% of Article 14"
+   has no honest denominator. Options: derived counts ("4 of 7
+   requirements mapped", computed from crosswalk data), qualitative
+   tiers, or removal. **The pack must show the proposed replacement as it
+   would render**, because this changes the landing page's face.
+3. **Class 2, blog statistics (~9 pairs): reproducible or externally
+   cited.** Methodology plus data or scripts sufficient to reproduce, or
+   an external primary source. **A post asserting its own number is not a
+   source for that number.** Where the artefacts do not exist, the honest
+   disposition is an annotation saying so, or a correction.
+4. **Class 3, hypotheticals (~3 pairs): rewrite so the framing is explicit
+   in the sentence itself.** Any exemption must be **typed
+   (`ILLUSTRATIVE`)**, constrained to framed sentences, carry a **control
+   proving a factual claim cannot ride it**, and stay **distinct from the
+   shrink-only quarantine**. The constraint is non-negotiable; the design
+   is ours to propose in the pack.
+
+Also log "unmeasured coverage percentages on the most public surfaces" in
+the severity list: it predates the programme, and the repaired gate now
+catches the class. Phase 7 evidence both ways.
+
+The quarantine must be **empty before Phase 6/8 publishes anything**.
+Quarantined items would fail the every-number-traces sweep regardless.
+
+## Still open, carried forward
+
+- **F1 watch item: OPEN, accepted as recorded.** Unreproduced transient,
+  capture armed. Not a diagnosis. Do not close it without a reproduction.
+  Repro: `timeout 2400 python3 tests/test_classification.py > run.txt 2>&1`
+  (redirect to a file; a pipe loses the failure line, which is how it was
+  lost the first time).
+- **Full `pytest tests/ -q`** (~15 min) was last green before the F1
+  rebind. **Re-run it early next session** to confirm the corrected
+  collection executes clean end to end.
+- Owner decisions 3 (1.5b pack) and 4 (backup for `getregula-internal/`).
+- `OWNER_ACTIONS.md` items 1, 2, 3, 5, 7 and the new 8. Item 4 is closed.
+- **New, from the relocation:** does `claim_auditor` sweep `<meta>`
+  descriptions? Untested. `OWNER_ACTIONS.md` item 8.
