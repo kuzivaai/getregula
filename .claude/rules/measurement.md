@@ -52,6 +52,28 @@ Before reporting a result, run the control: make the thing fail on
 purpose and confirm you see the failure. If you never saw it fail, you do
 not know it can.
 
+## 4b. Before calling a file a published surface, check it is tracked.
+
+**Untracked files are not surfaces.** They are local scratch. They do not
+ship, they are not on the website, and nobody outside this machine can read
+them.
+
+Counting them inflates scope and produces confident wrong numbers. This
+programme has done it twice in one session: a reviewer counted
+`docs/FULL_REVIEW.md` (gitignored) as a published surface, and one section
+later I counted 22 untracked files in my own scope figure and reported
+**58** ungated docs files when the tracked, publishable figure is **34**.
+
+```
+git ls-files <path>        # empty output means NOT a surface
+```
+
+Corollary, learned the same day: **produce counts with a test, not with
+prose.** A hand-built list of "every location" of the 83.5% figure had
+**eight** entries; the tracked total is **fourteen**. The test found the
+other six in one run. Any number you assert in a document will drift; a
+number a test computes cannot.
+
 ## 5. Passing a gate is not evidence of meeting a standard when the gate tests something narrower.
 
 This is the one that keeps recurring, in two different instruments.

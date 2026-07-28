@@ -25,6 +25,21 @@
 | Corpus | Tier | TP | FP | Precision | Recall |
 |---|---|---:|---:|---:|---:|
 | **Synthetic** | all | 5 prohibited + 5 high-risk | 0 | **100%** | **100%** |
+
+> **STALE AND CONTRADICTED, flagged 28 July 2026. Do not cite the
+> synthetic row.** It was measured on a 5+5 fixture corpus. That corpus
+> was expanded to 5 prohibited + 30 high-risk on 28 Jul 2026 and
+> re-measured: prohibited recall holds at 5/5, but **high-risk recall is
+> 10/30 = 33% on a default scan** (47% with the domain declared, 63% with
+> both gates satisfied). See
+> `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md`. The 100%
+> recall figure above is not reproducible on the current corpus and a
+> correction is pending owner approval as finding **F23**.
+
+> **Labelling basis for the 83.5% production figure:** N=115, Python
+> only, labelled by a **single reviewer**; no inter-rater agreement
+> measurement exists. See `benchmarks/README.md`. Three public surfaces
+> link here as "methodology" and this file did not previously say it.
 | OSS (5 projects, 257 findings) | **BLOCK (≥80)** | 0 | **0** | **N/A — 0 findings** | n/a |
 | OSS | WARN (50–79) | 2 | 6 | 25.0% | n/a |
 | OSS | INFO (<50) | 37 | 212 | 14.9% | n/a |
