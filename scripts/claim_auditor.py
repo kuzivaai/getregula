@@ -143,6 +143,32 @@ STRUCTURAL_REFS = [ARTICLE_REF, ANNEX_REF, RECITAL_REF, CATEGORY_REF, CHAPTER_RE
 URL_RE = re.compile(r"https?://[^\s)>\]}\"']+")
 MD_LINK_RE = re.compile(r"\[[^\]]+\]\([^)]+\)")
 HTML_LINK_RE = re.compile(r"<a\s+[^>]*href\s*=", re.IGNORECASE)
+# The href VALUE, so a fragment-only or self-referential anchor can be told
+# apart from a real outbound citation (F21).
+ANCHOR_HREF = re.compile(
+    r"""<a\s+[^>]*href\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))""",
+    re.IGNORECASE | re.VERBOSE,
+)
+MD_LINK_TARGET = re.compile(r"\[[^\]]+\]\(([^)\s]+)")
+
+# F21 - markup whose URLs are infrastructure, never citations. Blanked
+# before source detection so a stylesheet, favicon or og:image cannot
+# vouch for a number. Claim detection still sees the untouched text.
+NONCITATION_TAG = re.compile(
+    r"<(?:link|meta|img|source|iframe|base|track|area|use)\b[^>]*>",
+    re.IGNORECASE,
+)
+# Tags that carry the page's OWN address.
+SELFREF_TAG = re.compile(r"<(?:link|meta)\b[^>]*>", re.IGNORECASE)
+SELFREF_ATTR = re.compile(
+    r"""rel\s*=\s*["'](?:canonical|alternate)["']"""
+    r"""|(?:property|name)\s*=\s*["'](?:og:url|twitter:url)["']""",
+    re.IGNORECASE,
+)
+URL_IN_ATTR = re.compile(r"""(?:href|content)\s*=\s*["']([^"']+)["']""",
+                         re.IGNORECASE)
+# Any HTML tag, used to tell attribute syntax from prose.
+HTML_TAG = re.compile(r"<[^>]+>")
 CITATION_WORDS = re.compile(
     r"\b(source|citation|ref(?:erence)?|see|cf\.|ibid\.|op\.? cit\.?|"
     r"primary source|verified against|verified via|verified[- ]primary|"
@@ -327,23 +353,115 @@ def is_exempt_number(match_text: str) -> bool:
 # Source presence
 # ---------------------------------------------------------------------------
 
-def paragraph_has_source(paragraph: str) -> tuple[bool, str]:
-    """Return (has_source, reason_if_not)."""
-    if URL_RE.search(paragraph):
-        return True, "url"
-    if MD_LINK_RE.search(paragraph):
-        return True, "md-link"
-    if HTML_LINK_RE.search(paragraph):
-        return True, "html-link"
-    if CITATION_WORDS.search(paragraph):
+def _blank_preserving_newlines(text: str) -> str:
+    return "".join("\n" if ch == "\n" else " " for ch in text)
+
+
+def _citable_text(paragraph: str) -> str:
+    """The paragraph with non-citation markup blanked, newlines preserved.
+
+    Claim DETECTION still runs on the untouched paragraph; this view exists
+    only to answer "is there a citation here", where machine metadata must
+    not vote.
+    """
+    return NONCITATION_TAG.sub(
+        lambda m: _blank_preserving_newlines(m.group(0)), paragraph)
+
+
+def _normalise_url(url: str) -> str:
+    """Compare-ready form: no fragment, no trailing slash or punctuation."""
+    url = url.split("#", 1)[0]
+    return url.rstrip("/.,;:\"')>]}").lower()
+
+
+@dataclass(frozen=True)
+class PageIdentity:
+    """What counts as "this page itself" for self-citation purposes."""
+    urls: frozenset[str]
+    rel_path: str
+
+    @property
+    def basename(self) -> str:
+        return self.rel_path.rsplit("/", 1)[-1]
+
+
+def page_identity(text: str, rel_path: str) -> PageIdentity:
+    """Collect every address that means "this page", from its own markup."""
+    urls = set()
+    for m in SELFREF_TAG.finditer(text):
+        tag = m.group(0)
+        if not SELFREF_ATTR.search(tag):
+            continue
+        for u in URL_IN_ATTR.findall(tag):
+            urls.add(_normalise_url(u))
+    return PageIdentity(urls=frozenset(urls), rel_path=rel_path)
+
+
+def _is_self_url(url: str, identity: PageIdentity | None) -> bool:
+    return bool(identity) and _normalise_url(url) in identity.urls
+
+
+def _is_self_file_ref(ref: str, identity: PageIdentity | None) -> bool:
+    """A document citing its own filename is a circle, not a source."""
+    if identity is None:
+        return False
+    if ref == identity.rel_path:
+        return True
+    # A bare filename with no directory component, matching this page's own.
+    return "/" not in ref and ref == identity.basename
+
+
+def paragraph_has_source(paragraph: str,
+                         identity: PageIdentity | None = None) -> tuple[bool, str]:
+    """Return (has_source, reason_if_not).
+
+    F21. A page's own address is not a source for anything on that page,
+    and most URLs in an HTML `<head>` are not citations at all. This
+    function used to return True on the first URL it saw; a `<head>` parses
+    as one paragraph and is dense with non-citation URLs (rel=canonical,
+    og:url, og:image, stylesheet and preconnect hrefs, icons), so every
+    numeric claim in a `<meta name="description">` was permanently
+    "sourced".
+
+    MEASURED 2026-07-28, before the repair: 27 numeric matches inside
+    description-like `<meta>` tags across the 56 tracked site pages (24
+    after exemptions), every one reporting reason "url".
+
+    Three classes of URL never count as a citation:
+      1. machine metadata  - link/meta/img/source/iframe attributes
+      2. self-reference    - the page's own address, on a tag or in prose
+      3. fragment anchors  - href="#section" points back into this page
+
+    `identity` supplies (2) and is optional so existing callers keep
+    working; `scan_file` always passes it. Guarded by
+    tests/test_selfref_sourcing.py.
+    """
+    citable = _citable_text(paragraph)
+
+    for m in URL_RE.finditer(citable):
+        if not _is_self_url(m.group(0), identity):
+            return True, "url"
+    for m in MD_LINK_RE.finditer(citable):
+        target = MD_LINK_TARGET.search(m.group(0))
+        if target and not _is_self_url(target.group(1), identity):
+            return True, "md-link"
+    for m in ANCHOR_HREF.finditer(citable):
+        href = (m.group(1) or m.group(2) or m.group(3) or "").strip()
+        if not href or href.startswith("#"):
+            continue          # in-page anchor: points back at this page
+        if not _is_self_url(href, identity):
+            return True, "html-link"
+    if CITATION_WORDS.search(citable):
         return True, "citation-word"
-    if VERIFICATION_LABEL.search(paragraph):
+    if VERIFICATION_LABEL.search(citable):
         return True, "verification-label"
-    # File references — must resolve on disk
-    for m in FILE_REF_RE.finditer(paragraph):
-        candidate = REPO_ROOT / m.group(1)
-        if candidate.exists():
-            return True, f"file-ref:{m.group(1)}"
+    # File references - must resolve on disk, and must not be this page
+    for m in FILE_REF_RE.finditer(citable):
+        ref = m.group(1)
+        if _is_self_file_ref(ref, identity):
+            continue
+        if (REPO_ROOT / ref).exists():
+            return True, f"file-ref:{ref}"
     return False, "no-source"
 
 
@@ -409,13 +527,16 @@ def scan_file(path: Path, allowlist: list[re.Pattern[str]]) -> FileReport:
     report.scanned = True
     cleaned = strip_noise(raw, path.suffix.lower())
     paragraphs = split_paragraphs(cleaned)
+    # F21: the page's own address, collected once from its own markup, so a
+    # self-citation cannot source anything on this page.
+    identity = page_identity(raw, report.path)
 
     def match_line(para_text: str, offset: int, para_start_line: int) -> int:
         """Return 1-based file line for a regex match inside a paragraph."""
         return para_start_line + para_text.count("\n", 0, offset)
 
     for start, end, para in paragraphs:
-        has_src, src_reason = paragraph_has_source(para)
+        has_src, src_reason = paragraph_has_source(para, identity)
         para_claims: list[Claim] = []
 
         # Pre-compute character ranges occupied by structural regulatory
@@ -428,14 +549,28 @@ def scan_file(path: Path, allowlist: list[re.Pattern[str]]) -> FileReport:
             for m in pat.finditer(para):
                 blocked_ranges.append((m.start(), m.end()))
 
+        # ATTRIBUTED_CLAIM needs quoted text near an attribution verb. Inside
+        # a tag the quote characters are attribute syntax, not quotation, so
+        # `<meta ... content="... Reports | Regula">` reads as "Regula
+        # reports <quote>". Surfaced on site/pricing.html the moment the F21
+        # repair stopped the head block counting as sourced. Numeric claims
+        # inside tags are still detected: a meta description IS published
+        # prose. Only the attribution kind is excluded here.
+        tag_ranges = [(m.start(), m.end()) for m in HTML_TAG.finditer(para)]
+
         def _in_blocked(pos: int) -> bool:
             return any(lo <= pos < hi for lo, hi in blocked_ranges)
+
+        def _in_tag(pos: int) -> bool:
+            return any(lo <= pos < hi for lo, hi in tag_ranges)
 
         def _add(kind: str, m: re.Match[str]) -> None:
             snippet = m.group(0).strip()
             if kind == "numeric" and is_exempt_number(snippet):
                 return
             if kind in ("numeric", "currency") and _in_blocked(m.start()):
+                return
+            if kind == "attributed" and _in_tag(m.start()):
                 return
             para_claims.append(Claim(
                 file=report.path,
@@ -732,6 +867,222 @@ PRECISION_EXTRA_FILES = [
 ]
 
 
+# ---------------------------------------------------------------------------
+# F22 - stale-number decisions are data, not a magnitude guess
+# ---------------------------------------------------------------------------
+
+# The defect this replaces:
+#
+#     if found_val < int(actual_str) * 0.5:
+#         continue
+#
+# Canonical test count 2,363 put that floor at 1,181.5, so any published
+# figure below it was skipped in silence. The programme's own P0 control
+# cleared the floor by 2%. A gate that goes quiet as the error gets larger
+# is worse than no gate, because it reads as a pass.
+#
+# The floor did guard something real: a legitimately different quantity can
+# share a unit word with a canonical one. That is now handled by NAMING the
+# exemptions instead of guessing them from size. Every suppression is
+# visible, carries a reason, and is scoped to one file and one phrase -
+# exactly the discipline `.claim-quarantine.json` already applies to claims.
+#
+# Adding an entry here is a claim that the number means something else.
+# Guarded by tests/test_stale_number_floor.py.
+
+# ---------------------------------------------------------------------------
+# F24 - published recall fractions must be derivable from a committed artefact
+# ---------------------------------------------------------------------------
+#
+# The auditor could derive precision from PRECISION.json and could not
+# derive a recall figure at all, so every published recall number was
+# outside the reach of the gate that exists to catch published numbers.
+# That is how "80% recall" (n=5) survived, and how three different
+# conditions came to be quoted as though they were one measurement.
+#
+# `benchmarks/synthetic/RECALL.json` is now produced by
+# scripts/build_recall_artefact.py from an actual run, and every fraction in
+# it carries a path and a gate condition. This check enforces two things
+# about any published synthetic-corpus recall fraction:
+#
+#   1. the fraction exists in the artefact, and
+#   2. the paragraph publishing it names a path AND a gate condition.
+#
+# (2) is not pedantry. MEASURED 2026-07-28: on this corpus the same tier
+# scores 10/30, 16/30 and 23/30 depending only on which gates are
+# satisfied. A bare fraction is an average over conditions nobody chose.
+
+RECALL_ARTEFACT_PATH = REPO_ROOT / "benchmarks/synthetic/RECALL.json"
+
+# Paragraphs are only inspected when they are talking about recall.
+# Inflections included: "the scanner recalls 10/30" is a recall claim, and a
+# bare `\brecall\b` silently skipped it. Found by a test of this check
+# passing for the wrong reason - the paragraph was never inspected at all.
+RECALL_CONTEXT = re.compile(r"\brecall(?:s|ed|ing)?\b", re.IGNORECASE)
+FRACTION_RE = re.compile(r"(?<!\w)(\d{1,3})\s*/\s*(\d{1,3})(?!\w)")
+
+# A published fraction must name where it came from, on both axes.
+RECALL_PATH_LABEL = re.compile(
+    r"\bscanner\b|\bclassifier\b|regula\s+check|classify\(\)|scan_files",
+    re.IGNORECASE,
+)
+RECALL_GATE_LABEL = re.compile(
+    r"\bdefault\b|\bdomain[- ]?(?:declared|s)?\b|ai[- ]?(?:library\s+)?import"
+    r"|both\s+gates|no\s+flags",
+    re.IGNORECASE,
+)
+# A figure the programme has withdrawn may still appear, because deleting a
+# corrected number destroys the record of the correction. It must say so in
+# the same paragraph. This is the only way past the artefact check, and
+# tests/test_recall_artefact.py holds it to being a label rather than a
+# bypass: a bare unknown fraction still fails.
+RECALL_WITHDRAWN_LABEL = re.compile(
+    r"NOT\s+REPRODUCIBLE|WITHDRAWN|SUPERSEDED|UNREPRODUCIBLE",
+    re.IGNORECASE,
+)
+
+# Surfaces whose synthetic recall fractions are checked. Deliberately the
+# published ones plus the benchmark writeups that feed them; the
+# docs/improvement/ programme record is excluded because it quotes
+# superseded figures ON PURPOSE, as the record of how they were corrected.
+RECALL_CHECKED_FILES: list[str] = [
+    "README.md",
+    "docs/TRUST.md",
+    "docs/MODEL_CARD.md",
+    "benchmarks/README.md",
+    "benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md",
+    "site/index.html",
+    "site/llms.txt",
+    "site/llms-full.txt",
+]
+
+
+def load_recall_artefact() -> dict:
+    if not RECALL_ARTEFACT_PATH.exists():
+        raise SystemExit(
+            "claim-auditor: benchmarks/synthetic/RECALL.json is missing. "
+            "Run scripts/build_recall_artefact.py. Refusing to pass recall "
+            "claims with no artefact to check them against.")
+    return json.loads(RECALL_ARTEFACT_PATH.read_text(encoding="utf-8"))
+
+
+def known_recall_fractions(artefact: dict) -> dict[str, list[str]]:
+    """{"10/30": ["scanner/default high_risk"], ...}"""
+    out: dict[str, list[str]] = {}
+    for cond_id, cond in artefact.get("conditions", {}).items():
+        for tier, stats in cond.get("tiers", {}).items():
+            out.setdefault(stats["fraction"], []).append(f"{cond_id} {tier}")
+    return out
+
+
+def check_recall_claims(text: str, rel_path: str,
+                        artefact: dict) -> list[tuple[int, str]]:
+    """Published recall fractions that are unknown or unlabelled."""
+    known = known_recall_fractions(artefact)
+    denominators = {f.split("/")[1] for f in known}
+    problems: list[tuple[int, str]] = []
+
+    for start, _end, para in split_paragraphs(strip_noise(text, ".md")):
+        if not RECALL_CONTEXT.search(para):
+            continue
+        for m in FRACTION_RE.finditer(para):
+            num, den = m.group(1), m.group(2)
+            if den not in denominators:
+                continue           # not a synthetic-corpus recall fraction
+            fraction = f"{num}/{den}"
+            line = start + para.count("\n", 0, m.start())
+            if fraction not in known:
+                if RECALL_WITHDRAWN_LABEL.search(para):
+                    continue      # kept as the record of a correction
+                problems.append((
+                    line,
+                    f"recall {fraction} is not in RECALL.json. Known: "
+                    f"{', '.join(sorted(known))}"))
+                continue
+            if not RECALL_PATH_LABEL.search(para):
+                problems.append((
+                    line,
+                    f"recall {fraction} published without naming a path "
+                    f"(scanner or classifier). It is {known[fraction][0]}."))
+            elif not RECALL_GATE_LABEL.search(para):
+                problems.append((
+                    line,
+                    f"recall {fraction} published without naming a gate "
+                    f"condition. It is {known[fraction][0]}."))
+    return problems
+
+
+# Files verify_facts() cross-references against canonical counts, relative to
+# the repo root. Module level so the coverage question ("which surfaces does
+# this gate actually reach?") is answerable by reading one list, and so a
+# test can extend it against a planted fixture.
+#
+# NOT the full set of published surfaces. MEASURED 2026-07-28: tracked files
+# carrying a test-count claim include docs/architecture.md ("1,223 tests")
+# and docs/CONTINUITY.md ("2,600+ tests"), neither of which is listed here,
+# so neither is checked. Extending this list is P0 and is deliberately
+# parked behind 1.5c - a gate's reach must not be widened before its
+# sensitivity is repaired.
+VERIFY_FACTS_FILES: list[str] = [
+    "README.md",
+    # SECURITY.md carries the same numeric badges (test count etc.) and was
+    # previously unchecked, so a stale "2,468 tests" line drifted undetected.
+    "SECURITY.md",
+    "docs/TRUST.md",
+    "docs/MODEL_CARD.md",
+    "site/index.html",
+    "site/pricing.html",
+    "site/about.html",
+    "site/regions/uae.html",
+    "site/regions/regulations.html",
+    "site/locales/de.html",
+    "site/locales/pt-br.html",
+    # llms.txt / llms-full.txt are published AI-discovery surfaces and
+    # carry the same numeric claims; they were previously unchecked, so
+    # a stale test badge sat in llms-full.txt undetected.
+    "site/llms.txt",
+    "site/llms-full.txt",
+]
+
+STALE_CHECK_EXEMPTIONS: dict[tuple[str, str], dict] = {
+    # (repo-relative path, canonical fact name) -> {"phrases": [...], "why": str}
+    #
+    # Empty, and it took work to keep it that way. MEASURED 2026-07-28:
+    # removing the magnitude floor surfaced four suppressed matches. None
+    # was a legitimate sub-count needing an exemption; all four were
+    # pattern-precision defects the floor had been hiding - three instances
+    # of `python3 tests/...` read as "3 tests", and one "963 test
+    # functions" swept up by a singular unit. Both were fixed at the
+    # pattern, which is the better repair: an exemption records that a
+    # number means something else, it does not excuse a regex that cannot
+    # tell a filename from a count.
+    #
+    # If an entry is ever added, it must say why in prose a reviewer can
+    # disagree with, and the first question to ask is whether the pattern
+    # should have matched at all.
+}
+
+
+def stale_number_verdict(fact_name: str, actual_val: int, found_val: int,
+                         rel_path: str, matched_text: str,
+                         exemptions: dict | None = None) -> tuple[bool, str]:
+    """Should this published number be reported as stale? (flag, reason).
+
+    Magnitude plays no part. A number either equals the canonical value,
+    is explicitly exempted for a stated reason, or is flagged.
+    """
+    if found_val == actual_val:
+        return False, "matches canonical"
+    table = STALE_CHECK_EXEMPTIONS if exemptions is None else exemptions
+    entry = table.get((rel_path, fact_name))
+    if entry:
+        normalised = " ".join(matched_text.split())
+        for phrase in entry["phrases"]:
+            if " ".join(phrase.split()) in normalised:
+                return False, f"exempt: {entry['why']}"
+    return True, f"{found_val} does not match canonical {actual_val}"
+
+
 def verify_facts() -> int:
     """Cross-reference published numbers against canonical counts from site_facts.
 
@@ -758,27 +1109,7 @@ def verify_facts() -> int:
         "2354": ("tests", facts["counts"]["tests"]["total_collected"]),
     }
 
-    # Files to check (relative to repo root) — includes deployed site pages
-    check_files = [
-        "README.md",
-        # SECURITY.md carries the same numeric badges (test count etc.) and was
-        # previously unchecked, so a stale "2,468 tests" line drifted undetected.
-        "SECURITY.md",
-        "docs/TRUST.md",
-        "docs/MODEL_CARD.md",
-        "site/index.html",
-        "site/pricing.html",
-        "site/about.html",
-        "site/regions/uae.html",
-        "site/regions/regulations.html",
-        "site/locales/de.html",
-        "site/locales/pt-br.html",
-        # llms.txt / llms-full.txt are published AI-discovery surfaces and
-        # carry the same numeric claims; they were previously unchecked, so
-        # a stale test badge sat in llms-full.txt undetected.
-        "site/llms.txt",
-        "site/llms-full.txt",
-    ]
+    check_files = VERIFY_FACTS_FILES
 
     mismatches: list[str] = []
     checked = 0
@@ -804,12 +1135,24 @@ def verify_facts() -> int:
             # This catches cases where someone changes the code but not the docs.
             # We search for common patterns like "419 patterns", "62 commands",
             # "12 frameworks", "8 languages".
+            # `(?<!\w)`, not `(?<!\d)`. A digit-final identifier is not a
+            # count: `python3 tests/test_classification.py` was read as
+            # "3 tests" and reported as a stale suite total on three
+            # surfaces the moment the magnitude floor stopped hiding it
+            # (MEASURED 2026-07-28).
+            #
+            # `tests` plural only, never `tests?`. "963 test functions" is a
+            # different quantity - the legacy runner's function count - and
+            # the singular form swept it up. This matches the shape list
+            # scripts/cascade_count.py already uses for the same count, so
+            # the two instruments agree on what a test-count claim looks
+            # like.
             unit_patterns = {
-                "tier_regexes": rf"(?<!\d){actual_str}\s*(?:pattern|regex|risk\s+pattern)",
-                "commands": rf"(?<!\d){actual_str}\s+(?:commands?\b|CLI\s+commands?)",
-                "frameworks": rf"(?<!\d){actual_str}\s+(?:compliance\s+)?frameworks?",
-                "languages": rf"(?<!\d){actual_str}\s+(?:programming\s+)?languages?",
-                "tests": rf"(?<!\d)(?:{actual_str}|{int(actual_str):,})(?:\s*|%20)(?:unique\s+)?(?:pytest-collected\s+)?(?:tests?(?:\s+passing)?|passing|automated\s+tests?)",
+                "tier_regexes": rf"(?<!\w){actual_str}\s*(?:pattern|regex|risk\s+pattern)",
+                "commands": rf"(?<!\w){actual_str}\s+(?:commands?\b|CLI\s+commands?)",
+                "frameworks": rf"(?<!\w){actual_str}\s+(?:compliance\s+)?frameworks?",
+                "languages": rf"(?<!\w){actual_str}\s+(?:programming\s+)?languages?",
+                "tests": rf"(?<!\w)(?:{actual_str}|{int(actual_str):,})(?:\s*|%20)(?:unique\s+)?(?:pytest-collected\s+)?(?:tests\b(?:\s+passing)?|passing|automated\s+tests\b)",
             }
             pat = unit_patterns.get(fact_name)
             if not pat:
@@ -844,10 +1187,14 @@ def verify_facts() -> int:
                     found_num = re.search(r"\d[\d,]*\d|\d", wm.group(0))
                     if found_num and found_num.group(0).replace(",", "") != actual_str:
                         found_val = int(found_num.group(0).replace(",", ""))
-                        # Skip small numbers that are clearly a different
-                        # count (e.g. "14 GDPR patterns" vs "389 risk patterns").
-                        # Only flag if the found number is >= 50% of canonical.
-                        if found_val < int(actual_str) * 0.5:
+                        flag, _why = stale_number_verdict(
+                            fact_name=fact_name,
+                            actual_val=int(actual_str),
+                            found_val=found_val,
+                            rel_path=rel_path,
+                            matched_text=wm.group(0),
+                        )
+                        if not flag:
                             continue
                         line_num = text[:wm.start()].count("\n") + 1
                         mismatches.append(
@@ -892,6 +1239,20 @@ def verify_facts() -> int:
                     f"derivable from benchmarks/ data"
                 )
             checked += 1
+
+    # Recall-figure enforcement (F24): every published synthetic-corpus
+    # recall fraction must exist in benchmarks/synthetic/RECALL.json and
+    # must name the path and gate condition it was measured under.
+    recall_artefact = load_recall_artefact()
+    for rel_path in RECALL_CHECKED_FILES:
+        fpath = REPO_ROOT / rel_path
+        if not fpath.exists():
+            continue
+        text = fpath.read_text(encoding="utf-8", errors="replace")
+        for line_num, problem in check_recall_claims(text, rel_path,
+                                                     recall_artefact):
+            mismatches.append(f"  {rel_path}:L{line_num} — {problem}")
+        checked += 1
 
     # Banned-claim sweep: every HTML page under site/ (the purged
     # "zero false positives" claim must not return anywhere published).
