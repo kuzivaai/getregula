@@ -296,6 +296,43 @@ instrument improved; this error is the opposite failure — comparing
 across instruments and crediting the change to whichever one I had just
 edited.
 
+### 1.5b batch — triage prepared (execution pending F1 + count correction)
+
+**The priority item is already clean.** The 83.5% precision claim is
+**not in the quarantine** — its occurrences are already sourced or
+allowlisted, so the bar set for it ("N=115, single labeller, visible or
+one link away") has nothing to act on in this batch. That is worth
+re-checking during Phase 8's every-number sweep rather than assumed
+permanently settled, but no 1.5b disposition is owed for it.
+
+**The 42 pairs reduce to 19 distinct claim texts in three classes:**
+
+1. **Round percentages in landing/locale UI (about 30 of 42 pairs).**
+   `0/20/30/40/50/60/70/80%` in `index.html`, `about.html`, both locale
+   files and `assess/*`. Context sampled: they are values in an ASCII
+   progress-bar widget (`&#9617;&#9617;… 30%` beside "Article 14 Human
+   Oversight"). **These are rendered prose, correctly in scope** — a
+   coverage percentage beside an article name reads as a claim about
+   Regula's coverage of that article, whatever the surrounding markup.
+   Likely disposition: **corrected** (state what the figure describes, or
+   drop the numeral from an illustrative widget). Not "verified": no
+   underlying measurement is cited today.
+2. **Empirical statistics in blog posts (about 9 pairs).** For example
+   "Agent autonomy dominated at 56.6% of findings" across 8,659 source
+   files (`blog-scanning-10-ai-apps.html`), plus 41/57/65/72% in
+   `blog-scanning-5-frameworks.html`. These are real study results.
+   Likely disposition: **verified-with-source** if the post's own
+   methodology section supports them, else corrected.
+3. **Hypothetical illustrations (about 3 pairs).** For example "A model
+   with 95% accuracy overall but 70%…" in a healthcare guide — a worked
+   example, not a claim about Regula or the world. Likely disposition:
+   **corrected** by framing so the hypothetical is unambiguous, since a
+   bare figure in prose reads as factual.
+
+Every class-1 and class-3 item is a public-surface edit and therefore
+goes into the single batched approval, with the full per-item disposition
+list, before any of it lands.
+
 ### F7 must precede the F6 burn-down (evidence, not preference)
 
 While triaging the percentage findings above, the auditor reported a
