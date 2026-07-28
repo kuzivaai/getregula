@@ -221,3 +221,53 @@ independent agents; one I caught myself.
 result is that the programme is further from the Phase 4 gate than it
 looked at the start of the session, and the reason is that the checks
 worked.
+
+---
+
+# ADDENDUM — loop 2, and the escalation (28 July 2026)
+
+**HOSTILE REVIEWER loop 2: FAIL.** Full record in
+`HOSTILE-REVIEW-LOOP2.md`.
+
+Closure tally on loop 1's 24 objections: **9 CLOSED, 12 PARTIALLY CLOSED,
+3 COSMETIC**, plus **18 new MAJOR**.
+
+**All three closures I pre-flagged as likely cosmetic failed on merit.** I
+told the reviewer not to let the flag earn them a pass, and it did not.
+Self-flagging is not self-correcting.
+
+Three of its claims re-measured personally, all confirmed: the auditor
+silently skips any stale number below **50% of canonical**
+(`claim_auditor.py:850`); my "58 ungated docs files" is really **34**
+tracked and publishable; `CHANGELOG.md` carries 3 occurrences P4's list
+omitted.
+
+**Two things I got wrong twice in a row, which is the pattern worth
+reporting:**
+
+1. **A third wrong number for the same quantity.** Loop 1 told me the "18
+   occurrences" figure was unverified. I replaced it with 21, enumerated a
+   list summing to 20, and the true figure is 23. The fix is structural:
+   the count is now produced by the test, not asserted in prose.
+2. **The tracked-vs-untracked conflation.** I corrected loop 1 for treating
+   an untracked file as a published surface, then made the same error one
+   section later by counting local scratch in my own scope figure.
+
+**The projection is withdrawn.** It was computed from a Trust value the
+same document said must be re-derived before use, quoted the favourable end
+of a baseline I had called unresolved, and silently fixed craft at 88 while
+claiming the baseline was indeterminate. **No movement figure until Trust
+and Detection are re-derived at HEAD under one rule.**
+
+**ESCALATION.** Loop 2 of 3 failed; one loop remains and **I am not
+spending it in this session.** The defects are substantive design errors,
+not wording: a gate extended before its sensitivity is fixed, an acceptance
+that would red CI, a dependency inverted through the tier order. Revising
+under context pressure and immediately re-reviewing is precisely how the
+loop-1 and loop-2 errors were introduced. **Burning the last loop on a
+rushed revision would convert a real gate into a formality.**
+
+**Phase 4 remains NOT PASSED. The plan must not be executed.**
+
+**Decision 1 (the 1.5b pack) is unaffected and still ready**, now with the
+amendment-1 pre-landing gate built, controlled and run.

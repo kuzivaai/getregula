@@ -32,7 +32,34 @@ is **2,349**. The file is not in the auditor's list.
 number, attributed to a command, on a tracked surface, with the gate green.
 
 **Class, and it needs an assigned home rather than floating** (Phase 0
-finding 6): **58 `docs/*.md` files are swept by no gate.**
+finding 6).
+
+> **SCOPE FIGURE CORRECTED after loop 2, 28 Jul 2026.** This said
+> "**58** `docs/*.md` files are swept by no gate". MEASURED at HEAD: **70**
+> markdown files exist under `docs/`, **48** are tracked, **22 are
+> untracked** — including `docs/FULL_REVIEW.md`, the exact file loop 1
+> rejected half of objection 11 over because untracked files are not
+> published surfaces. **The tracked, publishable, currently-ungated set
+> outside `docs/improvement/` is 34.** I overstated my own scope by
+> roughly 70% by counting local scratch as publication surface, one
+> section after correcting that same conflation. **34 is the number.**
+
+> **BLOCKING PRECONDITION added after loop 2 (its N10), and it changes
+> what P0 is worth.** MEASURED: `claim_auditor.py:850` reads
+> `if found_val < int(actual_str) * 0.5: continue`. **Any stale number
+> below half of canonical is silently skipped.** P0's own control clears
+> that floor by 48 counts out of 1,174.5 — a **2% margin**. Had
+> `architecture.md` said 1,100 instead of 1,223, P0 would have shipped and
+> the gate would still have passed it.
+>
+> **Extending the gate's reach before its sensitivity is measurement rule
+> 5 applied to my own plan.** P0 must therefore fix the floor (or justify
+> it per fact) **before** widening scope, otherwise it propagates a known
+> blind spot across 34 more files and the item's apparent success
+> overstates what it bought. Related and also unfixed: CODE_REVIEW §8.5
+> records that **deleting a claim entirely passes**, and the canonical
+> `"8"` languages check compares against a hardcoded 8 (BASELINE §4), so
+> it is self-satisfying.
 
 **The decision, taken here rather than deferred. EXTEND COVERAGE.**
 
@@ -108,11 +135,23 @@ before the repro exists.**
 
 - **Criterion re-derived against the product surface.** MEASURED: `pip
   install regula[` returns **11**; the `regula[` form returns **30 across
-  17 files**; neither is the 18 the old plan asserted. Excluding
-  `docs/improvement/*`, the product surface is **21 occurrences** across
+  17 files**; neither is the 18 the old plan asserted.
+
+> **CORRECTED AGAIN after loop 2. This is the third wrong number for the
+> same quantity.** I wrote "**21 occurrences**" and then enumerated a file
+> list that sums to **20**. MEASURED: the product surface is **23**. The
+> omission is **`CHANGELOG.md`**, which carries **3** occurrences
+> (`regula[all]` ×2, `regula[signing]` ×1) and is neither in my list nor
+> inside the excluded directory. Objection 1's entire point was that the
+> number was unverified; I replaced it with another unverified number and
+> a list that did not sum to it. **The count must be produced by the test
+> itself, not asserted in prose** — that is the only fix that stops this
+> recurring, and it is now the acceptance criterion.
+
+  Product surface (23) spans
   `scripts/{doctor,pdf_export,signing,conform,timestamp,cli}.py`,
-  `README.md`, `docs/MODEL_CARD.md`, `docs/evidence-pack-guide.md`,
-  `site/llms-full.txt`, `.claim-allowlist`,
+  `README.md`, `CHANGELOG.md`, `docs/MODEL_CARD.md`,
+  `docs/evidence-pack-guide.md`, `site/llms-full.txt`, `.claim-allowlist`,
   `tests/test_manifest_timestamp.py`.
 - **The grep test must exclude the finding record**, or it goes red on the
   documents that describe the defect and gets deleted.
@@ -232,12 +271,39 @@ Baseline **52.3 or 52.6** (BASELINE §11 contradicts itself; unresolved).
 **Low:** 9.75 + 8.0 + 13.2 + 11.1 + 8.5 + 0.8 + 1.5 = **52.85**
 **High:** 10.25 + 8.2 + 13.5 + 11.55 + 8.7 + 0.8 + 1.5 = **54.5**
 
-**+0.6 to +2.2.** Small, and honest: this plan mostly removes false claims
-and closes gate defects.
+> **THE PROJECTION IS WITHDRAWN, after loop 2 (its N11 and n4).**
+>
+> **1. It was computed from a number this same document forbids using.**
+> The table uses Trust "Now" = 72 to derive 74-77, which drives the
+> headline movement — and eight lines below I wrote "Re-derive before
+> using it." **It had already been used.** Converting an objection into a
+> caveat and then overriding the caveat in the same document is worse than
+> not addressing it.
+>
+> **2. The range quoted the favourable baseline at both ends.** Against
+> 52.3 it is +0.55 to +2.2; against 52.6 it is **+0.25 to +1.9**. Across
+> an unresolved baseline the honest range is **+0.25 to +2.2**. I rounded
+> +0.55 up to +0.6 and took the favourable end of an acknowledged range,
+> against this project's own standing rule about exactly that.
+>
+> **3. I had silently resolved the baseline while calling it
+> indeterminate.** BASELINE §11's 52.3-vs-52.6 split *is* the craft
+> 88-vs-90 question, and my table fixes craft at 88 — which forces 52.3.
+> **It cannot be both.**
+>
+> **4. Staleness was applied asymmetrically.** Trust's "Now" is quarantined
+> as stale; Detection's "Now" of 38 is carried unchanged, although
+> BASELINE §11 justified 38 partly by "recall absent" and recall is no
+> longer absent — it is **33%**. I used that measurement to restructure
+> Tier 2 and declined to feed it back into the score.
+>
+> **No projection is published until Trust and Detection are both
+> re-derived at HEAD under one rule.** A withdrawn number is better than a
+> number computed from an input its own author disallowed.
 
-**Trust's "Now" of 72 is itself stale** (objection 7) — two of its six legs
-were fixed by `30cb981` and `093b839` and never re-derived. **Re-derive
-before using it.**
+*(Table retained above as the record of what loop 2 reviewed. Its
+arithmetic is correct — loop 2 reproduced 52.85 and 54.5 exactly — but its
+inputs are not defensible, so the movement derived from it is withdrawn.)*
 
 ---
 
