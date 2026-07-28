@@ -333,6 +333,32 @@ Every class-1 and class-3 item is a public-surface edit and therefore
 goes into the single batched approval, with the full per-item disposition
 list, before any of it lands.
 
+### PHASE 1.5 COMPLETE — all four items landed
+
+| Item | Commit | Evidence |
+|---|---|---|
+| F7 coordinates | `59ac25b` | fixture suite + line-count invariant |
+| F6 percentages + fence + quarantine | `35fc763` | 3-case fence fixture + shrink-only ratchet |
+| eli_data packaging | `7383f33` | verified against a real wheel build |
+| **F1 count** | **`fd212fb`** | **10/10 captured runs at 1386/0/963** |
+
+Published count corrected **2,821 -> 2,349**, produced by collection.
+`--verify-facts` rc=0, `site_integrity` OK, 27 Phase 1.5 guard tests pass.
+
+**F1 watch item (open, not closed):** an early post-fix run reported
+1,380 passed / 1 failed, function count intact at 963. Did not reproduce
+across ten runs; failure text never captured. Unreproduced transient, not
+a diagnosis. Repro `timeout 2400 python3 tests/test_classification.py`;
+captures at `<scratchpad>/runner_runs/`.
+
+**Two `git add -A` deviations, disclosed in `fd212fb`:** the manifest and
+its test landed in `140e7fb` instead of the count-correction commit; and
+the F1 code landed in `8a5888d`, whose message says F1 was NOT landed.
+Both messages are now inaccurate about their own contents.
+
+**NEXT: 1.5b batch pack** (owner approval required before any public
+surface changes), then Phase 2.
+
 ### RECONCILED CHAIN — closed, and 185 was never real
 
 All four stages re-measured **in place**, on the real file, with the real
