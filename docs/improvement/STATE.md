@@ -249,6 +249,53 @@ with no misquote. Legs one (inflated count enforced as canonical) and two
 recomputed.** Both score files now mark 72 as a WORKING NUMBER for the
 Phase 7 independent scorer to arbitrate, including over my own movement.
 
+### UNIT DEFINITIONS, and a correction to the F6 commit message
+
+**Units (both occurrence-level, not deduplicated):**
+
+- **claims** = every regex match the auditor records, counted once per
+  occurrence. `report.claims += len(para_claims)`.
+- **unsourced** = every claim that survived paragraph-sourcing, the
+  allowlist and (now) quarantine, counted once per occurrence. One
+  `Finding` per unsourced claim.
+
+Under these definitions **unsourced is a strict subset of claims**, and
+the current state satisfies it: 370 claims, 0 unsourced, 42 quarantined
+entries (the quarantine deduplicates to unique `(file, claim)` pairs, so
+42 unique pairs correspond to 55 occurrences — the only place a
+deduplicated unit appears, and it is labelled as such in the quarantine
+header).
+
+**CORRECTION — the reconciliation table in commit `35fc763` is not
+reliable.** It reported that the CSS fence removed "41 claims and 140
+would-be findings, all of them layout values". Re-measured on a single
+consistent code state (current code, quarantine disabled, fence toggled):
+
+| state | claims | unsourced |
+|---|---|---|
+| fence OFF | 411 | 185 |
+| fence ON | 370 | **168** |
+
+So the fence removes 41 claims and **17** findings, not 140. The
+intermediate figures in that commit were taken across *differing* code
+states — the F7 coordinate fix landed between two of the measurements,
+and correcting line attribution changes which line the allowlist is
+tested against, which changes how many claims get exempted. I attributed
+the whole movement to the fence without controlling for that.
+
+The commit is landed and history is immutable, so the correction lives
+here. **What remains true and independently verified:** percentages are
+now detectable, CSS values are fenced out with per-attribute proof that
+prose attributes are not, the gate is green for new claims, and the
+backlog is 42 unique pairs under quarantine. **What was wrong:** the
+attribution of the drop between the fence and the coordinate fix.
+
+Method lesson, third instance this phase: measure one variable at a time,
+on one code state. The 341 -> 185 -> 45 sequence improved because the
+instrument improved; this error is the opposite failure — comparing
+across instruments and crediting the change to whichever one I had just
+edited.
+
 ### F7 must precede the F6 burn-down (evidence, not preference)
 
 While triaging the percentage findings above, the auditor reported a
