@@ -35,11 +35,66 @@ durable output.
 | Condition (scanner path) | High-risk recall |
 |---|---|
 | **Default scan** | **10/30 = 33%** |
-| Domain declared (`--domain <matched>`) | **14/30 = 47%** |
-| Domain declared **and** an AI-library import present | **19/30 = 63%** |
+| Domain declared (`--domain <matched>`) | **14/30 = 47%** [NOT REPRODUCIBLE] |
+| Domain declared **and** an AI-library import present | **19/30 = 63%** [NOT REPRODUCIBLE] |
 
-Prohibited recall **5/5**. High-risk firings on the 3 negative controls:
-**0**.
+Prohibited recall on the scanner path, default scan: **5/5**. High-risk
+firings on the 3 negative controls: **0**.
+
+> **1.5c CORRECTION, 28 Jul 2026 — two of these four figures are WITHDRAWN
+> as NOT REPRODUCIBLE.** F24 committed
+> `benchmarks/synthetic/RECALL.json`, produced by
+> `scripts/build_recall_artefact.py` from an actual run. Re-measuring
+> reproduced **10/30 default** and **16/30 classifier** exactly. It could
+> not reproduce **14/30** or **19/30**, because the conditions that
+> produced them were never committed: "`--domain <matched>`" implies a
+> per-fixture domain mapping that does not exist in `manifest.json`, and
+> "an AI-library import present" does not say which import or which
+> fixtures received it.
+>
+> The reproducible neighbours, both from the committed artefact, are
+> **different conditions and are labelled as such** rather than
+> substituted for the withdrawn ones:
+>
+> | Condition (path, gates) | High-risk recall |
+> |---|---|
+> | scanner path, default scan, no flags | **10/30 = 33.3%** |
+> | scanner path, all eight opt-in domains declared | **16/30 = 53.3%** |
+> | scanner path, domains declared and `import torch` injected into every fixture | **23/30 = 76.7%** |
+> | classifier path (`report.scan_files`), all domains declared | **16/30 = 53.3%** |
+>
+> All four give prohibited **5/5**.
+
+### F8 does not survive a like-for-like comparison
+
+**MEASURED 2026-07-28 from `RECALL.json`.** Under the SAME gate condition
+(all eight domains declared) the scanner path and the classifier path miss
+**the identical 14 fixtures**. Not the same count with different members:
+the same set, symmetric difference zero.
+
+The "six-fixture divergence" recorded above and in the handover compared
+`scanner/default` against `classifier/all-domains` — **two paths and two
+gate conditions changed at once**. The six fixtures it identified
+(`highrisk_employment`, `highrisk_judicial_support`,
+`highrisk_promotion_ranking`, `highrisk_traffic_control`,
+`highrisk_visa_triage`, `highrisk_water_supply`) are exactly the ones the
+domain gate unlocks. They are the domain gate, not two unreconciled
+detectors.
+
+This is `.claude/rules/measurement.md` rule 2 — one variable at a time —
+failing in the document that was written to establish the recall baseline.
+**F8 as stated is not supported by this measurement.** Whether some
+narrower divergence exists is open; the trace work in Task C should start
+from the artefact rather than from the withdrawn claim.
+
+### The fixtures that miss with both gates satisfied
+
+Seven, not eight, under the reproducible condition (domains declared plus
+an injected AI import), named here because a trace has to start somewhere:
+`highrisk_benefits_eligibility`, `highrisk_border_screening`,
+`highrisk_crime_forecast`, `highrisk_energy_grid`, `highrisk_exam_proctor`,
+`highrisk_recidivism`, `highrisk_voter_targeting`. The handover's figure of
+eight came from the unreproducible condition and is not comparable.
 
 **The n=5 figure was 80%. On 30 fixtures it is 33%.** The first number was
 not wrong; it was underpowered, and it happened to sample the categories
@@ -128,9 +183,11 @@ for 134 patterns) is the wrong work at the wrong scale.
 ## What this does and does not license saying
 
 **Supported:** on a 30-fixture hand-built corpus with constructed ground
-truth, default-scan high-risk recall is 33%, rising to 63% with domain
-declared and an AI import present; prohibited recall is 5/5; zero false
-high-risk on 3 negatives.
+truth, scanner-path default-scan high-risk recall is 33%, rising to 76.7%
+with all domains declared and an AI import injected; scanner-path
+default-scan prohibited recall is 5/5; zero false high-risk on 3 negatives.
+The 63% figure is WITHDRAWN as NOT REPRODUCIBLE — see the 1.5c correction
+above. Every figure here traces to `benchmarks/synthetic/RECALL.json`.
 
 **NOT supported:** any real-world recall estimate; any comparison to
 another tool; any claim that 63% is "the" recall. Thirty hand-built files
