@@ -63,7 +63,7 @@ A Python project will receive more granular findings than an equivalent Rust pro
 
 ### Precision baseline
 
-Published benchmark against 50 randomly selected Python AI repos (from 276 candidates, random seed 42), blind-labelled (labeller saw only file path, code context, and finding description). Production code only (default `--skip-tests` settings):
+Published benchmark against 50 randomly selected Python AI repos (from 276 candidates, random seed 42), **N=115**, blind-labelled by a **single reviewer** with no inter-rater agreement measurement (labeller saw only file path, code context, and finding description; see [`benchmarks/README.md`](../benchmarks/README.md)). Production code only (default `--skip-tests` settings):
 
 | Tier | TP | FP | Precision |
 |---|---:|---:|---:|
@@ -144,7 +144,7 @@ Regula is explicitly **NOT** intended for:
 
 ### Continuous validation
 
-- 2,353 pytest-collected tests, produced by collection rather than
+- 2,354 pytest-collected tests, produced by collection rather than
   hand-maintained (measured 2026-07-28). See
   [`data/published_count_manifest.json`](../data/published_count_manifest.json).
 - 45 CLI integration tests (`tests/test_cli_integration.py`)

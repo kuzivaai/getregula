@@ -918,3 +918,59 @@ were introduced. **Phase 4 remains NOT PASSED.**
 4. F1 watch item stays open.
 
 **Nothing public changed. `main` untouched. Tree clean.**
+
+
+---
+
+# APPROVAL-SCOPE DEVIATION — logged 28 July 2026
+
+**The owner's approval of PACK-1.5b was granted on incomplete evidence.**
+
+The pack's §1 table claimed to cover **every** location of the 83.5%
+figure, passing and failing, "so approval happens on full evidence". It
+listed **8**. The tracked total is **14**. The six it missed:
+`site/index.html` (the landing page), `site/llms.txt`,
+`site/llms-full.txt`, `site/regions/uae.html`,
+`site/examples/sample-exec-summary.html`,
+`docs/benchmarks/PRECISION_RECALL_2026_04.md`.
+
+The table was hand-built. The guard test, which enumerates from
+`git ls-files`, found the other six on its first run.
+
+**Owner ruling: the in-batch extension to the six is RATIFIED
+retroactively** — the disposition class was approved, the bar was fixed,
+and landing eight while leaving six known-failing was the worse outcome.
+**The deviation is logged as such, not treated as in-scope.**
+
+## Forward rule for mid-landing expansion (owner-set)
+
+Permitted **only** when:
+
+(a) the item applies an **already-approved disposition class** to newly
+    discovered instances; **or**
+(b) leaving it would **publish a known-false claim** through the same
+    commit window.
+
+Every expansion is **flagged in the commit body and in the report**. Any
+expansion involving **discretionary framing** — not merely applying the
+approved fix — is **presented for ratification**, as was done with
+`uae.html`.
+
+The completeness half of this lesson is now
+`.claude/rules/measurement.md` §4c: a completeness claim is a
+measurement and must be produced by enumeration.
+
+# BLOG BRANCH TEST — BRANCH A, and my finding was wrong
+
+Full record in PACK-1.5b §4.2. The post already discloses the 665 re-scan
+in its own methodology note; its headline 553 is the v1.6.1 scan of
+10 April; the tracked data is the v1.7.0 re-scan of 23 April, which the
+post names explicitly. The post predates its own committed data by three
+days. **There was never a discrepancy.** I asserted one without reading
+the post's methodology section and escalated it as the pack's most serious
+item. **4 pairs released from quarantine, VERIFIED-WITH-SOURCE.**
+
+Two residual sub-findings: **R1** the v1.6.1 raw output is not committed
+though the post says both versions are (annotation fix); **R2** the post
+says v1.7.0 had 389 patterns, its data README says 409, and no committed
+artefact settles it (**genuine indeterminacy, owner call**).

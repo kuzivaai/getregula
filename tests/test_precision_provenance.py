@@ -79,28 +79,60 @@ def _paragraphs(text: str):
             yield block
 
 
+def _sections(text: str, rel: str):
+    """Yield (start_line, section_text).
+
+    Markdown: heading to next heading. Fenced code blocks are NOT split on,
+    because a shell comment like `# Expected: 83.5%` inside a ``` fence is
+    not a heading. An earlier version split there and produced a one-line
+    "section" that could never carry provenance, which is a defect in the
+    checker rather than in the document.
+
+    HTML/other: block-level element boundaries.
+    """
+    if rel.endswith((".md", ".txt")):
+        lines = text.splitlines(keepends=True)
+        in_fence = False
+        starts = []
+        for i, ln in enumerate(lines):
+            if ln.lstrip().startswith("```"):
+                in_fence = not in_fence
+                continue
+            if not in_fence and re.match(r"#{1,6}\s", ln):
+                starts.append(i)
+        if not starts or starts[0] != 0:
+            starts.insert(0, 0)
+        for j, st in enumerate(starts):
+            en = starts[j + 1] if j + 1 < len(starts) else len(lines)
+            yield st + 1, "".join(lines[st:en])
+        return
+
+    parts = re.split(r"(?i)(?=<(?:p|li|td|h[1-6]|section|div)\b)", text)
+    line = 1
+    for part in parts:
+        if part:
+            yield line, part
+            line += part.count("\n")
+
+
 class TestPrecisionProvenance(unittest.TestCase):
 
-    def test_every_published_83_5_carries_n_and_labeller_route(self):
-        """FILE-level, deliberately, and here is the limit of that choice.
+    def test_every_published_83_5_carries_provenance_AT_EACH_LOCATION(self):
+        """PER-LOCATION, not per-file.
 
-        An earlier draft checked every block that mentions the figure. That
-        failed on table cells, code-sample comments and back-references
-        inside files whose disclosure is two paragraphs away, which is noise
-        rather than a defect.
+        The earlier version of this test asserted only that N and the
+        labeller route appeared SOMEWHERE in the file. That is a counter
+        with a file-level check, and it is narrower than the standard: a
+        bare figure in one corner of a long document passes if the
+        disclosure sits far away. Counting locations without checking each
+        one is exactly the failure this whole finding is about.
 
-        File level is sufficient to catch all five documented failures:
-        site/about.html carried neither N nor the basis; docs/TRUST.md had N
-        but no basis; docs/MODEL_CARD.md linked METHODOLOGY.json, which has
-        no labeller field; and both exec summaries inherited TRUST.md's gap.
-
-        What this does NOT catch: a bare figure in one corner of a long file
-        whose disclosure sits far away. If that recurs, tighten to
-        section-level rather than block-level.
+        Unit: the enclosing SECTION. For markdown that is heading-to-heading;
+        for HTML it is the enclosing block-level element. That is wide enough
+        not to fire on a table cell whose header row carries the disclosure,
+        and narrow enough that a claim cannot borrow provenance from an
+        unrelated part of the page.
         """
-        # CHANGELOG.md is a historical release record, not a live claim.
-        # strip_noise() already skips historical CHANGELOG sections for the
-        # same reason. Excluded here with that reason, not silently.
         HISTORICAL = {"CHANGELOG.md"}
         failures = []
         for rel in KNOWN_SURFACES:
@@ -111,15 +143,63 @@ class TestPrecisionProvenance(unittest.TestCase):
                 failures.append(f"{rel}: MISSING")
                 continue
             text = p.read_text(encoding="utf-8", errors="replace")
-            if not FIGURE.search(text):
-                continue
-            if not HAS_N.search(text):
-                failures.append(f"{rel}: publishes 83.5% with no N=115 anywhere")
-            if not HAS_LABELLER.search(text):
-                failures.append(
-                    f"{rel}: publishes 83.5% with no route to the "
-                    f"single-reviewer disclosure")
+            for idx, section in _sections(text, rel):
+                if not FIGURE.search(section):
+                    continue
+                if not HAS_N.search(section):
+                    failures.append(
+                        f"{rel} (section @line {idx}): 83.5% with no N=115 "
+                        f"in the same section")
+                if not HAS_LABELLER.search(section):
+                    failures.append(
+                        f"{rel} (section @line {idx}): 83.5% with no route "
+                        f"to the single-reviewer disclosure in the same "
+                        f"section")
+        disc = (REPO / DISCLOSURE).read_text(encoding="utf-8")
+        if not HAS_N.search(disc) or not HAS_LABELLER.search(disc):
+            failures.append(f"{DISCLOSURE}: must carry N and the basis")
         self.assertEqual(failures, [], "\n  " + "\n  ".join(failures))
+
+    def test_the_checker_distinguishes_compliant_from_non_compliant(self):
+        """CONTROL. Plants one compliant and one non-compliant location and
+        proves the checker tells them apart.
+
+        Without this the test above could pass by asserting nothing. An
+        absent signal is not a passing signal.
+        """
+        compliant = (
+            "## Precision\n\n"
+            "Published precision is 83.5% (N=115, single reviewer, no "
+            "inter-rater agreement).\n"
+        )
+        non_compliant = (
+            "## Precision\n\n"
+            "Published precision on a random corpus: 83.5%.\n"
+        )
+        # borrowed-provenance case: disclosure exists but in ANOTHER section
+        borrowed = (
+            "## Methodology\n\nN=115, single reviewer.\n\n"
+            "## Headline\n\nPublished precision: 83.5%.\n"
+        )
+
+        def bad_sections(text):
+            out = []
+            for idx, sec in _sections(text, "probe.md"):
+                if not FIGURE.search(sec):
+                    continue
+                if not HAS_N.search(sec) or not HAS_LABELLER.search(sec):
+                    out.append(idx)
+            return out
+
+        self.assertEqual(bad_sections(compliant), [],
+                         "control failed: a compliant location was flagged")
+        self.assertNotEqual(bad_sections(non_compliant), [],
+                            "control failed: a BARE 83.5% was NOT flagged, "
+                            "so this guard proves nothing")
+        self.assertNotEqual(bad_sections(borrowed), [],
+                            "control failed: a claim borrowing provenance "
+                            "from another section was NOT flagged, so the "
+                            "check is still effectively file-level")
 
     def test_no_unlisted_surface_publishes_the_figure(self):
         """A new surface must be added to KNOWN_SURFACES, which forces it
