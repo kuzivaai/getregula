@@ -1,5 +1,5 @@
 {
-  "_status": "UNVERIFIED BACKLOG — QUARANTINED — NOT ENDORSED",
+  "_status": "UNVERIFIED BACKLOG \u2014 QUARANTINED \u2014 NOT ENDORSED",
   "_what_this_is": "Claims that existed BEFORE the claim auditor could detect bare percentages. They are NOT approved, NOT verified, and NOT endorsed. Quarantine exists so the gate can go green for NEW claims immediately while this backlog is burned down.",
   "_keying": "Entries key on file + normalised claim text, never line numbers. Line-keyed entries rot on every page edit and would have broken the moment the coordinate fix landed.",
   "_ratchet": "This list may only shrink. tests/test_claim_quarantine.py fails if the count rises. Burn-down records a per-item disposition: verified-with-source / corrected / removed.",
@@ -9,7 +9,7 @@
     "3. the remainder"
   ],
   "_created": "2026-07-28",
-  "_count": 42,
+  "_count": 44,
   "entries": [
     {
       "file": "site/about.html",
@@ -49,6 +49,10 @@
     },
     {
       "file": "site/blog/blog-scanning-10-ai-apps.html",
+      "claim": "553 findings"
+    },
+    {
+      "file": "site/blog/blog-scanning-10-ai-apps.html",
       "claim": "56.6%"
     },
     {
@@ -58,6 +62,10 @@
     {
       "file": "site/blog/blog-scanning-5-frameworks.html",
       "claim": "41%"
+    },
+    {
+      "file": "site/blog/blog-scanning-5-frameworks.html",
+      "claim": "562 findings"
     },
     {
       "file": "site/blog/blog-scanning-5-frameworks.html",
@@ -181,5 +189,28 @@
     }
   ],
   "_units": "entries are UNIQUE (file, normalised claim) pairs. The 42 entries correspond to 45 occurrence-level findings. The auditor's own 'claims' and 'unsourced' counters are occurrence-level; unsourced is a strict subset of claims. CORRECTED 2026-07-28: this field previously said 55, which contradicted the 45 in _reconciliation immediately below it, in this same file. Re-measured in place by importing the real scripts/claim_auditor.py (correct REPO_ROOT) and tallying is_quarantined hits across the same 56 site pages site_integrity.py sweeps: 370 claims, 0 unsourced, 45 suppressed occurrences over 42 unique pairs. 45 is correct.",
-  "_reconciliation": "Measured in place over 56 site pages, occurrence-level: S1 pre-fix 182 claims/0 unsourced; S2 +percent 411/61; S3 +CSS fence 370/45; S4 +quarantine 370/0. unsourced is a subset of claims at every stage. Earlier figures of 185 and 168 were artefacts of running patched copies from a scratchpad directory, which moved REPO_ROOT and broke file-reference sourcing."
+  "_reconciliation": "Measured in place over 56 site pages, occurrence-level: S1 pre-fix 182 claims/0 unsourced; S2 +percent 411/61; S3 +CSS fence 370/45; S4 +quarantine 370/0. unsourced is a subset of claims at every stage. Earlier figures of 185 and 168 were artefacts of running patched copies from a scratchpad directory, which moved REPO_ROOT and broke file-reference sourcing.",
+  "_sensitivity_admissions": {
+    "_why_this_block_exists": "The ratchet says the quarantine may only shrink, and that rule is what stops an entry being added instead of a claim being sourced. But a repair that makes the auditor MORE sensitive uncovers claims that were always there and were never visible. Those are backlog, not new claims, and refusing to record them would leave the gate red for pre-existing text or push someone to weaken the repair. So a rise is permitted ONLY here, ONLY with the finding that caused it named, and ONLY listing the exact entries admitted. Everything not listed here is still forbidden from being added.",
+    "_rule": "Each tranche may only shrink from its opening size. The ceiling in tests/test_claim_quarantine.py equals the base plus the sum of admitted entries, and falls as any of them is burned down.",
+    "tranches": [
+      {
+        "opened": "2026-07-28",
+        "finding": "F21",
+        "instrument_change": "paragraph_has_source() stopped accepting a page's own canonical URL, og:url, alternate and machine-metadata URLs as citations. Before the repair every numeric claim in an HTML <head> was sourced by the page's own address.",
+        "base_before": 42,
+        "admitted": [
+          {
+            "file": "site/blog/blog-scanning-10-ai-apps.html",
+            "claim": "553 findings"
+          },
+          {
+            "file": "site/blog/blog-scanning-5-frameworks.html",
+            "claim": "562 findings"
+          }
+        ],
+        "disposition_note": "Both posts DO disclose these figures with scan version and date in their own methodology sections, so the numbers are reproducible; what is missing is a source in the <meta> paragraph itself, and a 155-character SEO description cannot carry a citation. Burn-down options are to remove the figure from the description or to drop the description to a qualitative line. Quarantine is the holding position, not the answer."
+      }
+    ]
+  }
 }

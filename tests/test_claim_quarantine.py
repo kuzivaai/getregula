@@ -25,7 +25,20 @@ import claim_auditor as ca  # noqa: E402
 
 # The size of the backlog when quarantine was introduced (2026-07-28).
 # This number may be LOWERED as items are burned down. It may never rise.
-QUARANTINE_CEILING = 42
+QUARANTINE_BASE_CEILING = 42
+
+# Entries admitted because an instrument repair made the auditor MORE
+# sensitive, uncovering claims that were always present and never visible.
+# Each is itemised in the quarantine's own `_sensitivity_admissions` block
+# with the finding that caused it. This is the ONLY way the total may rise,
+# every admission is enumerated in data rather than asserted here, and each
+# tranche is shrink-only from its own opening size.
+#
+# 2026-07-28, F21: +2. paragraph_has_source() stopped accepting a page's own
+# address as a citation, which exposed two <meta> description figures.
+QUARANTINE_ADMITTED = 2
+
+QUARANTINE_CEILING = QUARANTINE_BASE_CEILING + QUARANTINE_ADMITTED
 
 
 class TestQuarantineRatchet(unittest.TestCase):
@@ -78,6 +91,38 @@ class TestQuarantineRatchet(unittest.TestCase):
             f"quarantine references files that no longer exist: {missing}. "
             f"Remove them — they inflate the backlog without protecting "
             f"anything.")
+
+    def test_every_admitted_entry_is_itemised_in_the_file(self):
+        """The ceiling may only rise by entries the file itself names.
+
+        Without this, `QUARANTINE_ADMITTED` is just a bigger number and the
+        ratchet is gone. The data must enumerate exactly what was let in.
+        """
+        block = self.doc.get("_sensitivity_admissions")
+        self.assertIsNotNone(
+            block,
+            "the ceiling allows admissions but the quarantine records none")
+        admitted = [a for t in block["tranches"] for a in t["admitted"]]
+        self.assertEqual(
+            len(admitted), QUARANTINE_ADMITTED,
+            f"the test allows {QUARANTINE_ADMITTED} admitted entries; the "
+            f"file itemises {len(admitted)}. They must agree.")
+        listed = {(e["file"], e["claim"]) for e in self.doc["entries"]}
+        for a in admitted:
+            self.assertIn(
+                (a["file"], a["claim"]), listed,
+                f"admitted entry {a} is not in the quarantine at all")
+
+    def test_every_tranche_names_the_finding_that_caused_it(self):
+        block = self.doc.get("_sensitivity_admissions", {})
+        for tranche in block.get("tranches", []):
+            for field in ("opened", "finding", "instrument_change",
+                          "admitted", "disposition_note"):
+                self.assertIn(field, tranche, f"tranche missing {field}")
+                self.assertTrue(
+                    tranche[field],
+                    f"tranche has an empty {field}; an admission with no "
+                    f"stated cause is indistinguishable from a bypass")
 
     def test_quarantine_actually_suppresses_only_listed_claims(self):
         """Control: an unlisted claim in a quarantined file still fires."""
