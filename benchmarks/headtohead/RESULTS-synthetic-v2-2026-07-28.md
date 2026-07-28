@@ -22,7 +22,17 @@ durable output.
 
 ## Headline
 
-| Condition | High-risk recall |
+> **PATH CORRECTION, 28 Jul 2026.** Every figure below is the **scanner**
+> path (`regula check`, via the committed `adapters.run_regula`) — what a
+> user actually runs. The **classifier** path (`classify()`, what
+> `benchmarks/synthetic/run.py` measures) gives **16/30 = 53%** on the same
+> corpus. **The two disagree by 6 fixtures.** My first writeup gave 33%
+> without stating which path produced it, which is the same
+> provenance-free-number defect this batch exists to fix. The divergence
+> is finding **F8** (two unreconciled detectors over the same code), now
+> quantified for the first time.
+
+| Condition (scanner path) | High-risk recall |
 |---|---|
 | **Default scan** | **10/30 = 33%** |
 | Domain declared (`--domain <matched>`) | **14/30 = 47%** |

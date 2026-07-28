@@ -138,13 +138,13 @@ Regula is explicitly **NOT** intended for:
 
 ### Random corpus (headline precision measurement)
 
-50 randomly selected Python AI repos (from 276 candidates, seed=42), scanned with Regula v1.7.4. 201 findings stratified-sampled and blind-labelled (labeller saw only file path, code context, and finding description — no project name, README, or purpose, see `benchmarks/labels.json`).
+50 randomly selected Python AI repos (from 276 candidates, seed=42), scanned with Regula v1.7.0. 201 findings stratified-sampled and blind-labelled by a **single reviewer** (labeller saw only file path, code context, and finding description — no project name, README, or purpose, see `benchmarks/labels.json`).
 
-**Result:** 83.5% precision on production code (N=115, measured on Regula v1.7.4). Previous baseline was 70.0% before domain gating and LLM import gating. Figures re-measured per release where corpus permits; v1.7.1+ additions not yet reflected. Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
+**Result:** 83.5% precision on production code (N=115, measured on Regula v1.7.0). **Labelled by one reviewer; no inter-rater agreement measurement exists.** Previous baseline was 70.0% before domain gating and LLM import gating. Figures re-measured per release where corpus permits; v1.7.1+ additions not yet reflected. Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`; labelling limits: [`benchmarks/README.md`](../benchmarks/README.md) (the only repo-wide disclosure of the single-reviewer basis).
 
 ### Continuous validation
 
-- 2,349 pytest-collected tests, produced by collection rather than
+- 2,353 pytest-collected tests, produced by collection rather than
   hand-maintained (measured 2026-07-28). See
   [`data/published_count_manifest.json`](../data/published_count_manifest.json).
 - 45 CLI integration tests (`tests/test_cli_integration.py`)

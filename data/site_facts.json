@@ -27,7 +27,7 @@
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 2349,
+      "total_collected": 2353,
       "total_functions": 1742,
       "per_file": {
         "test_agent_governance.py": 28,

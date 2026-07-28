@@ -61,7 +61,7 @@ your lawyer's job, not Regula's.
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | Machine-readable risk indication as JSON-LD, *aligned to* (not certified against) the DPVCG EU-AIAct vocabulary — a W3C Community Group report, **not a ratified W3C Standard** | `regula dpv .` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 2,349 unique tests (2,349 pytest-collected), 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
+| 2,353 unique tests (2,353 pytest-collected), 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -78,14 +78,14 @@ your lawyer's job, not Regula's.
 > Every number Regula publishes can be reproduced by anyone with a checkout
 > of the repo. The commands below run in under 30 seconds total on a laptop.
 
-### 3.1 Internal test suite — 2,349 [unique](../tests/) / 2,349 pytest-collected, all green
+### 3.1 Internal test suite — 2,353 [unique](../tests/) / 2,353 pytest-collected, all green
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ -q
-# Expected: 2349 passed (~16 minutes on a laptop — verified 2026-07-27)
-# 2,349 unique tests (sort -u of test IDs equals collected count).
+# Expected: 2353 passed (~16 minutes on a laptop — verified 2026-07-27)
+# 2,353 unique tests (sort -u of test IDs equals collected count).
 ```
 
 Regula also ships a legacy auto-discovery runner for the classification
@@ -126,17 +126,38 @@ directory writability, and policy file presence. INFO entries for
 optional features are not warnings — they are reminders that
 `pipx install "regula-ai[yaml,ast]"` would unlock more features.
 
-### 3.4 Synthetic precision + recall — 100 / 100
+### 3.4 Synthetic precision + recall — prohibited 5/5, high-risk 16 of 30
 
 ```bash
 python3 benchmarks/synthetic/run.py
-# Expected: precision 100% (5 TP, 0 FP), recall 100% (5 TP, 0 FN)
+# Expected (corpus v2.0, measured 2026-07-28):
+#   prohibited   tp=5   fp=0  fn=0
+#   high_risk    tp=16  fp=0  fn=14
+# The command prints these as percentages. Prohibited recall is 5/5.
+# High-risk recall is 16 of 30 on the classifier path.
 ```
 
-13 hand-crafted fixtures covering 5 Article 5 prohibited practices,
-5 Annex III high-risk categories, and 3 negative cases. The
-ground truth is the human-authored fixture set in
-`benchmarks/synthetic/fixtures/`.
+**38 hand-crafted fixtures** covering 5 Article 5 prohibited practices,
+**30** Annex III high-risk categories, and 3 negative cases. Ground truth
+is the human-authored fixture set in `benchmarks/synthetic/fixtures/`.
+
+> **This section previously claimed "100 / 100" against a 13-fixture
+> corpus (5 high-risk).** The high-risk set was expanded to 30 on
+> 28 July 2026 and recall fell to **16 of 30**. The old figure was not a
+> misstatement at the time; it was **underpowered** — 5 fixtures happened
+> to sample categories that pass. Corrected here rather than left
+> unreproducible.
+>
+> **Two paths, two numbers, and they are not interchangeable.** The 53%
+> above is the **classifier** path (`classify()`, what `run.py` measures).
+> The **scanner** path (`regula check`, what a user actually runs) gives
+> **10 of 30** on the same corpus, because opt-in domain suppression and an
+> AI-library-indicator requirement gate findings the classifier assigns.
+> Full decomposition (10/30 default, 14/30 domain-declared, 19/30 with both gates
+> satisfied, and the 17-vs-3 gates-vs-patterns split) is in
+> `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md`.
+> **Neither number may be quoted bare.** The divergence between the two
+> paths is finding F8.
 
 ### 3.5 OSS precision benchmark — published, sliced, reproducible
 
@@ -154,7 +175,9 @@ python3 benchmarks/label.py score
 ```
 
 **Two corpora, two numbers — both honest, different scopes.** The
-headline precision is **83.5%** (N=115, **measured on Regula v1.7.4**),
+headline precision is **83.5%** (N=115, **measured on Regula v1.7.0**,
+labelled by a **single reviewer** with no inter-rater agreement
+measurement, see [`benchmarks/README.md`](../benchmarks/README.md)),
 on production code from a random corpus of 50 Python AI repos selected
 via GitHub API (pool of 276, random seed 42) and blind-labelled
 (labeller saw only file path, code context, and finding description —
@@ -331,7 +354,7 @@ are tracked in a public delta log (`content/regulations/delta-log/`).
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (2,349 unique tests, 2,349 pytest-collected; the legacy `tests/test_classification.py` runner executes 963 functions, 437 defined in-file) |
+| Test suite | `tests/` (2,353 unique tests, 2,353 pytest-collected; the legacy `tests/test_classification.py` runner executes 963 functions, 437 defined in-file) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit hook source | `hooks/pre_tool_use.py` |
@@ -668,7 +691,7 @@ in this repository. Every row links to a verifiable artefact.
 | Precision and recall benchmark | [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md) | Labelled corpus, methodology, per-tier and per-project breakdown |
 | Framework crosswalk data | [`references/framework_crosswalk.yaml`](../references/framework_crosswalk.yaml) | EU AI Act ↔ ISO 42001 / NIST AI RMF / SOC 2 / etc. mappings |
 | Pattern definitions | [`scripts/risk_patterns.py`](../scripts/risk_patterns.py) | All detection regexes, grouped by risk tier and category |
-| Test suite | `tests/` | 2,349 unique tests (2,349 pytest-collected) |
+| Test suite | `tests/` | 2,353 unique tests (2,353 pytest-collected) |
 | Self-test | `regula self-test` | 6 round-trip assertions |
 | Environment health | `regula doctor` | 12 checks (pass/info split varies by environment) |
 | SBOM | `regula sbom --ai-bom` | CycloneDX 1.7 ML-BOM from any checkout |

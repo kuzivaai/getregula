@@ -1,7 +1,11 @@
 # PACK 1.5b — quarantine burn-down, for owner approval
 
-**Status: BUILT, HELD, NOT LANDED. Nothing in this pack has been applied.**
-No public surface has changed. Approval is required before any of it lands.
+> **STATUS UPDATED 28 July 2026: PARTIALLY LANDED.** See the LANDING RECORD
+> at the end of this file for exactly what landed and what is still held.
+> The header below describes the pack as first built and is kept as the
+> record of what was approved.
+
+**Status as built: BUILT, HELD, NOT LANDED.**
 
 Scope: the 42 unique `(file, claim)` pairs in `.claim-quarantine.json`,
 equal to **45 occurrence-level findings** (MEASURED 28 Jul 2026, in place;
@@ -501,3 +505,68 @@ before Phase 6/8 publishes anything**, so those 7 are the remaining debt.
 
 **Nothing in this pack has been applied.** The working tree is clean and
 every public surface is untouched.
+
+---
+
+# LANDING RECORD — 28 July 2026
+
+**Landed under the owner's standing approval.** Gates green after; see the
+commit body. **Green is now necessary but not sufficient** (F22, below).
+
+## Landed
+
+| Item | What changed |
+|---|---|
+| §1 provenance | **14 surfaces**, not the 8 this pack listed. All now carry N=115 and a route to the single-reviewer disclosure. |
+| §1 / F20 | Version attribution corrected **v1.7.4 → v1.7.0** to match `PRECISION.json`, the artefact. |
+| §5.1 | Healthcare hypothetical reframed with explicit framing in the sentence. |
+| Guard | `tests/test_precision_provenance.py`, 4 tests, fail-then-pass control run. |
+| F23 | Two public surfaces claiming **100% synthetic recall** corrected. |
+
+## The pack's own location table was incomplete
+
+It listed **8** locations. The guard test, which enumerates from
+`git ls-files` rather than by hand, found **14**. The six it missed:
+`site/index.html` (the landing page), `site/llms.txt`, `site/llms-full.txt`,
+`site/regions/uae.html`, `site/examples/sample-exec-summary.html`,
+`docs/benchmarks/PRECISION_RECALL_2026_04.md`.
+
+The owner required the table to cover *every* location so approval happened
+on full evidence. **It covered eight of fourteen.** The count is now
+produced by a test.
+
+## HELD, not landed
+
+- **§3 class 1 (progress-bar percentages).** Two OWNER-INPUT items in this
+  pack are unanswered: which fixture to feature, and DE/PT-BR sign-off.
+  Held rather than assumed.
+- **§4.2 blog, 4 pairs.** Awaiting the branch A/B answer.
+- **§4.1 `41%`** (unverified) and **§4.3** 4 pairs (untraced).
+- **The meta-description occurrence** on `blog-scanning-5-frameworks.html`,
+  per the pre-landing gate. Re-run immediately before the commit: still
+  1 offender, still held.
+
+## NEW FINDINGS FROM LANDING
+
+**F22 — the claim auditor's 50% sensitivity floor.**
+`claim_auditor.py:850`: `if found_val < int(actual_str) * 0.5: continue`.
+Any stale number below half canonical is silently skipped. **1.5c.**
+
+**F23 — published 100% synthetic recall was false.** `docs/TRUST.md` §3.4
+and `site/regions/uae.html` claimed 100% recall on the synthetic corpus.
+The documented command now reports **16 of 30** high-risk. Corrected in
+this batch, because leaving a "run this, expect 100%" instruction that the
+command contradicts is publishing an unreproducible claim.
+
+**F24 — the auditor cannot derive recall figures at all.**
+`known_precision_values()` reads precision from `PRECISION.json` artefacts
+only. Any published recall percentage is therefore underivable and gets
+rejected. That is why recall is now expressed as fractions (16 of 30) on
+published surfaces. **1.5c, alongside F22.**
+
+**F8 quantified for the first time.** The classifier path (`classify()`,
+what `benchmarks/synthetic/run.py` measures) gives **16 of 30**; the
+scanner path (`regula check`, what a user runs) gives **10 of 30**. **The
+two disagree by six fixtures on the same corpus.** My first writeup gave
+33% without stating the path, which is the provenance-free-number defect
+this batch exists to fix. Corrected in the results file.
