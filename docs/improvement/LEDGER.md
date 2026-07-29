@@ -21,6 +21,14 @@ consolidated session record.
   read again. State the date.
 - No figure whose apparatus is gone. If a number cannot be re-derived by a
   committed command, either re-derive it or replace it with the command.
+- **The `--diff-base` total has no fixed point and chasing it is the bug.**
+  This file and `docs/improvement/STATE.md` are inside the corpus the gate
+  measures, so every edit to them moves the number they record. Observed on
+  2026-07-29 across four commits: 278 at `b310821`, 281 at `3939949` after an
+  ADR landed, 278 again at `7b78f2e` after a STATE.md edit added file
+  references that sourced paragraphs. Each is correct at its commit. State the
+  commit, do not reconcile them, and do not re-edit the ledger to make the
+  latest figure match.
 
 ---
 

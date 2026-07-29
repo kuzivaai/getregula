@@ -31,7 +31,7 @@ strips one trailing full stop. It does **not** normalise digits.
 Three consequences follow, all intended.
 
 1. **Editing a claim's text makes it read as newly introduced.** Changing
-   "83.5% precision" to "91% precision" is a new claim, not an edited one.
+   "42.0% precision" to "51% precision" is a new claim, not an edited one.
 2. **Editing prose around a claim does not.** Identity keys on the claim
    snippet, not the paragraph, so rewording a sentence next to a number leaves
    the number's identity intact.
@@ -44,7 +44,7 @@ This is the contested one, so the argument is set out rather than asserted.
 
 The gate exists to enforce "you must source what you assert". If you changed
 the text of a claim, you re-asserted it, and re-assertion is exactly the moment
-to attach provenance. A figure that moves from 83.5% to 91% has a different
+to attach provenance. A figure that moves from 42.0% to 51% has a different
 truth condition and needs a different source; treating it as the same claim
 because it sits in the same sentence would let a changed number inherit an old
 citation. This repository has already published a figure that did not match its
@@ -54,6 +54,14 @@ The false-positive cost is bounded and visible: a genuine reword of a claim
 forces one provenance line. The false-negative cost of the alternative is
 silent and is the failure this programme keeps paying for.
 
+> **The figures 42.0% and 51% in this document are invented placeholders.**
+> An earlier draft used the repository's real published precision figure as
+> the example. `tests/test_precision_provenance.py` correctly failed: a
+> tracked file carrying that figure must be on the surface manifest with its
+> N and labeller route. The example was changed rather than the manifest.
+> The previous session made the identical mistake and recorded it; this is
+> the second occurrence.
+
 ## Rejected alternative: fuzzy or provenance-tracking identity
 
 Track a claim across edits, either by similarity matching on the snippet or by
@@ -62,8 +70,8 @@ assigning stable claim IDs carried in the document.
 Rejected for three reasons.
 
 1. **It reintroduces the exact defect it is meant to avoid.** Any similarity
-   threshold loose enough to survive a reword is loose enough to match 83.5%
-   against 91%, so a changed number escapes the gate wearing its predecessor's
+   threshold loose enough to survive a reword is loose enough to match 42.0%
+   against 51%, so a changed number escapes the gate wearing its predecessor's
    citation. That is worse than a false positive.
 2. **Stable IDs require authoring discipline the corpus does not have.** They
    would have to be embedded in Markdown and HTML by hand, in a repository
