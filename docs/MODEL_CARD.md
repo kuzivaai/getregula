@@ -142,7 +142,7 @@ Regula is explicitly **NOT** intended for:
 | classifier (`report.scan_files`), all domains declared | 16/30 = 53.3% | 5/5 |
 Source: `benchmarks/synthetic/RECALL.json`, produced from an actual run by `scripts/build_recall_artefact.py`.
 
-**Corrected 29 July 2026.** This section previously described a 13-file corpus and reported **100% precision, 100% recall**. The corpus was expanded to 38 fixtures (high-risk 5 to 30) and the claim was never re-measured against it. The withdrawn figures are recorded here rather than deleted; the measured replacements are in the table above, from `benchmarks/synthetic/RECALL.json`. Of the 20 fixtures missed on a default scan, 13 are suppressed by opt-in domain gating, 4 by the AI-indicator gate, and 3 are genuine pattern gaps, so **17 of 20 misses are gate behaviour rather than missing patterns**.
+**Corrected 29 July 2026.** This section previously described a 13-file corpus and reported **100% precision, 100% recall**. The corpus was expanded to 38 fixtures (high-risk 5 to 30) and the claim was never re-measured against it. The withdrawn figures are recorded here rather than deleted; the measured replacements are in the table above, from `benchmarks/synthetic/RECALL.json`. **Corrected again 29 July 2026.** The decomposition published here until today read "13 suppressed by opt-in domain gating, 4 by the AI-indicator gate, and 3 are genuine pattern gaps, so 17 of 20 misses are gate behaviour". Every component of that was wrong, and it understated the pattern-side weakness by more than double. It was carried over from an earlier recall table whose two lower rows are marked NOT REPRODUCIBLE in `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md`. Derived from the per-fixture `missed` lists in `benchmarks/synthetic/RECALL.json` by set difference across the three scanner conditions: of the 20 high-risk fixtures missed on a default scan, **6 are recovered by declaring the opt-in domains, a further 7 by also having an AI-library import present, and 7 are never recovered under any measured condition**. So **13 of 20 misses are gate behaviour and 7 are pattern-side exposure**. Regenerated and asserted by `tests/test_recall_decomposition.py`, which recomputes the three numbers from the artefact and fails if this paragraph disagrees.
 
 ### Curated library corpus (development baseline)
 
@@ -156,7 +156,7 @@ Source: `benchmarks/synthetic/RECALL.json`, produced from an actual run by `scri
 
 ### Continuous validation
 
-- 2,465 pytest-collected tests, produced by collection rather than
+- 2,474 pytest-collected tests, produced by collection rather than
   hand-maintained (measured 2026-07-28). See
   [`data/published_count_manifest.json`](../data/published_count_manifest.json).
 - 45 CLI integration tests (`tests/test_cli_integration.py`)
