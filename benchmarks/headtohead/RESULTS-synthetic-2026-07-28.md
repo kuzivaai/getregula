@@ -58,6 +58,7 @@ was fixed before the run.
 | Prohibited (Art. 5) | 5 | **5/5 = 100%** | 0 |
 | High risk (Annex III) | 5 | **4/5 = 80%** | 0 |
 | Negative controls | 3 | n/a | **0** high-risk firings |
+Derived from the committed raw output at benchmarks/headtohead/results/regula-synthetic-2026-07-28.json, which carries one record per fixture: of the 5 prohibited fixtures, 5 report tier prohibited; of the 5 high-risk fixtures, 4 report tier high_risk, the miss being highrisk_employment.py, which reports ai_security only; and none of the 3 negative controls reports high_risk.
 
 Per fixture:
 
