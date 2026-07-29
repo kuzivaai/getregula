@@ -34,6 +34,8 @@ import test_site_facts as _test_site_facts  # noqa: F401
 import test_dpv_export as _test_dpv_export  # noqa: F401
 import test_hostile_sweep as _test_hostile_sweep  # noqa: F401
 import test_release_gate as _test_release_gate  # noqa: F401
+import test_ledger_status as _test_ledger_status  # noqa: F401
+import test_merge_blockers as _test_merge_blockers  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
@@ -56,7 +58,7 @@ import inspect as _inspect
 RUNNER_ALIAS_PREFIX = "_runner_test_"
 
 _PYTEST_FIXTURES = {"monkeypatch", "tmp_path", "capsys", "tmpdir", "request"}
-for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate):
+for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
             continue
@@ -70,7 +72,7 @@ for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_ne
         if _params & _PYTEST_FIXTURES:
             continue
         globals()[RUNNER_ALIAS_PREFIX + _name] = _fn
-del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate
+del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:

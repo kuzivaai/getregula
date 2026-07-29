@@ -122,6 +122,90 @@ class TestPublishedCountManifest(unittest.TestCase):
             "collection; a hand-maintained count is how the double-count "
             "went unnoticed for so long")
 
+    def test_trust_publishes_the_custom_runners_own_function_count(self):
+        """The SECOND published test count, which nothing was guarding.
+
+        `docs/TRUST.md` publishes how many functions the legacy
+        `tests/test_classification.py` runner executes, alongside the
+        pytest-collected count. `scripts/cascade_count.py` propagates only the
+        collected count, so this one drifts silently.
+
+        MEASURED 2026-07-29: wiring two new test files into the runner, which
+        `.claude/rules/tests.md` requires, moved the runner from 963 functions
+        to 978 while `docs/TRUST.md` still read 963. The cascade did not catch
+        it because the figure is outside the manifest, and no test referenced
+        the number at all.
+
+        Both figures are recomputed here rather than asserted, so neither can
+        go stale without this failing. The total mirrors the runner's own
+        selection predicate: module-level callables named `test_*` or carrying
+        RUNNER_ALIAS_PREFIX.
+
+        ENUMERATED, not spotted. `git ls-files | xargs grep -n 963` finds the
+        figure in two places on a published surface, `docs/TRUST.md` line 95
+        (inside a reproduction instruction) and line 381 (in the summary
+        table), and this guard covers BOTH. The other tracked hits are
+        `CHANGELOG.md`, `docs/improvement/*` and two code comments, all of
+        which legitimately record what was true on a past date, plus hash
+        coincidences in `uv.lock` that must never be text-replaced.
+
+        NOT machine-checked, and stated rather than left implied: the runner's
+        `N passed` figure. Deriving it costs a full runner execution, about
+        twenty minutes, which does not belong in a unit test. It has to be
+        re-derived by hand whenever the runner is next run to completion.
+        """
+        sys.path.insert(0, str(REPO / "tests"))
+        import test_classification as tc
+
+        total = len([
+            name for name, obj in vars(tc).items()
+            if (name.startswith("test_")
+                or name.startswith(tc.RUNNER_ALIAS_PREFIX))
+            and callable(obj)])
+        in_file = len(re.findall(
+            r"^def (test_\w+)",
+            (REPO / "tests" / "test_classification.py").read_text(
+                encoding="utf-8"),
+            re.M))
+
+        trust = (REPO / "docs" / "TRUST.md").read_text(encoding="utf-8")
+        m = re.search(
+            r"runner executes ([\d,]+) functions, ([\d,]+) defined in-file",
+            trust)
+        self.assertIsNotNone(
+            m, "docs/TRUST.md no longer states the runner's function count in "
+               "the expected form; this guard has lost its target and must be "
+               "retargeted rather than deleted")
+        published_total = int(m.group(1).replace(",", ""))
+        published_in_file = int(m.group(2).replace(",", ""))
+
+        self.assertEqual(
+            published_total, total,
+            f"docs/TRUST.md publishes {published_total} runner functions; the "
+            f"runner selects {total}. Wiring a test file into "
+            f"tests/test_classification.py changes this number and "
+            f"scripts/cascade_count.py does not propagate it.")
+        self.assertEqual(
+            published_in_file, in_file,
+            f"docs/TRUST.md publishes {published_in_file} in-file test "
+            f"functions; the file defines {in_file}.")
+
+        # The second location: the reproduction instruction quoting the
+        # runner's own summary line. Covering only the table would have left
+        # this one stale, which is measurement rule 4c in miniature.
+        quoted = re.search(
+            r"Results: [\d,]+ passed, \d+ failed, \d+ skipped "
+            r"\(([\d,]+) test functions\)", trust)
+        self.assertIsNotNone(
+            quoted,
+            "docs/TRUST.md no longer quotes the runner's summary line in the "
+            "expected form; retarget this guard rather than dropping it")
+        self.assertEqual(
+            int(quoted.group(1).replace(",", "")), total,
+            f"the runner output quoted in docs/TRUST.md names "
+            f"{quoted.group(1)} test functions; the runner selects {total}. "
+            f"A reader following that instruction sees a different number.")
+
 
 if __name__ == "__main__":
     unittest.main()
