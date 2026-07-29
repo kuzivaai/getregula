@@ -1,15 +1,28 @@
 {
-  "generated_at": "2026-07-27T19:45:45.782530+00:00",
-  "total_entries": 10,
-  "latest_date": "2026-07-24",
+  "generated_at": "2026-07-29T09:27:59.308952+00:00",
+  "total_entries": 12,
+  "latest_date": "2026-07-29",
   "types": [
     "amendment-proposal",
     "council-position",
+    "harmonised-standard",
     "parliament-position",
     "regulation-adoption",
     "trilogue-outcome"
   ],
   "entries": [
+    {
+      "id": "2026-07-29-annex-xiv-aih-codes",
+      "date": "2026-07-29",
+      "type": "regulation-adoption",
+      "affected_articles": [
+        "30"
+      ],
+      "summary": "Regulation (EU) 2026/1744 inserts Annex XIV into Regulation (EU) 2024/1689, a three-category code list used to scope the designation of notified bodies: AIP codes (product legislation), AIB codes (bio",
+      "confidence": "verified-primary",
+      "source_url": "https://eur-lex.europa.eu/eli/reg/2026/1744/oj",
+      "file": "entries/2026-07-29-annex-xiv-aih-codes.json"
+    },
     {
       "id": "2026-07-24-oj-publication",
       "date": "2026-07-24",
@@ -24,6 +37,19 @@
       "confidence": "verified-primary",
       "source_url": "https://eur-lex.europa.eu/eli/reg/2026/1744/oj",
       "file": "entries/2026-07-24-oj-publication.json"
+    },
+    {
+      "id": "2026-07-12-en-18286-published",
+      "date": "2026-07-12",
+      "type": "harmonised-standard",
+      "affected_articles": [
+        "17",
+        "40"
+      ],
+      "summary": "CEN-CENELEC approved EN 18286 on 12 July 2026 and it is published as EN 18286:2026. It is the first AI Act standard from JTC 21 to reach publication, and it operationalises the Article 17 quality mana",
+      "confidence": "verified-secondary",
+      "source_url": "https://www.sgs.com/en-se/news/2026/07/en-18286-a-new-european-standard-for-ai-quality-management-and-eu-ai-act-readiness-has-been-published",
+      "file": "entries/2026-07-12-en-18286-published.json"
     },
     {
       "id": "2026-06-29-council-adoption",
@@ -85,7 +111,7 @@
         "50",
         "113"
       ],
-      "summary": "The first political trilogue on the Digital Omnibus on AI ended without agreement on 29 April 2026 after approximately 12 hours of negotiations. The sticking point was the conformity-assessment archit",
+      "summary": "The first political trilogue on the Digital Omnibus on AI ended without agreement on 29 April 2026 after about 12 hours of negotiations. The sticking point was the conformity-assessment architecture f",
       "confidence": "verified-primary",
       "source_url": "https://iapp.org/news/a/ai-act-omnibus-what-just-happened-and-what-comes-next",
       "file": "entries/2026-04-29-trilogue-failed.json"

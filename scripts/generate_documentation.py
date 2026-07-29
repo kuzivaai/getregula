@@ -1228,7 +1228,7 @@ _[TO BE COMPLETED]_
 | Standard | Status | Notes |
 |----------|--------|-------|
 | ISO 42001 (AI Management System) | [ ] Not started | |
-| prEN 18286 (QMS for AI) | [ ] Awaiting publication | Public enquiry closes Oct 2026 |
+| EN 18286:2026 (QMS for AI) | [ ] Not started | Published 12 Jul 2026; NOT yet OJ-cited, so no Art. 40 presumption |
 | ISO 23894 (AI Risk Management) | [ ] Not started | |
 
 ---
