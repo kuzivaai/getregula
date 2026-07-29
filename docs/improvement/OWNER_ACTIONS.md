@@ -41,15 +41,36 @@ carries CC BY 4.0 (common for datasets) — that is a licensing decision
 only you can make; the in-repo dataset currently states the repo
 licences.
 
-## 4. EUR-Lex eyeball — CLOSED 28 July 2026, no action required
-Two independent retrievals of Regulation (EU) 2026/1744 (the ELI
-`/eli/reg/2026/1744/oj/eng` record and the CELEX `32026R1744` text) agree:
-there is **no agentic-AI category or definition**, and the Omnibus does
-**not** amend Article 111(2) or set a 2 August 2030 date. Regula asserts
-neither, so nothing needed fixing and nothing may be added. Recorded in
-STATE.md under "EUR-LEX RE-VERIFICATION". Kept here as a closed record
-rather than deleted, so the closure is visible to anyone working from an
-older copy of this list. **Do not re-open or re-run this.**
+## 4. EUR-Lex eyeball: CLOSED, then PARTLY OVERTURNED 29 July 2026
+
+**The original closure, kept verbatim because the record of a wrong call is
+the point:** two independent retrievals of Regulation (EU) 2026/1744 agreed
+that there is "no agentic-AI category or definition", that the Omnibus does
+not amend Article 111(2) or set a 2 August 2030 date, and the item was closed
+with "Do not re-open or re-run this."
+
+**That instruction was wrong and has been withdrawn.** A full-text retrieval
+of the OJ HTML on 29 July 2026 (HTTP 200) found **Annex XIV, Section 3**:
+
+- `AIH 0401` = "AI systems based on other emerging AI technologies not covered
+  by other codes, **including Agentic AI**"
+- `AIH 0205` = "AI systems that learn from their environment, **excluding AI
+  systems covered under AIH 0401**"
+
+**A category label does exist and it names Agentic AI.** The earlier closure
+was **wrong on existence** and **right on substance**: the word appears
+exactly once in the whole regulation, in a notified-body competence table, with
+no definition, no risk tier and no obligation. The Article 111(2) and 2030
+findings stand and were correct but partial; recital 39 of 2026/1744 clarifies
+that grace period's scope without altering the date.
+
+**Standing lesson: a closure that forbids re-opening is a claim, and it carries
+the same evidence burden as any other.** The two earlier retrievals did not
+reach the annexes, and the closure asserted a negative over material it had not
+read. Recorded in the delta log at
+`content/regulations/delta-log/entries/2026-07-29-annex-xiv-aih-codes.json`
+with the delegated-act trigger conditions that would re-open the crosswalk
+question.
 
 ## 5. BSI ART/1 / JTC 21 route (the (e) credential; slowest, highest ceiling)
 ART/1 is BSI's AI standards committee and the UK route into CEN-CENELEC
@@ -160,3 +181,39 @@ lost with it.
 `scripts/gsc_fetch.py` still fails with invalid_grant. UX metrics for
 regulatory-currency queries (docs/UX-REVIEW-2026-07.md Section 4) wait
 on this.
+
+## 10. DEFERRED SESSIONS, recorded 29 July 2026 so neither is silently lost
+
+Owner-set sequencing. **Both are deferred deliberately, not dropped.**
+
+### Session B: F29 unit reconciliation, agentic draft humanising and validation
+
+**Contents:** settle F29 (387 against 386, and whether the blog post's 389 is
+corrected); humanise and validate
+`content/blog/article-agentic-ai-annex-xiv.md`, currently `published: false`.
+
+**Why it runs next, not now:** both are content corrections, and content
+corrections should be verified by the **repaired** claim gate rather than the
+current one. The current gate scans whole files and fails on pre-existing
+claims (see the session 5c checkpoint in STATE.md), so a content fix verified
+against it cannot be distinguished from a file that merely happens to be
+touched. Verifying content against a gate that is itself under repair proves
+nothing about the content.
+
+### Session C: repository restructure to public-repo standard
+
+**Contents:** full file inventory classified needed / superseded /
+never-public, structure to current conventions, governance files, SPDX
+headers, OpenSSF Scorecard in CI, Best Practices passing badge.
+
+**Why it runs last:** it is the largest diff, and **it moves the paths that
+every measurement currently on record is keyed to.** The F25 figure
+(33 / 61 at `81e14a3`, corpus of 156 files excluding `docs/improvement/`), the
+`--diff-base` distribution (195 / 67 / 8 at `b43f95d`), the manifest surfaces
+that `cascade_count --check` validates, and the claim identity rule the gate
+repair depends on are all path-keyed. Restructuring first would invalidate all
+of them at once and leave nothing to compare against.
+
+**Ordering rule that follows from this:** the gate repair and the measurements
+it produces must land and be stable **before** any path moves. Session C is a
+mechanical change once that is true, and an unmeasurable one before it.
