@@ -21,7 +21,7 @@ CLAIM IDENTITY
 A claim is keyed on **(repo-relative path, normalised claim text)**.
 
 Normalisation lowercases, collapses runs of whitespace, and strips a trailing
-full stop. It deliberately does NOT normalise digits, so 83.5% and 91% are
+full stop. It deliberately does NOT normalise digits, so 42.0% and 51% are
 different claims.
 
 The consequence, stated plainly: a paragraph edited so that its claim TEXT
@@ -87,7 +87,7 @@ _WS = re.compile(r"\s+")
 def normalise_claim(text: str) -> str:
     """Canonical form of a claim snippet for identity purposes.
 
-    Digits are NOT normalised. Changing 83.5% to 91% must read as a different
+    Digits are NOT normalised. Changing 42.0% to 51% must read as a different
     claim, because it is one.
     """
     return _WS.sub(" ", text.strip().lower()).rstrip(".")
