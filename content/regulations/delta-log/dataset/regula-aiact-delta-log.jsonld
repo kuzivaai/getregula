@@ -18,7 +18,7 @@
         "@type": "xsd:date"
       },
       "dct:modified": {
-        "@value": "2026-07-24",
+        "@value": "2026-07-29",
         "@type": "xsd:date"
       },
       "dct:license": [
@@ -53,7 +53,7 @@
         }
       ],
       "regula:generatorVersion": "1.9.0",
-      "regula:eventCount": 10,
+      "regula:eventCount": 12,
       "regula:vocabularyNote": "The DPVCG EU-AIAct vocabulary (a W3C Community Group report, not a ratified W3C Standard) is referenced because Regula's scan-result export emits its concepts. Per-event DPV concepts are not asserted: the vocabulary currently has no regulatory-change-event concepts. Regula proposes adding them upstream (DPVCG issue #229)."
     },
     {
@@ -244,7 +244,7 @@
         "@type": "xsd:date"
       },
       "regula:eventType": "amendment-proposal",
-      "dct:description": "The first political trilogue on the Digital Omnibus on AI ended without agreement on 29 April 2026 after approximately 12 hours of negotiations. The sticking point was the conformity-assessment architecture for AI in regulated products under Annex I: Parliament pushed to move sectoral legislation (machinery, medical devices, toys) from Section A to Section B, effectively letting sectoral safety law handle those AI systems; the Council resisted, wanting to preserve AI Act oversight for sensitive sectors. A follow-up trilogue is scheduled for approximately 13 May 2026. The Cypriot Council Presidency must close the file before its term ends 30 June 2026; otherwise the Lithuanian Presidency takes over from 1 July. If the Omnibus is not formally adopted before 2 August 2026, the original AI Act obligations (Regulation 2024/1689, Article 113) apply as written on that date. Multiple advisory firms (IAPP, DLA Piper, Modulos) now recommend organisations prepare against the original 2 August 2026 deadline rather than relying on the proposed extensions.",
+      "dct:description": "The first political trilogue on the Digital Omnibus on AI ended without agreement on 29 April 2026 after about 12 hours of negotiations. The sticking point was the conformity-assessment architecture for AI in regulated products under Annex I: Parliament pushed to move sectoral legislation (machinery, medical devices, toys) from Section A to Section B, letting sectoral safety law handle those AI systems; the Council resisted, to preserve AI Act oversight for sensitive sectors. A follow-up trilogue is scheduled for about 13 May 2026. The Cypriot Council Presidency must close the file before its term ends 30 June 2026; otherwise the Lithuanian Presidency takes over from 1 July. If the Omnibus is not formally adopted before 2 August 2026, the original AI Act obligations (Regulation 2024/1689, Article 113) apply as written on that date. Multiple advisory firms (IAPP, DLA Piper, Modulos) now recommend preparing against the original 2 August 2026 deadline rather than the proposed extensions.",
       "dct:source": {
         "@id": "https://iapp.org/news/a/ai-act-omnibus-what-just-happened-and-what-comes-next"
       },
@@ -369,6 +369,33 @@
       }
     },
     {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-07-12-en-18286-published",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2026-07-12-en-18286-published",
+      "dct:date": {
+        "@value": "2026-07-12",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "harmonised-standard",
+      "dct:description": "CEN-CENELEC approved EN 18286 on 12 July 2026 and it is published as EN 18286:2026. It is the first AI Act standard from JTC 21 to reach publication, and it operationalises the Article 17 quality management system duty for providers of high-risk AI systems. Its public enquiry ran 30 October 2025 to 22 January 2026. CRITICAL DISTINCTION: publication is not Official Journal citation. As at this entry's verification date the standard has NOT been cited in the OJ, so it does NOT yet confer the Article 40 presumption of conformity, and a provider relying on it carries the full evidentiary burden. Any statement that EN 18286 is unpublished or at formal vote is now false; any statement that it grants presumption of conformity is also false.",
+      "dct:source": {
+        "@id": "https://www.sgs.com/en-se/news/2026/07/en-18286-a-new-european-standard-for-ai-quality-management-and-eu-ai-act-readiness-has-been-published"
+      },
+      "regula:sourceTitle": "EN 18286:2026, Artificial Intelligence: Quality management system for EU AI Act regulatory purposes (CEN-CENELEC JTC 21)",
+      "regula:affectedArticles": [
+        "17",
+        "40"
+      ],
+      "regula:confidence": "verified-secondary",
+      "regula:jurisdiction": "EU",
+      "regula:verifiedOn": {
+        "@value": "2026-07-29",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "Corroborated 2026-07-29 across three independent sources: SGS (accredited certification body) announcing publication; Adam Leon Smith (named CEN-CENELEC JTC 21 participant) publishing \"EN 18286:2026 is finally published, the first AI Act standard to reach that milestone\"; and the Cloud Security Alliance research note of 28 April 2026 for the underlying legal point that presumption of conformity arises only on OJ citation. NOT verified at a CEN-CENELEC primary page: the official AI topic page carries no standard-level status, and the JTC 21 tracker consulted is a June 2026 snapshot that itself instructs readers to check the live work programme. The OJ-citation negative is therefore an absence-of-evidence finding, not a positive confirmation, and should be re-checked before any surface relies on it.",
+      "regula:mechanicalChange": "references/harmonised_standards.yaml qms-art17 moved from status in_progress to published, published_ref set to EN 18286:2026 with published_date 2026-07-12, while oj_reference stays null and confers_presumption stays false. The blog paragraph asserting the standards were not expected before Q4 2026 was corrected, and the generated documentation checklist row was corrected on both counts (it said awaiting publication, and gave the enquiry as closing October 2026 when it closed January 2026)."
+    },
+    {
       "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-07-24-oj-publication",
       "@type": "regula:RegulatoryDeltaEvent",
       "dct:identifier": "2026-07-24-oj-publication",
@@ -403,6 +430,40 @@
       "regula:supersedes": {
         "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-06-29-council-adoption"
       }
+    },
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-07-29-annex-xiv-aih-codes",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2026-07-29-annex-xiv-aih-codes",
+      "dct:date": {
+        "@value": "2026-07-29",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "regulation-adoption",
+      "dct:description": "Regulation (EU) 2026/1744 inserts Annex XIV into Regulation (EU) 2024/1689, a three-category code list used to scope the designation of notified bodies: AIP codes (product legislation), AIB codes (biometric Annex III systems) and AIH codes (horizontal, technology-specific). Annex XIV Section 3 defines AIH 0401 as \"AI systems based on other emerging AI technologies not covered by other codes, including Agentic AI\", and AIH 0205 as \"AI systems that learn from their environment, excluding AI systems covered under AIH 0401\". This is the first appearance of the term Agentic AI in binding Union law, and it appears exactly once in the whole regulation, in that table. It is a nomenclature code for assessor competence, NOT a definition: no article defines an agent, no risk tier is keyed to autonomy, and no obligation attaches to the code. Recital 43 states the code list exists so that notified bodies \"are fully competent in regard to the AI systems they are required to assess\".",
+      "dct:source": {
+        "@id": "https://eur-lex.europa.eu/eli/reg/2026/1744/oj"
+      },
+      "regula:sourceTitle": "Regulation (EU) 2026/1744, Annex XIV (list of codes, categories and corresponding types of AI systems) and recitals 43 and 45",
+      "regula:affectedArticles": [
+        "30"
+      ],
+      "regula:confidence": "verified-primary",
+      "regula:jurisdiction": "EU",
+      "regula:affectedRecitals": [
+        "43",
+        "45"
+      ],
+      "dct:subject": {
+        "@id": "http://data.europa.eu/eli/reg/2026/1744/oj"
+      },
+      "regula:celexNumber": "32026R1744",
+      "regula:verifiedOn": {
+        "@value": "2026-07-29",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "EUR-Lex full-text retrieval of eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202601744 on 2026-07-29, HTTP 200. Annex XIV Section 3 code labels extracted verbatim (AIH 0101, 0201, 0202, 0203, 0204, 0205, 0301, 0401); recitals 43 and 45 retrieved in full; the string \"agentic\" occurs exactly once in the document, at Annex XIV Section 3(d). Supersedes the earlier STATE.md closure, which was correct that no definition or obligation exists and incorrect that no category exists.",
+      "regula:mechanicalChange": "None. No Regula pattern, tier, crosswalk or obligation changes. Recorded because the code exists and because two widely cited commentaries each reported half of the AIH 0401 label (one as \"agentic AI\", one as \"emerging technologies\"); the operative text is both, in one sentence."
     }
   ]
 }

@@ -1,0 +1,24 @@
+{
+  "id": "2026-07-12-en-18286-published",
+  "date": "2026-07-12",
+  "type": "harmonised-standard",
+  "source_url": "https://www.sgs.com/en-se/news/2026/07/en-18286-a-new-european-standard-for-ai-quality-management-and-eu-ai-act-readiness-has-been-published",
+  "source_title": "EN 18286:2026, Artificial Intelligence: Quality management system for EU AI Act regulatory purposes (CEN-CENELEC JTC 21)",
+  "affected_articles": [
+    "17",
+    "40"
+  ],
+  "summary": "CEN-CENELEC approved EN 18286 on 12 July 2026 and it is published as EN 18286:2026. It is the first AI Act standard from JTC 21 to reach publication, and it operationalises the Article 17 quality management system duty for providers of high-risk AI systems. Its public enquiry ran 30 October 2025 to 22 January 2026. CRITICAL DISTINCTION: publication is not Official Journal citation. As at this entry's verification date the standard has NOT been cited in the OJ, so it does NOT yet confer the Article 40 presumption of conformity, and a provider relying on it carries the full evidentiary burden. Any statement that EN 18286 is unpublished or at formal vote is now false; any statement that it grants presumption of conformity is also false.",
+  "mechanical_change": "references/harmonised_standards.yaml qms-art17 moved from status in_progress to published, published_ref set to EN 18286:2026 with published_date 2026-07-12, while oj_reference stays null and confers_presumption stays false. The blog paragraph asserting the standards were not expected before Q4 2026 was corrected, and the generated documentation checklist row was corrected on both counts (it said awaiting publication, and gave the enquiry as closing October 2026 when it closed January 2026).",
+  "impact_on_regula_patterns": [
+    {
+      "pattern_id": "*",
+      "change": "reviewed-no-change",
+      "notes": "Currency correction to harmonised-standards reference data and the two surfaces quoting it. The OJ-citation field is the one to watch: when EN 18286:2026 is cited in the Official Journal, confers_presumption flips to true and the Article 40 wording on every surface must change with it."
+    }
+  ],
+  "confidence": "verified-secondary",
+  "verified_by": "Corroborated 2026-07-29 across three independent sources: SGS (accredited certification body) announcing publication; Adam Leon Smith (named CEN-CENELEC JTC 21 participant) publishing \"EN 18286:2026 is finally published, the first AI Act standard to reach that milestone\"; and the Cloud Security Alliance research note of 28 April 2026 for the underlying legal point that presumption of conformity arises only on OJ citation. NOT verified at a CEN-CENELEC primary page: the official AI topic page carries no standard-level status, and the JTC 21 tracker consulted is a June 2026 snapshot that itself instructs readers to check the live work programme. The OJ-citation negative is therefore an absence-of-evidence finding, not a positive confirmation, and should be re-checked before any surface relies on it.",
+  "verified_on": "2026-07-29",
+  "jurisdiction": "EU"
+}

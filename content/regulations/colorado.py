@@ -33,6 +33,43 @@ leg.colorado.gov/bills/sb26-189):
   No. 1:26-cv-01515, complaint filed 9 April 2026; DOJ moved to
   intervene 24 April 2026; joint motion to suspend enforcement granted
   27 April 2026.
+
+Two further 2026 Colorado AI statutes, added 2026-07-29 (verified against
+leg.colorado.gov primary bill pages):
+- HB 26-1263, "Conversational Artificial Intelligence Service Operator
+  Requirements" (the Chatbot Safety Act). Governor Signed 29 May 2026
+  (leg.colorado.gov/bills/hb26-1263 history line "05/29/2026"); act
+  effective 12 August 2026, operator duties from 1 January 2027.
+  Requires AI-interaction disclosure, age estimation, self-harm response
+  protocols, and bars representing output as licensed professional
+  services.
+- A 2026 health-care AI statute covering payers and utilisation review
+  (AI in coverage decisions, licensed-clinician review of denials,
+  restrictions on carrier-funded AI psychotherapy). The bill number is
+  reported as HB 26-1139 by a secondary source and is NOT yet verified
+  against leg.colorado.gov. Treat the number as unconfirmed.
+
+CROSSWALK DECISION, 2026-07-29 (reasons recorded either way):
+- HB 26-1263: IN SCOPE for a future crosswalk hook. Its AI-interaction
+  disclosure duty is statically detectable by the same mechanism Regula
+  already uses for AI Act Article 50 transparency, and its audience
+  (operators of conversational AI) is Regula's audience. NOT implemented
+  here: new detection scope belongs in the Phase 4 plan, not in a
+  factual-correction commit.
+- The health-care statute: OUT OF SCOPE. Its duties fall on insurers and
+  utilisation reviewers, not on the builders of AI systems, and they are
+  organisational (clinician review of denials, payment restrictions)
+  rather than detectable in code. Adding it would widen the crosswalk to
+  a population Regula does not serve and cannot scan.
+
+ENFORCEMENT POSITION, checked 2026-07-29: the Colorado AG's own AI page
+(coag.gov/ai/) names SB 26-189 and HB 26-1263, records that pre-rulemaking
+comment closed 13 July 2026, and states that formal rulemaking detail
+follows once that process begins. It does NOT say the AG will decline to
+enforce pending rulemaking. A widely repeated claim to that effect is
+therefore UNVERIFIED at the primary source and is not asserted here. The
+verified enforcement fact remains the 27 April 2026 suspension in xAI v.
+Weiser, whose reach to SB 26-189 is still publicly unresolved.
 """
 
 REGION = {
