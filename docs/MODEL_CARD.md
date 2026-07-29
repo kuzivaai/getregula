@@ -73,16 +73,18 @@ Published benchmark against 50 randomly selected Python AI repos (from 276 candi
 | `agent_autonomy` | 34 | 7 | 82.9% |
 | `high_risk` | 2 | 4 | 33.3% |
 | **Overall** | **96** | **19** | **83.5%** |
+Source: [`benchmarks/README.md`](../benchmarks/README.md). N=115, single reviewer, no inter-rater agreement measurement.
 
 **Improvement from v1.7.4:** Domain-gated high-risk findings, LLM import
 gating, and justice opt-in reduced FP from 42 to 19 on the same labelled
 corpus, improving production precision from 70.0% to 83.5%. 3 borderline
 ai_security TPs were lost (LLM02 findings in files without LLM library imports).
+Both figures are from the same N=115 corpus recorded in [`benchmarks/README.md`](../benchmarks/README.md).
 
 The `high_risk` tier (33%) remains weakest — 6 subcategories (`critical_infrastructure`,
 `safety_components`, `worker_management`, `democratic_processes`, `justice`,
 `essential_services`) now require `--domain` declaration or import fingerprinting to fire. Including test
-code drops overall precision to 60.6%.
+code drops overall precision to 60.6%. Both figures are recorded in [`benchmarks/README.md`](../benchmarks/README.md); note that 33% rests on N=6 and is not statistically meaningful at that sample size.
 
 Full methodology and reproduction steps: `benchmarks/README.md`
 
@@ -125,12 +127,22 @@ Regula is explicitly **NOT** intended for:
 
 ### Synthetic corpus (recall measurement)
 
-13 hand-crafted Python files covering:
+38 hand-crafted Python files (`benchmarks/synthetic/manifest.json`, version 2.0):
 - 5 Article 5 prohibited practices (social scoring, subliminal manipulation, real-time biometric identification, emotion inference in workplaces, vulnerability exploitation)
-- 5 Annex III high-risk categories (employment, credit scoring, education, law enforcement, essential services)
+- 30 Annex III high-risk categories
 - 3 negative cases (non-AI code that should not be flagged)
 
-**Result:** 100% precision, 100% recall. All prohibited and high-risk patterns detected. Zero false positives on negative cases.
+**Recall depends on the code path and the gate condition, so a bare fraction is not a measurement.** Every figure below is regenerated from `benchmarks/synthetic/RECALL.json` by `tests/test_recall_artefact.py`, and a fixture counts as recalled when the highest tier detected equals the tier the manifest expects.
+
+| Path and gate condition | High-risk | Prohibited |
+|---|---:|---:|
+| scanner, default scan, no flags | 10/30 = 33.3% | 5/5 |
+| scanner, all eight domains declared | 16/30 = 53.3% | 5/5 |
+| scanner, domains declared + AI-library import present | 23/30 = 76.7% | 5/5 |
+| classifier (`report.scan_files`), all domains declared | 16/30 = 53.3% | 5/5 |
+Source: `benchmarks/synthetic/RECALL.json`, produced from an actual run by `scripts/build_recall_artefact.py`.
+
+**Corrected 29 July 2026.** This section previously described a 13-file corpus and reported **100% precision, 100% recall**. The corpus was expanded to 38 fixtures (high-risk 5 to 30) and the claim was never re-measured against it. The withdrawn figures are recorded here rather than deleted; the measured replacements are in the table above, from `benchmarks/synthetic/RECALL.json`. Of the 20 fixtures missed on a default scan, 13 are suppressed by opt-in domain gating, 4 by the AI-indicator gate, and 3 are genuine pattern gaps, so **17 of 20 misses are gate behaviour rather than missing patterns**.
 
 ### Curated library corpus (development baseline)
 
@@ -144,7 +156,7 @@ Regula is explicitly **NOT** intended for:
 
 ### Continuous validation
 
-- 2,430 pytest-collected tests, produced by collection rather than
+- 2,439 pytest-collected tests, produced by collection rather than
   hand-maintained (measured 2026-07-28). See
   [`data/published_count_manifest.json`](../data/published_count_manifest.json).
 - 45 CLI integration tests (`tests/test_cli_integration.py`)
