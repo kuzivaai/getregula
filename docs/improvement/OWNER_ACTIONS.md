@@ -56,12 +56,63 @@ ART/1 is BSI's AI standards committee and the UK route into CEN-CENELEC
 JTC 21. Concrete first step: BSI committee-membership enquiry via the
 BSI standards development portal for ART/1 (individual expert
 membership). Cost and eligibility: UNVERIFIED this session — ask BSI;
-do not budget from guesses. Cheap parallel path regardless of
-membership: prEN 18286 is now OUT FOR FORMAL VOTE (verified 27 Jul;
-fresher than the research sweep), so public-comment windows are mostly
-past for this standard; alignment work matters more than commentary
-now. Technical alignment task queued for a session: map Annex IV pack
-structure to prEN 18286's published clause structure (10 normative
+do not budget from guesses.
+
+**CORRECTED 29 July 2026.** The paragraph that stood here said prEN 18286
+was "OUT FOR FORMAL VOTE (verified 27 Jul)" and that "public-comment
+windows are mostly past". **Both statements are now false, two days
+after they were written.** EN 18286 was approved 12 July 2026 and is
+published as EN 18286:2026, and other JTC 21 windows are open right now.
+This is what decaying-currency knowledge looks like in practice: a
+confident, correctly-hedged, correctly-dated claim went stale in 48
+hours. It is recorded rather than deleted because it is the argument for
+the delta log.
+
+### 5a. OPEN PUBLIC ENQUIRY WINDOWS — owner action, time-critical
+
+**Public comment is the cheapest route to standards participation, asset
+class (e), with no committee membership and no fee.**
+
+| Draft | Subject | Public enquiry closes |
+|---|---|---|
+| `prEN 18228` | AI Risk Management (Article 9) | **30 July 2026** |
+| `prEN 18282` | Cybersecurity Specifications for AI Systems | **30 July 2026** |
+| `prEN 18229-1` | Trustworthiness Framework, Part 1: Logging (Arts. 12, 13, 14) | **20 August 2026** |
+
+**Corroboration chain, stated at its real strength.** Four independent
+signals agree, and **no CEN-CENELEC primary page was reachable**:
+
+1. `jtc21.eu` states the 30 July and 20 August closing dates (owner-supplied,
+   29 Jul 2026).
+2. Adam Leon Smith, a named JTC 21 participant, published the enquiry-launch
+   posts for `prEN 18228` and `prEN 18282` on **7 and 8 May 2026**. A standard
+   12-week CEN enquiry from that launch lands on approximately 31 July, which
+   is consistent with a 30 July close.
+3. The ACM Europe Technology Policy Committee published public reflections on
+   draft `prEN 18282` roughly three weeks ago, which is a live enquiry with a
+   professional body commenting in it.
+4. BSI is a full CEN-CENELEC member, so the UK route is valid.
+
+**What could NOT be verified, checked 29 July 2026:** the official
+CEN-CENELEC AI topic page carries no enquiry dates at all; the JTC 21
+tracker consulted is a June 2026 snapshot with no closing dates that
+itself instructs readers to check the live work programme; the two
+participant posts are paywalled beyond their first paragraphs; and the
+BSI project page for `BS EN 18228`
+(`standardsdevelopment.bsigroup.com/projects/2025-01990`) exists but
+would not render for an automated fetch.
+
+**Route to comment:** the BSI standards development portal, or a
+commenting template emailed to `admin.start@bsigroup.com`.
+
+**This is an owner action and was not executed here.** Four corroborations
+are not a primary source. Confirm the window with BSI before relying on
+it; the check costs minutes and the window does not reopen.
+
+### 5b. Alignment task, unchanged
+
+Technical alignment task queued for a session: map Annex IV pack
+structure to EN 18286:2026's published clause structure (10 normative
 clauses, 5 informative annexes, ISO 9001/13485/42001-compatible per
 public summaries; the standard text itself is paywalled and must be
 purchased before claiming clause-level alignment).
