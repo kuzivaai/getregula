@@ -62,6 +62,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from collections import Counter
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -82,6 +83,70 @@ def is_published_surface(path: str) -> bool:
 
 
 # ---------------------------------------------------------------------------
+# Every total this script prints is reconciled against its own itemisation
+# ---------------------------------------------------------------------------
+# WHAT PROMPTED THIS, AND WHAT DID NOT.
+#
+# `LEDGER.md` N12 recorded this script as reporting 168 published-surface
+# findings on `main` "in 29 files", and the discrepancy between 168 and a
+# 29-file listing was raised as a defect to find. MEASURED 2026-07-29, it does
+# not reproduce:
+#
+#   at e48c4db, main tree:  files: 33  sum: 168
+#   at 30acb23, the commit that ADDED this script and recorded the figure:
+#                          files: 33  sum: 168
+#
+# The listing has always accounted for the total. The "29" was recorded without
+# an apparatus and cannot be re-derived, which is the ledger's own rule about
+# figures whose apparatus is gone.
+#
+# The check below is built anyway. "I could not reproduce the discrepancy" is
+# not "the discrepancy cannot happen", and the whole reason N12 was hard to
+# audit is that nothing forced a printed total to agree with the breakdown
+# printed under it. Now every total goes through one door, and the itemisation
+# it is checked against is the same list the reader is shown.
+
+
+class TotalMismatch(RuntimeError):
+    """A reported total disagrees with the itemisation printed beneath it."""
+
+
+def reconcile(label: str, total: int,
+              items: list[tuple[str, int]]) -> list[tuple[str, int]]:
+    """Prove `items` account for `total`, then return them for printing.
+
+    The caller passes the SAME list it is about to print, so this cannot pass
+    while the reader is shown something else. A count of a set comes from the
+    predicate that enumerated it; this is the arithmetic half of that rule.
+    """
+    counted = sum(n for _, n in items)
+    if counted != total:
+        raise TotalMismatch(
+            f"{label}: reported total {total}, but its itemisation of "
+            f"{len(items)} entries sums to {counted} (difference "
+            f"{total - counted}). One of the two is wrong, and neither may be "
+            f"published until it is known which.")
+    return items
+
+
+def _tally(findings: list[dict], key) -> list[tuple[str, int]]:
+    """Group findings by `key` into a sorted (name, count) itemisation."""
+    return sorted(Counter(key(f) for f in findings).items())
+
+
+def _file_of(f: dict) -> str:
+    return f["file"]
+
+
+def _bucket_of(f: dict) -> str:
+    return f["bucket"]
+
+
+def _disposition_of(f: dict) -> str:
+    return f["disposition"]
+
+
+# ---------------------------------------------------------------------------
 # Disposition of the residue
 # ---------------------------------------------------------------------------
 # Classifying a finding as fixable, inherited or contested is a judgement. The
@@ -94,6 +159,30 @@ WITHDRAWN_MARKER = "[NOT REPRODUCIBLE]"
 # disclaiming a figure, not asserting one. The gate cannot tell the difference
 # and flags the disclaimer. That is a gate limitation, not a content defect.
 DISCLAIMER_CUES = ("**NOT supported:**", "any claim that", "Do not generalise")
+
+
+def paragraph_lines(rel: str, line: int) -> list[str]:
+    """The raw lines of the paragraph containing `line`.
+
+    Uses the auditor's own splitter, so this predicate's idea of a paragraph is
+    the same as the gate's. `strip_noise` preserves line counts by design, so
+    the coordinates from the cleaned text index the raw lines correctly.
+    """
+    try:
+        raw = (REPO_ROOT / rel).read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return []
+    cleaned = ca.strip_noise(raw, Path(rel).suffix.lower())
+    lines = raw.splitlines()
+    for start, end, _text in ca.split_paragraphs(cleaned):
+        if start <= line <= end:
+            return lines[start - 1:end]
+    return []
+
+
+def paragraph_carries_a_withdrawn_figure(para: list[str]) -> bool:
+    """Does this paragraph contain a row already marked not reproducible?"""
+    return any(WITHDRAWN_MARKER in ln for ln in para)
 
 
 def disposition(finding: dict) -> tuple[str, str]:
@@ -131,6 +220,26 @@ def disposition(finding: dict) -> tuple[str, str]:
                 "illustrative example inside a decision record, not a claim "
                 "about the product. See the docs/adr bucket question in "
                 "LEDGER.md.")
+    # A citation sources a PARAGRAPH, not a line. `paragraph_has_source` is
+    # evaluated once per paragraph and every claim inside inherits the verdict.
+    # So if the only place a citation can go also sits beside a figure that has
+    # been withdrawn, sourcing this one necessarily cites the withdrawn one,
+    # and citing a withdrawn figure is worse than leaving it unsourced.
+    #
+    # MEASURED 2026-07-29 at e48c4db: RESULTS-synthetic-v2-2026-07-28.md:37
+    # (`33%`, reproducible, backed by benchmarks/synthetic/RECALL.json) shares
+    # paragraph 35-39 with :38 and :39, both marked [NOT REPRODUCIBLE] and both
+    # classed `inherited` by the arm above. The disposition predicate ran per
+    # finding while the remedy operates per paragraph, so `fixable` was
+    # over-counted by one. Found by attempting the fix, not by reading.
+    if paragraph_carries_a_withdrawn_figure(paragraph_lines(rel, line)):
+        return ("blocked",
+                "a real figure whose paragraph also holds a row marked "
+                "[NOT REPRODUCIBLE]. Sourcing is paragraph-granular, so the "
+                "citation that would source this figure would also cite the "
+                "withdrawn one. Not fixable by sourcing. It needs the "
+                "withdrawn rows moved into a paragraph of their own, which is "
+                "a presentation change and the owner's call.")
     return ("fixable",
             "a real figure on a published surface with no in-paragraph "
             "provenance. Derivable from the artefact it came from.")
@@ -155,6 +264,14 @@ def residue(base: str = "main") -> dict:
         "published_only": len(pub_only),
         "both": len(both),
         "residue": both,
+        # The three subsets are carried so every printed total has an
+        # itemisation to be reconciled against. `total` is checked against the
+        # full finding list rather than against itself, so a disagreement
+        # between claim_diff's reported total and the records it returned is
+        # caught here instead of being printed.
+        "all_findings": r["findings"],
+        "introduced": intro_only,
+        "published": pub_only,
     }
 
 
@@ -208,6 +325,76 @@ def main_only_findings() -> dict:
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def report_main_only(r: dict, out=print) -> None:
+    """Print the main-only result. Reconciles before emitting a single line."""
+    breakdown = reconcile("published-surface findings ON MAIN",
+                          r["published_surface_findings_on_main"],
+                          _tally(r["findings"], _file_of))
+    out(f"main {r['main_sha'][:7]}, clean worktree, "
+        f"{r['corpus']} tracked md/html")
+    out(f"published-surface findings ON MAIN: "
+        f"{r['published_surface_findings_on_main']}")
+    for rel, n in breakdown:
+        out(f"  {n:4d}  {rel}")
+    # Deliberately NOT formatted as "<spaces><count>  <name>". A line-based sum
+    # over this output treats any such line as an item, so a summary line in
+    # that shape would be added to the very total it reports. Observed while
+    # building this: the awk one-liner used to audit the figure read 34 files
+    # summing to 201 because it counted the summary as a 33-finding file.
+    out(f"reconciled: {len(breakdown)} files account for "
+        f"{r['published_surface_findings_on_main']} findings")
+    if r["published_surface_findings_on_main"]:
+        out("\nA published-surface condition that ignores the diff would "
+            "fail on main's own push trigger.")
+
+
+def reconcile_residue(r: dict) -> list[tuple[str, int, list[tuple[str, int]]]]:
+    """Every total the residue report prints, each with its itemisation.
+
+    Returned rather than printed so the reconciliation and the output cannot
+    drift apart: the caller prints exactly what was checked.
+    """
+    rows = [
+        ("total findings", r["total"], _tally(r["all_findings"], _bucket_of)),
+        ("survive introduced-claim alone", r["introduced_only"],
+         _tally(r["introduced"], _bucket_of)),
+        ("survive published-surface alone", r["published_only"],
+         _tally(r["published"], _bucket_of)),
+        ("survive BOTH", r["both"], _tally(r["residue"], _file_of)),
+    ]
+    for label, total, items in rows:
+        reconcile(label, total, items)
+    # `survive BOTH` is printed three times over: as a number, as one line per
+    # finding, and as a disposition tally. All three are itemisations of the
+    # same total, so all three are checked.
+    reconcile("survive BOTH, itemised one finding per line",
+              r["both"], [(f["file"], 1) for f in r["residue"]])
+    reconcile("survive BOTH, by disposition",
+              r["both"], _tally(r["residue"], _disposition_of))
+    return rows
+
+
+def report_residue(r: dict, out=print) -> None:
+    rows = reconcile_residue(r)
+    out(f"HEAD {r['head'][:7]}  base {r['base_sha'][:7]}  tree {r['tree']}")
+    for label, total, items in rows:
+        out(f"{label:34s}: {total}")
+        for name, n in items:
+            out(f"      {n:4d}  {name}")
+    out("")
+    for f in sorted(r["residue"], key=lambda x: (x["file"], x["line"])):
+        out(f"  [{f['disposition'].upper():9s}] {f['file']}:{f['line']} "
+            f"{f['snippet']!r}")
+    out("")
+    for k, v in sorted(_tally(r["residue"], _disposition_of)):
+        out(f"  {k:10s} {v}")
+    out(f"  {'TOTAL':10s} {r['both']}")
+    out("")
+    for k, _v in sorted(_tally(r["residue"], _disposition_of)):
+        ex = next(f for f in r["residue"] if f["disposition"] == k)
+        out(f"  {k}: {ex['why']}")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--base", default="main")
@@ -218,45 +405,27 @@ def main() -> int:
     if args.main_only:
         r = main_only_findings()
         if args.json:
+            # Reconciled before serialising too: a JSON consumer gets the same
+            # guarantee as a human reader, not a weaker one.
+            reconcile("published-surface findings ON MAIN",
+                      r["published_surface_findings_on_main"],
+                      _tally(r["findings"], _file_of))
             print(json.dumps(r, indent=2))
             return 0
-        print(f"main {r['main_sha'][:7]}, clean worktree, "
-              f"{r['corpus']} tracked md/html")
-        print(f"published-surface findings ON MAIN: "
-              f"{r['published_surface_findings_on_main']}")
-        for rel in r["files"]:
-            n = sum(1 for h in r["findings"] if h["file"] == rel)
-            print(f"  {n:4d}  {rel}")
-        if r["published_surface_findings_on_main"]:
-            print("\nA published-surface condition that ignores the diff would "
-                  "fail on main's own push trigger.")
+        report_main_only(r)
         return 0
 
     r = residue(args.base)
     for f in r["residue"]:
         f["disposition"], f["why"] = disposition(f)
-    from collections import Counter
-    r["by_disposition"] = dict(Counter(f["disposition"] for f in r["residue"]))
+    r["by_disposition"] = dict(_tally(r["residue"], _disposition_of))
     if args.json:
-        print(json.dumps(r, indent=2))
+        reconcile_residue(r)
+        serialisable = {k: v for k, v in r.items()
+                        if k not in ("all_findings", "introduced", "published")}
+        print(json.dumps(serialisable, indent=2))
         return 0
-    print(f"HEAD {r['head'][:7]}  base {r['base_sha'][:7]}  tree {r['tree']}")
-    print(f"total findings                    : {r['total']}")
-    print(f"  survive introduced-claim alone  : {r['introduced_only']}")
-    print(f"  survive published-surface alone : {r['published_only']}")
-    print(f"  survive BOTH                    : {r['both']}")
-    print()
-    for f in sorted(r["residue"], key=lambda x: (x["file"], x["line"])):
-        print(f"  [{f['disposition'].upper():9s}] {f['file']}:{f['line']} "
-              f"{f['snippet']!r}")
-    print()
-    for k, v in sorted(r["by_disposition"].items()):
-        print(f"  {k:10s} {v}")
-    print(f"  {'TOTAL':10s} {r['both']}")
-    print()
-    for k in sorted(r["by_disposition"]):
-        ex = next(f for f in r["residue"] if f["disposition"] == k)
-        print(f"  {k}: {ex['why']}")
+    report_residue(r)
     return 0
 
 
