@@ -1661,6 +1661,184 @@ exhaustively verified. Auditor clean at rc=0 after one real finding of its own
 (an unsourced "the only") was fixed with a primary-source link rather than an
 allowlist entry.
 
+---
+
+# CHECKPOINT — 29 July 2026, session 5c: DIFF-BASE CLEARED, BRANCH PUSHED
+
+## TASK 1 DIAGNOSIS: both the apparatus and the content were defective
+
+The question nobody had asked was whether the red was the files or the check.
+It was both, and they separate cleanly.
+
+**The base selection is NOT defective.** `files_diff_base()` runs
+`git diff --name-only --diff-filter=ACMR {base}...HEAD`. Three-dot notation
+means merge-base(base, HEAD) to HEAD, which is exactly "what this branch
+changed". That is correct and was never the problem.
+
+**The scope IS worth naming.** The function returns file paths and `scan_file`
+then audits the WHOLE FILE. The module docstring says the tool exists to
+"block commits that introduce unverified factual claims", but it blocks on
+every unverified claim in a touched file. That is why a one-line count cascade
+into `docs/TRUST.md` inherited 14 findings it did not introduce, and why
+the handover could say every cascade commit that has ever run was red.
+
+**One variable at a time settled where the findings came from:**
+
+| Instrument | Content | Claims | Unsourced |
+|---|---|---|---|
+| `main`'s auditor | `main`'s files | 13 | **0** |
+| **HEAD's auditor** | **`main`'s files** | 53 | **30** |
+| HEAD's auditor | HEAD's files | 50 | 26 |
+
+Identical bytes, 13 claims detected against 53. **The branch's own repairs
+(F21 self-citation, F22 floor removal, the `<pre>` change) made the instrument
+roughly four times more sensitive, and it then met pre-existing content.** The
+branch did not introduce these claims; it built the thing that can see them.
+HEAD's files also score better than main's under the same instrument, 26
+against 30, so the branch had already improved these two documents.
+
+### F32, apparatus: the gate blanked the remedy it recommends
+
+`strip_noise()` removes inline code spans, keeping only a span that
+**fullmatches** a resolvable repo path. MEASURED on `docs/TRUST.md` L226:
+`FILE_REF_RE` matches `benchmarks/label.py` on the raw line and matches
+**nothing** after `strip_noise`, because the span is
+`benchmarks/label.py score --breakdown`. So citing a file counted and citing
+the command that produced the number did not, while PROGRAMME.md Principle 1
+lists **MEASURED (command + output)** as an accepted evidence tag and the
+auditor's own failure text tells the reader to add "a reference to an existing
+file".
+
+Repaired: the span survives when ANY token in it resolves under `REPO_ROOT`.
+Repo-wide, one variable, all tracked Markdown and HTML: findings **360 to
+355**, total claims **unchanged at 1329**. Five real findings resolved and no
+claims hidden. `tests/test_command_citation.py`, 9 tests, is the regression
+pair: 3 must pass, 3 must still fail (including a command naming a
+nonexistent file, the anti-gaming half), 1 asserts a documented boundary, 2
+hold the named documents at zero. **Control run: reverting the repair fails
+exactly the two PASS tests.**
+
+The boundary test exists because my first version of it was wrong.
+`pytest tests/ --collect-only` names a directory, and `FILE_REF_RE` requires a
+file extension, so it does not source its paragraph. The expectation was
+wrong, not the code, and the limitation is now asserted so it cannot drift.
+
+### Content: 26 genuine findings, fixed at source
+
+Percentages sat in paragraphs with no in-paragraph source. The markdown tables
+could not inherit their captions because a blank line separates them. Fixed by
+putting provenance in the paragraph: a source line directly beneath each table
+and a reference in each prose paragraph. **Nothing was allowlisted,
+quarantined or suppressed.**
+
+### A stale claim, withdrawn rather than annotated
+
+`docs/MODEL_CARD.md` published "13 hand-crafted Python files ... **100%
+precision, 100% recall**". The corpus is **38 fixtures** (manifest v2.0:
+5 prohibited, 30 high-risk, 3 negative) and `RECALL.json` measures high-risk
+recall between **33.3% and 76.7%** by path and gate condition. Replaced with
+the four measured conditions, each naming its path and gate per the artefact's
+own publication rule.
+
+**`docs/TRUST.md` section 3.4 had already been corrected on 28 July.
+MODEL_CARD.md was never updated to match.** Parallel-path drift between two
+published surfaces, the exact class `quality-standards.md` warns about.
+
+**Result: `docs/TRUST.md` and `docs/MODEL_CARD.md` are 61 claims, 0 unsourced,
+rc=0.** `--diff-base main` falls from **297 to 266** unsourced and neither
+document appears in it. Suite **2439 passed in 1028.09s, rc=0**. Six fast
+gates rc=0.
+
+## TASK 2: CI DID NOT RUN, AND CANNOT RUN ON THIS BRANCH
+
+Branch pushed. `git ls-remote --heads origin` shows
+`improvement/2026-08-programme` at `e2b238c`. `main` unchanged at `6daacd2d`,
+still equal to `origin/main`. No PR opened.
+
+**MEASURED: `total_count: 0` runs for the pushed SHA.** Not a failure to
+observe, an absence of any run.
+
+**Cause, from the workflow files themselves.** `ci.yaml` declares:
+
+```
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+```
+
+**CI does not trigger on pushes to feature branches.** The same is true of
+`codeql.yml` and `regula-scan.yaml`. `ci.yaml` has **no `workflow_dispatch`**,
+so it cannot be started by hand either. Verbatim:
+
+```
+could not create workflow dispatch event: HTTP 422: Workflow does not have
+'workflow_dispatch' trigger
+```
+
+**Triage of this result: CI configuration, not a defect and not
+environment-specific.** The full matrix (Python 3.10, 3.11, 3.12, 3.13) has
+never executed against this branch and cannot without either opening a PR,
+which is out of scope this session, or adding a trigger, which is a repair
+beyond Task 1.
+
+**What could be run, was run.** Two workflows carry `workflow_dispatch` and
+were dispatched against the branch ref:
+
+| Run | Workflow | Result | Wall clock |
+|---|---|---|---|
+| [30448143491](https://github.com/kuzivaai/getregula/actions/runs/30448143491) | Site Integrity | **completed / success** | 10s |
+| [30448145329](https://github.com/kuzivaai/getregula/actions/runs/30448145329) | Test Regula Action | **completed / success** | 1m13s |
+
+Site Integrity executed `python3 scripts/site_integrity.py` on a hosted
+ubuntu-24.04 runner against the branch and passed. **This is real remote
+evidence, and it is NOT the claim gate and NOT the matrix.** Do not report it
+as CI passing.
+
+**The claim gate's push path is dead code in practice.** The
+`--diff-base HEAD~1` branch of the conditional only ever executes on a push to
+`main`, because pushes elsewhere do not trigger the workflow at all. Every
+real invocation on a feature branch goes through the PR path,
+`--diff-base origin/main`.
+
+## THE NEXT BINDING CONSTRAINT
+
+**Not the two documents. The 266.**
+
+The moment a PR is opened into `main`, CI runs
+`claim_auditor.py --diff-base origin/main`, which scans **57 files** and
+reports **266 unsourced across 20 files**. That gate fails on the first PR.
+The distribution:
+
+- `docs/improvement/` — **191** across 10 files, led by `PACK-1.5b.md` (50),
+  `STATE.md` (38), `BASELINE.md` (26), `PLAN-PHASE4.md` (20)
+- `benchmarks/` and `docs/benchmarks/` — **59** across 5 files, led by
+  `benchmarks/README.md` (28) and `PRECISION_RECALL_2026_04.md` (21)
+- `.claude/rules/` — 8, and `docs/improvement/DIRECTIVE-v3.md` — 2
+
+**Roughly 72% of the blocker is the programme's own working documents**, which
+are internal logs rather than published claim surfaces. Whether they belong in
+the CI claim gate at all is a scoping decision for the owner, and it is not one
+to settle by allowlisting. Recorded, not actioned.
+
+## F25 RE-MEASURED AT A FIXED COMMIT, SELF-REFERENCE REMOVED
+
+Per instruction, measured in a **detached worktree at commit `e2b238c`** with
+`docs/improvement/` excluded from the corpus. Corpus: **156 tracked Markdown
+and HTML files**, 16 excluded of 172.
+
+| Gates | union | source | see | ref | reference | multi-word |
+|---|---|---|---|---|---|---|
+| ON | **33** | 19 | 10 | 1 | 1 | 3 |
+| OFF | **61** | 35 | 19 | 4 | 2 | 7 |
+
+**This figure is stable and reproducible**, because the corpus no longer
+contains the documents that record it and the commit is pinned. The unstable
+series it replaces (105, 107, 108 in one day) moved only because checkpoints
+were being written into the measured corpus. **Quote this as
+"33 / 61 at `e2b238c`", never as a bare number.**
+
 ## NEXT
 
 Phase 1.7 scaffolding audit (directive section 5), including the two additions:
