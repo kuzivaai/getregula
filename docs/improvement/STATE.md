@@ -1839,6 +1839,130 @@ series it replaces (105, 107, 108 in one day) moved only because checkpoints
 were being written into the measured corpus. **Quote this as
 "33 / 61 at `e2b238c`", never as a bare number.**
 
+---
+
+# CHECKPOINT, 29 July 2026, session 5d: ITEM 0, THREE GAPS SETTLED
+
+Verification first, all at `ae56f42`: `git log --oneline main..HEAD | wc -l` = **58**;
+`git status --porcelain` **empty**; `git rev-parse main origin/main` both
+**6daacd2d**; `pytest tests/ -q` **2439 passed rc=0** (932.48s);
+`claim_auditor.py --diff-base main` **270 unsourced**. The three load-bearing
+items agree, so nothing is public and nothing is on main.
+
+## 0a. THE DISTRIBUTION DOES SUM. THE MASTER RECORD HAD TWO ERRORS.
+
+Produced by enumeration over the full JSON output, not sampling. At
+`ae56f42`, 57 files scanned, 899 claims, **270 unsourced across exactly 20
+files**, summing to 270 with **no unattributed remainder**.
+
+| Bucket | Findings |
+|---|---|
+| `docs/improvement/` | **195** |
+| `benchmarks/` + `docs/benchmarks/` | **67** |
+| `.claude/rules/` | **8** |
+| anything else | **0** |
+
+Only `docs/improvement/STATE.md` differs between `e2b238c` and `ae56f42`
+(MEASURED: `git diff --name-only e2b238c ae56f42` returns that one path), and
+it moved 38 to 42 findings. So at `e2b238c` the buckets were **191 / 67 / 8 =
+266**, which matches the total the master record stated.
+
+**The two errors were in the decomposition, not the total:**
+
+1. The `benchmarks/` bucket was stated as **59**. It is **67**, understated by 8.
+2. `docs/improvement/DIRECTIVE-v3.md` was listed as a separate "+2" when it is
+   **already inside** the 191. Double counted.
+
+191 + 59 + 8 + 2 = 260 against a correct 191 + 67 + 8 = 266. The two errors
+partly cancel, which is why the gap looked like six missing findings rather
+than two mistakes. **There are no unattributed findings.**
+
+**Root cause: the bucket table was hand-built from grep output.** That is
+measurement rule 4c failing for the third time in this programme. The table
+above came from `--format json` and a summation.
+
+## 0b. ONE TEST WAS ASSERTING CURRENT BEHAVIOUR. NAMED AND FIXED.
+
+MEASURED by reverting the F32 repair in a scratch worktree at `ae56f42` and
+running the pair. Before the fix below, exactly two tests failed:
+`test_command_citation_naming_a_real_file_is_a_source` and
+`test_interpreter_prefixed_command_is_a_source`.
+
+**The offender was `test_command_naming_a_NONEXISTENT_file_is_not_a_source`.**
+It guards the anti-gaming half of the new behaviour, and it **passed with the
+repair reverted**, because before the repair every non-fullmatch span was
+blanked, so a nonexistent path was rejected for an entirely different reason.
+It could not distinguish "the existence check works" from "the repair is not
+installed".
+
+An anti-gaming assertion cannot be fail-before-pass-after on its own, because
+before the repair the outcome is identical. Renamed to
+`test_existence_check_discriminates_real_from_invented_paths` and rewritten to
+assert the **contrast**: the same construction with a real file must source,
+with an invented file must not. The positive half fails when the repair is
+reverted, so the test is now fail-before and pass-after, while the negative
+half still guards the existence check against later removal.
+
+**Control re-run: 3 tests now fail with the repair reverted, 9 pass with it
+present.** The other four that pass both ways are legitimate: two are the
+FAIL half (must hold in both states), one is a deliberate no-regression test
+of pre-existing behaviour, one is a documented boundary.
+
+The master record's "three must pass" and "reverting fails exactly the two
+PASS tests" were both true but the pairing was ambiguous, because one of the
+three was a no-regression test rather than a new-behaviour test.
+
+## 0c. THE PLUS THREE IS MINE, AND IT EXPOSES A CHECK-ORDER DEFECT
+
+**MEASURED: `paragraph_has_source` tests `citation-word` at line 490 and
+`file-ref` at line 499.** The weak signal is checked before the strong one and
+returns first.
+
+The three paragraphs are the three source lines `e2b238c` added:
+`docs/TRUST.md` L230-238 (precision table), `docs/TRUST.md` L242 (by
+language), `docs/MODEL_CARD.md` L137-143 (recall table). Each carries a
+resolvable repo file reference AND begins `Source:`, so each reports reason
+**citation-word** rather than **file-ref**. **My F25-adjacent content fix
+increased the F25 population by exactly three.**
+
+**F25's remedy and F32's remedy pull against each other, and whoever disposes
+of F25 inherits this constraint.** The instruction "cite the file that
+produced the number" is satisfied by writing `Source: path`, and the word
+`Source` then masks the file reference that actually does the work.
+
+### The decision-relevant consequence, quantified
+
+For every numeric-claim paragraph currently sourced only by a citation word,
+one variable removed (`CITATION_WORDS` disabled), asking what would source it
+instead. Corpus excludes `docs/improvement/`, 156 tracked files, at `ae56f42`:
+
+| Gates | union | already sourced by a file-ref, masked by check order | genuinely exposed |
+|---|---|---|---|
+| ON | 33 | **11** | **22** |
+| OFF | 61 | **15** | **46** |
+
+**Roughly a third of F25's population is already properly sourced and merely
+mis-attributed.** The real exposure on non-programme surfaces is **22 gates-on
+/ 46 gates-off**, not 33 / 61. **Owner decision 3 should be posed against
+22 / 46.**
+
+**A cheap structural repair is implied and is NOT done here:** reordering
+`paragraph_has_source` to test `file-ref` before `citation-word` would
+reclassify those 11 to 15 paragraphs without weakening anything, because
+file-ref is the stronger signal and already requires the path to resolve. It
+is a behaviour change to the auditor and belongs with the F25 disposition, not
+in a verification item. **Recorded, not actioned.**
+
+### An error of mine, in this measurement
+
+My first masking run reported 29 / 58 where the recorded figure is 33 / 61.
+Nothing outside `docs/improvement/` had changed, so the two could not both be
+right. Cause: my script left `CITATION_WORDS` patched to a never-matching
+regex across `scan_file` calls, so later files were scanned with the weak
+signal already disabled. Rewritten to capture the originals once and restore
+before every call; it then reproduced 33 / 61 exactly. **Caught by noticing
+the disagreement, not by the script failing.**
+
 ## NEXT
 
 Phase 1.7 scaffolding audit (directive section 5), including the two additions:

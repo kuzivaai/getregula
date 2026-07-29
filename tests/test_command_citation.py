@@ -117,18 +117,45 @@ def test_bare_number_with_no_reference_still_fails() -> None:
     assert reason == "no-source", reason
 
 
-def test_command_naming_a_NONEXISTENT_file_is_not_a_source() -> None:
-    """The repair must not be satisfiable by inventing a plausible path.
+def test_existence_check_discriminates_real_from_invented_paths() -> None:
+    """Anti-gaming: the span survives ONLY if its path resolves on disk.
 
-    This is the anti-gaming half: the span survives only when the file
-    it names actually resolves under REPO_ROOT.
+    **This test asserts a CONTRAST, deliberately, and the earlier version
+    of it was defective.** It used to assert only the negative half: that
+    a command naming a nonexistent file is not a source. That passes with
+    the F32 repair reverted, because before the repair EVERY non-fullmatch
+    span was blanked, so the nonexistent path was rejected for a
+    completely different reason. It therefore asserted current behaviour
+    rather than correct behaviour, and could not distinguish "the
+    existence check works" from "the repair is not installed".
+
+    Found 29 July 2026 by reverting the repair in a scratch worktree and
+    reading which tests still passed. Measurement rule 4: an absent signal
+    is not a passing signal.
+
+    Asserting both halves in one test fixes it. The positive half fails
+    when the repair is reverted, so the test as a whole is fail-before,
+    pass-after, while the negative half still guards the existence check
+    against being dropped later.
     """
+    real = "benchmarks/label.py"
     ghost = "benchmarks/does_not_exist_ab12cd34.py"
+    assert (REPO_ROOT / real).exists(), "fixture path should exist"
     assert not (REPO_ROOT / ghost).exists(), "fixture path unexpectedly exists"
-    para = f"Precision is 99.9% (`{ghost} score --breakdown`)."
-    ok, reason = _sourced(para)
-    assert not ok, "a command naming a nonexistent file was accepted"
-    assert reason == "no-source", reason
+
+    # Identical construction, identical shape, one difference: the file.
+    ok_real, reason_real = _sourced(f"Precision is 99.9% (`{real} score --breakdown`).")
+    ok_ghost, reason_ghost = _sourced(f"Precision is 99.9% (`{ghost} score --breakdown`).")
+
+    assert ok_real, (
+        "a command naming a REAL repo file was not accepted as a source "
+        f"(reason={reason_real}); the F32 repair is missing or broken"
+    )
+    assert not ok_ghost, (
+        "a command naming a NONEXISTENT file was accepted as a source "
+        f"(reason={reason_ghost}); the existence check has been dropped"
+    )
+    assert reason_ghost == "no-source", reason_ghost
 
 
 def test_prose_inside_backticks_is_not_a_source() -> None:
