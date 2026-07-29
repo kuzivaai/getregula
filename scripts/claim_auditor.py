@@ -9,9 +9,11 @@ Scans Markdown, HTML, and landing-page files for:
   - Attributed quotes ("X said", "according to Y")
 
 For each claim it checks whether a verifiable source is present in the same
-paragraph: a URL, markdown link, HTML anchor, or reference to a file that
-exists in the repository (e.g. `benchmarks/results/PRECISION.json`,
+paragraph: a URL, markdown link, HTML anchor, or reference to a file that is
+GIT-TRACKED in the repository (e.g. `benchmarks/results/PRECISION.json`,
 `tests/test_classification.py`). Claims without a nearby source are flagged.
+Tracked, not merely present on disk: a gitignored file is not a source,
+because a reader cannot open it. See ref_is_tracked() and finding N1.
 
 Usage:
   python3 scripts/claim_auditor.py FILE [FILE ...]   # explicit file list
@@ -31,7 +33,9 @@ Exit codes:
 from __future__ import annotations
 
 import argparse
+import functools
 import json
+import os
 import re
 import subprocess
 import sys
@@ -194,6 +198,54 @@ FILE_REF_RE = re.compile(
 )
 
 
+@functools.lru_cache(maxsize=1)
+def tracked_paths() -> frozenset[str]:
+    """Every path git tracks, repo-relative. Cached; see cache_clear().
+
+    Loaded with `-z` so a path containing a newline or a quote cannot split
+    a record. `git ls-files` without it quotes such names, which would then
+    never match a reference.
+
+    A repository with zero tracked files is impossible, so an empty result
+    means git failed rather than that nothing is tracked. Raising here is
+    deliberate: the alternative is that every file citation in the corpus
+    silently stops counting and the gate reports hundreds of spurious
+    findings with no clue why. Measurement rule 4 - an absent signal is not
+    a passing signal.
+    """
+    result = subprocess.run(
+        ["git", "ls-files", "-z"], cwd=REPO_ROOT,
+        capture_output=True, text=True, check=False,
+    )
+    paths = frozenset(p for p in result.stdout.split("\0") if p)
+    if not paths:
+        raise RuntimeError(
+            f"git ls-files returned nothing in {REPO_ROOT} "
+            f"(rc={result.returncode}, stderr={result.stderr.strip()!r}). "
+            f"The claim auditor resolves citations against the tracked set, "
+            f"so it cannot run without it."
+        )
+    return paths
+
+
+def ref_is_tracked(ref: str) -> bool:
+    """Is this file reference something a reader could actually open?
+
+    Finding N1. All three call sites used to ask
+    `(REPO_ROOT / ref).exists()`, which consults the WORKING TREE. A gitignored file therefore counted as
+    provenance on the author's machine and was absent from a clean checkout,
+    so `--diff-base main` scored 276 locally and 277 in CI at the same
+    commit. `.claude/rules/measurement.md` rule 4b already holds that an
+    untracked file is not a published surface because nobody outside the
+    machine can read it; a citation is held to the same bar.
+
+    `os.path.normpath` collapses `./x` and `a/../x` so the two spellings of
+    one path give one answer. A reference that escapes the repository
+    normalises to a `../` prefix, which is never in the tracked set.
+    """
+    return os.path.normpath(ref) in tracked_paths()
+
+
 @dataclass
 class Claim:
     file: str
@@ -305,7 +357,7 @@ def strip_noise(text: str, suffix: str) -> str:
             # source file, and erasing them made such citations
             # invisible to paragraph_has_source().
             inner = m.group(0)[1:-1]
-            if FILE_REF_RE.fullmatch(inner) and (REPO_ROOT / inner).exists():
+            if FILE_REF_RE.fullmatch(inner) and ref_is_tracked(inner):
                 return f" {inner} "
             # ...and EXCEPT when the span is a command that names a repo
             # file. `fullmatch` above accepts `benchmarks/label.py` but
@@ -317,11 +369,12 @@ def strip_noise(text: str, suffix: str) -> str:
             # reference to an existing file". The gate was blanking the
             # remedy it recommends. Finding F32.
             #
-            # Still requires a path that RESOLVES ON DISK, so prose cannot
+            # Still requires a path that is GIT-TRACKED, so prose cannot
             # satisfy it: a span like `we measured this carefully` has no
-            # file token and stays blanked.
+            # file token and stays blanked. Tracked rather than merely
+            # present on disk since N1; see ref_is_tracked().
             for ref in FILE_REF_RE.finditer(inner):
-                if (REPO_ROOT / ref.group(1)).exists():
+                if ref_is_tracked(ref.group(1)):
                     return f" {inner} "
             # Blank the span but KEEP its newlines. `[^`]*` matches across
             # line breaks, so a span that wraps lines used to be replaced by
@@ -495,7 +548,7 @@ def paragraph_has_source(paragraph: str,
         ref = m.group(1)
         if _is_self_file_ref(ref, identity):
             continue
-        if (REPO_ROOT / ref).exists():
+        if ref_is_tracked(ref):
             return True, f"file-ref:{ref}"
     return False, "no-source"
 
