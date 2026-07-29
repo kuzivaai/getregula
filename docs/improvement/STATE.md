@@ -1384,3 +1384,124 @@ this task, still P0, still parked.
 
 Task C (re-derivations, then traces) runs next session. Task D follows.
 Loop 3 in its own fresh session. **F25, F29 and F30 are open escalations.**
+
+---
+
+# CHECKPOINT — 29 July 2026, session 5: DIRECTIVE v3 RECORDED
+
+## v3 extends PROGRAMME.md; it does not replace it
+
+Recorded verbatim at `docs/improvement/DIRECTIVE-v3.md` per its own section 0,
+with a seven-row conflict and extension log. **No irreconcilable conflict was
+found.** Every divergence is an extension or a sequencing change; none lowers a
+bar or discards a prior finding. PROGRAMME.md remains the contract.
+
+One logged deviation: the directive body contains em dashes, which the standing
+rule forbids in repo copy. The verbatim-record requirement wins, for the same
+reason verbatim command output wins in `.claude/rules/measurement.md`. Altering
+a contract document to satisfy a style rule would falsify the record.
+
+## Gates re-measured before trusting any prose. All eight green.
+
+`pytest tests/ -q` **2416 passed rc=0** (1336.52s). `tests/test_classification.py`
+**1386 passed, 0 failed, 0 skipped**, 963 test functions, rc=0 (19m53s).
+`--verify-facts` rc=0 (145 refs / 16 files). `site_integrity` rc=0.
+`cascade_count --check` rc=0, canonical **2,416**. `build_recall_artefact --check`
+rc=0. `build_gap_demo --check` rc=0. `check_selfref_sourcing --control-only`
+rc=0, control fires both ways. Tree clean, 52 commits `main..HEAD`, `main` =
+`origin/main` = `b5ac95c8`, branch absent from `git ls-remote`.
+
+**`--collect-only` was not used.** F26 is why.
+
+## Three HANDOVER.md prose figures do not reproduce at HEAD
+
+Not defects in code or in any gate. All three understate rather than overstate.
+
+| Figure | HANDOVER.md says | MEASURED |
+|---|---|---|
+| Whole-repo auditor, section 10 | 1,287 claims / 359 findings | HEAD **1,301 / 355**; parent `1a390ae` **1,287 / 360**. Both deterministic over repeated runs. |
+| F25 blast radius | 94 paragraphs, 46 by "source" | HEAD **105 / 49**; parent **100 / 47** (allowlist and quarantine off, like for like) |
+| F30 suppression | 240 suppressed, 63 para-only | HEAD **289 / 61**. Per-file leaders reproduce exactly. |
+
+**The section 10 pair is a mixed-state figure**: its claims half matches the
+parent commit, its findings half matches neither state. Cause is self-reference.
+`HANDOVER.md` is inside the corpus it measures, and went from 7 claims / 4
+findings at the parent to 21 claims / 0 findings at HEAD, so its own rewrite
+changed the number it publishes about itself. **This is a live instance of the
+failure that measurement rule 3 exists to prevent, committed by the document
+that states the rule.** It is also the worked example directive section 8 wants
+written up.
+
+**New, and not recorded anywhere before:** `CITATION_WORDS` also contains a bare
+`see` and `ref` / `reference`. At HEAD the word **see alone sources 26**
+numeric-claim paragraphs. F25 discusses only "source" and scopes its remediation
+on that basis, so **the F25 fix is larger than F25 states** and owner decision 3
+is currently posed against an incomplete picture.
+
+**My own error, recorded in place.** My first F25 figure was **218** and was
+wrong: it counted paragraphs unsourced for any reason, not only those sourced by
+a citation word. Corrected method gives 65 with gates on, 105 with gates off.
+Caught before it reached the owner, by asking why it diverged so far from the
+record rather than assuming the record was wrong.
+
+## AGENTIC AI: item RE-OPENED per directive section 4, and now SETTLED
+
+**Primary source retrieved from EUR-Lex, HTTP 200, 29 July 2026.** Regulation
+(EU) 2026/1744, Annex XIV, Section 3:
+
+- **AIH 0401** = "AI systems based on other emerging AI technologies not covered
+  by other codes, including Agentic AI"
+- **AIH 0205** = "AI systems that learn from their environment, excluding AI
+  systems covered under AIH 0401"
+
+**The word "Agentic" appears exactly once in the whole regulation**, at Annex
+XIV Section 3(d). Not in any article, not in any recital, no definition, no risk
+tier, no obligation. Recital 43 states the AIH codes exist to scope the
+designation of conformity assessment bodies so notified bodies "are fully
+competent in regard to the AI systems they are required to assess". Recital 45
+empowers delegated acts to amend Annex XIV.
+
+**Disposition. The prior STATE.md closure was half right and half wrong, and the
+directive was right to re-open it.**
+
+- WRONG on existence: a category label does exist and it names Agentic AI.
+- RIGHT on substance: it is a nomenclature code for notified-body competence.
+  No definition, no obligations.
+
+**Both careful secondaries were imprecise.** HAQQ ("AIH 0401 = agentic AI") and
+NicFab ("AIH 0401 = emerging technologies") each reported half the label. The
+actual label is both, in one sentence. Neither is quotable as written.
+
+**Ruling on the OWASP Agentic crosswalk: NO legitimate obligations hook.** A
+code that scopes assessor competence is not a source of duties. Regula may
+state that the AI Act's notified-body taxonomy names Agentic AI at AIH 0401 and
+attaches no obligations to it. It may not present AIH 0401 as a compliance
+requirement. **Any surface that mentions it must carry the no-obligations
+qualifier**, per the directive's own instruction.
+
+## Standards comment window: flagged, PARTIALLY verified, owner action
+
+`prEN 18228` and `prEN 18282` public enquiry reported closing **30 July 2026**;
+`prEN 18229-1` **20 August 2026**.
+
+**Verification status: NOT confirmed against a primary source.** CEN-CENELEC's
+own AI page carries no enquiry dates. The JTC 21 tracker is a June 2026 snapshot
+with no closing dates and tells the reader to check the live work programme. The
+two JTC 21 participant posts announcing the ballots are paywalled, but are dated
+**7 and 8 May 2026**, and a standard 12-week CEN enquiry from that start lands
+on approximately 31 July, which is consistent. The BSI project page for
+`BS EN 18228` (`projects/2025-01990`) exists but would not render.
+
+**Corroborated and consistent, not verified. The owner must confirm with BSI
+before relying on it.** Flagged same-day because the window is reported to close
+tomorrow and the cost of checking is minutes.
+
+## NEXT
+
+Directive section 4 correction layer, remaining items: Colorado SB 26-189 and
+the two further 2026 statutes against Colorado General Assembly primary text;
+EN 18286:2026 publication; ISO/IEC 42005 / 42006 / TR 42106; the 2 Aug 2030
+attribution to 2024/1689 Article 111(2). Then Phase 1.7 scaffolding audit.
+**The existing queue (section 6) is unchanged and still runs after that.**
+**F25, F29 and F30 remain open escalations**, and F25 is now known to be larger
+than recorded.
