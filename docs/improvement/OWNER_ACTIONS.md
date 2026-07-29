@@ -147,13 +147,10 @@ verbatim at `getregula-internal/competitive-intelligence-2026-07.md`.
 All of it is a snapshot of fetches dated 27 Jul 2026 and needs
 re-verifying before any external use.
 
-## 9. Private remote for `getregula-internal/` (still open, owner call)
-A local-only git repo was authorised and created on 28 Jul 2026 (`git
-init`, commit `756fb43`, no remote, `pre-push` hook refusing pushes). That
-gives history but everything still lives on one disk. A **private** remote
-would close it properly. Owner call because it needs an account. Whatever
-is chosen must stay private: the directory holds competitive and
-commercial strategy deliberately kept out of the public repo.
+## 7. GSC re-auth (owner credential; unblocks J4 metrics)
+`scripts/gsc_fetch.py` still fails with invalid_grant. UX metrics for
+regulatory-currency queries (docs/UX-REVIEW-2026-07.md Section 4) wait
+on this.
 
 ## 8. Does the claim auditor sweep meta descriptions? ANSWERED 28 Jul 2026
 **Yes it sweeps them, and that turned out not to be the problem.** It
@@ -177,10 +174,13 @@ in the same instrument Phase 1.5 just repaired. Preserved here because
 it was buried in the redacted section 6 and would otherwise have been
 lost with it.
 
-## 7. GSC re-auth (owner credential; unblocks J4 metrics)
-`scripts/gsc_fetch.py` still fails with invalid_grant. UX metrics for
-regulatory-currency queries (docs/UX-REVIEW-2026-07.md Section 4) wait
-on this.
+## 9. Private remote for `getregula-internal/` (still open, owner call)
+A local-only git repo was authorised and created on 28 Jul 2026 (`git
+init`, commit `756fb43`, no remote, `pre-push` hook refusing pushes). That
+gives history but everything still lives on one disk. A **private** remote
+would close it properly. Owner call because it needs an account. Whatever
+is chosen must stay private: the directory holds competitive and
+commercial strategy deliberately kept out of the public repo.
 
 ## 10. DEFERRED SESSIONS, recorded 29 July 2026 so neither is silently lost
 
