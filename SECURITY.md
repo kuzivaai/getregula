@@ -82,7 +82,7 @@ disclosure, etc.), include that in your initial report.
 | `semgrep --config p/security-audit --config p/python` | Each release | 0 findings on 200 rules / 129 files |
 | `pip-audit` | Each release | 0 vulnerabilities (zero runtime deps) |
 | `regula self-test` | Each commit | 6 / 6 |
-| Custom regression suite | Each commit | 2,430 pytest-collected tests |
+| Custom regression suite | Each commit | 2,439 pytest-collected tests |
 | PyPI provenance attestation (PEP 740, Trusted Publishing) | Each release | ✅ attached to wheel + sdist, Sigstore-backed |
 | CodeQL static analysis | Each push | workflow green; open alerts triaged below, never suppressed |
 

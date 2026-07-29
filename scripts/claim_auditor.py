@@ -307,6 +307,22 @@ def strip_noise(text: str, suffix: str) -> str:
             inner = m.group(0)[1:-1]
             if FILE_REF_RE.fullmatch(inner) and (REPO_ROOT / inner).exists():
                 return f" {inner} "
+            # ...and EXCEPT when the span is a command that names a repo
+            # file. `fullmatch` above accepts `benchmarks/label.py` but
+            # rejects `benchmarks/label.py score --breakdown`, so citing a
+            # file worked while citing the command that produced the number
+            # did not. That is backwards for this repo: PROGRAMME.md
+            # Principle 1 accepts "MEASURED (command + output)" as evidence,
+            # and the auditor's own remedy text tells the reader to add "a
+            # reference to an existing file". The gate was blanking the
+            # remedy it recommends. Finding F32.
+            #
+            # Still requires a path that RESOLVES ON DISK, so prose cannot
+            # satisfy it: a span like `we measured this carefully` has no
+            # file token and stays blanked.
+            for ref in FILE_REF_RE.finditer(inner):
+                if (REPO_ROOT / ref.group(1)).exists():
+                    return f" {inner} "
             # Blank the span but KEEP its newlines. `[^`]*` matches across
             # line breaks, so a span that wraps lines used to be replaced by
             # spaces alone — silently deleting those newlines and shifting
