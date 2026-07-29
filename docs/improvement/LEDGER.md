@@ -80,10 +80,10 @@ decision; BSI ART/1 route; GSC re-auth (`invalid_grant`); private remote for
 
 ## 4. Deferred sessions
 
-- **Session B** — F29 unit reconciliation; agentic draft humanising and
+- **Session B**. F29 unit reconciliation; agentic draft humanising and
   validation. Deferred on the grounds that both are content corrections better
   verified by the repaired gate than the current one.
-- **Session C** — repository restructure to public-repo standard. Deferred as
+- **Session C**. Repository restructure to public-repo standard. Deferred as
   the largest diff, and because it moves the paths every recorded measurement
   is keyed to.
 
