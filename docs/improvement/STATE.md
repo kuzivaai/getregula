@@ -883,16 +883,32 @@ baseline, while silently fixing craft at 88.
 
 ## Recall, expanded (supersedes the n=5 figure)
 
+> **WITHDRAWN 29 July 2026, finding N5.** The two lower rows below are marked
+> `[NOT REPRODUCIBLE]` in
+> `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md:38-39`, and the
+> 63% is marked WITHDRAWN at its line 189. The reproducible figures are in
+> `benchmarks/synthetic/RECALL.json`: 10/30 default, 16/30 domains declared,
+> 23/30 domains plus an AI import. The decomposition beneath the table was
+> derived from these withdrawn rows and is wrong in every component; it was
+> published on `docs/MODEL_CARD.md` until 29 July 2026. The rows are kept
+> rather than deleted because a superseded figure is part of the record, but
+> nothing may be derived from them.
+
 | Condition | Recall |
 |---|---|
 | Default scan | **10/30 = 33%** |
-| Domain declared | 14/30 = 47% |
-| Domain + AI import | 19/30 = 63% |
+| Domain declared | 14/30 = 47% [NOT REPRODUCIBLE, see above] |
+| Domain + AI import | 19/30 = 63% [WITHDRAWN, see above] |
 
-**17 of 20 misses are pipeline gates, not patterns:** 13 opt-in domain
-suppression (9 of 17 domains suppressed by default), 4 AI-indicator gate,
-3 genuine pattern gaps. **8 remain unexplained with both gates satisfied —
-the most important open thread.**
+**The decomposition below is WITHDRAWN.** Derived from the artefact by set
+difference over its per-fixture `missed` lists, the true split is 6 recovered
+by declaring domains, 7 more by an AI-library import, and 7 never recovered:
+13 of 20 are gate behaviour and 7 are pattern-side exposure, not 3. Asserted
+by `tests/test_recall_decomposition.py`. The withdrawn text read:
+
+> 17 of 20 misses are pipeline gates, not patterns: 13 opt-in domain
+> suppression (9 of 17 domains suppressed by default), 4 AI-indicator gate,
+> 3 genuine pattern gaps. 8 remain unexplained with both gates satisfied.
 
 Consequence: pattern work addresses 3 of 20 misses. This independently
 supports cutting P8.
