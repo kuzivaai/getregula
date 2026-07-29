@@ -1496,12 +1496,176 @@ on approximately 31 July, which is consistent. The BSI project page for
 before relying on it.** Flagged same-day because the window is reported to close
 tomorrow and the cost of checking is minutes.
 
+## F25: THE COMPLETE PICTURE, for owner decision 3
+
+MEASURED 29 July 2026 at HEAD over all tracked `.md` and `.html`. Method:
+wrap the real `paragraph_has_source`, force `citation-word` to stop sourcing,
+one variable, everything else untouched. Counts are **paragraphs carrying at
+least one numeric claim** whose only source is a citation word. A paragraph
+can contain more than one word, so per-word columns overlap and the union is
+the honest total.
+
+| Scope | Gates | union | source | see | ref | reference | other words | multi-word |
+|---|---|---|---|---|---|---|---|---|
+| Whole repo | ON | **65** | 30 | 20 | 2 | 4 | verdict 9, citation 8, verified-primary 3, primary source 2, verified against 1 | 10 |
+| Whole repo | OFF | **108** | 54 | 31 | 5 | 10 | verdict 14, citation 9, verified-primary 4, verified against 3, primary source 2, verified via 1 | 19 |
+| `docs/improvement/` only | ON | 35 | 14 | 10 | 1 | 3 | verdict 8, citation 7, others 2 | 7 |
+| `docs/improvement/` only | OFF | 50 | 22 | 12 | 1 | 8 | verdict 10, citation 8, others 6 | 12 |
+| **Everything else** | ON | **30** | 16 | 10 | 1 | 1 | verified-primary 2, others 4 | 3 |
+| **Everything else** | OFF | **58** | 32 | 19 | 4 | 2 | verdict 4, verified-primary 2, others 4 | 7 |
+
+"Gates ON" means the allowlist and quarantine are active, so it is what the
+auditor would surface today. "Gates OFF" is the full population the mechanism
+touches, and is the number a `CITATION_WORDS` tightening would have to triage.
+
+**Answering the question as posed: the union is NOT materially larger than
+105.** It is **108** whole-repo gates-off. `ref` and `reference`, which were
+unquantified anywhere, are **5 and 10** whole-repo, and only **4 and 2** on
+the surfaces outside this programme's own documents. They are the small arms.
+`see` is the large one at **31**, and it was named but never counted.
+
+**The finding that should shape decision 3.** Nearly half the population is
+`docs/improvement/`, this programme's own working documents: **50 of 108**
+gates-off, **35 of 65** gates-on. Those are not published surfaces in any
+meaningful sense. **The decision-relevant figure is the "everything else" row:
+58 paragraphs gates-off, 30 gates-on.** Scoping a `CITATION_WORDS` tightening
+against 108 overstates the work by about 46%.
+
+**The union figure is unstable by construction, and that is a finding not a
+caveat.** It measured 105, then 107, then 108 across three runs on the same
+day. Nothing about the auditor changed. What changed is that I wrote a STATE.md
+checkpoint and a DIRECTIVE-v3.md, both inside the corpus being measured. **The
+instrument's corpus contains the instrument's own output.** This is the second
+independent instance today, after the section 10 pair, and it is the worked
+example directive section 8 asks to be written up. Any F25 figure must carry
+the commit it was taken at.
+
+## SECTION 4 CORRECTION LAYER: what landed, and two corrections to the directive
+
+### Colorado: ALREADY CORRECT. The sweep would have caused a regression.
+
+`content/regulations/colorado.py` already carried SB 26-189 signed 14 May 2026,
+duties from 1 Jan 2027, repeal-and-reenactment of SB 24-205, and the 27 April
+2026 xAI v. Weiser suspension, verified against `leg.colorado.gov` on
+2026-07-16 with docket detail added 07-27. **Re-verified at the primary source
+2026-07-29:** the bill history line reads `05/14/2026 | Governor | Governor
+Signed`, and the summary says the act "repeals and reenacts those provisions".
+
+**The 29 July sweep downgraded this from settled fact to "conflicting
+accounts". Applying that framing would have degraded correct, primary-verified
+data.** This is the source-hierarchy rule earning its place on its first use.
+
+Two further statutes added to the fact block, verified at leg.colorado.gov:
+**HB 26-1263**, Conversational AI Service Operator Requirements, Governor
+Signed `05/29/2026`, act effective 12 Aug 2026 with operator duties from
+1 Jan 2027. A 2026 health-care AI statute covering payers and utilisation
+review, **bill number reported as HB 26-1139 by a secondary source and NOT
+verified**, recorded as unconfirmed.
+
+**Crosswalk decisions, reasons recorded both ways.** HB 26-1263 is IN SCOPE for
+a future hook: its AI-interaction disclosure duty is statically detectable by
+the same mechanism already used for Article 50, and its audience is Regula's
+audience. Not implemented here, because new detection scope belongs in the
+Phase 4 plan and not in a factual-correction commit. The health-care statute is
+OUT OF SCOPE: its duties fall on insurers and utilisation reviewers, not on
+builders of AI systems, and they are organisational rather than detectable in
+code.
+
+### CORRECTION TO THE DIRECTIVE 1: the AG enforcement claim is unverified
+
+The directive states "AG will not enforce either statute pending rulemaking".
+**The Colorado AG's own AI page (`coag.gov/ai/`) does not say that.** Checked
+2026-07-29: it names SB 26-189 and HB 26-1263, records that pre-rulemaking
+comment closed 13 July 2026, and says formal rulemaking detail follows once
+that process begins. It is silent on enforcement timing. Recorded in
+`colorado.py` as UNVERIFIED and **not asserted**. The verified enforcement fact
+remains the 27 April 2026 suspension, whose reach to SB 26-189 is still
+publicly unresolved.
+
+(The same AG page gives HB 26-1263 as "signed into law July 1, 2026", which the
+legislature's own bill history contradicts. Primary beat the agency page.)
+
+### CORRECTION TO THE DIRECTIVE 2: ISO/IEC TR 42106 is not published
+
+The directive lists it as "under publication 2026-04". `iso.org` returned
+**HTTP 403** to an automated fetch, so this is NOT primary-verified. The ISO
+catalogue entry surfaced in search is titled **ISO/IEC DTR 42106**, and DTR is
+the draft stage. Recorded as **draft, unverified**; it does bear on the
+benchmark work and should be re-checked by hand before being cited.
+
+### EN 18286: landed, with the load-bearing distinction preserved
+
+Approved 12 July 2026, published as EN 18286:2026, **not yet OJ-cited**, so it
+does NOT confer the Article 40 presumption. Three false statements corrected:
+`references/harmonised_standards.yaml` (status, published_ref, published_date,
+with `oj_reference` deliberately still null and `confers_presumption` still
+false); `site/blog/blog-omnibus-delay.html`, which said the standards were "not
+expected before Q4 2026 at the earliest"; and
+`scripts/generate_documentation.py`, which was wrong twice in one table row,
+saying "Awaiting publication" and giving the enquiry as closing October 2026
+when it closed January 2026. **That row is emitted into user-facing generated
+documentation.**
+
+Confidence is `verified-secondary`, not primary: SGS, a named JTC 21
+participant, and the CSA research note agree, but no CEN-CENELEC primary page
+carries standard-level status. **The OJ-citation negative is an
+absence-of-evidence finding, not a positive confirmation.**
+
+### The 2 August 2030 date
+
+Attributed to Regulation (EU) 2024/1689 **Article 111(2)**, unchanged by the
+Omnibus; recital 39 of 2026/1744 clarifies the grace period's scope without
+altering the date. The earlier STATE.md closure ("not an Omnibus provision")
+was **correct but partial**, and reads that way now rather than as an error.
+
+## NEW FINDING F31: the delta log had a schema and no gate. FIXED.
+
+`content/regulations/delta-log/schema.json` has existed since the delta log was
+built. **Nothing validated entries against it.** `build_delta_log.py` reads the
+entries and writes the index, feed and summary without checking them, and no
+test covered it.
+
+MEASURED 2026-07-29, the first time anything checked: of the 12 tracked
+entries, **`2026-04-29-trilogue-failed.json` carried a `summary` of 1058
+characters against a `maxLength` of 1000**, and had done since it was
+committed. Both entries I added the same day also failed, because
+`impact_on_regula_patterns` is an array of objects with a `pattern_id` and an
+enumerated `change`, not the free prose it resembles.
+
+`tests/test_delta_log_schema.py` closes it: 14 tests, every entry validated,
+a count floor so an empty glob cannot pass vacuously, and **a control that
+plants both real defects and asserts rejection**. Control fired both ways
+(deliberately corrupted an entry, saw 2 failures; restored, saw 14 pass). The
+over-length summary was trimmed to 999 characters with every fact and the
+original tense preserved.
+
+**It hard-fails rather than skips when `jsonschema` is missing.** A
+`pytest.importorskip` would rebuild the exact blank-gate defect already on
+record in this repo.
+
+**Count cascade:** 2,416 to **2,430** via `site_facts.py` then
+`cascade_count.py --apply`, in that order, 7 surfaces updated. Every changed
+line was read: all are test-count claims, no lockfile, hash or URL touched
+(rule 4d). The cascade also propagated a number into a sentence claiming
+`12m35s ... verified 2026-07-28`, a runtime never measured at 2,430; that
+attribution was corrected rather than left.
+
+## DRAFTED, HELD FOR APPROVAL
+
+`content/blog/article-agentic-ai-annex-xiv.md`, `published: false`. Quotes
+Annex XIV Section 3 exactly, states the AIH 0205 exclusion, states plainly that
+no obligations attach, and names both trigger conditions. Corrects the two
+secondary readings on substance without naming either outlet. **It makes no
+uniqueness claim**, because "nobody else published this correctly" cannot be
+exhaustively verified. Auditor clean at rc=0 after one real finding of its own
+(an unsourced "the only") was fixed with a primary-source link rather than an
+allowlist entry.
+
 ## NEXT
 
-Directive section 4 correction layer, remaining items: Colorado SB 26-189 and
-the two further 2026 statutes against Colorado General Assembly primary text;
-EN 18286:2026 publication; ISO/IEC 42005 / 42006 / TR 42106; the 2 Aug 2030
-attribution to 2024/1689 Article 111(2). Then Phase 1.7 scaffolding audit.
-**The existing queue (section 6) is unchanged and still runs after that.**
-**F25, F29 and F30 remain open escalations**, and F25 is now known to be larger
-than recorded.
+Phase 1.7 scaffolding audit (directive section 5), including the two additions:
+scope the em-dash rule to new prose rather than all prose, and encode the
+verbatim-record exemption as a rule. **Then** section 6: re-derive Trust and
+Detection at HEAD under one written rule, then the traces.
+**F25, F29, F30 remain open escalations.** F25 now has its complete table
+above, and decision 3 should be posed against the 58/30 row, not the 108/65.
