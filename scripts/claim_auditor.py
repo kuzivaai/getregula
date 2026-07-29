@@ -232,8 +232,9 @@ def ref_is_tracked(ref: str) -> bool:
     """Is this file reference something a reader could actually open?
 
     Finding N1. All three call sites used to ask
-    `(REPO_ROOT / ref).exists()`, which consults the WORKING TREE. A gitignored file therefore counted as
-    provenance on the author's machine and was absent from a clean checkout,
+    `(REPO_ROOT / ref).exists()`, which consults the WORKING TREE. A
+    gitignored file therefore counted as provenance on the author's
+    machine and was absent from a clean checkout,
     so `--diff-base main` scored 276 locally and 277 in CI at the same
     commit. `.claude/rules/measurement.md` rule 4b already holds that an
     untracked file is not a published surface because nobody outside the
