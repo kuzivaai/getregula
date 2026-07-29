@@ -99,6 +99,10 @@ eight came from the unreproducible condition and is not comparable.
 **The n=5 figure was 80%. On 30 fixtures it is 33%.** The first number was
 not wrong; it was underpowered, and it happened to sample the categories
 that survive the gates.
+The 80% is the high-risk row of
+benchmarks/headtohead/results/regula-synthetic-2026-07-28.json, 4 of 5. The 33%
+is the scanner default-scan condition in benchmarks/synthetic/RECALL.json,
+10 of 30.
 
 ## Diagnosis — every miss, not just the first
 
@@ -178,7 +182,10 @@ this number.** Any Phase 5 item proposing to improve recall by touching
 patterns is aimed at 3 of 20 misses.
 
 This is direct evidence for the hostile reviewer's ruling that P8 (fixtures
-for 134 patterns) is the wrong work at the wrong scale.
+for 134 patterns) is the wrong work at the wrong scale. The scope figure is
+recorded at docs/improvement/HOSTILE-REVIEW-DISPOSITIONS.md, objection 6, which
+cut the tier scope to 134 from the 183 in docs/improvement/PLAN-PHASE4.md and
+gives 134 as 17 prohibited plus 117 high-risk patterns.
 
 ## What this does and does not license saying
 
