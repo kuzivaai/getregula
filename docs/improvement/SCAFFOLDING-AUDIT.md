@@ -6,10 +6,13 @@ failure, and is there a recorded instance where it should have and did not.
 Every change made in this phase names the recorded failure it prevents. No
 change ships without one.
 
-Corpus audited: `.claude/rules/` (7 files, tracked), `.claude/commands/`
-(3 files, tracked), `.claude/skills/` (6 directories, untracked),
-`.claude/agents/` (1 charter, untracked). Tracked status established by
-`git ls-files .claude/`, per measurement rule 4b.
+Corpus audited, tracked status established per measurement rule 4b. Tracked:
+the rule files `.claude/rules/git.md`, `measurement.md`, `python-scripts.md`,
+`quality-standards.md`, `regulatory-content.md`, `site-html.md`, `tests.md`,
+and the command files `.claude/commands/add-command.md`, `add-pattern.md`,
+`verify.md`. Untracked (local scaffolding, not published surfaces): the six
+skill directories under `.claude/skills/`, the one agent charter
+`.claude/agents/claim-auditor.md`, and `CLAUDE.md` itself.
 
 ---
 

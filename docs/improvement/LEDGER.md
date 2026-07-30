@@ -164,7 +164,7 @@ decision; BSI ART/1 route; GSC re-auth (`invalid_grant`); private remote for
 | Class 1 landing-page derivation | DONE, 1 of 3 items, two residuals |
 | Phase 2 | **FAILED validation, loop 1 of 3** |
 | Phase 4 | **FAILED hostile review, loop 2 of 3** |
-| Phase 1.7 | NOT STARTED |
+| Phase 1.7 | **DONE 2026-07-30** in HELD:4ee37b2 (deliverable `docs/improvement/SCAFFOLDING-AUDIT.md`; residuals listed in its section 7). Untracked scaffolding (CLAUDE.md, two skills, one charter) corrected in place; gitignored files cannot carry a commit hash and the audit records them. |
 | Phases 5 to 8 | NOT STARTED |
 
 Neither Phase 2 nor Phase 4 has passed its gate. The Phase 4 plan must not be
@@ -273,6 +273,47 @@ diagnosis of a withdrawn figure added a claim to the corpus that measures
 claims; that is the same self-referential loop the merge-base row recorded for
 `docs/adr/`, and it is recorded rather than engineered away, because engineering
 it away is chasing the number and rule 24 above forbids it.
+
+### 2026-07-30, evening session: the held tree landed, and Phase 1.7
+
+The 12 files the previous session left modified-but-uncommitted were
+verified and committed as six units: HELD:820562c (shared exit-code
+derivation, CLI and API), HELD:2d0cea6 (MCP shared path denylist plus the
+repair of regula_gap, which imported a function that does not exist),
+HELD:3f1a797 (bias endpoint scheme guard), HELD:7317689 (jsonschema test
+dependency declared), HELD:0b74db0 (indicator language on generated
+surfaces; the hardcoded 419 pattern-count fallback removed), HELD:82266e9
+(four regression tests plus the cascade 2,581 to 2,585 in the same
+commit). Fail-before controls ran in a detached worktree at `e14fdbe`
+OUTSIDE /tmp: 5 discriminating tests failed there, 104 passed in the fixed
+tree. A first control run inside /tmp was discarded, /tmp is itself in the
+MCP denylist, which confounded one test (measurement rule 2: two variables
+had changed).
+
+Full `pytest tests/ -q` at `e14fdbe` with the 12 files in the working
+tree: **2581 passed in 1036.31s**, rc=0 from `$?` after redirection, the
+sentinel file removed before launch. The published expectation is now
+2,585; the post-change full-suite and custom-runner runs are recorded
+below when they complete, per the standing caveat that verification runs
+post-date the commit they verify.
+
+Phase 1.7 landed in HELD:4ee37b2 (see section 5). Its audit found and
+fixed: a rules file and a skill still describing the Omnibus as pending
+publication against `scripts/omnibus.py:29`; /verify's false
+mirrors-CI-exactly claim (measurement rule 5 in the scaffolding itself);
+add-command.md naming the wrong module for command bodies; the
+releasing-regula skill instructing `git add -A` (forbidden by
+`.claude/rules/git.md`) and a static pyproject version line that does not
+exist. The em-dash rule was scoped to new prose with the verbatim-record
+exemption encoded; the measured footprint of existing em dashes (40
+tracked files with the entity form, 167 under site/ and scripts/ with the
+literal) is recorded in the audit, deferred, not swept.
+
+At HELD:4ee37b2 with the audit doc's corpus header made self-verifiable:
+`claim_auditor.py --diff-base main` rc=1, scanned 66 file(s), 1057
+claim(s), **282 unsourced**, of which SCAFFOLDING-AUDIT.md contributes 0;
+the residue is the pre-existing programme-document debt this file already
+records. Six fast gates rc=0 at HELD:82266e9 and again at HELD:4ee37b2.
 
 ### Passing
 
