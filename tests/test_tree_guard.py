@@ -260,6 +260,6 @@ if __name__ == "__main__":
             print(f"  PASS: {t.__name__}")
         except Exception as e:
             failed += 1
-            print(f"  FAIL: {t.__name__} — {e}")
+            print(f"  FAIL: {t.__name__}: {e}")
     print(f"Results: {len(tests) - failed} passed, {failed} failed")
     sys.exit(1 if failed else 0)
