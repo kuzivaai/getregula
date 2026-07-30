@@ -69,6 +69,38 @@ def test_bootstrap_ci_empty():
     print("✓ Bootstrap CI: empty input returns (0.0, 1.0)")
 
 
+def test_cmd_bias_rejects_non_http_endpoint_before_urlopen():
+    """cmd_bias refuses a non-http(s) --endpoint before any request is made.
+
+    Regression guard: the pre-flight check passed args.endpoint straight to
+    urlopen, so file://, gopher:// and cloud metadata addresses reached the
+    URL opener. The discriminating signal is the stderr message: the scheme
+    guard names the scheme, whereas the old path reported a connection
+    failure (both exit 2, so the exit code alone proves nothing).
+    """
+    import contextlib
+    import io
+    import types
+
+    from cli_analysis import cmd_bias
+
+    args = types.SimpleNamespace(endpoint="file:///etc/passwd")
+    stderr = io.StringIO()
+    code = None
+    with contextlib.redirect_stderr(stderr):
+        try:
+            cmd_bias(args)
+        except SystemExit as e:
+            code = e.code
+    assert code == 2, f"expected SystemExit(2), got {code!r}"
+    err = stderr.getvalue()
+    assert "scheme must be http or https" in err, f"unexpected stderr: {err!r}"
+    assert "Cannot connect to Ollama" not in err, (
+        "the request path ran; the scheme guard did not fire first"
+    )
+    print("✓ cmd_bias: non-http endpoint refused before urlopen")
+
+
 def test_confidence_label():
     """Sample size maps to correct confidence labels."""
     from bias_stats import confidence_label
@@ -89,4 +121,5 @@ if __name__ == "__main__":
     test_bootstrap_ci_deterministic()
     test_bootstrap_ci_empty()
     test_confidence_label()
+    test_cmd_bias_rejects_non_http_endpoint_before_urlopen()
     print("\nAll bias_stats tests passed!")

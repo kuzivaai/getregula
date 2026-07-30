@@ -97,3 +97,33 @@ def test_exec_summary_with_findings():
     assert "HIGH RISK" in html or "HIGH_RISK" in html
     assert "screening.py" in html
     assert "employment" in html.lower() or "Employment" in html
+
+
+def test_exec_summary_omits_pattern_count_when_unmeasured():
+    """When the pattern count cannot be measured, the claim is omitted.
+
+    Regression guard: _pattern_count previously returned a hardcoded 419 on
+    any failure, so a stale literal could be published in a document a reader
+    takes as measured output. The rule is: if a figure cannot be measured,
+    omit it rather than substituting a fallback.
+    """
+    import types
+    from exec_summary import _pattern_count_phrase
+
+    boom = types.ModuleType("site_facts")
+
+    def _raise():
+        raise RuntimeError("unmeasurable in this environment")
+
+    boom.compute = _raise
+    saved = sys.modules.get("site_facts")
+    sys.modules["site_facts"] = boom
+    try:
+        phrase = _pattern_count_phrase()
+    finally:
+        if saved is not None:
+            sys.modules["site_facts"] = saved
+        else:
+            sys.modules.pop("site_facts", None)
+    assert phrase == "detection patterns ", f"unexpected phrase: {phrase!r}"
+    assert "419" not in phrase, "fallback literal must not reappear"
