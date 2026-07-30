@@ -112,6 +112,45 @@ def test_main_only_report_refuses_a_total_its_files_do_not_account_for():
     print("✓ main-only report: reconciles before printing, both directions")
 
 
+def _fake_arm_delta() -> dict:
+    """One finding under both arm states plus one the arm was hiding."""
+    on = {"file": "a.md", "line": 1, "kind": "numeric", "snippet": "1%",
+          "reason": "no-source", "occurrence": 0}
+    revealed = {"file": "b.md", "line": 2, "kind": "numeric", "snippet": "2%",
+                "reason": "no-source", "occurrence": 0}
+    return {"main_sha": "0" * 40, "corpus": 2,
+            "arm_on": 1, "arm_off": 2, "revealed": 1,
+            "findings_arm_on": [on], "findings_arm_off": [dict(on), revealed],
+            "revealed_findings": [revealed], "no_longer_reported": []}
+
+
+def test_arm_delta_report_refuses_each_total_its_files_do_not_account_for():
+    """Control on the arm-delta printing path, all four totals, both ways.
+
+    The direction check is the one that matters most: switching a source arm
+    OFF can only remove provenance, so the finding set can only grow. A
+    non-empty `no_longer_reported` means the toggle did something other than
+    what the module claims, and none of the figures may be printed.
+    """
+    emitted: list[str] = []
+    mb.report_arm_delta(_fake_arm_delta(), emitted.append)
+    assert any("citation-word arm ON: 1" in ln for ln in emitted), emitted
+    assert any("citation-word arm OFF: 2" in ln for ln in emitted), emitted
+    assert any("arm off: 1" in ln for ln in emitted), emitted
+
+    for field, wrong in (("arm_on", 9), ("arm_off", 9), ("revealed", 9)):
+        with pytest.raises(mb.TotalMismatch):
+            mb.report_arm_delta(dict(_fake_arm_delta(), **{field: wrong}),
+                                emitted.append)
+
+    lost = dict(_fake_arm_delta(),
+                no_longer_reported=[["a.md", 1, "numeric", "1%", 0]])
+    with pytest.raises(mb.TotalMismatch) as exc:
+        mb.report_arm_delta(lost, emitted.append)
+    assert "stop reporting" in str(exc.value), exc.value
+    print("✓ arm-delta report: four totals reconciled, direction check fires")
+
+
 def _fake_residue() -> dict:
     f = {"file": "x.md", "line": 1, "kind": "numeric", "snippet": "1%",
          "reason": "no-source", "bucket": "everything else",
@@ -166,6 +205,15 @@ def test_residue_disposition_tally_is_reconciled_too():
 # (per file, per finding, per disposition), and that `--main-only --json`
 # reconciles the same total a second time on its own branch.
 #
+# UPDATED 2026-07-30 when `--main-only --arm-delta` landed, which prints four
+# more totals and reconciles four more times: main's published-surface findings
+# with the F25 citation-word arm ON, the same with it OFF, the difference, and
+# the direction check that the toggle removed nothing. The counts below moved
+# from 5/6/1/5 and a module total of 8 to the figures now stated. That is what
+# these constants are for: a new total that IS reconciled should make someone
+# update the count, and a total that is NOT reconciled is a defect whatever the
+# count says.
+#
 # Neither number is asserted from prose here. The call sites come from the
 # module's own syntax tree, the executions come from wrapping the real
 # `reconcile` and delegating to it (measurement rule 1: never fork the thing
@@ -173,10 +221,12 @@ def test_residue_disposition_tally_is_reconciled_too():
 # functions actually emit. The load-bearing assertion is not any of the three
 # counts: it is that every total a reader is shown was reconciled.
 
-RECONCILE_SITE_COUNT = 5
+RECONCILE_SITE_COUNT = 6
 RECONCILIATIONS_PER_RESIDUE_RUN = 6
 RECONCILIATIONS_PER_MAIN_ONLY_RUN = 1
-PRINTED_TOTALS = 5
+RECONCILIATIONS_PER_ARM_DELTA_RUN = 4
+PRINTED_TOTALS = 9
+RECONCILIATIONS_ACROSS_THE_MODULE = 12
 
 # `<label>: <n>` at the start of a line. The residue report prints its four
 # totals in this shape and the main-only report prints its one. Indented lines
@@ -243,17 +293,18 @@ def test_reconcile_call_sites_come_from_the_syntax_tree():
         print(f"  merge_blockers.py:{line} in {func}() "
               f"label={label!r}")
     assert len(sites) == RECONCILE_SITE_COUNT, sites
-    # One site is inside a loop and takes its label from a variable; the rest
-    # name their total literally. If that ever flips, the arithmetic below
-    # stops holding and this says so.
+    # Two sites are inside a loop and take their label from a variable, one in
+    # `reconcile_residue` and one in `reconcile_arm_delta`; the rest name their
+    # total literally. If that ever flips, the arithmetic below stops holding
+    # and this says so.
     variable_label = [s for s in sites if s[1] is None]
-    assert len(variable_label) == 1, variable_label
+    assert len(variable_label) == 2, variable_label
     print(f"✓ reconcile call sites: {len(sites)} in "
           f"{len({s[0] for s in sites})} functions")
 
 
 def test_reconciliations_executed_are_counted_by_wrapping_the_real_check():
-    """6 on the residue path, 1 on the main-only path, 8 across the module."""
+    """6 residue, 1 main-only, 4 arm-delta, 1 json-only: 12 across the module."""
     residue_labels = _labels_reconciled_by(
         lambda: mb.reconcile_residue(_fake_residue()))
     main_only_labels = _labels_reconciled_by(
@@ -262,27 +313,37 @@ def test_reconciliations_executed_are_counted_by_wrapping_the_real_check():
              "published_surface_findings_on_main": 1,
              "files": ["a.md"], "findings": [_one_main_only_finding()]},
             lambda _line: None))
+    arm_delta_labels = _labels_reconciled_by(
+        lambda: mb.report_arm_delta(_fake_arm_delta(), lambda _line: None))
 
     for label in residue_labels:
         print(f"  residue path reconciles: {label}")
     for label in main_only_labels:
         print(f"  main-only path reconciles: {label}")
+    for label in arm_delta_labels:
+        print(f"  arm-delta path reconciles: {label}")
 
     assert len(residue_labels) == RECONCILIATIONS_PER_RESIDUE_RUN, residue_labels
     assert len(main_only_labels) == RECONCILIATIONS_PER_MAIN_ONLY_RUN, \
         main_only_labels
+    assert len(arm_delta_labels) == RECONCILIATIONS_PER_ARM_DELTA_RUN, \
+        arm_delta_labels
 
-    # The eighth is the `--main-only --json` branch, which reconciles before
+    # The last is the `--main-only --json` branch, which reconciles before
     # serialising so a machine consumer gets the same guarantee as a reader.
     # Driving it would check out a worktree of main, so it is counted from the
-    # syntax tree instead and that limitation is stated rather than hidden.
+    # syntax tree instead and that limitation is stated rather than hidden. The
+    # `--main-only --arm-delta --json` branch needs no separate count: it calls
+    # `reconcile_arm_delta`, which is already one of the four above.
     in_main = [s for s in _reconcile_call_sites() if s[0] == "main"]
     assert len(in_main) == 1, in_main
-    total = (len(residue_labels) + len(main_only_labels) + len(in_main))
+    total = (len(residue_labels) + len(main_only_labels)
+             + len(arm_delta_labels) + len(in_main))
     print(f"✓ reconciliations across the module: "
           f"{len(residue_labels)} residue + {len(main_only_labels)} main-only "
-          f"+ {len(in_main)} json-only = {total}")
-    assert total == 8, total
+          f"+ {len(arm_delta_labels)} arm-delta + {len(in_main)} json-only "
+          f"= {total}")
+    assert total == RECONCILIATIONS_ACROSS_THE_MODULE, total
 
 
 def test_every_total_printed_to_a_reader_was_reconciled():
@@ -299,7 +360,12 @@ def test_every_total_printed_to_a_reader_was_reconciled():
              "files": ["a.md"], "findings": [_one_main_only_finding()]},
             main_lines.append))
 
-    printed = [TOTAL_LINE_RE.match(ln) for ln in residue_lines + main_lines]
+    arm_lines: list[str] = []
+    arm_labels = _labels_reconciled_by(
+        lambda: mb.report_arm_delta(_fake_arm_delta(), arm_lines.append))
+
+    printed = [TOTAL_LINE_RE.match(ln)
+               for ln in residue_lines + main_lines + arm_lines]
     printed_labels = [m.group(1).strip() for m in printed if m]
     for label in printed_labels:
         print(f"  printed total: {label}")
@@ -308,7 +374,7 @@ def test_every_total_printed_to_a_reader_was_reconciled():
     # not the thing being guarded: a new total that IS reconciled should make
     # someone update the count, but a total that is NOT reconciled is a defect
     # whatever the count says.
-    reconciled = set(residue_labels) | set(main_labels)
+    reconciled = set(residue_labels) | set(main_labels) | set(arm_labels)
     unchecked = [lab for lab in printed_labels if lab not in reconciled]
     assert not unchecked, (
         f"these totals were printed to a reader without being reconciled "

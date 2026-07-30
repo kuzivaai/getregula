@@ -113,6 +113,97 @@ def test_the_gate_unit_agrees_with_the_auditors_own_total():
           f"{len(paths)} files")
 
 
+def _joinable(file="a.md", line=3, start=2, end=4):
+    """One revealed finding and the citation-word row it must join to."""
+    finding = {"file": file, "line": line, "kind": "numeric", "snippet": "1%",
+               "occurrence": 0, "paragraph_start": start, "paragraph_end": end}
+    row = {"file": file, "paragraph_start": start, "paragraph_end": end,
+           "exposed": True, "otherwise_sourced_by": None, "words": ["see"]}
+    return finding, row
+
+
+def test_the_revealed_enumeration_accounts_for_the_revealed_count():
+    """The per-finding enumeration, checked against the count it itemises.
+
+    WHY THIS TEST EXISTS. Before it, this module reported how MANY findings the
+    citation-word arm holds green and never which ones. The 26 on the live site
+    could only be listed by writing a throwaway script, and a figure whose
+    apparatus is gone is the exact defect that made owner decision 3
+    unanswerable for five sessions.
+
+    TWO corpora, because a length equality on one could hold by accident, and
+    both are asserted non-empty first: an absent signal is not a passing
+    signal, and a corpus with nothing revealed proves nothing about an
+    enumeration of revealed findings.
+    """
+    for name in ("manifest", "site"):
+        m = fx.measure(name)
+        revealed = m["claim_unit"]["revealed"]
+        listed = m["revealed_findings"]
+        assert revealed > 0, (
+            f"corpus {name} reveals nothing, so this test would pass by "
+            f"comparing zero with zero: {m['claim_unit']}")
+        assert len(listed) == revealed, (
+            f"corpus {name}: the enumeration has {len(listed)} entries where "
+            f"the gate unit reports {revealed} revealed findings. The list and "
+            f"the count must come from the same predicate.")
+        assert len({f["file"] for f in listed}) == m["revealed_files"]
+        for f in listed:
+            # A revealed finding sat in a paragraph the WORD alone sourced. If
+            # the paragraph had any other provenance it would still be sourced
+            # with the arm off and nothing would be revealed, so `masked` here
+            # would mean the join found the wrong paragraph.
+            assert f["exposed"] is True, f
+            assert f["otherwise_sourced_by"] is None, f
+            assert f["citation_words"], f
+            assert f["snippet"].strip(), f
+            assert f["line"] > 0, f
+        print(f"✓ {name}: {len(listed)} revealed findings enumerated over "
+              f"{len({f['file'] for f in listed})} file(s)")
+
+
+def test_enumeration_refuses_a_finding_it_cannot_join_to_a_paragraph():
+    """Control A: the two passes disagreeing about paragraph boundaries.
+
+    Driven on the real function with a row set that cannot satisfy the join, so
+    the guard is proved to fire rather than assumed to.
+    """
+    finding, row = _joinable()
+    delta = {"revealed": [finding], "findings_now": 0,
+             "findings_with_arm_off": 1}
+
+    assert fx.enumerate_revealed({"rows": [row]}, delta), "the joinable case " \
+        "must succeed, or this control cannot distinguish anything"
+
+    with pytest.raises(fx.UnjoinedFinding) as exc:
+        fx.enumerate_revealed({"rows": []}, delta)
+    assert "a.md" in str(exc.value), exc.value
+    print("✓ an unjoinable revealed finding refuses to enumerate, and names it")
+
+
+def test_enumeration_is_reconciled_against_the_difference_of_the_gate_totals():
+    """Control B: the enumeration is checked against an INDEPENDENT total.
+
+    Reconciling `len(revealed)` against the list built from `revealed` could
+    never fail. The check is against `findings_with_arm_off - findings_now`,
+    counted separately, so a toggle that lost a finding fires it too.
+    """
+    finding, row = _joinable()
+    result = {"rows": [row]}
+
+    ok = fx.enumerate_revealed(
+        result, {"revealed": [finding], "findings_now": 0,
+                 "findings_with_arm_off": 1})
+    assert len(ok) == 1
+
+    with pytest.raises(fx.TotalMismatch) as exc:
+        fx.enumerate_revealed(
+            result, {"revealed": [finding], "findings_now": 0,
+                     "findings_with_arm_off": 3})
+    assert "difference 2" in str(exc.value), exc.value
+    print("✓ enumeration reconciles against the gate totals, and refuses a gap")
+
+
 def test_a_corpus_that_drops_a_named_surface_says_so():
     """Finding N6, surfaced rather than absorbed.
 
