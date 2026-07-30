@@ -172,6 +172,16 @@ def format_mapping_text(mapping: dict) -> str:
         if eu:
             lines.append(f"  EU AI Act — {eu.get('title', '')}")
             lines.append(f"    Requirement: {eu.get('requirement', '')}")
+            # An amending regulation changes what the article requires, so a
+            # reader who is shown only the base requirement is shown stale law.
+            # Generic over any article that declares an amendment rather than
+            # special-cased to the one that has one today.
+            if eu.get("amended_by"):
+                lines.append(f"    Amended by: {eu['amended_by']}")
+                if eu.get("amendment"):
+                    lines.append(f"    Amendment: {eu['amendment']}")
+                if eu.get("amendment_source"):
+                    lines.append(f"    Source: {eu['amendment_source']}")
 
         nist = frameworks.get("nist_ai_rmf", {})
         if nist:

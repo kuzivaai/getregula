@@ -5,7 +5,7 @@
     <link>https://getregula.com/content/regulations/delta-log/</link>
     <description>Primary-source-linked changelog for the EU AI Act. Every entry is article-keyed and machine-readable.</description>
     <language>en-GB</language>
-    <lastBuildDate>Wed, 29 Jul 2026 09:27:59 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 30 Jul 2026 00:21:44 +0000</lastBuildDate>
     <item>
       <title>[regulation-adoption] Art. 30: Regulation (EU) 2026/1744, Annex XIV (list of codes, categories and correspondin</title>
       <link>https://eur-lex.europa.eu/eli/reg/2026/1744/oj</link>
@@ -14,7 +14,7 @@
       <description>Regulation (EU) 2026/1744 inserts Annex XIV into Regulation (EU) 2024/1689, a three-category code list used to scope the designation of notified bodies: AIP codes (product legislation), AIB codes (biometric Annex III systems) and AIH codes (horizontal, technology-specific). Annex XIV Section 3 defines AIH 0401 as &quot;AI systems based on other emerging AI technologies not covered by other codes, including Agentic AI&quot;, and AIH 0205 as &quot;AI systems that learn from their environment, excluding AI systems covered under AIH 0401&quot;. This is the first appearance of the term Agentic AI in binding Union law, and it appears exactly once in the whole regulation, in that table. It is a nomenclature code for assessor competence, NOT a definition: no article defines an agent, no risk tier is keyed to autonomy, and no obligation attaches to the code. Recital 43 states the code list exists so that notified bodies &quot;are fully competent in regard to the AI systems they are required to assess&quot;. (confidence: verified-primary)</description>
     </item>
     <item>
-      <title>[regulation-adoption] Art. 5, Art. 6, Art. 50, Art. 113: Regulation (EU) 2026/1744 of the European Parliament and of the Council of 8 Jul</title>
+      <title>[regulation-adoption] Art. 5, Art. 6, Art. 11, Art. 50, Art. 113: Regulation (EU) 2026/1744 of the European Parliament and of the Council of 8 Jul</title>
       <link>https://eur-lex.europa.eu/eli/reg/2026/1744/oj</link>
       <guid isPermaLink="false">https://getregula.com/content/regulations/delta-log/entries/2026-07-24-oj-publication.json</guid>
       <pubDate>Fri, 24 Jul 2026 00:00:00 +0000</pubDate>
