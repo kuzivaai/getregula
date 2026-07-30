@@ -222,9 +222,30 @@ def _git(*args: str) -> subprocess.CompletedProcess:
                           capture_output=True, text=True)
 
 
-def commit_exists(sha: str) -> bool:
+def object_type(sha: str) -> str:
+    """The git object type of `sha`, or "" if it resolves to nothing.
+
+    Widened from a commit-only check on 2026-07-30. This file's own rules
+    require every figure to state "the commit AND the tree it was measured in",
+    and a tree hash is written in exactly the same backticked form as a commit.
+    The commit-only predicate therefore rejected the ledger for obeying its own
+    rule: `46b7c3d`, the tree of `60fa775`, was reported as "no such commit
+    exists". Accepting a tree is not a loosening — a token that resolves to
+    NOTHING is still a defect, and that is the case the check exists for.
+    """
     r = _git("cat-file", "-t", sha)
-    return r.returncode == 0 and r.stdout.strip() == "commit"
+    return r.stdout.strip() if r.returncode == 0 else ""
+
+
+def commit_exists(sha: str) -> bool:
+    """Does `sha` name a real commit or tree in this repository?
+
+    Kept under this name because it is the injection point the controls below
+    drive. The HELD:/PUSHED: markers still require a COMMIT, checked separately
+    in `audit_status_claims`, because reachability from a remote ref is not a
+    question you can ask about a tree.
+    """
+    return object_type(sha) in ("commit", "tree")
 
 
 def remote_tracking_refs() -> list[str]:
@@ -255,14 +276,21 @@ def checkout_can_answer() -> tuple[bool, str]:
     return True, ""
 
 
+def is_commit(sha: str) -> bool:
+    return object_type(sha) == "commit"
+
+
 def audit_status_claims(text: str,
                         exists=commit_exists,
-                        on_remote=is_on_remote) -> tuple[list[str], int]:
+                        on_remote=is_on_remote,
+                        commit_check=is_commit) -> tuple[list[str], int]:
     """Return (problems, claims_checked) for one ledger body.
 
-    Pure over `text`, and the two git resolvers are injectable, so a control
+    Pure over `text`, and all three git resolvers are injectable, so a control
     can plant a claim and drive this without writing to the file on disk or
-    to the repository.
+    to the repository. `commit_check` is separate from `exists` because a
+    backticked hash may legitimately be a tree, while a HELD:/PUSHED: marker
+    may not.
     """
     problems: list[str] = []
     checked = 0
@@ -272,10 +300,19 @@ def audit_status_claims(text: str,
             checked += 1
         else:
             problems.append(
-                f"`{sha}` is written in the commit form but no such commit "
-                f"exists in this repository")
+                f"`{sha}` is written in the object form but names no commit or "
+                f"tree in this repository")
 
     for kind, sha in MARKER_RE.findall(text):
+        # A remote-state marker must name a COMMIT. Reachability from a remote
+        # ref is meaningless for a tree, and a marker on one would pass or fail
+        # for the wrong reason.
+        if not commit_check(sha):
+            problems.append(
+                f"{kind}:{sha} names no commit; a hold or a push is a claim "
+                f"about a commit, and a tree cannot be reachable from a "
+                f"remote ref")
+            continue
         if not exists(sha):
             problems.append(f"{kind}:{sha} names a commit that does not exist")
             continue
@@ -373,12 +410,38 @@ def test_prose_only_remote_claim_is_rejected():
 
 
 def test_a_backticked_non_commit_is_reported():
-    """An invented commit hash must not pass as a citation."""
+    """An invented hash must not pass as a citation."""
     problems, _ = audit_status_claims(
         "text citing `abcdef1234567` as though it were a commit")
-    assert any("no such commit exists" in p for p in problems), (
-        "an invented commit hash was accepted")
-    print("✓ ledger status: invented commit hashes rejected")
+    assert any("names no commit or tree" in p for p in problems), (
+        "an invented hash was accepted")
+    print("✓ ledger status: invented hashes rejected")
+
+
+def test_a_backticked_tree_hash_is_accepted_but_not_as_a_marker():
+    """This file's rules require a figure to state its commit AND its tree.
+
+    A tree hash is written in the same backticked form as a commit, so the
+    original commit-only check rejected the ledger for obeying its own rule.
+    Widened on 2026-07-30 after `46b7c3d`, the tree of `60fa775`, was reported
+    as a non-existent commit. Reachability from a remote ref is meaningless for
+    a tree, so a HELD:/PUSHED: marker on one is still refused.
+    """
+    ok, why = checkout_can_answer()
+    if not ok:
+        pytest.skip(why)
+    head_tree = _git("rev-parse", "HEAD^{tree}").stdout.strip()[:7]
+    if not head_tree:
+        pytest.skip("cannot resolve HEAD's tree in this checkout")
+    assert object_type(head_tree) == "tree", object_type(head_tree)
+
+    accepted, checked = audit_status_claims(f"measured in tree `{head_tree}`")
+    assert not accepted, accepted
+    assert checked == 1, checked
+
+    refused, _ = audit_status_claims(f"| x | HELD:{head_tree} |")
+    assert any("names no commit" in p for p in refused), refused
+    print(f"✓ ledger status: tree `{head_tree}` cited, refused as a marker")
 
 
 def test_ledger_supersession_declarations_are_paired():
@@ -496,14 +559,17 @@ def test_marker_polarity_is_decided_by_the_resolver_not_the_word():
     def off(_sha):
         return False
 
+    def is_a_commit(_sha):
+        return True
+
     held_but_pushed, _ = audit_status_claims("| HELD:aaaaaaa |",
-                                             always_exists, on)
+                                             always_exists, on, is_a_commit)
     held_and_absent, _ = audit_status_claims("| HELD:aaaaaaa |",
-                                             always_exists, off)
+                                             always_exists, off, is_a_commit)
     pushed_and_present, _ = audit_status_claims("| PUSHED:aaaaaaa |",
-                                                always_exists, on)
+                                                always_exists, on, is_a_commit)
     pushed_but_absent, _ = audit_status_claims("| PUSHED:aaaaaaa |",
-                                               always_exists, off)
+                                               always_exists, off, is_a_commit)
 
     assert held_but_pushed and not held_and_absent
     assert pushed_but_absent and not pushed_and_present
