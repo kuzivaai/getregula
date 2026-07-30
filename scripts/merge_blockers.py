@@ -49,20 +49,38 @@ published-surface
     `docs/QUICKSTART.md` and `docs/consultant-guide.md` ship to readers and
     are not on it.
 
+THE CITATION-WORD ARM, AND WHY IT IS TOGGLED HERE
+-------------------------------------------------
+The 168 below is measured with `CITATION_WORDS` active, and that arm accepts
+bare English prose (`source`, `see`, `ref`) as provenance and is tried before
+the file-reference arm. Finding F25. So the 168 is a floor, not the debt, and a
+ratchet baselined on it would be wrong the moment the arm is narrowed by the
+gate-scope repair.
+
+`--main-only --arm-delta` measures both states in ONE clean worktree of main,
+with ONE variable toggled: `CITATION_WORDS` swapped for a pattern that cannot
+match, nothing else changed. Two worktrees would be two specimens; one worktree
+scanned twice is one specimen and one instrument, which is measurement rule 2.
+
 USAGE
   python3 scripts/merge_blockers.py                 # the residue, enumerated
   python3 scripts/merge_blockers.py --main-only     # would main go red?
+  python3 scripts/merge_blockers.py --main-only --arm-delta
+                                                    # ... and how much of that
+                                                    # green rests on F25
   python3 scripts/merge_blockers.py --json
 """
 from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 import subprocess
 import sys
 import tempfile
 from collections import Counter
+from contextlib import contextmanager
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -76,6 +94,18 @@ REPO_ROOT = ca.REPO_ROOT
 # agent configuration. Deliberately NOT claim_diff's reporting buckets; see
 # the module docstring for the error that distinction cost.
 WORKING_PREFIXES = ("docs/improvement/", ".claude/")
+
+# The off-switch for a source arm of `paragraph_has_source`: a pattern that
+# cannot match anything, substituted for the real one so the REAL function is
+# what gets measured rather than a fork of it.
+#
+# DEFINED ONCE, HERE. `scripts/f25_exposure.py` imports it rather than keeping
+# its own copy. Two copies of an off-switch drift, and a drifted off-switch
+# under-reports exposure, which reads as good news. The dependency runs this
+# way round because f25_exposure already imports `reconcile`,
+# `is_published_surface` and `TotalMismatch` from this module; the reverse
+# would be a cycle.
+ARM_OFF = re.compile(r"(?!x)x")
 
 
 def is_published_surface(path: str) -> bool:
@@ -275,6 +305,75 @@ def residue(base: str = "main") -> dict:
     }
 
 
+@contextmanager
+def main_worktree():
+    """A clean, detached worktree of `main`, with HEAD's auditor copied in.
+
+    One instrument, two specimens: HEAD's auditor against main's content, so a
+    difference cannot be the detector changing. Same reasoning as
+    `scripts/claim_diff.py`; `REPO_ROOT` is asserted before anything is scanned,
+    because a module whose root resolved elsewhere is exactly how the figures
+    185 and 168 were produced in an earlier session.
+
+    Factored out of `main_only_findings` so the arm-delta measurement runs both
+    of its passes inside ONE worktree. Two worktrees of the same commit are
+    byte-identical today, but they are two specimens, and measurement rule 2 is
+    one variable on one state.
+    """
+    tmp = Path(tempfile.mkdtemp(prefix="merge-blockers-"))
+    wt = tmp / "main"
+    try:
+        subprocess.run(["git", "worktree", "add", "--detach", str(wt), "main"],
+                       cwd=REPO_ROOT, capture_output=True, text=True,
+                       check=True)
+        shutil.copy2(REPO_ROOT / "scripts" / "claim_auditor.py",
+                     wt / "scripts" / "claim_auditor.py")
+        mod = claim_diff.load_base_module(wt)
+        if Path(mod.REPO_ROOT).resolve() != wt.resolve():
+            raise RuntimeError(
+                f"REPO_ROOT is {mod.REPO_ROOT}, expected {wt}")
+        yield wt, mod
+    finally:
+        subprocess.run(["git", "worktree", "remove", "--force", str(wt)],
+                       cwd=REPO_ROOT, capture_output=True, text=True,
+                       check=False)
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def _scan_published(wt: Path, mod) -> tuple[list[str], list[dict]]:
+    """(tracked md/html corpus, published-surface findings) inside `wt`.
+
+    THE OCCURRENCE ORDINAL IS NOT DECORATION. These records are compared as a
+    SET between two arm states, and (file, line, kind, snippet) is not unique:
+    a claim can repeat identically on one line. `scripts/f25_exposure.py`
+    reported 267 findings where the auditor's own list had 273 for exactly that
+    reason. The ordinal makes the key unique per occurrence so a set difference
+    cannot silently merge duplicates.
+    """
+    corpus = _git("ls-files", "*.md", "*.html", cwd=wt).split()
+    allow = mod.load_allowlist()
+    hits: list[dict] = []
+    seen: dict[tuple[str, int, str, str], int] = {}
+    for rel in corpus:
+        if not is_published_surface(rel):
+            continue
+        rep = mod.scan_file(wt / rel, allow)
+        for f in rep.findings:
+            base = (rep.path, f.claim.line, f.claim.kind, f.claim.snippet)
+            ordinal = seen.get(base, 0)
+            seen[base] = ordinal + 1
+            hits.append({
+                "file": rep.path, "line": f.claim.line,
+                "kind": f.claim.kind, "snippet": f.claim.snippet,
+                "reason": f.reason, "occurrence": ordinal,
+            })
+    return corpus, hits
+
+
+def _occurrence_key(h: dict) -> tuple[str, int, str, str, int]:
+    return (h["file"], h["line"], h["kind"], h["snippet"], h["occurrence"])
+
+
 def main_only_findings() -> dict:
     """Run the published-surface predicate against a clean checkout of main.
 
@@ -283,34 +382,8 @@ def main_only_findings() -> dict:
     the condition turns the default branch red on the next push to it. This
     scans main ALONE, with no reference to the branch.
     """
-    tmp = Path(tempfile.mkdtemp(prefix="merge-blockers-"))
-    wt = tmp / "main"
-    try:
-        subprocess.run(["git", "worktree", "add", "--detach", str(wt), "main"],
-                       cwd=REPO_ROOT, capture_output=True, text=True,
-                       check=True)
-        # One instrument, two specimens: HEAD's auditor against main's content,
-        # so a difference cannot be the detector changing. Same reasoning as
-        # scripts/claim_diff.py; REPO_ROOT is asserted below.
-        shutil.copy2(REPO_ROOT / "scripts" / "claim_auditor.py",
-                     wt / "scripts" / "claim_auditor.py")
-        mod = claim_diff.load_base_module(wt)
-        if Path(mod.REPO_ROOT).resolve() != wt.resolve():
-            raise RuntimeError(
-                f"REPO_ROOT is {mod.REPO_ROOT}, expected {wt}")
-        corpus = _git("ls-files", "*.md", "*.html", cwd=wt).split()
-        allow = mod.load_allowlist()
-        hits = []
-        for rel in corpus:
-            if not is_published_surface(rel):
-                continue
-            rep = mod.scan_file(wt / rel, allow)
-            for f in rep.findings:
-                hits.append({
-                    "file": rep.path, "line": f.claim.line,
-                    "kind": f.claim.kind, "snippet": f.claim.snippet,
-                    "reason": f.reason,
-                })
+    with main_worktree() as (wt, mod):
+        corpus, hits = _scan_published(wt, mod)
         return {
             "main_sha": _git("rev-parse", "main", cwd=REPO_ROOT).strip(),
             "corpus": len(corpus),
@@ -318,11 +391,94 @@ def main_only_findings() -> dict:
             "files": sorted({h["file"] for h in hits}),
             "findings": hits,
         }
-    finally:
-        subprocess.run(["git", "worktree", "remove", "--force", str(wt)],
-                       cwd=REPO_ROOT, capture_output=True, text=True,
-                       check=False)
-        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def main_only_arm_delta() -> dict:
+    """main's published-surface debt with the citation-word arm on and off.
+
+    The missing input to owner decision 7. A ratchet baselined on the arm-on
+    figure is baselined on a number the gate-scope repair is going to move,
+    because narrowing `CITATION_WORDS` is part of that repair.
+
+    ONE worktree, ONE auditor module, TWO scans, ONE variable: `CITATION_WORDS`
+    replaced by `ARM_OFF` and restored in a `finally` so an exception cannot
+    leave the module patched. Switching an arm OFF can only remove provenance,
+    so the finding set can only grow; if anything disappeared the toggle did
+    something other than what this function claims, and `reconcile_arm_delta`
+    refuses to print the figures.
+    """
+    with main_worktree() as (wt, mod):
+        corpus, before = _scan_published(wt, mod)
+        real_words = mod.CITATION_WORDS
+        try:
+            mod.CITATION_WORDS = ARM_OFF
+            corpus_off, after = _scan_published(wt, mod)
+        finally:
+            mod.CITATION_WORDS = real_words
+        # One specimen means one corpus. If the two passes disagree about which
+        # files exist, the delta is between two different things and the whole
+        # measurement is void.
+        if corpus_off != corpus:
+            raise RuntimeError(
+                f"the two passes scanned different corpora: "
+                f"{len(corpus)} files then {len(corpus_off)}. The delta would "
+                f"be between two specimens, not one.")
+        main_sha = _git("rev-parse", "main", cwd=REPO_ROOT).strip()
+
+    before_keys = {_occurrence_key(h) for h in before}
+    after_by_key = {_occurrence_key(h): h for h in after}
+    revealed = [after_by_key[k] for k in sorted(set(after_by_key) - before_keys)]
+    no_longer = sorted(before_keys - set(after_by_key))
+    return {
+        "main_sha": main_sha,
+        "corpus": len(corpus),
+        "arm_on": len(before),
+        "arm_off": len(after),
+        "revealed": len(revealed),
+        "findings_arm_on": before,
+        "findings_arm_off": after,
+        "revealed_findings": revealed,
+        "no_longer_reported": [list(k) for k in no_longer],
+    }
+
+
+def reconcile_arm_delta(r: dict) -> list[tuple[str, int, list[tuple[str, int]]]]:
+    """Every total the arm-delta report prints, each with its itemisation.
+
+    Returned rather than printed, so the reconciliation and the output cannot
+    drift apart: the caller prints exactly what was checked.
+    """
+    rows = [
+        ("published-surface findings ON MAIN, citation-word arm ON",
+         r["arm_on"], _tally(r["findings_arm_on"], _file_of)),
+        ("published-surface findings ON MAIN, citation-word arm OFF",
+         r["arm_off"], _tally(r["findings_arm_off"], _file_of)),
+        ("revealed by switching the citation-word arm off",
+         r["revealed"], _tally(r["revealed_findings"], _file_of)),
+        # Direction check. An arm that is switched off cannot ADD provenance,
+        # so this itemisation must be empty and the total must be zero. If it
+        # is not, the toggle changed something else and none of the three
+        # figures above may be published.
+        ("findings the arm off would stop reporting",
+         len(r["no_longer_reported"]), []),
+    ]
+    for label, total, items in rows:
+        reconcile(label, total, items)
+    return rows
+
+
+def report_arm_delta(r: dict, out=print) -> None:
+    rows = reconcile_arm_delta(r)
+    out(f"main {r['main_sha'][:7]}, clean worktree, "
+        f"{r['corpus']} tracked md/html")
+    for label, total, items in rows:
+        out(f"{label}: {total}")
+        for name, n in items:
+            out(f"      {n:4d}  {name}")
+    out("")
+    for f in sorted(r["revealed_findings"],
+                    key=lambda x: (x["file"], x["line"])):
+        out(f"  {f['file']}:{f['line']}  [{f['kind']}] {f['snippet']!r}")
 
 
 def report_main_only(r: dict, out=print) -> None:
@@ -399,8 +555,25 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--base", default="main")
     ap.add_argument("--main-only", action="store_true")
+    ap.add_argument("--arm-delta", action="store_true",
+                    help="with --main-only: measure the same corpus twice, "
+                         "with the F25 citation-word arm on and off")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
+
+    if args.arm_delta and not args.main_only:
+        print("merge-blockers: --arm-delta is only defined with --main-only",
+              file=sys.stderr)
+        return 2
+
+    if args.main_only and args.arm_delta:
+        r = main_only_arm_delta()
+        if args.json:
+            reconcile_arm_delta(r)
+            print(json.dumps(r, indent=2))
+            return 0
+        report_arm_delta(r)
+        return 0
 
     if args.main_only:
         r = main_only_findings()

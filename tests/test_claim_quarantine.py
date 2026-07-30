@@ -24,11 +24,16 @@ REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "scripts"))
 
 import claim_auditor as ca  # noqa: E402
+import quarantine_liveness as ql  # noqa: E402
 
 LEDGER_PATH = REPO / "docs" / "improvement" / "LEDGER.md"
 
 # The size of the backlog when quarantine was introduced (2026-07-28).
-# This number may be LOWERED as items are burned down. It may never rise.
+#
+# THIS CONSTANT DOES NOT MOVE. It records what the backlog WAS, which is what
+# the declared re-base chain in the data is anchored to. Burning entries down
+# lowers the CEILING, below, and rewriting this number instead would falsify
+# the historical record the chain depends on.
 QUARANTINE_BASE_CEILING = 42
 
 # Entries admitted because an instrument repair made the auditor MORE
@@ -45,7 +50,32 @@ QUARANTINE_BASE_CEILING = 42
 # `burned_down` object in the data and stops counting, so the ceiling falls.
 QUARANTINE_ADMITTED = 2
 
-QUARANTINE_CEILING = QUARANTINE_BASE_CEILING + QUARANTINE_ADMITTED
+# Where the declared re-base chain must end: the backlog at creation plus the
+# live admissions. Condition 3 of owner decision 1 is checked against this.
+REBASED_CEILING = QUARANTINE_BASE_CEILING + QUARANTINE_ADMITTED
+
+
+def burned_down_records(doc: dict) -> list[dict]:
+    """Base entries removed from the backlog, one record each.
+
+    Admissions are NOT here. An admission burns down through its own
+    `burned_down` object inside its tranche and already lowers the ceiling by
+    dropping out of the live-admission count; listing it here as well would
+    lower the ceiling twice for one entry.
+    """
+    return doc.get("burned_down", [])
+
+
+def quarantine_ceiling(doc: dict) -> int:
+    """The ceiling the quarantine may not exceed, DERIVED from the data.
+
+    Condition 3 of owner decision 1 says the ceiling re-bases once, visibly,
+    and shrinks from the new ceiling thereafter. This is that shrink, and it is
+    automatic: every burn-down record takes one off, so a burned-down entry
+    cannot leave headroom behind it for a new entry to occupy. Typing the
+    number here instead is what let 42 stand while entries were being removed.
+    """
+    return REBASED_CEILING - len(burned_down_records(doc))
 
 # ---------------------------------------------------------------------------
 # OWNER DECISION 1, ruled 2026-07-28, encoded 2026-07-30
@@ -120,9 +150,10 @@ class TestQuarantineRatchet(unittest.TestCase):
 
     def test_count_may_only_decrease(self):
         actual = len(self.doc["entries"])
+        ceiling = quarantine_ceiling(self.doc)
         self.assertLessEqual(
-            actual, QUARANTINE_CEILING,
-            f"quarantine grew from {QUARANTINE_CEILING} to {actual}. "
+            actual, ceiling,
+            f"quarantine grew from {ceiling} to {actual}. "
             f"Quarantine is a backlog being burned down, not a bypass for "
             f"new claims. Source the claim, correct it, or remove it — do "
             f"not add an entry. If a legitimate pre-existing claim was "
@@ -136,13 +167,31 @@ class TestQuarantineRatchet(unittest.TestCase):
             "entries; a stale header hides the true backlog size")
 
     def test_entries_key_on_file_and_claim_never_line_numbers(self):
+        """Identity is `file` plus normalised claim text, and nothing else.
+
+        WIDENED 2026-07-30 to admit `silent_because` and `also_blocked_by`,
+        which are MEASURED ANNOTATIONS and not key material: the auditor's
+        `load_quarantine` reads `file` and `claim` and ignores the rest, so an
+        annotation cannot change what is suppressed. The prohibition that
+        matters is unchanged and is now stated directly rather than implied by
+        an exact key set: no key may carry a line number, because line-keyed
+        entries rot on every page edit.
+        """
+        allowed = {"file", "claim", "silent_because", "also_blocked_by"}
         for e in self.doc["entries"]:
-            self.assertEqual(
-                set(e), {"file", "claim"},
-                f"quarantine entry {e!r} has unexpected keys. Entries key on "
-                f"file plus normalised claim text only. Line numbers rot on "
-                f"every page edit and would have broken the moment the "
-                f"coordinate fix landed.")
+            self.assertTrue(
+                set(e) <= allowed,
+                f"quarantine entry {e!r} has unexpected keys "
+                f"{sorted(set(e) - allowed)}. Entries key on file plus "
+                f"normalised claim text; the only other permitted fields are "
+                f"the measured silence annotations.")
+            self.assertEqual({"file", "claim"} & set(e), {"file", "claim"},
+                             f"entry {e!r} is missing key material")
+            self.assertNotIn(
+                "line", " ".join(e).lower(),
+                f"quarantine entry {e!r} carries a line number. Line-keyed "
+                f"entries rot on every page edit and would have broken the "
+                f"moment the coordinate fix landed.")
             self.assertTrue(e["claim"].strip(), "empty claim text")
 
     def test_status_labelling_stays_honest(self):
@@ -368,18 +417,27 @@ class TestQuarantineRatchet(unittest.TestCase):
             cursor = rebase["to"]
 
         self.assertEqual(
-            cursor, QUARANTINE_CEILING,
+            cursor, REBASED_CEILING,
             f"the declared re-base chain ends at {cursor} but "
-            f"tests/test_claim_quarantine.py allows {QUARANTINE_CEILING}. A "
+            f"tests/test_claim_quarantine.py re-bases to {REBASED_CEILING}. A "
             f"ceiling that grows with no recorded re-base is not permitted; "
             f"declare the re-base with its reason, or lower the ceiling.")
+
+        # "...and shrinks from the new ceiling thereafter". The shrink is the
+        # burn-down, and it is derived from the data so it cannot be forgotten.
+        burned = len(burned_down_records(self.doc))
+        ceiling = quarantine_ceiling(self.doc)
+        self.assertEqual(
+            ceiling, cursor - burned,
+            "the ceiling must fall by exactly one for each burned-down entry")
         self.assertLessEqual(
-            len(self.doc["entries"]), cursor,
+            len(self.doc["entries"]), ceiling,
             f"the quarantine holds {len(self.doc['entries'])} entries against "
-            f"a re-based ceiling of {cursor}; it must shrink from the new "
+            f"a ceiling of {ceiling}; it must shrink from the re-based "
             f"ceiling, never rise past it")
         print(f"✓ condition 3: ceiling re-based {QUARANTINE_BASE_CEILING} -> "
-              f"{cursor}, reason recorded, entries {len(self.doc['entries'])}")
+              f"{cursor}, reason recorded; {burned} burned down -> ceiling "
+              f"{ceiling}, entries {len(self.doc['entries'])}")
 
     def test_condition_3_control_a_ceiling_that_grows_unrecorded_is_refused(
             self):
@@ -393,11 +451,22 @@ class TestQuarantineRatchet(unittest.TestCase):
         cursor = QUARANTINE_BASE_CEILING
         for tranche in tranches:
             cursor = tranche["rebase"]["to"]
-        self.assertEqual(cursor, QUARANTINE_CEILING)
+        self.assertEqual(cursor, REBASED_CEILING)
         self.assertNotEqual(
-            cursor, QUARANTINE_CEILING + 1,
+            cursor, REBASED_CEILING + 1,
             "raising the ceiling by one must not still be justified by the "
             "same declared chain")
+        # And the burn-down half: an entry removed from `entries` without a
+        # record in `burned_down` would leave the ceiling where it was, which
+        # is headroom a new entry could occupy without the ratchet firing.
+        self.assertEqual(
+            quarantine_ceiling(dict(self.doc, burned_down=[])), REBASED_CEILING,
+            "a quarantine with no burn-down records must sit at the re-based "
+            "ceiling; if it does not, the derivation is not reading the data")
+        self.assertLess(
+            quarantine_ceiling(self.doc),
+            quarantine_ceiling(dict(self.doc, burned_down=[])),
+            "burn-down records exist but the ceiling did not fall")
 
         # A tranche that claims one step more than its admissions justify is
         # the same defect wearing a different hat, and must also be refused.
@@ -493,6 +562,134 @@ class TestQuarantineRatchet(unittest.TestCase):
               f"{len(occurrences)} suppressed occurrences, "
               f"{len(listed - fired)} silent; {claims} claims, "
               f"{unsourced} unsourced")
+
+    def test_every_burned_down_entry_is_really_gone_from_its_page(self):
+        """A burn-down lowers the ceiling, so it has to be true.
+
+        Each record states the measured cause that made the entry removable.
+        Re-measured here against the page as it stands, not against the record:
+        a disposition that stops reproducing is a ceiling lowered on a false
+        premise, and the ratchet would be protecting nothing.
+        """
+        records = burned_down_records(self.doc)
+        self.assertTrue(
+            records,
+            "no burn-down records; if the backlog has genuinely never shrunk, "
+            "say so, but do not let this check pass by having nothing to check")
+        listed = {(e["file"], ca._normalise_claim(e["claim"]))
+                  for e in self.doc["entries"]}
+        for rec in records:
+            for field in ("file", "claim", "disposition", "silent_because",
+                          "measured_at", "note"):
+                self.assertIn(field, rec, f"burn-down record missing {field}")
+            self.assertIn(rec["disposition"],
+                          ("verified-with-source", "corrected", "removed"),
+                          f"unknown disposition {rec['disposition']!r}")
+            key = (rec["file"], ca._normalise_claim(rec["claim"]))
+            self.assertNotIn(
+                key, listed,
+                f"{key} is recorded as burned down but is still in `entries`; "
+                f"one of the two records is wrong")
+            if rec["silent_because"] == ql.TEXT_ABSENT:
+                raw = (REPO / rec["file"]).read_text(encoding="utf-8",
+                                                     errors="replace")
+                self.assertFalse(
+                    ql.claim_text_present(raw, rec["claim"]),
+                    f"{rec['file']} still contains {rec['claim']!r}, but the "
+                    f"burn-down record says the text is absent. The ceiling "
+                    f"was lowered on a premise that no longer holds.")
+        print(f"✓ {len(records)} burned-down entr(ies) re-measured, all gone")
+
+    def test_every_silent_entry_carries_a_measured_silent_because(self):
+        """The gap N23 left: silent-and-forgotten looks like silent-and-held.
+
+        The liveness test deliberately does not assert that every entry fires,
+        which is correct while a backlog exists. What was missing is that
+        nothing distinguished an entry awaiting a disposition from one that had
+        quietly stopped protecting anything. Fifteen went silent and nothing
+        noticed.
+
+        This asserts a FACT, not a disposition: every silent entry records why
+        it is silent, the recorded reason still reproduces against the pages as
+        they stand, and a live entry records nothing. What to do with a silent
+        entry stays the owner's.
+
+        MEASURED IN PLACE by `scripts/quarantine_liveness.py`, which runs the
+        real gate with one thing toggled at a time and never forks `scan_file`.
+        """
+        measured = ql.measure(self.doc)
+        by_key = {(s["file"], s["claim"]): s for s in measured["silent"]}
+        live_keys = set(measured["live"])
+        self.assertTrue(by_key, "nothing is silent; this check has no subject")
+
+        for e in self.doc["entries"]:
+            key = (e["file"], ca._normalise_claim(e["claim"]))
+            if key in live_keys:
+                self.assertNotIn(
+                    "silent_because", e,
+                    f"{key} suppresses something but is annotated as silent. "
+                    f"A live entry with a recorded silence reason reads as "
+                    f"burnable and is not.")
+                continue
+            self.assertIn(
+                key, by_key,
+                f"{key} is neither live nor silent, which the measurement "
+                f"cannot produce; the entry list and the measurement disagree")
+            self.assertIn(
+                "silent_because", e,
+                f"{key} suppresses nothing and does not say why. An entry "
+                f"that has gone silent unrecorded is indistinguishable from "
+                f"one held pending a disposition, which is exactly how "
+                f"fifteen entries were forgotten.")
+            self.assertEqual(
+                e["silent_because"], by_key[key]["cause"],
+                f"{key} records silent_because={e['silent_because']!r} but a "
+                f"fresh measurement says {by_key[key]['cause']!r}. The page "
+                f"moved and the record did not.")
+            self.assertEqual(
+                e.get("also_blocked_by", []), by_key[key]["also_blocked_by"],
+                f"{key} records also_blocked_by="
+                f"{e.get('also_blocked_by', [])!r} but a fresh measurement "
+                f"says {by_key[key]['also_blocked_by']!r}")
+            self.assertIn(e["silent_because"], ql.SILENT_CAUSES,
+                          f"{key} records an unknown cause")
+        print(f"✓ {len(by_key)} silent entr(ies), each carrying a cause that "
+              f"re-measures; {len(live_keys)} live, none annotated")
+
+    def test_every_cause_in_the_taxonomy_can_actually_be_produced(self):
+        """No unreachable branch in the classifier.
+
+        Only three of the six causes occur in the data today, so three of the
+        classifier's branches would otherwise never execute and could be wrong
+        without anything saying so. Driven on the REAL `cause_of` against real
+        files, with only the pass results synthesised, so what is exercised is
+        the decision procedure and not a copy of it.
+        """
+        present = ("site/index.html", "13 frameworks")     # on the page
+        blanked = ("site/index.html", "50%")               # inside a CSS fence
+        absent = ("site/index.html", "99999 widgets")      # not on the page
+
+        def passes(**fired):
+            return {name: {"fired": fired.get(name, set())}
+                    for name in ("shipped", "no_allowlist",
+                                 "forced_unsourced", "allowlist_only")}
+
+        cases = [
+            (present, passes(shipped={present}), ql.LIVE),
+            (absent, passes(), ql.TEXT_ABSENT),
+            (blanked, passes(), ql.BLANKED),
+            (present, passes(no_allowlist={present}), ql.ALLOWLIST_PREEMPTED),
+            (present, passes(forced_unsourced={present}), ql.PARAGRAPH_SOURCED),
+            (present, passes(), ql.NOT_A_CLAIM),
+        ]
+        for pair, p, expected in cases:
+            self.assertEqual(ql.cause_of(pair, p), expected, (pair, expected))
+        produced = {expected for _, _, expected in cases}
+        self.assertEqual(produced - {ql.LIVE}, set(ql.SILENT_CAUSES),
+                         "the taxonomy and this control disagree about which "
+                         "causes exist")
+        print(f"✓ all {len(cases)} causes reachable, driven on the real "
+              f"classifier")
 
     def test_quarantine_actually_suppresses_only_listed_claims(self):
         """Control: an unlisted claim in a quarantined file still fires."""

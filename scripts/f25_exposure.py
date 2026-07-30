@@ -95,9 +95,20 @@ paragraph directly, which counted matches the gate exempts and overstated the
 number. It was deleted rather than corrected: the gate is the instrument, so
 the gate is what gets run twice.
 
+PER-FINDING ENUMERATION
+-----------------------
+The counts say how much provenance rests on an ordinary English word. They do
+not say WHICH claims, and for the 26 findings the arm holds green on the live
+site that is the question a reader has. `--enumerate` prints file, line, claim
+text and the citation word that sourced each, produced by the same predicate
+that produces the counts, joined to its paragraph on exact coordinates. Built
+into this module rather than as a throwaway script for the reason this module
+exists at all: a figure whose apparatus is gone is not a decision input.
+
 USAGE
   python3 scripts/f25_exposure.py                    # every corpus, both units
   python3 scripts/f25_exposure.py --corpus published
+  python3 scripts/f25_exposure.py --corpus site --enumerate
   python3 scripts/f25_exposure.py --json
   python3 scripts/f25_exposure.py --recover          # can 22/46 or 29/53 be
                                                      # reproduced by any of
@@ -107,7 +118,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import subprocess
 import sys
 from pathlib import Path
@@ -116,6 +126,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import claim_auditor as ca              # noqa: E402
 from merge_blockers import (             # noqa: E402
+    ARM_OFF as NEVER,
     TotalMismatch,
     is_published_surface,
     reconcile,
@@ -129,9 +140,12 @@ RECORDED_FIGURES = {
     "29 / 53": (29, 53),
 }
 
-# A pattern that cannot match. Used to switch the citation-word arm off for
-# pass 2 without editing claim_auditor.py.
-NEVER = re.compile(r"(?!x)x")
+# `NEVER` is `merge_blockers.ARM_OFF`, imported above rather than redefined: a
+# pattern that cannot match, used to switch the citation-word arm off without
+# editing claim_auditor.py. Both this module and `merge_blockers` switch the
+# same arm off, and two copies of an off-switch drift. A drifted off-switch
+# reports LESS exposure, which reads as good news, so it is the copy that would
+# not get caught.
 
 MANIFEST_PATH = REPO_ROOT / "data" / "published_count_manifest.json"
 
@@ -287,8 +301,17 @@ def scan_paragraphs(paths: list[str]) -> dict:
     }
 
 
-def _findings(paths: list[str]) -> set[tuple[str, int, str, str, int]]:
-    """Findings the REAL gate reports over `paths`, one key per OCCURRENCE.
+class UnjoinedFinding(RuntimeError):
+    """A revealed finding did not join to a citation-word paragraph.
+
+    Not a total mismatch: the arithmetic is fine and the join is broken, which
+    means the two passes disagree about where a paragraph starts. Separated so
+    the message says which of the two went wrong.
+    """
+
+
+def _findings(paths: list[str]) -> list[dict]:
+    """Findings the REAL gate reports over `paths`, one record per OCCURRENCE.
 
     `scan_file` is the gate. Calling it is the only way to count claim
     occurrences the way the gate counts them, because every exemption that
@@ -306,9 +329,14 @@ def _findings(paths: list[str]) -> set[tuple[str, int, str, str, int]]:
     disagrees with the instrument by six is exactly what this programme keeps
     paying for. Appending an occurrence index makes the set size equal the list
     length while keeping the set difference well defined.
+
+    Records rather than bare keys, because a count with no itemisation behind it
+    is the defect that made owner decision 3 unanswerable for five sessions.
+    The paragraph coordinates travel with each record so the enumeration can be
+    joined back to the paragraph that sourced it without re-deriving anything.
     """
     allow = ca.load_allowlist()
-    out: set[tuple[str, int, str, str, int]] = set()
+    out: list[dict] = []
     seen: dict[tuple[str, int, str, str], int] = {}
     for rel in paths:
         report = ca.scan_file(REPO_ROOT / rel, allow)
@@ -316,8 +344,21 @@ def _findings(paths: list[str]) -> set[tuple[str, int, str, str, int]]:
             base = (report.path, f.claim.line, f.claim.kind, f.claim.snippet)
             ordinal = seen.get(base, 0)
             seen[base] = ordinal + 1
-            out.add((*base, ordinal))
+            out.append({
+                "file": report.path,
+                "line": f.claim.line,
+                "kind": f.claim.kind,
+                "snippet": f.claim.snippet,
+                "occurrence": ordinal,
+                "paragraph_start": f.claim.paragraph_start,
+                "paragraph_end": f.claim.paragraph_end,
+            })
     return out
+
+
+def finding_key(f: dict) -> tuple[str, int, str, str, int]:
+    """The identity of one finding OCCURRENCE. See `_findings`."""
+    return (f["file"], f["line"], f["kind"], f["snippet"], f["occurrence"])
 
 
 def gate_delta(paths: list[str]) -> dict:
@@ -338,14 +379,72 @@ def gate_delta(paths: list[str]) -> dict:
         after = _findings(paths)
     finally:
         ca.CITATION_WORDS = real_words
-    revealed = sorted(after - before)
-    lost = sorted(before - after)
+    before_keys = {finding_key(f) for f in before}
+    after_by_key = {finding_key(f): f for f in after}
+    revealed = [after_by_key[k] for k in sorted(set(after_by_key) - before_keys)]
+    lost = sorted(before_keys - set(after_by_key))
     return {
         "findings_now": len(before),
         "findings_with_arm_off": len(after),
         "revealed": revealed,
-        "no_longer_reported": lost,
+        "no_longer_reported": [list(k) for k in lost],
     }
+
+
+def enumerate_revealed(result: dict, delta: dict) -> list[dict]:
+    """One record per revealed finding: file, line, claim text, citation word.
+
+    WHY THIS EXISTS. The counts alone turned F25 into an apparatus finding: 26
+    findings on the live site were suppressed by an ordinary English word and
+    nobody could say WHICH claims they were without building a throwaway
+    script. A figure whose apparatus is gone is the defect that made owner
+    decision 3 unanswerable for five sessions, so the enumeration is produced by
+    the SAME predicate that produces the counts and is re-derivable by a
+    committed command.
+
+    THE JOIN IS ON EXACT PARAGRAPH COORDINATES, never on containment. Both
+    sides come from `ca.split_paragraphs(ca.strip_noise(...))` over the same
+    file at the same code state, and `Claim` carries the paragraph it was found
+    in, so `(file, paragraph_start, paragraph_end)` identifies the same
+    paragraph on both sides or nothing does.
+
+    EVERY revealed finding must join. Switching the citation-word arm off can
+    only change the verdict of a paragraph whose winning reason WAS
+    `citation-word`, because the arms before it are untouched and the arms after
+    it are only ever reached more often; `scan_paragraphs` records every such
+    paragraph. A revealed finding with no matching row means the two passes
+    disagree about what a paragraph is, and the enumeration must not print.
+    """
+    rows = {(r["file"], r["paragraph_start"], r["paragraph_end"]): r
+            for r in result["rows"]}
+    out: list[dict] = []
+    unjoined: list[tuple] = []
+    for f in delta["revealed"]:
+        row = rows.get((f["file"], f["paragraph_start"], f["paragraph_end"]))
+        if row is None:
+            unjoined.append(finding_key(f))
+            continue
+        out.append({**f,
+                    "citation_words": row["words"],
+                    "exposed": row["exposed"],
+                    "otherwise_sourced_by": row["otherwise_sourced_by"]})
+    if unjoined:
+        raise UnjoinedFinding(
+            f"{len(unjoined)} of {len(delta['revealed'])} revealed finding(s) "
+            f"do not sit in any paragraph this run recorded as sourced by the "
+            f"citation-word arm: {unjoined}. The two passes disagree about "
+            f"paragraph boundaries, so neither the enumeration nor the counts "
+            f"may be published.")
+    # Reconciled against the DIFFERENCE OF THE TWO GATE TOTALS, not against
+    # `len(delta["revealed"])`. The latter is the same object this list was
+    # built from, so checking against it could never fail and would be a blank
+    # gate. The two totals are counted independently of the set difference, so
+    # this fires if the toggle lost a finding as well as if the join dropped
+    # one.
+    reconcile("revealed findings, enumerated one per line",
+              delta["findings_with_arm_off"] - delta["findings_now"],
+              [(f["file"], 1) for f in out])
+    return out
 
 
 def totals(result: dict, delta: dict) -> dict:
@@ -360,9 +459,9 @@ def totals(result: dict, delta: dict) -> dict:
     reconcile("citation-word paragraphs, by verdict", len(rows),
               [("exposed", len(exposed)), ("masked", len(masked))])
 
-    revealed_by_file = sorted({r[0] for r in delta["revealed"]})
+    revealed_by_file = sorted({r["file"] for r in delta["revealed"]})
     reconcile("findings revealed with the arm off", len(delta["revealed"]),
-              [(f, sum(1 for r in delta["revealed"] if r[0] == f))
+              [(f, sum(1 for r in delta["revealed"] if r["file"] == f))
                for f in revealed_by_file])
     # Switching an arm OFF can only remove provenance, so the gate's finding
     # set can only grow. If anything disappeared, the toggle did something
@@ -394,7 +493,8 @@ def measure(name: str) -> dict:
             "paragraphs": result["paragraphs"],
             "sourced_paragraphs": result["sourced_paragraphs"],
             "dropped_from_corpus": DROPPED.get(name, []),
-            **totals(result, delta), "rows": result["rows"]}
+            **totals(result, delta), "rows": result["rows"],
+            "revealed_findings": enumerate_revealed(result, delta)}
 
 
 def head_and_tree() -> tuple[str, str, str]:
@@ -428,6 +528,24 @@ def report(measurements: list[dict], out=print) -> None:
         out(f"  gate unit:      {c['findings_now']} finding(s) now, "
             f"{c['findings_with_arm_off']} with the arm off  ->  "
             f"{c['revealed']} REVEALED over {m['revealed_files']} file(s)")
+        out("")
+
+
+def report_enumeration(measurements: list[dict], out=print) -> None:
+    """Every revealed finding, one line each, with the word that sourced it.
+
+    The counts above say how much provenance rests on an ordinary English word.
+    This says which claims they are, which is what turns F25 from a statement
+    about an instrument into a statement about the product.
+    """
+    for m in measurements:
+        listed = m["revealed_findings"]
+        out(f"corpus {m['corpus']}: {len(listed)} revealed finding(s), "
+            f"enumerated")
+        for f in sorted(listed, key=lambda x: (x["file"], x["line"],
+                                               x["snippet"])):
+            out(f"  {f['file']}:{f['line']}  [{f['kind']}] {f['snippet']!r}  "
+                f"sourced by: {', '.join(f['citation_words'])}")
         out("")
 
 
@@ -484,12 +602,16 @@ def main() -> int:
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--recover", action="store_true",
                     help="test whether 22/46 or 29/53 reproduces")
+    ap.add_argument("--enumerate", dest="enumerate_findings",
+                    action="store_true",
+                    help="list every revealed finding with the citation word "
+                         "that sourced it")
     args = ap.parse_args()
 
     names = args.corpus or sorted(CORPORA)
     try:
         measurements = [measure(n) for n in names]
-    except TotalMismatch as exc:
+    except (TotalMismatch, UnjoinedFinding) as exc:
         print(f"f25-exposure: {exc}", file=sys.stderr)
         return 2
 
@@ -501,6 +623,8 @@ def main() -> int:
         return 0
 
     report(measurements)
+    if args.enumerate_findings:
+        report_enumeration(measurements)
     if args.recover:
         report_recovery(measurements)
     return 0

@@ -2,14 +2,14 @@
   "_status": "UNVERIFIED BACKLOG \u2014 QUARANTINED \u2014 NOT ENDORSED",
   "_what_this_is": "Claims that existed BEFORE the claim auditor could detect bare percentages. They are NOT approved, NOT verified, and NOT endorsed. Quarantine exists so the gate can go green for NEW claims immediately while this backlog is burned down.",
   "_keying": "Entries key on file + normalised claim text, never line numbers. Line-keyed entries rot on every page edit and would have broken the moment the coordinate fix landed.",
-  "_ratchet": "This list may only shrink. tests/test_claim_quarantine.py fails if the count rises. Burn-down records a per-item disposition: verified-with-source / corrected / removed.",
+  "_ratchet": "This list may only shrink. tests/test_claim_quarantine.py fails if the count rises above the ceiling. Burn-down records a per-item disposition (verified-with-source / corrected / removed) in `burned_down` below, and the ceiling falls by one for every record there, derived rather than typed, so burning an entry down cannot silently leave headroom for a new one to take its place.",
   "_priority_order": [
     "1. the 83.5% precision claim and anything else quoting precision",
     "2. anything sharing a surface with the published test count",
     "3. the remainder"
   ],
   "_created": "2026-07-28",
-  "_count": 44,
+  "_count": 29,
   "entries": [
     {
       "file": "site/about.html",
@@ -81,7 +81,11 @@
     },
     {
       "file": "site/guides/article-9-risk-management.html",
-      "claim": "29%"
+      "claim": "29%",
+      "silent_because": "paragraph-sourced",
+      "also_blocked_by": [
+        "allowlist"
+      ]
     },
     {
       "file": "site/guides/eu-ai-act-healthcare.html",
@@ -101,94 +105,178 @@
     },
     {
       "file": "site/index.html",
-      "claim": "0%"
+      "claim": "0%",
+      "silent_because": "paragraph-sourced",
+      "also_blocked_by": [
+        "allowlist"
+      ]
     },
     {
       "file": "site/index.html",
-      "claim": "20%"
-    },
-    {
-      "file": "site/index.html",
-      "claim": "30%"
-    },
-    {
-      "file": "site/index.html",
-      "claim": "40%"
-    },
-    {
-      "file": "site/index.html",
-      "claim": "50%"
-    },
-    {
-      "file": "site/index.html",
-      "claim": "60%"
-    },
-    {
-      "file": "site/index.html",
-      "claim": "80%"
+      "claim": "50%",
+      "silent_because": "blanked-by-strip-noise",
+      "also_blocked_by": []
     },
     {
       "file": "site/locales/de.html",
-      "claim": "0%"
+      "claim": "0%",
+      "silent_because": "paragraph-sourced",
+      "also_blocked_by": [
+        "allowlist"
+      ]
     },
     {
       "file": "site/locales/de.html",
-      "claim": "20%"
-    },
-    {
-      "file": "site/locales/de.html",
-      "claim": "30%"
-    },
-    {
-      "file": "site/locales/de.html",
-      "claim": "40%"
-    },
-    {
-      "file": "site/locales/de.html",
-      "claim": "50%"
-    },
-    {
-      "file": "site/locales/de.html",
-      "claim": "60%"
-    },
-    {
-      "file": "site/locales/de.html",
-      "claim": "80%"
+      "claim": "50%",
+      "silent_because": "blanked-by-strip-noise",
+      "also_blocked_by": []
     },
     {
       "file": "site/locales/pt-br.html",
-      "claim": "0%"
+      "claim": "0%",
+      "silent_because": "paragraph-sourced",
+      "also_blocked_by": [
+        "allowlist"
+      ]
     },
     {
       "file": "site/locales/pt-br.html",
-      "claim": "20%"
-    },
-    {
-      "file": "site/locales/pt-br.html",
-      "claim": "30%"
-    },
-    {
-      "file": "site/locales/pt-br.html",
-      "claim": "40%"
-    },
-    {
-      "file": "site/locales/pt-br.html",
-      "claim": "50%"
-    },
-    {
-      "file": "site/locales/pt-br.html",
-      "claim": "60%"
-    },
-    {
-      "file": "site/locales/pt-br.html",
-      "claim": "80%"
+      "claim": "50%",
+      "silent_because": "blanked-by-strip-noise",
+      "also_blocked_by": []
     },
     {
       "file": "site/sample-report.html",
-      "claim": "43%"
+      "claim": "43%",
+      "silent_because": "paragraph-sourced",
+      "also_blocked_by": []
     }
   ],
-  "_units": "entries are UNIQUE (file, normalised claim) pairs. The auditor's own 'claims' and 'unsourced' counters are occurrence-level; unsourced is a strict subset of claims. Quarantine is consulted only for a claim whose paragraph has no source AND which no allowlist pattern already matched, so the number of occurrences it actually suppresses is smaller than the number of entries and moves whenever a page is edited. CORRECTED TWICE, and the second correction is why this field no longer carries figures. 2026-07-28: it said 55, contradicting the 45 in _reconciliation below it in this same file. 2026-07-30: it still said '42 entries' and '370 claims, 0 unsourced, 45 suppressed occurrences over 42 unique pairs' while _count said 44, and a fresh in-place measurement over the same 56 tracked site pages gave 380 claims, 0 unsourced, 26 suppressed occurrences over 21 unique pairs. Every one of those figures had gone stale, in a field whose own text records a previous staleness correction. So the numbers are no longer copied into this field at all: the apparatus is named instead. tests/test_claim_quarantine.py::test_quarantine_liveness_is_recomputed_not_asserted recomputes them in place on every run over the pages this file names, prints both units, and asserts only what is invariant. The 56-page figures above are a dated one-off diagnosis, not the apparatus. See LEDGER.md N23 for the 44-versus-21 finding and its per-entry cause.",
+  "burned_down": [
+    {
+      "file": "site/index.html",
+      "claim": "20%",
+      "disposition": "removed",
+      "silent_because": "text-absent",
+      "measured_at": "f2de2ff",
+      "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    },
+    {
+      "file": "site/index.html",
+      "claim": "30%",
+      "disposition": "removed",
+      "silent_because": "text-absent",
+      "measured_at": "f2de2ff",
+      "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    },
+    {
+      "file": "site/index.html",
+      "claim": "40%",
+      "disposition": "removed",
+      "silent_because": "text-absent",
+      "measured_at": "f2de2ff",
+      "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    },
+    {
+      "file": "site/index.html",
+      "claim": "60%",
+      "disposition": "removed",
+      "silent_because": "text-absent",
+      "measured_at": "f2de2ff",
+      "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    },
+    {
+      "file": "site/index.html",
+      "claim": "80%",
+      "disposition": "removed",
+      "silent_because": "text-absent",
+      "measured_at": "f2de2ff",
+      "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    },
+    {
+      "file": "site/locales/de.html",
+      "claim": "20%",
+      "disposition": "removed",
+      "silent_because": "text-absent",
+      "measured_at": "f2de2ff",
+      "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    },
+    {
+      "file": "site/locales/de.html",
+      "claim": "30%",
+      "disposition": "removed",
+      "silent_because": "text-absent",
+      "measured_at": "f2de2ff",
+      "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    },
+    {
+      "file": "site/locales/de.html",
+      "claim": "40%",
+      "disposition": "removed",
+      "silent_because": "text-absent",
+      "measured_at": "f2de2ff",
+      "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    },
+    {
+      "file": "site/locales/de.html",
+      "claim": "60%",
+      "disposition": "removed",
+      "silent_because": "text-absent",
+      "measured_at": "f2de2ff",
+      "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    },
+    {
+      "file": "site/locales/de.html",
+      "claim": "80%",
+      "disposition": "removed",
+      "silent_because": "text-absent",
+      "measured_at": "f2de2ff",
+      "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    },
+    {
+      "file": "site/locales/pt-br.html",
+      "claim": "20%",
+      "disposition": "removed",
+      "silent_because": "text-absent",
+      "measured_at": "f2de2ff",
+      "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    },
+    {
+      "file": "site/locales/pt-br.html",
+      "claim": "30%",
+      "disposition": "removed",
+      "silent_because": "text-absent",
+      "measured_at": "f2de2ff",
+      "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    },
+    {
+      "file": "site/locales/pt-br.html",
+      "claim": "40%",
+      "disposition": "removed",
+      "silent_because": "text-absent",
+      "measured_at": "f2de2ff",
+      "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    },
+    {
+      "file": "site/locales/pt-br.html",
+      "claim": "60%",
+      "disposition": "removed",
+      "silent_because": "text-absent",
+      "measured_at": "f2de2ff",
+      "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    },
+    {
+      "file": "site/locales/pt-br.html",
+      "claim": "80%",
+      "disposition": "removed",
+      "silent_because": "text-absent",
+      "measured_at": "f2de2ff",
+      "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    }
+  ],
+  "_burn_down": "PROTOCOL FOR BASE ENTRIES. To burn one down, remove it from `entries` and add a record here carrying `file`, `claim`, `disposition`, `silent_because` and `measured_at`. The ceiling in tests/test_claim_quarantine.py is QUARANTINE_BASE_CEILING minus the length of this list plus the live sensitivity admissions, so it falls automatically and nothing has to be edited by hand. tests/test_claim_quarantine.py re-measures every record here and fails if a burned-down claim turns out still to be on its page. ADMISSIONS BURN DOWN ELSEWHERE: an entry admitted under _sensitivity_admissions carries its own `burned_down` object inside its tranche and must NOT be listed here, because it already lowers the ceiling through the live-admission count and listing it twice would lower the ceiling twice. `measured_at` is the commit the silence was measured at; the instrument, scripts/claim_auditor.py, was unmodified at that commit. It is provenance, not the guarantee: the guarantee is that the test re-measures on every run. PRIORITY ORDER, AND WHY IT WAS NOT FOLLOWED. _priority_order puts the 83.5% precision claim first and 'the remainder' third, and the fifteen entries burned down on 2026-07-30 are in the third group. The owner directed this burn-down explicitly on the ground that an entry naming text which is not on the page suppresses nothing, so there is no per-item judgement to make and the priority order does not bear on it. Recorded here rather than left to be inferred, because LEDGER.md N23 had declined the same burn-down one session earlier for exactly that reason.",
+  "_silence": "Every entry that suppresses nothing carries `silent_because`, the blocker the gate reaches FIRST, and `also_blocked_by`, any blocker standing behind it. Both are measured by scripts/quarantine_liveness.py, which runs the REAL gate over the pages this file names with one thing toggled at a time, and both are re-measured by tests/test_claim_quarantine.py on every run; a recorded cause that stops reproducing fails the suite. WHY TWO FIELDS: LEDGER.md N23 recorded four entries as silent because an allowlist pattern matched their paragraph first. Measured, those paragraphs are both sourced AND allowlist-matched, and scan_file skips a sourced paragraph BEFORE it consults the allowlist, so the operative cause is the source. Both statements about the data were true and the attribution was not. THIS IS A STATEMENT OF FACT, NOT A DISPOSITION. What to do with a silent entry remains the owner's decision and nothing here pre-empts it.",
+  "_units": "entries are UNIQUE (file, normalised claim) pairs. The auditor's own 'claims' and 'unsourced' counters are occurrence-level; unsourced is a strict subset of claims. Quarantine is consulted only for a claim whose paragraph has no source AND which no allowlist pattern already matched, so the number of occurrences it actually suppresses is smaller than the number of entries and moves whenever a page is edited. CORRECTED TWICE, and the second correction is why this field no longer carries figures. 2026-07-28: it said 55, contradicting the 45 in _reconciliation below it in this same file. 2026-07-30: it still said '42 entries' and '370 claims, 0 unsourced, 45 suppressed occurrences over 42 unique pairs' while _count said 44, and a fresh in-place measurement over the same 56 tracked site pages gave 380 claims, 0 unsourced, 26 suppressed occurrences over 21 unique pairs. Every one of those figures had gone stale, in a field whose own text records a previous staleness correction. So the numbers are no longer copied into this field at all: the apparatus is named instead. tests/test_claim_quarantine.py::test_quarantine_liveness_is_recomputed_not_asserted recomputes them in place on every run over the pages this file names, prints both units, and asserts only what is invariant. The 56-page figures above are a dated one-off diagnosis, not the apparatus. 2026-07-30, LATER THE SAME DAY: the fifteen entries whose text is gone from the page were burned down, so the entry count is 29 and the 44-versus-21 framing above belongs to a state this file is no longer in. See LEDGER.md N31 for the burn-down and N32 for the per-entry cause, which does not reproduce as N23 recorded it.",
   "_reconciliation": "HISTORICAL, measured 2026-07-28 and not re-measured since: this records four successive instrument states from that day's work, not the state of the repository now. For the current figures run tests/test_claim_quarantine.py, which recomputes them. Measured in place over 56 site pages, occurrence-level: S1 pre-fix 182 claims/0 unsourced; S2 +percent 411/61; S3 +CSS fence 370/45; S4 +quarantine 370/0. unsourced is a subset of claims at every stage. Earlier figures of 185 and 168 were artefacts of running patched copies from a scratchpad directory, which moved REPO_ROOT and broke file-reference sourcing.",
   "_sensitivity_admissions": {
     "_why_this_block_exists": "The ratchet says the quarantine may only shrink, and that rule is what stops an entry being added instead of a claim being sourced. But a repair that makes the auditor MORE sensitive uncovers claims that were always there and were never visible. Those are backlog, not new claims, and refusing to record them would leave the gate red for pre-existing text or push someone to weaken the repair. So a rise is permitted ONLY here, ONLY with the finding that caused it named, and ONLY listing the exact entries admitted. Everything not listed here is still forbidden from being added.",
@@ -217,7 +305,7 @@
           }
         ],
         "disposition_note": "Both posts DO disclose these figures with scan version and date in their own methodology sections, so the numbers are reproducible; what is missing is a source in the <meta> paragraph itself, and a 155-character SEO description cannot carry a citation. Burn-down options are to remove the figure from the description or to drop the description to a qualitative line. Quarantine is the holding position, not the answer.",
-        "_burn_down_protocol": "To burn one of these down, remove it from `entries` AND add a `burned_down` object to its admission here, carrying `disposition` (one of verified-with-source, corrected, removed), `commit`, and `note`. The ceiling then falls automatically, because it is derived from the count of admissions that are still live. Lower QUARANTINE_ADMITTED in tests/test_claim_quarantine.py in the same commit."
+        "_burn_down_protocol": "To burn one of these down, remove it from `entries` AND add a `burned_down` object to its admission here, carrying `disposition` (one of verified-with-source, corrected, removed), `commit`, and `note`. The ceiling then falls automatically, because it is derived from the count of admissions that are still live. Lower QUARANTINE_ADMITTED in tests/test_claim_quarantine.py in the same commit. THIS PROTOCOL COVERS ADMISSIONS ONLY. A base entry burns down through the top-level `burned_down` list and `_burn_down` protocol, which lowers the ceiling without any constant being edited. Keeping them separate is deliberate: an admission that appeared in both would lower the ceiling twice for one entry. See LEDGER.md N31."
       }
     ]
   }
