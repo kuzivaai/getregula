@@ -209,6 +209,17 @@ gate that is not one of the six fast gates is not thereby a gate that passes.
 | **F30 now has a third measured instance.** The allowlist exempts the whole paragraph, and `site/index.html`'s `0%` quarantine entry is held silent by a paragraph whose only citation word sits inside an HTML attribute. | `python3 scripts/f25_exposure.py --corpus site --shape` | **18 of 105 citation-word paragraphs on the site corpus are sourced ONLY from inside an HTML attribute**, at `9e6b6de`. See N35. rc=0: a measurement, not a gate. |
 | **`main`'s published-surface debt is larger than the gate can see.** | `python3 scripts/merge_blockers.py --main-only --arm-delta` | **168 with the citation-word arm on, 238 with it off, 70 revealed, 0 lost**, at `main` `6daacd2`, tree `b95876d`, clean detached worktree, HEAD's auditor unmodified at `13ffc00`. rc=0: this is a measurement, not a gate. See N29 and section 7. |
 
+**What the 2026-07-30 apparatus session added to the blocker, named.** Produced
+by `python3 scripts/claim_diff.py --blocker-delta 9e6b6de 4e1a33f`, whose
+apparatus is `scripts/claim_diff.py`: **3 findings, all in
+`docs/adr/0002-the-seventy-percent-claim.md`**, at lines 111 (`the only`), 121
+(`83.5%`) and 126 (`70%`). The code and the count cascade added **0**, measured
+separately as `--blocker-delta 9e6b6de fc27823`. All three are the ADR
+discussing figures it is about, which is the self-referential loop this file
+already records for `docs/adr/`: writing the analysis of a claim adds claims to
+the corpus that measures claims. Recorded rather than engineered away, per rule
+24 in `docs/improvement/LEDGER.md` above.
+
 **On the two figures 273.** The most recent prior record measured 273 at
 `969f3a8` (N18). `e8b5986` added one line to this file, which is inside the
 measured corpus, so the number was expected to move and **it did not**. The
