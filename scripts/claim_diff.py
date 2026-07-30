@@ -151,15 +151,26 @@ def _assert_repo_root(module, expected: Path) -> None:
         )
 
 
-def extract_claims(module, root: Path, paths: list[str]) -> set[tuple[str, str]]:
-    """Every claim the detector finds in `paths` under `root`.
+def extract_claims(module, root: Path,
+                   paths: list[str]) -> Counter[tuple[str, str]]:
+    """Every claim the detector finds in `paths` under `root`, WITH COUNTS.
 
     Claims, not findings. The question this module answers is whether the same
     CLAIM existed at the base, regardless of whether it was sourced there.
     Sourcing is the gate's business; existence is identity's business.
+
+    A MULTISET, not a set, and the difference is a defect this returned before
+    2026-07-30. `claim_key` carries no line and no ordinal, so a set collapses
+    every occurrence of one claim string in one file to a single element. Ask a
+    set "was this claim at the base" and it answers yes when the base had it
+    ONCE and the head has it TWICE, so the occurrence the branch actually
+    introduced is classified as inherited and disappears from the introduced
+    bucket. Counting instead of collapsing is the whole fix; see
+    `classify_findings` for what is done with the counts, and for the one thing
+    the counts still cannot decide.
     """
     _assert_repo_root(module, root)
-    keys: set[tuple[str, str]] = set()
+    keys: Counter[tuple[str, str]] = Counter()
     for rel in paths:
         fp = root / rel
         if not fp.exists() or fp.suffix.lower() not in module.SCANNED_SUFFIXES:
@@ -187,7 +198,7 @@ def extract_claims(module, root: Path, paths: list[str]) -> set[tuple[str, str]]
                     return
                 if kind == "attributed" and in_tag(m.start()):
                     return
-                keys.add(claim_key(rel, snip[:120]))
+                keys[claim_key(rel, snip[:120])] += 1
 
             for m in module.NUMERIC_CLAIM.finditer(para):
                 add("numeric", m)
@@ -201,16 +212,64 @@ def extract_claims(module, root: Path, paths: list[str]) -> set[tuple[str, str]]
 
 
 def classify_findings(findings: list[dict],
-                      base_keys: set[tuple[str, str]]) -> list[dict]:
+                      base_counts: Counter) -> list[dict]:
     """Mark each finding present-at-base or introduced, and bucket it.
 
-    The whole decision of this module, in two lines, deliberately kept as a
-    pure function of (findings, base_keys) so a test can drive it without a
-    repository. Mutates in place and returns the same list for convenience.
+    The whole decision of this module, kept as a pure function of
+    (findings, base_counts) so a test can drive it without a repository.
+    Mutates in place and returns the same list for convenience.
+
+    A MULTISET COMPARISON, and it used to be a set membership test. `claim_key`
+    is `(file, normalised snippet)`: no line, no ordinal. Asking a set "is this
+    key present at base" gives every occurrence of one claim string in one file
+    the same answer, so a base that had the claim ONCE marks a head that has it
+    TWICE as entirely inherited and the introduced occurrence vanishes. On the
+    real tree at `da728db` the under-count was 0, because all 49 duplicated
+    head keys sit in files the base does not have the claim in at all; the
+    defect was LATENT, not active, and it is fixed on the strength of being
+    reachable rather than on the strength of having bitten. This is the same
+    root cause as N37, where a key that dropped the line produced a correct
+    total of 70 and a wrong attribution.
+
+    WHAT THE COUNTS STILL CANNOT DECIDE, stated rather than papered over. If a
+    file had the claim twice at base and has it three times at head, exactly
+    one occurrence is new and WHICH ONE cannot be decided from counts. Deciding
+    it needs diff hunks, which `blocker_delta` reaches the same conclusion
+    about and handles by refusing to pick. A per-finding boolean has to be
+    assigned to something, so the surplus is assigned to the LAST occurrences
+    in document order, and that is a DECLARED TIE-BREAK, not a measurement.
+    Every finding in such a group carries `present_at_base_ambiguous: True` so
+    a reader can tell a convention from a fact. Where the group is
+    unambiguous, base 0 or head <= base, the flag is False.
     """
+    if isinstance(base_counts, (set, frozenset)):
+        # Refuse rather than coerce. Treating a set as "one of each" would
+        # silently under-count the base side wherever it held a claim twice,
+        # which turns this fix into a different wrong answer. A caller holding
+        # a set has not re-derived it as a multiset and needs to know.
+        raise TypeError(
+            "classify_findings needs a multiset of base claim counts, not a "
+            "set: a set collapses repeated occurrences of one claim in one "
+            "file and is exactly the defect this signature was changed to "
+            "prevent. Build it with extract_claims(), which returns a Counter."
+        )
+
+    by_key: dict[tuple[str, str], list[dict]] = {}
     for f in findings:
         f["bucket"] = bucket_of(f["file"])
-        f["present_at_base"] = claim_key(f["file"], f["snippet"]) in base_keys
+        by_key.setdefault(claim_key(f["file"], f["snippet"]), []).append(f)
+
+    for key, group in by_key.items():
+        at_base = base_counts[key]
+        introduced = max(0, len(group) - at_base)
+        # Document order, so the tie-break is stable and reproducible rather
+        # than dependent on dict iteration or on which pass produced the list.
+        group.sort(key=lambda f: (f.get("line", 0), f.get("occurrence", 0)))
+        ambiguous = at_base > 0 and introduced > 0
+        for position, finding in enumerate(group):
+            # The surplus is the TAIL of the group; see the docstring.
+            finding["present_at_base"] = position < len(group) - introduced
+            finding["present_at_base_ambiguous"] = ambiguous
     return findings
 
 

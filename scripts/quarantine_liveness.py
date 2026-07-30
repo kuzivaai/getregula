@@ -119,7 +119,22 @@ def load_doc() -> dict:
 
 
 def entry_pairs(doc: dict) -> list[tuple[str, str]]:
-    """The quarantine's entries as the auditor keys them."""
+    """The quarantine's entries as the auditor keys them.
+
+    WHY THIS MODULE CANNOT CARRY THE ORDINAL DEFECT, checked 2026-07-30 rather
+    than assumed. N37 is a comparison whose key is COARSER than the unit it
+    resolves to: a finding key without a line, differenced to pick out one
+    occurrence among several. Here the key and the unit are the SAME
+    granularity. A quarantine entry is `(file, normalised claim)` and carries
+    no line, so this is what the thing being classified actually is, not a
+    lossy identifier for something finer. `scan_pass` builds its `fired` set on
+    the identical key, and `cause_of` only ever asks whether an entry fired in
+    a given pass. There is no occurrence to attribute to, so there is nothing
+    to misattribute. Cardinality is not lost either: `scan_pass` keeps
+    `occurrences` as a LIST beside the set, so anything needing multiplicity
+    reads that rather than the set. Do not "improve" this by adding a line to
+    the key; it would stop matching the quarantine file's own identity.
+    """
     return [(e["file"], ca._normalise_claim(e["claim"]))
             for e in doc["entries"]]
 

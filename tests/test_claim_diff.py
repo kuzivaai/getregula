@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import subprocess
 import sys
+from collections import Counter
 from pathlib import Path
 
 import pytest
@@ -122,7 +123,7 @@ def test_control_a_broken_classifier_is_caught():
     If this passes silently, the test above proves nothing, because it would
     also pass against a classifier that always answered the same way.
     """
-    base_keys = {claim_diff.claim_key("docs/claims.md", "83.5%")}
+    base_keys = Counter({claim_diff.claim_key("docs/claims.md", "83.5%"): 1})
     findings = [
         {"file": "docs/claims.md", "snippet": "83.5%"},
         {"file": "docs/claims.md", "snippet": "2,452 tests"},
@@ -168,10 +169,147 @@ def test_editing_a_claim_makes_it_read_as_introduced():
     later session decides otherwise, this test is the thing to change, and the
     ADR is the thing to supersede.
     """
-    base_keys = {claim_diff.claim_key("a.md", "83.5%")}
+    base_keys = Counter({claim_diff.claim_key("a.md", "83.5%"): 1})
     findings = [{"file": "a.md", "snippet": "91%"}]
     claim_diff.classify_findings(findings, base_keys)
     assert findings[0]["present_at_base"] is False
+
+
+# --------------------------------------------------------------------------
+# The N37 ordinal class, audited across the programme on 2026-07-30.
+#
+# N37 was a comparison whose KEY was coarser than the UNIT it resolved to:
+# a finding key with the line dropped, differenced to pick out one occurrence
+# among several, giving a correct total of 70 and a wrong attribution (the
+# difference resolved to line 213 while the finding revealed was at line 210).
+#
+# `classify_findings` carried the same root cause in a different shape. Its
+# key also drops the line, and it compared a SET, so multiplicity was lost
+# rather than position. These tests are the shape of the 210/213 case: two
+# occurrences of one claim string in one file, where the comparison must not
+# collapse them. A count-only check cannot catch this class, so every
+# assertion below is about attribution and about which occurrence carries it.
+# --------------------------------------------------------------------------
+
+def test_a_second_occurrence_of_a_base_claim_is_introduced_not_inherited():
+    """The defect, in the 210/213 shape. Set membership answered 0 introduced.
+
+    Base has the claim ONCE. Head has it TWICE. Exactly one occurrence is new.
+    A set says "the key is present at base" for both and the introduced
+    occurrence disappears from the bucket the merge gate reads.
+    """
+    base = Counter({claim_diff.claim_key("a.md", "43%"): 1})
+    findings = [
+        {"file": "a.md", "line": 210, "snippet": "43%", "occurrence": 1},
+        {"file": "a.md", "line": 213, "snippet": "43%", "occurrence": 2},
+    ]
+    claim_diff.classify_findings(findings, base)
+    introduced = [f for f in findings if not f["present_at_base"]]
+    assert len(introduced) == 1, [
+        (f["line"], f["present_at_base"]) for f in findings]
+    assert introduced[0]["line"] == 213, "the declared tie-break is the TAIL"
+    assert all(f["present_at_base_ambiguous"] for f in findings), (
+        "base>0 and head>base: which occurrence is new is undecidable from "
+        "counts and the record must say so")
+    print("✓ a second occurrence of a base claim reads as introduced")
+
+
+def test_the_surplus_is_the_tail_and_the_ambiguity_is_declared():
+    """Three at head against two at base: one new, and it is not guessed at."""
+    base = Counter({claim_diff.claim_key("a.md", "43%"): 2})
+    findings = [
+        {"file": "a.md", "line": 10, "snippet": "43%", "occurrence": 1},
+        {"file": "a.md", "line": 20, "snippet": "43%", "occurrence": 2},
+        {"file": "a.md", "line": 30, "snippet": "43%", "occurrence": 3},
+    ]
+    claim_diff.classify_findings(findings, base)
+    assert [f["present_at_base"] for f in findings] == [True, True, False]
+    assert all(f["present_at_base_ambiguous"] for f in findings)
+    print("✓ the surplus is the tail, and the tie-break is flagged, not hidden")
+
+
+def test_an_unambiguous_group_is_not_flagged_ambiguous():
+    """A flag that is always on carries no information. Both directions pinned."""
+    absent = Counter()
+    findings = [
+        {"file": "a.md", "line": 10, "snippet": "43%", "occurrence": 1},
+        {"file": "a.md", "line": 20, "snippet": "43%", "occurrence": 2},
+    ]
+    claim_diff.classify_findings(findings, absent)
+    assert [f["present_at_base"] for f in findings] == [False, False]
+    assert not any(f["present_at_base_ambiguous"] for f in findings), (
+        "base 0 means every occurrence is new; nothing is undecidable")
+
+    covered = Counter({claim_diff.claim_key("b.md", "43%"): 5})
+    more = [{"file": "b.md", "line": 10, "snippet": "43%", "occurrence": 1}]
+    claim_diff.classify_findings(more, covered)
+    assert more[0]["present_at_base"] is True
+    assert more[0]["present_at_base_ambiguous"] is False
+    print("✓ the ambiguity flag is off where nothing is ambiguous")
+
+
+def test_the_tie_break_is_document_order_not_list_order():
+    """Stable under reordering, so the answer does not depend on scan order."""
+    base = Counter({claim_diff.claim_key("a.md", "43%"): 1})
+    shuffled = [
+        {"file": "a.md", "line": 213, "snippet": "43%", "occurrence": 2},
+        {"file": "a.md", "line": 210, "snippet": "43%", "occurrence": 1},
+    ]
+    claim_diff.classify_findings(shuffled, base)
+    by_line = {f["line"]: f["present_at_base"] for f in shuffled}
+    assert by_line == {210: True, 213: False}, by_line
+    print("✓ the tie-break follows document order, not the input list order")
+
+
+def test_classify_findings_refuses_a_set_rather_than_coercing_it():
+    """A set is the defect. Coercing it would be a different wrong answer."""
+    with pytest.raises(TypeError) as exc:
+        claim_diff.classify_findings(
+            [{"file": "a.md", "line": 1, "snippet": "43%"}],
+            {claim_diff.claim_key("a.md", "43%")})
+    assert "multiset" in str(exc.value), exc.value
+    print("✓ a set is refused, with the reason, rather than silently accepted")
+
+
+def test_extract_claims_returns_a_multiset_that_counts_repeats(tmp_path):
+    """The base side must count, not collapse. Measured on a real scan."""
+    doc = tmp_path / "a.md"
+    doc.write_text(
+        "The figure is 43% here.\n\nAnd the figure is 43% again here.\n",
+        encoding="utf-8")
+
+    class _Shim:
+        pass
+    for name in ("SCANNED_SUFFIXES", "strip_noise", "split_paragraphs",
+                 "STRUCTURAL_REFS", "HTML_TAG", "NUMERIC_CLAIM",
+                 "CURRENCY_CLAIM", "SUPERLATIVE_CLAIM", "ATTRIBUTED_CLAIM",
+                 "is_exempt_number"):
+        setattr(_Shim, name, getattr(ca, name))
+    _Shim.REPO_ROOT = tmp_path
+    _Shim.__name__ = "shim"
+
+    counts = claim_diff.extract_claims(_Shim, tmp_path, ["a.md"])
+    assert isinstance(counts, Counter), type(counts)
+    key = claim_diff.claim_key("a.md", "43%")
+    assert counts[key] == 2, dict(counts)
+    print("✓ extract_claims counts repeated occurrences instead of collapsing")
+
+
+def test_gate_probe_keys_stay_split_by_question():
+    """The N37 fix itself, re-asserted here so this audit has one home.
+
+    `finding_key` is same-tree and MUST carry the line; `content_signature` is
+    cross-commit and MUST NOT carry any coordinate. Collapsing them back into
+    one key is what produced the 210-versus-213 misattribution.
+    """
+    import gate_probe as gp
+    a = {"file": "a.md", "line": 210, "kind": "numeric",
+         "snippet": "43%", "occurrence": 1}
+    b = dict(a, line=213, occurrence=2)
+    assert gp.finding_key(a) != gp.finding_key(b), "same-tree key lost the line"
+    assert gp.content_signature(a) == gp.content_signature(b), (
+        "cross-commit signature grew a coordinate and is now unstable")
+    print("✓ the two keys remain split by the question they answer")
 
 
 # --------------------------------------------------------------------------
