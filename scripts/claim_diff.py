@@ -49,9 +49,25 @@ tree being measured, and `_assert_repo_root` verifies it at runtime. Rule 1
 says do not fork the instrument; holding one instrument against two specimens
 is what rule 2 requires.
 
+WHAT DID A COMMIT ADD TO THE MERGE BLOCKER?
+-------------------------------------------
+`--blocker-delta A B` answers it. The blocker read 274 unsourced at `13ffc00`
+and 279 at `9e6b6de`, and nothing said which five findings appeared or why. A
+session that adds to the blocker without naming what it added is the accounting
+failure `docs/improvement/LEDGER.md` exists to prevent, and it could not be
+answered by a committed command until this existed.
+
+It scans `--diff-base main` inside a clean detached worktree of each commit and
+diffs the two finding sets. Findings, not claims: `--base` above asks whether a
+CLAIM existed at the base, which is a different question, and a claim that was
+present but sourced at A and unsourced at B is a new FINDING while being an old
+claim.
+
 USAGE
   python3 scripts/claim_diff.py --base main
   python3 scripts/claim_diff.py --base main --json
+  python3 scripts/claim_diff.py --blocker-delta 13ffc00 9e6b6de
+  python3 scripts/claim_diff.py --blocker-delta 13ffc00 9e6b6de --carry-instrument
 """
 from __future__ import annotations
 
@@ -62,13 +78,29 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from collections import Counter
+from contextlib import contextmanager
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
 import claim_auditor as ca  # noqa: E402
+from gate_probe import (  # noqa: E402,F401
+    TotalMismatch,
+    content_signature,
+    findings_over,
+    reconcile,
+)
 
 REPO_ROOT = ca.REPO_ROOT
+
+# What makes the gate's verdict, as opposed to what it reads. Copying these
+# into both worktrees holds the INSTRUMENT constant so the only variable is the
+# scanned content. Offered as an option rather than forced, because the honest
+# reproduction of "the blocker said 274 there and 279 here" runs each commit
+# with its own everything.
+BLOCKER_INSTRUMENT = ("scripts/claim_auditor.py", ".claim-quarantine.json",
+                      ".claim-allowlist")
 
 # Bucket predicate. Shared so that any figure of the form "N of M are the
 # programme's own working documents" is produced here rather than by hand.
@@ -264,11 +296,205 @@ def classify(base: str) -> dict:
     }
 
 
+# ---------------------------------------------------------------------------
+# What did a commit add to the merge blocker?
+# ---------------------------------------------------------------------------
+
+@contextmanager
+def commit_worktree(commit: str, carry: tuple[str, ...] = ()):
+    """A clean detached worktree of `commit`, optionally carrying files in.
+
+    `carry` names paths copied from THIS tree into the worktree after checkout.
+    With `BLOCKER_INSTRUMENT` that holds the detector, the quarantine and the
+    allowlist constant so the only variable left is the scanned content.
+    """
+    tmp = Path(tempfile.mkdtemp(prefix="blocker-delta-"))
+    wt = tmp / "wt"
+    try:
+        subprocess.run(["git", "worktree", "add", "--detach", str(wt), commit],
+                       cwd=REPO_ROOT, capture_output=True, text=True,
+                       check=True)
+        for rel in carry:
+            src = REPO_ROOT / rel
+            if src.exists():
+                (wt / rel).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(src, wt / rel)
+        yield wt
+    finally:
+        subprocess.run(["git", "worktree", "remove", "--force", str(wt)],
+                       cwd=REPO_ROOT, capture_output=True, text=True,
+                       check=False)
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def blocker_findings(commit: str, base: str = "main",
+                     carry: tuple[str, ...] = ()) -> dict:
+    """The findings `--diff-base <base>` reports at `commit`.
+
+    Run inside a detached worktree of that commit, so the corpus and the file
+    contents are that commit's, not this working tree's. `--diff-base` reads
+    WORKING TREE contents, so measuring a past commit from here would measure
+    the present.
+    """
+    with commit_worktree(commit, carry) as wt:
+        mod = load_base_module(wt)
+        _assert_repo_root(mod, wt)
+        corpus = [str(Path(p).relative_to(wt)) for p in mod.files_diff_base(base)]
+        # `files_diff_base` returns every changed path; `scan_file` silently
+        # skips the ones whose suffix it does not scan. Both numbers are
+        # reported because the auditor's own summary line says "scanned 59
+        # file(s)" and a report that only showed 159 here would look like a
+        # different corpus.
+        scanned = [p for p in corpus
+                   if Path(p).suffix.lower() in mod.SCANNED_SUFFIXES]
+        findings = findings_over(mod, wt, corpus)
+        sha = _git("rev-parse", commit, cwd=REPO_ROOT).strip()
+        tree = _git("rev-parse", f"{commit}^{{tree}}", cwd=REPO_ROOT).strip()
+    return {"commit": sha, "tree": tree, "corpus": len(corpus),
+            "scanned": len(scanned), "findings": findings}
+
+
+def blocker_delta(older: str, newer: str, base: str = "main",
+                  carry: tuple[str, ...] = ()) -> dict:
+    """Findings the merge blocker gained and lost between two commits.
+
+    A MULTISET DIFF on `gate_probe.content_signature`, which is
+    `(file, kind, normalised snippet)` and carries no coordinates. Lines move
+    between commits, so a line-keyed diff would report every finding below an
+    insertion as removed and re-added. An occurrence ordinal cannot rescue that
+    either: it is positionally unstable, and the measured instance of that
+    defect is recorded in `gate_probe`'s docstring.
+
+    ATTRIBUTION IS EXACT ONLY WHERE A SIGNATURE IS NEW. If a file already
+    contained the same claim text and now contains it once more, which
+    occurrence is the new one cannot be decided without reading diff hunks. Such
+    rows carry `ambiguous: True` and list every line the signature occupies at
+    the newer commit, rather than picking one and looking certain.
+    """
+    a = blocker_findings(older, base, carry)
+    b = blocker_findings(newer, base, carry)
+    a_counts = Counter(content_signature(f) for f in a["findings"])
+    b_counts = Counter(content_signature(f) for f in b["findings"])
+    b_lines: dict[tuple[str, str, str], list[int]] = {}
+    a_lines: dict[tuple[str, str, str], list[int]] = {}
+    for f in b["findings"]:
+        b_lines.setdefault(content_signature(f), []).append(f["line"])
+    for f in a["findings"]:
+        a_lines.setdefault(content_signature(f), []).append(f["line"])
+
+    def rows(gained: bool) -> list[dict]:
+        out = []
+        for sig in sorted(set(a_counts) | set(b_counts)):
+            move = b_counts[sig] - a_counts[sig]
+            if (move > 0) != gained or move == 0:
+                continue
+            file, kind, snippet = sig
+            lines = sorted(b_lines.get(sig, []) if gained
+                           else a_lines.get(sig, []))
+            out.append({
+                "file": file, "kind": kind, "snippet": snippet,
+                "count": abs(move),
+                "was": a_counts[sig], "now": b_counts[sig],
+                "lines": lines,
+                # Both sides, so an ambiguous row can be resolved by a reader
+                # against the diff rather than left as a bare warning.
+                "lines_older": sorted(a_lines.get(sig, [])),
+                "lines_newer": sorted(b_lines.get(sig, [])),
+                # Ambiguous when the signature already existed on the side it
+                # is being attributed against: the occurrences are identical
+                # text in one file and nothing here can tell them apart.
+                "ambiguous": (a_counts[sig] if gained else b_counts[sig]) > 0,
+            })
+        return out
+
+    added, removed = rows(True), rows(False)
+    return {
+        "older": a["commit"], "older_tree": a["tree"],
+        "older_total": len(a["findings"]), "older_corpus": a["corpus"],
+        "older_scanned": a["scanned"],
+        "newer": b["commit"], "newer_tree": b["tree"],
+        "newer_total": len(b["findings"]), "newer_corpus": b["corpus"],
+        "newer_scanned": b["scanned"],
+        "added": added, "removed": removed,
+        "added_occurrences": sum(r["count"] for r in added),
+        "removed_occurrences": sum(r["count"] for r in removed),
+        "net": len(b["findings"]) - len(a["findings"]),
+        "carried_instrument": list(carry),
+    }
+
+
+def _by_file(rows: list[dict]) -> list[tuple[str, int]]:
+    tally: Counter = Counter()
+    for r in rows:
+        tally[r["file"]] += r["count"]
+    return sorted(tally.items())
+
+
+def report_blocker_delta(r: dict, out=print) -> None:
+    """Print the delta. Every total reconciled against its own itemisation."""
+    by_file_added = _by_file(r["added"])
+    by_file_removed = _by_file(r["removed"])
+    reconcile("findings added to the blocker", r["added_occurrences"],
+              by_file_added)
+    reconcile("findings removed from the blocker", r["removed_occurrences"],
+              by_file_removed)
+    # The net move has to equal added minus removed, or one of the three counts
+    # is wrong. Stated as a reconciliation so it cannot be asserted in prose.
+    reconcile("net movement, as added minus removed", r["net"],
+              [("added", r["added_occurrences"]),
+               ("removed", -r["removed_occurrences"])])
+
+    out(f"older {r['older'][:7]}  tree {r['older_tree'][:7]}  "
+        f"{r['older_corpus']} changed path(s), {r['older_scanned']} scanned  "
+        f"{r['older_total']} finding(s)")
+    out(f"newer {r['newer'][:7]}  tree {r['newer_tree'][:7]}  "
+        f"{r['newer_corpus']} changed path(s), {r['newer_scanned']} scanned  "
+        f"{r['newer_total']} finding(s)")
+    out(f"instrument carried from this tree: "
+        f"{r['carried_instrument'] or 'none, each commit ran its own'}")
+    out("")
+    for sign, label, rows_, by_file in (
+            ("+", "added to", r["added"], by_file_added),
+            ("-", "removed from", r["removed"], by_file_removed)):
+        total = (r["added_occurrences"] if sign == "+"
+                 else r["removed_occurrences"])
+        out(f"findings {label} the blocker: {total}")
+        for name, n in by_file:
+            out(f"      {n:4d}  {name}")
+        for f in sorted(rows_, key=lambda x: (x["file"], x["lines"])):
+            where = ", ".join(str(n) for n in f["lines"])
+            note = (f"  AMBIGUOUS: was {f['was']}x at "
+                    f"{f['lines_older']}, now {f['now']}x at "
+                    f"{f['lines_newer']}; which occurrence moved cannot be "
+                    f"decided without reading diff hunks"
+                    if f["ambiguous"] else "")
+            out(f"  {sign} {f['file']}:{where}  [{f['kind']}] "
+                f"{f['snippet']!r}  x{f['count']}{note}")
+        out("")
+    out(f"net movement, as added minus removed: {r['net']}")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--base", default="main")
+    ap.add_argument("--blocker-delta", nargs=2, metavar=("OLDER", "NEWER"),
+                    help="findings the blocker gained and lost between two "
+                         "commits")
+    ap.add_argument("--carry-instrument", action="store_true",
+                    help="with --blocker-delta: copy this tree's auditor, "
+                         "quarantine and allowlist into both worktrees, so the "
+                         "only variable is the scanned content")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
+
+    if args.blocker_delta:
+        carry = BLOCKER_INSTRUMENT if args.carry_instrument else ()
+        r = blocker_delta(*args.blocker_delta, base=args.base, carry=carry)
+        if args.json:
+            print(json.dumps(r, indent=2))
+            return 0
+        report_blocker_delta(r)
+        return 0
 
     r = classify(args.base)
     if args.json:

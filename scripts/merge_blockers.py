@@ -74,7 +74,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import shutil
 import subprocess
 import sys
@@ -87,6 +86,23 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import claim_auditor as ca      # noqa: E402
 import claim_diff               # noqa: E402
+# The shared probe. `ARM_OFF`, `reconcile`, `TotalMismatch` and the
+# enumeration all used to live in this module, which put them out of reach of
+# `claim_diff` without an import cycle and led `f25_exposure` to hold a second
+# copy of the off-switch. They now live in a leaf module both sides import.
+# Re-exported here under their old names so every existing caller and test
+# keeps working; `scripts/gate_probe.py` is where they are defined.
+from gate_probe import (        # noqa: E402,F401
+    ARM_OFF,
+    TotalMismatch,
+    UnjoinedFinding,
+    arm_delta,
+    citation_word_rows,
+    enumerate_revealed,
+    finding_key,
+    findings_over,
+    reconcile,
+)
 
 REPO_ROOT = ca.REPO_ROOT
 
@@ -94,18 +110,6 @@ REPO_ROOT = ca.REPO_ROOT
 # agent configuration. Deliberately NOT claim_diff's reporting buckets; see
 # the module docstring for the error that distinction cost.
 WORKING_PREFIXES = ("docs/improvement/", ".claude/")
-
-# The off-switch for a source arm of `paragraph_has_source`: a pattern that
-# cannot match anything, substituted for the real one so the REAL function is
-# what gets measured rather than a fork of it.
-#
-# DEFINED ONCE, HERE. `scripts/f25_exposure.py` imports it rather than keeping
-# its own copy. Two copies of an off-switch drift, and a drifted off-switch
-# under-reports exposure, which reads as good news. The dependency runs this
-# way round because f25_exposure already imports `reconcile`,
-# `is_published_surface` and `TotalMismatch` from this module; the reverse
-# would be a cycle.
-ARM_OFF = re.compile(r"(?!x)x")
 
 
 def is_published_surface(path: str) -> bool:
@@ -135,28 +139,6 @@ def is_published_surface(path: str) -> bool:
 # audit is that nothing forced a printed total to agree with the breakdown
 # printed under it. Now every total goes through one door, and the itemisation
 # it is checked against is the same list the reader is shown.
-
-
-class TotalMismatch(RuntimeError):
-    """A reported total disagrees with the itemisation printed beneath it."""
-
-
-def reconcile(label: str, total: int,
-              items: list[tuple[str, int]]) -> list[tuple[str, int]]:
-    """Prove `items` account for `total`, then return them for printing.
-
-    The caller passes the SAME list it is about to print, so this cannot pass
-    while the reader is shown something else. A count of a set comes from the
-    predicate that enumerated it; this is the arithmetic half of that rule.
-    """
-    counted = sum(n for _, n in items)
-    if counted != total:
-        raise TotalMismatch(
-            f"{label}: reported total {total}, but its itemisation of "
-            f"{len(items)} entries sums to {counted} (difference "
-            f"{total - counted}). One of the two is wrong, and neither may be "
-            f"published until it is known which.")
-    return items
 
 
 def _tally(findings: list[dict], key) -> list[tuple[str, int]]:
@@ -340,38 +322,22 @@ def main_worktree():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def _published_paths(wt: Path) -> tuple[list[str], list[str]]:
+    """(every tracked md/html path in `wt`, the published-surface subset)."""
+    corpus = _git("ls-files", "*.md", "*.html", cwd=wt).split()
+    return corpus, [rel for rel in corpus if is_published_surface(rel)]
+
+
 def _scan_published(wt: Path, mod) -> tuple[list[str], list[dict]]:
     """(tracked md/html corpus, published-surface findings) inside `wt`.
 
-    THE OCCURRENCE ORDINAL IS NOT DECORATION. These records are compared as a
-    SET between two arm states, and (file, line, kind, snippet) is not unique:
-    a claim can repeat identically on one line. `scripts/f25_exposure.py`
-    reported 267 findings where the auditor's own list had 273 for exactly that
-    reason. The ordinal makes the key unique per occurrence so a set difference
-    cannot silently merge duplicates.
+    Delegates to `gate_probe.findings_over`, the same predicate
+    `scripts/f25_exposure.py` uses against this branch's working tree. One
+    question, one enumerator: a second one here would drift the way two
+    off-switches would.
     """
-    corpus = _git("ls-files", "*.md", "*.html", cwd=wt).split()
-    allow = mod.load_allowlist()
-    hits: list[dict] = []
-    seen: dict[tuple[str, int, str, str], int] = {}
-    for rel in corpus:
-        if not is_published_surface(rel):
-            continue
-        rep = mod.scan_file(wt / rel, allow)
-        for f in rep.findings:
-            base = (rep.path, f.claim.line, f.claim.kind, f.claim.snippet)
-            ordinal = seen.get(base, 0)
-            seen[base] = ordinal + 1
-            hits.append({
-                "file": rep.path, "line": f.claim.line,
-                "kind": f.claim.kind, "snippet": f.claim.snippet,
-                "reason": f.reason, "occurrence": ordinal,
-            })
-    return corpus, hits
-
-
-def _occurrence_key(h: dict) -> tuple[str, int, str, str, int]:
-    return (h["file"], h["line"], h["kind"], h["snippet"], h["occurrence"])
+    corpus, published = _published_paths(wt)
+    return corpus, findings_over(mod, wt, published)
 
 
 def main_only_findings() -> dict:
@@ -408,37 +374,32 @@ def main_only_arm_delta() -> dict:
     refuses to print the figures.
     """
     with main_worktree() as (wt, mod):
-        corpus, before = _scan_published(wt, mod)
-        real_words = mod.CITATION_WORDS
-        try:
-            mod.CITATION_WORDS = ARM_OFF
-            corpus_off, after = _scan_published(wt, mod)
-        finally:
-            mod.CITATION_WORDS = real_words
-        # One specimen means one corpus. If the two passes disagree about which
-        # files exist, the delta is between two different things and the whole
-        # measurement is void.
-        if corpus_off != corpus:
-            raise RuntimeError(
-                f"the two passes scanned different corpora: "
-                f"{len(corpus)} files then {len(corpus_off)}. The delta would "
-                f"be between two specimens, not one.")
+        corpus, published = _published_paths(wt)
+        delta = arm_delta(mod, wt, published)
+        rows = citation_word_rows(mod, wt, published)
+        # The per-finding enumeration, from the SAME predicate that answers the
+        # question for the branch. Raises `UnjoinedFinding` if a revealed
+        # finding does not sit in a paragraph this run recorded as sourced by
+        # the citation-word arm, and reconciles its own length against the
+        # difference of the two independently counted gate totals.
+        listed = enumerate_revealed(rows, delta)
         main_sha = _git("rev-parse", "main", cwd=REPO_ROOT).strip()
 
-    before_keys = {_occurrence_key(h) for h in before}
-    after_by_key = {_occurrence_key(h): h for h in after}
-    revealed = [after_by_key[k] for k in sorted(set(after_by_key) - before_keys)]
-    no_longer = sorted(before_keys - set(after_by_key))
     return {
         "main_sha": main_sha,
         "corpus": len(corpus),
-        "arm_on": len(before),
-        "arm_off": len(after),
-        "revealed": len(revealed),
-        "findings_arm_on": before,
-        "findings_arm_off": after,
-        "revealed_findings": revealed,
-        "no_longer_reported": [list(k) for k in no_longer],
+        "published_corpus": len(published),
+        "arm_on": delta["findings_now"],
+        "arm_off": delta["findings_with_arm_off"],
+        "revealed": len(delta["revealed"]),
+        "findings_arm_on": delta["findings_arm_on"],
+        "findings_arm_off": delta["findings_arm_off"],
+        "revealed_findings": listed,
+        "no_longer_reported": delta["no_longer_reported"],
+        "paragraphs": rows["paragraphs"],
+        "sourced_paragraphs": rows["sourced_paragraphs"],
+        "citation_word_paragraphs": len(rows["rows"]),
+        "citation_word_exposed": sum(1 for r in rows["rows"] if r["exposed"]),
     }
 
 
@@ -477,8 +438,9 @@ def report_arm_delta(r: dict, out=print) -> None:
             out(f"      {n:4d}  {name}")
     out("")
     for f in sorted(r["revealed_findings"],
-                    key=lambda x: (x["file"], x["line"])):
-        out(f"  {f['file']}:{f['line']}  [{f['kind']}] {f['snippet']!r}")
+                    key=lambda x: (x["file"], x["line"], x["snippet"])):
+        out(f"  {f['file']}:{f['line']}  [{f['kind']}] {f['snippet']!r}  "
+            f"sourced by: {', '.join(f['citation_words'])}")
 
 
 def report_main_only(r: dict, out=print) -> None:
