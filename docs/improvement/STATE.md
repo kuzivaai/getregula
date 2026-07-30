@@ -1987,3 +1987,39 @@ verbatim-record exemption as a rule. **Then** section 6: re-derive Trust and
 Detection at HEAD under one written rule, then the traces.
 **F25, F29, F30 remain open escalations.** F25 now has its complete table
 above, and decision 3 should be posed against the 58/30 row, not the 108/65.
+
+---
+
+# CHECKPOINT, 30 July 2026, session 6: THE HELD TREE LANDED, PHASE 1.7 DONE
+
+Verification first: `pytest tests/ -q` at `f407156` with the previous
+session's 12 modified files in the working tree gave **2581 passed in
+1036.31s, rc=0** (exit code from `$?` after redirection, sentinel removed
+before launch); ruff F821/F811 clean; six fast gates rc=0; self-test 6/6;
+doctor 8 passed / 4 info. The handover's "plus 6 subtests" did not appear in
+the pytest summary; the likely referent is the self-test's six assertions,
+recorded here as interpretation, not fact.
+
+**The 12 held files were verified and committed as six units**
+(`a6f9475`, `e78cb8a`, `7e426ea`, `831b017`, `5c83f75`, `852b01e`); the
+ledger's 2026-07-30 evening entry carries the detail, including the
+fail-before controls (5 discriminating failures at `f407156` in a worktree
+outside /tmp, 104 passed after) and the discarded /tmp-confounded first
+control. Four regression tests were added for the three repairs that
+arrived without one; cascade 2,581 to 2,585 in the same commit as the
+tests. NOT pushed: everything on this branch beyond `e48c4db` is local.
+
+**Phase 1.7 is DONE** (`810eb1c`): `docs/improvement/SCAFFOLDING-AUDIT.md`
+is the deliverable and the ledger's phase table points at it. The two
+STATE 5d additions landed: the em-dash rule is scoped to new prose with the
+verbatim-record exemption encoded in CLAUDE.md (untracked, recorded in the
+audit), and the stale-status class was fixed at its two live instances
+(regulatory-content.md rule, regulatory-context skill).
+
+## NEXT
+
+Unchanged from 5d, minus what landed: **queue item 3, re-derive Trust and
+Detection at HEAD under one written rule** (DIRECTIVE-v3 section 6), then
+the traces (7 fixtures, per F27), then the Phase 4 plan revision, then
+loop 3 in a fresh session. F25, F29 (one surface), F30 remain open owner
+escalations; owner decisions 3, 4 (last surface), 5, 6, 7 and 8 unchanged.
