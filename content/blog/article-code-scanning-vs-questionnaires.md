@@ -17,7 +17,7 @@ A questionnaire captures organisational information that no scanner can reach. D
 
 These are human obligations. They exist in meeting rooms, policy documents, and governance structures. A regex cannot attend a board meeting. A static analyser cannot verify that your AI risk committee met last quarter. For these obligations, a structured questionnaire filled out by the responsible person in your organisation is not just acceptable. It is the correct tool.
 
-No serious compliance programme can skip this layer. The EU AI Act is roughly 70% organisational and 30% technical. If you only scan code, you are ignoring the majority of what the regulation requires.
+No serious compliance programme can skip this layer. The obligations above are organisational: they live in processes, approvals and documents, and none of them leaves a trace in source code. If you only scan code, you do not see them at all.
 
 ## What questionnaires cannot do
 
@@ -45,7 +45,7 @@ For the technical subset of the EU AI Act, this produces evidence that questionn
 
 ## What code scanning cannot do
 
-Static analysis addresses roughly 30% of the EU AI Act. That is not a pessimistic estimate. It is a structural reality. We have documented the boundary in detail: see [what Regula does not do](https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md).
+Static analysis addresses only part of the EU AI Act. That is not a pessimistic estimate. It is a structural reality. We have documented the boundary in detail: see [what Regula does not do](https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md).
 
 Article 9 requires a risk management system. A set of processes, approvals, and reviews that happen inside an organisation. Not a code artefact.
 
@@ -81,4 +81,4 @@ Neither layer alone is compliance. But a governance programme built entirely on 
 
 ---
 
-*[Regula](https://github.com/kuzivaai/getregula) is an open-source CLI that scans codebases for EU AI Act risk patterns. It covers the code layer of compliance, which is roughly 30% of the regulation. For everything it does not cover, see [what Regula does not do](https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md).*
+*[Regula](https://github.com/kuzivaai/getregula) is an open-source CLI that scans codebases for EU AI Act risk patterns. It covers the code layer of compliance, which is one part of the regulation. For everything it does not cover, see [what Regula does not do](https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md).*

@@ -3,7 +3,7 @@
 An explicit scope statement for the Regula project. This document exists
 because an honest assessment of our coverage surfaced a load-bearing
 counterargument: **static code scanning may fundamentally address only
-about 30% of the EU AI Act.** Articles 9 (risk management system),
+part of the EU AI Act.** Articles 9 (risk management system),
 Article 17 (quality management system), Article 27 (fundamental rights
 impact assessment), Article 72 (post-market monitoring) and much of
 Annex IV are organisational obligations, not code-level ones. A Python
