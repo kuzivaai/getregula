@@ -168,7 +168,7 @@
       <ul>
         <li><strong>330 patterns (v1.6.1) is UNSETTLEABLE.</strong> There is no <code>v1.6.1</code> git tag and no 1.6.1 release on PyPI, so no artefact records what that version counted. Measured at the tags that do exist, using the current counting script: v1.6.0 gives 219 and v1.6.2 gives 386, so 330 is arithmetically consistent with sitting between them, and that is the strongest statement the evidence supports. It is not confirmation.</li>
         <li><strong>The unit is not fixed either.</strong> Run against the same v1.6.2 tree, that version&rsquo;s own counting script gives 358 and the current one gives 386. A 28-count gap on identical code means a bracket cannot settle a figure whose definition moved.</li>
-        <li><strong>387 does not reproduce at the v1.7.0 tag; 386 does.</strong> Both that version&rsquo;s own script and the current one give 386. This page also says 389 further down, and 387 and 389 cannot both be right. Flagged for the owner rather than changed here, because the 387 on record was reached by two methods that have not been re-run.</li>
+        <li><strong>387 and 386 are both correct, at two different trees that both call themselves v1.7.0.</strong> The <code>v1.7.0</code> tag is commit <code>7fa2088</code> of 16 April 2026 and counts <strong>386</strong> tier regexes. The re-scan on this page ran on commit <code>c6aa67a</code> of 23 April 2026, which still carries version 1.7.0 and counts <strong>387</strong>. Measured at each tree by two independent methods that agree: that tree&rsquo;s own <code>scripts/site_facts.py</code>, and a direct sum over the pattern lists in <code>scripts/risk_patterns.py</code>. The disagreement was never about what a pattern is; it was about which tree. <strong>389 was wrong and is corrected.</strong> It appears under no unit at either tree: the full set at the tag is 52 / 386 / 182 / 17 / 38 / 10 / 4 / 4 / 18 / 659 / 446, and at 23 April it is 52 / 387 / 182 / 17 / 38 / 10 / 4 / 4 / 18 / 660 / 447.</li>
         <li><strong>The v1.6.1 raw scan output is NOT committed</strong>, although the closing note below says output for both versions is available. Only the v1.7.0 re-scan of 23 April 2026 is in <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/blog_scan_2026_04">benchmarks/results/blog_scan_2026_04</a>, and its README says so. The v1.6.1 files were never added.</li>
       </ul>
       Method and figures: benchmarks/results/blog_scan_2026_04/README.md and scripts/site_facts.py.
@@ -405,7 +405,7 @@ regula check /path/to/your/project</code></pre>
 
         <p>Regula is open-source, has zero dependencies, and runs entirely locally. No data leaves your machine. It takes under a second for most projects.</p>
 
-        <p>The risk patterns it checks against (389 as of v1.7.0; 330 at the time this scan was run with v1.6.1) are documented in the repository. If you disagree with a classification, you can suppress individual findings with inline comments or contribute pattern improvements upstream.</p>
+        <p>The risk patterns it checks against (387 as of v1.7.0; 330 at the time this scan was run with v1.6.1) are documented in the repository. If you disagree with a classification, you can suppress individual findings with inline comments or contribute pattern improvements upstream.</p>
     </section>
 
     <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
