@@ -369,12 +369,10 @@ def cmd_check(args) -> None:
     # field exists specifically for that purpose) would be silently misled
     # into treating a prohibited/high-risk finding as a clean pass.
     strict = args.strict or getattr(args, "ci", False)
-    if block_findings:
-        _exit_code = 1
-    elif warn_findings and strict:
-        _exit_code = 1
-    else:
-        _exit_code = 0
+    # Shared with the HTTP API via findings_view.compute_exit_code so the two
+    # surfaces cannot diverge. Behaviour is unchanged for the CLI.
+    from findings_view import compute_exit_code
+    _exit_code = compute_exit_code(findings, strict=bool(strict))
 
     # --audit-suppressions: list all annotations with status (ISO 42001 9.1)
     if getattr(args, "audit_suppressions", False):
