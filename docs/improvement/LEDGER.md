@@ -210,15 +210,26 @@ gate that is not one of the six fast gates is not thereby a gate that passes.
 | **`main`'s published-surface debt is larger than the gate can see.** | `python3 scripts/merge_blockers.py --main-only --arm-delta` | **168 with the citation-word arm on, 238 with it off, 70 revealed, 0 lost**, at `main` `b5ac95c`, tree `b95876d`, clean detached worktree, HEAD's auditor unmodified at `f2de2ff`. rc=0: this is a measurement, not a gate. See N29 and section 7. |
 
 **What the 2026-07-30 apparatus session added to the blocker, named.** Produced
-by `python3 scripts/claim_diff.py --blocker-delta 2c1f080 bbdbac6`, whose
-apparatus is `scripts/claim_diff.py`: **3 findings, all in
-`docs/adr/0002-the-seventy-percent-claim.md`**, at lines 111 (`the only`), 121
-(`83.5%`) and 126 (`70%`). The code and the count cascade added **0**, measured
-separately as `--blocker-delta 2c1f080 1ea7436`. All three are the ADR
-discussing figures it is about, which is the self-referential loop this file
-already records for `docs/adr/`: writing the analysis of a claim adds claims to
-the corpus that measures claims. Recorded rather than engineered away, per rule
-24 in `docs/improvement/LEDGER.md` above.
+by `python3 scripts/claim_diff.py --blocker-delta 2c1f080 4a442f2`, whose
+apparatus is `scripts/claim_diff.py`: **1 finding, in
+`docs/adr/0002-the-seventy-percent-claim.md` at line 130, the snippet `70%`.**
+The code and the count cascade added **0**, measured separately as
+`--blocker-delta 2c1f080 1ea7436`. It is the ADR naming the very figure it
+exists to investigate, which is the self-referential loop this file already
+records for `docs/adr/`: writing the analysis of a claim adds claims to the
+corpus that measures claims. Recorded rather than engineered away, per rule 24
+in `docs/improvement/LEDGER.md` above.
+
+**It was 3 before the ADR was corrected, and the correction was forced by a
+test.** At `bbdbac6` the ADR also carried `the only` and the bare precision
+figure; `tests/test_precision_provenance.py` failed the full suite because that
+figure was published on a surface not listed in its `KNOWN_SURFACES`, without
+N and the single-reviewer basis at the point of use. The fix at `4a442f2`
+removed the figure from the sentence rather than adding `docs/adr/` to that
+test's exclusions, because excluding a surface to make a check pass is
+prohibited outright. Removing it also took `the only` out of the blocker, since
+the rewritten paragraph now cites `tests/test_precision_provenance.py` and is
+sourced through the file-reference arm.
 
 **On the two figures 273.** The most recent prior record measured 273 at
 `130a16a` (N18). `cacf21a` added one line to this file, which is inside the
