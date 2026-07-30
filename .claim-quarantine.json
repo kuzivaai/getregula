@@ -9,16 +9,8 @@
     "3. the remainder"
   ],
   "_created": "2026-07-28",
-  "_count": 29,
+  "_count": 25,
   "entries": [
-    {
-      "file": "site/about.html",
-      "claim": "30%"
-    },
-    {
-      "file": "site/about.html",
-      "claim": "70%"
-    },
     {
       "file": "site/assess/de.html",
       "claim": "0%"
@@ -30,14 +22,6 @@
     {
       "file": "site/assess/pt-br.html",
       "claim": "0%"
-    },
-    {
-      "file": "site/blog/blog-code-scanning-vs-questionnaires.html",
-      "claim": "30%"
-    },
-    {
-      "file": "site/blog/blog-code-scanning-vs-questionnaires.html",
-      "claim": "70%"
     },
     {
       "file": "site/blog/blog-scanning-10-ai-apps.html",
@@ -272,6 +256,38 @@
       "silent_because": "text-absent",
       "measured_at": "f2de2ff",
       "note": "The claim text is not on the page at all, so the entry suppressed nothing. Removing it is gate-neutral: verified by re-running the auditor and site_integrity.py, not assumed."
+    },
+    {
+      "file": "site/about.html",
+      "claim": "30%",
+      "disposition": "corrected",
+      "silent_because": "text-absent",
+      "measured_at": "509c997",
+      "note": "Burned down by the Item 2 held draft, not by a no-op. The sentences carrying this figure were rewritten to drop an unsourced proportional claim about the composition of the EU AI Act, so the claim text is no longer on the page and this entry would otherwise suppress nothing. Disposition is `corrected` rather than `removed` because the page content changed, which is materially different from the fifteen records above, where the text had never been present. Removing a quarantine entry whose claim no longer exists makes the gate strictly stricter, so this is cleanup and not suppression. CONDITIONAL: this record is part of a draft held for owner confirmation of ADR 0002 option 2, and is discarded with that commit if a different option is chosen."
+    },
+    {
+      "file": "site/about.html",
+      "claim": "70%",
+      "disposition": "corrected",
+      "silent_because": "text-absent",
+      "measured_at": "509c997",
+      "note": "Burned down by the Item 2 held draft, not by a no-op. The sentences carrying this figure were rewritten to drop an unsourced proportional claim about the composition of the EU AI Act, so the claim text is no longer on the page and this entry would otherwise suppress nothing. Disposition is `corrected` rather than `removed` because the page content changed, which is materially different from the fifteen records above, where the text had never been present. Removing a quarantine entry whose claim no longer exists makes the gate strictly stricter, so this is cleanup and not suppression. CONDITIONAL: this record is part of a draft held for owner confirmation of ADR 0002 option 2, and is discarded with that commit if a different option is chosen."
+    },
+    {
+      "file": "site/blog/blog-code-scanning-vs-questionnaires.html",
+      "claim": "30%",
+      "disposition": "corrected",
+      "silent_because": "text-absent",
+      "measured_at": "509c997",
+      "note": "Burned down by the Item 2 held draft, not by a no-op. The sentences carrying this figure were rewritten to drop an unsourced proportional claim about the composition of the EU AI Act, so the claim text is no longer on the page and this entry would otherwise suppress nothing. Disposition is `corrected` rather than `removed` because the page content changed, which is materially different from the fifteen records above, where the text had never been present. Removing a quarantine entry whose claim no longer exists makes the gate strictly stricter, so this is cleanup and not suppression. CONDITIONAL: this record is part of a draft held for owner confirmation of ADR 0002 option 2, and is discarded with that commit if a different option is chosen."
+    },
+    {
+      "file": "site/blog/blog-code-scanning-vs-questionnaires.html",
+      "claim": "70%",
+      "disposition": "corrected",
+      "silent_because": "text-absent",
+      "measured_at": "509c997",
+      "note": "Burned down by the Item 2 held draft, not by a no-op. The sentences carrying this figure were rewritten to drop an unsourced proportional claim about the composition of the EU AI Act, so the claim text is no longer on the page and this entry would otherwise suppress nothing. Disposition is `corrected` rather than `removed` because the page content changed, which is materially different from the fifteen records above, where the text had never been present. Removing a quarantine entry whose claim no longer exists makes the gate strictly stricter, so this is cleanup and not suppression. CONDITIONAL: this record is part of a draft held for owner confirmation of ADR 0002 option 2, and is discarded with that commit if a different option is chosen."
     }
   ],
   "_burn_down": "PROTOCOL FOR BASE ENTRIES. To burn one down, remove it from `entries` and add a record here carrying `file`, `claim`, `disposition`, `silent_because` and `measured_at`. The ceiling in tests/test_claim_quarantine.py is QUARANTINE_BASE_CEILING minus the length of this list plus the live sensitivity admissions, so it falls automatically and nothing has to be edited by hand. tests/test_claim_quarantine.py re-measures every record here and fails if a burned-down claim turns out still to be on its page. ADMISSIONS BURN DOWN ELSEWHERE: an entry admitted under _sensitivity_admissions carries its own `burned_down` object inside its tranche and must NOT be listed here, because it already lowers the ceiling through the live-admission count and listing it twice would lower the ceiling twice. `measured_at` is the commit the silence was measured at; the instrument, scripts/claim_auditor.py, was unmodified at that commit. It is provenance, not the guarantee: the guarantee is that the test re-measures on every run. PRIORITY ORDER, AND WHY IT WAS NOT FOLLOWED. _priority_order puts the 83.5% precision claim first and 'the remainder' third, and the fifteen entries burned down on 2026-07-30 are in the third group. The owner directed this burn-down explicitly on the ground that an entry naming text which is not on the page suppresses nothing, so there is no per-item judgement to make and the priority order does not bear on it. Recorded here rather than left to be inferred, because LEDGER.md N23 had declined the same burn-down one session earlier for exactly that reason.",
