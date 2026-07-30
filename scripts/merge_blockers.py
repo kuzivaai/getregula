@@ -565,4 +565,6 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    from tree_guard import stamp
+    stamp()
     raise SystemExit(main())

@@ -134,6 +134,8 @@ def _pack_files() -> list[Path]:
 
 
 if __name__ == "__main__":
+    from tree_guard import stamp
+    stamp()
     args = sys.argv[1:]
     if not args:
         print(__doc__)
