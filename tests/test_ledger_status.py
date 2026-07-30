@@ -31,6 +31,47 @@ WHAT THIS CHECKS
 4. A ledger table row that discusses a commit's remote state in prose must
    carry one of those markers, so the prose-only claim that failed here cannot
    be made again without something checking it.
+5. Supersession between rows is DECLARED and BIDIRECTIONAL. See below.
+
+WHY SUPERSESSION IS A MARKER AND NOT PROSE
+------------------------------------------
+The checks above verify claims about commits. Nothing verified that a figure is
+still current, and the ledger carried a stale headline through two consecutive
+sessions because of it: row N13 led with "15 findings, 6 fixable" after N15 had
+established the `fixable` count was over-counted by one and N18 had re-measured
+the residue at a different commit.
+
+Supersession is a relation between two rows. No predicate can infer it from
+prose, because "which rows N15 and N18 supersede" is a sentence about the file
+and not a fact in it. So the relation is declared:
+
+    the superseding row carries   SUPERSEDES:<id>
+    the superseded row carries    SUPERSEDED-BY:<id>
+
+and this module asserts every declaration has its counterpart. That is the
+whole mechanism. It cannot tell you a figure is stale; it can only stop a row
+from being marked stale in one direction and current in the other, which is
+exactly the half-recorded state N13 was left in.
+
+Design choices, recorded because they were mine and a later session inherits
+them rather than only the result:
+
+- Markers are UPPERCASE, matching HELD:/PUSHED:, so a machine assertion is
+  visibly not prose in the rendered table.
+- Ids are the row's own first cell, so no second identifier scheme is
+  introduced and a marker cannot point at something that is not a row.
+- Bidirectional rather than one-way. A one-way SUPERSEDES: would let a reader
+  arrive at N13 from the contents page and see nothing wrong with it, which is
+  the failure being fixed. The cost is that both rows must be edited together;
+  that cost is the point.
+- Many-to-one is allowed. N13 is superseded by two rows and carries two
+  markers.
+- NOT used for a figure that merely moved. This file's own rule 24 holds that
+  `--diff-base` totals have no fixed point and that each is correct at its
+  commit. A number that changed because the corpus changed is not superseded.
+  Supersession is for a statement that was WRONG or has been RETRACTED. This
+  distinction is a judgement and no test enforces it; it is written here so the
+  mechanism does not decay into marking every re-measurement.
 
 RESOLVING "ON THE REMOTE" WITHOUT THE NETWORK
 ---------------------------------------------
@@ -76,6 +117,104 @@ REMOTE_STATE_CUES = (
     "absent from the remote",
     "on the remote",
 )
+
+# `SUPERSEDES:<id>` / `SUPERSEDED-BY:<id>`. The two tokens cannot collide:
+# after `SUPERSEDE` one continues with `S:` and the other with `D-BY:`.
+#
+# The id charset deliberately excludes `.` so that a marker ending a sentence
+# parses as the id and not as the id plus a full stop. Caught by this check on
+# its first real use: `SUPERSEDED-BY:N18.` was read as row `N18.`, which does
+# not exist, and the pairing failed. A marker can therefore only name a
+# single-token id, which every F*/N* row has; a row titled in words, such as
+# `Merge-base measurement`, cannot be named by one, and that limitation is
+# stated rather than worked around.
+SUPERSEDES_RE = re.compile(r"\bSUPERSEDES:([A-Za-z0-9_-]+)")
+SUPERSEDED_BY_RE = re.compile(r"\bSUPERSEDED-BY:([A-Za-z0-9_-]+)")
+
+
+def row_id(line: str) -> str | None:
+    """The row's own identifier: its first table cell, stripped of emphasis.
+
+    Returns None for anything that is not a body row of a table, including the
+    `|---|---|` separator and the header.
+    """
+    if not line.lstrip().startswith("|"):
+        return None
+    cells = line.strip().strip("|").split("|")
+    if not cells:
+        return None
+    ident = cells[0].strip().strip("*").strip("`").strip()
+    if not ident or set(ident) <= set("-: "):
+        return None
+    return ident
+
+
+def audit_supersession(text: str) -> tuple[list[str], int]:
+    """Return (problems, declarations_checked) for one ledger body.
+
+    Pure over `text`, so a control can drive it with a fixture instead of
+    editing the file on disk.
+    """
+    problems: list[str] = []
+    rows: dict[str, str] = {}
+    for line in text.splitlines():
+        ident = row_id(line)
+        if ident is not None:
+            # First occurrence wins. A duplicate id is reported rather than
+            # silently shadowing, because a marker pointing at an ambiguous
+            # row checks nothing.
+            if ident in rows:
+                problems.append(
+                    f"row id {ident!r} appears more than once, so a "
+                    f"SUPERSEDES:/SUPERSEDED-BY: marker naming it is ambiguous")
+            else:
+                rows[ident] = line
+
+    forward: set[tuple[str, str]] = set()      # (newer, older)
+    backward: set[tuple[str, str]] = set()     # (newer, older)
+
+    for ident, line in rows.items():
+        for older in SUPERSEDES_RE.findall(line):
+            forward.add((ident, older))
+        for newer in SUPERSEDED_BY_RE.findall(line):
+            backward.add((newer, ident))
+
+    checked = 0
+    for newer, older in sorted(forward):
+        checked += 1
+        if newer == older:
+            problems.append(f"row {newer} declares SUPERSEDES:{older}, itself")
+            continue
+        if older not in rows:
+            problems.append(
+                f"row {newer} declares SUPERSEDES:{older}, but no row {older} "
+                f"exists in the ledger")
+            continue
+        if (newer, older) not in backward:
+            problems.append(
+                f"unpaired declaration: row {newer} declares "
+                f"SUPERSEDES:{older}, but row {older} does not carry "
+                f"SUPERSEDED-BY:{newer}. Supersession is bidirectional so a "
+                f"reader arriving at the superseded row is told it is stale.")
+
+    for newer, older in sorted(backward):
+        checked += 1
+        if newer == older:
+            problems.append(
+                f"row {older} declares SUPERSEDED-BY:{newer}, itself")
+            continue
+        if newer not in rows:
+            problems.append(
+                f"row {older} declares SUPERSEDED-BY:{newer}, but no row "
+                f"{newer} exists in the ledger")
+            continue
+        if (newer, older) not in forward:
+            problems.append(
+                f"unpaired declaration: row {older} declares "
+                f"SUPERSEDED-BY:{newer}, but row {newer} does not carry "
+                f"SUPERSEDES:{older}")
+
+    return problems, checked
 
 
 def _git(*args: str) -> subprocess.CompletedProcess:
@@ -240,6 +379,106 @@ def test_a_backticked_non_commit_is_reported():
     assert any("no such commit exists" in p for p in problems), (
         "an invented commit hash was accepted")
     print("✓ ledger status: invented commit hashes rejected")
+
+
+def test_ledger_supersession_declarations_are_paired():
+    """Every SUPERSEDES: in LEDGER.md has its SUPERSEDED-BY: counterpart."""
+    problems, checked = audit_supersession(
+        LEDGER_PATH.read_text(encoding="utf-8"))
+    assert not problems, (
+        "LEDGER.md has half-declared supersessions:\n"
+        + "\n".join(f"  - {p}" for p in problems))
+    # An absent signal is not a passing signal. If the ledger stops declaring
+    # supersession at all, this test must say so rather than pass on nothing.
+    assert checked > 0, (
+        "no SUPERSEDES:/SUPERSEDED-BY: declarations were found in LEDGER.md. "
+        "Either every superseded figure has been removed, or the markers have "
+        "been dropped and stale headlines are unguarded again.")
+    print(f"✓ ledger supersession: {checked} declarations paired")
+
+
+def test_an_unpaired_supersedes_is_named():
+    """The exact defect: N15 supersedes N13 and N13 is not told about it.
+
+    This is the control for the real edit made in this session, run as a
+    fixture so it keeps firing after the file is correct.
+    """
+    unpaired = (
+        "| **N13** | residue is 15, 6 fixable | date | OPEN. |\n"
+        "| **N15** | fixable was over-counted | date | SUPERSEDES:N13 |\n"
+    )
+    problems, checked = audit_supersession(unpaired)
+    assert checked == 1, checked
+    assert any("unpaired declaration" in p and "N13" in p and "N15" in p
+               for p in problems), problems
+
+    paired = (
+        "| **N13** | residue is 15, 6 fixable | date | OPEN. SUPERSEDED-BY:N15 |\n"
+        "| **N15** | fixable was over-counted | date | SUPERSEDES:N13 |\n"
+    )
+    ok, checked_ok = audit_supersession(paired)
+    assert not ok, ok
+    assert checked_ok == 2, checked_ok
+    print("✓ ledger supersession control: unpaired named, paired accepted")
+
+
+def test_the_reverse_direction_is_also_required():
+    """A lone SUPERSEDED-BY: is as unverifiable as a lone SUPERSEDES:."""
+    problems, _ = audit_supersession(
+        "| **N13** | x | d | SUPERSEDED-BY:N15 |\n"
+        "| **N15** | y | d | OPEN. |\n")
+    assert any("does not carry SUPERSEDES:N13" in p for p in problems), problems
+    print("✓ ledger supersession: reverse direction required too")
+
+
+def test_a_marker_naming_a_row_that_does_not_exist_is_reported():
+    problems, _ = audit_supersession(
+        "| **N15** | y | d | SUPERSEDES:N99 |\n")
+    assert any("no row N99 exists" in p for p in problems), problems
+
+    self_ref, _ = audit_supersession("| **N15** | y | d | SUPERSEDES:N15 |\n")
+    assert any("itself" in p for p in self_ref), self_ref
+    print("✓ ledger supersession: dangling and self-referential markers caught")
+
+
+def test_a_marker_ending_a_sentence_is_not_read_as_part_of_the_id():
+    """Regression: `SUPERSEDED-BY:N18.` must name N18, not `N18.`.
+
+    This defect was introduced by the very edit that added the markers and was
+    caught by this check, so the case is pinned.
+    """
+    text = (
+        "| **N13** | x | d | SUPERSEDED-BY:N18. Do not quote this row. |\n"
+        "| **N18** | y | d | SUPERSEDES:N13, so the figures moved. |\n"
+    )
+    problems, checked = audit_supersession(text)
+    assert not problems, problems
+    assert checked == 2, checked
+    print("✓ ledger supersession: trailing punctuation is not part of the id")
+
+
+def test_many_to_one_supersession_is_allowed():
+    """N13 is superseded by two rows; that must not be an error."""
+    text = (
+        "| **N13** | x | d | SUPERSEDED-BY:N15 SUPERSEDED-BY:N18 |\n"
+        "| **N15** | y | d | SUPERSEDES:N13 |\n"
+        "| **N18** | z | d | SUPERSEDES:N13 |\n"
+    )
+    problems, checked = audit_supersession(text)
+    assert not problems, problems
+    assert checked == 4, checked
+    print("✓ ledger supersession: many-to-one accepted")
+
+
+def test_row_id_ignores_table_furniture_and_prose():
+    assert row_id("| **N13** | a | b | c |") == "N13"
+    assert row_id("| F21 | a | b | c |") == "F21"
+    assert row_id("| **Merge-base measurement** | a | b | c |") == \
+        "Merge-base measurement"
+    assert row_id("|---|---|---|---|") is None
+    assert row_id("Nothing drops off because it stopped being mentioned.") \
+        is None
+    print("✓ row_id: only table body rows produce an id")
 
 
 def test_marker_polarity_is_decided_by_the_resolver_not_the_word():

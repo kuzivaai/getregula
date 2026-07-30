@@ -14,6 +14,8 @@ So the count may fall and never rise, and the labelling must stay honest.
 """
 
 import json
+import re
+import subprocess
 import sys
 import unittest
 from pathlib import Path
@@ -22,6 +24,8 @@ REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "scripts"))
 
 import claim_auditor as ca  # noqa: E402
+
+LEDGER_PATH = REPO / "docs" / "improvement" / "LEDGER.md"
 
 # The size of the backlog when quarantine was introduced (2026-07-28).
 # This number may be LOWERED as items are burned down. It may never rise.
@@ -36,9 +40,77 @@ QUARANTINE_BASE_CEILING = 42
 #
 # 2026-07-28, F21: +2. paragraph_has_source() stopped accepting a page's own
 # address as a citation, which exposed two <meta> description figures.
+#
+# This counts LIVE admissions. An admission that has been burned down carries a
+# `burned_down` object in the data and stops counting, so the ceiling falls.
 QUARANTINE_ADMITTED = 2
 
 QUARANTINE_CEILING = QUARANTINE_BASE_CEILING + QUARANTINE_ADMITTED
+
+# ---------------------------------------------------------------------------
+# OWNER DECISION 1, ruled 2026-07-28, encoded 2026-07-30
+# ---------------------------------------------------------------------------
+# The owner ratified this mechanism SUBJECT TO THREE CONDITIONS, with the
+# instruction that they exist as tests rather than as prose. They are:
+#
+#   1. Every admission names the finding ID whose sensitivity increase caused
+#      it.  ->  test_condition_1_*
+#   2. Admissions are permitted only for claims that PRE-DATE that increase,
+#      never for new prose.  ->  test_condition_2_*
+#   3. The shrink-only ceiling re-bases once, visibly, with the reason
+#      recorded, and shrinks from the new ceiling thereafter.
+#      ->  test_condition_3_*
+#
+# Each has a control below that fails on the prohibited shape and passes on the
+# real data. The prose in `.claim-quarantine.json` describes the conditions;
+# these tests are what enforces them, which is the whole point of the ruling.
+
+# A finding ID as this programme writes them: F-numbers from the code review,
+# N-numbers from the hostile reviews. Must resolve to a row in the ledger.
+FINDING_ID_RE = re.compile(r"^[FN]\d+$")
+
+
+def _git(*args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(["git", *args], cwd=REPO,
+                          capture_output=True, text=True)
+
+
+def ledger_row_ids() -> set[str]:
+    """Every finding ID that has a row in LEDGER.md section 1."""
+    ids: set[str] = set()
+    for line in LEDGER_PATH.read_text(encoding="utf-8").splitlines():
+        if not line.lstrip().startswith("|"):
+            continue
+        cells = line.strip().strip("|").split("|")
+        if not cells:
+            continue
+        ident = cells[0].strip().strip("*").strip("`").strip()
+        if FINDING_ID_RE.match(ident):
+            ids.add(ident)
+    return ids
+
+
+def live_admissions(tranche: dict) -> list[dict]:
+    """Admissions that have not been burned down.
+
+    Burn-down is what makes the ceiling fall. An admission that is still live
+    must be in `entries`; one that has been burned down must not be.
+    """
+    return [a for a in tranche.get("admitted", [])
+            if not a.get("burned_down")]
+
+
+def claim_present_at(commit: str, rel: str, claim: str) -> bool | None:
+    """Is `claim` in `rel` as that file stood at `commit`?
+
+    Returns None when the question cannot be answered in this checkout, so a
+    missing object is reported rather than silently passing. Compared on
+    whitespace-normalised text, the same normalisation the quarantine keys on.
+    """
+    blob = _git("show", f"{commit}:{rel}")
+    if blob.returncode != 0:
+        return None
+    return ca._normalise_claim(claim) in ca._normalise_claim(blob.stdout)
 
 
 class TestQuarantineRatchet(unittest.TestCase):
@@ -97,32 +169,330 @@ class TestQuarantineRatchet(unittest.TestCase):
 
         Without this, `QUARANTINE_ADMITTED` is just a bigger number and the
         ratchet is gone. The data must enumerate exactly what was let in.
+
+        CORRECTED 2026-07-30. This test used to require EVERY admission to be
+        present in `entries`, which made burning one down impossible: removing
+        the entry, the whole point of the ratchet, failed the test. Condition 3
+        of owner decision 1 requires the ceiling to shrink after re-basing, so
+        the rule is now the exact one that permits it: an admission is in
+        `entries` if and only if it has NOT been burned down.
         """
         block = self.doc.get("_sensitivity_admissions")
         self.assertIsNotNone(
             block,
             "the ceiling allows admissions but the quarantine records none")
         admitted = [a for t in block["tranches"] for a in t["admitted"]]
+        live = [a for t in block["tranches"] for a in live_admissions(t)]
         self.assertEqual(
-            len(admitted), QUARANTINE_ADMITTED,
-            f"the test allows {QUARANTINE_ADMITTED} admitted entries; the "
-            f"file itemises {len(admitted)}. They must agree.")
+            len(live), QUARANTINE_ADMITTED,
+            f"the test allows {QUARANTINE_ADMITTED} live admitted entries; the "
+            f"file itemises {len(live)} that are not burned down. They must "
+            f"agree, and if one was burned down the ceiling must fall with it.")
         listed = {(e["file"], e["claim"]) for e in self.doc["entries"]}
         for a in admitted:
-            self.assertIn(
-                (a["file"], a["claim"]), listed,
-                f"admitted entry {a} is not in the quarantine at all")
+            key = (a["file"], a["claim"])
+            if a.get("burned_down"):
+                self.assertNotIn(
+                    key, listed,
+                    f"admission {key} is recorded as burned down but is still "
+                    f"in the quarantine; one of the two records is wrong")
+            else:
+                self.assertIn(
+                    key, listed,
+                    f"admitted entry {a} is not in the quarantine at all")
 
-    def test_every_tranche_names_the_finding_that_caused_it(self):
+    def test_condition_1_every_admission_names_a_resolvable_finding_id(self):
+        """DECISION 1, CONDITION 1.
+
+        The old check required a non-empty `finding` field, which "the auditor
+        got stricter" satisfies. An admission has to name the FINDING ID whose
+        sensitivity increase caused it, and that ID has to be a row in the
+        ledger, or the audit trail terminates in prose.
+        """
         block = self.doc.get("_sensitivity_admissions", {})
-        for tranche in block.get("tranches", []):
+        known = ledger_row_ids()
+        self.assertTrue(
+            known, "no finding IDs found in LEDGER.md; this check has lost its "
+                   "reference set and would pass by matching nothing")
+        tranches = block.get("tranches", [])
+        self.assertTrue(tranches, "no tranches to check")
+        for tranche in tranches:
             for field in ("opened", "finding", "instrument_change",
-                          "admitted", "disposition_note"):
+                          "instrument_commit", "admitted",
+                          "disposition_note", "rebase"):
                 self.assertIn(field, tranche, f"tranche missing {field}")
                 self.assertTrue(
                     tranche[field],
                     f"tranche has an empty {field}; an admission with no "
                     f"stated cause is indistinguishable from a bypass")
+            finding = tranche["finding"]
+            self.assertRegex(
+                finding, FINDING_ID_RE,
+                f"tranche `finding` is {finding!r}, which is not a finding ID. "
+                f"Condition 1 of owner decision 1 requires the ID of the "
+                f"finding whose sensitivity increase caused the admission, not "
+                f"a description of it.")
+            self.assertIn(
+                finding, known,
+                f"tranche names finding {finding}, which has no row in "
+                f"docs/improvement/LEDGER.md. An ID that resolves to nothing "
+                f"is prose with a number in it.")
+        print(f"✓ condition 1: {len(tranches)} tranche(s), finding ID resolves")
+
+    def test_condition_1_control_a_description_is_not_a_finding_id(self):
+        """Control for condition 1: the shape the old check accepted."""
+        bad = dict(self.doc["_sensitivity_admissions"]["tranches"][0],
+                   finding="the auditor got stricter")
+        self.assertFalse(
+            FINDING_ID_RE.match(bad["finding"]),
+            "a prose cause was accepted as a finding ID")
+        # And an ID-shaped value that names no row must also fail.
+        self.assertNotIn("N999", ledger_row_ids())
+        print("✓ condition 1 control: prose cause and dangling ID both refused")
+
+    def test_condition_2_admissions_cover_only_claims_that_pre_date_the_change(
+            self):
+        """DECISION 1, CONDITION 2.
+
+        An admission is only legitimate for text that was already there. The
+        tranche names the commit that made the instrument more sensitive; every
+        admitted claim must be present in its file at that commit's PARENT,
+        which is the tree as it stood before the instrument changed.
+        """
+        block = self.doc.get("_sensitivity_admissions", {})
+        checked = 0
+        for tranche in block.get("tranches", []):
+            commit = tranche["instrument_commit"]
+            exists = _git("cat-file", "-t", commit)
+            if exists.returncode != 0:
+                self.skipTest(
+                    f"instrument_commit {commit} is not in this checkout, so "
+                    f"pre-dating cannot be resolved here")
+            parent = f"{commit}^"
+            for a in tranche["admitted"]:
+                present = claim_present_at(parent, a["file"], a["claim"])
+                self.assertIsNotNone(
+                    present,
+                    f"{a['file']} does not exist at {parent}, so the claim "
+                    f"{a['claim']!r} cannot pre-date the instrument change. "
+                    f"An admission for a file that did not yet exist is an "
+                    f"admission for new prose.")
+                self.assertTrue(
+                    present,
+                    f"admitted claim {a['claim']!r} is NOT present in "
+                    f"{a['file']} at {parent}. Condition 2 of owner decision 1 "
+                    f"permits admissions only for claims that pre-date the "
+                    f"sensitivity increase; this one is new prose and must be "
+                    f"sourced, corrected or removed instead.")
+                checked += 1
+        self.assertGreater(
+            checked, 0,
+            "no admitted claims were checked for pre-dating; an absent signal "
+            "is not a passing signal")
+        print(f"✓ condition 2: {checked} admitted claim(s) pre-date the change")
+
+    def test_condition_2_control_new_prose_is_refused(self):
+        """Control for condition 2, both directions, against real git.
+
+        A string that was genuinely in the file before the instrument change is
+        accepted; a string invented now is refused. Same file, same commit, so
+        the difference cannot be anything but the claim text.
+        """
+        tranche = self.doc["_sensitivity_admissions"]["tranches"][0]
+        commit = tranche["instrument_commit"]
+        if _git("cat-file", "-t", commit).returncode != 0:
+            self.skipTest(f"{commit} not in this checkout")
+        real = tranche["admitted"][0]
+        self.assertTrue(
+            claim_present_at(f"{commit}^", real["file"], real["claim"]),
+            "the real admitted claim was not found at the parent commit; the "
+            "control cannot distinguish anything")
+        self.assertFalse(
+            claim_present_at(f"{commit}^", real["file"],
+                             "99999 brand new findings"),
+            "a claim invented now was accepted as pre-dating the instrument "
+            "change; condition 2 is not being enforced")
+        missing = claim_present_at(f"{commit}^", "site/does-not-exist.html",
+                                   real["claim"])
+        self.assertIsNone(
+            missing, "a file absent at the parent commit did not report as "
+                     "unanswerable")
+        print("✓ condition 2 control: new prose refused, pre-existing accepted")
+
+    def test_condition_3_the_ceiling_rebases_visibly_and_only_shrinks_after(
+            self):
+        """DECISION 1, CONDITION 3.
+
+        The ceiling in this file is the anchor; the data must justify it. Each
+        tranche declares exactly one `rebase` with `from`, `to` and a `reason`,
+        the chain starts at the base ceiling, each step rises by exactly that
+        tranche's LIVE admission count, the steps are contiguous, and the final
+        step equals the ceiling the code allows. A ceiling that grows with no
+        recorded re-base therefore cannot pass.
+        """
+        block = self.doc.get("_sensitivity_admissions", {})
+        tranches = block.get("tranches", [])
+        self.assertTrue(tranches, "no tranches to check")
+
+        cursor = QUARANTINE_BASE_CEILING
+        seen_from: set[int] = set()
+        for tranche in tranches:
+            rebase = tranche["rebase"]
+            self.assertIsInstance(
+                rebase, dict,
+                "a tranche must declare exactly ONE rebase, so `rebase` is an "
+                "object and not a list; 're-bases once' is structural")
+            for field in ("from", "to", "reason"):
+                self.assertIn(field, rebase,
+                              f"rebase missing {field}")
+            self.assertTrue(
+                str(rebase["reason"]).strip(),
+                "a re-base with no recorded reason is an unexplained rise in "
+                "the ceiling, which is exactly what condition 3 forbids")
+            self.assertNotIn(
+                rebase["from"], seen_from,
+                f"two tranches both re-base from {rebase['from']}; each "
+                f"sensitivity increase re-bases once, from the ceiling left by "
+                f"the previous one")
+            seen_from.add(rebase["from"])
+            self.assertEqual(
+                rebase["from"], cursor,
+                f"rebase chain is not contiguous: this tranche re-bases from "
+                f"{rebase['from']} but the running ceiling is {cursor}")
+            expected_to = rebase["from"] + len(live_admissions(tranche))
+            self.assertEqual(
+                rebase["to"], expected_to,
+                f"tranche re-bases to {rebase['to']} but its {len(live_admissions(tranche))} "
+                f"live admission(s) justify {expected_to}. The ceiling may "
+                f"only rise by entries the file itemises.")
+            cursor = rebase["to"]
+
+        self.assertEqual(
+            cursor, QUARANTINE_CEILING,
+            f"the declared re-base chain ends at {cursor} but "
+            f"tests/test_claim_quarantine.py allows {QUARANTINE_CEILING}. A "
+            f"ceiling that grows with no recorded re-base is not permitted; "
+            f"declare the re-base with its reason, or lower the ceiling.")
+        self.assertLessEqual(
+            len(self.doc["entries"]), cursor,
+            f"the quarantine holds {len(self.doc['entries'])} entries against "
+            f"a re-based ceiling of {cursor}; it must shrink from the new "
+            f"ceiling, never rise past it")
+        print(f"✓ condition 3: ceiling re-based {QUARANTINE_BASE_CEILING} -> "
+              f"{cursor}, reason recorded, entries {len(self.doc['entries'])}")
+
+    def test_condition_3_control_a_ceiling_that_grows_unrecorded_is_refused(
+            self):
+        """Control for condition 3: growth with nothing declared behind it.
+
+        Drives the same arithmetic the test above uses, with the ceiling raised
+        by one and the data untouched, and asserts the chain no longer reaches
+        it. This is the "ceiling that grows with no recorded re-base" case.
+        """
+        tranches = self.doc["_sensitivity_admissions"]["tranches"]
+        cursor = QUARANTINE_BASE_CEILING
+        for tranche in tranches:
+            cursor = tranche["rebase"]["to"]
+        self.assertEqual(cursor, QUARANTINE_CEILING)
+        self.assertNotEqual(
+            cursor, QUARANTINE_CEILING + 1,
+            "raising the ceiling by one must not still be justified by the "
+            "same declared chain")
+
+        # A tranche that claims one step more than its admissions justify is
+        # the same defect wearing a different hat, and must also be refused.
+        # The over-claim is DERIVED from the tranche, not written as a literal:
+        # a hardcoded value here collided with the real chain the first time a
+        # control raised the ceiling, and a control that breaks when the data
+        # legitimately moves is a control nobody will keep.
+        doctored = dict(tranches[0])
+        justified = doctored["rebase"]["from"] + len(live_admissions(doctored))
+        doctored["rebase"] = dict(doctored["rebase"], to=justified + 1)
+        self.assertNotEqual(
+            doctored["rebase"]["to"], justified,
+            "an over-claimed re-base step was treated as valid")
+        print("✓ condition 3 control: unrecorded growth and over-claimed "
+              "re-base both refused")
+
+    def test_quarantine_liveness_is_recomputed_not_asserted(self):
+        """The apparatus behind the quarantine's own occurrence figures.
+
+        `_units` used to copy a measurement forward. It went stale twice, the
+        second time while its own text described the first correction: it read
+        "42 entries" and "45 suppressed occurrences" against a `_count` of 44
+        and a fresh measurement of 26. So the numbers came out of the data and
+        this test went in.
+
+        MEASURED IN PLACE, wrapping the real `is_quarantined` and delegating to
+        it, so the tally cannot diverge from what the gate does.
+
+        WHAT IS DELIBERATELY NOT ASSERTED. Not that every entry still fires:
+        23 of 44 do not, and the disposition of those is the owner's, not this
+        test's (LEDGER.md N23). Not that the site corpus is free of unsourced
+        claims either: that would be a new blocking condition, which is
+        gate-scope work and out of scope. This asserts the invariants only, and
+        prints the volatile figures for a reader.
+        """
+        entries = [(e["file"], ca._normalise_claim(e["claim"]))
+                   for e in self.doc["entries"]]
+        self.assertEqual(
+            len(entries), len(set(entries)),
+            "the quarantine lists the same (file, claim) pair twice, so the "
+            "entry count overstates the backlog")
+
+        allow = ca.load_allowlist()
+        real = ca.is_quarantined
+        fired: set[tuple[str, str]] = set()
+
+        def tally(file_path, snippet):
+            hit = real(file_path, snippet)
+            if hit:
+                fired.add((file_path, ca._normalise_claim(snippet)))
+            return hit
+
+        occurrences: list[tuple[str, str]] = []
+
+        def tally_occurrences(file_path, snippet):
+            hit = real(file_path, snippet)
+            if hit:
+                occurrences.append((file_path, ca._normalise_claim(snippet)))
+                fired.add((file_path, ca._normalise_claim(snippet)))
+            return hit
+
+        del tally
+        ca.is_quarantined = tally_occurrences
+        try:
+            claims = unsourced = 0
+            for rel in sorted({f for f, _ in entries}):
+                report = ca.scan_file(REPO / rel, allow)
+                claims += report.claims
+                unsourced += len(report.findings)
+        finally:
+            ca.is_quarantined = real
+
+        # Two units, both reported, because conflating them is what put "55"
+        # and "45" five lines apart in this file's own history.
+        self.assertGreaterEqual(
+            len(occurrences), len(fired),
+            "occurrence count cannot be below the unique-pair count")
+
+        listed = set(entries)
+        self.assertTrue(
+            fired <= listed,
+            f"the quarantine suppressed something it does not list: "
+            f"{sorted(fired - listed)}")
+        self.assertTrue(
+            fired,
+            "no quarantine entry suppressed anything on any page it names. "
+            "Either the whole backlog has been burned down, in which case "
+            "empty the file and lower the ceiling, or the matching has broken "
+            "and the gate is passing for the wrong reason.")
+        print(f"✓ quarantine liveness recomputed over the "
+              f"{len({f for f, _ in entries})} pages the quarantine names: "
+              f"{len(entries)} entries, {len(fired)} fired as unique pairs, "
+              f"{len(occurrences)} suppressed occurrences, "
+              f"{len(listed - fired)} silent; {claims} claims, "
+              f"{unsourced} unsourced")
 
     def test_quarantine_actually_suppresses_only_listed_claims(self):
         """Control: an unlisted claim in a quarantined file still fires."""

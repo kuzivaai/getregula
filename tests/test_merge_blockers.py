@@ -31,6 +31,8 @@ citing a withdrawn figure. It is now classed `blocked` by predicate.
 """
 from __future__ import annotations
 
+import ast
+import re
 import sys
 from pathlib import Path
 
@@ -143,6 +145,176 @@ def test_residue_disposition_tally_is_reconciled_too():
     with pytest.raises(mb.TotalMismatch):
         mb.reconcile_residue(broken)
     print("✓ residue report: per-finding and per-disposition views reconciled")
+
+
+# ---------------------------------------------------------------------------
+# How many totals, and how many reconciliations? Produced, never counted by eye
+# ---------------------------------------------------------------------------
+# WHY THIS SECTION EXISTS.
+#
+# Two session records disagreed about this module. One said the self-check
+# "covers all five printed totals". Another said "5 totals, 8 reconciliations".
+# A reader with no terminal cannot tell whether that is a contradiction or two
+# different units, because neither record said what it was counting.
+#
+# It is two different units, and both figures are right:
+#
+#   5  distinct totals PRINTED to a reader, across both report functions
+#   8  reconciliations EXECUTED, counting every code path in the module
+#
+# The gap is that `survive BOTH` is printed once but reconciled three ways
+# (per file, per finding, per disposition), and that `--main-only --json`
+# reconciles the same total a second time on its own branch.
+#
+# Neither number is asserted from prose here. The call sites come from the
+# module's own syntax tree, the executions come from wrapping the real
+# `reconcile` and delegating to it (measurement rule 1: never fork the thing
+# you are measuring), and the printed totals come from the text the report
+# functions actually emit. The load-bearing assertion is not any of the three
+# counts: it is that every total a reader is shown was reconciled.
+
+RECONCILE_SITE_COUNT = 5
+RECONCILIATIONS_PER_RESIDUE_RUN = 6
+RECONCILIATIONS_PER_MAIN_ONLY_RUN = 1
+PRINTED_TOTALS = 5
+
+# `<label>: <n>` at the start of a line. The residue report prints its four
+# totals in this shape and the main-only report prints its one. Indented lines
+# (the itemisations, the disposition tally) are deliberately excluded: the
+# summary-line lesson in merge_blockers.report_main_only is that an indented
+# `<count>  <name>` line must never be readable as a total.
+TOTAL_LINE_RE = re.compile(r"^(\S[^:]*):\s+(\d+)\s*$")
+
+
+def _reconcile_call_sites() -> list[tuple[str, str | None, int]]:
+    """(enclosing function, literal label or None, line) for each call site.
+
+    Read out of the module's syntax tree rather than by grepping, so a call
+    written across two lines or inside a comprehension is still counted and a
+    mention of the word in a docstring is not.
+    """
+    source = (REPO_ROOT / "scripts" / "merge_blockers.py").read_text(
+        encoding="utf-8")
+    tree = ast.parse(source)
+    sites: list[tuple[str, str | None, int]] = []
+    for node in ast.walk(tree):
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        for inner in ast.walk(node):
+            if not isinstance(inner, ast.Call):
+                continue
+            fn = inner.func
+            if not (isinstance(fn, ast.Name) and fn.id == "reconcile"):
+                continue
+            label = None
+            if inner.args and isinstance(inner.args[0], ast.Constant) and \
+                    isinstance(inner.args[0].value, str):
+                label = inner.args[0].value
+            sites.append((node.name, label, inner.lineno))
+    return sorted(sites, key=lambda s: s[2])
+
+
+def _labels_reconciled_by(driver) -> list[str]:
+    """Labels passed to the REAL reconcile while `driver` runs.
+
+    Wraps and delegates. A stub would count calls into a function that no
+    longer checks anything, which is the blank-gate failure this repository
+    keeps paying for.
+    """
+    seen: list[str] = []
+    real = mb.reconcile
+
+    def tally(label, total, items):
+        seen.append(label)
+        return real(label, total, items)
+
+    mb.reconcile = tally
+    try:
+        driver()
+    finally:
+        mb.reconcile = real
+    return seen
+
+
+def test_reconcile_call_sites_come_from_the_syntax_tree():
+    """The lexical count, itemised so the number has a listing behind it."""
+    sites = _reconcile_call_sites()
+    for func, label, line in sites:
+        print(f"  merge_blockers.py:{line} in {func}() "
+              f"label={label!r}")
+    assert len(sites) == RECONCILE_SITE_COUNT, sites
+    # One site is inside a loop and takes its label from a variable; the rest
+    # name their total literally. If that ever flips, the arithmetic below
+    # stops holding and this says so.
+    variable_label = [s for s in sites if s[1] is None]
+    assert len(variable_label) == 1, variable_label
+    print(f"✓ reconcile call sites: {len(sites)} in "
+          f"{len({s[0] for s in sites})} functions")
+
+
+def test_reconciliations_executed_are_counted_by_wrapping_the_real_check():
+    """6 on the residue path, 1 on the main-only path, 8 across the module."""
+    residue_labels = _labels_reconciled_by(
+        lambda: mb.reconcile_residue(_fake_residue()))
+    main_only_labels = _labels_reconciled_by(
+        lambda: mb.report_main_only(
+            {"main_sha": "0" * 40, "corpus": 1,
+             "published_surface_findings_on_main": 1,
+             "files": ["a.md"], "findings": [_one_main_only_finding()]},
+            lambda _line: None))
+
+    for label in residue_labels:
+        print(f"  residue path reconciles: {label}")
+    for label in main_only_labels:
+        print(f"  main-only path reconciles: {label}")
+
+    assert len(residue_labels) == RECONCILIATIONS_PER_RESIDUE_RUN, residue_labels
+    assert len(main_only_labels) == RECONCILIATIONS_PER_MAIN_ONLY_RUN, \
+        main_only_labels
+
+    # The eighth is the `--main-only --json` branch, which reconciles before
+    # serialising so a machine consumer gets the same guarantee as a reader.
+    # Driving it would check out a worktree of main, so it is counted from the
+    # syntax tree instead and that limitation is stated rather than hidden.
+    in_main = [s for s in _reconcile_call_sites() if s[0] == "main"]
+    assert len(in_main) == 1, in_main
+    total = (len(residue_labels) + len(main_only_labels) + len(in_main))
+    print(f"✓ reconciliations across the module: "
+          f"{len(residue_labels)} residue + {len(main_only_labels)} main-only "
+          f"+ {len(in_main)} json-only = {total}")
+    assert total == 8, total
+
+
+def test_every_total_printed_to_a_reader_was_reconciled():
+    """The invariant. The three counts above are description; this is the rule."""
+    residue_lines: list[str] = []
+    residue_labels = _labels_reconciled_by(
+        lambda: mb.report_residue(_fake_residue(), residue_lines.append))
+
+    main_lines: list[str] = []
+    main_labels = _labels_reconciled_by(
+        lambda: mb.report_main_only(
+            {"main_sha": "0" * 40, "corpus": 1,
+             "published_surface_findings_on_main": 1,
+             "files": ["a.md"], "findings": [_one_main_only_finding()]},
+            main_lines.append))
+
+    printed = [TOTAL_LINE_RE.match(ln) for ln in residue_lines + main_lines]
+    printed_labels = [m.group(1).strip() for m in printed if m]
+    for label in printed_labels:
+        print(f"  printed total: {label}")
+
+    # The invariant first. The count below is a regression guard on top of it,
+    # not the thing being guarded: a new total that IS reconciled should make
+    # someone update the count, but a total that is NOT reconciled is a defect
+    # whatever the count says.
+    reconciled = set(residue_labels) | set(main_labels)
+    unchecked = [lab for lab in printed_labels if lab not in reconciled]
+    assert not unchecked, (
+        f"these totals were printed to a reader without being reconciled "
+        f"against an itemisation: {unchecked}")
+    assert len(printed_labels) == PRINTED_TOTALS, printed_labels
+    print(f"✓ {len(printed_labels)} printed totals, all reconciled")
 
 
 # ---------------------------------------------------------------------------
