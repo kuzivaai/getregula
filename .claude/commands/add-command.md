@@ -2,7 +2,12 @@ Add a new CLI command to Regula named `$ARGUMENTS`.
 
 ## Steps
 
-1. **Create the command function** in `scripts/cli.py`:
+1. **Create the command function** in the `cli_*.py` module that matches its
+   concern (`cli_scan.py`, `cli_analysis.py`, `cli_compliance.py`,
+   `cli_evidence.py`, `cli_governance.py`, `cli_report.py`, `cli_admin.py`,
+   `cli_infra.py`, `cli_monitor.py`, `cli_util.py`), NOT in `scripts/cli.py`.
+   `cli.py` keeps `main()` and the subparser wiring only; command bodies were
+   split out of it and this file used to say the opposite:
    ```python
    def cmd_$ARGUMENTS(args):
        """Short description."""
