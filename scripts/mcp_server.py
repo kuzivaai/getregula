@@ -125,14 +125,16 @@ TOOLS = [
 ]
 
 
-def _call_regula_check(arguments: dict) -> str:
-    """Invoke regula check and return text output."""
-    from report import scan_files
-    from pathlib import Path as _Path
+def _validate_scan_path(path: str) -> str | None:
+    """Return an error string if `path` must not be scanned, else None.
 
-    path = arguments.get("path", ".")
-    skip_tests = arguments.get("skip_tests", False)
-    min_tier = arguments.get("min_tier", "")
+    Shared by every MCP tool that accepts a caller-supplied path. Arguments
+    reach these tools from an MCP client, so they are model-driven and
+    prompt-influenceable; each entry point must apply the same denylist.
+    regula_gap previously applied none of this while regula_check applied all
+    of it, so the weaker tool set the real security boundary.
+    """
+    from pathlib import Path as _Path
 
     # Validate path — prevent unbounded filesystem scans
     resolved = _Path(path).resolve()
@@ -149,6 +151,20 @@ def _call_regula_check(arguments: dict) -> str:
     for bp in _BLOCKED_PREFIXES:
         if resolved == bp or resolved.is_relative_to(bp):
             return f"Error: scanning {resolved} is not permitted — specify a project directory."
+    return None
+
+
+def _call_regula_check(arguments: dict) -> str:
+    """Invoke regula check and return text output."""
+    from report import scan_files
+
+    path = arguments.get("path", ".")
+    skip_tests = arguments.get("skip_tests", False)
+    min_tier = arguments.get("min_tier", "")
+
+    err = _validate_scan_path(path)
+    if err:
+        return err
 
     try:
         findings = scan_files(path, skip_tests=skip_tests, min_tier=min_tier)
@@ -195,27 +211,60 @@ def _call_regula_classify(arguments: dict) -> str:
 
 
 def _call_regula_gap(arguments: dict) -> str:
-    """Invoke regula gap assessment and return text output."""
-    from compliance_check import check_compliance
+    """Invoke regula gap assessment and return text output.
+
+    This previously imported `check_compliance`, which does not exist in
+    compliance_check (the function is `assess_compliance`), so every call
+    raised ImportError before reaching any logic. The rendering loop was also
+    written against a flat {article: data} mapping; the real return nests the
+    articles under an "articles" key and stores `score` as a string.
+    """
+    from compliance_check import assess_compliance
 
     path = arguments.get("path", ".")
     article = arguments.get("article")
 
+    err = _validate_scan_path(path)
+    if err:
+        return err
+
+    articles_filter = [str(article)] if article is not None else None
     try:
-        results = check_compliance(path)
+        assessment = assess_compliance(path, articles=articles_filter)
     except Exception as e:
         return f"Error running gap assessment on {path}: {e}"
 
-    lines = [f"Compliance gap assessment: {path}\n"]
-    for art_num, art_data in sorted(results.items()):
-        if article and int(art_num.replace("article_", "").replace("art", "")) != article:
-            continue
-        score = art_data.get("score", 0)
-        name = art_data.get("name", art_num)
+    articles = assessment.get("articles", {}) or {}
+    overall = assessment.get("overall_score")
+    lines = [f"Compliance gap assessment: {path}"]
+    if overall is not None:
+        lines.append(f"Overall score: {overall}")
+    lines.append("")
+
+    if not articles:
+        lines.append("No articles assessed.")
+        return "\n".join(lines)
+
+    def _sort_key(item):
+        try:
+            return (0, int(item[0]))
+        except (TypeError, ValueError):
+            return (1, 0)
+
+    for art_num, art_data in sorted(articles.items(), key=_sort_key):
+        try:
+            score = int(art_data.get("score", 0))
+        except (TypeError, ValueError):
+            score = 0
+        name = art_data.get("title", art_num)
         status = "STRONG" if score >= 80 else "ADEQUATE" if score >= 50 else "WEAK"
-        lines.append(f"Article {art_num}  {name:<30} [{score:3d}%] {status}")
-        for gap in art_data.get("gaps", [])[:2]:
+        lines.append(f"Article {art_num:<4} {name:<30} [{score:3d}%] {status}")
+        for gap in (art_data.get("gaps") or [])[:2]:
             lines.append(f"  Gap: {gap}")
+
+    lines.append("")
+    lines.append("Gap assessment output is a risk indication, not a conformity "
+                 "assessment or legal determination.")
     return "\n".join(lines)
 
 
