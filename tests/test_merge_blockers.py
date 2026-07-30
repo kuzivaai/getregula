@@ -116,8 +116,13 @@ def _fake_arm_delta() -> dict:
     """One finding under both arm states plus one the arm was hiding."""
     on = {"file": "a.md", "line": 1, "kind": "numeric", "snippet": "1%",
           "reason": "no-source", "occurrence": 0}
+    # The revealed record carries what the enumeration attaches: the citation
+    # words that sourced its paragraph, and the exposed verdict. A fixture
+    # without them would not exercise the line the report actually prints.
     revealed = {"file": "b.md", "line": 2, "kind": "numeric", "snippet": "2%",
-                "reason": "no-source", "occurrence": 0}
+                "reason": "no-source", "occurrence": 0,
+                "citation_words": ["see"], "exposed": True,
+                "otherwise_sourced_by": None}
     return {"main_sha": "0" * 40, "corpus": 2,
             "arm_on": 1, "arm_off": 2, "revealed": 1,
             "findings_arm_on": [on], "findings_arm_off": [dict(on), revealed],
@@ -428,3 +433,51 @@ def test_the_reproducible_row_is_blocked_not_fixable():
     # The withdrawn row itself must stay inherited: it must not be sourced.
     assert mb.disposition({"file": V2, "line": withdrawn[0]})[0] == "inherited"
     print("✓ disposition: reproducible row blocked, withdrawn row inherited")
+
+
+# ---------------------------------------------------------------------------
+# The main-worktree path, driven for real
+# ---------------------------------------------------------------------------
+# This is the only test here that checks out a worktree of `main`. The rest of
+# the file deliberately avoids it for cost, and that was the right call while
+# the main path only produced counts. It now produces a per-finding
+# ENUMERATION, and an enumeration that is never driven against the real corpus
+# is an enumeration nobody has proved joins.
+#
+# The assertion is deliberately NOT `len(revealed_findings) == len(delta
+# ["revealed"])`. Those are the same object counted twice and the comparison is
+# true by construction, which is the blank gate an earlier draft of this
+# machinery shipped. `arm_on` and `arm_off` are counted separately over main's
+# worktree, so their difference is an independent total: the check fires if the
+# join drops a finding AND if the toggle loses one.
+
+def test_main_path_enumeration_reconciles_against_independently_counted_totals():
+    r = mb.main_only_arm_delta()
+
+    assert r["arm_off"] >= r["arm_on"], (
+        "switching a source arm off can only reveal findings; a shrink means "
+        "the toggle changed something other than the arm")
+    assert r["no_longer_reported"] == [], r["no_longer_reported"]
+    assert r["arm_off"] - r["arm_on"] > 0, (
+        f"nothing is revealed on main ({r['arm_on']} to {r['arm_off']}), so "
+        f"this test would pass by comparing zero with zero")
+
+    assert len(r["revealed_findings"]) == r["arm_off"] - r["arm_on"], (
+        f"the enumeration has {len(r['revealed_findings'])} entries where the "
+        f"two independently counted gate totals differ by "
+        f"{r['arm_off'] - r['arm_on']}. Either the join dropped a finding or "
+        f"the toggle lost one.")
+
+    for f in r["revealed_findings"]:
+        # Every revealed finding sat in a paragraph the WORD alone sourced.
+        # `masked` here would mean the join found the wrong paragraph, which is
+        # exactly the mis-attribution the same-tree key exists to prevent.
+        assert f["exposed"] is True, f
+        assert f["otherwise_sourced_by"] is None, f
+        assert f["citation_words"], f
+        assert f["line"] > 0 and f["snippet"].strip(), f
+
+    print(f"✓ main {r['main_sha'][:7]}: {r['arm_on']} findings with the arm "
+          f"on, {r['arm_off']} with it off, {len(r['revealed_findings'])} "
+          f"enumerated over {len({f['file'] for f in r['revealed_findings']})} "
+          f"file(s)")

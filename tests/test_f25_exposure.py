@@ -38,6 +38,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 import claim_auditor as ca          # noqa: E402
 import f25_exposure as fx           # noqa: E402
+import gate_probe as gp             # noqa: E402
 
 
 def test_the_citation_word_arm_really_is_tried_before_the_file_ref_arm():
@@ -232,20 +233,27 @@ def test_every_total_is_reconciled_against_its_itemisation():
 
 
 def test_citation_words_is_restored_even_when_a_measurement_raises():
-    """A module left patched would corrupt every later scan in the process."""
+    """A module left patched would corrupt every later scan in the process.
+
+    RETARGETED 2026-07-30. The toggle moved into `gate_probe.arm_delta` when
+    the probe was made shared, so patching `f25_exposure._findings` no longer
+    intercepts the call path and this test would have passed by never raising,
+    which is the blank-gate failure it exists to prevent. It now patches the
+    function `arm_delta` actually calls.
+    """
     original = ca.CITATION_WORDS
     boom = RuntimeError("planted")
 
-    def explode(_paths):
+    def explode(_module, _root, _paths):
         raise boom
 
-    real_findings = fx._findings
-    fx._findings = explode
+    real_findings = gp.findings_over
+    gp.findings_over = explode
     try:
         with pytest.raises(RuntimeError):
             fx.gate_delta(["README.md"])
     finally:
-        fx._findings = real_findings
+        gp.findings_over = real_findings
 
     assert ca.CITATION_WORDS is original, (
         "CITATION_WORDS was left patched after a failure; every subsequent "

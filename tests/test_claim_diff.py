@@ -189,3 +189,79 @@ def test_editing_a_claim_makes_it_read_as_introduced():
 ])
 def test_bucket_predicate(path, expected):
     assert claim_diff.bucket_of(path) == expected
+
+
+# ---------------------------------------------------------------------------
+# --blocker-delta: what did a commit add to the merge blocker?
+# ---------------------------------------------------------------------------
+# The blocker read 274 unsourced at f2de2ff and 279 at 2c1f080 and nothing said
+# which five appeared. These cover the reporting path with doctored records, so
+# the arithmetic is proved without checking out two worktrees on every run.
+
+
+def _delta(added=(), removed=(), older_total=10, newer_total=10) -> dict:
+    return {
+        "older": "a" * 40, "older_tree": "b" * 40, "older_total": older_total,
+        "older_corpus": 1, "older_scanned": 1,
+        "newer": "c" * 40, "newer_tree": "d" * 40, "newer_total": newer_total,
+        "newer_corpus": 1, "newer_scanned": 1,
+        "added": list(added), "removed": list(removed),
+        "added_occurrences": sum(r["count"] for r in added),
+        "removed_occurrences": sum(r["count"] for r in removed),
+        "net": newer_total - older_total,
+        "carried_instrument": [],
+    }
+
+
+def _row(file="x.md", snippet="5%", count=1, was=0, now=1, lines=(9,)):
+    return {"file": file, "kind": "numeric", "snippet": snippet,
+            "count": count, "was": was, "now": now, "lines": list(lines),
+            "lines_older": [] if was == 0 else list(lines),
+            "lines_newer": list(lines), "ambiguous": was > 0}
+
+
+def test_blocker_delta_report_reconciles_added_removed_and_net():
+    lines: list[str] = []
+    claim_diff.report_blocker_delta(
+        _delta(added=[_row()], older_total=10, newer_total=11), lines.append)
+    assert any("findings added to the blocker: 1" in ln for ln in lines), lines
+    assert any("net movement, as added minus removed: 1" in ln
+               for ln in lines), lines
+
+
+def test_blocker_delta_report_refuses_a_net_its_rows_do_not_account_for():
+    """Control: the net must equal added minus removed, or nothing prints."""
+    bad = _delta(added=[_row()], older_total=10, newer_total=99)
+    with pytest.raises(claim_diff.TotalMismatch) as exc:
+        claim_diff.report_blocker_delta(bad, lambda _l: None)
+    assert "net movement" in str(exc.value), exc.value
+
+
+def test_blocker_delta_report_refuses_an_added_total_its_files_miss():
+    bad = _delta(added=[_row()], older_total=10, newer_total=11)
+    bad["added_occurrences"] = 7
+    with pytest.raises(claim_diff.TotalMismatch):
+        claim_diff.report_blocker_delta(bad, lambda _l: None)
+
+
+def test_a_signature_that_already_existed_is_reported_as_ambiguous():
+    """Identical claim text repeated in one file cannot be told apart.
+
+    Reporting a confident line number for it would be a fabricated attribution.
+    The row says so and prints both sides instead.
+    """
+    lines: list[str] = []
+    row = _row(was=1, now=2, lines=(5, 336))
+    claim_diff.report_blocker_delta(
+        _delta(added=[row], older_total=10, newer_total=11), lines.append)
+    assert any("AMBIGUOUS" in ln for ln in lines), lines
+    assert any("was 1x at [5, 336]" in ln or "was 1x at" in ln
+               for ln in lines), lines
+
+
+def test_content_signature_is_what_the_delta_keys_on():
+    """Lines move between commits; the signature must not depend on them."""
+    a = {"file": "d.md", "line": 5, "kind": "superlative", "snippet": "the only"}
+    b = {"file": "d.md", "line": 336, "kind": "superlative",
+         "snippet": "The Only"}
+    assert claim_diff.content_signature(a) == claim_diff.content_signature(b)
