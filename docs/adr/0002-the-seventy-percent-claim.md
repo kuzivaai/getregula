@@ -118,8 +118,12 @@ that no source exists; what to do about that is an argument.
   and a figure that needs its denominator quoted with it is not the crisp
   marketing number the current sentence is doing duty as.
 - Publishing a derived figure would create a NEW claim of exactly the kind this
-  programme has already paid for: the 83.5% precision figure passed the gate
-  while failing honest provenance at five of eight locations.
+  programme has already paid for: the headline precision figure passed the gate
+  while failing honest provenance at five of eight locations, which is the
+  finding `tests/test_precision_provenance.py` exists to enforce against. The
+  figure itself is deliberately not repeated here, because that test's bar is
+  that any surface publishing it must carry N and the single-reviewer basis at
+  the point of use, and this document has no business restating either.
 
 **The case against, stated because the owner should weigh it:**
 
