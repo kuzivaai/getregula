@@ -92,7 +92,7 @@ python3 -m pytest tests/ -q
 
 Regula also ships a legacy auto-discovery runner for the classification
 suite — run `python3 tests/test_classification.py` for its output
-(`Results: 1386 passed, 0 failed, 0 skipped (1043 test functions)` — the
+(`Results: 1386 passed, 0 failed, 0 skipped (1043 test functions)`; the
 passed figure was verified 2026-07-30 by an actual run at 1033 functions,
 exit code 0; the ten functions wired since use bare `assert` and cannot move
 it; the bracketed function count is machine-checked by
