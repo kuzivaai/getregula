@@ -1,8 +1,10 @@
 # Measurement Rules
 
-Five rules. This programme paid for every one of them with a wrong number
-that was published or nearly published. They are loaded every session so
-they survive a context reset, which a promise does not.
+This programme paid for every rule in this file with a wrong number that
+was published or nearly published. They are loaded every session so they
+survive a context reset, which a promise does not. (This opening used to
+hand-count the rules and drifted as corollaries were added, which is rule
+4c's own failure mode; the count is gone for that reason.)
 
 If you are about to report a number, you are in scope.
 

@@ -19,14 +19,20 @@ Add a new risk detection pattern to Regula for: $ARGUMENTS
    },
    ```
 
-3. **Add test cases** to `tests/test_classification.py`:
+3. **Cascade the published pattern count.** Adding a pattern moves the
+   tier-regex count that public surfaces quote. In the SAME commit as the
+   pattern: `python3 scripts/site_facts.py` then
+   `python3 scripts/cascade_count.py --apply`, in that order. Skipping this
+   leaves the fast gates red at that commit.
+
+4. **Add test cases** to `tests/test_classification.py`:
    - Test that the pattern matches expected input
    - Test that it does NOT match benign input (false positive check)
    - Add both test functions to the manual list at the bottom
 
-4. **Run verification**: `/verify`
+5. **Run verification**: `/verify`
 
-5. **Run benchmark** to check for false positives on real projects:
+6. **Run benchmark** to check for false positives on real projects:
    ```bash
    python3 benchmarks/run_benchmark.py  # if benchmark suite exists
    ```

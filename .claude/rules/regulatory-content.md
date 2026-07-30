@@ -8,7 +8,7 @@ paths:
 
 # Regulatory Content Rules
 
-- NEVER state an EU AI Act deadline without noting the Omnibus provisional agreement of 7 May 2026 (Annex III postponed to 2 Dec 2027, pending formal adoption)
+- The Digital Omnibus is ENACTED: Regulation (EU) 2026/1744, published in the Official Journal 24 July 2026, in force 27 July 2026. Annex III high-risk obligations are deferred to 2 Dec 2027. `scripts/omnibus.py` is the single source of truth for these dates; on any disagreement between prose (including this file) and that module, the module wins. Do not describe the Omnibus as provisional, pending, or awaiting publication.
 - NEVER state a regulatory fine, article number, or obligation without verifying against the primary legislation text
 - For any regulatory claim, search for "[regulation] amendment 2025 2026" before writing
 - Cite specific article numbers: "Article 9" not "risk management requirements"
