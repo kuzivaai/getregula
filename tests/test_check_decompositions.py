@@ -336,8 +336,17 @@ def test_the_tracked_corpus_is_clean_at_this_commit():
     print("✓ every tracked record reconciles at this commit")
 
 
-def test_cli_exit_codes(tmp_path):
-    """Exit codes are the contract: 0 clean, 1 findings, 2 control failed."""
+def test_decomposition_cli_exit_codes(tmp_path):
+    """Exit codes are the contract: 0 clean, 1 findings, 2 control failed.
+
+    Named for this module rather than `test_cli_exit_codes`, which
+    `tests/test_classification.py` already defines at its line 3231. Two
+    same-named functions in two modules are not a double-count, but
+    `tests/test_collection_integrity.py` cannot tell that from a runner
+    rebind when one of the two modules is `test_classification.py`, and it
+    failed here for exactly that reason. The name is the cheaper thing to
+    change.
+    """
     clean = _write(tmp_path, "clean.md", "The split is 7 + 15 + 18 = 40.\n")
     dirty = _write(tmp_path, "dirty.md", "The split is 7 + 15 + 21 = 40.\n")
 

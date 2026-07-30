@@ -207,6 +207,11 @@ def _manifest_surfaces() -> list[str]:
     # A designated published surface the auditor cannot scan is finding N6, not
     # a rounding error. `site/llms-full.txt` is on this manifest and `.txt` is
     # outside SCANNED_SUFFIXES, so the corpus is 9 of 10 and the tenth is named.
+    # This set difference cannot carry the N37 ordinal defect, checked
+    # 2026-07-30. Its elements are FILE PATHS from a manifest, not findings: a
+    # path occurs at most once, so there is no multiplicity to collapse and no
+    # occurrence to attribute to. Contrast `claim_diff.classify_findings`,
+    # where the elements were claim keys standing in for several occurrences.
     DROPPED["manifest"] = [
         f"{p} (suffix {Path(p).suffix or 'none'} is outside "
         f"claim_auditor.SCANNED_SUFFIXES; finding N6)"
