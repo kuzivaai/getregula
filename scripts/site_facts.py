@@ -31,6 +31,11 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+# Self-protection for the bare sibling import in __main__ (tree_guard), per
+# .claude/rules/python-scripts.md: without it the module imports only when a
+# caller happens to have seeded sys.path first.
+sys.path.insert(0, str(Path(__file__).parent))
+
 REPO = Path(__file__).resolve().parent.parent
 OUT_JSON = REPO / "data" / "site_facts.json"
 OUT_MD = REPO / "data" / "site_facts.md"
