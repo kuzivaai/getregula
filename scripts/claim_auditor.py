@@ -52,10 +52,22 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # module importable if cascade_count is ever absent (scripts/ ships as the
 # PyPI package); tests/test_cascade_count.py asserts the two are identical,
 # so the fallback cannot drift unnoticed either.
+# `_GAP_SOURCE` exists because an adversarial review on 2026-07-31 showed
+# that asserting `claim_auditor._GAP == cascade_count.GAP` detects DRIFT but
+# never detects that the import failed and the fallback is live: while the
+# two happen to be equal, the assertion passes either way. The flag makes
+# the fallback observable, and `except Exception` swallowing a syntax error
+# in cascade_count now leaves a signal instead of nothing.
 try:
     from cascade_count import GAP as _GAP, _dotted
-except Exception:  # pragma: no cover - defensive, asserted equal by tests
-    _GAP = r"(?:\s|</?[a-zA-Z][^>]*>)+"
+    _GAP_SOURCE = "cascade_count"
+except Exception:  # pragma: no cover - defensive, asserted by tests
+    _GAP_SOURCE = "fallback"
+    _GAP = (r"(?:[ \t]|</?(?:strong|b|em|i|span|a|code|kbd|mark|small|sup"
+            r"|sub|abbr|u|q|time|data|var|samp|cite|dfn|s|del|ins|wbr|bdi"
+            r"|bdo|font)\b[^>]*>|&(?:nbsp|ensp|emsp|thinsp|hairsp|numsp"
+            r"|puncsp|#160|#8194|#8195|#8201|#8202|#x[aA]0|#x00[aA]0|#x2002"
+            r"|#x2003|#x2009);|<!--.*?-->)+")
 
     def _dotted(value: int) -> str:
         return f"{value:,}".replace(",", ".")
@@ -1136,7 +1148,7 @@ def check_recall_claims(text: str, rel_path: str,
 # 2026-07-31: the sensitivity defect was repaired (unit_patterns["tests"]
 # now tolerates inline markup and dotted grouping), and the cost of the
 # parking was then measured: docs/architecture.md had been publishing
-# "1,223 tests" against a canonical of 2,619, short by 1,396. It is added
+# 1,223 against a canonical of 2,618 at the moment of discovery (short by 1,395; the canonical rose during the session as tests were added, so any single subtraction is only true of one instant, which is why the two figures are stated together). It is added
 # below. docs/CONTINUITY.md is deliberately NOT added: "2,600+ tests" is an
 # open-ended claim that remains true, and cascading a hard number into it
 # would make a doc that needs no maintenance need it.
@@ -1158,7 +1170,7 @@ VERIFY_FACTS_FILES: list = [
     "SECURITY.md",
     "docs/TRUST.md",
     "docs/MODEL_CARD.md",
-    # Added 2026-07-31 after it was found 1,396 short. See the note above.
+    # Added 2026-07-31 after it was found short. See the note above.
     #
     # SCOPED, and the scoping is not a suppression. This file is a directory
     # tree whose comments carry deliberate PER-MODULE counts:
@@ -1172,7 +1184,15 @@ VERIFY_FACTS_FILES: list = [
     # gate's error, not the document's. Listing the facts a surface actually
     # publishes is the fix; adding either number to .claim-allowlist would
     # have hidden a real defect class behind a real false positive.
-    ("docs/architecture.md", {"tests"}),
+    # Scoped to the facts this file genuinely publishes. `frameworks` is in
+    # the set because docs/architecture.md:28 and :88 both state "13
+    # frameworks" and both match the gate's own frameworks pattern; an
+    # adversarial review on 2026-07-31 showed the first version of this
+    # entry, scoped to {"tests"} alone, silently dropped that coverage while
+    # its own comment claimed to name "the facts that surface actually
+    # publishes". `tier_regexes` is EXCLUDED because the only pattern counts
+    # in this file are per-module (18 and 14) and correct; see the note above.
+    ("docs/architecture.md", {"tests", "frameworks"}),
     "site/index.html",
     "site/pricing.html",
     "site/about.html",

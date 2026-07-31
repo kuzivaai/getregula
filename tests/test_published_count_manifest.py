@@ -45,6 +45,30 @@ def _tracked_files() -> list:
     return [Path(p) for p in out.splitlines() if p]
 
 
+
+def _count_pattern(count: int):
+    """The literal-scan regex, shared so a test can exercise it directly.
+
+    Matches the count bare, comma-grouped and dot-grouped (the DE/PT-BR
+    form, which defeated a manual sweep before).
+
+    `(?<!\\w)`, not `(?<!\\d)`. Excluding only a preceding DIGIT lets the
+    count match inside a longer alphanumeric run, which is the exact defect
+    scripts/cascade_count.py::_patterns already carries a comment about
+    ("ee2353d8330 must NOT match ... the 28 July near-miss"). MEASURED
+    2026-07-31: at one canonical value the scan failed naming
+    scripts/report.py, where every hit was inside a hex colour literal of
+    the form `#dcNNNN` and nothing else. A hex colour is not a published
+    claim, and allowlisting the file would have blinded the guard to every
+    real claim in it. The colliding value is deliberately not written into
+    this file, for the same reason the note inside the test gives.
+    """
+    grouped = f"{count:,}"
+    variants = {str(count), grouped, grouped.replace(",", ".")}
+    return re.compile(
+        r"(?<!\w)(" + "|".join(re.escape(v) for v in sorted(variants))
+        + r")(?!\d)")
+
 class TestPublishedCountManifest(unittest.TestCase):
     def test_manifest_is_wellformed(self):
         m = _manifest()
@@ -58,6 +82,27 @@ class TestPublishedCountManifest(unittest.TestCase):
             self.assertIn(entry["role"], ("source", "generated"))
             self.assertTrue((REPO / entry["path"]).exists())
 
+    def test_a_hex_colour_is_not_a_published_count(self):
+        """THE CONTROL for the lookbehind, both ways.
+
+        Constructed from the live canonical rather than a literal, because
+        this file is inside the corpus the scan walks and a literal here
+        would fail the very check it explains.
+        """
+        count = _canonical_count()
+        rx = _count_pattern(count)
+        self.assertEqual(
+            rx.findall(f'    exec_colour = "#dc{count}"'), [],
+            "the count matched inside a hex colour literal, so any file "
+            "using that colour is a false violation")
+        self.assertEqual(
+            rx.findall(f"sha256:ee{count}d8330ed8de1"), [],
+            "the count matched inside a hash path (the 28 July near-miss)")
+        self.assertEqual(
+            rx.findall(f"| {count:,} |"), [f"{count:,}"],
+            "the narrowed lookbehind stopped seeing a real published claim, "
+            "so the guard has been blinded rather than corrected")
+
     def test_count_literal_appears_nowhere_outside_the_manifest(self):
         count = _canonical_count()
         m = _manifest()
@@ -68,11 +113,7 @@ class TestPublishedCountManifest(unittest.TestCase):
 
         # Match the number both bare and comma-grouped, and the DE/PT-BR
         # dot-grouped form, since those defeated a manual sweep before.
-        grouped = f"{count:,}"
-        variants = {str(count), grouped, grouped.replace(",", ".")}
-        pattern = re.compile(
-            r"(?<!\d)(" + "|".join(re.escape(v) for v in sorted(variants))
-            + r")(?!\d)")
+        pattern = _count_pattern(count)
 
         # A digit sequence is not a claim just because it appears in a file
         # (measurement rule 4d). Machine-generated scan artefacts carry

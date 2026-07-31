@@ -164,6 +164,68 @@ class TestCountsAreSeenInsidePublishedMarkup(unittest.TestCase):
             cc._stale_values(text, 2612), set(),
             "an unrelated number in the same sentence became a candidate")
 
+    def test_space_entities_and_comments_are_markup_too(self):
+        """`&nbsp;` is a separator by the same reasoning that made
+        `</strong> ` one, and it appears 64 times in the published site.
+
+        A guard that saw tags but not entities would repeat this
+        repository's documented entity-blindness failure, where a check for
+        the literal em dash let seven `&mdash;` entities render live.
+        """
+        for text, label in (
+                ('<strong>2,354</strong>&nbsp;tests', "named entity"),
+                ('2,354&#160;tests', "numeric entity"),
+                ('2,354&#xA0;tests', "hex entity"),
+                ('2,354<!-- build stamp -->tests', "HTML comment")):
+            self.assertEqual(
+                cc._stale_values(text, 2622), {2354},
+                f"a count separated by {label} was not seen")
+
+    def test_the_gap_never_crosses_a_block_boundary(self):
+        """THE CONTROL for the widening. A number in one block and a unit
+        word in the next are not one claim, and treating them as one puts
+        years back in scope: `<h2>Roadmap 2026</h2>\\n<p>tests ...` nominated
+        2026 under the first version of GAP.
+        """
+        for text, label in (
+                ('<h2>Roadmap 2026</h2>\n<p>tests were rewritten</p>',
+                 "year across h2/p"),
+                ('<tr><td>2,468</td><td>Tests updated</td></tr>',
+                 "adjacent table cells"),
+                ('<ul><li>2,595</li><li>tests</li></ul>',
+                 "adjacent list items"),
+                ('<em>2026</em>\n\ntests', "paragraph break")):
+            self.assertEqual(
+                cc._stale_values(text, 2622), set(),
+                f"the gap crossed a block boundary ({label}), so an "
+                f"unrelated number became a rewrite candidate")
+
+    def test_swap_rewrites_exactly_one_occurrence(self):
+        """Measurement rule 4d, reopened and closed again.
+
+        Once GAP pulls complete tags into the match, the matched fragment
+        carries attribute values. Three chained unbounded `str.replace`
+        calls rewrote digits inside an href and an id, which is the uv.lock
+        near-miss class in a different file.
+        """
+        frag = ('<strong>2,354</strong>'
+                '<a href="/c#build-2354" id="n2354"> tests</a>')
+        out = cc._swap(frag, 2354, 2622)
+        self.assertTrue(
+            out.startswith('<strong>2,622</strong>'),
+            f"the published number was not rewritten: {out!r}")
+        self.assertIn('href="/c#build-2354"', out,
+                      f"an href was rewritten: {out!r}")
+        self.assertIn('id="n2354"', out, f"an id was rewritten: {out!r}")
+
+    def test_swap_still_handles_the_badge_where_the_number_is_not_first(self):
+        """The other half of the one-substitution rule: the badge template
+        does not put the count first, so a `startswith` shortcut alone would
+        silently stop maintaining the README badge."""
+        self.assertEqual(
+            cc._swap("tests-2354%20passing", 2354, 2622),
+            "tests-2622%20passing")
+
     def test_years_behind_markup_are_still_not_rewritten(self):
         """The other control: markup tolerance must not resurrect the year
         class that COUNT_TEMPLATES exists to prevent."""
@@ -191,7 +253,8 @@ class TestEveryPublishedSurfaceCarriesTheCanonicalCount(unittest.TestCase):
     2. Deliberately does not iterate the manifest either. The manifest is a
        hand-maintained list, and measurement rule 4c says a completeness
        claim must come from enumeration. It did not: `docs/architecture.md`
-       published "1,223 tests" (short by 1,395) while absent from both the
+       published "1,223 tests" against a canonical of 2,618 (short by
+       1,395 at that instant) while absent from both the
        manifest and claim_auditor's VERIFY_FACTS_FILES, a gap
        claim_auditor.py:1109-1114 had recorded as known and parked. Covering
        only manifest entries would have left it wrong.
@@ -204,7 +267,15 @@ class TestEveryPublishedSurfaceCarriesTheCanonicalCount(unittest.TestCase):
     different quantity and must not be flagged.
     """
 
-    UNIT = r"(?:tests|testes|Tests|pytest-collected|passing)"
+    # Matched case-insensitively, and the badge form is included. An
+    # adversarial review on 2026-07-31 showed the first version, a hand-listed
+    # set of case variants matched case-sensitively with a `\s*` separator,
+    # could not see the README/llms-full.txt badge (`tests-2622%20passing`),
+    # `TESTS`, `Testes`, or the "automated tests" phrasing claim_auditor
+    # supports. For the badge that left coverage resting on exactly the two
+    # things this class exists not to trust: the tool and the manifest.
+    UNIT = r"(?:tests|testes|pytest-collected|passing|automated\s+tests)"
+    SEP = r"(?:\s|%20|&nbsp;|&\#160;|<!--.*?-->|</?[a-zA-Z][^>]*>)*"
 
     # Historical and verbatim records. A changelog entry, a ledger row and a
     # rules file citing a past incident MUST keep the number that was true
@@ -234,10 +305,10 @@ class TestEveryPublishedSurfaceCarriesTheCanonicalCount(unittest.TestCase):
         wrong = []
         for rel in self._tracked_surfaces():
             path = cc.REPO / rel
-            flat = re.sub(r"</?[a-zA-Z][^>]*>", "",
-                          path.read_text(encoding="utf-8", errors="replace"))
+            flat = path.read_text(encoding="utf-8", errors="replace")
             for m in re.finditer(
-                    rf"(\d{{1,3}}[.,]\d{{3}}|\d{{4}})\s*{self.UNIT}\b", flat):
+                    rf"(\d{{1,3}}[.,]\d{{3}}|\d{{4}})"
+                    rf"{self.SEP}{self.UNIT}\b", flat, re.IGNORECASE):
                 value = int(m.group(1).replace(",", "").replace(".", ""))
                 if value != canonical:
                     wrong.append(f"{rel}: publishes {m.group(1)}")
@@ -260,10 +331,20 @@ class TestEveryPublishedSurfaceCarriesTheCanonicalCount(unittest.TestCase):
         behind.
         """
         import claim_auditor
+        # Value equality detects DRIFT. It does NOT detect that the import
+        # failed and the copied fallback is live, because while the two are
+        # equal the assertion passes either way; an adversarial review
+        # demonstrated exactly that by blocking the import via sys.meta_path.
+        # _GAP_SOURCE is what makes the fallback observable.
+        self.assertEqual(
+            claim_auditor._GAP_SOURCE, "cascade_count",
+            "claim_auditor fell back to its copied gap regex instead of "
+            "importing cascade_count.GAP; the two can now drift, and an "
+            "import error (including a syntax error in cascade_count) is "
+            "being swallowed silently")
         self.assertEqual(
             claim_auditor._GAP, cc.GAP,
-            "claim_auditor fell back to its copied gap regex instead of "
-            "importing cascade_count.GAP, so the two can now drift")
+            "claim_auditor's gap regex has drifted from cascade_count.GAP")
         self.assertEqual(claim_auditor._dotted(2619), "2.619")
 
     def test_the_enumeration_actually_reaches_the_known_surfaces(self):

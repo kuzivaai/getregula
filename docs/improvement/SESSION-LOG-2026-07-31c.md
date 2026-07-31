@@ -254,3 +254,129 @@ site/locales/de.html:328     <strong ...>2.622</strong> Tests
 site/locales/pt-br.html:337  <strong ...>2.622</strong> testes
 docs/architecture.md:53      101 test files, 2,622 tests
 ```
+
+## FULL SUITE, quiescent tree, commit captured before launch and confirmed after
+```
+$ git rev-parse --short HEAD; git rev-parse 'HEAD^{tree}'
+a181128
+dae3093ef5f89eef6bd8f1359384679c1c8604ae
+$ python3 -m pytest tests/ -q
+2622 passed in 1441.20s (0:24:01)
+FULL SUITE rc=0          (read from $? after redirection, not through a pipe)
+$ git status --porcelain  -> empty, still a181128
+$ grep -c FAILED          -> 0
+```
+The passing count equals the published count exactly: 2,622.
+
+## STEP 4: adversarial check
+
+A read-only subagent was given the four commits, the ledger and the session
+log, and told to falsify the work and that finding nothing was acceptable.
+It returned 11 findings. **Every one below was reproduced in this session
+before being acted on; none was taken on the reviewer's word.**
+
+### Reproduced, and all four are real
+```
+FINDING 1 control, entity gap:
+   A tag gap (works today)      -> [2354]
+   B &nbsp; entity gap          -> []
+   C HTML comment gap           -> []
+
+FINDING 4 control, _swap over a fragment carrying extra digits:
+   IN : <strong>2,354</strong><a href="/c#build-2354" id="n2354"> tests</a>
+   OUT: <strong>2,622</strong><a href="/c#build-2622" id="n2622"> tests</a>
+
+FINDING 5 control, gap crossing block boundaries:
+   D year across block tags     -> [2026]
+   E adjacent table cells       -> [2468]
+
+FINDING 3: architecture.md publishes the frameworks fact, twice
+   :28  framework_mapper.py  # Cross-framework compliance mapping (13 frameworks)
+   :88  **Multi-framework mapping.** 13 frameworks with full crosswalk data
+```
+
+### What was FIXED from the adversarial review (6 of 11, plus 1 it did not find)
+
+After the fixes, the reviewer's own counterexamples:
+```
+FINDING 1 (entity / comment gap) now:
+   A tag gap            -> [2354]
+   B &nbsp; entity      -> [2354]
+   C HTML comment       -> [2354]
+   C2 &#160; numeric    -> [2354]
+
+FINDING 4 (_swap must touch exactly one occurrence):
+   OUT: <strong>2,622</strong><a href="/c#build-2354" id="n2354"> tests</a>
+   badge: tests-2622%20passing
+   dotted: 2.622</strong> Tests
+
+FINDING 5 (must NOT cross block boundaries):
+   D year across h2/p     -> []
+   E table cells          -> []
+   F list items           -> []
+   M year tag word        -> []
+```
+
+FAIL-BEFORE for the three new regression tests, implementation reverted to
+`a181128` with the tests kept:
+```
+E  AssertionError: 2354 : a count separated by named entity was not seen
+E  AssertionError: 'href="/c#build-2354"' not found in
+   '<strong>2,622</strong><a href="/c#build-2622" id="n2622"> tests</a>'
+E  AssertionError: 2026 : the gap crossed a block boundary (year across h2/p)
+3 failed, 6 passed in 0.25s
+```
+
+### An eighth defect, found BY the repair rather than by the reviewer
+Regenerating moved the canonical to a value whose digits collide with a hex
+colour, and `test_published_count_manifest.py` failed naming
+`scripts/report.py`:
+```
+E  the published test count appears in files not listed in
+   data/published_count_manifest.json: ['scripts/report.py']
+$ grep -n '#dc' scripts/report.py    ->  exec_colour = "#dc2626"  (x3)
+```
+Its scan used `(?<!\d)`, which is the exact defect
+`cascade_count._patterns` already carries a comment about ("ee2353d8330 must
+NOT match ... the 28 July near-miss"). Fixed to `(?<!\w)`, with a both-ways
+control:
+```
+OLD  (?<!\d) on '#dc2626'    -> ['2626']
+NEW  (?<!\w) on '#dc2626'    -> []
+OLD  (?<!\d) on '| 2,626 |'  -> ['2,626']
+NEW  (?<!\w) on '| 2,626 |'  -> ['2,626']
+```
+Allowlisting `scripts/report.py` would have blinded the guard to every real
+claim in it. **While writing that fix I wrote the count literal into the
+comment and the test failed naming its own file** - the file warns about
+exactly this - so the literal was removed and the control is constructed
+from the live canonical instead.
+
+### Gates and targeted tests after all repairs
+```
+rc=0 claim_auditor --verify-facts   rc=0 site_integrity
+rc=0 cascade_count --check          rc=0 build_recall_artefact --check
+rc=0 build_gap_demo --check         rc=0 check_selfref_sourcing --control-only
+rc=0 check_decompositions           rc=0 ruff
+$ pytest tests/test_cascade_count.py tests/test_stale_number_floor.py \
+         tests/test_site_facts.py tests/test_published_count_manifest.py -q
+50 passed in 27.88s   rc=0
+canonical = 2627
+```
+
+### What was DISPUTED or left open, and why
+Nothing was disputed as wrong. Five items are recorded OPEN on ledger N57
+rather than fixed: the undisclosed 50% magnitude floor in `_stale_values`
+(so the claim that manifesting `docs/architecture.md` brought it under the
+cascade tool is WITHDRAWN; it was corrected by hand and is held by the
+at-rest test and claim_auditor, neither of which has a floor); the
+`.claim-allowlist` range patterns that silently covered the exact stale
+strings in a third instrument; `--verify-facts` deriving its canonical from
+a working-tree compute; the `scripts/` exemption swallowing
+`scripts/dashboard/index.html` (measured to carry no count claim today);
+and a cosmetic wrong figure in one `wrong_pat` message.
+
+The reviewer's finding 6 was correct and is fixed: three artefacts stated
+the architecture.md discrepancy as 1,395, 1,396 and (implicitly) 1,399,
+because the canonical moved during the session. All now read "1,223 against
+a canonical of 2,618 at the moment of discovery" with the instant named.
