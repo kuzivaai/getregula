@@ -27,6 +27,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import re
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -203,12 +204,41 @@ def count_languages() -> int:
     return 8  # Python, JS, TS, Java, Go, Rust, C, C++
 
 
+def untracked_test_contributors(per_file, tracked=None) -> list[str]:
+    """Return the test-file names in `per_file` that git does not track.
+
+    Every file that contributes to a published count must be in the
+    repository, or the count does not reproduce from a checkout. `per_file`
+    is keyed by basename, which is what the artefact records, so the
+    comparison is made on basenames.
+
+    `tracked` is injectable for testing. Left None, it asks git. A git
+    failure returns an empty set rather than raising, because this predicate
+    feeds a warning inside a generator that must keep working outside a git
+    checkout (`scripts/` ships as the PyPI package); the invariant is
+    enforced at rest by tests/test_site_facts.py, which does run in a
+    checkout.
+    """
+    if tracked is None:
+        try:
+            out = subprocess.run(
+                ["git", "ls-files", "-z", "--", "tests"],
+                cwd=str(REPO), capture_output=True, text=True, check=True,
+            ).stdout
+            tracked = {
+                name.rsplit("/", 1)[-1]
+                for name in out.split("\0") if name.endswith(".py")
+            }
+        except (OSError, subprocess.CalledProcessError):
+            return []
+    return sorted(name for name in per_file if name not in tracked)
+
+
 def count_tests() -> dict:
     """Return a breakdown of test functions and per-file counts."""
     # Use actual pytest collection to get the truthful executable count,
     # handling parametrization and the custom test runner properly, rather
     # than just grepping for 'def test_'.
-    import subprocess
     tests_dir = REPO / "tests"
     if not tests_dir.exists():
         return {"total_collected": 0, "total_functions": 0, "per_file": {}}
@@ -240,6 +270,27 @@ def count_tests() -> dict:
         per_file[path.name] = len(
             re.findall(r"^def (test_\w+)", text, re.MULTILINE)
         )
+
+    # N52. Both counts above read the WORKING TREE: the glob walks it, and
+    # `pytest --collect-only` collects from it. An untracked test file is
+    # therefore counted into figures that cascade to nine published surfaces,
+    # and a clean checkout of the same commit collects a different number.
+    # Warn rather than raise: the legitimate workflow is to add a test file,
+    # regenerate, cascade and commit all of it together, and refusing here
+    # would block exactly that. The invariant is enforced at rest instead, by
+    # tests/test_site_facts.py, which fails if a COMMITTED artefact names a
+    # contributor git does not track.
+    stray = untracked_test_contributors(per_file)
+    if stray:
+        print(
+            "WARNING: the test count below includes files that are not "
+            "tracked by git, so it does not reproduce in a clean checkout:\n"
+            + "\n".join(f"  {name}" for name in stray)
+            + "\nCommit them in the same commit as the count cascade, or "
+              "remove them before regenerating.",
+            file=sys.stderr,
+        )
+
     return {
         "total_collected": total_collected,
         "total_functions": sum(per_file.values()),
