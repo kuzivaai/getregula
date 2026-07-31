@@ -38,5 +38,5 @@
       "note": "Programme working documents record measurements and corrections, including superseded figures, by design."
     }
   ],
-  "_added_2026_07_31": "docs/architecture.md joined the list after it was found publishing '1,223 tests', short by 1,395, while absent from this manifest and from claim_auditor.VERIFY_FACTS_FILES. scripts/claim_auditor.py:1109-1114 had recorded that exact gap as known and parked. A hand-maintained list cannot prove its own completeness, so the backstop is now tests/test_cascade_count.py::TestEveryPublishedSurfaceCarriesTheCanonicalCount, which enumerates tracked .md/.html/.txt with git ls-files instead of reading this file (measurement rule 4c)."
+  "_added_2026_07_31": "docs/architecture.md joined the list after it was found publishing '1,223 tests' against a canonical of 2,618 at the moment of discovery (short by 1,395 at that instant; the canonical rose during the session as tests were added), while absent from this manifest and from claim_auditor.VERIFY_FACTS_FILES. scripts/claim_auditor.py:1109-1114 had recorded that exact gap as known and parked. A hand-maintained list cannot prove its own completeness, so the backstop is now tests/test_cascade_count.py::TestEveryPublishedSurfaceCarriesTheCanonicalCount, which enumerates tracked .md/.html/.txt with git ls-files instead of reading this file (measurement rule 4c)."
 }

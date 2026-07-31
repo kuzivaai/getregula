@@ -174,7 +174,15 @@ class TestEndToEndThroughVerifyFacts(unittest.TestCase):
         2026-07-31 could be lost silently by a later edit to the set.
         """
         import tempfile
-        with tempfile.TemporaryDirectory(dir=str(REPO_ROOT)) as td:
+        # Under build/, which .gitignore:6 excludes. verify_facts resolves
+        # paths against REPO_ROOT so the fixture must live inside the repo,
+        # but it must not DIRTY it: this programme has five recorded
+        # incidents (N45, N48, N50, N54) of a mutating tree invalidating a
+        # measurement, and a test that transiently creates an untracked
+        # tmpXXXX/ at the repo root is that same class.
+        holder = REPO_ROOT / "build"
+        holder.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=str(holder)) as td:
             planted = Path(td) / "PLANTED_SCOPED.md"
             planted.write_text(
                 "# Fixture\n\nThe suite carries 1,100 tests today.\n",

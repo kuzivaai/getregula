@@ -77,12 +77,38 @@ DENY_NAMES = {"uv.lock", "poetry.lock", "package-lock.json", "Cargo.lock",
 # carry the canonical value" and exited 0 while site/index.html was 258
 # short. It stayed that way across cascades to 2,595, 2,608 and 2,612.
 #
-# The gap tolerates whitespace and complete HTML tags, and nothing else. It
-# deliberately does NOT tolerate arbitrary text: the unit word must still be
-# the next thing after the number, because the unit word is the whole reason
-# a year is safe here. Widening this to "somewhere near the word tests" is
-# the heuristic the header above records as tried and abandoned twice.
-GAP = r"(?:\s|</?[a-zA-Z][^>]*>)+"
+# The gap tolerates horizontal whitespace, INLINE HTML tags, space entities
+# and HTML comments, and nothing else. It deliberately does NOT tolerate
+# arbitrary text: the unit word must still be the next thing after the
+# number, because the unit word is the whole reason a year is safe here.
+# Widening this to "somewhere near the word tests" is the heuristic the
+# header above records as tried and abandoned twice.
+#
+# Three deliberate narrowings, each one paid for by an adversarial review of
+# the first version of this constant on 2026-07-31:
+#
+# 1. INLINE TAGS ONLY, named explicitly. The first version accepted any tag,
+#    `</?[a-zA-Z][^>]*>`, which let the gap cross a block boundary:
+#    `<h2>Roadmap 2026</h2>\n<p>tests ...` nominated 2026, and
+#    `<tr><td>2,468</td><td>Tests updated</td></tr>` nominated 2,468. A
+#    number in one block and a unit word in the next are not one claim.
+# 2. NO NEWLINES. `[ \t]`, not `\s`. Same reason: a blank line between a
+#    number and the word "tests" is a paragraph break, not a separator.
+# 3. SPACE ENTITIES AND COMMENTS ARE MARKUP TOO. `&nbsp;` appears 64 times
+#    in the published site and is used exactly as an inline separator after
+#    a value. A guard that saw `</strong> ` but not `&nbsp;` would repeat
+#    this repository's documented entity-blindness failure, where a check
+#    for the literal em dash let seven `&mdash;` entities render live.
+_INLINE_TAG = (
+    r"</?(?:strong|b|em|i|span|a|code|kbd|mark|small|sup|sub|abbr|u|q"
+    r"|time|data|var|samp|cite|dfn|s|del|ins|wbr|bdi|bdo|font)\b[^>]*>"
+)
+_SPACE_ENTITY = (
+    r"&(?:nbsp|ensp|emsp|thinsp|hairsp|numsp|puncsp|#160|#8194|#8195"
+    r"|#8201|#8202|#x[aA]0|#x00[aA]0|#x2002|#x2003|#x2009);"
+)
+_HTML_COMMENT = r"<!--.*?-->"
+GAP = rf"(?:[ \t]|{_INLINE_TAG}|{_SPACE_ENTITY}|{_HTML_COMMENT})+"
 
 COUNT_TEMPLATES = [
     r"tests-{n}%20passing",
@@ -193,10 +219,36 @@ def _swap(fragment: str, old: int, new: int) -> str:
     The dotted form is handled FIRST and explicitly. Writing `2,612` into
     a German or Brazilian page would correct the number and corrupt the
     language, which is a different published defect, not a fix.
+
+    EXACTLY ONE substitution is made, and that is load-bearing. The first
+    version chained three unbounded `str.replace` calls over the whole
+    matched fragment. Once GAP began pulling complete tags (with their
+    attributes) into the match, that rewrote digits inside attributes:
+
+        IN   <strong>2,354</strong><a href="/c#build-2354" id="n2354"> tests</a>
+        OUT  <strong>2,622</strong><a href="/c#build-2622" id="n2622"> tests</a>
+
+    which is measurement rule 4d's own class, the uv.lock near-miss, reopened
+    inside the module whose header documents it. Every count template except
+    the badge puts the number first, so a form the fragment BEGINS with is
+    the published number itself; the badge is handled by taking the earliest
+    occurrence instead. Nothing later in the fragment is ever touched.
     """
-    return (fragment.replace(_dotted(old), _dotted(new))
-                    .replace(f"{old:,}", f"{new:,}")
-                    .replace(str(old), str(new)))
+    forms = ((_dotted(old), _dotted(new)),
+             (f"{old:,}", f"{new:,}"),
+             (str(old), str(new)))
+    for was, now in forms:
+        if fragment.startswith(was):
+            return now + fragment[len(was):]
+    earliest = None
+    for was, now in forms:
+        at = fragment.find(was)
+        if at != -1 and (earliest is None or at < earliest[0]):
+            earliest = (at, was, now)
+    if earliest is None:
+        return fragment
+    at, was, now = earliest
+    return fragment[:at] + now + fragment[at + len(was):]
 
 
 def propagate(new: int, apply: bool) -> int:
