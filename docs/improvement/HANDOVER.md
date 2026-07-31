@@ -1,5 +1,21 @@
 # Regula Handover
 
+## CURRENT RESUME POINT
+
+This file is a historical narrative from session 4 and is not the current
+state record. The single durable record of open and closed work is
+`docs/improvement/LEDGER.md`; its section 6 records the measured current state.
+Read the ledger before selecting work, then use the newest checkpoints at the
+end of `docs/improvement/STATE.md` for chronological evidence.
+
+Do not use the historical Git state or verification figures below as current
+facts. Re-measure the tree before relying on any mutable count. This notice is
+guarded by `tests/test_handover_continuity.py` so a future session cannot again
+present the old instructions as the current entry point without a failing
+test.
+
+## HISTORICAL SESSION 4 HANDOVER
+
 Rewritten 28 July 2026, end of session 4. Supersedes all earlier versions of
 this file. Tracked (owner decision 1); `.claude/handover.md` is superseded
 history and remains untracked.

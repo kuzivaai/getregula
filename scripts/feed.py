@@ -265,25 +265,28 @@ def _dedup_key(title: str) -> str:
 # ---------------------------------------------------------------------------
 
 def _load_cache() -> dict:
-    if CACHE_FILE.exists():
-        try:
+    try:
+        if CACHE_FILE.exists():
             data = json.loads(CACHE_FILE.read_text(encoding="utf-8"))
             cached_at = datetime.fromisoformat(data.get("cached_at", "2000-01-01T00:00:00+00:00"))
             age = datetime.now(timezone.utc) - cached_at
             if age < timedelta(hours=CACHE_MAX_AGE_HOURS):
                 return data
-        except (json.JSONDecodeError, ValueError, KeyError):
-            pass  # corrupt cache is non-fatal; refetch instead
+    except (json.JSONDecodeError, ValueError, KeyError, OSError):
+        pass  # corrupt or unreadable cache is non-fatal; refetch instead
     return {}
 
 
 def _save_cache(articles: list) -> None:
-    CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    data = {
-        "cached_at": datetime.now(timezone.utc).isoformat(),
-        "articles": articles,
-    }
-    CACHE_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    try:
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        data = {
+            "cached_at": datetime.now(timezone.utc).isoformat(),
+            "articles": articles,
+        }
+        CACHE_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    except OSError:
+        pass  # caching is optional; a read-only home must not break the feed
 
 
 # ---------------------------------------------------------------------------
