@@ -35,3 +35,10 @@ The corrections intentionally make a favourable verdict harder. In particular,
 the absence of independent repository labels and equivalent competitor accuracy
 adapters means Candidates A and B cannot become `CLAIM_READY` in this session,
 regardless of synthetic point estimates.
+
+Post-commit dry verification, still before any result, found that the first
+verifier conflated the committed protocol tree with the earlier frozen product
+tree. A separate pre-results correction makes those roots explicit: protocol
+files are tracked and hash-bound in the protocol tree, while `--product-repo`
+must resolve exactly to the frozen production commit. The preregistration
+commit was not amended.

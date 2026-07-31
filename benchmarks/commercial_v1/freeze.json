@@ -3,8 +3,8 @@
   "frozen_at": "2026-08-01T00:41:49+01:00",
   "regula_commit": "140bdacdcbfaaa9bd0892989861751b0b5e2d8d0",
   "hashes": {
-    "PROTOCOL.md": "8f128544891e87154765d8c83f07e424de4254eeb4a64dad95f12492166c1e23",
-    "manifest.json": "75770c3b6434a8e6319774d8120b91dc3b893a92ce78b8fc320a24fff89502d4",
+    "PROTOCOL.md": "58c935903b5832eb7b8232116f6dc182b97708a89b5d3070f8b856ec9272d8c4",
+    "manifest.json": "13ac04c2eff82f28f4ce4ebceb3a7e50530391feb9590ce76c314537a22f0366",
     "labels.json": "feea31edb0316ad8606c8d995b2164b4704b46e0223e7ad4df29a94154217e28",
     "tools.lock.json": "f933ba1c4107bea1f2a46f32b59f60f239c51eef3a0718d7fd1464905a23bd77",
     "research_questions.json": "d8dab648777b301a11d5255b59d7be6a8b09f5daeef49eb09818f7ce158ba172",
