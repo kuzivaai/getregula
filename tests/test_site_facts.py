@@ -130,3 +130,77 @@ def test_main_fails_closed_when_compute_raises(monkeypatch, tmp_path, capsys):
     assert not (tmp_path / "site_facts.json").exists()
     assert not (tmp_path / "site_facts.md").exists()
     assert "ERROR" in capsys.readouterr().err
+
+
+# --- Count provenance: every contributor to a published count must be tracked
+#
+# N52. count_tests() enumerates by working-tree glob (`tests_dir.glob`) and by
+# `pytest --collect-only` over the working tree, unlike claim_auditor,
+# f25_exposure, merge_blockers and check_decompositions, which all select
+# their corpus with `git ls-files`. So an UNTRACKED test file is counted into
+# total_collected and per_file, and those figures cascade to nine published
+# surfaces including the README badge.
+#
+# This is the same class as N43 (untracked content reaching a published
+# number) on the generator that publishes the most numbers. It has already
+# fired once: on 2026-07-31 a new, still-untracked test file was counted into
+# the canonical artefact, and the published figures were only correct because
+# the file happened to be committed in the same commit.
+#
+# The invariant these tests hold: every key in counts.tests.per_file names a
+# file that git tracks. If it does not, the published count is not derivable
+# from a clean checkout.
+
+
+def test_untracked_contributors_flags_a_file_git_does_not_track():
+    """The predicate must name a contributor that is not tracked.
+
+    Constructed rather than pinned to today's tree: passing the real per_file
+    would assert current state, and would stop testing anything the moment the
+    tree changed.
+    """
+    per_file = {"test_real_tracked_example.py": 3,
+                "test_never_committed.py": 7}
+    tracked = {"test_real_tracked_example.py"}
+    found = site_facts.untracked_test_contributors(per_file, tracked=tracked)
+    assert found == ["test_never_committed.py"], f"unexpected result: {found}"
+
+
+def test_untracked_contributors_is_quiet_when_every_contributor_is_tracked():
+    """The other half. Without this, a predicate that flagged everything
+    would pass the test above and break every legitimate run."""
+    per_file = {"test_a.py": 1, "test_b.py": 2}
+    found = site_facts.untracked_test_contributors(
+        per_file, tracked={"test_a.py", "test_b.py"})
+    assert found == [], f"clean input reported {found}"
+
+
+def test_untracked_contributors_defaults_to_asking_git():
+    """With no explicit tracked set, the predicate must consult git rather
+    than assume. Read against the real repository, where the committed
+    artefact's contributors are all tracked."""
+    facts = json.loads(
+        (REPO_ROOT / "data" / "site_facts.json").read_text(encoding="utf-8"))
+    per_file = facts["counts"]["tests"]["per_file"]
+    assert per_file, "artefact has no per_file entries; nothing to check"
+    found = site_facts.untracked_test_contributors(per_file)
+    assert found == [], (
+        "the committed canonical count was generated from test files that "
+        f"git does not track, so it does not reproduce in a clean "
+        f"checkout: {found}. Commit them, or regenerate after removing them.")
+
+
+def test_generation_warns_when_a_contributor_is_untracked(monkeypatch, capsys):
+    """count_tests must say so at the moment it counts, not leave the reader
+    to discover it later from a cascade that already shipped."""
+    monkeypatch.setattr(
+        site_facts, "untracked_test_contributors",
+        lambda per_file, tracked=None: ["test_never_committed.py"])
+    monkeypatch.setattr(
+        subprocess, "run",
+        lambda *a, **k: types.SimpleNamespace(
+            returncode=0, stdout="42 tests collected in 0.1s", stderr=""))
+    site_facts.count_tests()
+    err = capsys.readouterr().err
+    assert "test_never_committed.py" in err, f"warning omits the file: {err!r}"
+    assert "not tracked" in err.lower(), f"warning does not say why: {err!r}"
