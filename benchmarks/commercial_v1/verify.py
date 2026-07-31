@@ -110,17 +110,17 @@ def discover_repository_inputs(repo):
                   not path.endswith(("manifest.json", "freeze.json")))
 
 
-def verify_freeze(root, freeze_path):
+def verify_freeze(root, freeze_path, product_root):
     freeze = json.loads(Path(freeze_path).read_text())
     base = Path(freeze_path).parent
     for name, expected in freeze["hashes"].items():
         path = base / name
         if not path.is_file() or sha256_file(path) != expected:
             raise IntegrityError(f"frozen input mismatch: {name}")
-    head = _git(root, "rev-parse", "HEAD").decode().strip()
+    head = _git(product_root, "rev-parse", "HEAD").decode().strip()
     if head != freeze["regula_commit"]:
         raise IntegrityError(
-            f"freeze commit mismatch: expected {freeze['regula_commit']}, got {head}")
+            f"product freeze mismatch: expected {freeze['regula_commit']}, got {head}")
 
 
 def main(argv=None):
@@ -128,16 +128,18 @@ def main(argv=None):
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", type=Path, required=True)
+    parser.add_argument("--product-repo", type=Path, required=True)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--freeze", type=Path, required=True)
     args = parser.parse_args(argv)
     manifest = json.loads(args.manifest.read_text())
-    verify_freeze(args.repo, args.freeze)
+    verify_freeze(args.repo, args.freeze, args.product_repo)
     paths = [entry["path"] for entry in manifest["repository_inputs"]]
-    head = _git(args.repo, "rev-parse", "HEAD").decode().strip()
-    if head != manifest["regula_commit"]:
+    product_head = _git(args.product_repo, "rev-parse", "HEAD").decode().strip()
+    if product_head != manifest["regula_commit"]:
         raise IntegrityError(
-            f"wrong commit: manifest={manifest['regula_commit']}, HEAD={head}")
+            f"wrong product commit: manifest={manifest['regula_commit']}, "
+            f"HEAD={product_head}")
     assert_clean_inputs(args.repo, paths)
     discovered = discover_repository_inputs(args.repo)
     verify_enumeration(args.repo, manifest["repository_inputs"], discovered)

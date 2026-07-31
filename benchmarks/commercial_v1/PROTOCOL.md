@@ -113,7 +113,9 @@ inspection alone cannot prove zero network calls.
 
 ## Execution sequence
 
-1. Verify all frozen hashes, that Git actually succeeds, every repository
+1. Verify all frozen hashes in the committed protocol tree, independently
+   verify that the detached product worktree is exactly the frozen product
+   commit, that Git actually succeeds, every repository
    input is tracked and not ignored, every listed input exists, and recursive
    discovery agrees with the manifest in both directions.
 2. Acquire each pinned public repository into the external artefact directory;
