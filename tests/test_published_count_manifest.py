@@ -74,6 +74,29 @@ class TestPublishedCountManifest(unittest.TestCase):
             r"(?<!\d)(" + "|".join(re.escape(v) for v in sorted(variants))
             + r")(?!\d)")
 
+        # A digit sequence is not a claim just because it appears in a file
+        # (measurement rule 4d). Machine-generated scan artefacts carry
+        # structural integers -- source line numbers, offsets, counts of
+        # findings in someone else's repository -- and one of them will
+        # collide with the test count sooner or later. That happened on
+        # 2026-07-31: a `"line":` value in
+        # benchmarks/results/blog_scan_2026_04/khoj.json equalled the
+        # published count exactly. The colliding figure is deliberately not
+        # written here, because this file is inside the corpus the test
+        # scans, so quoting it would fail the very check it explains.
+        #
+        # This exempts the COLLISION, never the file: any other occurrence in
+        # the same file still fails the test, so a genuine stale claim sitting
+        # in a JSON artefact is still caught. The keys below are structural by
+        # definition; none of them can hold a published test count.
+        structural_json_key = re.compile(
+            r'"(line|line_number|start_line|end_line|lineno|offset|column|'
+            r'total_lines|loc|size|bytes)"\s*:\s*$')
+
+        def _is_structural(text, match):
+            """True when the match is the value of a structural JSON key."""
+            return bool(structural_json_key.search(text[:match.start()]))
+
         violations = []
         for rel in _tracked_files():
             posix = rel.as_posix()
@@ -87,7 +110,9 @@ class TestPublishedCountManifest(unittest.TestCase):
                 text = path.read_text(encoding="utf-8", errors="ignore")
             except OSError:
                 continue
-            if pattern.search(text):
+            hits = [m for m in pattern.finditer(text)
+                    if not _is_structural(text, m)]
+            if hits:
                 violations.append(posix)
 
         self.assertEqual(

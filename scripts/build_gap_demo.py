@@ -15,10 +15,19 @@ also fails if the site shows a percentage the artefact does not contain.
 
 WHY THIS FIXTURE
 ----------------
-`tests/fixtures/sample_high_risk` is tracked, so a clone reproduces the
-output exactly. The criterion was fixed before any score was looked at:
-the target must be committed and must be scanned as the page depicts it,
-with no flags.
+`tests/fixtures/sample_high_risk` is tracked. The criterion was fixed
+before any score was looked at: the target must be committed and must be
+scanned as the page depicts it, with no flags.
+
+**That reasoning was sound and the outcome still failed, which is why this
+paragraph is corrected rather than deleted.** Choosing a tracked target does
+NOT make the output reproducible if untracked content is sitting inside it.
+This machine's copy of the fixture holds a gitignored `.regula/registry/`
+directory, which `compliance_check` credits toward Article 11, so the
+figures below (9% overall, Article 11 at 25%) are what THIS tree produces
+and a clean clone produces 6% and 0%. See ledger N43. `assert_inputs_tracked`
+now refuses to write from a contaminated target, so this cannot recur
+silently; correcting the published figures is a separate, owner-gated step.
 
 Two candidates were rejected for reasons independent of their scores:
 
@@ -29,8 +38,9 @@ Two candidates were rejected for reasons independent of their scores:
 - A purpose-built fixture would be the shop window chosen by its author,
   which is the metric gaming PROGRAMME.md principle 3 forbids.
 
-The fixture scores 9%, which is unflattering. That is not why it was
-chosen and it is not a reason to change it.
+The fixture scores 9% on this machine and 6% in a clean clone (see above).
+Either way it is unflattering. That is not why it was chosen and it is not
+a reason to change it.
 
 WHAT THE REAL OUTPUT CHANGES ON THE PAGE
 ----------------------------------------
@@ -156,8 +166,38 @@ def _comparable(doc: dict) -> str:
 
 
 def main(argv: list[str]) -> int:
+    from tree_guard import (
+        UntrackedInputError, assert_inputs_tracked, untracked_inputs,
+    )
+
     fresh = build()
     if "--check" in argv:
+        # Deliberately a warning here and a refusal on the write path below.
+        # --check asks "does the committed artefact match a fresh run", and in
+        # a tree carrying this contamination the honest answer to THAT question
+        # is yes: both sides are contaminated identically. The defect is that
+        # the artefact is not reproducible elsewhere, which is a different
+        # question, and strengthening this gate to ask it would turn it red
+        # until the artefact is regenerated and the published figures move.
+        # That is an owner decision (ledger N43), so the contamination is made
+        # impossible to miss rather than silently tolerated or silently fixed.
+        # Never let the advisory warning break the command it advises on.
+        # `scripts/` ships as the PyPI package and can run from a directory
+        # that is not a git checkout, where the git call fails outright.
+        try:
+            stray = untracked_inputs(FIXTURE)
+        except Exception:
+            stray = []
+        if stray:
+            print(
+                "WARNING: " + FIXTURE + " holds content that is not in the "
+                "repository, so these figures do not reproduce in a clean "
+                "clone:\n  " + "\n  ".join(stray) + "\n"
+                "This check compares the artefact against a run on the SAME "
+                "contaminated inputs, so it passing does not mean the "
+                "published figures are reproducible. See ledger N43.",
+                file=sys.stderr,
+            )
         if not ARTEFACT.exists():
             print(f"MISSING: {ARTEFACT.relative_to(REPO_ROOT)}",
                   file=sys.stderr)
@@ -170,6 +210,16 @@ def main(argv: list[str]) -> int:
             return 1
         print("data/gap_demo.json matches a fresh run.")
         return 0
+
+    # Write path: refuse outright. This is where an unreproducible artefact
+    # would be created, so it is the point at which the class is closed.
+    # Caught and presented rather than allowed to traceback: the exception
+    # carries the paths to remove, and a traceback buries them.
+    try:
+        assert_inputs_tracked(FIXTURE)
+    except UntrackedInputError as exc:
+        print(f"REFUSED: {exc}", file=sys.stderr)
+        return 2
 
     ARTEFACT.write_text(json.dumps(fresh, indent=2, sort_keys=True) + "\n",
                         encoding="utf-8")

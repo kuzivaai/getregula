@@ -1,18 +1,29 @@
 #!/usr/bin/env python3
-"""Working-tree drift detection between a recorded baseline and now.
+"""Working-tree integrity: drift over time, and untracked inputs to a build.
 
-Why this exists. On 30 July 2026 twelve tracked files changed in this
-working tree with no session record in this repository: a session running
-from a different project context wrote them (attributed afterwards from its
-transcript, `docs/improvement/LEDGER.md`). Every figure this programme
-publishes is measured from this tree, so an unattributed mutation between
-two measurements silently changes what the numbers describe. This module
-makes that drift detectable at the moment a measurement runs instead of
-whenever a cache-staleness refusal happens to fire.
+Two related guards live here, both answering "does this tree contain
+something the repository does not account for".
 
-What it can and cannot do. It detects THAT the tree changed between a
-recorded baseline and a check, and names every path. It cannot say WHO
-changed it; actor attribution needs an OS-level watcher and belongs to the
+1. DRIFT, between a recorded baseline and now (`record`, `compare`, `stamp`).
+   On 30 July 2026 twelve tracked files changed in this working tree with no
+   session record in this repository: a session running from a different
+   project context wrote them (attributed afterwards from its transcript,
+   `docs/improvement/LEDGER.md`). Every figure this programme publishes is
+   measured from this tree, so an unattributed mutation between two
+   measurements silently changes what the numbers describe.
+
+2. UNTRACKED INPUTS to an artefact build (`untracked_inputs`,
+   `assert_inputs_tracked`). An artefact that backs a published number must
+   be derivable from tracked content alone. `data/gap_demo.json` was not:
+   the fixture it scans carries a gitignored `.regula/registry/` directory
+   locally, which `compliance_check` credits as a component of Article 11,
+   so the published figures reproduce on no other machine (ledger N43).
+   Generators call `assert_inputs_tracked` before writing, so a published
+   artefact can no longer be built from inputs a clone does not have.
+
+What these can and cannot do. They detect THAT the tree contains
+unaccounted-for content, and name every path. They cannot say WHO put it
+there; actor attribution needs an OS-level watcher and belongs to the
 session harness, not to this repository.
 
 Usage:
@@ -41,6 +52,78 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 STATE_PATH = REPO_ROOT / ".claude" / "tree-state.json"
+
+
+class UntrackedInputError(RuntimeError):
+    """An artefact build was asked to scan a target holding content that is
+    not in the repository, so its output would not reproduce elsewhere."""
+
+
+def untracked_inputs(path, root=None):
+    """Return every UNTRACKED or IGNORED path under `path`, sorted.
+
+    `--ignored=matching` is the load-bearing flag. A plain
+    `git status --porcelain` reports nothing for a gitignored file, which is
+    exactly how a `.regula/registry/` directory fed the published gap-demo
+    figures unnoticed: invisible to the usual check, fully visible to a
+    scanner walking the directory.
+
+    Only the `??` (untracked) and `!!` (ignored) porcelain codes qualify. A
+    tracked file that is merely modified, staged, renamed or deleted is NOT
+    returned: its content is in the repository, so an artefact built from it
+    still reproduces from a checkout, and refusing on it would block a
+    legitimate regeneration while advising the reader to "track it", which
+    they already have. An earlier version of this function returned every
+    porcelain line and had exactly that defect.
+
+    Returns paths relative to the repository root. A directory entry keeps
+    its trailing slash, git's own signal that the whole subtree is excluded.
+    Git C-quotes names containing spaces or non-ASCII bytes; `-z` is used so
+    the caller gets the real path rather than an escaped rendering of it.
+    """
+    root = Path(root or REPO_ROOT)
+    target = Path(path)
+    if not target.is_absolute():
+        target = root / target
+    if not target.exists():
+        # A silent empty list here would turn a typo'd or renamed path
+        # constant into a permanently passing guard, which is measurement
+        # rule 4: an absent signal is not a passing signal.
+        raise FileNotFoundError(
+            f"cannot check inputs under {target}: the path does not exist"
+        )
+    out = _git(
+        ["status", "--porcelain", "-z", "--ignored=matching", "--", str(target)],
+        cwd=root,
+    )
+    found = []
+    for record in out.split("\0"):
+        if len(record) < 4:
+            continue
+        code, name = record[:2], record[3:]
+        if code in ("??", "!!"):
+            found.append(name)
+    return sorted(found)
+
+
+def assert_inputs_tracked(path, root=None):
+    """Refuse to proceed if `path` holds anything the repository does not.
+
+    Called by every generator that scans a directory to produce a published
+    artefact. Raising here is deliberate rather than returning a flag: a
+    build that silently continued would write the unreproducible figures the
+    guard exists to prevent, and a caller cannot forget to check an
+    exception.
+    """
+    found = untracked_inputs(path, root=root)
+    if found:
+        listed = "\n  ".join(found)
+        raise UntrackedInputError(
+            f"{path} holds content that is not in the repository, so an "
+            f"artefact built from it would not reproduce in a clean clone:\n"
+            f"  {listed}\n"
+            "Remove it, or track it, before regenerating."
+        )
 
 
 def _git(args, cwd=None):
