@@ -2,7 +2,7 @@
 
 *Canonical source of truth for every numeric claim on the landing pages. Regenerate by running `python3 scripts/site_facts.py`.*
 
-Generated: `2026-07-31T07:26:47.940474+00:00`
+Generated: `2026-07-31T08:08:20.380621+00:00`
 
 ## Top-line counts
 

@@ -64,15 +64,36 @@ DENY_NAMES = {"uv.lock", "poetry.lock", "package-lock.json", "Cargo.lock",
 # exact shapes. A year never appears inside "N passing" or "N
 # pytest-collected", so the class of error is eliminated rather than reduced.
 #
-# {n} is the count, with or without a thousands separator.
+# {n} is the count, with or without a thousands separator (comma or full
+# stop; de-DE and pt-BR group with a full stop).
+#
+# {g} is the gap between the number and its unit word. It is NOT `\s+`.
+#
+# MEASURED 2026-07-31. Every template below used to join with `\s+`. The
+# landing page publishes the count as
+#     <strong style="color:var(--text);">2,354</strong> tests
+# and `</strong> ` is not whitespace, so no template matched, `_stale_values`
+# nominated nothing, and `--check` printed "all manifest surfaces already
+# carry the canonical value" and exited 0 while site/index.html was 258
+# short. It stayed that way across cascades to 2,595, 2,608 and 2,612.
+#
+# The gap tolerates whitespace and complete HTML tags, and nothing else. It
+# deliberately does NOT tolerate arbitrary text: the unit word must still be
+# the next thing after the number, because the unit word is the whole reason
+# a year is safe here. Widening this to "somewhere near the word tests" is
+# the heuristic the header above records as tried and abandoned twice.
+GAP = r"(?:\s|</?[a-zA-Z][^>]*>)+"
+
 COUNT_TEMPLATES = [
     r"tests-{n}%20passing",
-    r"{n}\s+passing",
-    r"{n}\s+pytest-collected",
-    r"{n}\s+unique tests",
-    r"{n}\s+\[unique\]",
-    # plural only: matches "2,354 tests", not "963 test functions"
-    r"{n}\s+tests\b",
+    r"{n}{g}passing",
+    r"{n}{g}pytest-collected",
+    r"{n}{g}unique tests",
+    r"{n}{g}\[unique\]",
+    # Plural only: matches "2,354 tests", German "2.612 Tests" and pt-BR
+    # "2.612 testes", but NOT "963 test functions", which is a different
+    # quantity that docs/TRUST.md publishes three lines away.
+    r"{n}{g}test(?:s|es)\b",
     # NOT a bare "{n} passed": the custom runner publishes "1386 passed",
     # a different quantity. Caught by this module's own sync test.
     r"Expected:\s*{n}\s+passed",
@@ -160,10 +181,21 @@ def _patterns(old: int):
         yield re.compile(rf"(?<![\w,.]){esc}(?![\w,.])")
 
 
+def _dotted(value: int) -> str:
+    """de-DE / pt-BR thousands grouping: 2612 -> '2.612'."""
+    return f"{value:,}".replace(",", ".")
+
+
 def _swap(fragment: str, old: int, new: int) -> str:
     """Replace old with new inside a matched count fragment, keeping the
-    thousands-separator style the surface already uses."""
-    return (fragment.replace(f"{old:,}", f"{new:,}")
+    thousands-separator style the surface already uses.
+
+    The dotted form is handled FIRST and explicitly. Writing `2,612` into
+    a German or Brazilian page would correct the number and corrupt the
+    language, which is a different published defect, not a fix.
+    """
+    return (fragment.replace(_dotted(old), _dotted(new))
+                    .replace(f"{old:,}", f"{new:,}")
                     .replace(str(old), str(new)))
 
 
@@ -197,20 +229,36 @@ def propagate(new: int, apply: bool) -> int:
 
 
 def _count_regexes(value: int):
-    """Compiled regexes for every sanctioned shape of `value`."""
-    plain, comma = str(value), f"{value:,}"
-    alt = f"(?:{re.escape(comma)}|{re.escape(plain)})"
+    """Compiled regexes for every sanctioned shape of `value`.
+
+    Three renderings of the same number are sanctioned: bare (`2612`),
+    comma-grouped (`2,612`) and dot-grouped (`2.612`). The third exists
+    because site/locales/de.html and site/locales/pt-br.html are manifest
+    surfaces and both group thousands with a full stop.
+    """
+    plain, comma, dot = str(value), f"{value:,}", _dotted(value)
+    alt = "(?:{})".format(
+        "|".join(re.escape(s) for s in (comma, dot, plain)))
     for tpl in COUNT_TEMPLATES:
-        yield re.compile(tpl.replace("{n}", alt), re.IGNORECASE)
+        yield re.compile(
+            tpl.replace("{n}", alt).replace("{g}", GAP), re.IGNORECASE)
 
 
 def _stale_values(text: str, new: int) -> set:
     """Values appearing in a sanctioned count shape but differing from
-    canonical. Nothing outside COUNT_TEMPLATES is ever a candidate."""
+    canonical. Nothing outside COUNT_TEMPLATES is ever a candidate.
+
+    The candidate scanner accepts a full stop as a thousands separator as
+    well as a comma. Without that, `2.349` on the German and Brazilian
+    landing pages was not merely unmatched by the templates, it was never
+    nominated as a candidate at all, so both blindnesses had to be closed
+    to make either page reachable.
+    """
     out = set()
     lo, hi = int(new * 0.5), int(new * 2)
-    for m in re.finditer(r"(?<![\w,.])(\d{1,3},\d{3}|\d{4})(?![\w,.])", text):
-        val = int(m.group(1).replace(",", ""))
+    for m in re.finditer(
+            r"(?<![\w,.])(\d{1,3}[.,]\d{3}|\d{4})(?![\w,.])", text):
+        val = int(m.group(1).replace(",", "").replace(".", ""))
         if val == new or not (lo <= val <= hi):
             continue
         for rx in _count_regexes(val):
