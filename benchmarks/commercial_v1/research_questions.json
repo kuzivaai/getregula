@@ -1,0 +1,31 @@
+{
+  "protocol_version": "commercial_v1",
+  "frozen_before_results": true,
+  "questions": [
+    {
+      "id": "RQ1",
+      "candidate": "A",
+      "question": "Does Regula identify code-observable AI inventory evidence more accurately or operationally usefully than transparent import matching?"
+    },
+    {
+      "id": "RQ2",
+      "candidate": "B",
+      "question": "Does Regula identify rendered Article 50 implementation evidence while rejecting non-rendered near misses better than exact markup matching?"
+    },
+    {
+      "id": "RQ3",
+      "candidate": "C",
+      "question": "Can context-assisted high-risk review be evaluated without independent human legal labels?"
+    },
+    {
+      "id": "RQ4",
+      "candidate": "cross-cutting",
+      "question": "Do public release and local HEAD install, run, reproduce evidence, remain deterministic, and avoid undisclosed network behavior?"
+    },
+    {
+      "id": "RQ5",
+      "candidate": "commercial",
+      "question": "Does any measured capability clear its preregistered gate and justify a bounded customer pilot despite the strongest adverse evidence?"
+    }
+  ]
+}
