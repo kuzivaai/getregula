@@ -8,11 +8,13 @@ import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "benchmarks" / "commercial_v1"))
+sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 import normalise  # noqa: E402
 import score  # noqa: E402
 import verify  # noqa: E402
 import gate  # noqa: E402
+import commercial_acquire_runtime  # noqa: E402
 
 
 def _git_repo(tmp):
@@ -181,3 +183,14 @@ def test_score_duplicate_decisions_are_never_headline_eligible():
         report = score.score_result_files(labels, [results])["reports"][0]
         assert report["duplicate_ids"] == ["a-positive-01"]
         assert report["candidates"]["A"]["synthetic_metric_eligible"] is False
+
+
+def test_licence_discovery_is_case_insensitive_and_root_scoped():
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        (root / "license").write_text("MIT\n")
+        (root / "NOTICE.md").write_text("notice\n")
+        nested = root / "vendor"
+        nested.mkdir()
+        (nested / "LICENSE").write_text("not the repository licence\n")
+        assert commercial_acquire_runtime.discover_licence_files(root) == ["NOTICE.md", "license"]
