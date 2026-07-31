@@ -1,0 +1,1602 @@
+[
+  {
+    "id": "a-positive-01",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "direct_import",
+    "content": "import torch\nmodel_component = 'torch'\n",
+    "content_sha256": "ded7106eb0daf0773555419b9f91af3902de42fd29f901182f1a4ab9f045f1b6",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-02",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "alias_import",
+    "content": "import tensorflow as component_1\n",
+    "content_sha256": "8b9fe89de7b7b3345bd9ef05db436a4af864aef6d03e2fee0139eb3783e4e620",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-03",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "from_import",
+    "content": "from transformers import client as component_2\n",
+    "content_sha256": "fd2031d574691edcc626454bdc5a5d6fc9bc4eb75b32ce776f89d21e9f10a67a",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-04",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "direct_import",
+    "content": "import sklearn\nmodel_component = 'sklearn'\n",
+    "content_sha256": "1a24151155ebada09137cf667a9f5911e40039a6e098de80733fd75a3a412caf",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-05",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "alias_import",
+    "content": "import openai as component_4\n",
+    "content_sha256": "ffd9fe9501c12a329aab76e11863aff72f4a6b45fa348b89687c1a51495c7755",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-06",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "from_import",
+    "content": "from anthropic import client as component_5\n",
+    "content_sha256": "842d167172070846ad9e55ae85e7866e4db273a35ab85d945ed62f6c5c42426a",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-07",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "direct_import",
+    "content": "import langchain\nmodel_component = 'langchain'\n",
+    "content_sha256": "6fc22d4c16665becfd44bd495a7eee864f2c2961f9cced13d871eb86fd489d5f",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-08",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "alias_import",
+    "content": "import llama_index as component_7\n",
+    "content_sha256": "40bc98ca11b44b6496b2b903bf1495e8c0183cbb5921f6e04cc20f3cb0202910",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-09",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "from_import",
+    "content": "from ollama import client as component_8\n",
+    "content_sha256": "a391ec8f9d0754d93d39c5d3f67b711ce9394a4958528d89867bd7f912c7d81b",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-10",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "direct_import",
+    "content": "import xgboost\nmodel_component = 'xgboost'\n",
+    "content_sha256": "66a717f969954d1a71ab5cf66ccae39c3fcc3d5a34842e4413394b9861727715",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-11",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "alias_import",
+    "content": "import torch as component_10\n",
+    "content_sha256": "bd521d5c78f76c7666664a07448c5a40f9bcd8ab59fbb5e862cf0d165b9459ee",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-12",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "from_import",
+    "content": "from tensorflow import client as component_11\n",
+    "content_sha256": "eff5db6324de55183f0671e3bfb2c21346808372af0d94eb0743eedc9d42c284",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-13",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "direct_import",
+    "content": "import transformers\nmodel_component = 'transformers'\n",
+    "content_sha256": "041591714ffadb44f665b5f0af83b0df700c4308e2aa03e5178328ef38b732e0",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-14",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "alias_import",
+    "content": "import sklearn as component_13\n",
+    "content_sha256": "42709d4b0368b66254cb3418088346857a9a25f8cbd1545c15b82f9776a70e75",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-15",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "from_import",
+    "content": "from openai import client as component_14\n",
+    "content_sha256": "f2836f31546b5c2df412db7df688f828744cc552561376d29cfa6bf62e6b9b36",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-16",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "direct_import",
+    "content": "import anthropic\nmodel_component = 'anthropic'\n",
+    "content_sha256": "9022029064849847b9eea24fb8aa90ce020df7ae993c57592d00a5e94bc85ae8",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-17",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "alias_import",
+    "content": "import langchain as component_16\n",
+    "content_sha256": "c5d4e2e928d850220578f315bbb93544259d367eaf15f6a01e166b4e1384d402",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-18",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "from_import",
+    "content": "from llama_index import client as component_17\n",
+    "content_sha256": "a69b78cad4d670ed2998baa30e33eff838f9fafa91a77ad56bf53ec814ddc19c",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-19",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "direct_import",
+    "content": "import ollama\nmodel_component = 'ollama'\n",
+    "content_sha256": "2cba3dbb00ada4f3f87f3054aabe3164839aa7a347b6147acca9d22bf10251d4",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-20",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "alias_import",
+    "content": "import xgboost as component_19\n",
+    "content_sha256": "9323e36e9b27b62c6b56753934d7dc76e85a57eac1eea4edb9d2cf15386bd1b4",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-21",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "from_import",
+    "content": "from torch import client as component_20\n",
+    "content_sha256": "ac5d56ce5d63388820e383e9cc4dc5a446407a7379adab247b6deaa611def329",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-22",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "direct_import",
+    "content": "import tensorflow\nmodel_component = 'tensorflow'\n",
+    "content_sha256": "5501077ab7b1ce2b4fe779b35a7cfc78dc04799dffafa59e3b196f7829a76a21",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-23",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "alias_import",
+    "content": "import transformers as component_22\n",
+    "content_sha256": "53b2fa1a692c11eb864b5d64fdc2cb6e8ec5145e6a72716d0ee510fcceb575a4",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-24",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "from_import",
+    "content": "from sklearn import client as component_23\n",
+    "content_sha256": "546216560ddd4ff4a1d7d5334fd6649ccbe00e1d97413eba971e0680cb8116a7",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-25",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "direct_import",
+    "content": "import openai\nmodel_component = 'openai'\n",
+    "content_sha256": "7784743066e273bd3c8b87dd70f61b756bc5c3e8b85a9baead0d11797c87a37f",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-26",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "alias_import",
+    "content": "import anthropic as component_25\n",
+    "content_sha256": "87a8aa4283b84194c7537696a214c5da175f0f4e186ae311d5d49b2543726344",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-27",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "from_import",
+    "content": "from langchain import client as component_26\n",
+    "content_sha256": "ed33aced64e6825b051d9f44ccbaf02c90561a4eaa182ccb8cdc093820be3360",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-28",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "direct_import",
+    "content": "import llama_index\nmodel_component = 'llama_index'\n",
+    "content_sha256": "4a4f7bc7c6529a9c0aee9de1a77615bf9f1165be133d167d1c3c2c23168c3290",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-29",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "alias_import",
+    "content": "import ollama as component_28\n",
+    "content_sha256": "a022bf00998cc259e46823a58c71bdc65b8aa6957aecc143176f29c8ab7ff89f",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-30",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "from_import",
+    "content": "from xgboost import client as component_29\n",
+    "content_sha256": "46027242f229c057a74264b2b41cc65edd1e7246b7f05efd4a41cf5de120fb51",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-31",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "direct_import",
+    "content": "import torch\nmodel_component = 'torch'\n",
+    "content_sha256": "ded7106eb0daf0773555419b9f91af3902de42fd29f901182f1a4ab9f045f1b6",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-32",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "alias_import",
+    "content": "import tensorflow as component_31\n",
+    "content_sha256": "aefb5c7b0b6d6f9a558e266131f8fe647c82198abc3a6b30f1dc239c67516d97",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-33",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "from_import",
+    "content": "from transformers import client as component_32\n",
+    "content_sha256": "eb20067292540d27274520f31eda4df8afacc571e03a82ac06a73dd7863459ae",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-34",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "direct_import",
+    "content": "import sklearn\nmodel_component = 'sklearn'\n",
+    "content_sha256": "1a24151155ebada09137cf667a9f5911e40039a6e098de80733fd75a3a412caf",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-35",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "alias_import",
+    "content": "import openai as component_34\n",
+    "content_sha256": "13163cfbbca2d6094a36837572c36164aad709595ff6f5645f02e6e7942d72b8",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-36",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "from_import",
+    "content": "from anthropic import client as component_35\n",
+    "content_sha256": "818e9ca0a767a74832e71ce08cf0977739207be59a7c6a3613413e34851f6984",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-37",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "direct_import",
+    "content": "import langchain\nmodel_component = 'langchain'\n",
+    "content_sha256": "6fc22d4c16665becfd44bd495a7eee864f2c2961f9cced13d871eb86fd489d5f",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-38",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "alias_import",
+    "content": "import llama_index as component_37\n",
+    "content_sha256": "5e9780e7e7d8958093076427ff7b68ff52f214226666d9021f0ad0e0d99ade85",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-39",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "from_import",
+    "content": "from ollama import client as component_38\n",
+    "content_sha256": "992693c510480d588a5553e3d2bbdebac73c0afb0897361c571ad2ac54925d72",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-positive-40",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "direct_import",
+    "content": "import xgboost\nmodel_component = 'xgboost'\n",
+    "content_sha256": "66a717f969954d1a71ab5cf66ccae39c3fcc3d5a34842e4413394b9861727715",
+    "observable": "AI library or service import"
+  },
+  {
+    "id": "a-negative-01",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "comment",
+    "content": "# Example documentation says: import torch\nvalue = 1\n",
+    "content_sha256": "8908cc72c47bb51c8a8779691a0864cce5450518bd4d77a934451bca9d6e5463",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-02",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "string_literal",
+    "content": "message = \"import tensorflow\"\nvalue = len(message)\n",
+    "content_sha256": "a4c722cf83b6bf4fb952fd844d1710b4985ac60eb92e46963e8de7ececc30570",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-03",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "near_name",
+    "content": "import transformers_notes\nvalue = transformers_notes.__name__\n",
+    "content_sha256": "876eca6c08a37541838d7dc9d01b847ee98d507eb835b0a0aa482aff64c1b9d5",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-04",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "dead_comment",
+    "content": "# removed dependency: sklearn\ndef add(a, b): return a + b\n",
+    "content_sha256": "abb6ce379754bcc55ee84741ab7f407d381152d7acaca51efd7535eb4b58e1a7",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-05",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "documentation",
+    "content": "DOC = \"The team evaluated openai, but it is not used.\"\n",
+    "content_sha256": "2ea97323af9dd0b0f9e3f5f564835ad7decf4d4fd48be871ea0df1f52af9d0b6",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-06",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "comment",
+    "content": "# Example documentation says: import anthropic\nvalue = 1\n",
+    "content_sha256": "e45596788c7a3fd86ceb24bfca86276999116d634cbf854b8defb28542986c37",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-07",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "string_literal",
+    "content": "message = \"import langchain\"\nvalue = len(message)\n",
+    "content_sha256": "064bf9afdf3243ea05218661c0b76f64710cb84b8a00fabbff0067f0bc670bf9",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-08",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "near_name",
+    "content": "import llamaindex_notes\nvalue = llamaindex_notes.__name__\n",
+    "content_sha256": "db7542c61ad40150688fa91b1610a7bbdd29988d1dac08d59c9e328ffeae0fc4",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-09",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "dead_comment",
+    "content": "# removed dependency: ollama\ndef add(a, b): return a + b\n",
+    "content_sha256": "2bd8a0afc5fbf9459fd038c35882bc26a28bd100643a031f61a63f67abcee57e",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-10",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "documentation",
+    "content": "DOC = \"The team evaluated xgboost, but it is not used.\"\n",
+    "content_sha256": "0cfb95f569d352c8fcf2db8ba93950ed18059f62899d84e10566c7b44ec2d8f4",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-11",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "comment",
+    "content": "# Example documentation says: import torch\nvalue = 1\n",
+    "content_sha256": "8908cc72c47bb51c8a8779691a0864cce5450518bd4d77a934451bca9d6e5463",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-12",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "string_literal",
+    "content": "message = \"import tensorflow\"\nvalue = len(message)\n",
+    "content_sha256": "a4c722cf83b6bf4fb952fd844d1710b4985ac60eb92e46963e8de7ececc30570",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-13",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "near_name",
+    "content": "import transformers_notes\nvalue = transformers_notes.__name__\n",
+    "content_sha256": "876eca6c08a37541838d7dc9d01b847ee98d507eb835b0a0aa482aff64c1b9d5",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-14",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "dead_comment",
+    "content": "# removed dependency: sklearn\ndef add(a, b): return a + b\n",
+    "content_sha256": "abb6ce379754bcc55ee84741ab7f407d381152d7acaca51efd7535eb4b58e1a7",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-15",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "documentation",
+    "content": "DOC = \"The team evaluated openai, but it is not used.\"\n",
+    "content_sha256": "2ea97323af9dd0b0f9e3f5f564835ad7decf4d4fd48be871ea0df1f52af9d0b6",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-16",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "comment",
+    "content": "# Example documentation says: import anthropic\nvalue = 1\n",
+    "content_sha256": "e45596788c7a3fd86ceb24bfca86276999116d634cbf854b8defb28542986c37",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-17",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "string_literal",
+    "content": "message = \"import langchain\"\nvalue = len(message)\n",
+    "content_sha256": "064bf9afdf3243ea05218661c0b76f64710cb84b8a00fabbff0067f0bc670bf9",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-18",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "near_name",
+    "content": "import llamaindex_notes\nvalue = llamaindex_notes.__name__\n",
+    "content_sha256": "db7542c61ad40150688fa91b1610a7bbdd29988d1dac08d59c9e328ffeae0fc4",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-19",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "dead_comment",
+    "content": "# removed dependency: ollama\ndef add(a, b): return a + b\n",
+    "content_sha256": "2bd8a0afc5fbf9459fd038c35882bc26a28bd100643a031f61a63f67abcee57e",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-20",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "documentation",
+    "content": "DOC = \"The team evaluated xgboost, but it is not used.\"\n",
+    "content_sha256": "0cfb95f569d352c8fcf2db8ba93950ed18059f62899d84e10566c7b44ec2d8f4",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-21",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "comment",
+    "content": "# Example documentation says: import torch\nvalue = 1\n",
+    "content_sha256": "8908cc72c47bb51c8a8779691a0864cce5450518bd4d77a934451bca9d6e5463",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-22",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "string_literal",
+    "content": "message = \"import tensorflow\"\nvalue = len(message)\n",
+    "content_sha256": "a4c722cf83b6bf4fb952fd844d1710b4985ac60eb92e46963e8de7ececc30570",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-23",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "near_name",
+    "content": "import transformers_notes\nvalue = transformers_notes.__name__\n",
+    "content_sha256": "876eca6c08a37541838d7dc9d01b847ee98d507eb835b0a0aa482aff64c1b9d5",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-24",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "dead_comment",
+    "content": "# removed dependency: sklearn\ndef add(a, b): return a + b\n",
+    "content_sha256": "abb6ce379754bcc55ee84741ab7f407d381152d7acaca51efd7535eb4b58e1a7",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-25",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "documentation",
+    "content": "DOC = \"The team evaluated openai, but it is not used.\"\n",
+    "content_sha256": "2ea97323af9dd0b0f9e3f5f564835ad7decf4d4fd48be871ea0df1f52af9d0b6",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-26",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "comment",
+    "content": "# Example documentation says: import anthropic\nvalue = 1\n",
+    "content_sha256": "e45596788c7a3fd86ceb24bfca86276999116d634cbf854b8defb28542986c37",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-27",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "string_literal",
+    "content": "message = \"import langchain\"\nvalue = len(message)\n",
+    "content_sha256": "064bf9afdf3243ea05218661c0b76f64710cb84b8a00fabbff0067f0bc670bf9",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-28",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "near_name",
+    "content": "import llamaindex_notes\nvalue = llamaindex_notes.__name__\n",
+    "content_sha256": "db7542c61ad40150688fa91b1610a7bbdd29988d1dac08d59c9e328ffeae0fc4",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-29",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "dead_comment",
+    "content": "# removed dependency: ollama\ndef add(a, b): return a + b\n",
+    "content_sha256": "2bd8a0afc5fbf9459fd038c35882bc26a28bd100643a031f61a63f67abcee57e",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-30",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "documentation",
+    "content": "DOC = \"The team evaluated xgboost, but it is not used.\"\n",
+    "content_sha256": "0cfb95f569d352c8fcf2db8ba93950ed18059f62899d84e10566c7b44ec2d8f4",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-31",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "comment",
+    "content": "# Example documentation says: import torch\nvalue = 1\n",
+    "content_sha256": "8908cc72c47bb51c8a8779691a0864cce5450518bd4d77a934451bca9d6e5463",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-32",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "string_literal",
+    "content": "message = \"import tensorflow\"\nvalue = len(message)\n",
+    "content_sha256": "a4c722cf83b6bf4fb952fd844d1710b4985ac60eb92e46963e8de7ececc30570",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-33",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "near_name",
+    "content": "import transformers_notes\nvalue = transformers_notes.__name__\n",
+    "content_sha256": "876eca6c08a37541838d7dc9d01b847ee98d507eb835b0a0aa482aff64c1b9d5",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-34",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "dead_comment",
+    "content": "# removed dependency: sklearn\ndef add(a, b): return a + b\n",
+    "content_sha256": "abb6ce379754bcc55ee84741ab7f407d381152d7acaca51efd7535eb4b58e1a7",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-35",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "documentation",
+    "content": "DOC = \"The team evaluated openai, but it is not used.\"\n",
+    "content_sha256": "2ea97323af9dd0b0f9e3f5f564835ad7decf4d4fd48be871ea0df1f52af9d0b6",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-36",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "comment",
+    "content": "# Example documentation says: import anthropic\nvalue = 1\n",
+    "content_sha256": "e45596788c7a3fd86ceb24bfca86276999116d634cbf854b8defb28542986c37",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-37",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "string_literal",
+    "content": "message = \"import langchain\"\nvalue = len(message)\n",
+    "content_sha256": "064bf9afdf3243ea05218661c0b76f64710cb84b8a00fabbff0067f0bc670bf9",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-38",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "near_name",
+    "content": "import llamaindex_notes\nvalue = llamaindex_notes.__name__\n",
+    "content_sha256": "db7542c61ad40150688fa91b1610a7bbdd29988d1dac08d59c9e328ffeae0fc4",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-39",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "dead_comment",
+    "content": "# removed dependency: ollama\ndef add(a, b): return a + b\n",
+    "content_sha256": "2bd8a0afc5fbf9459fd038c35882bc26a28bd100643a031f61a63f67abcee57e",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "a-negative-40",
+    "candidate": "A",
+    "language": "python",
+    "relative_path": "src/case.py",
+    "transform": "documentation",
+    "content": "DOC = \"The team evaluated xgboost, but it is not used.\"\n",
+    "content_sha256": "0cfb95f569d352c8fcf2db8ba93950ed18059f62899d84e10566c7b44ec2d8f4",
+    "observable": "no implemented AI library, model, or service"
+  },
+  {
+    "id": "b-positive-01",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "chatbot_notice:rendered_body",
+    "content": "<html><body><p id=\"ai-notice\">You are interacting with an AI system.</p></body></html>\n",
+    "content_sha256": "6c61d95cebad1e76e3f0e3cb4231139620a704c846df42d3cad319f1bac5c9d7",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-02",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "synthetic_marker:nested_template",
+    "content": "<main><section><meta name=\"ai-generated\" content=\"true\"></section></main>\n",
+    "content_sha256": "5eeedd9e08f12227ff0eb02ba4e0c93b5fcab5e29c91975e5b3a3e1bc1fa8ed1",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-03",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "deepfake_notice:language_attribute",
+    "content": "<div lang=\"en\"><figcaption>This video was artificially generated.</figcaption></div>\n",
+    "content_sha256": "b96f82b2e57fe0eed27164f36dea4f416ad4359b0a7993c6154d86dcf1ed04bd",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-04",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "emotion_notice:rendered_body",
+    "content": "<html><body><p>Emotion recognition is active during this session.</p></body></html>\n",
+    "content_sha256": "f37af5207221650b4d67a9dca2be2c852c62f7d22588b291cfb6983ad1e079cc",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-05",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "biometric_notice:nested_template",
+    "content": "<main><section><p>Biometric categorisation is active for this interaction.</p></section></main>\n",
+    "content_sha256": "e5099c04b346980b7fee4adea247921c2919d70236c6d256a581e017c22ea8e9",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-06",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "chatbot_notice:language_attribute",
+    "content": "<div lang=\"en\"><p id=\"ai-notice\">You are interacting with an AI system.</p></div>\n",
+    "content_sha256": "80352563a61221e3ddbb8226b6f1a42e557b34ea4db3089a3c49f056bee15214",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-07",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "synthetic_marker:rendered_body",
+    "content": "<html><body><meta name=\"ai-generated\" content=\"true\"></body></html>\n",
+    "content_sha256": "8f8a075fceff762f185d7cadfa06e4c22887a4125f6eb7a6aa240989a01db189",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-08",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "deepfake_notice:nested_template",
+    "content": "<main><section><figcaption>This video was artificially generated.</figcaption></section></main>\n",
+    "content_sha256": "3ab3f19e96a22d3acbb2a1f414e38ec44d350caaacc8154b64397e067f41c3fc",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-09",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "emotion_notice:language_attribute",
+    "content": "<div lang=\"en\"><p>Emotion recognition is active during this session.</p></div>\n",
+    "content_sha256": "fcce19c5f96104dc6bbcb6bb63d5120a2e857e6d84a87f30bc0b3cd0f6c5ab18",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-10",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "biometric_notice:rendered_body",
+    "content": "<html><body><p>Biometric categorisation is active for this interaction.</p></body></html>\n",
+    "content_sha256": "f6b4fc76b513fc95b7e07ead850377648d33c1b2bf283126a848ce3a121c1876",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-11",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "chatbot_notice:nested_template",
+    "content": "<main><section><p id=\"ai-notice\">You are interacting with an AI system.</p></section></main>\n",
+    "content_sha256": "4645bae881d2b62313d9e96cdc6e74bbb1e54e39eec775cf7929b0c8c201f9d3",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-12",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "synthetic_marker:language_attribute",
+    "content": "<div lang=\"en\"><meta name=\"ai-generated\" content=\"true\"></div>\n",
+    "content_sha256": "1409b8c7a6ed5c2cab6ec1a6b2bacb22d06aee080d3fe7e1e0c481ca2dc3acee",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-13",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "deepfake_notice:rendered_body",
+    "content": "<html><body><figcaption>This video was artificially generated.</figcaption></body></html>\n",
+    "content_sha256": "1b4c32838588359049c849369c48f640fad219b60493edfd38655f2ccb4beda8",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-14",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "emotion_notice:nested_template",
+    "content": "<main><section><p>Emotion recognition is active during this session.</p></section></main>\n",
+    "content_sha256": "56f653313083a619a922543a2b16386f74cd157292aa4ad41e07c3a88a964943",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-15",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "biometric_notice:language_attribute",
+    "content": "<div lang=\"en\"><p>Biometric categorisation is active for this interaction.</p></div>\n",
+    "content_sha256": "fabcc66585f275d53a17fd838ef5bb80935c4166997a09122f8edfd8f84cd258",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-16",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "chatbot_notice:rendered_body",
+    "content": "<html><body><p id=\"ai-notice\">You are interacting with an AI system.</p></body></html>\n",
+    "content_sha256": "6c61d95cebad1e76e3f0e3cb4231139620a704c846df42d3cad319f1bac5c9d7",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-17",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "synthetic_marker:nested_template",
+    "content": "<main><section><meta name=\"ai-generated\" content=\"true\"></section></main>\n",
+    "content_sha256": "5eeedd9e08f12227ff0eb02ba4e0c93b5fcab5e29c91975e5b3a3e1bc1fa8ed1",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-18",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "deepfake_notice:language_attribute",
+    "content": "<div lang=\"en\"><figcaption>This video was artificially generated.</figcaption></div>\n",
+    "content_sha256": "b96f82b2e57fe0eed27164f36dea4f416ad4359b0a7993c6154d86dcf1ed04bd",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-19",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "emotion_notice:rendered_body",
+    "content": "<html><body><p>Emotion recognition is active during this session.</p></body></html>\n",
+    "content_sha256": "f37af5207221650b4d67a9dca2be2c852c62f7d22588b291cfb6983ad1e079cc",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-20",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "biometric_notice:nested_template",
+    "content": "<main><section><p>Biometric categorisation is active for this interaction.</p></section></main>\n",
+    "content_sha256": "e5099c04b346980b7fee4adea247921c2919d70236c6d256a581e017c22ea8e9",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-21",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "chatbot_notice:language_attribute",
+    "content": "<div lang=\"en\"><p id=\"ai-notice\">You are interacting with an AI system.</p></div>\n",
+    "content_sha256": "80352563a61221e3ddbb8226b6f1a42e557b34ea4db3089a3c49f056bee15214",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-22",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "synthetic_marker:rendered_body",
+    "content": "<html><body><meta name=\"ai-generated\" content=\"true\"></body></html>\n",
+    "content_sha256": "8f8a075fceff762f185d7cadfa06e4c22887a4125f6eb7a6aa240989a01db189",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-23",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "deepfake_notice:nested_template",
+    "content": "<main><section><figcaption>This video was artificially generated.</figcaption></section></main>\n",
+    "content_sha256": "3ab3f19e96a22d3acbb2a1f414e38ec44d350caaacc8154b64397e067f41c3fc",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-24",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "emotion_notice:language_attribute",
+    "content": "<div lang=\"en\"><p>Emotion recognition is active during this session.</p></div>\n",
+    "content_sha256": "fcce19c5f96104dc6bbcb6bb63d5120a2e857e6d84a87f30bc0b3cd0f6c5ab18",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-25",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "biometric_notice:rendered_body",
+    "content": "<html><body><p>Biometric categorisation is active for this interaction.</p></body></html>\n",
+    "content_sha256": "f6b4fc76b513fc95b7e07ead850377648d33c1b2bf283126a848ce3a121c1876",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-26",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "chatbot_notice:nested_template",
+    "content": "<main><section><p id=\"ai-notice\">You are interacting with an AI system.</p></section></main>\n",
+    "content_sha256": "4645bae881d2b62313d9e96cdc6e74bbb1e54e39eec775cf7929b0c8c201f9d3",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-27",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "synthetic_marker:language_attribute",
+    "content": "<div lang=\"en\"><meta name=\"ai-generated\" content=\"true\"></div>\n",
+    "content_sha256": "1409b8c7a6ed5c2cab6ec1a6b2bacb22d06aee080d3fe7e1e0c481ca2dc3acee",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-28",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "deepfake_notice:rendered_body",
+    "content": "<html><body><figcaption>This video was artificially generated.</figcaption></body></html>\n",
+    "content_sha256": "1b4c32838588359049c849369c48f640fad219b60493edfd38655f2ccb4beda8",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-29",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "emotion_notice:nested_template",
+    "content": "<main><section><p>Emotion recognition is active during this session.</p></section></main>\n",
+    "content_sha256": "56f653313083a619a922543a2b16386f74cd157292aa4ad41e07c3a88a964943",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-30",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "biometric_notice:language_attribute",
+    "content": "<div lang=\"en\"><p>Biometric categorisation is active for this interaction.</p></div>\n",
+    "content_sha256": "fabcc66585f275d53a17fd838ef5bb80935c4166997a09122f8edfd8f84cd258",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-31",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "chatbot_notice:rendered_body",
+    "content": "<html><body><p id=\"ai-notice\">You are interacting with an AI system.</p></body></html>\n",
+    "content_sha256": "6c61d95cebad1e76e3f0e3cb4231139620a704c846df42d3cad319f1bac5c9d7",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-32",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "synthetic_marker:nested_template",
+    "content": "<main><section><meta name=\"ai-generated\" content=\"true\"></section></main>\n",
+    "content_sha256": "5eeedd9e08f12227ff0eb02ba4e0c93b5fcab5e29c91975e5b3a3e1bc1fa8ed1",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-33",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "deepfake_notice:language_attribute",
+    "content": "<div lang=\"en\"><figcaption>This video was artificially generated.</figcaption></div>\n",
+    "content_sha256": "b96f82b2e57fe0eed27164f36dea4f416ad4359b0a7993c6154d86dcf1ed04bd",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-34",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "emotion_notice:rendered_body",
+    "content": "<html><body><p>Emotion recognition is active during this session.</p></body></html>\n",
+    "content_sha256": "f37af5207221650b4d67a9dca2be2c852c62f7d22588b291cfb6983ad1e079cc",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-35",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "biometric_notice:nested_template",
+    "content": "<main><section><p>Biometric categorisation is active for this interaction.</p></section></main>\n",
+    "content_sha256": "e5099c04b346980b7fee4adea247921c2919d70236c6d256a581e017c22ea8e9",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-36",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "chatbot_notice:language_attribute",
+    "content": "<div lang=\"en\"><p id=\"ai-notice\">You are interacting with an AI system.</p></div>\n",
+    "content_sha256": "80352563a61221e3ddbb8226b6f1a42e557b34ea4db3089a3c49f056bee15214",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-37",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "synthetic_marker:rendered_body",
+    "content": "<html><body><meta name=\"ai-generated\" content=\"true\"></body></html>\n",
+    "content_sha256": "8f8a075fceff762f185d7cadfa06e4c22887a4125f6eb7a6aa240989a01db189",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-38",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "deepfake_notice:nested_template",
+    "content": "<main><section><figcaption>This video was artificially generated.</figcaption></section></main>\n",
+    "content_sha256": "3ab3f19e96a22d3acbb2a1f414e38ec44d350caaacc8154b64397e067f41c3fc",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-39",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "emotion_notice:language_attribute",
+    "content": "<div lang=\"en\"><p>Emotion recognition is active during this session.</p></div>\n",
+    "content_sha256": "fcce19c5f96104dc6bbcb6bb63d5120a2e857e6d84a87f30bc0b3cd0f6c5ab18",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-positive-40",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "biometric_notice:rendered_body",
+    "content": "<html><body><p>Biometric categorisation is active for this interaction.</p></body></html>\n",
+    "content_sha256": "f6b4fc76b513fc95b7e07ead850377648d33c1b2bf283126a848ce3a121c1876",
+    "observable": "rendered Article 50 implementation evidence"
+  },
+  {
+    "id": "b-negative-01",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "html_comment",
+    "content": "<html><body><!-- You are interacting with an AI system. --></body></html>\n",
+    "content_sha256": "3d7deb62483072b23f9dc176233ce2b1084b2a896fc60d1ffeb77fa0db5d0042",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-02",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "non_rendered_template",
+    "content": "<html><body><template id=\"unused\">AI-generated content</template></body></html>\n",
+    "content_sha256": "45484438e6c2b989ba9c79840ff8d6a091d3d54df7725a47381b561ca0e4a34f",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-03",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "irrelevant_attribute",
+    "content": "<html><body><div data-doc=\"deepfake disclosure\">ordinary content</div></body></html>\n",
+    "content_sha256": "1ee7ec00d688b72db785eaf2052b28f2ace67ef6bf48fb2c7b8bbc893040ea7e",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-04",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "developer_note",
+    "content": "<html><body><script type=\"text/plain\">add emotion recognition notice later</script></body></html>\n",
+    "content_sha256": "bd1c028bdb6a4a40aaaa3cbea64b8a4c46950623190e72b45a36d9a9003a87dc",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-05",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "negated_copy",
+    "content": "<html><body><p>This service does not use biometric categorisation.</p></body></html>\n",
+    "content_sha256": "455360f7f4613925053069d2b491a3817ba19c9a2ed34296048404912d32db36",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-06",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "html_comment",
+    "content": "<html><body><!-- You are interacting with an AI system. --></body></html>\n",
+    "content_sha256": "3d7deb62483072b23f9dc176233ce2b1084b2a896fc60d1ffeb77fa0db5d0042",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-07",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "non_rendered_template",
+    "content": "<html><body><template id=\"unused\">AI-generated content</template></body></html>\n",
+    "content_sha256": "45484438e6c2b989ba9c79840ff8d6a091d3d54df7725a47381b561ca0e4a34f",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-08",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "irrelevant_attribute",
+    "content": "<html><body><div data-doc=\"deepfake disclosure\">ordinary content</div></body></html>\n",
+    "content_sha256": "1ee7ec00d688b72db785eaf2052b28f2ace67ef6bf48fb2c7b8bbc893040ea7e",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-09",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "developer_note",
+    "content": "<html><body><script type=\"text/plain\">add emotion recognition notice later</script></body></html>\n",
+    "content_sha256": "bd1c028bdb6a4a40aaaa3cbea64b8a4c46950623190e72b45a36d9a9003a87dc",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-10",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "negated_copy",
+    "content": "<html><body><p>This service does not use biometric categorisation.</p></body></html>\n",
+    "content_sha256": "455360f7f4613925053069d2b491a3817ba19c9a2ed34296048404912d32db36",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-11",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "html_comment",
+    "content": "<html><body><!-- You are interacting with an AI system. --></body></html>\n",
+    "content_sha256": "3d7deb62483072b23f9dc176233ce2b1084b2a896fc60d1ffeb77fa0db5d0042",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-12",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "non_rendered_template",
+    "content": "<html><body><template id=\"unused\">AI-generated content</template></body></html>\n",
+    "content_sha256": "45484438e6c2b989ba9c79840ff8d6a091d3d54df7725a47381b561ca0e4a34f",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-13",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "irrelevant_attribute",
+    "content": "<html><body><div data-doc=\"deepfake disclosure\">ordinary content</div></body></html>\n",
+    "content_sha256": "1ee7ec00d688b72db785eaf2052b28f2ace67ef6bf48fb2c7b8bbc893040ea7e",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-14",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "developer_note",
+    "content": "<html><body><script type=\"text/plain\">add emotion recognition notice later</script></body></html>\n",
+    "content_sha256": "bd1c028bdb6a4a40aaaa3cbea64b8a4c46950623190e72b45a36d9a9003a87dc",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-15",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "negated_copy",
+    "content": "<html><body><p>This service does not use biometric categorisation.</p></body></html>\n",
+    "content_sha256": "455360f7f4613925053069d2b491a3817ba19c9a2ed34296048404912d32db36",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-16",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "html_comment",
+    "content": "<html><body><!-- You are interacting with an AI system. --></body></html>\n",
+    "content_sha256": "3d7deb62483072b23f9dc176233ce2b1084b2a896fc60d1ffeb77fa0db5d0042",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-17",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "non_rendered_template",
+    "content": "<html><body><template id=\"unused\">AI-generated content</template></body></html>\n",
+    "content_sha256": "45484438e6c2b989ba9c79840ff8d6a091d3d54df7725a47381b561ca0e4a34f",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-18",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "irrelevant_attribute",
+    "content": "<html><body><div data-doc=\"deepfake disclosure\">ordinary content</div></body></html>\n",
+    "content_sha256": "1ee7ec00d688b72db785eaf2052b28f2ace67ef6bf48fb2c7b8bbc893040ea7e",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-19",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "developer_note",
+    "content": "<html><body><script type=\"text/plain\">add emotion recognition notice later</script></body></html>\n",
+    "content_sha256": "bd1c028bdb6a4a40aaaa3cbea64b8a4c46950623190e72b45a36d9a9003a87dc",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-20",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "negated_copy",
+    "content": "<html><body><p>This service does not use biometric categorisation.</p></body></html>\n",
+    "content_sha256": "455360f7f4613925053069d2b491a3817ba19c9a2ed34296048404912d32db36",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-21",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "html_comment",
+    "content": "<html><body><!-- You are interacting with an AI system. --></body></html>\n",
+    "content_sha256": "3d7deb62483072b23f9dc176233ce2b1084b2a896fc60d1ffeb77fa0db5d0042",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-22",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "non_rendered_template",
+    "content": "<html><body><template id=\"unused\">AI-generated content</template></body></html>\n",
+    "content_sha256": "45484438e6c2b989ba9c79840ff8d6a091d3d54df7725a47381b561ca0e4a34f",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-23",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "irrelevant_attribute",
+    "content": "<html><body><div data-doc=\"deepfake disclosure\">ordinary content</div></body></html>\n",
+    "content_sha256": "1ee7ec00d688b72db785eaf2052b28f2ace67ef6bf48fb2c7b8bbc893040ea7e",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-24",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "developer_note",
+    "content": "<html><body><script type=\"text/plain\">add emotion recognition notice later</script></body></html>\n",
+    "content_sha256": "bd1c028bdb6a4a40aaaa3cbea64b8a4c46950623190e72b45a36d9a9003a87dc",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-25",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "negated_copy",
+    "content": "<html><body><p>This service does not use biometric categorisation.</p></body></html>\n",
+    "content_sha256": "455360f7f4613925053069d2b491a3817ba19c9a2ed34296048404912d32db36",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-26",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "html_comment",
+    "content": "<html><body><!-- You are interacting with an AI system. --></body></html>\n",
+    "content_sha256": "3d7deb62483072b23f9dc176233ce2b1084b2a896fc60d1ffeb77fa0db5d0042",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-27",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "non_rendered_template",
+    "content": "<html><body><template id=\"unused\">AI-generated content</template></body></html>\n",
+    "content_sha256": "45484438e6c2b989ba9c79840ff8d6a091d3d54df7725a47381b561ca0e4a34f",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-28",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "irrelevant_attribute",
+    "content": "<html><body><div data-doc=\"deepfake disclosure\">ordinary content</div></body></html>\n",
+    "content_sha256": "1ee7ec00d688b72db785eaf2052b28f2ace67ef6bf48fb2c7b8bbc893040ea7e",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-29",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "developer_note",
+    "content": "<html><body><script type=\"text/plain\">add emotion recognition notice later</script></body></html>\n",
+    "content_sha256": "bd1c028bdb6a4a40aaaa3cbea64b8a4c46950623190e72b45a36d9a9003a87dc",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-30",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "negated_copy",
+    "content": "<html><body><p>This service does not use biometric categorisation.</p></body></html>\n",
+    "content_sha256": "455360f7f4613925053069d2b491a3817ba19c9a2ed34296048404912d32db36",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-31",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "html_comment",
+    "content": "<html><body><!-- You are interacting with an AI system. --></body></html>\n",
+    "content_sha256": "3d7deb62483072b23f9dc176233ce2b1084b2a896fc60d1ffeb77fa0db5d0042",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-32",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "non_rendered_template",
+    "content": "<html><body><template id=\"unused\">AI-generated content</template></body></html>\n",
+    "content_sha256": "45484438e6c2b989ba9c79840ff8d6a091d3d54df7725a47381b561ca0e4a34f",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-33",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "irrelevant_attribute",
+    "content": "<html><body><div data-doc=\"deepfake disclosure\">ordinary content</div></body></html>\n",
+    "content_sha256": "1ee7ec00d688b72db785eaf2052b28f2ace67ef6bf48fb2c7b8bbc893040ea7e",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-34",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "developer_note",
+    "content": "<html><body><script type=\"text/plain\">add emotion recognition notice later</script></body></html>\n",
+    "content_sha256": "bd1c028bdb6a4a40aaaa3cbea64b8a4c46950623190e72b45a36d9a9003a87dc",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-35",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "negated_copy",
+    "content": "<html><body><p>This service does not use biometric categorisation.</p></body></html>\n",
+    "content_sha256": "455360f7f4613925053069d2b491a3817ba19c9a2ed34296048404912d32db36",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-36",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "html_comment",
+    "content": "<html><body><!-- You are interacting with an AI system. --></body></html>\n",
+    "content_sha256": "3d7deb62483072b23f9dc176233ce2b1084b2a896fc60d1ffeb77fa0db5d0042",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-37",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "non_rendered_template",
+    "content": "<html><body><template id=\"unused\">AI-generated content</template></body></html>\n",
+    "content_sha256": "45484438e6c2b989ba9c79840ff8d6a091d3d54df7725a47381b561ca0e4a34f",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-38",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "irrelevant_attribute",
+    "content": "<html><body><div data-doc=\"deepfake disclosure\">ordinary content</div></body></html>\n",
+    "content_sha256": "1ee7ec00d688b72db785eaf2052b28f2ace67ef6bf48fb2c7b8bbc893040ea7e",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-39",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "developer_note",
+    "content": "<html><body><script type=\"text/plain\">add emotion recognition notice later</script></body></html>\n",
+    "content_sha256": "bd1c028bdb6a4a40aaaa3cbea64b8a4c46950623190e72b45a36d9a9003a87dc",
+    "observable": "no rendered affirmative Article 50 evidence"
+  },
+  {
+    "id": "b-negative-40",
+    "candidate": "B",
+    "language": "html",
+    "relative_path": "src/case.html",
+    "transform": "negated_copy",
+    "content": "<html><body><p>This service does not use biometric categorisation.</p></body></html>\n",
+    "content_sha256": "455360f7f4613925053069d2b491a3817ba19c9a2ed34296048404912d32db36",
+    "observable": "no rendered affirmative Article 50 evidence"
+  }
+]
