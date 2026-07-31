@@ -380,3 +380,22 @@ The reviewer's finding 6 was correct and is fixed: three artefacts stated
 the architecture.md discrepancy as 1,395, 1,396 and (implicitly) 1,399,
 because the canonical moved during the session. All now read "1,223 against
 a canonical of 2,618 at the moment of discovery" with the instant named.
+
+## FINAL FULL SUITE, quiescent tree, commit captured before launch and confirmed after
+```
+$ git rev-parse --short HEAD; git rev-parse 'HEAD^{tree}'
+707e2bd
+b9de87c74280de65db2ffd8bd843fe594037af86
+$ python3 -m pytest tests/ -q
+2627 passed in 906.84s (0:15:06)
+FINAL SUITE rc=0         (read from $? after redirection, not through a pipe)
+$ git status --porcelain -> empty, still 707e2bd
+```
+The passing count equals the published count exactly: 2,627. Both full runs
+this session were launched on a clean tree and the tree was confirmed
+unchanged afterwards, so neither describes a tree that moved underneath it
+(N45/N48/N50/N54). Between them, only read-only work was done.
+
+## Session close
+Six commits, all local, branch not pushed, `main` untouched at `6daacd2d`.
+Consolidated handover written to the Downloads folder.
