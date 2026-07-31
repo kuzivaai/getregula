@@ -365,3 +365,35 @@ the reason it was not. Three HIGH findings were raised; one (1) was a real
 falsification of the central claim and is fixed, one (3) resolves by
 committing correctly with its residue recorded, and one (2) is a genuine
 larger instance that needs an owner ruling.
+
+## STEP 5: final verification at the committed state
+
+Launched AFTER the commit, on a quiescent tree, with the commit, tree and
+dirty-count captured to a file before launch and the exit code read from
+`$?` after redirection to a sentinel deleted beforehand.
+
+```
+$ git rev-parse --short HEAD; git rev-parse 'HEAD^{tree}'; git status --porcelain | wc -l   # captured pre-launch
+a8ff846
+cac853f5f4e0ca81f2ab0f9a234083975fb311a3
+0
+
+$ python3 -m pytest tests/ -q > final31.log 2>&1; echo $? > final31.exit
+2608 passed in 875.65s (0:14:35)
+exit: 0
+$ grep -cE '^FAILED' final31.log
+0
+
+# tree after the run
+a8ff846   0 modified
+```
+
+**This run is not contaminated.** It was launched after the commit, nothing
+was edited while it ran, and the tree hash is identical before and after.
+That is the discipline this session broke twice (see N50) and then held.
+
+### Session close
+
+Commit `a8ff846`, 17 files. Tree clean. Remote `e48c4db`, unchanged.
+`main` untouched at `b5ac95c8`. Nothing pushed, no pull request, nothing
+deployed. Ledger rows N49 to N53 added; N43 remains open on its instance.
