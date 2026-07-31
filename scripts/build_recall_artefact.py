@@ -236,9 +236,30 @@ def _comparable(doc: dict) -> str:
 
 
 def main(argv: list[str]) -> int:
+    from tree_guard import untracked_inputs
+
     check_only = "--check" in argv
     fresh = build()
     if check_only:
+        # Symmetry with build_gap_demo: --check reports contamination rather
+        # than refusing, so a reader cannot mistake a passing comparison for
+        # a reproducible artefact. Without this the recall corpus could be
+        # contaminated and --check would stay silent, which is the asymmetry
+        # an adversarial review of the first version found.
+        try:
+            stray = untracked_inputs(FIXTURES)
+        except Exception:
+            stray = []
+        if stray:
+            print(
+                "WARNING: " + str(FIXTURES) + " holds content that is not in "
+                "the repository, so these figures do not reproduce in a clean "
+                "clone:\n  " + "\n  ".join(stray) + "\n"
+                "This check compares the artefact against a run on the SAME "
+                "inputs, so it passing does not mean the published figures "
+                "are reproducible. See ledger N43.",
+                file=sys.stderr,
+            )
         if not ARTEFACT.exists():
             print(f"MISSING: {ARTEFACT.relative_to(REPO_ROOT)}", file=sys.stderr)
             return 1
@@ -250,6 +271,19 @@ def main(argv: list[str]) -> int:
             return 1
         print("RECALL.json matches a fresh run.")
         return 0
+
+    # Refuse to write a published artefact from inputs a clone does not have.
+    # This corpus is clean today (38 tracked files, nothing untracked or
+    # ignored, measured 2026-07-31), so this changes no current behaviour; it
+    # is here because the same defect reached data/gap_demo.json through the
+    # other generator, and a guard on only the fixture that already failed
+    # would close the instance rather than the class. See ledger N43.
+    from tree_guard import UntrackedInputError, assert_inputs_tracked
+    try:
+        assert_inputs_tracked(FIXTURES)
+    except UntrackedInputError as exc:
+        print(f"REFUSED: {exc}", file=sys.stderr)
+        return 2
 
     ARTEFACT.write_text(json.dumps(fresh, indent=2, sort_keys=True) + "\n",
                         encoding="utf-8")
