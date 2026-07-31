@@ -2,7 +2,7 @@
   "_what_this_is": "The complete, authoritative list of files permitted to carry the published test count. Committed data, not prose. It exists because 'nine surfaces' was once inherited from a label whose own components summed to ten, and nobody checked — the same trusting-prose-over-measurement error that produced a false claim about verify_seo gating CI.",
   "_enforcement": "tests/test_published_count_manifest.py scans the whole repository for the published count literal and fails on any occurrence outside this manifest and the changelog. Enumerate the allowed locations, then scan for violations — an eleventh surface cannot appear silently.",
   "_canonical_source": "data/site_facts.json -> counts.tests.total_collected, produced by scripts/site_facts.count_tests() from `pytest --collect-only`. The number is generated, never hand-authored.",
-  "_updated": "2026-07-28",
+  "_updated": "2026-07-31",
   "published_surfaces": [
     "README.md",
     "SECURITY.md",
@@ -13,7 +13,8 @@
     "site/llms-full.txt",
     "site/regions/uae.html",
     "site/locales/de.html",
-    "site/locales/pt-br.html"
+    "site/locales/pt-br.html",
+    "docs/architecture.md"
   ],
   "non_surface_carriers": [
     {
@@ -36,5 +37,6 @@
       "path": "docs/improvement/",
       "note": "Programme working documents record measurements and corrections, including superseded figures, by design."
     }
-  ]
+  ],
+  "_added_2026_07_31": "docs/architecture.md joined the list after it was found publishing '1,223 tests', short by 1,395, while absent from this manifest and from claim_auditor.VERIFY_FACTS_FILES. scripts/claim_auditor.py:1109-1114 had recorded that exact gap as known and parked. A hand-maintained list cannot prove its own completeness, so the backstop is now tests/test_cascade_count.py::TestEveryPublishedSurfaceCarriesTheCanonicalCount, which enumerates tracked .md/.html/.txt with git ls-files instead of reading this file (measurement rule 4c)."
 }

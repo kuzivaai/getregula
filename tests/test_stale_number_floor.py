@@ -167,6 +167,56 @@ class TestEndToEndThroughVerifyFacts(unittest.TestCase):
             "verify_facts passed a file publishing 1,100 tests against a "
             "canonical 2,363. The unit-level fix is not wired into the gate.")
 
+    def test_a_scoped_entry_still_checks_the_fact_it_declares(self):
+        """A scoped entry must narrow the FACTS checked, never disable the
+        file. Without this control, `("path", {"tests"})` is
+        indistinguishable from deleting the entry, and the reach won on
+        2026-07-31 could be lost silently by a later edit to the set.
+        """
+        import tempfile
+        with tempfile.TemporaryDirectory(dir=str(REPO_ROOT)) as td:
+            planted = Path(td) / "PLANTED_SCOPED.md"
+            planted.write_text(
+                "# Fixture\n\nThe suite carries 1,100 tests today.\n",
+                encoding="utf-8")
+            rel = str(planted.relative_to(REPO_ROOT))
+            original = list(ca.VERIFY_FACTS_FILES)
+            try:
+                ca.VERIFY_FACTS_FILES.append((rel, {"tests"}))
+                rc_declared = ca.verify_facts()
+                ca.VERIFY_FACTS_FILES[:] = original
+                # ... and must NOT check a fact it does not declare.
+                ca.VERIFY_FACTS_FILES.append((rel, {"commands"}))
+                rc_undeclared = ca.verify_facts()
+            finally:
+                ca.VERIFY_FACTS_FILES[:] = original
+        self.assertEqual(
+            rc_declared, 1,
+            "a scoped entry declaring 'tests' did not flag a planted stale "
+            "test count, so scoping silently disabled the file")
+        self.assertEqual(
+            rc_undeclared, 0,
+            "a scoped entry checked a fact it did not declare, so scoping "
+            "does not actually scope")
+
+    def test_architecture_md_is_covered_for_its_test_count(self):
+        """Positive proof the 2026-07-31 reach widening is still in place.
+
+        docs/architecture.md published '1,223 tests' against a canonical of
+        2,619 while absent from this list. It is now present and scoped to
+        {'tests'}; assert both halves, because either alone is meaningless.
+        """
+        entries = {e[0] if isinstance(e, tuple) else e
+                   for e in ca.VERIFY_FACTS_FILES}
+        self.assertIn("docs/architecture.md", entries)
+        scoped = [e for e in ca.VERIFY_FACTS_FILES
+                  if isinstance(e, tuple) and e[0] == "docs/architecture.md"]
+        self.assertTrue(scoped, "architecture.md is present but not scoped")
+        self.assertIn(
+            "tests", scoped[0][1],
+            "architecture.md is scoped in a way that excludes the very fact "
+            "it was added to cover")
+
     def test_the_real_repo_still_passes(self):
         """Control: the repair must not red the gate on a clean tree."""
         self.assertEqual(

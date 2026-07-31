@@ -9,6 +9,8 @@ that, the tool is a promise rather than a mechanism.
 Stdlib only.
 """
 
+import re
+import subprocess
 import sys
 import unittest
 from pathlib import Path
@@ -99,11 +101,185 @@ class TestCascadeRefusal(unittest.TestCase):
         self.assertGreater(cc.canonical_count(), 0)
 
     def test_repo_is_currently_in_sync(self):
-        """--check must be clean at HEAD, or the cascade was done by hand."""
+        """--check must be clean at HEAD, or the cascade was done by hand.
+
+        NOT SUFFICIENT ON ITS OWN, and the reason is recorded because this
+        test passed green for three days while the landing page published a
+        count 258 short. It asks the tool whether the tool found drift, so
+        it inherits every blindness the tool has. The independent at-rest
+        check is TestEveryPublishedSurfaceCarriesTheCanonicalCount below.
+        """
         self.assertEqual(
             cc.main(["--check"]), 0,
             "manifest surfaces drift from the canonical count; run "
             "python3 scripts/cascade_count.py --apply")
+
+
+class TestCountsAreSeenInsidePublishedMarkup(unittest.TestCase):
+    """A count is published inside HTML and in non-English number formats.
+
+    Both shapes below were live on getregula.com while `--check` reported
+    "all manifest surfaces already carry the canonical value". Neither is
+    hypothetical: they are the exact bytes from site/index.html:346 and
+    site/locales/de.html:328.
+    """
+
+    def test_count_behind_inline_markup_is_detected(self):
+        """`</strong> ` is not `\\s`, so a `{n}\\s+tests` template misses it."""
+        text = '<strong style="color:var(--text);">2,354</strong> tests'
+        self.assertEqual(
+            cc._stale_values(text, 2612), {2354},
+            "a count separated from its unit word by inline markup was not "
+            "seen; this is how site/index.html published 2,354 for 3 days")
+
+    def test_dot_grouped_count_is_detected(self):
+        """de-DE and pt-BR group thousands with a full stop."""
+        for text, label in (
+                ('<strong style="color:var(--text);">2.349</strong> Tests',
+                 "de"),
+                ('<strong style="color:var(--text);">2.349</strong> testes',
+                 "pt-br")):
+            self.assertEqual(
+                cc._stale_values(text, 2612), {2349},
+                f"dot-grouped count invisible to the scanner ({label})")
+
+    def test_dot_grouped_count_keeps_its_separator_when_rewritten(self):
+        """Detecting it is half the job. Writing `2,612` into German copy
+        would fix the number and break the language."""
+        text = '<strong>2.349</strong> Tests'
+        out = text
+        for old in cc._stale_values(text, 2612):
+            for rx in cc._count_regexes(old):
+                out = rx.sub(lambda m: cc._swap(m.group(0), old, 2612), out)
+        self.assertIn("2.612", out, f"separator style not preserved: {out!r}")
+        self.assertNotIn("2,612", out, f"English separator written: {out!r}")
+
+    def test_markup_tolerance_does_not_reach_across_a_sentence(self):
+        """THE CONTROL. Tolerating markup must not become tolerating text.
+        If it did, any number in the same paragraph as the word `tests`
+        would become a rewrite candidate, which is the heuristic this
+        module's header records as tried and abandoned twice."""
+        text = "We shipped 2,354 features in 2026. The suite has 2,612 tests."
+        self.assertEqual(
+            cc._stale_values(text, 2612), set(),
+            "an unrelated number in the same sentence became a candidate")
+
+    def test_years_behind_markup_are_still_not_rewritten(self):
+        """The other control: markup tolerance must not resurrect the year
+        class that COUNT_TEMPLATES exists to prevent."""
+        for text in ('<strong>2026</strong> was the year',
+                     '<em>2024</em>/1689 applies',
+                     '<span>2026</span>-07-28'):
+            self.assertEqual(
+                cc._stale_values(text, 2612), set(),
+                f"non-count number became a candidate in: {text!r}")
+
+
+class TestEveryPublishedSurfaceCarriesTheCanonicalCount(unittest.TestCase):
+    """At rest, on the real repository, INDEPENDENTLY of the tool AND
+    INDEPENDENTLY of the manifest.
+
+    Two separate failures made this shape necessary, both measured
+    2026-07-31:
+
+    1. Deliberately does not import COUNT_TEMPLATES. A test that reuses the
+       tool's own matcher passes for exactly the reason the tool is wrong.
+       `test_repo_is_currently_in_sync` above did precisely that and stayed
+       green through cascades to 2,595, 2,608 and 2,612 while three manifest
+       surfaces carried 2,354 and 2.349.
+
+    2. Deliberately does not iterate the manifest either. The manifest is a
+       hand-maintained list, and measurement rule 4c says a completeness
+       claim must come from enumeration. It did not: `docs/architecture.md`
+       published "1,223 tests" (short by 1,395) while absent from both the
+       manifest and claim_auditor's VERIFY_FACTS_FILES, a gap
+       claim_auditor.py:1109-1114 had recorded as known and parked. Covering
+       only manifest entries would have left it wrong.
+
+    The corpus is `git ls-files`, so untracked scratch is out of scope
+    (rule 4b), and the exemptions below are named and justified rather than
+    being a pattern that quietly swallows real surfaces.
+
+    Plural unit words only. `1,059 test functions` in docs/TRUST.md is a
+    different quantity and must not be flagged.
+    """
+
+    UNIT = r"(?:tests|testes|Tests|pytest-collected|passing)"
+
+    # Historical and verbatim records. A changelog entry, a ledger row and a
+    # rules file citing a past incident MUST keep the number that was true
+    # when written; rewriting them would falsify the record. Everything else
+    # tracked is treated as a live surface.
+    EXEMPT_PREFIXES = (
+        "docs/improvement/",     # ledger, session logs, review packs
+        "benchmarks/results/",   # dated scan artefacts
+        ".claude/rules/",        # rules quoting past wrong numbers verbatim
+        "CHANGELOG.md",          # per-release record of what was true then
+        "tests/",                # test fixtures and this file's own examples
+        "scripts/",              # docstrings citing the incidents by number
+    )
+
+    def _tracked_surfaces(self):
+        out = subprocess.run(
+            ["git", "ls-files", "-z"], cwd=str(cc.REPO),
+            capture_output=True, text=True, check=True).stdout
+        for rel in out.split("\0"):
+            if not rel or rel.startswith(self.EXEMPT_PREFIXES):
+                continue
+            if rel.endswith((".md", ".html", ".txt")):
+                yield rel
+
+    def test_no_tracked_surface_publishes_a_stale_count(self):
+        canonical = cc.canonical_count()
+        wrong = []
+        for rel in self._tracked_surfaces():
+            path = cc.REPO / rel
+            flat = re.sub(r"</?[a-zA-Z][^>]*>", "",
+                          path.read_text(encoding="utf-8", errors="replace"))
+            for m in re.finditer(
+                    rf"(\d{{1,3}}[.,]\d{{3}}|\d{{4}})\s*{self.UNIT}\b", flat):
+                value = int(m.group(1).replace(",", "").replace(".", ""))
+                if value != canonical:
+                    wrong.append(f"{rel}: publishes {m.group(1)}")
+        self.assertEqual(
+            wrong, [],
+            f"canonical is {canonical:,} but these tracked surfaces "
+            f"disagree: {wrong}. Add the file to the manifest and re-run "
+            f"`python3 scripts/cascade_count.py --apply`, or correct it by "
+            f"hand if the shape is not one the cascade tool may touch.")
+
+    def test_the_two_instruments_share_one_gap_definition(self):
+        """cascade_count and claim_auditor must agree on what separates a
+        count from its unit word.
+
+        claim_auditor's comment beside unit_patterns["tests"] asserts the
+        two "agree on what a test-count claim looks like". That assertion
+        was already false once: cascade_count used `\\s+` and claim_auditor
+        `(?:\\s*|%20)`, and BOTH were blind to `</strong> `. Asserting the
+        identity here is what stops a repair to one from leaving the other
+        behind.
+        """
+        import claim_auditor
+        self.assertEqual(
+            claim_auditor._GAP, cc.GAP,
+            "claim_auditor fell back to its copied gap regex instead of "
+            "importing cascade_count.GAP, so the two can now drift")
+        self.assertEqual(claim_auditor._dotted(2619), "2.619")
+
+    def test_the_enumeration_actually_reaches_the_known_surfaces(self):
+        """POSITIVE PROOF THE CORPUS IS NOT EMPTY (measurement rule 4).
+
+        Without this, an exemption typo that excluded everything would make
+        the test above pass by scanning nothing, which is the exact failure
+        mode it exists to catch.
+        """
+        found = set(self._tracked_surfaces())
+        for required in ("README.md", "site/index.html", "docs/TRUST.md",
+                         "site/locales/de.html", "docs/architecture.md"):
+            self.assertIn(
+                required, found,
+                f"{required} is not reached by the enumeration, so its "
+                f"count is unchecked")
 
 
 if __name__ == "__main__":

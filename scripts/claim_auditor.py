@@ -43,6 +43,24 @@ from dataclasses import dataclass, field, asdict
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+
+# The gap a published count may put between the digits and its unit word.
+# SINGLE SOURCE: scripts/cascade_count.py::GAP. Imported rather than copied,
+# because the comment beside unit_patterns["tests"] asserts that this module
+# and cascade_count "agree on what a test-count claim looks like", and a
+# copied regex makes that assertion decay silently. The fallback keeps this
+# module importable if cascade_count is ever absent (scripts/ ships as the
+# PyPI package); tests/test_cascade_count.py asserts the two are identical,
+# so the fallback cannot drift unnoticed either.
+try:
+    from cascade_count import GAP as _GAP, _dotted
+except Exception:  # pragma: no cover - defensive, asserted equal by tests
+    _GAP = r"(?:\s|</?[a-zA-Z][^>]*>)+"
+
+    def _dotted(value: int) -> str:
+        return f"{value:,}".replace(",", ".")
+
+
 ALLOWLIST_PATH = REPO_ROOT / ".claim-allowlist"
 
 SCANNED_SUFFIXES = {".md", ".markdown", ".html", ".htm"}
@@ -1106,19 +1124,55 @@ def check_recall_claims(text: str, rel_path: str,
 # this gate actually reach?") is answerable by reading one list, and so a
 # test can extend it against a planted fixture.
 #
-# NOT the full set of published surfaces. MEASURED 2026-07-28: tracked files
-# carrying a test-count claim include docs/architecture.md ("1,223 tests")
-# and docs/CONTINUITY.md ("2,600+ tests"), neither of which is listed here,
-# so neither is checked. Extending this list is P0 and is deliberately
-# parked behind 1.5c - a gate's reach must not be widened before its
-# sensitivity is repaired.
-VERIFY_FACTS_FILES: list[str] = [
+# STILL NOT the full set of published surfaces, and the reason this list
+# cannot be trusted to be complete is that it is maintained by hand.
+#
+# MEASURED 2026-07-28: docs/architecture.md ("1,223 tests") and
+# docs/CONTINUITY.md ("2,600+ tests") both carried test-count claims while
+# absent from this list, so neither was checked. Extending it was recorded
+# as P0 and parked behind 1.5c on the principle that a gate's reach must
+# not be widened before its sensitivity is repaired.
+#
+# 2026-07-31: the sensitivity defect was repaired (unit_patterns["tests"]
+# now tolerates inline markup and dotted grouping), and the cost of the
+# parking was then measured: docs/architecture.md had been publishing
+# "1,223 tests" against a canonical of 2,619, short by 1,396. It is added
+# below. docs/CONTINUITY.md is deliberately NOT added: "2,600+ tests" is an
+# open-ended claim that remains true, and cascading a hard number into it
+# would make a doc that needs no maintenance need it.
+#
+# The durable answer to "is this list complete?" is not a longer list. It is
+# tests/test_cascade_count.py::TestEveryPublishedSurfaceCarriesTheCanonicalCount,
+# which enumerates tracked .md/.html/.txt with `git ls-files` and never reads
+# this list at all (measurement rule 4c: a completeness claim must come from
+# enumeration).
+# Entries are either a plain path (every fact in `canonical` is checked) or
+# a (path, {fact_names}) pair naming the facts that surface actually
+# publishes. The pair form exists so that widening reach cannot import false
+# positives from documents that carry legitimately scoped counts; see
+# docs/architecture.md below.
+VERIFY_FACTS_FILES: list = [
     "README.md",
     # SECURITY.md carries the same numeric badges (test count etc.) and was
     # previously unchecked, so a stale "2,468 tests" line drifted undetected.
     "SECURITY.md",
     "docs/TRUST.md",
     "docs/MODEL_CARD.md",
+    # Added 2026-07-31 after it was found 1,396 short. See the note above.
+    #
+    # SCOPED, and the scoping is not a suppression. This file is a directory
+    # tree whose comments carry deliberate PER-MODULE counts:
+    # `credential_check.py # Secret detection (18 patterns ...)` and
+    # `gdpr_patterns.py # GDPR pattern definitions (14 patterns ...)`. Both
+    # were verified correct on 2026-07-31 against the modules themselves
+    # (len(credential_check.SECRET_PATTERNS) == 18,
+    # len(gdpr_patterns.GDPR_PATTERNS) == 14). The file makes NO repo-wide
+    # pattern claim, so the unscoped gate read "18 pattern" as a failed
+    # attempt at the canonical 419 and reported two mismatches that were the
+    # gate's error, not the document's. Listing the facts a surface actually
+    # publishes is the fix; adding either number to .claim-allowlist would
+    # have hidden a real defect class behind a real false positive.
+    ("docs/architecture.md", {"tests"}),
     "site/index.html",
     "site/pricing.html",
     "site/about.html",
@@ -1193,23 +1247,39 @@ def verify_facts() -> int:
         "62": ("commands", facts["counts"]["commands"]),
         "13": ("frameworks", facts["counts"]["frameworks"]),
         "8": ("languages", facts["counts"]["languages"]),
-        # The key is only a human-readable hint; the check compares the
-        # CURRENT value below. Kept in sync with the current count for clarity.
-        "2354": ("tests", facts["counts"]["tests"]["total_collected"]),
+        # Derived, never hand-written. This key used to be the literal
+        # "2354" with a comment claiming it was "kept in sync with the
+        # current count for clarity"; it was not, and by 2026-07-31 it was
+        # 265 out of date, so the one thing it promised was the one thing it
+        # did not do. The key is only a human-readable hint (the check
+        # compares the CURRENT value below), which is exactly why nothing
+        # forced it to stay true.
+        str(facts["counts"]["tests"]["total_collected"]): (
+            "tests", facts["counts"]["tests"]["total_collected"]),
     }
 
     check_files = VERIFY_FACTS_FILES
+    # Bare paths, for the checks below that are not fact-scoped. Kept as one
+    # derivation so a scoped entry cannot reach a loop expecting a string,
+    # which is exactly what broke when the tuple form was introduced.
+    check_paths = [e[0] if isinstance(e, tuple) else e for e in check_files]
 
     mismatches: list[str] = []
     checked = 0
 
-    for rel_path in check_files:
+    for entry in check_files:
+        if isinstance(entry, tuple):
+            rel_path, only_facts = entry
+        else:
+            rel_path, only_facts = entry, None
         fpath = REPO_ROOT / rel_path
         if not fpath.exists():
             continue
         text = fpath.read_text(encoding="utf-8", errors="replace")
 
         for published_str, (fact_name, actual_val) in canonical.items():
+            if only_facts is not None and fact_name not in only_facts:
+                continue
             actual_str = str(actual_val)
             if published_str != actual_str:
                 # The published number and the canonical number differ.
@@ -1241,7 +1311,14 @@ def verify_facts() -> int:
                 "commands": rf"(?<!\w){actual_str}\s+(?:commands?\b|CLI\s+commands?)",
                 "frameworks": rf"(?<!\w){actual_str}\s+(?:compliance\s+)?frameworks?",
                 "languages": rf"(?<!\w){actual_str}\s+(?:programming\s+)?languages?",
-                "tests": rf"(?<!\w)(?:{actual_str}|{int(actual_str):,})(?:\s*|%20)(?:unique\s+)?(?:pytest-collected\s+)?(?:tests\b(?:\s+passing)?|passing|automated\s+tests\b)",
+                # `_GAP`, not `\s*`. MEASURED 2026-07-31: site/index.html
+                # published the count as `<strong ...>2,354</strong> tests`
+                # and `</strong> ` is neither whitespace nor `%20`, so this
+                # pattern could not see it and --verify-facts reported OK
+                # while the landing page was 258 short. The dotted
+                # alternative covers the de-DE and pt-BR locale pages, which
+                # group thousands with a full stop.
+                "tests": rf"(?<!\w)(?:{actual_str}|{int(actual_str):,}|{_dotted(int(actual_str))})(?:{_GAP}|%20)?(?:unique\s+)?(?:pytest-collected\s+)?(?:tests\b(?:\s+passing)?|passing|automated\s+tests\b)",
             }
             pat = unit_patterns.get(fact_name)
             if not pat:
@@ -1295,7 +1372,7 @@ def verify_facts() -> int:
             checked += 1
 
     # Also check for the known-bad number 780 in pattern context
-    for rel_path in check_files:
+    for rel_path in check_paths:
         fpath = REPO_ROOT / rel_path
         if not fpath.exists():
             continue
@@ -1311,7 +1388,7 @@ def verify_facts() -> int:
     # Precision-figure enforcement (T3c): every "<N>% ...precision" claim in
     # published copy must be derivable from the benchmark artifacts.
     known = known_precision_values()
-    precision_files = list(dict.fromkeys(check_files + PRECISION_EXTRA_FILES))
+    precision_files = list(dict.fromkeys(check_paths + PRECISION_EXTRA_FILES))
     if not known:
         print("claim-auditor --verify-facts: WARNING — benchmark artifacts "
               "not found, precision claims not checked", file=sys.stderr)
