@@ -1,0 +1,376 @@
+[
+  {
+    "id": "microsoft/markitdown",
+    "url": "https://github.com/microsoft/markitdown.git",
+    "commit": "fd239d5d2be43d9b68329730206b9312c7d5a388",
+    "clone_command": [
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "--no-checkout",
+      "https://github.com/microsoft/markitdown.git",
+      "/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/microsoft__markitdown"
+    ],
+    "clone_stdout": "",
+    "clone_stderr": "Cloning into '/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/microsoft__markitdown'...\n",
+    "fetch_command": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "fd239d5d2be43d9b68329730206b9312c7d5a388"
+    ],
+    "fetch_stdout": "",
+    "fetch_stderr": "From https://github.com/microsoft/markitdown\n * branch            fd239d5d2be43d9b68329730206b9312c7d5a388 -> FETCH_HEAD\n",
+    "checkout_stdout": "",
+    "checkout_stderr": "HEAD is now at fd239d5 Bump version to 0.1.7 (#2258)\n",
+    "licence_files": [
+      "LICENSE"
+    ],
+    "source_tree_sha256": "aee9f6ad0b07883af1e79b3cd48e53b7ef618aa4ed72b67818860d81a6d68405"
+  },
+  {
+    "id": "open-webui/open-webui",
+    "url": "https://github.com/open-webui/open-webui.git",
+    "commit": "01f4282f1ffe0d6212f58d3afbeae21fffd0c4be",
+    "clone_command": [
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "--no-checkout",
+      "https://github.com/open-webui/open-webui.git",
+      "/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/open-webui__open-webui"
+    ],
+    "clone_stdout": "",
+    "clone_stderr": "Cloning into '/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/open-webui__open-webui'...\n",
+    "fetch_command": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "01f4282f1ffe0d6212f58d3afbeae21fffd0c4be"
+    ],
+    "fetch_stdout": "",
+    "fetch_stderr": "From https://github.com/open-webui/open-webui\n * branch                01f4282f1ffe0d6212f58d3afbeae21fffd0c4be -> FETCH_HEAD\n",
+    "checkout_stdout": "",
+    "checkout_stderr": "HEAD is now at 01f4282f1 Merge pull request #27590 from open-webui/dev\n",
+    "licence_files": [
+      "LICENSE",
+      "LICENSE_HISTORY",
+      "LICENSE_NOTICE"
+    ],
+    "source_tree_sha256": "b8a376d775bcb35deca73b6045773ce755bfd01fa09f2efd2ad91299cba8249e"
+  },
+  {
+    "id": "browser-use/browser-use",
+    "url": "https://github.com/browser-use/browser-use.git",
+    "commit": "f0aa3a8bb03779c71a5aa262d389e3bfe6b77cdc",
+    "clone_command": [
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "--no-checkout",
+      "https://github.com/browser-use/browser-use.git",
+      "/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/browser-use__browser-use"
+    ],
+    "clone_stdout": "",
+    "clone_stderr": "Cloning into '/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/browser-use__browser-use'...\n",
+    "fetch_command": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "f0aa3a8bb03779c71a5aa262d389e3bfe6b77cdc"
+    ],
+    "fetch_stdout": "",
+    "fetch_stderr": "From https://github.com/browser-use/browser-use\n * branch              f0aa3a8bb03779c71a5aa262d389e3bfe6b77cdc -> FETCH_HEAD\n",
+    "checkout_stdout": "",
+    "checkout_stderr": "HEAD is now at f0aa3a8b Release 0.13.7 with Browser Harness 0.1.8 (#5308)\n",
+    "licence_files": [
+      "LICENSE"
+    ],
+    "source_tree_sha256": "97bff1bae64d8436f9c4db149cba440bad9915b477f3e2dbe94756e301d683e2"
+  },
+  {
+    "id": "modelcontextprotocol/python-sdk",
+    "url": "https://github.com/modelcontextprotocol/python-sdk.git",
+    "commit": "a4f4ccd091138771535e17191123f20b30fda68e",
+    "clone_command": [
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "--no-checkout",
+      "https://github.com/modelcontextprotocol/python-sdk.git",
+      "/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/modelcontextprotocol__python-sdk"
+    ],
+    "clone_stdout": "",
+    "clone_stderr": "Cloning into '/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/modelcontextprotocol__python-sdk'...\n",
+    "fetch_command": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "a4f4ccd091138771535e17191123f20b30fda68e"
+    ],
+    "fetch_stdout": "",
+    "fetch_stderr": "From https://github.com/modelcontextprotocol/python-sdk\n * branch            a4f4ccd091138771535e17191123f20b30fda68e -> FETCH_HEAD\n",
+    "checkout_stdout": "",
+    "checkout_stderr": "HEAD is now at a4f4ccd Link the released 2026-07-28 spec and point migrators at /v1/ (#3214)\n",
+    "licence_files": [
+      "LICENSE"
+    ],
+    "source_tree_sha256": "7c06d7e6eb423bbb9237c2656e5b0165ae94930062c4042afb4bb44f3fdb4555"
+  },
+  {
+    "id": "pallets/click",
+    "url": "https://github.com/pallets/click.git",
+    "commit": "00e592cea702e0b2caa0dee42489fdb1c22cd845",
+    "clone_command": [
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "--no-checkout",
+      "https://github.com/pallets/click.git",
+      "/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/pallets__click"
+    ],
+    "clone_stdout": "",
+    "clone_stderr": "Cloning into '/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/pallets__click'...\n",
+    "fetch_command": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "00e592cea702e0b2caa0dee42489fdb1c22cd845"
+    ],
+    "fetch_stdout": "",
+    "fetch_stderr": "From https://github.com/pallets/click\n * branch            00e592cea702e0b2caa0dee42489fdb1c22cd845 -> FETCH_HEAD\n",
+    "checkout_stdout": "",
+    "checkout_stderr": "HEAD is now at 00e592c Pre-8.5.0 release changelog and doc fixes (#3697)\n",
+    "licence_files": [
+      "LICENSE.txt"
+    ],
+    "source_tree_sha256": "274afad87467b10f67d0e4abf52e1c7ebb883c5c6fe84f4868c80267a0374dfb"
+  },
+  {
+    "id": "pallets/itsdangerous",
+    "url": "https://github.com/pallets/itsdangerous.git",
+    "commit": "672971d66a2ef9f85151e53283113f33d642dabd",
+    "clone_command": [
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "--no-checkout",
+      "https://github.com/pallets/itsdangerous.git",
+      "/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/pallets__itsdangerous"
+    ],
+    "clone_stdout": "",
+    "clone_stderr": "Cloning into '/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/pallets__itsdangerous'...\n",
+    "fetch_command": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "672971d66a2ef9f85151e53283113f33d642dabd"
+    ],
+    "fetch_stdout": "",
+    "fetch_stderr": "From https://github.com/pallets/itsdangerous\n * branch            672971d66a2ef9f85151e53283113f33d642dabd -> FETCH_HEAD\n",
+    "checkout_stdout": "",
+    "checkout_stderr": "HEAD is now at 672971d Merge branch 'stable'\n",
+    "licence_files": [
+      "LICENSE.txt"
+    ],
+    "source_tree_sha256": "a22ce9d2ffec1bc00f7a3b9f50b2a21516f99a75f6a20b6f48234854bdc58e5e"
+  },
+  {
+    "id": "python-attrs/attrs",
+    "url": "https://github.com/python-attrs/attrs.git",
+    "commit": "97f8d175656bc03c373a1c9038048a4d312c307c",
+    "clone_command": [
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "--no-checkout",
+      "https://github.com/python-attrs/attrs.git",
+      "/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/python-attrs__attrs"
+    ],
+    "clone_stdout": "",
+    "clone_stderr": "Cloning into '/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/python-attrs__attrs'...\n",
+    "fetch_command": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "97f8d175656bc03c373a1c9038048a4d312c307c"
+    ],
+    "fetch_stdout": "",
+    "fetch_stderr": "From https://github.com/python-attrs/attrs\n * branch            97f8d175656bc03c373a1c9038048a4d312c307c -> FETCH_HEAD\n",
+    "checkout_stdout": "",
+    "checkout_stderr": "HEAD is now at 97f8d17 Fix ClassVar forward reference detection (#1593)\n",
+    "licence_files": [
+      "LICENSE"
+    ],
+    "source_tree_sha256": "b91fc866a25933f42ecead50ecac41d7c7a69310e28aa63f5c7858bc4ddeb009"
+  },
+  {
+    "id": "astral-sh/ruff",
+    "url": "https://github.com/astral-sh/ruff.git",
+    "commit": "2272478c067945096c34350b20d0bfc41d356d3c",
+    "clone_command": [
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "--no-checkout",
+      "https://github.com/astral-sh/ruff.git",
+      "/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/astral-sh__ruff"
+    ],
+    "clone_stdout": "",
+    "clone_stderr": "Cloning into '/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/astral-sh__ruff'...\n",
+    "fetch_command": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "2272478c067945096c34350b20d0bfc41d356d3c"
+    ],
+    "fetch_stdout": "",
+    "fetch_stderr": "From https://github.com/astral-sh/ruff\n * branch                2272478c067945096c34350b20d0bfc41d356d3c -> FETCH_HEAD\n",
+    "checkout_stdout": "",
+    "checkout_stderr": "HEAD is now at 2272478c0 [ty] Reject `ClassVar` and `Final` qualifiers in `NamedTuple` fields (#27380)\n",
+    "licence_files": [
+      "LICENSE"
+    ],
+    "source_tree_sha256": "5d20fec3bec662acb0dded7e4791c4978f0688f01c3c9e70e582f042c4854c3f"
+  },
+  {
+    "id": "prettier/prettier",
+    "url": "https://github.com/prettier/prettier.git",
+    "commit": "60f03eae59ddf0dff496073d88b0263507c99a5a",
+    "clone_command": [
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "--no-checkout",
+      "https://github.com/prettier/prettier.git",
+      "/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/prettier__prettier"
+    ],
+    "clone_stdout": "",
+    "clone_stderr": "Cloning into '/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/prettier__prettier'...\n",
+    "fetch_command": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "60f03eae59ddf0dff496073d88b0263507c99a5a"
+    ],
+    "fetch_stdout": "",
+    "fetch_stderr": "From https://github.com/prettier/prettier\n * branch                60f03eae59ddf0dff496073d88b0263507c99a5a -> FETCH_HEAD\n",
+    "checkout_stdout": "",
+    "checkout_stderr": "HEAD is now at 60f03eae5 Refactor `BindExpression` test (#19759)\n",
+    "licence_files": [
+      "LICENSE"
+    ],
+    "source_tree_sha256": "8bc4a50958e2d2d83520eb19561872fc1dd1649367cc28fdf72f7a72b658e7da"
+  },
+  {
+    "id": "axios/axios",
+    "url": "https://github.com/axios/axios.git",
+    "commit": "c3f553c740ebf3dff5e22dae24e9caaafafddd2d",
+    "clone_command": [
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "--no-checkout",
+      "https://github.com/axios/axios.git",
+      "/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/axios__axios"
+    ],
+    "clone_stdout": "",
+    "clone_stderr": "Cloning into '/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/axios__axios'...\n",
+    "fetch_command": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "c3f553c740ebf3dff5e22dae24e9caaafafddd2d"
+    ],
+    "fetch_stdout": "",
+    "fetch_stderr": "From https://github.com/axios/axios\n * branch            c3f553c740ebf3dff5e22dae24e9caaafafddd2d -> FETCH_HEAD\n",
+    "checkout_stdout": "",
+    "checkout_stderr": "HEAD is now at c3f553c fix(xhr): reject navigation-canceled requests as ECONNABORTED (#11094)\n",
+    "licence_files": [
+      "LICENSE"
+    ],
+    "source_tree_sha256": "18677b7234040a442b2c241387226acc6b8cc111f5c02f98715fc24b5bf4bb5f"
+  },
+  {
+    "id": "sindresorhus/ky",
+    "url": "https://github.com/sindresorhus/ky.git",
+    "commit": "3419113b48e034fdcf8fa6bd3be3da7b3d0d758f",
+    "clone_command": [
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "--no-checkout",
+      "https://github.com/sindresorhus/ky.git",
+      "/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/sindresorhus__ky"
+    ],
+    "clone_stdout": "",
+    "clone_stderr": "Cloning into '/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/sindresorhus__ky'...\n",
+    "fetch_command": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "3419113b48e034fdcf8fa6bd3be3da7b3d0d758f"
+    ],
+    "fetch_stdout": "",
+    "fetch_stderr": "From https://github.com/sindresorhus/ky\n * branch            3419113b48e034fdcf8fa6bd3be3da7b3d0d758f -> FETCH_HEAD\n",
+    "checkout_stdout": "",
+    "checkout_stderr": "HEAD is now at 3419113 Improve `Retry-After` handling (#874)\n",
+    "licence_files": [
+      "license"
+    ],
+    "source_tree_sha256": "9c434ef236b66face73d52c9f7b35c9d50487643b51ae54a680228de2508f3c8"
+  },
+  {
+    "id": "vitest-dev/vitest",
+    "url": "https://github.com/vitest-dev/vitest.git",
+    "commit": "ec367cf2a6c955da8304e8cea935d1f3dc034a98",
+    "clone_command": [
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "--no-checkout",
+      "https://github.com/vitest-dev/vitest.git",
+      "/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/vitest-dev__vitest"
+    ],
+    "clone_stdout": "",
+    "clone_stderr": "Cloning into '/tmp/regula-commercial-20260731.Inq4k2/repositories-fixed/vitest-dev__vitest'...\n",
+    "fetch_command": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "ec367cf2a6c955da8304e8cea935d1f3dc034a98"
+    ],
+    "fetch_stdout": "",
+    "fetch_stderr": "From https://github.com/vitest-dev/vitest\n * branch              ec367cf2a6c955da8304e8cea935d1f3dc034a98 -> FETCH_HEAD\n",
+    "checkout_stdout": "",
+    "checkout_stderr": "HEAD is now at ec367cf2 feat!: support nested projects (#10846)\n",
+    "licence_files": [
+      "LICENSE"
+    ],
+    "source_tree_sha256": "904e8ebb3d389b18b2262515b1f203f6f205e5683694323f600b16dfaa10f552"
+  }
+]

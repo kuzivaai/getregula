@@ -2023,3 +2023,41 @@ Detection at HEAD under one written rule** (DIRECTIVE-v3 section 6), then
 the traces (7 fixtures, per F27), then the Phase 4 plan revision, then
 loop 3 in a fresh session. F25, F29 (one surface), F30 remain open owner
 escalations; owner decisions 3, 4 (last surface), 5, 6, 7 and 8 unchanged.
+
+---
+
+# CHECKPOINT, 31 July–1 August 2026: COMMERCIAL DEFENSIBILITY GATE
+
+The evaluation froze product commit `94efa9e` and preregistered at `5bd2112`
+before result execution. Two protocol deviations are explicit: `84e0118`
+separated protocol and product trees before results, and `056bcf2` supplied a
+case-insensitive runtime licence acquirer after retaining the frozen
+lowercase-licence failure. No detector rule, threshold, corpus label or public
+claim was changed.
+
+The result is adverse. Local 1.9.0 detected **0/40** constructed Candidate A
+positives and **0/40** Candidate B positives. Transparent baselines detected
+**40/40** for both; A produced 4/40 negative false alerts and B 0/40. Two
+fresh runs per tool normalised identically. Twelve exact public repositories
+were acquired; no independent repository labels exist, so comparator accuracy
+is UNTESTABLE. Local and public Regula each exited zero for 9/12 repository
+runs and non-zero for 3/12, identically on repeat. Candidate C has 0/30
+independently human-labelled scenarios and remains MODEL-PROVISIONAL.
+
+Operationally, local 1.9.0 generated and strictly verified an evidence pack;
+public 1.7.4 generated a legacy pack whose strict verification exited 2. Both
+versions emitted empty finding lists for the active OpenAI first-use control.
+Network behaviour remains UNVERIFIED: `unshare -n` is unavailable and the
+frozen Python socket-denial probe invalidates `ssl` import before the scanner
+runs.
+
+Verdict: **TECHNICAL_EVIDENCE FAILED; COMPARATIVE_ADVANTAGE NOT_DEMONSTRATED;
+PUBLIC_CLAIM_INTEGRITY FAIL; REGULATORY_CURRENCY PARTIAL; OPERATIONAL_READINESS
+FAIL; DEMAND_EVIDENCE UNVALIDATED; OVERALL_DECISION STOP.** The detailed
+review, claim register, validation-only pilot packet and compact result are in
+`docs/commercial/` and `benchmarks/commercial_v1/results/summary.json`.
+
+F25, F30, N35, N43, N50/N54, N53, N55, N57, N6, N7, N10, N11 and N12 remain
+open or partially closed exactly as the ledger records. The next bounded unit
+is high-consequence public/PyPI claim correction; it must not tune the frozen
+benchmark or imply a customer pilot.

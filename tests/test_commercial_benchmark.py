@@ -17,6 +17,34 @@ import gate  # noqa: E402
 import commercial_acquire_runtime  # noqa: E402
 
 
+def test_committed_result_summary_matches_raw_score_and_operations():
+    root = Path(__file__).parent.parent / "benchmarks" / "commercial_v1" / "results"
+    summary = json.loads((root / "summary.json").read_text())
+    raw_score_path = root / "raw" / "synthetic-score.json"
+    assert hashlib.sha256(raw_score_path.read_bytes()).hexdigest() == summary[
+        "raw_score_sha256"]
+    raw = json.loads(raw_score_path.read_text())
+    local = next(row for row in raw["reports"] if row["tool"] == "local_head")
+    for candidate in ("A", "B"):
+        counts = local["candidates"][candidate]["metrics"]["counts"]
+        assert counts == {"tp": 0, "fp": 0, "fn": 40, "tn": 40,
+                          "decisions": 80}
+        assert summary["synthetic"]["local"][candidate]["recall"] == "0/40"
+    for tool, names in {
+        "local_head": ("operations-local-1.json", "operations-local-2.json"),
+        "public_1_7_4": ("operations-public-1.json", "operations-public-2.json"),
+    }.items():
+        first, second = [json.loads((root / "raw" / name).read_text())
+                         for name in names]
+        assert len(first) == len(second) == 12
+        assert [(x["exit_code"], x["stdout_sha256"], x["stderr_sha256"])
+                for x in first] == [
+                    (x["exit_code"], x["stdout_sha256"], x["stderr_sha256"])
+                    for x in second]
+        assert summary["repositories"][tool][
+            "exit_stdout_stderr_hash_repeat_match"] == "12/12"
+
+
 def _git_repo(tmp):
     root = Path(tmp)
     subprocess.run(["git", "init", "-q"], cwd=root, check=True)
