@@ -1,5 +1,16 @@
 # Public claim register — 2026-07-31
 
+## Erratum — 2026-08-01: published package
+
+The register's references to PyPI 1.7.4 as the current release are
+**CONTRADICTED**. Primary package-registry evidence retrieved 2026-08-01 and
+downloaded wheel metadata identify `regula-ai==1.9.0` as current; wheel
+SHA-256 `01cde674270adcf08acedf1b79e003c6f083c464944cf158582a14afde93cff3`.
+The 1.7.4 findings remain VERSION_BOUND to 1.7.4, while 1.9.0 operational
+readiness is UNTESTED by commercial_v1. The published 1.9.0 METADATA contains
+the same disputed high-consequence claim classes. Frozen benchmark data and
+the local 1.9.0 Candidate A/B results are not altered by this correction.
+
 This register is version-aware. No public wording was edited in this session.
 
 | Exact claim | Active surfaces/version | Disposition and evidence | Exact proposed replacement | Consequence |
@@ -11,7 +22,7 @@ This register is version-aware. No public wording was edited in this session.
 | “under 30 seconds” / “30 seconds” | README and TRUST | **CONTRADICTED as an unqualified universal bound.** The frozen local `ruff` repository runs took 68.885 and 122.778 seconds; three Regula repository runs also returned non-zero. No frozen hardware, repository-size or command boundary accompanies the public wording. | “Runtime depends on repository size, language mix and environment; no universal runtime bound is claimed.” | material |
 | “0 known security findings” | TRUST | **CONTRADICTED as an inventory statement, not proof of vulnerabilities.** SECURITY discloses 42 open high-severity CodeQL alerts, says they are triaged and explains why many are believed false positives. An alert is not automatically a confirmed vulnerability, but the zero wording hides the disclosed open-alert inventory. | “See SECURITY.md for the current, versioned open-alert inventory and disposition; open alerts are not equivalent to confirmed vulnerabilities.” | release-blocking |
 | “100% recall” residue and derived precision/recall claims | TRUST, benchmark/history surfaces | **STALE / VERSION_BOUND.** Historical fixture results do not establish current buyer-job performance; commercial_v1 local recall was 0/40 for A and 0/40 for B. | “Historical fixture result; not a current external accuracy estimate. commercial_v1 results are reported separately with corpus, fractions and intervals.” | pilot-blocking |
-| current test, pattern and command counts (including PyPI “2484 passing”) | README, badges, PyPI 1.7.4, site/generated facts | **STALE / VERSION_BOUND.** Initial HEAD collected 2628 pytest cases; the custom runner reported 1060 functions and 1386 cases. Counts changed again with this harness. | “Version-specific counts only, generated from the named release artefact and command; do not reuse local-HEAD counts for 1.7.4.” | material |
+| current test, pattern and command counts (including a stale PyPI passing-count badge) | README, badges, PyPI 1.7.4, site/generated facts | **STALE / VERSION_BOUND.** Initial HEAD collected 2,628 pytest cases; the custom runner reported 1,060 functions and 1,386 cases. Counts changed again with this harness. | “Version-specific counts only, generated from the named release artefact and command; do not reuse local-HEAD counts for 1.7.4.” | material |
 | “independently verifiable” evidence signing/timestamping | TRUST and evidence guide | **VERSION_BOUND.** Local unsigned hash-manifest strict verification passed; no signed or timestamped commercial_v1 pack was tested. | “Unsigned manifest integrity was reproduced for 1.9.0. Signature identity and timestamp trust require the documented keys, dependencies and trust-anchor checks and were not tested here.” | material |
 | draft standards are “published” or provide harmonised-standard presumption | standards/blog surfaces | **CONTRADICTED / UNVERIFIED.** Draft/enquiry/formal-vote stages are not OJ citation; no OJ citation was established. | “Draft or voting-stage work item; no Article 40 presumption of conformity is claimed unless and until the exact standard is cited in the Official Journal.” | release-blocking |
 | Article 50 and high-risk application dates stated without 2026/1744 transition | README/docs/site/blog and translations where present | **STALE where old dates remain.** PRIMARY-SOURCE VERIFIED transition dates are in the research register. | “Dates reflect Regulation (EU) 2026/1744: identify the exact provision and transition; include the Digital Omnibus caveat and retrieval date.” | release-blocking |
