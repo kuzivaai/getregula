@@ -1,5 +1,23 @@
 # Commercial defensibility review — 2026-07-31
 
+## Erratum — 2026-08-01: public release identity
+
+**CONTRADICTED:** the review below described `regula-ai==1.7.4` as the current
+public package. A no-cache PyPI JSON response retrieved 2026-08-01 at
+09:16:26 UTC, `pip index versions regula-ai`, the downloaded
+`regula_ai-1.9.0-py3-none-any.whl`, and local tag `v1.9.0` all identify 1.9.0
+as current. The downloaded wheel SHA-256 is
+`01cde674270adcf08acedf1b79e003c6f083c464944cf158582a14afde93cff3` and its
+METADATA says `Version: 1.9.0`; tag `v1.9.0` resolves to
+`15a1ae051e9fa6c83ae7f7432e190fd54c032aad`.
+
+The commercial_v1 public-package operational findings remain **VERSION_BOUND**
+to the wheel actually tested, 1.7.4. commercial_v1 did not establish the
+operational readiness of published 1.9.0. The 1.9.0 wheel still carries the
+disputed classification, network, DPA, runtime, and auditor-completeness copy
+quoted in the claim register. Frozen corpora, results, hashes, local 1.9.0
+Candidate A/B results, and the STOP decision are unchanged.
+
 ## Executive decision
 
 `OVERALL_DECISION: STOP`. No evaluated capability justifies a customer pilot.
