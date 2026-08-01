@@ -42,10 +42,10 @@
     <link rel="preconnect" href="https://plausible.io" crossorigin>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <title>Regula: EU-KI-Gesetz Compliance-Scanner für Code (Open Source)</title>
-    <meta name="description" content="Open-Source-CLI, die Ihren Code gegen 419 EU-KI-Gesetz-Risikomuster scannt. Klassifiziert Risikostufe, 13 Frameworks, läuft lokal. Nicht Regula Forensics.">
+    <meta name="description" content="Open-Source-CLI, die Ihren Code gegen 419 EU-KI-Gesetz-Risikomuster scannt. Liefert Risikohinweise zur menschlichen Prüfung, 13 Frameworks, läuft lokal. Nicht Regula Forensics.">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta property="og:title" content="Regula: EU-KI-Gesetz Compliance-Scanner für Code (Open Source)">
-    <meta property="og:description" content="Open-Source-CLI, die Ihren Code gegen 419 EU-KI-Gesetz-Risikomuster scannt. Klassifiziert Risikostufe, 13 Frameworks, läuft lokal. Nicht Regula Forensics.">
+    <meta property="og:description" content="Open-Source-CLI, die Ihren Code gegen 419 EU-KI-Gesetz-Risikomuster scannt. Liefert Risikohinweise zur menschlichen Prüfung, 13 Frameworks, läuft lokal. Nicht Regula Forensics.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/locales/de.html">
     <meta property="og:site_name" content="Regula">
@@ -53,7 +53,7 @@
     <meta name="twitter:site" content="@kuzivaai">
     <meta property="og:locale" content="de_DE">
     <meta name="twitter:title" content="Regula: EU-KI-Gesetz Compliance-Scanner für Code (Open Source)">
-    <meta name="twitter:description" content="Open-Source-CLI, die Ihren Code gegen 419 EU-KI-Gesetz-Risikomuster scannt. Klassifiziert Risikostufe, 13 Frameworks, läuft lokal. Nicht Regula Forensics.">
+    <meta name="twitter:description" content="Open-Source-CLI, die Ihren Code gegen 419 EU-KI-Gesetz-Risikomuster scannt. Liefert Risikohinweise zur menschlichen Prüfung, 13 Frameworks, läuft lokal. Nicht Regula Forensics.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -196,7 +196,7 @@
                 "name": "Was sollte ich jetzt tun, um mich auf das EU-KI-Gesetz vorzubereiten?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Drei Schritte, unter fünf Minuten: (1) Installieren Sie mit pipx install regula-ai, (2) führen Sie regula assess aus, um zu prüfen, ob das Gesetz für Ihr Produkt gilt, (3) falls ja, führen Sie regula check . aus, um Ihre Risikostufe und Befunde zu sehen. Von dort aus erstellt regula plan einen priorisierten Maßnahmenplan mit Aufwandsschätzungen, und regula gap zeigt Ihre Compliance-Lage pro Artikel. Kein Konto, kein API-Schlüssel, keine Daten verlassen Ihren Rechner."
+                    "text": "Drei Schritte: (1) Installieren Sie mit pipx install regula-ai, (2) führen Sie regula assess für einen vorläufigen Hinweis aus, (3) prüfen Sie Befunde, Verwendungszweck und Einsatzkontext menschlich. Regula bestimmt weder die rechtliche Klassifizierung noch die Compliance. Der lokale Kern lädt gescannte Dateien nicht hoch; optionale Integrationen und die Ausführungsplattform sind separat zu prüfen."
                 }
             }
         ]
@@ -321,15 +321,15 @@
             </div>
 
             <div class="cta-secondary">
-                kein Konto, kein API-Schl&uuml;ssel &middot; vollst&auml;ndig offline &middot;
+                kein Konto, kein API-Schl&uuml;ssel &middot; lokale Kernpr&uuml;fung &middot;
         <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2.670</strong> Tests
+                <strong style="color:var(--text);">2.673</strong> Tests
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> unerwartete Sicherheitsbefunde
                 <span class="sp-sep" aria-hidden="true">&middot;</span> null Abh&auml;ngigkeiten
-                <span class="sp-sep" aria-hidden="true">&middot;</span> Ihr Code verl&auml;sst nie Ihren Rechner
+                <span class="sp-sep" aria-hidden="true">&middot;</span> der lokale Kern lädt gescannte Dateien nicht hoch
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md" style="color:#8888aa;">Trust Pack</a>
             </div>
         </div>
@@ -395,7 +395,7 @@ Total: 64&ndash;96h estimated effort</pre>
 
 <span class="t-h">EU AI Act Compliance Gap Assessment: sample_high_risk</span>
 Highest risk tier: not_ai
-Overall score:     9%
+Overall score:     6%
 
   NOTE: This score measures the PRESENCE of compliance
   documentation and infrastructure &mdash; it does not assess code
@@ -405,7 +405,7 @@ Overall score:     9%
 
 Article 9   Risk Management                     [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
 Article 10  Data Governance                     [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-Article 11  Technical Documentation             [<span class="t-y"> 25%</span>] <span class="t-y">PARTIAL</span>
+Article 11  Technical Documentation             [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
 Article 12  Record-Keeping                      [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
 Article 13  Transparency                        [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
 Article 14  Human Oversight                     [<span class="t-y"> 45%</span>] <span class="t-y">PARTIAL</span>
@@ -419,12 +419,12 @@ Run: <span class="t-b">regula plan tests/fixtures/sample_high_risk</span> for a 
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula comply tests/fixtures/sample_high_risk --all</span>
 
 <span class="t-h">EU AI Act Compliance Checklist: sample_high_risk</span>
-  Overall compliance score: 9/100
+  Overall compliance score: 6/100
   Highest risk tier:        not_ai (showing all articles per --all flag)
 
   [<span class="t-r">&times;</span>] Article 9   Risk Management                       <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
   [<span class="t-r">&times;</span>] Article 10  Data Governance                       <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-  [<span class="t-r">&times;</span>] Article 11  Technical Documentation              <span class="t-y">25%</span> <span class="t-y">NEEDS WORK</span>
+  [<span class="t-r">&times;</span>] Article 11  Technical Documentation               <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
   [<span class="t-r">&times;</span>] Article 12  Record-Keeping                        <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
   [<span class="t-r">&times;</span>] Article 13  Transparency                          <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
   [<span class="t-r">&times;</span>] Article 14  Human Oversight                      <span class="t-y">45%</span> <span class="t-y">NEEDS WORK</span>
@@ -537,7 +537,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 <!-- SO FUNKTIONIERT ES -->
 <div class="sec reveal" id="how">
     <h2 class="sec-head">So funktioniert es</h2>
-    <p class="sec-sub">Drei Schritte. Kein Konto, kein API-Schl&uuml;ssel, keine Daten verlassen Ihren Rechner.</p>
+    <p class="sec-sub">Drei Schritte. Kein Konto, kein API-Schl&uuml;ssel. Der lokale Kern lädt gescannte Dateien nicht hoch; optionale Integrationen sind separat zu prüfen.</p>
     <div class="art-grid">
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Schritt 1</div>
@@ -713,7 +713,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="price-card featured">
             <div class="price-tier price-featured-tier">Regula</div>
             <div class="price-amount price-featured-amount">Kostenlos &amp; Open Source</div>
-            <p class="price-desc">Code-Scanning + Governance-Frageb&ouml;gen. L&auml;uft auf Ihrem Laptop mit einem Befehl. Python-Kern nur aus der Standardbibliothek, null Produktionsabh&auml;ngigkeiten, vollst&auml;ndig offline. <code>pipx install regula-ai</code>, Projekt scannen, klare Antwort erhalten. Apache 2.0 / EUPL 1.2; Erkennungsregeln unter DRL 1.1.</p>
+            <p class="price-desc">Code-Scanning + Governance-Frageb&ouml;gen. L&auml;uft auf Ihrem Laptop mit einem Befehl. Der Standardbibliothek-Kern lädt gescannte Dateien nicht hoch; optionale Integrationen und die Plattform können Netzwerkzugriff haben. <code>pipx install regula-ai</code>, Projekt scannen, Hinweise menschlich prüfen. Apache 2.0 / EUPL 1.2; Erkennungsregeln unter DRL 1.1.</p>
         </div>
     </div>
     <div role="region" aria-label="Vergleich von EU-KI-Gesetz-Compliance-Tools" style="overflow-x:auto;margin-top:32px;-webkit-overflow-scrolling:touch;">
@@ -735,7 +735,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Sprachen</th><td>8 Familien</td><td>Python</td><td>JS/TS/Python</td><td>Kein Code-Scanner</td><td>Kein Code-Scanner</td></tr>
             <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Erkennungsmuster</th><td>419</td><td>51 Pr&uuml;fungen</td><td>37+ Frameworks</td><td>Fragebogen</td><td>Variiert</td></tr>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Abh&auml;ngigkeiten</th><td>Null (stdlib)</td><td>Mehrere</td><td>npm</td><td>Next.js + Ollama</td><td>SaaS</td></tr>
-            <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Offline</th><td>Vollst&auml;ndig offline</td><td>Lokal</td><td>Lokal</td><td>Lokal + Ollama</td><td>Cloud</td></tr>
+            <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Ausführung</th><td>Lokaler Kern</td><td>Lokal</td><td>Lokal</td><td>Lokal + Ollama</td><td>Cloud</td></tr>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Evidenzsignierung</th><td>Ed25519 + RFC 3161</td><td>Ed25519 (opt-in)</td><td>&mdash;</td><td>&mdash;</td><td>Variiert</td></tr>
             <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Framework-Zuordnungen</th><td>13</td><td>3</td><td>EU AI Act</td><td>EU AI Act</td><td>Mehrere</td></tr>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">CI/CD-Integration</th><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>&mdash;</td><td>Nativ</td></tr>

@@ -54,7 +54,7 @@ TOOLS = [
     {
         "name": "regula_check",
         "description": (
-            "Scan a project directory for EU AI Act compliance issues. "
+            "Scan a project directory for code indicators relevant to EU AI Act review. "
             "Detects prohibited practices (Article 5), high-risk patterns (Annex III), "
             "limited-risk systems (Article 50), credential exposure, and agent autonomy signals. "
             "Returns findings with tier (BLOCK/WARN/INFO), confidence, and remediation guidance."
@@ -82,7 +82,8 @@ TOOLS = [
     {
         "name": "regula_classify",
         "description": (
-            "Classify a code snippet or text against EU AI Act risk tiers. "
+            "Return a provisional, pattern-based risk indication for code or text; "
+            "this is not a legal classification of an AI system. "
             "Returns: PROHIBITED (Article 5), HIGH-RISK (Annex III), LIMITED-RISK (Article 50), "
             "or MINIMAL-RISK, with confidence score and applicable articles."
         ),
@@ -100,8 +101,9 @@ TOOLS = [
     {
         "name": "regula_gap",
         "description": (
-            "Assess compliance gaps for Articles 9-15 of the EU AI Act against a project directory. "
-            "Returns a score (0-100) per article with evidence and gaps. "
+            "Assess the presence of project evidence relevant to Articles 9-15 of the EU AI Act. "
+            "Returns a readiness score (0-100) per article with observed evidence and gaps; "
+            "the score does not determine compliance. "
             "Article 9: Risk Management, 10: Data Governance, 11: Technical Docs, "
             "12: Record-Keeping, 13: Transparency, 14: Human Oversight, 15: Accuracy/Security."
         ),

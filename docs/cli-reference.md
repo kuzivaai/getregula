@@ -643,10 +643,10 @@ After restarting your client, the assistant gains three tools:
 
 - `regula_check` — scan a project directory; returns findings with tier,
   confidence, and remediation guidance.
-- `regula_classify` — classify a code snippet against EU AI Act risk tiers.
+- `regula_classify` — return a provisional pattern-based risk indication for a
+  code snippet; it is not a legal classification of an AI system.
 - `regula_gap` — assess Articles 9–15 compliance gaps with per-article scores.
 
 **Security note.** The MCP server is stdio-only and inherits the
 permissions of the parent process. Do not expose it over TCP/HTTP without
 adding authentication first.
-
