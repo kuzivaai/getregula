@@ -13,7 +13,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-2628%20passing-brightgreen.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-2646%20passing-brightgreen.svg)](#verified-numbers)
 [![WCAG 2.2 AA](https://img.shields.io/badge/WCAG%202.2-AA-success.svg)](docs/accessibility/README.md)
 
 ---
@@ -40,7 +40,7 @@
 
 ## What it does
 
-If you ship an AI product to EU users, the EU AI Act applies to you -- regardless of where you are based or how small your team is. Regula combines code scanning with governance questionnaires: it scans your codebase for risk indicators, classifies your system into one of the Act's four risk tiers, and tells you which obligations apply. For the obligations code can't verify (risk management systems, quality management, fundamental rights impact assessments), it provides structured self-assessment questionnaires. It runs in your terminal, in CI/CD, or as a pre-commit hook. No external dependencies, no API calls, no data leaves your machine. Unlike cloud-based scanners, Regula makes zero network calls during scanning — no DPA required, no vendor data breach risk, no GDPR processor relationship.
+Regula reports code-observable AI-governance indicators, candidate risk categories, and potentially relevant provisions for contextual human review. It does not determine legal classification, compliance, or applicable obligations. The core install has no required third-party runtime dependencies; optional features may add dependencies or network access.
 
 ## Quick start
 
@@ -55,7 +55,7 @@ regula assess               # 5 yes/no questions → your risk tier
 
 **Want to scan your code?**
 ```bash
-regula check .              # 419 patterns, 8 languages, 30 seconds
+regula check .              # 419 tier patterns, 8 language families; runtime varies
 ```
 
 **Need documentation for auditors?**
@@ -140,7 +140,7 @@ Every finding includes the relevant Article reference and explains when exceptio
 | `regula gap --project .` | Compliance gap assessment against Articles 9-15 |
 | `regula plan --project .` | Prioritised remediation plan based on gap results |
 | `regula fix --project .` | Generate compliance fix scaffolds for findings |
-| `regula evidence-pack --project .` | Auditor-ready evidence package |
+| `regula evidence-pack --project .` | Reviewer-completable evidence scaffold |
 | `regula conform --project .` | Article 43 conformity assessment evidence pack |
 | `regula dpv --project .` | Export the risk indication as DPV-AIAct JSON-LD (aligned to the DPVCG EU-AIAct vocabulary) for RDF/GRC tooling |
 | `regula check --ci .` | CI mode -- exit code 1 on any WARN or BLOCK finding, SARIF output |
@@ -154,7 +154,7 @@ Every finding includes the relevant Article reference and explains when exceptio
 | `regula guardrails .` | Article 15 guardrail implementation coverage detection |
 | `regula owasp-agentic` | OWASP Top 10 for Agentic Applications assessment |
 | `regula monitor` | Runtime monitoring for AI applications (Article 12) |
-| `regula gdpr` | GDPR dual-compliance scan (14 patterns, 4 AI Act/GDPR hotspots) |
+| `regula gdpr` | GDPR cross-reference scan (14 focused checks, 4 AI Act/GDPR hotspots) |
 | `regula mcp-server` | MCP server for Claude Code, Cursor, and other MCP clients |
 | `regula install <platform>` | Set up pre-commit hooks, git hooks, or Claude Code/Copilot/Windsurf integration |
 
@@ -182,7 +182,7 @@ Seven endpoints: `/health`, `/v1/check`, `/v1/classify`, `/v1/gap`, `/v1/questio
 **Regula is:**
 
 - A development-time compliance tool that combines static code analysis with governance questionnaires, mapping both to EU AI Act obligations
-- A shift-left compliance scanner -- like ESLint for regulatory risk, running in your terminal or CI/CD pipeline
+- A shift-left code-indicator scanner -- like ESLint for governance review, running in your terminal or CI/CD pipeline
 - A questionnaire-based assessment tool for organisational obligations that code patterns cannot verify (Articles 9, 17, 27, 72)
 - A starting point for compliance awareness, not a finish line
 
@@ -244,10 +244,10 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | Risk detection patterns (regexes) | 419 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Compliance frameworks mapped | 13 |
-| Tests (pytest --collect-only, all passing) | 2,628 |
+| Tests (pytest --collect-only, all passing) | 2,646 |
 | Required production dependencies | 0 |
 
-For buyer-facing trust evidence (every number above paired with a reproducible command, plus precision/recall benchmark, security posture, and audit trail), see [`docs/TRUST.md`](docs/TRUST.md).
+For reproduction commands, version-bounded benchmarks, known exceptions, security posture, and audit-trail design, see [`docs/TRUST.md`](docs/TRUST.md).
 
 ## Privacy and data handling
 
@@ -501,7 +501,7 @@ You built an AI-powered app. Maybe with Claude, ChatGPT, Cursor, Lovable, or Bol
 
 If your app is used by anyone in the EU — or you plan to sell it there — the **EU AI Act** applies to you. Violations carry fines up to **EUR 35 million or 7% of global turnover**. Art 50 transparency obligations apply from **2 August 2026**. Annex III high-risk obligations are deferred to **2 December 2027** under the Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026 (approved by Council on 29 June 2026; published in the Official Journal on 24 July 2026 as Regulation (EU) 2026/1744, in force from 27 July 2026; the deferred dates are enacted law).
 
-Regula tells you where you stand in 10 seconds.
+Regula provides a starting point for contextual human review; runtime varies by repository and environment.
 
 ---
 
@@ -923,7 +923,7 @@ All three remove only Regula. They do not remove the optional policy file at `~/
 
 # Regula precision & recall — published methodology, April 2026
 
-> This is Regula's published precision and recall benchmark. Every number
+> This is a historical, version-bound precision and recall benchmark. Each retained figure
 > below can be reproduced from the labelled corpus checked into the repo
 > at `benchmarks/labels.json` using a single command.
 >
@@ -976,7 +976,7 @@ review only when the user explicitly requests them (`regula check
 
 ---
 
-## Reproducing every number on this page
+## Reproducing the retained historical benchmark figures
 
 ### Synthetic precision + recall
 
@@ -1101,7 +1101,7 @@ precision of the wide INFO cast — the part the user almost never sees.
 | `agent_autonomy` | 5 | 2 | 3 | 40.0% | Autonomous tool-calling patterns. Small sample. |
 | `limited_risk` | 3 | 1 | 2 | 33.3% | Article 50 disclosure (chatbot, deepfake). Small sample. |
 | `minimal_risk` | 241 | 36 | 205 | 14.9% | The bulk of the OSS corpus. Most are AI library imports without high-risk context. |
-| `ai_security` | 6 | 0 | 6 | 0.0% | OWASP LLM Top 10 patterns. All 6 FPs are framework code, not application code. |
+| `ai_security` | 6 | 0 | 6 | 0.0% | OWASP LLM Top 10 indicators. All 6 FPs are framework code, not application code. |
 | `credential_exposure` | 2 | 0 | 2 | 0.0% | Tiny sample. Both FPs are test fixtures. |
 
 The `ai_security` 0% and `credential_exposure` 0% cells are real but
@@ -1209,7 +1209,7 @@ If you cite this benchmark in a research paper, vendor evaluation, or
 audit report, the recommended format is:
 
 > Regula precision/recall benchmark, April 2026 release.
-> Synthetic corpus: 100% precision, 100% recall (5 prohibited + 5 high-risk fixtures, 0 FP, 0 FN).
+> WITHDRAWN historical claim: a superseded small synthetic corpus reported complete detection in both positive categories. It is not current external buyer-job accuracy; retained raw figures are in the dated benchmark record.
 > OSS corpus: 15.2% precision overall (39 TP / 218 FP / n=257), 0% on BLOCK tier (0 findings),
 > 25.0% on WARN tier (n=8), 14.9% on INFO tier (n=249).
 > Reproducible from `github.com/kuzivaai/getregula` at v1.7.4 via

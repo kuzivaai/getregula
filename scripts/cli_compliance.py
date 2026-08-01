@@ -279,7 +279,7 @@ def cmd_comply(args) -> None:
             )
         if assessment["overall_score"] >= 50:
             steps.append(
-                f"regula evidence-pack --project .{'':<13s}Generate auditor-ready evidence"
+                f"regula evidence-pack --project .{'':<13s}Generate a reviewer-completable evidence scaffold"
             )
         if highest_risk in ("high_risk", "prohibited"):
             steps.append(
@@ -287,7 +287,7 @@ def cmd_comply(args) -> None:
             )
         if not steps:
             steps.append(
-                f"regula evidence-pack --project .{'':<13s}Generate auditor-ready evidence"
+                f"regula evidence-pack --project .{'':<13s}Generate a reviewer-completable evidence scaffold"
             )
 
         print("\n  Next steps:")

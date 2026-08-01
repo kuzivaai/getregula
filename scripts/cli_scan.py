@@ -724,7 +724,7 @@ def cmd_check(args) -> None:
             print(f"    {step_num}. regula roadmap --project .     Get a week-by-week compliance plan")
             step_num += 1
         if active:
-            print(f"    {step_num}. regula evidence-pack --project . --bundle   Generate auditor-ready evidence")
+            print(f"    {step_num}. regula evidence-pack --project . --bundle   Generate a reviewer-completable evidence scaffold")
             step_num += 1
         if not active:
             print(f"    {step_num}. regula gap --project .         Verify compliance documentation exists")

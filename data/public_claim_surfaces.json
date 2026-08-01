@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "purpose": "Authoritative active source surfaces for high-consequence product-positioning claims. Historical records are listed individually; directories are never broadly exempted.",
+  "package_description_source": "README.md",
+  "active_surfaces": [
+    {"path": "README.md", "locale": "en", "kind": "package-description-source"},
+    {"path": "SECURITY.md", "locale": "en", "kind": "security"},
+    {"path": "docs/TRUST.md", "locale": "en", "kind": "trust"},
+    {"path": "docs/MODEL_CARD.md", "locale": "en", "kind": "model-card"},
+    {"path": "docs/what-regula-does-not-do.md", "locale": "en", "kind": "limitation"},
+    {"path": "mcp-server.json", "locale": "en", "kind": "machine-readable"},
+    {"path": "pyproject.toml", "locale": "en", "kind": "package-metadata-source"},
+    {"path": "scripts/cli.py", "locale": "en", "kind": "cli-help-source"},
+    {"path": "scripts/cli_compliance.py", "locale": "en", "kind": "cli-help-source"},
+    {"path": "scripts/cli_scan.py", "locale": "en", "kind": "cli-help-source"},
+    {"path": "docs/QUICKSTART.md", "locale": "en", "kind": "active-guide"},
+    {"path": "site/index.html", "locale": "en", "kind": "website"},
+    {"path": "site/about.html", "locale": "en", "kind": "website"},
+    {"path": "site/assess/index.html", "locale": "en", "kind": "interactive-assessment"},
+    {"path": "site/pricing.html", "locale": "en", "kind": "website"},
+    {"path": "site/sample-report.html", "locale": "en", "kind": "website"},
+    {"path": "site/blog/blog-classify-ai-system.html", "locale": "en", "kind": "active-guide"},
+    {"path": "site/llms.txt", "locale": "en", "kind": "machine-readable"},
+    {"path": "site/llms-full.txt", "locale": "en", "kind": "machine-readable"},
+    {"path": "site/regions/uae.html", "locale": "en", "kind": "regional"},
+    {"path": "site/locales/de.html", "locale": "de", "kind": "translated"},
+    {"path": "site/locales/pt-br.html", "locale": "pt-BR", "kind": "translated"}
+  ],
+  "historical_surfaces": [
+    "CHANGELOG.md",
+    "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+    "docs/commercial/COMMERCIAL_DEFENSIBILITY_REVIEW_2026-07-31.md",
+    "docs/commercial/PUBLIC_CLAIM_REGISTER_2026-07-31.md"
+  ]
+}

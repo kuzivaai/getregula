@@ -45,25 +45,25 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="preconnect" href="https://plausible.io" crossorigin>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
-    <title>Regula: EU AI Act Compliance Scanner for Code (Open Source)</title>
-    <meta name="description" content="Open-source CLI that scans your codebase against 419 EU AI Act risk patterns. Classifies risk tier, maps to 13 frameworks, runs locally. Not Regula Forensics.">
+    <title>Regula: EU AI Act Code-Indicator Scanner (Open Source)</title>
+    <meta name="description" content="Open-source CLI reporting code-observable AI-governance indicators for contextual human review. It does not determine legal classification or compliance.">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta property="og:title" content="Regula: EU AI Act Compliance Scanner for Code (Open Source)">
-    <meta property="og:description" content="Open-source CLI that scans your codebase against 419 EU AI Act risk patterns. Classifies risk tier, maps to 13 frameworks, runs locally. Not Regula Forensics.">
+    <meta property="og:title" content="Regula: EU AI Act Code-Indicator Scanner (Open Source)">
+    <meta property="og:description" content="Open-source CLI reporting code-observable AI-governance indicators for contextual human review. It does not determine legal classification or compliance.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/">
     <meta property="og:site_name" content="Regula">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@kuzivaai">
     <meta property="og:locale" content="en_GB">
-    <meta name="twitter:title" content="Regula: EU AI Act Compliance Scanner for Code (Open Source)">
-    <meta name="twitter:description" content="Open-source CLI that scans your codebase against 419 EU AI Act risk patterns. Classifies risk tier, maps to 13 frameworks, runs locally. Not Regula Forensics.">
+    <meta name="twitter:title" content="Regula: EU AI Act Code-Indicator Scanner (Open Source)">
+    <meta name="twitter:description" content="Open-source CLI reporting code-observable AI-governance indicators for contextual human review. It does not determine legal classification or compliance.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Regula — EU AI Act compliance scanner for code">
+    <meta property="og:image:alt" content="Regula — EU AI Act code-indicator scanner">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
-    <meta name="twitter:image:alt" content="Regula — EU AI Act compliance scanner for code">
+    <meta name="twitter:image:alt" content="Regula — EU AI Act code-indicator scanner">
     <meta name="author" content="Regula">
     <link rel="canonical" href="https://getregula.com/">
     <script type="application/ld+json">
@@ -214,7 +214,7 @@
                 "name": "What should I do right now to prepare for the EU AI Act?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Three steps, under five minutes: (1) Install with pipx install regula-ai, (2) run regula assess to check whether the Act applies to your product, (3) if it does, run regula check . to see your risk tier and findings. From there, regula plan generates a prioritised remediation plan with effort estimates, and regula gap shows your compliance posture per article. No account, no API key, no data leaves your machine."
+                    "text": "Install Regula, run the declared-context questionnaire, then scan for code-observable indicators. Findings require human review and do not determine legal classification or compliance. Runtime varies by repository and environment."
                 }
             }
         ]
@@ -320,17 +320,18 @@
 
 <!-- HERO -->
 <main id="main">
+    <p class="sec-sub"><strong>Scope:</strong> Regula reports code-observable indicators and supports structured contextual human review. It does not determine legal classification, compliance, or the obligations applicable to a real deployment.</p>
 <div class="hero-wrap">
     <div class="hero-glow"></div>
     <div class="hero">
         <div class="hero-text">
             <div class="badge"><span class="badge-dot"></span> Open-source CLI &middot; v1.9.0 &middot; Apache 2.0</div>
             <h1>Is your AI app <span class="hl">high-risk</span> in the EU, Korea, or Colorado?</h1>
-            <p class="sub">One command scans your code against the EU AI Act, Korea's AI Basic Act, and Colorado SB 26-189: which risk tier you're in, why, and what to fix. <strong>30 seconds, free, no account.</strong></p>
+            <p class="sub">One command reports code-observable indicators against three jurisdiction reference sets, with provision links for contextual human review. Runtime varies; no account is required for core scanning.</p>
 
             <button type="button" class="cta-pill" id="install-pill" aria-live="polite" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'install'}});copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
-                Try free in 30 seconds
+                Try the local scanner
             </button>
 
             <div style="margin-top:14px;">
@@ -343,7 +344,7 @@
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2,628</strong> tests
+                <strong style="color:var(--text);">2,646</strong> tests
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> unexpected security findings
                 <span class="sp-sep" aria-hidden="true">&middot;</span> zero dependencies
                 <span class="sp-sep" aria-hidden="true">&middot;</span> your code never leaves your machine
@@ -554,7 +555,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 <!-- HOW IT WORKS -->
 <div class="sec reveal" id="how">
     <h2 class="sec-head">How it works</h2>
-    <p class="sec-sub">Three steps. No account, no API key, no data leaves your machine.</p>
+    <p class="sec-sub">Three steps. Core scanning requires no account or API key; optional network-enabled features have separate boundaries.</p>
     <div class="art-grid">
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Step 1</div>
@@ -880,7 +881,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </details>
         <details>
             <summary>What should I do right now to prepare?</summary>
-            <p>Three steps, under five minutes: (1) install with <code>pipx install regula-ai</code>, (2) run <code>regula assess</code> to check whether the Act applies to your product, (3) if it does, run <code>regula check .</code> to see your risk tier and findings. No account, no API key, no data leaves your machine.</p>
+            <p>Install with <code>pipx install regula-ai</code>, use <code>regula assess</code> to record declared context, then run <code>regula check .</code> for code-observable indicators. Human review is required; these outputs do not determine legal classification or compliance.</p>
         </details>
     </div>
 </div>
@@ -892,7 +893,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     <div class="final-glow"></div>
     <div class="final reveal">
         <h2>Find out where you stand</h2>
-        <p>One command. Takes 30 seconds. No account needed.</p>
+        <p>One command; runtime varies by repository and environment. No account is needed for core scanning.</p>
         <button type="button" class="install-box" id="install-btn-2" onclick="copyInstall(this)" style="display:inline-flex;">
             <span class="dollar">$</span>
             <span class="cmd">pipx install regula-ai</span>
@@ -938,7 +939,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
                 <div class="foot-col-head">Reading</div>
                 <div class="foot-col-links">
                     <a href="/blog/blog-static-analysis-ai-compliance.html">Code scanning vs questionnaires <span class="muted">Why you need both for EU AI Act compliance</span></a>
-                    <a href="/blog/blog-classify-ai-system.html">How to classify your AI system <span class="muted">Article 6 routes, risk tiers, what Regula can and cannot tell you</span></a>
+                    <a href="/blog/blog-classify-ai-system.html">How to review your AI system context <span class="muted">Article 6 routes, candidate risk categories, and limits</span></a>
                     <a href="/blog/blog-art50-code-of-practice.html">Art 50 Code of Practice mapping <span class="muted">What the 10 June 2026 final code means for your codebase</span></a>
                     <a href="/blog/blog-aicdi-governance-gaps.html">AICDI corporate governance gaps <span class="muted">How Regula maps to the 2026 UNESCO/TRF report</span></a>
                     <a href="/guides/eu-ai-act-python.html">EU AI Act for Python developers <span class="muted">Scan Python AI code for risk patterns</span></a>
