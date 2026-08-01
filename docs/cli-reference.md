@@ -306,12 +306,12 @@ Hand-labelled 257 findings sampled across five OSS AI projects (`instructor`, `p
 
 | Cut | TP | FP | Precision |
 |---|---:|---:|---:|
-| **Overall** | 39 | 218 | **15.2%** |
-| `agent_autonomy` | 2 | 3 | 40.0% |
-| `limited_risk` | 1 | 2 | 33.3% |
-| `minimal_risk` (94% of findings) | 36 | 205 | 14.9% |
-| `ai_security` | 0 | 6 | 0.0% |
-| `credential_exposure` | 0 | 2 | 0.0% |
+| **Overall** | 39 | 218 | **15.2%** ([source](../benchmarks/README.md)) |
+| `agent_autonomy` | 2 | 3 | 40.0% ([source](../benchmarks/README.md)) |
+| `limited_risk` | 1 | 2 | 33.3% ([source](../benchmarks/README.md)) |
+| `minimal_risk` (94% of findings) | 36 | 205 | 14.9% ([source](../benchmarks/README.md)) |
+| `ai_security` | 0 | 6 | 0.0% ([source](../benchmarks/README.md)) |
+| `credential_exposure` | 0 | 2 | 0.0% ([source](../benchmarks/README.md)) |
 
 This is the honest current state. The minimal_risk tier dominates the sample on general-purpose libraries and is noisy — that's the next pattern-tuning target. None of the five repos triggered `prohibited` or `high_risk` findings, so precision for the tiers that actually block merges cannot be estimated from this benchmark and is a separate piece of work.
 

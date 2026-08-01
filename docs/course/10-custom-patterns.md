@@ -50,7 +50,8 @@ Based on the audit findings, follow these rules when writing patterns:
 2. **Require context** for common words — don't match "sentence" alone, match "sentencing recommendation"
 3. **Skip comments** — the AI security checker skips `#` comments and docstrings
 4. **Test against real code** — scan an actual project to check for false positives
-5. **Target <10% false positive rate** — Google's Tricorder removes checks above this threshold
+5. **Set and justify a false-positive target** — measure it on representative,
+   independently reviewed code before enabling a blocking rule
 
 ## Adding AI Security Patterns
 
