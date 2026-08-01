@@ -504,3 +504,23 @@ partially addressed as above. Public source correction is not evidence that
 detectors, benchmark reproducibility, merge policy, CI, or pilot readiness
 improved. commercial_v1 remains STOP and the product remains not approved for
 a customer pilot.
+
+## N62 — Delivery-derived public-surface inventory
+
+**First raised:** 2026-08-01. **Status:** implemented; residual claims remain
+open.
+
+The former 22-path hand-curated contract could pass while tracked Pages routes,
+Action descriptors, registered CLI help, MCP `tools/list` descriptors, package
+metadata and README-reachable documents were absent. The authoritative
+inventory is now derived from the two GitHub Pages workflows, tracked `site/`
+artifact contents, `pyproject.toml`, README-relative link reachability,
+`action.yml`, the constructed `argparse` registry and the actual MCP `TOOLS`
+registry. `data/public_claim_surfaces.json` and the human report are generated;
+`data/public_surface_policy.json` contains only narrow, reasoned dispositions.
+Mutation controls cover new routes and outputs, linked docs, CLI, MCP, Action,
+package metadata, renames, policy integrity, Git/build failures and legitimate
+negatives. Existing residual overclaims are enumerated without changing their
+wording. F25, F30, N35, N43, N50/N54, N53, N55, N57, N6, N7, N10, N11, N12,
+N60 and N61 retain their prior status. commercial_v1 remains STOP and
+`PRODUCT_PILOT_STATUS` remains NOT_APPROVED.

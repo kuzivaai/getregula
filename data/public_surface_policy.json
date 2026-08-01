@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "purpose": "Narrow dispositions only; absence means the delivery-derived classification controls.",
+  "legacy_contract_sources": [
+    "README.md", "SECURITY.md", "docs/TRUST.md", "docs/MODEL_CARD.md",
+    "docs/what-regula-does-not-do.md", "mcp-server.json", "pyproject.toml",
+    "scripts/cli.py", "scripts/cli_compliance.py", "scripts/cli_scan.py",
+    "docs/QUICKSTART.md", "site/index.html", "site/about.html",
+    "site/assess/index.html", "site/pricing.html", "site/sample-report.html",
+    "site/blog/blog-classify-ai-system.html", "site/llms.txt", "site/llms-full.txt",
+    "site/regions/uae.html", "site/locales/de.html", "site/locales/pt-br.html"
+  ],
+  "dispositions": [
+    {
+      "source": "CHANGELOG.md",
+      "classification": "historical_record",
+      "claim_capable": true,
+      "reason": "README-linked version history records claims in their dated release context, not current product positioning."
+    },
+    {
+      "source": "docs/improvement/LEDGER.md",
+      "classification": "internal_record",
+      "claim_capable": true,
+      "reason": "Reachable programme evidence is retained for audit continuity but is not an active product promise."
+    },
+    {
+      "source": "site/assets/demo/landing-page.png",
+      "classification": "non_claim_asset",
+      "claim_capable": false,
+      "reason": "Tracked binary screenshot deployed by Pages; pixels are not scanned as public copy."
+    }
+  ]
+}
