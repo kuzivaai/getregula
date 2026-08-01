@@ -3,7 +3,7 @@
   "_why_it_exists": "The block it replaces was invented output shown behind a $ prompt. A visitor reads that as a real scan.",
   "comply": {
     "command": "regula comply tests/fixtures/sample_high_risk --all",
-    "overall_score": 9,
+    "overall_score": 6,
     "rows": [
       {
         "article": "9",
@@ -19,8 +19,8 @@
       },
       {
         "article": "11",
-        "percent": 25,
-        "status": "NEEDS WORK",
+        "percent": 0,
+        "status": "NOT FOUND",
         "title": "Technical Documentation"
       },
       {
@@ -59,7 +59,7 @@
   "gap": {
     "command": "regula gap tests/fixtures/sample_high_risk",
     "note": "NOTE: This score measures the PRESENCE of compliance documentation and infrastructure \u2014 it does not assess code risk and cannot offset scan findings. A project can score 100% here and still fail `regula check` on prohibited or high-risk patterns. Run both; they answer different questions.",
-    "overall_percent": 9,
+    "overall_percent": 6,
     "rows": [
       {
         "article": "9",
@@ -75,8 +75,8 @@
       },
       {
         "article": "11",
-        "percent": 25,
-        "status": "PARTIAL",
+        "percent": 0,
+        "status": "NOT FOUND",
         "title": "Technical Documentation"
       },
       {
@@ -111,5 +111,5 @@
       }
     ]
   },
-  "generated_at": "2026-07-28T15:16:46.412087+00:00"
+  "generated_at": "2026-08-01T19:53:51.888009+00:00"
 }

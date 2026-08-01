@@ -83,7 +83,7 @@ Run `python3 tests/test_classification.py` — if all tests pass plus your new t
 You've learned to:
 - Scan codebases for EU AI Act risk patterns
 - Interpret findings and distinguish true positives from false positives
-- Assess compliance gaps for Articles 9-15
+- Assess documentation and implementation indicators for Articles 9-15
 - Check AI dependency supply chain security
 - Detect AI-specific security vulnerabilities
 - Integrate into CI/CD pipelines

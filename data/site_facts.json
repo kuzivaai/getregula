@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-01T19:05:39.516526+00:00",
+  "generated_at": "2026-08-01T20:01:34.345092+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,8 +27,8 @@
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 2670,
-      "total_functions": 1946,
+      "total_collected": 2673,
+      "total_functions": 1949,
       "per_file": {
         "test_agent_governance.py": 28,
         "test_ai_codegen.py": 0,
@@ -43,7 +43,7 @@
         "test_bias_stats.py": 9,
         "test_build_regulations.py": 14,
         "test_cascade_count.py": 0,
-        "test_check_decompositions.py": 19,
+        "test_check_decompositions.py": 20,
         "test_claim_auditor.py": 35,
         "test_claim_auditor_coords.py": 0,
         "test_claim_auditor_percent.py": 0,
@@ -77,7 +77,7 @@
         "test_f25_exposure.py": 15,
         "test_file_provenance.py": 9,
         "test_first_run.py": 4,
-        "test_gap_demo.py": 0,
+        "test_gap_demo.py": 2,
         "test_gate_probe.py": 7,
         "test_gdpr_patterns.py": 32,
         "test_gpai_check.py": 27,

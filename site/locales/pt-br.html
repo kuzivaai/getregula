@@ -46,7 +46,7 @@
     <meta name="keywords" content="LGPD IA, Marco Legal da IA, PL 2338/2023, conformidade IA Brasil, ferramenta compliance IA, Lei de IA da UE, regulamenta&ccedil;&atilde;o intelig&ecirc;ncia artificial, LGPD artigo 20, classifica&ccedil;&atilde;o de risco IA">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta property="og:title" content="Regula: Scanner de Conformidade da Lei de IA da UE (Open Source)">
-    <meta property="og:description" content="CLI open-source que analisa seu c&oacute;digo contra 419 padr&otilde;es de risco da Lei de IA da UE. Classifica n&iacute;vel de risco, 13 frameworks, roda localmente.">
+    <meta property="og:description" content="CLI open-source que analisa seu c&oacute;digo contra 419 padr&otilde;es de risco da Lei de IA da UE. Fornece indicadores para revis&atilde;o humana, 13 frameworks, roda localmente.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/locales/pt-br.html">
     <meta property="og:site_name" content="Regula">
@@ -54,7 +54,7 @@
     <meta name="twitter:site" content="@kuzivaai">
     <meta property="og:locale" content="pt_BR">
     <meta name="twitter:title" content="Regula: Scanner de Conformidade da Lei de IA da UE (Open Source)">
-    <meta name="twitter:description" content="CLI open-source que analisa seu c&oacute;digo contra 419 padr&otilde;es de risco da Lei de IA da UE. Classifica n&iacute;vel de risco, 13 frameworks, roda localmente.">
+    <meta name="twitter:description" content="CLI open-source que analisa seu c&oacute;digo contra 419 padr&otilde;es de risco da Lei de IA da UE. Fornece indicadores para revis&atilde;o humana, 13 frameworks, roda localmente.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -205,7 +205,7 @@
                 "name": "O que devo fazer agora para me preparar para a Lei de IA da UE?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Três passos, em menos de cinco minutos: (1) Instale com pipx install regula-ai, (2) execute regula assess para verificar se a Lei se aplica ao seu produto, (3) se sim, execute regula check . para ver sua classificação de risco e achados. A partir daí, regula plan gera um plano de remediação priorizado com estimativas de esforço, e regula gap mostra sua postura de conformidade por artigo. Sem conta, sem chave de API, nenhum dado sai da sua máquina."
+                    "text": "Três passos: (1) instale com pipx install regula-ai, (2) execute regula assess para obter uma indicação preliminar, (3) revise os achados, a finalidade pretendida e o contexto de implantação. O Regula não determina classificação jurídica nem conformidade. O núcleo local não envia os arquivos analisados; integrações opcionais e a plataforma de execução devem ser avaliadas separadamente."
                 }
             }
         ]
@@ -318,11 +318,11 @@
         <div class="hero-text">
             <div class="badge"><span class="badge-dot"></span> CLI open-source &middot; v1.9.0 &middot; Apache 2.0</div>
             <h1>Seu app de IA e de <span class="hl">alto risco</span> na UE, na Coreia ou no Colorado?</h1>
-            <p class="sub">Um comando verifica seu codigo contra a Lei de IA da UE, a Lei Basica de IA da Coreia e a Colorado SB 26-189: qual nivel de risco, por que, e o que corrigir. <strong>30 segundos, gratis, sem conta.</strong></p>
+            <p class="sub">Um comando procura indicadores relacionados à Lei de IA da UE, à Lei Básica de IA da Coreia e à Colorado SB 26-189 para revisão humana. O tempo varia conforme o projeto e o ambiente. <strong>Grátis, sem conta.</strong></p>
 
             <button type="button" class="cta-pill" id="install-pill" aria-live="polite" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'install'}});copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
-                Teste gratis em 30 segundos
+                Teste grátis; o tempo varia por projeto
             </button>
 
             <div style="margin-top:14px;">
@@ -330,12 +330,12 @@
             </div>
 
             <div class="cta-secondary">
-                sem conta, sem API key &middot; totalmente offline &middot;
+                sem conta, sem API key &middot; núcleo local &middot;
         <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2.670</strong> testes
+                <strong style="color:var(--text);">2.673</strong> testes
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> vulnerabilidades inesperadas
                 <span class="sp-sep" aria-hidden="true">&middot;</span> zero depend&ecirc;ncias
                 <span class="sp-sep" aria-hidden="true">&middot;</span> seu c&oacute;digo nunca sai da sua m&aacute;quina
@@ -404,7 +404,7 @@ Total: 64&ndash;96h estimated effort</pre>
 
 <span class="t-h">EU AI Act Compliance Gap Assessment: sample_high_risk</span>
 Highest risk tier: not_ai
-Overall score:     9%
+Overall score:     6%
 
   NOTE: This score measures the PRESENCE of compliance
   documentation and infrastructure &mdash; it does not assess code
@@ -414,7 +414,7 @@ Overall score:     9%
 
 Article 9   Risk Management                     [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
 Article 10  Data Governance                     [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-Article 11  Technical Documentation             [<span class="t-y"> 25%</span>] <span class="t-y">PARTIAL</span>
+Article 11  Technical Documentation             [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
 Article 12  Record-Keeping                      [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
 Article 13  Transparency                        [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
 Article 14  Human Oversight                     [<span class="t-y"> 45%</span>] <span class="t-y">PARTIAL</span>
@@ -428,12 +428,12 @@ Run: <span class="t-b">regula plan tests/fixtures/sample_high_risk</span> for a 
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula comply tests/fixtures/sample_high_risk --all</span>
 
 <span class="t-h">EU AI Act Compliance Checklist: sample_high_risk</span>
-  Overall compliance score: 9/100
+  Overall compliance score: 6/100
   Highest risk tier:        not_ai (showing all articles per --all flag)
 
   [<span class="t-r">&times;</span>] Article 9   Risk Management                       <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
   [<span class="t-r">&times;</span>] Article 10  Data Governance                       <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-  [<span class="t-r">&times;</span>] Article 11  Technical Documentation              <span class="t-y">25%</span> <span class="t-y">NEEDS WORK</span>
+  [<span class="t-r">&times;</span>] Article 11  Technical Documentation               <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
   [<span class="t-r">&times;</span>] Article 12  Record-Keeping                        <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
   [<span class="t-r">&times;</span>] Article 13  Transparency                          <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
   [<span class="t-r">&times;</span>] Article 14  Human Oversight                      <span class="t-y">45%</span> <span class="t-y">NEEDS WORK</span>
@@ -554,7 +554,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 <!-- COMO FUNCIONA -->
 <div class="sec reveal" id="how">
     <h2 class="sec-head">Como funciona</h2>
-    <p class="sec-sub">Tres passos. Sem conta, sem chave de API, nenhum dado sai da sua maquina.</p>
+    <p class="sec-sub">Três passos. Sem conta, sem chave de API. O núcleo local não envia arquivos analisados; integrações opcionais devem ser avaliadas separadamente.</p>
     <div class="art-grid">
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Passo 1</div>
@@ -730,7 +730,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="price-card featured">
             <div class="price-tier price-featured-tier">Regula</div>
             <div class="price-amount price-featured-amount">Gratuito e open source</div>
-            <p class="price-desc">Escaneamento de c&oacute;digo + question&aacute;rios de governan&ccedil;a. Roda no seu laptop com um comando. Nucleo Python apenas da biblioteca padrao, zero dependencias de producao, totalmente offline. <code>pipx install regula-ai</code>, escaneie seu projeto, obtenha uma resposta clara. Apache 2.0 / EUPL 1.2; regras de detec&ccedil;&atilde;o sob DRL 1.1.</p>
+            <p class="price-desc">Escaneamento de c&oacute;digo + question&aacute;rios de governan&ccedil;a. Roda no seu laptop com um comando. O núcleo da biblioteca padrão não envia arquivos analisados; integrações opcionais e a plataforma podem usar rede. <code>pipx install regula-ai</code>, escaneie seu projeto e revise os indicadores. Apache 2.0 / EUPL 1.2; regras de detec&ccedil;&atilde;o sob DRL 1.1.</p>
         </div>
     </div>
     <div role="region" aria-label="Comparacao de ferramentas de conformidade da Lei de IA da UE" style="overflow-x:auto;margin-top:32px;-webkit-overflow-scrolling:touch;">
@@ -752,7 +752,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Linguagens</th><td>8 familias</td><td>Python</td><td>JS/TS/Python</td><td>Nao e scanner de codigo</td><td>Nao e scanner de codigo</td></tr>
             <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Padroes de deteccao</th><td>419</td><td>51 verificacoes</td><td>37+ frameworks</td><td>Questionario</td><td>Varia</td></tr>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Dependencias</th><td>Zero (stdlib)</td><td>Multiplas</td><td>npm</td><td>Next.js + Ollama</td><td>SaaS</td></tr>
-            <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Offline</th><td>Totalmente offline</td><td>Local</td><td>Local</td><td>Local + Ollama</td><td>Nuvem</td></tr>
+            <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Execução</th><td>Núcleo local</td><td>Local</td><td>Local</td><td>Local + Ollama</td><td>Nuvem</td></tr>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Assinatura de evidencias</th><td>Ed25519 + RFC 3161</td><td>Ed25519 (opt-in)</td><td>&mdash;</td><td>&mdash;</td><td>Varia</td></tr>
             <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Mapeamentos de frameworks</th><td>13</td><td>3</td><td>Lei de IA da UE</td><td>Lei de IA da UE</td><td>Multiplos</td></tr>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Integracao CI/CD</th><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>&mdash;</td><td>Nativo</td></tr>
@@ -859,7 +859,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     <div class="final-glow"></div>
     <div class="final reveal">
         <h2>Descubra onde voce esta</h2>
-        <p>Um comando. Leva 30 segundos. Sem conta necessaria.</p>
+        <p>Um comando. O tempo varia conforme o projeto e o ambiente. Sem conta necessária.</p>
         <button type="button" class="install-box" id="install-btn-2" onclick="copyInstall(this)" style="display:inline-flex;">
             <span class="dollar">$</span>
             <span class="cmd">pipx install regula-ai</span>

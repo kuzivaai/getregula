@@ -1,25 +1,24 @@
 """Tests for the tracked-inputs guard: an artefact that backs a published
 number must be derivable from tracked content alone.
 
-Why this exists. `data/gap_demo.json` publishes an overall score of 9 and
+Why this exists. `data/gap_demo.json` once published an overall score of 9 and
 Article 11 at 25 on `site/index.html` and both locale pages. No clean
-checkout reproduces those figures: the fixture the generator scans,
+checkout reproduced those figures: the fixture the generator scanned,
 `tests/fixtures/sample_high_risk`, carries a gitignored `.regula/registry/`
 directory locally, and `scripts/compliance_check.py` credits any `.regula/*`
 match as one of Article 11's four components. Ledger row N43 records the
 control both ways.
 
-The instance (the wrong published figures) needs an owner decision, because
-correcting it moves numbers on reader-facing pages. The CLASS does not: a
-generator must not be able to build a published artefact from inputs that
-are not in the repository. That is what these tests hold closed.
+The corrected generator materialises a tracked-only snapshot, so local ignored
+state is never a scan input. These tests hold that class closed.
 
-Every test builds its own throwaway git repository. None reads the real
+Every guard test builds its own throwaway git repository. None reads the real
 fixture, deliberately: a test pinned to today's contamination would assert
 current behaviour rather than correct behaviour, and would start passing for
 the wrong reason the moment the owner cleans the fixture.
 """
 
+import json
 import subprocess
 import sys
 import tempfile
@@ -214,22 +213,19 @@ def _clone_with_working_tree_scripts(repo, dest):
     return dest
 
 
-def test_generator_refuses_and_does_not_write_when_inputs_are_untracked():
-    """The claim this whole change rests on: a contaminated fixture means NO
-    artefact is written. Behaviour, not a substring search.
-
-    The first version of this test asserted only that the string
-    "assert_inputs_tracked" appeared in the generator source. An adversarial
-    review moved the guard to AFTER the write and every test still passed
-    while the artefact was rewritten. That test proved nothing; this one
-    executes the real entry point and checks the file on disk.
-    """
+def test_generator_ignores_untracked_inputs_by_construction():
+    """Contamination cannot affect output because only tracked files are copied."""
     repo = Path(__file__).resolve().parent.parent
     with tempfile.TemporaryDirectory() as tmp:
         work = _clone_with_working_tree_scripts(repo, Path(tmp) / "repo")
         fixture = work / "tests" / "fixtures" / "sample_high_risk"
         artefact = work / "data" / "gap_demo.json"
-        before = artefact.read_bytes()
+        clean = subprocess.run(
+            [sys.executable, "scripts/build_gap_demo.py"],
+            cwd=work, capture_output=True, text=True,
+        )
+        assert clean.returncode == 0, clean.stderr
+        before = json.loads(artefact.read_text(encoding="utf-8"))
 
         # A clean clone has no contamination, so plant the exact shape the
         # real defect had: a gitignored directory inside the tracked fixture.
@@ -241,13 +237,11 @@ def test_generator_refuses_and_does_not_write_when_inputs_are_untracked():
             [sys.executable, "scripts/build_gap_demo.py"],
             cwd=work, capture_output=True, text=True,
         )
-        assert proc.returncode != 0, (
-            "generator wrote an artefact from contaminated inputs "
-            f"(rc={proc.returncode})"
-        )
-        assert "REFUSED" in proc.stderr, f"no refusal message: {proc.stderr}"
-        assert artefact.read_bytes() == before, \
-            "the artefact was rewritten despite the refusal"
+        assert proc.returncode == 0, proc.stderr
+        after = json.loads(artefact.read_text(encoding="utf-8"))
+        before.pop("generated_at")
+        after.pop("generated_at")
+        assert after == before, "ignored local state changed the generated result"
 
 
 def test_generator_writes_normally_when_inputs_are_clean():
@@ -279,7 +273,7 @@ if __name__ == "__main__":
         test_deleted_and_renamed_tracked_files_are_not_reported,
         test_nonexistent_target_raises_rather_than_passing_silently,
         test_awkward_filenames_are_reported_unescaped,
-        test_generator_refuses_and_does_not_write_when_inputs_are_untracked,
+        test_generator_ignores_untracked_inputs_by_construction,
         test_generator_writes_normally_when_inputs_are_clean,
     ]
     failed = 0

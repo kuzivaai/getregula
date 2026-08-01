@@ -89,6 +89,19 @@ DECOMP = re.compile(
     r"(?<![\d.,])(\d[\d,]*(?:\.\d+)?(?:\s*\+\s*\d[\d,]*(?:\.\d+)?)+)"
 )
 
+# A timezone offset is not arithmetic. Mask the whole ISO timestamp before
+# looking for decompositions so e.g. ``2026-08-01T14:00:06+01:00`` cannot be
+# read as ``06+01``. Requiring the date, time, and offset keeps this narrower
+# than ignoring arbitrary plus signs beside numbers.
+ISO_TIMESTAMP = re.compile(
+    r"\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})\b"
+)
+
+
+def _without_iso_timestamps(text):
+    """Replace ISO timestamps with spaces while preserving match offsets."""
+    return ISO_TIMESTAMP.sub(lambda match: " " * len(match.group(0)), text)
+
 # "a + b + ... = T", tolerating markdown bold on the total.
 SUM_EQUALS = re.compile(
     DECOMP.pattern + r"\s*=\s*\*{0,2}\s*(\d[\d,]*(?:\.\d+)?)"
@@ -156,7 +169,7 @@ def check_sum_equals(path, lines):
     """Rule sum-equals: an explicit a + b + ... = T must sum to T."""
     findings = []
     for index, line in enumerate(lines, 1):
-        for match in SUM_EQUALS.finditer(line):
+        for match in SUM_EQUALS.finditer(_without_iso_timestamps(line)):
             parts = _components(match.group(1))
             stated = _num(match.group(2))
             if not _agrees(sum(parts), stated):
@@ -198,7 +211,9 @@ def check_fence_total(path, lines):
         for forward in range(index + 1, min(len(lines), index + 1 + LOOKAHEAD)):
             if FENCE.match(lines[forward]):
                 break
-            matches = list(DECOMP.finditer(lines[forward]))
+            matches = list(
+                DECOMP.finditer(_without_iso_timestamps(lines[forward]))
+            )
             if not matches:
                 continue
             sums = [(m.group(1), sum(_components(m.group(1)))) for m in matches]

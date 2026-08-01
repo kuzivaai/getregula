@@ -344,10 +344,10 @@
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2,670</strong> tests
+                <strong style="color:var(--text);">2,673</strong> tests
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> unexpected security findings
                 <span class="sp-sep" aria-hidden="true">&middot;</span> zero dependencies
-                <span class="sp-sep" aria-hidden="true">&middot;</span> your code never leaves your machine
+                <span class="sp-sep" aria-hidden="true">&middot;</span> the local core does not upload scanned files
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md" style="color:#8888aa;">trust pack</a>
             </div>
         </div>
@@ -413,7 +413,7 @@ Total: 64&ndash;96h estimated effort</pre>
 
 <span class="t-h">EU AI Act Compliance Gap Assessment: sample_high_risk</span>
 Highest risk tier: not_ai
-Overall score:     9%
+Overall score:     6%
 
   NOTE: This score measures the PRESENCE of compliance
   documentation and infrastructure &mdash; it does not assess code
@@ -423,7 +423,7 @@ Overall score:     9%
 
 Article 9   Risk Management                     [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
 Article 10  Data Governance                     [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-Article 11  Technical Documentation             [<span class="t-y"> 25%</span>] <span class="t-y">PARTIAL</span>
+Article 11  Technical Documentation             [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
 Article 12  Record-Keeping                      [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
 Article 13  Transparency                        [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
 Article 14  Human Oversight                     [<span class="t-y"> 45%</span>] <span class="t-y">PARTIAL</span>
@@ -437,12 +437,12 @@ Run: <span class="t-b">regula plan tests/fixtures/sample_high_risk</span> for a 
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula comply tests/fixtures/sample_high_risk --all</span>
 
 <span class="t-h">EU AI Act Compliance Checklist: sample_high_risk</span>
-  Overall compliance score: 9/100
+  Overall compliance score: 6/100
   Highest risk tier:        not_ai (showing all articles per --all flag)
 
   [<span class="t-r">&times;</span>] Article 9   Risk Management                       <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
   [<span class="t-r">&times;</span>] Article 10  Data Governance                       <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-  [<span class="t-r">&times;</span>] Article 11  Technical Documentation              <span class="t-y">25%</span> <span class="t-y">NEEDS WORK</span>
+  [<span class="t-r">&times;</span>] Article 11  Technical Documentation               <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
   [<span class="t-r">&times;</span>] Article 12  Record-Keeping                        <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
   [<span class="t-r">&times;</span>] Article 13  Transparency                          <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
   [<span class="t-r">&times;</span>] Article 14  Human Oversight                      <span class="t-y">45%</span> <span class="t-y">NEEDS WORK</span>

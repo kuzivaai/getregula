@@ -26,10 +26,19 @@ POLICY = REPO / "data/public_surface_policy.json"
 TEXT_SITE = {".html", ".htm", ".txt", ".xml", ".json"}
 LINK_RE = re.compile(r"(?<!!)\[[^]]*\]\(([^)#?]+)(?:#[^)]*)?\)")
 PROHIBITED_CLAIMS = {
-    "legal classification": re.compile(r"(?:classif(?:y|ies)(?!-ai-system\.html).*(?:system|snippet).*risk tier|classifies risk tier)", re.I),
+    "legal classification": re.compile(
+        r"(?:(?:regula|scanner|tool|command)\s+(?:automatically\s+)?"
+        r"classif(?:y|ies)\b.{0,120}(?:system|snippet).{0,80}risk tier|"
+        r"classifies your system\b)",
+        re.I,
+    ),
     "compliance scan": re.compile(r"(?:compliance scanner|compliance issues|assess compliance gaps)", re.I),
     "obligation determination": re.compile(r"tells? you which obligations apply", re.I),
-    "universal network": re.compile(r"(?:zero network calls|no API calls|no data leaves)", re.I),
+    "universal network": re.compile(
+        r"(?:zero network calls|no API calls|no data leaves|"
+        r"zero data transmission|never leaves your machine)",
+        re.I,
+    ),
     "DPA determination": re.compile(r"no DPA (?:is )?required", re.I),
     "auditor completeness": re.compile(r"auditor.ready|audit.ready", re.I),
     "universal reproducibility": re.compile(r"every (?:metric|number).*(?:reproduc|CI.enforced)", re.I),
@@ -339,7 +348,7 @@ def render_report(payload: dict[str, Any], old_sources: set[str]) -> str:
     lines += [f"- `{sid}`" for sid in payload["active_not_claim_enforced"]] or ["- None"]
     lines += ["", "## Residual overclaims", ""]
     lines += [f"- `{r['source']}` — {r['claim_class']}" for r in payload["residual_overclaims"]] or ["- None"]
-    lines += ["", "This discovery unit reports but does not alter wording. The merge blocker remains controlling.", ""]
+    lines += ["", "This inventory is the active-surface enforcement authority. The independent merge blocker remains controlling.", ""]
     return "\n".join(lines)
 
 

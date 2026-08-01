@@ -1,6 +1,6 @@
 name: Regula AI Governance Check
 description: >-
-  Scan code for EU AI Act risk patterns. 419 patterns, 8 languages, zero data transmission. Your code never leaves your machine.
+  Scan code for EU AI Act risk patterns. 419 patterns, 8 languages. The Regula core does not upload scanned file contents; repository handling by the workflow runner depends on your GitHub configuration.
 author: Regula
 
 branding:

@@ -4,7 +4,10 @@ Learn AI governance by building with Regula, an open-source tool that scans code
 
 ## What This Course Covers
 
-You'll learn to scan AI codebases for regulatory compliance issues, understand what the EU AI Act requires from AI systems, and use code analysis to generate compliance evidence.
+You'll learn to scan AI codebases for indicators relevant to regulatory review,
+understand what the EU AI Act requires from AI systems, and use code analysis
+to prepare evidence for human assessment. Regula does not determine legal
+compliance.
 
 ## Prerequisites
 

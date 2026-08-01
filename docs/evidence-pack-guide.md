@@ -1,6 +1,6 @@
 # Evidence pack guide — what auditors actually get
 
-Regula has two commands that produce audit-ready output:
+Regula has two commands that produce structured evidence for audit review:
 
 - `regula evidence-pack .` — the developer-friendly bundle
 - `regula conform .` — the Article 43 conformity assessment evidence pack

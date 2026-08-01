@@ -182,6 +182,17 @@ def test_fence_total_needs_an_anchor_noun_for_the_total(tmp_path):
     print("✓ an unanchored number in a fence is never treated as the total")
 
 
+def test_fence_total_does_not_read_iso_timezone_as_arithmetic(tmp_path):
+    """An ISO offset such as 06+01 is timestamp syntax, not a decomposition."""
+    path = _write(
+        tmp_path, "h.md",
+        "```\n244 files changed\n```\n"
+        "Ended: 2026-08-01T14:00:06+01:00\n",
+    )
+    assert cd.check_file(path) == []
+    print("✓ an ISO timezone offset is never treated as arithmetic")
+
+
 def test_fence_total_ignores_prose_beyond_the_window(tmp_path):
     """Distant prose is not a decomposition OF the total, so it is not paired."""
     path = _write(

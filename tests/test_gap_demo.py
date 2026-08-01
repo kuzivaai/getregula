@@ -29,9 +29,12 @@ import subprocess
 import sys
 import unittest
 from pathlib import Path
+from unittest import mock
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ARTEFACT = REPO_ROOT / "data/gap_demo.json"
+sys.path.insert(0, str(REPO_ROOT / "scripts"))
+import build_gap_demo as builder
 
 LOCALE_PAGES = [
     "site/index.html",
@@ -86,6 +89,32 @@ class TestArtefactIsProducedNotWritten(unittest.TestCase):
         note = _artefact()["gap"]["note"]
         self.assertIn("PRESENCE", note)
         self.assertIn("cannot offset scan findings", note)
+
+
+def test_untracked_or_ignored_content_is_not_an_input():
+    """A local file inside the fixture must never enter the snapshot."""
+    stray = REPO_ROOT / builder.FIXTURE / ".mutation-untracked-input"
+    assert not stray.exists(), f"mutation path already exists: {stray}"
+    try:
+        stray.write_text("must not be scanned\n", encoding="utf-8")
+        with builder._tracked_fixture_snapshot() as snapshot:
+            assert not (snapshot / stray.name).exists()
+    finally:
+        stray.unlink(missing_ok=True)
+
+
+def test_git_failure_is_fatal():
+    failed = subprocess.CompletedProcess(
+        args=["git"], returncode=128, stdout=b"", stderr=b"git unavailable"
+    )
+    with mock.patch.object(builder.subprocess, "run", return_value=failed):
+        try:
+            with builder._tracked_fixture_snapshot():
+                pass
+        except RuntimeError as exc:
+            assert "Git could not derive" in str(exc)
+        else:
+            raise AssertionError("Git failure was swallowed")
 
 
 class TestEveryLocalePanelMatchesTheArtefact(unittest.TestCase):

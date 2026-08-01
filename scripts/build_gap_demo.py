@@ -9,7 +9,8 @@ No scan produced any of those numbers. A visitor reads a `$` prompt as real
 output; that is what makes it a claim rather than a mock-up.
 
 This script is the only writer of `data/gap_demo.json`. It runs both
-commands against a COMMITTED fixture and records what they actually print.
+commands against a tracked-only snapshot of a COMMITTED fixture and records
+what they actually print.
 `tests/test_gap_demo.py` re-runs them and fails on any disagreement, and
 also fails if the site shows a percentage the artefact does not contain.
 
@@ -19,15 +20,11 @@ WHY THIS FIXTURE
 before any score was looked at: the target must be committed and must be
 scanned as the page depicts it, with no flags.
 
-**That reasoning was sound and the outcome still failed, which is why this
-paragraph is corrected rather than deleted.** Choosing a tracked target does
-NOT make the output reproducible if untracked content is sitting inside it.
-This machine's copy of the fixture holds a gitignored `.regula/registry/`
-directory, which `compliance_check` credits toward Article 11, so the
-figures below (9% overall, Article 11 at 25%) are what THIS tree produces
-and a clean clone produces 6% and 0%. See ledger N43. `assert_inputs_tracked`
-now refuses to write from a contaminated target, so this cannot recur
-silently; correcting the published figures is a separate, owner-gated step.
+Choosing a tracked target is not sufficient when ignored content can sit
+inside its directory. The builder therefore asks Git for the fixture's
+tracked files, copies only those files to a temporary snapshot, and runs both
+commands there. Git failure, an empty tracked population, a copy failure, or
+a command/build failure is fatal. Local ignored state is never an input.
 
 Two candidates were rejected for reasons independent of their scores:
 
@@ -38,14 +35,14 @@ Two candidates were rejected for reasons independent of their scores:
 - A purpose-built fixture would be the shop window chosen by its author,
   which is the metric gaming PROGRAMME.md principle 3 forbids.
 
-The fixture scores 9% on this machine and 6% in a clean clone (see above).
-Either way it is unflattering. That is not why it was chosen and it is not
-a reason to change it.
+The tracked fixture scores 6% in both this working tree and a clean clone.
+That unflattering result is not why it was chosen and is not a reason to
+change it.
 
 WHAT THE REAL OUTPUT CHANGES ON THE PAGE
 ----------------------------------------
-1. The numbers get worse: 20/40/60/80/0/30/50 becomes 0/0/25/0/0/45/0/0,
-   and 42/100 becomes 9/100.
+1. The numbers get worse: 20/40/60/80/0/30/50 becomes 0/0/0/0/0/45/0/0,
+   and 42/100 becomes 6/100.
 2. The real command emits a NOTE the mock-up omitted entirely, saying the
    score measures presence of documentation and cannot offset scan
    findings. That NOTE is the denominator disclosure, and its absence was
@@ -68,8 +65,11 @@ from __future__ import annotations
 
 import json
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -81,9 +81,6 @@ sys.path.insert(0, str(Path(__file__).parent))
 REPO_ROOT = Path(__file__).resolve().parent.parent
 FIXTURE = "tests/fixtures/sample_high_risk"
 ARTEFACT = REPO_ROOT / "data/gap_demo.json"
-
-GAP_CMD = ["-m", "scripts.cli", "gap", FIXTURE]
-COMPLY_CMD = ["-m", "scripts.cli", "comply", FIXTURE, "--all"]
 
 # "Article 9   Risk Management   [  0%] NOT FOUND"  (gap)
 GAP_ROW = re.compile(
@@ -109,6 +106,38 @@ def _run(args: list[str]) -> str:
     return proc.stdout
 
 
+@contextmanager
+def _tracked_fixture_snapshot():
+    """Yield a directory containing exactly Git's tracked fixture files."""
+    proc = subprocess.run(
+        ["git", "-C", str(REPO_ROOT), "ls-files", "-z", "--", FIXTURE],
+        capture_output=True,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(
+            "Git could not derive the gap-demo inputs: "
+            + proc.stderr.decode("utf-8", errors="replace")[:400]
+        )
+    paths = [Path(raw.decode("utf-8")) for raw in proc.stdout.split(b"\0") if raw]
+    if not paths:
+        raise RuntimeError(f"Git reported no tracked files under {FIXTURE}")
+
+    with tempfile.TemporaryDirectory(prefix="regula-gap-demo-") as tmp:
+        snapshot = Path(tmp) / Path(FIXTURE).name
+        for relative in paths:
+            try:
+                within_fixture = relative.relative_to(FIXTURE)
+            except ValueError as exc:
+                raise RuntimeError(
+                    f"Git returned an input outside {FIXTURE}: {relative}"
+                ) from exc
+            source = REPO_ROOT / relative
+            destination = snapshot / within_fixture
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, destination)
+        yield snapshot
+
+
 def _rows(pattern: re.Pattern[str], text: str) -> list[dict]:
     return [{"article": m.group(1), "title": m.group(2).strip(),
              "percent": int(m.group(3)), "status": m.group(4).strip()}
@@ -116,8 +145,11 @@ def _rows(pattern: re.Pattern[str], text: str) -> list[dict]:
 
 
 def build() -> dict:
-    gap_out = _run(GAP_CMD)
-    comply_out = _run(COMPLY_CMD)
+    with _tracked_fixture_snapshot() as snapshot:
+        gap_out = _run(["-m", "scripts.cli", "gap", str(snapshot)])
+        comply_out = _run(
+            ["-m", "scripts.cli", "comply", str(snapshot), "--all"]
+        )
 
     note = NOTE_BLOCK.search(gap_out)
     gap_rows = _rows(GAP_ROW, gap_out)
@@ -166,38 +198,8 @@ def _comparable(doc: dict) -> str:
 
 
 def main(argv: list[str]) -> int:
-    from tree_guard import (
-        UntrackedInputError, assert_inputs_tracked, untracked_inputs,
-    )
-
     fresh = build()
     if "--check" in argv:
-        # Deliberately a warning here and a refusal on the write path below.
-        # --check asks "does the committed artefact match a fresh run", and in
-        # a tree carrying this contamination the honest answer to THAT question
-        # is yes: both sides are contaminated identically. The defect is that
-        # the artefact is not reproducible elsewhere, which is a different
-        # question, and strengthening this gate to ask it would turn it red
-        # until the artefact is regenerated and the published figures move.
-        # That is an owner decision (ledger N43), so the contamination is made
-        # impossible to miss rather than silently tolerated or silently fixed.
-        # Never let the advisory warning break the command it advises on.
-        # `scripts/` ships as the PyPI package and can run from a directory
-        # that is not a git checkout, where the git call fails outright.
-        try:
-            stray = untracked_inputs(FIXTURE)
-        except Exception:
-            stray = []
-        if stray:
-            print(
-                "WARNING: " + FIXTURE + " holds content that is not in the "
-                "repository, so these figures do not reproduce in a clean "
-                "clone:\n  " + "\n  ".join(stray) + "\n"
-                "This check compares the artefact against a run on the SAME "
-                "contaminated inputs, so it passing does not mean the "
-                "published figures are reproducible. See ledger N43.",
-                file=sys.stderr,
-            )
         if not ARTEFACT.exists():
             print(f"MISSING: {ARTEFACT.relative_to(REPO_ROOT)}",
                   file=sys.stderr)
@@ -210,16 +212,6 @@ def main(argv: list[str]) -> int:
             return 1
         print("data/gap_demo.json matches a fresh run.")
         return 0
-
-    # Write path: refuse outright. This is where an unreproducible artefact
-    # would be created, so it is the point at which the class is closed.
-    # Caught and presented rather than allowed to traceback: the exception
-    # carries the paths to remove, and a traceback buries them.
-    try:
-        assert_inputs_tracked(FIXTURE)
-    except UntrackedInputError as exc:
-        print(f"REFUSED: {exc}", file=sys.stderr)
-        return 2
 
     ARTEFACT.write_text(json.dumps(fresh, indent=2, sort_keys=True) + "\n",
                         encoding="utf-8")

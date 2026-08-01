@@ -52,13 +52,10 @@ def test_contract_is_bidirectional_and_non_vacuous():
 
 
 def test_active_surfaces_do_not_publish_prohibited_claims():
-    # Discovery expands enforcement beyond the old hand-curated set. This
-    # bounded unit reports existing wording defects; it must not hide or edit
-    # them merely to make the new inventory green.
-    found = violations()
-    assert found
-    assert all(path in active_paths() and claim_class in PROHIBITED
-               for path, claim_class in found)
+    # Every discovered active, claim-capable delivery surface is enforced.
+    # The negative controls below prove this is green because the copy was
+    # corrected, not because the guards became inert.
+    assert violations() == []
 
 
 def test_required_limitation_concepts_are_translated():

@@ -398,12 +398,12 @@
     <section id="how-to-run">
         <h2>How to run this yourself</h2>
 
-        <p>Install Regula with pip, point it at any project directory, and get a compliance scan in under a second. Regula is open-source, has zero dependencies, and runs entirely offline. No data leaves your machine, and results include file paths, line numbers, and EU AI Act article references for every finding.</p>
+        <p>Install Regula with pip and point it at a project directory to obtain a pattern-based risk scan. Regula is open-source, has zero core dependencies, and its local scan engine does not upload project files. Results include file paths, line numbers, and EU AI Act article references for matched findings; runtime varies with project size and hardware.</p>
 
         <pre><code>pip install regula-ai
 regula check /path/to/your/project</code></pre>
 
-        <p>Regula is open-source, has zero dependencies, and runs entirely locally. No data leaves your machine. It takes under a second for most projects.</p>
+        <p>Regula is open-source, has zero core dependencies, and processes scan inputs locally without uploading project files. Runtime varies with project size and hardware.</p>
 
         <p>The risk patterns it checks against (387 as of v1.7.0; 330 at the time this scan was run with v1.6.1) are documented in the repository. If you disagree with a classification, you can suppress individual findings with inline comments or contribute pattern improvements upstream.</p>
     </section>

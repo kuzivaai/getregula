@@ -3,7 +3,8 @@
 
 ## What You'll Learn
 
-- Assess compliance gaps for EU AI Act Articles 9-15
+- Assess the presence of documentation and implementation indicators relevant
+  to EU AI Act Articles 9-15
 - Understand what evidence Regula looks for
 - Interpret per-article compliance scores
 

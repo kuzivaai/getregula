@@ -507,8 +507,8 @@ a customer pilot.
 
 ## N62 — Delivery-derived public-surface inventory
 
-**First raised:** 2026-08-01. **Status:** implemented; residual claims remain
-open.
+**First raised:** 2026-08-01. **Status:** implemented; discovered residual claim
+classes corrected, exact final verification pending.
 
 The former 22-path hand-curated contract could pass while tracked Pages routes,
 Action descriptors, registered CLI help, MCP `tools/list` descriptors, package
@@ -520,7 +520,31 @@ registry. `data/public_claim_surfaces.json` and the human report are generated;
 `data/public_surface_policy.json` contains only narrow, reasoned dispositions.
 Mutation controls cover new routes and outputs, linked docs, CLI, MCP, Action,
 package metadata, renames, policy integrity, Git/build failures and legitimate
-negatives. Existing residual overclaims are enumerated without changing their
-wording. F25, F30, N35, N43, N50/N54, N53, N55, N57, N6, N7, N10, N11, N12,
-N60 and N61 retain their prior status. commercial_v1 remains STOP and
-`PRODUCT_PILOT_STATUS` remains NOT_APPROVED.
+negatives. The resulting active-surface residual list is now empty after
+capability wording was narrowed to code-observable indicators, human review,
+variable runtime and scoped local-processing statements. F25, F30, N35, N43,
+N50/N54, N53, N55, N57, N6, N7, N10, N11, N12, N60 and N61 retain their prior
+status. commercial_v1 remains STOP and `PRODUCT_PILOT_STATUS` remains
+NOT_APPROVED.
+
+## N63 — Decision labels were downstream of three reproducibility defects
+
+**First raised:** 2026-08-01. **Status:** implementation complete; independent
+exact-commit verification pending.
+
+The decision labels were not themselves the defect. Three evidence mechanisms
+were: an ISO-8601 timezone offset was parsed as arithmetic; five numeric claims
+introduced by the evidence-only records lacked same-paragraph sources; and the
+gap-demo builder scanned ignored local files while claiming clone
+reproducibility. The decomposition parser now masks complete ISO timestamps and
+retains positive arithmetic controls. The evidence records link their durable
+sources and the claim-auditor count returned from 314 to the pre-existing 309.
+The gap-demo builder now materialises exactly `git ls-files` into a temporary
+snapshot and fails closed on Git, copy, command or parse failure. Mutation
+controls prove ignored input is absent and Git failure is not swallowed. The
+generated result is 6% overall with Article 11 at 0%, synchronized across EN,
+DE and PT-BR. N43 is deliberately carried forward unchanged until the required
+detached-worktree verification reproduces the repair. All previously named open
+items remain open. These corrections do not create human-labelled accuracy,
+competitor equivalence, demand or pilot evidence, so commercial_v1 remains STOP
+and `PRODUCT_PILOT_STATUS` remains NOT_APPROVED.
