@@ -8,6 +8,13 @@ state record. The single durable record of open and closed work is
 Read the ledger before selecting work, then use the newest checkpoints at the
 end of `docs/improvement/STATE.md` for chronological evidence.
 
+The latest bounded commercial decision is the 2026-07-31 commercial_v1
+review. It records `OVERALL_DECISION: STOP`, not a pilot recommendation. Read
+`docs/commercial/COMMERCIAL_DEFENSIBILITY_REVIEW_2026-07-31.md`,
+`docs/commercial/PUBLIC_CLAIM_REGISTER_2026-07-31.md` and
+`benchmarks/commercial_v1/results/summary.json` after the ledger. This pointer
+does not supersede any older open ledger item.
+
 Do not use the historical Git state or verification figures below as current
 facts. Re-measure the tree before relying on any mutable count. This notice is
 guarded by `tests/test_handover_continuity.py` so a future session cannot again

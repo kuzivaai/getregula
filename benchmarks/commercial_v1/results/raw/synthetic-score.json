@@ -1,0 +1,4398 @@
+{
+  "schema_version": "commercial_v1.score.1",
+  "labels_sha256": "feea31edb0316ad8606c8d995b2164b4704b46e0223e7ad4df29a94154217e28",
+  "reports": [
+    {
+      "result_path": "/tmp/regula-commercial-20260731.Inq4k2/synthetic-naive-1/results.json",
+      "tool": "naive",
+      "result_sha256": "6125eb9518cb93d985095fd4919b179de04a62984feb7ba7c48d56087d3d5a1a",
+      "enumeration_complete": true,
+      "missing_ids": [],
+      "extra_ids": [],
+      "duplicate_ids": [],
+      "failed_ids": [],
+      "candidates": {
+        "A": {
+          "complete": true,
+          "applicable_decisions": 80,
+          "valid_decisions": 80,
+          "failed_decision_ids": [],
+          "metrics": {
+            "counts": {
+              "tp": 40,
+              "fp": 4,
+              "fn": 0,
+              "tn": 36,
+              "decisions": 80
+            },
+            "precision": {
+              "numerator": 40,
+              "denominator": 44,
+              "value": 0.9090909090909091,
+              "wilson95": {
+                "low": 0.7884076083340138,
+                "high": 0.9640778067726837
+              }
+            },
+            "recall": {
+              "numerator": 40,
+              "denominator": 40,
+              "value": 1.0,
+              "wilson95": {
+                "low": 0.9123783988027135,
+                "high": 1.0
+              }
+            },
+            "f1": {
+              "numerator": 80,
+              "denominator": 84,
+              "value": 0.9523809523809523
+            },
+            "mcc": 0.9045340337332909
+          },
+          "strata": {
+            "language:python": {
+              "counts": {
+                "tp": 40,
+                "fp": 4,
+                "fn": 0,
+                "tn": 36,
+                "decisions": 80
+              },
+              "precision": {
+                "numerator": 40,
+                "denominator": 44,
+                "value": 0.9090909090909091,
+                "wilson95": {
+                  "low": 0.7884076083340138,
+                  "high": 0.9640778067726837
+                }
+              },
+              "recall": {
+                "numerator": 40,
+                "denominator": 40,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.9123783988027135,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 80,
+                "denominator": 84,
+                "value": 0.9523809523809523
+              },
+              "mcc": 0.9045340337332909
+            },
+            "transform:alias_import": {
+              "counts": {
+                "tp": 13,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 13
+              },
+              "precision": {
+                "numerator": 13,
+                "denominator": 13,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.7719046276458016,
+                  "high": 0.9999999999999999
+                }
+              },
+              "recall": {
+                "numerator": 13,
+                "denominator": 13,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.7719046276458016,
+                  "high": 0.9999999999999999
+                }
+              },
+              "f1": {
+                "numerator": 26,
+                "denominator": 26,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:comment": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:dead_comment": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:direct_import": {
+              "counts": {
+                "tp": 14,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 14
+              },
+              "precision": {
+                "numerator": 14,
+                "denominator": 14,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.7846891972623643,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 14,
+                "denominator": 14,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.7846891972623643,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 28,
+                "denominator": 28,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:documentation": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:from_import": {
+              "counts": {
+                "tp": 13,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 13
+              },
+              "precision": {
+                "numerator": 13,
+                "denominator": 13,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.7719046276458016,
+                  "high": 0.9999999999999999
+                }
+              },
+              "recall": {
+                "numerator": 13,
+                "denominator": 13,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.7719046276458016,
+                  "high": 0.9999999999999999
+                }
+              },
+              "f1": {
+                "numerator": 26,
+                "denominator": 26,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:near_name": {
+              "counts": {
+                "tp": 0,
+                "fp": 4,
+                "fn": 0,
+                "tn": 4,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 4,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.4898908364545973
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 4,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:string_literal": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            }
+          },
+          "synthetic_metric_eligible": true,
+          "headline_eligible": false,
+          "headline_blockers": [
+            "synthetic transformations are correlated families",
+            "real-repository labelled accuracy unavailable",
+            "comparative, determinism, network, public-claim and demand gates are evaluated outside this score file"
+          ]
+        },
+        "B": {
+          "complete": true,
+          "applicable_decisions": 80,
+          "valid_decisions": 80,
+          "failed_decision_ids": [],
+          "metrics": {
+            "counts": {
+              "tp": 40,
+              "fp": 0,
+              "fn": 0,
+              "tn": 40,
+              "decisions": 80
+            },
+            "precision": {
+              "numerator": 40,
+              "denominator": 40,
+              "value": 1.0,
+              "wilson95": {
+                "low": 0.9123783988027135,
+                "high": 1.0
+              }
+            },
+            "recall": {
+              "numerator": 40,
+              "denominator": 40,
+              "value": 1.0,
+              "wilson95": {
+                "low": 0.9123783988027135,
+                "high": 1.0
+              }
+            },
+            "f1": {
+              "numerator": 80,
+              "denominator": 80,
+              "value": 1.0
+            },
+            "mcc": 1.0
+          },
+          "strata": {
+            "language:html": {
+              "counts": {
+                "tp": 40,
+                "fp": 0,
+                "fn": 0,
+                "tn": 40,
+                "decisions": 80
+              },
+              "precision": {
+                "numerator": 40,
+                "denominator": 40,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.9123783988027135,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 40,
+                "denominator": 40,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.9123783988027135,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 80,
+                "denominator": 80,
+                "value": 1.0
+              },
+              "mcc": 1.0
+            },
+            "transform:biometric_notice:language_attribute": {
+              "counts": {
+                "tp": 2,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 4,
+                "denominator": 4,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:biometric_notice:nested_template": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:biometric_notice:rendered_body": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:chatbot_notice:language_attribute": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:chatbot_notice:nested_template": {
+              "counts": {
+                "tp": 2,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 4,
+                "denominator": 4,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:chatbot_notice:rendered_body": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:deepfake_notice:language_attribute": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:deepfake_notice:nested_template": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:deepfake_notice:rendered_body": {
+              "counts": {
+                "tp": 2,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 4,
+                "denominator": 4,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:developer_note": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:emotion_notice:language_attribute": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:emotion_notice:nested_template": {
+              "counts": {
+                "tp": 2,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 4,
+                "denominator": 4,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:emotion_notice:rendered_body": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:html_comment": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:irrelevant_attribute": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:negated_copy": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:non_rendered_template": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:synthetic_marker:language_attribute": {
+              "counts": {
+                "tp": 2,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 4,
+                "denominator": 4,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:synthetic_marker:nested_template": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:synthetic_marker:rendered_body": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            }
+          },
+          "synthetic_metric_eligible": true,
+          "headline_eligible": false,
+          "headline_blockers": [
+            "synthetic transformations are correlated families",
+            "real-repository labelled accuracy unavailable",
+            "comparative, determinism, network, public-claim and demand gates are evaluated outside this score file"
+          ]
+        }
+      }
+    },
+    {
+      "result_path": "/tmp/regula-commercial-20260731.Inq4k2/synthetic-naive-2/results.json",
+      "tool": "naive",
+      "result_sha256": "29077cf8ed190561bf7dc3b96410d514767bdc9437feb50cbf483c63a50edb24",
+      "enumeration_complete": true,
+      "missing_ids": [],
+      "extra_ids": [],
+      "duplicate_ids": [],
+      "failed_ids": [],
+      "candidates": {
+        "A": {
+          "complete": true,
+          "applicable_decisions": 80,
+          "valid_decisions": 80,
+          "failed_decision_ids": [],
+          "metrics": {
+            "counts": {
+              "tp": 40,
+              "fp": 4,
+              "fn": 0,
+              "tn": 36,
+              "decisions": 80
+            },
+            "precision": {
+              "numerator": 40,
+              "denominator": 44,
+              "value": 0.9090909090909091,
+              "wilson95": {
+                "low": 0.7884076083340138,
+                "high": 0.9640778067726837
+              }
+            },
+            "recall": {
+              "numerator": 40,
+              "denominator": 40,
+              "value": 1.0,
+              "wilson95": {
+                "low": 0.9123783988027135,
+                "high": 1.0
+              }
+            },
+            "f1": {
+              "numerator": 80,
+              "denominator": 84,
+              "value": 0.9523809523809523
+            },
+            "mcc": 0.9045340337332909
+          },
+          "strata": {
+            "language:python": {
+              "counts": {
+                "tp": 40,
+                "fp": 4,
+                "fn": 0,
+                "tn": 36,
+                "decisions": 80
+              },
+              "precision": {
+                "numerator": 40,
+                "denominator": 44,
+                "value": 0.9090909090909091,
+                "wilson95": {
+                  "low": 0.7884076083340138,
+                  "high": 0.9640778067726837
+                }
+              },
+              "recall": {
+                "numerator": 40,
+                "denominator": 40,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.9123783988027135,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 80,
+                "denominator": 84,
+                "value": 0.9523809523809523
+              },
+              "mcc": 0.9045340337332909
+            },
+            "transform:alias_import": {
+              "counts": {
+                "tp": 13,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 13
+              },
+              "precision": {
+                "numerator": 13,
+                "denominator": 13,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.7719046276458016,
+                  "high": 0.9999999999999999
+                }
+              },
+              "recall": {
+                "numerator": 13,
+                "denominator": 13,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.7719046276458016,
+                  "high": 0.9999999999999999
+                }
+              },
+              "f1": {
+                "numerator": 26,
+                "denominator": 26,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:comment": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:dead_comment": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:direct_import": {
+              "counts": {
+                "tp": 14,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 14
+              },
+              "precision": {
+                "numerator": 14,
+                "denominator": 14,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.7846891972623643,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 14,
+                "denominator": 14,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.7846891972623643,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 28,
+                "denominator": 28,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:documentation": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:from_import": {
+              "counts": {
+                "tp": 13,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 13
+              },
+              "precision": {
+                "numerator": 13,
+                "denominator": 13,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.7719046276458016,
+                  "high": 0.9999999999999999
+                }
+              },
+              "recall": {
+                "numerator": 13,
+                "denominator": 13,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.7719046276458016,
+                  "high": 0.9999999999999999
+                }
+              },
+              "f1": {
+                "numerator": 26,
+                "denominator": 26,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:near_name": {
+              "counts": {
+                "tp": 0,
+                "fp": 4,
+                "fn": 0,
+                "tn": 4,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 4,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.4898908364545973
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 4,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:string_literal": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            }
+          },
+          "synthetic_metric_eligible": true,
+          "headline_eligible": false,
+          "headline_blockers": [
+            "synthetic transformations are correlated families",
+            "real-repository labelled accuracy unavailable",
+            "comparative, determinism, network, public-claim and demand gates are evaluated outside this score file"
+          ]
+        },
+        "B": {
+          "complete": true,
+          "applicable_decisions": 80,
+          "valid_decisions": 80,
+          "failed_decision_ids": [],
+          "metrics": {
+            "counts": {
+              "tp": 40,
+              "fp": 0,
+              "fn": 0,
+              "tn": 40,
+              "decisions": 80
+            },
+            "precision": {
+              "numerator": 40,
+              "denominator": 40,
+              "value": 1.0,
+              "wilson95": {
+                "low": 0.9123783988027135,
+                "high": 1.0
+              }
+            },
+            "recall": {
+              "numerator": 40,
+              "denominator": 40,
+              "value": 1.0,
+              "wilson95": {
+                "low": 0.9123783988027135,
+                "high": 1.0
+              }
+            },
+            "f1": {
+              "numerator": 80,
+              "denominator": 80,
+              "value": 1.0
+            },
+            "mcc": 1.0
+          },
+          "strata": {
+            "language:html": {
+              "counts": {
+                "tp": 40,
+                "fp": 0,
+                "fn": 0,
+                "tn": 40,
+                "decisions": 80
+              },
+              "precision": {
+                "numerator": 40,
+                "denominator": 40,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.9123783988027135,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 40,
+                "denominator": 40,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.9123783988027135,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 80,
+                "denominator": 80,
+                "value": 1.0
+              },
+              "mcc": 1.0
+            },
+            "transform:biometric_notice:language_attribute": {
+              "counts": {
+                "tp": 2,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 4,
+                "denominator": 4,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:biometric_notice:nested_template": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:biometric_notice:rendered_body": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:chatbot_notice:language_attribute": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:chatbot_notice:nested_template": {
+              "counts": {
+                "tp": 2,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 4,
+                "denominator": 4,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:chatbot_notice:rendered_body": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:deepfake_notice:language_attribute": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:deepfake_notice:nested_template": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:deepfake_notice:rendered_body": {
+              "counts": {
+                "tp": 2,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 4,
+                "denominator": 4,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:developer_note": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:emotion_notice:language_attribute": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:emotion_notice:nested_template": {
+              "counts": {
+                "tp": 2,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 4,
+                "denominator": 4,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:emotion_notice:rendered_body": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:html_comment": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:irrelevant_attribute": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:negated_copy": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:non_rendered_template": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:synthetic_marker:language_attribute": {
+              "counts": {
+                "tp": 2,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 2,
+                "denominator": 2,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.34238022750665303,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 4,
+                "denominator": 4,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:synthetic_marker:nested_template": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            },
+            "transform:synthetic_marker:rendered_body": {
+              "counts": {
+                "tp": 3,
+                "fp": 0,
+                "fn": 0,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "recall": {
+                "numerator": 3,
+                "denominator": 3,
+                "value": 1.0,
+                "wilson95": {
+                  "low": 0.4385029682449546,
+                  "high": 1.0
+                }
+              },
+              "f1": {
+                "numerator": 6,
+                "denominator": 6,
+                "value": 1.0
+              },
+              "mcc": null
+            }
+          },
+          "synthetic_metric_eligible": true,
+          "headline_eligible": false,
+          "headline_blockers": [
+            "synthetic transformations are correlated families",
+            "real-repository labelled accuracy unavailable",
+            "comparative, determinism, network, public-claim and demand gates are evaluated outside this score file"
+          ]
+        }
+      }
+    },
+    {
+      "result_path": "/tmp/regula-commercial-20260731.Inq4k2/synthetic-local-1/results.json",
+      "tool": "local_head",
+      "result_sha256": "8041bbb547ef56b9a586e457d95c7e641045a027d33c9933fcaaa7d3b70c26b6",
+      "enumeration_complete": true,
+      "missing_ids": [],
+      "extra_ids": [],
+      "duplicate_ids": [],
+      "failed_ids": [],
+      "candidates": {
+        "A": {
+          "complete": true,
+          "applicable_decisions": 80,
+          "valid_decisions": 80,
+          "failed_decision_ids": [],
+          "metrics": {
+            "counts": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 40,
+              "tn": 40,
+              "decisions": 80
+            },
+            "precision": {
+              "numerator": 0,
+              "denominator": 0,
+              "value": null,
+              "wilson95": {
+                "low": null,
+                "high": null
+              }
+            },
+            "recall": {
+              "numerator": 0,
+              "denominator": 40,
+              "value": 0.0,
+              "wilson95": {
+                "low": 0.0,
+                "high": 0.08762160119728664
+              }
+            },
+            "f1": {
+              "numerator": 0,
+              "denominator": 40,
+              "value": 0.0
+            },
+            "mcc": null
+          },
+          "strata": {
+            "language:python": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 40,
+                "tn": 40,
+                "decisions": 80
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 40,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.08762160119728664
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 40,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:alias_import": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 13,
+                "tn": 0,
+                "decisions": 13
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 13,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.22809537235419838
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 13,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:comment": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:dead_comment": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:direct_import": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 14,
+                "tn": 0,
+                "decisions": 14
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 14,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 1.3877787807814457e-17,
+                  "high": 0.2153108027376358
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 14,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:documentation": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:from_import": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 13,
+                "tn": 0,
+                "decisions": 13
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 13,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.22809537235419838
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 13,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:near_name": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:string_literal": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            }
+          },
+          "synthetic_metric_eligible": true,
+          "headline_eligible": false,
+          "headline_blockers": [
+            "synthetic transformations are correlated families",
+            "real-repository labelled accuracy unavailable",
+            "comparative, determinism, network, public-claim and demand gates are evaluated outside this score file"
+          ]
+        },
+        "B": {
+          "complete": true,
+          "applicable_decisions": 80,
+          "valid_decisions": 80,
+          "failed_decision_ids": [],
+          "metrics": {
+            "counts": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 40,
+              "tn": 40,
+              "decisions": 80
+            },
+            "precision": {
+              "numerator": 0,
+              "denominator": 0,
+              "value": null,
+              "wilson95": {
+                "low": null,
+                "high": null
+              }
+            },
+            "recall": {
+              "numerator": 0,
+              "denominator": 40,
+              "value": 0.0,
+              "wilson95": {
+                "low": 0.0,
+                "high": 0.08762160119728664
+              }
+            },
+            "f1": {
+              "numerator": 0,
+              "denominator": 40,
+              "value": 0.0
+            },
+            "mcc": null
+          },
+          "strata": {
+            "language:html": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 40,
+                "tn": 40,
+                "decisions": 80
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 40,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.08762160119728664
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 40,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:biometric_notice:language_attribute": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 2,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.6576197724933469
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:biometric_notice:nested_template": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:biometric_notice:rendered_body": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:chatbot_notice:language_attribute": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:chatbot_notice:nested_template": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 2,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.6576197724933469
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:chatbot_notice:rendered_body": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:deepfake_notice:language_attribute": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:deepfake_notice:nested_template": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:deepfake_notice:rendered_body": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 2,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.6576197724933469
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:developer_note": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:emotion_notice:language_attribute": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:emotion_notice:nested_template": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 2,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.6576197724933469
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:emotion_notice:rendered_body": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:html_comment": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:irrelevant_attribute": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:negated_copy": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:non_rendered_template": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:synthetic_marker:language_attribute": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 2,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.6576197724933469
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:synthetic_marker:nested_template": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:synthetic_marker:rendered_body": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            }
+          },
+          "synthetic_metric_eligible": true,
+          "headline_eligible": false,
+          "headline_blockers": [
+            "synthetic transformations are correlated families",
+            "real-repository labelled accuracy unavailable",
+            "comparative, determinism, network, public-claim and demand gates are evaluated outside this score file"
+          ]
+        }
+      }
+    },
+    {
+      "result_path": "/tmp/regula-commercial-20260731.Inq4k2/synthetic-local-2/results.json",
+      "tool": "local_head",
+      "result_sha256": "54110a8672f39c58eb4762646091669c0bd15194d082b9840c0f53ed856d4add",
+      "enumeration_complete": true,
+      "missing_ids": [],
+      "extra_ids": [],
+      "duplicate_ids": [],
+      "failed_ids": [],
+      "candidates": {
+        "A": {
+          "complete": true,
+          "applicable_decisions": 80,
+          "valid_decisions": 80,
+          "failed_decision_ids": [],
+          "metrics": {
+            "counts": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 40,
+              "tn": 40,
+              "decisions": 80
+            },
+            "precision": {
+              "numerator": 0,
+              "denominator": 0,
+              "value": null,
+              "wilson95": {
+                "low": null,
+                "high": null
+              }
+            },
+            "recall": {
+              "numerator": 0,
+              "denominator": 40,
+              "value": 0.0,
+              "wilson95": {
+                "low": 0.0,
+                "high": 0.08762160119728664
+              }
+            },
+            "f1": {
+              "numerator": 0,
+              "denominator": 40,
+              "value": 0.0
+            },
+            "mcc": null
+          },
+          "strata": {
+            "language:python": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 40,
+                "tn": 40,
+                "decisions": 80
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 40,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.08762160119728664
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 40,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:alias_import": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 13,
+                "tn": 0,
+                "decisions": 13
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 13,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.22809537235419838
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 13,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:comment": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:dead_comment": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:direct_import": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 14,
+                "tn": 0,
+                "decisions": 14
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 14,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 1.3877787807814457e-17,
+                  "high": 0.2153108027376358
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 14,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:documentation": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:from_import": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 13,
+                "tn": 0,
+                "decisions": 13
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 13,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.22809537235419838
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 13,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:near_name": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:string_literal": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            }
+          },
+          "synthetic_metric_eligible": true,
+          "headline_eligible": false,
+          "headline_blockers": [
+            "synthetic transformations are correlated families",
+            "real-repository labelled accuracy unavailable",
+            "comparative, determinism, network, public-claim and demand gates are evaluated outside this score file"
+          ]
+        },
+        "B": {
+          "complete": true,
+          "applicable_decisions": 80,
+          "valid_decisions": 80,
+          "failed_decision_ids": [],
+          "metrics": {
+            "counts": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 40,
+              "tn": 40,
+              "decisions": 80
+            },
+            "precision": {
+              "numerator": 0,
+              "denominator": 0,
+              "value": null,
+              "wilson95": {
+                "low": null,
+                "high": null
+              }
+            },
+            "recall": {
+              "numerator": 0,
+              "denominator": 40,
+              "value": 0.0,
+              "wilson95": {
+                "low": 0.0,
+                "high": 0.08762160119728664
+              }
+            },
+            "f1": {
+              "numerator": 0,
+              "denominator": 40,
+              "value": 0.0
+            },
+            "mcc": null
+          },
+          "strata": {
+            "language:html": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 40,
+                "tn": 40,
+                "decisions": 80
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 40,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.08762160119728664
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 40,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:biometric_notice:language_attribute": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 2,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.6576197724933469
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:biometric_notice:nested_template": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:biometric_notice:rendered_body": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:chatbot_notice:language_attribute": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:chatbot_notice:nested_template": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 2,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.6576197724933469
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:chatbot_notice:rendered_body": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:deepfake_notice:language_attribute": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:deepfake_notice:nested_template": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:deepfake_notice:rendered_body": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 2,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.6576197724933469
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:developer_note": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:emotion_notice:language_attribute": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:emotion_notice:nested_template": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 2,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.6576197724933469
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:emotion_notice:rendered_body": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:html_comment": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:irrelevant_attribute": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:negated_copy": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:non_rendered_template": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 0,
+                "tn": 8,
+                "decisions": 8
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null
+              },
+              "mcc": null
+            },
+            "transform:synthetic_marker:language_attribute": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 2,
+                "tn": 0,
+                "decisions": 2
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 0.0,
+                  "high": 0.6576197724933469
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 2,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:synthetic_marker:nested_template": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            },
+            "transform:synthetic_marker:rendered_body": {
+              "counts": {
+                "tp": 0,
+                "fp": 0,
+                "fn": 3,
+                "tn": 0,
+                "decisions": 3
+              },
+              "precision": {
+                "numerator": 0,
+                "denominator": 0,
+                "value": null,
+                "wilson95": {
+                  "low": null,
+                  "high": null
+                }
+              },
+              "recall": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0,
+                "wilson95": {
+                  "low": 5.551115123125783e-17,
+                  "high": 0.5614970317550454
+                }
+              },
+              "f1": {
+                "numerator": 0,
+                "denominator": 3,
+                "value": 0.0
+              },
+              "mcc": null
+            }
+          },
+          "synthetic_metric_eligible": true,
+          "headline_eligible": false,
+          "headline_blockers": [
+            "synthetic transformations are correlated families",
+            "real-repository labelled accuracy unavailable",
+            "comparative, determinism, network, public-claim and demand gates are evaluated outside this score file"
+          ]
+        }
+      }
+    }
+  ]
+}

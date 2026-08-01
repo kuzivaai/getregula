@@ -1,0 +1,59 @@
+{
+  "schema_version": "commercial_v1.result-summary.1",
+  "session_date": "2026-07-31",
+  "frozen_product_commit": "140bdacdcbfaaa9bd0892989861751b0b5e2d8d0",
+  "preregistration_commit": "f77473d",
+  "protocol_sha256": "58c935903b5832eb7b8232116f6dc182b97708a89b5d3070f8b856ec9272d8c4",
+  "raw_score_sha256": "bd8191a1ec9f19bfc408fc770fd40409da091b6a218308ae0014200a6df20a3e",
+  "protocol_deviations": [
+    "e7bb6d5 separated protocol-tree hashes from the frozen product tree before result execution",
+    "f9e671e added a non-frozen acquisition runner for case-insensitive root licence filenames after the retained frozen-run failure"
+  ],
+  "synthetic": {
+    "decisions_per_run": 160,
+    "runs_per_tool": 2,
+    "local_normalised_sha256": "d3e891c9453a53acc6ba1c2905c2102f835ff39366be8be37e0101b86b3eb485",
+    "naive_normalised_sha256": "8ddf6b690861f3e361a9375dff1e3d8615a457784fad3e9fa49a974b5b337e83",
+    "local": {
+      "A": {"tp": 0, "fp": 0, "fn": 40, "tn": 40, "recall": "0/40", "wilson95": [0.0, 0.08762160119728664]},
+      "B": {"tp": 0, "fp": 0, "fn": 40, "tn": 40, "recall": "0/40", "wilson95": [0.0, 0.08762160119728664]}
+    },
+    "naive": {
+      "A": {"tp": 40, "fp": 4, "fn": 0, "tn": 36, "precision": "40/44", "recall": "40/40", "precision_wilson95": [0.7884076083340138, 0.9640778067726837], "recall_wilson95": [0.9123783988027135, 1.0]},
+      "B": {"tp": 40, "fp": 0, "fn": 0, "tn": 40, "precision": "40/40", "recall": "40/40", "precision_wilson95": [0.9123783988027135, 1.0], "recall_wilson95": [0.9123783988027135, 1.0]}
+    },
+    "ground_truth": "truth by construction; correlated transformation families; diagnostic, not external accuracy ground truth"
+  },
+  "repositories": {
+    "pinned": 12,
+    "acquired": 12,
+    "human_labelled": 0,
+    "local_head": {"successful_exits": "9/12", "nonzero_exits": "3/12", "exit_stdout_stderr_hash_repeat_match": "12/12"},
+    "public_1_7_4": {"successful_exits": "9/12", "nonzero_exits": "3/12", "exit_stdout_stderr_hash_repeat_match": "12/12"},
+    "compliance_agent_0_5_0_default": {"successful_exits": "12/12"},
+    "compliance_agent_0_5_0_configured": {"successful_exits": "12/12"},
+    "air_blackbox_1_13_2": {"successful_exits": "12/12"},
+    "accuracy_comparison": "UNTESTABLE: no independent repository labels or equivalent source-event adapters"
+  },
+  "operational": {
+    "active_openai_fixture_local_findings": "0/1",
+    "active_openai_fixture_public_findings": "0/1",
+    "unicode_path_local": "exit 0",
+    "unicode_path_public": "exit 0",
+    "local_pack_generation": "exit 0",
+    "local_strict_pack_verification": "exit 0",
+    "public_pack_generation": "exit 0 after documented --project syntax",
+    "public_strict_pack_verification": "exit 2: legacy manifest lacks regula.evidence.v1 format declaration",
+    "public_nonstrict_pack_verification": "exit 0",
+    "network": "UNVERIFIED: namespace denial unavailable and frozen socket-denial probe breaks ssl import before command execution"
+  },
+  "verdict": {
+    "TECHNICAL_EVIDENCE": "FAILED",
+    "COMPARATIVE_ADVANTAGE": "NOT_DEMONSTRATED",
+    "PUBLIC_CLAIM_INTEGRITY": "FAIL",
+    "REGULATORY_CURRENCY": "PARTIAL",
+    "OPERATIONAL_READINESS": "FAIL",
+    "DEMAND_EVIDENCE": "UNVALIDATED",
+    "OVERALL_DECISION": "STOP"
+  }
+}
