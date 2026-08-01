@@ -11,7 +11,10 @@ readiness is UNTESTED by commercial_v1. The published 1.9.0 METADATA contains
 the same disputed high-consequence claim classes. Frozen benchmark data and
 the local 1.9.0 Candidate A/B results are not altered by this correction.
 
-This register is version-aware. No public wording was edited in this session.
+This register is version-aware. The sentence originally recorded that no public
+wording was edited in the 2026-07-31 benchmark session; the separate 2026-08-01
+claim-correction session did edit local public-source wording but did not release
+or deploy it.
 
 | Exact claim | Active surfaces/version | Disposition and evidence | Exact proposed replacement | Consequence |
 |---|---|---|---|---|

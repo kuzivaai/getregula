@@ -410,9 +410,9 @@
     <script>
     function updateAssessIntro() {
       const intros = {
-        eu: "The EU AI Act classifies AI systems into risk tiers &mdash; from minimal-risk to prohibited &mdash; with different legal obligations for each. This assessment determines which tier applies to your system and what you need to do next.",
-        kr: "South Korea's AI Basic Act classifies AI systems as high-impact or high-performance, with obligations for risk management, transparency, and explainability. This assessment determines whether your system is covered and what you need to do.",
-        co: "Colorado SB 26-189 regulates automated decision-making technology (ADMT) that makes consequential decisions about individuals in specific domains. This assessment determines whether your system is covered and what disclosure obligations apply."
+        eu: "The EU AI Act uses intended purpose and deployment context in determining legal obligations. This questionnaire reports indicators for human review; it does not determine your legal classification, compliance, or applicable obligations.",
+        kr: "South Korea's AI Basic Act regulates specified AI systems. This questionnaire reports indicators for human review; it does not determine whether your system is legally covered or compliant.",
+        co: "Colorado SB 26-189 regulates specified automated decision-making technology. This questionnaire reports indicators for human review; it does not determine legal coverage, compliance, or applicable disclosure obligations."
       };
       const el = document.getElementById("assessIntro");
       if (el) el.innerHTML = '<p style="margin:0 0 8px 0;">' + (intros[activeJurisdiction] || intros.eu) + '</p><p style="margin:0 0 0 0;font-size:0.8rem;color:var(--text-muted);">This is not legal advice. Your answers are not stored or transmitted. Results can be shared via a stateless URL.</p>';

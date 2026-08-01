@@ -482,3 +482,25 @@ holds until then because it is the only figure that cannot be invalidated by
 the repair, and it is the cheapest to reverse: lowering a recorded baseline
 after a measurement is a one-line edit, whereas raising one after it has been
 published is the move this programme exists to catch.
+
+---
+
+## N61 — Commercial review used stale current-release identity
+
+**First raised:** 2026-08-01. **Status:** partially addressed.
+
+PyPI no-cache JSON, pip index, downloaded wheel METADATA, and tag mapping identify
+1.9.0 as current on 2026-08-01, contradicting commercial_v1's description of
+1.7.4 as current. Dated errata preserve the 1.7.4 frozen result as VERSION_BOUND.
+The structural prevention criterion remains open: release identity must be
+mechanically queried and retained in future protocols rather than inherited.
+
+## 2026-08-01 bounded claim-correction carry-forward
+
+F25, F30, N35, N43, N50, N54, N53, N55, N57, N6, N10, N11, N12 and N60 remain
+open or retain their previous recorded verdict; none was closed by weakening
+public wording. N7 was not examined as an independent acceptance unit. N61 is
+partially addressed as above. Public source correction is not evidence that
+detectors, benchmark reproducibility, merge policy, CI, or pilot readiness
+improved. commercial_v1 remains STOP and the product remains not approved for
+a customer pilot.

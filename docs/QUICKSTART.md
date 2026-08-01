@@ -4,7 +4,7 @@ You built an AI-powered app. Maybe with Claude, ChatGPT, Cursor, Lovable, or Bol
 
 If your app is used by anyone in the EU — or you plan to sell it there — the **EU AI Act** applies to you. Violations carry fines up to **EUR 35 million or 7% of global turnover**. Art 50 transparency obligations apply from **2 August 2026**. Annex III high-risk obligations are deferred to **2 December 2027** under the Digital Omnibus (agreed 7 May 2026, EP approved 16 June 2026, Council approved 29 June 2026; published in the Official Journal on 24 July 2026 as Regulation (EU) 2026/1744, in force from 27 July 2026; the deferred dates are enacted law).
 
-Regula tells you where you stand in 10 seconds.
+Regula reports code-observable indicators and asks for deployment context. It does not determine legal classification, compliance, or which obligations apply to a real deployment.
 
 ---
 

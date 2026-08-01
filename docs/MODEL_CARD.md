@@ -1,6 +1,6 @@
 # Model Card — Regula Detection Engine
 
-Regula's detection engine is a static analysis system that classifies source code against EU AI Act risk tiers. This document treats it as an AI system and documents its capabilities, limitations, and biases. To generate a model card scaffold for your own project, run `regula model-card --project /path/to/project`.
+Regula's detection engine is a static analysis system that reports source-code indicators associated with EU AI Act risk categories. It does not determine legal classification. This document treats it as an AI system and documents its capabilities, limitations, and biases. To generate a model card scaffold for your own project, run `regula model-card --project /path/to/project`.
 
 ---
 
@@ -30,7 +30,7 @@ Regula's detection engine is a static analysis system that classifies source cod
 - Compliance officers who need a technical evidence base for governance programmes
 - Auditors who need a starting point for code-level compliance assessment
 
-**Deployment context:** Local CLI tool. Runs on the developer's machine. No data leaves the machine. No network access required. No account or API key needed.
+**Deployment context:** Local CLI tool. Core scan paths are designed for local execution without an account or API key. Optional timestamping, configured telemetry, update/feed paths, and other explicitly network-enabled features are outside that boundary.
 
 ---
 
@@ -156,7 +156,7 @@ Source: `benchmarks/synthetic/RECALL.json`, produced from an actual run by `scri
 
 ### Continuous validation
 
-- 2,628 pytest-collected tests, produced by collection rather than
+- 2,646 pytest-collected tests, produced by collection rather than
   hand-maintained (measured 2026-07-30). See
   [`data/published_count_manifest.json`](../data/published_count_manifest.json).
 - 45 CLI integration tests (`tests/test_cli_integration.py`)

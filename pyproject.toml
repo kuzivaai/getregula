@@ -8,7 +8,7 @@ name = "regula-ai"
 # release rehearsal built a mis-versioned wheel because pyproject and
 # constants had to be bumped in lockstep and only one was).
 dynamic = ["version"]
-description = "AI governance risk indication for code — EU AI Act, South Korea, Colorado. Multi-jurisdiction compliance at the point of creation"
+description = "Local code-observable AI governance risk indicators for contextual human review"
 readme = "README.md"
 license = "(Apache-2.0 OR EUPL-1.2) AND LicenseRef-DRL-1.1"
 license-files = ["LICENSE.txt", "LICENSE.EUPL", "docs/LICENSE.Detection.Rules.md", "NOTICE"]

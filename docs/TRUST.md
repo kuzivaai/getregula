@@ -61,7 +61,7 @@ your lawyer's job, not Regula's.
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | Machine-readable risk indication as JSON-LD, *aligned to* (not certified against) the DPVCG EU-AIAct vocabulary — a W3C Community Group report, **not a ratified W3C Standard** | `regula dpv .` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 2,628 unique tests (2,628 pytest-collected), 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
+| 2,646 unique tests (2,646 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -75,8 +75,8 @@ your lawyer's job, not Regula's.
 
 ## 3. Reproducibility
 
-> Every number Regula publishes can be reproduced by anyone with a checkout
-> of the repo. The commands below run in under 30 seconds total on a laptop.
+> This document provides reproduction commands for selected, version-bounded
+> facts. Runtime is environment-dependent, and known exceptions are retained.
 >
 > **One documented exception, stated here rather than discovered later.** The
 > landing page's `regula gap` / `regula comply` demo panel (9% overall,
@@ -88,21 +88,21 @@ your lawyer's job, not Regula's.
 > is pending and tracked as ledger row N43 in
 > [`docs/improvement/LEDGER.md`](improvement/LEDGER.md).
 
-### 3.1 Internal test suite — 2,628 [unique](../tests/) / 2,628 pytest-collected, all green
+### 3.1 Internal test suite — 2,646 [unique](../tests/) / 2,646 pytest-collected, all green
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ -q
-# Expected: 2628 passed. Wall-clock is machine-dependent and is NOT a claim;
+# Expected: 2646 passed. Wall-clock is machine-dependent and is NOT a claim;
 # it has varied by a factor of two on one laptop in a single day. Quote the
 # count, never the duration.
-# 2,628 unique tests (sort -u of test IDs equals collected count).
+# 2,646 unique tests (sort -u of test IDs equals collected count).
 ```
 
 Regula also ships a legacy auto-discovery runner for the classification
 suite — run `python3 tests/test_classification.py` for its output
-(`Results: 1386 passed, 0 failed, 0 skipped (1060 test functions)`; the
+(`Results: 1386 passed, 0 failed, 0 skipped (1076 test functions)`; the
 passed figure was verified 2026-07-30 by an actual run at 1033 functions,
 exit code 0; the twenty-seven functions wired since use bare `assert` and cannot
 move it; the bracketed function count is machine-checked by
@@ -398,7 +398,7 @@ are tracked in a public delta log (`content/regulations/delta-log/`).
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (2,628 unique tests, 2,628 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,060 functions, 437 defined in-file) |
+| Test suite | `tests/` (2,646 unique tests, 2,646 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,076 functions, 437 defined in-file) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit hook source | `hooks/pre_tool_use.py` |
@@ -637,10 +637,11 @@ Only when the user explicitly invokes the relevant command:
 | `regula audit anchor` | user-configured RFC 3161 TSA (default `freetsa.org`) | A SHA-256 hash of the local audit log head. The hash itself reveals nothing about the user's code. |
 | `regula bias` | `raw.githubusercontent.com/nyu-mll/crows-pairs/master/...` | HTTP GET only. Falls back to bundled 20-pair sample if network unavailable. |
 
-`regula check`, `regula classify`, `regula gap`, `regula oversight`,
-`regula sbom`, `regula register`, `regula conform`, `regula doctor`, and
-the MCP server **make no network calls at all**. They run fully
-offline.
+Core scan paths are designed for local execution. This repository has not
+completed operating-system-level network observation for every command and
+environment. Optional timestamping, configured telemetry, update/feed paths,
+and other explicitly network-enabled features are excluded from any local-only
+statement.
 
 ---
 
@@ -654,9 +655,9 @@ A: Local-only command-line tool. Installs via `pipx install regula-ai`.
 No accounts, no servers, no SaaS tier exists.
 
 **Q: Where is data stored?**
-A: All scan output, audit logs, and conformity packs are written to
-the user's local filesystem under `~/.regula/` and the project
-directory. Nothing is uploaded.
+A: Core scan output, audit logs, and generated scaffolds are written to
+the user's local filesystem under `~/.regula/` and the project directory.
+Optional network-enabled features have separate boundaries and must be assessed.
 
 **Q: What is the licensing model?**
 A: Apache License 2.0 (with EUPL-1.2 dual-licence option). Commercial
@@ -665,10 +666,10 @@ tier. The maintainer accepts sponsorships but does not gate features
 behind payment.
 
 **Q: How do you handle GDPR / DPA / SCCs?**
-A: Regula is a data processor only in the trivial sense that it
-processes the user's own source code on the user's own machine. No
-personal data leaves the user's environment. No DPA is required because
-no controller-processor relationship is established.
+A: Core scan paths are designed to process source locally. Whether a controller-
+processor relationship, DPA, SCCs, or other privacy measure is required depends
+on the actual deployment, data, roles, and optional features; Regula does not
+make that legal determination.
 
 **Q: What is the support model?**
 A: Best-effort via `support@getregula.com` and GitHub Issues. Response
@@ -735,7 +736,7 @@ in this repository. Every row links to a verifiable artefact.
 | Precision and recall benchmark | [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md) | Labelled corpus, methodology, per-tier and per-project breakdown |
 | Framework crosswalk data | [`references/framework_crosswalk.yaml`](../references/framework_crosswalk.yaml) | EU AI Act ↔ ISO 42001 / NIST AI RMF / SOC 2 / etc. mappings |
 | Pattern definitions | [`scripts/risk_patterns.py`](../scripts/risk_patterns.py) | All detection regexes, grouped by risk tier and category |
-| Test suite | `tests/` | 2,628 unique tests (2,628 pytest-collected) |
+| Test suite | `tests/` | 2,646 unique tests (2,646 pytest-collected) |
 | Self-test | `regula self-test` | 6 round-trip assertions |
 | Environment health | `regula doctor` | 12 checks (pass/info split varies by environment) |
 | SBOM | `regula sbom --ai-bom` | CycloneDX 1.7 ML-BOM from any checkout |
