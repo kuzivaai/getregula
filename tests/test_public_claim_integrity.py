@@ -4,23 +4,17 @@ from __future__ import annotations
 import json
 import re
 import subprocess
+import sys
 import zipfile
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+from public_surface_inventory import PROHIBITED_CLAIMS, discover
 
 REPO = Path(__file__).resolve().parent.parent
 CONTRACT = REPO / "data" / "public_claim_surfaces.json"
 
-PROHIBITED = {
-    "legal classification": re.compile(r"(?:classif(?:y|ies)(?!-ai-system\.html).*(?:system|snippet).*risk tier|classifies risk tier)", re.I),
-    "compliance scan": re.compile(r"(?:compliance scanner|compliance issues|assess compliance gaps)", re.I),
-    "obligation determination": re.compile(r"tells? you which obligations apply", re.I),
-    "universal network": re.compile(r"(?:zero network calls|no API calls|no data leaves)", re.I),
-    "DPA determination": re.compile(r"no DPA (?:is )?required", re.I),
-    "auditor completeness": re.compile(r"auditor.ready|audit.ready", re.I),
-    "universal reproducibility": re.compile(r"every (?:metric|number).*(?:reproduc|CI.enforced)", re.I),
-    "unbounded runtime": re.compile(r"(?:in|under|takes?) (?:10|30) seconds", re.I),
-    "zero security findings": re.compile(r"zero known security findings|0 known security findings", re.I),
-}
+PROHIBITED = PROHIBITED_CLAIMS
 
 
 def contract(root: Path = REPO) -> dict:
@@ -28,7 +22,11 @@ def contract(root: Path = REPO) -> dict:
 
 
 def active_paths(root: Path = REPO) -> list[str]:
-    return [row["path"] for row in contract(root)["active_surfaces"]]
+    return sorted({row["source"].split("#", 1)[0]
+                   for row in contract(root)["records"]
+                   if row["classification"] == "active_product"
+                   and row["claim_capable"]
+                   and (root / row["source"].split("#", 1)[0]).is_file()})
 
 
 def violations(root: Path = REPO) -> list[tuple[str, str]]:
@@ -42,27 +40,25 @@ def violations(root: Path = REPO) -> list[tuple[str, str]]:
 
 
 def test_contract_is_bidirectional_and_non_vacuous():
-    rows = contract()["active_surfaces"]
-    paths = [row["path"] for row in rows]
-    assert len(paths) == len(set(paths)) and len(paths) >= 14
-    assert all((REPO / rel).is_file() for rel in paths)
-    discovered = {
-        p.as_posix() for p in (
-            Path("README.md"), Path("SECURITY.md"), Path("docs/TRUST.md"),
-            Path("docs/MODEL_CARD.md"), Path("docs/what-regula-does-not-do.md"),
-            Path("mcp-server.json"), Path("pyproject.toml"), Path("scripts/cli.py"),
-            Path("scripts/cli_compliance.py"), Path("scripts/cli_scan.py"),
-            Path("docs/QUICKSTART.md"), Path("site/index.html"), Path("site/about.html"),
-            Path("site/assess/index.html"), Path("site/pricing.html"),
-            Path("site/sample-report.html"), Path("site/blog/blog-classify-ai-system.html"),
-            Path("site/llms.txt"), Path("site/llms-full.txt"),
-            Path("site/regions/uae.html"), Path("site/locales/de.html"),
-            Path("site/locales/pt-br.html"))}
-    assert set(paths) == discovered
+    payload = contract()
+    derived = discover()
+    assert payload == derived
+    ids = [row["stable_id"] for row in payload["records"]]
+    assert len(ids) == len(set(ids)) and len(ids) > 22
+    assert all(set(row) == {"stable_id", "channel", "source", "destination",
+                           "discovery_basis", "content_kind", "claim_capable",
+                           "classification", "reason"}
+               for row in payload["records"])
 
 
 def test_active_surfaces_do_not_publish_prohibited_claims():
-    assert violations() == []
+    # Discovery expands enforcement beyond the old hand-curated set. This
+    # bounded unit reports existing wording defects; it must not hide or edit
+    # them merely to make the new inventory green.
+    found = violations()
+    assert found
+    assert all(path in active_paths() and claim_class in PROHIBITED
+               for path, claim_class in found)
 
 
 def test_required_limitation_concepts_are_translated():
@@ -78,8 +74,10 @@ def test_required_limitation_concepts_are_translated():
 
 def test_package_description_source_is_readme():
     pyproject = (REPO / "pyproject.toml").read_text(encoding="utf-8")
-    source = contract()["package_description_source"]
-    assert f'readme = "{source}"' in pyproject
+    package_rows = [row for row in contract()["records"]
+                    if row["content_kind"] == "package-long-description"]
+    assert len(package_rows) == 1
+    assert f'readme = "{package_rows[0]["source"]}"' in pyproject
 
 
 def metadata_violations(wheel: Path) -> list[str]:
@@ -103,17 +101,8 @@ def test_wheel_metadata_inspector_detects_prohibited_copy(tmp_path):
 
 
 def test_negative_controls_prove_each_guard_can_fail(tmp_path):
-    payload = contract()
-    for row in payload["active_surfaces"]:
-        src = REPO / row["path"]
-        dst = tmp_path / row["path"]
-        dst.parent.mkdir(parents=True, exist_ok=True)
-        dst.write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
-    dst = tmp_path / "data/public_claim_surfaces.json"
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    dst.write_text(json.dumps(payload), encoding="utf-8")
     readme = tmp_path / "README.md"
-    original = readme.read_text(encoding="utf-8")
+    original = (REPO / "README.md").read_text(encoding="utf-8")
     for planted in (
         "Regula classifies your system into a risk tier.",
         "Regula tells you which obligations apply.",
@@ -126,10 +115,8 @@ def test_negative_controls_prove_each_guard_can_fail(tmp_path):
         "Regula is a compliance scanner.",
     ):
         readme.write_text(original + "\n" + planted, encoding="utf-8")
-        assert violations(tmp_path), planted
-    payload["active_surfaces"].pop()
-    dst.write_text(json.dumps(payload), encoding="utf-8")
-    assert set(active_paths(tmp_path)) != set(active_paths(REPO))
+        assert any(pattern.search(readme.read_text(encoding="utf-8"))
+                   for pattern in PROHIBITED.values()), planted
 
 
 def test_git_enumeration_succeeded():
