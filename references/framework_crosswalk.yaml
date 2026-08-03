@@ -9,8 +9,12 @@
 #          Singapore Model AI Governance Framework 2.0 + FEAT Principles (MAS/PDPC, 2024),
 #          OECD AI Principles (OECD/LEGAL/0449, 2024 update),
 #          South Korea AI Basic Act (Act No. 20676, in force 22 Jan 2026)
-schema_version: "2.3"
-last_updated: "2026-04-11"
+#          Digital Omnibus on AI: Regulation (EU) 2026/1744 of 8 July 2026,
+#          OJ 24 July 2026, in force 27 July 2026. Amendments to the base
+#          articles are carried on the article's own eu_ai_act block as
+#          amended_by / amendment / amendment_source / amendment_verified.
+schema_version: "2.4"
+last_updated: "2026-07-30"
 
 mappings:
   article_9:
@@ -195,6 +199,11 @@ mappings:
       article: "11"
       title: "Technical Documentation"
       requirement: "Technical documentation shall be drawn up before the system is placed on the market"
+      amended_by: "Regulation (EU) 2026/1744 (Digital Omnibus on AI), Article 1, point (10). In force 27 July 2026."
+      amendment: "Article 11(1) second subparagraph replaced. SMEs, including start-ups, and SMCs may provide the elements of the technical documentation specified in Annex IV in a simplified manner. The Commission shall establish a simplified technical documentation form targeted at their needs; where an SME, start-up or SMC opts for the simplified route it shall use that form, and notified bodies shall accept the form for the purposes of the conformity assessment."
+      amendment_source: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202601744"
+      amendment_verified: "2026-07-30, primary text retrieved in full and searched locally rather than through a summarising fetch. The amending point reads: in Article 11(1), the second subparagraph is replaced by the following. Point (9) amends Article 10 and point (11) amends Article 17. The amending article carries 40 numbered points, 1 to 40 with none missing; 37 of them amend an existing article of Regulation (EU) 2024/1689 and 3 insert new ones (point 6 inserts Article 4a, point 25 inserts Article 60a, point 32 inserts Article 75a and following). NO point amends Article 12. Corroborated in-repo by content/regulations/delta-log/entries/2026-07-24-oj-publication.json."
+      amendment_note: "This is the crosswalk gap owner decision 2 REJECTED the deviation over, ruled 2026-07-28 and closed here 2026-07-30. The base requirement above is unchanged; the amendment adds a route, it does not remove an obligation. Regula does not implement the simplified form, because the Commission has not published it."
     nist_ai_rmf:
       functions: ["GOVERN", "MAP"]
       subcategories:
@@ -236,6 +245,9 @@ mappings:
       items: []
     mitre_atlas:
       techniques: []
+    owasp_agentic:
+      items: []
+      notes: "DELIBERATELY EMPTY, and this is the reason rather than an omission. Owner decision 2, ruled 2026-07-28, RATIFIED the deviation of leaving OWASP Agentic unmapped on Articles 11 and 12. Regulation (EU) 2026/1744 names Agentic AI exactly once in its whole text, in the Annex XIV notified-body competence code list, at AIH 0401: AI systems based on other emerging AI technologies not covered by other codes, including Agentic AI. Annex XIV Section 4 states that conformity assessment bodies shall use those codes when specifying the types of AI system they seek designation for, so the annex scopes ASSESSOR COMPETENCE and attaches no obligation to a provider or a deployer. Mapping an OWASP Agentic item onto the technical-documentation duty would assert a regulatory relationship the text does not create. COUNTED LITERALLY 2026-07-30: the primary text was retrieved in full and the string agentic occurs once, case-insensitive. RE-OPEN THIS if a delegated act amends Annex XIV, or if Commission or AI Office guidance attaches duties to AIH 0401; see content/regulations/delta-log/entries/2026-07-29-annex-xiv-aih-codes.json for the trigger list."
     lgpd:
       articles:
         - "Art. 38: Relatório de Impacto à Proteção de Dados (RIPD) como documentação técnica"
@@ -302,6 +314,9 @@ mappings:
       items: []
     mitre_atlas:
       techniques: []
+    owasp_agentic:
+      items: []
+      notes: "DELIBERATELY EMPTY, for the same ratified reason recorded under article_11. Owner decision 2, 2026-07-28, ratified leaving OWASP Agentic unmapped on Articles 11 and 12. Agentic AI appears once in Regulation (EU) 2026/1744, in the Annex XIV notified-body competence code list at AIH 0401, attaching no obligation to providers or deployers. Article 12 is additionally NOT amended by that regulation at all: an enumeration of its 40 numbered amending points against the primary text on 2026-07-30, 37 amending an existing article and 3 inserting new ones, found none touching Article 12; the sequence runs Article 10 at point (9), Article 11 at point (10), Article 17 at point (11). RE-OPEN if a delegated act amends Annex XIV or guidance attaches duties to AIH 0401."
     lgpd:
       articles:
         - "Art. 6 (responsabilização): Demonstração do cumprimento das normas de proteção de dados"

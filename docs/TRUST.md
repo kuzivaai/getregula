@@ -61,7 +61,7 @@ your lawyer's job, not Regula's.
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | Machine-readable risk indication as JSON-LD, *aligned to* (not certified against) the DPVCG EU-AIAct vocabulary — a W3C Community Group report, **not a ratified W3C Standard** | `regula dpv .` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 2,821 unique tests (2,821 pytest-collected), 6 self-tests, 0 known security findings | see [§3](#3-reproducibility) |
+| 2,684 unique tests (2,684 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -75,23 +75,42 @@ your lawyer's job, not Regula's.
 
 ## 3. Reproducibility
 
-> Every number Regula publishes can be reproduced by anyone with a checkout
-> of the repo. The commands below run in under 30 seconds total on a laptop.
+> This document provides reproduction commands for selected, version-bounded
+> facts. Runtime is environment-dependent, and known exceptions are retained.
+>
+> **One documented exception, stated here rather than discovered later.** The
+> landing page's `regula gap` / `regula comply` demo panel (9% overall,
+> Article 11 at 25%) does NOT currently reproduce from a clean checkout: it
+> was generated on a machine whose copy of the scanned fixture held a
+> gitignored `.regula/` directory, which the Article 11 checker credits. A
+> clean clone yields 6% and 0%. The generator now refuses to build from
+> untracked inputs, so this cannot recur; correcting the published figures
+> is pending and tracked as ledger row N43 in
+> [`docs/improvement/LEDGER.md`](improvement/LEDGER.md).
 
-### 3.1 Internal test suite — 2,821 [unique](../tests/) / 2,821 pytest-collected, all green
+### 3.1 Internal test suite — 2,684 [unique](../tests/) / 2,684 pytest-collected, all green
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ -q
-# Expected: 2821 passed (~16 minutes on a laptop — verified 2026-07-27)
-# 2,821 unique tests (sort -u of test IDs equals collected count).
+# Expected: 2684 passed. Wall-clock is machine-dependent and is NOT a claim;
+# it has varied by a factor of two on one laptop in a single day. Quote the
+# count, never the duration.
+# 2,684 unique tests (sort -u of test IDs equals collected count).
 ```
 
 Regula also ships a legacy auto-discovery runner for the classification
-suite — run `python3 tests/test_classification.py` for its output
-(`Results: 1386 passed, 0 failed, 0 skipped (963 test functions)` — verified
-2026-07-27). It walks `globals()` of `tests/test_classification.py`,
+suite — run `python3 tests/test_classification.py` for its current output.
+The runner currently discovers 1,082 functions, a count machine-checked by
+`tests/test_published_count_manifest.py`). **Read that line carefully:
+`1386 passed` is not a count of tests.** The runner's counter is incremented by
+the `assert_true` / `assert_eq` / `assert_false` helpers in `tests/helpers.py`,
+so it counts helper assertions, and a test written with a bare `assert`
+contributes nothing to it. The figure was **also 1386 when the runner executed
+978, 1010, 1011, 1015, 1023, 1033, 1043, 1051, 1056, 1059 and 1060 functions**: 82 functions were added across those
+runs and not one of them uses the helpers. **The number to read is the function count
+in brackets.** It walks `globals()` of `tests/test_classification.py`,
 finds every `test_*` function, and executes it; 437 of those functions
 are defined in the file itself, the rest are aliased in from other test
 modules. The pytest total above covers this suite
@@ -126,17 +145,54 @@ directory writability, and policy file presence. INFO entries for
 optional features are not warnings — they are reminders that
 `pipx install "regula-ai[yaml,ast]"` would unlock more features.
 
-### 3.4 Synthetic precision + recall — 100 / 100
+### 3.4 Synthetic precision and recall: classifier path, all domains declared, prohibited 5/5, high-risk 16/30
 
 ```bash
 python3 benchmarks/synthetic/run.py
-# Expected: precision 100% (5 TP, 0 FP), recall 100% (5 TP, 0 FN)
+# Expected (corpus v2.0, measured 2026-07-28):
+#   prohibited   tp=5   fp=0  fn=0
+#   high_risk    tp=16  fp=0  fn=14
+# The command prints these as percentages. Prohibited recall is 5/5.
+# High-risk recall is 16 of 30 on the classifier path.
 ```
 
-13 hand-crafted fixtures covering 5 Article 5 prohibited practices,
-5 Annex III high-risk categories, and 3 negative cases. The
-ground truth is the human-authored fixture set in
-`benchmarks/synthetic/fixtures/`.
+**38 hand-crafted fixtures** covering 5 Article 5 prohibited practices,
+**30** Annex III high-risk categories, and 3 negative cases. Ground truth
+is the human-authored fixture set in `benchmarks/synthetic/fixtures/`.
+
+> **This section previously claimed "100 / 100" against a 13-fixture
+> corpus (5 high-risk).** The high-risk set was expanded to 30 on
+> 28 July 2026 and recall fell to **16 of 30**. The old figure was not a
+> misstatement at the time; it was **underpowered** — 5 fixtures happened
+> to sample categories that pass. Corrected here rather than left
+> unreproducible.
+>
+> **Gate conditions change this number more than anything else does.** The
+> 53% above is the **classifier** path (`report.scan_files`, what `run.py`
+> measures) with all eight opt-in domains declared. The **scanner** path
+> (`regula check`, what a user actually runs) with **no flags** gives
+> **10 of 30** on the same corpus, because opt-in domain suppression and an
+> AI-library-indicator requirement gate findings the classifier assigns.
+>
+> Every figure below is reproducible from `benchmarks/synthetic/RECALL.json`,
+> which `scripts/build_recall_artefact.py` produces from an actual run:
+> **scanner path, default scan 10/30**; **scanner path, all domains declared
+> 16/30**; **scanner path, domains declared with an AI import injected
+> 23/30**; **classifier path, all domains declared 16/30**. Prohibited
+> recall is **5/5** on every one of them.
+>
+> **No recall figure may be quoted without naming its path and its gate
+> condition** — `claim_auditor --verify-facts` now rejects one that is not.
+> The earlier "14/30 domain-declared" and "19/30 with both gates" figures
+> are WITHDRAWN as NOT REPRODUCIBLE: the conditions behind them were never
+> committed. Full decomposition, including the 17-vs-3
+> gates-vs-patterns split, is in
+> `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md`.
+>
+> **Finding F8 (scanner and classifier disagree) is not supported by the
+> artefact.** Under the same gate condition the two paths miss the
+> identical 14 fixtures. The divergence previously recorded compared two
+> different gate conditions as well as two paths.
 
 ### 3.5 OSS precision benchmark — published, sliced, reproducible
 
@@ -147,6 +203,8 @@ The full report is at
 # Headline precision (blind-labelled random corpus, production code only):
 python3 benchmarks/label.py score --corpus random
 # Expected: 83.5% precision (N=115)
+# Labelled by a single reviewer; no inter-rater agreement measurement
+# exists. See benchmarks/README.md.
 
 # Full development corpus (library + application projects, all code):
 python3 benchmarks/label.py score
@@ -154,7 +212,9 @@ python3 benchmarks/label.py score
 ```
 
 **Two corpora, two numbers — both honest, different scopes.** The
-headline precision is **83.5%** (N=115, **measured on Regula v1.7.4**),
+headline precision is **83.5%** (N=115, **measured on Regula v1.7.0**,
+labelled by a **single reviewer** with no inter-rater agreement
+measurement, see [`benchmarks/README.md`](../benchmarks/README.md)),
 on production code from a random corpus of 50 Python AI repos selected
 via GitHub API (pool of 276, random seed 42) and blind-labelled
 (labeller saw only file path, code context, and finding description —
@@ -170,7 +230,9 @@ with default `--skip-tests` and domain-gating settings.
 **statistically unmeasurable** at this sample size — corpus expansion
 to N>=30 is required before any meaningful conclusion about high_risk
 precision. Six subcategories now require `--domain` declaration or
-import fingerprinting to fire.
+import fingerprinting to fire. All per-tier figures in this note are the
+rounded values from the N=115 published benchmark recorded in
+[`benchmarks/README.md`](../benchmarks/README.md).
 
 The development corpus (`python3 benchmarks/label.py score`, no flags)
 scores **36.8%** on 446 entries across 5 AI library projects and 12
@@ -178,7 +240,8 @@ application projects. The library subset (scikit-learn, langchain,
 pydantic-ai, instructor, openai-python) alone is 15.2% — AI framework
 infrastructure code is the hardest corpus, analogous to running an SQL
 injection scanner on psycopg2 itself. Discovering this 36.8% figure is
-not a contradiction of the 83.5% headline — it is a different corpus
+not a contradiction of the 83.5% headline (N=115, single reviewer, see
+[`benchmarks/README.md`](../benchmarks/README.md)) — it is a different corpus
 measuring a different thing.
 
 **Development corpus per-tier precision (v1.7.3, `benchmarks/label.py score --breakdown`):**
@@ -191,17 +254,18 @@ measuring a different thing.
 | high_risk | 38 | 38 | 50.0% |
 | credential_exposure | 2 | 5 | 28.6% |
 | minimal_risk | 39 | 205 | 16.0% |
+Source: `benchmarks/results/random_corpus/METHODOLOGY.json`, regenerated by `benchmarks/label.py score --breakdown` on the 446-entry development corpus.
 
-**By corpus type:** application code 66.1% (125 TP, 64 FP); library source code 15.2% (39 TP, 218 FP).
+**By corpus type:** application code 66.1% (125 TP, 64 FP); library source code 15.2% (39 TP, 218 FP). Source: [`benchmarks/results/random_corpus/METHODOLOGY.json`](../benchmarks/results/random_corpus/METHODOLOGY.json).
 
-**By language:** Python 36.7% (160 TP, 276 FP); TypeScript 0.0% (0 TP, 6 FP); Jupyter/YAML/PKL 100% (3 TP, 0 FP; N too small for significance).
+**By language:** Python 36.7% (160 TP, 276 FP); TypeScript 0.0% (0 TP, 6 FP); Jupyter/YAML/PKL 100% (3 TP, 0 FP; N too small for significance). Source: `benchmarks/results/random_corpus/METHODOLOGY.json`.
 
 Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
 
 ### 3.5 Known limitations
 
-- **TypeScript precision is 0% on the current benchmark** (0 TP, 6 FP). All six TypeScript false positives are domain-keyword matches (biometrics, employment) in UI components, type definitions, and configuration files where no AI inference occurs. Regula has no TypeScript-specific AST gating — regex patterns match across all languages without language-aware filtering. TypeScript findings should be treated as advisory until language-specific precision improvements are implemented.
-- **Library source code** triggers a high false-positive rate (15.2% precision on library corpora). This is structural: AI frameworks implement the same APIs that Regula's patterns flag. Running Regula on framework source code (e.g., scikit-learn, langchain) is analogous to running an SQL injection scanner on a database driver. Use `--scope production` (default) and `--skip-tests` (default) to focus on application code, where precision is 66.1%.
+- **TypeScript precision is 0% on the current benchmark** (0 TP, 6 FP). All six TypeScript false positives are domain-keyword matches in code where no AI inference occurs. Regula has no TypeScript-specific AST gating, so TypeScript findings should be treated as advisory. Source: [`benchmarks/results/random_corpus/METHODOLOGY.json`](../benchmarks/results/random_corpus/METHODOLOGY.json).
+- **Library source code** has 15.2% precision on the measured library corpus, compared with 66.1% for measured application code. AI frameworks implement APIs that the patterns flag, so use `--scope production` and `--skip-tests` to focus on application code. Source: [`benchmarks/results/random_corpus/METHODOLOGY.json`](../benchmarks/results/random_corpus/METHODOLOGY.json).
 
 ### 3.6 Security posture — bandit, semgrep, pip-audit
 
@@ -331,7 +395,7 @@ are tracked in a public delta log (`content/regulations/delta-log/`).
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (2,821 unique tests, 2,821 pytest-collected; the legacy `tests/test_classification.py` runner executes 963 functions, 437 defined in-file) |
+| Test suite | `tests/` (2,684 unique tests, 2,684 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,082 functions, 437 defined in-file) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit hook source | `hooks/pre_tool_use.py` |
@@ -570,10 +634,11 @@ Only when the user explicitly invokes the relevant command:
 | `regula audit anchor` | user-configured RFC 3161 TSA (default `freetsa.org`) | A SHA-256 hash of the local audit log head. The hash itself reveals nothing about the user's code. |
 | `regula bias` | `raw.githubusercontent.com/nyu-mll/crows-pairs/master/...` | HTTP GET only. Falls back to bundled 20-pair sample if network unavailable. |
 
-`regula check`, `regula classify`, `regula gap`, `regula oversight`,
-`regula sbom`, `regula register`, `regula conform`, `regula doctor`, and
-the MCP server **make no network calls at all**. They run fully
-offline.
+Core scan paths are designed for local execution. This repository has not
+completed operating-system-level network observation for every command and
+environment. Optional timestamping, configured telemetry, update/feed paths,
+and other explicitly network-enabled features are excluded from any local-only
+statement.
 
 ---
 
@@ -587,9 +652,9 @@ A: Local-only command-line tool. Installs via `pipx install regula-ai`.
 No accounts, no servers, no SaaS tier exists.
 
 **Q: Where is data stored?**
-A: All scan output, audit logs, and conformity packs are written to
-the user's local filesystem under `~/.regula/` and the project
-directory. Nothing is uploaded.
+A: Core scan output, audit logs, and generated scaffolds are written to
+the user's local filesystem under `~/.regula/` and the project directory.
+Optional network-enabled features have separate boundaries and must be assessed.
 
 **Q: What is the licensing model?**
 A: Apache License 2.0 (with EUPL-1.2 dual-licence option). Commercial
@@ -598,10 +663,10 @@ tier. The maintainer accepts sponsorships but does not gate features
 behind payment.
 
 **Q: How do you handle GDPR / DPA / SCCs?**
-A: Regula is a data processor only in the trivial sense that it
-processes the user's own source code on the user's own machine. No
-personal data leaves the user's environment. No DPA is required because
-no controller-processor relationship is established.
+A: Core scan paths are designed to process source locally. Whether a controller-
+processor relationship, DPA, SCCs, or other privacy measure is required depends
+on the actual deployment, data, roles, and optional features; Regula does not
+make that legal determination.
 
 **Q: What is the support model?**
 A: Best-effort via `support@getregula.com` and GitHub Issues. Response
@@ -668,7 +733,7 @@ in this repository. Every row links to a verifiable artefact.
 | Precision and recall benchmark | [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md) | Labelled corpus, methodology, per-tier and per-project breakdown |
 | Framework crosswalk data | [`references/framework_crosswalk.yaml`](../references/framework_crosswalk.yaml) | EU AI Act ↔ ISO 42001 / NIST AI RMF / SOC 2 / etc. mappings |
 | Pattern definitions | [`scripts/risk_patterns.py`](../scripts/risk_patterns.py) | All detection regexes, grouped by risk tier and category |
-| Test suite | `tests/` | 2,821 unique tests (2,821 pytest-collected) |
+| Test suite | `tests/` | 2,684 unique tests (2,684 pytest-collected) |
 | Self-test | `regula self-test` | 6 round-trip assertions |
 | Environment health | `regula doctor` | 12 checks (pass/info split varies by environment) |
 | SBOM | `regula sbom --ai-bom` | CycloneDX 1.7 ML-BOM from any checkout |

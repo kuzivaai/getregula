@@ -1,6 +1,6 @@
 {
-  "description": "Synthetic ground-truth fixture for prohibited and high-risk tier precision/recall measurement. Each fixture file is hand-crafted to contain a single, unambiguous example of the labelled tier. Fixture filenames use Article references (art5_1a etc.) instead of trigger words because Regula's own pre_tool_use hook would otherwise block the manifest from being read.",
-  "version": "1.0",
+  "description": "Synthetic ground-truth fixture for prohibited and high-risk tier precision/recall measurement. Each fixture file is hand-crafted to contain a single, unambiguous example of the labelled tier. Fixture filenames use Article references (art5_1a etc.) instead of trigger words because Regula's own pre_tool_use hook would otherwise block the manifest from being read. v2.0 (28 Jul 2026): high-risk set expanded from 5 to 30 files spanning Annex III Categories 1-8 plus the medical-device, safety-component and housing families the patterns claim. Fixtures are written as a developer in that domain would plausibly write the code, NOT reverse-engineered from the regexes; where domain vocabulary naturally collides with a pattern that is real, and where it does not the miss is real.",
+  "version": "2.0",
   "expectations": {
     "prohibited_art5_1a.py": "prohibited",
     "prohibited_art5_1b.py": "prohibited",
@@ -14,7 +14,32 @@
     "highrisk_migration.py": "high_risk",
     "negative_pure_utility.py": "not_high",
     "negative_chatbot.py": "not_high",
-    "negative_minimal_ai.py": "not_high"
+    "negative_minimal_ai.py": "not_high",
+    "highrisk_admissions.py": "high_risk",
+    "highrisk_autonomous_vehicle.py": "high_risk",
+    "highrisk_benefits_eligibility.py": "high_risk",
+    "highrisk_biometric_access.py": "high_risk",
+    "highrisk_border_screening.py": "high_risk",
+    "highrisk_crime_forecast.py": "high_risk",
+    "highrisk_emergency_dispatch.py": "high_risk",
+    "highrisk_energy_grid.py": "high_risk",
+    "highrisk_exam_proctor.py": "high_risk",
+    "highrisk_insurance_pricing.py": "high_risk",
+    "highrisk_judicial_support.py": "high_risk",
+    "highrisk_loan_underwriting.py": "high_risk",
+    "highrisk_medical_triage.py": "high_risk",
+    "highrisk_polygraph_screen.py": "high_risk",
+    "highrisk_promotion_ranking.py": "high_risk",
+    "highrisk_recidivism.py": "high_risk",
+    "highrisk_student_assessment.py": "high_risk",
+    "highrisk_task_allocation_shift.py": "high_risk",
+    "highrisk_tenant_screening.py": "high_risk",
+    "highrisk_traffic_control.py": "high_risk",
+    "highrisk_visa_triage.py": "high_risk",
+    "highrisk_voice_verify.py": "high_risk",
+    "highrisk_voter_targeting.py": "high_risk",
+    "highrisk_water_supply.py": "high_risk",
+    "highrisk_worker_monitoring.py": "high_risk"
   },
   "negative_meaning": "not_high means the file must NOT be classified as prohibited or high_risk. Any tier minimal_risk/limited_risk/not_ai is acceptable for negative fixtures."
 }

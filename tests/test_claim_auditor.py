@@ -13,8 +13,11 @@ Covers:
 """
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
+
+import pytest
 
 # claim_auditor.py uses bare imports and sys.path.insert itself — but for the
 # test file we import it as a module via the scripts/ directory.
@@ -104,12 +107,12 @@ def test_paragraph_has_source_html_link():
     assert reason == "html-link"
 
 
-def test_paragraph_has_source_citation_word():
+def test_paragraph_does_not_accept_a_citation_word_without_evidence():
     has, reason = claim_auditor.paragraph_has_source(
         "Regula scans 8 languages (source: CLAUDE.md identity block)."
     )
-    assert has is True
-    assert reason == "citation-word"
+    assert has is False
+    assert reason == "no-source"
 
 
 # ---------------------------------------------------------------------------
@@ -140,6 +143,8 @@ def test_is_exempt_number_annex_ref():
 def test_is_exempt_number_plain_numeric_claim_is_not_exempt():
     assert claim_auditor.is_exempt_number("17 frameworks") is False
     assert claim_auditor.is_exempt_number("1,000 tests") is False
+    assert claim_auditor.is_exempt_number("2465 tests") is False
+    assert claim_auditor.is_exempt_number("10 seconds") is False
 
 
 # ---------------------------------------------------------------------------
@@ -210,6 +215,16 @@ def test_scan_file_allowlist_exempts_match(tmp_path, monkeypatch):
     assert len(report.findings) == 0
 
 
+def test_allowlist_matches_only_the_claim_not_its_paragraph(tmp_path, monkeypatch):
+    import re as re_module
+    md = "Regula scans 17 frameworks and runs 999 tests today.\n"
+    path = _write(tmp_path, "narrow.md", md, monkeypatch)
+    report = claim_auditor.scan_file(
+        path, allowlist=[re_module.compile(r"17\s+frameworks")]
+    )
+    assert [f.claim.snippet for f in report.findings] == ["999 tests"]
+
+
 def test_scan_file_historical_changelog_section_skipped(tmp_path, monkeypatch):
     """Keep-a-Changelog historical `## [1.6.2]` sections are stripped
     by strip_noise and never audited (release notes are historical
@@ -228,12 +243,79 @@ def test_scan_file_historical_changelog_section_skipped(tmp_path, monkeypatch):
     assert len(report.findings) == 0
 
 
-def test_scan_file_skips_non_markdown_non_html(tmp_path, monkeypatch):
-    path = _write(tmp_path, "ignored.txt",
+def test_scan_file_skips_non_public_data_suffix(tmp_path, monkeypatch):
+    path = _write(tmp_path, "ignored.dat",
                   "This has 47 tests and nothing else.\n", monkeypatch)
     report = claim_auditor.scan_file(path, allowlist=[])
     assert report.scanned is False
     assert len(report.findings) == 0
+
+
+def test_scan_file_enforces_machine_readable_text_surface(tmp_path, monkeypatch):
+    path = _write(tmp_path, "llms.txt",
+                  "This has 47 tests and nothing else.\n", monkeypatch)
+    report = claim_auditor.scan_file(path, allowlist=[])
+    assert report.scanned is True
+    assert "47 tests" in [f.claim.snippet for f in report.findings]
+
+
+def test_delivery_filter_keeps_only_active_claim_capable_paths(tmp_path, monkeypatch):
+    inventory = {
+        "records": [
+            {"source": "site/index.html#hero", "classification": "active_product",
+             "claim_capable": True},
+            {"source": "docs/internal.md", "classification": "internal_record",
+             "claim_capable": True},
+        ]
+    }
+    inv = tmp_path / "inventory.json"
+    inv.write_text(json.dumps(inventory), encoding="utf-8")
+    monkeypatch.setattr(claim_auditor, "DELIVERY_INVENTORY_PATH", inv)
+    monkeypatch.setattr(claim_auditor, "REPO_ROOT", tmp_path)
+    paths = [tmp_path / "site/index.html", tmp_path / "docs/internal.md"]
+    assert claim_auditor.delivered_targets(paths) == [paths[0]]
+
+
+def test_delivery_filter_fails_closed_on_missing_inventory(tmp_path, monkeypatch):
+    monkeypatch.setattr(
+        claim_auditor, "DELIVERY_INVENTORY_PATH", tmp_path / "missing.json"
+    )
+    with pytest.raises(RuntimeError, match="cannot load delivery inventory"):
+        claim_auditor.delivered_targets([])
+
+
+def test_delivery_surfaces_mode_scans_complete_inventory(tmp_path, monkeypatch, capsys):
+    public = tmp_path / "public.md"
+    public.write_text("Regula has 2465 tests.\n", encoding="utf-8")
+    inventory = {"records": [{
+        "stable_id": "docs:public",
+        "channel": "repository_docs",
+        "source": "public.md",
+        "destination": "public.md",
+        "discovery_basis": "test",
+        "content_kind": "documentation",
+        "claim_capable": True,
+        "classification": "active_product",
+        "reason": "test",
+    }]}
+    inv_path = tmp_path / "inventory.json"
+    inv_path.write_text(json.dumps(inventory), encoding="utf-8")
+    monkeypatch.setattr(claim_auditor, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(claim_auditor, "DELIVERY_INVENTORY_PATH", inv_path)
+    monkeypatch.setattr(claim_auditor, "load_allowlist", lambda: [])
+
+    assert claim_auditor.main(["--delivery-surfaces"]) == 1
+    assert "2465 tests" in capsys.readouterr().out
+
+
+def test_html_attribute_words_do_not_count_as_citations(tmp_path, monkeypatch):
+    path = _write(
+        tmp_path, "attribute.html",
+        '<div class="article-ref source see">Regula runs 47 tests.</div>\n',
+        monkeypatch,
+    )
+    report = claim_auditor.scan_file(path, allowlist=[])
+    assert [f.claim.snippet for f in report.findings] == ["47 tests"]
 
 
 # ---------------------------------------------------------------------------

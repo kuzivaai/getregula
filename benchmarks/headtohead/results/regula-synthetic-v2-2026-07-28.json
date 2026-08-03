@@ -1,0 +1,274 @@
+{
+  "manifest_version": "2.0",
+  "cases": [
+    {
+      "file": "highrisk_admissions.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_autonomous_vehicle.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "high_risk"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "highrisk_benefits_eligibility.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_biometric_access.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "high_risk"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "highrisk_biometrics.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "high_risk"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "highrisk_border_screening.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_credit.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "high_risk"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "highrisk_crime_forecast.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "prohibited"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "highrisk_emergency_dispatch.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "high_risk"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "highrisk_employment.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "ai_security"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "highrisk_energy_grid.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_exam_proctor.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_insurance_pricing.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "high_risk"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "highrisk_judicial_support.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_loan_underwriting.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "high_risk"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "highrisk_medical.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "ai_security",
+        "high_risk"
+      ],
+      "n_findings": 2
+    },
+    {
+      "file": "highrisk_medical_triage.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_migration.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "high_risk"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "highrisk_polygraph_screen.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_promotion_ranking.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_recidivism.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "prohibited"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "highrisk_student_assessment.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_task_allocation_shift.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_tenant_screening.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "high_risk"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "highrisk_traffic_control.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_visa_triage.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_voice_verify.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_voter_targeting.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_water_supply.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "highrisk_worker_monitoring.py",
+      "expected": "high_risk",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "negative_chatbot.py",
+      "expected": "not_high",
+      "tiers_found": [
+        "ai_security"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "negative_minimal_ai.py",
+      "expected": "not_high",
+      "tiers_found": [
+        "ai_security"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "negative_pure_utility.py",
+      "expected": "not_high",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "prohibited_art5_1a.py",
+      "expected": "prohibited",
+      "tiers_found": [
+        "prohibited"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "prohibited_art5_1b.py",
+      "expected": "prohibited",
+      "tiers_found": [
+        "prohibited"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "prohibited_art5_1c.py",
+      "expected": "prohibited",
+      "tiers_found": [
+        "prohibited"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "prohibited_art5_1d.py",
+      "expected": "prohibited",
+      "tiers_found": [
+        "prohibited"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "prohibited_art5_1e.py",
+      "expected": "prohibited",
+      "tiers_found": [
+        "prohibited"
+      ],
+      "n_findings": 1
+    }
+  ]
+}

@@ -1481,7 +1481,8 @@ personnel. This is not legal advice.
         exec_detail = (
             f"This codebase contains {prohibited_count} pattern(s) associated with practices "
             "that are prohibited under EU AI Act Article 5 (e.g. social scoring, real-time biometric surveillance). "
-            "These must be resolved before the system can lawfully enter the EU market."
+            "Article 5 carries conditions and exceptions that require human judgement, so these are indicators "
+            "to review with your legal advisers, not a finding that the system is unlawful."
         )
         if credential_count > 0:
             exec_detail += (

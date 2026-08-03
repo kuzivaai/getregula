@@ -50,7 +50,8 @@ Based on the audit findings, follow these rules when writing patterns:
 2. **Require context** for common words — don't match "sentence" alone, match "sentencing recommendation"
 3. **Skip comments** — the AI security checker skips `#` comments and docstrings
 4. **Test against real code** — scan an actual project to check for false positives
-5. **Target <10% false positive rate** — Google's Tricorder removes checks above this threshold
+5. **Set and justify a false-positive target** — measure it on representative,
+   independently reviewed code before enabling a blocking rule
 
 ## Adding AI Security Patterns
 
@@ -83,7 +84,7 @@ Run `python3 tests/test_classification.py` — if all tests pass plus your new t
 You've learned to:
 - Scan codebases for EU AI Act risk patterns
 - Interpret findings and distinguish true positives from false positives
-- Assess compliance gaps for Articles 9-15
+- Assess documentation and implementation indicators for Articles 9-15
 - Check AI dependency supply chain security
 - Detect AI-specific security vulnerabilities
 - Integrate into CI/CD pipelines

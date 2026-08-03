@@ -1,0 +1,285 @@
+{
+  "_comment": "Categorised false-positive taxonomy derived from the existing blind-labelled corpus. Source of truth: benchmarks/results/random_corpus/BLIND_LABELS.json. Regenerate with the script recorded in docs/improvement/CODE_REVIEW.md. Feeds the Phase 3 annotation guidelines.",
+  "generated_from": "benchmarks/results/random_corpus/BLIND_LABELS.json",
+  "generated_on": "2026-07-27",
+  "corpus_totals": {
+    "labelled_entries": 201,
+    "false_positives_all_tiers": 98,
+    "false_positives_by_tier": {
+      "ai_security": 37,
+      "limited_risk": 3,
+      "agent_autonomy": 30,
+      "high_risk": 24,
+      "credential_exposure": 2,
+      "minimal_risk": 2
+    },
+    "high_risk_false_positives": 24,
+    "note": "PRECISION.json reports high_risk n=6 (tp=2, fp=4). That is the post-domain-gating PRODUCTION subset (N=115). The full labelled set (201) contains 24 high-risk false positives. Both figures are correct for their scope; conflating them would misstate either."
+  },
+  "classes": {
+    "homonym_compute_vs_human": {
+      "description": "Regulated-domain term whose ordinary meaning in ML/systems code is unrelated to people. The regex is lexically correct; the sense is wrong.",
+      "examples_terms": [
+        "worker",
+        "task allocation",
+        "control",
+        "pipeline",
+        "validation"
+      ],
+      "fixable_by_regex": false,
+      "requires": "domain/context signal (package purpose, sibling imports, call-site semantics)"
+    },
+    "domain_word_collision": {
+      "description": "A safety/critical/justice keyword appears in generic engineering vocabulary (safety checker, critical section, factory).",
+      "examples_terms": [
+        "safety",
+        "critical",
+        "justice"
+      ],
+      "fixable_by_regex": false,
+      "requires": "co-occurrence requirements or domain gating"
+    },
+    "modality_confusion": {
+      "description": "Audio/vision processing read as biometric identification. Speech datasets and video pipelines are not biometric identification systems.",
+      "examples_terms": [
+        "voice",
+        "face",
+        "speaker"
+      ],
+      "fixable_by_regex": "partially",
+      "requires": "identification-intent signal, not mere modality"
+    },
+    "non_production_context": {
+      "description": "Finding sits in tutorials, tests, notebooks, legacy or previous_versions paths that do not ship.",
+      "examples_terms": [],
+      "fixable_by_regex": false,
+      "requires": "path-scope policy (already partially implemented via --skip-tests)"
+    },
+    "generative_model_infra_as_regulated_domain": {
+      "description": "Image/video generation model plumbing read as critical infrastructure or safety component.",
+      "examples_terms": [
+        "control_specification",
+        "pipeline",
+        "model"
+      ],
+      "fixable_by_regex": false,
+      "requires": "package-level domain classification"
+    }
+  },
+  "findings_by_class": {
+    "generative_model_infra_as_regulated_domain": [
+      {
+        "file": "finetrainers/models/cogview4/control_specification.py",
+        "category": "Annex III, Category 2",
+        "indicators": [
+          "critical_infrastructure"
+        ],
+        "labeller_note": "CogView4 is an image generation model; control_specification.py likely defines model control parameters, not critical infrastructure management."
+      },
+      {
+        "file": "simpletuner/helpers/models/auraflow/model.py",
+        "category": "Annex III, Category 2",
+        "indicators": [
+          "critical_infrastructure"
+        ],
+        "labeller_note": "AuraFlow is an image generation model; this model helper file manages an AI image generation model, not critical infrastructure like energy, water, or transport systems."
+      },
+      {
+        "file": "simpletuner/helpers/models/longcat_video/pipeline.py",
+        "category": "Annex III, Category 2",
+        "indicators": [
+          "critical_infrastructure"
+        ],
+        "labeller_note": "LongCat Video is a video generation model pipeline in a fine-tuning toolkit — it has nothing to do with critical infrastructure management."
+      },
+      {
+        "file": "simpletuner/helpers/models/ltxvideo2/pipeline_ltx2.py",
+        "category": "Annex III, Category 2",
+        "indicators": [
+          "critical_infrastructure"
+        ],
+        "labeller_note": "LTX Video 2 is a video generation model pipeline in a fine-tuning toolkit — it has nothing to do with critical infrastructure management."
+      },
+      {
+        "file": "finetrainers/models/wan/control_specification.py",
+        "category": "Annex III, Category 2",
+        "indicators": [
+          "critical_infrastructure"
+        ],
+        "labeller_note": "finetrainers is a model fine-tuning library; 'control_specification' refers to model control parameters (e.g. ControlNet), not critical infrastructure management."
+      },
+      {
+        "file": "simpletuner/helpers/models/pixart/pipeline.py",
+        "category": "Annex III, Category 2",
+        "indicators": [
+          "critical_infrastructure"
+        ],
+        "labeller_note": "simpletuner/pixart is an image generation model fine-tuning pipeline; 'pipeline' refers to a diffusion model pipeline, not critical infrastructure."
+      },
+      {
+        "file": "simpletuner/helpers/models/pixart/model.py",
+        "category": "Annex III, Category 2",
+        "indicators": [
+          "critical_infrastructure"
+        ],
+        "labeller_note": "PixArt is an image generation model; this is model definition code, not critical infrastructure management."
+      }
+    ],
+    "non_production_context": [
+      {
+        "file": ".dev/previous_versions/Supervertaler_v3.7.0.py",
+        "category": "Annex III, Category 8",
+        "indicators": [
+          "justice",
+          "high_risk__democratic_processes"
+        ],
+        "labeller_note": "Supervertaler is a translation tool; the keyword 'justice' likely appears in a comment or docstring but the tool does not relate to justice or democratic processes."
+      },
+      {
+        "file": ".dev/previous_versions/Supervertaler_v3.6.6-beta_CAT.py",
+        "category": "Annex III, Category 8",
+        "indicators": [
+          "justice",
+          "high_risk__democratic_processes"
+        ],
+        "labeller_note": "Supervertaler appears to be a translation tool (vertaler = translator in Dutch); the match on 'justice' and 'democratic processes' is likely a false keyword match from translated content, not an AI system for justice/democratic processes."
+      },
+      {
+        "file": "legacy_versions/Supervertaler_tkinter.py",
+        "category": "Annex III, Category 2",
+        "indicators": [
+          "critical_infrastructure",
+          "justice",
+          "high_risk__democratic_processes"
+        ],
+        "labeller_note": "Supervertaler is a translation tool (tkinter GUI); the name does not indicate critical infrastructure, justice, or democratic processes — multiple unrelated indicators suggest broad regex over-matching."
+      },
+      {
+        "file": "tutorials/tutorial15/tutorial.ipynb",
+        "category": "Safety Components",
+        "indicators": [
+          "safety_components"
+        ],
+        "labeller_note": "A tutorial notebook is educational/demo material, not a deployed safety component under EU harmonisation legislation."
+      },
+      {
+        "file": "tutorials/tutorial15/tutorial.py",
+        "category": "Safety Components",
+        "indicators": [
+          "safety_components"
+        ],
+        "labeller_note": "A tutorial Python file is educational/demo code, not a deployed safety component under EU harmonisation legislation."
+      },
+      {
+        "file": "tests/pytorch_tests/layer_tests/test_layers_runner.py",
+        "category": "Annex III, Category 3",
+        "indicators": [
+          "education"
+        ],
+        "labeller_note": "This is a test file for PyTorch layer tests; no connection to education or vocational training systems."
+      }
+    ],
+    "domain_word_collision": [
+      {
+        "file": "simpletuner/helpers/data_backend/factory.py",
+        "category": "Safety Components",
+        "indicators": [
+          "safety_components"
+        ],
+        "labeller_note": "simpletuner is an ML fine-tuning tool; data_backend/factory.py is a data loading factory pattern, not a safety component under EU harmonisation legislation."
+      },
+      {
+        "file": "deepmd/utils/tabulate.py",
+        "category": "Safety Components",
+        "indicators": [
+          "safety_components"
+        ],
+        "labeller_note": "DeePMD is a molecular dynamics simulation tool; tabulate.py generates tabulated potential functions, not safety components under EU harmonisation legislation."
+      },
+      {
+        "file": "pixeltable/functions/yolox.py",
+        "category": "Safety Components",
+        "indicators": [
+          "safety_components"
+        ],
+        "labeller_note": "YOLOX is a general-purpose object detection model; a function wrapper in a data framework does not constitute a safety component under EU harmonisation legislation without evidence of safety-critical deployment."
+      },
+      {
+        "file": "pixeltable/functions/huggingface.py",
+        "category": "Safety Components",
+        "indicators": [
+          "safety_components"
+        ],
+        "labeller_note": "pixeltable is a data management library with HuggingFace integrations; the word 'safety' likely triggered on an unrelated pattern, not actual Union harmonisation safety components."
+      }
+    ],
+    "homonym_compute_vs_human": [
+      {
+        "file": "fastdeploy/worker/worker_process.py",
+        "category": "Annex III, Category 4(b)",
+        "indicators": [
+          "high_risk__worker_management"
+        ],
+        "labeller_note": "worker_process.py in fastdeploy refers to compute worker processes for model serving, not human worker monitoring or employment task allocation."
+      },
+      {
+        "file": "src/lightmem/memory/lightmem.py",
+        "category": "Annex III, Category 4(b)",
+        "indicators": [
+          "high_risk__worker_management"
+        ],
+        "labeller_note": "lightmem is a memory management library for LLM inference (GPU memory allocation); it manages computational memory, not human workers or task allocation."
+      },
+      {
+        "file": "bodo/ai/bodo_dist_sampler.py",
+        "category": "Annex III, Category 4(b)",
+        "indicators": [
+          "high_risk__worker_management"
+        ],
+        "labeller_note": "A distributed sampler in an AI/data framework distributes data across compute workers (GPUs/nodes), not human employees — 'worker' here refers to compute processes, not labour management."
+      },
+      {
+        "file": "deepmd/pt/train/validation.py",
+        "category": "Annex III, Category 4",
+        "indicators": [
+          "employment"
+        ],
+        "labeller_note": "DeepMD is a deep learning molecular dynamics library; 'validation.py' in a training module validates model training, not employment or worker management."
+      }
+    ],
+    "modality_confusion": [
+      {
+        "file": "lhotse/recipes/this_american_life.py",
+        "category": "Annex III, Category 1",
+        "indicators": [
+          "biometrics"
+        ],
+        "labeller_note": "Lhotse is a speech data preparation library; this_american_life.py is a dataset recipe for a podcast, not biometric identification."
+      },
+      {
+        "file": "frontend/src/components/events/utils.tsx",
+        "category": "Annex III, Category 1",
+        "indicators": [
+          "biometrics"
+        ],
+        "labeller_note": "A frontend React utility file for events UI components is unlikely to perform biometric identification; the match is likely a keyword false positive."
+      },
+      {
+        "file": "lhotse/recipes/ali_meeting.py",
+        "category": "Annex III, Category 1",
+        "indicators": [
+          "biometrics"
+        ],
+        "labeller_note": "lhotse is a speech data processing library; 'ali_meeting' is a meeting speech corpus recipe, not biometric identification."
+      }
+    ]
+  },
+  "counts_by_class": {
+    "generative_model_infra_as_regulated_domain": 7,
+    "non_production_context": 6,
+    "domain_word_collision": 4,
+    "homonym_compute_vs_human": 4,
+    "modality_confusion": 3
+  },
+  "headline_conclusion": "The high-risk false positives are overwhelmingly semantic, not lexical. The patterns that fire use genuine EU AI Act Annex III vocabulary (for example 'task allocation' in Annex III 4(b)); the failure is that the same words carry an unrelated ordinary meaning in ML and systems code. Tightening the regexes cannot fix this class without destroying recall on real cases. The fix space is context: package-level domain classification, co-occurrence requirements, path scoping, or an optional semantic verification tier."
+}

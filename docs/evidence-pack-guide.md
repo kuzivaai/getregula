@@ -1,6 +1,6 @@
 # Evidence pack guide — what auditors actually get
 
-Regula has two commands that produce audit-ready output:
+Regula has two commands that produce structured evidence for audit review:
 
 - `regula evidence-pack .` — the developer-friendly bundle
 - `regula conform .` — the Article 43 conformity assessment evidence pack
@@ -12,9 +12,9 @@ Regula project.
 ## `regula conform .`
 
 Produces an **Article 43 conformity assessment evidence pack**: a
-directory containing 26 files mapped to Articles 9–15 (and related
-annexes), each with a per-article readiness score and a SHA-256
-integrity hash.
+directory mapped to Articles 9–15 (and related annexes), with
+per-article readiness scores and SHA-256 integrity hashes. The exact
+generated layout is defined by [`scripts/conformity_pack.py`](../scripts/conformity_pack.py).
 
 This command backs the "26 files mapped to Articles 9-15, per-article
 readiness scores, SHA-256 integrity hashes" claim on the Regula

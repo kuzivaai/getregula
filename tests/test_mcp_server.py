@@ -83,6 +83,43 @@ def test_mcp_regula_check():
     assert_in("Regula scan:", text, "output contains scan header")
 
 
+# ── Gap Tool ───────────────────────────────────────────────────────
+
+def test_mcp_regula_gap_returns_assessment():
+    """tools/call with regula_gap renders an assessment, not an error.
+
+    Regression guard: regula_gap imported a function that does not exist
+    (check_compliance; the real name is assess_compliance), so every call
+    failed before reaching any logic, and nothing executed this path.
+    """
+    fixture_path = str(Path(__file__).parent / "fixtures" / "sample_high_risk")
+    resp = handle_request({
+        "jsonrpc": "2.0", "id": 7, "method": "tools/call",
+        "params": {"name": "regula_gap", "arguments": {"path": fixture_path}},
+    })
+    assert_eq(resp["id"], 7, "response id")
+    assert_true("result" in resp, "gap call returns a result, not a JSON-RPC error")
+    text = resp["result"]["content"][0]["text"]
+    assert_in("Compliance gap assessment", text, "gap output header")
+    assert_true(not text.startswith("Error"), "gap output is not an error string")
+    assert_in("risk indication", text, "indicator disclaimer present")
+
+
+def test_mcp_regula_gap_blocked_path_refused():
+    """regula_gap applies the same path denylist as regula_check.
+
+    Regression guard: the gap tool previously applied none of the path
+    validation, so the weakest tool set the real security boundary.
+    """
+    resp = handle_request({
+        "jsonrpc": "2.0", "id": 8, "method": "tools/call",
+        "params": {"name": "regula_gap", "arguments": {"path": "/etc"}},
+    })
+    assert_true("result" in resp, "refusal is a tool result, not a protocol error")
+    text = resp["result"]["content"][0]["text"]
+    assert_in("not permitted", text, "blocked path is refused")
+
+
 # ── Unknown Method ─────────────────────────────────────────────────
 
 def test_mcp_unknown_method():
@@ -116,6 +153,8 @@ if __name__ == "__main__":
         test_mcp_tools_list,
         test_mcp_regula_classify,
         test_mcp_regula_check,
+        test_mcp_regula_gap_returns_assessment,
+        test_mcp_regula_gap_blocked_path_refused,
         test_mcp_unknown_method,
         test_mcp_unknown_tool,
     ]

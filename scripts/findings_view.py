@@ -26,7 +26,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from risk_types import compute_finding_tier
 
-__all__ = ["partition_findings", "FindingsView"]
+__all__ = ["partition_findings", "compute_exit_code", "FindingsView"]
 
 # Type alias for clarity — this is just `dict[str, Any]` at runtime.
 FindingsView = dict[str, Any]
@@ -101,3 +101,25 @@ def partition_findings(findings: list[dict]) -> FindingsView:
         **by_tier,
         **by_display,
     }
+
+
+def compute_exit_code(findings: list[dict], strict: bool = False) -> int:
+    """Exit code for a set of scan findings. Single source of truth.
+
+    Returns 1 when any active finding blocks (a prohibited tier, or any tier at
+    or above the policy's block threshold), or when a warn-level finding is
+    present and strict mode is on. Returns 0 otherwise.
+
+    This exists because the CLI and the HTTP API each derived the exit code
+    independently, and they disagreed: the API keyed only off tier ==
+    "prohibited", so a credential_exposure finding at confidence 95 exited 1 on
+    the CLI and 0 over the API, while the README documents both as returning the
+    same envelope. Suppressed and risk-accepted findings are excluded here
+    because partition_findings already removes them from the active buckets.
+    """
+    view = partition_findings(findings)
+    if view["block"]:
+        return 1
+    if strict and view["warn"]:
+        return 1
+    return 0

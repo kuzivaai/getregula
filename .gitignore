@@ -30,9 +30,23 @@ vscode-extension/node_modules/
 credentials.json
 token.json
 
-# Claude Code (local development tooling — not part of the project)
+# Claude Code local tooling. Session scratch is not part of the project;
+# the loaded rules and commands are, so they are re-included below.
 CLAUDE.md
-.claude/
+# The !.claude/ line is load-bearing, do not delete it as redundant.
+# The user's global ignore file (core.excludesFile) also lists .claude/,
+# and git refuses to re-include anything whose parent directory is
+# excluded, so without un-ignoring the parent first the two negations
+# below silently do nothing. Then .claude/* re-ignores every child, and
+# the negations re-include only what we want.
+!.claude/
+.claude/*
+# Rules and commands are the instruction set every session actually runs
+# under. Tracking them puts them in review and in history instead of
+# leaving them one git clean from gone. settings.local.json, skills/,
+# agents/, worktrees/ and all session scratch stay ignored via .claude/*.
+!.claude/rules/
+!.claude/commands/
 .claudeignore
 hooks/
 .ci-heal/
@@ -70,7 +84,10 @@ site/ddf625ccd88f40018ebaf614953eb73f.txt
 
 # Internal documents (not public)
 analysis/
-HANDOVER.md
+# Root-anchored, matching the /AI_GOVERNANCE.md and /MODEL_CARD.md pattern
+# below, so docs/improvement/HANDOVER.md stays tracked. Unanchored, this
+# rule silently swallowed the relocated programme handover.
+/HANDOVER.md
 TODO.md
 ROADMAP.md
 output.txt

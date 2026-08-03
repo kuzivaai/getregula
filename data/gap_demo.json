@@ -1,0 +1,115 @@
+{
+  "_what_this_is": "The landing page's terminal demo, parsed from real command output against a committed fixture. Produced by scripts/build_gap_demo.py. Never hand-edited: tests/test_gap_demo.py re-runs both commands and fails on disagreement, and fails if the site shows a percentage this file does not contain.",
+  "_why_it_exists": "The block it replaces was invented output shown behind a $ prompt. A visitor reads that as a real scan.",
+  "comply": {
+    "command": "regula comply tests/fixtures/sample_high_risk --all",
+    "overall_score": 6,
+    "rows": [
+      {
+        "article": "9",
+        "percent": 0,
+        "status": "NOT FOUND",
+        "title": "Risk Management"
+      },
+      {
+        "article": "10",
+        "percent": 0,
+        "status": "NOT FOUND",
+        "title": "Data Governance"
+      },
+      {
+        "article": "11",
+        "percent": 0,
+        "status": "NOT FOUND",
+        "title": "Technical Documentation"
+      },
+      {
+        "article": "12",
+        "percent": 0,
+        "status": "NOT FOUND",
+        "title": "Record-Keeping"
+      },
+      {
+        "article": "13",
+        "percent": 0,
+        "status": "NOT FOUND",
+        "title": "Transparency"
+      },
+      {
+        "article": "14",
+        "percent": 45,
+        "status": "NEEDS WORK",
+        "title": "Human Oversight"
+      },
+      {
+        "article": "15",
+        "percent": 0,
+        "status": "NOT FOUND",
+        "title": "Accuracy, Robustness, Cybersecurity"
+      },
+      {
+        "article": "17",
+        "percent": 0,
+        "status": "NOT FOUND",
+        "title": "Quality Management System"
+      }
+    ]
+  },
+  "fixture": "tests/fixtures/sample_high_risk",
+  "gap": {
+    "command": "regula gap tests/fixtures/sample_high_risk",
+    "note": "NOTE: This score measures the PRESENCE of compliance documentation and infrastructure \u2014 it does not assess code risk and cannot offset scan findings. A project can score 100% here and still fail `regula check` on prohibited or high-risk patterns. Run both; they answer different questions.",
+    "overall_percent": 6,
+    "rows": [
+      {
+        "article": "9",
+        "percent": 0,
+        "status": "NOT FOUND",
+        "title": "Risk Management"
+      },
+      {
+        "article": "10",
+        "percent": 0,
+        "status": "NOT FOUND",
+        "title": "Data Governance"
+      },
+      {
+        "article": "11",
+        "percent": 0,
+        "status": "NOT FOUND",
+        "title": "Technical Documentation"
+      },
+      {
+        "article": "12",
+        "percent": 0,
+        "status": "NOT FOUND",
+        "title": "Record-Keeping"
+      },
+      {
+        "article": "13",
+        "percent": 0,
+        "status": "NOT FOUND",
+        "title": "Transparency"
+      },
+      {
+        "article": "14",
+        "percent": 45,
+        "status": "PARTIAL",
+        "title": "Human Oversight"
+      },
+      {
+        "article": "15",
+        "percent": 0,
+        "status": "NOT FOUND",
+        "title": "Accuracy, Robustness, Cybersecurity"
+      },
+      {
+        "article": "17",
+        "percent": 0,
+        "status": "NOT FOUND",
+        "title": "Quality Management System"
+      }
+    ]
+  },
+  "generated_at": "2026-08-01T19:53:51.888009+00:00"
+}

@@ -9,7 +9,8 @@
 
 ## What Regula Detects
 
-Regula checks for 6 AI-specific security vulnerability categories (14 patterns):
+Regula checks for AI-specific security indicator categories; the current
+definitions are in [`scripts/risk_patterns.py`](../../scripts/risk_patterns.py):
 
 | Pattern | OWASP | Severity | What It Catches |
 |---------|-------|----------|-----------------|

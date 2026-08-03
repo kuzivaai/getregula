@@ -1,0 +1,72 @@
+{
+  "protocol_version": "commercial_v1",
+  "retrieved_at": "2026-07-31",
+  "tools": [
+    {
+      "id": "naive",
+      "type": "transparent_baseline",
+      "version": "commercial_v1",
+      "configuration": "Candidate A exact active import matching; Candidate B exact affirmative rendered-markup phrase matching with five explicit exclusions",
+      "network": "none"
+    },
+    {
+      "id": "regula_public",
+      "type": "public_release",
+      "package": "regula-ai",
+      "version": "1.7.4",
+      "source": "https://pypi.org/pypi/regula-ai/json",
+      "status_at_freeze": "latest publicly installable version reported by official registry JSON",
+      "default_first": true
+      ,"accuracy_adapter": "source-linked Regula check finding; executable after isolated install"
+    },
+    {
+      "id": "local_head",
+      "type": "local_source",
+      "version": "1.9.0",
+      "commit": "94efa9e6ad9173fb888822543c247195078b0220",
+      "default_first": true
+      ,"accuracy_adapter": "source-linked Regula check finding"
+    },
+    {
+      "id": "compliance_agent",
+      "type": "direct_competitor",
+      "package": "compliance-agent",
+      "version": "0.5.0",
+      "source": "https://pypi.org/project/compliance-agent/0.5.0/",
+      "documented_default": "compliance-agent scan . --format json",
+      "best_reasonable": "compliance-agent scan . --format json --no-update-check",
+      "license": "MIT (vendor registry claim; package artefact to verify)",
+      "status_at_freeze": "VENDOR-CLAIMED until installed and executed"
+      ,"accuracy_adapter": null
+      ,"applicability": "installation and repository operations only; no accuracy coercion"
+    },
+    {
+      "id": "air_blackbox",
+      "type": "direct_competitor",
+      "package": "air-blackbox",
+      "version": "1.13.2",
+      "source": "https://pypi.org/project/air-blackbox/1.13.2/",
+      "documented_default": "air-blackbox comply --scan .",
+      "best_reasonable": null,
+      "license": "Apache-2.0 (vendor registry claim; package artefact to verify)",
+      "status_at_freeze": "VENDOR-CLAIMED until installed and executed"
+      ,"accuracy_adapter": null
+      ,"applicability": "installation and repository operations only; no accuracy coercion"
+    },
+    {
+      "id": "complior",
+      "type": "direct_competitor_lead",
+      "version": null,
+      "source": "https://docs.complior.ai/",
+      "status_at_freeze": "CLI package identity unresolved; installation failure remains an operational result and no replacement is allowed"
+      ,"applicability": "identity availability audit only"
+    }
+  ],
+  "limits": {
+    "timeout_seconds_per_synthetic_decision": 120,
+    "timeout_seconds_per_repository": 900,
+    "memory_measurement": "NOT_MEASURED comparatively; only cumulative child high-water mark retained",
+    "paid_credentials": false,
+    "configuration_count_after_default": 1
+  }
+}

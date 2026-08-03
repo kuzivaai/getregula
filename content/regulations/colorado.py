@@ -28,6 +28,48 @@ leg.colorado.gov/bills/sb26-189):
   intervened; enforcement of the original Act was suspended by
   agreement in April 2026. Whether that stay reaches SB 26-189 is
   publicly unresolved (Norton Rose Fulbright, June 2026).
+- Docket detail added 2026-07-27 (verified vs Civil Rights Litigation
+  Clearinghouse case page): xAI LLC v. Weiser, D. Colo.,
+  No. 1:26-cv-01515, complaint filed 9 April 2026; DOJ moved to
+  intervene 24 April 2026; joint motion to suspend enforcement granted
+  27 April 2026.
+
+Two further 2026 Colorado AI statutes, added 2026-07-29 (verified against
+leg.colorado.gov primary bill pages):
+- HB 26-1263, "Conversational Artificial Intelligence Service Operator
+  Requirements" (the Chatbot Safety Act). Governor Signed 29 May 2026
+  (leg.colorado.gov/bills/hb26-1263 history line "05/29/2026"); act
+  effective 12 August 2026, operator duties from 1 January 2027.
+  Requires AI-interaction disclosure, age estimation, self-harm response
+  protocols, and bars representing output as licensed professional
+  services.
+- A 2026 health-care AI statute covering payers and utilisation review
+  (AI in coverage decisions, licensed-clinician review of denials,
+  restrictions on carrier-funded AI psychotherapy). The bill number is
+  reported as HB 26-1139 by a secondary source and is NOT yet verified
+  against leg.colorado.gov. Treat the number as unconfirmed.
+
+CROSSWALK DECISION, 2026-07-29 (reasons recorded either way):
+- HB 26-1263: IN SCOPE for a future crosswalk hook. Its AI-interaction
+  disclosure duty is statically detectable by the same mechanism Regula
+  already uses for AI Act Article 50 transparency, and its audience
+  (operators of conversational AI) is Regula's audience. NOT implemented
+  here: new detection scope belongs in the Phase 4 plan, not in a
+  factual-correction commit.
+- The health-care statute: OUT OF SCOPE. Its duties fall on insurers and
+  utilisation reviewers, not on the builders of AI systems, and they are
+  organisational (clinician review of denials, payment restrictions)
+  rather than detectable in code. Adding it would widen the crosswalk to
+  a population Regula does not serve and cannot scan.
+
+ENFORCEMENT POSITION, checked 2026-07-29: the Colorado AG's own AI page
+(coag.gov/ai/) names SB 26-189 and HB 26-1263, records that pre-rulemaking
+comment closed 13 July 2026, and states that formal rulemaking detail
+follows once that process begins. It does NOT say the AG will decline to
+enforce pending rulemaking. A widely repeated claim to that effect is
+therefore UNVERIFIED at the primary source and is not asserted here. The
+verified enforcement fact remains the 27 April 2026 suspension in xAI v.
+Weiser, whose reach to SB 26-189 is still publicly unresolved.
 """
 
 REGION = {
@@ -66,9 +108,9 @@ REGION = {
         "consumer correction and human-review rights, from 1 Jan 2027."
     ),
 
-    "last_updated": "2026-07-16",
+    "last_updated": "2026-07-27",
     "published_time": "2026-04-08T00:00:00+00:00",
-    "modified_time": "2026-07-16T00:00:00+00:00",
+    "modified_time": "2026-07-27T00:00:00+00:00",
 
     "lede": (
         "Colorado was the first US state to pass a comprehensive, horizontal "
@@ -137,7 +179,7 @@ REGION = {
         },
         {
             "label": "Litigation",
-            "value": "xAI LLC v. Weiser (filed Apr 2026; DOJ intervened): enforcement of the original Act suspended by agreement in Apr 2026. Whether the stay reaches SB 26-189 is publicly unresolved",
+            "value": "xAI LLC v. Weiser, D. Colo. No. 1:26-cv-01515 (filed 9 Apr 2026; DOJ moved to intervene 24 Apr): enforcement of the original Act suspended by court-granted joint motion, 27 Apr 2026. Whether the stay reaches SB 26-189 is publicly unresolved",
             "state": "pending",
         },
     ],
@@ -151,7 +193,7 @@ REGION = {
 <ol>
     <li><strong>May 2024</strong> — SB 24-205 signed: a horizontal statute imposing a reasonable-care duty against algorithmic discrimination, technical documentation, impact assessments, and consumer notices on developers and deployers of high-risk AI systems, effective 1 February 2026.</li>
     <li><strong>28 August 2025</strong> — SB 25B-004 delayed the effective date to 30 June 2026 after a special session failed to reach a broader compromise.</li>
-    <li><strong>April 2026</strong> — xAI sued the Colorado Attorney General (<em>xAI LLC v. Weiser</em>) challenging the Act on First Amendment, due-process, and Commerce Clause grounds; the US Department of Justice intervened in support — the first time the federal government joined a challenge to a state AI law. Enforcement of the Act was suspended by agreement pending the litigation and any legislative amendment.</li>
+    <li><strong>April 2026</strong> — xAI sued the Colorado Attorney General (<em>xAI LLC v. Weiser</em>, D. Colo. No. 1:26-cv-01515, filed 9 April) challenging the Act on First Amendment, due-process, and Commerce Clause grounds; the US Department of Justice moved to intervene in support on 24 April — the first time the federal government joined a challenge to a state AI law. On 27 April 2026 the court granted the parties' joint motion suspending enforcement of the Act pending the litigation and any legislative amendment.</li>
     <li><strong>14 May 2026</strong> — Governor Polis signed SB 26-189, which <strong>repeals and reenacts</strong> C.R.S. Title 6, Article 1, Part 17. The algorithmic-discrimination duty of care and the impact-assessment regime are gone; what remains is a notice, documentation, and consumer-rights framework for <em>automated decision-making technology</em> (ADMT), with duties applying on and after 1 January 2027.</li>
 </ol>
 <p>Whether the April 2026 enforcement stay carries over to SB 26-189 has not been publicly resolved; the passage of SB 26-189 mooted the core claims aimed at the discrimination provisions. We track this below.</p>
@@ -168,7 +210,7 @@ REGION = {
     <li><strong>Section 6-1-1703 — Deployer record-keeping.</strong> Deployers must retain records demonstrating compliance for at least three years after each consequential decision.</li>
     <li><strong>Section 6-1-1704 — Consumer notice.</strong> Deployers must give clear and conspicuous notice that ADMT is being used, and after an adverse outcome must provide a plain-language description of the ADMT's role within 30 days.</li>
     <li><strong>Section 6-1-1705 — Consumer rights.</strong> Consumers can correct inaccurate personal data and request <em>meaningful human review and reconsideration</em> of adverse outcomes; deployers must designate trained individuals with authority to override ADMT decisions. The Attorney General must adopt implementing rules for these procedures on or before 1 January 2027.</li>
-    <li><strong>Section 6-1-1706 — Enforcement.</strong> Exclusive enforcement by the Colorado Attorney General through the Colorado Consumer Protection Act (civil penalties under the CCPA, C.R.S. section 6-1-112). A 60-day right-to-cure applies (the cure provision sunsets 1 January 2030). No new private right of action.</li>
+    <li><strong>Section 6-1-1706 — Enforcement.</strong> Enforcement rests with the Colorado Attorney General through the Colorado Consumer Protection Act (civil penalties under the CCPA, C.R.S. section 6-1-112). A 60-day right-to-cure applies (the cure provision sunsets 1 January 2030). No new private right of action.</li>
 </ul>
 <p>What is <em>not</em> in SB 26-189 matters as much: the reasonable-care duty against algorithmic discrimination, mandatory impact assessments, and risk management programme requirements of SB 24-205 were not reenacted.</p>
 """,
@@ -331,6 +373,11 @@ regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.7)
             "title": "Colorado enacts revised AI law — Norton Rose Fulbright",
             "note": "Legal summary of SB 26-189 and the xAI LLC v. Weiser enforcement-suspension agreement.",
             "url": "https://www.nortonrosefulbright.com/en-us/knowledge/publications/18733d31/colorado-enacts-revised-ai-law",
+        },
+        {
+            "title": "xAI LLC v. Weiser, No. 1:26-cv-01515 (D. Colo.) — Civil Rights Litigation Clearinghouse",
+            "note": "Case page: complaint filed 9 April 2026; DOJ motion to intervene 24 April; joint motion suspending enforcement granted 27 April 2026.",
+            "url": "https://clearinghouse.net/case/48129/",
         },
         {
             "title": "Colorado Attorney General — Office of the Attorney General",

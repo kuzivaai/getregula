@@ -20,9 +20,38 @@ content/regulations/delta-log/
 ├── README.md              ← you are here
 ├── schema.json            ← JSON Schema for every entry
 ├── index.json             ← auto-generated manifest (do not edit by hand)
+├── dataset/
+│   └── regula-aiact-delta-log.jsonld   ← auto-generated JSON-LD dataset
 └── entries/
     └── YYYY-MM-DD-slug.json
 ```
+
+## Machine-readable dataset (JSON-LD)
+
+`dataset/regula-aiact-delta-log.jsonld` publishes this log as a linked-data
+dataset, generated from the entries by `scripts/build_delta_dataset.py`
+(rebuild after any entry change; `tests/test_delta_dataset.py` fails if the
+committed file goes stale):
+
+- Dataset metadata in W3C DCAT + Dublin Core terms.
+- Legal acts identified by their EUR-Lex **ELI** IRIs, with the amendment
+  relation expressed using the ELI ontology's own `eli:amends` property
+  (the vocabulary the Publications Office uses). Every `eli:` term emitted
+  is validated at build time against a checked-in snapshot of the ontology
+  (`scripts/eli_data/eli_ontology_terms.json`, refresh with
+  `scripts/refresh_eli_vocab.py`), so the builder cannot emit a fabricated
+  IRI.
+- Change events use Regula's own, clearly-namespaced extension terms
+  (`https://getregula.com/ns/delta/`). Article references are literals,
+  never invented article-level IRIs.
+- The DPVCG EU-AIAct vocabulary is referenced at dataset level; per-event
+  DPV concepts are not asserted because the vocabulary has no
+  regulatory-change-event concepts today (proposing them upstream is
+  tracked separately).
+
+Entries may carry an optional `jurisdiction` field (default `EU`) so
+Korea AI Basic Act, Colorado ADMT and other jurisdiction currency events
+can join the same log without a schema break.
 
 Each entry file conforms to `schema.json`. New entries are added by
 opening a pull request with the entry file and a commit message of the

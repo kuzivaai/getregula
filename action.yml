@@ -1,6 +1,6 @@
 name: Regula AI Governance Check
 description: >-
-  Scan code for EU AI Act risk patterns. 419 patterns, 8 languages, zero data transmission. Your code never leaves your machine.
+  Scan code for EU AI Act risk patterns. 419 patterns, 8 languages. The Regula core does not upload scanned file contents; repository handling by the workflow runner depends on your GitHub configuration.
 author: Regula
 
 branding:
@@ -316,12 +316,18 @@ runs:
         if ! [[ "$HIGH_RISK" =~ ^[0-9]+$ ]]; then HIGH_RISK=0; fi
 
         if [ "${PROHIBITED}" -gt "0" ]; then
-          echo "### Status: FAIL — Prohibited-use issues detected" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Status: FAIL — Prohibited-use indicators detected" >> "$GITHUB_STEP_SUMMARY"
         elif [ "${HIGH_RISK}" -gt "0" ] && [ "${FAIL_ON_HIGH_RISK}" = "true" ]; then
-          echo "### Status: FAIL — High-risk issues detected" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Status: FAIL — High-risk indicators detected" >> "$GITHUB_STEP_SUMMARY"
         else
-          echo "### Status: PASS" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Status: No prohibited-use or high-risk indicators detected" >> "$GITHUB_STEP_SUMMARY"
         fi
+
+        # The step summary is the surface most developers actually read, so it
+        # carries the same disclaimer as the PR comment path below. A bare
+        # "PASS" here reads as a compliance determination, which this tool does
+        # not make and must never imply.
+        printf '\n*Findings are indicators, not legal determinations. Absence of a finding is not evidence of compliance.*\n' >> "$GITHUB_STEP_SUMMARY"
 
     - name: Post PR compliance comment
       if: inputs.comment-on-pr == 'true' && github.event_name == 'pull_request'

@@ -3,7 +3,8 @@
 
 ## What You'll Learn
 
-- Assess compliance gaps for EU AI Act Articles 9-15
+- Assess the presence of documentation and implementation indicators relevant
+  to EU AI Act Articles 9-15
 - Understand what evidence Regula looks for
 - Interpret per-article compliance scores
 
@@ -25,7 +26,10 @@ regula gap --project /tmp/anthropic-cookbook
 | **Art 14** (Human Oversight) | Review/approve functions, human-in-the-loop patterns, override mechanisms |
 | **Art 15** (Security) | Test suites, security configs, dependency pinning, credential management |
 
-Each article gets a score from 0-100% with specific evidence (file paths where evidence was found) and gaps (what's missing).
+Each article gets a score from 0-100% with observed file paths and missing
+indicators. The scoring implementation is defined in
+[`compliance_check.py`](../../scripts/compliance_check.py); it measures
+presence, not legal compliance.
 
 ## Model Card Validation
 
