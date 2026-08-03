@@ -80,6 +80,37 @@ def test_public_homepages_do_not_expose_internal_programme_gates():
         assert not any(phrase in text for phrase in phrases), (rel, phrases)
 
 
+def test_public_entry_points_do_not_use_em_dashes():
+    paths = (
+        "README.md",
+        "site/index.html",
+        "site/locales/de.html",
+        "site/locales/pt-br.html",
+        "site/assess/index.html",
+        "site/assess/de.html",
+        "site/assess/pt-br.html",
+        "site/about.html",
+    )
+    for rel in paths:
+        text = (REPO / rel).read_text(encoding="utf-8", errors="replace")
+        assert "—" not in text and "&mdash;" not in text.lower(), rel
+
+
+def test_mobile_navigation_toggle_remains_pointer_accessible():
+    paths = (
+        "site/index.html",
+        "site/locales/de.html",
+        "site/locales/pt-br.html",
+        "site/assess/index.html",
+        "site/assess/de.html",
+        "site/assess/pt-br.html",
+    )
+    for rel in paths:
+        text = (REPO / rel).read_text(encoding="utf-8", errors="replace")
+        assert ".showModal()" not in text, rel
+        assert ".show()" in text, rel
+
+
 def test_package_description_source_is_readme():
     pyproject = (REPO / "pyproject.toml").read_text(encoding="utf-8")
     package_rows = [row for row in contract()["records"]

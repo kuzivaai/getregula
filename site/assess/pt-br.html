@@ -25,7 +25,7 @@
     <meta property="og:title" content="Avaliação de Regulamentação de IA: Lei de IA da UE, Coreia do Sul, Colorado">
     <meta property="og:description" content="Avaliação gratuita de risco de regulamentação de IA. Verifique suas obrigações sob a Lei de IA da UE, Lei Básica de IA da Coreia do Sul, ou Colorado SB 26-189. Sem cadastro, sem instalação.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
-    <meta property="og:image:alt" content="Regula — open-source AI governance risk indication tool">
+    <meta property="og:image:alt" content="Regula :  open-source AI governance risk indication tool">
     <meta property="og:locale" content="pt_BR">
     <meta property="og:site_name" content="Regula">
     <meta name="twitter:card" content="summary_large_image">
@@ -41,7 +41,7 @@
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Regula — Avaliação de Regulamentação de IA",
+      "name": "Regula :  Avaliação de Regulamentação de IA",
       "url": "https://getregula.com/assess/pt-br.html",
       "description": "Ferramenta gratuita de avaliação de risco de regulamentação de IA. Verifique suas obrigações sob a Lei de IA da UE, Lei Básica de IA da Coreia do Sul, ou Colorado SB 26-189. Equipes de desenvolvimento também podem analisar código contra 419 padrões de detecção.",
       "applicationCategory": "BusinessApplication",
@@ -80,7 +80,7 @@
       a { color: var(--accent); text-decoration: none; }
       a:hover { text-decoration: underline; }
 
-      /* Nav — matching main site pattern */
+      /* Nav :  matching main site pattern */
       .nav {
           position: sticky; top: 0; z-index: 100;
           height: 56px; padding: 0 24px;
@@ -362,12 +362,11 @@
 
 <nav class="nav" id="nav" aria-label="Navegação principal">
     <a href="/" class="nav-brand">Regula</a>
-    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="/assess/" class="active">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html">Regulations</a>
         <a href="/blog/writing.html">Blog</a>
         <a href="/about.html">About</a>
@@ -409,7 +408,7 @@
     <script>
     function updateAssessIntro() {
       const intros = {
-        eu: "A Lei de IA da UE classifica sistemas de IA em n\u00edveis de risco &mdash; de risco m\u00ednimo a proibido &mdash; com diferentes obriga\u00e7\u00f5es legais para cada um. Esta avalia\u00e7\u00e3o determina qual n\u00edvel se aplica ao seu sistema e o que voc\u00ea precisa fazer a seguir.",
+        eu: "A Lei de IA da UE classifica sistemas de IA em n\u00edveis de risco : de risco m\u00ednimo a proibido : com diferentes obriga\u00e7\u00f5es legais para cada um. Esta avalia\u00e7\u00e3o determina qual n\u00edvel se aplica ao seu sistema e o que voc\u00ea precisa fazer a seguir.",
         kr: "A Lei B\u00e1sica de IA da Coreia do Sul classifica sistemas de IA como de alto impacto ou alto desempenho, com obriga\u00e7\u00f5es de gest\u00e3o de risco, transpar\u00eancia e explicabilidade. Esta avalia\u00e7\u00e3o determina se o seu sistema \u00e9 abrangido e o que voc\u00ea precisa fazer.",
         co: "Colorado SB 26-189 regulamenta tecnologia de tomada de decis\u00e3o automatizada (ADMT) que toma decis\u00f5es consequentes sobre indiv\u00edduos em dom\u00ednios espec\u00edficos. Esta avalia\u00e7\u00e3o determina se o seu sistema \u00e9 abrangido e quais obriga\u00e7\u00f5es de divulga\u00e7\u00e3o se aplicam."
       };
@@ -437,7 +436,7 @@
     <div class="q-card">
       <div class="q-number">SCANNER DE CÓDIGO <span style="font-size:0.7rem;background:var(--accent-dim);color:var(--accent);padding:2px 8px;border-radius:4px;margin-left:8px;vertical-align:middle;">Para equipes de desenvolvimento</span></div>
       <div class="q-text">Cole seu código ou envie um arquivo</div>
-      <div class="q-help">O Regula analisa código-fonte para padrões de risco da Lei de IA da UE &mdash; práticas proibidas, indicadores de alto risco, antipadrões de segurança e requisitos de transparência. Tudo roda no seu navegador. Nada é enviado ou armazenado. Não é desenvolvedor? Use o <button type="button" onclick="backToHero()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">questionário</button> em vez disso.</div>
+      <div class="q-help">O Regula analisa código-fonte para padrões de risco da Lei de IA da UE : práticas proibidas, indicadores de alto risco, antipadrões de segurança e requisitos de transparência. Tudo roda no seu navegador. Nada é enviado ou armazenado. Não é desenvolvedor? Use o <button type="button" onclick="backToHero()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">questionário</button> em vez disso.</div>
 
       <div style="margin-bottom:12px;">
         <label for="scanLang" style="font-size:0.8rem;color:var(--text-dim);display:block;margin-bottom:4px;">Linguagem (detectada automaticamente pela extensão do arquivo)</label>
@@ -532,9 +531,9 @@
 <script src="scanner.js"></script>
 <script>
 // =====================================================================
-// Regula Web Assessment — ported from scripts/questionnaire.py
+// Regula Web Assessment :  ported from scripts/questionnaire.py
 // All logic runs client-side. Nothing leaves the browser.
-// PT-BR locale — only display strings changed.
+// PT-BR locale :  only display strings changed.
 // =====================================================================
 
 // =====================================================================
@@ -568,7 +567,7 @@ function selectJurisdiction(jur) {
 
   const info = JURISDICTION_INFO[jur];
   document.getElementById("jurisdictionInfo").textContent =
-    info.law + " — " + info.status + " — " + info.questionCount + " perguntas";
+    info.law + " :  " + info.status + " :  " + info.questionCount + " perguntas";
 }
 
 // Korea questions (mapped from south-korea-mapping.md research)
@@ -797,7 +796,7 @@ const QUESTIONS = [
   {
     id: "improves_human_activity",
     text: "Este sistema APENAS melhora o resultado de uma atividade humana previamente concluída (ex.: correção gramatical de texto escrito por humano, melhoria de foto tirada por humano, formatação automática de documento criado por humano)?",
-    help: "O Artigo 6(3)(b) isenta sistemas de IA que melhoram atividades humanas previamente concluídas. A atividade humana deve estar completa antes que a IA atue sobre ela — a IA aprimora, não cria.",
+    help: "O Artigo 6(3)(b) isenta sistemas de IA que melhoram atividades humanas previamente concluídas. A atividade humana deve estar completa antes que a IA atue sobre ela :  a IA aprimora, não cria.",
     article: "Artigo 6(3)(b)",
     weight: { yes: -20, no: 5, unsure: 0 },
     signal: "exemption"
@@ -822,7 +821,7 @@ const QUESTIONS = [
   {
     id: "profiling",
     text: "Este sistema cria perfis de indivíduos com base em seus dados pessoais (ex.: rastreamento de desempenho, análise de comportamento, modelagem de preferências, pontuação de risco baseada em características pessoais)?",
-    help: "Se um sistema perfila pessoas naturais conforme definido no Artigo 4(4) do RGPD, as isenções do Artigo 6(3) NÃO podem se aplicar — o sistema é automaticamente de alto risco, independentemente de quão restrita ou procedimental seja sua função. Perfilamento significa qualquer processamento automatizado de dados pessoais para avaliar aspectos pessoais.",
+    help: "Se um sistema perfila pessoas naturais conforme definido no Artigo 4(4) do RGPD, as isenções do Artigo 6(3) NÃO podem se aplicar :  o sistema é automaticamente de alto risco, independentemente de quão restrita ou procedimental seja sua função. Perfilamento significa qualquer processamento automatizado de dados pessoais para avaliar aspectos pessoais.",
     article: "Article 6(3), GDPR Article 4(4)",
     weight: { yes: 15, no: 0, unsure: 5 },
     signal: "profiling"
@@ -919,7 +918,7 @@ const OBLIGATIONS_KR = [
   { article: 34, name: "Plano de gestão de riscos", desc: "Operadores de IA de alto impacto devem estabelecer e manter um plano de gestão de riscos cobrindo o ciclo de vida do sistema de IA.", plain: "Você precisa de um plano documentado para identificar e gerenciar riscos do seu sistema de IA. Esta é uma obrigação de esforço ('empenhar-se').", effort: "20-40 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
   { article: 34, name: "Documentação e manutenção de registros", desc: "Manter documentação do design, desenvolvimento e processos operacionais do sistema de IA.", plain: "Mantenha registros de como o sistema foi construído, quais dados ele usa e como toma decisões.", effort: "15-30 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
   { article: 34, name: "Supervisão humana", desc: "Implementar medidas de supervisão humana para sistemas de IA de alto impacto.", plain: "Um humano deve ser capaz de monitorar e intervir nas decisões do sistema de IA.", effort: "10-30 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
-  { article: 34, name: "Explicabilidade de decisões de IA", desc: "Operadores devem fornecer explicações para resultados gerados por IA dentro dos limites técnicos, incluindo critérios-chave de decisão e uma visão geral dos dados de treinamento (Artigo 34).", plain: "Quando sua IA toma uma decisão sobre alguém, você deve ser capaz de explicar por quê — incluindo os fatores que impulsionaram a decisão e os dados com os quais o sistema foi treinado.", effort: "10-25 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
+  { article: 34, name: "Explicabilidade de decisões de IA", desc: "Operadores devem fornecer explicações para resultados gerados por IA dentro dos limites técnicos, incluindo critérios-chave de decisão e uma visão geral dos dados de treinamento (Artigo 34).", plain: "Quando sua IA toma uma decisão sobre alguém, você deve ser capaz de explicar por quê :  incluindo os fatores que impulsionaram a decisão e os dados com os quais o sistema foi treinado.", effort: "10-25 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
   { article: 31, name: "Notificação de transparência", desc: "Os usuários devem ser notificados quando interagem com IA. Conteúdo de IA generativa deve ser rotulado.", plain: "Informe as pessoas que estão interagindo com IA e rotule conteúdo gerado por IA como tal.", effort: "5-15 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
 ];
 
@@ -1086,7 +1085,7 @@ function prevQuestion() {
 }
 
 // =====================================================================
-// Scoring — ported from questionnaire.py evaluate_questionnaire()
+// Scoring :  ported from questionnaire.py evaluate_questionnaire()
 // =====================================================================
 
 function calculateResults() {
@@ -1195,7 +1194,7 @@ function calculateResultsKR() {
   if (highImpactSignals.length > 0 && score >= 50) {
     tier = "high_impact";
     tierName = "Sistema de IA de alto impacto";
-    tierDesc = "Seu sistema opera em um domínio classificado como alto impacto pelo Artigo 33. Você deve cumprir obrigações de gestão de riscos, documentação, supervisão humana, transparência e explicabilidade sob os Artigos 31 e 34. Nota: a Coreia está em período de carência até 2026 — a aplicação é diferida exceto para danos graves. Penalidades: até KRW 30 milhões (~USD 20.700) ou 3 anos de prisão.";
+    tierDesc = "Seu sistema opera em um domínio classificado como alto impacto pelo Artigo 33. Você deve cumprir obrigações de gestão de riscos, documentação, supervisão humana, transparência e explicabilidade sob os Artigos 31 e 34. Nota: a Coreia está em período de carência até 2026 :  a aplicação é diferida exceto para danos graves. Penalidades: até KRW 30 milhões (~USD 20.700) ou 3 anos de prisão.";
     tierClass = "tier-high";
     obligations = OBLIGATIONS_KR;
   } else if (highPerformanceSignals.length > 0) {
@@ -1372,7 +1371,7 @@ function getNextSteps(results) {
   }
   return [
     { title: "Nenhuma obrigação específica se aplica", desc: "Seu sistema parece ser de risco mínimo sob a Lei de IA da UE. Considere seguir códigos de conduta voluntários (Artigo 95) como boa prática." },
-    { title: "Reavalie se o escopo mudar", desc: "Se você adicionar novas funcionalidades — especialmente em áreas como emprego, saúde, crédito, aplicação da lei ou infraestrutura crítica — execute esta avaliação novamente. A classificação de risco depende da finalidade pretendida, que pode mudar." }
+    { title: "Reavalie se o escopo mudar", desc: "Se você adicionar novas funcionalidades :  especialmente em áreas como emprego, saúde, crédito, aplicação da lei ou infraestrutura crítica :  execute esta avaliação novamente. A classificação de risco depende da finalidade pretendida, que pode mudar." }
   ];
 }
 
@@ -1437,7 +1436,7 @@ function decodeAnswers(code) {
   const decoded = {};
   activeQ.forEach((q, i) => {
     let c = raw[i];
-    // v1 URLs had Q8 (public_facing, index 7) with opposite polarity — EU only
+    // v1 URLs had Q8 (public_facing, index 7) with opposite polarity :  EU only
     if (version === 1 && i === 7 && activeJurisdiction === "eu") {
       c = c === "y" ? "n" : c === "n" ? "y" : c;
     }
@@ -1630,7 +1629,7 @@ function renderScanResults(result) {
   // Korea or Colorado on the jurisdiction toggle.
   if (typeof activeJurisdiction !== 'undefined' && activeJurisdiction !== 'eu') {
     const jurName = activeJurisdiction === 'kr' ? 'Coreia do Sul' : 'Colorado';
-    html += `<div class="scan-jur-notice" style="margin-bottom:16px;padding:12px 14px;border:1px solid var(--border-active);border-radius:var(--radius);background:var(--accent-dim);font-size:0.85rem;line-height:1.45;">Atenção: o scanner de código cobre atualmente padrões da <strong>Lei de IA da UE</strong>. Você selecionou <strong>${jurName}</strong> — para uma triagem específica de ${jurName}, use o questionário ou execute a CLI completa.</div>`;
+    html += `<div class="scan-jur-notice" style="margin-bottom:16px;padding:12px 14px;border:1px solid var(--border-active);border-radius:var(--radius);background:var(--accent-dim);font-size:0.85rem;line-height:1.45;">Atenção: o scanner de código cobre atualmente padrões da <strong>Lei de IA da UE</strong>. Você selecionou <strong>${jurName}</strong> :  para uma triagem específica de ${jurName}, use o questionário ou execute a CLI completa.</div>`;
   }
 
   // Tier card (reuse existing styles)
@@ -1654,7 +1653,7 @@ function renderScanResults(result) {
       <div class="tier-label">RESULTADO DA ANÁLISE DE CÓDIGO</div>
       <div class="tier-name">${tierNames[c.tier] || c.tier}</div>
       <div class="tier-desc">${c.message}</div>
-      ${(c.tier === 'prohibited' || c.tier === 'high_risk') ? '<div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">Isto é uma <strong>correspondência de padrão, não uma determinação</strong> — verifique se o código sinalizado realmente implementa a prática descrita. Falsos positivos são possíveis; isto não é aconselhamento jurídico.</div>' : ''}
+      ${(c.tier === 'prohibited' || c.tier === 'high_risk') ? '<div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">Isto é uma <strong>correspondência de padrão, não uma determinação</strong> :  verifique se o código sinalizado realmente implementa a prática descrita. Falsos positivos são possíveis; isto não é aconselhamento jurídico.</div>' : ''}
       <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">
         Confiança: ${c.confidence_score}/100 &middot; Linguagem: ${result.language}
         ${c.indicators_matched.length ? ' &middot; Indicadores: ' + c.indicators_matched.join(', ') : ''}
