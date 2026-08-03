@@ -28,6 +28,7 @@ What is pinned is that the instrument works:
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -271,6 +272,24 @@ def test_corpus_definitions_are_all_tracked_and_scannable():
         bad = [p for p in paths
                if Path(p).suffix.lower() not in ca.SCANNED_SUFFIXES]
         assert not bad, f"corpus {name} includes unscannable paths: {bad}"
+
+    original_git = fx._git
+    def detached_git(*args):
+        if args[0] == "merge-base":
+            raise subprocess.CalledProcessError(128, ["git", *args])
+        if args[0] == "rev-list":
+            return "merge-head base-parent topic-parent\n"
+        if args[0] == "diff":
+            assert args[2] == "base-parent"
+            return "README.md\n"
+        if args[0] == "ls-files":
+            return "README.md\0"
+        raise AssertionError(args)
+    try:
+        fx._git = detached_git
+        assert fx._diff_base("main") == ["README.md"]
+    finally:
+        fx._git = original_git
     print(f"✓ {len(fx.CORPORA)} corpus definitions, all tracked and scannable")
 
 
