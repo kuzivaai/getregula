@@ -61,7 +61,7 @@ your lawyer's job, not Regula's.
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | Machine-readable risk indication as JSON-LD, *aligned to* (not certified against) the DPVCG EU-AIAct vocabulary — a W3C Community Group report, **not a ratified W3C Standard** | `regula dpv .` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 2,683 unique tests (2,683 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
+| 2,684 unique tests (2,684 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -88,16 +88,16 @@ your lawyer's job, not Regula's.
 > is pending and tracked as ledger row N43 in
 > [`docs/improvement/LEDGER.md`](improvement/LEDGER.md).
 
-### 3.1 Internal test suite — 2,683 [unique](../tests/) / 2,683 pytest-collected, all green
+### 3.1 Internal test suite — 2,684 [unique](../tests/) / 2,684 pytest-collected, all green
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ -q
-# Expected: 2683 passed. Wall-clock is machine-dependent and is NOT a claim;
+# Expected: 2684 passed. Wall-clock is machine-dependent and is NOT a claim;
 # it has varied by a factor of two on one laptop in a single day. Quote the
 # count, never the duration.
-# 2,683 unique tests (sort -u of test IDs equals collected count).
+# 2,684 unique tests (sort -u of test IDs equals collected count).
 ```
 
 Regula also ships a legacy auto-discovery runner for the classification
@@ -395,7 +395,7 @@ are tracked in a public delta log (`content/regulations/delta-log/`).
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (2,683 unique tests, 2,683 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,082 functions, 437 defined in-file) |
+| Test suite | `tests/` (2,684 unique tests, 2,684 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,082 functions, 437 defined in-file) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit hook source | `hooks/pre_tool_use.py` |
@@ -733,7 +733,7 @@ in this repository. Every row links to a verifiable artefact.
 | Precision and recall benchmark | [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md) | Labelled corpus, methodology, per-tier and per-project breakdown |
 | Framework crosswalk data | [`references/framework_crosswalk.yaml`](../references/framework_crosswalk.yaml) | EU AI Act ↔ ISO 42001 / NIST AI RMF / SOC 2 / etc. mappings |
 | Pattern definitions | [`scripts/risk_patterns.py`](../scripts/risk_patterns.py) | All detection regexes, grouped by risk tier and category |
-| Test suite | `tests/` | 2,683 unique tests (2,683 pytest-collected) |
+| Test suite | `tests/` | 2,684 unique tests (2,684 pytest-collected) |
 | Self-test | `regula self-test` | 6 round-trip assertions |
 | Environment health | `regula doctor` | 12 checks (pass/info split varies by environment) |
 | SBOM | `regula sbom --ai-bom` | CycloneDX 1.7 ML-BOM from any checkout |
