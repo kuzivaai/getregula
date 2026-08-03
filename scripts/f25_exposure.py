@@ -220,28 +220,33 @@ def _manifest_surfaces() -> list[str]:
     return kept
 
 
-def _diff_base(base: str) -> list[str]:
-    """The corpus `--diff-base` scans: tracked, changed against the merge base.
-
-    Resolved through the same merge-base semantics the auditor uses, so this
-    definition and the gate's cannot drift apart without one of them failing.
-    """
+def _resolve_merge_base(base: str) -> str:
+    """Resolve a branch, remote branch, or detached PR merge base."""
     try:
-        merge_base = _git("merge-base", "HEAD", base).strip()
+        return _git("merge-base", "HEAD", base).strip()
     except subprocess.CalledProcessError:
         # pull_request jobs check out a detached merge commit and commonly
         # expose the target only as a remote-tracking ref.
         if base.startswith("origin/"):
             raise
         try:
-            merge_base = _git("merge-base", "HEAD", f"origin/{base}").strip()
+            return _git("merge-base", "HEAD", f"origin/{base}").strip()
         except subprocess.CalledProcessError:
             commit_headers = _git("cat-file", "-p", "HEAD").splitlines()
             parents = [line.removeprefix("parent ") for line in commit_headers
                        if line.startswith("parent ")]
             if len(parents) < 2:
                 raise
-            merge_base = parents[0]
+            return parents[0]
+
+
+def _diff_base(base: str) -> list[str]:
+    """The corpus `--diff-base` scans: tracked, changed against the merge base.
+
+    Resolved through the same merge-base semantics the auditor uses, so this
+    definition and the gate's cannot drift apart without one of them failing.
+    """
+    merge_base = _resolve_merge_base(base)
     changed = _git("diff", "--name-only", merge_base, "HEAD").split("\n")
     tracked = set(_tracked_scannable())
     return sorted(p for p in changed if p in tracked)

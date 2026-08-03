@@ -263,7 +263,7 @@ def test_recovery_reporting_is_honest_in_both_directions():
 
 def _assert_corpus_not_vacuous(name, paths):
     if name == "diff-base" and not paths:
-        merge_base = fx._git("merge-base", "HEAD", "main").strip()
+        merge_base = fx._resolve_merge_base("main")
         head_tree = fx._git("rev-parse", "HEAD^{tree}").strip()
         base_tree = fx._git("rev-parse", f"{merge_base}^{{tree}}").strip()
         assert head_tree == base_tree, (
