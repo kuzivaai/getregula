@@ -226,7 +226,14 @@ def _diff_base(base: str) -> list[str]:
     Resolved through the same merge-base semantics the auditor uses, so this
     definition and the gate's cannot drift apart without one of them failing.
     """
-    merge_base = _git("merge-base", "HEAD", base).strip()
+    try:
+        merge_base = _git("merge-base", "HEAD", base).strip()
+    except subprocess.CalledProcessError:
+        # pull_request jobs check out a detached merge commit and commonly
+        # expose the target only as a remote-tracking ref.
+        if base.startswith("origin/"):
+            raise
+        merge_base = _git("merge-base", "HEAD", f"origin/{base}").strip()
     changed = _git("diff", "--name-only", merge_base, "HEAD").split("\n")
     tracked = set(_tracked_scannable())
     return sorted(p for p in changed if p in tracked)
