@@ -261,12 +261,25 @@ def test_recovery_reporting_is_honest_in_both_directions():
     print("✓ recovery reporting distinguishes a hit from a miss")
 
 
+def _assert_corpus_not_vacuous(name, paths):
+    if name == "diff-base" and not paths:
+        merge_base = fx._git("merge-base", "HEAD", "main").strip()
+        head_tree = fx._git("rev-parse", "HEAD^{tree}").strip()
+        base_tree = fx._git("rev-parse", f"{merge_base}^{{tree}}").strip()
+        assert head_tree == base_tree, (
+            "diff-base is empty although HEAD differs from its main merge base")
+        return
+    assert paths, f"corpus {name} is empty"
+
+
 def test_corpus_definitions_are_all_tracked_and_scannable():
     """Rule 4b: an untracked file is not a surface, in every corpus."""
     tracked = set(fx._tracked_scannable())
     for name, build in fx.CORPORA.items():
         paths = build()
-        assert paths, f"corpus {name} is empty"
+        _assert_corpus_not_vacuous(name, paths)
+        if not paths:
+            continue
         stray = [p for p in paths if p not in tracked]
         assert not stray, f"corpus {name} includes untracked paths: {stray}"
         bad = [p for p in paths
@@ -288,6 +301,18 @@ def test_corpus_definitions_are_all_tracked_and_scannable():
     try:
         fx._git = detached_git
         assert fx._diff_base("main") == ["README.md"]
+    finally:
+        fx._git = original_git
+
+    def same_tree_git(*args):
+        if args[0] == "merge-base":
+            return "base\n"
+        if args[0] == "rev-parse":
+            return "tree\n"
+        raise AssertionError(args)
+    try:
+        fx._git = same_tree_git
+        _assert_corpus_not_vacuous("diff-base", [])
     finally:
         fx._git = original_git
     print(f"✓ {len(fx.CORPORA)} corpus definitions, all tracked and scannable")
