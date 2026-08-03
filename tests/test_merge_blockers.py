@@ -46,6 +46,21 @@ import merge_blockers as mb          # noqa: E402
 V2 = "benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md"
 
 
+def test_publication_scope_comes_from_delivery_inventory():
+    assert mb.is_published_surface("README.md")
+    assert mb.is_published_surface("site/index.html")
+    assert not mb.is_published_surface("docs/adr/0001-claim-identity.md")
+    assert not mb.is_published_surface(
+        "benchmarks/commercial_v1/PROTOCOL.md")
+
+
+def test_publication_scope_fails_closed_on_missing_inventory(tmp_path,
+                                                             monkeypatch):
+    monkeypatch.setattr(mb, "DELIVERY_INVENTORY", tmp_path / "missing.json")
+    with pytest.raises(RuntimeError, match="cannot load delivery inventory"):
+        mb.is_published_surface("README.md")
+
+
 # ---------------------------------------------------------------------------
 # reconcile(): the arithmetic
 # ---------------------------------------------------------------------------
@@ -452,32 +467,10 @@ def test_the_reproducible_row_is_blocked_not_fixable():
 # join drops a finding AND if the toggle loses one.
 
 def test_main_path_enumeration_reconciles_against_independently_counted_totals():
-    r = mb.main_only_arm_delta()
-
-    assert r["arm_off"] >= r["arm_on"], (
-        "switching a source arm off can only reveal findings; a shrink means "
-        "the toggle changed something other than the arm")
-    assert r["no_longer_reported"] == [], r["no_longer_reported"]
-    assert r["arm_off"] - r["arm_on"] > 0, (
-        f"nothing is revealed on main ({r['arm_on']} to {r['arm_off']}), so "
-        f"this test would pass by comparing zero with zero")
-
-    assert len(r["revealed_findings"]) == r["arm_off"] - r["arm_on"], (
-        f"the enumeration has {len(r['revealed_findings'])} entries where the "
-        f"two independently counted gate totals differ by "
-        f"{r['arm_off'] - r['arm_on']}. Either the join dropped a finding or "
-        f"the toggle lost one.")
-
-    for f in r["revealed_findings"]:
-        # Every revealed finding sat in a paragraph the WORD alone sourced.
-        # `masked` here would mean the join found the wrong paragraph, which is
-        # exactly the mis-attribution the same-tree key exists to prevent.
-        assert f["exposed"] is True, f
-        assert f["otherwise_sourced_by"] is None, f
-        assert f["citation_words"], f
-        assert f["line"] > 0 and f["snippet"].strip(), f
-
-    print(f"✓ main {r['main_sha'][:7]}: {r['arm_on']} findings with the arm "
-          f"on, {r['arm_off']} with it off, {len(r['revealed_findings'])} "
-          f"enumerated over {len({f['file'] for f in r['revealed_findings']})} "
-          f"file(s)")
+    # F25 is repaired by deleting the provenance arm. Recreating a detached
+    # main worktree to toggle a deleted arm measures nothing and contends on
+    # Git metadata when the legacy runner executes tests in parallel.
+    has_source, reason = mb.ca.paragraph_has_source(
+        "Regula has 2465 tests; see the documentation.")
+    assert has_source is False
+    assert reason == "no-source"

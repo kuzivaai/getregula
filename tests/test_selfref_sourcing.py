@@ -174,9 +174,9 @@ class TestSourceMechanismsSurvive(unittest.TestCase):
         para = "419 patterns, per https://example.org/benchmark-report"
         self.assertTrue(ca.paragraph_has_source(para)[0])
 
-    def test_citation_word_still_sources(self):
+    def test_citation_word_without_evidence_does_not_source(self):
         para = "419 patterns. Source: the pattern registry."
-        self.assertTrue(ca.paragraph_has_source(para)[0])
+        self.assertFalse(ca.paragraph_has_source(para)[0])
 
     def test_resolvable_repo_file_ref_still_sources(self):
         para = "419 patterns, counted by scripts/site_facts.py."

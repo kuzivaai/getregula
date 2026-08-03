@@ -82,6 +82,19 @@ OUT_OF_SCOPE = "out-of-scope"
 # CROSS-STATE entries are the N37 class. Each states which key it uses, whether
 # that key can collide within one file, and what kind of comparison it makes.
 INVENTORY: dict[tuple[str, str, str], tuple[str, str]] = {
+    ("scripts/merge_blockers.py", "active_claim_surface_paths", "setcomp"): (
+        OUT_OF_SCOPE,
+        "SAFE. Single-state derivation from the generated delivery inventory. "
+        "The repository-relative source path is the key; repeated records for "
+        "one source intentionally collapse because publication is a file-level "
+        "predicate. It compares neither commits nor finding populations."),
+    ("scripts/claim_auditor.py", "delivery_surface_paths", "setcomp"): (
+        OUT_OF_SCOPE,
+        "SAFE. This is a single-state derivation of active source paths from "
+        "one generated inventory. The key is the repository-relative source "
+        "path; duplicates intentionally collapse because a source file is "
+        "scanned once even when it supplies multiple destinations. It does "
+        "not compare states, totals, findings, or commits."),
     # ---- CROSS-STATE: the class N37 belongs to -------------------------
     ("scripts/gate_probe.py", "arm_delta", "setcomp"): (
         CROSS_STATE,
