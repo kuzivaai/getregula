@@ -120,7 +120,10 @@ def test_package_readme_discovery_supports_python_310(tmp_path, monkeypatch, rea
     assert any(row["source"] == "README.md" for row in rows)
 
 
-def test_wheel_metadata_and_sdist_pkg_info_are_verified(tmp_path):
+@pytest.mark.parametrize("python_310_fallback", [False, True])
+def test_wheel_metadata_and_sdist_pkg_info_are_verified(tmp_path, monkeypatch, python_310_fallback):
+    if python_310_fallback:
+        monkeypatch.setattr(psi, "tomllib", None)
     root = tmp_path / "repo"; dist = root / "dist"; dist.mkdir(parents=True)
     (root / "README.md").write_text("Long description\n", encoding="utf-8")
     (root / "pyproject.toml").write_text(

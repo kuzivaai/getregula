@@ -110,18 +110,27 @@ def website_records(root: Path, files: set[str]) -> list[dict[str, Any]]:
     return rows
 
 
-def package_records(root: Path, files: set[str]) -> list[dict[str, Any]]:
-    pyproject = (root / "pyproject.toml").read_text(encoding="utf-8")
+def _project_fields(pyproject: str) -> tuple[str, Any]:
     if tomllib is not None:
         project = tomllib.loads(pyproject)["project"]
-        readme = project.get("readme")
     else:
         project_match = re.search(r"(?ms)^\[project\]\s*$\n(.*?)(?=^\[|\Z)", pyproject)
+        project_body = project_match.group(1) if project_match else ""
         readme_match = re.search(
             r'''(?m)^\s*readme\s*=\s*(?:["']([^"']+)["']|\{[^}\n]*\bfile\s*=\s*["']([^"']+)["'][^}\n]*\})\s*(?:#.*)?$''',
-            project_match.group(1) if project_match else "",
+            project_body,
         )
-        readme = next((value for value in readme_match.groups() if value), None) if readme_match else None
+        description_match = re.search(r'''(?m)^\s*description\s*=\s*["']([^"']*)["']\s*(?:#.*)?$''', project_body)
+        project = {
+            "description": description_match.group(1) if description_match else None,
+            "readme": next((value for value in readme_match.groups() if value), None) if readme_match else None,
+        }
+    return project.get("description"), project.get("readme")
+
+
+def package_records(root: Path, files: set[str]) -> list[dict[str, Any]]:
+    pyproject = (root / "pyproject.toml").read_text(encoding="utf-8")
+    _, readme = _project_fields(pyproject)
     if isinstance(readme, dict):
         readme = readme.get("file")
     if not isinstance(readme, str) or readme not in files:
@@ -287,9 +296,14 @@ def apply_policy(root: Path, rows: list[dict[str, Any]]) -> tuple[list[dict[str,
 
 
 def verify_package_artifacts(root: Path, dist: Path) -> None:
-    config = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))["project"]
-    expected_summary = config["description"]
-    readme = config["readme"] if isinstance(config["readme"], str) else config["readme"]["file"]
+    pyproject = (root / "pyproject.toml").read_text(encoding="utf-8")
+    expected_summary, readme = _project_fields(pyproject)
+    if not isinstance(expected_summary, str):
+        raise DiscoveryError("pyproject project.description is missing or unsupported")
+    if isinstance(readme, dict):
+        readme = readme.get("file")
+    if not isinstance(readme, str):
+        raise DiscoveryError("pyproject project.readme is missing or unsupported")
     expected_body = (root / readme).read_text(encoding="utf-8").strip()
     wheels = sorted(dist.glob("*.whl")); sdists = sorted(dist.glob("*.tar.gz"))
     if len(wheels) != 1 or len(sdists) != 1:
