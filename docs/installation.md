@@ -239,7 +239,7 @@ pip install "regula-ai[yaml,ast,pdf]"
 Two likely causes:
 
 1. **You pointed at a directory with no code files matching Regula's extensions.** Regula scans `.py, .js, .ts, .jsx, .tsx, .java, .go, .rs, .c, .cpp, .mjs, .cjs, .ipynb`. The CLI now tells you this with `(no code files matched; check path and extensions)` rather than the old misleading `(test files excluded)` suffix.
-2. **You're on an older release.** Versions before 1.6.1 had a telemetry bug where a clean scan could misreport 0 files scanned. Upgrade: `pipx upgrade regula-ai` (once 1.6.1+ is published — see the PyPI release-gap issue tracked separately).
+2. **You're on an older release.** Earlier releases had a file-count telemetry bug. Upgrade with `pipx upgrade regula-ai`; check the [PyPI release history](https://pypi.org/project/regula-ai/) for published versions.
 
 ### `regula: permission denied`
 

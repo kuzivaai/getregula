@@ -23,9 +23,8 @@ regula check /tmp/anthropic-cookbook
 
 ## What You Should See
 
-Approximately 32 findings:
-- 3 AI Security findings (BLOCK tier) — all genuine pickle.load() calls in vectordb.py files
-- 29 Minimal-risk findings — correctly identifying AI-related code files
+The exact findings depend on the checked-out target and Regula version. Review
+each result against the source rather than expecting a fixed total.
 
 The 3 BLOCK findings are **true positives**: the vectordb.py files use `pickle.load(file)` to deserialise data, which is an arbitrary code execution risk (OWASP LLM05).
 

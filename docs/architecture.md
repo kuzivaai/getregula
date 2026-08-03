@@ -50,7 +50,7 @@ regula/
 ├── references/                    # Regulatory reference documents
 │   ├── owasp_llm_top10.yaml       # OWASP Top 10 for LLMs → EU AI Act mapping
 │   └── mitre_atlas.yaml           # MITRE ATLAS → EU AI Act mapping
-├── tests/                         # 101 test files, 2,673 tests (pytest --collect-only)
+├── tests/                         # 101 test files, 2,681 tests (pytest --collect-only)
 │   ├── test_classification.py     # Core classification tests (main test file)
 │   └── ...                        # See tests/ for full list
 ├── docs/

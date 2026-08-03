@@ -64,7 +64,7 @@ REGION = {
                 </div>
                 <div class="tracker-row">
                     <div class="lbl">Penalties (draft)</div>
-                    <div class="val">Up to R$50,000,000 or 2% annual revenue per infringement</div>
+                    <div class="val">Penalty ceilings are specified in the Senate-approved bill; the text may change in the Chamber</div>
                 </div>
                 <div class="tracker-row">
                     <div class="lbl">LGPD</div>
@@ -87,7 +87,7 @@ REGION = {
 
             <p>The bill was then sent to the Chamber of Deputies. On 4 April 2025, the Chamber created a Special Commission to analyse the text. As of April 2026, the bill is awaiting the rapporteur's report within that Special Commission. The Chamber may amend the text before voting; if it does, the bill returns to the Senate for conciliation.</p>
 
-            <p>The Senate-approved text phases entry into force: most provisions apply <strong>730 days</strong> (two years) after publication in the Diario Oficial da Uniao, while the rules on generative and general-purpose systems, prohibited practices and author rights apply after <strong>180 days</strong> (Senado Noticias, 10 Dec 2024). In December 2025 the Executive sent Congress a complementary bill creating the National AI Governance System (SIA), to be considered alongside PL 2338; the Chamber may further modify the implementation timeline. Penalties for non-compliance include fines of up to <strong>R$50,000,000</strong> (fifty million reais) or <strong>2% of the gross revenue of the group or conglomerate in Brazil</strong>, per infraction.</p>
+            <p>The Senate-approved text phases entry into force, but the Chamber may modify the implementation timeline and penalties before enactment. <a href="https://www25.senado.leg.br/web/atividade/materias/-/materia/157233" target="_blank" rel="noopener">Senado Federal: bill text and procedural history</a>.</p>
 
             <p class="note-inline">PL 2338/2023 is not yet law. The penalty ranges, risk classifications, and obligations described on this page reflect the Senate-approved text and may be modified by the Chamber of Deputies.</p>
 """,
@@ -236,7 +236,7 @@ REGION = {
                 </details>
                 <details>
                     <summary>What are the penalties under the Marco Legal da IA?</summary>
-                    <p>If PL 2338/2023 is enacted as currently drafted, penalties include fines of up to R$50,000,000 (fifty million reais) or 2% of the gross revenue of the group or conglomerate in Brazil, per infraction (Senado Noticias, 10 Dec 2024). These penalty ranges are subject to change during Chamber deliberation. The bill is not yet law.</p>
+                    <p>The Senate-approved bill specifies financial penalties, but those provisions may change during Chamber deliberation and are not current law. <a href="https://www25.senado.leg.br/web/atividade/materias/-/materia/157233" target="_blank" rel="noopener">Senado Federal: bill text and status</a>.</p>
                 </details>
                 <details>
                     <summary>What risk categories does the Marco Legal define?</summary>
@@ -252,7 +252,7 @@ REGION = {
                 </details>
                 <details>
                     <summary>How does the Marco Legal compare to the EU AI Act?</summary>
-                    <p>Both use a risk-based approach with prohibited practices, high-risk categories, and lighter obligations for lower-risk systems. The Marco Legal's high-risk categories overlap significantly with the EU AI Act's Annex III list (employment, credit, education, healthcare, law enforcement). Key differences: the Marco Legal does not have an EU-style central AI database or conformity assessment procedure (yet), and the penalty structure is different (R$50M / 2% revenue vs the EU's tiered percentage-of-global-revenue model). Regula's framework crosswalk maps between both frameworks, covering all 7 EU AI Act obligation articles (9&ndash;15).</p>
+                    <p>Both use a risk-based approach, but their categories, institutions, and procedures differ. The Brazilian bill remains subject to Chamber amendment. <a href="https://www25.senado.leg.br/web/atividade/materias/-/materia/157233" target="_blank" rel="noopener">Senado Federal bill record</a>.</p>
                 </details>
             </div>
 """,
@@ -266,7 +266,7 @@ REGION = {
                 <h3>To verify on enactment</h3>
                 <ol>
                     <li><strong>High-risk category definitions.</strong> The Chamber may add, remove, or redefine high-risk categories. Autonomous vehicles, in particular, were a late addition and may be scoped differently.</li>
-                    <li><strong>Penalty ranges.</strong> The R$50M / 2% revenue figures may be adjusted during Chamber deliberation.</li>
+                    <li><strong>Penalty ranges.</strong> The Senate-approved provisions may be adjusted during Chamber deliberation.</li>
                     <li><strong>Supervisory authority.</strong> The Senate text assigns oversight roles but the final institutional arrangement (single authority vs sector-specific model) may change.</li>
                     <li><strong>Transition period.</strong> The Senate-approved text phases entry into force: 730 days for most provisions, 180 days for generative/prohibited-practice/author-rights rules (Senado Noticias, 10 Dec 2024; some analyses cite Art. 80 of the approved substitute). An earlier version of this page stated a single one-year window citing Art. 45 — that was wrong. The final timeline will be confirmed upon enactment.</li>
                     <li><strong>ANPD role.</strong> Whether the ANPD becomes the primary AI regulator or shares authority with sector-specific regulators.</li>

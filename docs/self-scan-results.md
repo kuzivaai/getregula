@@ -50,19 +50,16 @@ comment; all 27 now carry one (fixed 17 July 2026 — verify with
 
 ## What changed since the 16 April 2026 scan (v1.7.0)
 
-The April scan reported 1 active WARN (`examples/cv-screening-app/`)
-and 1 active INFO (`examples/customer-chatbot/`) — see this file's own
+The April scan recorded active findings in the bundled examples — see this file's own
 history at commit `9d075be` (16 April 2026). Both are gone from
 the default scan, for two deliberate reasons — not because detection
 weakened:
 
-1. **Domain gating shipped** (the April–July precision work,
-   15.2% → 85.9% measured precision). High-risk patterns in the
+1. **Domain gating shipped.** High-risk patterns in the
    employment, essential-services, worker-management, and justice
    domains no longer fire unless the project declares that domain
    (`--domain` or `system.domain` in `regula-policy.yaml`). The
-   default self-scan therefore reports these as "5 high-risk
-   finding(s) suppressed by domain gating" instead of active findings.
+   default self-scan reports domain-gated indicators separately instead of active findings.
    Activating the domain shows detection still works (table above).
 2. **`examples/`, `demos/`, and `benchmarks/` joined the canonical
    skip set** (`constants.SKIP_DIRS`) during false-positive tuning, so
