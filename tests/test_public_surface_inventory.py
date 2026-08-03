@@ -108,6 +108,18 @@ def test_package_summary_and_long_description_are_derived(tmp_path):
     assert {r["source"] for r in rows} == {"pyproject.toml#project.description", "README-new.md"}
 
 
+@pytest.mark.parametrize("readme_value", ['"README.md"', '{file = "README.md", content-type = "text/markdown"}'])
+def test_package_readme_discovery_supports_python_310(tmp_path, monkeypatch, readme_value):
+    (tmp_path / "README.md").write_text("long description", encoding="utf-8")
+    (tmp_path / "pyproject.toml").write_text(
+        f'[project]\nname="x"\nversion="1"\ndescription="Summary"\nreadme={readme_value}\n',
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(psi, "tomllib", None)
+    rows = psi.package_records(tmp_path, {"pyproject.toml", "README.md"})
+    assert any(row["source"] == "README.md" for row in rows)
+
+
 def test_wheel_metadata_and_sdist_pkg_info_are_verified(tmp_path):
     root = tmp_path / "repo"; dist = root / "dist"; dist.mkdir(parents=True)
     (root / "README.md").write_text("Long description\n", encoding="utf-8")

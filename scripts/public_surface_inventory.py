@@ -11,11 +11,15 @@ import re
 import subprocess
 import sys
 import tarfile
-import tomllib
 import zipfile
 from collections import Counter, deque
 from pathlib import Path
 from typing import Any
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10: only the project readme key is needed.
+    tomllib = None
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -107,9 +111,17 @@ def website_records(root: Path, files: set[str]) -> list[dict[str, Any]]:
 
 
 def package_records(root: Path, files: set[str]) -> list[dict[str, Any]]:
-    config = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
-    project = config["project"]
-    readme = project.get("readme")
+    pyproject = (root / "pyproject.toml").read_text(encoding="utf-8")
+    if tomllib is not None:
+        project = tomllib.loads(pyproject)["project"]
+        readme = project.get("readme")
+    else:
+        project_match = re.search(r"(?ms)^\[project\]\s*$\n(.*?)(?=^\[|\Z)", pyproject)
+        readme_match = re.search(
+            r'''(?m)^\s*readme\s*=\s*(?:["']([^"']+)["']|\{[^}\n]*\bfile\s*=\s*["']([^"']+)["'][^}\n]*\})\s*(?:#.*)?$''',
+            project_match.group(1) if project_match else "",
+        )
+        readme = next((value for value in readme_match.groups() if value), None) if readme_match else None
     if isinstance(readme, dict):
         readme = readme.get("file")
     if not isinstance(readme, str) or readme not in files:
