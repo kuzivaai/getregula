@@ -236,10 +236,12 @@ def _diff_base(base: str) -> list[str]:
         try:
             merge_base = _git("merge-base", "HEAD", f"origin/{base}").strip()
         except subprocess.CalledProcessError:
-            parents = _git("rev-list", "--parents", "-n", "1", "HEAD").split()
-            if len(parents) < 3:
+            commit_headers = _git("cat-file", "-p", "HEAD").splitlines()
+            parents = [line.removeprefix("parent ") for line in commit_headers
+                       if line.startswith("parent ")]
+            if len(parents) < 2:
                 raise
-            merge_base = parents[1]
+            merge_base = parents[0]
     changed = _git("diff", "--name-only", merge_base, "HEAD").split("\n")
     tracked = set(_tracked_scannable())
     return sorted(p for p in changed if p in tracked)
