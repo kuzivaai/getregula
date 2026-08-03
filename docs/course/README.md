@@ -31,7 +31,7 @@ compliance.
 | [9. Framework Mapping](09-framework-mapping.md) | Map findings to NIST, ISO, OWASP, and MITRE frameworks | 15 min |
 | [10. Building Your Own Patterns](10-custom-patterns.md) | Extend Regula with domain-specific detection rules | 30 min |
 
-**Total estimated time: ~4 hours**
+**Timing:** work at your own pace; duration depends on the exercises and project selected.
 
 ## How to Use This Course
 

@@ -65,6 +65,7 @@ Labels from 2026-04-01, re-validated 2026-04-07 (257 hand-labelled findings).
 >
 > **Coverage caveat.** The rescan produced 3,927 unlabelled findings.
 > Published precision covers ~6% of current scanner output on these repos.
+> Evidence: [`benchmarks/labels.json`](labels.json) and the reproducible scorer in [`benchmarks/label.py`](label.py).
 
 | Cut | TP | FP | Precision |
 |---|---:|---:|---:|
@@ -74,6 +75,7 @@ Labels from 2026-04-01, re-validated 2026-04-07 (257 hand-labelled findings).
 | `minimal_risk` (94% of findings) | 36 | 205 | 14.9% |
 | `ai_security` | 0 | 6 | 0.0% |
 | `credential_exposure` | 0 | 2 | 0.0% |
+Source: [`benchmarks/labels.json`](labels.json), reproduced with [`benchmarks/label.py`](label.py) `score`.
 
 The `minimal_risk` tier dominates and is noisy on library code — these
 projects are AI libraries where every file imports AI modules, but most
@@ -84,15 +86,16 @@ No `prohibited` or `high_risk` findings were generated because library
 code does not typically trigger domain-specific patterns (hiring,
 credit scoring, biometrics, etc.).
 
-## Precision — Random Corpus, Blind-Labelled (83.5%)
+## Precision — Random Corpus, Blind-Labelled
 
 **N=115, labelled by a single reviewer; no inter-rater agreement
 measurement exists** (see "Limitations" below).
 
-**This is the headline number.** 50 randomly selected Python AI repos
-(from a pool of 276, seed=42), scanned with Regula v1.7.0, 201 findings
+The measured corpus uses 50 randomly selected Python AI repos
+(from a pool of 276, seed=42), scanned with Regula v1.7.0; 201 findings were
 stratified-sampled and blind-labelled (labeller saw only file path, code
 context, and finding description — no project name, README, or purpose).
+Source: [`METHODOLOGY.json`](results/random_corpus/METHODOLOGY.json).
 
 Precision is measured on **production code only** (default `--skip-tests`
 settings), which is what users actually see.
@@ -106,39 +109,33 @@ settings), which is what users actually see.
 | `credential_exposure` | 1 | 0 | 100.0% |
 | `high_risk` | 2 | 4 | 33.3% |
 | **Overall** | **96** | **19** | **83.5% (N=115)** |
+Source: [`benchmarks/results/random_corpus/BLIND_LABELS.json`](results/random_corpus/BLIND_LABELS.json) and [`METHODOLOGY.json`](results/random_corpus/METHODOLOGY.json).
 
-**Improvement from v1.7.0:** Production precision improved from 70.0% to
-83.5% (+13.5pp) via four changes: (1) domain-gated high-risk findings
-(16 FP removed, 0 TP lost), (2) LLM import gating for OWASP findings
-(4 FP removed, 3 borderline TP lost), (3) pattern fixes (pipeline/ControlNet
-separation, worker exclusion), (4) justice subcategory added to opt-in
-(3 FP removed from translation tool keyword matches).
+**Measured v1.7.0 comparison:** production precision changed from 70.0% to
+83.5% (+13.5pp) after domain gating, import gating, and pattern changes.
+The underlying labels and methodology are in
+[`benchmarks/results/random_corpus/`](results/random_corpus/).
 
-**What this means:** About 5 in 6 of Regula's findings on production
-code in a random AI project are genuine risk indicators. The `high_risk`
-tier (33%) remains weakest — 6 domain keyword subcategories now require
-`--domain` declaration or import fingerprinting to fire. The structural
-tiers (`ai_security`, `agent_autonomy`, `limited_risk`, `minimal_risk`)
-are all above 80% because they match on code patterns (deserialization,
-subprocess calls, API calls, model files) rather than keywords.
+**Interpretation:** the measured production subset was 83.5% precise. The
+`high_risk` tier result rests on N=6 and is too small for a reliable tier-level
+conclusion. See [`METHODOLOGY.json`](results/random_corpus/METHODOLOGY.json).
 
-**Including test code** (what users see with `--no-skip-tests`), overall
-precision is 60.6% (N=165, was 51.2%).
+**Including test code**, the measured precision is 60.6% (N=165).
+Source: [`METHODOLOGY.json`](results/random_corpus/METHODOLOGY.json).
 
-**Post-v1.7.0 pattern improvements (not yet re-benchmarked against random corpus):**
+**Pattern improvements after the measured version (not yet re-benchmarked against the random corpus):**
 
 Three SUPPRESS_FINGERPRINTS groups added (medical_imaging, experiment_tracking,
 database_migration), sensitive_info_disclosure pattern narrowed to require PII
 context, employment domain excludes threading/joblib/concurrent.futures. These
 changes should reduce false positives but have NOT been measured against the
 random corpus because re-scanning requires cloning the 50 repos and re-labelling
-new findings. The 83.5% figure remains the last verified measurement (v1.7.0,
-domain-gated, April 2026).
+new findings. The last verified measurement is the v1.7.0 result recorded in
+[`METHODOLOGY.json`](results/random_corpus/METHODOLOGY.json).
 
-**B1 status (June 2026):** The random corpus PRECISION.json already reflects
-domain-gated scanning (v1.7.0). The high_risk tier remains at 33.3% on N=6 —
-this is statistically unmeasurable (Wilson CI: ~4%–78%). No conclusion about
-high_risk precision is possible until the corpus is expanded to N>=30 (task A3).
+**B1 status (June 2026):** The random corpus result reflects domain-gated
+scanning (v1.7.0). The high-risk slice is N=6 and does not support a reliable
+tier-level conclusion. See [`METHODOLOGY.json`](results/random_corpus/METHODOLOGY.json).
 A full rescan of the random corpus with current patterns is needed to verify
 whether the post-v1.7.0 improvements affect the 83.5% headline.
 
@@ -157,6 +154,7 @@ non-random (hand-picked to match specific risk categories).
 |--------|----------|---:|---:|---:|------|
 | Hand-picked apps (12 projects) | 189 | 125 | 64 | 66.1% | Cherry-picked to match Annex III categories |
 | Library code (5 projects) | 257 | 39 | 218 | 15.2% | AI SDKs — mostly infrastructure code |
+Source: [`benchmarks/labels.json`](labels.json) and development-corpus records under [`benchmarks/results/`](results/).
 
 ## Scan Summary — Application Corpus
 
@@ -196,8 +194,8 @@ would conflate two different corpora and is methodologically unsound.
 
 ## Limitations
 
-1. **Sample size.** 257 library labels + 234 app findings is small by
-   SAST benchmark standards (OWASP uses 2,740 test cases).
+1. **Sample size.** The checked-in corpus is too small for dependable
+   conclusions about every tier, language, and project type.
 2. **Single reviewer.** All labels are from one reviewer. No inter-rater
    agreement measurement exists (target: P2).
 3. **Python only.** All benchmarked projects are Python. Regula supports

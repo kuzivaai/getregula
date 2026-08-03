@@ -7,7 +7,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-2673%20passing-brightgreen.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-2679%20collected-blue.svg)](#verified-numbers)
 [![WCAG 2.2 AA](https://img.shields.io/badge/WCAG%202.2-AA-success.svg)](docs/accessibility/README.md)
 
 ---
@@ -44,7 +44,7 @@ pipx install regula-ai      # or: pip install regula-ai / uv pip install regula-
 
 **Not sure if the AI Act applies?** No code needed:
 ```bash
-regula assess               # 5 yes/no questions → your risk tier
+regula assess               # record declared context for human review
 ```
 
 **Want to scan your code?**
@@ -121,10 +121,10 @@ The EU AI Act defines four risk tiers. Regula maps code patterns to each:
 
 | Tier | Action | What it means |
 |------|--------|---------------|
-| **Prohibited** (Article 5) | Block | Social scoring, subliminal manipulation, real-time biometric ID, emotion detection in workplaces. Regula blocks these patterns and explains the specific prohibition. |
-| **High-risk** (Annex III) | Warn + requirements | CV screening, credit scoring, healthcare services, biometrics, education assessment. Regula lists the Articles 9-15 obligations that apply if the system is confirmed high-risk. |
-| **Limited-risk** (Article 50) | Transparency note | Chatbots, deepfakes, emotion recognition. Regula flags the transparency disclosure required. |
-| **Minimal-risk** | Log only | Spam filters, recommendations, code completion. Logged for awareness, no action required. |
+| **Potentially prohibited** (Article 5) | Block indicator | Reports code patterns associated with listed practices for urgent contextual review. |
+| **Potentially high-risk** (Article 6 and Annex III) | Warn + review map | Reports candidate use categories and maps provisions that may be relevant if a reviewer confirms the legal classification. |
+| **Potential transparency duty** (Article 50) | Transparency indicator | Reports chatbot, synthetic-content and related implementation signals; the applicable paragraph and exceptions require review. |
+| **No elevated code indicator** | Log only | Means the scanner did not observe a configured elevated indicator. It does not establish minimal-risk status or absence of legal duties. |
 
 Every finding includes the relevant Article reference and explains when exceptions may apply. Regula flags patterns -- it does not make legal determinations.
 
@@ -154,7 +154,7 @@ Every finding includes the relevant Article reference and explains when exceptio
 | `regula conform --project .` | Article 43 conformity assessment evidence pack |
 | `regula dpv --project .` | Export the risk indication as DPV-AIAct JSON-LD (aligned to the DPVCG EU-AIAct vocabulary) for RDF/GRC tooling |
 | `regula check --ci .` | CI mode -- exit code 1 on any WARN or BLOCK finding, SARIF output |
-| `regula assess` | Interactive applicability check -- does the EU AI Act apply to you? |
+| `regula assess` | Structured declared-context questionnaire for applicability and risk review |
 | `regula demo` | Scan a bundled example project -- zero-commitment trial |
 | `regula api-server` | Start the REST API (localhost:8487) with web dashboard |
 | `regula conform --organisational` | Governance self-assessment for Articles 9/17/27/72 |
@@ -184,7 +184,7 @@ Seven endpoints: `/health`, `/v1/check`, `/v1/classify`, `/v1/gap`, `/v1/questio
 
 ## Who is this for?
 
-- **Solo founders and indie hackers** building AI products (with Claude Code, Cursor, or similar) who have EU users and need to know what the EU AI Act means for their code.
+- **Solo founders and indie hackers** building AI products who need an initial inventory of code-observable governance indicators before contextual and legal review.
 - **Small teams** who want to understand their compliance exposure before it becomes a sales blocker. Enterprise procurement is already asking for AI Act evidence.
 - **Engineering teams** who want EU AI Act scanning in CI/CD to catch high-risk or prohibited patterns before they ship.
 - **AI governance consultants and advisors** — run Regula on a client's codebase to produce code-observation reports, gap-review scaffolds, and hash-manifested documentation for completion and review within a broader governance engagement. Selected generated facts have repository checks; limitations and reproduction commands are recorded in the trust pack. Deliverables can carry engagement metadata (client, preparer, reference) via the `engagement:` policy section or `--client`/`--prepared-by`/`--engagement-ref` flags. See the [consultant guide](docs/consultant-guide.md) for the workflow and its boundaries.
@@ -258,7 +258,7 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | Risk detection patterns (regexes) | 419 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Compliance frameworks mapped | 13 |
-| Tests (pytest --collect-only, all passing) | 2,673 |
+| Tests (pytest --collect-only, all passing) | 2,681 |
 | Required production dependencies | 0 |
 
 For reproduction commands, version-bounded benchmarks, known exceptions, security posture, and audit-trail design, see [`docs/TRUST.md`](docs/TRUST.md). What version numbers promise, the public API they cover, and the deprecation policy: [`docs/VERSIONING.md`](docs/VERSIONING.md).

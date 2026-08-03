@@ -137,7 +137,7 @@ regula conform --project .                    # Generate evidence pack
 regula conform --project . --format json      # Machine-readable summary
 ```
 
-Output: 26 files across 12 folders, including Annex IV draft, audit trail, SBOM, remediation plan, Article 14 oversight analysis, and an Article 47 declaration of conformity template. All files SHA-256 hashed in a manifest for tamper detection.
+Output is a structured folder containing an Annex IV draft, audit trail, SBOM, remediation plan, Article 14 oversight analysis, and an Article 47 declaration of conformity template. All files are SHA-256 hashed in a manifest for tamper detection. The exact generated layout is defined by [`scripts/conformity_pack.py`](../scripts/conformity_pack.py).
 
 **Important:** This is a compliance evidence scaffold, not a legal determination. The `00-assessment-summary.json` file lists what Regula auto-generated and what requires human input (intended purpose, FRIA, training data provenance, etc.).
 

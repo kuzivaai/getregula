@@ -26,7 +26,7 @@ pip install pyyaml  # optional but recommended
 regula --help
 ```
 
-You should see 20 commands listed:
+The help output lists the commands registered by the installed version:
 
 ```
 agent, audit, baseline, benchmark, check, classify, compliance,

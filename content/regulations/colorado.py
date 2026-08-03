@@ -210,7 +210,7 @@ REGION = {
     <li><strong>Section 6-1-1703 — Deployer record-keeping.</strong> Deployers must retain records demonstrating compliance for at least three years after each consequential decision.</li>
     <li><strong>Section 6-1-1704 — Consumer notice.</strong> Deployers must give clear and conspicuous notice that ADMT is being used, and after an adverse outcome must provide a plain-language description of the ADMT's role within 30 days.</li>
     <li><strong>Section 6-1-1705 — Consumer rights.</strong> Consumers can correct inaccurate personal data and request <em>meaningful human review and reconsideration</em> of adverse outcomes; deployers must designate trained individuals with authority to override ADMT decisions. The Attorney General must adopt implementing rules for these procedures on or before 1 January 2027.</li>
-    <li><strong>Section 6-1-1706 — Enforcement.</strong> Exclusive enforcement by the Colorado Attorney General through the Colorado Consumer Protection Act (civil penalties under the CCPA, C.R.S. section 6-1-112). A 60-day right-to-cure applies (the cure provision sunsets 1 January 2030). No new private right of action.</li>
+    <li><strong>Section 6-1-1706 — Enforcement.</strong> Enforcement rests with the Colorado Attorney General through the Colorado Consumer Protection Act (civil penalties under the CCPA, C.R.S. section 6-1-112). A 60-day right-to-cure applies (the cure provision sunsets 1 January 2030). No new private right of action.</li>
 </ul>
 <p>What is <em>not</em> in SB 26-189 matters as much: the reasonable-care duty against algorithmic discrimination, mandatory impact assessments, and risk management programme requirements of SB 24-205 were not reenacted.</p>
 """,

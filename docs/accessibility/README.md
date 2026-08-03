@@ -87,8 +87,8 @@ the page state before `site.css` has applied.
 
 **What this does NOT certify:**
 
-- Automated tooling catches ~30–50% of real accessibility barriers. Passing
-  axe is a floor, not a ceiling.
+- Automated tooling cannot find every accessibility barrier. Passing an
+  automated check is a floor, not a ceiling.
 - **Manual screen-reader testing** (NVDA on Windows, VoiceOver on macOS,
   TalkBack on Android) has NOT been performed. Do that before making a
   formal AA claim.
