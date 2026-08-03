@@ -404,7 +404,7 @@ def test_prose_only_remote_claim_is_rejected():
 
     accepted, _ = audit_status_claims(
         "| N2 | ... | corrected, and the commit is PUSHED:236437b |",
-        exists, present)
+        exists, present, lambda _sha: True)
     assert not accepted, "; ".join(accepted)
     print("✓ ledger status: prose-only remote claims rejected")
 
