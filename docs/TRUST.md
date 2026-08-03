@@ -102,7 +102,7 @@ python3 -m pytest tests/ -q
 
 Regula also ships a legacy auto-discovery runner for the classification
 suite — run `python3 tests/test_classification.py` for its current output.
-The runner currently discovers 1,082 functions, a count machine-checked by
+The runner currently discovers 1,083 functions, a count machine-checked by
 `tests/test_published_count_manifest.py`). **Read that line carefully:
 `1386 passed` is not a count of tests.** The runner's counter is incremented by
 the `assert_true` / `assert_eq` / `assert_false` helpers in `tests/helpers.py`,
@@ -395,7 +395,7 @@ are tracked in a public delta log (`content/regulations/delta-log/`).
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (2,685 unique tests, 2,685 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,082 functions, 437 defined in-file) |
+| Test suite | `tests/` (2,685 unique tests, 2,685 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,083 functions, 437 defined in-file) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit hook source | `hooks/pre_tool_use.py` |
