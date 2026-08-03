@@ -548,3 +548,50 @@ detached-worktree verification reproduces the repair. All previously named open
 items remain open. These corrections do not create human-labelled accuracy,
 competitor equivalence, demand or pilot evidence, so commercial_v1 remains STOP
 and `PRODUCT_PILOT_STATUS` remains NOT_APPROVED.
+
+## N64 — Active-delivery claim enforcement and readiness decision
+
+**First raised:** 2026-08-03. **Status:** partially addressed; release remains
+blocked.
+
+The discovery inventory exposed a second-order enforcement defect: the normal
+diff audit could be green while claim-capable, actively delivered surfaces
+that were unchanged in the current diff still contained unsourced or stale
+claims. The auditor now consumes the generated delivery inventory and
+`--delivery-surfaces` fails closed on an unreadable or empty inventory. The
+full active delivery scan covers 96 text surfaces and currently reports 538
+claim candidates with no unsourced candidates; fact verification checks 148
+references across 17 files. Mutation tests cover the inventory hand-off and
+prevent a policy entry from turning an entire paragraph into an exemption.
+
+This does not make the repository release-ready. The independent merge-blocker
+analysis still reports 42 findings that survive both enforcement arms: 1
+blocked, 21 contested, 18 fixable and 2 inherited. Exact final full-suite and
+detached-worktree verification remain required. No deployment is authorised by
+this item. F25, F30, N35, N43, N50/N54, N53, N55, N57, N6, N7, N10, N11, N12,
+N60 and N61 retain their prior status. commercial_v1 remains STOP and
+`PRODUCT_PILOT_STATUS` remains NOT_APPROVED.
+
+## N65 — Merge blocker used tracked-renderable as a publication proxy
+
+**First raised:** 2026-08-03. **Status:** implementation complete; exact final
+verification pending.
+
+The independent merge analysis continued to classify almost every tracked
+document outside `.claude/` and `docs/improvement/` as a published product
+surface after N62 introduced the authoritative delivery-derived inventory.
+That proxy mixed active product promises with retained benchmarks, ADRs and
+commercial evidence. The reported 42-item residue therefore comprised two
+different populations and could not support a single merge decision.
+
+`merge_blockers.is_published_surface` now derives its file set from generated
+records classified `active_product` and `claim_capable`, and fails closed when
+the inventory is missing, malformed or empty. The current run reports 474
+total claim findings, 463 introduced-only findings, zero active-delivery
+findings and zero surviving both conditions. The 42 previously reported items
+remain in retained evidence; they were not deleted, sourced indiscriminately
+or allowlisted. Focused gate, set-operation and mutation coverage reports 45
+passing tests. This changes the active claim-blocker measurement, not the
+commercial evidence: commercial_v1 remains STOP and
+`PRODUCT_PILOT_STATUS` remains NOT_APPROVED. Repository merge readiness remains
+pending until the complete test matrix and detached-worktree checks pass.
