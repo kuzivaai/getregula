@@ -13,7 +13,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-2673%20passing-brightgreen.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-2681%20passing-brightgreen.svg)](#verified-numbers)
 [![WCAG 2.2 AA](https://img.shields.io/badge/WCAG%202.2-AA-success.svg)](docs/accessibility/README.md)
 
 ---
@@ -244,7 +244,7 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | Risk detection patterns (regexes) | 419 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Compliance frameworks mapped | 13 |
-| Tests (pytest --collect-only, all passing) | 2,673 |
+| Tests (pytest --collect-only, all passing) | 2,681 |
 | Required production dependencies | 0 |
 
 For reproduction commands, version-bounded benchmarks, known exceptions, security posture, and audit-trail design, see [`docs/TRUST.md`](docs/TRUST.md).
@@ -499,7 +499,7 @@ at [docs/what-regula-does-not-do.md](https://github.com/kuzivaai/getregula/blob/
 
 You built an AI-powered app. Maybe with Claude, ChatGPT, Cursor, Lovable, or Bolt. It works. Now what?
 
-If your app is used by anyone in the EU — or you plan to sell it there — the **EU AI Act** applies to you. Violations carry fines up to **EUR 35 million or 7% of global turnover**. Art 50 transparency obligations apply from **2 August 2026**. Annex III high-risk obligations are deferred to **2 December 2027** under the Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026 (approved by Council on 29 June 2026; published in the Official Journal on 24 July 2026 as Regulation (EU) 2026/1744, in force from 27 July 2026; the deferred dates are enacted law).
+If your app is used in the EU, the **EU AI Act** may apply depending on the roles and scope in Article 2. Article 50 transparency obligations apply from **2 August 2026**. Annex III high-risk obligations are deferred to **2 December 2027** under the Digital Omnibus. Primary legislation: [Regulation (EU) 2024/1689](https://eur-lex.europa.eu/eli/reg/2024/1689/oj).
 
 Regula provides a starting point for contextual human review; runtime varies by repository and environment.
 
@@ -889,7 +889,7 @@ pip install "regula-ai[yaml,ast,pdf]"
 Two likely causes:
 
 1. **You pointed at a directory with no code files matching Regula's extensions.** Regula scans `.py, .js, .ts, .jsx, .tsx, .java, .go, .rs, .c, .cpp, .mjs, .cjs, .ipynb`. The CLI now tells you this with `(no code files matched; check path and extensions)` rather than the old misleading `(test files excluded)` suffix.
-2. **You're on an older release.** Versions before 1.6.1 had a telemetry bug where a clean scan could misreport 0 files scanned. Upgrade: `pipx upgrade regula-ai` (once 1.6.1+ is published — see the PyPI release-gap issue tracked separately).
+2. **You're on an older release.** Earlier releases had a telemetry bug where a clean scan could misreport the file count. Upgrade with `pipx upgrade regula-ai`; release history is on [PyPI](https://pypi.org/project/regula-ai/).
 
 ### `regula: permission denied`
 
@@ -952,6 +952,7 @@ All three remove only Regula. They do not remove the optional policy file at `~/
 | OSS | WARN (50–79) | 2 | 6 | 25.0% | n/a |
 | OSS | INFO (<50) | 37 | 212 | 14.9% | n/a |
 | OSS — overall | all tiers | 39 | 218 | **15.2%** | n/a |
+Source: [`benchmarks/labels.json`](https://github.com/kuzivaai/getregula/blob/main/benchmarks/labels.json).
 
 **The most important row is the third one.** Regula's CI default gate
 is BLOCK tier. **0 BLOCK findings fired across 257 sampled findings on
@@ -969,10 +970,10 @@ behaviour on other codebases.
 > repository scanned falsely PROHIBITED before the July 2026
 > suppression-parsing fix.
 
-The 15.2% headline is real but applies to a tier — INFO — that does
+The measured 15.2% result applies to a tier — INFO — that does
 not fail CI builds by default. INFO findings are surfaced for manual
 review only when the user explicitly requests them (`regula check
---show-info` or the JSON envelope).
+Evidence: [`benchmarks/labels.json`](https://github.com/kuzivaai/getregula/blob/main/benchmarks/labels.json).
 
 ---
 
@@ -1008,7 +1009,7 @@ python3 benchmarks/label.py score
 Expected output:
 
 ```
-precision: 15.2% (tp=39, fp=218, n=257)
+precision result derived from the checked-in labels
 ```
 
 The 257 labels are at `benchmarks/labels.json`. Every entry has:
@@ -1052,21 +1053,19 @@ python3 -m pytest tests/ --collect-only -q 2>&1 | tail -1  # Full pytest count
 | pydantic-ai | 52 | 10 | 42 | 19.2% | Similar to langchain — agent patterns in framework code |
 | instructor | 51 | 2 | 49 | 3.9% | Mostly LLM provider adapters — fires on every model call |
 | openai-python | 51 | 0 | 51 | **0.0%** | Canonical AI library implementation. Every file is an AI library call. Pure FP territory by design. |
+Source: [`benchmarks/labels.json`](https://github.com/kuzivaai/getregula/blob/main/benchmarks/labels.json).
 
 **Reading the table:**
 
-- **`scikit-learn` shows the realistic ceiling.** A real ML codebase with
-  bias-relevant features and pipelines gets **30% precision** across all
-  tiers, not 15%. Filter to BLOCK tier and the figure is 0 FPs.
+- **`scikit-learn` measured 30% precision** across all tiers in this corpus.
+  Source: [`benchmarks/labels.json`](https://github.com/kuzivaai/getregula/blob/main/benchmarks/labels.json).
 - **`openai-python` and `instructor` show the floor.** Both are AI library
   implementations themselves. Regula's job is to flag *use* of AI in
   application code; it is not designed to be run on the SDK that wraps
   the OpenAI HTTP API. Running Regula on `openai-python` is like
   running an SQL injection scanner on `psycopg2` itself.
-- **The benchmark deliberately includes both extremes** so the 15.2%
-  headline is honest about the worst case. A user scanning their own
-  application code rather than the SDKs they import is closer to the
-  scikit-learn number.
+- **The benchmark includes both library and application-like projects.**
+  Results should not be generalized beyond the measured corpus.
 
 ---
 
@@ -1077,6 +1076,7 @@ python3 -m pytest tests/ --collect-only -q 2>&1 | tail -1  # Full pytest count
 | **BLOCK** | confidence ≥ 80 | **0** | 0 | 0 | **n/a** (no findings) | Fails CI build |
 | WARN | 50 ≤ confidence < 80 | 8 | 2 | 6 | 25.0% | Logged, does not fail CI |
 | INFO | confidence < 50 | 249 | 37 | 212 | 14.9% | Hidden by default, opt-in via `--show-info` |
+Source: [`benchmarks/labels.json`](https://github.com/kuzivaai/getregula/blob/main/benchmarks/labels.json).
 
 **Why this matters more than the headline:**
 
@@ -1087,10 +1087,9 @@ genuinely high-confidence — for example, a literal `def classify_resume`
 function calling OpenAI (the synthetic-corpus high-risk fixture set,
 which scores 88+ and triggers BLOCK).
 
-This is deliberate. The confidence-score model is tuned so that the
-gap between "definitely worth a human's attention" (BLOCK) and
-"possibly interesting context" (INFO) is wide. The 15.2% figure is the
-precision of the wide INFO cast — the part the user almost never sees.
+The confidence-score model separates BLOCK and INFO output. The measured
+INFO precision is recorded in
+[`benchmarks/labels.json`](https://github.com/kuzivaai/getregula/blob/main/benchmarks/labels.json).
 
 ---
 
@@ -1103,11 +1102,10 @@ precision of the wide INFO cast — the part the user almost never sees.
 | `minimal_risk` | 241 | 36 | 205 | 14.9% | The bulk of the OSS corpus. Most are AI library imports without high-risk context. |
 | `ai_security` | 6 | 0 | 6 | 0.0% | OWASP LLM Top 10 indicators. All 6 FPs are framework code, not application code. |
 | `credential_exposure` | 2 | 0 | 2 | 0.0% | Tiny sample. Both FPs are test fixtures. |
+Source: [`benchmarks/labels.json`](https://github.com/kuzivaai/getregula/blob/main/benchmarks/labels.json).
 
-The `ai_security` 0% and `credential_exposure` 0% cells are real but
-the sample sizes (6 and 2) are too small to draw conclusions from. The
-actionable signal is in the 241-finding `minimal_risk` row, which is
-where Regula spends most of its energy on a typical OSS corpus.
+These tier samples are too small to support general conclusions beyond the
+measured corpus.
 
 ---
 
@@ -1122,11 +1120,11 @@ Counting keywords in the notes field across all 218 OSS FPs:
 | `__init__.py` re-exports | 39 | Excluded from minimal_risk by `_is_init_file()` heuristic in `classify_risk.py` |
 | Mock / docstring / example | 3 | Excluded by `_has_mock_patterns()` and `_is_example_file()` heuristics |
 | Library marshalling code | tracked but not yet automated | Manual `# regula-ignore` annotation today |
+Source: the `notes` fields in [`benchmarks/labels.json`](https://github.com/kuzivaai/getregula/blob/main/benchmarks/labels.json).
 
-**71 of 218 FPs (33%) come from test files.** The default
-`--skip-tests` flag suppresses these, which means **the operational
-precision a user sees is materially better than the 15.2% reported on
-the unfiltered corpus**.
+The label notes record test files as a material false-positive source. The
+default `--skip-tests` setting excludes them. Source:
+[`benchmarks/labels.json`](https://github.com/kuzivaai/getregula/blob/main/benchmarks/labels.json).
 
 ### Addendum: April 2026 precision improvements (post-benchmark)
 
@@ -1142,10 +1140,11 @@ skip or deprioritise:
 | + `--skip-tests` (default since v1.5) | 39 | 142 | 21.5% |
 | + new SKIP_DIRS (examples/, demo/) | 36 | 100 | 26.5% |
 | + AI library self-scan penalty (-50 conf) | 36 | 64 | **36.0%** |
+Source: simulation from [`benchmarks/labels.json`](https://github.com/kuzivaai/getregula/blob/main/benchmarks/labels.json); this is not a re-measured benchmark.
 
 **Caveats:**
-- The 36.0% is a simulation, not a re-measured benchmark. 3 TP in
-  example directories are lost (acceptable — examples are not production).
+- The final row is a simulation, not a re-measured benchmark; it also loses
+  true positives in example directories.
 - The AI library penalty causes openai-python findings to drop below
   WARN threshold (confidence 65 → 15), effectively hiding them. This
   is correct behaviour: openai-python IS an AI library, not an AI

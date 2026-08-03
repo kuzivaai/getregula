@@ -12,7 +12,7 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>AI Risk Assessment: EU AI Act, South Korea, Colorado | Regula</title>
-    <meta name="description" content="Free AI regulation risk assessment. Check your risk tier under the EU AI Act, South Korea AI Basic Act, or Colorado SB 26-189. No signup.">
+    <meta name="description" content="Record deployment context and review candidate AI-governance indicators under the EU AI Act, South Korea AI Basic Act, or Colorado SB 26-189. No signup.">
     <meta name="author" content="Kuziva Muzondo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://getregula.com/assess/">
@@ -383,11 +383,11 @@
   <!-- HERO -->
   <div class="hero" id="heroSection">
     <h1>Does AI regulation <span>apply to you?</span></h1>
-    <p>Choose your jurisdiction and answer a few questions to learn your risk classification, legal obligations, and what to do next. Nothing leaves your browser.</p>
+    <p>Choose a jurisdiction and record deployment context. The questionnaire reports candidate indicators, provisions to review, and next questions; it does not determine legal classification, compliance, or applicable obligations.</p>
     <div class="hero-stats">
-      <span>Under 5 minutes</span>
-      <span>Instant risk classification</span>
-      <span>Nothing leaves your browser</span>
+      <span>Complete in your browser</span>
+      <span>Immediate review indicators</span>
+      <span>Questionnaire processing stays in this browser</span>
     </div>
     <div style="margin-top:24px;">
       <label style="font-size:0.85rem;color:var(--text-dim);display:block;margin-bottom:8px;">Which regulation applies to you?</label>
@@ -1281,16 +1281,16 @@ function showResults() {
   // Tier card
   document.getElementById("tierResult").innerHTML = `
     <div class="result-tier ${results.tierClass}">
-      <div class="tier-label">YOUR RISK TIER</div>
+      <div class="tier-label">QUESTIONNAIRE INDICATION</div>
       <div class="tier-name">${results.tierName}</div>
       <div class="tier-desc">${results.tierDesc}</div>
-      <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">Risk score: ${results.score}/100 (higher = greater regulatory risk)</div>
+      <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">Questionnaire signal score: ${results.score}/100 (not a legal or validated risk probability)</div>
     </div>
   `;
 
   // Obligations
   if (results.obligations.length > 0) {
-    let oblHtml = `<h2 style="margin-bottom:12px;">Applicable obligations</h2><div class="obligations">`;
+    let oblHtml = `<h2 style="margin-bottom:12px;">Provisions to review if the indicated classification is confirmed</h2><div class="obligations">`;
     for (const o of results.obligations) {
       const gapScore = results.gapScores[o.article] || 0;
       const gapColor = gapScore >= 50 ? "var(--green)" : gapScore >= 30 ? "var(--amber)" : "var(--red)";
@@ -1373,7 +1373,7 @@ function getNextSteps(results) {
     ];
   }
   return [
-    { title: "No specific obligations apply", desc: "Your system appears to be minimal-risk under the EU AI Act. Consider following voluntary codes of conduct (Article 95) as good practice." },
+    { title: "No elevated indicator from these answers", desc: "This questionnaire did not identify an elevated category. That is not a legal minimal-risk determination or proof that no obligations apply; review the intended purpose, Article 5 and other applicable provisions." },
     { title: "Re-assess if scope changes", desc: "If you add new features — especially in areas like employment, healthcare, credit, law enforcement, or critical infrastructure — re-run this assessment. Risk classification depends on intended purpose, which can change." }
   ];
 }
@@ -1406,7 +1406,7 @@ function getNextStepsCO(results) {
     ];
   }
   return [
-    { title: "No specific obligations apply", desc: "Your system does not appear to be covered ADMT under Colorado SB 26-189." },
+    { title: "No covered-ADMT indicator from these answers", desc: "This questionnaire did not identify covered ADMT from the supplied context. Confirm scope and exceptions against the enacted text and deployment facts." },
     { title: "Re-assess if scope changes", desc: "If your system starts making consequential decisions about individuals in covered domains, re-run this assessment." }
   ];
 }

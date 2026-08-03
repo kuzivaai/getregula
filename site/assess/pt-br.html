@@ -382,11 +382,11 @@
   <!-- HERO -->
   <div class="hero" id="heroSection">
     <h1>A regulamentação de IA <span>se aplica a você?</span></h1>
-    <p>Escolha sua jurisdição e responda algumas perguntas para conhecer sua classificação de risco, obrigações legais e o que fazer a seguir. Nada sai do seu navegador.</p>
+    <p>Escolha uma jurisdição e registre o contexto da implantação. O questionário relata indicadores possíveis, normas a revisar e questões em aberto; ele não determina classificação jurídica, conformidade ou obrigações aplicáveis.</p>
     <div class="hero-stats">
       <span>Menos de 5 minutos</span>
-      <span>Classificação de risco instantânea</span>
-      <span>Nada sai do seu navegador</span>
+      <span>Indicadores imediatos para revisão</span>
+      <span>O processamento do questionário permanece neste navegador</span>
     </div>
     <div style="margin-top:24px;">
       <label style="font-size:0.85rem;color:var(--text-dim);display:block;margin-bottom:8px;">Qual regulamentação se aplica a você?</label>
@@ -1279,16 +1279,16 @@ function showResults() {
   // Tier card
   document.getElementById("tierResult").innerHTML = `
     <div class="result-tier ${results.tierClass}">
-      <div class="tier-label">SEU NÍVEL DE RISCO</div>
+      <div class="tier-label">INDICAÇÃO DO QUESTIONÁRIO</div>
       <div class="tier-name">${results.tierName}</div>
       <div class="tier-desc">${results.tierDesc}</div>
-      <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">Pontuação de risco: ${results.score}/100 (maior = maior risco regulatório)</div>
+      <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">Sinal do questionário: ${results.score}/100 (não é probabilidade jurídica nem risco validado)</div>
     </div>
   `;
 
   // Obligations
   if (results.obligations.length > 0) {
-    let oblHtml = `<h2 style="margin-bottom:12px;">Obrigações aplicáveis</h2><div class="obligations">`;
+    let oblHtml = `<h2 style="margin-bottom:12px;">Normas a revisar se a classificação indicada for confirmada</h2><div class="obligations">`;
     for (const o of results.obligations) {
       const gapScore = results.gapScores[o.article] || 0;
       const gapColor = gapScore >= 50 ? "var(--green)" : gapScore >= 30 ? "var(--amber)" : "var(--red)";

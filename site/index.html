@@ -321,12 +321,13 @@
 <!-- HERO -->
 <main id="main">
     <p class="sec-sub"><strong>Scope:</strong> Regula reports code-observable indicators and supports structured contextual human review. It does not determine legal classification, compliance, or the obligations applicable to a real deployment.</p>
+    <p class="sec-sub"><strong>Validation status:</strong> the current commercial evaluation remains STOP and a customer pilot is not approved. The repository publishes the failed and incomplete evidence so users can evaluate the tool's present limits.</p>
 <div class="hero-wrap">
     <div class="hero-glow"></div>
     <div class="hero">
         <div class="hero-text">
             <div class="badge"><span class="badge-dot"></span> Open-source CLI &middot; v1.9.0 &middot; Apache 2.0</div>
-            <h1>Is your AI app <span class="hl">high-risk</span> in the EU, Korea, or Colorado?</h1>
+            <h1>Find <span class="hl">AI governance indicators</span> in your code</h1>
             <p class="sub">One command reports code-observable indicators against three jurisdiction reference sets, with provision links for contextual human review. Runtime varies; no account is required for core scanning.</p>
 
             <button type="button" class="cta-pill" id="install-pill" aria-live="polite" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'install'}});copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
@@ -339,12 +340,12 @@
             </div>
 
             <div class="cta-secondary">
-                no account, no API key &middot; fully offline &middot;
+                no account or API key for core scanning &middot; scanned files stay local in the core workflow &middot;
         <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2,673</strong> tests
+                <strong style="color:var(--text);">2,681</strong> tests
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> unexpected security findings
                 <span class="sp-sep" aria-hidden="true">&middot;</span> zero dependencies
                 <span class="sp-sep" aria-hidden="true">&middot;</span> the local core does not upload scanned files
@@ -478,8 +479,8 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     <div class="audience-grid">
         <div class="audience-card audience-biz">
             <div class="audience-label">If you run the business</div>
-            <h3>Do you know your legal exposure?</h3>
-            <p>If your team builds or uses AI, the EU AI Act may apply, even outside the EU. Most tools fall under limited or minimal risk. Building with Claude Code or Cursor? Paste <code>regula assess</code> in your chat. Have a developer? Send them this page.</p>
+            <h3>Start with deployment context</h3>
+            <p>If your team builds or uses AI, jurisdiction, intended purpose, role and deployment context determine which rules may apply. Record that context in <code>regula assess</code>, then have the result reviewed by the appropriate technical and legal owners.</p>
             <button type="button" class="audience-fwd" onclick="copyPageUrl(this)">
                 <span class="fwd-icon">&#8599;</span>
                 <span class="fwd-txt">Copy link to send to your developer</span>
@@ -491,8 +492,8 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
         <div class="audience-card audience-dev">
             <div class="audience-label">If you write the code</div>
-            <h3>EU users? The AI Act applies to you.</h3>
-            <p>Article 2 is extraterritorial. Most chatbots and productivity tools are limited-risk: one transparency disclosure, nothing more. Scan to confirm.</p>
+            <h3>Inspect code-observable indicators</h3>
+            <p>Article 2 includes circumstances in which the Act applies outside the EU, but applicability and risk classification cannot be settled from source code alone. Use the scan to locate evidence and questions for contextual review.</p>
             <ul>
                 <li>Works on AI-generated code (Cursor, Lovable, Bolt, Claude Code)</li>
                 <li>Generates Annex IV documentation from your actual code</li>
@@ -502,8 +503,8 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
         <div class="audience-card audience-audit">
             <div class="audience-label">If you audit compliance</div>
-            <h3>Locally verifiable evidence.</h3>
-            <p>Regula generates signed, timestamped evidence packs with SHA-256 integrity manifests. Every finding is traceable to a file and line. Verify the chain yourself. <a href="/sample-report.html" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'sample-report'}})">See a sample report &rarr;</a> &middot; <a href="/pricing.html">Evidence pack tiers &rarr;</a></p>
+            <h3>Reviewable evidence scaffolds</h3>
+            <p>Regula can generate evidence-pack scaffolds with SHA-256 manifests; optional commands can add signatures or timestamps when their prerequisites are configured. Packs require human completion and do not establish legal sufficiency. <a href="/sample-report.html" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'sample-report'}})">See a sample report &rarr;</a> &middot; <a href="/pricing.html">Evidence pack tiers &rarr;</a></p>
             <button type="button" class="audience-fwd" aria-live="polite" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula conform --sign .')">
                 <span class="fwd-icon">&#9654;</span>
                 <span class="fwd-txt">regula conform --sign .</span>
@@ -517,7 +518,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 <!-- WHAT REGULA TELLS YOU -->
 <div class="sec reveal" id="tiers">
     <h2 class="sec-head">What Regula tells you</h2>
-    <p class="sec-sub">The EU AI Act sorts every AI system into a risk tier. Regula scans your code, tells you which tier applies, and gives you the fix list.</p>
+    <p class="sec-sub">The EU AI Act uses risk-based rules whose application depends on intended purpose and deployment context. Regula reports candidate indicators and related provisions for human review; it does not decide the legal tier.</p>
     <div class="tiers">
         <div class="tier tier-r">
             <div class="tier-badge">Prohibited</div>
@@ -537,16 +538,16 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="tier tier-g">
             <div class="tier-badge">Minimal Risk</div>
             <div class="tier-examples">Spam filters &middot; AI games &middot; Basic recommendations &middot; Search ranking</div>
-            <div class="tier-hint">No mandatory requirements &rarr;</div>
+            <div class="tier-hint">No AI-Act duty inferred from code alone &rarr;</div>
         </div>
     </div>
-    <p class="tier-cta">Regula tells you where your code lands, and exactly why.</p>
+    <p class="tier-cta">Regula shows which code evidence triggered a candidate indicator and what context a reviewer still needs.</p>
 </div>
 
 <div class="urgency">
     <div class="urgency-box" role="note">
         <div class="date">2026&ndash;27</div>
-        <div class="body"><strong>High-risk obligations</strong> for Annex III systems now apply from December 2027, following the Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026. Annex I product-embedded systems apply from August 2028. The Council approved it on 29 June 2026, and the regulation was published in the Official Journal on 24 July 2026 as Regulation (EU) 2026/1744, in force from 27 July 2026. The deferred dates are enacted law. Either way, the requirements do not change &mdash; only the timeline. <strong>You need to know where you stand.</strong></div>
+        <div class="body"><strong>Current enacted timeline:</strong> Regulation (EU) 2026/1744 entered into force on 27 July 2026. Annex III high-risk rules apply from 2 December 2027 and Annex I product-embedded high-risk rules from 2 August 2028. Other provisions have different dates and conditions; review the amended legislation for the system in question.</div>
     </div>
 </div>
 
@@ -560,7 +561,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Step 1</div>
             <h3>Install</h3>
-            <p><code>pipx install regula-ai</code><br>Works on every OS. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md" style="color:#8888aa;">Other methods &#8599;</a></p>
+            <p><code>pipx install regula-ai</code><br>Requires Python 3.10 or later; see the tested installation paths. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md" style="color:#8888aa;">Installation guide &#8599;</a></p>
         </div>
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Step 2</div>
@@ -637,7 +638,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="card-base art-card">
             <div class="tag tag-purple">Evidence</div>
             <h3>Conformity assessment pack</h3>
-            <p>Article 43 evidence: 26 files mapped to Articles 9&ndash;15, per-article readiness scores, SHA-256 integrity hashes.</p>
+            <p>Article 43 evidence pack mapped to Articles 9&ndash;15, with per-article readiness scores and SHA-256 integrity hashes. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/evidence-pack-guide.md">Evidence-pack specification</a>.</p>
             <code style="font-size:11px;color:#9898b4;">regula conform . &middot; regula evidence-pack .</code>
         </div>
         <div class="card-base art-card">
@@ -699,7 +700,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
         <div class="card-base art-card">
             <h3>GDPR dual-compliance</h3>
-            <p><code>regula gdpr</code> &mdash; 14 patterns, 4 AI Act/GDPR hotspots</p>
+            <p><code>regula gdpr</code> &mdash; GDPR-related code indicators and AI Act/GDPR hotspots. <a href="https://github.com/kuzivaai/getregula/blob/main/scripts/risk_patterns.py">Pattern source</a>.</p>
         </div>
     </div>
 </div>
@@ -725,7 +726,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="price-card featured">
             <div class="price-tier price-featured-tier">Regula</div>
             <div class="price-amount price-featured-amount">Free &amp; open source</div>
-            <p class="price-desc">Code scanning + governance questionnaires. Runs on your laptop in one command. Stdlib-only Python core, zero production dependencies, fully offline. <code>pipx install regula-ai</code>, scan your project, get a clear answer. Apache 2.0 / EUPL 1.2; detection rules under DRL 1.1.</p>
+            <p class="price-desc">Code scanning plus governance questionnaires. The stdlib-only core scans local files without uploading them; optional features have separate dependency and network boundaries. <code>pipx install regula-ai</code>, inspect the indicators, then complete contextual human review. Apache 2.0 / EUPL 1.2; detection rules under DRL 1.1.</p>
         </div>
     </div>
     <div role="region" aria-label="Competitive comparison of EU AI Act compliance tools" style="overflow-x:auto;margin-top:32px;-webkit-overflow-scrolling:touch;">
@@ -747,7 +748,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Languages</th><td>8 families</td><td>Python</td><td>JS/TS/Python</td><td>Not a code scanner</td><td>Not a code scanner</td></tr>
             <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Detection patterns</th><td>419</td><td>51 checks</td><td>37+ frameworks</td><td>Questionnaire</td><td>Varies</td></tr>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Dependencies</th><td>Zero (stdlib)</td><td>Multiple</td><td>npm</td><td>Next.js + Ollama</td><td>SaaS</td></tr>
-            <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Offline</th><td>Fully offline</td><td>Local</td><td>Local</td><td>Local + Ollama</td><td>Cloud</td></tr>
+            <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Data path</th><td>Local core; optional features vary</td><td>Local</td><td>Local</td><td>Local + Ollama</td><td>Cloud</td></tr>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Evidence signing</th><td>Ed25519 + RFC 3161</td><td>Ed25519 (opt-in)</td><td>&mdash;</td><td>&mdash;</td><td>Varies</td></tr>
             <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Framework mappings</th><td>13</td><td>3</td><td>EU AI Act</td><td>EU AI Act</td><td>Multiple</td></tr>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">CI/CD integration</th><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>&mdash;</td><td>Native</td></tr>
@@ -865,11 +866,11 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </details>
         <details>
             <summary>What are the fines under the EU AI Act?</summary>
-            <p>Prohibited AI practices (Article 5) carry fines up to &euro;35 million or 7% of global annual turnover, whichever is higher. High-risk violations carry fines up to &euro;15 million or 3% of turnover. Non-compliance with information requirements carries fines up to &euro;7.5 million or 1% of turnover.</p>
+            <p>Article 99 provides for fines up to &euro;35 million or 7% of global annual turnover for prohibited-practice infringements; up to &euro;15 million or 3% for certain other infringements; and up to &euro;7.5 million or 1% for supplying incorrect, incomplete, or misleading information. <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" rel="noopener">Read Article 99 in the primary legislation</a>.</p>
         </details>
         <details>
             <summary>Is Regula free?</summary>
-            <p>Yes. Regula is open-source under the Apache 2.0 or EUPL 1.2 licence. No account, no API key, no sales call. Install with <code>pipx install regula-ai</code> and run it locally. All 62 commands, all 419 risk patterns, and all 13 compliance framework mappings are free.</p>
+            <p>Yes. Regula is open-source under the Apache 2.0 or EUPL 1.2 licence. No account or API key is required for local use. Install with <code>pipx install regula-ai</code> and run it locally. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md">The CLI reference</a> and <a href="https://github.com/kuzivaai/getregula/blob/main/references/framework_crosswalk.yaml">framework crosswalk</a> document the shipped surface.</p>
         </details>
         <details>
             <summary>Does the EU AI Act overlap with GDPR, DORA, or NIS2?</summary>

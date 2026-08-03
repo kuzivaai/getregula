@@ -41,19 +41,19 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="preconnect" href="https://plausible.io" crossorigin>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
-    <title>Regula: EU-KI-Gesetz Compliance-Scanner für Code (Open Source)</title>
-    <meta name="description" content="Open-Source-CLI, die Ihren Code gegen 419 EU-KI-Gesetz-Risikomuster scannt. Liefert Risikohinweise zur menschlichen Prüfung, 13 Frameworks, läuft lokal. Nicht Regula Forensics.">
+    <title>Regula: Open-Source-Scanner für KI-Governance-Indikatoren</title>
+    <meta name="description" content="Open-Source-CLI für im Code beobachtbare KI-Governance-Indikatoren und strukturierte menschliche Kontextprüfung. Keine rechtliche Einstufung oder Compliance-Bestimmung.">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta property="og:title" content="Regula: EU-KI-Gesetz Compliance-Scanner für Code (Open Source)">
-    <meta property="og:description" content="Open-Source-CLI, die Ihren Code gegen 419 EU-KI-Gesetz-Risikomuster scannt. Liefert Risikohinweise zur menschlichen Prüfung, 13 Frameworks, läuft lokal. Nicht Regula Forensics.">
+    <meta property="og:title" content="Regula: Open-Source-Scanner für KI-Governance-Indikatoren">
+    <meta property="og:description" content="Meldet im Code beobachtbare KI-Governance-Indikatoren zur menschlichen Kontextprüfung; keine rechtliche Einstufung oder Compliance-Bestimmung.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/locales/de.html">
     <meta property="og:site_name" content="Regula">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@kuzivaai">
     <meta property="og:locale" content="de_DE">
-    <meta name="twitter:title" content="Regula: EU-KI-Gesetz Compliance-Scanner für Code (Open Source)">
-    <meta name="twitter:description" content="Open-Source-CLI, die Ihren Code gegen 419 EU-KI-Gesetz-Risikomuster scannt. Liefert Risikohinweise zur menschlichen Prüfung, 13 Frameworks, läuft lokal. Nicht Regula Forensics.">
+    <meta name="twitter:title" content="Regula: Open-Source-Scanner für KI-Governance-Indikatoren">
+    <meta name="twitter:description" content="Meldet im Code beobachtbare KI-Governance-Indikatoren zur menschlichen Kontextprüfung; keine rechtliche Einstufung oder Compliance-Bestimmung.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -67,7 +67,7 @@
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
         "name": "Regula",
-        "description": "Open-Source-CLI für EU-KI-Gesetz-Konformität, die Code auf Risikomuster prüft. 419 Risikomuster, 8 Programmiersprachen, 13 Konformitätsframeworks.",
+        "description": "Open-Source-CLI für im Code beobachtbare KI-Governance-Indikatoren und strukturierte menschliche Kontextprüfung; keine rechtliche Einstufung oder Compliance-Bestimmung.",
         "url": "https://getregula.com/locales/de.html",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Linux, macOS, Windows",
@@ -303,13 +303,14 @@
 <!-- HERO -->
 <main id="main">
     <p class="sec-sub"><strong>Abgrenzung:</strong> Regula meldet im Code beobachtbare Indikatoren und unterstützt eine strukturierte menschliche Prüfung des Kontexts. Regula bestimmt weder die rechtliche Einstufung noch die Compliance oder die für einen realen Einsatz geltenden Pflichten.</p>
+    <p class="sec-sub"><strong>Validierungsstatus:</strong> Die aktuelle kommerzielle Bewertung bleibt STOP; ein Kundenpilot ist nicht freigegeben. Das Repository veröffentlicht auch fehlgeschlagene und unvollständige Nachweise.</p>
 <div class="hero-wrap">
     <div class="hero-glow"></div>
     <div class="hero">
         <div class="hero-text">
             <div class="badge"><span class="badge-dot"></span> Open-Source-CLI &middot; v1.9.0 &middot; Apache 2.0</div>
-            <h1>Ist Ihre KI-App in der EU, Korea oder Colorado <span class="hl">hochriskant</span>?</h1>
-            <p class="sub">Ein Befehl pr&uuml;ft Ihren Code gegen das EU-KI-Gesetz, Koreas KI-Basisgesetz und Colorado SB 26-189: welche Risikostufe, warum, und was zu beheben ist. <strong>30 Sekunden, kostenlos, kein Konto.</strong></p>
+            <h1><span class="hl">KI-Governance-Indikatoren</span> im Code finden</h1>
+            <p class="sub">Ein Befehl meldet im Code beobachtbare Indikatoren zu drei Rechtsrahmen mit Fundstellen für die menschliche Kontextprüfung. Die Laufzeit variiert; für den Kernscan ist kein Konto erforderlich.</p>
 
             <button type="button" class="cta-pill" id="install-pill" aria-live="polite" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'install'}});copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
@@ -326,7 +327,7 @@
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2.673</strong> Tests
+                <strong style="color:var(--text);">2.681</strong> Tests
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> unerwartete Sicherheitsbefunde
                 <span class="sp-sep" aria-hidden="true">&middot;</span> null Abh&auml;ngigkeiten
                 <span class="sp-sep" aria-hidden="true">&middot;</span> der lokale Kern lädt gescannte Dateien nicht hoch
@@ -826,7 +827,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </details>
         <details>
             <summary>Welche Strafen sieht die KI-Verordnung vor?</summary>
-            <p>Verbotene KI-Praktiken (Artikel 5): bis zu 35 Mio. &euro; oder 7 % des weltweiten Jahresumsatzes. Hochrisiko-Verst&ouml;&szlig;e: bis zu 15 Mio. &euro; oder 3 %. Verst&ouml;&szlig;e gegen Informationspflichten: bis zu 7,5 Mio. &euro; oder 1 %.</p>
+            <p>Artikel 99 sieht je nach Versto&szlig; unterschiedliche Bu&szlig;geldobergrenzen vor, darunter umsatzbezogene Grenzen. <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Prim&auml;rtext: Artikel 99</a>.</p>
         </details>
         <details>
             <summary>Ist Regula kostenlos?</summary>
@@ -842,7 +843,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     <div class="final-glow"></div>
     <div class="final reveal">
         <h2>Finden Sie heraus, wo Sie stehen</h2>
-        <p>Ein Befehl. Dauert 30 Sekunden. Kein Konto n&ouml;tig.</p>
+        <p>Ein Befehl. Die Laufzeit h&auml;ngt von Projekt und Umgebung ab. Kein Konto n&ouml;tig.</p>
         <button type="button" class="install-box" id="install-btn-2" onclick="copyInstall(this)" style="display:inline-flex;">
             <span class="dollar">$</span>
             <span class="cmd">pipx install regula-ai</span>

@@ -41,20 +41,20 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="preconnect" href="https://plausible.io" crossorigin>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
-    <title>Regula: Scanner de Conformidade da Lei de IA da UE (Open Source)</title>
-    <meta name="description" content="CLI open-source que analisa seu c&oacute;digo contra 419 padr&otilde;es da Lei de IA da UE. N&iacute;vel de risco, 13 frameworks, roda localmente.">
+    <title>Regula: Scanner open-source de indicadores de governança de IA</title>
+    <meta name="description" content="CLI open-source para indicadores de governança de IA observáveis no código e revisão humana estruturada do contexto. Não determina classificação jurídica ou conformidade.">
     <meta name="keywords" content="LGPD IA, Marco Legal da IA, PL 2338/2023, conformidade IA Brasil, ferramenta compliance IA, Lei de IA da UE, regulamenta&ccedil;&atilde;o intelig&ecirc;ncia artificial, LGPD artigo 20, classifica&ccedil;&atilde;o de risco IA">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta property="og:title" content="Regula: Scanner de Conformidade da Lei de IA da UE (Open Source)">
-    <meta property="og:description" content="CLI open-source que analisa seu c&oacute;digo contra 419 padr&otilde;es de risco da Lei de IA da UE. Fornece indicadores para revis&atilde;o humana, 13 frameworks, roda localmente.">
+    <meta property="og:title" content="Regula: Scanner open-source de indicadores de governança de IA">
+    <meta property="og:description" content="Relata indicadores de governança observáveis no código para revisão humana; não determina classificação jurídica ou conformidade.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/locales/pt-br.html">
     <meta property="og:site_name" content="Regula">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@kuzivaai">
     <meta property="og:locale" content="pt_BR">
-    <meta name="twitter:title" content="Regula: Scanner de Conformidade da Lei de IA da UE (Open Source)">
-    <meta name="twitter:description" content="CLI open-source que analisa seu c&oacute;digo contra 419 padr&otilde;es de risco da Lei de IA da UE. Fornece indicadores para revis&atilde;o humana, 13 frameworks, roda localmente.">
+    <meta name="twitter:title" content="Regula: Scanner open-source de indicadores de governança de IA">
+    <meta name="twitter:description" content="Relata indicadores de governança observáveis no código para revisão humana; não determina classificação jurídica ou conformidade.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -68,7 +68,7 @@
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
         "name": "Regula",
-        "description": "CLI open-source que analisa código contra padrões de risco de conformidade. Lei de IA da UE, LGPD e Marco Legal da IA. 419 padrões de risco, 8 linguagens de programação, 13 frameworks de conformidade.",
+        "description": "CLI open-source para indicadores de governança de IA observáveis no código e revisão humana estruturada do contexto; não determina classificação jurídica ou conformidade.",
         "url": "https://getregula.com/locales/pt-br.html",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Linux, macOS, Windows",
@@ -312,12 +312,13 @@
 <!-- HERO -->
 <main id="main">
     <p class="sec-sub"><strong>Limite:</strong> O Regula relata indicadores observáveis no código e apoia uma revisão humana estruturada do contexto. Ele não determina a classificação jurídica, a conformidade nem as obrigações aplicáveis a uma implantação real.</p>
+    <p class="sec-sub"><strong>Status de validação:</strong> a avaliação comercial atual permanece STOP e um piloto com clientes não está aprovado. O repositório publica também as evidências incompletas e os resultados negativos.</p>
 <div class="hero-wrap">
     <div class="hero-glow"></div>
     <div class="hero">
         <div class="hero-text">
             <div class="badge"><span class="badge-dot"></span> CLI open-source &middot; v1.9.0 &middot; Apache 2.0</div>
-            <h1>Seu app de IA e de <span class="hl">alto risco</span> na UE, na Coreia ou no Colorado?</h1>
+            <h1>Encontre <span class="hl">indicadores de governança de IA</span> no seu código</h1>
             <p class="sub">Um comando procura indicadores relacionados à Lei de IA da UE, à Lei Básica de IA da Coreia e à Colorado SB 26-189 para revisão humana. O tempo varia conforme o projeto e o ambiente. <strong>Grátis, sem conta.</strong></p>
 
             <button type="button" class="cta-pill" id="install-pill" aria-live="polite" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'install'}});copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
@@ -335,7 +336,7 @@
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2.673</strong> testes
+                <strong style="color:var(--text);">2.681</strong> testes
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> vulnerabilidades inesperadas
                 <span class="sp-sep" aria-hidden="true">&middot;</span> zero depend&ecirc;ncias
                 <span class="sp-sep" aria-hidden="true">&middot;</span> seu c&oacute;digo nunca sai da sua m&aacute;quina
@@ -843,7 +844,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </details>
         <details>
             <summary>Quais s&atilde;o as multas do Regulamento de IA da UE?</summary>
-            <p>Pr&aacute;ticas de IA proibidas (Artigo 5): at&eacute; 35 milh&otilde;es de euros ou 7% do volume de neg&oacute;cios anual global. Viola&ccedil;&otilde;es de alto risco: at&eacute; 15 milh&otilde;es de euros ou 3%. Descumprimento de requisitos de informa&ccedil;&atilde;o: at&eacute; 7,5 milh&otilde;es de euros ou 1%.</p>
+            <p>O Artigo 99 estabelece diferentes limites de coima conforme a infra&ccedil;&atilde;o, incluindo limites baseados no volume de neg&oacute;cios. <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Texto prim&aacute;rio: Artigo 99</a>.</p>
         </details>
         <details>
             <summary>O Regula &eacute; gratuito?</summary>
