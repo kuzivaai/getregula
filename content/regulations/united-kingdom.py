@@ -20,7 +20,7 @@ REGION = {
     "status_cls": "live",
     "status_text": "Coverage in progress · frameworks live",
 
-    "title_tag": "UK AI Regulation Tracker — ICO, DSIT, principles-based | Regula",
+    "title_tag": "UK AI Regulation Tracker — ICO and DSIT | Regula",
     "title_html": 'United Kingdom — <span class="hl">AI regulation</span> tracker',
     "meta_description": (
         "Live tracker of the UK's principles-based AI regulation: ICO "

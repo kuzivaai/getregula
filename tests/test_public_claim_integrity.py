@@ -61,12 +61,23 @@ def test_active_surfaces_do_not_publish_prohibited_claims():
 def test_required_limitation_concepts_are_translated():
     required = {
         "site/index.html": ("does not determine legal classification", "human review"),
-        "site/locales/de.html": ("bestimmt weder die rechtliche Einstufung", "menschliche Prüfung"),
-        "site/locales/pt-br.html": ("não determina a classificação jurídica", "revisão humana"),
+        "site/locales/de.html": ("bestimmt weder die rechtliche klassifizierung", "menschliche kontextprüfung"),
+        "site/locales/pt-br.html": ("não determina classificação jurídica", "revisão humana"),
     }
     for rel, phrases in required.items():
         text = (REPO / rel).read_text(encoding="utf-8", errors="replace").lower()
         assert all(phrase.lower() in text for phrase in phrases), (rel, phrases)
+
+
+def test_public_homepages_do_not_expose_internal_programme_gates():
+    forbidden = {
+        "site/index.html": ("commercial evaluation remains stop", "customer pilot is not approved"),
+        "site/locales/de.html": ("kommerzielle bewertung bleibt stop", "kundenpilot ist nicht freigegeben"),
+        "site/locales/pt-br.html": ("avaliação comercial atual permanece stop", "piloto com clientes não está aprovado"),
+    }
+    for rel, phrases in forbidden.items():
+        text = (REPO / rel).read_text(encoding="utf-8", errors="replace").lower()
+        assert not any(phrase in text for phrase in phrases), (rel, phrases)
 
 
 def test_package_description_source_is_readme():
