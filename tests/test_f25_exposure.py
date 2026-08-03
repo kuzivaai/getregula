@@ -277,8 +277,8 @@ def test_corpus_definitions_are_all_tracked_and_scannable():
     def detached_git(*args):
         if args[0] == "merge-base":
             raise subprocess.CalledProcessError(128, ["git", *args])
-        if args[0] == "rev-list":
-            return "merge-head base-parent topic-parent\n"
+        if args[0] == "cat-file":
+            return "tree t\nparent base-parent\nparent topic-parent\n\nmessage\n"
         if args[0] == "diff":
             assert args[2] == "base-parent"
             return "README.md\n"
