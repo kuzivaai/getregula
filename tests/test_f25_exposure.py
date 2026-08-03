@@ -264,10 +264,13 @@ def test_recovery_reporting_is_honest_in_both_directions():
 def _assert_corpus_not_vacuous(name, paths):
     if name == "diff-base" and not paths:
         merge_base = fx._resolve_merge_base("main")
-        head_tree = fx._git("rev-parse", "HEAD^{tree}").strip()
-        base_tree = fx._git("rev-parse", f"{merge_base}^{{tree}}").strip()
-        assert head_tree == base_tree, (
-            "diff-base is empty although HEAD differs from its main merge base")
+        changed = set(fx._git(
+            "diff", "--name-only", merge_base, "HEAD").splitlines())
+        tracked_scannable = set(fx._tracked_scannable())
+        unexpected = sorted(changed & tracked_scannable)
+        assert not unexpected, (
+            "diff-base omitted tracked, claim-scannable paths: "
+            f"{unexpected}")
         return
     assert paths, f"corpus {name} is empty"
 
@@ -304,14 +307,16 @@ def test_corpus_definitions_are_all_tracked_and_scannable():
     finally:
         fx._git = original_git
 
-    def same_tree_git(*args):
+    def empty_claim_diff_git(*args):
         if args[0] == "merge-base":
             return "base\n"
-        if args[0] == "rev-parse":
-            return "tree\n"
+        if args[0] == "diff":
+            return "tests/test_only.py\n"
+        if args[0] == "ls-files":
+            return "tests/test_only.py\0"
         raise AssertionError(args)
     try:
-        fx._git = same_tree_git
+        fx._git = empty_claim_diff_git
         _assert_corpus_not_vacuous("diff-base", [])
     finally:
         fx._git = original_git
