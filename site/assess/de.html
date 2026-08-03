@@ -382,11 +382,11 @@
   <!-- HERO -->
   <div class="hero" id="heroSection">
     <h1>Gilt die KI-Regulierung <span>für Sie?</span></h1>
-    <p>Wählen Sie Ihre Rechtsordnung und beantworten Sie einige Fragen, um Ihre Risikoeinstufung, rechtliche Pflichten und nächste Schritte zu erfahren. Nichts verlässt Ihren Browser.</p>
+    <p>Wählen Sie eine Rechtsordnung und erfassen Sie den Einsatzkontext. Der Fragebogen meldet mögliche Indikatoren, zu prüfende Vorschriften und offene Fragen; er bestimmt weder die rechtliche Einstufung noch Compliance oder anwendbare Pflichten.</p>
     <div class="hero-stats">
       <span>Unter 5 Minuten</span>
-      <span>Sofortige Risikoeinstufung</span>
-      <span>Nichts verlässt Ihren Browser</span>
+      <span>Sofortige Prüfhinweise</span>
+      <span>Die Fragebogenverarbeitung bleibt in diesem Browser</span>
     </div>
     <div style="margin-top:24px;">
       <label style="font-size:0.85rem;color:var(--text-dim);display:block;margin-bottom:8px;">Welche Regulierung betrifft Sie?</label>
@@ -1278,16 +1278,16 @@ function showResults() {
   // Tier card
   document.getElementById("tierResult").innerHTML = `
     <div class="result-tier ${results.tierClass}">
-      <div class="tier-label">IHRE RISIKOSTUFE</div>
+      <div class="tier-label">HINWEIS AUS DEM FRAGEBOGEN</div>
       <div class="tier-name">${results.tierName}</div>
       <div class="tier-desc">${results.tierDesc}</div>
-      <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">Risikobewertung: ${results.score}/100 (höher = größeres regulatorisches Risiko)</div>
+      <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">Fragebogen-Signal: ${results.score}/100 (keine rechtliche oder validierte Risikowahrscheinlichkeit)</div>
     </div>
   `;
 
   // Obligations
   if (results.obligations.length > 0) {
-    let oblHtml = `<h2 style="margin-bottom:12px;">Anwendbare Pflichten</h2><div class="obligations">`;
+    let oblHtml = `<h2 style="margin-bottom:12px;">Zu prüfende Vorschriften, falls die Einstufung bestätigt wird</h2><div class="obligations">`;
     for (const o of results.obligations) {
       const gapScore = results.gapScores[o.article] || 0;
       const gapColor = gapScore >= 50 ? "var(--green)" : gapScore >= 30 ? "var(--amber)" : "var(--red)";

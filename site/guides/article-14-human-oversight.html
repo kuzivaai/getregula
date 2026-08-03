@@ -214,12 +214,13 @@ def process_application(app):
 
 <h2>How Regula checks for oversight patterns</h2>
 
-<p>Regula's <code>oversight</code> command does cross-file data flow analysis. It traces AI model outputs from the file where they are generated through the codebase to the point where they reach an endpoint, API response, or user-facing function. At each step, it checks whether the data passes through a human review gate.</p>
+<p>Regula's <code>oversight</code> command performs cross-file data-flow analysis. It traces AI model outputs toward endpoints and checks for code patterns associated with a human review gate. The example below is illustrative; behavior is defined in <a href="https://github.com/kuzivaai/getregula/blob/main/scripts/oversight.py">the implementation</a>.</p>
 
 <pre><code>$ regula oversight .
 
 Article 14 Human Oversight Analysis
 ====================================
+Example source: https://github.com/kuzivaai/getregula/blob/main/scripts/oversight.py
 Traced 3 AI output flows across 12 files.
 
 Flow 1: model.py:predict() -> api.py:recommend() -> review.py:officer_queue()
