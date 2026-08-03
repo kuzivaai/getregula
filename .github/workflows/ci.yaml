@@ -122,6 +122,10 @@ jobs:
           git diff --exit-code data/site_facts.json data/site_facts.md
       - name: Verify published numbers match canonical counts
         run: python3 scripts/claim_auditor.py --verify-facts
+      - name: Verify sitemap coverage and modification dates
+        run: |
+          python3 scripts/update_sitemap.py
+          git diff --exit-code site/sitemap.xml
 
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'

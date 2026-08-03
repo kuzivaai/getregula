@@ -21,6 +21,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 REPO = Path(__file__).resolve().parent.parent
 SITEMAP = REPO / "site" / "sitemap.xml"
+NOINDEX_RE = re.compile(
+    r'<meta[^>]+name=["\']robots["\'][^>]+content=["\'][^"\']*noindex', re.I)
+CANONICAL_RE = re.compile(
+    r'<link[^>]+rel=["\']canonical["\'][^>]+href=["\']([^"\']+)', re.I)
 
 # Built pages whose true change date includes their generator source.
 SOURCE_MAP = {
@@ -68,6 +72,28 @@ def main() -> int:
     matched = 0
     missing = []
 
+    sitemap_urls = set(re.findall(r"<loc>([^<]+)</loc>", text))
+    canonical_urls = set()
+    missing_canonical = []
+    for page in sorted((REPO / "site").rglob("*.html")):
+        body = page.read_text(encoding="utf-8")
+        if NOINDEX_RE.search(body):
+            continue
+        canonical = CANONICAL_RE.search(body)
+        if not canonical:
+            missing_canonical.append(str(page.relative_to(REPO)))
+        else:
+            canonical_urls.add(canonical.group(1))
+    if missing_canonical:
+        print(f"sitemap: ERROR — indexable pages lack canonical URLs: "
+              f"{missing_canonical}", file=sys.stderr)
+        return 1
+    if sitemap_urls != canonical_urls:
+        print("sitemap: ERROR — sitemap/canonical URL mismatch; "
+              f"missing={sorted(canonical_urls - sitemap_urls)}, "
+              f"extra={sorted(sitemap_urls - canonical_urls)}", file=sys.stderr)
+        return 1
+
     def repl(m: re.Match) -> str:
         nonlocal changed, matched
         matched += 1
@@ -110,7 +136,8 @@ def main() -> int:
         return 1
     if changed:
         SITEMAP.write_text(new, encoding="utf-8")
-    print(f"sitemap: {changed} lastmod value(s) updated from git history")
+    print(f"sitemap: {len(sitemap_urls)} canonical URL(s) reconciled; "
+          f"{changed} lastmod value(s) updated from git history")
     return 0
 
 
