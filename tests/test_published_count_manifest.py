@@ -256,19 +256,18 @@ class TestPublishedCountManifest(unittest.TestCase):
             f"docs/TRUST.md publishes {published_in_file} in-file test "
             f"functions; the file defines {in_file}.")
 
-        # The second location: the reproduction instruction quoting the
-        # runner's own summary line. Covering only the table would have left
-        # this one stale, which is measurement rule 4c in miniature.
+        # The second location: the reproduction instruction.  Do not require
+        # it to quote a pass total: that total is only trustworthy after a
+        # complete run, whereas discovery is cheap and deterministic.
         quoted = re.search(
-            r"Results: [\d,]+ passed, \d+ failed, \d+ skipped "
-            r"\(([\d,]+) test functions\)", trust)
+            r"runner currently discovers ([\d,]+) functions", trust)
         self.assertIsNotNone(
             quoted,
-            "docs/TRUST.md no longer quotes the runner's summary line in the "
+            "docs/TRUST.md no longer states the runner's discovered count in the "
             "expected form; retarget this guard rather than dropping it")
         self.assertEqual(
             int(quoted.group(1).replace(",", "")), total,
-            f"the runner output quoted in docs/TRUST.md names "
+            f"the runner reproduction text in docs/TRUST.md names "
             f"{quoted.group(1)} test functions; the runner selects {total}. "
             f"A reader following that instruction sees a different number.")
 

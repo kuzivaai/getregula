@@ -41,29 +41,17 @@ import f25_exposure as fx           # noqa: E402
 import gate_probe as gp             # noqa: E402
 
 
-def test_the_citation_word_arm_really_is_tried_before_the_file_ref_arm():
-    """F25's mechanism, read from the source rather than remembered.
-
-    The finding was originally recorded with line numbers 490 and 499, then
-    re-recorded as 544 and 553, and both had moved again by the time this was
-    written. The ORDER is the claim; the line numbers are just where it happens
-    to live today.
-    """
+def test_the_citation_word_arm_has_been_removed():
+    """F25 is repaired only if ordinary prose is no longer a source arm."""
     order = dict(fx.arm_order())
-    assert "citation-word" in order, order
+    assert "citation-word" not in order, order
     assert "file-ref" in order, order
-    assert order["citation-word"] < order["file-ref"], (
-        f"the citation-word arm is no longer tried before the file-reference "
-        f"arm ({order}). If that was deliberate, F25 is fixed and this "
-        f"module should be retired, not edited to agree.")
-    print(f"✓ arm order: citation-word at :{order['citation-word']} "
-          f"before file-ref at :{order['file-ref']}")
 
 
 def test_every_arm_the_module_names_was_found_in_the_source():
     """A needle that stops matching would silently drop an arm from the table."""
     names = [name for name, _ in fx.arm_order()]
-    assert names == ["url", "md-link", "html-link", "citation-word",
+    assert names == ["url", "md-link", "html-link",
                      "verification-label", "file-ref"], names
 
 
@@ -75,7 +63,7 @@ def test_the_never_pattern_matches_nothing():
     print("✓ the off-switch pattern matches nothing")
 
 
-def test_switching_the_arm_off_can_only_reveal_findings():
+def test_legacy_off_switch_is_now_a_noop():
     """Direction check on the real gate over a small real corpus.
 
     Removing a source arm removes provenance, so the finding set can only grow.
@@ -86,10 +74,8 @@ def test_switching_the_arm_off_can_only_reveal_findings():
     assert paths, "the manifest corpus is empty; this proves nothing"
     delta = fx.gate_delta(paths)
     assert delta["no_longer_reported"] == [], delta["no_longer_reported"]
-    assert delta["findings_with_arm_off"] >= delta["findings_now"]
-    assert len(delta["revealed"]) == (
-        delta["findings_with_arm_off"] - delta["findings_now"])
-    print(f"✓ arm off reveals {len(delta['revealed'])}, hides 0")
+    assert delta["findings_with_arm_off"] == delta["findings_now"]
+    assert delta["revealed"] == []
 
 
 def test_the_gate_unit_agrees_with_the_auditors_own_total():
@@ -141,26 +127,8 @@ def test_the_revealed_enumeration_accounts_for_the_revealed_count():
         m = fx.measure(name)
         revealed = m["claim_unit"]["revealed"]
         listed = m["revealed_findings"]
-        assert revealed > 0, (
-            f"corpus {name} reveals nothing, so this test would pass by "
-            f"comparing zero with zero: {m['claim_unit']}")
-        assert len(listed) == revealed, (
-            f"corpus {name}: the enumeration has {len(listed)} entries where "
-            f"the gate unit reports {revealed} revealed findings. The list and "
-            f"the count must come from the same predicate.")
-        assert len({f["file"] for f in listed}) == m["revealed_files"]
-        for f in listed:
-            # A revealed finding sat in a paragraph the WORD alone sourced. If
-            # the paragraph had any other provenance it would still be sourced
-            # with the arm off and nothing would be revealed, so `masked` here
-            # would mean the join found the wrong paragraph.
-            assert f["exposed"] is True, f
-            assert f["otherwise_sourced_by"] is None, f
-            assert f["citation_words"], f
-            assert f["snippet"].strip(), f
-            assert f["line"] > 0, f
-        print(f"✓ {name}: {len(listed)} revealed findings enumerated over "
-              f"{len({f['file'] for f in listed})} file(s)")
+        assert revealed == 0, (name, m["claim_unit"])
+        assert listed == [], (name, listed)
 
 
 def test_enumeration_refuses_a_finding_it_cannot_join_to_a_paragraph():
@@ -205,7 +173,7 @@ def test_enumeration_is_reconciled_against_the_difference_of_the_gate_totals():
     print("✓ enumeration reconciles against the gate totals, and refuses a gap")
 
 
-def test_a_corpus_that_drops_a_named_surface_says_so():
+def test_manifest_corpus_includes_machine_readable_text_surfaces():
     """Finding N6, surfaced rather than absorbed.
 
     `site/llms-full.txt` is on the published-count manifest and `.txt` is
@@ -214,9 +182,7 @@ def test_a_corpus_that_drops_a_named_surface_says_so():
     """
     fx.CORPORA["manifest"]()          # populates DROPPED as a side effect
     dropped = fx.DROPPED.get("manifest", [])
-    assert any("llms-full.txt" in d for d in dropped), dropped
-    assert all("N6" in d for d in dropped), dropped
-    print(f"✓ manifest corpus names its {len(dropped)} unscannable surface(s)")
+    assert not any("llms-full.txt" in d for d in dropped), dropped
 
 
 def test_every_total_is_reconciled_against_its_itemisation():
@@ -258,8 +224,7 @@ def test_citation_words_is_restored_even_when_a_measurement_raises():
     assert ca.CITATION_WORDS is original, (
         "CITATION_WORDS was left patched after a failure; every subsequent "
         "scan in this process would report the wrong thing")
-    assert ca.CITATION_WORDS.search("see the table"), (
-        "the restored pattern no longer matches a citation word")
+    assert not ca.paragraph_has_source("see the table with 47 tests")[0]
     print("✓ CITATION_WORDS restored after a raising measurement")
 
 

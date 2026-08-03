@@ -27,27 +27,16 @@ introduced-claim
 
 published-surface
     Fail on any finding on a surface that ships to a reader, irrespective of
-    the diff. Implemented by `is_published_surface` below: everything tracked
-    EXCEPT programme working documents (`docs/improvement/`) and agent
-    configuration (`.claude/`).
+    the diff. Implemented by `is_published_surface` below from
+    `data/public_claim_surfaces.json`: only repository-derived records marked
+    `active_product` and `claim_capable` participate.
 
-    A FIRST DRAFT OF THIS MODULE GOT THIS WRONG and the error is recorded
-    because it changed the answer by a factor of five. It reused
-    `claim_diff.bucket_of(path) == "everything else"`, which excludes
-    `benchmarks/` and `docs/benchmarks/` as well, and reported 3 findings
-    surviving the published-surface condition instead of 70. Those buckets
-    exist in claim_diff for REPORTING, to show where the mass sits; they are
-    not a statement that benchmarks documents are unpublished. They are
-    tracked, they render on GitHub, and `docs/MODEL_CARD.md` cites
-    `benchmarks/README.md` as the only repo-wide disclosure of the
-    single-reviewer basis for the headline precision figure. A reader follows
-    that link. It is published.
-
-    `data/published_count_manifest.json` is NOT used here either. It lists ten
-    surfaces, but it governs one specific figure, the published test count,
-    not the whole class of published prose. Using it would under-count:
-    `docs/QUICKSTART.md` and `docs/consultant-guide.md` ship to readers and
-    are not on it.
+    Earlier versions equated publication first with a reporting bucket and
+    then with almost every tracked document. Both were proxies. The former
+    missed linked documentation; the latter treated retained benchmarks,
+    decision records and internal commercial evidence as current product
+    promises merely because GitHub can render Markdown. The delivery-derived
+    inventory replaces both proxies and fails closed when unavailable.
 
 THE CITATION-WORD ARM, AND WHY IT IS TOGGLED HERE
 -------------------------------------------------
@@ -106,14 +95,36 @@ from gate_probe import (        # noqa: E402,F401
 
 REPO_ROOT = ca.REPO_ROOT
 
-# A surface ships to a reader unless it is a programme working document or
-# agent configuration. Deliberately NOT claim_diff's reporting buckets; see
-# the module docstring for the error that distinction cost.
-WORKING_PREFIXES = ("docs/improvement/", ".claude/")
+DELIVERY_INVENTORY = REPO_ROOT / "data" / "public_claim_surfaces.json"
+
+
+def active_claim_surface_paths() -> frozenset[str]:
+    """Return the repository-derived active, claim-capable source paths.
+
+    Publication is a delivery fact, not a synonym for "tracked Markdown".
+    Keep this gate aligned with the inventory used by the claim auditor and
+    fail closed if its authority cannot be read.
+    """
+    try:
+        payload = json.loads(DELIVERY_INVENTORY.read_text(encoding="utf-8"))
+        records = payload["records"]
+    except (OSError, KeyError, TypeError, json.JSONDecodeError) as exc:
+        raise RuntimeError(
+            f"cannot load delivery inventory {DELIVERY_INVENTORY}: {exc}"
+        ) from exc
+    paths = {
+        str(record["source"]).split("#", 1)[0]
+        for record in records
+        if record.get("classification") == "active_product"
+        and record.get("claim_capable") is True
+    }
+    if not paths:
+        raise RuntimeError("delivery inventory has no active claim surfaces")
+    return frozenset(paths)
 
 
 def is_published_surface(path: str) -> bool:
-    return not path.startswith(WORKING_PREFIXES)
+    return path in active_claim_surface_paths()
 
 
 # ---------------------------------------------------------------------------

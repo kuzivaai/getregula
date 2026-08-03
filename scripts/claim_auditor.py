@@ -74,8 +74,9 @@ except Exception:  # pragma: no cover - defensive, asserted by tests
 
 
 ALLOWLIST_PATH = REPO_ROOT / ".claim-allowlist"
+DELIVERY_INVENTORY_PATH = REPO_ROOT / "data/public_claim_surfaces.json"
 
-SCANNED_SUFFIXES = {".md", ".markdown", ".html", ".htm"}
+SCANNED_SUFFIXES = {".md", ".markdown", ".html", ".htm", ".txt"}
 
 # ---------------------------------------------------------------------------
 # Claim detection regexes
@@ -97,7 +98,7 @@ NUMERIC_CLAIM = re.compile(
     r"""
     (?<!\w)                                     # word boundary
     (?:[€$£¥]\s*)?                              # optional currency
-    \d{1,3}(?:[,.\s]\d{3})*(?:\.\d+)?           # number with grouping
+    (?:\d+(?:\.\d+)?|\d{1,3}(?:[,\s]\d{3})+(?:\.\d+)?)
     (?:
         \s*%                                    # percent IS the unit
       | \s*(?:""" + _NUMERIC_UNITS + r""")\b    # or a word unit
@@ -139,7 +140,8 @@ ATTRIBUTED_CLAIM = re.compile(
     re.IGNORECASE | re.VERBOSE,
 )
 
-# Short time durations — UX copy, not statistical claims
+# Short durations are claims when published. Retained as a recogniser for
+# callers and tests, but deliberately not used as an exemption.
 SHORT_DURATION = re.compile(
     r"^\s*\d{1,3}\s*(?:seconds?|minutes?|ms|s|m)\s*$",
     re.IGNORECASE,
@@ -460,8 +462,6 @@ def is_exempt_number(match_text: str) -> bool:
         return True
     if RECITAL_REF.search(snippet):
         return True
-    if SHORT_DURATION.match(snippet):
-        return True
     # Small integer "N files" / "N cases" / "N commands" phrases within a
     # repo that publishes its own counts — these are self-claims that are
     # either verifiable from the repo or allowlisted explicitly.
@@ -483,7 +483,7 @@ def _citable_text(paragraph: str) -> str:
     only to answer "is there a citation here", where machine metadata must
     not vote.
     """
-    return NONCITATION_TAG.sub(
+    return HTML_TAG.sub(
         lambda m: _blank_preserving_newlines(m.group(0)), paragraph)
 
 
@@ -564,14 +564,17 @@ def paragraph_has_source(paragraph: str,
         target = MD_LINK_TARGET.search(m.group(0))
         if target and not _is_self_url(target.group(1), identity):
             return True, "md-link"
-    for m in ANCHOR_HREF.finditer(citable):
+    # Read link destinations from the original tags. Attribute text itself is
+    # never prose evidence, but a non-self link destination is a real source.
+    for m in ANCHOR_HREF.finditer(paragraph):
         href = (m.group(1) or m.group(2) or m.group(3) or "").strip()
         if not href or href.startswith("#"):
             continue          # in-page anchor: points back at this page
         if not _is_self_url(href, identity):
             return True, "html-link"
-    if CITATION_WORDS.search(citable):
-        return True, "citation-word"
+    # Ordinary words such as "source", "see" and CSS class fragments never
+    # establish provenance. A citation must resolve as a URL, link, tracked
+    # file reference, or explicit verification record.
     if VERIFICATION_LABEL.search(citable):
         return True, "verification-label"
     # File references - must resolve on disk, and must not be this page
@@ -718,12 +721,7 @@ def scan_file(path: Path, allowlist: list[re.Pattern[str]]) -> FileReport:
         for claim in para_claims:
             idx = claim.line - 1
             claim_line = raw_lines[idx] if 0 <= idx < len(raw_lines) else ""
-            if any(
-                p.search(claim_line)
-                or p.search(claim.snippet)
-                or p.search(para)
-                for p in allowlist
-            ):
+            if any(p.search(claim.snippet) for p in allowlist):
                 continue
             if is_quarantined(report.path, claim.snippet):
                 continue
@@ -760,6 +758,44 @@ def files_commit(sha: str) -> list[Path]:
     out = git("show", "--name-only", "--diff-filter=ACMR",
               "--pretty=format:", sha)
     return [REPO_ROOT / f for f in out.splitlines() if f]
+
+
+def delivery_surface_paths() -> set[str]:
+    """Return repository paths that are actively delivered and claim-capable.
+
+    The generated inventory is derived independently from Pages, packaging,
+    README reachability, Action, argparse and MCP delivery mechanisms. Failing
+    to read or validate it is fatal: an unknown surface population must never
+    become an empty green audit.
+    """
+    try:
+        payload = json.loads(DELIVERY_INVENTORY_PATH.read_text(encoding="utf-8"))
+        records = payload["records"]
+    except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
+        raise RuntimeError(f"cannot load delivery inventory: {exc}") from exc
+    paths = {
+        row["source"].split("#", 1)[0]
+        for row in records
+        if row.get("classification") == "active_product"
+        and row.get("claim_capable") is True
+    }
+    if not paths:
+        raise RuntimeError("delivery inventory has no active claim-capable paths")
+    return paths
+
+
+def delivered_targets(paths: list[Path]) -> list[Path]:
+    """Filter a Git change set to active delivery surfaces, preserving order."""
+    active = delivery_surface_paths()
+    result = []
+    for path in paths:
+        try:
+            rel = path.relative_to(REPO_ROOT).as_posix()
+        except ValueError:
+            continue
+        if rel in active:
+            result.append(path)
+    return result
 
 
 def last_n_commits(n: int) -> list[str]:
@@ -1474,6 +1510,9 @@ def main(argv: list[str] | None = None) -> int:
                    help="scan files currently staged in git")
     p.add_argument("--diff-base", metavar="REF",
                    help="scan files changed vs REF (e.g. origin/main)")
+    p.add_argument("--delivery-surfaces", action="store_true",
+                   help="scan every active, claim-capable source in the "
+                        "repository-derived delivery inventory")
     p.add_argument("--backtest", type=int, metavar="N",
                    help="run auditor against files in last N commits")
     p.add_argument("--verify-facts", action="store_true",
@@ -1492,14 +1531,17 @@ def main(argv: list[str] | None = None) -> int:
 
     targets: list[Path] = []
     if args.staged:
-        targets = files_staged()
+        targets = delivered_targets(files_staged())
     elif args.diff_base:
-        targets = files_diff_base(args.diff_base)
+        targets = delivered_targets(files_diff_base(args.diff_base))
+    elif args.delivery_surfaces:
+        targets = [REPO_ROOT / rel for rel in sorted(delivery_surface_paths())]
     elif args.files:
         targets = [Path(f) for f in args.files]
     else:
         print("claim-auditor: no input (use FILE, --staged, --diff-base, "
-              "--verify-facts, or --backtest)", file=sys.stderr)
+              "--delivery-surfaces, --verify-facts, or --backtest)",
+              file=sys.stderr)
         return 2
 
     reports = [scan_file(t, allowlist) for t in targets]
