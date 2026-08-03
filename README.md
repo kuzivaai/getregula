@@ -7,7 +7,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-2679%20collected-blue.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-2683%20collected-blue.svg)](#verified-numbers)
 [![WCAG 2.2 AA](https://img.shields.io/badge/WCAG%202.2-AA-success.svg)](docs/accessibility/README.md)
 
 ---
@@ -15,6 +15,7 @@
 ## Table of contents
 
 - [What it does](#what-it-does)
+- [Choose how to start](#choose-how-to-start)
 - [Quick start](#quick-start)
 - [What Regula tells you](#what-regula-tells-you)
 - [Key commands](#key-commands)
@@ -36,6 +37,18 @@
 
 Regula combines local code scanning with governance questionnaires. It reports code-observable AI-governance indicators, candidate risk categories, and potentially relevant provisions for contextual human review. It does not determine legal classification, compliance, or the obligations applicable to a real deployment. Multi-jurisdiction reference material covers the EU AI Act, South Korea's AI Basic Act (Act No. 20676), and Colorado SB 26-189. The core install has no required third-party runtime dependencies; optional extras add dependencies and some optional commands or configured features can contact external services. Assess the territorial scope and data-processing duties for your deployment independently.
 
+In plain English: you give Regula a source-code folder and, where needed, answers about how the system will be used. It returns indicators and a review trail that can help a developer, governance lead, or adviser decide what to investigate next. A quiet scan does not prove that a system is compliant or low risk.
+
+## Choose how to start
+
+| If you want to… | Start here |
+|---|---|
+| Explore the questions without installing anything | Use the [browser assessment](https://getregula.com/assess/). It records declared context for review; it does not inspect your code or make a legal determination. |
+| Check a local codebase | Follow the [Quick start](#quick-start), then run `regula check .`. |
+| Evaluate Regula before adopting it | Follow the [10-minute example journey](examples/cv-screening-app/) and read the [documented limitations and verification evidence](docs/TRUST.md). |
+| Add a repeatable team check | Use the [CI/CD example](#cicd) and review the exit-code policy before making it blocking. |
+| Prepare material for a human reviewer | Generate a reviewer-completable evidence scaffold, then complete and validate its contextual fields. |
+
 ## Quick start
 
 ```bash
@@ -53,11 +66,13 @@ regula check .              # 419 tier patterns, 8 language families; runtime va
 regula check . --jurisdictions eu,korea,colorado  # all 3 jurisdictions
 ```
 
-**Need documentation for auditors?**
+**Need a review pack?**
 ```bash
-regula evidence-pack --project .   # Annex IV docs + evidence pack
-regula conform --sign --timestamp  # signed + timestamped (requires regula[signing])
+regula evidence-pack --project .   # reviewer-completable evidence scaffold
+regula conform --sign --timestamp  # integrity metadata (requires regula[signing])
 ```
+
+Generated files are inputs to human review, not an audit opinion, certification, or proof of compliance.
 
 **Just want to see it work?** (requires the cloned repo — `examples/` is not bundled in the pip package)
 ```bash
@@ -278,7 +293,7 @@ Bug reports and pull requests are welcome.
 
 ### Authorship
 
-Regula is maintained by Kuziva Muzondo (solo). Commits include a `Co-Authored-By: Claude Opus 4.6` trailer where the work was paired with Anthropic's Claude. This is standard pair-programming attribution — the maintainer is accountable for every merged change, and every commit was reviewed and reasoned about by a human before landing. Said plainly so you know how the sausage is made.
+Regula is maintained by Kuziva Muzondo. Where commits identify a co-author, that attribution records the tools or collaborators involved. The maintainer remains accountable for reviewing and accepting every merged change.
 
 ## Licence
 
