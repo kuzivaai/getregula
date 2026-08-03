@@ -4,8 +4,15 @@
   "type": "amendment-proposal",
   "source_url": "https://iapp.org/news/a/ai-act-omnibus-what-just-happened-and-what-comes-next",
   "source_title": "AI Act Omnibus: first political trilogue ends without agreement",
-  "affected_articles": ["6", "13", "26", "43", "50", "113"],
-  "summary": "The first political trilogue on the Digital Omnibus on AI ended without agreement on 29 April 2026 after approximately 12 hours of negotiations. The sticking point was the conformity-assessment architecture for AI in regulated products under Annex I: Parliament pushed to move sectoral legislation (machinery, medical devices, toys) from Section A to Section B, effectively letting sectoral safety law handle those AI systems; the Council resisted, wanting to preserve AI Act oversight for sensitive sectors. A follow-up trilogue is scheduled for approximately 13 May 2026. The Cypriot Council Presidency must close the file before its term ends 30 June 2026; otherwise the Lithuanian Presidency takes over from 1 July. If the Omnibus is not formally adopted before 2 August 2026, the original AI Act obligations (Regulation 2024/1689, Article 113) apply as written on that date. Multiple advisory firms (IAPP, DLA Piper, Modulos) now recommend organisations prepare against the original 2 August 2026 deadline rather than relying on the proposed extensions.",
+  "affected_articles": [
+    "6",
+    "13",
+    "26",
+    "43",
+    "50",
+    "113"
+  ],
+  "summary": "The first political trilogue on the Digital Omnibus on AI ended without agreement on 29 April 2026 after about 12 hours of negotiations. The sticking point was the conformity-assessment architecture for AI in regulated products under Annex I: Parliament pushed to move sectoral legislation (machinery, medical devices, toys) from Section A to Section B, letting sectoral safety law handle those AI systems; the Council resisted, to preserve AI Act oversight for sensitive sectors. A follow-up trilogue is scheduled for about 13 May 2026. The Cypriot Council Presidency must close the file before its term ends 30 June 2026; otherwise the Lithuanian Presidency takes over from 1 July. If the Omnibus is not formally adopted before 2 August 2026, the original AI Act obligations (Regulation 2024/1689, Article 113) apply as written on that date. Multiple advisory firms (IAPP, DLA Piper, Modulos) now recommend preparing against the original 2 August 2026 deadline rather than the proposed extensions.",
   "mechanical_change": "No change to the AI Act text. The proposed delay (2 Dec 2027 for standalone Annex III, 2 Aug 2028 for Annex I products) remains a proposal, not law. Original deadlines remain legally binding.",
   "confidence": "verified-primary",
   "verified_by": "IAPP, Modulos, The Next Web, Computerworld, Ropes & Gray — multiple independent legal and policy sources confirmed the trilogue outcome",

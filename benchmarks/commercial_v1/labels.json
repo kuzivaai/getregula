@@ -1,0 +1,962 @@
+[
+  {
+    "decision_id": "a-positive-01",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-02",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-03",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-04",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-05",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-06",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-07",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-08",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-09",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-10",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-11",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-12",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-13",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-14",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-15",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-16",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-17",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-18",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-19",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-20",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-21",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-22",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-23",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-24",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-25",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-26",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-27",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-28",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-29",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-30",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-31",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-32",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-33",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-34",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-35",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-36",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-37",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-38",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-39",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-positive-40",
+    "candidate": "A",
+    "expected": true,
+    "basis": "truth-by-construction import"
+  },
+  {
+    "decision_id": "a-negative-01",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-02",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-03",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-04",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-05",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-06",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-07",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-08",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-09",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-10",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-11",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-12",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-13",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-14",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-15",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-16",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-17",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-18",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-19",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-20",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-21",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-22",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-23",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-24",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-25",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-26",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-27",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-28",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-29",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-30",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-31",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-32",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-33",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-34",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-35",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-36",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-37",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-38",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-39",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "a-negative-40",
+    "candidate": "A",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-positive-01",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction chatbot_notice"
+  },
+  {
+    "decision_id": "b-positive-02",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction synthetic_marker"
+  },
+  {
+    "decision_id": "b-positive-03",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction deepfake_notice"
+  },
+  {
+    "decision_id": "b-positive-04",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction emotion_notice"
+  },
+  {
+    "decision_id": "b-positive-05",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction biometric_notice"
+  },
+  {
+    "decision_id": "b-positive-06",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction chatbot_notice"
+  },
+  {
+    "decision_id": "b-positive-07",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction synthetic_marker"
+  },
+  {
+    "decision_id": "b-positive-08",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction deepfake_notice"
+  },
+  {
+    "decision_id": "b-positive-09",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction emotion_notice"
+  },
+  {
+    "decision_id": "b-positive-10",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction biometric_notice"
+  },
+  {
+    "decision_id": "b-positive-11",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction chatbot_notice"
+  },
+  {
+    "decision_id": "b-positive-12",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction synthetic_marker"
+  },
+  {
+    "decision_id": "b-positive-13",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction deepfake_notice"
+  },
+  {
+    "decision_id": "b-positive-14",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction emotion_notice"
+  },
+  {
+    "decision_id": "b-positive-15",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction biometric_notice"
+  },
+  {
+    "decision_id": "b-positive-16",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction chatbot_notice"
+  },
+  {
+    "decision_id": "b-positive-17",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction synthetic_marker"
+  },
+  {
+    "decision_id": "b-positive-18",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction deepfake_notice"
+  },
+  {
+    "decision_id": "b-positive-19",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction emotion_notice"
+  },
+  {
+    "decision_id": "b-positive-20",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction biometric_notice"
+  },
+  {
+    "decision_id": "b-positive-21",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction chatbot_notice"
+  },
+  {
+    "decision_id": "b-positive-22",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction synthetic_marker"
+  },
+  {
+    "decision_id": "b-positive-23",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction deepfake_notice"
+  },
+  {
+    "decision_id": "b-positive-24",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction emotion_notice"
+  },
+  {
+    "decision_id": "b-positive-25",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction biometric_notice"
+  },
+  {
+    "decision_id": "b-positive-26",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction chatbot_notice"
+  },
+  {
+    "decision_id": "b-positive-27",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction synthetic_marker"
+  },
+  {
+    "decision_id": "b-positive-28",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction deepfake_notice"
+  },
+  {
+    "decision_id": "b-positive-29",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction emotion_notice"
+  },
+  {
+    "decision_id": "b-positive-30",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction biometric_notice"
+  },
+  {
+    "decision_id": "b-positive-31",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction chatbot_notice"
+  },
+  {
+    "decision_id": "b-positive-32",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction synthetic_marker"
+  },
+  {
+    "decision_id": "b-positive-33",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction deepfake_notice"
+  },
+  {
+    "decision_id": "b-positive-34",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction emotion_notice"
+  },
+  {
+    "decision_id": "b-positive-35",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction biometric_notice"
+  },
+  {
+    "decision_id": "b-positive-36",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction chatbot_notice"
+  },
+  {
+    "decision_id": "b-positive-37",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction synthetic_marker"
+  },
+  {
+    "decision_id": "b-positive-38",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction deepfake_notice"
+  },
+  {
+    "decision_id": "b-positive-39",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction emotion_notice"
+  },
+  {
+    "decision_id": "b-positive-40",
+    "candidate": "B",
+    "expected": true,
+    "basis": "truth-by-construction biometric_notice"
+  },
+  {
+    "decision_id": "b-negative-01",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-02",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-03",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-04",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-05",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-06",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-07",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-08",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-09",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-10",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-11",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-12",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-13",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-14",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-15",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-16",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-17",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-18",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-19",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-20",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-21",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-22",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-23",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-24",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-25",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-26",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-27",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-28",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-29",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-30",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-31",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-32",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-33",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-34",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-35",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-36",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-37",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-38",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-39",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  },
+  {
+    "decision_id": "b-negative-40",
+    "candidate": "B",
+    "expected": false,
+    "basis": "truth-by-construction near miss"
+  }
+]

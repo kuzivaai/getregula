@@ -131,8 +131,7 @@ def _run_bare_scan() -> None:
     2. Compliance gap score
     3. Contextual next steps based on what was found
 
-    Designed to deliver value in under 30 seconds (per clig.dev:
-    "suggest the next best step users should take").
+    Designed to suggest the next best step after a local scan.
     """
     import time
     from report import scan_files
@@ -179,6 +178,15 @@ def _run_bare_scan() -> None:
     if highest_risk and highest_risk != "unknown":
         print(f"  {'Highest risk tier:':<24}{highest_risk}")
     print(f"  {'Scan time:':<24}{elapsed:.1f}s")
+    # A high score or not_ai tier next to BLOCK findings reads as a
+    # contradiction unless the relationship is stated: the score reflects
+    # applicable obligations for the project's classification, while the
+    # finding counts are raw pattern hits (often tests or fixtures).
+    if blocks and (highest_risk == "not_ai" or gap_score == 100):
+        print("\n  Note: the score reflects obligations applicable to this "
+              "project's classification;\n  the findings above are raw "
+              "pattern hits (often in tests or fixtures).\n  Run 'regula "
+              "check .' to see each finding in context.")
 
     # Top findings (up to 3)
     # Deduplicate by file+description for concise output
@@ -217,7 +225,7 @@ def _run_bare_scan() -> None:
         steps.append(f"regula check --verbose .{'':<20s}Show all findings including INFO tier")
     steps.append(f"regula gap --project .{'':<22s}Detailed compliance gap assessment")
     if not any("evidence" in s for s in steps):
-        steps.append(f"regula evidence-pack --project .{'':<13s}Generate auditor-ready evidence")
+        steps.append(f"regula evidence-pack --project .{'':<13s}Generate a reviewer-completable evidence scaffold")
 
     print("\n  Next steps:")
     for i, step in enumerate(steps[:5], 1):
@@ -707,7 +715,7 @@ Quick start:
 Examples:
   regula gap --project .                  Compliance gap assessment (Articles 9-15)
   regula plan --project .                 Prioritised remediation plan
-  regula evidence-pack --project .        Auditor-ready evidence package
+  regula evidence-pack --project .        Reviewer-completable evidence scaffold
   regula docs --project . --qms          Generate Annex IV + QMS scaffolds
 
 Run 'regula --help-all' to see all commands.
@@ -809,7 +817,7 @@ def cmd_demo(args):
     print("    regula check .          Scan YOUR project")
     print("    regula assess           Am I even in scope? (no code needed)")
     print("    regula gap .            Per-article compliance score")
-    print("    regula evidence-pack .  Generate auditor-ready evidence")
+    print("    regula evidence-pack .  Generate a reviewer-completable evidence scaffold")
     print("=" * 60)
 
 

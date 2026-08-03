@@ -308,7 +308,7 @@
     <div class="track-box track-active">
         <h3>Track 1: Prohibited practices (Article 5)</h3>
         <p><strong>Deadline: 2 February 2025. Already in force. Not affected by the Omnibus.</strong></p>
-        <p>The prohibitions on social scoring, subliminal manipulation, real-time remote biometric identification in public spaces, and emotion inference in workplaces and educational institutions have been enforceable since February 2025. Fines for violations go up to EUR 35 million or 7% of global annual turnover, whichever is higher.</p>
+        <p>The defined Article 5 prohibitions have applied since February 2025. Article 99 specifies penalty ceilings. <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Primary legislation: Articles 5, 99 and 113</a>.</p>
         <p>If your code does any of these things, the Omnibus is irrelevant to you. You're already in scope. The fact that people are talking about deadline delays elsewhere in the Act doesn't change this.</p>
     </div>
 
@@ -323,7 +323,7 @@
         <h3>Track 3: High-risk system obligations (Annex III)</h3>
         <p><strong>Current law: 2 August 2026. Omnibus proposal: 2 December 2027. Not yet agreed.</strong></p>
         <p>This is where the uncertainty lives. If your system falls under Annex III (standalone high-risk AI systems used in areas like employment, creditworthiness, law enforcement, migration, or access to essential services), the Omnibus proposes to push your deadline back by 16 months.</p>
-        <p>If your system is covered by Annex I (AI embedded in products regulated under Union harmonisation legislation, such as medical devices, machinery, or vehicles), the proposed delay is even longer: to 2 August 2028, a full 24 months.</p>
+        <p>If your system is covered by Annex I, consult the enacted amendment and applicable sector legislation for its current application date.</p>
     </div>
 
     <h2>What the Omnibus actually changes</h2>
@@ -376,7 +376,7 @@
                 <td>High-risk: product-embedded (Annex I)</td>
                 <td>2 Aug 2026</td>
                 <td>2 Aug 2028</td>
-                <td><span class="status-proposed">Proposed (+24 months)</span></td>
+                <td><span class="status-proposed">Historical proposal</span></td>
             </tr>
         </tbody>
     </table>
@@ -406,13 +406,13 @@
 
     <p><strong>Scenario B:</strong> You wait for the Omnibus to become law, it stalls in trilogue (this happens), and the deadline stays at August 2026. You now have three months to implement a risk management system, overhaul your logging infrastructure, write technical documentation, build human oversight interfaces, and pass conformity assessment. You won't make it.</p>
 
-    <p>The downside of Scenario A is being early. The downside of Scenario B is non-compliance with a regulation that carries fines of up to EUR 15 million or 3% of global annual turnover.</p>
+    <p>The downside of Scenario A is starting early. Scenario B risks insufficient implementation and review time. Article 99 specifies the applicable penalty framework. <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Primary legislation</a>.</p>
 
     <p>This is an asymmetric bet. Being early costs you nothing beyond the engineering time, and that time isn't wasted even if you didn't need it yet.</p>
 
     <h2>The work is not wasted anyway</h2>
 
-    <p>The requirements in Articles 9 through 15 aren't unique to the EU AI Act either. They overlap substantially with frameworks your organisation may already be pursuing:</p>
+    <p>The requirements in Articles 9 through 15 also overlap with controls found in other governance and security frameworks:</p>
 
     <ul>
         <li><strong>NIST AI RMF</strong> maps directly to the risk management, documentation, and testing requirements. Build for the EU AI Act and you're most of the way to NIST AI RMF compliance.</li>
@@ -427,7 +427,7 @@
 
     <h2>What to do right now</h2>
 
-    <p>Start by running <code>regula check .</code> to determine your risk tier. If you are high-risk, begin writing your Article 11 technical documentation and Article 9 risk management plan now, because these are the most time-consuming requirements and only get harder to produce as institutional knowledge fades. Build audit-grade logging infrastructure for Article 12 in parallel.</p>
+    <p>Start by running <code>regula check .</code> to identify code-observable indicators, then determine legal classification from intended purpose and deployment context with qualified reviewers. If the system is confirmed high-risk, plan the applicable documentation, risk-management and record-keeping work against the amended legislation.</p>
 
     <ol class="action-steps">
         <li>
@@ -462,7 +462,7 @@
             <span class="cmd">pipx install regula-ai && regula check .</span>
             <span class="cp">copy</span>
         </div>
-        <p>Find out your risk tier and which track applies to you.</p>
+        <p>Review candidate indicators and establish which legal track applies from deployment context.</p>
     </div>
 
     <h2>The bottom line</h2>

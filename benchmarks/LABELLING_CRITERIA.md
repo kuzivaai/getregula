@@ -109,7 +109,7 @@ If YES → **TP**. If NO → **FP**.
 ## Labelling Process
 
 1. Open the finding's source file at the indicated line number
-2. Read surrounding context (±20 lines minimum)
+2. Read enough surrounding context to understand the behavior
 3. Consider the project's stated purpose (README, documentation)
 4. Apply the tier-specific criteria above
 5. Set `"label": "tp"` or `"label": "fp"`
@@ -166,7 +166,7 @@ If YES → **TP**. If NO → **FP**.
 
 ### What gets published
 
-- Cohen's kappa with 95% confidence interval
+- Cohen's kappa with a stated confidence interval
 - Sample size (N overlapping)
 - Agreement count and disagreement count
 - Per-tier breakdown if sample permits
@@ -211,3 +211,4 @@ TN counts.
 | **App corpus** | Precision on hand-picked AI apps (development reference) | 189 labels, 66.1% precision |
 | **Synthetic corpus** | Recall on controlled fixtures with known issues | 13 fixtures in `benchmarks/synthetic/` |
 | **Planted corpus** | Recall on real code with seeded issues | Not yet built |
+Sources: [`benchmarks/labels.json`](labels.json), [`benchmarks/results/random_corpus/`](results/random_corpus/), and [`benchmarks/synthetic/`](synthetic/).

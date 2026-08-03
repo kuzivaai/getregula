@@ -245,7 +245,7 @@
     <section id="what-we-found">
         <h2>What we found</h2>
 
-        <p>562 findings across 19,426 source files. AI security dominated at 54.1%, followed by agent autonomy (18.5%), high risk (14.2%), limited risk (10.1%), and credential exposure (3.0%). Zero prohibited-practice patterns were found in any framework. The profile is the inverse of application-level scans, where agent autonomy leads &mdash; frameworks create security surfaces, applications create oversight surfaces.</p>
+        <p>562 findings across 19,426 source files. AI security accounted for 54.1%, followed by agent autonomy (18.5%), high risk (14.2%), limited risk (10.1%), and credential exposure (3.0%). No prohibited-practice patterns were found in this scan. <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/framework_scan_2026_04">Checked-in scan results</a>.</p>
 
         <table>
             <thead>
@@ -295,6 +295,7 @@
                 </tr>
             </tbody>
         </table>
+        <p><a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/framework_scan_2026_04">Source data for this table</a>.</p>
 
         <p>Compare this to the <a href="/blog/blog-scanning-10-ai-apps.html">application-level scan</a>: when we scanned 10 AI apps, agent autonomy was the top category at 56.6%. In frameworks, AI security dominates at 54.1%. That makes sense. Frameworks handle the plumbing (model loading, data serialization, API wiring). Applications make the deployment decisions.</p>
 
@@ -342,7 +343,7 @@
 
         <h3>LangChain: relatively clean for its size</h3>
 
-        <p>53 findings across 2,463 source files. Surprisingly low for a project with 134K stars. LangChain&rsquo;s monorepo splits functionality into small packages (<code>langchain-core</code>, <code>langchain-community</code>, etc.), so patterns don&rsquo;t concentrate in one place.</p>
+        <p>The recorded scan found 53 findings across 2,463 source files. LangChain&rsquo;s monorepo splits functionality into small packages, so patterns do not concentrate in one place. <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/framework_scan_2026_04">Checked-in scan results</a>.</p>
 
         <p>Top indicators: sensitive information disclosure (18) and system command execution (9). The agent patterns exist (LangChain has tool-calling and agent execution) but they&rsquo;re spread across packages rather than concentrated in a single orchestration layer.</p>
     </section>
@@ -370,13 +371,13 @@
     <section id="how-to-run">
         <h2>Run this yourself</h2>
 
-        <p>Install Regula with pip, clone any framework, and scan it in one command. Regula is open-source, has zero dependencies, and runs entirely locally &mdash; no data leaves your machine. Full JSON scan output for every framework in this post is published in the repository for independent verification.</p>
+        <p>Install Regula with pip, clone a framework, and scan it in one command. Regula is open-source, has zero core dependencies, and its local scan engine does not upload project files. Full JSON scan output for every framework in this post is published in the repository for independent verification.</p>
 
 <pre><code>pip install regula-ai
 git clone --depth 1 https://github.com/langchain-ai/langchain.git
 regula check langchain</code></pre>
 
-        <p>Regula is open-source, zero-dependency, and runs locally. No data leaves your machine. The full scan JSON for each framework in this post is available in the <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/framework_scan_2026_04">repository</a> for independent verification.</p>
+        <p>Regula is open-source, has zero core dependencies, and processes scan inputs locally without uploading project files. The full scan JSON for each framework in this post is available in the <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/framework_scan_2026_04">repository</a> for independent verification.</p>
     </section>
 
     <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">

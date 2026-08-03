@@ -70,10 +70,19 @@ def cmd_deps(args) -> None:
 
 def cmd_bias(args) -> None:
     """Evaluate model stereotype bias using multiple benchmarks."""
-    # Pre-flight: check Ollama is available
+    # Pre-flight: check Ollama is available.
+    # --endpoint is an unvalidated CLI string, so the scheme is checked before
+    # it reaches urlopen, exactly as bias_eval and bias_bbq already do. Without
+    # this, file://, gopher:// and cloud metadata addresses reached urlopen.
     import urllib.request
+    from bias_stats import require_http_url
     try:
-        urllib.request.urlopen(f"{args.endpoint}/api/tags", timeout=5)
+        require_http_url(args.endpoint)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        raise SystemExit(2)
+    try:
+        urllib.request.urlopen(f"{args.endpoint}/api/tags", timeout=5)  # nosec B310  # nosemgrep: dynamic-urllib-use-detected — scheme validated by require_http_url above
     except Exception:
         print("Error: Cannot connect to Ollama at " + args.endpoint, file=sys.stderr)
         print("", file=sys.stderr)

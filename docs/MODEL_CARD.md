@@ -1,6 +1,6 @@
 # Model Card — Regula Detection Engine
 
-Regula's detection engine is a static analysis system that classifies source code against EU AI Act risk tiers. This document treats it as an AI system and documents its capabilities, limitations, and biases. To generate a model card scaffold for your own project, run `regula model-card --project /path/to/project`.
+Regula's detection engine is a static analysis system that reports source-code indicators associated with EU AI Act risk categories. It does not determine legal classification. This document treats it as an AI system and documents its capabilities, limitations, and biases. To generate a model card scaffold for your own project, run `regula model-card --project /path/to/project`.
 
 ---
 
@@ -30,7 +30,7 @@ Regula's detection engine is a static analysis system that classifies source cod
 - Compliance officers who need a technical evidence base for governance programmes
 - Auditors who need a starting point for code-level compliance assessment
 
-**Deployment context:** Local CLI tool. Runs on the developer's machine. No data leaves the machine. No network access required. No account or API key needed.
+**Deployment context:** Local CLI tool. Core scan paths are designed for local execution without an account or API key. Optional timestamping, configured telemetry, update/feed paths, and other explicitly network-enabled features are outside that boundary.
 
 ---
 
@@ -63,7 +63,7 @@ A Python project will receive more granular findings than an equivalent Rust pro
 
 ### Precision baseline
 
-Published benchmark against 50 randomly selected Python AI repos (from 276 candidates, random seed 42), blind-labelled (labeller saw only file path, code context, and finding description). Production code only (default `--skip-tests` settings):
+Published benchmark against 50 randomly selected Python AI repos (from 276 candidates, random seed 42), **N=115**, blind-labelled by a **single reviewer** with no inter-rater agreement measurement (labeller saw only file path, code context, and finding description; see [`benchmarks/README.md`](../benchmarks/README.md)). Production code only (default `--skip-tests` settings):
 
 | Tier | TP | FP | Precision |
 |---|---:|---:|---:|
@@ -73,16 +73,18 @@ Published benchmark against 50 randomly selected Python AI repos (from 276 candi
 | `agent_autonomy` | 34 | 7 | 82.9% |
 | `high_risk` | 2 | 4 | 33.3% |
 | **Overall** | **96** | **19** | **83.5%** |
+Source: [`benchmarks/README.md`](../benchmarks/README.md). N=115, single reviewer, no inter-rater agreement measurement.
 
 **Improvement from v1.7.4:** Domain-gated high-risk findings, LLM import
 gating, and justice opt-in reduced FP from 42 to 19 on the same labelled
 corpus, improving production precision from 70.0% to 83.5%. 3 borderline
 ai_security TPs were lost (LLM02 findings in files without LLM library imports).
+Both figures are from the same N=115 corpus recorded in [`benchmarks/README.md`](../benchmarks/README.md).
 
 The `high_risk` tier (33%) remains weakest — 6 subcategories (`critical_infrastructure`,
 `safety_components`, `worker_management`, `democratic_processes`, `justice`,
 `essential_services`) now require `--domain` declaration or import fingerprinting to fire. Including test
-code drops overall precision to 60.6%.
+code drops overall precision to 60.6%. Both figures are recorded in [`benchmarks/README.md`](../benchmarks/README.md); note that 33% rests on N=6 and is not statistically meaningful at that sample size.
 
 Full methodology and reproduction steps: `benchmarks/README.md`
 
@@ -125,12 +127,22 @@ Regula is explicitly **NOT** intended for:
 
 ### Synthetic corpus (recall measurement)
 
-13 hand-crafted Python files covering:
+38 hand-crafted Python files (`benchmarks/synthetic/manifest.json`, version 2.0):
 - 5 Article 5 prohibited practices (social scoring, subliminal manipulation, real-time biometric identification, emotion inference in workplaces, vulnerability exploitation)
-- 5 Annex III high-risk categories (employment, credit scoring, education, law enforcement, essential services)
+- 30 Annex III high-risk categories
 - 3 negative cases (non-AI code that should not be flagged)
 
-**Result:** 100% precision, 100% recall. All prohibited and high-risk patterns detected. Zero false positives on negative cases.
+**Recall depends on the code path and the gate condition, so a bare fraction is not a measurement.** Every figure below is regenerated from `benchmarks/synthetic/RECALL.json` by `tests/test_recall_artefact.py`, and a fixture counts as recalled when the highest tier detected equals the tier the manifest expects.
+
+| Path and gate condition | High-risk | Prohibited |
+|---|---:|---:|
+| scanner, default scan, no flags | 10/30 = 33.3% | 5/5 |
+| scanner, all eight domains declared | 16/30 = 53.3% | 5/5 |
+| scanner, domains declared + AI-library import present | 23/30 = 76.7% | 5/5 |
+| classifier (`report.scan_files`), all domains declared | 16/30 = 53.3% | 5/5 |
+Source: `benchmarks/synthetic/RECALL.json`, produced from an actual run by `scripts/build_recall_artefact.py`.
+
+**Corrected 29 July 2026.** This section previously described a 13-file corpus and reported **100% precision, 100% recall**. The corpus was expanded to 38 fixtures (high-risk 5 to 30) and the claim was never re-measured against it. The withdrawn figures are recorded here rather than deleted; the measured replacements are in the table above, from `benchmarks/synthetic/RECALL.json`. **Corrected again 29 July 2026.** The decomposition published here until today read "13 suppressed by opt-in domain gating, 4 by the AI-indicator gate, and 3 are genuine pattern gaps, so 17 of 20 misses are gate behaviour". Every component of that was wrong, and it understated the pattern-side weakness by more than double. It was carried over from an earlier recall table whose two lower rows are marked NOT REPRODUCIBLE in `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md`. Derived from the per-fixture `missed` lists in `benchmarks/synthetic/RECALL.json` by set difference across the three scanner conditions: of the 20 high-risk fixtures missed on a default scan, **6 are recovered by declaring the opt-in domains, a further 7 by also having an AI-library import present, and 7 are never recovered under any measured condition**. So **13 of 20 misses are gate behaviour and 7 are pattern-side exposure**. Regenerated and asserted by `tests/test_recall_decomposition.py`, which recomputes the three numbers from the artefact and fails if this paragraph disagrees.
 
 ### Curated library corpus (development baseline)
 
@@ -138,13 +150,15 @@ Regula is explicitly **NOT** intended for:
 
 ### Random corpus (headline precision measurement)
 
-50 randomly selected Python AI repos (from 276 candidates, seed=42), scanned with Regula v1.7.4. 201 findings stratified-sampled and blind-labelled (labeller saw only file path, code context, and finding description — no project name, README, or purpose, see `benchmarks/labels.json`).
+50 randomly selected Python AI repos (from 276 candidates, seed=42), scanned with Regula v1.7.0. 201 findings stratified-sampled and blind-labelled by a **single reviewer** (labeller saw only file path, code context, and finding description — no project name, README, or purpose, see `benchmarks/labels.json`).
 
-**Result:** 83.5% precision on production code (N=115, measured on Regula v1.7.4). Previous baseline was 70.0% before domain gating and LLM import gating. Figures re-measured per release where corpus permits; v1.7.1+ additions not yet reflected. Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
+**Result:** 83.5% precision on production code (N=115, measured on Regula v1.7.0). **Labelled by one reviewer; no inter-rater agreement measurement exists.** Previous baseline was 70.0% before domain gating and LLM import gating. Figures re-measured per release where corpus permits; v1.7.1+ additions not yet reflected. Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`; labelling limits: [`benchmarks/README.md`](../benchmarks/README.md) (the only repo-wide disclosure of the single-reviewer basis).
 
 ### Continuous validation
 
-- 2,821 pytest-collected tests (2,821 [unique](tests/) test IDs as of 2026-07-24)
+- 2,684 pytest-collected tests, produced by collection rather than
+  hand-maintained (measured 2026-07-30). See
+  [`data/published_count_manifest.json`](../data/published_count_manifest.json).
 - 45 CLI integration tests (`tests/test_cli_integration.py`)
 - 6 self-test assertions (`regula self-test`)
 - 12 health checks (`regula doctor`)

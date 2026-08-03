@@ -82,9 +82,10 @@ disclosure, etc.), include that in your initial report.
 | `semgrep --config p/security-audit --config p/python` | Each release | 0 findings on 200 rules / 129 files |
 | `pip-audit` | Each release | 0 vulnerabilities (zero runtime deps) |
 | `regula self-test` | Each commit | 6 / 6 |
-| Custom regression suite | Each commit | 2,821 pytest-collected tests |
+| Custom regression suite | Each commit | 2,684 pytest-collected tests |
 | PyPI provenance attestation (PEP 740, Trusted Publishing) | Each release | ✅ attached to wheel + sdist, Sigstore-backed |
 | CodeQL static analysis | Each push | workflow green; open alerts triaged below, never suppressed |
+Source: reproducible commands and evidence are documented in [`docs/TRUST.md`](docs/TRUST.md); live workflow state is available in [GitHub Actions](https://github.com/kuzivaai/getregula/actions).
 
 The full posture is in [`docs/TRUST.md`](docs/TRUST.md), Section 7.
 
@@ -104,8 +105,8 @@ Honest list, also recorded in `docs/TRUST.md`:
 
 ## CodeQL static-analysis alerts (open, triaged, not suppressed)
 
-CodeQL runs on every push. As of 2026-07-22 it reports **42 open high-severity
-alerts** (live list: <https://github.com/kuzivaai/getregula/security/code-scanning>).
+CodeQL runs on every push. The dated snapshot recorded **42 open high-severity
+alerts**; use the [live code-scanning list](https://github.com/kuzivaai/getregula/security/code-scanning) for current state.
 They are listed here in full, with the reasoning for each, and left open in the
 GitHub Security tab. We do not dismiss or suppress security alerts:
 a compliance tool that clears its own dashboard by waving alerts away is not one

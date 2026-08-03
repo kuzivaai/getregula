@@ -4,7 +4,10 @@ Learn AI governance by building with Regula, an open-source tool that scans code
 
 ## What This Course Covers
 
-You'll learn to scan AI codebases for regulatory compliance issues, understand what the EU AI Act requires from AI systems, and use code analysis to generate compliance evidence.
+You'll learn to scan AI codebases for indicators relevant to regulatory review,
+understand what the EU AI Act requires from AI systems, and use code analysis
+to prepare evidence for human assessment. Regula does not determine legal
+compliance.
 
 ## Prerequisites
 
@@ -28,7 +31,7 @@ You'll learn to scan AI codebases for regulatory compliance issues, understand w
 | [9. Framework Mapping](09-framework-mapping.md) | Map findings to NIST, ISO, OWASP, and MITRE frameworks | 15 min |
 | [10. Building Your Own Patterns](10-custom-patterns.md) | Extend Regula with domain-specific detection rules | 30 min |
 
-**Total estimated time: ~4 hours**
+**Timing:** work at your own pace; duration depends on the exercises and project selected.
 
 ## How to Use This Course
 

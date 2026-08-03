@@ -25,10 +25,27 @@
 | Corpus | Tier | TP | FP | Precision | Recall |
 |---|---|---:|---:|---:|---:|
 | **Synthetic** | all | 5 prohibited + 5 high-risk | 0 | **100%** | **100%** |
+Historical source: [`benchmarks/synthetic/`](../../benchmarks/synthetic/). This row is superseded by the correction immediately below.
+
+> **STALE AND CONTRADICTED, flagged 28 July 2026. Do not cite the
+> synthetic row.** It was measured on a 5+5 fixture corpus. That corpus
+> was expanded to 5 prohibited + 30 high-risk on 28 Jul 2026 and
+> re-measured: prohibited recall holds at 5/5, but **high-risk recall is
+> 10/30 = 33% on a default scan** (47% with the domain declared, 63% with
+> both gates satisfied). See
+> `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md`. The 100%
+> recall figure above is not reproducible on the current corpus and a
+> correction is pending owner approval as finding **F23**.
+
+> **Labelling basis for the 83.5% production figure:** N=115, Python
+> only, labelled by a **single reviewer**; no inter-rater agreement
+> measurement exists. See `benchmarks/README.md`. Three public surfaces
+> link here as "methodology" and this file did not previously say it.
 | OSS (5 projects, 257 findings) | **BLOCK (≥80)** | 0 | **0** | **N/A — 0 findings** | n/a |
 | OSS | WARN (50–79) | 2 | 6 | 25.0% | n/a |
 | OSS | INFO (<50) | 37 | 212 | 14.9% | n/a |
 | OSS — overall | all tiers | 39 | 218 | **15.2%** | n/a |
+Source: [`benchmarks/labels.json`](../../benchmarks/labels.json), reproduced with [`benchmarks/label.py`](../../benchmarks/label.py) `score`.
 
 **The most important row is the third one.** Regula's CI default gate
 is BLOCK tier. **0 BLOCK findings fired across 257 sampled findings on
@@ -46,10 +63,10 @@ behaviour on other codebases.
 > repository scanned falsely PROHIBITED before the July 2026
 > suppression-parsing fix.
 
-The 15.2% headline is real but applies to a tier — INFO — that does
+The measured 15.2% result applies to a tier — INFO — that does
 not fail CI builds by default. INFO findings are surfaced for manual
 review only when the user explicitly requests them (`regula check
---show-info` or the JSON envelope).
+Evidence: [`benchmarks/labels.json`](../../benchmarks/labels.json).
 
 ---
 
@@ -129,6 +146,7 @@ python3 -m pytest tests/ --collect-only -q 2>&1 | tail -1  # Full pytest count
 | pydantic-ai | 52 | 10 | 42 | 19.2% | Similar to langchain — agent patterns in framework code |
 | instructor | 51 | 2 | 49 | 3.9% | Mostly LLM provider adapters — fires on every model call |
 | openai-python | 51 | 0 | 51 | **0.0%** | Canonical AI library implementation. Every file is an AI library call. Pure FP territory by design. |
+Source: [`benchmarks/labels.json`](../../benchmarks/labels.json).
 
 **Reading the table:**
 
@@ -154,6 +172,7 @@ python3 -m pytest tests/ --collect-only -q 2>&1 | tail -1  # Full pytest count
 | **BLOCK** | confidence ≥ 80 | **0** | 0 | 0 | **n/a** (no findings) | Fails CI build |
 | WARN | 50 ≤ confidence < 80 | 8 | 2 | 6 | 25.0% | Logged, does not fail CI |
 | INFO | confidence < 50 | 249 | 37 | 212 | 14.9% | Hidden by default, opt-in via `--show-info` |
+Source: [`benchmarks/labels.json`](../../benchmarks/labels.json).
 
 **Why this matters more than the headline:**
 
@@ -180,6 +199,7 @@ precision of the wide INFO cast — the part the user almost never sees.
 | `minimal_risk` | 241 | 36 | 205 | 14.9% | The bulk of the OSS corpus. Most are AI library imports without high-risk context. |
 | `ai_security` | 6 | 0 | 6 | 0.0% | OWASP LLM Top 10 patterns. All 6 FPs are framework code, not application code. |
 | `credential_exposure` | 2 | 0 | 2 | 0.0% | Tiny sample. Both FPs are test fixtures. |
+Source: [`benchmarks/labels.json`](../../benchmarks/labels.json).
 
 The `ai_security` 0% and `credential_exposure` 0% cells are real but
 the sample sizes (6 and 2) are too small to draw conclusions from. The
@@ -199,6 +219,7 @@ Counting keywords in the notes field across all 218 OSS FPs:
 | `__init__.py` re-exports | 39 | Excluded from minimal_risk by `_is_init_file()` heuristic in `classify_risk.py` |
 | Mock / docstring / example | 3 | Excluded by `_has_mock_patterns()` and `_is_example_file()` heuristics |
 | Library marshalling code | tracked but not yet automated | Manual `# regula-ignore` annotation today |
+Source: the `notes` fields in [`benchmarks/labels.json`](../../benchmarks/labels.json).
 
 **71 of 218 FPs (33%) come from test files.** The default
 `--skip-tests` flag suppresses these, which means **the operational

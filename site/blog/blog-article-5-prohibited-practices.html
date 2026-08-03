@@ -26,10 +26,10 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Article 5 Prohibited AI Practices &mdash; Regula</title>
-    <meta name="description" content="Article 5 prohibited AI practices are enforceable since Feb 2025, with fines up to EUR 35M or 7% of turnover. How to scan your codebase.">
+    <meta name="description" content="A developer guide to Article 5 prohibited AI practices and reviewing related code indicators.">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta property="og:title" content="Article 5 Prohibited AI Practices — Regula">
-    <meta property="og:description" content="Article 5 prohibited AI practices are enforceable since Feb 2025, with fines up to EUR 35M or 7% of turnover. How to scan your codebase for them.">
+    <meta property="og:description" content="A developer guide to Article 5 prohibited AI practices and reviewing related code indicators.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://getregula.com/blog/blog-article-5-prohibited-practices.html">
     <meta property="og:locale" content="en_GB">
@@ -40,7 +40,7 @@
     <meta property="article:author" content="Kuziva Muzondo">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Article 5 Prohibited AI Practices — Regula">
-    <meta name="twitter:description" content="Article 5 prohibited AI practices are enforceable since Feb 2025, with fines up to EUR 35M or 7% of turnover.">
+    <meta name="twitter:description" content="A developer guide to Article 5 prohibited AI practices and related code indicators.">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
     <link rel="canonical" href="https://getregula.com/blog/blog-article-5-prohibited-practices.html">
     <link rel="alternate" hreflang="en" href="https://getregula.com/blog/blog-article-5-prohibited-practices.html">
@@ -220,7 +220,7 @@
         <span>The Implementation Layer</span>
     </div>
     <h1>EU AI Act Article 5 Is Already Live: Scanning Your Code for Prohibited AI Practices</h1>
-    <p class="standfirst">Eight categories of AI practice have been illegal in the EU since 2 February 2025, with two more added by the Digital Omnibus (taking effect 2 December 2026). The fines are up to EUR 35 million or 7% of global annual turnover. Most developers have no idea. Here's what the original eight prohibitions actually mean in code, how to scan for them, and what to do when something gets flagged.</p>
+    <p class="standfirst">Eight categories of AI practice have been prohibited in the EU since 2 February 2025, with two more added by the Digital Omnibus (taking effect 2 December 2026). Article 99 provides for fines up to EUR 35 million or 7% of global annual turnover. Here is what the original eight prohibitions mean in code, how to scan for indicators, and what to review when something is flagged. <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Primary legislation</a>.</p>
 </div>
 
 <div class="blog-sep"></div>
@@ -233,13 +233,13 @@
 
     <h2>This is already law</h2>
 
-    <p>Article 5 of the EU AI Act has been enforceable since 2 February 2025. The original eight prohibited AI practices carry fines of up to EUR 35 million or 7% of worldwide annual turnover, the highest penalty tier in the regulation. The Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026, does not change these 8 categories or their application date. It adds 2 new prohibitions (non-consensual intimate imagery and CSAM generation) that take effect on 2 December 2026, bringing the total to 10.</p>
+    <p>Article 5 of the EU AI Act has applied since 2 February 2025. Article 99 provides for fines up to EUR 35 million or 7% of worldwide annual turnover for prohibited-practice infringements. The Digital Omnibus does not change the original categories or their application date; it adds two prohibitions taking effect on 2 December 2026. <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Read Articles 5, 99 and 113</a>.</p>
 
     <p>I keep meeting developers who think the EU AI Act is a future problem. Something to deal with in 2027 or 2028, once the Omnibus delay sorts itself out.</p>
 
     <p>For high-risk systems, that might be true. The <a href="/blog/blog-omnibus-delay.html">Digital Omnibus on AI</a> proposes pushing those deadlines to late 2027 or mid-2028, and trilogue negotiations are underway.</p>
 
-    <p>But Article 5 isn't part of that delay. Article 5 has been enforceable since <strong>2 February 2025</strong>. That was over a year ago. The prohibitions are in force right now, with the highest penalty tier in the entire regulation: up to EUR 35 million, or 7% of worldwide annual turnover, whichever is higher. For context, the high-risk non-compliance penalty is 3% of turnover. Article 5 violations are penalised at more than double that rate.</p>
+    <p>But Article 5 is not part of that delay. It has applied since <strong>2 February 2025</strong>. Article 99 provides for fines up to EUR 35 million or 7% of worldwide annual turnover for prohibited-practice infringements, and up to 3% for certain other infringements. <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Primary legislation: Articles 5, 99 and 113</a>.</p>
 
     <p>If your codebase contains one of the eight prohibited practices and you deploy it in the EU, you're already in breach. Not "will be in breach when the deadline hits." Are, today.</p>
 
@@ -267,7 +267,7 @@
         <div class="article-ref">Article 5(1)(c)</div>
         <h3>Social scoring</h3>
         <p>Evaluating or classifying people based on their social behaviour or personal traits, where this leads to detrimental treatment that is disproportionate to the context. The prohibition applies to scoring by public authorities or on their behalf.</p>
-        <p>Patterns: <code>social_score</code>, <code>social_credit</code>, <code>citizen_score</code>, <code>behaviour_scoring</code> (when combined with terms like <code>citizen</code>, <code>public</code>, <code>government</code>, or <code>trustworthy</code>). Regula uses 6 patterns here because social scoring shows up in a lot of different phrasings. But a gamification leaderboard is not social scoring. More on false positives below.</p>
+        <p>Patterns include <code>social_score</code>, <code>social_credit</code>, <code>citizen_score</code>, and <code>behaviour_scoring</code> when combined with public-authority context. A gamification leaderboard is not necessarily social scoring; deployment context and effects require human review. <a href="https://github.com/kuzivaai/getregula/blob/main/scripts/risk_patterns.py">Pattern source</a>.</p>
     </div>
 
     <div class="prohibition-card">
@@ -315,7 +315,7 @@
 
 <div class="cli-output" tabindex="0">$ regula check .
 
-  <span class="cli-dim">Regula v1.7.0 &mdash; EU AI Act compliance scanner</span>
+  <span class="cli-dim">Regula v1.7.0 &mdash; EU AI Act code-risk indicator</span>
 ============================================================
 
   <span class="cli-red">Verdict</span>: <span class="cli-red">PROHIBITED</span>
@@ -356,7 +356,7 @@
     1. regula fix --project .         Remove prohibited practices
     2. regula gap --project .         See which articles you need to address
     3. regula roadmap --project .     Get a week-by-week compliance plan
-    4. regula evidence-pack --project . --bundle   Generate auditor-ready evidence</div>
+    4. regula evidence-pack --project . --bundle   Generate evidence for auditor review</div>
 
     <p>Three things immediately: your verdict (prohibited), which files caused it, and what to do next. The confidence scores (92, 88, 85) reflect how closely the matched code resembles a real prohibited practice. A score of 92 on an emotion-in-workplace finding means the pattern matched <code>sentiment.*employee</code> or <code>emotion.*workplace</code> with strong surrounding context.</p>
 

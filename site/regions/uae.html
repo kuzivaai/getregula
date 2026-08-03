@@ -297,11 +297,11 @@
 <section class="hero">
     <div class="badge">For DIFC, ADGM &amp; GCC AI teams selling into Europe</div>
     <h1>If your AI features touch EU users, you&rsquo;re <span class="hl">already liable</span>.</h1>
-    <p class="sub">The EU AI Act applies <strong>extraterritorially</strong>. A UAE-licensed company that ships AI to EU customers is a &ldquo;provider&rdquo; or &ldquo;deployer&rdquo; under Article&nbsp;2(1)(c) — and on the hook for fines up to <strong>&euro;35M or 7% of global turnover</strong>. Art&nbsp;50 transparency applies from <strong>2 August 2026</strong>; Annex&nbsp;III high-risk from <strong>2 December 2027</strong> (Omnibus agreed, approved by European Parliament on 16 June 2026; approved by Council on 29 June 2026; published in the Official Journal on 24 July 2026, in force from 27 July 2026). Regula audits your codebase locally in one command. Free, open-source, no consultants.</p>
+    <p class="sub">Article&nbsp;2(1)(c) can apply the EU AI Act to providers and deployers outside the EU when an AI system&rsquo;s output is used in the Union. Scope depends on role, use, and the Act&rsquo;s exclusions. Regula reports code indicators locally for human review; it does not determine whether the Act applies. <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Read Article 2 in the primary legislation</a>.</p>
 
     <button type="button" class="cta-pill" onclick="copyCmd(this, 'pipx install regula-ai \u0026\u0026 regula quickstart')">
         <span>&#9654;</span>
-        Try free in 30 seconds
+        Try the local scanner
     </button>
 
     <div class="cta-secondary">
@@ -314,9 +314,9 @@
         <span class="sp-sep" aria-hidden="true">&middot;</span>
         <span>zero runtime dependencies</span>
         <span class="sp-sep" aria-hidden="true">&middot;</span>
-        <span><a href="https://github.com/kuzivaai/getregula/tree/main/tests" style="color:inherit;text-decoration:underline dotted;">2,821 tests</a></span>
+        <span><a href="https://github.com/kuzivaai/getregula/tree/main/tests" style="color:inherit;text-decoration:underline dotted;">2,684 tests</a></span>
         <span class="sp-sep" aria-hidden="true">&middot;</span>
-        <span>0 known security findings</span>
+        <span>Versioned security-alert inventory</span>
     </div>
 </section>
 
@@ -337,9 +337,9 @@
             <p class="ref">Source: Regulation (EU) 2024/1689 Article 3(3) and Article 16</p>
         </div>
         <div class="card-base liab-card">
-            <h3>Fines up to &euro;35M or 7% of global turnover</h3>
-            <p>Article 99 sets the maximum administrative fine at &euro;35 million or 7% of worldwide annual turnover, whichever is higher. For a DIFC fintech with EU exposure, this is materially worse than DFSA and DIFC data-protection enforcement combined.</p>
-            <p class="ref">Source: Regulation (EU) 2024/1689 Article 99</p>
+            <h3>Article 99 penalty framework</h3>
+            <p>Article 99 sets penalty ceilings by infringement type and includes turnover-based limits. The applicable amount depends on the legal conditions and enforcement decision.</p>
+            <p class="ref"><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Primary source: Regulation (EU) 2024/1689, Article 99</a></p>
         </div>
         <div class="card-base liab-card">
             <h3>High-risk deadline: 2 December 2027 (Omnibus)</h3>
@@ -413,7 +413,7 @@ Regula Quickstart
 <span class="prompt">$</span> <span class="cmd">regula classify --file demo.py</span>
 <span class="out-warn">HIGH-RISK</span>: Employment and workers management - Articles 9, 10, 11, 12, 13, 14, 15
 
-<span class="prompt">$</span> <span class="out-ok"># From pip install to a categorised, article-cited finding in under 10 seconds.</span></pre>
+<span class="prompt">$</span> <span class="out-ok"># Reports code-observable indicators; runtime varies by repository.</span></pre>
 
     <div class="install-block">
         <span class="dollar">$</span>
@@ -429,10 +429,10 @@ Regula Quickstart
 
     <ul style="list-style: none; padding: 0; font-size: 15px; color: #aaaac0;">
         <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Trust Pack</strong> — every claim is paired with the exact shell command anyone can run to verify it. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">docs/TRUST.md</a></li>
-        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Published precision &amp; recall</strong> — 100% on the synthetic Annex III/Article 5 corpus, 83.5% on production code in a blind-labelled random corpus (N=115, measured on v1.7.4). Reproducible methodology. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md">benchmark report</a></li>
+        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Published precision &amp; recall</strong> — full recall on the synthetic Article 5 prohibited corpus and partial recall on the expanded 30-fixture Annex III high-risk corpus (figures and their decomposition are in the benchmark report, and vary by which command you run), 83.5% on production code in a blind-labelled random corpus (N=115, measured on v1.7.0, labelled by a single reviewer with no inter-rater agreement measurement). Reproducible methodology. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md">benchmark report</a></li>
         <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>SHA-256 tamper-evident audit log</strong> — verify the chain yourself with <code>regula audit verify</code>.</li>
         <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Zero runtime dependencies</strong> — Regula's core only uses Python's standard library. The Software Bill of Materials is empty by design.</li>
-        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Runs entirely on your machine</strong> — no SaaS, no API, no data leaves your environment. <code>regula check</code> is fully offline.</li>
+        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Local-first core scanning</strong> — no account or API key is required for the core scan path. Optional network-enabled features have separate boundaries.</li>
         <li style="padding: 10px 0;">&#10003; <strong>Open source under Apache 2.0 / EUPL 1.2</strong> — read every line at <a href="https://github.com/kuzivaai/getregula">github.com/kuzivaai/getregula</a>.</li>
     </ul>
 </section>

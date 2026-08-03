@@ -713,11 +713,26 @@ def test_check_clean_exit_code_zero():
 def test_check_high_risk_strict_exit_code():
     """A high_risk-tier finding (not prohibited) only triggers exit_code=1
     when strict=True is passed in the request body -- mirroring the CLI's
-    --strict/--ci semantics."""
+    --strict/--ci semantics.
+
+    confidence_score is set explicitly because the CLI derives block/warn/info
+    from it, and every finding produced by report.scan_files carries one. The
+    fixture previously omitted it, which made the finding score as "info" under
+    CLI semantics while the API's own copy of the exit-code logic ignored
+    confidence entirely. That divergence is the bug this test now guards
+    against, so 60 places the finding in the warn band: not blocking on its
+    own, blocking under strict.
+    """
     import types
 
     mock_findings = [
-        {"file": "a.py", "line": 1, "pattern": "credit_scoring", "tier": "high_risk"},
+        {
+            "file": "a.py",
+            "line": 1,
+            "pattern": "credit_scoring",
+            "tier": "high_risk",
+            "confidence_score": 60,
+        },
     ]
     mock_module = types.ModuleType("report")
     mock_module.scan_files = MagicMock(return_value=list(mock_findings))
@@ -736,6 +751,16 @@ def test_check_high_risk_strict_exit_code():
             )
     assert body_lenient["exit_code"] == 0, "high_risk alone (no strict) must not fail"
     assert body_strict["exit_code"] == 1, "high_risk + strict=True must fail"
+
+    # Parity with the CLI is the actual contract the README states, so assert it
+    # directly rather than trusting that two implementations happen to agree.
+    import sys as _sys
+    from pathlib import Path as _Path
+    _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent / "scripts"))
+    from findings_view import compute_exit_code
+
+    assert compute_exit_code(mock_findings, strict=False) == body_lenient["exit_code"]
+    assert compute_exit_code(mock_findings, strict=True) == body_strict["exit_code"]
 
 
 def test_check_skip_tests_flag():

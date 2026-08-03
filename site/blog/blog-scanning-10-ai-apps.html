@@ -162,7 +162,17 @@
         <span>The Implementation Layer</span>
     </div>
     <h1>I scanned 10 open-source AI apps for EU AI Act compliance. Here&rsquo;s what I <span class="hl">found.</span></h1>
-    <p style="font-style:italic;color:var(--text-dim);font-size:0.85rem;margin-bottom:12px;">Original scan with Regula v1.6.1 (330 patterns); re-scan with v1.7.0 (389 patterns). Current version has 419.</p>
+    <p style="font-style:italic;color:var(--text-dim);font-size:0.85rem;margin-bottom:12px;">Original scan with Regula v1.6.1 (330 patterns); re-scan with v1.7.0 (387 tier regexes). Current version has 419.</p>
+    <aside class="provenance-note" style="font-size:0.85rem;margin-bottom:16px;">
+      <strong>Provenance note, added 28 July 2026.</strong> Three figures on this page are annotated rather than corrected, because correcting them would mean substituting a number nobody can reproduce for another.
+      <ul>
+        <li><strong>330 patterns (v1.6.1) is UNSETTLEABLE.</strong> There is no <code>v1.6.1</code> git tag and no 1.6.1 release on PyPI, so no artefact records what that version counted. Measured at the tags that do exist, using the current counting script: v1.6.0 gives 219 and v1.6.2 gives 386, so 330 is arithmetically consistent with sitting between them, and that is the strongest statement the evidence supports. It is not confirmation.</li>
+        <li><strong>The unit is not fixed either.</strong> Run against the same v1.6.2 tree, that version&rsquo;s own counting script gives 358 and the current one gives 386. A 28-count gap on identical code means a bracket cannot settle a figure whose definition moved.</li>
+        <li><strong>387 and 386 are both correct, at two different trees that both call themselves v1.7.0.</strong> The <code>v1.7.0</code> tag is commit <code>10137ff</code> of 16 April 2026 and counts <strong>386</strong> tier regexes. The re-scan on this page ran on commit <code>c12f0b5</code> of 23 April 2026, which still carries version 1.7.0 and counts <strong>387</strong>. Measured at each tree by two independent methods that agree: that tree&rsquo;s own <code>scripts/site_facts.py</code>, and a direct sum over the pattern lists in <code>scripts/risk_patterns.py</code>. The disagreement was never about what a pattern is; it was about which tree. <strong>389 was wrong and is corrected.</strong> It appears under no unit at either tree: the full set at the tag is 52 / 386 / 182 / 17 / 38 / 10 / 4 / 4 / 18 / 659 / 446, and at 23 April it is 52 / 387 / 182 / 17 / 38 / 10 / 4 / 4 / 18 / 660 / 447.</li>
+        <li><strong>The v1.6.1 raw scan output is NOT committed</strong>, although the closing note below says output for both versions is available. Only the v1.7.0 re-scan of 23 April 2026 is in <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/blog_scan_2026_04">benchmarks/results/blog_scan_2026_04</a>, and its README says so. The v1.6.1 files were never added.</li>
+      </ul>
+      Method and figures: benchmarks/results/blog_scan_2026_04/README.md and scripts/site_facts.py.
+    </aside>
     <p class="standfirst">The EU AI Act&rsquo;s high-risk obligations take effect in August 2026 &mdash; though the <a href="https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-regulation-proposal">Omnibus simplification proposal</a> (February 2026) may push certain deadlines to December 2027 if adopted. Either way, the regulation is law. It applies to AI systems deployed in or affecting the EU market.</p>
 </div>
 
@@ -277,7 +287,7 @@
             </tbody>
         </table>
 
-        <p>Scan time for all 10 projects: under 3 seconds combined.</p>
+        <p>Runtime varies with repository size, language mix, command options, and environment.</p>
     </section>
 
     <section id="what-regula-checks">
@@ -291,7 +301,7 @@
     <section id="what-i-found">
         <h2>What I found</h2>
 
-        <p>Regula flagged 553 findings across 8,659 source files. Agent autonomy dominated at 56.6% of findings, followed by limited-risk transparency patterns (27.8%), AI security issues (7.4%), high-risk indicators (4.9%), credential exposure (2.5%), and prohibited-practice patterns (0.7%). Most source files had no findings at all.</p>
+        <p>Regula flagged 553 findings across 8,659 source files. Agent autonomy dominated at 56.6% of findings, followed by limited-risk transparency patterns (27.8%), AI security issues (7.4%), high-risk indicators (4.9%), credential exposure (2.5%), and prohibited-practice patterns (0.7%). Most source files had no findings. <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results">Checked-in scan results</a>.</p>
 
         <p>553 findings across 8,659 source files. The breakdown:</p>
 
@@ -343,6 +353,7 @@
                 </tr>
             </tbody>
         </table>
+        <p><a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results">Source data for this table</a>.</p>
 
         <h3>The dominant pattern: agent autonomy (56.6%)</h3>
 
@@ -388,14 +399,14 @@
     <section id="how-to-run">
         <h2>How to run this yourself</h2>
 
-        <p>Install Regula with pip, point it at any project directory, and get a compliance scan in under a second. Regula is open-source, has zero dependencies, and runs entirely offline. No data leaves your machine, and results include file paths, line numbers, and EU AI Act article references for every finding.</p>
+        <p>Install Regula with pip and point it at a project directory to obtain a pattern-based risk scan. Regula is open-source, has zero core dependencies, and its local scan engine does not upload project files. Results include file paths, line numbers, and EU AI Act article references for matched findings; runtime varies with project size and hardware.</p>
 
         <pre><code>pip install regula-ai
 regula check /path/to/your/project</code></pre>
 
-        <p>Regula is open-source, has zero dependencies, and runs entirely locally. No data leaves your machine. It takes under a second for most projects.</p>
+        <p>Regula is open-source, has zero core dependencies, and processes scan inputs locally without uploading project files. Runtime varies with project size and hardware.</p>
 
-        <p>The risk patterns it checks against (389 as of v1.7.0; 330 at the time this scan was run with v1.6.1) are documented in the repository. If you disagree with a classification, you can suppress individual findings with inline comments or contribute pattern improvements upstream.</p>
+        <p>The risk patterns it checks against (387 as of v1.7.0; 330 at the time this scan was run with v1.6.1) are documented in the repository. If you disagree with a classification, you can suppress individual findings with inline comments or contribute pattern improvements upstream.</p>
     </section>
 
     <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
@@ -406,7 +417,7 @@ regula check /path/to/your/project</code></pre>
     <!-- Disclaimer -->
     <div class="disclaimer">
         <p><em>Scans were run using Regula v1.6.1 against shallow clones of each project&rsquo;s default branch on 10 April 2026. Star counts are as of the same date. Findings reflect code-level patterns, not deployed system risk classifications &mdash; the EU AI Act regulates systems as deployed, not code in isolation.</em></p>
-        <p><em>A re-scan with Regula v1.7.0 (23 April 2026) found 665 findings across the same 10 projects. The increase is primarily due to expanded AI security patterns in v1.7.0 (389 patterns vs 330 in v1.6.1). Full JSON scan output for both versions is available in the <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/blog_scan_2026_04">repository</a> for independent verification.</em></p>
+        <p><em>A re-scan with Regula v1.7.0 (23 April 2026) found 665 findings across the same 10 projects. The increase is primarily due to expanded AI security patterns in v1.7.0 (387 tier regexes vs 330 in v1.6.1). Full JSON scan output for both versions is available in the <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/blog_scan_2026_04">repository</a> for independent verification.</em></p>
         <p><em>The EU AI Act enforcement timeline is subject to change. The Omnibus simplification proposal (February 2026) is under legislative review and has not been enacted. All deadline references in this article reflect current law unless otherwise noted.</em></p>
     </div>
 

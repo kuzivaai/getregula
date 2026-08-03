@@ -271,13 +271,15 @@ class RegulaHandler(BaseHTTPRequestHandler):
                 key=lambda f: (f.get("file", ""), f.get("line", 0), f.get("pattern", ""))
             )
             
-            # DEF-008: Populate correct exit_code in envelope
-            _exit_code = 0
-            if any(f.get("tier") == "prohibited" for f in findings):
-                _exit_code = 1
-            elif strict and any(f.get("tier") == "high_risk" for f in findings):
-                _exit_code = 1
-                
+            # DEF-008: Populate correct exit_code in envelope.
+            # Derived from the same helper the CLI uses so the two surfaces
+            # cannot drift; deriving it independently here meant a
+            # credential_exposure finding at confidence 95 blocked on the CLI
+            # and passed over the API.
+            from findings_view import compute_exit_code
+            _exit_code = compute_exit_code(findings, strict=bool(strict))
+
+
             envelope = _build_envelope("check", findings, _exit_code)
             self._send_json(200, envelope)
         except Exception:

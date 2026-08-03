@@ -15,7 +15,7 @@ a genuine **key-person / bus-factor risk**, and it is not erased by
 development velocity or by the use of AI-assisted tooling. Shipping
 quickly and staying available if the maintainer is ill, unreachable, or
 stops working on the project are **separate concerns**; we do not conflate
-them. The 2024 `xz-utils` incident (CVE-2024-3094), in which a single
+them. The `xz-utils` incident (CVE-2024-3094), in which a single
 overburdened open-source maintainer was socially engineered into ceding
 control of a critical library, is the reason vendor-risk teams treat
 bus-factor-of-one as a *security* question, not only an availability one.

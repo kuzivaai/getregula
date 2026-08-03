@@ -5,8 +5,14 @@
   "description": "A single regulatory change to the EU AI Act or adjacent frameworks. Every entry is primary-source-linked, article-keyed, and machine-readable.",
   "type": "object",
   "required": [
-    "id", "date", "type", "source_url", "source_title",
-    "affected_articles", "summary", "confidence"
+    "id",
+    "date",
+    "type",
+    "source_url",
+    "source_title",
+    "affected_articles",
+    "summary",
+    "confidence"
   ],
   "properties": {
     "id": {
@@ -53,12 +59,16 @@
     },
     "affected_articles": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Article references (e.g. '6', '9', '99'). Use 'Annex III', 'Annex IV' for annexes."
     },
     "affected_recitals": {
       "type": "array",
-      "items": { "type": "string" }
+      "items": {
+        "type": "string"
+      }
     },
     "member_state": {
       "type": "string",
@@ -77,20 +87,37 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["pattern_id", "change"],
+        "required": [
+          "pattern_id",
+          "change"
+        ],
         "properties": {
-          "pattern_id": { "type": "string" },
+          "pattern_id": {
+            "type": "string"
+          },
           "change": {
             "type": "string",
-            "enum": ["reviewed-no-change", "updated", "added", "deprecated"]
+            "enum": [
+              "reviewed-no-change",
+              "updated",
+              "added",
+              "deprecated"
+            ]
           },
-          "notes": { "type": "string" }
+          "notes": {
+            "type": "string"
+          }
         }
       }
     },
     "confidence": {
       "type": "string",
-      "enum": ["verified-primary", "verified-secondary", "reported-unverified", "speculative"],
+      "enum": [
+        "verified-primary",
+        "verified-secondary",
+        "reported-unverified",
+        "speculative"
+      ],
       "description": "How the entry was verified"
     },
     "verified_by": {
@@ -100,6 +127,16 @@
     "verified_on": {
       "type": "string",
       "format": "date"
+    },
+    "jurisdiction": {
+      "type": "string",
+      "description": "Jurisdiction the change belongs to. Defaults to EU when absent. Headroom for logging Korea AI Basic Act, Colorado ADMT and other jurisdiction currency events in the same log.",
+      "examples": [
+        "EU",
+        "KR",
+        "US-CO",
+        "BR"
+      ]
     }
   }
 }

@@ -18,10 +18,12 @@ jobs:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install pyyaml "pytest~=9.0" "cryptography>=41,<50" "asn1crypto>=1.5.1,<2"
+      - run: pip install pyyaml "pytest~=9.0" "jsonschema~=4.0" "cryptography>=41,<50" "asn1crypto>=1.5.1,<2"
       - name: Custom test runner (manual list — asserts every test is registered)
         run: python3 tests/test_classification.py
       - name: pytest discovery (catches anything not in the manual list)
@@ -99,7 +101,7 @@ jobs:
       # site_facts measures total_collected via pytest --collect-only, and
       # collection imports the test modules — install the same deps as the
       # test matrix or the count is unmeasurable (site_facts then exits 1).
-      - run: pip install pyyaml "pytest~=9.0" "cryptography>=41,<50" "asn1crypto>=1.5.1,<2"
+      - run: pip install pyyaml "pytest~=9.0" "jsonschema~=4.0" "cryptography>=41,<50" "asn1crypto>=1.5.1,<2"
       - name: Scan modified Markdown/HTML for unverified claims
         env:
           # Passed via env, never interpolated into the shell. `base_ref` is
@@ -120,6 +122,10 @@ jobs:
           git diff --exit-code data/site_facts.json data/site_facts.md
       - name: Verify published numbers match canonical counts
         run: python3 scripts/claim_auditor.py --verify-facts
+      - name: Verify sitemap coverage and modification dates
+        run: |
+          python3 scripts/update_sitemap.py
+          git diff --exit-code site/sitemap.xml
 
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'

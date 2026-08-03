@@ -50,10 +50,15 @@ standards:
     draft_reference: "prEN 18286"
     description: >-
       Quality management system requirements for providers of high-risk AI
-      systems. First harmonised standard under the AI Act. Public enquiry
-      (CEN Enquiry) ran 2025-10-30 to 2026-01-22. Publication expected Q4 2026.
-    status: in_progress
-    published_ref: null
+      systems. First AI Act standard to reach publication. Public enquiry
+      (CEN Enquiry) ran 2025-10-30 to 2026-01-22; approved by CEN-CENELEC
+      2026-07-12 and published as EN 18286:2026. PUBLISHED IS NOT OJ-CITED:
+      it is not yet cited in the Official Journal, so it does NOT yet confer
+      the Article 40 presumption of conformity. Until citation, a provider
+      relying on it carries the full evidentiary burden.
+    status: published
+    published_ref: "EN 18286:2026"
+    published_date: "2026-07-12"
     oj_reference: null
     confers_presumption: false
 

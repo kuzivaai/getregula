@@ -137,7 +137,7 @@ regula conform --project .                    # Generate evidence pack
 regula conform --project . --format json      # Machine-readable summary
 ```
 
-Output: 26 files across 12 folders, including Annex IV draft, audit trail, SBOM, remediation plan, Article 14 oversight analysis, and an Article 47 declaration of conformity template. All files SHA-256 hashed in a manifest for tamper detection.
+Output is a structured folder containing an Annex IV draft, audit trail, SBOM, remediation plan, Article 14 oversight analysis, and an Article 47 declaration of conformity template. All files are SHA-256 hashed in a manifest for tamper detection. The exact generated layout is defined by [`scripts/conformity_pack.py`](../scripts/conformity_pack.py).
 
 **Important:** This is a compliance evidence scaffold, not a legal determination. The `00-assessment-summary.json` file lists what Regula auto-generated and what requires human input (intended purpose, FRIA, training data provenance, etc.).
 
@@ -306,12 +306,12 @@ Hand-labelled 257 findings sampled across five OSS AI projects (`instructor`, `p
 
 | Cut | TP | FP | Precision |
 |---|---:|---:|---:|
-| **Overall** | 39 | 218 | **15.2%** |
-| `agent_autonomy` | 2 | 3 | 40.0% |
-| `limited_risk` | 1 | 2 | 33.3% |
-| `minimal_risk` (94% of findings) | 36 | 205 | 14.9% |
-| `ai_security` | 0 | 6 | 0.0% |
-| `credential_exposure` | 0 | 2 | 0.0% |
+| **Overall** | 39 | 218 | **15.2%** ([source](../benchmarks/README.md)) |
+| `agent_autonomy` | 2 | 3 | 40.0% ([source](../benchmarks/README.md)) |
+| `limited_risk` | 1 | 2 | 33.3% ([source](../benchmarks/README.md)) |
+| `minimal_risk` (94% of findings) | 36 | 205 | 14.9% ([source](../benchmarks/README.md)) |
+| `ai_security` | 0 | 6 | 0.0% ([source](../benchmarks/README.md)) |
+| `credential_exposure` | 0 | 2 | 0.0% ([source](../benchmarks/README.md)) |
 
 This is the honest current state. The minimal_risk tier dominates the sample on general-purpose libraries and is noisy — that's the next pattern-tuning target. None of the five repos triggered `prohibited` or `high_risk` findings, so precision for the tiers that actually block merges cannot be estimated from this benchmark and is a separate piece of work.
 
@@ -643,10 +643,10 @@ After restarting your client, the assistant gains three tools:
 
 - `regula_check` — scan a project directory; returns findings with tier,
   confidence, and remediation guidance.
-- `regula_classify` — classify a code snippet against EU AI Act risk tiers.
+- `regula_classify` — return a provisional pattern-based risk indication for a
+  code snippet; it is not a legal classification of an AI system.
 - `regula_gap` — assess Articles 9–15 compliance gaps with per-article scores.
 
 **Security note.** The MCP server is stdio-only and inherits the
 permissions of the parent process. Do not expose it over TCP/HTTP without
 adding authentication first.
-

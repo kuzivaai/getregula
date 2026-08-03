@@ -1,0 +1,63 @@
+{
+  "protocol_version": "commercial_v1",
+  "regula_commit": "140bdacdcbfaaa9bd0892989861751b0b5e2d8d0",
+  "selection_seed": "identity provenance only; repository frame is a disclosed purposive census, not a random sample",
+  "ground_truth": {
+    "layer_1": "truth-by-construction",
+    "layer_2": "repository identity and code are factual; capability labels require blinded human review and are unavailable",
+    "layer_3": "MODEL-PROVISIONAL because independent human raters and adjudication are unavailable"
+  },
+  "repository_inputs": [
+    {"path": "benchmarks/commercial_v1/PROTOCOL.md", "sha256": "58c935903b5832eb7b8232116f6dc182b97708a89b5d3070f8b856ec9272d8c4"},
+    {"path": "benchmarks/commercial_v1/REDTEAM_PREREGISTRATION.md", "sha256": "82ffaea70cba9e325a8354dbca48fb948cc4bc68abd0e31cc48e9377b6a16c03"},
+    {"path": "benchmarks/commercial_v1/acquire.py", "sha256": "d2cc1d48cfa8c05eb37791e0987cea483e5d668f5c8c3fbdec7a0260dd49d43a"},
+    {"path": "benchmarks/commercial_v1/annotation_pack.json", "sha256": "5e4edf71cb03c89331f642ea70a6ef6d1e1501fcbd094afcbed694cd22ee0eb8"},
+    {"path": "benchmarks/commercial_v1/build_annotation_pack.py", "sha256": "20cd491ac6b04518333f743a3e865b1ba3b6aad1654a61d25d2e75fbd7907c4e"},
+    {"path": "benchmarks/commercial_v1/build_corpus.py", "sha256": "41779ababa2b13479c39edff12bb28c05e1b3e63f950f1559dcb450a62257aec"},
+    {"path": "benchmarks/commercial_v1/corpus.json", "sha256": "9c726626ce8ff34d94fb070c0d732fe25a6a243e3401618fa12ae63673f763af"},
+    {"path": "benchmarks/commercial_v1/gate.py", "sha256": "0b059050c024cc3208f3cc96f60ff1052b34309d5e9b006f92f0d76c0ccacfdc"},
+    {"path": "benchmarks/commercial_v1/install_tools.py", "sha256": "04abc48c26bb488578d2fef9ba87572713751b0d048c0c75b75133a00bbb10c3"},
+    {"path": "benchmarks/commercial_v1/labels.json", "sha256": "feea31edb0316ad8606c8d995b2164b4704b46e0223e7ad4df29a94154217e28"},
+    {"path": "benchmarks/commercial_v1/network_probe.py", "sha256": "f46928064729f65798439d41d5798dea5986739cae8979909622a7cf0c4ecc78"},
+    {"path": "benchmarks/commercial_v1/normalise.py", "sha256": "53a6321117fc8ec6bb348e6ee0b36f0589f59df14fe5b9dddd9f2a87f28f3478"},
+    {"path": "benchmarks/commercial_v1/operations.py", "sha256": "d5a652874ecaa25d2e008f2d914bf5cb23b79960bf1cd1c49b40c95b98717723"},
+    {"path": "benchmarks/commercial_v1/repository_candidates.json", "sha256": "efd0ae2ab51b6a7ed6e63cd9b5e72f81c1b030510ca9b159d255dce24f9f0859"},
+    {"path": "benchmarks/commercial_v1/research_questions.json", "sha256": "d8dab648777b301a11d5255b59d7be6a8b09f5daeef49eb09818f7ce158ba172"},
+    {"path": "benchmarks/commercial_v1/run.py", "sha256": "f04d002d1a93363b33b10692a43b3d8f33909e9f41299b8dae837c5cfade25e7"},
+    {"path": "benchmarks/commercial_v1/score.py", "sha256": "fc020c842d360c62b6bcfbb6a2718ba3fb4870aaeeae92b757bba62516a2cb08"},
+    {"path": "benchmarks/commercial_v1/select_repositories.py", "sha256": "5bc876796c4f3f334deabce12732d5195397a146a2a9310dadd6ed1c3856df5b"},
+    {"path": "benchmarks/commercial_v1/tools.lock.json", "sha256": "f933ba1c4107bea1f2a46f32b59f60f239c51eef3a0718d7fd1464905a23bd77"},
+    {"path": "benchmarks/commercial_v1/verify.py", "sha256": "2c8ebd6723eb7e0e12ba711625d60eb2e96b24604a105b68a84f3878f7fd84da"}
+  ],
+  "layers": {
+    "truth_by_construction": {
+      "corpus_file": "benchmarks/commercial_v1/corpus.json",
+      "labels_file": "benchmarks/commercial_v1/labels.json",
+      "decisions": 160,
+      "strata": {
+        "A_positive": 40,
+        "A_negative": 40,
+        "B_positive": 40,
+        "B_negative": 40
+      }
+    },
+    "public_repositories": [
+      {"id": "microsoft/markitdown", "commit": "fd239d5d2be43d9b68329730206b9312c7d5a388", "language": "Python", "ai_mix": "AI", "license_expected": "MIT"},
+      {"id": "open-webui/open-webui", "commit": "01f4282f1ffe0d6212f58d3afbeae21fffd0c4be", "language": "Python/TypeScript", "ai_mix": "AI", "license_expected": "repository licence to verify"},
+      {"id": "browser-use/browser-use", "commit": "f0aa3a8bb03779c71a5aa262d389e3bfe6b77cdc", "language": "Python", "ai_mix": "AI", "license_expected": "MIT"},
+      {"id": "modelcontextprotocol/python-sdk", "commit": "a4f4ccd091138771535e17191123f20b30fda68e", "language": "Python", "ai_mix": "AI infrastructure", "license_expected": "MIT"},
+      {"id": "pallets/click", "commit": "00e592cea702e0b2caa0dee42489fdb1c22cd845", "language": "Python", "ai_mix": "non-AI", "license_expected": "BSD-3-Clause"},
+      {"id": "pallets/itsdangerous", "commit": "672971d66a2ef9f85151e53283113f33d642dabd", "language": "Python", "ai_mix": "non-AI", "license_expected": "BSD-3-Clause"},
+      {"id": "python-attrs/attrs", "commit": "97f8d175656bc03c373a1c9038048a4d312c307c", "language": "Python", "ai_mix": "non-AI", "license_expected": "MIT"},
+      {"id": "astral-sh/ruff", "commit": "2272478c067945096c34350b20d0bfc41d356d3c", "language": "Rust/Python", "ai_mix": "non-AI", "license_expected": "MIT"},
+      {"id": "prettier/prettier", "commit": "60f03eae59ddf0dff496073d88b0263507c99a5a", "language": "TypeScript/JavaScript", "ai_mix": "non-AI", "license_expected": "MIT"},
+      {"id": "axios/axios", "commit": "c3f553c740ebf3dff5e22dae24e9caaafafddd2d", "language": "JavaScript", "ai_mix": "non-AI", "license_expected": "MIT"},
+      {"id": "sindresorhus/ky", "commit": "3419113b48e034fdcf8fa6bd3be3da7b3d0d758f", "language": "TypeScript", "ai_mix": "non-AI", "license_expected": "MIT"},
+      {"id": "vitest-dev/vitest", "commit": "ec367cf2a6c955da8304e8cea935d1f3dc034a98", "language": "TypeScript", "ai_mix": "non-AI", "license_expected": "MIT"}
+    ],
+    "legal_context_scenarios": {
+      "status": "annotation pack required but not claim-eligible without two independent human raters and adjudication",
+      "headline_allowed": false
+    }
+  }
+}

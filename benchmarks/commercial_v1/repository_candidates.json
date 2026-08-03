@@ -1,0 +1,23 @@
+{
+  "population_frozen_at": "2026-07-31",
+  "selection_seed_material": "140bdacdcbfaaa9bd0892989861751b0b5e2d8d0:commercial_v1",
+  "selection_rule": "purposive convenience frame: exclude preregistered ineligible entries, then include all 12 remaining eligible entries in lexical order; not a random or confirmatory sample",
+  "candidates": [
+    {"id": "microsoft/markitdown", "eligible": true},
+    {"id": "open-webui/open-webui", "eligible": true},
+    {"id": "browser-use/browser-use", "eligible": true},
+    {"id": "modelcontextprotocol/python-sdk", "eligible": true},
+    {"id": "pallets/click", "eligible": true},
+    {"id": "pallets/itsdangerous", "eligible": true},
+    {"id": "python-attrs/attrs", "eligible": true},
+    {"id": "astral-sh/ruff", "eligible": true},
+    {"id": "prettier/prettier", "eligible": true},
+    {"id": "axios/axios", "eligible": true},
+    {"id": "sindresorhus/ky", "eligible": true},
+    {"id": "vitest-dev/vitest", "eligible": true},
+    {"id": "BerriAI/litellm", "eligible": false, "exclusion": "already present in Regula benchmark results"},
+    {"id": "openai/openai-python", "eligible": false, "exclusion": "already present in Regula benchmark results"},
+    {"id": "instructor-ai/instructor", "eligible": false, "exclusion": "already present in Regula benchmark results"},
+    {"id": "pydantic/pydantic-ai", "eligible": false, "exclusion": "already present in Regula benchmark results"}
+  ]
+}

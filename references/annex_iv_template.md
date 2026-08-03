@@ -1,6 +1,17 @@
 # Annex IV — Technical Documentation Template
 
-Use this template to generate EU AI Act compliant technical documentation for high-risk AI systems.
+A scaffold for drafting the technical documentation described in Annex IV of the
+EU AI Act, for systems a provider has determined to be high risk.
+
+**This template does not make a system compliant, and completing it is not a
+conformity assessment.** It reproduces the structure of the Annex IV headings so
+that a provider and their advisers can see what information is expected. Whether
+the resulting documentation satisfies the Act is a determination for the
+provider, their legal advisers, and where applicable a notified body. Regula
+produces risk indications, not legal determinations.
+
+Sections left unanswered, or answered from engineering intent rather than from
+evidence, do not become compliant by being written down.
 
 ---
 

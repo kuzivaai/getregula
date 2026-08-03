@@ -31,7 +31,19 @@ regula check <repo> --format json > <repo>.json
 
 The original blog post reports 553 findings using Regula v1.6.1 (10 April 2026).
 The difference is primarily due to expanded AI security detection patterns in v1.7.0
-(409 patterns vs 330 in v1.6.1).
+(387 tier regexes vs 330 in v1.6.1).
+
+> **CORRECTED 28 July 2026.** This said **409** and the blog post said
+> **389**. Neither is derivable. MEASURED: 387 tier regexes, counted at commit c12f0b5 (23 April 2026, VERSION 1.7.0, the tree the scan actually ran) by two independent methods: that tree's own scripts/site_facts.py, and a direct sum over risk_patterns.py. Every pattern unit
+> available at that tree is 52 / 387 / 182 / 17 / 38 / 10 / 4 / 4 / 18 /
+> 660 / 447 — **neither 389 nor 409 appears under any unit**, so this was
+> not a units mismatch, it was two wrong numbers. The v1.7.0 tag
+> (16 April) gives 386; the 23 April tree gives 387. The `409` that
+> appears in the v1.7.0 tree is a false match inside `arXiv:2409.11363`.
+>
+> **Still open:** the **330** figure for v1.6.1 is not settleable from a
+> tag, because no `v1.6.1` tag exists (only v1.6.0 and v1.6.2). It is
+> left as published and flagged.
 
 ## Category breakdown
 

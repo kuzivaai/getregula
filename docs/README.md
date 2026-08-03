@@ -35,7 +35,7 @@ You know what you want to do; these give you the steps.
 
 - [Installation](installation.md) — pipx, uv, and pip; platform notes.
 - [Consultant guide](consultant-guide.md) — using Regula in a paid engagement, reproducibly.
-- [Evidence-pack guide](evidence-pack-guide.md) — produce an auditor-ready evidence pack.
+- [Evidence-pack guide](evidence-pack-guide.md) — produce a review-ready evidence bundle for an auditor or assessor.
 - [DPV-AIAct export](dpv-aiact-export.md) — emit the risk indication as machine-readable JSON-LD for RDF/GRC tooling.
 
 ## Reference — accurate, complete, look-it-up

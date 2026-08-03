@@ -303,10 +303,10 @@
 <div class="blog-body">
 
         <!-- SECTION 1 -->
-        <h2>The four risk tiers in 30 seconds</h2>
+        <h2>A quick guide to the four risk tiers</h2>
         <p>The EU AI Act classifies AI systems into four tiers based on the harm they can cause. The tiers determine what obligations you have as a provider or deployer:</p>
         <ul>
-            <li><span class="tier-label tier-prohibited">Prohibited</span> &mdash; <strong>Banned outright.</strong> <span class="art-ref">Article 5</span> lists practices that cannot be placed on the EU market under any circumstances (with narrow exceptions for some). Fines: up to &euro;35 million or 7% of global turnover.</li>
+            <li><span class="tier-label tier-prohibited">Prohibited</span> &mdash; <strong>Banned, subject to the text's defined conditions and exceptions.</strong> Article 5 lists prohibited practices; Article 99 provides for fines up to &euro;35 million or 7% of global turnover. <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Primary legislation</a>.</li>
             <li><span class="tier-label tier-high">High-Risk</span> &mdash; <strong>Allowed, with obligations.</strong> <span class="art-ref">Annex III</span> lists eight categories. If your system falls within one and poses a significant risk of harm (<span class="art-ref">Article 6</span>), you must comply with <span class="art-ref">Articles 9&ndash;15</span>: risk management, data governance, technical documentation, transparency, human oversight, accuracy, and cybersecurity. Deadline: 2 August 2026.</li>
             <li><span class="tier-label tier-limited">Limited-Risk</span> &mdash; <strong>Transparency obligations only.</strong> <span class="art-ref">Article 50</span> requires you to disclose that the user is interacting with an AI system, or that content is AI-generated.</li>
             <li><span class="tier-label tier-minimal">Minimal-Risk</span> &mdash; <strong>No specific obligations.</strong> Most AI systems fall here. You can adopt voluntary codes of conduct (<span class="art-ref">Article 95</span>), but the Act does not impose requirements.</li>
@@ -318,7 +318,7 @@
 
         <!-- SECTION 2: PROHIBITED -->
         <h2>Prohibited &mdash; what triggers it</h2>
-        <p>Article 5 of the EU AI Act bans eight AI practices outright, enforceable since 2 February 2025 with fines up to EUR 35 million or 7% of global turnover. In code, these appear as social scoring systems, emotion inference in workplaces, subliminal manipulation, biometric categorisation of sensitive attributes, and similar patterns that a static scanner can detect from variable names and function signatures.</p>
+        <p>Article 5 of the EU AI Act prohibits defined AI practices and has applied since 2 February 2025; Article 99 provides for fines up to EUR 35 million or 7% of global turnover. Static scanning can flag related names and signatures, but cannot determine whether the legal conditions are met. <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Primary legislation</a>.</p>
         <p><span class="art-ref">Article 5</span> bans eight categories of AI practice. Two of the clearest in code are <strong>social scoring</strong> (<span class="art-ref">Article 5(1)(c)</span>) and <strong>emotion inference in the workplace</strong> (<span class="art-ref">Article 5(1)(f)</span>).</p>
 
         <h3>Example: social scoring system</h3>
@@ -358,7 +358,7 @@ Regula Scan: citizen_rating.py
   <span class="t-r">PROHIBITED PRACTICES:</span>
     <span class="t-r">[BLOCK] [ 95]</span> citizen_rating.py &mdash; Social scoring by public authorities
       <span class="t-r">Article 5(1)(c)</span> &mdash; Prohibited when evaluating or classifying
-      persons based on social behaviour, leading to detrimental
+      persons based on social behaviour, resulting in detrimental
       treatment disproportionate to context.
 ============================================================</pre>
         </div>

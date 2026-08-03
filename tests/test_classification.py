@@ -34,6 +34,20 @@ import test_site_facts as _test_site_facts  # noqa: F401
 import test_dpv_export as _test_dpv_export  # noqa: F401
 import test_hostile_sweep as _test_hostile_sweep  # noqa: F401
 import test_release_gate as _test_release_gate  # noqa: F401
+import test_ledger_status as _test_ledger_status  # noqa: F401
+import test_merge_blockers as _test_merge_blockers  # noqa: F401
+import test_crosswalk_omnibus as _test_crosswalk_omnibus  # noqa: F401
+import test_f25_exposure as _test_f25_exposure  # noqa: F401
+import test_gate_probe as _test_gate_probe  # noqa: F401
+import test_tree_guard as _test_tree_guard  # noqa: F401
+import test_tracked_inputs as _test_tracked_inputs  # noqa: F401
+import test_commercial_benchmark as _test_commercial_benchmark  # noqa: F401
+import test_check_decompositions as _test_check_decompositions  # noqa: F401
+import test_setop_inventory as _test_setop_inventory  # noqa: F401
+import test_handover_continuity as _test_handover_continuity  # noqa: F401
+import test_public_claim_integrity as _test_public_claim_integrity  # noqa: F401
+import test_public_surface_inventory as _test_public_surface_inventory  # noqa: F401
+import test_gap_demo as _test_gap_demo  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
@@ -44,8 +58,19 @@ from helpers import assert_eq, assert_true, assert_false
 # pytest discovers them natively from tests/test_register.py and runs them
 # with proper fixture injection.
 import inspect as _inspect
+
+# Aliases are bound under this prefix, NOT under "test_", because pytest
+# collects every module-level name matching python_functions
+# (pyproject.toml: "test_*"). Binding them as "test_*" here made pytest
+# collect each one twice — once in its home module, once in this one —
+# which inflated the published test count by 527 (2,849 reported vs 2,322
+# real). The runner's globals() walk below accepts this prefix, so
+# discovery stays automatic and no manual list is reintroduced.
+# Guarded by tests/test_collection_integrity.py.
+RUNNER_ALIAS_PREFIX = "_runner_test_"
+
 _PYTEST_FIXTURES = {"monkeypatch", "tmp_path", "capsys", "tmpdir", "request"}
-for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate):
+for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
             continue
@@ -58,8 +83,8 @@ for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_ne
             _params = set()
         if _params & _PYTEST_FIXTURES:
             continue
-        globals()[_name] = _fn
-del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate
+        globals()[RUNNER_ALIAS_PREFIX + _name] = _fn
+del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:
@@ -3469,6 +3494,16 @@ def test_smoke_status():
 
 def test_smoke_feed():
     """Smoke test: regula feed --format json runs and exits 0."""
+    from unittest.mock import patch
+    import feed
+
+    class ReadOnlyCacheDir:
+        def mkdir(self, **_kwargs):
+            raise OSError(30, "read-only cache")
+
+    with patch.object(feed, "CACHE_DIR", ReadOnlyCacheDir()):
+        feed._save_cache([])
+
     r = _run_cli("feed", "--format", "json")
     assert_eq(r.returncode, 0, f"feed exit {r.returncode}: {r.stderr[:200]}")
     data = _assert_json_envelope(r.stdout, "feed")
@@ -6611,13 +6646,29 @@ def test_self_scan_benchmark_runs():
 # Synthetic prohibited / high-risk fixture — regression guard
 # ---------------------------------------------------------------------------
 
-def test_synthetic_fixture_perfect_precision_recall():
-    """Pin the synthetic-fixture baseline: prohibited and high_risk tiers
-    must achieve 100% precision and 100% recall against the labelled
-    fixture in benchmarks/synthetic/. This guards against the bug fixed
-    by the early prohibited check in report.py — the scanner used to
-    short-circuit on non-AI-importing files and skip Article 5 entirely.
+def test_synthetic_fixture_precision_recall_matches_artefact():
+    """Pin the synthetic-fixture baseline against the committed artefact.
+
+    HISTORY, because it is the point of this test's current shape.
+
+    This assertion used to be `recall == 1.0` for both tiers. That was true
+    when the high-risk set held 5 fixtures. Commit a941321 expanded it to 30
+    and measured real recall at 16/30, and did not touch this test — so the
+    suite went red and STAYED red across six further commits, none of which
+    ran it. The number a test pins is a published claim like any other, and
+    this one had been falsified by the programme's own measurement.
+
+    It now reads its expectation from `benchmarks/synthetic/RECALL.json`,
+    which is produced by an actual run (F24). A corpus change moves the
+    artefact and this test with it; a DETECTION regression still fails it,
+    which is what the test was always for.
+
+    The original guard is kept explicitly: prohibited must stay 5/5 with no
+    false positives. That is the regression the early prohibited check in
+    report.py fixed - the scanner used to short-circuit on non-AI-importing
+    files and skip Article 5 entirely.
     """
+    import json
     import sys
     from pathlib import Path as _P
     sys.path.insert(0, str(_P(__file__).parent.parent / "benchmarks" / "synthetic"))
@@ -6630,14 +6681,37 @@ def test_synthetic_fixture_perfect_precision_recall():
     cache_dir = _P.home() / ".regula" / "cache"
     if cache_dir.exists():
         shutil.rmtree(cache_dir, ignore_errors=True)
+
+    artefact_path = (_P(__file__).parent.parent
+                     / "benchmarks" / "synthetic" / "RECALL.json")
+    artefact = json.loads(artefact_path.read_text(encoding="utf-8"))
+    # run.py IS the classifier path with all domains declared.
+    expected = artefact["conditions"]["classifier/domains-declared"]["tiers"]
+
     metrics = metrics_dict()
     for tier in ("prohibited", "high_risk"):
         m = metrics[tier]
-        assert m["precision"] == 1.0, f"{tier} precision regression: got {m['precision']}, expected 1.0. tp={m['tp']} fp={m['fp']}"
-        assert m["recall"] == 1.0, f"{tier} recall regression: got {m['recall']}, expected 1.0. tp={m['tp']} fn={m['fn']}"
+        want = expected[tier]
+        assert m["tp"] == want["hits"], (
+            f"{tier} recall moved: {m['tp']}/{want['total']} measured, "
+            f"artefact says {want['fraction']}. If the corpus or the "
+            f"detector changed on purpose, re-run "
+            f"scripts/build_recall_artefact.py and commit the artefact in "
+            f"the same change. Do not edit this expectation by hand.")
+        assert m["fn"] == want["total"] - want["hits"], (
+            f"{tier} false negatives disagree with the artefact: {m}")
+        assert m["precision"] == 1.0, (
+            f"{tier} precision regression: got {m['precision']}, "
+            f"expected 1.0. tp={m['tp']} fp={m['fp']}")
         assert m["fp"] == 0, f"{tier} false positive on synthetic fixture: {m}"
-        assert m["fn"] == 0, f"{tier} false negative on synthetic fixture: {m}"
-    print("✓ synthetic: prohibited 100/100, high_risk 100/100 (5 TP each, 0 FP, 0 FN)")
+
+    # The original guard, stated on its own terms rather than folded into a
+    # blanket 100%: Article 5 detection must not regress.
+    assert metrics["prohibited"]["tp"] == 5, (
+        "prohibited recall is no longer 5/5 - the early prohibited check in "
+        "report.py is the thing this test exists to protect")
+    print(f"✓ synthetic: prohibited {expected['prohibited']['fraction']}, "
+          f"high_risk {expected['high_risk']['fraction']} (artefact-backed)")
 
 
 # ---------------------------------------------------------------------------
@@ -7194,9 +7268,14 @@ if __name__ == "__main__":
     # new test had to be added in two places (the def and the manual list)
     # and forgetting the second was undetectable until pytest ran. Now the
     # custom runner and pytest discovery use the same source of truth.
+    # Both this module's own test_* functions and the aliases rebound from
+    # sibling modules under RUNNER_ALIAS_PREFIX. The prefix exists so pytest
+    # does not collect the aliases twice; the runner must therefore look for
+    # both names. Still fully automatic — nothing is listed by hand.
     tests = sorted(
         (obj for name, obj in list(globals().items())
-         if name.startswith("test_") and callable(obj)),
+         if (name.startswith("test_") or name.startswith(RUNNER_ALIAS_PREFIX))
+         and callable(obj)),
         key=lambda f: f.__code__.co_firstlineno,
     )
 
