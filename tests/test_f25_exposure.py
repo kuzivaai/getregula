@@ -261,12 +261,28 @@ def test_recovery_reporting_is_honest_in_both_directions():
     print("✓ recovery reporting distinguishes a hit from a miss")
 
 
+def _assert_corpus_not_vacuous(name, paths):
+    if name == "diff-base" and not paths:
+        merge_base = fx._resolve_merge_base("main")
+        changed = set(fx._git(
+            "diff", "--name-only", merge_base, "HEAD").splitlines())
+        tracked_scannable = set(fx._tracked_scannable())
+        unexpected = sorted(changed & tracked_scannable)
+        assert not unexpected, (
+            "diff-base omitted tracked, claim-scannable paths: "
+            f"{unexpected}")
+        return
+    assert paths, f"corpus {name} is empty"
+
+
 def test_corpus_definitions_are_all_tracked_and_scannable():
     """Rule 4b: an untracked file is not a surface, in every corpus."""
     tracked = set(fx._tracked_scannable())
     for name, build in fx.CORPORA.items():
         paths = build()
-        assert paths, f"corpus {name} is empty"
+        _assert_corpus_not_vacuous(name, paths)
+        if not paths:
+            continue
         stray = [p for p in paths if p not in tracked]
         assert not stray, f"corpus {name} includes untracked paths: {stray}"
         bad = [p for p in paths
@@ -288,6 +304,20 @@ def test_corpus_definitions_are_all_tracked_and_scannable():
     try:
         fx._git = detached_git
         assert fx._diff_base("main") == ["README.md"]
+    finally:
+        fx._git = original_git
+
+    def empty_claim_diff_git(*args):
+        if args[0] == "merge-base":
+            return "base\n"
+        if args[0] == "diff":
+            return "tests/test_only.py\n"
+        if args[0] == "ls-files":
+            return "tests/test_only.py\0"
+        raise AssertionError(args)
+    try:
+        fx._git = empty_claim_diff_git
+        _assert_corpus_not_vacuous("diff-base", [])
     finally:
         fx._git = original_git
     print(f"✓ {len(fx.CORPORA)} corpus definitions, all tracked and scannable")
