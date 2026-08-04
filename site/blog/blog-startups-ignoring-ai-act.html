@@ -244,7 +244,7 @@
 
         <p>There are real reasons why most founders are not losing sleep over this.</p>
 
-        <p><strong>Enforcement has barely started.</strong> Article 5 prohibitions (social scoring, subliminal manipulation) took effect on 2 February 2025. GPAI obligations followed on 2 August 2025. But the high-risk system obligations &mdash; the ones that affect most startups &mdash; are not due until 2 August 2026. And even that date is likely to slip.</p>
+        <p><strong>Enforcement remains early.</strong> Article 5 prohibitions took effect on 2 February 2025 and GPAI obligations followed on 2 August 2025. Regulation (EU) 2026/1744 now sets 2 December 2027 for Annex III high-risk obligations and 2 August 2028 for Annex I product-embedded systems.</p>
 
         <p><strong>The Omnibus delays the high-risk deadline.</strong> The <a href="https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-regulation-proposal">Digital Omnibus on AI</a> pushes the Annex III (high-risk) deadline from 2 August 2026 to 2 December 2027. The European Parliament adopted its negotiating position by 569&ndash;45&ndash;23 on 26 March 2026, then gave final approval to the agreed text on 16 June 2026 (423&ndash;57&ndash;174); the Council approved on 29 June 2026. It was published in the Official Journal on 24 July 2026 as Regulation (EU) 2026/1744 and is in force from 27 July 2026; the deferral is enacted law.</p>
 
@@ -310,13 +310,13 @@
     <section id="what-preparing-means">
         <h2>What &ldquo;preparing&rdquo; actually means</h2>
 
-        <p>Preparing means three concrete steps that take under five minutes combined and cost nothing: run a risk-tier assessment to find out whether you are minimal-risk, limited-risk, or high-risk; scan your codebase for gaps against Articles 9&ndash;15; and scaffold an Annex IV technical documentation template if needed. Most startups will stop at step one.</p>
+        <p>Preparing starts with three concrete steps: run a risk-indicator assessment, scan the codebase for observable gaps, and scaffold documentation for qualified review where relevant. Runtime and the legal work required depend on the system and its context.</p>
 
         <p>Not hiring a compliance team. Not buying a platform. Three concrete steps.</p>
 
         <h3>Know your tier</h3>
 
-        <p><code>regula assess</code> walks you through the same decision tree as Article 6 and Annex III. Five questions. Thirty seconds. It tells you whether you are prohibited, high-risk, limited-risk, or minimal-risk.</p>
+<p><a href="https://github.com/kuzivaai/getregula/blob/main/scripts/assess.py"><code>regula assess</code></a> asks five questions and reports candidate Article 5, Annex III, or Article 50 indicators. It does not determine legal classification or every applicable duty.</p>
 
         <div class="term">
             <div class="term-bar">
@@ -337,7 +337,7 @@
 </pre>
         </div>
 
-        <p>If you are minimal-risk, you are done. No obligations. You can stop here.</p>
+        <p>If no elevated tier is indicated, record that result and review the intended purpose and cross-cutting duties, including Articles 4 and 5. An untriggered questionnaire path is not legal clearance.</p>
 
         <h3>Know your gaps</h3>
 

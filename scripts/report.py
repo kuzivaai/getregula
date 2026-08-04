@@ -1297,7 +1297,10 @@ def _enrich_deadlines(findings: list) -> None:
         else:
             f["deadline"] = None
             f["deadline_status"] = "none"
-            f["deadline_note"] = "Minimal-risk: no mandatory deadline."
+            f["deadline_note"] = (
+                "No tier-specific deadline inferred; this is not a legal "
+                "classification and other duties may still apply."
+            )
 
 
 # ---------------------------------------------------------------------------

@@ -267,7 +267,7 @@
 </aside>
 
 <aside style="background:rgba(255,180,0,0.08);border-left:3px solid #e6a817;padding:16px 20px;margin:0 0 32px;border-radius:0 8px 8px 0;">
-  <strong>Update (1 May 2026):</strong> The first political trilogue on the Omnibus failed on 28 April after ~12 hours of negotiations. The sticking point was conformity assessment for AI in regulated products (Annex I). A follow-up trilogue succeeded on 7 May 2026 (see editor's note above). The original 2 August 2026 deadline remains legally binding until formal adoption.
+  <strong>Historical note:</strong> The first political trilogue failed on 28 April 2026 and the 7 May follow-up succeeded. Regulation (EU) 2026/1744 was subsequently enacted and entered into force on 27 July 2026. The original-deadline scenario below is retained only as historical decision context.
 </aside>
 
 <div class="blog-hero">
@@ -291,19 +291,19 @@
 
     <h2>The situation</h2>
 
-    <p>If you're building AI systems that touch the European market, you have a planning problem. The EU AI Act says your high-risk obligations kick in on 2 August 2026. The Digital Omnibus on AI says actually, make that 2 December 2027. Both statements are currently true, in the sense that the first is law and the second is a formal legislative proposal with strong institutional backing.</p>
+    <p>If you are building AI systems for the European market, the applicable timeline depends on the provision and system category. Regulation (EU) 2026/1744 now sets 2 December 2027 for Annex III high-risk obligations and 2 August 2028 for Annex I product-embedded obligations.</p>
 
-    <p>On 26 March 2026, the European Parliament voted 569&ndash;45&ndash;23 in favour of its negotiating position on the Omnibus. The Council had already adopted its general approach on 13 March. Trilogue negotiations between Parliament, Council, and Commission launched the same day as the EP vote. The Cypriot Council Presidency targeted 28 April 2026 for political agreement. The trilogue ran for approximately 12 hours and ended without agreement. The sticking point was conformity assessment architecture for AI in regulated products (Annex I). A follow-up is expected mid-May 2026. The Presidency must close the file before 30 June or it passes to Lithuania.</p>
+    <p>On 26 March 2026, the European Parliament adopted its negotiating position after the Council's 13 March general approach. The 28 April trilogue ended without agreement, but a follow-up reached agreement on 7 May. Parliament and Council subsequently approved the text, which entered into force on 27 July 2026 as Regulation (EU) 2026/1744.</p>
 
-    <p>So the delay has overwhelming political support. But it isn't law yet. And until the trilogue produces agreed text that passes formal adoption, the current legal baseline remains 2 August 2026.</p>
+    <p>The negotiation uncertainty described when this article was first published is now resolved. The amended dates are enacted law; contextual classification and the other application dates still need provision-by-provision review.</p>
 
-    <p>This leaves developers in a genuinely annoying position. You can't plan around a deadline that might move by 16 months. But you also can't ignore the strong signal that it will move. I think the right approach is to stop treating the EU AI Act as one deadline and start treating it as three separate tracks, each on its own timeline, with different levels of certainty.</p>
+    <p>The useful part of the original planning framework remains: do not treat the EU AI Act as one deadline. Treat the relevant provisions as separate tracks, each with its own application date and scope.</p>
 
     <h2>Three tracks, not one deadline</h2>
 
-    <p>The EU AI Act phases in across three separate tracks: prohibited practices under Article 5 (in force since February 2025), transparency obligations under Article 50 (due August 2026, not delayed), and high-risk system obligations under Annex III (current law says August 2026, Omnibus proposes December 2027). Each track has its own timeline and the Omnibus only affects the third.</p>
+    <p>The EU AI Act phases in across separate tracks: prohibited practices under Article 5 (applicable since February 2025), transparency obligations under Article 50 (generally applicable from August 2026, with specific transition provisions), and high-risk system obligations under Annex III (2 December 2027). Each track has its own scope and timeline.</p>
 
-    <p>The EU AI Act doesn't have a single compliance date. It phases in over several years, and the Omnibus only proposes changes to some of those phases. Treating it as a single event leads to either panic (August is soon) or complacency (they're pushing it back, we can relax). Neither is correct.</p>
+    <p>The EU AI Act does not have a single compliance date. It phases in over several years, and the Omnibus changed only specified provisions. Treating it as a single event obscures which obligations are already applicable and which apply later.</p>
 
     <div class="track-box track-active">
         <h3>Track 1: Prohibited practices (Article 5)</h3>
@@ -321,8 +321,8 @@
 
     <div class="track-box track-uncertain">
         <h3>Track 3: High-risk system obligations (Annex III)</h3>
-        <p><strong>Current law: 2 August 2026. Omnibus proposal: 2 December 2027. Not yet agreed.</strong></p>
-        <p>This is where the uncertainty lives. If your system falls under Annex III (standalone high-risk AI systems used in areas like employment, creditworthiness, law enforcement, migration, or access to essential services), the Omnibus proposes to push your deadline back by 16 months.</p>
+        <p><strong>Enacted application date: 2 December 2027.</strong></p>
+        <p>If a system is classified under Annex III, Regulation (EU) 2026/1744 moves the relevant application date from 2 August 2026 to 2 December 2027.</p>
         <p>If your system is covered by Annex I, consult the enacted amendment and applicable sector legislation for its current application date.</p>
     </div>
 
@@ -336,8 +336,8 @@
         <thead>
             <tr>
                 <th>Obligation</th>
-                <th>Current law</th>
-                <th>Omnibus proposal</th>
+                <th>Original date</th>
+                <th>Enacted position</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -370,13 +370,13 @@
                 <td>High-risk: standalone (Annex III)</td>
                 <td>2 Aug 2026</td>
                 <td>2 Dec 2027</td>
-                <td><span class="status-proposed">Proposed (+16 months)</span></td>
+                <td><span class="status-active">Enacted (+16 months)</span></td>
             </tr>
             <tr>
                 <td>High-risk: product-embedded (Annex I)</td>
                 <td>2 Aug 2026</td>
                 <td>2 Aug 2028</td>
-                <td><span class="status-proposed">Historical proposal</span></td>
+                <td><span class="status-active">Enacted</span></td>
             </tr>
         </tbody>
     </table>
@@ -385,7 +385,7 @@
 
     <h2>The engineering argument for planning to August</h2>
 
-    <p>This article was written while the timing was still uncertain. It argued for planning conservatively against August 2026. That uncertainty is now resolved (see the editor's note): the deferral to 2 December 2027 was approved by Parliament (16 June) and the Council (29 June 2026), with Official Journal publication pending, so December 2027 is the baseline for standalone high-risk systems.</p>
+    <p>This article was written while the timing was uncertain and originally argued for planning against August 2026. That uncertainty is resolved: Regulation (EU) 2026/1744 is in force, and 2 December 2027 is the enacted Annex III application date.</p>
 
     <p>The high-risk obligations under Articles 9 through 15 aren't checkbox items you knock out in a sprint. They require:</p>
 
@@ -402,9 +402,9 @@
 
     <p>Two scenarios:</p>
 
-    <p><strong>Scenario A:</strong> You start now, the Omnibus passes, and the deadline moves to December 2027. You're 16 months early. Your compliance work is done, you've had time to iterate on it, and you're ahead of competitors who waited. The cost was starting earlier than strictly necessary.</p>
+    <p><strong>Current planning case:</strong> You start now against the enacted December 2027 Annex III date. Early work creates time for iteration, evidence gathering, and human validation; it does not by itself establish compliance.</p>
 
-    <p><strong>Scenario B:</strong> You wait for the Omnibus to become law, it stalls in trilogue (this happens), and the deadline stays at August 2026. You now have three months to implement a risk management system, overhaul your logging infrastructure, write technical documentation, build human oversight interfaces, and pass conformity assessment. You won't make it.</p>
+    <p><strong>Delay case:</strong> You defer implementation until close to the applicable date. That leaves less time to build and validate risk management, logging, technical documentation, human oversight, and any required conformity-assessment work.</p>
 
     <p>The downside of Scenario A is starting early. Scenario B risks insufficient implementation and review time. Article 99 specifies the applicable penalty framework. <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Primary legislation</a>.</p>
 
@@ -423,7 +423,7 @@
 
     <p>This isn't a coincidence. AI governance frameworks converge because they're all trying to answer the same question: can you demonstrate that your system is reliable, documented, and auditable? The specific article numbers change. The underlying engineering work doesn't.</p>
 
-    <p>Building logging infrastructure, documentation pipelines, risk assessment processes, and human oversight interfaces pays off regardless of which deadline applies, which regulation you're targeting, or whether the Omnibus passes at all.</p>
+    <p>Building proportionate logging, documentation, risk assessment, and human oversight capabilities can support several governance frameworks. The appropriate controls and timing still depend on the system, organisational role, and applicable law.</p>
 
     <h2>What to do right now</h2>
 

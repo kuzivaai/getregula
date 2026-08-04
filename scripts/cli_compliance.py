@@ -127,7 +127,8 @@ def cmd_comply(args) -> None:
     Scopes obligations to the detected risk tier:
     - High-risk/prohibited: Articles 9-15 + Article 50 (where applicable)
     - Limited-risk: Article 50 transparency obligations only
-    - Minimal-risk: No mandatory requirements
+    - No elevated tier detected: no tier-specific checklist is inferred; Articles
+      4 and 5 and other context-dependent duties may still apply
     Use --all to show the full Articles 9-15 assessment regardless of tier.
     """
     from cli import json_output, _is_tty
@@ -165,9 +166,9 @@ def cmd_comply(args) -> None:
     # --- MINIMAL RISK ---
     if highest_risk in ("minimal_risk", "not_ai") and not show_all:
         print(f"  Highest risk tier: {highest_risk}")
-        print("\n  No mandatory EU AI Act requirements apply to minimal-risk")
-        print("  or non-AI systems. Voluntary codes of conduct may apply")
-        print("  (Article 95).")
+        print("\n  No elevated risk-tier indicators were detected.")
+        print("  This is not a legal classification. Article 4, Article 5,")
+        print("  and other context-dependent duties may still apply.")
         print(f"\n{'=' * 60}")
         print("\n  Next steps:")
         print(f"    1. regula assess{'':<25s}Verify this classification with guided questions")

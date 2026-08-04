@@ -732,7 +732,11 @@ def classify(text: str, language: str = "python") -> Classification:
         else:
             result = Classification(
                 tier=RiskTier.MINIMAL_RISK, confidence="medium", action="allow",
-                message="Minimal-risk AI system. No specific EU AI Act requirements.",
+                message=(
+                    "No elevated risk-tier indicators detected. This is not a legal "
+                    "classification; Article 4, Article 5, and other context-dependent "
+                    "duties may still apply."
+                ),
             )
 
     # Attach detected domains to result

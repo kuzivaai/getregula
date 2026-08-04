@@ -43,9 +43,9 @@ TIER_DESCRIPTIONS = {
         f"from {ORIGINAL_PROSE}."
     ),
     "minimal_risk": (
-        "This project contains indicators associated with MINIMAL-RISK AI "
-        "systems. No specific EU AI Act obligations apply beyond voluntary "
-        "codes of conduct."
+        "No elevated risk-tier indicators were detected for this project. "
+        "This is not a legal classification; Article 4, Article 5, and other "
+        "context-dependent duties may still apply."
     ),
 }
 

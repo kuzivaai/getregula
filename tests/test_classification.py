@@ -742,10 +742,13 @@ def test_limited_risk_emotion_no_workplace():
 # ── Minimal-Risk Classification Tests ───────────────────────────────
 
 def test_minimal_risk_recommendation():
-    """Recommendation engine → MINIMAL-RISK"""
+    """Recommendation engine retains internal tier without legal clearance text."""
     r = classify("import tensorflow; recommendation engine")
     assert_eq(r.tier, RiskTier.MINIMAL_RISK, "recommendation engine")
-    print("✓ Minimal-risk: recommendation engine")
+    assert_true("not a legal classification" in r.message.lower(), "qualified result")
+    assert_true("Article 4" in r.message and "Article 5" in r.message, "cross-cutting duties")
+    assert_true("No specific EU AI Act requirements" not in r.message, "no absolute clearance")
+    print("✓ Minimal-risk internal tier is presented without legal clearance")
 
 
 def test_minimal_risk_code_completion():
