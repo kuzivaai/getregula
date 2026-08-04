@@ -124,7 +124,7 @@ Regula maps code patterns to candidate Article 5, Annex III, and Article 50 revi
 | Tier | Action | What it means |
 |------|--------|---------------|
 | **Article 5 indicator** | Block pending review | Possible prohibited-practice evidence. Regula identifies the potentially relevant provision; qualified review must confirm scope and exceptions. |
-| **Annex III indicator** | Warn + review | Employment, credit, healthcare, biometric, education, or other listed-use evidence. Articles 9-15 are relevant if high-risk status is confirmed under Article 6. |
+| **Annex III indicator** | Warn + review | Employment, credit, healthcare, biometric, education, or other listed-use evidence. Articles 9-15 are relevant if high-risk status is confirmed under [Article 6 of Regulation (EU) 2024/1689](https://eur-lex.europa.eu/eli/reg/2024/1689/oj). |
 | **Article 50 indicator** | Transparency review | Chatbot, synthetic-content, or related evidence. The deployment context determines the exact duty. |
 | **No elevated indicator** | Log only | No listed elevated path was detected. This is not legal clearance and other duties may still apply. |
 
