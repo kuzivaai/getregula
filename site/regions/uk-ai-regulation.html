@@ -203,7 +203,7 @@
     <nav class="nav" id="nav" aria-label="Main navigation">
         <a href="/" class="nav-brand">Regula</a>
         <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-        <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+        <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
             <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
             <a href="/guides/">Guides</a>
             <a href="https://github.com/kuzivaai/getregula">GitHub</a>
@@ -303,7 +303,7 @@
             <h2>Where Regula fits for UK teams</h2>
 
 <p>Regula is an open-source compliance CLI that combines code scanning with governance questionnaires for AI risk assessment. It was built primarily against the EU AI Act, but every finding is also mapped to UK DSIT / ICO principles (among twelve other frameworks). For a UK team the practically useful starting commands are:</p>
-<pre><code>pip install regula-ai
+<pre tabindex="0"><code>pip install regula-ai
 
 regula discover .              # AI systems present in the project
 regula check .                 # Risk indicators against all thirteen frameworks

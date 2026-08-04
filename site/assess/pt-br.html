@@ -189,8 +189,8 @@
         font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none;
         transition: all 0.15s;
       }
-      .btn-primary { background: var(--accent); color: #fff; }
-      .btn-primary:hover { filter: brightness(1.1); }
+      .btn-primary { background: #1d4ed8; color: #fff; }
+      .btn-primary:hover { background: #1e40af; }
       .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
       .btn-secondary { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
       .btn-secondary:hover { border-color: var(--text-dim); color: var(--text); }
@@ -363,7 +363,7 @@
 <nav class="nav" id="nav" aria-label="Navegação principal">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" class="active">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
@@ -1128,14 +1128,14 @@ function calculateResultsEU() {
 
   if (prohibitedSignals.length > 0) {
     tier = "prohibited";
-    tierName = "Prática proibida detectada";
-    tierDesc = "Seu sistema pode conter práticas proibidas pelo Artigo 5. Estas são aplicáveis desde 2 de fevereiro de 2025, com multas de até 35 milhões de euros ou 7% do faturamento global.";
+    tierName = "Possíveis indicadores do Artigo 5";
+    tierDesc = "Suas respostas podem descrever uma prática proibida pelo Artigo 5. Uma análise qualificada deve confirmar os fatos, o escopo jurídico e qualquer exceção. As proibições se aplicam desde 2 de fevereiro de 2025. O Artigo 99 estabelece multas máximas de 35 milhões de euros ou 7% do faturamento global, com limites separados para PMEs e aplicação conforme o caso.";
     tierClass = "tier-prohibited";
     obligations = [];
   } else if (score >= 65 && exemptionSignals.length === 0) {
     tier = "high_risk";
-    tierName = "Sistema de IA de alto risco";
-    tierDesc = "Seu sistema provavelmente se enquadra em uma categoria que a Lei de IA da UE considera alto risco. Você deve atender aos requisitos de gestão de riscos, governança de dados, documentação, logging, transparência, supervisão humana e cibersegurança. O prazo de conformidade foi estendido para 2 de dezembro de 2027, pendente publicação da emenda Omnibus no Jornal Oficial.";
+    tierName = "Possíveis indicadores de alto risco";
+    tierDesc = "Suas respostas colocam o sistema em uma área de uso do Anexo III. A confirmação do alto risco exige análise da finalidade prevista e do Artigo 6, incluindo qualquer exclusão aplicável. Se confirmado, os requisitos abrangem gestão de riscos, governança de dados, documentação, registros, transparência, supervisão humana e cibersegurança. O prazo do Anexo III é 2 de dezembro de 2027 conforme o Digital Omnibus, publicado em 24 de julho de 2026 e em vigor desde 27 de julho de 2026.";
     tierClass = "tier-high";
     obligations = OBLIGATIONS;
   } else if (score >= 65 && exemptionSignals.length > 0) {
@@ -1146,14 +1146,14 @@ function calculateResultsEU() {
     obligations = OBLIGATIONS;
   } else if (score >= 35 || transparencySignals.length > 0) {
     tier = "limited_risk";
-    tierName = "Sistema de IA de risco limitado";
-    tierDesc = "As obrigações de transparência do Artigo 50 se aplicam. Os usuários devem saber que estão interagindo com IA, e conteúdo gerado por IA deve ser rotulado.";
+    tierName = "Possíveis indicadores do Artigo 50";
+    tierDesc = "Suas respostas indicam um uso que pode acionar deveres de transparência do Artigo 50. Confirme o sistema exato e o contexto de implantação antes de tratar um dever listado como aplicável.";
     tierClass = "tier-limited";
     obligations = LIMITED_RISK_OBLIGATIONS;
   } else {
     tier = "minimal_risk";
-    tierName = "Sistema de IA de risco mínimo";
-    tierDesc = "Sem obrigações específicas da Lei de IA da UE. Você ainda pode querer seguir códigos de conduta voluntários (Artigo 95) e manter boas práticas de IA.";
+    tierName = "Nenhum indicador específico de nível de risco";
+    tierDesc = "Estas respostas não acionaram os caminhos do Artigo 5, Anexo III ou Artigo 50. Isto não é uma classificação jurídica e não testa todas as obrigações da Lei de IA. Reavalie se a finalidade prevista, os usuários ou a implantação mudarem.";
     tierClass = "tier-minimal";
     obligations = [];
   }
@@ -1641,10 +1641,10 @@ function renderScanResults(result) {
     not_ai: "tier-minimal",
   };
   const tierNames = {
-    prohibited: "Prática proibida detectada",
-    high_risk: "Sistema de IA de alto risco",
-    limited_risk: "Sistema de IA de risco limitado",
-    minimal_risk: "Sistema de IA de risco mínimo",
+    prohibited: "Possíveis indicadores do Artigo 5",
+    high_risk: "Possíveis indicadores de alto risco",
+    limited_risk: "Possíveis indicadores do Artigo 50",
+    minimal_risk: "Nenhum indicador específico de nível de risco",
     not_ai: "Nenhum indicador de IA detectado",
   };
 

@@ -189,8 +189,8 @@
         font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none;
         transition: all 0.15s;
       }
-      .btn-primary { background: var(--accent); color: #fff; }
-      .btn-primary:hover { filter: brightness(1.1); }
+      .btn-primary { background: #1d4ed8; color: #fff; }
+      .btn-primary:hover { background: #1e40af; }
       .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
       .btn-secondary { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
       .btn-secondary:hover { border-color: var(--text-dim); color: var(--text); }
@@ -363,7 +363,7 @@
 <nav class="nav" id="nav" aria-label="Hauptnavigation">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" class="active">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
@@ -1127,14 +1127,14 @@ function calculateResultsEU() {
 
   if (prohibitedSignals.length > 0) {
     tier = "prohibited";
-    tierName = "Verbotene Praktik erkannt";
-    tierDesc = "Ihr System enthält möglicherweise Praktiken, die nach Artikel 5 verboten sind. Diese sind seit dem 2. Februar 2025 durchsetzbar, mit Bußgeldern bis zu 35 Mio. EUR oder 7 % des weltweiten Umsatzes.";
+    tierName = "Mögliche Indikatoren nach Artikel 5";
+    tierDesc = "Ihre Antworten könnten eine nach Artikel 5 verbotene Praktik beschreiben. Eine qualifizierte Prüfung muss Sachverhalt, Rechtsrahmen und mögliche Ausnahmen bestätigen. Die Verbote gelten seit dem 2. Februar 2025. Artikel 99 legt Höchstbußgelder von 35 Mio. EUR oder 7 % des weltweiten Umsatzes fest, mit gesonderten Grenzen für KMU und einzelfallbezogener Durchsetzung.";
     tierClass = "tier-prohibited";
     obligations = [];
   } else if (score >= 65 && exemptionSignals.length === 0) {
     tier = "high_risk";
-    tierName = "Hochrisiko-KI-System";
-    tierDesc = "Ihr System fällt voraussichtlich in eine Kategorie, die die EU-KI-Verordnung als hochriskant einstuft. Sie müssen Anforderungen an Risikomanagement, Daten-Governance, Dokumentation, Protokollierung, Transparenz, menschliche Aufsicht und Cybersicherheit erfüllen. Die Compliance-Frist wurde auf den 2. Dezember 2027 verschoben, vorbehaltlich der Veröffentlichung der Omnibus-Änderung im Amtsblatt.";
+    tierName = "Mögliche Hochrisiko-Indikatoren";
+    tierDesc = "Ihre Antworten ordnen das System einem Anwendungsbereich des Anhangs III zu. Die Bestätigung als Hochrisiko-System erfordert eine Prüfung des Verwendungszwecks und des Artikels 6 einschließlich möglicher Ausnahmen. Bei Bestätigung betreffen die Anforderungen Risikomanagement, Daten-Governance, Dokumentation, Protokollierung, Transparenz, menschliche Aufsicht und Cybersicherheit. Die Frist für Anhang III ist nach dem am 24. Juli 2026 veröffentlichten und seit 27. Juli 2026 geltenden Digital Omnibus der 2. Dezember 2027.";
     tierClass = "tier-high";
     obligations = OBLIGATIONS;
   } else if (score >= 65 && exemptionSignals.length > 0) {
@@ -1145,14 +1145,14 @@ function calculateResultsEU() {
     obligations = OBLIGATIONS;
   } else if (score >= 35 || transparencySignals.length > 0) {
     tier = "limited_risk";
-    tierName = "KI-System mit begrenztem Risiko";
-    tierDesc = "Transparenzpflichten nach Artikel 50 gelten. Nutzer müssen wissen, dass sie mit KI interagieren, und KI-generierte Inhalte müssen gekennzeichnet werden.";
+    tierName = "Mögliche Indikatoren nach Artikel 50";
+    tierDesc = "Ihre Antworten deuten auf eine Nutzung hin, die Transparenzpflichten nach Artikel 50 auslösen könnte. Bestätigen Sie das genaue System und den Einsatzkontext, bevor Sie eine aufgeführte Pflicht als anwendbar behandeln.";
     tierClass = "tier-limited";
     obligations = LIMITED_RISK_OBLIGATIONS;
   } else {
     tier = "minimal_risk";
-    tierName = "KI-System mit minimalem Risiko";
-    tierDesc = "Keine spezifischen Pflichten nach der KI-Verordnung. Sie sollten dennoch freiwillige Verhaltenskodizes (Artikel 95) beachten und gute KI-Praktiken beibehalten.";
+    tierName = "Kein spezifischer Risikostufen-Indikator";
+    tierDesc = "Diese Antworten haben die Pfade zu Artikel 5, Anhang III oder Artikel 50 nicht ausgelöst. Dies ist keine rechtliche Einstufung und prüft nicht alle Pflichten der KI-Verordnung. Bewerten Sie erneut, wenn sich Verwendungszweck, Nutzer oder Einsatz ändern.";
     tierClass = "tier-minimal";
     obligations = [];
   }
@@ -1639,10 +1639,10 @@ function renderScanResults(result) {
     not_ai: "tier-minimal",
   };
   const tierNames = {
-    prohibited: "Verbotene Praktik erkannt",
-    high_risk: "Hochrisiko-KI-System",
-    limited_risk: "KI-System mit begrenztem Risiko",
-    minimal_risk: "KI-System mit minimalem Risiko",
+    prohibited: "Mögliche Indikatoren nach Artikel 5",
+    high_risk: "Mögliche Hochrisiko-Indikatoren",
+    limited_risk: "Mögliche Indikatoren nach Artikel 50",
+    minimal_risk: "Kein spezifischer Risikostufen-Indikator",
     not_ai: "Keine KI-Indikatoren erkannt",
   };
 

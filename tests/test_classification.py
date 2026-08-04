@@ -5971,20 +5971,21 @@ def test_cross_file_call_chain_detection():
 # ---------------------------------------------------------------------------
 
 def test_assess_format_result_not_in_scope():
-    """format_result returns correct text for out-of-scope products."""
+    """format_result reports the declared evidence without a scope ruling."""
     from assess import format_result, TIER_NOT_IN_SCOPE
     result = format_result(TIER_NOT_IN_SCOPE, False)
-    assert "NOT IN SCOPE" in result
-    assert "EU AI Act does" in result
-    print("✓ assess: not-in-scope result formatted correctly")
+    assert "NO AI USE DECLARED" in result
+    assert "did not declare AI or ML use" in result
+    assert "does not apply" not in result
+    print("✓ assess: no-AI answer is reported without a legal scope ruling")
 
 
 def test_assess_format_result_limited_risk():
-    """format_result returns Article 50 obligations for limited-risk tier."""
+    """format_result returns candidate Article 50 review information."""
     from assess import format_result, TIER_LIMITED
     from omnibus import ORIGINAL_PROSE
     result = format_result(TIER_LIMITED, False)
-    assert "LIMITED-RISK" in result
+    assert "CANDIDATE ARTICLE 50 INDICATORS" in result
     assert "Article 50" in result
     # Art 50's applicability date is statutory and derives from omnibus.py
     assert ORIGINAL_PROSE in result
@@ -6020,22 +6021,109 @@ def test_assess_format_result_high_risk_non_eu():
 
 
 def test_assess_format_result_minimal_risk():
-    """format_result returns no mandatory obligations for minimal-risk."""
+    """format_result avoids turning an untriggered path into legal clearance."""
     from assess import format_result, TIER_MINIMAL
     result = format_result(TIER_MINIMAL, False)
-    assert "MINIMAL-RISK" in result
-    assert "no mandatory" in result
-    print("✓ assess: minimal-risk result shows no mandatory obligations")
+    assert "NO SPECIFIC RISK-TIER INDICATOR" in result
+    assert "not a legal" in result
+    assert "no mandatory" not in result
+    print("✓ assess: untriggered risk paths do not become legal clearance")
 
 
 def test_assess_format_result_prohibited():
-    """format_result returns prohibition enforcement context."""
+    """format_result returns possible-prohibition enforcement context."""
     from assess import format_result, TIER_PROHIBITED
     result = format_result(TIER_PROHIBITED, False)
-    assert "PROHIBITED" in result
+    assert "POSSIBLE ARTICLE 5 INDICATORS" in result
+    assert "qualified review must confirm" in result
     assert "35 million" in result
     assert "2 February 2025" in result
-    print("✓ assess: prohibited result includes enforcement date and penalty")
+    print("✓ assess: Article 5 candidate includes review, enforcement date and penalty")
+
+
+def test_default_scope_does_not_translate_exclusions_into_no_ai():
+    """Excluded evidence must not become a definitive absence claim."""
+    from test_cli_integration import run_cli
+
+    rc, stdout, stderr = run_cli("check", "examples/customer-chatbot")
+    assert rc == 0, f"expected rc=0, got {rc}\nstderr={stderr}"
+    assert "NO ACTIVE PRODUCTION-SCOPE INDICATORS" in stdout
+    assert "Run with --scope all" in stdout
+    assert "No AI components" not in stdout
+    assert "likely does not apply" not in stdout
+
+
+def test_cli_assessment_outputs_candidates_not_determinations():
+    from assess import (
+        TIER_HIGH,
+        TIER_LIMITED,
+        TIER_MINIMAL,
+        TIER_PROHIBITED,
+        format_result,
+    )
+
+    outputs = {
+        "prohibited": format_result(TIER_PROHIBITED, False),
+        "high": format_result(TIER_HIGH, False),
+        "limited": format_result(TIER_LIMITED, False),
+        "minimal": format_result(TIER_MINIMAL, False),
+    }
+    assert "POSSIBLE ARTICLE 5 INDICATORS" in outputs["prohibited"]
+    assert "qualified review must confirm" in outputs["prohibited"]
+    assert "CANDIDATE HIGH-RISK INDICATORS" in outputs["high"]
+    assert "If high-risk status is confirmed" in outputs["high"]
+    assert "CANDIDATE ARTICLE 50 INDICATORS" in outputs["limited"]
+    assert "not a legal\n  classification" in outputs["minimal"]
+
+    combined = "\n".join(outputs.values())
+    for phrase in (
+        "PROHIBITED PRACTICE DETECTED",
+        "These practices cannot be made compliant. They must stop.",
+        "Your product falls into a high-risk category",
+        "There are no mandatory compliance requirements",
+    ):
+        assert phrase not in combined
+
+
+def test_web_assessment_locales_preserve_candidate_framing_and_current_status():
+    expectations = {
+        "index.html": (
+            "Possible Article 5 indicators",
+            "Candidate high-risk indicators",
+            "Candidate Article 50 indicators",
+            "in force from 27 July 2026",
+        ),
+        "de.html": (
+            "Mögliche Indikatoren nach Artikel 5",
+            "Mögliche Hochrisiko-Indikatoren",
+            "Mögliche Indikatoren nach Artikel 50",
+            "seit 27. Juli 2026 geltenden",
+        ),
+        "pt-br.html": (
+            "Possíveis indicadores do Artigo 5",
+            "Possíveis indicadores de alto risco",
+            "Possíveis indicadores do Artigo 50",
+            "em vigor desde 27 de julho de 2026",
+        ),
+    }
+    assess_dir = Path(__file__).resolve().parents[1] / "site" / "assess"
+    for filename, required in expectations.items():
+        text = (assess_dir / filename).read_text(encoding="utf-8")
+        for phrase in required:
+            assert phrase in text, f"{filename} missing {phrase!r}"
+
+    all_locales = "\n".join(
+        (assess_dir / name).read_text(encoding="utf-8") for name in expectations
+    )
+    for stale in (
+        "Prohibited practice detected",
+        "High-risk AI system",
+        "Verbotene Praktik erkannt",
+        "Prática proibida detectada",
+        "vorbehaltlich der Veröffentlichung der Omnibus-Änderung",
+        "pendente publicação da emenda Omnibus",
+    ):
+        assert stale not in all_locales
 
 
 def test_assess_run_from_answers_non_interactive():
@@ -7282,13 +7370,16 @@ if __name__ == "__main__":
     print(f"Running {len(tests)} tests...\n")
 
     import io
+    import time as _time
     skipped = 0
+    durations = []
     for test in tests:
         # Capture stdout per-test so we can detect silent skips (⊘ prefix)
         # and count them accurately before re-printing the output.
         captured = io.StringIO()
         _real_stdout = sys.stdout
         sys.stdout = captured
+        started_at = _time.perf_counter()
         try:
             test()
         except _HookNotAvailable:
@@ -7312,6 +7403,8 @@ if __name__ == "__main__":
             continue
         finally:
             sys.stdout = _real_stdout
+            test_id = f"{test.__module__}.{test.__qualname__}"
+            durations.append((_time.perf_counter() - started_at, test_id))
 
         output = captured.getvalue()
         # A test that prints a line starting with ⊘ has taken a skip path.
@@ -7322,6 +7415,9 @@ if __name__ == "__main__":
 
     print("\n" + "=" * 50)
     print(f"Results: {helpers.passed} passed, {helpers.failed} failed, {skipped} skipped ({len(tests)} test functions)")
+    print("Slowest test functions:")
+    for duration, name in sorted(durations, reverse=True)[:50]:
+        print(f"  {duration:8.3f}s  {name}")
     if helpers.failed:
         print("❌ SOME TESTS FAILED")
         sys.exit(1)
