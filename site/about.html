@@ -19,7 +19,7 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
 
-    <title>About Regula &mdash; EU AI Act Compliance CLI</title>
+    <title>About Regula : EU AI Act Compliance CLI</title>
     <meta name="description" content="Regula is an open-source EU AI Act compliance CLI by Kuziva Muzondo. 419 risk patterns, zero dependencies. What it does and does not do.">
     <meta name="author" content="Kuziva Muzondo">
     <meta name="robots" content="index, follow, max-image-preview:large">
@@ -29,14 +29,14 @@
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/about.html">
-    <meta property="og:title" content="About Regula — EU AI Act Compliance CLI">
+    <meta property="og:title" content="About Regula :  EU AI Act Compliance CLI">
     <meta property="og:description" content="Open-source EU AI Act compliance tool maintained by Kuziva Muzondo. What it does, what it does not do, and how it works.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
-    <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
+    <meta property="og:image:alt" content="Regula :  EU AI Act compliance tool for code">
     <meta property="og:locale" content="en_GB">
     <meta property="og:site_name" content="Regula">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="About Regula — EU AI Act Compliance CLI">
+    <meta name="twitter:title" content="About Regula :  EU AI Act Compliance CLI">
     <meta name="twitter:description" content="Open-source EU AI Act compliance tool maintained by Kuziva Muzondo. What it does, what it does not do, and how it works.">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
 
@@ -129,8 +129,8 @@
 
 <p>It works on two fronts:</p>
 <ul>
-    <li><strong>Code scanning</strong> &mdash; 419 regex patterns across Articles 5&ndash;15, with a 6-layer precision architecture (AST context gating, domain exclusions, library fingerprinting, confidence floors) to reduce false positives. Published precision on a random corpus: 83.5% (N=115, Python only, labelled by a single reviewer with no inter-rater agreement measurement &mdash; <a href="https://github.com/kuzivaai/getregula/blob/main/benchmarks/README.md">methodology and limits</a>).</li>
-    <li><strong>Governance questionnaires</strong> &mdash; structured self-assessments for organisational obligations that code cannot verify, including risk management (Article 9), quality management (Article 17), and fundamental rights impact assessments (Article 27).</li>
+    <li><strong>Code scanning</strong> : 419 regex patterns across Articles 5&ndash;15, with a 6-layer precision architecture (AST context gating, domain exclusions, library fingerprinting, confidence floors) to reduce false positives. Published precision on a random corpus: 83.5% (N=115, Python only, labelled by a single reviewer with no inter-rater agreement measurement : <a href="https://github.com/kuzivaai/getregula/blob/main/benchmarks/README.md">methodology and limits</a>).</li>
+    <li><strong>Governance questionnaires</strong> : structured self-assessments for organisational obligations that code cannot verify, including risk management (Article 9), quality management (Article 17), and fundamental rights impact assessments (Article 27).</li>
 </ul>
 
 <p>62 CLI commands. 13 compliance framework mappings (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, OWASP Top 10 for Agentic Applications, MITRE ATLAS, LGPD, Marco Legal da IA, EU CRA, ICO/DSIT). Multi-jurisdiction risk indication across 3 jurisdictions (EU AI Act, South Korea AI Basic Act, Colorado SB 26-189). The current test count is generated and checked in <a href="https://github.com/kuzivaai/getregula/blob/main/data/site_facts.json">site facts</a>. Free under Apache 2.0 / EUPL 1.2.</p>
@@ -153,7 +153,7 @@
 
 <p>Regula is maintained by <strong>Kuziva Muzondo</strong>, a software engineer based in the UK who explores AI governance outside his day job. The project started as a practical question: if the EU AI Act creates obligations that apply to code, what would a developer-facing compliance tool actually look like?</p>
 
-<p>Commits include a <code>Co-Authored-By: Claude Opus 4.6</code> trailer where work was paired with Anthropic's Claude. This is standard pair-programming attribution &mdash; the maintainer is accountable for every merged change. The project's approach to honesty is documented in the codebase: no fabricated statistics, no overstated capabilities, no marketing claims that can't be verified against the code.</p>
+<p>Commits include a <code>Co-Authored-By: Claude Opus 4.6</code> trailer where work was paired with Anthropic's Claude. This is standard pair-programming attribution : the maintainer is accountable for every merged change. The project's approach to honesty is documented in the codebase: no fabricated statistics, no overstated capabilities, no marketing claims that can't be verified against the code.</p>
 
 <p>Kuziva also writes <a href="https://theimplementationlayer.substack.com">The Implementation Layer</a>, a newsletter on the gap between AI governance theory and organisational reality.</p>
 
@@ -162,12 +162,12 @@
 <p>Regula's classification engine matches source code against regex patterns mapped to EU AI Act articles. A 6-layer precision architecture reduces false positives:</p>
 
 <ol>
-    <li><strong>Match-line context gating</strong> &mdash; AST analysis suppresses findings where all pattern matches occur inside docstrings or string literals</li>
-    <li><strong>Opt-in category expansion</strong> &mdash; categories with high false-positive rates require additional corroborating evidence</li>
-    <li><strong>Domain exclusion patterns</strong> &mdash; medical imaging libraries are excluded from biometrics findings, database migration tools from migration findings, etc.</li>
-    <li><strong>Project fingerprinting</strong> &mdash; scans <code>package.json</code> and import graphs to identify AI library projects and suppress self-scan noise</li>
-    <li><strong>Confidence floors</strong> &mdash; findings with confidence below a threshold and no corroborating evidence are suppressed</li>
-    <li><strong>Cross-file oversight enrichment</strong> &mdash; optional Article 14 analysis traces AI outputs across files to human review gates</li>
+    <li><strong>Match-line context gating</strong> : AST analysis suppresses findings where all pattern matches occur inside docstrings or string literals</li>
+    <li><strong>Opt-in category expansion</strong> : categories with high false-positive rates require additional corroborating evidence</li>
+    <li><strong>Domain exclusion patterns</strong> : medical imaging libraries are excluded from biometrics findings, database migration tools from migration findings, etc.</li>
+    <li><strong>Project fingerprinting</strong> : scans <code>package.json</code> and import graphs to identify AI library projects and suppress self-scan noise</li>
+    <li><strong>Confidence floors</strong> : findings with confidence below a threshold and no corroborating evidence are suppressed</li>
+    <li><strong>Cross-file oversight enrichment</strong> : optional Article 14 analysis traces AI outputs across files to human review gates</li>
 </ol>
 
 <p>Evidence packs are signed with SHA-256 integrity manifests and in-toto attestations. Every finding is traceable to a file and line number.</p>

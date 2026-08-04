@@ -25,7 +25,7 @@
     <meta property="og:title" content="KI-Regulierung-Bewertung: EU AI Act, Südkorea, Colorado">
     <meta property="og:description" content="Kostenlose KI-Regulierung-Risikobewertung. Prüfen Sie Ihre Pflichten unter dem EU AI Act, dem südkoreanischen KI-Grundgesetz oder Colorado SB 26-189. Keine Anmeldung, keine Installation.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
-    <meta property="og:image:alt" content="Regula — open-source AI governance risk indication tool">
+    <meta property="og:image:alt" content="Regula :  open-source AI governance risk indication tool">
     <meta property="og:locale" content="de_DE">
     <meta property="og:site_name" content="Regula">
     <meta name="twitter:card" content="summary_large_image">
@@ -80,7 +80,7 @@
       a { color: var(--accent); text-decoration: none; }
       a:hover { text-decoration: underline; }
 
-      /* Nav — matching main site pattern */
+      /* Nav :  matching main site pattern */
       .nav {
           position: sticky; top: 0; z-index: 100;
           height: 56px; padding: 0 24px;
@@ -362,12 +362,11 @@
 
 <nav class="nav" id="nav" aria-label="Hauptnavigation">
     <a href="/" class="nav-brand">Regula</a>
-    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="/assess/" class="active">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html">Regulations</a>
         <a href="/blog/writing.html">Blog</a>
         <a href="/about.html">About</a>
@@ -409,7 +408,7 @@
     <script>
     function updateAssessIntro() {
       const intros = {
-        eu: "Die EU-KI-Verordnung stuft KI-Systeme in Risikokategorien ein &mdash; von minimalem Risiko bis verboten &mdash; mit unterschiedlichen rechtlichen Pflichten f\u00fcr jede Stufe. Diese Bewertung ermittelt, welche Stufe f\u00fcr Ihr System gilt und was Sie als N\u00e4chstes tun m\u00fcssen.",
+        eu: "Die EU-KI-Verordnung stuft KI-Systeme in Risikokategorien ein : von minimalem Risiko bis verboten : mit unterschiedlichen rechtlichen Pflichten f\u00fcr jede Stufe. Diese Bewertung ermittelt, welche Stufe f\u00fcr Ihr System gilt und was Sie als N\u00e4chstes tun m\u00fcssen.",
         kr: "Das s\u00fcdkoreanische KI-Grundgesetz stuft KI-Systeme als hochriskant oder hochleistungsf\u00e4hig ein, mit Pflichten f\u00fcr Risikomanagement, Transparenz und Erkl\u00e4rbarkeit. Diese Bewertung ermittelt, ob Ihr System betroffen ist und was Sie tun m\u00fcssen.",
         co: "Colorado SB 26-189 reguliert automatisierte Entscheidungstechnologie (ADMT), die folgenreiche Entscheidungen \u00fcber Personen in bestimmten Bereichen trifft. Diese Bewertung ermittelt, ob Ihr System betroffen ist und welche Offenlegungspflichten gelten."
       };
@@ -437,7 +436,7 @@
     <div class="q-card">
       <div class="q-number">CODE-SCANNER <span style="font-size:0.7rem;background:var(--accent-dim);color:var(--accent);padding:2px 8px;border-radius:4px;margin-left:8px;vertical-align:middle;">Für Entwicklungsteams</span></div>
       <div class="q-text">Code einfügen oder Datei hochladen</div>
-      <div class="q-help">Regula scannt Quellcode nach EU-KI-Gesetz-Risikomustern &mdash; verbotene Praktiken, Hochrisiko-Indikatoren, Sicherheits-Antipatterns und Transparenzanforderungen. Alles läuft in Ihrem Browser. Nichts wird hochgeladen oder gespeichert. Kein Entwickler? Nutzen Sie stattdessen den <button type="button" onclick="backToHero()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">Fragebogen</button>.</div>
+      <div class="q-help">Regula scannt Quellcode nach EU-KI-Gesetz-Risikomustern : verbotene Praktiken, Hochrisiko-Indikatoren, Sicherheits-Antipatterns und Transparenzanforderungen. Alles läuft in Ihrem Browser. Nichts wird hochgeladen oder gespeichert. Kein Entwickler? Nutzen Sie stattdessen den <button type="button" onclick="backToHero()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">Fragebogen</button>.</div>
 
       <div style="margin-bottom:12px;">
         <label for="scanLang" style="font-size:0.8rem;color:var(--text-dim);display:block;margin-bottom:4px;">Sprache (automatisch erkannt anhand der Dateiendung)</label>
@@ -532,7 +531,7 @@
 <script src="scanner.js"></script>
 <script>
 // =====================================================================
-// Regula Web-Bewertung — portiert von scripts/questionnaire.py
+// Regula Web-Bewertung :  portiert von scripts/questionnaire.py
 // Gesamte Logik läuft clientseitig. Nichts verlässt den Browser.
 // =====================================================================
 
@@ -567,7 +566,7 @@ function selectJurisdiction(jur) {
 
   const info = JURISDICTION_INFO[jur];
   document.getElementById("jurisdictionInfo").textContent =
-    info.law + " — " + info.status + " — " + info.questionCount + " Fragen";
+    info.law + " :  " + info.status + " :  " + info.questionCount + " Fragen";
 }
 
 // Südkorea-Fragen (aus south-korea-mapping.md-Forschung)
@@ -796,7 +795,7 @@ const QUESTIONS = [
   {
     id: "improves_human_activity",
     text: "Verbessert dieses System NUR das Ergebnis einer bereits abgeschlossenen menschlichen Tätigkeit (z. B. Grammatikprüfung von menschlich verfasstem Text, Verbesserung eines menschlich aufgenommenen Fotos, automatische Formatierung eines menschlich erstellten Dokuments)?",
-    help: "Artikel 6(3)(b) nimmt KI-Systeme aus, die bereits abgeschlossene menschliche Tätigkeiten verbessern. Die menschliche Tätigkeit muss abgeschlossen sein, bevor die KI eingreift — die KI verfeinert, sie erstellt nicht.",
+    help: "Artikel 6(3)(b) nimmt KI-Systeme aus, die bereits abgeschlossene menschliche Tätigkeiten verbessern. Die menschliche Tätigkeit muss abgeschlossen sein, bevor die KI eingreift :  die KI verfeinert, sie erstellt nicht.",
     article: "Artikel 6(3)(b)",
     weight: { yes: -20, no: 5, unsure: 0 },
     signal: "exemption"
@@ -821,7 +820,7 @@ const QUESTIONS = [
   {
     id: "profiling",
     text: "Erstellt dieses System Profile von Einzelpersonen auf Basis ihrer personenbezogenen Daten (z. B. Leistungsverfolgung, Verhaltensanalyse, Präferenzmodellierung, Risikobewertung auf Grundlage persönlicher Merkmale)?",
-    help: "Wenn ein System natürliche Personen im Sinne von Artikel 4 Absatz 4 DSGVO profiliert, können Ausnahmen nach Artikel 6 Absatz 3 NICHT greifen — das System gilt automatisch als hochriskant, unabhängig davon, wie eng begrenzt oder verfahrenstechnisch es ist. Profiling bedeutet jede automatisierte Verarbeitung personenbezogener Daten zur Bewertung persönlicher Aspekte.",
+    help: "Wenn ein System natürliche Personen im Sinne von Artikel 4 Absatz 4 DSGVO profiliert, können Ausnahmen nach Artikel 6 Absatz 3 NICHT greifen :  das System gilt automatisch als hochriskant, unabhängig davon, wie eng begrenzt oder verfahrenstechnisch es ist. Profiling bedeutet jede automatisierte Verarbeitung personenbezogener Daten zur Bewertung persönlicher Aspekte.",
     article: "Article 6(3), GDPR Article 4(4)",
     weight: { yes: 15, no: 0, unsure: 5 },
     signal: "profiling"
@@ -918,7 +917,7 @@ const OBLIGATIONS_KR = [
   { article: 34, name: "Risikomanagementplan", desc: "Betreiber von KI mit hoher Auswirkung müssen einen Risikomanagementplan erstellen und pflegen, der den gesamten KI-System-Lebenszyklus abdeckt.", plain: "Sie benötigen einen dokumentierten Plan zur Identifizierung und Bewältigung von Risiken Ihres KI-Systems. Dies ist eine Bemühenspflicht.", effort: "20\u201340 Stunden (Team)", deadline: "In Kraft (Übergangsfrist bis 2026)" },
   { article: 34, name: "Dokumentation und Aufzeichnung", desc: "Dokumentation der Entwurfs-, Entwicklungs- und Betriebsprozesse des KI-Systems pflegen.", plain: "Führen Sie Aufzeichnungen darüber, wie das System gebaut wurde, welche Daten es verwendet und wie es Entscheidungen trifft.", effort: "15\u201330 Stunden (Team)", deadline: "In Kraft (Übergangsfrist bis 2026)" },
   { article: 34, name: "Menschliche Aufsicht", desc: "Maßnahmen zur menschlichen Aufsicht für KI-Systeme mit hoher Auswirkung umsetzen.", plain: "Ein Mensch muss in der Lage sein, die Entscheidungen des KI-Systems zu überwachen und einzugreifen.", effort: "10\u201330 Stunden (Team)", deadline: "In Kraft (Übergangsfrist bis 2026)" },
-  { article: 34, name: "Erklärbarkeit von KI-Entscheidungen", desc: "Betreiber müssen Erklärungen für KI-generierte Ergebnisse innerhalb technischer Grenzen bereitstellen, einschließlich zentraler Entscheidungskriterien und einer Übersicht der Trainingsdaten (Artikel 34).", plain: "Wenn Ihre KI eine Entscheidung über jemanden trifft, müssen Sie erklären können, warum — einschließlich der entscheidenden Faktoren und der Daten, mit denen das System trainiert wurde.", effort: "10\u201325 Stunden (Team)", deadline: "In Kraft (Übergangsfrist bis 2026)" },
+  { article: 34, name: "Erklärbarkeit von KI-Entscheidungen", desc: "Betreiber müssen Erklärungen für KI-generierte Ergebnisse innerhalb technischer Grenzen bereitstellen, einschließlich zentraler Entscheidungskriterien und einer Übersicht der Trainingsdaten (Artikel 34).", plain: "Wenn Ihre KI eine Entscheidung über jemanden trifft, müssen Sie erklären können, warum :  einschließlich der entscheidenden Faktoren und der Daten, mit denen das System trainiert wurde.", effort: "10\u201325 Stunden (Team)", deadline: "In Kraft (Übergangsfrist bis 2026)" },
   { article: 31, name: "Transparenzbenachrichtigung", desc: "Nutzer müssen benachrichtigt werden, wenn sie mit KI interagieren. Generative KI-Inhalte müssen gekennzeichnet werden.", plain: "Teilen Sie den Menschen mit, dass sie mit KI interagieren, und kennzeichnen Sie KI-generierte Inhalte entsprechend.", effort: "5\u201315 Stunden (Team)", deadline: "In Kraft (Übergangsfrist bis 2026)" },
 ];
 
@@ -1085,7 +1084,7 @@ function prevQuestion() {
 }
 
 // =====================================================================
-// Bewertung — portiert von questionnaire.py evaluate_questionnaire()
+// Bewertung :  portiert von questionnaire.py evaluate_questionnaire()
 // =====================================================================
 
 function calculateResults() {
@@ -1194,7 +1193,7 @@ function calculateResultsKR() {
   if (highImpactSignals.length > 0 && score >= 50) {
     tier = "high_impact";
     tierName = "KI-System mit hoher Auswirkung";
-    tierDesc = "Ihr System ist in einem Bereich tätig, der nach Artikel 33 als KI mit hoher Auswirkung eingestuft wird. Sie müssen Pflichten zu Risikomanagement, Dokumentation, menschlicher Aufsicht, Transparenz und Erklärbarkeit nach den Artikeln 31 und 34 erfüllen. Hinweis: Südkorea befindet sich bis 2026 in einer Übergangsfrist — die Durchsetzung ist aufgeschoben, außer bei schwerem Schaden. Strafen: bis zu 30 Mio. KRW (~20.700 USD) oder 3 Jahre Freiheitsstrafe.";
+    tierDesc = "Ihr System ist in einem Bereich tätig, der nach Artikel 33 als KI mit hoher Auswirkung eingestuft wird. Sie müssen Pflichten zu Risikomanagement, Dokumentation, menschlicher Aufsicht, Transparenz und Erklärbarkeit nach den Artikeln 31 und 34 erfüllen. Hinweis: Südkorea befindet sich bis 2026 in einer Übergangsfrist :  die Durchsetzung ist aufgeschoben, außer bei schwerem Schaden. Strafen: bis zu 30 Mio. KRW (~20.700 USD) oder 3 Jahre Freiheitsstrafe.";
     tierClass = "tier-high";
     obligations = OBLIGATIONS_KR;
   } else if (highPerformanceSignals.length > 0) {
@@ -1436,7 +1435,7 @@ function decodeAnswers(code) {
   const decoded = {};
   activeQ.forEach((q, i) => {
     let c = raw[i];
-    // v1 URLs had Q8 (public_facing, index 7) with opposite polarity — EU only
+    // v1 URLs had Q8 (public_facing, index 7) with opposite polarity :  EU only
     if (version === 1 && i === 7 && activeJurisdiction === "eu") {
       c = c === "y" ? "n" : c === "n" ? "y" : c;
     }
@@ -1628,7 +1627,7 @@ function renderScanResults(result) {
   // Korea or Colorado on the jurisdiction toggle.
   if (typeof activeJurisdiction !== 'undefined' && activeJurisdiction !== 'eu') {
     const jurName = activeJurisdiction === 'kr' ? 'Südkorea' : 'Colorado';
-    html += `<div class="scan-jur-notice" style="margin-bottom:16px;padding:12px 14px;border:1px solid var(--border-active);border-radius:var(--radius);background:var(--accent-dim);font-size:0.85rem;line-height:1.45;">Hinweis: Der Code-Scanner deckt derzeit Muster der <strong>EU-KI-Verordnung</strong> ab. Sie haben <strong>${jurName}</strong> ausgewählt — für eine ${jurName}-spezifische Prüfung nutzen Sie den Fragebogen oder die vollständige CLI.</div>`;
+    html += `<div class="scan-jur-notice" style="margin-bottom:16px;padding:12px 14px;border:1px solid var(--border-active);border-radius:var(--radius);background:var(--accent-dim);font-size:0.85rem;line-height:1.45;">Hinweis: Der Code-Scanner deckt derzeit Muster der <strong>EU-KI-Verordnung</strong> ab. Sie haben <strong>${jurName}</strong> ausgewählt :  für eine ${jurName}-spezifische Prüfung nutzen Sie den Fragebogen oder die vollständige CLI.</div>`;
   }
 
   // Tier card (reuse existing styles)
@@ -1652,7 +1651,7 @@ function renderScanResults(result) {
       <div class="tier-label">CODE-SCAN-ERGEBNIS</div>
       <div class="tier-name">${tierNames[c.tier] || c.tier}</div>
       <div class="tier-desc">${c.message}</div>
-      ${(c.tier === 'prohibited' || c.tier === 'high_risk') ? '<div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">Dies ist ein <strong>Mustertreffer, keine Feststellung</strong> — prüfen Sie, ob der markierte Code die beschriebene Praktik tatsächlich umsetzt. Fehlalarme sind möglich; dies ist keine Rechtsberatung.</div>' : ''}
+      ${(c.tier === 'prohibited' || c.tier === 'high_risk') ? '<div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">Dies ist ein <strong>Mustertreffer, keine Feststellung</strong> :  prüfen Sie, ob der markierte Code die beschriebene Praktik tatsächlich umsetzt. Fehlalarme sind möglich; dies ist keine Rechtsberatung.</div>' : ''}
       <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">
         Konfidenz: ${c.confidence_score}/100 &middot; Sprache: ${result.language}
         ${c.indicators_matched.length ? ' &middot; Indikatoren: ' + c.indicators_matched.join(', ') : ''}
