@@ -79,7 +79,7 @@ regula/
 - **Confidence scores, not binary labels.** 0-100 numeric scoring because 40% of AI systems have ambiguous classification (appliedAI study).
 - **Inline suppression with audit trail.** `# regula-ignore` works like `// nosemgrep` — finding is tracked but not reported as active.
 - **SARIF for CI/CD.** Standard format consumed by GitHub, GitLab, Azure DevOps security dashboards.
-- **Named accountability.** Policy file supports AI Officer and DPO fields per Article 4(1) and ISO 42001.
+- **Named governance contacts.** The policy file supports optional AI Officer and DPO fields. These fields do not represent an Article 4 requirement; AI-literacy measures and ISO/IEC 42001 role controls must be assessed separately.
 - **Compliance workflow.** Tracked status progression with audit trail and transition history.
 - **AST over regex where it matters.** Python `ast` module provides structure-aware analysis: real imports vs string mentions, data flow tracing, human oversight detection. Regex remains for cross-language pattern matching.
 - **Compliance gap assessment, not just risk flagging.** Checks whether Articles 9-15 compliance infrastructure actually exists in the codebase.

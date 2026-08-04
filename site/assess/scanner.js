@@ -162,9 +162,9 @@ const PROHIBITED_PATTERNS = {
       "\\bcloth_off",
       "\\bstrip_ai"
     ],
-    "article": "5(1)(i) [Omnibus]",
+    "article": "5(1)(ba) [Regulation (EU) 2026/1744]",
     "description": "AI systems generating non-consensual intimate imagery of identifiable persons",
-    "conditions": "Added by the Digital Omnibus (agreed 7 May 2026; EP approved 16 June 2026, Council approved 29 June 2026; published in the Official Journal on 24 July 2026, in force from 27 July 2026). Effective 2 December 2026.",
+    "conditions": "Article 5(1)(ba), 5(1a) and 5(1b), added by Regulation (EU) 2026/1744 and applicable from 2 December 2026. Provider/deployer conditions, safeguards, foreseeability and the manipulation exclusion must be assessed.",
     "exceptions": null,
     "confidence": "high",
     "likelihood": "high",
@@ -177,9 +177,9 @@ const PROHIBITED_PATTERNS = {
       "\\bchild[\\s_-]?(?:face[\\s_-]?(?:swap|generat)|body[\\s_-]?generat|image[\\s_-]?generat)",
       "\\bminor[\\s_-]?(?:face[\\s_-]?(?:swap|generat)|body[\\s_-]?generat|image[\\s_-]?generat)"
     ],
-    "article": "5(1)(i) [Omnibus]",
+    "article": "5(1)(bb) [Regulation (EU) 2026/1744]",
     "description": "AI systems generating material depicting minors in sexually explicit contexts",
-    "conditions": "Added by the Digital Omnibus (agreed 7 May 2026; EP approved 16 June 2026, Council approved 29 June 2026; published in the Official Journal on 24 July 2026, in force from 27 July 2026). Effective 2 December 2026.",
+    "conditions": "Article 5(1)(bb) and 5(1a), added by Regulation (EU) 2026/1744 and applicable from 2 December 2026. Provider/deployer conditions, safeguards, foreseeability and any national-law defence must be assessed.",
     "exceptions": null,
     "confidence": "high",
     "likelihood": "high",

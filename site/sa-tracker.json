@@ -1,9 +1,9 @@
 {
   "$schema": "https://getregula.com/sa-tracker.schema.json",
   "version": "1.0",
-  "last_updated": "2026-06-13",
+  "last_updated": "2026-08-04",
   "gazette_status": "withdrawn",
-  "next_review": "Monitor for revised draft (expected 2027)",
+  "next_review": "Monitor official sources for any replacement publication",
   "rows": [
     {
       "label": "Cabinet approval",
@@ -25,15 +25,15 @@
     },
     {
       "label": "Withdrawal",
-      "value": "~26 April 2026 — Minister Solly Malatsi withdrew the draft after at least 6 of 67 academic citations were found to be AI-generated hallucinations. Called it 'an unacceptable lapse' that 'compromised the integrity and credibility of the draft policy'",
+      "value": "Cabinet-approved withdrawal confirmed 5 June 2026 after fictitious references were identified",
       "state": "verified",
-      "source": "https://www.cnbcafrica.com/2026/south-africa-pulls-ai-policy-after-hallucinated-citations-expose-drafting-scandal"
+      "source": "https://www.sanews.gov.za/node/81987"
     },
     {
       "label": "Revised timeline",
-      "value": "No immediate timeline for a revised draft. Reports suggest 2027. Minister committed to resubmitting with 'much more rigorous oversight'",
-      "state": "estimated",
-      "source": "https://thenextweb.com/news/south-africa-ai-policy-hallucinated-citations"
+      "value": "No replacement date asserted until an official record is published",
+      "state": "unverified",
+      "source": "https://www.gov.za"
     },
     {
       "label": "Regulatory model",

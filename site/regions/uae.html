@@ -26,10 +26,10 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Regula — EU AI Act Compliance for UAE & GCC Companies</title>
-    <meta name="description" content="EU AI Act compliance for UAE and GCC companies. If your AI features touch EU users, you need to comply. Free CLI that audits your codebase.">
+    <meta name="description" content="EU AI Act scope and code-indicator review for UAE and GCC companies whose AI outputs may be used in the EU.">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta property="og:title" content="Regula — EU AI Act compliance for UAE & GCC companies selling into Europe">
-    <meta property="og:description" content="The EU AI Act applies extraterritorially. UAE & GCC providers and deployers are liable. Regula audits your codebase locally — no SaaS, no consultants, free.">
+    <meta property="og:description" content="Article 2 can apply to some UAE and GCC providers and deployers. Regula reports code indicators locally for contextual review.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/regions/uae.html">
     <meta name="twitter:card" content="summary_large_image">
@@ -296,7 +296,7 @@
 <main id="main">
 <section class="hero">
     <div class="badge">For DIFC, ADGM &amp; GCC AI teams selling into Europe</div>
-    <h1>If your AI features touch EU users, you&rsquo;re <span class="hl">already liable</span>.</h1>
+    <h1>If your AI outputs are used in the EU, <span class="hl">check Article 2 scope</span>.</h1>
     <p class="sub">Article&nbsp;2(1)(c) can apply the EU AI Act to providers and deployers outside the EU when an AI system&rsquo;s output is used in the Union. Scope depends on role, use, and the Act&rsquo;s exclusions. Regula reports code indicators locally for human review; it does not determine whether the Act applies. <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Read Article 2 in the primary legislation</a>.</p>
 
     <button type="button" class="cta-pill" onclick="copyCmd(this, 'pipx install regula-ai \u0026\u0026 regula quickstart')">
@@ -332,8 +332,8 @@
             <p class="ref">Source: Regulation (EU) 2024/1689 Article 2(1)(c)</p>
         </div>
         <div class="card-base liab-card">
-            <h3>The provider carries the liability</h3>
-            <p>If your DIFC or ADGM company places an AI system on the EU market — directly, through a reseller, or via an EU-based customer using your API — you are the provider. Compliance liability sits with you, not your distributor.</p>
+            <h3>Provider status carries duties</h3>
+            <p>A DIFC or ADGM company may be a provider where it develops an AI system or model, or has one developed, and places it on the market or puts it into service under its own name or trademark. Article 3 definitions and the actual distribution arrangement matter; a reseller relationship alone does not settle the role.</p>
             <p class="ref">Source: Regulation (EU) 2024/1689 Article 3(3) and Article 16</p>
         </div>
         <div class="card-base liab-card">
@@ -343,7 +343,7 @@
         </div>
         <div class="card-base liab-card">
             <h3>High-risk deadline: 2 December 2027 (Omnibus)</h3>
-            <p>The Digital Omnibus provisional agreement of 7 May 2026 defers Annex III high-risk obligations from 2 August 2026 to 2 December 2027. The European Parliament approved the Omnibus on 16 June 2026 (423 for, 57 against, 174 abstentions). The regulation was published in the Official Journal on 24 July 2026 as Regulation (EU) 2026/1744 and is in force from 27 July 2026; the deferred dates are enacted law. Article 50 transparency obligations still apply from 2 August 2026.</p>
+            <p><a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj">Regulation (EU) 2026/1744</a> was published on 24 July 2026 and entered into force on 27 July 2026. It sets 2 December 2027 for Annex III high-risk provisions and 2 August 2028 for Annex I product-embedded provisions. Article 50 obligations generally have applied since 2 August 2026; providers of systems covered by Article 50(2) that were already on the market before that date have until 2 December 2026 under the amendment's transition rule.</p>
             <p class="ref">Source: Council press release, 7 May 2026; Regulation (EU) 2024/1689 Article 113</p>
         </div>
     </div>
@@ -367,15 +367,15 @@
 <!-- REGULATORS -->
 <section class="sec">
     <h2>DIFC, ADGM, and the federal layer: who regulates AI in the UAE today?</h2>
-    <p class="sec-sub">The UAE does not yet have a federal AI Act. AI governance today sits across sectoral and free-zone regulators, plus the federal data institutions now being consolidated into the Federal Authority for Artificial Intelligence and Data announced in June 2026 (<a href="https://www.morganlewis.com/pubs/2026/06/uae-establishes-federal-authority-for-artificial-intelligence-and-data">Morgan Lewis</a>). Most UAE AI teams encounter the three regulators below. None of them displace the EU AI Act when your product reaches EU users.</p>
+    <p class="sec-sub">No federal UAE AI Act was identified in the official legal sources reviewed for this audit. AI governance also involves data-protection, financial, health, and free-zone rules. The regulator summary below is orientation, not a complete statement of UAE law.</p>
 
     <div class="sectors">
         <div class="sector"><strong>DIFC — Dubai International Financial Centre</strong><span>DIFC Data Protection Law 2020 (DIFC Law No. 5 of 2020) + Regulation 10 on processing personal data through autonomous and semi-autonomous systems. Dubai Financial Services Authority (DFSA) regulates AI deployed in regulated financial services. Personal data triggers DP law; financial use triggers DFSA rules.</span></div>
         <div class="sector"><strong>ADGM — Abu Dhabi Global Market</strong><span>ADGM Data Protection Regulations 2021 (modelled on GDPR). Financial Services Regulatory Authority (FSRA) regulates AI in licensed financial activities. ADGM's Office of Data Protection publishes guidance on the DPR 2021, including on automated decision-making.</span></div>
-        <div class="sector"><strong>Federal — UAE Data Office + AI Council</strong><span>Federal Decree-Law No. 45 of 2021 (PDPL) governs personal data across the mainland. In June 2026 the UAE announced a Federal Authority for Artificial Intelligence and Data, chaired by the Minister of State for AI, consolidating the AI Office, the Emirates Data Office and part of TDRA's remit. No federal AI Act has been enacted; sectoral regulators (Central Bank, DHA, MoHAP) retain their levers.</span></div>
+        <div class="sector"><strong>Federal layer</strong><span>Federal Decree-Law No. 45 of 2021 governs personal-data processing within its scope. Sector regulators may add requirements. This page does not rely on an unverified secondary claim about a new federal AI authority.</span></div>
     </div>
 
-    <p style="margin-top: 24px; color: #888; font-size: 14px;">The practical takeaway: regardless of which UAE regulator sits over your company, if your AI touches EU users, EU AI Act obligations apply on top of your local rules. Regula checks against the EU layer locally, in one command, with no data leaving your machine.</p>
+    <p style="margin-top: 24px; color: #888; font-size: 14px;">The practical takeaway: UAE rules and EU AI Act scope are separate questions. If Article 2 brings a system or actor into EU scope, applicable EU duties may sit alongside local rules. Regula reports local code indicators but cannot decide either legal question.</p>
 </section>
 
 <!-- DEMO -->
