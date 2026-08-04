@@ -36,9 +36,9 @@ REGION = {
     "og_description": "PL 2338/2023 in committee. LGPD already applies to AI. Live tracker covering legislative status, ANPD enforcement, and developer guidance.",
     "twitter_title": "Brazil AI Regulation — LGPD & Marco Legal da IA | Regula",
     "twitter_description": "PL 2338/2023 in committee. LGPD already applies. Legislative tracker, ANPD enforcement priorities, developer checklist.",
-    "last_updated": "16 July 2026",
+    "last_updated": "4 August 2026",
     "published_time": "2026-04-25T00:00:00-03:00",
-    "modified_time": "2026-07-16T00:00:00-03:00",
+    "modified_time": "2026-08-04T00:00:00-03:00",
     "lede": "Brazil's Marco Legal da Inteligencia Artificial (PL 2338/2023) passed the Senate on 10 December 2024 and is now in a Special Commission at the Chamber of Deputies. It is not yet law. In the meantime, the LGPD already applies to AI systems that process personal data, including automated decision-making under Article 20. This page is the live reference &mdash; what is in force, what is pending, and what developers building for the Brazilian market should do now.",
     # Bespoke tracker (verbatim from the reviewed page) — used instead
     # of builder-rendered tracker_rows.
@@ -56,7 +56,7 @@ REGION = {
                 </div>
                 <div class="tracker-row">
                     <div class="lbl">Current status</div>
-                    <div class="val">Awaiting rapporteur's report in Special Commission (as of April 2026) &nbsp;<span class="pend">IN COMMITTEE</span></div>
+                    <div class="val">Awaiting rapporteur's report in Special Commission (official Chamber status checked 4 August 2026; latest recorded action 17 June 2026) &nbsp;<span class="pend">IN COMMITTEE</span></div>
                 </div>
                 <div class="tracker-row">
                     <div class="lbl">Entry into force</div>
@@ -85,7 +85,7 @@ REGION = {
             "body": """\
             <p>PL 2338/2023, known as the <strong>Marco Legal da Inteligencia Artificial</strong>, is a bill that would establish a comprehensive legal framework for the development and use of artificial intelligence in Brazil. It originated in the Senate, where it was approved by symbolic vote on 10 December 2024.</p>
 
-            <p>The bill was then sent to the Chamber of Deputies. On 4 April 2025, the Chamber created a Special Commission to analyse the text. As of April 2026, the bill is awaiting the rapporteur's report within that Special Commission. The Chamber may amend the text before voting; if it does, the bill returns to the Senate for conciliation.</p>
+            <p>The bill was then sent to the Chamber of Deputies. On 4 April 2025, the Chamber created a Special Commission to analyse the text. The <a href="https://www.camara.leg.br/propostas-legislativas/2555663" target="_blank" rel="noopener">official Chamber status page</a>, checked on 4 August 2026, records that it is awaiting the rapporteur's report and lists 17 June 2026 as the latest legislative action. The Chamber may amend the text before voting; if it does, the bill returns to the Senate for conciliation.</p>
 
             <p>The Senate-approved text phases entry into force, but the Chamber may modify the implementation timeline and penalties before enactment. <a href="https://www25.senado.leg.br/web/atividade/materias/-/materia/157233" target="_blank" rel="noopener">Senado Federal: bill text and procedural history</a>.</p>
 
@@ -224,7 +224,7 @@ REGION = {
             <div class="faq">
                 <details>
                     <summary>What is PL 2338/2023 (Marco Legal da IA)?</summary>
-                    <p>PL 2338/2023, known as the Marco Legal da Inteligencia Artificial, is a bill that would establish a legal framework for AI in Brazil. The Senate approved it by symbolic vote on 10 December 2024. It was sent to the Chamber of Deputies, where a Special Commission was created on 4 April 2025. As of April 2026, the bill is awaiting the rapporteur's report in that Special Commission. It is not yet law.</p>
+                    <p>PL 2338/2023, known as the Marco Legal da Inteligencia Artificial, is a bill that would establish a legal framework for AI in Brazil. The Senate approved it by symbolic vote on 10 December 2024. It was sent to the Chamber of Deputies, where a Special Commission was created on 4 April 2025. The official Chamber status page, checked on 4 August 2026, records that the bill is awaiting the rapporteur's report. It is not yet law.</p>
                 </details>
                 <details>
                     <summary>Does Brazil have an AI law?</summary>
@@ -261,7 +261,7 @@ REGION = {
             "id": "honest-gaps",
             "heading": "What we are tracking and what may change",
             "body": """\
-            <p>The Marco Legal is still in committee. The final text may differ significantly from the Senate-approved version. Here is what we are watching as of April 2026:</p>
+            <p>The Marco Legal is still in committee. The final text may differ significantly from the Senate-approved version. Here is what we are watching as of 4 August 2026:</p>
             <div class="gaps-box">
                 <h3>To verify on enactment</h3>
                 <ol>
@@ -301,7 +301,7 @@ REGION = {
         # hand-maintained page, incl. PT-BR pairs for search).
         {
             "q": "What is PL 2338/2023 (Marco Legal da IA)?",
-            "a": "PL 2338/2023, known as the Marco Legal da Inteligência Artificial, is a bill that would establish a legal framework for AI in Brazil. The Senate approved it by symbolic vote on 10 December 2024. It was sent to the Chamber of Deputies, where a Special Commission was created on 4 April 2025. As of April 2026, the bill is awaiting the rapporteur's report in that Special Commission. It is not yet law.",
+            "a": "PL 2338/2023, known as the Marco Legal da Inteligência Artificial, is a bill that would establish a legal framework for AI in Brazil. The Senate approved it by symbolic vote on 10 December 2024. The official Chamber status page, checked on 4 August 2026, records that the bill is awaiting the rapporteur's report in the Special Commission. It is not yet law.",
             "jsonld_only": True,
         },
         {

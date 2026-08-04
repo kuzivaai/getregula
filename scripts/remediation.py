@@ -341,11 +341,15 @@ def _remediate_limited_risk(category, indicators):
 def _remediate_minimal(category):
     """Remediation for minimal-risk AI (informational only)."""
     return {
-        "summary": "No mandatory requirements - consider voluntary codes of conduct",
+        "summary": "No elevated tier inferred - review cross-cutting duties and voluntary measures",
         "article": "Article 95 (Voluntary Codes of Conduct)",
         "fix_code": "",
         "fix_command": "",
-        "explanation": "Minimal-risk AI systems have no mandatory EU AI Act requirements, but voluntary codes of conduct are encouraged.",
+        "explanation": (
+            "The scan found no elevated risk-tier indicator. This is not a legal "
+            "classification; Articles 4 and 5 and other context-dependent duties "
+            "may still apply, and Article 95 codes of conduct remain available."
+        ),
     }
 
 

@@ -603,7 +603,7 @@ def generate_compliance_html_report(
 </div>
 <div class="severity-row">
   <div class="severity-badge sev-minimal">MINIMAL-RISK</div>
-  <div class="severity-text"><strong>No mandatory obligations</strong> under the EU AI Act. Includes AI-enabled spam filters, inventory management, and most AI features not in the above categories. Voluntary codes of conduct encouraged.</div>
+  <div class="severity-text"><strong>No elevated risk-tier path identified.</strong> This is not a legal classification or proof that no duties apply. Review intended purpose, Article 4, Article 5, role-specific duties, and other context-dependent provisions.</div>
 </div>
 <p style="font-size:12px;color:#6B7280;margin-top:16px;">Confidence scores (0–100) indicate how many risk indicators matched in the scanned file. Scores &ge;80 or any prohibited pattern = BLOCK tier. 50–79 = WARN. &lt;50 = INFO.</p>
 </section>

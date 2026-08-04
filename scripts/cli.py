@@ -510,8 +510,8 @@ def _print_register_text(packet: dict, out_path) -> None:
         for r in packet.get("redirects", []):
             print(f"    - {r}")
     d = packet.get("deadlines", {})
-    print(f"\n  Deadline (current law):    {d.get('applicable_deadline')}")
-    print(f"  Deadline (Omnibus prop.):  {d.get('omnibus_proposed_deadline')}  [{d.get('omnibus_status')}]")
+    print(f"\n  Applicable deadline:       {d.get('applicable_deadline')}")
+    print(f"  Annex III amended date:    {d.get('omnibus_proposed_deadline')}  [{d.get('omnibus_status')}]")
     print(f"\n  Packet written to: {out_path}")
     print()
 

@@ -119,14 +119,14 @@ jobs:
 
 ## What Regula tells you
 
-The EU AI Act defines four risk tiers. Regula maps code patterns to each:
+Regula maps code patterns to candidate Article 5, Annex III, and Article 50 review paths:
 
 | Tier | Action | What it means |
 |------|--------|---------------|
-| **Prohibited** (Article 5) | Block | Social scoring, subliminal manipulation, real-time biometric ID, emotion detection in workplaces. Regula blocks these patterns and explains the specific prohibition. |
-| **High-risk** (Annex III) | Warn + requirements | CV screening, credit scoring, healthcare services, biometrics, education assessment. Regula lists the Articles 9-15 obligations that apply if the system is confirmed high-risk. |
-| **Limited-risk** (Article 50) | Transparency note | Chatbots, deepfakes, emotion recognition. Regula flags the transparency disclosure required. |
-| **Minimal-risk** | Log only | Spam filters, recommendations, code completion. Logged for awareness, no action required. |
+| **Article 5 indicator** | Block pending review | Possible prohibited-practice evidence. Regula identifies the potentially relevant provision; qualified review must confirm scope and exceptions. |
+| **Annex III indicator** | Warn + review | Employment, credit, healthcare, biometric, education, or other listed-use evidence. Articles 9-15 are relevant if high-risk status is confirmed under [Article 6 of Regulation (EU) 2024/1689](https://eur-lex.europa.eu/eli/reg/2024/1689/oj). |
+| **Article 50 indicator** | Transparency review | Chatbot, synthetic-content, or related evidence. The deployment context determines the exact duty. |
+| **No elevated indicator** | Log only | No listed elevated path was detected. This is not legal clearance and other duties may still apply. |
 
 Every finding includes the relevant Article reference and explains when exceptions may apply. Regula flags patterns -- it does not make legal determinations.
 
@@ -512,18 +512,18 @@ pipx install regula-ai
 regula check .
 ```
 
-Regula scans your code and tells you which **risk tier** your AI system falls into:
+Regula scans code for indicators that may support a contextual risk classification:
 
 | Tier | What It Means | Example |
 |------|---------------|---------|
-| **PROHIBITED** | Banned in the EU. Stop. | Social credit scoring, subliminal manipulation |
-| **HIGH-RISK** | Heavy compliance required (Articles 9-15) | CV screening, credit scoring, healthcare services |
-| **LIMITED-RISK** | Must disclose AI to users (Article 50) | Chatbots, deepfakes, emotion recognition |
-| **MINIMAL-RISK** | No mandatory requirements | Spam filters, recommendation engines |
+| **ARTICLE 5 INDICATOR** | Possible prohibited-practice evidence requiring qualified review | Social scoring or manipulation indicators |
+| **ANNEX III INDICATOR** | Possible high-risk use requiring Article 6 assessment | Employment, credit, or specified healthcare indicators |
+| **ARTICLE 50 INDICATOR** | Possible transparency duty requiring contextual review | Chatbot or synthetic-content indicators |
+| **NO ELEVATED INDICATOR** | No listed elevated path detected; not legal clearance | Context still requires review |
 
-If you built a chatbot — that's limited-risk. If it screens job applications — that's high-risk. If it scores people's social behaviour — that's prohibited.
+Those examples are indicators, not determinations. Intended purpose, provider or deployer role, deployment context, exclusions, and exceptions affect the legal result.
 
-**Regula detects this from your code patterns.** It doesn't need you to fill in a questionnaire.
+**Regula detects code-observable patterns.** It cannot infer every legally relevant fact from source code, so questionnaire evidence and qualified review may still be needed.
 
 ---
 
@@ -601,19 +601,19 @@ Bundles your scan results, gap assessment, documentation, and audit trail into a
 ## Common Scenarios
 
 ### "I built a chatbot with the OpenAI API"
-- Risk tier: **LIMITED-RISK** (Article 50)
-- What you need: Tell users they're talking to AI. That's it.
-- Run: `regula check .` to confirm, `regula disclose .` for disclosure text
+- Indicator: possible **Article 50 transparency** path
+- Review: confirm whether Article 50 applies to the actual interaction and deployment context
+- Run: `regula check .` for code indicators and `regula disclose .` for draft disclosure text
 
 ### "I built a CV screening tool for recruiters"
-- Risk tier: **HIGH-RISK** (Annex III, Category 4 — Employment)
-- What you need: Full Articles 9-15 compliance, conformity assessment
+- Indicator: candidate **Annex III employment** use
+- Review: assess Article 6, intended purpose, exclusions, and role before treating Articles 9-15 as applicable
 - Run: `regula check .` → `regula gap .` → `regula plan .` → `regula docs .`
 
 ### "I built a recommendation engine for an online shop"
-- Risk tier: **MINIMAL-RISK**
-- What you need: Nothing mandatory. Optional: transparency is good practice.
-- Run: `regula check .` to confirm you're in the clear
+- Automated result may be: **NO ELEVATED INDICATOR**
+- Review: intended purpose, Article 4, Article 5, consumer and data-protection law, and any other applicable context
+- Run: `regula check .` for indicators; do not interpret an empty result as legal clearance
 
 ### "I fine-tuned an open-source model"
 - Risk tier: Depends on use case + whether you're distributing the model
