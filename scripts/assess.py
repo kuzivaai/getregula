@@ -139,48 +139,53 @@ def format_result(tier: str, non_eu_provider: bool) -> str:
 
     if tier == TIER_NOT_IN_SCOPE:
         lines += [
-            "  Result: NOT IN SCOPE\n",
-            "  Your product does not use AI or ML, so the EU AI Act does",
-            "  not apply. If that changes, run this check again.",
+            "  Result: NO AI USE DECLARED\n",
+            "  Based on your answers, you did not declare AI or ML use.",
+            "  This questionnaire therefore found no AI Act indicator. If",
+            "  the product or your answer changes, run this check again.",
             "",
         ]
         return "\n".join(lines)
 
     if tier == TIER_NOT_IN_SCOPE_EU:
         lines += [
-            "  Result: NOT CURRENTLY IN SCOPE (EU market)\n",
-            "  Your product uses AI but you are not currently marketing to",
-            "  EU customers. The Act applies from the point you first have",
-            "  EU users. Run `regula check .` now so you are ready.",
+            "  Result: NO CURRENT EU-SCOPE INDICATOR DECLARED\n",
+            "  Based on your answers, the product uses AI but is not currently",
+            "  placed on the EU market and its output is not used in the EU.",
+            "  Reassess before that context changes. Run `regula check .` now",
+            "  if you want to review code-observable indicators.",
             "",
         ]
         return "\n".join(lines)
 
     if tier == TIER_PROHIBITED:
         lines += [
-            "  Result: PROHIBITED PRACTICE DETECTED\n",
-            "  One or more practices you described are prohibited under",
-            "  Article 5 of the EU AI Act. These prohibitions have been",
-            "  in force since 2 February 2025 and apply regardless of",
-            "  where you are based.",
+            "  Result: POSSIBLE ARTICLE 5 INDICATORS\n",
+            "  Your answers describe one or more practices that may fall under",
+            "  Article 5 prohibitions. A qualified review must confirm the facts,",
+            "  legal scope, and any applicable exception. Article 5 prohibitions",
+            "  have applied since 2 February 2025.",
             "",
-            "  What this means:",
-            "  - These practices cannot be made compliant. They must stop.",
-            "  - Penalties: up to EUR 35 million or 7% of global turnover.",
-            "  - Applies now, not in 2026.",
+            "  What this could mean if confirmed:",
+            "  - A confirmed prohibited practice cannot be deployed or used as",
+            "    described and requires immediate legal and product review.",
+            "  - Article 99 sets maximum fines of EUR 35 million or 7% of global",
+            "    turnover, with separate limits for SMEs and case-specific enforcement.",
             "",
-            "  Next step: Run `regula check .` to find prohibited patterns",
-            "  in your code. Seek qualified legal advice.",
+            "  Next step: Do not rely on this questionnaire as the determination.",
+            "  Preserve the answers, seek qualified legal advice, and run",
+            "  `regula check .` to review related code indicators.",
             "",
         ]
 
     elif tier == TIER_HIGH:
         lines += [
-            "  Result: HIGH-RISK AI SYSTEM (Annex III)\n",
-            "  Your product falls into a high-risk category under Annex III.",
-            "  Articles 9-15 apply -- a substantial compliance obligation.",
+            "  Result: CANDIDATE HIGH-RISK INDICATORS (Annex III)\n",
+            "  Your answers place the product in an Annex III use area.",
+            "  Confirming high-risk status requires intended-purpose and",
+            "  Article 6 assessment, including any applicable exclusion.",
             "",
-            "  Your obligations:",
+            "  If high-risk status is confirmed, review:",
             "  Art. 9  -- Risk management system",
             "  Art. 10 -- Training data documentation and data governance",
             "  Art. 11 -- Annex IV technical documentation",
@@ -213,10 +218,10 @@ def format_result(tier: str, non_eu_provider: bool) -> str:
 
     elif tier == TIER_LIMITED:
         lines += [
-            "  Result: LIMITED-RISK (Article 50 transparency obligation)\n",
-            "  Your product is in scope, but the obligation is lightweight:",
-            "  inform users they are interacting with AI or consuming",
-            "  AI-generated content.",
+            "  Result: CANDIDATE ARTICLE 50 INDICATORS\n",
+            "  Your answers indicate a use that may trigger Article 50",
+            "  transparency duties. Confirm the exact system and deployment",
+            "  context before treating a listed duty as applicable.",
             "",
             "  What Article 50 requires:",
             "  - Chatbots / voice: disclose that the user is talking to AI",
@@ -236,17 +241,15 @@ def format_result(tier: str, non_eu_provider: bool) -> str:
 
     elif tier == TIER_MINIMAL:
         lines += [
-            "  Result: MINIMAL-RISK\n",
-            "  Your product uses AI but falls into the minimal-risk tier.",
-            "  There are no mandatory compliance requirements under the",
-            "  EU AI Act for minimal-risk systems.",
+            "  Result: NO SPECIFIC RISK-TIER INDICATOR FROM THESE ANSWERS\n",
+            "  Your answers did not trigger the prohibited, Annex III, or",
+            "  Article 50 paths in this questionnaire. That is not a legal",
+            "  classification and does not test every AI Act obligation.",
             "",
             "  What this means:",
-            "  - No documentation, audit trail, or conformity assessment",
-            "    required.",
-            "  - No transparency disclosure obligation.",
-            "  - Article 5 prohibitions still apply -- if you answered no",
-            "    to the prohibited practices question, you are clear.",
+            "  - Reassess when intended purpose, users, or deployment changes.",
+            "  - Article 4 AI-literacy and Article 5 prohibitions may still matter.",
+            "  - Use qualified review for unresolved or high-consequence contexts.",
             "",
             "  Good practice (not mandatory):",
             "  Run `regula check .` periodically. If your product evolves",

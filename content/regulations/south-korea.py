@@ -203,7 +203,7 @@ REGION = {
             "heading": "Where Regula fits for Korean operators and foreign providers",
             "body": """
 <p>Regula supports the Korean AI Basic Act directly. You can <a href="/assess/?j=kr">take the Korea assessment</a> (9 questions, no signup) or scan your codebase:</p>
-<pre><code>pipx install regula-ai
+<pre tabindex="0"><code>pipx install regula-ai
 
 regula discover .              # AI systems present in the project
 regula check .                 # Risk indicators across all frameworks

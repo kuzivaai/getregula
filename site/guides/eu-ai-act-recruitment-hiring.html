@@ -142,7 +142,7 @@
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
@@ -190,7 +190,7 @@
 
 <p>Here is what the scan looks like on the bundled example project:</p>
 
-<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula check examples/cv-screening-app --scope all --domain employment
+<pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula check examples/cv-screening-app --scope all --domain employment
 
 Regula Scan: examples/cv-screening-app
 ============================================================
@@ -276,13 +276,13 @@ Regula Scan: examples/cv-screening-app
 
 <h3>Step 1: Scan for risk indicators</h3>
 
-<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula check examples/cv-screening-app --domain employment --scope all</code></pre>
+<pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula check examples/cv-screening-app --domain employment --scope all</code></pre>
 
 <p>This tells you whether Regula detects high-risk patterns and which Annex III category they fall under. The output above shows it: Verdict HIGH-RISK, Annex III Category 4.</p>
 
 <h3>Step 2: Gap analysis against Articles 9-15</h3>
 
-<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula gap --project examples/cv-screening-app
+<pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula gap --project examples/cv-screening-app
 
 EU AI Act Compliance Gap Assessment: cv-screening-app
 Example source: https://github.com/kuzivaai/getregula/tree/main/examples/cv-screening-app
@@ -314,7 +314,7 @@ Article 15  Accuracy, Robustness, Cybersecurity [ 40%] PARTIAL
 
 <h3>Step 3: Organisational conformity check</h3>
 
-<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula conform --organisational</code></pre>
+<pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula conform --organisational</code></pre>
 
 <p>This is an interactive questionnaire that walks through the organisational requirements: do you have a risk management process, data governance policy, human oversight procedures, and so on. It generates a conformity report you can include in your compliance file.</p>
 

@@ -507,8 +507,19 @@ def cmd_check(args) -> None:
         else:
             _pre_stats = getattr(scan_files, "last_stats", {}) or {}
             _pre_gated = _pre_stats.get("domain_gated_count", 0)
-            verdict_tier = "NO AI DETECTED"
-            if _pre_gated > 0:
+            if _scope_excluded:
+                verdict_tier = "NO ACTIVE PRODUCTION-SCOPE INDICATORS"
+                verdict_desc = (
+                    f"No active findings remain in production scope. "
+                    f"{len(_scope_excluded)} finding(s) from non-production "
+                    "files were excluded."
+                )
+                verdict_action = (
+                    "This is not evidence that the project contains no AI. "
+                    "Run with --scope all to review the excluded findings."
+                )
+            elif _pre_gated > 0:
+                verdict_tier = "NO ACTIVE FINDINGS"
                 _pre_cats = ", ".join(_pre_stats.get("domain_gated_categories", []))
                 verdict_desc = (
                     f"No active findings. {_pre_gated} high-risk finding(s) "
@@ -516,6 +527,7 @@ def cmd_check(args) -> None:
                 )
                 verdict_action = f"Use --domain <domain> to activate ({_pre_cats})."
             else:
+                verdict_tier = "NO AI DETECTED"
                 verdict_desc = "No AI components or risk indicators found in your project."
                 verdict_action = "The EU AI Act likely does not apply to this project."
             verdict_color = lambda x: x  # identity function — no color applied

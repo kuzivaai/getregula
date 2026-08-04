@@ -144,7 +144,7 @@ REGION = {
             "heading": "Where Regula fits for UK teams",
             "body": """
 <p>Regula is an open-source compliance CLI that combines code scanning with governance questionnaires for AI risk assessment. It was built primarily against the EU AI Act, but every finding is also mapped to UK DSIT / ICO principles (among twelve other frameworks). For a UK team the practically useful starting commands are:</p>
-<pre><code>pip install regula-ai
+<pre tabindex="0"><code>pip install regula-ai
 
 regula discover .              # AI systems present in the project
 regula check .                 # Risk indicators against all thirteen frameworks

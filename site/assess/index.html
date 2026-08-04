@@ -190,8 +190,8 @@
         font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none;
         transition: all 0.15s;
       }
-      .btn-primary { background: var(--accent); color: #fff; }
-      .btn-primary:hover { filter: brightness(1.1); }
+      .btn-primary { background: #1d4ed8; color: #fff; }
+      .btn-primary:hover { background: #1e40af; }
       .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
       .btn-secondary { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
       .btn-secondary:hover { border-color: var(--text-dim); color: var(--text); }
@@ -364,7 +364,7 @@
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" class="active">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
@@ -1130,14 +1130,14 @@ function calculateResultsEU() {
 
   if (prohibitedSignals.length > 0) {
     tier = "prohibited";
-    tierName = "Prohibited practice detected";
-    tierDesc = "Your system may contain practices banned under Article 5. These are enforceable now (since 2 February 2025) with fines up to EUR 35 million or 7% of global turnover.";
+    tierName = "Possible Article 5 indicators";
+    tierDesc = "Your answers may describe a practice prohibited by Article 5. A qualified review must confirm the facts, legal scope, and any exception. Article 5 prohibitions have applied since 2 February 2025; Article 99 sets maximum fines of EUR 35 million or 7% of global turnover, with separate SME limits and case-specific enforcement.";
     tierClass = "tier-prohibited";
     obligations = [];
   } else if (score >= 65 && exemptionSignals.length === 0) {
     tier = "high_risk";
-    tierName = "High-risk AI system";
-    tierDesc = "Your system likely falls into a category the EU AI Act considers high-risk. You must meet requirements for risk management, data governance, documentation, logging, transparency, human oversight, and cybersecurity. The compliance deadline has been extended to 2 December 2027 (Digital Omnibus, published in the Official Journal on 24 July 2026, in force from 27 July 2026).";
+    tierName = "Candidate high-risk indicators";
+    tierDesc = "Your answers place the system in an Annex III use area. Confirming high-risk status requires intended-purpose and Article 6 assessment, including any applicable exclusion. If confirmed, requirements cover risk management, data governance, documentation, logging, transparency, human oversight, and cybersecurity. The Annex III deadline is 2 December 2027 under the Digital Omnibus, published on 24 July 2026 and in force from 27 July 2026.";
     tierClass = "tier-high";
     obligations = OBLIGATIONS;
   } else if (score >= 65 && exemptionSignals.length > 0) {
@@ -1148,14 +1148,14 @@ function calculateResultsEU() {
     obligations = OBLIGATIONS;
   } else if (score >= 35 || transparencySignals.length > 0) {
     tier = "limited_risk";
-    tierName = "Limited-risk AI system";
-    tierDesc = "Article 50 transparency obligations apply. Users must know they are interacting with AI, and AI-generated content must be labelled.";
+    tierName = "Candidate Article 50 indicators";
+    tierDesc = "Your answers indicate a use that may trigger Article 50 transparency duties. Confirm the exact system and deployment context before treating a listed duty as applicable.";
     tierClass = "tier-limited";
     obligations = LIMITED_RISK_OBLIGATIONS;
   } else {
     tier = "minimal_risk";
-    tierName = "Minimal-risk AI system";
-    tierDesc = "No specific EU AI Act obligations. You may still want to follow voluntary codes of conduct (Article 95) and maintain good AI practices.";
+    tierName = "No specific risk-tier indicator";
+    tierDesc = "These answers did not trigger the Article 5, Annex III, or Article 50 paths. This is not a legal classification and does not test every AI Act obligation. Reassess if intended purpose, users, or deployment changes.";
     tierClass = "tier-minimal";
     obligations = [];
   }
@@ -1642,10 +1642,10 @@ function renderScanResults(result) {
     not_ai: "tier-minimal",
   };
   const tierNames = {
-    prohibited: "Prohibited practice detected",
-    high_risk: "High-risk AI system",
-    limited_risk: "Limited-risk AI system",
-    minimal_risk: "Minimal-risk AI system",
+    prohibited: "Possible Article 5 indicators",
+    high_risk: "Candidate high-risk indicators",
+    limited_risk: "Candidate Article 50 indicators",
+    minimal_risk: "No specific risk-tier indicator",
     not_ai: "No AI indicators detected",
   };
 
