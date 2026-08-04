@@ -123,13 +123,13 @@ TIMELINE = [
     {
         "date": "2026-08-02",
         "event": "Article 50 transparency obligations apply",
-        "status": "current_law",
-        "source": "Article 113(b); unchanged by Omnibus",
+        "status": "effective",
+        "source": "Regulation (EU) 2024/1689, Articles 50 and 113; Regulation (EU) 2026/1744, Article 1(39)",
         "note": (
-            "Interaction disclosure (Art 50(1)), watermarking for NEW systems "
-            "(Art 50(2)), emotion recognition (Art 50(3)), and deepfake "
-            "labelling (Art 50(4)) all apply from this date. Unchanged by "
-            "the Omnibus. Article 49 registration also applies."
+            "Article 50 obligations generally apply from this date. Providers "
+            "of Article 50(2) systems already on the market before this date "
+            "must comply by 2 December 2026 under Regulation (EU) 2026/1744. "
+            "Actor, condition, exception, and transition details differ by paragraph."
         ),
     },
     {
@@ -138,11 +138,11 @@ TIMELINE = [
         "status": _OMNIBUS_ROW_STATUS,
         "source": _OMNIBUS_SOURCE,
         "note": (
-            "Two obligations take effect on this date under the Omnibus: "
-            "(1) Art 50(2) watermarking obligations for AI systems already "
-            "on the market before 2 August 2026. (2) New Art 5 prohibition "
-            "on AI systems that generate child sexual abuse material or "
-            "non-consensual intimate imagery of identifiable persons. "
+            "Two transitions take effect on this date: (1) providers of "
+            "Article 50(2) systems already on the market before 2 August 2026 "
+            "must comply; (2) Article 5(1)(ba), 5(1)(bb), 5(1a), and 5(1b) "
+            "apply. The Article 5 provider/deployer conditions, safeguards, "
+            "foreseeability tests, and exceptions must be assessed. "
             + _OMNIBUS_NOTE_STATUS
         ),
     },
@@ -181,7 +181,7 @@ TIMELINE = [
             "deadline was 2 August 2026; deferred 16 months under the "
             "Omnibus. " + _OMNIBUS_NOTE_STATUS + " Multiple law firms (Bird & "
             "Bird, Travers Smith, Modulos) advise planning against this "
-            "date as the baseline."
+            "date as the baseline. Legal classification remains contextual."
         ),
     },
     {
@@ -278,10 +278,9 @@ def format_timeline_text() -> str:
     lines.extend([
         *footer_note,
         "",
-        "  Sources: Regulation (EU) 2026/1744 (OJ, 24 Jul 2026), EU Council",
-        "  press release (7 May 2026), Gibson Dunn, Latham & Watkins,",
-        "  Bird & Bird, Travers Smith, White & Case, EC Code of Practice",
-        "  on AI content marking (10 June 2026)",
+        "  Primary sources: Regulations (EU) 2024/1689 and 2026/1744.",
+        "  Commission guidance and the voluntary content-marking Code of",
+        "  Practice are supplementary and do not replace the enacted text.",
         "",
     ])
 

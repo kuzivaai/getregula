@@ -117,7 +117,7 @@ Honesty constraints on this artefact (normative for Regula generators):
   EU-AIAct vocabulary, never as "the AI Act standard" or "standards-compliant".
 - Every emitted concept IRI MUST be a real term in the referenced vocabulary
   version. Generators MUST NOT invent IRIs; where no vocabulary concept exists
-  (e.g. Article 5(1)(i), added by the Digital Omnibus after the vocabulary
+  (e.g. Article 5(1)(ba) or (bb), added by Regulation (EU) 2026/1744 after the vocabulary
   version, or non-EU regimes such as the Korea AI Basic Act / Colorado
   SB 26-189), the artefact MUST state the gap rather than assert a nearest EU
   concept.

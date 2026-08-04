@@ -780,7 +780,7 @@ const QUESTIONS = [
   {
     id: "public_facing",
     text: "Could individuals interact with this system without knowing it is AI-powered?",
-    help: "Article 50 requires transparency: users must know when they interact with AI, when content is AI-generated, or when AI analyses their data. If your system does not currently disclose its AI nature, transparency obligations apply.",
+    help: "Article 50 contains several transparency duties with different actors, conditions, and exceptions. A missing disclosure is an indicator to review, not proof that every Article 50 duty applies.",
     article: "Article 50",
     weight: { yes: 15, no: -5, unsure: 5 },
     signal: "transparency"
@@ -1351,7 +1351,7 @@ function getNextSteps(results) {
       { title: "Get legal advice immediately", desc: "Article 5 prohibitions carry the highest penalty tier. A qualified lawyer needs to assess whether your system falls within scope or qualifies for an exception." },
       { title: "Share this assessment with legal counsel", desc: "Download the JSON or print this page as a PDF. Your legal team needs to review the specific prohibition flagged and advise on whether an exception applies." },
       { title: "Document your assessment", desc: "Whether you proceed, modify, or remove the practice, document the reasoning. Regulatory authorities will want to see that you considered the prohibition." },
-      { title: "For your development team", desc: "Your developers can run the Regula CLI (<code>pipx install regula-ai</code>, then <code>regula check .</code>) to see exactly which code patterns triggered the prohibition flag." }
+      { title: "For your development team", desc: "Your developers can run the Regula CLI (<code>pipx install regula-ai</code>, then <code>regula check .</code>) to collect separate code-level indicators for contextual review. CLI findings do not explain or determine this questionnaire result." }
     ];
   }
   if (results.tier === "high_risk" || results.tier === "high_risk_exempt") {
@@ -1545,20 +1545,21 @@ document.addEventListener("keydown", function(e) {
   if (!assessmentStarted) return;
   const section = document.getElementById("questionnaireSection");
   if (section.style.display === "none") return;
+  const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
 
-  if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+  if (key === "ArrowRight" || key === "ArrowDown") {
     e.preventDefault();
     if (!document.getElementById("nextBtn").disabled) nextQuestion();
-  } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+  } else if (key === "ArrowLeft" || key === "ArrowUp") {
     e.preventDefault();
     if (!document.getElementById("prevBtn").disabled) prevQuestion();
-  } else if (e.key === "1" || e.key === "y") {
+  } else if (key === "1" || key === "y") {
     const btns = document.querySelectorAll(".ans-btn");
     if (btns.length >= 1) { btns[0].click(); btns[0].focus(); }
-  } else if (e.key === "2" || e.key === "n") {
+  } else if (key === "2" || key === "n") {
     const btns = document.querySelectorAll(".ans-btn");
     if (btns.length >= 2) { btns[1].click(); btns[1].focus(); }
-  } else if (e.key === "3" || e.key === "u") {
+  } else if (key === "3" || key === "u") {
     const btns = document.querySelectorAll(".ans-btn");
     if (btns.length >= 3) { btns[2].click(); btns[2].focus(); }
   }
@@ -1821,7 +1822,7 @@ function getScanNextSteps(tier) {
   if (tier === "prohibited") {
     return [
       { title: "Get legal advice", desc: "Article 5 prohibitions carry the highest penalties. A qualified lawyer needs to assess whether your system falls within scope or qualifies for a narrow exception." },
-      { title: "Review the matched patterns", desc: "Some matches may be false positives. The patterns above show exactly what triggered the classification. Check whether the flagged code implements the practice described." },
+      { title: "Review the matched patterns", desc: "Some matches may be false positives. The patterns above show what triggered this scanner result. Check whether the flagged code implements the practice described." },
       { title: "Share with your team", desc: "Export this scan as JSON or print as PDF. Your compliance and legal teams need to review these findings." },
       { title: "For deeper analysis", desc: "Your development team can run the Regula CLI for file-by-file analysis: <code>pipx install regula-ai</code>, then <code>regula check .</code>" },
     ];

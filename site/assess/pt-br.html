@@ -383,7 +383,7 @@
     <h1>A regulamentação de IA <span>se aplica a você?</span></h1>
     <p>Escolha uma jurisdição e registre o contexto da implantação. O questionário relata indicadores possíveis, normas a revisar e questões em aberto; ele não determina classificação jurídica, conformidade ou obrigações aplicáveis.</p>
     <div class="hero-stats">
-      <span>Menos de 5 minutos</span>
+      <span>Preencha no navegador</span>
       <span>Indicadores imediatos para revisão</span>
       <span>O processamento do questionário permanece neste navegador</span>
     </div>
@@ -780,7 +780,7 @@ const QUESTIONS = [
   {
     id: "public_facing",
     text: "Indivíduos poderiam interagir com este sistema sem saber que ele é movido a IA?",
-    help: "O Artigo 50 exige transparência: os usuários devem saber quando interagem com IA, quando o conteúdo é gerado por IA, ou quando a IA analisa seus dados. Se seu sistema atualmente não divulga sua natureza de IA, as obrigações de transparência se aplicam.",
+    help: "O Artigo 50 contém diferentes deveres de transparência, com responsáveis, condições e exceções próprios. A falta de aviso é um indicador para análise, não prova de que todos os deveres do Artigo 50 se aplicam.",
     article: "Artigo 50",
     weight: { yes: 15, no: -5, unsure: 5 },
     signal: "transparency"
@@ -1349,7 +1349,7 @@ function getNextSteps(results) {
       { title: "Obtenha aconselhamento jurídico imediatamente", desc: "As proibições do Artigo 5 preveem a faixa de penalidade mais alta. Um advogado qualificado precisa avaliar se seu sistema está dentro do escopo ou se qualifica para uma exceção." },
       { title: "Compartilhe esta avaliação com seu consultor jurídico", desc: "Baixe o JSON ou imprima esta página como PDF. Sua equipe jurídica precisa revisar a proibição específica sinalizada e orientar se uma exceção se aplica." },
       { title: "Documente sua avaliação", desc: "Independentemente de prosseguir, modificar ou remover a prática, documente o raciocínio. As autoridades regulatórias vão querer ver que você considerou a proibição." },
-      { title: "Para sua equipe de desenvolvimento", desc: "Seus desenvolvedores podem executar a CLI do Regula (<code>pipx install regula-ai</code>, depois <code>regula check .</code>) para ver exatamente quais padrões de código acionaram a sinalização de proibição." }
+      { title: "Para sua equipe de desenvolvimento", desc: "Seus desenvolvedores podem executar a CLI do Regula (<code>pipx install regula-ai</code>, depois <code>regula check .</code>) para coletar indicadores separados no código para revisão contextual. Os achados da CLI não explicam nem determinam este resultado do questionário." }
     ];
   }
   if (results.tier === "high_risk" || results.tier === "high_risk_exempt") {
@@ -1544,20 +1544,21 @@ document.addEventListener("keydown", function(e) {
   if (!assessmentStarted) return;
   const section = document.getElementById("questionnaireSection");
   if (section.style.display === "none") return;
+  const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
 
-  if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+  if (key === "ArrowRight" || key === "ArrowDown") {
     e.preventDefault();
     if (!document.getElementById("nextBtn").disabled) nextQuestion();
-  } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+  } else if (key === "ArrowLeft" || key === "ArrowUp") {
     e.preventDefault();
     if (!document.getElementById("prevBtn").disabled) prevQuestion();
-  } else if (e.key === "1" || e.key === "y" || e.key === "s") {
+  } else if (key === "1" || key === "y" || key === "s") {
     const btns = document.querySelectorAll(".ans-btn");
     if (btns.length >= 1) { btns[0].click(); btns[0].focus(); }
-  } else if (e.key === "2" || e.key === "n") {
+  } else if (key === "2" || key === "n") {
     const btns = document.querySelectorAll(".ans-btn");
     if (btns.length >= 2) { btns[1].click(); btns[1].focus(); }
-  } else if (e.key === "3" || e.key === "u" || e.key === "i") {
+  } else if (key === "3" || key === "u" || key === "i") {
     const btns = document.querySelectorAll(".ans-btn");
     if (btns.length >= 3) { btns[2].click(); btns[2].focus(); }
   }
@@ -1820,7 +1821,7 @@ function getScanNextSteps(tier) {
   if (tier === "prohibited") {
     return [
       { title: "Obtenha aconselhamento jur\u00eddico", desc: "As proibi\u00e7\u00f5es do Artigo 5 preveem as penalidades mais altas. Um advogado qualificado precisa avaliar se seu sistema est\u00e1 dentro do escopo ou se qualifica para uma exce\u00e7\u00e3o restrita." },
-      { title: "Revise os padr\u00f5es correspondentes", desc: "Algumas correspond\u00eancias podem ser falsos positivos. Os padr\u00f5es acima mostram exatamente o que acionou a classifica\u00e7\u00e3o. Verifique se o c\u00f3digo sinalizado implementa a pr\u00e1tica descrita." },
+      { title: "Revise os padr\u00f5es correspondentes", desc: "Algumas correspond\u00eancias podem ser falsos positivos. Os padr\u00f5es acima mostram o que acionou este resultado do scanner. Verifique se o c\u00f3digo sinalizado implementa a pr\u00e1tica descrita." },
       { title: "Compartilhe com sua equipe", desc: "Exporte esta an\u00e1lise como JSON ou imprima como PDF. Suas equipes de compliance e jur\u00eddica precisam revisar estes achados." },
       { title: "Para an\u00e1lise mais profunda", desc: "Sua equipe de desenvolvimento pode executar a CLI do Regula para an\u00e1lise arquivo por arquivo: <code>pipx install regula-ai</code>, depois <code>regula check .</code>" },
     ];

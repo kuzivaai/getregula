@@ -168,7 +168,7 @@
     <section id="why-frameworks">
         <h2>Why scan frameworks, not apps?</h2>
 
-        <p>Frameworks establish compliance-relevant patterns that propagate into every application built on them. A model-loading library using pickle deserialisation carries a cybersecurity surface (Article 15) into every project that imports it; an agent framework piping LLM output to subprocess carries a human oversight surface (Article 14). Scanning frameworks reveals the inherited compliance baseline.</p>
+        <p>Framework code can expose technical patterns that an application team should review. Importing a library does not by itself transfer an Article 14 or Article 15 obligation to every application; legal relevance depends on the resulting system, its classification, use, and implementation.</p>
 
         <p>Our <a href="/blog/blog-scanning-10-ai-apps.html">previous post</a> scanned 10 open-source AI applications and found 553 findings. That told us what developers are building. This post asks a different question: what does the foundation layer look like?</p>
 
@@ -305,7 +305,7 @@
     <section id="framework-profiles">
         <h2>Each framework carries a different compliance profile</h2>
 
-        <p>Each framework concentrates findings in a different EU AI Act category. HuggingFace Transformers is 65% AI security (Article 15 cybersecurity). CrewAI is 72% agent autonomy (Article 14 human oversight). PyTorch splits between AI security and high-risk indicators. The framework you choose pre-loads a specific compliance surface before you write a line of application code.</p>
+        <p>Within this scan's own finding taxonomy, each framework concentrated matches differently. Those percentages describe scanner findings, not the share of legal obligations or compliance risk. Application context and Article 6 classification remain untested.</p>
 
         <p>We didn&rsquo;t expect the differences to be this stark.</p>
 
@@ -315,7 +315,7 @@
 
         <p>It also had 28 high-risk findings, the highest count of any framework. Transformers is used in computer vision, speech recognition, and NLP classification, all of which can land in Annex III high-risk categories depending on how they&rsquo;re deployed.</p>
 
-        <p>If you&rsquo;re building on Transformers, your main compliance concern is cybersecurity: verifying model integrity, securing the deserialization pipeline, documenting provenance.</p>
+        <p>If you are building on Transformers, the scan suggests reviewing model integrity, deserialisation, and provenance. It does not establish that cybersecurity is the project's main legal concern.</p>
 
         <h3>CrewAI: human oversight surface (72% agent autonomy)</h3>
 
@@ -351,7 +351,7 @@
     <section id="what-this-means">
         <h2>What this means for teams choosing frameworks</h2>
 
-        <p>Your compliance surface is partly inherited. Choosing CrewAI for your agent pipeline means inheriting a human oversight obligation. Choosing Transformers for model serving means inheriting a cybersecurity obligation. These aren&rsquo;t bad things. They&rsquo;re the baseline engineering requirements for that type of work. But you should know about them before you start building.</p>
+        <p>Framework choice affects technical architecture and therefore the evidence worth reviewing. It does not automatically create a specific EU AI Act obligation. Confirm system scope, role, classification, and actual safeguards before drawing a legal conclusion.</p>
 
         <p>The framework-level story is AI security, not agent autonomy. When we scanned applications, agent autonomy dominated. When we scanned frameworks, AI security dominated. Frameworks create the security surface. Applications create the oversight surface. Different conversations, different teams.</p>
 
@@ -388,7 +388,7 @@ regula check langchain</code></pre>
     <!-- Disclaimer -->
     <div class="disclaimer">
         <p><em>Scans were run using Regula v1.7.0 against shallow clones of each framework&rsquo;s default branch on 25 April 2026. Star counts are as of the same date. Source file counts include Python, JavaScript, TypeScript, C/C++, and Jupyter notebooks. Findings reflect code-level patterns, not deployed system risk classifications &mdash; the EU AI Act regulates systems as deployed, not code in isolation.</em></p>
-        <p><em>The EU AI Act enforcement timeline is subject to change. The <a href="https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-regulation-proposal">Omnibus simplification proposal</a> (February 2026) may push certain Annex III deadlines from August 2026 to December 2027 if adopted. It has not been enacted. All deadline references in this article reflect current law unless otherwise noted.</em></p>
+        <p><em>Regulatory update, 4 August 2026: <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj">Regulation (EU) 2026/1744</a> is enacted and in force. It sets 2 December 2027 for the Annex III path and 2 August 2028 for the Annex I product-embedded path. This April 2026 scan remains a historical benchmark; findings are code indicators, not legal classifications.</em></p>
     </div>
 
 </div>

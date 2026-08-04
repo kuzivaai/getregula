@@ -97,9 +97,9 @@ Every EU indicator declares how precise its DPV mapping is:
 Two situations have **no** matching EU DPV concept. The export says so rather
 than assert a nearest concept:
 
-1. **Article 5(1)(i)** — the Digital Omnibus prohibition on CSAM/NCII
-   generation was added *after* DPV-AIAct v2.3, so the vocabulary has no
-   concept for it. Findings get the parent `ProhibitedAISystem` plus a note
+1. **Article 5(1)(ba) and (bb)** — the Regulation (EU) 2026/1744 prohibitions
+   concerning NCII and CSAM were added *after* DPV-AIAct v2.3, so the vocabulary has no
+   concepts for them. Findings get the parent `ProhibitedAISystem` plus a note
    explaining the gap.
 2. **Non-EU regimes** — Regula also flags high-risk indicators under the
    **Korea AI Basic Act** and **Colorado SB 26-189**. DPV-AIAct models only the

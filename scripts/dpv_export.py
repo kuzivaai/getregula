@@ -19,8 +19,8 @@ Honesty guards baked into this module (do not remove):
   import time and raises if any name is not in the vocabulary. It is therefore
   structurally impossible for this module to emit a fabricated IRI.
 - **Gaps are stated, never invented.** Where Regula detects something the
-  vocabulary has no concept for — Article 5(1)(i) (the Digital Omnibus
-  CSAM/NCII prohibition, added after DPV-AIAct v2.3) or non-EU jurisdictions
+  vocabulary has no concept for — Article 5(1)(ba) and (bb) (the Digital
+  Omnibus NCII and CSAM prohibitions, added after DPV-AIAct v2.3) or non-EU jurisdictions
   (Korea AI Basic Act, Colorado SB 26-189) — the export says so explicitly
   instead of asserting the nearest EU concept.
 - **This is risk INDICATION, not legal classification.** The document carries
@@ -145,9 +145,9 @@ TIER_TO_SYSTEM_CLASS = {
 #   c social scoring            d criminal-offence risk prediction
 #   e facial-recognition DB scraping   f emotion inference workplace/education
 #   g biometric categorisation (sensitive)   h real-time remote biometric ID
-# Article 5(1)(i) (CSAM/NCII generation) is INTENTIONALLY ABSENT: it was added
+# Article 5(1)(ba)/(bb) (NCII/CSAM generation) are INTENTIONALLY ABSENT: they were added
 # by the Digital Omnibus, and DPV-AIAct v2.3 has no concept for it. Findings
-# for (i) get the parent ProhibitedAISystem plus an explicit gap note.
+# for (ba)/(bb) get the parent ProhibitedAISystem plus an explicit gap note.
 PROHIBITED_LETTER_TO_CONCEPT = {
     "a": "ProhibitedAISystem-A5-1-a",
     "b": "ProhibitedAISystem-A5-1-b",
@@ -159,7 +159,7 @@ PROHIBITED_LETTER_TO_CONCEPT = {
     "h": "ProhibitedAISystem-A5-1-h",
 }
 
-_A5_LETTER_RE = re.compile(r"5\(1\)\(([a-z])\)")
+_A5_LETTER_RE = re.compile(r"5\(1\)\(([a-z]{1,2})\)")
 
 
 # Regula high-risk category string (emitted as finding["category"]) -> mapping.
@@ -291,11 +291,11 @@ def map_finding(finding: dict):
                 f"Mapped to DPV concept {PROHIBITED_LETTER_TO_CONCEPT[letter]}."
             )
             precision = "practice"
-        elif letter == "i":
+        elif letter in {"ba", "bb"}:
             note = (
-                "Prohibited practice under EU AI Act Article 5(1)(i) "
-                "(CSAM/NCII generation, added by the Digital Omnibus). "
-                "DPV-AIAct v2.3 has no concept for Article 5(1)(i); only the "
+                f"Prohibited practice under EU AI Act Article 5(1)({letter}), "
+                "added by Regulation (EU) 2026/1744. "
+                f"DPV-AIAct v2.3 has no concept for Article 5(1)({letter}); only the "
                 "parent ProhibitedAISystem is asserted."
             )
             precision = "practice"

@@ -223,7 +223,7 @@ with default `--skip-tests` and domain-gating settings.
 
 > **Version note:** Precision figures are re-measured per release where
 > the corpus permits. Pattern additions in v1.7.1+ (including Article
-> 5(1)(i) NCII/CSAM detection) are not yet reflected in benchmark
+> 5(1)(ba)/(bb) NCII/CSAM detection) are not yet reflected in benchmark
 > numbers. Figures cite the Regula version they were measured on. Per-tier:
 `ai_security` (85%), `agent_autonomy` (83%), `limited_risk` (88%),
 `minimal_risk` (100%). The `high_risk` tier (33%, N=6) remains weakest and is

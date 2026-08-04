@@ -5,7 +5,7 @@
     <link>https://getregula.com/content/regulations/delta-log/</link>
     <description>Primary-source-linked changelog for the EU AI Act. Every entry is article-keyed and machine-readable.</description>
     <language>en-GB</language>
-    <lastBuildDate>Thu, 30 Jul 2026 00:21:44 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 04 Aug 2026 14:40:29 +0000</lastBuildDate>
     <item>
       <title>[regulation-adoption] Art. 30: Regulation (EU) 2026/1744, Annex XIV (list of codes, categories and correspondin</title>
       <link>https://eur-lex.europa.eu/eli/reg/2026/1744/oj</link>
@@ -18,7 +18,7 @@
       <link>https://eur-lex.europa.eu/eli/reg/2026/1744/oj</link>
       <guid isPermaLink="false">https://getregula.com/content/regulations/delta-log/entries/2026-07-24-oj-publication.json</guid>
       <pubDate>Fri, 24 Jul 2026 00:00:00 +0000</pubDate>
-      <description>The Digital Omnibus on AI was published in the Official Journal of the European Union on 24 July 2026 as Regulation (EU) 2026/1744, amending Regulation (EU) 2024/1689 (the AI Act) together with Regulation (EU) 2018/1139 (civil aviation) and Regulation (EU) 2023/1230 (machinery). It enters into force on 27 July 2026, the third day following publication. From that date the deferred deadlines are enacted law: Annex III standalone high-risk obligations apply from 2 December 2027, Annex I product-embedded high-risk obligations from 2 August 2028, Article 50(2) watermarking for existing systems from 2 December 2026, and the new Article 5 prohibition on AI-generated CSAM and non-consensual intimate imagery from 2 December 2026. Article 50 transparency duties for new systems keep their 2 August 2026 date, unchanged. (confidence: verified-primary)</description>
+      <description>The Digital Omnibus on AI was published in the Official Journal of the European Union on 24 July 2026 as Regulation (EU) 2026/1744, amending Regulations (EU) 2024/1689, (EU) 2018/1139 and (EU) 2023/1230. It entered into force on 27 July 2026. The amendment sets 2 December 2027 for the Article 6(2)/Annex III path and 2 August 2028 for the Article 6(1)/Annex I path. Providers of Article 50(2) systems placed on the market before 2 August 2026 must comply by 2 December 2026. New Article 5(1)(ba), 5(1)(bb), 5(1a) and 5(1b) apply from 2 December 2026. The regulation also amends definitions, AI literacy, classification, governance, conformity, sandbox, transparency and other provisions; it is not only a deadline amendment. (confidence: verified-primary)</description>
     </item>
     <item>
       <title>[harmonised-standard] Art. 17, Art. 40: EN 18286:2026, Artificial Intelligence: Quality management system for EU AI Act </title>

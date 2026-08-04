@@ -6114,6 +6114,9 @@ def test_web_assessment_locales_preserve_candidate_framing_and_current_status():
         text = (assess_dir / filename).read_text(encoding="utf-8")
         for phrase in required:
             assert phrase in text, f"{filename} missing {phrase!r}"
+        assert (
+            'const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;' in text
+        ), f"{filename} must make the advertised letter shortcuts case-insensitive"
 
     all_locales = "\n".join(
         (assess_dir / name).read_text(encoding="utf-8") for name in expectations
@@ -6125,6 +6128,12 @@ def test_web_assessment_locales_preserve_candidate_framing_and_current_status():
         "Prática proibida detectada",
         "vorbehaltlich der Veröffentlichung der Omnibus-Änderung",
         "pendente publicação da emenda Omnibus",
+        "which code patterns triggered the prohibition flag",
+        "welche Code-Muster das Verbot ausgelöst haben",
+        "quais padrões de código acionaram a sinalização de proibição",
+        "what triggered the classification",
+        "was die Einstufung ausgelöst hat",
+        "acionou a classifica\\u00e7\\u00e3o",
     ):
         assert stale not in all_locales
 

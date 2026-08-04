@@ -49,6 +49,10 @@ const PAGES = htmlFiles(SITE)
   for (const p of PAGES) {
     const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 } });
     await ctx.route('**/*plausible*', route => route.abort());
+    // The audit evaluates the shipped DOM, styles and local interaction code.
+    // Do not let the optional third-party newsletter enhancement make page
+    // loading depend on registry/CDN availability in the audit environment.
+    await ctx.route('https://unpkg.com/**', route => route.abort());
     const page = await ctx.newPage();
     try {
       console.error(`Testing ${p}`);

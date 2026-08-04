@@ -150,7 +150,7 @@
                 "name": "Does the EU AI Act apply to my company if I'm outside the EU?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes. Article 2(1)(c) applies extraterritorially. If your AI system's output is used in the EU, the regulation applies regardless of where your company is established. This covers UAE, UK, US, Brazil, and any non-EU provider or deployer."
+                    "text": "Potentially. Article 2(1)(c) covers providers and deployers established outside the EU where an AI system's output is used in the Union, subject to the Act's roles, exclusions, and other scope conditions. Location alone does not decide applicability."
                 }
             },
             {
@@ -158,7 +158,7 @@
                 "name": "What makes an AI system high-risk under the EU AI Act?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Annex III lists eight high-risk categories including credit scoring, hiring, healthcare services, education assessment, law enforcement, border control, essential services, and democratic process integrity. Regula identifies code patterns that match each category."
+                    "text": "Article 6 contains the classification routes and Annex III lists specified intended uses across eight areas. Conditions, exceptions, intended purpose, and deployment context matter. Regula reports related code indicators but does not determine high-risk status."
                 }
             },
             {
@@ -166,7 +166,7 @@
                 "name": "When does the EU AI Act start being enforced?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Article 5 prohibitions took effect on 2 February 2025. GPAI obligations (Articles 51-55) took effect on 2 August 2025. High-risk obligations (Articles 9-15) were originally due 2 August 2026. The Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026, postpones Annex III high-risk to 2 December 2027 and Annex I product-embedded to 2 August 2028. Approved by the Council on 29 June 2026 and published in the Official Journal on 24 July 2026 as Regulation (EU) 2026/1744, in force from 27 July 2026."
+                    "text": "The original Article 5 prohibitions have applied since 2 February 2025. GPAI provisions began applying on 2 August 2025, subject to transition rules. Regulation (EU) 2026/1744 sets 2 December 2027 for Annex III high-risk provisions and 2 August 2028 for the Annex I product path. Article 50 generally has applied since 2 August 2026, with a specific 2 December 2026 transition for providers of Article 50(2) systems already on the market."
                 }
             },
             {
@@ -206,7 +206,7 @@
                 "name": "Does Regula work with AI-generated code from Cursor, Claude Code, or Lovable?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes. Regula scans source code files regardless of who or what wrote them. AI-generated code carries the same EU AI Act obligations as hand-written code :  Article 2 does not distinguish by authorship. Run regula check . on any project. If you use Cursor or Claude Code, paste regula assess in your chat for a quick applicability check without leaving your editor."
+                    "text": "Yes. Regula scans source code files regardless of who or what wrote them. Authorship alone does not determine whether the EU AI Act applies: Article 2 scope, the actor's role, intended purpose, deployment context, and applicable exclusions still require review. Run regula check . for code-observable indicators and regula assess to record context."
                 }
             },
             {
@@ -534,8 +534,8 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <div class="tier-hint">Transparency rules &rarr;</div>
         </div>
         <div class="tier tier-g">
-            <div class="tier-badge">Minimal Risk</div>
-            <div class="tier-examples">Spam filters &middot; AI games &middot; Basic recommendations &middot; Search ranking</div>
+            <div class="tier-badge">No elevated indicator</div>
+            <div class="tier-examples">No Article 5, Annex III, or Article 50 pattern detected</div>
             <div class="tier-hint">No AI-Act duty inferred from code alone &rarr;</div>
         </div>
     </div>
@@ -848,7 +848,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     <div class="faq" style="max-width:760px;margin:0 auto;">
         <details>
             <summary>Does the EU AI Act apply to my company if I'm outside the EU?</summary>
-            <p>Yes. Article 2(1)(c) applies extraterritorially. If your AI system's output is used in the EU, the regulation applies regardless of where your company is established. This covers UAE, UK, US, Brazil, and any non-EU provider or deployer.</p>
+            <p>Potentially. Article 2(1)(c) covers providers and deployers established outside the EU where an AI system's output is used in the Union, subject to the Act's roles, exclusions, and other scope conditions. Location alone does not decide applicability.</p>
         </details>
         <details>
             <summary>Is my AI app prohibited under the EU AI Act?</summary>
@@ -856,11 +856,11 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </details>
         <details>
             <summary>What makes an AI system high-risk?</summary>
-            <p>Annex III lists eight high-risk categories including credit scoring, hiring, healthcare services, education assessment, law enforcement, border control, essential services, and democratic process integrity. Regula identifies code patterns that match each category.</p>
+            <p>Article 6 contains the classification routes and Annex III lists specified intended uses across eight areas. Conditions, exceptions, intended purpose, and deployment context matter. Regula reports related code indicators but does not determine high-risk status.</p>
         </details>
         <details>
             <summary>When does the EU AI Act start being enforced?</summary>
-            <p>Article 5 prohibitions took effect on 2 February 2025. GPAI obligations took effect on 2 August 2025. High-risk obligations (Annex III) are due 2 December 2027 under the Digital Omnibus (provisional agreement 7 May 2026, approved by European Parliament 16 June 2026, Council 29 June 2026; published in the Official Journal 24 July 2026 as Regulation (EU) 2026/1744, in force from 27 July 2026). The deferred dates are enacted law.</p>
+            <p>The original Article 5 prohibitions have applied since 2 February 2025. GPAI provisions began applying on 2 August 2025, subject to transition rules. Regulation (EU) 2026/1744 sets 2 December 2027 for Annex III and 2 August 2028 for the Annex I product path. Article 50 generally has applied since 2 August 2026, with a specific transition for providers of Article 50(2) systems already on the market.</p>
         </details>
         <details>
             <summary>What are the fines under the EU AI Act?</summary>
@@ -876,7 +876,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </details>
         <details>
             <summary>Does Regula work with AI-generated code?</summary>
-            <p>Yes. Regula scans source files regardless of who or what wrote them. AI-generated code carries the same EU AI Act obligations as hand-written code : Article 2 does not distinguish by authorship. Run <code>regula check .</code> on any project.</p>
+            <p>Yes. Regula scans source files regardless of who or what wrote them. Authorship alone does not determine whether the EU AI Act applies: Article 2 scope, the actor's role, intended purpose, deployment context, and applicable exclusions still require review. Run <code>regula check .</code> for code-observable indicators and <code>regula assess</code> to record context.</p>
         </details>
         <details>
             <summary>What should I do right now to prepare?</summary>

@@ -161,7 +161,7 @@
 <div class="blog-hero" style="padding-bottom:24px;">
     <p style="color:var(--text-dim);font-size:0.9rem;">25 June 2026 &middot; Kuziva Muzondo</p>
     <h1 style="margin:8px 0 16px;">EU AI Act for Recruitment and Hiring AI: What Developers Need</h1>
-    <p class="standfirst" style="color:var(--text-2);font-size:1.1rem;line-height:1.6;">If you built or maintain software that screens CVs, ranks candidates, scores interviews, or automates hiring decisions, the EU AI Act classifies it as high-risk. This is Annex III, Category 4 (point (a)): <em>&ldquo;AI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to screen or filter applications, and to evaluate candidates.&rdquo;</em> The obligations are real. Here is what they look like in practice.</p>
+    <p class="standfirst" style="color:var(--text-2);font-size:1.1rem;line-height:1.6;">Software intended to screen CVs, rank candidates, score interviews, or automate hiring decisions may follow the high-risk path under Article 6 and Annex III point 4(a): <em>&ldquo;AI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to screen or filter applications, and to evaluate candidates.&rdquo;</em> Intended purpose, Article 6 conditions, and exceptions must be assessed in context.</p>
 </div>
 
 <div class="blog-body">
@@ -170,13 +170,13 @@
 
 <p>Annex III of the <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">EU AI Act (Regulation (EU) 2024/1689)</a> lists eight domains where AI systems are considered high-risk by their intended purpose. Category 4, &ldquo;Employment, workers management and access to self-employment,&rdquo; covers the full hiring pipeline: job advertisement targeting, application screening and filtering, candidate evaluation, and interview assessment.</p>
 
-<p>The classification is broad. It does not matter whether your system uses a logistic regression or a large language model. What matters is the intended purpose. If the software is designed to influence who gets hired, shortlisted, or rejected, it falls here.</p>
+<p>The model type alone does not settle classification. Intended purpose is central, but the complete Article 6 test and Annex III wording still apply. Recruitment-related code is evidence to review, not a legal conclusion by itself.</p>
 
-<p>The <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442">Digital Omnibus</a> (provisional agreement 7 May 2026, approved by European Parliament on 16 June 2026) defers the compliance deadline for Annex III high-risk systems to <strong>2 December 2027</strong>. The Council approved it on 29 June 2026, and the regulation was published in the Official Journal on 24 July 2026 as Regulation (EU) 2026/1744, in force from 27 July 2026. The deferred date is enacted law.</p>
+<p><a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj">Regulation (EU) 2026/1744</a>, in force since 27 July 2026, sets <strong>2 December 2027</strong> for Annex III high-risk provisions. Whether a recruitment system follows that path depends on the Article 6 test, intended purpose, and the Annex III wording; a code pattern alone does not decide it.</p>
 
 <p>One thing that is already enforceable: Article 5 prohibitions, in force since 2 February 2025. If your recruitment tool uses subliminal manipulation, exploits vulnerabilities, or implements social scoring, that is banned now, not in 2027.</p>
 
-<h2>Code patterns that trigger high-risk classification</h2>
+<h2>Code patterns associated with the high-risk path</h2>
 
 <p>Regula scans source code for patterns associated with Annex III use cases. In recruitment software, the patterns it looks for include:</p>
 
@@ -216,7 +216,7 @@ Regula Scan: examples/cv-screening-app
 
 <h2>Articles 9-15: what they actually require</h2>
 
-<p>Once your system is classified as high-risk, seven articles define what you need to do. Here is a developer-oriented reading of each one.</p>
+<p>If contextual review establishes that the system is high-risk, Articles 9 through 15 define core requirements. Here is a developer-oriented reading of each one.</p>
 
 <h3>Article 9: Risk management system</h3>
 <p>You need a documented process for identifying and mitigating risks throughout the system lifecycle. For recruitment AI, this means documenting known biases in your training data, testing for discrimination across demographic groups, and defining what happens when the system gets it wrong. This is not a one-off document. It is a living system with identified risks, mitigations, owners, and review cycles.</p>
@@ -329,7 +329,7 @@ Article 15  Accuracy, Robustness, Cybersecurity [ 40%] PARTIAL
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
-    <strong>Omnibus caveat:</strong> All dates referencing the Digital Omnibus are based on the provisional political agreement of 7 May 2026, approved by the European Parliament on 16 June 2026. The regulation was published in the Official Journal on 24 July 2026 as Regulation (EU) 2026/1744 and is in force from 27 July 2026; the deferred dates are enacted law.
+    <strong>Omnibus status:</strong> The dates stated here come from <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj" style="color:var(--text-dim);">Regulation (EU) 2026/1744</a>, published in the Official Journal on 24 July 2026 and in force from 27 July 2026. The earlier provisional agreement is legislative history, not the current legal basis.
 </p>
 
 <p style="color:var(--text-dim);font-size:0.85rem;">

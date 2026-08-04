@@ -405,7 +405,7 @@ functionally identical to 1.7.10 plus the additions below.
   Standard** (the output says "aligned to", never "standard"); every emitted
   IRI is validated at load against a checked-in vocabulary snapshot
   (`scripts/dpv_data/dpv_aiact_terms.json`, 170 terms) so a fabricated IRI cannot ship;
-  and genuine gaps are stated, not invented — Article 5(1)(i) (the Digital
+  and genuine gaps are stated, not invented — Article 5(1)(ba)/(bb) (the Digital
   Omnibus CSAM/NCII prohibition, absent from the vocabulary) and non-EU
   findings (Korea AI Basic Act, Colorado SB 26-189) are reported as
   out-of-scope rather than forced into an EU concept. The evidence-pack
