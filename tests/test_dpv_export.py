@@ -114,9 +114,9 @@ def test_dpv_every_prohibited_article_letter_is_handled():
     )
     # And 'i' must remain an explicit gap, not silently mapped to a fake concept
     assert "i" not in dx.PROHIBITED_LETTER_TO_CONCEPT, (
-        "Article 5(1)(i) must have NO DPV concept — the vocabulary predates it."
+        "Article 5(1)(ba)/(bb) must have NO DPV concepts — the vocabulary predates them."
     )
-    print(f"  PASS  prohibited letters {sorted(letters)} handled; (i) is an honest gap")
+    print(f"  PASS  prohibited letters {sorted(letters)} handled; (ba)/(bb) are honest gaps")
 
 
 def test_dpv_high_risk_specific_mappings_match_definitions():
@@ -149,17 +149,17 @@ def test_dpv_prohibited_practice_maps_to_specific_concept():
     print("  PASS  prohibited 5(1)(c) -> ProhibitedAISystem-A5-1-c")
 
 
-def test_dpv_omnibus_article_5_1_i_is_honest_gap():
-    """Article 5(1)(i) must NOT invent a concept — parent only, with a note."""
+def test_dpv_omnibus_article_5_1_ba_is_honest_gap():
+    """Article 5(1)(ba) must NOT invent a concept — parent only, with a note."""
     f = {"tier": "prohibited", "category": "Prohibited (Article 5)",
-         "articles": ["5(1)(i) [Omnibus]"], "file": "x.py"}
+         "articles": ["5(1)(ba) [Omnibus]"], "file": "x.py"}
     rec = dx.map_finding(f)
     assert rec["risk_level"] == "RiskLevelProhibited"
     assert rec["concepts"] == ["AISystem", "ProhibitedAISystem"]
-    assert not any("A5-1-i" in c for c in rec["concepts"]), "must not invent A5-1-i"
-    assert "no concept for Article 5(1)(i)" in rec["note"] or "5(1)(i)" in rec["note"]
-    assert "Omnibus" in rec["note"]
-    print("  PASS  Article 5(1)(i) is an explicit gap, no invented concept")
+    assert not any("A5-1-ba" in c for c in rec["concepts"]), "must not invent A5-1-ba"
+    assert "no concept for Article 5(1)(ba)" in rec["note"] or "5(1)(ba)" in rec["note"]
+    assert "Regulation (EU) 2026/1744" in rec["note"]
+    print("  PASS  Article 5(1)(ba) is an explicit gap, no invented concept")
 
 
 def test_dpv_high_risk_area_only_does_not_overclaim():
@@ -294,7 +294,7 @@ def _comprehensive_findings():
     category strings and article codes the classifier emits."""
     return [
         {"tier": "prohibited", "category": "Prohibited (Article 5)", "articles": ["5(1)(c)"], "file": "a.py"},
-        {"tier": "prohibited", "category": "Prohibited (Article 5)", "articles": ["5(1)(i) [Omnibus]"], "file": "b.py"},
+        {"tier": "prohibited", "category": "Prohibited (Article 5)", "articles": ["5(1)(bb) [Omnibus]"], "file": "b.py"},
         {"tier": "high_risk", "category": "Annex III, Category 5(b)", "articles": ["9", "10"], "file": "credit.py"},
         {"tier": "high_risk", "category": "Annex III, Category 5(c)", "articles": ["9"], "file": "ins.py"},
         {"tier": "high_risk", "category": "Annex III, Category 2", "articles": ["9"], "file": "infra.py"},

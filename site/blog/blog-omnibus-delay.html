@@ -278,7 +278,7 @@
 
     <h2>What the deadlines look like now</h2>
 
-    <p>Article 5 prohibitions and GPAI obligations are already in force. Article 50 transparency remains on its 2 August 2026 deadline. The Omnibus defers standalone high-risk (Annex III) to 2 December 2027 and product-embedded high-risk (Annex I) to 2 August 2028. These dates were approved by the European Parliament on 16 June 2026 and by the Council on 29 June 2026, and were published in the Official Journal on 24 July 2026 as Regulation (EU) 2026/1744, in force from 27 July 2026.</p>
+    <p>Article 5 prohibitions and GPAI obligations are already applicable. Article 50 obligations generally have applied since 2 August 2026; providers of systems covered by Article 50(2) that were already on the market before then have until 2 December 2026. Regulation (EU) 2026/1744 sets 2 December 2027 for Annex III high-risk provisions and 2 August 2028 for Annex I product-embedded provisions.</p>
 
     <p>The table distinguishes the original AI Act dates from the dates now enacted by Regulation (EU) 2026/1744.</p>
 
@@ -340,10 +340,10 @@
     <p>The practical advice: <strong>keep your compliance programme running against the deferred 2 December 2027 date for standalone high-risk systems.</strong> The extra time is now approved rather than merely likely, but it is not an excuse to do nothing.</p>
 
     <h3>If your system is high-risk (Annex I &mdash; product-embedded)</h3>
-    <p>The proposed deadline is 2 August 2028. If you are building AI into medical devices, machinery, or other products covered by the Union harmonisation legislation listed in Annex I, you have more runway &mdash; but you also face the additional burden of aligning with sector-specific conformity assessment procedures that are <a href="https://www.cencenelec.eu/news-events/news/2025/brief-news/2025-10-23-ai-standardization/">still being drafted by CEN-CENELEC JTC 21</a>. The first of those standards has now landed: EN 18286:2026 on AI quality management systems was approved on 12 July 2026 and is published. Publication is not the same as citation: until a standard is cited in the Official Journal it does not confer the Article 40 presumption of conformity, so a provider relying on EN 18286:2026 today still carries the full evidentiary burden. The remaining JTC 21 standards are still in progress.</p>
+    <p>The enacted application date for the Annex I product-embedded path is 2 August 2028. If you are building AI into medical devices, machinery, or other products covered by the Union harmonisation legislation listed in Annex I, check the amended Article 113 and the relevant sector legislation. Standards publication and Official Journal citation are separate events: Article 40's presumption of conformity depends on the conditions in the enacted text.</p>
 
     <h3>If your system is minimal or limited risk</h3>
-    <p>The Omnibus does not affect you materially. Limited-risk transparency obligations under Article 50 are already in effect or unaffected by the proposed deferrals. If anything, Parliament's position <em>strengthens</em> Article 50 requirements, so the trilogue could result in tighter transparency rules for chatbots, deepfakes, and emotion recognition.</p>
+    <p>Do not infer that the amendment is irrelevant solely from a scanner tier. Article 50 obligations generally have applied since 2 August 2026, and the amendment includes a transition to 2 December 2026 for providers of Article 50(2) systems already on the market before 2 August 2026. Scope and other amended provisions still require contextual review.</p>
 
     <h2>What Regula does about this</h2>
 
@@ -370,13 +370,13 @@
         <li>
             <div>
                 <strong>Find out your risk tier</strong>
-                <p>Run <code>regula check .</code> in your project root. This scans your codebase against 419 risk patterns and tells you which EU AI Act tier you are in &mdash; prohibited, high-risk, limited, or minimal. If you are not high-risk, the Omnibus delay does not change your obligations.</p>
+                <p>Run <code>regula check .</code> in your project root. It reports code-observable indicators associated with candidate categories. It does not determine a legal tier or whether an amendment affects your obligations.</p>
             </div>
         </li>
         <li>
             <div>
                 <strong>Check whether the delay affects you</strong>
-                <p>If <code>regula check</code> classifies you as high-risk, run <code>regula timeline</code> to see your current deadline. Then check whether your system falls under Annex III (standalone, proposed delay to December 2027) or Annex I (product-embedded, proposed delay to August 2028). This determines how much additional runway you may get.</p>
+                <p>If <code>regula check</code> reports high-risk indicators, use <code>regula timeline</code> as a reference. Then determine from intended purpose and deployment context whether Article 6 and Annex III or the Annex I product path applies. The enacted dates are 2 December 2027 and 2 August 2028 respectively.</p>
             </div>
         </li>
         <li>

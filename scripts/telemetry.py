@@ -1,6 +1,6 @@
 # regula-ignore
 """
-Regula telemetry — GDPR-compliant opt-in crash reporting.
+Regula telemetry — opt-in crash reporting with no default endpoint.
 
 Consent is stored in ~/.regula/config.toml (or $REGULA_CONFIG_DIR/config.toml).
 No data is sent unless the user explicitly opted in.

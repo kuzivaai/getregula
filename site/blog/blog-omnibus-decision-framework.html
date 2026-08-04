@@ -314,9 +314,9 @@
 
     <div class="track-box track-active">
         <h3>Track 2: Transparency obligations (Article 50)</h3>
-        <p><strong>Deadline: 2 August 2026. Not delayed by the Omnibus.</strong></p>
+        <p><strong>Generally applicable since 2 August 2026, with a specific Article 50(2) transition.</strong></p>
         <p>Article 50 covers the transparency requirements most developers will hit first: disclosing that a user is interacting with an AI system (chatbot disclosure), labelling AI-generated or manipulated content (deepfake labelling), and marking synthetic text published to inform the public on matters of public interest.</p>
-        <p>The Omnibus doesn't propose to defer these obligations. If anything, the Parliament's negotiating position strengthens them. You have until August 2026 to get your disclosure and labelling mechanisms in place. That timeline is stable.</p>
+        <p>Regulation (EU) 2026/1744 did not generally defer Article 50. It provides that providers of systems covered by Article 50(2) which were already on the market before 2 August 2026 must comply by 2 December 2026. Other Article 50 scope and application questions must be checked against the enacted text.</p>
     </div>
 
     <div class="track-box track-uncertain">
@@ -328,7 +328,7 @@
 
     <h2>What the Omnibus actually changes</h2>
 
-    <p>The Omnibus defers only two deadlines: standalone high-risk AI systems (Annex III) from August 2026 to December 2027, and product-embedded high-risk AI (Annex I) from August 2026 to August 2028. Article 5 prohibitions, GPAI obligations, and Article 50 transparency requirements are not touched. The Omnibus also adjusts the Article 6(3) procedural-task carve-out and regulatory sandbox provisions.</p>
+    <p>The enacted amendment changes substantially more than the two high-risk application dates. Among other changes, it amends definitions, Article 4, Article 6, conformity-assessment and registration provisions, regulatory sandboxes, Article 50, codes of conduct, governance arrangements, and the application schedule. The table below focuses only on selected timeline effects and is not a summary of every amendment.</p>
 
     <p>Most coverage collapses everything into "the deadline is delayed" without distinguishing what is delayed from what isn't. The detail matters.</p>
 
@@ -415,7 +415,7 @@
     <p>The requirements in Articles 9 through 15 also overlap with controls found in other governance and security frameworks:</p>
 
     <ul>
-        <li><strong>NIST AI RMF</strong> maps directly to the risk management, documentation, and testing requirements. Build for the EU AI Act and you're most of the way to NIST AI RMF compliance.</li>
+        <li><strong>NIST AI RMF</strong> has concepts that can be cross-referenced with risk management, documentation, and testing work. A crosswalk does not establish conformity with either framework.</li>
         <li><strong>ISO 42001</strong> (AI management systems) covers governance structures, risk assessment, and documentation requirements that run parallel to Articles 9 and 11.</li>
         <li><strong>SOC 2</strong> audit criteria for security, availability, and processing integrity overlap with Article 15's accuracy and cybersecurity requirements.</li>
         <li><strong>NIST CSF</strong> and <strong>ISO 27001</strong> cover the cybersecurity baseline that Article 15 expects.</li>
@@ -433,7 +433,7 @@
         <li>
             <div>
                 <strong>Find out which track you're on</strong>
-                <p>Run <code>regula check .</code> in your project root. It scans your codebase against 419 risk patterns and tells you whether you fall into prohibited, high-risk, limited-risk, or minimal-risk territory. If you're not high-risk, the Omnibus delay is irrelevant to you. Your obligations are either already in force (Track 1) or on a fixed August 2026 timeline (Track 2).</p>
+                <p>Run <code>regula check .</code> in your project root to identify code-observable indicators for review. The scan does not determine whether a system is prohibited, high-risk or subject to Article 50; that requires the intended purpose, organisational role, deployment context, conditions and exceptions.</p>
             </div>
         </li>
         <li>
@@ -451,7 +451,7 @@
         <li>
             <div>
                 <strong>Check your framework crosswalks</strong>
-                <p>Run <code>regula gap . --project .</code> to see how your EU AI Act compliance gaps map to ISO 42001 and other frameworks. If you're already working towards NIST or ISO 42001, you may have less to do than you think. If you're starting from scratch, the crosswalk helps you prioritise work that satisfies multiple frameworks at once.</p>
+                <p>Run <code>regula gap . --project .</code> to review cross-references between selected EU AI Act provisions and other frameworks. Treat the crosswalk as orientation: it does not prove equivalence, certification, or that one control satisfies multiple legal requirements.</p>
             </div>
         </li>
     </ol>
@@ -467,16 +467,12 @@
 
     <h2>The bottom line</h2>
 
-    <p>The Omnibus will very likely pass. The political support is there: 569 votes in favour, 45 against, 23 abstentions. Both Council and Parliament have their mandates. The trilogue is under way.</p>
+    <p>Regulation (EU) 2026/1744 is enacted and in force. It sets 2 December 2027 for the Annex III path and 2 August 2028 for the Annex I product-embedded path. Those dates do not determine whether a particular system is high-risk or which transition rule applies.</p>
 
-    <p>But "very likely" is a prediction about politics, not a fact about law. Even if the delay does become law, it only affects Track 3: the Annex III and Annex I high-risk obligations. Everything else stays on its current schedule.</p>
-
-    <p>Plan against December 2027 as the baseline, but treat it as a working deadline rather than a licence to procrastinate. The work you do now isn't wasted. And if you start in the second half of 2027 because the delay gave you permission to procrastinate, you'll be in exactly the position that the compliance industry makes its money from: rushed, expensive, and cutting corners.</p>
-
-    <p>Start now. Go at a sustainable pace. If the deadline moves, you're early. That's fine.</p>
+    <p>Use the enacted dates for planning, but establish scope, role, intended purpose, Article 6 classification, and any transition provision before treating a date as applicable to a specific system.</p>
 
     <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
-        <strong>Last verified:</strong> 25 April 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
+        <strong>Last verified:</strong> 4 August 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
         <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
     </p>
 

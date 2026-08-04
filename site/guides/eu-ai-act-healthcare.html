@@ -108,7 +108,7 @@
           "name": "Is AI used in medical devices high-risk under the EU AI Act?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Article 6(1) cross-references Annex I Section A, which lists Regulation (EU) 2017/745 (Medical Devices Regulation) and Regulation (EU) 2017/746 (In Vitro Diagnostic Medical Devices Regulation). If your AI system is itself a medical device, or is a safety component of a medical device, it is classified as high-risk. This applies regardless of whether the device is Class IIa, IIb, or III under the MDR. The compliance deadline for Annex I high-risk systems has been deferred to 2 August 2028 under the Digital Omnibus (European Parliament approved 16 June 2026, approved by Council 29 June 2026; published in the Official Journal on 24 July 2026, in force from 27 July 2026)."
+            "text": "Article 6(1) uses a two-part test: the AI system must be a safety component of a product, or itself a product, covered by Annex I legislation, and that product must require third-party conformity assessment under the relevant legislation. MDR or IVDR coverage alone does not automatically satisfy both conditions. Regulation (EU) 2026/1744 sets 2 August 2028 for this product-embedded path."
           }
         },
         {
@@ -116,7 +116,7 @@
           "name": "Does the EU AI Act cover AI used in emergency triage or healthcare access?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Annex III Category 5 covers AI systems intended for use in access to and enjoyment of essential public and private services. Emergency dispatch systems, triage tools, and AI that determines patient priority for healthcare services fall under this category. These systems are high-risk and must comply with Articles 9 through 15. The compliance deadline for Annex III high-risk systems has been deferred to 2 December 2027 under the Digital Omnibus (European Parliament approved 16 June 2026, approved by Council 29 June 2026; published in the Official Journal on 24 July 2026, in force from 27 July 2026)."
+            "text": "Annex III includes specified systems used to evaluate and classify emergency calls and to dispatch or prioritise emergency first-response services, including emergency healthcare patient triage systems. Whether a particular system is high-risk requires the Article 6 test and intended-purpose context. Regulation (EU) 2026/1744 sets 2 December 2027 for the Annex III path."
           }
         },
         {
@@ -179,7 +179,7 @@
 
 <p>This covers a wide range of software: diagnostic imaging AI, pathology analysis tools, AI-assisted surgical planning, clinical decision support systems that are classified as medical devices under the MDR, and AI components embedded in physical medical devices. The classification follows the MDR/IVDR classification, not the AI Act&rsquo;s own risk categories.</p>
 
-<p>The compliance deadline for Annex I high-risk systems has been deferred to <strong>2 August 2028</strong> under the <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442">Digital Omnibus</a> (provisional agreement 7 May 2026, European Parliament approved 16 June 2026, approved by Council 29 June 2026; published in the Official Journal on 24 July 2026, in force from 27 July 2026).</p>
+<p>The application date for Annex I high-risk-system requirements is <strong>2 August 2028</strong> under <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj">Regulation (EU) 2026/1744</a> (published in the Official Journal on 24 July 2026 and in force from 27 July 2026).</p>
 
 <p>If your system falls under Annex I, the conformity assessment follows the MDR/IVDR procedures. This typically involves a notified body. You do not get to self-assess.</p>
 
@@ -203,7 +203,7 @@
 
 <h2>What Articles 9-15 require for healthcare AI</h2>
 
-<p>Once classified as high-risk through either route, your system must meet the requirements of Articles 9 through 15. Here is what each article means for healthcare AI specifically.</p>
+<p>If contextual review establishes high-risk status through either route, Articles 9 through 15 apply according to the enacted scope and transition rules. Here is what each article means for healthcare AI specifically.</p>
 
 <h3>Article 9: Risk management</h3>
 <p>You need a risk management system that runs throughout the entire lifecycle of the AI system. For healthcare AI, this means identifying risks to patient safety and health outcomes, not just commercial risks. A diagnostic AI that misclassifies a malignant tumour as benign is a different category of risk from one that recommends a slightly suboptimal treatment. Your <a href="/guides/article-9-risk-management.html">risk management framework</a> must account for the severity and probability of harm, and you must test for foreseeable misuse &mdash; clinicians relying on AI outputs without independent verification, for example.</p>
@@ -322,7 +322,7 @@ Regula Scan: sample_medical.py
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
-    <strong>Omnibus caveat:</strong> All dates referencing the Digital Omnibus are based on the provisional political agreement of 7 May 2026, approved by the European Parliament on 16 June 2026. The regulation was published in the Official Journal on 24 July 2026 as Regulation (EU) 2026/1744 and is in force from 27 July 2026; the deferred dates are enacted law.
+    <strong>Omnibus status:</strong> Regulation (EU) 2026/1744 was published in the Official Journal on 24 July 2026 and is in force from 27 July 2026. The dates stated here come from the enacted amendment, not the earlier provisional agreement.
 </p>
 
 <p style="color:var(--text-dim);font-size:0.85rem;">

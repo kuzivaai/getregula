@@ -105,7 +105,7 @@
           "name": "How do I know which risk tier my AI system falls into?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Classification depends on your system's intended purpose and deployment context, not just the code. Article 6 of the EU AI Act defines the routes: systems listed in Annex III by use case are high-risk, systems embedded in products covered by Annex I are high-risk, and systems with transparency obligations fall under limited risk (Article 50). Everything else is minimal risk. A code scanner can detect risk indicators but cannot make the final determination — that requires understanding your deployment context."
+            "text": "Classification depends on intended purpose, role, and deployment context, not just code. Article 6 defines high-risk routes and Article 50 creates specified transparency duties. A system with no detected elevated path is not automatically minimal risk or outside the Act. A code scanner reports indicators but cannot make the legal determination."
           }
         },
         {
@@ -121,7 +121,7 @@
           "name": "When do the high-risk obligations start applying?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Under the Digital Omnibus provisional agreement of 7 May 2026, approved by European Parliament on 16 June 2026, Annex III (use-based) high-risk obligations are postponed to 2 December 2027. Annex I (product-embedded) obligations apply from 2 August 2028. The Council approved it on 29 June 2026, and the regulation was published in the Official Journal on 24 July 2026 as Regulation (EU) 2026/1744, in force from 27 July 2026. The deferred dates are enacted law."
+            "text": "Regulation (EU) 2026/1744 is in force and sets 2 December 2027 for Annex III high-risk provisions and 2 August 2028 for the Annex I product-embedded path. Article 6 classification and transition rules must still be assessed in context."
           }
         },
         {
@@ -137,7 +137,7 @@
           "name": "What are the Article 5 prohibitions under the EU AI Act?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Article 5 defines practices not permitted under the Act. The original 8 categories have been enforceable since 2 February 2025. The Digital Omnibus (provisional agreement 7 May 2026, approved by European Parliament 16 June 2026) adds 2 further categories (CSAM and NCII generation), bringing the total to 10; these 2 new prohibitions take effect on 2 December 2026 (approved by Council on 29 June 2026; published in the Official Journal on 24 July 2026, in force from 27 July 2026). The specific categories are listed in Article 5(1)(a) through (h) of the original text plus the Omnibus additions. If your system falls into any of these categories, it may not be placed on the EU market."
+            "text": "Article 5 defines prohibited practices with conditions and exceptions. The original points have applied since 2 February 2025. Regulation (EU) 2026/1744 adds points 5(1)(ba) and 5(1)(bb), applying from 2 December 2026. Whether a system meets a prohibition requires the full legal test, not a code-pattern match."
           }
         }
       ]
@@ -181,10 +181,10 @@
 <p>The EU AI Act is commonly explained through four practical groupings: practices not permitted (Article 5), high-risk (Annex III use-based or Annex I product-embedded), systems subject to Article 50 transparency duties, and systems without an identified elevated risk-tier path. This shorthand is not a substitute for checking cross-cutting and context-dependent duties.</p>
 <p>The EU AI Act sorts AI systems into four tiers. Your obligations depend entirely on which tier applies.</p>
 <h3>Practices not permitted (Article&nbsp;5)</h3>
-<p>Article&nbsp;5 defines 10 categories of AI practices not permitted under the Act &mdash; 8 in the original text (in force since 2&nbsp;February&nbsp;2025) plus 2 additions from the <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442">Digital Omnibus</a> provisional agreement, approved by European Parliament on 16&nbsp;June&nbsp;2026 (the 2 new prohibitions take effect 2&nbsp;December&nbsp;2026, approved by Council on 29 June 2026; published in the Official Journal on 24 July 2026, in force from 27 July 2026). If your system falls into any of these categories, it may not be placed on the EU market. See <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Article&nbsp;5(1) of Regulation&nbsp;(EU)&nbsp;2024/1689</a> for the full list.</p>
+<p>Article&nbsp;5 defines prohibited practices with detailed conditions and exceptions. The original points have applied since 2&nbsp;February&nbsp;2025. <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj">Regulation (EU) 2026/1744</a> adds points 5(1)(ba) and 5(1)(bb), applying from 2&nbsp;December&nbsp;2026. A code-pattern match is not proof that the legal test is met.</p>
 
 <h3>High-risk: use-based (Annex&nbsp;III)</h3>
-<p>Systems whose intended purpose falls into one of eight domains: biometrics, critical infrastructure, education and vocational training, employment, access to essential services, law enforcement, migration and border control, and administration of justice. Classification is determined by what the system is <em>used for</em>, not what libraries it imports. Compliance deadline: <strong>2&nbsp;December&nbsp;2027</strong> (Digital Omnibus provisional agreement of 7&nbsp;May&nbsp;2026, approved by European Parliament on 16&nbsp;June&nbsp;2026; approved by Council on 29 June 2026; published in the Official Journal on 24 July 2026, in force from 27 July 2026; original deadline was 2&nbsp;August&nbsp;2026).</p>
+<p>Annex III lists specified intended uses across eight areas. Classification requires the Article 6 test, including applicable exceptions and documentation duties; libraries alone cannot decide it. Regulation (EU) 2026/1744 sets <strong>2&nbsp;December&nbsp;2027</strong> for the Annex III path.</p>
 
 <h3>High-risk: product-embedded (Annex&nbsp;I)</h3>
 <p>AI systems that are safety components of, or are themselves, products covered by EU harmonisation legislation listed in Annex&nbsp;I &mdash; including medical devices, machinery, toys, lifts, and radio equipment. These follow the existing CE marking framework. Compliance deadline: <strong>2&nbsp;August&nbsp;2028</strong> (Digital Omnibus).</p>
@@ -256,11 +256,11 @@ regula check .
 # 3. Check for compliance gaps against the Act
 regula gap .</code></pre>
 
-<p><code>regula assess</code> asks about your intended purpose and deployment context &mdash; the factors that code scanning alone cannot determine. It then maps your answers to a risk tier. <code>regula check</code> scans your source code for risk indicators that corroborate or challenge that classification. <code>regula gap</code> identifies which obligations apply to your tier and where your documentation or technical measures fall short.</p>
+<p><code>regula assess</code> records intended-purpose and deployment answers and reports candidate paths for review. <code>regula check</code> reports source-code indicators, and <code>regula gap</code> compares observable evidence with selected controls. None determines a legal tier, applicable obligations, or compliance gaps conclusively.</p>
 
-<h2>Omnibus caveat</h2>
+<h2>Omnibus status</h2>
 
-<p>All dates referencing the Digital Omnibus are based on the provisional political agreement of <strong>7&nbsp;May&nbsp;2026</strong>, approved by the European Parliament on <strong>16&nbsp;June&nbsp;2026</strong> (423 for, 57 against, 174 abstentions). The Council approved it on 29&nbsp;June&nbsp;2026, and the regulation was published in the Official Journal on 24&nbsp;July&nbsp;2026 as Regulation&nbsp;(EU)&nbsp;2026/1744, in force from 27&nbsp;July&nbsp;2026. The deferred dates are enacted law.</p>
+<p>The dates stated here come from <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj">Regulation&nbsp;(EU)&nbsp;2026/1744</a>, published in the Official Journal on 24&nbsp;July&nbsp;2026 and in force from 27&nbsp;July&nbsp;2026. The provisional agreement of 7&nbsp;May&nbsp;2026 is legislative history, not the current legal basis.</p>
 
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 

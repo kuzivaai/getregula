@@ -110,7 +110,7 @@ Regula is open-source, zero-dependency, and runs locally. No data leaves your ma
 
 *PyTorch results pending at time of publication due to scan duration on a 7,010-file codebase. Totals will be updated when available.*
 
-*The EU AI Act enforcement timeline is subject to change. The [Omnibus simplification proposal](https://digital-strategy.ec.europa.eu/en/library/proposal-regulation-amending-ai-act) (February 2026) may push certain Annex III deadlines from August 2026 to December 2027 if adopted. It has not been enacted. All deadline references in this article reflect current law unless otherwise noted.*
+*Regulatory update, 4 August 2026: [Regulation (EU) 2026/1744](https://eur-lex.europa.eu/eli/reg/2026/1744/oj) is enacted and in force. It sets 2 December 2027 for the Annex III path and 2 August 2028 for the Annex I product-embedded path, subject to the amended provisions and transition rules. This April 2026 scan remains a historical benchmark; findings are code indicators, not legal classifications.*
 
 ---
 
