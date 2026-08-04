@@ -203,7 +203,7 @@
     <nav class="nav" id="nav" aria-label="Main navigation">
         <a href="/" class="nav-brand">Regula</a>
         <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-        <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+        <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
             <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
             <a href="/guides/">Guides</a>
             <a href="https://github.com/kuzivaai/getregula">GitHub</a>
@@ -345,7 +345,7 @@
             <h2>Where Regula fits for Korean operators and foreign providers</h2>
 
 <p>Regula supports the Korean AI Basic Act directly. You can <a href="/assess/?j=kr">take the Korea assessment</a> (9 questions, no signup) or scan your codebase:</p>
-<pre><code>pipx install regula-ai
+<pre tabindex="0"><code>pipx install regula-ai
 
 regula discover .              # AI systems present in the project
 regula check .                 # Risk indicators across all frameworks

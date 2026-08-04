@@ -70,7 +70,7 @@
         .artifact-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-lg); padding: var(--s6); display: flex; flex-direction: column; }
         .artifact-card h3 { font-family: var(--font-serif); font-size: 18px; margin-bottom: var(--s3); }
         .artifact-card p { flex: 1; font-size: 14px; }
-        .artifact-card a.open-btn { display: inline-block; text-align: center; padding: 0 var(--s5); min-height: 44px; line-height: 44px; border-radius: var(--r-md); font-family: var(--font-mono); font-size: 13px; background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(59,130,246,0.25); text-decoration: none; }
+        .artifact-card a.open-btn { display: inline-block; text-align: center; padding: 0 var(--s5); min-height: 44px; line-height: 44px; border-radius: var(--r-md); font-family: var(--font-mono); font-size: 13px; background: var(--accent-soft); color: #93c5fd; border: 1px solid rgba(59,130,246,0.25); text-decoration: none; }
         .provenance { background: rgba(59,130,246,0.06); border-left: 3px solid var(--accent); padding: 14px 18px; border-radius: 0 8px 8px 0; font-size: 14px; color: var(--text-2); }
         .provenance code { font-family: var(--font-mono); font-size: 12px; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; }
     </style>
@@ -87,7 +87,7 @@
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
@@ -113,7 +113,7 @@
             <span class="term-dot td-y"></span>
             <span class="term-dot td-g"></span>
         </div>
-        <pre>
+        <pre tabindex="0">
 Regula Scan: /home/mkuziva/getregula/examples/cv-screening-app
 ============================================================
 

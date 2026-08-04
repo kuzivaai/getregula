@@ -96,7 +96,7 @@
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
@@ -171,6 +171,14 @@
 </ol>
 
 <p>Evidence packs are signed with SHA-256 integrity manifests and in-toto attestations. Every finding is traceable to a file and line number.</p>
+
+<h2>Accessibility, usability and performance</h2>
+
+<p>Regula targets <a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2 Level AA</a> and uses the human-centred design principles in <a href="https://www.iso.org/standard/77520.html">ISO 9241-210:2019</a> and the usability concepts in <a href="https://www.iso.org/standard/63500.html">ISO 9241-11:2018</a>. This is a design and evaluation target, not a claim of formal conformance or certification.</p>
+
+<p>Automated accessibility checks are run as evidence, but they cannot establish full WCAG conformance. Manual keyboard, zoom, reflow, screen-reader and representative-user testing remain required. The current evidence, limitations and test procedure are published in the <a href="https://github.com/kuzivaai/getregula/blob/main/docs/accessibility/README.md">accessibility and human-centred quality record</a>.</p>
+
+<p>Performance is assessed against LCP, INP and CLS using the documented Core Web Vitals thresholds. Lab measurements are treated as diagnostics. They are not presented as real-user results when sufficient field data is unavailable.</p>
 
 <h2>Disambiguation</h2>
 
