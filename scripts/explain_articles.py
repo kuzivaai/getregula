@@ -12,14 +12,117 @@ used by scripts/risk_patterns.py and the test fixtures.
 
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent))
 
-from omnibus import ANNEX_III_PROSE as _A3, ORIGINAL_PROSE as _ORIG, OMNIBUS_ENACTED as _ENACTED, OMNIBUS_IN_FORCE_DATE as _IN_FORCE
+from omnibus import (
+    ANNEX_III_PROSE as _A3,
+    LIMITED_PROSE as _A50_TRANSITION,
+    ORIGINAL_PROSE as _ORIG,
+    OMNIBUS_ENACTED as _ENACTED,
+    OMNIBUS_IN_FORCE_DATE as _IN_FORCE,
+)
+
 # High-risk applicability date, single-sourced from omnibus.py so the
 # OJ flip updates every article explanation at once. Date-qualified:
 # flat "in force" would overstate legal status during the 3 days
 # between OJ publication and effect.
-_WHEN_HIGH_RISK = (f'{_A3} (Omnibus in force from {_IN_FORCE})' if _ENACTED
-                   else f'{_ORIG} (Omnibus defers Annex III to {_A3}; adopted, pending OJ publication)')
+_WHEN_HIGH_RISK = (
+    f"{_A3} (Omnibus in force from {_IN_FORCE})"
+    if _ENACTED
+    else f"{_ORIG} (Omnibus defers Annex III to {_A3}; adopted, pending OJ publication)"
+)
 
-ARTICLES = {'4': {'title': 'AI literacy', 'summary': 'Providers and deployers must ensure staff handling AI systems have sufficient AI literacy, considering their technical knowledge, experience, education, and the context of use.', 'who': 'Providers and deployers', 'when': '2 February 2025 (already in force)', 'what_regula_checks': 'Nothing — this is an organisational obligation. Regula cannot verify staff training.'}, '5': {'title': 'Prohibited AI practices', 'summary': 'Eight categories of AI system are banned outright: subliminal manipulation, exploitation of vulnerabilities, social scoring, criminal prediction without human assessment, untargeted facial recognition scraping, emotion inference in workplaces/education, sensitive biometric categorisation, and real-time remote biometric identification in public spaces (with narrow law enforcement exceptions).', 'who': 'Everyone — no exemptions', 'when': '2 February 2025 (already in force)', 'what_regula_checks': '8 prohibited-tier patterns detect code matching these categories. regula check flags them as PROHIBITED.'}, '6': {'title': 'Classification of high-risk AI systems', 'summary': 'An AI system is high-risk if it falls under Annex III categories (biometrics, critical infrastructure, education, employment, essential services, law enforcement, migration, justice) AND poses a significant risk of harm. Article 6(3) provides exemptions for narrow procedural tasks, systems that improve human decision-making, or preparatory/pattern-detection tasks.', 'who': 'Providers', 'when': _WHEN_HIGH_RISK, 'what_regula_checks': '15 high-risk patterns detect Annex III categories. regula exempt runs the Article 6(3) exemption decision tree.'}, '9': {'title': 'Risk management system', 'summary': "High-risk AI providers must establish and maintain a risk management system throughout the AI system's lifecycle. It must identify risks, estimate them, adopt mitigation measures, and be documented. The RMS must be regularly reviewed and updated.", 'who': 'Providers of high-risk AI', 'when': _WHEN_HIGH_RISK, 'what_regula_checks': 'regula gap checks for RMS indicators. But an RMS is an organisational process — Regula detects presence of documentation artefacts, not whether the RMS actually operates.'}, '10': {'title': 'Data and data governance', 'summary': 'Training, validation, and testing datasets must be relevant, representative, free of errors, and complete. Data governance must cover design choices, data collection, preparation, labelling, bias examination, and gap identification.', 'who': 'Providers of high-risk AI', 'when': _WHEN_HIGH_RISK, 'what_regula_checks': 'regula check detects dataset loading patterns and data source references. Cannot verify data quality, representativeness, or bias in the actual data.'}, '11': {'title': 'Technical documentation', 'summary': 'High-risk AI systems must have technical documentation drawn up before being placed on the market. The documentation must contain the information set out in Annex IV: general description, detailed description of elements, monitoring/functioning/control, risk management, changes during lifecycle, standards applied, and the EU declaration of conformity.', 'who': 'Providers of high-risk AI', 'when': _WHEN_HIGH_RISK, 'what_regula_checks': 'regula conform generates an Annex IV scaffold pre-filled from scan data. regula docs generates documentation templates. Both are scaffolds — human must complete with substantive content.'}, '12': {'title': 'Record-keeping', 'summary': "High-risk AI systems must be designed with automatic logging capabilities, ensuring traceability of the system's functioning. Logs must record events relevant to identifying situations that may result in risks, and facilitate post-market monitoring.", 'who': 'Providers of high-risk AI', 'when': _WHEN_HIGH_RISK, 'what_regula_checks': 'regula check detects logging calls near AI model invocations. Detects presence, not completeness or retention compliance.'}, '13': {'title': 'Transparency and information to deployers', 'summary': "High-risk AI systems must be designed to be sufficiently transparent to enable deployers to interpret the system's output and use it appropriately. Instructions for use must accompany the system.", 'who': 'Providers of high-risk AI', 'when': _WHEN_HIGH_RISK, 'what_regula_checks': 'regula check detects disclosure strings and transparency markers. regula disclose generates Article 50 disclosure templates.'}, '14': {'title': 'Human oversight', 'summary': "High-risk AI systems must be designed to allow effective oversight by natural persons during use. Oversight measures must enable the human to fully understand the system's capacities and limitations, monitor operation, decide not to use or disregard the output, and interrupt or stop the system.", 'who': 'Providers and deployers of high-risk AI', 'when': _WHEN_HIGH_RISK, 'what_regula_checks': 'regula oversight does cross-file flow analysis for human review gates. Detects presence of oversight patterns, not their adequacy.'}, '15': {'title': 'Accuracy, robustness and cybersecurity', 'summary': 'High-risk AI systems must achieve appropriate levels of accuracy, robustness, and cybersecurity throughout their lifecycle. Accuracy levels and metrics must be declared. The system must be resilient to errors, faults, inconsistencies, and attempted manipulation.', 'who': 'Providers of high-risk AI', 'when': _WHEN_HIGH_RISK, 'what_regula_checks': '17 AI security patterns detect anti-patterns (unsafe deserialisation, prompt injection, missing validation). regula guardrails checks guardrail implementation coverage. Detects anti-patterns, not actual robustness or accuracy metrics.'}, '17': {'title': 'Quality management system', 'summary': 'Providers of high-risk AI must put in place a quality management system covering: compliance strategy, design and development procedures, testing and validation, data management, risk management, post-market monitoring, incident reporting, communication with authorities, record-keeping, resource management, and an accountability framework.', 'who': 'Providers of high-risk AI', 'when': _WHEN_HIGH_RISK, 'what_regula_checks': 'regula governance generates a QMS scaffold. regula conform --organisational produces a self-attestation questionnaire. Both are scaffolds — Regula cannot verify that a QMS actually operates.'}, '50': {'title': 'Transparency obligations for certain AI systems', 'summary': 'AI systems that interact with natural persons (chatbots) must disclose they are AI. Deepfakes must be labelled. Emotion recognition and biometric categorisation systems must inform subjects. AI-generated text published to inform the public must be labelled as AI-generated.', 'who': 'Providers and deployers of limited-risk AI', 'when': f'{_ORIG} (unchanged by the Omnibus)', 'what_regula_checks': '4 limited-risk patterns detect chatbots, emotion recognition, biometric categorisation, and synthetic content. regula disclose generates disclosure templates in text, HTML, or code format.'}, '53': {'title': 'Obligations for providers of general-purpose AI models', 'summary': 'GPAI model providers must: maintain technical documentation, draw up an information policy for downstream providers, put in place a copyright policy, and publish a training data summary. Models with systemic risk have additional obligations under Article 55.', 'who': 'GPAI model providers', 'when': '2 August 2025 (already in force)', 'what_regula_checks': 'regula gpai-check maps code to Code of Practice chapters. regula sbom generates an AI-BOM including GPAI tier annotations. regula inventory tracks GPAI model references.'}}
+ARTICLES = {
+    "4": {
+        "title": "AI literacy",
+        "summary": "Providers and deployers must take measures to support the development of AI literacy for staff and other persons operating or using AI systems on their behalf. Regulation (EU) 2026/1744 states that no specific level for an individual is guaranteed.",
+        "who": "Providers and deployers",
+        "when": "2 February 2025 (already in force)",
+        "what_regula_checks": "Nothing — this is an organisational obligation. Regula cannot verify staff training.",
+    },
+    "5": {
+        "title": "Prohibited AI practices",
+        "summary": "Article 5 prohibits specified practices subject to detailed conditions and exceptions. The original points have applied since 2 February 2025; points (ba), (bb) and paragraphs 1a and 1b added by Regulation (EU) 2026/1744 apply from 2 December 2026.",
+        "who": "Providers, deployers and other actors within the scope of each prohibition",
+        "when": "Original points: 2 February 2025; new points and conditions: 2 December 2026",
+        "what_regula_checks": "10 prohibited-tier pattern groups report code indicators. They do not establish that the legal conditions are met.",
+    },
+    "6": {
+        "title": "Classification of high-risk AI systems",
+        "summary": "An AI system is high-risk if it falls under Annex III categories (biometrics, critical infrastructure, education, employment, essential services, law enforcement, migration, justice) AND poses a significant risk of harm. Article 6(3) provides exemptions for narrow procedural tasks, systems that improve human decision-making, or preparatory/pattern-detection tasks.",
+        "who": "Providers",
+        "when": _WHEN_HIGH_RISK,
+        "what_regula_checks": "15 high-risk patterns detect Annex III categories. regula exempt runs the Article 6(3) exemption decision tree.",
+    },
+    "9": {
+        "title": "Risk management system",
+        "summary": "High-risk AI providers must establish and maintain a risk management system throughout the AI system's lifecycle. It must identify risks, estimate them, adopt mitigation measures, and be documented. The RMS must be regularly reviewed and updated.",
+        "who": "Providers of high-risk AI",
+        "when": _WHEN_HIGH_RISK,
+        "what_regula_checks": "regula gap checks for RMS indicators. But an RMS is an organisational process — Regula detects presence of documentation artefacts, not whether the RMS actually operates.",
+    },
+    "10": {
+        "title": "Data and data governance",
+        "summary": "Training, validation, and testing datasets must be relevant, representative, free of errors, and complete. Data governance must cover design choices, data collection, preparation, labelling, bias examination, and gap identification.",
+        "who": "Providers of high-risk AI",
+        "when": _WHEN_HIGH_RISK,
+        "what_regula_checks": "regula check detects dataset loading patterns and data source references. Cannot verify data quality, representativeness, or bias in the actual data.",
+    },
+    "11": {
+        "title": "Technical documentation",
+        "summary": "High-risk AI systems must have technical documentation drawn up before being placed on the market. The documentation must contain the information set out in Annex IV: general description, detailed description of elements, monitoring/functioning/control, risk management, changes during lifecycle, standards applied, and the EU declaration of conformity.",
+        "who": "Providers of high-risk AI",
+        "when": _WHEN_HIGH_RISK,
+        "what_regula_checks": "regula conform generates an Annex IV scaffold pre-filled from scan data. regula docs generates documentation templates. Both are scaffolds — human must complete with substantive content.",
+    },
+    "12": {
+        "title": "Record-keeping",
+        "summary": "High-risk AI systems must be designed with automatic logging capabilities, ensuring traceability of the system's functioning. Logs must record events relevant to identifying situations that may result in risks, and facilitate post-market monitoring.",
+        "who": "Providers of high-risk AI",
+        "when": _WHEN_HIGH_RISK,
+        "what_regula_checks": "regula check detects logging calls near AI model invocations. Detects presence, not completeness or retention compliance.",
+    },
+    "13": {
+        "title": "Transparency and information to deployers",
+        "summary": "High-risk AI systems must be designed to be sufficiently transparent to enable deployers to interpret the system's output and use it appropriately. Instructions for use must accompany the system.",
+        "who": "Providers of high-risk AI",
+        "when": _WHEN_HIGH_RISK,
+        "what_regula_checks": "regula check detects disclosure strings and transparency markers. regula disclose generates Article 50 disclosure templates.",
+    },
+    "14": {
+        "title": "Human oversight",
+        "summary": "High-risk AI systems must be designed to allow effective oversight by natural persons during use. Oversight measures must enable the human to fully understand the system's capacities and limitations, monitor operation, decide not to use or disregard the output, and interrupt or stop the system.",
+        "who": "Providers and deployers of high-risk AI",
+        "when": _WHEN_HIGH_RISK,
+        "what_regula_checks": "regula oversight does cross-file flow analysis for human review gates. Detects presence of oversight patterns, not their adequacy.",
+    },
+    "15": {
+        "title": "Accuracy, robustness and cybersecurity",
+        "summary": "High-risk AI systems must achieve appropriate levels of accuracy, robustness, and cybersecurity throughout their lifecycle. Accuracy levels and metrics must be declared. The system must be resilient to errors, faults, inconsistencies, and attempted manipulation.",
+        "who": "Providers of high-risk AI",
+        "when": _WHEN_HIGH_RISK,
+        "what_regula_checks": "17 AI security patterns detect anti-patterns (unsafe deserialisation, prompt injection, missing validation). regula guardrails checks guardrail implementation coverage. Detects anti-patterns, not actual robustness or accuracy metrics.",
+    },
+    "17": {
+        "title": "Quality management system",
+        "summary": "Providers of high-risk AI must put in place a quality management system covering: compliance strategy, design and development procedures, testing and validation, data management, risk management, post-market monitoring, incident reporting, communication with authorities, record-keeping, resource management, and an accountability framework.",
+        "who": "Providers of high-risk AI",
+        "when": _WHEN_HIGH_RISK,
+        "what_regula_checks": "regula governance generates a QMS scaffold. regula conform --organisational produces a self-attestation questionnaire. Both are scaffolds — Regula cannot verify that a QMS actually operates.",
+    },
+    "50": {
+        "title": "Transparency obligations for certain AI systems",
+        "summary": "AI systems that interact with natural persons (chatbots) must disclose they are AI. Deepfakes must be labelled. Emotion recognition and biometric categorisation systems must inform subjects. AI-generated text published to inform the public must be labelled as AI-generated.",
+        "who": "Providers and deployers of limited-risk AI",
+        "when": f"Generally from {_ORIG}; providers of Article 50(2) systems already on the market before then must comply by {_A50_TRANSITION}",
+        "what_regula_checks": "4 limited-risk patterns detect chatbots, emotion recognition, biometric categorisation, and synthetic content. regula disclose generates disclosure templates in text, HTML, or code format.",
+    },
+    "53": {
+        "title": "Obligations for providers of general-purpose AI models",
+        "summary": "GPAI model providers must: maintain technical documentation, draw up an information policy for downstream providers, put in place a copyright policy, and publish a training data summary. Models with systemic risk have additional obligations under Article 55.",
+        "who": "GPAI model providers",
+        "when": "2 August 2025 (already in force)",
+        "what_regula_checks": "regula gpai-check maps code to Code of Practice chapters. regula sbom generates an AI-BOM including GPAI tier annotations. regula inventory tracks GPAI model references.",
+    },
+}

@@ -1,4 +1,4 @@
-<!-- STALE — trilogue references need updating. Omnibus agreed 7 May 2026. Current: v1.7.1, 419 patterns. -->
+<!-- Updated 4 August 2026 against Regulations (EU) 2024/1689 and 2026/1744. -->
 ---
 title: "EU AI Act Article 5 Is Already Live: Scanning Your Code for Prohibited AI Practices"
 published: true
@@ -14,11 +14,11 @@ Eight categories of AI practice have been illegal in the EU since 2 February 202
 
 I keep meeting developers who think the EU AI Act is a future problem. Something to deal with in 2027 or 2028, once the Omnibus delay sorts itself out.
 
-For high-risk systems, that might be true. The Digital Omnibus on AI proposes pushing those deadlines to late 2027 or mid-2028, and trilogue negotiations are underway.
+For specified high-risk provisions, Regulation (EU) 2026/1744 now sets later dates: 2 December 2027 for the Annex III path and 2 August 2028 for the Annex I path.
 
 But Article 5 isn't part of that delay. Article 5 has been enforceable since **2 February 2025**. That was over a year ago. The prohibitions are in force right now, with the highest penalty tier in the entire regulation: up to EUR 35 million, or 7% of worldwide annual turnover, whichever is higher. For context, the high-risk non-compliance penalty is 3% of turnover. Article 5 violations are penalised at more than double that rate.
 
-If your codebase contains one of the eight prohibited practices and you deploy it in the EU, you're already in breach. Not "will be in breach when the deadline hits." Are, today.
+A code match does not establish that a prohibited practice exists. If a deployed system meets the full legal test for one of the original Article 5 prohibitions, the relevant prohibition has applied since 2 February 2025. Conditions, exceptions, intended purpose and actual use must be assessed.
 
 ## The eight prohibited categories
 
@@ -161,13 +161,13 @@ user_social_score = calculate_engagement_points(activity_log)
 
 **If you're not sure:** Get legal review. Some of these categories have exceptions that require actual legal judgment, not just a regex match. The emotion inference prohibition has a medical/safety exception. The criminal prediction prohibition hinges on whether the system uses "solely" profiling. Regula can tell you a pattern matched. It can't tell you whether your specific use case falls within a narrow exception. A lawyer can.
 
-## The Omnibus doesn't change this
+## The enacted Omnibus preserves the original date and adds provisions
 
-I keep seeing this cause confusion, so I want to be direct. The Digital Omnibus on AI, currently in trilogue negotiations, proposes delaying the deadlines for **high-risk AI systems**. It doesn't touch Article 5.
+Regulation (EU) 2026/1744 is enacted and in force. It did not defer the 2 February 2025 application date for the original Article 5 prohibitions, but it did amend Article 5.
 
-The Article 5 prohibitions became enforceable on 2 February 2025. The Omnibus proposal doesn't modify that date. Neither the Council's general approach (13 March 2026) nor the Parliament's first-reading position (26 March 2026) proposed any change to the Article 5 application date. There's no version of the trilogue outcome that delays Article 5.
+New points Article 5(1)(ba) and (bb), concerning non-consensual intimate content and child sexual abuse material, apply from 2 December 2026. New paragraphs 1a and 1b add conditions involving intended purpose, reasonably foreseeable use, provider safeguards and deployer use, as well as a specified law-enforcement exclusion. The full enacted tests and exceptions must be reviewed.
 
-If someone on your team is saying "we can wait for the Omnibus," they're wrong about Article 5. They may be right about Annex III high-risk obligations. Not about this.
+The original prohibitions are already applicable; the new provisions have their own 2 December 2026 application date. The Annex III and Annex I high-risk paths have separate dates.
 
 ## The eight patterns in numbers
 
@@ -177,7 +177,7 @@ The patterns aren't trying to be clever. They match the terms that developers ac
 
 ## Run the scan
 
-Install Regula, point it at your project, and read the output. Takes about three seconds for a typical codebase. If everything comes back clean, you're done. If something gets flagged as prohibited, you now know about it before a regulator does.
+Install Regula, point it at your project, and review the output. A clean scan means only that this pattern set found no match in the scanned files. It does not establish that no prohibited practice exists or that no obligation applies. A match is an indicator for contextual review, not proof that Article 5 is met.
 
 ```bash
 pipx install regula-ai && regula check .
@@ -185,9 +185,9 @@ pipx install regula-ai && regula check .
 
 If you want only prohibited findings, filter with `regula check . --format json | python3 -c "import sys,json; d=json.load(sys.stdin); [print(f['file'],f['description']) for f in d['data']['findings'] if f['tier']=='prohibited']"`. But honestly, just read the full output. It isn't long, and you should know your full risk profile.
 
-Article 5 isn't coming. It's here. The scan takes seconds. The fines don't.
+The original Article 5 provisions are applicable now. Review scanner output against the enacted text and the system's actual purpose and use.
 
-**Not legal advice.** Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions. All regulatory dates and article references cited in this article are sourced from [Regulation (EU) 2024/1689](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689). Penalty amounts are specified in Article 99(3).
+**Not legal advice.** Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions. Sources: [Regulation (EU) 2024/1689](https://eur-lex.europa.eu/eli/reg/2024/1689/oj) and [Regulation (EU) 2026/1744](https://eur-lex.europa.eu/eli/reg/2026/1744/oj).
 
 ---
 

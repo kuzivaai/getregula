@@ -173,7 +173,7 @@
       </ul>
       Method and figures: benchmarks/results/blog_scan_2026_04/README.md and scripts/site_facts.py.
     </aside>
-    <p class="standfirst">The EU AI Act&rsquo;s high-risk obligations take effect in August 2026 &mdash; though the <a href="https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-regulation-proposal">Omnibus simplification proposal</a> (February 2026) may push certain deadlines to December 2027 if adopted. Either way, the regulation is law. It applies to AI systems deployed in or affecting the EU market.</p>
+    <p class="standfirst">This is a historical April 2026 benchmark. <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj">Regulation (EU) 2026/1744</a> is now enacted and sets 2 December 2027 for the Annex III path and 2 August 2028 for the Annex I path. Whether the Act applies requires the Article 2 scope and the facts of the system and actor.</p>
 </div>
 
 <div class="blog-sep"></div>
@@ -303,7 +303,7 @@
 
         <p>Regula flagged 553 findings across 8,659 source files. Agent autonomy dominated at 56.6% of findings, followed by limited-risk transparency patterns (27.8%), AI security issues (7.4%), high-risk indicators (4.9%), credential exposure (2.5%), and prohibited-practice patterns (0.7%). Most source files had no findings. <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results">Checked-in scan results</a>.</p>
 
-        <p>553 findings across 8,659 source files. The breakdown:</p>
+        <p>The checked-in April 2026 benchmark records 553 findings across 8,659 source files; see the <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/blog_scan_2026_04">archived source data and reproducibility qualifications</a>. The breakdown reported by the original run was:</p>
 
         <table>
             <thead>
@@ -325,13 +325,13 @@
                     <td>Limited risk</td>
                     <td>154</td>
                     <td>27.8%</td>
-                    <td>Chatbot interfaces, synthetic content generation &mdash; Article 50 transparency obligations apply</td>
+                    <td>Chatbot and synthetic-content indicators that may require an Article 50 review</td>
                 </tr>
                 <tr>
                     <td>AI security</td>
                     <td>41</td>
                     <td>7.4%</td>
-                    <td>Unsafe deserialisation, unbounded token generation &mdash; maps to OWASP LLM05/LLM10 and Article 15</td>
+                    <td>Unsafe deserialisation and unbounded generation indicators; legal relevance depends on system classification and context</td>
                 </tr>
                 <tr>
                     <td>High risk</td>
@@ -367,7 +367,7 @@
 
         <h3>Limited risk is straightforward (27.8%)</h3>
 
-        <p>154 findings relate to chatbot interfaces and synthetic content generation. Under Article 50, these systems must disclose to users that they are interacting with AI or viewing AI-generated content. This is the easiest obligation to meet &mdash; a disclosure notice in the UI. Most of these projects already do this implicitly (the user knows they&rsquo;re talking to an AI), but the Act requires explicit disclosure.</p>
+        <p>154 findings relate to chatbot interfaces and synthetic content generation. They identify candidates for an Article 50 review; they do not establish that a duty applies. Article 50 contains different duties, roles, conditions and exceptions, so a disclosure or machine-readable mark must be designed for the applicable paragraph and context.</p>
 
         <p>LiteLLM accounts for 130 of these &mdash; expected for a proxy that routes to 100+ LLM providers, many of which generate text presented to end users.</p>
 
@@ -387,13 +387,13 @@
     <section id="what-this-means">
         <h2>What this means for developers building with AI</h2>
 
-        <p><strong>Most AI code carries no specific regulatory risk.</strong> 553 findings across 8,659 source files, concentrated in a small number of files. The majority of source files in these projects had no compliance-relevant patterns at all. The EU AI Act&rsquo;s minimal-risk category &mdash; which carries zero mandatory obligations &mdash; covers the vast majority of AI code.</p>
+        <p><strong>Most files in this sample had no matched elevated-risk pattern.</strong> The <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/blog_scan_2026_04">archived April 2026 benchmark</a> reported 553 findings across 8,659 source files, concentrated in a small number of files. That file-level observation does not establish that a project is minimal risk, outside the Act, or free of mandatory duties; those questions depend on the system, actor, intended purpose, and deployment context.</p>
 
         <p><strong>Agent autonomy is the pattern to watch.</strong> If you&rsquo;re building agents that execute actions based on LLM output, you should be thinking about human oversight mechanisms now. Not because of regulatory panic &mdash; because it&rsquo;s good engineering. An agent that can execute arbitrary system commands based on LLM output is a security risk regardless of what the EU AI Act says.</p>
 
-        <p><strong>Transparency obligations are easy to meet.</strong> If your application presents AI-generated content to users or operates as a chatbot, Article 50 requires disclosure. This is a UI change, not an architecture change.</p>
+        <p><strong>Transparency needs a scoped review.</strong> A chatbot or synthetic-content match can prompt review under Article 50, but does not by itself establish the applicable paragraph or required measure. Some duties involve user-facing disclosure; others include machine-readable marking or deployer obligations.</p>
 
-        <p><strong>The Omnibus may simplify things further.</strong> The European Commission&rsquo;s February 2026 simplification proposal would narrow the scope of high-risk classification and raise SME exemption thresholds. As of writing, it&rsquo;s a proposal under legislative review &mdash; not enacted. The original August 2026 timeline remains the legal baseline.</p>
+        <p><strong>The Omnibus is now enacted.</strong> <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj">Regulation (EU) 2026/1744</a> entered into force on 27 July 2026. It changes more than dates and sets 2 December 2027 for the Annex III path and 2 August 2028 for the Annex I product-embedded path; the full amended provisions and transition rules still need to be applied to the facts.</p>
     </section>
 
     <section id="how-to-run">
@@ -406,7 +406,7 @@ regula check /path/to/your/project</code></pre>
 
         <p>Regula is open-source, has zero core dependencies, and processes scan inputs locally without uploading project files. Runtime varies with project size and hardware.</p>
 
-        <p>The risk patterns it checks against (387 as of v1.7.0; 330 at the time this scan was run with v1.6.1) are documented in the repository. If you disagree with a classification, you can suppress individual findings with inline comments or contribute pattern improvements upstream.</p>
+        <p>The historical scan used the pattern set recorded with the <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/blog_scan_2026_04">archived benchmark</a>. Pattern findings should be reviewed against code and deployment context; suspected false positives can be reported upstream with reproducible evidence.</p>
     </section>
 
     <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
@@ -418,7 +418,7 @@ regula check /path/to/your/project</code></pre>
     <div class="disclaimer">
         <p><em>Scans were run using Regula v1.6.1 against shallow clones of each project&rsquo;s default branch on 10 April 2026. Star counts are as of the same date. Findings reflect code-level patterns, not deployed system risk classifications &mdash; the EU AI Act regulates systems as deployed, not code in isolation.</em></p>
         <p><em>A re-scan with Regula v1.7.0 (23 April 2026) found 665 findings across the same 10 projects. The increase is primarily due to expanded AI security patterns in v1.7.0 (387 tier regexes vs 330 in v1.6.1). Full JSON scan output for both versions is available in the <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/blog_scan_2026_04">repository</a> for independent verification.</em></p>
-        <p><em>The EU AI Act enforcement timeline is subject to change. The Omnibus simplification proposal (February 2026) is under legislative review and has not been enacted. All deadline references in this article reflect current law unless otherwise noted.</em></p>
+        <p><em>Regulatory update, 4 August 2026: Regulation (EU) 2026/1744 is enacted and in force. Historical scan counts on this page do not establish legal classification, compliance or applicable obligations.</em></p>
     </div>
 
 </div>

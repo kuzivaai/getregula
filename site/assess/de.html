@@ -383,7 +383,7 @@
     <h1>Gilt die KI-Regulierung <span>für Sie?</span></h1>
     <p>Wählen Sie eine Rechtsordnung und erfassen Sie den Einsatzkontext. Der Fragebogen meldet mögliche Indikatoren, zu prüfende Vorschriften und offene Fragen; er bestimmt weder die rechtliche Einstufung noch Compliance oder anwendbare Pflichten.</p>
     <div class="hero-stats">
-      <span>Unter 5 Minuten</span>
+      <span>Im Browser ausfüllen</span>
       <span>Sofortige Prüfhinweise</span>
       <span>Die Fragebogenverarbeitung bleibt in diesem Browser</span>
     </div>
@@ -779,7 +779,7 @@ const QUESTIONS = [
   {
     id: "public_facing",
     text: "Könnten Einzelpersonen mit diesem System interagieren, ohne zu wissen, dass es KI-gestützt ist?",
-    help: "Artikel 50 verlangt Transparenz: Nutzer müssen wissen, wenn sie mit KI interagieren, wenn Inhalte KI-generiert sind oder wenn KI ihre Daten analysiert. Wenn Ihr System seine KI-Natur derzeit nicht offenlegt, gelten Transparenzpflichten.",
+    help: "Artikel 50 enthält mehrere Transparenzpflichten mit unterschiedlichen Adressaten, Bedingungen und Ausnahmen. Eine fehlende Offenlegung ist ein Prüfhinweis, kein Nachweis dafür, dass jede Pflicht aus Artikel 50 gilt.",
     article: "Artikel 50",
     weight: { yes: 15, no: -5, unsure: 5 },
     signal: "transparency"
@@ -1348,7 +1348,7 @@ function getNextSteps(results) {
       { title: "Sofort Rechtsberatung einholen", desc: "Artikel-5-Verbote unterliegen der höchsten Bußgeldkategorie. Ein qualifizierter Anwalt muss beurteilen, ob Ihr System in den Anwendungsbereich fällt oder für eine Ausnahme in Frage kommt." },
       { title: "Diese Bewertung mit der Rechtsabteilung teilen", desc: "Laden Sie die JSON-Datei herunter oder drucken Sie diese Seite als PDF. Ihre Rechtsabteilung muss das spezifische Verbot prüfen und beraten, ob eine Ausnahme greift." },
       { title: "Ihre Bewertung dokumentieren", desc: "Ob Sie die Praktik fortsetzen, ändern oder entfernen \u2014 dokumentieren Sie die Begründung. Regulierungsbehörden werden sehen wollen, dass Sie das Verbot in Betracht gezogen haben." },
-      { title: "Für Ihr Entwicklungsteam", desc: "Ihre Entwickler können die Regula-CLI ausführen (<code>pipx install regula-ai</code>, dann <code>regula check .</code>), um genau zu sehen, welche Code-Muster das Verbot ausgelöst haben." }
+      { title: "Für Ihr Entwicklungsteam", desc: "Ihre Entwickler können die Regula-CLI ausführen (<code>pipx install regula-ai</code>, dann <code>regula check .</code>), um separate Indikatoren auf Code-Ebene für die kontextbezogene Prüfung zu sammeln. CLI-Ergebnisse erklären oder bestimmen dieses Fragebogenergebnis nicht." }
     ];
   }
   if (results.tier === "high_risk" || results.tier === "high_risk_exempt") {
@@ -1542,20 +1542,21 @@ document.addEventListener("keydown", function(e) {
   if (!assessmentStarted) return;
   const section = document.getElementById("questionnaireSection");
   if (section.style.display === "none") return;
+  const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
 
-  if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+  if (key === "ArrowRight" || key === "ArrowDown") {
     e.preventDefault();
     if (!document.getElementById("nextBtn").disabled) nextQuestion();
-  } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+  } else if (key === "ArrowLeft" || key === "ArrowUp") {
     e.preventDefault();
     if (!document.getElementById("prevBtn").disabled) prevQuestion();
-  } else if (e.key === "1" || e.key === "y") {
+  } else if (key === "1" || key === "y") {
     const btns = document.querySelectorAll(".ans-btn");
     if (btns.length >= 1) { btns[0].click(); btns[0].focus(); }
-  } else if (e.key === "2" || e.key === "n") {
+  } else if (key === "2" || key === "n") {
     const btns = document.querySelectorAll(".ans-btn");
     if (btns.length >= 2) { btns[1].click(); btns[1].focus(); }
-  } else if (e.key === "3" || e.key === "u") {
+  } else if (key === "3" || key === "u") {
     const btns = document.querySelectorAll(".ans-btn");
     if (btns.length >= 3) { btns[2].click(); btns[2].focus(); }
   }
@@ -1818,7 +1819,7 @@ function getScanNextSteps(tier) {
   if (tier === "prohibited") {
     return [
       { title: "Rechtsberatung einholen", desc: "Artikel-5-Verbote unterliegen den h\u00f6chsten Strafen. Ein qualifizierter Anwalt muss beurteilen, ob Ihr System in den Anwendungsbereich f\u00e4llt oder f\u00fcr eine enge Ausnahme in Frage kommt." },
-      { title: "Die erkannten Muster \u00fcberpr\u00fcfen", desc: "Einige Treffer k\u00f6nnen falsch-positiv sein. Die obigen Muster zeigen genau, was die Einstufung ausgel\u00f6st hat. Pr\u00fcfen Sie, ob der markierte Code die beschriebene Praktik umsetzt." },
+      { title: "Die erkannten Muster \u00fcberpr\u00fcfen", desc: "Einige Treffer k\u00f6nnen falsch-positiv sein. Die obigen Muster zeigen, was dieses Scanner-Ergebnis ausgel\u00f6st hat. Pr\u00fcfen Sie, ob der markierte Code die beschriebene Praktik umsetzt." },
       { title: "Mit Ihrem Team teilen", desc: "Exportieren Sie diesen Scan als JSON oder drucken Sie ihn als PDF. Ihre Compliance- und Rechtsteams m\u00fcssen diese Ergebnisse pr\u00fcfen." },
       { title: "F\u00fcr tiefere Analyse", desc: "Ihr Entwicklungsteam kann die Regula-CLI f\u00fcr dateiweise Analyse ausf\u00fchren: <code>pipx install regula-ai</code>, dann <code>regula check .</code>" },
     ];

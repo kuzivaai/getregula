@@ -149,7 +149,7 @@ def validate_config(path: str | None = None, format_type: str = "text") -> dict:
 
     if ai_officer_name_empty:
         warnings.append(
-            "governance.ai_officer.name is empty (EU AI Act Article 4 recommends a named person)"
+            "governance.ai_officer.name is empty (optional governance contact)"
         )
 
     # --- Validate thresholds ---
@@ -246,7 +246,7 @@ def _print_result(result: dict) -> None:
             print("  PASS  governance.ai_officer: defined")
         elif ai_officer_defined and ai_officer_name_empty:
             print("  PASS  governance.ai_officer: defined")
-            print("  WARN  governance.ai_officer.name is empty (EU AI Act Article 4 recommends a named person)")
+            print("  WARN  governance.ai_officer.name is empty (optional governance contact)")
         else:
             pass  # Covered by warnings list
 

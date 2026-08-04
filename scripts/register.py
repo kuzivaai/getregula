@@ -132,7 +132,7 @@ def build_redirects(kind: str) -> list[str]:
     if kind == "no_registration_required":
         return [
             "regula check      — keep scanning for risk indicators",
-            "regula classify   — confirm classification on individual files",
+            "regula classify   — review candidate indicators on individual files",
         ]
     return []
 

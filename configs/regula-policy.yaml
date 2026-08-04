@@ -1,9 +1,9 @@
 version: "1.0"
 organisation: "Your Organisation"
 
-# Named accountable person — EU AI Act Article 4(1) requires a natural person
-# or legal entity responsible for the AI system. ISO 42001 A.5.2 requires
-# defined roles and responsibilities for AI governance.
+# Optional named governance contact. Regulation (EU) 2026/1744 replaced
+# Article 4 with an AI-literacy duty; Article 4 does not require an AI officer.
+# ISO/IEC 42001 role and responsibility controls are a separate framework.
 governance:
   ai_officer:
     name: "Kuziva Muzondo"      # Natural person accountable for the Regula project itself
@@ -19,7 +19,7 @@ regulatory_basis:
   eu_ai_act_version: "2024/1689"
   pattern_version: "1.1.0"
   last_reviewed: "2026-08-04"
-  notes: "Patterns aligned to original text. Omnibus provisional agreement reached 7 May 2026, approved by European Parliament 16 Jun 2026. Annex III deferred to 2 Dec 2027. Pending Council adoption and OJ publication; original dates remain legally binding until then."
+  notes: "Patterns reviewed against Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744. The amendment was published on 24 July 2026 and entered into force on 27 July 2026. Annex III high-risk provisions apply from 2 Dec 2027 and Annex I product-embedded provisions from 2 Aug 2028, subject to the enacted scope and transition rules."
 
 frameworks:
   - eu_ai_act

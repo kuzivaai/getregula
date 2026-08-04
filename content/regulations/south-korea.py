@@ -5,13 +5,13 @@ Data file consumed by scripts/build_regulations.py to generate
 south-korea-ai-regulation.html. Every claim is traceable to primary or
 primary-adjacent sources cited in the `sources` list at the bottom.
 
-Key verified facts (published 2026-04-08; re-verified 2026-07-22;
+Key verified facts (published 2026-04-08; re-verified 2026-08-04;
 grace-period, KRW 30M fine ceiling, and 99-task action plan added
 2026-07-27, verified vs trade.gov ITA summary + multiple secondaries):
 - The "Act on the Development of Artificial Intelligence and Establishment
   of Trust" (commonly the AI Basic Act) took effect on 22 January 2026.
-- The enforcement decree took effect the same day; detailed subordinate
-  regulations from MSIT remain in public consultation.
+- The Enforcement Decree took effect the same day. MSIT also released
+  transparency and other implementation guidelines on 22 January 2026.
 - MSIT has clarified that AI systems trained with a cumulative compute of
   at least 10^26 FLOPs are designated "high-performance AI" with associated
   safety obligations. Note this is a different threshold from the EU AI Act's
@@ -56,9 +56,9 @@ REGION = {
         "Korea AI Basic Act \u2014 in force 22 Jan 2026. Regula's live coverage."
     ),
 
-    "last_updated": "2026-07-27",
+    "last_updated": "2026-08-04",
     "published_time": "2026-04-08T00:00:00+00:00",
-    "modified_time": "2026-07-27T00:00:00+00:00",
+    "modified_time": "2026-08-04T00:00:00+00:00",
 
     "lede": (
         "South Korea is the second major jurisdiction after the European Union "
@@ -68,11 +68,11 @@ REGION = {
         "with its Enforcement Decree. The Act is a framework statute: it "
         "defines categories (high-impact AI, high-performance AI, generative "
         "AI), imposes documentation and transparency obligations, and "
-        "delegates the technical detail to subordinate regulations from the "
-        "Ministry of Science and ICT (MSIT). Those subordinate regulations "
-        "are the single most important thing to monitor in 2026 \u2014 they will "
-        "define thresholds, watermarking specifications, and audit "
-        "expectations. This page tracks what is in force today."
+        "delegates technical detail to the Enforcement Decree and guidance "
+        "from the Ministry of Science and ICT (MSIT). The decree and initial "
+        "transparency guidance are in force; later amendments and revised "
+        "guidance must be tracked separately. This page records the official "
+        "position reviewed on 4 August 2026."
     ),
 
     "tracker_rows": [
@@ -108,8 +108,8 @@ REGION = {
         },
         {
             "label": "Subordinate regulations",
-            "value": "MSIT Enforcement Decree in force \u00b7 detailed thresholds and watermarking spec in public consultation",
-            "state": "pending",
+            "value": "MSIT Enforcement Decree and initial implementation guidelines released 22 January 2026",
+            "state": "verified",
         },
         {
             "label": "Extraterritorial reach",
@@ -132,7 +132,7 @@ REGION = {
     <li><strong>Generative AI</strong> \u2014 providers must clearly disclose to users that they are interacting with AI, and must apply watermarking or labelling to AI-generated content. The specific watermarking standard is delegated to MSIT subordinate regulation.</li>
     <li><strong>Extraterritoriality</strong> \u2014 the Act explicitly applies to foreign providers whose AI systems affect users in the Republic of Korea, similar in architecture to the EU AI Act's Article 2.</li>
 </ul>
-<p>Enforcement is administered by MSIT. The statute includes investigative powers, corrective orders, and administrative fines of up to KRW 30 million (<a href="https://www.trade.gov/market-intelligence/south-korea-artificial-intelligence-ai-basic-act">US ITA summary</a>). MSIT has stated it will operate a grace period of at least one year through 2026, during which fact-finding investigations and fines are generally deferred except in cases involving serious social harm, while regulators focus on guidance and adaptation. As of 2026-07-27, no enforcement action has been reported publicly; the regime remains guidance- and readiness-oriented. In February 2026 the National AI Strategy Committee finalised an AI action plan with 99 tasks at its second plenary session. In June 2026 MSIT consulted on an amendment to the Enforcement Decree defining AI-vulnerable groups and establishing an AI product/service verification system for public procurement.</p>
+<p>Enforcement is administered by MSIT. MSIT's 22 January 2026 release states that it will provide a grace period of at least one year, generally deferring fact-finding investigations and penalties during that period except for highly exceptional cases involving death, human-rights violations, or other serious social harm. The same release records that the Act, Enforcement Decree, and implementation guidelines took effect or were released on 22 January 2026. This page does not infer from the grace period that the statutory obligations are suspended.</p>
 """,
         },
         {
@@ -171,14 +171,14 @@ REGION = {
             "id": "what-to-do-today",
             "heading": "What Korean operators and foreign providers should do today",
             "body": """
-<p>The statute is already in force. Subordinate regulations are still settling. The practical sequence:</p>
+<p>The statute and Enforcement Decree are in force, and MSIT released initial guidelines on 22 January 2026. The practical sequence:</p>
 <ol>
     <li><strong>Determine whether you are a high-impact AI provider</strong> by reviewing your deployment domains against the statute's list: healthcare, energy, public-sector use, identification, hiring, creditworthiness assessment, and related sensitive sectors. Extraterritorial reach means foreign providers serving Korean users are in scope.</li>
     <li><strong>Estimate your training compute</strong> against the 10\u00b2\u2076 FLOP threshold. Most production models today sit well below this. If you are building a frontier or near-frontier model, Regula's <code>regula inventory</code> command can annotate detected model references with their tier; add your own internal training-run metadata to confirm.</li>
-    <li><strong>If you ship generative AI, audit your transparency path.</strong> Clear user disclosure that the output is AI-generated is already required. Watermarking is required; the spec is pending. Building a watermarking hook now can reduce the implementation work remaining when MSIT publishes the payload format.</li>
+    <li><strong>If you ship generative AI, audit your transparency path.</strong> MSIT's official transparency guidance distinguishes prior notice for high-impact or generative AI from labelling AI-generated content and permits specified visible or invisible methods depending on the content. Check the Act, decree, and current guideline rather than assuming one universal watermark format.</li>
     <li><strong>Document your risk management and human oversight.</strong> Regula's <code>regula gap</code> and <code>regula oversight</code> commands map cleanly onto the high-impact AI obligations. The outputs are not Korean-statute-specific, but the evidence is the same.</li>
     <li><strong>Appoint a domestic representative</strong> if you are a foreign provider without a Korean legal entity. This is a common pattern in Korean tech regulation and is likely to be explicitly required under MSIT subordinate rules.</li>
-    <li><strong>Watch MSIT's rulemaking.</strong> The Enforcement Decree is in force but several subordinate regulations are still in public consultation. These will define the watermarking specification, the high-impact domain list in detail, and the exact investigative procedures.</li>
+    <li><strong>Watch MSIT's official updates.</strong> The Act, decree, and initial guidelines are in force. MSIT has continued to amend the framework and refine guidance during the enforcement grace period.</li>
 </ol>
 """,
         },
@@ -192,7 +192,7 @@ REGION = {
     <li><strong>Compute threshold.</strong> EU Article 51 uses 10\u00b2\u2075 FLOPs as the systemic-risk GPAI threshold. Korea uses 10\u00b2\u2076 FLOPs as the high-performance AI threshold. A model trained between 10\u00b2\u2075 and 10\u00b2\u2076 FLOPs is a systemic-risk GPAI in the EU but <em>not</em> high-performance AI under the Korean regime.</li>
     <li><strong>Hard prohibitions.</strong> The EU AI Act has a hard prohibition list under Article 5. The Korean AI Basic Act does not have an equivalent hard prohibition list \u2014 sensitive use cases are channelled into the high-impact AI obligations instead.</li>
     <li><strong>Conformity assessment.</strong> The EU AI Act requires third-party conformity assessment for some Annex I high-risk systems and self-assessment for Annex III. The Korean Act currently relies on provider documentation and MSIT oversight rather than third-party assessment bodies.</li>
-    <li><strong>Watermarking.</strong> The EU AI Act's Article 50 transparency rules on AI-generated content apply from 2 August 2026. Korea's watermarking obligation is already in force as of 22 January 2026 \u2014 six months earlier \u2014 though the technical specification is still pending.</li>
+    <li><strong>Content marking.</strong> EU AI Act Article 50 obligations generally have applied since 2 August 2026, with a 2 December 2026 transition for providers of Article 50(2) systems already on the market before then. Korea's separate disclosure and content-marking rules must be checked against the Korean Act, Enforcement Decree, and current MSIT notices; this page does not treat a secondary summary as the legal text.</li>
     <li><strong>Enforcement.</strong> EU enforcement is decentralised across national authorities plus the AI Office. Korean enforcement is centralised under MSIT.</li>
 </ul>
 <p>If you are already on a path to EU AI Act readiness, a large share of the evidence and documentation will translate directly \u2014 but the thresholds, categories, and watermarking specifications need to be checked separately.</p>
@@ -202,7 +202,7 @@ REGION = {
             "id": "where-regula-fits",
             "heading": "Where Regula fits for Korean operators and foreign providers",
             "body": """
-<p>Regula supports the Korean AI Basic Act directly. You can <a href="/assess/?j=kr">take the Korea assessment</a> (9 questions, no signup) or scan your codebase:</p>
+<p>Regula includes a Korea-oriented assessment and can report related code indicators. It does not determine coverage or compliance under Korean law. You can <a href="/assess/?j=kr">take the Korea assessment</a> (9 questions, no signup) or scan your codebase:</p>
 <pre tabindex="0"><code>pipx install regula-ai
 
 regula discover .              # AI systems present in the project
@@ -220,9 +220,9 @@ regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.7)
             "id": "what-we-are-tracking",
             "heading": "What we are tracking for the South Korea page",
             "body": """
-<p>This page will be updated as the Korean landscape moves. Specifically we are watching for:</p>
+<p>This page requires periodic review as the Korean framework changes. Specifically we are watching for:</p>
 <ol>
-    <li><strong>MSIT subordinate regulations</strong> specifying the high-performance AI safety obligations, the generative AI watermarking standard, and the high-impact AI documentation format.</li>
+    <li><strong>MSIT amendments and revised guidance</strong> affecting safety, transparency, high-impact determinations, and operator responsibilities.</li>
     <li><strong>First enforcement actions</strong> \u2014 the first MSIT investigation, corrective order, or administrative fine under the Act.</li>
     <li><strong>Interaction with existing Korean statutes</strong> \u2014 PIPA (Personal Information Protection Act) enforcement on AI training data, the Information and Communications Network Act on generative AI service providers, and sector regulators issuing their own AI guidance.</li>
     <li><strong>Bilateral alignment</strong> with EU AI Act harmonised standards \u2014 whether MSIT references CEN-CENELEC JTC 21 work or the final GPAI Code of Practice in its subordinate regulations.</li>
@@ -237,8 +237,8 @@ regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.7)
             "q": "When did the South Korean AI Basic Act take effect?",
             "a": (
                 "22 January 2026, along with its Enforcement Decree. The statute is "
-                "in force; several subordinate regulations from the Ministry of "
-                "Science and ICT remain in public consultation."
+                "in force. MSIT released the Enforcement Decree and initial "
+                "implementation guidelines on the same date."
             ),
         },
         {
@@ -285,14 +285,23 @@ regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.7)
                 "Partially. Regula's gap assessment, human oversight trace, "
                 "technical documentation scaffold, and AI Bill of Materials all "
                 "produce evidence that translates to the Korean regime's high-impact "
-                "AI obligations. Regula does not yet ship Korean watermarking "
-                "payloads or Korean-language disclosure templates; those will land "
-                "after MSIT publishes the watermarking specification."
+                "AI review. Regula does not validate compliance with MSIT's "
+                "transparency guideline or generate Korean-language notices."
             ),
         },
     ],
 
     "sources": [
+        {
+            "title": "AI Basic Act and Enforcement Decree enter into force — MSIT, 22 January 2026",
+            "note": "Official ministry account of the effective date, decree, safety threshold, high-impact criteria, and enforcement grace period.",
+            "url": "https://www.msit.go.kr/eng/bbs/view.do?bbsSeqNo=42&mId=4&mPid=2&nttSeqNo=1214&sCode=eng",
+        },
+        {
+            "title": "Guidelines on Ensuring AI Transparency — MSIT, 22 January 2026",
+            "note": "Official ministry summary of Article 31 prior-notice and content-labelling guidance.",
+            "url": "https://www.msit.go.kr/eng/bbs/view.do?bbsSeqNo=42&mId=4&mPid=2&nttSeqNo=1215&sCode=eng",
+        },
         {
             "title": "South Korea: Comprehensive AI Legal Framework Takes Effect \u2014 Library of Congress Global Legal Monitor",
             "note": "Primary-adjacent official summary of the AI Basic Act and Enforcement Decree taking effect on 22 January 2026.",
