@@ -43,7 +43,7 @@ the 75th percentile of real visits when sufficient field data exists:
 | Metric | Good | Poor |
 |---|---:|---:|
 | Largest Contentful Paint (LCP) | at most 2.5 s | over 4.0 s |
-| Interaction to Next Paint (INP) | at most 200 ms | over 500 ms |
+| [Interaction to Next Paint (INP)](https://web.dev/articles/inp) | at most 200 ms | over 500 ms |
 | Cumulative Layout Shift (CLS) | at most 0.1 | over 0.25 |
 
 Source: [Google's Core Web Vitals threshold methodology](https://web.dev/articles/defining-core-web-vitals-thresholds).
@@ -88,7 +88,7 @@ Before making that claim, record results for:
 
 - keyboard-only completion of the primary assessment and installation paths
 - visible focus, focus order, dialogs, tabs, error recovery and status updates
-- 200% and 400% zoom, reflow, text spacing and representative mobile sizes
+- [200% text resizing](https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html) and [400% reflow](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html), text spacing and representative mobile sizes
 - reduced motion and high-contrast or forced-colour behavior
 - NVDA with Firefox or Chrome on Windows
 - VoiceOver with Safari on macOS and iOS
