@@ -1619,7 +1619,7 @@ button.audience-fwd {
     .blog-body h2 { font-size: 1.5rem; }
 }
 
-/* ===== ACCESSIBILITY — WCAG 2.2 AA compliance =====
+/* ===== ACCESSIBILITY — WCAG 2.2 AA implementation target =====
    axe-core audit (2026-04-16) flagged link-in-text-block on links
    that relied on colour alone to differentiate from surrounding text.
    WCAG SC 1.4.1 (Use of Color) requires a non-colour indicator.

@@ -22,7 +22,7 @@ Regula scans your code and tells you which **risk tier** your AI system falls in
 | **PROHIBITED** | Banned in the EU. Stop. | Social credit scoring, subliminal manipulation |
 | **HIGH-RISK** | Heavy compliance required (Articles 9-15) | CV screening, credit scoring, healthcare services |
 | **LIMITED-RISK** | Must disclose AI to users (Article 50) | Chatbots, deepfakes, emotion recognition |
-| **MINIMAL-RISK** | No mandatory requirements | Spam filters, recommendation engines |
+| **NO ELEVATED RISK-TIER INDICATORS** | No prohibited, Annex III or Article 50 path detected in code; not legal clearance | Examples may include spam filters or recommendation engines, depending on context |
 
 If you built a chatbot — that's limited-risk. If it screens job applications — that's high-risk. If it scores people's social behaviour — that's prohibited.
 
@@ -116,7 +116,7 @@ Bundles your scan results, gap assessment, documentation, and audit trail into a
 ### "I built a recommendation engine for an online shop"
 - Risk tier: **MINIMAL-RISK**
 - What you need: Nothing mandatory. Optional: transparency is good practice.
-- Run: `regula check .` to confirm you're in the clear
+- Run: `regula check .` to identify code-level indicators, then review intended purpose and deployment context
 
 ### "I fine-tuned an open-source model"
 - Risk tier: Depends on use case + whether you're distributing the model

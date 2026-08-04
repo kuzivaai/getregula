@@ -53,7 +53,7 @@ Regula classifies findings into tiers based on the EU AI Act:
 | **Prohibited** | Matches an Article 5 banned practice | Blocked — cannot proceed |
 | **High-Risk** | Matches an Annex III category (e.g., credit AI, hiring AI) | Warning with Article 9-15 requirements |
 | **Limited-Risk** | Transparency obligation (e.g., chatbots, deepfakes) | Note — inform users they interact with AI |
-| **Minimal-Risk** | AI code detected, no specific regulatory concern | Logged only |
+| **No elevated risk-tier indicators** | AI code detected, but no elevated path found by the scan | Logged for contextual review; not legal clearance |
 | **AI Security** | Code-level vulnerability (e.g., unsafe deserialization) | Warning with OWASP LLM reference |
 | **Credential** | Hardcoded API key or secret detected | Blocked or warned |
 

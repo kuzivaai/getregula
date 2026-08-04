@@ -500,9 +500,15 @@ def cmd_check(args) -> None:
             verdict_action = "If confirmed, Article 50 requires disclosing AI usage to users."
             verdict_color = blue
         elif active:
-            verdict_tier = "MINIMAL-RISK"
-            verdict_desc = "Your project uses AI but with minimal regulatory obligations."
-            verdict_action = "No mandatory requirements, but good governance is recommended."
+            verdict_tier = "NO ELEVATED RISK-TIER INDICATORS"
+            verdict_desc = (
+                "AI indicators were found, but this scan did not identify an "
+                "Article 5, Annex III, or Article 50 path."
+            )
+            verdict_action = (
+                "This is not a legal classification. Review intended purpose, "
+                "Articles 4 and 5, and other context-dependent duties."
+            )
             verdict_color = lambda x: x  # identity function — no color applied
         else:
             _pre_stats = getattr(scan_files, "last_stats", {}) or {}

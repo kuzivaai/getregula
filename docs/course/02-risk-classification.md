@@ -17,7 +17,7 @@ The EU AI Act (Regulation 2024/1689) classifies AI systems into four tiers. From
 
 **Limited-Risk (Article 50):** 4 categories requiring transparency (chatbots, emotion recognition, biometric categorisation, synthetic content). Users must be informed they're interacting with AI.
 
-**Minimal-Risk:** No specific requirements. Regula logs detection only.
+**No elevated risk-tier indicators:** the scan found no elevated path. This is not a legal classification; contextual and cross-cutting duties still require review.
 
 ## Important Caveat
 

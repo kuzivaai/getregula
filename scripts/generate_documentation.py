@@ -1434,7 +1434,11 @@ _[TO BE COMPLETED]_
     elif highest == "limited_risk":
         doc += "**Risk tier:** LIMITED-RISK\n\nArticle 50 transparency requirements apply.\n"
     else:
-        doc += "**Risk tier:** MINIMAL-RISK\n\nNo specific EU AI Act requirements.\n"
+        doc += (
+            "**Automated result:** NO ELEVATED RISK-TIER INDICATORS\n\n"
+            "This is not a legal classification. Articles 4 and 5 and other "
+            "context-dependent duties may still apply.\n"
+        )
 
     # --- Enhanced sections ---
 

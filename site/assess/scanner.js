@@ -1858,7 +1858,7 @@ function classifyCode(text, language) {
     tier: 'minimal_risk', confidence: 'medium',
     indicators_matched: [], applicable_articles: [],
     action: 'allow',
-    message: 'Minimal-risk AI system. No specific EU AI Act requirements.',
+    message: 'No elevated risk-tier indicators detected. This is not a legal classification; Article 4, Article 5, and other context-dependent duties may still apply.',
     confidence_score: _confScore('minimal_risk', 0, true),
     match_lines: [],
   };
