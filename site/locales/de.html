@@ -6,11 +6,11 @@
     <!-- Critical inline CSS + non-render-blocking stylesheet loading.
          Why: /assets/site.min.css is render-blocking, so Chrome shows a WHITE canvas
          (the browser default) for the entire duration of the CSS fetch on cold
-         loads — measured at ~600ms on simulated 3G, worse on real slow networks.
+         loads :  measured at ~600ms on simulated 3G, worse on real slow networks.
          That white→dark snap is what users reported as "the demo flashing": the
          hero terminal sits at the top of the fold and takes the full brunt of it.
          The earlier attempt (93a833b) targeted panel opacity and font preload,
-         neither of which is the actual cause — the cause is that the browser
+         neither of which is the actual cause :  the cause is that the browser
          cannot paint at all until the external stylesheet arrives.
 
          Fix: establish the brand background + basic tokens inline so first paint
@@ -57,9 +57,9 @@
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Regula — EU-KI-Gesetz-Konformitätsscanner für Code">
+    <meta property="og:image:alt" content="Regula :  EU-KI-Gesetz-Konformitätsscanner für Code">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
-    <meta name="twitter:image:alt" content="Regula — EU-KI-Gesetz-Konformitätsscanner für Code">
+    <meta name="twitter:image:alt" content="Regula :  EU-KI-Gesetz-Konformitätsscanner für Code">
     <meta name="author" content="Regula">
     <link rel="canonical" href="https://getregula.com/locales/de.html">
     <script type="application/ld+json">
@@ -124,7 +124,7 @@
                 "name": "Ist meine KI-App nach dem EU-KI-Gesetz verboten?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Social Scoring, unterschwellige Manipulation, biometrische Echtzeit-Identifizierung im öffentlichen Raum und Emotionserkennung am Arbeitsplatz sind nach Artikel 5 vollständig verboten. Regula scannt Ihren Code auf Muster, die diesen verbotenen Verwendungen entsprechen."
+                    "text": "Artikel 5 verbietet bestimmte Praktiken, darunter bestimmte Formen von Social Scoring, Manipulation, biometrischer Identifizierung und Emotionserkennung. Der genaue Umfang, die Bedingungen und die Ausnahmen sind entscheidend. Regula markiert zugehörige Codemuster zur Prüfung; es stellt keine verbotene Praxis fest."
                 }
             },
             {
@@ -188,7 +188,7 @@
                 "name": "Funktioniert Regula mit KI-generiertem Code von Cursor, Claude Code oder Lovable?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Ja. Regula scannt Quellcode-Dateien unabhängig davon, wer oder was sie geschrieben hat. KI-generierter Code unterliegt denselben EU-KI-Gesetz-Pflichten wie handgeschriebener Code — Artikel 2 unterscheidet nicht nach Urheberschaft. Führen Sie regula check . für jedes Projekt aus. Wenn Sie Cursor oder Claude Code verwenden, fügen Sie regula assess in Ihren Chat ein, um schnell die Anwendbarkeit zu prüfen, ohne Ihren Editor zu verlassen."
+                    "text": "Ja. Regula scannt Quellcode-Dateien unabhängig davon, wer oder was sie geschrieben hat. KI-generierter Code unterliegt denselben EU-KI-Gesetz-Pflichten wie handgeschriebener Code :  Artikel 2 unterscheidet nicht nach Urheberschaft. Führen Sie regula check . für jedes Projekt aus. Wenn Sie Cursor oder Claude Code verwenden, fügen Sie regula assess in Ihren Chat ein, um schnell die Anwendbarkeit zu prüfen, ohne Ihren Editor zu verlassen."
                 }
             },
             {
@@ -226,7 +226,7 @@
          when the woff2 arrives late. -->
     <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
     <style>
-        /* de.html overrides — values that intentionally differ from site.css */
+        /* de.html overrides :  values that intentionally differ from site.css */
         body { line-height: 1.6; }
         .nav { height: 52px; }
         .badge { gap: 6px; padding: 4px 12px; }
@@ -285,7 +285,7 @@
 <!-- NAV -->
 <nav class="nav" id="nav" aria-label="Hauptnavigation">
     <a href="/" class="nav-brand">Regula</a>
-    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Men&uuml;" aria-expanded="false">&#9776;</button>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Men&uuml;" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="/assess/de.html" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/guides/">Guides</a>
@@ -307,7 +307,7 @@
         <div class="hero-text">
             <div class="badge"><span class="badge-dot"></span> Open-Source-CLI &middot; v1.9.0 &middot; Apache 2.0</div>
             <h1><span class="hl">KI-Governance-Indikatoren</span> im Code finden</h1>
-            <p class="sub">Ein Befehl meldet im Code beobachtbare Indikatoren zu drei Rechtsrahmen mit Fundstellen für die menschliche Kontextprüfung. Die Laufzeit variiert; für den Kernscan ist kein Konto erforderlich.</p>
+            <p class="sub">Scannen Sie einen Quellcode-Ordner nach Mustern, die eine KI-Governance-Prüfung erfordern könnten. Regula erklärt, warum jedes Muster relevant ist, und verlinkt die zugehörigen Regeln. Es entscheidet nicht, ob Ihr System rechtskonform ist.</p>
 
             <button type="button" class="cta-pill" id="install-pill" aria-live="polite" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'install'}});copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
@@ -324,7 +324,7 @@
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2.685</strong> Tests
+                <strong style="color:var(--text);">2.687</strong> Tests
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> unerwartete Sicherheitsbefunde
                 <span class="sp-sep" aria-hidden="true">&middot;</span> null Abh&auml;ngigkeiten
                 <span class="sp-sep" aria-hidden="true">&middot;</span> der lokale Kern lädt gescannte Dateien nicht hoch
@@ -353,17 +353,17 @@
   Annex III, Category 5
 
 <span class="t-y">WHY:</span>
-  scoring.py:23 &mdash; essential_services
+  scoring.py:23 : essential_services
     <span class="t-m">Code: score = model.predict(applicant)</span>
-    Legal basis: Annex III &mdash; Articles 9-15
+    Legal basis: Annex III : Articles 9-15
     False positive if: not a credit decision
 
 <span class="t-h">ROLE:</span> DEPLOYER (confidence: high)
   <span class="t-m">- OpenAI API usage detected</span>
 
 <span class="t-y">OBLIGATIONS:</span>
-  <span class="t-c">[HIGH]</span> Art. 9  Risk management   &mdash; 40-60h
-  <span class="t-c">[HIGH]</span> Art. 14 Human oversight  &mdash; 16-24h
+  <span class="t-c">[HIGH]</span> Art. 9  Risk management   : 40-60h
+  <span class="t-c">[HIGH]</span> Art. 14 Human oversight  : 16-24h
   Total: 160-324h | Deadline: <span class="t-y">Dec 2027</span>
   <span class="t-m">&#9888; Omnibus agreed 7 May 2026, EP approved 16 Jun 2026, Council approved 29 Jun 2026; published in OJ 2026-07-24, in force from 2026-07-27</span></pre>
                 </div>
@@ -372,17 +372,17 @@
 
 <span class="t-h">COMPLIANCE PLAN  &middot;  HIGH-RISK (Annex III, Category 5)</span>
 
-Priority 1 &mdash; Risk Management System (Art. 9)
+Priority 1 : Risk Management System (Art. 9)
   Effort: 40&ndash;60h
   <span class="t-r">&times;</span> No risk assessment file found
   <span class="t-r">&times;</span> No model evaluation documented
 
-Priority 2 &mdash; Human Oversight (Art. 14)
+Priority 2 : Human Oversight (Art. 14)
   Effort: 16&ndash;24h
   <span class="t-r">&times;</span> No review-before-action pattern detected
   <span class="t-r">&times;</span> No override mechanism found
 
-Priority 3 &mdash; Technical Documentation (Art. 11)
+Priority 3 : Technical Documentation (Art. 11)
   Effort: 8&ndash;12h
   <span class="t-g">&#10003;</span> Annex IV template: regula docs .
 
@@ -396,7 +396,7 @@ Highest risk tier: not_ai
 Overall score:     6%
 
   NOTE: This score measures the PRESENCE of compliance
-  documentation and infrastructure &mdash; it does not assess code
+  documentation and infrastructure : it does not assess code
   risk and cannot offset scan findings. A project can score
   100% here and still fail `regula check` on prohibited or
   high-risk patterns. Run both; they answer different questions.
@@ -443,7 +443,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
   // Flip panel transitions on AFTER the first paint so the terminal does
   // not play its 0→1 opacity fade on page load. Uses requestAnimationFrame
   // rather than DOMContentLoaded so the class lands just after the browser
-  // has committed initial styles — guaranteed no flash.
+  // has committed initial styles :  guaranteed no flash.
   requestAnimationFrame(function () {
       requestAnimationFrame(function () {
           document.body.classList.add('term-panels-ready');
@@ -502,12 +502,12 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="tier tier-r">
             <div class="tier-badge">Verboten</div>
             <div class="tier-examples">Social Scoring &middot; Emotionserkennung &middot; Biometrie in Echtzeit &middot; Unterschwellige Manipulation</div>
-            <div class="tier-hint">Art. 5: vollst&auml;ndig verboten &rarr;</div>
+            <div class="tier-hint">Hinweis auf eine nach Artikel 5 verbotene Praxis &rarr;</div>
         </div>
         <div class="tier tier-a">
             <div class="tier-badge">Hochrisiko</div>
             <div class="tier-examples">Kreditbewertung &middot; Besch&auml;ftigung &middot; Gesundheitsdienstleistungen &middot; Bildung &middot; Strafverfolgung</div>
-            <div class="tier-hint">Art. 9&ndash;15 gelten &rarr;</div>
+            <div class="tier-hint">Zugehörige Artikel 9&ndash;15 &rarr;</div>
         </div>
         <div class="tier tier-y">
             <div class="tier-badge">Begrenztes Risiko</div>
@@ -526,7 +526,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 <div class="urgency">
     <div class="urgency-box" role="note">
         <div class="date">2026&ndash;27</div>
-        <div class="body"><strong>Hochrisiko-Pflichten</strong> f&uuml;r Anhang-III-Systeme gelten ab Dezember 2027, nach der vorl&auml;ufigen Einigung zum Digital Omnibus vom 7. Mai 2026, vom Europ&auml;ischen Parlament am 16. Juni 2026 gebilligt. Anhang-I-Produktsysteme gelten ab August 2028. Der Rat hat am 29. Juni 2026 zugestimmt; veröffentlicht im Amtsblatt am 24. Juli 2026 als Verordnung (EU) 2026/1744, in Kraft ab dem 27. Juli 2026. So oder so: die Anforderungen &auml;ndern sich nicht &mdash; nur die Frist. <strong>Sie m&uuml;ssen wissen, wo Sie stehen.</strong></div>
+        <div class="body"><strong>Hochrisiko-Pflichten</strong> f&uuml;r Anhang-III-Systeme gelten ab Dezember 2027, nach der vorl&auml;ufigen Einigung zum Digital Omnibus vom 7. Mai 2026, vom Europ&auml;ischen Parlament am 16. Juni 2026 gebilligt. Anhang-I-Produktsysteme gelten ab August 2028. Der Rat hat am 29. Juni 2026 zugestimmt; veröffentlicht im Amtsblatt am 24. Juli 2026 als Verordnung (EU) 2026/1744, in Kraft ab dem 27. Juli 2026. So oder so: die Anforderungen &auml;ndern sich nicht : nur die Frist. <strong>Sie m&uuml;ssen wissen, wo Sie stehen.</strong></div>
     </div>
 </div>
 
@@ -545,12 +545,12 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Schritt 2</div>
             <h3>Scannen</h3>
-            <p><code>regula</code><br>Konformit&auml;tsbewertung, Befunde und n&auml;chste Schritte.</p>
+            <p><code>regula</code><br>Indikatorübersicht, Befunde und vorgeschlagene nächste Schritte.</p>
         </div>
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Schritt 3</div>
             <h3>Handeln</h3>
-            <p><code>regula comply</code><br>Pflichtencheckliste mit Bestanden/Nicht-Bestanden pro Artikel.</p>
+            <p><code>regula comply</code><br>Checkliste der gefundenen Dokumentation und Kontrollen je Artikel.</p>
         </div>
     </div>
 </div>
@@ -610,7 +610,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     <div class="art-grid">
         <div class="card-base art-card">
             <div class="tag tag-blue">Dokumentation</div>
-            <h3>K&ouml;nnen Sie Konformit&auml;t nachweisen?</h3>
+            <h3>Benötigen Sie Unterlagen für die Prüfung?</h3>
             <p>Anhang-IV-Dokumentation, generiert aus Ihrem tats&auml;chlichen Code. Funktionen, Abh&auml;ngigkeiten und Protokollabdeckung bereits ausgef&uuml;llt.</p>
             <code style="font-size:11px;color:#9898b4;">regula docs . &middot; regula conform .</code>
         </div>
@@ -622,8 +622,8 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-purple">Integrit&auml;t</div>
-            <h3>Manipulationssicher &amp; signiert</h3>
-            <p>SHA-256-Manifest + Ed25519-Signierung + RFC-3161-Zeitstempel. Beweisen Sie, wann die Bewertung erstellt wurde und dass sie nicht ver&auml;ndert wurde.</p>
+            <h3>Integritätsprüfungen und optionale Signaturen</h3>
+            <p>SHA-256-Manifeste, Ed25519-Signaturen und RFC-3161-Zeitstempel helfen Prüfern festzustellen, wann eine Bewertung erstellt wurde und ob Dateien danach geändert wurden.</p>
             <code style="font-size:11px;color:#9898b4;">regula conform --sign --timestamp .</code>
         </div>
         <div class="card-base art-card">
@@ -685,7 +685,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
         <div class="card-base art-card">
             <h3>DSGVO-Doppelkonformit&auml;t</h3>
-            <p><code>regula gdpr</code> &mdash; 14 Muster, 4 KI-Gesetz/DSGVO-Hotspots</p>
+            <p><code>regula gdpr</code> : 14 Muster, 4 KI-Gesetz/DSGVO-Hotspots</p>
         </div>
     </div>
 </div>
@@ -734,10 +734,10 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Erkennungsmuster</th><td>419</td><td>51 Pr&uuml;fungen</td><td>37+ Frameworks</td><td>Fragebogen</td><td>Variiert</td></tr>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Abh&auml;ngigkeiten</th><td>Null (stdlib)</td><td>Mehrere</td><td>npm</td><td>Next.js + Ollama</td><td>SaaS</td></tr>
             <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Ausführung</th><td>Lokaler Kern</td><td>Lokal</td><td>Lokal</td><td>Lokal + Ollama</td><td>Cloud</td></tr>
-            <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Evidenzsignierung</th><td>Ed25519 + RFC 3161</td><td>Ed25519 (opt-in)</td><td>&mdash;</td><td>&mdash;</td><td>Variiert</td></tr>
+            <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Evidenzsignierung</th><td>Ed25519 + RFC 3161</td><td>Ed25519 (opt-in)</td><td>:</td><td>:</td><td>Variiert</td></tr>
             <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Framework-Zuordnungen</th><td>13</td><td>3</td><td>EU AI Act</td><td>EU AI Act</td><td>Mehrere</td></tr>
-            <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">CI/CD-Integration</th><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>&mdash;</td><td>Nativ</td></tr>
-            <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Anhang-IV-Doku</th><td>Kostenlos</td><td>&mdash;</td><td>&mdash;</td><td>PDF-Berichte</td><td>Integriert</td></tr>
+            <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">CI/CD-Integration</th><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>:</td><td>Nativ</td></tr>
+            <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Anhang-IV-Doku</th><td>Kostenlos</td><td>:</td><td>:</td><td>PDF-Berichte</td><td>Integriert</td></tr>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Preis</th><td>Kostenlos (Apache 2.0 / EUPL 1.2)</td><td>Kostenlos (Apache 2.0)</td><td>Kostenlos (Apache 2.0)</td><td>Kostenlos (MIT)</td><td>Typischerweise nicht ver&ouml;ffentlicht</td></tr>
         </tbody>
     </table>
@@ -759,7 +759,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
         <div class="card-base art-card">
             <h3>Mustererkennung, nicht Verst&auml;ndnis</h3>
-            <p>83,5% Pr&auml;zision auf Produktionscode (blind-gelabelter Zufallskorpus, N=115). 15,2% Pr&auml;zision auf KI-Bibliotheks-Quellcode &mdash; dem schwierigsten Korpus, da diese Bibliotheken KI implementieren, anstatt sie f&uuml;r regulierte Entscheidungen zu nutzen. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Ver&ouml;ffentlichter Benchmark &rarr;</a></p>
+            <p>83,5% Pr&auml;zision auf Produktionscode (blind-gelabelter Zufallskorpus, N=115). 15,2% Pr&auml;zision auf KI-Bibliotheks-Quellcode : dem schwierigsten Korpus, da diese Bibliotheken KI implementieren, anstatt sie f&uuml;r regulierte Entscheidungen zu nutzen. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Ver&ouml;ffentlichter Benchmark &rarr;</a></p>
         </div>
         <div class="card-base art-card">
             <h3>Ger&uuml;ste, nicht Substanz</h3>
@@ -816,7 +816,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </details>
         <details>
             <summary>Ist meine KI-Anwendung nach der EU-KI-Verordnung verboten?</summary>
-            <p>Soziales Scoring, unterschwellige Manipulation, biometrische Echtzeit-Fernidentifizierung im &ouml;ffentlichen Raum und Emotionserkennung am Arbeitsplatz sind gem&auml;&szlig; Artikel 5 vollst&auml;ndig verboten. Regula scannt Ihren Code auf Muster, die diesen verbotenen Praktiken zugeordnet werden.</p>
+            <p>Artikel 5 verbietet bestimmte Praktiken, darunter bestimmte Formen von Social Scoring, Manipulation, biometrischer Identifizierung und Emotionserkennung. Der genaue Umfang, die Bedingungen und die Ausnahmen sind entscheidend. Regula markiert zugehörige Codemuster zur Prüfung; es stellt keine verbotene Praxis fest.</p>
         </details>
         <details>
             <summary>Wann wird die KI-Verordnung der EU durchgesetzt?</summary>
@@ -877,7 +877,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/SECURITY.md">Sicherheit</a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Mitwirken</a>
                     <a href="/regions/uae.html">&#x1F1E6;&#x1F1EA; VAE &amp; GCC</a>
-                    <a href="/regions/brazil-ai-regulation.html">&#x1F1E7;&#x1F1F7; Brasilien &mdash; LGPD &amp; Marco Legal</a>
+                    <a href="/regions/brazil-ai-regulation.html">&#x1F1E7;&#x1F1F7; Brasilien : LGPD &amp; Marco Legal</a>
                     <a href="mailto:support@getregula.com">support@getregula.com</a>
                     <a href="/about.html">About</a>
                 </div>
@@ -917,7 +917,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     // Swap the currently-active tab and panel directly, rather than first
     // deactivating ALL of them. The old approach briefly left zero panels
     // with `.active`, so the outgoing panel started its opacity-fade to 0
-    // *before* the incoming one started fading in — visible as a flash.
+    // *before* the incoming one started fading in :  visible as a flash.
     function switchTab(name, el) {
         const currentTab = document.querySelector('.term-tab.active');
         const currentPanel = document.querySelector('.term-panel.active');
@@ -1006,7 +1006,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                // Don't unobserve — keep visible
+                // Don't unobserve :  keep visible
             }
         });
     }, { threshold: 0.08 });

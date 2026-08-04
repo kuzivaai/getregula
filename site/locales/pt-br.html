@@ -6,11 +6,11 @@
     <!-- Critical inline CSS + non-render-blocking stylesheet loading.
          Why: /assets/site.min.css is render-blocking, so Chrome shows a WHITE canvas
          (the browser default) for the entire duration of the CSS fetch on cold
-         loads — measured at ~600ms on simulated 3G, worse on real slow networks.
+         loads :  measured at ~600ms on simulated 3G, worse on real slow networks.
          That white→dark snap is what users reported as "the demo flashing": the
          hero terminal sits at the top of the fold and takes the full brunt of it.
          The earlier attempt (93a833b) targeted panel opacity and font preload,
-         neither of which is the actual cause — the cause is that the browser
+         neither of which is the actual cause :  the cause is that the browser
          cannot paint at all until the external stylesheet arrives.
 
          Fix: establish the brand background + basic tokens inline so first paint
@@ -58,9 +58,9 @@
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Regula — scanner de conformidade da Lei de IA da UE para c&oacute;digo">
+    <meta property="og:image:alt" content="Regula :  scanner de conformidade da Lei de IA da UE para c&oacute;digo">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
-    <meta name="twitter:image:alt" content="Regula — scanner de conformidade da Lei de IA da UE para c&oacute;digo">
+    <meta name="twitter:image:alt" content="Regula :  scanner de conformidade da Lei de IA da UE para c&oacute;digo">
     <meta name="author" content="Regula">
     <link rel="canonical" href="https://getregula.com/locales/pt-br.html">
     <script type="application/ld+json">
@@ -125,7 +125,7 @@
                 "name": "Meu aplicativo de IA é proibido pela Lei de IA da UE?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Pontuação social, manipulação subliminar, reconhecimento facial em tempo real em espaços públicos e inferência de emoções no ambiente de trabalho são proibidos pelo Artigo 5. O Regula escaneia seu código em busca de padrões que correspondam a esses usos proibidos."
+                    "text": "O Artigo 5 proíbe práticas específicas, incluindo certas formas de pontuação social, manipulação, identificação biométrica e inferência de emoções. O escopo exato, as condições e as exceções são importantes. O Regula sinaliza padrões de código relacionados para revisão; ele não determina que existe uma prática proibida."
                 }
             },
             {
@@ -197,7 +197,7 @@
                 "name": "O Regula funciona com código gerado por IA do Cursor, Claude Code ou Lovable?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Sim. O Regula escaneia arquivos de código-fonte independentemente de quem ou o que os escreveu. Código gerado por IA tem as mesmas obrigações da Lei de IA da UE que código escrito manualmente — o Artigo 2 não distingue por autoria. Execute regula check . em qualquer projeto. Se você usa Cursor ou Claude Code, cole regula assess no seu chat para uma verificação rápida de aplicabilidade sem sair do seu editor."
+                    "text": "Sim. O Regula escaneia arquivos de código-fonte independentemente de quem ou o que os escreveu. Código gerado por IA tem as mesmas obrigações da Lei de IA da UE que código escrito manualmente :  o Artigo 2 não distingue por autoria. Execute regula check . em qualquer projeto. Se você usa Cursor ou Claude Code, cole regula assess no seu chat para uma verificação rápida de aplicabilidade sem sair do seu editor."
                 }
             },
             {
@@ -235,7 +235,7 @@
          when the woff2 arrives late. -->
     <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
     <style>
-        /* pt-br.html overrides — values that intentionally differ from site.css */
+        /* pt-br.html overrides :  values that intentionally differ from site.css */
         body { line-height: 1.6; }
         .nav { height: 52px; }
         .badge { gap: 6px; padding: 4px 12px; }
@@ -294,7 +294,7 @@
 <!-- NAV -->
 <nav class="nav" id="nav" aria-label="Navegacao principal">
     <a href="/" class="nav-brand">Regula</a>
-    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()">
         <a href="/assess/pt-br.html" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/guides/">Guides</a>
@@ -316,7 +316,7 @@
         <div class="hero-text">
             <div class="badge"><span class="badge-dot"></span> CLI open-source &middot; v1.9.0 &middot; Apache 2.0</div>
             <h1>Encontre <span class="hl">indicadores de governança de IA</span> no seu código</h1>
-            <p class="sub">Um comando procura indicadores relacionados à Lei de IA da UE, à Lei Básica de IA da Coreia e à Colorado SB 26-189 para revisão humana. O tempo varia conforme o projeto e o ambiente. <strong>Grátis, sem conta.</strong></p>
+            <p class="sub">Analise uma pasta de código-fonte para encontrar padrões que talvez precisem de revisão de governança de IA. O Regula explica por que cada padrão importa e apresenta links para as regras relevantes. Ele não decide se o seu sistema está em conformidade jurídica.</p>
 
             <button type="button" class="cta-pill" id="install-pill" aria-live="polite" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'install'}});copyPill(this, 'pipx install regula-ai \u0026\u0026 regula')">
                 <span>&#9654;</span>
@@ -333,7 +333,7 @@
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2.685</strong> testes
+                <strong style="color:var(--text);">2.687</strong> testes
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> vulnerabilidades inesperadas
                 <span class="sp-sep" aria-hidden="true">&middot;</span> zero depend&ecirc;ncias
                 <span class="sp-sep" aria-hidden="true">&middot;</span> seu c&oacute;digo nunca sai da sua m&aacute;quina
@@ -362,17 +362,17 @@
   Annex III, Category 5
 
 <span class="t-y">WHY:</span>
-  scoring.py:23 &mdash; essential_services
+  scoring.py:23 : essential_services
     <span class="t-m">Code: score = model.predict(applicant)</span>
-    Legal basis: Annex III &mdash; Articles 9-15
+    Legal basis: Annex III : Articles 9-15
     False positive if: not a credit decision
 
 <span class="t-h">ROLE:</span> DEPLOYER (confidence: high)
   <span class="t-m">- OpenAI API usage detected</span>
 
 <span class="t-y">OBLIGATIONS:</span>
-  <span class="t-c">[HIGH]</span> Art. 9  Risk management   &mdash; 40-60h
-  <span class="t-c">[HIGH]</span> Art. 14 Human oversight  &mdash; 16-24h
+  <span class="t-c">[HIGH]</span> Art. 9  Risk management   : 40-60h
+  <span class="t-c">[HIGH]</span> Art. 14 Human oversight  : 16-24h
   Total: 160-324h | Deadline: <span class="t-y">Dec 2027</span>
   <span class="t-m">&#9888; Omnibus agreed 7 May 2026, EP approved 16 Jun 2026, Council approved 29 Jun 2026; published in OJ 2026-07-24, in force from 2026-07-27</span></pre>
                 </div>
@@ -381,17 +381,17 @@
 
 <span class="t-h">COMPLIANCE PLAN  &middot;  HIGH-RISK (Annex III, Category 5)</span>
 
-Priority 1 &mdash; Risk Management System (Art. 9)
+Priority 1 : Risk Management System (Art. 9)
   Effort: 40&ndash;60h
   <span class="t-r">&times;</span> No risk assessment file found
   <span class="t-r">&times;</span> No model evaluation documented
 
-Priority 2 &mdash; Human Oversight (Art. 14)
+Priority 2 : Human Oversight (Art. 14)
   Effort: 16&ndash;24h
   <span class="t-r">&times;</span> No review-before-action pattern detected
   <span class="t-r">&times;</span> No override mechanism found
 
-Priority 3 &mdash; Technical Documentation (Art. 11)
+Priority 3 : Technical Documentation (Art. 11)
   Effort: 8&ndash;12h
   <span class="t-g">&#10003;</span> Annex IV template: regula docs .
 
@@ -405,7 +405,7 @@ Highest risk tier: not_ai
 Overall score:     6%
 
   NOTE: This score measures the PRESENCE of compliance
-  documentation and infrastructure &mdash; it does not assess code
+  documentation and infrastructure : it does not assess code
   risk and cannot offset scan findings. A project can score
   100% here and still fail `regula check` on prohibited or
   high-risk patterns. Run both; they answer different questions.
@@ -452,7 +452,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
   // Flip panel transitions on AFTER the first paint so the terminal does
   // not play its 0→1 opacity fade on page load. Uses requestAnimationFrame
   // rather than DOMContentLoaded so the class lands just after the browser
-  // has committed initial styles — guaranteed no flash.
+  // has committed initial styles :  guaranteed no flash.
   requestAnimationFrame(function () {
       requestAnimationFrame(function () {
           document.body.classList.add('term-panels-ready');
@@ -511,12 +511,12 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="tier tier-r">
             <div class="tier-badge">Proibido</div>
             <div class="tier-examples">Pontuacao social &middot; Inferencia de emocoes &middot; Biometria em tempo real &middot; Manipulacao subliminar</div>
-            <div class="tier-hint">Art. 5, proibido &rarr;</div>
+            <div class="tier-hint">Indicador de prática proibida pelo Artigo 5 &rarr;</div>
         </div>
         <div class="tier tier-a">
             <div class="tier-badge">Alto risco</div>
             <div class="tier-examples">Pontuacao de credito &middot; Emprego &middot; Servicos de saude &middot; Educacao &middot; Aplicacao da lei</div>
-            <div class="tier-hint">Art. 9&ndash;15 aplicaveis &rarr;</div>
+            <div class="tier-hint">Artigos 9&ndash;15 relacionados &rarr;</div>
         </div>
         <div class="tier tier-y">
             <div class="tier-badge">Risco limitado</div>
@@ -535,7 +535,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 <div class="urgency">
     <div class="urgency-box" role="note">
         <div class="date">2026&ndash;27</div>
-        <div class="body"><strong>Obrigacoes de alto risco</strong> para sistemas do Anexo III agora se aplicam a partir de dezembro de 2027, apos o acordo provisorio do Digital Omnibus de 7 de maio de 2026, aprovado pelo Parlamento Europeu em 16 de junho de 2026. Sistemas do Anexo I se aplicam a partir de agosto de 2028. O Conselho aprovou em 29 de junho de 2026; publicado no Jornal Oficial em 24 de julho de 2026 como Regulamento (UE) 2026/1744, em vigor a partir de 27 de julho de 2026. De qualquer forma, os requisitos nao mudam &mdash; apenas o prazo. <strong>Voce precisa saber onde esta.</strong></div>
+        <div class="body"><strong>Obrigacoes de alto risco</strong> para sistemas do Anexo III agora se aplicam a partir de dezembro de 2027, apos o acordo provisorio do Digital Omnibus de 7 de maio de 2026, aprovado pelo Parlamento Europeu em 16 de junho de 2026. Sistemas do Anexo I se aplicam a partir de agosto de 2028. O Conselho aprovou em 29 de junho de 2026; publicado no Jornal Oficial em 24 de julho de 2026 como Regulamento (UE) 2026/1744, em vigor a partir de 27 de julho de 2026. De qualquer forma, os requisitos nao mudam : apenas o prazo. <strong>Voce precisa saber onde esta.</strong></div>
     </div>
 </div>
 
@@ -562,12 +562,12 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Passo 2</div>
             <h3>Verificar</h3>
-            <p><code>regula</code><br>Pontuacao de conformidade, achados e proximos passos.</p>
+            <p><code>regula</code><br>Resumo de indicadores, achados e próximos passos sugeridos.</p>
         </div>
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Passo 3</div>
             <h3>Agir</h3>
-            <p><code>regula comply</code><br>Checklist de obrigacoes com status por artigo.</p>
+            <p><code>regula comply</code><br>Lista da documentação e dos controles encontrados para cada artigo.</p>
         </div>
     </div>
 </div>
@@ -627,7 +627,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     <div class="art-grid">
         <div class="card-base art-card">
             <div class="tag tag-blue">Documentacao</div>
-            <h3>Voce consegue provar conformidade?</h3>
+            <h3>Precisa de evidências para revisão?</h3>
             <p>Documentacao tecnica Anexo IV gerada a partir do seu codigo real. Funcoes, dependencias e cobertura de logging pre-preenchidos.</p>
             <code style="font-size:11px;color:#9898b4;">regula docs . &middot; regula conform .</code>
         </div>
@@ -639,8 +639,8 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-purple">Integridade</div>
-            <h3>A prova de adulteracao e assinado</h3>
-            <p>Manifesto SHA-256 + assinatura Ed25519 + carimbos de tempo RFC 3161. Prove quando a avaliacao foi produzida e que nao foi alterada.</p>
+            <h3>Verificações de integridade e assinaturas opcionais</h3>
+            <p>Manifestos SHA-256, assinaturas Ed25519 e carimbos de data e hora RFC 3161 ajudam revisores a verificar quando uma avaliação foi produzida e se os arquivos foram alterados depois.</p>
             <code style="font-size:11px;color:#9898b4;">regula conform --sign --timestamp .</code>
         </div>
         <div class="card-base art-card">
@@ -702,7 +702,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
         <div class="card-base art-card">
             <h3>Conformidade dupla LGPD</h3>
-            <p><code>regula gdpr</code> &mdash; 14 padr&otilde;es, 4 hotspots Lei de IA/LGPD</p>
+            <p><code>regula gdpr</code> : 14 padr&otilde;es, 4 hotspots Lei de IA/LGPD</p>
         </div>
     </div>
 </div>
@@ -751,10 +751,10 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
             <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Padroes de deteccao</th><td>419</td><td>51 verificacoes</td><td>37+ frameworks</td><td>Questionario</td><td>Varia</td></tr>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Dependencias</th><td>Zero (stdlib)</td><td>Multiplas</td><td>npm</td><td>Next.js + Ollama</td><td>SaaS</td></tr>
             <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Execução</th><td>Núcleo local</td><td>Local</td><td>Local</td><td>Local + Ollama</td><td>Nuvem</td></tr>
-            <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Assinatura de evidencias</th><td>Ed25519 + RFC 3161</td><td>Ed25519 (opt-in)</td><td>&mdash;</td><td>&mdash;</td><td>Varia</td></tr>
+            <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Assinatura de evidencias</th><td>Ed25519 + RFC 3161</td><td>Ed25519 (opt-in)</td><td>:</td><td>:</td><td>Varia</td></tr>
             <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Mapeamentos de frameworks</th><td>13</td><td>3</td><td>Lei de IA da UE</td><td>Lei de IA da UE</td><td>Multiplos</td></tr>
-            <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Integracao CI/CD</th><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>&mdash;</td><td>Nativo</td></tr>
-            <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Documentacao Anexo IV</th><td>Gratuito</td><td>&mdash;</td><td>&mdash;</td><td>Relatorios PDF</td><td>Integrado</td></tr>
+            <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Integracao CI/CD</th><td>GitHub Action + SARIF</td><td>GitHub Action</td><td>GitHub Action</td><td>:</td><td>Nativo</td></tr>
+            <tr><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Documentacao Anexo IV</th><td>Gratuito</td><td>:</td><td>:</td><td>Relatorios PDF</td><td>Integrado</td></tr>
             <tr style="background:#0d0d1a;"><th scope="row" style="padding:6px 12px;color:#e0e0f0;font-weight:400;text-align:left;">Preco</th><td>Gratuito (Apache 2.0 / EUPL 1.2)</td><td>Gratuito (Apache 2.0)</td><td>Gratuito (Apache 2.0)</td><td>Gratuito (MIT)</td><td>Tipicamente n&atilde;o divulgado</td></tr>
         </tbody>
     </table>
@@ -765,7 +765,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 
 <div class="sep"></div>
 
-<!-- HONESTIDADE — O QUE O REGULA FAZ E NAO FAZ -->
+<!-- HONESTIDADE :  O QUE O REGULA FAZ E NAO FAZ -->
 <div class="sec reveal">
     <h2 class="sec-head">O que o Regula nao faz</h2>
     <p class="sec-sub">Uma ferramenta de conformidade que exagera suas capacidades e pior do que nenhuma ferramenta. Aqui esta o que o Regula realmente e, e o que nao e.</p>
@@ -776,7 +776,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
         <div class="card-base art-card">
             <h3>Correspondencia de padroes, nao compreensao</h3>
-            <p>83,5% de precisao em codigo de producao (corpus aleatorio blind-labelled, N=115). 15,2% de precisao em codigo-fonte de bibliotecas AI — o corpus mais dificil, pois essas bibliotecas implementam AI em vez de usa-la para decisoes reguladas. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Benchmark publicado &rarr;</a></p>
+            <p>83,5% de precisao em codigo de producao (corpus aleatorio blind-labelled, N=115). 15,2% de precisao em codigo-fonte de bibliotecas AI :  o corpus mais dificil, pois essas bibliotecas implementam AI em vez de usa-la para decisoes reguladas. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Benchmark publicado &rarr;</a></p>
         </div>
         <div class="card-base art-card">
             <h3>Estruturas, nao substancia</h3>
@@ -833,7 +833,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </details>
         <details>
             <summary>Minha aplica&ccedil;&atilde;o de IA &eacute; proibida pelo Regulamento de IA da UE?</summary>
-            <p>Pontua&ccedil;&atilde;o social, manipula&ccedil;&atilde;o subliminar, identifica&ccedil;&atilde;o biom&eacute;trica remota em tempo real em espa&ccedil;os p&uacute;blicos e infer&ecirc;ncia de emo&ccedil;&otilde;es no local de trabalho s&atilde;o totalmente proibidos pelo Artigo 5. O Regula analisa seu c&oacute;digo em busca de padr&otilde;es que correspondam a esses usos proibidos.</p>
+            <p>O Artigo 5 proíbe práticas específicas, incluindo certas formas de pontuação social, manipulação, identificação biométrica e inferência de emoções. O escopo exato, as condições e as exceções são importantes. O Regula sinaliza padrões de código relacionados para revisão; ele não determina que existe uma prática proibida.</p>
         </details>
         <details>
             <summary>Quando o Regulamento de IA da UE come&ccedil;a a ser aplicado?</summary>
@@ -894,7 +894,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/SECURITY.md">Seguranca</a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contribuir</a>
                     <a href="/regions/uae.html">UAE &amp; GCC</a>
-                    <a href="/regions/brazil-ai-regulation.html">Brasil — LGPD &amp; Marco Legal</a>
+                    <a href="/regions/brazil-ai-regulation.html">Brasil :  LGPD &amp; Marco Legal</a>
                     <a href="mailto:support@getregula.com">support@getregula.com</a>
                     <a href="/about.html">About</a>
                 </div>
@@ -934,7 +934,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     // Swap the currently-active tab and panel directly, rather than first
     // deactivating ALL of them. The old approach briefly left zero panels
     // with `.active`, so the outgoing panel started its opacity-fade to 0
-    // *before* the incoming one started fading in — visible as a flash.
+    // *before* the incoming one started fading in :  visible as a flash.
     function switchTab(name, el) {
         const currentTab = document.querySelector('.term-tab.active');
         const currentPanel = document.querySelector('.term-panel.active');
@@ -1023,7 +1023,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                // Don't unobserve — keep visible
+                // Don't unobserve :  keep visible
             }
         });
     }, { threshold: 0.08 });
