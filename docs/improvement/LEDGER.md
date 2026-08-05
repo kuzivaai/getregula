@@ -713,3 +713,47 @@ N67 continues to control H1. Acceptance for reopening remains N67's permissioned
 matching transaction with actual request, roles, measured burden, material
 technical subset and manual-workflow comparison. No product, contact, spend,
 ownership, immigration, public or release action is authorised.
+
+## N69 — Direct-transaction discovery requires owner and professional gates
+
+**First raised:** 2026-08-05. **Status:** preparation ready for owner review;
+external contact and real-data collection remain NOT AUTHORISED.
+
+The existing validation-readiness pack was audited for narrow reuse. Its
+participant-information, consent, no-recording, withdrawal and permission drafts
+remain useful but are not legally approved or populated. Its old discovery
+protocol remains historical and bound to abandoned H1; it was not renamed or
+broadened. A transaction-qualified successor method now screens only first-hand
+enterprise AI diligence events within 12 months, separates supplier and buyer
+accounts, includes negative cases, prohibits Regula priming, and uses sequential
+information-power review rather than claiming a universal interview count.
+
+Stage A is an access/method checkpoint: 2 supplier-side plus 2 buyer/reviewer-
+side participants across at least 2 organisations, denominator 4 participants.
+It is not demand, prevalence or market evidence. Review occurs in batches of 2
+and no later than 12 participants; 12 is a management maximum, not saturation.
+H2 remains NOT CREATED. Its future preregistration gate requires 3 independent
+recent transactions, 2 suppliers, buyer-side evidence for 2 transactions or
+close analogues, repeated measured burden, buyer acceptance/rejection criteria,
+a material technically observable subset, inadequate incumbent handling,
+permissioned artefact feasibility and no fatal negative case.
+
+Before contact the owner and qualified reviewers must settle controller,
+purpose, lawful basis, storage, access roles, retention/deletion, interviewer
+work permission and zero/capped cost. The recommended Stage A boundary prohibits
+recording, transcripts, confidential documents, repositories, incentives and
+Regula demonstration, but this recommendation is not itself authorisation.
+
+`DIRECT_DISCOVERY_PACK: READY_FOR_OWNER_REVIEW`; `DATA_GOVERNANCE:
+OWNER_INPUT_REQUIRED; PROFESSIONAL_REVIEW_REQUIRED`; `ORGANISATION_ACCESS_MAP:
+READY` means only organisation/role-level routes without personal data;
+`OUTREACH: DRAFTED_NOT_SENT`; `EXTERNAL_CONTACT: NOT_AUTHORISED`; `REAL_DATA_COLLECTION:
+DISABLED`; `H1_STATUS: ABANDONED`; `H2_STATUS: NOT_CREATED`; `WILLINGNESS_TO_PAY:
+UNVALIDATED`; technical fit remains failed until new evidence; product and
+venture decisions remain STOP.
+
+Kill or hold on access failure, hypothetical accounts, no repeated transaction,
+buyer/supplier non-alignment, adequate incumbents, negligible technical evidence,
+unsafe confidentiality/data boundaries or adverse work-permission advice. This
+item closes none of N60, F25, F30, N35, N36, N43, N51, N53, N55, N57, N28,
+N6, N7, N10, N11 or N12 and does not reopen N67.
