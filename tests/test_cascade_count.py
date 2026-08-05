@@ -283,6 +283,7 @@ class TestEveryPublishedSurfaceCarriesTheCanonicalCount(unittest.TestCase):
     # tracked is treated as a live surface.
     EXEMPT_PREFIXES = (
         "docs/improvement/",     # ledger, session logs, review packs
+        "docs/venture/REGULA_VENTURE_EVIDENCE_DOSSIER_2026-08-04.md",  # dated measured record
         "benchmarks/results/",   # dated scan artefacts
         ".claude/rules/",        # rules quoting past wrong numbers verbatim
         "CHANGELOG.md",          # per-release record of what was true then
