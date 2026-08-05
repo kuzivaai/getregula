@@ -1,0 +1,25 @@
+{
+  "hypothesis": "A small UK AI supplier is responding to a UK general insurer's production-onboarding evidence request for an AI-assisted claims-triage system.",
+  "retrieval_date": "2026-08-05",
+  "atoms": [
+    {"claim_id":"H1-01","atom":"transaction existence","status":"UNVERIFIED","sources":[],"falsifier":"named attributable matching transaction"},
+    {"claim_id":"H1-02","atom":"recurrence","status":"UNVERIFIED","sources":[],"falsifier":"independent repeated matching transactions"},
+    {"claim_id":"H1-03","atom":"small supplier","status":"UNVERIFIED","sources":[],"falsifier":"named supplier size evidence"},
+    {"claim_id":"H1-04","atom":"UK supplier","status":"UNVERIFIED","sources":[],"falsifier":"named UK supplier"},
+    {"claim_id":"H1-05","atom":"UK general-insurer buyer","status":"INDICATED_CONTEXT_ONLY","sources":["S01","S02","S03"],"falsifier":"buyer-issued matching request"},
+    {"claim_id":"H1-06","atom":"production-onboarding trigger","status":"UNVERIFIED","sources":[],"falsifier":"transaction artefact naming trigger"},
+    {"claim_id":"H1-07","atom":"AI-assisted claims triage","status":"UNVERIFIED_IN_SUCCESSOR","sources":[],"falsifier":"matching named deployment; predecessor context remains inherited only"},
+    {"claim_id":"H1-08","atom":"evidence categories","status":"GENERAL_ONLY","sources":["S08","S09"],"falsifier":"buyer-issued H1 evidence list"},
+    {"claim_id":"H1-09","atom":"supplier burden","status":"UNVERIFIED","sources":[],"falsifier":"attributable transaction-linked account"},
+    {"claim_id":"H1-10","atom":"economic consequence","status":"UNVERIFIED","sources":[],"falsifier":"measured delay rework rejection or cost"},
+    {"claim_id":"H1-11","atom":"requester","status":"UNVERIFIED","sources":[],"falsifier":"identified requester role"},
+    {"claim_id":"H1-12","atom":"reviewer","status":"GENERAL_ONLY","sources":["S08"],"falsifier":"identified H1 reviewer"},
+    {"claim_id":"H1-13","atom":"blocker","status":"UNVERIFIED","sources":[],"falsifier":"identified blocking role"},
+    {"claim_id":"H1-14","atom":"approver","status":"GENERAL_ONLY","sources":["S08"],"falsifier":"identified H1 approver"},
+    {"claim_id":"H1-15","atom":"budget","status":"UNVERIFIED","sources":[],"falsifier":"transaction-linked budget owner or spend"},
+    {"claim_id":"H1-16","atom":"access route","status":"UNKNOWN","sources":[],"falsifier":"permissioned representative route"},
+    {"claim_id":"H1-17","atom":"technically observable share","status":"UNESTABLISHED","sources":["S08","S09"],"falsifier":"real request mapped to artefacts"},
+    {"claim_id":"H1-18","atom":"substitute adequacy","status":"UNESTABLISHED","sources":["S04","S05","S06","S07"],"falsifier":"workflow comparison on matching request"},
+    {"claim_id":"H1-19","atom":"Regula differentiation","status":"NOT_DEMONSTRATED","sources":[],"falsifier":"independent comparative result"}
+  ]
+}
