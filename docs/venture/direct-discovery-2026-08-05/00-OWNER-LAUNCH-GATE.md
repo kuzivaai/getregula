@@ -2,7 +2,7 @@
 
 Current state: H1 remains abandoned; Regula and its pilot remain stopped.
 Action considered: owner review of a transaction-first, non-sales interview stage.
-Pack verdict: READY_FOR_OWNER_REVIEW; this does not authorise contact.
+Pack verdict: HOLD pending professional and owner decisions; contact is not authorised.
 Reason to proceed later: the method can test whether a real repeated transaction exists.
 Reason to hold now: controller, lawful-processing, storage and work-permission decisions are unresolved.
 
@@ -25,9 +25,9 @@ The concise controlling register is
 | Determine and document lawful basis | PROFESSIONAL_REVIEW_REQUIRED | Yes |
 | Select storage location, access roles and processor boundary | OWNER_INPUT_REQUIRED; PROFESSIONAL_REVIEW_REQUIRED | Yes |
 | Set retention and deletion periods | OWNER_INPUT_REQUIRED; PROFESSIONAL_REVIEW_REQUIRED | Yes |
-| Prohibit recording and transcripts for Stage A | Recommended REASONED default; OWNER_INPUT_REQUIRED | Yes |
-| Prohibit confidential documents and repositories for Stage A | Recommended REASONED default; OWNER_INPUT_REQUIRED | Yes |
-| Set zero-cost or explicit capped-cost boundary | OWNER_INPUT_REQUIRED | Yes |
+| Prohibit recording and transcripts for Stage A | OWNER_APPROVED DEFAULT: PROHIBITED | Yes; retain in final authorisation |
+| Prohibit confidential documents, code and repositories for Stage A | OWNER_APPROVED DEFAULT: PROHIBITED | Yes; retain in final authorisation |
+| Set Stage A cost boundary | OWNER_APPROVED DEFAULT: GBP 0 | Yes; retain in final authorisation |
 | Confirm who may conduct interviews and their work-permission boundary | PROFESSIONAL_REVIEW_REQUIRED | Yes |
 | Keep research separate from sales and Regula demonstration | OWNER_INPUT_REQUIRED | Yes |
 
@@ -44,9 +44,9 @@ KILL if compliant contact cannot occur, transaction-qualified access fails,
 accounts remain hypothetical, confidentiality boundaries are unacceptable, or
 the researcher's permitted-work boundary is adverse.
 
-DIRECT_DISCOVERY_PACK: READY_FOR_OWNER_REVIEW
-DATA_GOVERNANCE: OWNER_INPUT_REQUIRED; PROFESSIONAL_REVIEW_REQUIRED
-ORGANISATION_ACCESS_MAP: READY
+DIRECT_DISCOVERY_PACK: HOLD
+DATA_GOVERNANCE: READY_FOR_NARROW_PROFESSIONAL_REVIEW
+ORGANISATION_ACCESS_MAP: PREPARED_UNVALIDATED
 OUTREACH: DRAFTED_NOT_SENT
 EXTERNAL_CONTACT: NOT_AUTHORISED
 REAL_DATA_COLLECTION: DISABLED
@@ -58,3 +58,12 @@ PRODUCT_BUILD: STOP
 SOFTWARE_BUILD: STOP
 VENTURE_DECISION: STOP
 PRODUCT_PILOT_STATUS: NOT_APPROVED
+
+STAGE_A_PACK: HOLD
+WORK_PERMISSION: PROFESSIONAL_REVIEW_REQUIRED
+
+Owner decision: `HOLD`. The zero-cost and prohibition defaults are accepted,
+but controller, research lead, exact purpose, approved storage and processors,
+access roles, retention/deletion, privacy ownership, lawful basis, interviewer
+work permission and separate contact authorisation remain unresolved. This is a
+GO/HOLD decision on activation readiness, not a commercial or product decision.

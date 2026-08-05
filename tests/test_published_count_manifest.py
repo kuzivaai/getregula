@@ -35,7 +35,9 @@ sys.path.insert(0, str(REPO / "scripts"))
 from count_record_policy import (  # noqa: E402
     classify_count_occurrences,
     discover_tracked_files,
+    read_tracked_files,
     validate_record_policy,
+    verify_record_provenance,
 )
 
 
@@ -95,12 +97,12 @@ class TestPublishedCountManifest(unittest.TestCase):
 
     def test_dated_evidence_preserves_historically_true_count(self):
         count = 2000 + 468
-        files = {"records/one.md": f"At capture: {count:,} tests.\n"}
+        files = {"records/2026-08-05-one.md": f"At capture: {count:,} tests.\n"}
         digest = __import__("hashlib").sha256(
-            files["records/one.md"].encode()).hexdigest()
+            files["records/2026-08-05-one.md"].encode()).hexdigest()
         violations = classify_count_occurrences(
             count, files, set(), set(), self._policy(
-                ("records/one.md", digest)))
+                ("records/2026-08-05-one.md", digest)))
         self.assertEqual(violations, [])
 
     def test_stale_current_count_fails(self):
@@ -113,8 +115,8 @@ class TestPublishedCountManifest(unittest.TestCase):
     def test_sibling_dated_records_receive_same_treatment(self):
         count = 2000 + 468
         files = {
-            "records/one.md": f"At capture: {count:,} tests.\n",
-            "records/two.md": f"At capture: {count} tests.\n",
+            "records/2026-08-05-one.md": f"At capture: {count:,} tests.\n",
+            "records/2026-08-05-two.md": f"At capture: {count} tests.\n",
         }
         historical = tuple(
             (path, __import__("hashlib").sha256(text.encode()).hexdigest())
@@ -150,14 +152,14 @@ class TestPublishedCountManifest(unittest.TestCase):
     def test_duplicate_literal_only_nonhistorical_record_violates(self):
         count = 2000 + 468
         files = {
-            "records/old.md": f"At capture: {count:,} tests.\n",
+            "records/2026-08-05-old.md": f"At capture: {count:,} tests.\n",
             "current.md": f"Current: {count:,} tests.\n",
         }
         digest = __import__("hashlib").sha256(
-            files["records/old.md"].encode()).hexdigest()
+            files["records/2026-08-05-old.md"].encode()).hexdigest()
         self.assertEqual(classify_count_occurrences(
             count, files, set(), set(),
-            self._policy(("records/old.md", digest))), ["current.md"])
+            self._policy(("records/2026-08-05-old.md", digest))), ["current.md"])
 
     def test_discovery_failure_cannot_become_empty_clean_result(self):
         failed = subprocess.CompletedProcess(
@@ -182,6 +184,48 @@ class TestPublishedCountManifest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "broad exclusion"):
             validate_record_policy(policy, {}, set(), set())
 
+    def test_unlisted_text_suffix_is_scanned(self):
+        count = 2000 + 468
+        files = {"claims.csv": f"claim,count\ntests,{count}\n"}
+        self.assertEqual(classify_count_occurrences(
+            count, files, set(), set(), self._policy()), ["claims.csv"])
+
+    def test_tracked_file_read_failure_is_not_silently_skipped(self):
+        with mock.patch("pathlib.Path.read_bytes",
+                        side_effect=OSError("unreadable")):
+            with self.assertRaisesRegex(RuntimeError, "cannot read tracked file"):
+                read_tracked_files(REPO, [Path("ordinary.txt")])
+
+    def test_nonexistent_evidence_commit_fails(self):
+        record = self._policy(("records/2026-08-05.md", "b" * 64))["records"][0]
+        failed = subprocess.CompletedProcess([], 128, stdout=b"", stderr=b"fatal")
+        with mock.patch("count_record_policy.subprocess.run",
+                        return_value=failed):
+            with self.assertRaisesRegex(ValueError, "does not exist"):
+                verify_record_provenance(REPO, record)
+
+    def test_path_missing_at_evidence_commit_fails(self):
+        record = self._policy(("records/2026-08-05.md", "b" * 64))["records"][0]
+        results = [
+            subprocess.CompletedProcess([], 0, stdout=b"", stderr=b""),
+            subprocess.CompletedProcess([], 128, stdout=b"", stderr=b"missing"),
+        ]
+        with mock.patch("count_record_policy.subprocess.run",
+                        side_effect=results):
+            with self.assertRaisesRegex(ValueError, "path missing"):
+                verify_record_provenance(REPO, record)
+
+    def test_evidence_commit_blob_mismatch_fails(self):
+        record = self._policy(("records/2026-08-05.md", "b" * 64))["records"][0]
+        results = [
+            subprocess.CompletedProcess([], 0, stdout=b"", stderr=b""),
+            subprocess.CompletedProcess([], 0, stdout=b"historical", stderr=b""),
+        ]
+        with mock.patch("count_record_policy.subprocess.run",
+                        side_effect=results):
+            with self.assertRaisesRegex(ValueError, "blob hash mismatch"):
+                verify_record_provenance(REPO, record)
+
     def test_manifest_is_wellformed(self):
         m = _manifest()
         self.assertTrue(m["published_surfaces"], "manifest lists no surfaces")
@@ -194,15 +238,11 @@ class TestPublishedCountManifest(unittest.TestCase):
             self.assertIn(entry["role"], ("source", "generated"))
             self.assertTrue((REPO / entry["path"]).exists())
 
-        files = {
-            path.as_posix(): (REPO / path).read_text(
-                encoding="utf-8", errors="ignore")
-            for path in _tracked_files() if (REPO / path).is_file()
-        }
+        files = read_tracked_files(REPO, _tracked_files())
         validate_record_policy(
             json.loads(RECORD_CLASSES.read_text(encoding="utf-8")), files,
             set(m["published_surfaces"]),
-            {entry["path"] for entry in m["non_surface_carriers"]})
+            {entry["path"] for entry in m["non_surface_carriers"]}, REPO)
 
     def test_a_hex_colour_is_not_a_published_count(self):
         """THE CONTROL for the lookbehind, both ways.
@@ -228,22 +268,12 @@ class TestPublishedCountManifest(unittest.TestCase):
     def test_count_literal_appears_nowhere_outside_the_manifest(self):
         count = _canonical_count()
         m = _manifest()
-        files = {}
-        for rel in _tracked_files():
-            if rel.suffix.lower() not in (
-                    ".md", ".html", ".txt", ".json", ".py", ".yaml", ".yml"):
-                continue
-            path = REPO / rel
-            try:
-                text = path.read_text(encoding="utf-8", errors="ignore")
-            except OSError:
-                continue
-            files[rel.as_posix()] = text
+        files = read_tracked_files(REPO, _tracked_files())
 
         violations = classify_count_occurrences(
             count, files, set(m["published_surfaces"]),
             {entry["path"] for entry in m["non_surface_carriers"]},
-            json.loads(RECORD_CLASSES.read_text(encoding="utf-8")))
+            json.loads(RECORD_CLASSES.read_text(encoding="utf-8")), REPO)
 
         self.assertEqual(
             violations, [],
@@ -259,15 +289,12 @@ class TestPublishedCountManifest(unittest.TestCase):
     def test_scan_would_actually_catch_a_violation(self):
         """Vacuity control: prove the scan can return a negative."""
         count = _canonical_count()
-        grouped = f"{count:,}"
-        pattern = re.compile(
-            r"(?<!\d)(" + re.escape(str(count)) + "|"
-            + re.escape(grouped) + r")(?!\d)")
-        planted = f"This page claims {grouped} tests were run."
-        self.assertTrue(
-            pattern.search(planted),
-            "the violation pattern does not match a planted literal, so a "
-            "clean run of the scan above would prove nothing")
+        planted = {"planted.rst": f"This page claims {count:,} tests.\n"}
+        self.assertEqual(
+            classify_count_occurrences(
+                count, planted, set(), set(), self._policy()),
+            ["planted.rst"],
+            "the production classifier missed a planted violation")
 
     def test_canonical_source_is_generated_not_handwritten(self):
         """The number must come from collection, never a hand-typed literal."""

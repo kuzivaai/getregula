@@ -15,7 +15,7 @@ its abandoned insurer-specific protocol or treat templates as approved controls.
 | Interview screener | `templates/RECRUITMENT-SPECIFICATION.md` | NEEDS_NARROW_CORRECTION | Existing placeholder is not executable; use transaction screener in `02` |
 | Supplier guide | none specific | NEEDS_NARROW_CORRECTION | Added in `02` |
 | Buyer guide | none specific | NEEDS_NARROW_CORRECTION | Added in `02` |
-| Note schema | no transaction-first schema | NEEDS_NARROW_CORRECTION | Added de-identified schema and synthetic examples |
+| Note schema | no transaction-first schema | NEEDS_NARROW_CORRECTION | Synthetic pseudonymised-form schema only; real schema remains unfrozen |
 | Event and negative-case fields | partial in old discovery protocol | NEEDS_NARROW_CORRECTION | Old fields are bound to abandoned H1 |
 | Owner permissions | `06-ADVICE-PERMISSIONS-AND-COST-REGISTER.md` | READY_WITHOUT_CHANGE | All external actions default not authorised |
 | Go/hold/stop gate | `07-GO-HOLD-STOP-GATE.md` | NEEDS_NARROW_CORRECTION | New gate narrows Stage A; later baseline/labelling gates remain valid |
