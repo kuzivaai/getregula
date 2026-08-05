@@ -678,3 +678,38 @@ technically observable subset, and a comparison route against the existing
 manual workflow. A generic questionnaire, use case or expression of interest is
 insufficient. This item changes neither N66's external controls nor any product,
 efficacy, claim-integrity, release, ownership or immigration item.
+
+## N68 — Successor falsification does not overturn the abandoned H1
+
+**First raised:** 2026-08-05. **Status:** public successor review complete;
+exact H1 remains ABANDONED; no spend or external action authorised.
+
+A preregistered successor review reconciled the exact implementation evidence,
+separated nine new search rounds from the prior 13-round record, and screened
+143 returned results. It added direct adjacent evidence: Zurich describes
+governance checks before delegated claims outsourcing; Ebix ComplianceHub and
+Lloyd's Delegated Audit Manager cover insurance-specific diligence/audit work;
+Conveyor and model-governance platforms cover generic questionnaire and model
+workflows; and a UK government assurance case describes review of an unnamed
+third-party model for a financial-and-insurance client's new-product process.
+
+None joins the atomic H1 components. No public source identified the matching
+small UK supplier, UK general-insurer claims-triage production-onboarding request,
+transaction-linked burden or cost, requester/blocker/budget, buyer acceptance,
+or source-code request. The technically observable share remains
+`UNESTABLISHED` because there is no real request to provide a denominator.
+Rounds 7-9 added no new qualifying H1 category. The searched-source result is
+`GENERAL_PROBLEM_ONLY`, not evidence that the private market does not exist.
+
+`HYPOTHESIS_STATUS: ABANDON`; `ACCESS_FEASIBILITY: UNKNOWN`;
+`SUBSTITUTE_PRESSURE: UNESTABLISHED`; `WILLINGNESS_TO_PAY: UNVALIDATED`;
+`TECHNICAL_FIT: FAILED_UNTIL_NEW_EVIDENCE`; `DIFFERENTIATION:
+NOT_DEMONSTRATED`; `OWNER_SPEND_RECOMMENDATION: DO_NOT_SPEND`;
+`CONTACT_READINESS: HOLD`; commercial and product decisions remain STOP.
+
+N65 still supersedes only N64's mixed 42-item tracked-renderable measurement;
+N64's wider release blockers remain open. N66's safeguards remain active and
+N67 continues to control H1. Acceptance for reopening remains N67's permissioned
+matching transaction with actual request, roles, measured burden, material
+technical subset and manual-workflow comparison. No product, contact, spend,
+ownership, immigration, public or release action is authorised.
