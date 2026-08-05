@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "_purpose": "Exact central classifications for immutable dated records that may quote a test count current at capture time. A file cannot classify itself. Paths, provenance and hashes fail closed on edits or renames.",
+  "records": [
+    {
+      "path": "docs/improvement/HANDOVER-TRANSACTION-EVIDENCE-2026-08-05-111235.md",
+      "record_class": "dated_evidence",
+      "recorded_at": "2026-08-05",
+      "evidence_commit": "8928bad63fe24c45c730ecd12d3258fc075121d5",
+      "immutable_sha256": "091c9625e0574476d45fb3c668a2ab091448679faa9be4cc6084408603ba21a4",
+      "rationale": "Committed handover preserving test totals observed during its recorded session."
+    },
+    {
+      "path": "docs/improvement/HANDOVER-VALIDATION-READINESS-2026-08-05-084916.md",
+      "record_class": "dated_evidence",
+      "recorded_at": "2026-08-05",
+      "evidence_commit": "55cec556440e5130c700cc00f662838ff84f1bb4",
+      "immutable_sha256": "9da87a2042ce6fcb10fb69087bf53f5c7fbfb3e9329fd1bb1bd1ed524b1eb82c",
+      "rationale": "Committed handover preserving test totals observed during its recorded session."
+    },
+    {
+      "path": "docs/improvement/SESSION-LOG-TRANSACTION-EVIDENCE-2026-08-05-111235.md",
+      "record_class": "dated_evidence",
+      "recorded_at": "2026-08-05",
+      "evidence_commit": "8928bad63fe24c45c730ecd12d3258fc075121d5",
+      "immutable_sha256": "6d3947cc9efbfffdb418d4292d11b896aeb406f7712cbffe7793f9a0db29b184",
+      "rationale": "Append-only command evidence preserving output observed during its session."
+    },
+    {
+      "path": "docs/improvement/SESSION-LOG-VALIDATION-READINESS-2026-08-05-084916.md",
+      "record_class": "dated_evidence",
+      "recorded_at": "2026-08-05",
+      "evidence_commit": "55cec556440e5130c700cc00f662838ff84f1bb4",
+      "immutable_sha256": "5b6ee4be1c36560dd67268b43d0b9d287a6fcb06a2f35dd6e8f23feeb7537db8",
+      "rationale": "Append-only command evidence preserving output observed during its session."
+    },
+    {
+      "path": "docs/venture/validation-readiness-2026-08-05/08-EVIDENCE-RECONCILIATION.md",
+      "record_class": "dated_evidence",
+      "recorded_at": "2026-08-05",
+      "evidence_commit": "1ca083c0415bc6ef64bd1c512de1c644820144a4",
+      "immutable_sha256": "d5f1b68b0b2f2e3dfd69aa20f42f10626c9a1a848558c3fa77b9d209eabeb409",
+      "rationale": "Dated reconciliation preserving exact-commit totals rather than a current published count."
+    }
+  ]
+}

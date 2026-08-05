@@ -23,11 +23,20 @@ import re
 import subprocess
 import sys
 import unittest
+from unittest import mock
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 MANIFEST = REPO / "data" / "published_count_manifest.json"
 SITE_FACTS = REPO / "data" / "site_facts.json"
+RECORD_CLASSES = REPO / "data" / "count_record_classes.json"
+
+sys.path.insert(0, str(REPO / "scripts"))
+from count_record_policy import (  # noqa: E402
+    classify_count_occurrences,
+    discover_tracked_files,
+    validate_record_policy,
+)
 
 
 def _manifest() -> dict:
@@ -40,9 +49,7 @@ def _canonical_count() -> int:
 
 
 def _tracked_files() -> list:
-    out = subprocess.run(["git", "ls-files"], cwd=str(REPO),
-                         capture_output=True, text=True, check=False).stdout
-    return [Path(p) for p in out.splitlines() if p]
+    return discover_tracked_files(REPO)
 
 
 
@@ -70,6 +77,111 @@ def _count_pattern(count: int):
         + r")(?!\d)")
 
 class TestPublishedCountManifest(unittest.TestCase):
+    def _policy(self, *historical):
+        return {
+            "schema_version": 1,
+            "records": [
+                {
+                    "path": path,
+                    "record_class": "dated_evidence",
+                    "recorded_at": "2026-08-05",
+                    "evidence_commit": "a" * 40,
+                    "immutable_sha256": digest,
+                    "rationale": "Synthetic dated measurement record.",
+                }
+                for path, digest in historical
+            ],
+        }
+
+    def test_dated_evidence_preserves_historically_true_count(self):
+        count = 2000 + 468
+        files = {"records/one.md": f"At capture: {count:,} tests.\n"}
+        digest = __import__("hashlib").sha256(
+            files["records/one.md"].encode()).hexdigest()
+        violations = classify_count_occurrences(
+            count, files, set(), set(), self._policy(
+                ("records/one.md", digest)))
+        self.assertEqual(violations, [])
+
+    def test_stale_current_count_fails(self):
+        count = 2000 + 468
+        violations = classify_count_occurrences(
+            count, {"current.md": f"Current: {count:,} tests.\n"},
+            set(), set(), self._policy())
+        self.assertEqual(violations, ["current.md"])
+
+    def test_sibling_dated_records_receive_same_treatment(self):
+        count = 2000 + 468
+        files = {
+            "records/one.md": f"At capture: {count:,} tests.\n",
+            "records/two.md": f"At capture: {count} tests.\n",
+        }
+        historical = tuple(
+            (path, __import__("hashlib").sha256(text.encode()).hexdigest())
+            for path, text in files.items())
+        self.assertEqual(classify_count_occurrences(
+            count, files, set(), set(), self._policy(*historical)), [])
+
+    def test_self_claimed_historical_file_fails_without_registry_metadata(self):
+        count = 2000 + 468
+        files = {"ordinary.md": (
+            f"record_class: dated_evidence\nAt capture: {count:,} tests.\n")}
+        self.assertEqual(classify_count_occurrences(
+            count, files, set(), set(), self._policy()), ["ordinary.md"])
+
+    def test_current_surface_cannot_be_registered_as_historical(self):
+        count = 2000 + 468
+        text = f"Current: {count:,} tests.\n"
+        digest = __import__("hashlib").sha256(text.encode()).hexdigest()
+        with self.assertRaisesRegex(ValueError, "current surface"):
+            validate_record_policy(
+                self._policy(("current.md", digest)), {"current.md": text},
+                {"current.md"}, set())
+
+    def test_renamed_record_does_not_inherit_historical_class(self):
+        count = 2000 + 468
+        old = f"At capture: {count:,} tests.\n"
+        digest = __import__("hashlib").sha256(old.encode()).hexdigest()
+        with self.assertRaisesRegex(ValueError, "missing tracked file"):
+            validate_record_policy(
+                self._policy(("records/old.md", digest)),
+                {"records/new.md": old}, set(), set())
+
+    def test_duplicate_literal_only_nonhistorical_record_violates(self):
+        count = 2000 + 468
+        files = {
+            "records/old.md": f"At capture: {count:,} tests.\n",
+            "current.md": f"Current: {count:,} tests.\n",
+        }
+        digest = __import__("hashlib").sha256(
+            files["records/old.md"].encode()).hexdigest()
+        self.assertEqual(classify_count_occurrences(
+            count, files, set(), set(),
+            self._policy(("records/old.md", digest))), ["current.md"])
+
+    def test_discovery_failure_cannot_become_empty_clean_result(self):
+        failed = subprocess.CompletedProcess(
+            ["git", "ls-files", "-z"], 128, stdout=b"", stderr=b"fatal")
+        with mock.patch("count_record_policy.subprocess.run",
+                        return_value=failed):
+            with self.assertRaisesRegex(RuntimeError, "git ls-files failed"):
+                discover_tracked_files(REPO)
+
+    def test_git_nonzero_with_partial_output_still_fails(self):
+        failed = subprocess.CompletedProcess(
+            ["git", "ls-files", "-z"], 1,
+            stdout=b"README.md\0", stderr=b"partial failure")
+        with mock.patch("count_record_policy.subprocess.run",
+                        return_value=failed):
+            with self.assertRaisesRegex(RuntimeError, "partial failure"):
+                discover_tracked_files(REPO)
+
+    def test_broad_path_exclusions_are_rejected(self):
+        policy = self._policy()
+        policy["excluded_by_design"] = [{"path": "docs/improvement/"}]
+        with self.assertRaisesRegex(ValueError, "broad exclusion"):
+            validate_record_policy(policy, {}, set(), set())
+
     def test_manifest_is_wellformed(self):
         m = _manifest()
         self.assertTrue(m["published_surfaces"], "manifest lists no surfaces")
@@ -81,6 +193,16 @@ class TestPublishedCountManifest(unittest.TestCase):
         for entry in m["non_surface_carriers"]:
             self.assertIn(entry["role"], ("source", "generated"))
             self.assertTrue((REPO / entry["path"]).exists())
+
+        files = {
+            path.as_posix(): (REPO / path).read_text(
+                encoding="utf-8", errors="ignore")
+            for path in _tracked_files() if (REPO / path).is_file()
+        }
+        validate_record_policy(
+            json.loads(RECORD_CLASSES.read_text(encoding="utf-8")), files,
+            set(m["published_surfaces"]),
+            {entry["path"] for entry in m["non_surface_carriers"]})
 
     def test_a_hex_colour_is_not_a_published_count(self):
         """THE CONTROL for the lookbehind, both ways.
@@ -106,43 +228,8 @@ class TestPublishedCountManifest(unittest.TestCase):
     def test_count_literal_appears_nowhere_outside_the_manifest(self):
         count = _canonical_count()
         m = _manifest()
-        allowed = set(m["published_surfaces"])
-        allowed |= {e["path"] for e in m["non_surface_carriers"]}
-        allowed_prefixes = tuple(
-            e["path"] for e in m["excluded_by_design"])
-
-        # Match the number both bare and comma-grouped, and the DE/PT-BR
-        # dot-grouped form, since those defeated a manual sweep before.
-        pattern = _count_pattern(count)
-
-        # A digit sequence is not a claim just because it appears in a file
-        # (measurement rule 4d). Machine-generated scan artefacts carry
-        # structural integers -- source line numbers, offsets, counts of
-        # findings in someone else's repository -- and one of them will
-        # collide with the test count sooner or later. That happened on
-        # 2026-07-31: a `"line":` value in
-        # benchmarks/results/blog_scan_2026_04/khoj.json equalled the
-        # published count exactly. The colliding figure is deliberately not
-        # written here, because this file is inside the corpus the test
-        # scans, so quoting it would fail the very check it explains.
-        #
-        # This exempts the COLLISION, never the file: any other occurrence in
-        # the same file still fails the test, so a genuine stale claim sitting
-        # in a JSON artefact is still caught. The keys below are structural by
-        # definition; none of them can hold a published test count.
-        structural_json_key = re.compile(
-            r'"(line|line_number|start_line|end_line|lineno|offset|column|'
-            r'total_lines|loc|size|bytes)"\s*:\s*$')
-
-        def _is_structural(text, match):
-            """True when the match is the value of a structural JSON key."""
-            return bool(structural_json_key.search(text[:match.start()]))
-
-        violations = []
+        files = {}
         for rel in _tracked_files():
-            posix = rel.as_posix()
-            if posix in allowed or posix.startswith(allowed_prefixes):
-                continue
             if rel.suffix.lower() not in (
                     ".md", ".html", ".txt", ".json", ".py", ".yaml", ".yml"):
                 continue
@@ -151,17 +238,20 @@ class TestPublishedCountManifest(unittest.TestCase):
                 text = path.read_text(encoding="utf-8", errors="ignore")
             except OSError:
                 continue
-            hits = [m for m in pattern.finditer(text)
-                    if not _is_structural(text, m)]
-            if hits:
-                violations.append(posix)
+            files[rel.as_posix()] = text
+
+        violations = classify_count_occurrences(
+            count, files, set(m["published_surfaces"]),
+            {entry["path"] for entry in m["non_surface_carriers"]},
+            json.loads(RECORD_CLASSES.read_text(encoding="utf-8")))
 
         self.assertEqual(
             violations, [],
             f"the published test count ({count}) appears in files not "
-            f"listed in data/published_count_manifest.json: {violations}. "
-            f"Either add the file to the manifest (and to every future "
-            f"count correction), or remove the literal. A surface that "
+            f"authorised by the current-carrier or dated-record policies: "
+            f"{violations}. Classify the exact immutable dated record with "
+            f"provenance, add a genuine current carrier to the manifest, or "
+            f"remove the literal. A surface that "
             f"carries the number without being in the manifest will be "
             f"missed by the next correction and left publishing a stale "
             f"figure.")
