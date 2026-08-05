@@ -6,17 +6,33 @@ reasoned interpretations, not quotations or legal conclusions.
 | Source | Date | Passage used | Application | Cannot establish |
 |---|---|---|---|---|
 | [MRS Code of Conduct](https://www.mrs.org.uk/standards/code-of-conduct) | 2023 edition effective 14 August 2023; page retrieved 2026-08-05 | “reporting sampling characteristics and parameters used when defining samples as representative” | Neutral research and no representative claim | Lawful basis or approval; binding status outside members/partners |
+| [MRS Responsibilities of Interviewers](https://www.mrs.org.uk/standards/responsibilities-of-interviewers) | guide based on the 2023 Code; retrieved 2026-08-05 | “responsibilities of research interviewers towards the people they interview” | Interviewer duties and participant-facing conduct | Legal approval or evidence that an interviewer is competent |
 | [ICO research safeguards](https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/the-research-provisions/what-are-the-appropriate-safeguards/) | live guidance retrieved 2026-08-05; explicitly under review after the Data (Use and Access) Act | “identify the minimum amount of personal data you need to fulfil your purpose” | Minimal Stage A data and no documents | Which lawful basis applies; guidance may change |
+| [ICO consultation on updated research guidance](https://ico.org.uk/about-the-ico/ico-and-stakeholder-consultations/2026/02/ico-consultation-on-the-draft-updated-guidance-on-the-research-archiving-and-statistics-provisions/) | 2026 consultation; retrieved 2026-08-05 | “updates to our guidance follow the introduction of the Data (Use and Access) Act” | Confirms currency uncertainty must remain explicit | Final future ICO position |
 | Existing readiness SOURCES S01-S06 | retrieved 2026-08-05 | ICO requires purpose-specific lawful basis, transparency and minimisation | Owner/professional gates | Legal approval |
-| Malterud, Siersma and Guassora, [Information Power](https://doi.org/10.1177/1049732315617444) | 2016 | More relevant information power can justify fewer interviews | Sequential role-based reassessment | A universal sample size or market prevalence |
-| Flanagan, [Critical Incident Technique](https://doi.org/10.1037/h0061470) | 1954 | Collect specific observations tied to consequential events | Most-recent real transaction and neutral prompts | Accuracy of recollection or causality |
-| Morgan et al., [Dyadic Interviews](https://doi.org/10.1177/1049732313501889) | 2013 | Separate perspectives can expose interaction and disagreement | Buyer/supplier triangulation; interviews remain separate for confidentiality | Matched-dyad access or truth by agreement |
+| Flanagan, [Critical Incident Technique](https://doi.org/10.1037/h0061470) | 1954; retrieved 2026-08-05 | collect “specific and significant behavioral facts” | Most-recent real transaction and neutral prompts | Accuracy of recollection or causality |
+| Byrne, [Critical incident technique as a qualitative research method](https://doi.org/10.1016/S0001-2092(06)61688-8) | 2001; retrieved 2026-08-05 | researchers should compare CIT with alternative methods for fit | CIT is used only for concrete transaction reconstruction | That CIT alone answers prevalence, demand or causality |
+| Sadeghi et al., [CIT literature review](https://doi.org/10.1111/hir.12416) | 2022; retrieved 2026-08-05 | interviewees are asked about “the latest incidents that happened to them” | Supports most-recent-event prompt and explicit stages | Enterprise-AI applicability or recall accuracy |
 | Mahoney and Goertz, [Possibility Principle](https://doi.org/10.1017/S0003055404041401) | 2004 | Negative cases should be cases where the outcome was possible | Recruit qualified transactions with no burden/advantage | Statistical frequency |
 | O'Brien et al., [SRQR](https://doi.org/10.1097/ACM.0000000000000388) | 2014 | 21 reporting items improve transparency across qualitative research | Audit trail, researcher role, context, analysis and limitations | Study validity merely by checklist completion |
 | Tong et al., [COREQ](https://pubmed.ncbi.nlm.nih.gov/17872937/) | 2007 | Interview reporting covers research team, design, analysis and findings | Secondary reporting cross-check | Methodological quality by itself; later critique exists |
+| Buus and Perron, [COREQ development critique](https://doi.org/10.1016/j.ijnurstu.2019.103452) | 2020; retrieved 2026-08-05 | replication questioned the trustworthiness and decontextualisation of checklist items | Prevents checklist scoring from becoming a validity claim | That every COREQ item is useless |
+| Smith et al., [How do you solve a problem like COREQ?](https://doi.org/10.1016/j.metip.2024.100155) | 2024; retrieved 2026-08-05 | universal use “can contribute to methodologically incongruent reporting” | Use COREQ only to expose missing reporting | That transparent reporting is unnecessary |
+| Wutich, Beresford and Bernard, [Sample Sizes for 10 Types](https://doi.org/10.1177/16094069241296206) | 2024; retrieved 2026-08-05 | guidance is “not yet comprehensive and nuanced enough” for some methods | Supports method-specific sequential review, not one fixed N | A universal cap or proof at 12 interviews |
+| Malterud et al., [Information Power](https://doi.org/10.1177/1049732315617444) | 2016; retrieved 2026-08-05 | sample size should be appraised “continuously” during research | Batch memo and adaptive stopping | A fixed minimum, saturation or market prevalence |
+| Morgan et al., [Introducing dyadic interviews](https://doi.org/10.1177/1049732313501889) | 2013; retrieved 2026-08-05 | dyadic data expose interaction and potentially divergent perspectives | Separate buyer/supplier accounts and event linkage | Matched access or truth by agreement |
+| Olmos-Vega et al., [Practical guide to reflexivity](https://doi.org/10.1080/0142159X.2022.2057287) | 2022; retrieved 2026-08-05 | reflexivity considers personal, interpersonal, methodological and contextual factors | Batch memo records researcher influence and changed interpretations | Elimination of researcher influence or independent truth |
 
 Method choice is `REASONED`: critical incidents reduce hypothetical answers;
 two-sided sampling tests asymmetric accounts; negative cases resist confirmation;
 information power governs continuation. The combination is overturned if Stage A
 cannot distinguish real events, confidentiality prevents useful detail, or the
 coding produces incompatible accounts without an auditable resolution path.
+
+The 2024 sample-size review reports numerical ranges for specific analytic aims,
+but this study is an access/falsification sequence across heterogeneous roles.
+Therefore those numbers are not imported as thresholds. The 12-participant cap
+remains a cost and management review point; sensitivity is explicit: if four
+qualified accounts provide weak dialogue or divergent roles, the method narrows
+or stops rather than treating 12 as a remedy; if high-information negative cases
+falsify the premise earlier, collection stops earlier.

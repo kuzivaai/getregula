@@ -757,3 +757,12 @@ buyer/supplier non-alignment, adequate incumbents, negligible technical evidence
 unsafe confidentiality/data boundaries or adverse work-permission advice. This
 item closes none of N60, F25, F30, N35, N36, N43, N51, N53, N55, N57, N28,
 N6, N7, N10, N11 or N12 and does not reopen N67.
+
+**2026-08-05 continuity correction:** N69's original H2 summary allowed buyer
+evidence from “close analogues”. That phrase is superseded for the launch gate,
+not silently erased. The committed method now requires buyer-side evidence
+matched to two qualifying transactions under the anonymous event-link rule;
+analogue material may be context but cannot pass buyer acceptance. It also
+blocks any H2 gate until corpus-level uniqueness/range/substitute-basis controls
+and independent analyst review exist. H2 remains NOT CREATED. This correction
+does not reopen N67 or change any STOP decision.
