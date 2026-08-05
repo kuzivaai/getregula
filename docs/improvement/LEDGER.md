@@ -776,8 +776,11 @@ H2 remains not created, and contact remains not authorised.
 
 ## N70 — Current-count enforcement hid collisions behind broad path exclusions
 
-**First raised:** 2026-08-05. **Status:** implementation in progress; acceptance
-requires exact-final suite evidence.
+**First raised:** 2026-08-05. **Status:** CLOSED 2026-08-05 in
+`7a9ef2c8105a9281897e22b1228a881287206c18`, tree
+`8f68c5dcea92ff132e9848799fe418c26967b00f`; acceptance evidence in the closure
+record below. Prior status: implementation in progress; acceptance requires
+exact-final suite evidence.
 
 The published-count guard excluded all of `docs/improvement/` and `CHANGELOG.md`
 by prefix, while a dated venture reconciliation outside those prefixes collided
@@ -791,6 +794,53 @@ and historical content is not rewritten. Acceptance: focused controls, revert
 control and exact committed full suite pass. Falsifier: any stale ordinary/current
 record can carry the canonical literal without failure, or a dated record can
 evade provenance/hash enforcement.
+
+**Closure record, 2026-08-05.** The residual defect instance was the two
+immutable pytest evidence logs first tracked by the evidence-preservation
+commit `be25ec45f9be8f8dfade321d7540e807367a48f2`, which carried the canonical
+count literal at capture without a dated-record classification and made the
+exact current suite red. Fail-before, reproduced twice on 2026-08-05 at that
+commit: `tests/test_published_count_manifest.py::TestPublishedCountManifest::`
+`test_count_literal_appears_nowhere_outside_the_manifest` failed, exit 1,
+naming exactly
+`docs/improvement/evidence-2026-08-05/full-pytest-27aefd7b-unrestricted-incomplete.txt`
+and `docs/improvement/evidence-2026-08-05/full-pytest-27aefd7b.txt`.
+Implementation: commit `7a9ef2c8105a9281897e22b1228a881287206c18`, tree
+`8f68c5dcea92ff132e9848799fe418c26967b00f`, changing exactly
+`data/count_record_classes.json` (sixteen inserted lines, nothing else): two
+centrally assigned `dated_evidence` records carrying capture date 2026-08-05,
+evidence commit `be25ec45f9be8f8dfade321d7540e807367a48f2`, each file's
+immutable SHA-256, and rationales that keep the completed run distinct from
+the incomplete execution attempt. Pass-after: the focused test and
+`test_manifest_is_wellformed` both passed, exit 0, with live Git provenance
+verification enabled. Mutation controls, each restored byte-exactly
+afterwards: one altered hash digit failed with "historical record content
+changed without reclassification"; substituting the parent commit
+`27aefd7b242b6a194fb03dc57b7d6e92bf207ee8`, where the files were untracked,
+failed with "path missing at evidence commit". Revert control: restoring the
+pre-implementation registry restored the original two-path failure, exit 1;
+restoring the correction restored the pass, exit 0. Evidence integrity: all
+37 entries of `docs/improvement/evidence-2026-08-05/SHA256SUMS.txt` verified
+OK, exit 0, and both classified logs are byte-identical to their blobs at the
+evidence commit. Complete suite on the exact implementation tree: the custom
+runner reported 1,389 helper assertions passed, 0 failed, 0 skipped over
+1,090 test functions, exit 0; the complete pytest suite passed with zero
+failures and zero reported skips under `-rs`, exit 0, its collected total
+equal to the canonical count in `data/site_facts.json` (the literal is
+deliberately not written into this file because this file is inside the
+corpus the guard scans). At the same tree, `scripts/cli` self-test and
+doctor, the diff claim audit, `--verify-facts`, `site_integrity.py`,
+`cascade_count.py --check`, `build_recall_artefact.py --check`,
+`build_gap_demo.py --check` and `check_selfref_sourcing.py --control-only`
+all exited 0. Closure reason: every acceptance condition of this row is
+demonstrated at one commit and tree. Residual limitations: the closure proves
+enforcement behaviour, not the truthfulness or currency of the underlying
+historical logs; the incomplete-attempt log remains classified as incomplete
+evidence, not a suite verdict; a full-suite result is one run on one machine
+under the N28 wall-clock caveat; and the classification-transition gap in the
+delivery-inventory policy demonstrated in the retained 2026-08-05 transfer
+record remains open and is not closed by this row. Falsifier: unchanged from
+the paragraph above.
 
 ## N71 — Stage A linkage and re-identification controls remain pre-execution
 
