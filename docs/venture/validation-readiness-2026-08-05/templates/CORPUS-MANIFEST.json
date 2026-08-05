@@ -1,0 +1,23 @@
+{
+  "status": "PREPARATION ONLY",
+  "external_action": "DISABLED",
+  "venture_decision": "STOP",
+  "product_pilot": "NOT APPROVED",
+  "real_data_collection": "DISABLED",
+  "schema_version": "regula.validation-corpus.1",
+  "entries": [],
+  "required_entry_fields": [
+    "repository_id",
+    "transaction_cluster_id",
+    "permission_id",
+    "licence",
+    "provenance",
+    "commit",
+    "tree",
+    "content_hash",
+    "language_strata",
+    "eligibility",
+    "inclusion_or_exclusion_reason",
+    "failure_status"
+  ]
+}

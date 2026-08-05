@@ -1,0 +1,21 @@
+{
+  "schema_version": "regula.validation-readiness.1",
+  "as_of": "2026-08-05",
+  "implementation_parent": "5800380",
+  "venture_decision": "STOP",
+  "product_pilot_status": "NOT_APPROVED",
+  "external_action": "NOT_AUTHORISED",
+  "real_data_collection": "DISABLED",
+  "discovery_hypothesis_status": "PREREGISTERED_NOT_EXECUTED",
+  "ip_and_account_inventory": "COMPLETE_WITH_UNKNOWNS",
+  "work_permission_analysis": "PROFESSIONAL_ADVICE_REQUIRED",
+  "data_governance_pack": "READY_FOR_PROFESSIONAL_REVIEW",
+  "manual_baseline": "PREREGISTERED_NOT_EXECUTED",
+  "independent_technical_labelling": "PREREGISTERED_NOT_EXECUTED",
+  "willingness_to_pay": "UNVALIDATED",
+  "technical_fit": "FAILED_UNTIL_NEW_EVIDENCE",
+  "differentiation": "NOT_DEMONSTRATED",
+  "professional_advice": "REQUIRED",
+  "owner_recommendation": "HOLD_PENDING_READINESS",
+  "default": "HOLD"
+}

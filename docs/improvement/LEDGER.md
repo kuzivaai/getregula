@@ -595,3 +595,40 @@ passing tests. This changes the active claim-blocker measurement, not the
 commercial evidence: commercial_v1 remains STOP and
 `PRODUCT_PILOT_STATUS` remains NOT_APPROVED. Repository merge readiness remains
 pending until the complete test matrix and detached-worktree checks pass.
+
+## N66 — Validation-readiness decision pack remains externally disabled
+
+**First raised:** 2026-08-05. **Status:** preparation implemented; owner and
+professional prerequisites OPEN; external action NOT AUTHORISED.
+
+The preparation unit preserves `VENTURE_DECISION: STOP` and
+`PRODUCT_PILOT_STATUS: NOT_APPROVED`. Its exact unvalidated hypothesis is a small
+UK AI supplier responding to a UK general insurer's production-onboarding
+evidence request for an AI-assisted claims-triage system. Discovery, real data,
+manual baseline, independent labels, payment and external efficacy have not
+occurred.
+
+Owner inputs remain open for GitHub, PyPI, domain/DNS, analytics, email, social,
+release/signing, CI, research storage and company/finance control; no secret was
+read. Professional advice remains required for work permission, contracting,
+officer roles, ownership, compensation, pre-existing and future IP, corporate and
+tax treatment, controller/processor roles, lawful basis, DPIA, transfers,
+confidentiality, sector boundaries and insurance. Material costs are
+`QUOTE_REQUIRED` or `UNKNOWN`; no gross margin is calculated.
+
+Consent and data templates are drafts for review, not implemented governance or
+legal approval. Real data, recording, confidential documents, repositories,
+derived labels, reuse and publication remain disabled. The manual baseline and
+technical study are `PREREGISTERED_NOT_EXECUTED`; Regula is hidden from the
+baseline and technical labels require two independent blinded qualified human
+raters, raw disagreements, adjudication, abstention, `NOT_ASSESSABLE`, a frozen
+holdout and cluster-aware reporting.
+
+Acceptance for a future bounded-discovery decision requires reviewed controller,
+lawful-basis, storage, consent/confidentiality and zero-cost/budget boundaries plus
+explicit owner approval. It is falsified by a false founder premise, prohibited
+work, unsafe disclosure, unmanageable liability, inability to obtain independent
+review or evidence that the transaction is not recurring and costly. Current
+recommendation: `HOLD_PENDING_READINESS`; default `HOLD`. This item closes no
+pre-existing ledger item and authorises no contact, spend, role, ownership,
+immigration, public, release or deployment action.
