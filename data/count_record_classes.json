@@ -35,6 +35,22 @@
       "rationale": "Append-only command evidence preserving output observed during its session."
     },
     {
+      "path": "docs/improvement/evidence-2026-08-05/full-pytest-55e9192d-unrestricted-incomplete.txt",
+      "record_class": "dated_evidence",
+      "recorded_at": "2026-08-05",
+      "evidence_commit": "4ce306eefcffb7ddb5a77091d41c3896cf9b9f3c",
+      "immutable_sha256": "e703a05acc479293f8d4ce451832193820a2ce503fc03b90647c138f4c4406e0",
+      "rationale": "Immutable log of a pytest attempt at commit 55e9192d whose capturing session ended without a trustworthy exit marker; retained as incomplete evidence. Its printed summary total is historical capture output, not a suite verdict and not a current result."
+    },
+    {
+      "path": "docs/improvement/evidence-2026-08-05/full-pytest-55e9192d.txt",
+      "record_class": "dated_evidence",
+      "recorded_at": "2026-08-05",
+      "evidence_commit": "4ce306eefcffb7ddb5a77091d41c3896cf9b9f3c",
+      "immutable_sha256": "fbb3c13363996bc7c504d1769d916f2e640264812a3938798ce2f97f930479b7",
+      "rationale": "Immutable evidence log of the completed full pytest run at commit 55e9192d, with its exit status retained in the companion .exit file. Preserves the suite total observed at capture; it is historical evidence, not a claim about the current tree."
+    },
+    {
       "path": "docs/venture/validation-readiness-2026-08-05/08-EVIDENCE-RECONCILIATION.md",
       "record_class": "dated_evidence",
       "recorded_at": "2026-08-05",
