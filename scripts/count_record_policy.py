@@ -10,7 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-ALLOWED_RECORD_CLASSES = {"dated_evidence", "historical_quote"}
+ALLOWED_RECORD_CLASSES = {"dated_evidence"}
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -28,9 +28,45 @@ def discover_tracked_files(repo: Path) -> list[Path]:
             for part in result.stdout.split(b"\0") if part]
 
 
-def validate_record_policy(policy: dict, files: dict[str, str],
+def read_tracked_files(repo: Path, paths: list[Path]) -> dict[str, bytes]:
+    """Read every tracked regular file; a read failure cannot disappear."""
+    files: dict[str, bytes] = {}
+    for path in paths:
+        absolute = repo / path
+        try:
+            files[path.as_posix()] = absolute.read_bytes()
+        except OSError as exc:
+            raise RuntimeError(f"cannot read tracked file {path}: {exc}") from exc
+    return files
+
+
+def _raw(value: str | bytes) -> bytes:
+    return value if isinstance(value, bytes) else value.encode("utf-8")
+
+
+def verify_record_provenance(repo: Path, record: dict) -> None:
+    """Prove the declared commit contains the exact registered file blob."""
+    commit = record["evidence_commit"]
+    path = record["path"]
+    exists = subprocess.run(
+        ["git", "cat-file", "-e", f"{commit}^{{commit}}"], cwd=repo,
+        capture_output=True, check=False)
+    if exists.returncode != 0:
+        raise ValueError(f"evidence commit does not exist for {path}: {commit}")
+    blob = subprocess.run(
+        ["git", "show", f"{commit}:{path}"], cwd=repo,
+        capture_output=True, check=False)
+    if blob.returncode != 0:
+        raise ValueError(f"path missing at evidence commit: {path}")
+    historical_hash = hashlib.sha256(blob.stdout).hexdigest()
+    if historical_hash != record["immutable_sha256"]:
+        raise ValueError(f"evidence-commit blob hash mismatch for {path}")
+
+
+def validate_record_policy(policy: dict, files: dict[str, str | bytes],
                            current_paths: set[str],
-                           non_surface_paths: set[str]) -> dict[str, dict]:
+                           non_surface_paths: set[str],
+                           repo: Path | None = None) -> dict[str, dict]:
     """Validate centrally assigned historical classes and return by path."""
     if "excluded_by_design" in policy:
         raise ValueError("broad exclusion is forbidden; classify exact records")
@@ -58,16 +94,20 @@ def validate_record_policy(policy: dict, files: dict[str, str],
             raise ValueError(f"invalid historical record class for {path}")
         if not DATE_RE.fullmatch(str(record.get("recorded_at", ""))):
             raise ValueError(f"recorded_at must be an ISO date for {path}")
+        if record["recorded_at"] not in path:
+            raise ValueError(f"dated evidence path must contain recorded_at: {path}")
         if not COMMIT_RE.fullmatch(str(record.get("evidence_commit", ""))):
             raise ValueError(f"evidence_commit must be a full commit for {path}")
         if not SHA256_RE.fullmatch(str(record.get("immutable_sha256", ""))):
             raise ValueError(f"immutable_sha256 must be lowercase SHA-256 for {path}")
         if not str(record.get("rationale", "")).strip():
             raise ValueError(f"rationale is required for {path}")
-        actual = hashlib.sha256(files[path].encode("utf-8")).hexdigest()
+        actual = hashlib.sha256(_raw(files[path])).hexdigest()
         if actual != record["immutable_sha256"]:
             raise ValueError(
                 f"historical record content changed without reclassification: {path}")
+        if repo is not None:
+            verify_record_provenance(repo, record)
         by_path[path] = record
     return by_path
 
@@ -80,20 +120,27 @@ def count_pattern(count: int) -> re.Pattern:
         + r")(?!\d)")
 
 
-def classify_count_occurrences(count: int, files: dict[str, str],
+def classify_count_occurrences(count: int, files: dict[str, str | bytes],
                                current_paths: set[str],
                                non_surface_paths: set[str],
-                               policy: dict) -> list[str]:
+                               policy: dict, repo: Path | None = None) -> list[str]:
     """Return files whose count literal lacks an authorised record class."""
     historical = validate_record_policy(
-        policy, files, current_paths, non_surface_paths)
+        policy, files, current_paths, non_surface_paths, repo)
     pattern = count_pattern(count)
     structural_json_key = re.compile(
         r'"(line|line_number|start_line|end_line|lineno|offset|column|'
         r'total_lines|loc|size|bytes)"\s*:\s*$')
     violations: list[str] = []
-    for path, body in files.items():
+    for path, raw_body in files.items():
         if path in current_paths or path in non_surface_paths or path in historical:
+            continue
+        raw_body = _raw(raw_body)
+        if b"\0" in raw_body:
+            continue
+        try:
+            body = raw_body.decode("utf-8", errors="strict")
+        except UnicodeDecodeError:
             continue
         hits = [match for match in pattern.finditer(body)
                 if not structural_json_key.search(body[:match.start()])]

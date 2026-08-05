@@ -39,7 +39,7 @@ Ask without collecting names or documents:
 5. Which qualifying review occurred: information security, privacy, AI
    governance, model risk, third-party risk, technical assurance or procurement
    diligence? If none, exclude.
-6. Can you discuss the event at a non-confidential, organisation-de-identified
+6. Can you discuss the event at a non-confidential, organisation-minimised
    level without documents, names, contract terms or security findings? If no,
    exclude from Stage A.
 
@@ -111,10 +111,13 @@ Burden is retained as a non-confidential range plus unit, basis, affected role
 and uncertainty; “material” is not a free-standing label. Delay uses the same
 rule. Each requirement links its state, requester/reviewer role, acceptance
 outcome and observability basis. Observability is assessed after the interview,
-per requirement, with `NOT_ASSESSABLE` available. Anonymous account IDs and a
-shared event-link key permit two sides of one event to be reconciled without
-counting them as independent transactions. Independence requires different
-event-link keys and no evidence that the events are the same transaction.
+per requirement, with `NOT_ASSESSABLE` available. Future account and transaction
+IDs must be random tokens, not derived from identity, organisation, date or
+event facts. They are pseudonyms, not proof of anonymity. Only a separately
+permissioned Layer 2 linkage register may associate two accounts with one
+transaction; the analytical corpus carries the random transaction ID but no
+identity or contact mapping. Independence requires different transaction IDs
+and no evidence that the events are the same transaction.
 
 Both bounds must be non-negative; lower must not exceed upper; both may be null
 only when the unit is `UNKNOWN` and the basis explains why. A bounded qualitative
@@ -123,7 +126,7 @@ called measured. An `INADEQUATE` substitute requires a non-empty account of the
 observed failure criterion and contrary evidence. Empty strings are invalid.
 
 Before any H2 gate is evaluated, a corpus check must enforce unique account IDs,
-verify that every event-link group represents one event, apply the range rules,
+verify that every transaction group represents one event, apply the range rules,
 and reject an unsupported `INADEQUATE` result. The object schema cannot establish
 these cross-record facts by itself. A second analyst must independently review
 observability, contradiction and negative-case coding; disagreement is retained
@@ -154,7 +157,7 @@ a named construct and evidence that successive batches added none of it.
 Stage B must retain both sides unless a recorded information-power assessment
 explains the imbalance; no organisation or role may dominate the inference.
 “No repeated transaction” means that, after a completed batch, no two independent
-event-link keys share a bounded trigger, job, supplier profile, buyer type,
+transaction IDs share a bounded trigger, job, supplier profile, buyer type,
 geography, deployment stage and evidence exchange. Non-alignment means linked
 buyer/supplier accounts materially disagree on a gate fact after uncertainty is
 retained; it triggers review, not forced adjudication.
@@ -164,12 +167,14 @@ retained; it triggers review, not forced adjudication.
 H2 is not created. It may be preregistered only after three independent recent
 transactions share a bounded trigger, job, supplier profile, buyer type,
 geography, deployment stage and evidence exchange; two suppliers are represented;
-buyer-side evidence matches two of those transactions under the event-link rule;
+buyer-side evidence matches two of those transactions under the separately
+permissioned transaction-linkage rule;
 bounded qualitative or measured burden occurs
 in more than one; a buyer gives acceptance/rejection criteria; a material subset
 is `OBSERVABILITY_INDICATED` by the accounts; its incumbent workaround has a
 retained observed inadequacy basis;
-separate permission for a de-identified representative artefact is feasible; and
+separate permission for a minimised, pseudonymised representative artefact is
+feasible; and
 no negative case already falsifies the proposed advantage. These are management
 gates, not statistical validation. Willingness to pay remains unvalidated.
 Three selected transactions do not establish prevalence, recurrence, a market

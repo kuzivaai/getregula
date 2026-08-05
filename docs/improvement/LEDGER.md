@@ -766,3 +766,54 @@ analogue material may be context but cannot pass buyer acceptance. It also
 blocks any H2 gate until corpus-level uniqueness/range/substitute-basis controls
 and independent analyst review exist. H2 remains NOT CREATED. This correction
 does not reopen N67 or change any STOP decision.
+
+**2026-08-05 Stage A correction:** N69's `READY` access-map wording and
+“anonymous event-link” description are superseded, not erased. The map is now
+`PREPARED_UNVALIDATED`; no access exists until a qualifying participant agrees.
+Future analytical records are classified `PSEUDONYMISED`, and linkage requires
+a separately permissioned register using random tokens. H1 remains abandoned,
+H2 remains not created, and contact remains not authorised.
+
+## N70 — Current-count enforcement hid collisions behind broad path exclusions
+
+**First raised:** 2026-08-05. **Status:** implementation in progress; acceptance
+requires exact-final suite evidence.
+
+The published-count guard excluded all of `docs/improvement/` and `CHANGELOG.md`
+by prefix, while a dated venture reconciliation outside those prefixes collided
+with the live canonical count. The same focused failure reproduced at starting
+commit `ba673b2` and pre-implementation HEAD `ac9e01b`; c11a831 did not create
+it. The class fix replaces broad exclusions with centrally assigned exact-path
+dated-evidence records carrying capture date, evidence commit and immutable
+SHA-256. Current surfaces cannot be registered historical, self-labelling has
+no effect, renames/missing files/hash changes fail, Git discovery fails closed,
+and historical content is not rewritten. Acceptance: focused controls, revert
+control and exact committed full suite pass. Falsifier: any stale ordinary/current
+record can carry the canonical literal without failure, or a dated record can
+evade provenance/hash enforcement.
+
+## N71 — Stage A linkage and re-identification controls remain pre-execution
+
+**First raised:** 2026-08-05. **Status:** preparation corrected; owner and
+professional gates remain OPEN; real data DISABLED.
+
+The earlier method called account tokens anonymous and co-located a shared event
+key with analytical accounts without specifying an identity/linkage separation.
+The corrected design has three layers: contact/participation, separately
+permissioned transaction linkage, and pseudonymised analytical corpus. Random
+tokens cannot derive from identity, domains, dates or event facts. The threat
+model covers singling out, linkage, deterministic-hash attacks, insider access,
+Git, logs/backups, linkage disclosure, false matches, counterpart inference,
+small cells, quotations, cross-session inference and linked withdrawal.
+
+Owner-approved defaults are GBP 0 and prohibitions on recording, transcription,
+confidential documents, repositories/code, security findings, special-category
+data, incentives, Regula demonstration, sales, publication and real data in Git.
+Controller, research lead/purpose, storage/jurisdiction/processors, access roles,
+retention, deletion/privacy ownership, lawful basis, interviewer work permission
+and explicit contact authorisation remain blocking. The future H2 corpus
+validator is deliberately deferred until Stage A produces a frozen real-record
+schema; it must precede H2 generation. Acceptance: qualified review plus explicit
+owner decisions and tested storage/rights processes. Falsifier: any real-data
+flow can join identity and analytical content, use deterministic IDs, link
+counterparts without permission, or fail to propagate withdrawal.

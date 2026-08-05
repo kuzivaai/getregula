@@ -13,7 +13,7 @@ Public organisation routes are candidates for a later owner decision, not access
 | Insurtech UK member population | public directory identifies suppliers, including claims technology | supplier role strata | current-only | organisation programme/enquiry | population signal only; membership bias and no transaction proof | screening pool only after authorisation |
 | UK government AI assurance portfolio | published third-party-model assurance cases | assurance observer of buyer/supplier | 2023-current | official programme route | cases may be vendor-contributed and anonymised | observer stratum, not buyer substitute |
 
-`ORGANISATION_ACCESS_MAP: READY` means only that role/organisation-level routes
-are specified without personal data. It does not mean participants are reachable
-or willing. Actual access remains `UNKNOWN` until authorised contact occurs.
-
+`ORGANISATION_ACCESS_MAP: PREPARED_UNVALIDATED` means only that
+role/organisation-level routes are specified without personal data. It does not
+mean a qualifying person is reachable or willing. Actual access remains
+`UNKNOWN` until authorised contact occurs and a qualifying person agrees.

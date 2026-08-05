@@ -2,7 +2,7 @@
   {
     "synthetic": true,
     "account_id": "SYNTHETIC-ACCT-0001",
-    "event_link_key": "SYNTHETIC-EVENT-0001",
+    "transaction_id": "SYNTHETIC-TXN-0001",
     "independence_status": "INDEPENDENT",
     "participant_side": "SUPPLIER",
     "role_archetype": "synthetic security lead",
@@ -34,7 +34,7 @@
   {
     "synthetic": true,
     "account_id": "SYNTHETIC-ACCT-0002",
-    "event_link_key": "SYNTHETIC-EVENT-0002",
+    "transaction_id": "SYNTHETIC-TXN-0002",
     "independence_status": "INDEPENDENT",
     "participant_side": "BUYER_REVIEWER",
     "role_archetype": "synthetic risk reviewer",
