@@ -7,9 +7,10 @@ STATUS: DRAFTED_NOT_SENT. EXTERNAL CONTACT: NOT AUTHORISED.
 We are conducting a short research interview about one recent enterprise review
 of an AI-enabled software product. This is research, not sales, and Regula will
 not be offered or demonstrated. We are looking for people who personally took
-part in a security, privacy, AI-governance, model-risk, third-party-risk or
-procurement review during an active sale or production onboarding in the last
-12 months. The discussion would last about 30 minutes, would not be recorded,
+part in an information-security, privacy, AI-governance, model-risk,
+third-party-risk, technical-assurance or procurement review during an active
+sale or production onboarding in the last 12 months. The discussion would last
+about 30 minutes, would not be recorded,
 and would not request names, confidential information, documents or source code.
 Please do not disclose them; if offered, the interviewer will stop and omit or
 redact the note under the reviewed incident/deletion process.
@@ -20,9 +21,9 @@ You may decline any question or stop at any time.
 We are conducting a short research interview about one recent enterprise review
 of an AI-enabled supplier. This is research, not sales, and no product will be
 demonstrated. We are seeking people who personally requested, reviewed or decided
-on security, privacy, AI-governance, model-risk, third-party-risk or procurement
-evidence during an active transaction in the last 12 months. The discussion would
-last about 30 minutes, would not be recorded, and would not request supplier
+on information-security, privacy, AI-governance, model-risk, third-party-risk,
+technical-assurance or procurement evidence during an active transaction in the
+last 12 months. The discussion would last about 30 minutes, would not be recorded, and would not request supplier
 names, confidential information, documents or security findings. You may decline
 any question or stop at any time.
 Please do not disclose them; if offered, the interviewer will stop and omit or
@@ -49,3 +50,10 @@ Thank you. We will not contact you again about this study. Subject to the
 controller and deletion process being approved before contact, any contact record
 will be handled under those instructions.
 No research inference will be drawn from your decision to decline.
+
+## Withdrawal/deletion response
+
+We have received your withdrawal or deletion request. We will follow the
+controller-approved process described in the reviewed participant information,
+including any applicable limit disclosed before participation. This draft does
+not promise deletion until that process and its exceptions have been reviewed.

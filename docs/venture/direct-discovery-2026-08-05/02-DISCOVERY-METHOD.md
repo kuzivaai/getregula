@@ -10,8 +10,9 @@ H2: NOT CREATED
 
 Include only a participant who personally took part in the previous 12 months
 in an active enterprise sale, supplier onboarding or procurement review for an
-AI-enabled software product involving security, privacy, AI governance, model
-risk, third-party risk or procurement due diligence. This is an inclusion rule,
+AI-enabled software product involving information security, privacy, AI
+governance, model risk, third-party risk, technical assurance or procurement
+due diligence. This is an inclusion rule,
 not a market or beachhead.
 
 Eligible supplier roles: founder, technical founder, CTO, security/compliance
@@ -35,8 +36,9 @@ Ask without collecting names or documents:
 3. Did the transaction concern an AI-enabled software product? If no, exclude.
 4. Did it reach active sale, procurement or production-onboarding review? If no,
    exclude.
-5. Which qualifying review occurred: security, privacy, AI governance, model
-   risk, third-party risk or procurement diligence? If none, exclude.
+5. Which qualifying review occurred: information security, privacy, AI
+   governance, model risk, third-party risk, technical assurance or procurement
+   diligence? If none, exclude.
 6. Can you discuss the event at a non-confidential, organisation-de-identified
    level without documents, names, contract terms or security findings? If no,
    exclude from Stage A.
@@ -66,8 +68,8 @@ uncertainty? Did the transaction change, pause, fail or proceed, and what reason
 was actually given? What workaround, tool or adviser was actually used? Was any
 money actually committed to completing the review, by which role and for what?
 What could not leave the supplier? Ask for non-confidential ranges, not exact
-commercial values. Record hypothetical value separately as `HYPOTHETICAL_ONLY`;
-it is never willingness-to-pay evidence.
+commercial values. Do not encode hypothetical prices or enthusiasm as economic
+evidence; they are never willingness-to-pay evidence.
 
 ## Buyer/reviewer guide
 
@@ -99,6 +101,11 @@ A negative case is transaction-qualified but shows no material burden, no
 repeatable requirement, adequate incumbent handling, negligible technical
 evidence, buyer/supplier disagreement, or no plausible economic consequence.
 It remains in analysis and can stop the programme.
+
+Deliberately seek, without quotas implying prevalence: a fast pass; a delayed or
+rejected transaction; a buyer satisfied with the evidence; a buyer requiring
+independent assurance; an adequate incumbent; immaterial code evidence; no
+dedicated budget; and a supplier unwilling or unable to share technical evidence.
 
 Burden is retained as a non-confidential range plus unit, basis, affected role
 and uncertainty; “material” is not a free-standing label. Delay uses the same
@@ -136,6 +143,14 @@ Stop earlier for access failure, hypothetical accounts, no repeated transaction,
 buyer/supplier non-alignment, adequate incumbents, negligible technical evidence,
 or unacceptable data/liability boundaries.
 
+After every batch, write an information-power memo recording aim specificity,
+participant specificity, dialogue quality, theory contribution, analysis
+strategy, new mechanisms, contradictions, negative-case coverage and buyer-
+supplier divergence. Rank the next role by qualitative value of information:
+decision consequence, likelihood that the role can settle it, access cost and
+privacy risk. Do not fabricate probabilities. “Saturation” may be used only with
+a named construct and evidence that successive batches added none of it.
+
 Stage B must retain both sides unless a recorded information-power assessment
 explains the imbalance; no organisation or role may dominate the inference.
 “No repeated transaction” means that, after a completed batch, no two independent
@@ -152,10 +167,20 @@ geography, deployment stage and evidence exchange; two suppliers are represented
 buyer-side evidence matches two of those transactions under the event-link rule;
 bounded qualitative or measured burden occurs
 in more than one; a buyer gives acceptance/rejection criteria; a material subset
-is technically observable; its incumbent workaround is demonstrably inadequate;
+is `OBSERVABILITY_INDICATED` by the accounts; its incumbent workaround has a
+retained observed inadequacy basis;
 separate permission for a de-identified representative artefact is feasible; and
 no negative case already falsifies the proposed advantage. These are management
 gates, not statistical validation. Willingness to pay remains unvalidated.
 Three selected transactions do not establish prevalence, recurrence, a market
 or demand. Analogue evidence may be retained as context but cannot pass a buyer
 acceptance gate.
+
+Any H2 produced is explicitly generated from these discovery cases, not
+preregistered before them and not validated by them. It must list every retained
+negative case, freeze the claimed mechanism and its falsifiers, and be tested on
+fresh holdout transactions. A permissioned artefact check is required before
+technical observability can be called demonstrated or Regula-relevant. H2
+creation establishes neither Regula performance nor advantage over a transparent
+manual baseline: `TECHNICAL_FIT: FAILED_UNTIL_NEW_EVIDENCE` and
+`DIFFERENTIATION: NOT_DEMONSTRATED` remain unchanged until prospective comparison.

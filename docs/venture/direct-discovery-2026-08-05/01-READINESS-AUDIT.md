@@ -19,7 +19,9 @@ its abandoned insurer-specific protocol or treat templates as approved controls.
 | Event and negative-case fields | partial in old discovery protocol | NEEDS_NARROW_CORRECTION | Old fields are bound to abandoned H1 |
 | Owner permissions | `06-ADVICE-PERMISSIONS-AND-COST-REGISTER.md` | READY_WITHOUT_CHANGE | All external actions default not authorised |
 | Go/hold/stop gate | `07-GO-HOLD-STOP-GATE.md` | NEEDS_NARROW_CORRECTION | New gate narrows Stage A; later baseline/labelling gates remain valid |
+| Validator | `scripts/validate_validation_readiness.py` | READY_WITHOUT_CHANGE for the original 29-file pack | Tests preparation controls, not future corpus or legal readiness |
+| Machine-readable readiness | `readiness.json` | READY_WITHOUT_CHANGE as historical readiness state | Does not authorise this launch gate or encode owner decisions |
 
 The old `02-DISCOVERY-PROTOCOL.md` remains a historical preregistration for H1
 and is not reused as the new population. H1 stays abandoned under N67/N68.
-
+The irreducible decisions are isolated in `05-OWNER-AND-PROFESSIONAL-DECISIONS.md`.

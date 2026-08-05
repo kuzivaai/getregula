@@ -3,7 +3,7 @@
   "title": "De-identified enterprise AI diligence account",
   "type": "object",
   "additionalProperties": false,
-  "required": ["synthetic", "account_id", "event_link_key", "independence_status", "participant_side", "role_archetype", "transaction_type", "within_12_months", "supplier_profile_band", "buyer_profile_band", "geography_band", "deployment_stage", "trigger", "review_types", "requirements", "burden", "delay", "outcome", "actual_expenditure_or_commitment", "current_substitute", "substitute_result", "substitute_result_basis", "contradiction", "contradiction_basis", "negative_case", "negative_case_basis", "unresolved_questions"],
+  "required": ["synthetic", "account_id", "event_link_key", "independence_status", "participant_side", "role_archetype", "transaction_type", "within_12_months", "supplier_profile_band", "buyer_profile_band", "geography_band", "deployment_stage", "trigger", "review_types", "requirements", "burden", "delay", "outcome", "blocker_role", "residual_risk_approver_role", "independent_review_required", "actual_expenditure_or_commitment", "current_substitute", "substitute_result", "substitute_result_basis", "contradiction", "contradiction_basis", "negative_case", "negative_case_basis", "unresolved_questions"],
   "properties": {
     "synthetic": {"type": "boolean"},
     "account_id": {"type": "string", "pattern": "^(SYNTHETIC-)?ACCT-[0-9]{4}$"},
@@ -18,13 +18,15 @@
     "geography_band": {"type": "string", "minLength": 1},
     "deployment_stage": {"type": "string", "minLength": 1},
     "trigger": {"type": "string", "minLength": 1},
-    "review_types": {"type": "array", "items": {"enum": ["SECURITY", "PRIVACY", "AI_GOVERNANCE", "MODEL_RISK", "THIRD_PARTY_RISK", "PROCUREMENT"]}, "minItems": 1, "uniqueItems": true},
+    "review_types": {"type": "array", "items": {"enum": ["INFORMATION_SECURITY", "PRIVACY", "AI_GOVERNANCE", "MODEL_RISK", "THIRD_PARTY_RISK", "TECHNICAL_ASSURANCE", "PROCUREMENT"]}, "minItems": 1, "uniqueItems": true},
     "requirements": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/requirement"}},
     "burden": {"$ref": "#/$defs/boundedMeasure"},
     "delay": {"$ref": "#/$defs/boundedMeasure"},
     "outcome": {"type": "string", "minLength": 1},
-    "actual_expenditure_or_commitment": {"type": "object", "required": ["occurred", "role", "purpose", "basis"], "properties": {"occurred": {"enum": ["YES", "NO", "UNKNOWN"]}, "role": {"type": "string"}, "purpose": {"type": "string"}, "basis": {"type": "string"}}, "additionalProperties": false},
-    "hypothetical_value": {"type": "string"},
+    "blocker_role": {"type": "string", "minLength": 1},
+    "residual_risk_approver_role": {"type": "string", "minLength": 1},
+    "independent_review_required": {"enum": ["YES", "NO", "UNKNOWN"]},
+    "actual_expenditure_or_commitment": {"type": "object", "required": ["occurred", "role", "purpose", "basis"], "properties": {"occurred": {"enum": ["YES", "NO", "UNKNOWN"]}, "role": {"type": "string", "minLength": 1}, "purpose": {"type": "string", "minLength": 1}, "basis": {"type": "string", "minLength": 1}}, "additionalProperties": false},
     "current_substitute": {"type": "string", "minLength": 1},
     "substitute_result": {"enum": ["ADEQUATE", "INADEQUATE", "MIXED", "UNKNOWN"]},
     "substitute_result_basis": {"type": "string", "minLength": 1},
@@ -35,7 +37,7 @@
     "unresolved_questions": {"type": "array", "items": {"type": "string"}}
   },
   "$defs": {
-    "requirement": {"type": "object", "additionalProperties": false, "required": ["requirement_id", "category", "evidence_state", "requester_role", "reviewer_role", "acceptance_outcome", "observability", "observability_basis", "uncertainty"], "properties": {"requirement_id": {"type": "string"}, "category": {"enum": ["TECHNICAL_ARTEFACT", "SUPPLIER_ATTESTATION", "ORGANISATIONAL", "CONTRACTUAL", "LEGAL_JUDGEMENT", "BUYER_DECISION", "INDEPENDENT_ASSURANCE", "NOT_ASSESSABLE"]}, "evidence_state": {"enum": ["EXISTED", "CREATED", "MISSING", "STALE", "CONTRADICTORY", "REJECTED", "ACCEPTED_WITH_CONDITIONS", "ACCEPTED", "UNKNOWN"]}, "requester_role": {"type": "string"}, "reviewer_role": {"type": "string"}, "acceptance_outcome": {"type": "string"}, "observability": {"enum": ["SOURCE_CODE", "DEPENDENCY_CONFIGURATION", "CI_TEST_ARTEFACT", "RUNTIME_EVIDENCE", "SUPPLIER_ATTESTED", "CONTRACTUAL", "ORGANISATIONAL", "LEGAL_JUDGEMENT", "BUYER_DECISION", "INDEPENDENT_ASSURANCE", "NOT_ASSESSABLE"]}, "observability_basis": {"type": "string"}, "uncertainty": {"type": "string"}}},
+    "requirement": {"type": "object", "additionalProperties": false, "required": ["requirement_id", "category", "evidence_state", "corroboration_state", "requester_role", "reviewer_role", "acceptance_outcome", "observability", "observability_basis", "uncertainty"], "properties": {"requirement_id": {"type": "string", "minLength": 1}, "category": {"enum": ["TECHNICAL_ARTEFACT", "SUPPLIER_ATTESTATION", "ORGANISATIONAL", "CONTRACTUAL", "LEGAL_JUDGEMENT", "BUYER_DECISION", "INDEPENDENT_ASSURANCE", "NOT_ASSESSABLE"]}, "evidence_state": {"enum": ["EXISTED", "CREATED", "MISSING", "STALE", "CONTRADICTORY", "REJECTED", "ACCEPTED_WITH_CONDITIONS", "ACCEPTED", "UNKNOWN"]}, "corroboration_state": {"enum": ["DIRECTLY_EVIDENCED", "PARTICIPANT_REPORTED", "BUYER_CONFIRMED", "SUPPLIER_CONFIRMED", "CONTRADICTED", "NOT_OBSERVED", "NOT_ASSESSABLE", "REQUIRES_LEGAL_DECISION", "REQUIRES_BUYER_DECISION", "REQUIRES_INDEPENDENT_REVIEW"]}, "requester_role": {"type": "string", "minLength": 1}, "reviewer_role": {"type": "string", "minLength": 1}, "acceptance_outcome": {"type": "string", "minLength": 1}, "observability": {"enum": ["SOURCE_CODE", "DEPENDENCY_CONFIGURATION", "CI_TEST_ARTEFACT", "RUNTIME_EVIDENCE", "SUPPLIER_ATTESTED", "CONTRACTUAL", "ORGANISATIONAL", "LEGAL_JUDGEMENT", "BUYER_DECISION", "INDEPENDENT_ASSURANCE", "NOT_ASSESSABLE"]}, "observability_basis": {"type": "string", "minLength": 1}, "uncertainty": {"type": "string", "minLength": 1}}},
     "boundedMeasure": {"type": "object", "additionalProperties": false, "required": ["lower", "upper", "unit", "basis", "affected_role", "uncertainty"], "properties": {"lower": {"type": ["number", "null"], "minimum": 0}, "upper": {"type": ["number", "null"], "minimum": 0}, "unit": {"enum": ["PERSON_HOURS", "CALENDAR_DAYS", "UNKNOWN"]}, "basis": {"type": "string", "minLength": 1}, "affected_role": {"type": "string", "minLength": 1}, "uncertainty": {"type": "string", "minLength": 1}}}
   },
   "description": "Empty schema only. Names, contact details, employer-identifying free text, customer/product names, contracts, repositories, code, security findings and special-category data are prohibited. Real data collection remains disabled."
