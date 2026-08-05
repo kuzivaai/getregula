@@ -157,21 +157,23 @@ def test_untracked_contributors_flags_a_file_git_does_not_track():
 
     Constructed rather than pinned to today's tree: passing the real per_file
     would assert current state, and would stop testing anything the moment the
-    tree changed.
+    tree changed. Keys are repo-relative paths (N55: basenames could not be
+    compared soundly against tracked paths).
     """
-    per_file = {"test_real_tracked_example.py": 3,
-                "test_never_committed.py": 7}
-    tracked = {"test_real_tracked_example.py"}
+    per_file = {"tests/test_real_tracked_example.py": 3,
+                "tests/test_never_committed.py": 7}
+    tracked = {"tests/test_real_tracked_example.py"}
     found = site_facts.untracked_test_contributors(per_file, tracked=tracked)
-    assert found == ["test_never_committed.py"], f"unexpected result: {found}"
+    assert found == ["tests/test_never_committed.py"], (
+        f"unexpected result: {found}")
 
 
 def test_untracked_contributors_is_quiet_when_every_contributor_is_tracked():
     """The other half. Without this, a predicate that flagged everything
     would pass the test above and break every legitimate run."""
-    per_file = {"test_a.py": 1, "test_b.py": 2}
+    per_file = {"tests/test_a.py": 1, "tests/sub/test_b.py": 2}
     found = site_facts.untracked_test_contributors(
-        per_file, tracked={"test_a.py", "test_b.py"})
+        per_file, tracked={"tests/test_a.py", "tests/sub/test_b.py"})
     assert found == [], f"clean input reported {found}"
 
 
@@ -195,7 +197,10 @@ def test_generation_warns_when_a_contributor_is_untracked(monkeypatch, capsys):
     to discover it later from a cascade that already shipped."""
     monkeypatch.setattr(
         site_facts, "untracked_test_contributors",
-        lambda per_file, tracked=None: ["test_never_committed.py"])
+        lambda per_file, tracked=None: ["tests/test_never_committed.py"])
+    monkeypatch.setattr(
+        site_facts, "missing_tracked_contributors",
+        lambda per_file, tracked=None: [], raising=False)
     monkeypatch.setattr(
         subprocess, "run",
         lambda *a, **k: types.SimpleNamespace(
@@ -204,3 +209,127 @@ def test_generation_warns_when_a_contributor_is_untracked(monkeypatch, capsys):
     err = capsys.readouterr().err
     assert "test_never_committed.py" in err, f"warning omits the file: {err!r}"
     assert "not tracked" in err.lower(), f"warning does not say why: {err!r}"
+
+
+# --- N55: the guard must fail closed, see recursively, and look both ways.
+#
+# Three holes, all measured on 2026-07-31 (ledger N55) and reproduced on
+# 2026-08-05 before the correction:
+# (a) a git failure inside untracked_test_contributors returned [], the PASS
+#     value, so the at-rest enforcement could not distinguish "everything is
+#     tracked" from "git never ran" (measurement rule 4);
+# (b) per_file came from a top-level glob while total_collected came from
+#     recursive pytest collection, so a nested test file inflated the
+#     published count with no per_file key for the predicate to see;
+# (c) the predicate only looked from per_file towards git, so a tracked test
+#     file deleted without `git rm` lowered the count silently.
+
+
+def test_git_discovery_failure_raises_not_clean(monkeypatch):
+    """IMP-01 (N55a): a git failure must raise, never return the PASS value."""
+    def boom(*a, **k):
+        raise OSError("git binary missing")
+    monkeypatch.setattr(subprocess, "run", boom)
+    with pytest.raises(site_facts.GitDiscoveryError, match="git ls-files"):
+        site_facts.untracked_test_contributors({"tests/test_x.py": 1})
+
+
+def test_git_nonzero_exit_raises_not_clean(monkeypatch):
+    """IMP-01 (N55a): rc!=0 is a failure, not an empty clean answer."""
+    monkeypatch.setattr(
+        subprocess, "run",
+        _fake_run(128, stdout="", stderr="fatal: not a git repository"))
+    with pytest.raises(site_facts.GitDiscoveryError,
+                       match="not a git repository"):
+        site_facts.untracked_test_contributors({"tests/test_x.py": 1})
+
+
+def test_git_success_with_everything_tracked_is_distinguishably_clean(
+        monkeypatch):
+    """IMP-01 negative control: a genuine all-tracked answer is [], so the
+    fail-closed change cannot be satisfied by refusing everything."""
+    monkeypatch.setattr(
+        subprocess, "run",
+        _fake_run(0, stdout="tests/test_a.py\0tests/sub/test_b.py\0"))
+    found = site_facts.untracked_test_contributors(
+        {"tests/test_a.py": 1, "tests/sub/test_b.py": 2})
+    assert found == [], f"clean tracked population reported {found}"
+
+
+def test_nested_contributors_are_inventoried_with_the_collector(
+        monkeypatch, tmp_path):
+    """IMP-02 (N55b): the per-file inventory must agree with the REAL
+    recursive collector, exercised end to end on a scratch tree."""
+    tests = tmp_path / "tests"
+    (tests / "sub").mkdir(parents=True)
+    (tests / "test_top.py").write_text(
+        "def test_a():\n    assert True\n", encoding="utf-8")
+    (tests / "sub" / "test_nested.py").write_text(
+        "def test_b():\n    assert True\n\n\ndef test_c():\n    assert True\n",
+        encoding="utf-8")
+    monkeypatch.setattr(site_facts, "REPO", tmp_path)
+    result = site_facts.count_tests()
+    assert result["total_collected"] == 3, result
+    assert set(result["per_file"]) == {
+        "tests/test_top.py", "tests/sub/test_nested.py"}, (
+        "the contributor inventory does not match the population the "
+        f"collector counted: {sorted(result['per_file'])}")
+    assert result["total_functions"] == 3, result
+
+
+def test_deleted_tracked_contributor_is_reported():
+    """IMP-03 (N55c): a tracked test file absent from the inventory is an
+    under-count and must be named."""
+    found = site_facts.missing_tracked_contributors(
+        {"tests/test_alive.py": 4},
+        tracked={"tests/test_alive.py",
+                 "tests/test_deleted_without_git_rm.py"})
+    assert found == ["tests/test_deleted_without_git_rm.py"], (
+        f"unexpected result: {found}")
+
+
+def test_reverse_direction_is_quiet_when_populations_agree():
+    found = site_facts.missing_tracked_contributors(
+        {"tests/test_a.py": 1}, tracked={"tests/test_a.py"})
+    assert found == [], f"agreeing populations reported {found}"
+
+
+def test_reverse_direction_demands_only_collector_pattern_files():
+    """conftest.py, helpers and fixture sources are tracked but are not test
+    files under python_files = test_*.py; the reverse check must not demand
+    them as contributors."""
+    found = site_facts.missing_tracked_contributors(
+        {"tests/test_a.py": 1},
+        tracked={"tests/test_a.py", "tests/conftest.py", "tests/helpers.py",
+                 "tests/fixtures/sample_high_risk/app.py"})
+    assert found == [], f"non-test tracked files demanded: {found}"
+
+
+def test_committed_artefact_covers_every_tracked_test_file():
+    """The reverse at-rest enforcement (IMP-03), against the real repository:
+    every tracked test file must appear in the committed artefact, or the
+    published count under-reports a deletion nobody recorded."""
+    facts = json.loads(
+        (REPO_ROOT / "data" / "site_facts.json").read_text(encoding="utf-8"))
+    per_file = facts["counts"]["tests"]["per_file"]
+    assert per_file, "artefact has no per_file entries; nothing to check"
+    found = site_facts.missing_tracked_contributors(per_file)
+    assert found == [], (
+        "tracked test files are missing from the committed canonical count, "
+        f"so it under-reports the suite a checkout would run: {found}. "
+        "Either `git rm` the deletion deliberately and regenerate, or "
+        "restore the files.")
+
+
+def test_committed_artefact_keys_are_repo_relative_paths():
+    """A basename key cannot be compared soundly against tracked paths (a
+    tracked nested file would mask an untracked top-level one of the same
+    name), so a stale basename-keyed artefact must fail loudly here rather
+    than pass the two at-rest checks above vacuously."""
+    facts = json.loads(
+        (REPO_ROOT / "data" / "site_facts.json").read_text(encoding="utf-8"))
+    per_file = facts["counts"]["tests"]["per_file"]
+    offenders = [k for k in per_file
+                 if not k.startswith("tests/") or "\\" in k]
+    assert offenders == [], (
+        f"artefact keys are not repo-relative posix paths: {offenders[:5]}")
