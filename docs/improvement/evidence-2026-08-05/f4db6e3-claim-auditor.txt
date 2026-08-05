@@ -1,0 +1,2 @@
+claim-auditor: scanned 38 file(s), 378 claim(s), 0 unsourced
+  all claims sourced — OK

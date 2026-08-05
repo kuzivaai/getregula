@@ -1,0 +1,265 @@
+claim-auditor: scanned 60 file(s), 1016 claim(s), 280 unsourced
+
+  .claude/rules/git.md — 1 unsourced
+    L21 [superlative] 'the only'
+
+  .claude/rules/measurement.md — 5 unsourced
+    L26 [numeric] '140 findings'
+    L38 [numeric] '18.5%'
+    L72 [numeric] '83.5%'
+    L120 [superlative] 'nothing else'
+    L128 [attributed] "reported that a blog post'"
+
+  .claude/rules/quality-standards.md — 2 unsourced
+    L22 [numeric] '15 files'
+    L22 [numeric] '15 files'
+
+  benchmarks/README.md — 28 unsourced
+    L71 [numeric] '15.2%'
+    L72 [numeric] '40.0%'
+    L73 [numeric] '33.3%'
+    L74 [numeric] '94%'
+    L74 [numeric] '14.9%'
+    L75 [numeric] '0.0%'
+    L76 [numeric] '0.0%'
+    L87 [numeric] '83.5%'
+    L93 [numeric] '201 findings'
+    L102 [numeric] '100.0%'
+    L103 [numeric] '87.5%'
+    L104 [numeric] '85.4%'
+    L105 [numeric] '82.9%'
+    L106 [numeric] '100.0%'
+    L107 [numeric] '33.3%'
+    L108 [numeric] '83.5%'
+    L110 [numeric] '70.0%'
+    L111 [numeric] '83.5%'
+    L119 [numeric] '33%'
+    L122 [numeric] '80%'
+    ... and 8 more
+
+  benchmarks/headtohead/RESULTS-synthetic-2026-07-28.md — 2 unsourced
+    L91 [numeric] '80%'
+    L105 [numeric] '80%'
+
+  benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md — 5 unsourced
+    L37 [numeric] '33%'
+    L38 [numeric] '47%'
+    L39 [numeric] '63%'
+    L144 [superlative] 'nothing else'
+    L200 [numeric] '63%'
+
+  benchmarks/results/blog_scan_2026_04/README.md — 6 unsourced
+    L52 [numeric] '36.2%'
+    L53 [numeric] '32.5%'
+    L54 [numeric] '23.3%'
+    L55 [numeric] '5.3%'
+    L56 [numeric] '2.1%'
+    L57 [numeric] '0.6%'
+
+  docs/adr/0001-claim-identity.md — 3 unsourced
+    L34 [numeric] '42.0%'
+    L34 [numeric] '51%'
+    L109 [superlative] 'Cheapest'
+
+  docs/adr/0002-the-seventy-percent-claim.md — 1 unsourced
+    L130 [numeric] '70%'
+
+  docs/benchmarks/PRECISION_RECALL_2026_04.md — 21 unsourced
+    L27 [numeric] '100%'
+    L27 [numeric] '100%'
+    L64 [numeric] '15.2%'
+    L142 [numeric] '30.0%'
+    L143 [numeric] '22.6%'
+    L144 [numeric] '19.2%'
+    L145 [numeric] '3.9%'
+    L146 [numeric] '0.0%'
+    L151 [numeric] '30%'
+    L152 [numeric] '15%'
+    L158 [numeric] '15.2%'
+    L170 [numeric] '25.0%'
+    L171 [numeric] '14.9%'
+    L184 [numeric] '15.2%'
+    L199 [numeric] '0%'
+    L199 [numeric] '0%'
+    L233 [numeric] '15.2%'
+    L234 [numeric] '21.5%'
+    L235 [numeric] '26.5%'
+    L236 [numeric] '36.0%'
+    ... and 1 more
+
+  docs/improvement/BASELINE.md — 26 unsourced
+    L22 [numeric] '2,821 tests'
+    L23 [numeric] '28 tests'
+    L22 [attributed] 'said 2'
+    L25 [numeric] '18.5%'
+    L194 [numeric] '57.3%'
+    L196 [numeric] '45%'
+    L204 [numeric] '91.2%'
+    L205 [numeric] '87.9%'
+    L206 [numeric] '86.8%'
+    L207 [numeric] '86.7%'
+    L208 [numeric] '83.2%'
+    L209 [numeric] '76.5%'
+    L210 [numeric] '75.2%'
+    L211 [numeric] '73.5%'
+    L212 [numeric] '73.2%'
+    L213 [numeric] '63.8%'
+    L220 [numeric] '0.0%'
+    L221 [numeric] '0.0%'
+    L222 [numeric] '0.0%'
+    L223 [numeric] '57.7%'
+    ... and 6 more
+
+  docs/improvement/CODE_REVIEW.md — 15 unsourced
+    L21 [attributed] 'reports             n=6'
+    L61 [attributed] 'write better regexes"'
+    L204 [numeric] '46.8%'
+    L209 [numeric] '103 files'
+    L216 [numeric] '46.8%'
+    L228 [numeric] '2,849 tests'
+    L366 [numeric] '136 files'
+    L366 [attributed] 'reported 1'
+    L367 [attributed] 'reported 2'
+    L429 [numeric] '18.5%'
+    L466 [numeric] '190 lines'
+    L466 [numeric] '11.6%'
+    L464 [superlative] 'unique'
+    L496 [numeric] '50%'
+    L506 [attributed] 'claimed a 2'
+
+  docs/improvement/COMMIT_ERRATA.md — 1 unsourced
+    L80 [numeric] '83.5%'
+
+  docs/improvement/DIRECTIVE-v3.md — 2 unsourced
+    L66 [numeric] '53%'
+    L119 [superlative] 'cheapest'
+
+  docs/improvement/GATE-REVIEW.md — 2 unsourced
+    L159 [attributed] 'wrote "'
+    L248 [attributed] 'told me the "'
+
+  docs/improvement/HOSTILE-REVIEW-LOOP2.md — 8 unsourced
+    L43 [numeric] '33%'
+    L48 [numeric] '33%'
+    L45 [superlative] 'The only'
+    L59 [numeric] '50%'
+    L61 [numeric] '2%'
+    L61 [attributed] 'said 1'
+    L79 [attributed] 'wrote "'
+    L135 [numeric] '50%'
+
+  docs/improvement/LEDGER.md — 7 unsourced
+    L5 [superlative] 'the only'
+    L186 [numeric] '2,849 tests'
+    L345 [numeric] '70 findings'
+    L355 [numeric] '6 files'
+    L356 [numeric] '42%'
+    L365 [superlative] 'the only'
+    L366 [superlative] 'cheapest'
+
+  docs/improvement/OWNER_ACTIONS.md — 3 unsourced
+    L10 [superlative] 'Nothing else'
+    L94 [superlative] 'cheapest'
+    L211 [numeric] '156 files'
+
+  docs/improvement/PACK-1.5b.md — 50 unsourced
+    L32 [attributed] 'said: "'
+    L41 [numeric] '83.5%'
+    L76 [numeric] '83.5%'
+    L97 [numeric] '83.5%'
+    L209 [numeric] '30%'
+    L244 [numeric] '9%'
+    L255 [numeric] '9%'
+    L281 [numeric] '41%'
+    L281 [numeric] '57%'
+    L281 [numeric] '65%'
+    L281 [numeric] '72%'
+    L284 [numeric] '65%'
+    L285 [numeric] '72%'
+    L286 [numeric] '562 findings'
+    L289 [numeric] '5 files'
+    L293 [numeric] '65%'
+    L294 [numeric] '60%'
+    L295 [numeric] '57%'
+    L296 [numeric] '72%'
+    L297 [numeric] '47%'
+    ... and 30 more
+
+  docs/improvement/PLAN-PHASE4-v2.md — 19 unsourced
+    L16 [numeric] '33%'
+    L44 [numeric] '70%'
+    L51 [numeric] '2%'
+    L52 [attributed] 'said 1'
+    L118 [numeric] '119 files'
+    L138 [numeric] '17 files'
+    L168 [numeric] '83.5%'
+    L217 [superlative] 'the only'
+    L231 [attributed] 'confirmed, return to Phase 3'
+    L263 [numeric] '25%'
+    L264 [numeric] '20%'
+    L265 [numeric] '15%'
+    L266 [numeric] '15%'
+    L267 [numeric] '10%'
+    L268 [numeric] '10%'
+    L269 [numeric] '5%'
+    L297 [numeric] '33%'
+    L301 [superlative] 'better than'
+    L278 [attributed] 'wrote "'
+
+  docs/improvement/PLAN-PHASE4.md — 20 unsourced
+    L81 [numeric] '83.5%'
+    L101 [superlative] 'the only'
+    L112 [numeric] '183 patterns'
+    L105 [attributed] 'reports **0'
+    L121 [numeric] '12.7%'
+    L122 [numeric] '70.9%'
+    L123 [numeric] '90.5%'
+    L156 [numeric] '50%'
+    L158 [numeric] '88.6%'
+    L158 [numeric] '98%'
+    L159 [numeric] '43.7%'
+    L198 [numeric] '25%'
+    L198 [numeric] '183 patterns'
+    L199 [numeric] '20%'
+    L200 [numeric] '15%'
+    L201 [numeric] '15%'
+    L202 [numeric] '10%'
+    L203 [numeric] '10%'
+    L204 [numeric] '5%'
+    L235 [numeric] '183 patterns'
+
+  docs/improvement/RESEARCH-CARDS.md — 9 unsourced
+    L149 [numeric] '88.6%'
+    L140 [attributed] 'said all six operate where "'
+    L156 [superlative] 'better than'
+    L168 [numeric] '88.6%'
+    L168 [numeric] '98%'
+    L168 [numeric] '43.7%'
+    L274 [attributed] 'reported values would fail a 0'
+    L327 [numeric] '2 case'
+    L342 [attributed] 'Stated rather than glossed, per "'
+
+  docs/improvement/STATE.md — 44 unsourced
+    L92 [numeric] '3 line'
+    L108 [superlative] 'the only'
+    L130 [numeric] '8 Test'
+    L139 [numeric] '1 findings'
+    L141 [numeric] '1 findings'
+    L234 [numeric] '27%'
+    L275 [numeric] '3 line'
+    L293 [superlative] 'unique'
+    L294 [superlative] 'unique'
+    L294 [superlative] 'the only'
+    L312 [attributed] 'reported that the CSS fence removed "'
+    L332 [superlative] 'unique'
+    L345 [numeric] '83.5%'
+    L357 [numeric] '83.5%'
+    L432 [numeric] '61 findings'
+    L449 [numeric] '123 findings'
+    L465 [superlative] 'nothing else'
+    L466 [superlative] 'unique'
+    L593 [numeric] '12 frameworks'
+    L637 [superlative] 'unique'
+    ... and 24 more
+
+Fix: add a URL, markdown link, or reference to an existing file (benchmarks/*.json, tests/*.py) in the same paragraph. To exempt a line, add a regex to .claim-allowlist.

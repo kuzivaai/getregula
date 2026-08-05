@@ -1,0 +1,2 @@
+claim-auditor: scanned 0 file(s), 0 claim(s), 0 unsourced
+  all claims sourced — OK

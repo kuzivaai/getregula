@@ -1,0 +1,236 @@
+{
+  "scanned": [
+    "README.md",
+    "SECURITY.md",
+    "docs/MODEL_CARD.md",
+    "docs/TRUST.md",
+    "docs/architecture.md",
+    "docs/dpv-aiact-export.md",
+    "docs/spec/regula-evidence-format-v1.md",
+    "site/assess/de.html",
+    "site/assess/index.html",
+    "site/assess/pt-br.html",
+    "site/blog/blog-article-5-prohibited-practices.html",
+    "site/blog/blog-classify-ai-system.html",
+    "site/blog/blog-does-ai-act-apply.html",
+    "site/blog/blog-omnibus-decision-framework.html",
+    "site/blog/blog-omnibus-delay.html",
+    "site/blog/blog-risk-tiers-in-code.html",
+    "site/blog/blog-scanning-10-ai-apps.html",
+    "site/blog/blog-scanning-5-frameworks.html",
+    "site/blog/blog-startups-ignoring-ai-act.html",
+    "site/blog/blog-static-analysis-ai-compliance.html",
+    "site/blog/writing.html",
+    "site/guides/article-14-human-oversight.html",
+    "site/guides/article-5-prohibited-practices.html",
+    "site/guides/article-50-transparency.html",
+    "site/guides/article-9-risk-management.html",
+    "site/guides/eu-ai-act-healthcare.html",
+    "site/guides/eu-ai-act-javascript.html",
+    "site/guides/eu-ai-act-recruitment-hiring.html",
+    "site/guides/index.html",
+    "site/index.html",
+    "site/llms-full.txt",
+    "site/llms.txt",
+    "site/locales/de.html",
+    "site/locales/pt-br.html",
+    "site/regions/regulations.html",
+    "site/regions/south-africa-ai-policy.html",
+    "site/regions/south-korea-ai-regulation.html",
+    "site/regions/uae.html"
+  ],
+  "total_claims": 378,
+  "total_findings": 0,
+  "files": [
+    {
+      "path": "README.md",
+      "claims": 10,
+      "findings": []
+    },
+    {
+      "path": "SECURITY.md",
+      "claims": 8,
+      "findings": []
+    },
+    {
+      "path": "docs/MODEL_CARD.md",
+      "claims": 25,
+      "findings": []
+    },
+    {
+      "path": "docs/TRUST.md",
+      "claims": 41,
+      "findings": []
+    },
+    {
+      "path": "docs/architecture.md",
+      "claims": 2,
+      "findings": []
+    },
+    {
+      "path": "docs/dpv-aiact-export.md",
+      "claims": 1,
+      "findings": []
+    },
+    {
+      "path": "docs/spec/regula-evidence-format-v1.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": "site/assess/de.html",
+      "claims": 1,
+      "findings": []
+    },
+    {
+      "path": "site/assess/index.html",
+      "claims": 1,
+      "findings": []
+    },
+    {
+      "path": "site/assess/pt-br.html",
+      "claims": 1,
+      "findings": []
+    },
+    {
+      "path": "site/blog/blog-article-5-prohibited-practices.html",
+      "claims": 9,
+      "findings": []
+    },
+    {
+      "path": "site/blog/blog-classify-ai-system.html",
+      "claims": 1,
+      "findings": []
+    },
+    {
+      "path": "site/blog/blog-does-ai-act-apply.html",
+      "claims": 2,
+      "findings": []
+    },
+    {
+      "path": "site/blog/blog-omnibus-decision-framework.html",
+      "claims": 4,
+      "findings": []
+    },
+    {
+      "path": "site/blog/blog-omnibus-delay.html",
+      "claims": 1,
+      "findings": []
+    },
+    {
+      "path": "site/blog/blog-risk-tiers-in-code.html",
+      "claims": 7,
+      "findings": []
+    },
+    {
+      "path": "site/blog/blog-scanning-10-ai-apps.html",
+      "claims": 32,
+      "findings": []
+    },
+    {
+      "path": "site/blog/blog-scanning-5-frameworks.html",
+      "claims": 39,
+      "findings": []
+    },
+    {
+      "path": "site/blog/blog-startups-ignoring-ai-act.html",
+      "claims": 14,
+      "findings": []
+    },
+    {
+      "path": "site/blog/blog-static-analysis-ai-compliance.html",
+      "claims": 5,
+      "findings": []
+    },
+    {
+      "path": "site/blog/writing.html",
+      "claims": 6,
+      "findings": []
+    },
+    {
+      "path": "site/guides/article-14-human-oversight.html",
+      "claims": 3,
+      "findings": []
+    },
+    {
+      "path": "site/guides/article-5-prohibited-practices.html",
+      "claims": 3,
+      "findings": []
+    },
+    {
+      "path": "site/guides/article-50-transparency.html",
+      "claims": 1,
+      "findings": []
+    },
+    {
+      "path": "site/guides/article-9-risk-management.html",
+      "claims": 8,
+      "findings": []
+    },
+    {
+      "path": "site/guides/eu-ai-act-healthcare.html",
+      "claims": 2,
+      "findings": []
+    },
+    {
+      "path": "site/guides/eu-ai-act-javascript.html",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": "site/guides/eu-ai-act-recruitment-hiring.html",
+      "claims": 12,
+      "findings": []
+    },
+    {
+      "path": "site/guides/index.html",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": "site/index.html",
+      "claims": 30,
+      "findings": []
+    },
+    {
+      "path": "site/llms-full.txt",
+      "claims": 44,
+      "findings": []
+    },
+    {
+      "path": "site/llms.txt",
+      "claims": 6,
+      "findings": []
+    },
+    {
+      "path": "site/locales/de.html",
+      "claims": 23,
+      "findings": []
+    },
+    {
+      "path": "site/locales/pt-br.html",
+      "claims": 22,
+      "findings": []
+    },
+    {
+      "path": "site/regions/regulations.html",
+      "claims": 7,
+      "findings": []
+    },
+    {
+      "path": "site/regions/south-africa-ai-policy.html",
+      "claims": 5,
+      "findings": []
+    },
+    {
+      "path": "site/regions/south-korea-ai-regulation.html",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": "site/regions/uae.html",
+      "claims": 2,
+      "findings": []
+    }
+  ]
+}

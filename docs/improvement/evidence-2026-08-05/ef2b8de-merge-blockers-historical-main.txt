@@ -1,0 +1,40 @@
+HEAD ef2b8de  base 6daacd2  tree /tmp/regula-integrity-ef2b8de-IZQ8A1cr
+total findings                    : 280
+         8  .claude/rules/
+        62  benchmarks/ + docs/benchmarks/
+       206  docs/improvement/
+         4  everything else
+survive introduced-claim alone    : 225
+         8  .claude/rules/
+         7  benchmarks/ + docs/benchmarks/
+       206  docs/improvement/
+         4  everything else
+survive published-surface alone   : 66
+        62  benchmarks/ + docs/benchmarks/
+         4  everything else
+survive BOTH                      : 11
+         2  benchmarks/headtohead/RESULTS-synthetic-2026-07-28.md
+         5  benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md
+         3  docs/adr/0001-claim-identity.md
+         1  docs/adr/0002-the-seventy-percent-claim.md
+
+  [CONTESTED] benchmarks/headtohead/RESULTS-synthetic-2026-07-28.md:91 '80%'
+  [CONTESTED] benchmarks/headtohead/RESULTS-synthetic-2026-07-28.md:105 '80%'
+  [BLOCKED  ] benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md:37 '33%'
+  [INHERITED] benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md:38 '47%'
+  [INHERITED] benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md:39 '63%'
+  [CONTESTED] benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md:144 'nothing else'
+  [CONTESTED] benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md:200 '63%'
+  [CONTESTED] docs/adr/0001-claim-identity.md:34 '42.0%'
+  [CONTESTED] docs/adr/0001-claim-identity.md:34 '51%'
+  [CONTESTED] docs/adr/0001-claim-identity.md:109 'Cheapest'
+  [CONTESTED] docs/adr/0002-the-seventy-percent-claim.md:130 '70%'
+
+  blocked    1
+  contested  8
+  inherited  2
+  TOTAL      11
+
+  blocked: a real figure whose paragraph also holds a row marked [NOT REPRODUCIBLE]. Sourcing is paragraph-granular, so the citation that would source this figure would also cite the withdrawn one. Not fixable by sourcing. It needs the withdrawn rows moved into a paragraph of their own, which is a presentation change and the owner's call.
+  contested: the surrounding text is disclaiming this figure, not asserting it. Flagging a disclaimer is a gate limitation.
+  inherited: row already marked [NOT REPRODUCIBLE]; this is finding N5. Sourcing it would be wrong. It needs withdrawing or making machine-visible, not a citation.

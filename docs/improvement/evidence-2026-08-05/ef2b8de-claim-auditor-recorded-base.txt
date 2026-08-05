@@ -1,0 +1,15 @@
+claim-auditor: scanned 9 file(s), 186 claim(s), 8 unsourced
+
+  docs/adr/0002-the-seventy-percent-claim.md — 1 unsourced
+    L130 [numeric] '70%'
+
+  docs/improvement/LEDGER.md — 7 unsourced
+    L5 [superlative] 'the only'
+    L186 [numeric] '2,849 tests'
+    L345 [numeric] '70 findings'
+    L355 [numeric] '6 files'
+    L356 [numeric] '42%'
+    L365 [superlative] 'the only'
+    L366 [superlative] 'cheapest'
+
+Fix: add a URL, markdown link, or reference to an existing file (benchmarks/*.json, tests/*.py) in the same paragraph. To exempt a line, add a regex to .claim-allowlist.

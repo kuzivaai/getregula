@@ -1,0 +1,13 @@
+HEAD 95caef4  base 301a573  tree /tmp/regula-integrity-95caef4-HcCA5dDg
+total findings                    : 209
+       142  docs/improvement/
+        67  everything else
+survive introduced-claim alone    : 168
+       119  docs/improvement/
+        49  everything else
+survive published-surface alone   : 0
+survive BOTH                      : 0
+
+
+  TOTAL      0
+

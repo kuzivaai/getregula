@@ -1,0 +1,13 @@
+HEAD f4db6e3  base 301a573  tree /tmp/regula-integrity-f4db6e3-sHA63ogw
+total findings                    : 246
+       179  docs/improvement/
+        67  everything else
+survive introduced-claim alone    : 205
+       156  docs/improvement/
+        49  everything else
+survive published-surface alone   : 0
+survive BOTH                      : 0
+
+
+  TOTAL      0
+
